@@ -105,12 +105,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
         if (deepCloneDecision) {
             return true;
         }
-        deepCloneDecision = deepCloneDecisionActualValueClassCache.get(actualValueClass);
-        if (deepCloneDecision == null) {
-            deepCloneDecision = isClassDeepCloned(actualValueClass);
-            deepCloneDecisionActualValueClassCache.put(actualValueClass, deepCloneDecision);
-        }
-        return deepCloneDecision;
+        return retrieveDeepCloneDecisionForActualValueClass(actualValueClass);
     }
 
     private boolean isFieldDeepCloned(Field field) {
@@ -170,7 +165,16 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
         return readMethod != null && readMethod.isAnnotationPresent(DeepPlanningClone.class);
     }
 
-    private boolean isClassDeepCloned(Class<?> type) {
+    protected boolean retrieveDeepCloneDecisionForActualValueClass(Class<?> actualValueClass) {
+        Boolean deepCloneDecision = deepCloneDecisionActualValueClassCache.get(actualValueClass);
+        if (deepCloneDecision == null) {
+            deepCloneDecision = isClassDeepCloned(actualValueClass);
+            deepCloneDecisionActualValueClassCache.put(actualValueClass, deepCloneDecision);
+        }
+        return deepCloneDecision;
+    }
+
+    protected boolean isClassDeepCloned(Class<?> type) {
         return solutionDescriptor.hasEntityDescriptor(type)
                 || solutionDescriptor.getSolutionClass().isAssignableFrom(type)
                 || type.isAnnotationPresent(DeepPlanningClone.class);
@@ -278,7 +282,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
                         + " Consider replacing the default " + SolutionCloner.class.getSimpleName() + ".");
             }
             for (E originalElement : originalCollection) {
-                E cloneElement = clone(originalElement);
+                E cloneElement = cloneCollectionsElementIfNeeded(originalElement);
                 cloneCollection.add(cloneElement);
             }
             return cloneCollection;
@@ -319,8 +323,8 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
                         + " Consider replacing the default " + SolutionCloner.class.getSimpleName() + ".");
             }
             for (Map.Entry<K,V> originalEntry : originalMap.entrySet()) {
-                K cloneKey = clone(originalEntry.getKey());
-                V cloneValue = clone(originalEntry.getValue());
+                K cloneKey = cloneCollectionsElementIfNeeded(originalEntry.getKey());
+                V cloneValue = cloneCollectionsElementIfNeeded(originalEntry.getValue());
                 cloneMap.put(cloneKey, cloneValue);
             }
             return cloneMap;
@@ -338,6 +342,14 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             } else { // Default Map
                 // Default to a LinkedHashMap to respect order
                 return new LinkedHashMap<K,V>(originalMap.size());
+            }
+        }
+
+        protected <C> C cloneCollectionsElementIfNeeded(C original) {
+            if (retrieveDeepCloneDecisionForActualValueClass(original.getClass())) {
+                return clone(original);
+            } else {
+                return original;
             }
         }
 

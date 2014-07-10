@@ -470,8 +470,8 @@ public abstract class AbstractSolutionClonerTest {
         List<String> cloneGeneralShadowVariableList = clone.getGeneralShadowVariableList();
         assertNotSame(generalShadowVariableList, cloneGeneralShadowVariableList);
         assertEquals(2, cloneGeneralShadowVariableList.size());
-        assertEquals("shadow g1", cloneGeneralShadowVariableList.get(0));
-        assertEquals("shadow g2", cloneGeneralShadowVariableList.get(1));
+        assertSame(generalShadowVariableList.get(0), cloneGeneralShadowVariableList.get(0));
+        assertEquals(generalShadowVariableList.get(1), cloneGeneralShadowVariableList.get(1));
 
         b.setValue(val2);
         assertCode("2", b.getValue());
@@ -499,7 +499,7 @@ public abstract class AbstractSolutionClonerTest {
             assertNotSame(originalShadowVariableList, cloneShadowVariableList);
             assertEquals(originalShadowVariableList.size(), cloneShadowVariableList.size());
             for (int i = 0; i < originalShadowVariableList.size(); i++) {
-                assertEquals(originalShadowVariableList.get(i), cloneShadowVariableList.get(i));
+                assertSame(originalShadowVariableList.get(i), cloneShadowVariableList.get(i));
             }
         }
 
@@ -511,7 +511,7 @@ public abstract class AbstractSolutionClonerTest {
             assertNotSame(originalShadowVariableMap, cloneShadowVariableMap);
             assertEquals(originalShadowVariableMap.size(), cloneShadowVariableMap.size());
             for (String key : originalShadowVariableMap.keySet()) {
-                assertEquals(originalShadowVariableMap.get(key), cloneShadowVariableMap.get(key));
+                assertSame(originalShadowVariableMap.get(key), cloneShadowVariableMap.get(key));
             }
         }
     }
