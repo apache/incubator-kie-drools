@@ -347,11 +347,14 @@ public abstract class AbstractSolutionClonerTest {
         a.setEntityToStringMap(new HashMap<TestdataEntityCollectionPropertyEntity, String>());
         a.getEntityToStringMap().put(b, "b");
         a.getEntityToStringMap().put(c, "c");
+        a.setStringToEntityListMap(new HashMap<String, List<TestdataEntityCollectionPropertyEntity>>());
+        a.getStringToEntityListMap().put("bc", Arrays.asList(b, c));
 
         b.setEntityList(Collections.<TestdataEntityCollectionPropertyEntity>emptyList());
         b.setEntitySet(new HashSet<TestdataEntityCollectionPropertyEntity>());
         b.setStringToEntityMap(new HashMap<String, TestdataEntityCollectionPropertyEntity>());
         b.setEntityToStringMap(null);
+        b.setStringToEntityListMap(null);
 
         c.setEntityList(Arrays.asList(a, c));
         c.setEntitySet(new HashSet<TestdataEntityCollectionPropertyEntity>(Arrays.asList(a, c)));
@@ -359,6 +362,7 @@ public abstract class AbstractSolutionClonerTest {
         c.getStringToEntityMap().put("a", a);
         c.getStringToEntityMap().put("c", c);
         c.setEntityToStringMap(null);
+        c.setStringToEntityListMap(null);
 
         TestdataEntityCollectionPropertySolution original = new TestdataEntityCollectionPropertySolution("solution");
         List<TestdataValue> valueList = Arrays.asList(val1, val2, val3);
@@ -395,11 +399,19 @@ public abstract class AbstractSolutionClonerTest {
         assertEquals("b", cloneA.getEntityToStringMap().get(cloneB));
         assertEquals("c", cloneA.getEntityToStringMap().get(cloneC));
 
+        assertNotSame(a.getStringToEntityListMap(), cloneA.getStringToEntityListMap());
+        assertEquals(1, cloneA.getStringToEntityListMap().size());
+        List<TestdataEntityCollectionPropertyEntity> entityListOfMap = cloneA.getStringToEntityListMap().get("bc");
+        assertEquals(2, entityListOfMap.size());
+        assertSame(cloneB, entityListOfMap.get(0));
+        assertSame(cloneC, entityListOfMap.get(1));
+
         assertEntityCollectionPropertyEntityClone(b, cloneB, "b", "1");
         assertEquals(0, cloneB.getEntityList().size());
         assertEquals(0, cloneB.getEntitySet().size());
         assertEquals(0, cloneB.getStringToEntityMap().size());
         assertNull(cloneB.getEntityToStringMap());
+        assertNull(cloneB.getStringToEntityListMap());
 
         assertEntityCollectionPropertyEntityClone(c, cloneC, "c", "3");
         assertEquals(2, cloneC.getEntityList().size());
@@ -410,6 +422,7 @@ public abstract class AbstractSolutionClonerTest {
         assertSame(cloneA, cloneC.getStringToEntityMap().get("a"));
         assertSame(cloneC, cloneC.getStringToEntityMap().get("c"));
         assertNull(cloneC.getEntityToStringMap());
+        assertNull(cloneC.getStringToEntityListMap());
     }
 
     private void assertEntityCollectionPropertyEntityClone(TestdataEntityCollectionPropertyEntity originalEntity,

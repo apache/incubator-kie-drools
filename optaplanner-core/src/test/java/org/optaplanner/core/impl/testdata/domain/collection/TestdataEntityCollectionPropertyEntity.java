@@ -23,6 +23,7 @@ public class TestdataEntityCollectionPropertyEntity extends TestdataObject {
     private Set<TestdataEntityCollectionPropertyEntity> entitySet;
     private Map<String, TestdataEntityCollectionPropertyEntity> stringToEntityMap;
     private Map<TestdataEntityCollectionPropertyEntity, String> entityToStringMap;
+    private Map<String, List<TestdataEntityCollectionPropertyEntity>> stringToEntityListMap;
 
     private TestdataValue value;
 
@@ -68,6 +69,14 @@ public class TestdataEntityCollectionPropertyEntity extends TestdataObject {
 
     public void setEntityToStringMap(Map<TestdataEntityCollectionPropertyEntity, String> entityToStringMap) {
         this.entityToStringMap = entityToStringMap;
+    }
+
+    public Map<String, List<TestdataEntityCollectionPropertyEntity>> getStringToEntityListMap() {
+        return stringToEntityListMap;
+    }
+
+    public void setStringToEntityListMap(Map<String, List<TestdataEntityCollectionPropertyEntity>> stringToEntityListMap) {
+        this.stringToEntityListMap = stringToEntityListMap;
     }
 
     @PlanningVariable(valueRangeProviderRefs = "valueRange")

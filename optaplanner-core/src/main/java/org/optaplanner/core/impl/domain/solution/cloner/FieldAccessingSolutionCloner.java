@@ -138,16 +138,25 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             return true;
         }
         if (Collection.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)) {
-            // Check the generic type arguments of the field.
-            // Yes, it is possible for fields and methods, but not instances!
-            Type genericType = field.getGenericType();
-            if (genericType instanceof ParameterizedType) {
-                ParameterizedType parameterizedType = (ParameterizedType) genericType;
-                for (Type actualTypeArgument : parameterizedType.getActualTypeArguments()) {
-                    if (actualTypeArgument instanceof Class
-                            && isClassDeepCloned((Class) actualTypeArgument)) {
-                        return true;
-                    }
+            if (isTypeArgumentDeepCloned(field.getGenericType())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isTypeArgumentDeepCloned(Type genericType) {
+        // Check the generic type arguments of the field.
+        // Yes, it is possible for fields and methods, but not instances!
+        if (genericType instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) genericType;
+            for (Type actualTypeArgument : parameterizedType.getActualTypeArguments()) {
+                if (actualTypeArgument instanceof Class
+                        && isClassDeepCloned((Class) actualTypeArgument)) {
+                    return true;
+                }
+                if (isTypeArgumentDeepCloned(actualTypeArgument)) {
+                    return true;
                 }
             }
         }
@@ -346,6 +355,14 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
         }
 
         protected <C> C cloneCollectionsElementIfNeeded(C original) {
+            // Because an element which is itself a Collection or Map might hold an entity, we clone it too
+            // Also, the List<Long> in Map<String, List<Long>> needs to be cloned
+            // if the List<Long> is a shadow, despite that Long never needs to be cloned (because it's immutable).
+            if (original instanceof Collection) {
+                return (C) cloneCollection(Collection.class, (Collection) original);
+            } else if (original instanceof Collection) {
+                return (C) cloneMap(Map.class, (Map) original);
+            }
             if (retrieveDeepCloneDecisionForActualValueClass(original.getClass())) {
                 return clone(original);
             } else {
