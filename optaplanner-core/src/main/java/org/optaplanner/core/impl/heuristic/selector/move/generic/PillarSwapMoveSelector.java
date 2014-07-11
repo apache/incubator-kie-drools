@@ -63,12 +63,6 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
                         + ") has a variableDescriptor (" + variableDescriptor
                         + ") which is chained (" + variableDescriptor.isChained() + ").");
             }
-            if (!variableDescriptor.isValueRangeEntityIndependent()) {
-                throw new IllegalStateException("The selector (" + this
-                        + ") has a variableDescriptor (" + variableDescriptor
-                        + ") which has a valueRange which is entityIndependent ("
-                        + variableDescriptor.isValueRangeEntityIndependent() + ").");
-            }
         }
         phaseLifecycleSupport.addEventListener(leftPillarSelector);
         if (leftPillarSelector != rightPillarSelector) {
