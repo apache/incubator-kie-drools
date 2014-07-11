@@ -1,0 +1,12 @@
+package org.drools.compiler.i18ntest
+
+import org.drools.compiler.I18nPerson
+
+global java.util.List list
+
+rule "名称 is 山田花子"
+    when
+        p : I18nPerson( 名称 == "山田花子" )
+    then
+        list.add( "名称は山田花子です" );
+end
