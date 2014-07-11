@@ -63,10 +63,8 @@ public class SwapMove extends AbstractMove {
             Object leftValue = variableDescriptor.getValue(leftEntity);
             Object rightValue = variableDescriptor.getValue(rightEntity);
             if (!ObjectUtils.equals(leftValue, rightValue)) {
-                if (variableDescriptor.isValueRangeEntityIndependent()) {
-                    return true;
-                } else {
-                    movable = true;
+                movable = true;
+                if (!variableDescriptor.isValueRangeEntityIndependent()) {
                     ValueRangeDescriptor valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
                     Solution workingSolution = scoreDirector.getWorkingSolution();
                     ValueRange rightValueRange = valueRangeDescriptor.extractValueRange(workingSolution, rightEntity);
