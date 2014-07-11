@@ -4524,3 +4524,18 @@ After in *.java:
 
 [MINOR] The interface Move has a new method getSimpleMoveTypeDescription().
 Extend AbstractMove so to avoid having to implement it.
+
+[MINOR] If you have a @ValueRangeProvider on an entity class (instead of the Solution class),
+then it's now safe to use the <pillarChangeMoveSelector> and <pillarSwapMoveSelector> as is.
+It's no longer needed to filter out swaps or changes
+which could put a value in an entity's variable that's not in its value range.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <pillarChangeMoveSelector>
+        <filterClass>...ValidChangesOnlyPillarChangeMoveFilter</filterClass>
+      </pillarChangeMoveSelector>
+      <pillarSwapMoveSelector>
+        <filterClass>...ValidSwapsOnlyPillarSwapMoveFilter</filterClass>
+      </pillarSwapMoveSelector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <pillarChangeMoveSelector/>
+      <pillarSwapMoveSelector/>
