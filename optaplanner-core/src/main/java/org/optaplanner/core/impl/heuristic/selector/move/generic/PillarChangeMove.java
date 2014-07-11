@@ -24,6 +24,9 @@ import java.util.List;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.valuerange.ValueRange;
+import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
@@ -59,7 +62,20 @@ public class PillarChangeMove extends AbstractMove {
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         Object oldValue = variableDescriptor.getValue(pillar.get(0));
-        return !ObjectUtils.equals(oldValue, toPlanningValue);
+        if (ObjectUtils.equals(oldValue, toPlanningValue)) {
+            return false;
+        }
+        if (!variableDescriptor.isValueRangeEntityIndependent()) {
+            ValueRangeDescriptor valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
+            Solution workingSolution = scoreDirector.getWorkingSolution();
+            for (Object entity : pillar) {
+                ValueRange rightValueRange = valueRangeDescriptor.extractValueRange(workingSolution, entity);
+                if (!rightValueRange.contains(toPlanningValue)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
