@@ -204,6 +204,23 @@ public class QueryElementBuilder
             varIndexesArray[i] = varIndexes.get( i );
         }
 
+        for ( Integer declIndex : declrIndexes ) {
+            Declaration knownInputArg = (Declaration) arguments.get( declIndex );
+            Declaration formalArgument = query.getParameters()[ declIndex ];
+            Class actual = knownInputArg.getExtractor().getExtractToClass();
+            Class formal = formalArgument.getExtractor().getExtractToClass();
+
+            // with queries invoking each other, we won't know until runtime whether a declaration is input, output or else
+            // input argument require a broader type, while output types require a narrower type, so we check for both.
+            if ( ! isCompatible( actual, formal ) && ! isCompatible( formal, actual ) ) {
+                context.addError( new DescrBuildError( context.getParentDescr(),
+                                                       descr,
+                                                           null,
+                                                       "Query is being invoked with known argument of type " + actual +
+                                                       " at position " + declIndex + ", but the expected query argument is of type " + formal ) );
+            }
+        }
+
         return new QueryElement( pattern,
                                  query.getName(),
                                  arguments.toArray( new Object[arguments.size()] ),
@@ -212,6 +229,82 @@ public class QueryElementBuilder
                                  varIndexesArray,
                                  !patternDescr.isQuery(),
                                  query.isAbductive() );
+    }
+
+    // FIXME : These methods do not belong here, but where?
+    private boolean isCompatible( Class actual, Class formal ) {
+        if ( actual.isPrimitive() && formal.isPrimitive() ) {
+            return isConvertible( actual, formal );
+        } else if ( actual.isPrimitive() ) {
+            return isConvertible( actual, unbox( formal ) );
+        } else if ( formal.isPrimitive() ) {
+            return isConvertible( unbox( actual ), formal );
+        } else {
+            return formal.isAssignableFrom( actual );
+        }
+    }
+
+    private boolean isConvertible( Class srcPrimitive, Class tgtPrimitive ) {
+        if ( Boolean.TYPE.equals( srcPrimitive ) ) {
+            return Boolean.TYPE.equals( tgtPrimitive );
+        } else if ( Byte.TYPE.equals( tgtPrimitive ) ) {
+            return Byte.TYPE.equals( tgtPrimitive )
+                    || Short.TYPE.equals( tgtPrimitive )
+                    || Integer.TYPE.equals( tgtPrimitive )
+                    || Long.TYPE.equals( tgtPrimitive )
+                    || Float.TYPE.equals( tgtPrimitive )
+                    || Double.TYPE.equals( tgtPrimitive );
+        } else if ( Character.TYPE.equals( srcPrimitive ) ) {
+            return Character.TYPE.equals( tgtPrimitive )
+                   || Integer.TYPE.equals( tgtPrimitive )
+                   || Long.TYPE.equals( tgtPrimitive )
+                   || Float.TYPE.equals( tgtPrimitive )
+                   || Double.TYPE.equals( tgtPrimitive );
+        } else if ( Double.TYPE.equals( srcPrimitive ) ) {
+            return Double.TYPE.equals( tgtPrimitive );
+        } else if ( Float.TYPE.equals( srcPrimitive ) ) {
+            return Float.TYPE.equals( tgtPrimitive )
+                   || Double.TYPE.equals( tgtPrimitive );
+        } else if ( Integer.TYPE.equals( srcPrimitive ) ) {
+            return Integer.TYPE.equals( tgtPrimitive )
+                   || Long.TYPE.equals( tgtPrimitive )
+                   || Float.TYPE.equals( tgtPrimitive )
+                   || Double.TYPE.equals( tgtPrimitive );
+        } else if ( Long.TYPE.equals( srcPrimitive ) ) {
+            return Long.TYPE.equals( tgtPrimitive )
+                   || Float.TYPE.equals( tgtPrimitive )
+                   || Double.TYPE.equals( tgtPrimitive );
+        } else if ( Short.TYPE.equals( srcPrimitive ) ) {
+            return Short.TYPE.equals( tgtPrimitive )
+                   || Integer.TYPE.equals( tgtPrimitive )
+                   || Long.TYPE.equals( tgtPrimitive )
+                   || Float.TYPE.equals( tgtPrimitive )
+                   || Double.TYPE.equals( tgtPrimitive );
+        }
+        return false;
+    }
+
+    private Class unbox( Class boxed ) {
+        if ( Boolean.class.equals( boxed ) ) {
+            return Boolean.TYPE;
+        } else if ( Byte.class.equals( boxed ) ) {
+            return Byte.TYPE;
+        } else if ( Character.class.equals( boxed ) ) {
+            return Character.TYPE;
+        } else if ( Double.class.equals( boxed ) ) {
+            return Double.TYPE;
+        } else if ( Float.class.equals( boxed ) ) {
+            return Float.TYPE;
+        } else if ( Integer.class.equals( boxed ) ) {
+            return Integer.TYPE;
+        } else if ( Long.class.equals( boxed ) ) {
+            return Long.TYPE;
+        } else if ( Short.class.equals( boxed ) ) {
+            return Short.TYPE;
+        } else if ( Number.class.equals( boxed ) ) {
+            return Double.TYPE;
+        }
+        return boxed;
     }
 
     @SuppressWarnings("unchecked")
@@ -336,7 +429,7 @@ public class QueryElementBuilder
             context.addError( new DescrBuildError( context.getParentDescr(),
                                                           base,
                                                           null,
-                                                          "Unable to parse query '" + query.getName() + "', as postion " + (position-1) + " for expression '" + expression + "' does not exist on query size " + arguments.size()) );
+                                                          "Unable to parse query '" + query.getName() + "', as postion " + position + " for expression '" + expression + "' does not exist on query size " + arguments.size()) );
             return;            
         }
         if ( isVariable( expression ) ) {
