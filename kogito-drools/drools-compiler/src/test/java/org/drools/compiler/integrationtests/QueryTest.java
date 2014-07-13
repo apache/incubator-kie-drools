@@ -23,7 +23,11 @@ import org.drools.core.util.Entry;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.core.util.ObjectHashSet;
 import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Results;
 import org.kie.api.definition.rule.Rule;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.conf.QueryListenerOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
@@ -35,6 +39,7 @@ import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -580,7 +585,7 @@ public class QueryTest extends CommonTestMethodBase {
         org.kie.api.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
                                                                                  new Object[]{Variable.v, Variable.v, Variable.v} );
         assertEquals( 2,
-                          results.size() );
+                      results.size() );
         List names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
@@ -874,6 +879,67 @@ public class QueryTest extends CommonTestMethodBase {
                       results.iterator().next().get( "$do" ) );
 
         ksession.dispose();
+    }
+
+    @Test
+    public void testQueryWithIncompatibleArgs() {
+        String drl = "global java.util.List list; " +
+                     "" +
+                     "query foo( String $s, String $s, String $s ) end " +
+                     "" +
+                     "rule React \n" +
+                     "when\n" +
+                     "  $i : Integer() " +
+                     "  foo( $i, $x, $i ; ) " +
+                     "then\n" +
+                     "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        Results results = helper.verify();
+        assertTrue( results.hasMessages( Message.Level.ERROR ) );
+        assertEquals( 2, results.getMessages( Message.Level.ERROR ).size() );
+    }
+
+    @Test
+    public void testQueryWithSyntaxError() {
+        String drl = "global java.util.List list; " +
+                     "" +
+                     "query foo( Integer $i ) end " +
+                     "" +
+                     "rule React \n" +
+                     "when\n" +
+                     "  $i : Integer() " +
+                     "  foo( $i ) " +   // missing ";" should result in 1 compilation error
+                     "then\n" +
+                     "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        Results results = helper.verify();
+        assertTrue( results.hasMessages( Message.Level.ERROR ) );
+        assertEquals( 1, results.getMessages( Message.Level.ERROR ).size() );
+    }
+
+    @Test
+    public void testQueryWithWrongParamNumber() {
+        String drl = "global java.util.List list; " +
+                     "" +
+                     "query foo( Integer $i ) end " +
+                     "" +
+                     "rule React \n" +
+                     "when\n" +
+                     "  $i : Integer() " +
+                     "  $j : Integer() " +
+                     "  foo( $i, $j ; ) " +
+                    "then\n" +
+                     "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        Results results = helper.verify();
+        assertTrue( results.hasMessages( Message.Level.ERROR ) );
+        assertEquals( 1, results.getMessages( Message.Level.ERROR ).size() );
     }
 
 }
