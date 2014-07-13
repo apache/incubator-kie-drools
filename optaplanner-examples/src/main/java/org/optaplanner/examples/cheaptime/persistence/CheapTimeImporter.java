@@ -16,22 +16,10 @@
 
 package org.optaplanner.examples.cheaptime.persistence;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
@@ -40,12 +28,63 @@ import org.optaplanner.examples.cheaptime.domain.Resource;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
+import org.optaplanner.examples.cheaptime.solver.CostCalculator;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 
 public class CheapTimeImporter extends AbstractTxtSolutionImporter {
 
     public static void main(String[] args) {
-        new CheapTimeImporter().convertAll();
+        CheapTimeImporter importer = new CheapTimeImporter();
+        importer.convert("instance00/instance.txt", "instance00.xml");
+        importer.convert("instance01/instance.txt", "instance01.xml");
+        importer.convert("instance02/instance.txt", "instance02.xml");
+        importer.convert("instance03/instance.txt", "instance03.xml");
+        importer.convert("instance04/instance.txt", "instance04.xml");
+        importer.convert("instance05/instance.txt", "instance05.xml");
+        importer.convert("instance06/instance.txt", "instance06.xml");
+        importer.convert("instance07/instance.txt", "instance07.xml");
+        importer.convert("instance08/instance.txt", "instance08.xml");
+        importer.convert("instance09/instance.txt", "instance09.xml");
+        importer.convert("instance10/instance.txt", "instance10.xml");
+        importer.convert("instance11/instance.txt", "instance11.xml");
+        importer.convert("instance12/instance.txt", "instance12.xml");
+        importer.convert("instance13/instance.txt", "instance13.xml");
+        importer.convert("instance14/instance.txt", "instance14.xml");
+        importer.convert("instance15/instance.txt", "instance15.xml");
+        importer.convert("instance16/instance.txt", "instance16.xml");
+        importer.convert("instance17/instance.txt", "instance17.xml");
+        importer.convert("instance18/instance.txt", "instance18.xml");
+        importer.convert("instance19/instance.txt", "instance19.xml");
+        importer.convert("instance20/instance.txt", "instance20.xml");
+        importer.convert("instance21/instance.txt", "instance21.xml");
+        importer.convert("instance22/instance.txt", "instance22.xml");
+        importer.convert("instance23/instance.txt", "instance23.xml");
+        importer.convert("instance24/instance.txt", "instance24.xml");
+        importer.convert("instance25/instance.txt", "instance25.xml");
+        importer.convert("instance26/instance.txt", "instance26.xml");
+        importer.convert("instance27/instance.txt", "instance27.xml");
+        importer.convert("instance28/instance.txt", "instance28.xml");
+        importer.convert("instance29/instance.txt", "instance29.xml");
+        importer.convert("instance30/instance.txt", "instance30.xml");
+        importer.convert("instance31/instance.txt", "instance31.xml");
+        importer.convert("instance32/instance.txt", "instance32.xml");
+        importer.convert("instance33/instance.txt", "instance33.xml");
+        importer.convert("instance34/instance.txt", "instance34.xml");
+        importer.convert("instance35/instance.txt", "instance35.xml");
+        importer.convert("instance36/instance.txt", "instance36.xml");
+        importer.convert("instance37/instance.txt", "instance37.xml");
+        importer.convert("instance38/instance.txt", "instance38.xml");
+        importer.convert("instance39/instance.txt", "instance39.xml");
+        importer.convert("instance40/instance.txt", "instance40.xml");
+        importer.convert("instance41/instance.txt", "instance41.xml");
+        importer.convert("instance42/instance.txt", "instance42.xml");
+        importer.convert("instance43/instance.txt", "instance43.xml");
+        importer.convert("instance44/instance.txt", "instance44.xml");
+        importer.convert("instance45/instance.txt", "instance45.xml");
+        importer.convert("instance46/instance.txt", "instance46.xml");
+        importer.convert("instance47/instance.txt", "instance47.xml");
+        importer.convert("instance48/instance.txt", "instance48.xml");
+        importer.convert("instance49/instance.txt", "instance49.xml");
     }
 
     public CheapTimeImporter() {
@@ -102,12 +141,13 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
             List<MachineCapacity> machineCapacityList = new ArrayList<MachineCapacity>(
                     machineListSize * resourceListSize);
             long machineCapacityId = 0L;
-            for (int i = 0; i < machineListSize * 2; i++) {
+            for (int i = 0; i < machineListSize; i++) {
                 Machine machine = new Machine();
                 String[] machineLineTokens = splitBySpacesOrTabs(readStringValue(), 4);
                 machine.setId(Long.parseLong(machineLineTokens[0]));
-                machine.setEnergyUsage(Integer.parseInt(machineLineTokens[1])); // TODO convert cost
-                machine.setSpinUpDownCost(Integer.parseInt(machineLineTokens[2]) + Integer.parseInt(machineLineTokens[3])); // TODO convert cost
+                machine.setEnergyUsage(Integer.parseInt(machineLineTokens[1]));
+                machine.setSpinUpDownCostMicros(CostCalculator.parseMicroCost(machineLineTokens[2])
+                        + CostCalculator.parseMicroCost(machineLineTokens[3]));
                 String[] capacityLineTokens = splitBySpacesOrTabs(readStringValue(), resourceListSize);
                 List<MachineCapacity> machineCapacityListOfMachine = new ArrayList<MachineCapacity>(resourceListSize);
                 for (int j = 0; j < resourceListSize; j++) {
@@ -133,7 +173,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
             List<TaskRequirement> taskRequirementList = new ArrayList<TaskRequirement>(taskListSize * resourceListSize);
             long taskRequirementId = 0L;
             for (int i = 0; i < taskListSize; i++) {
-                String[] taskLineTokens = splitBySpace(readStringValue(), 4);
+                String[] taskLineTokens = splitBySpace(readStringValue(), 5);
                 Task task = new Task();
                 task.setId(Long.parseLong(taskLineTokens[0]));
                 int duration = Integer.parseInt(taskLineTokens[1]);
@@ -155,6 +195,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
                             + ") has a latestEnd (" + latestEnd
                             + ") which is not between 0 and maximumPeriod (" + maximumPeriod + "), both inclusive.");
                 }
+                task.setPowerConsumptionMicros(CostCalculator.parseMicroCost(taskLineTokens[4]));
                 // + 1 because rangeTo is exclusive
                 // (the fact that latestEnd is exclusive is irrelevant because start = end - duration)
                 task.setStartPeriodRangeTo(latestEnd - duration + 1);

@@ -25,7 +25,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 public class Machine extends AbstractPersistable {
 
     private long energyUsage; // when it's up
-    private long spinUpDownCost; // sum of upCost and downCost
+    private long spinUpDownCostMicros; // In micro's, sum of upCost and downCost
 
     // Order is equal to resourceList so resource.getIndex() can be used
     private List<MachineCapacity> machineCapacityList;
@@ -38,12 +38,12 @@ public class Machine extends AbstractPersistable {
         this.energyUsage = energyUsage;
     }
 
-    public long getSpinUpDownCost() {
-        return spinUpDownCost;
+    public long getSpinUpDownCostMicros() {
+        return spinUpDownCostMicros;
     }
 
-    public void setSpinUpDownCost(long spinUpDownCost) {
-        this.spinUpDownCost = spinUpDownCost;
+    public void setSpinUpDownCostMicros(long spinUpDownCostMicros) {
+        this.spinUpDownCostMicros = spinUpDownCostMicros;
     }
 
     public List<MachineCapacity> getMachineCapacityList() {

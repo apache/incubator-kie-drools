@@ -24,12 +24,21 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("CtTask")
 public class Task extends AbstractPersistable {
 
+    private long powerConsumptionMicros;
     private int duration;
     private int startPeriodRangeFrom; // Inclusive
     private int startPeriodRangeTo; // Exclusive
 
     // Order is equal to resourceList so resource.getIndex() can be used
     private List<TaskRequirement> taskRequirementList;
+
+    public long getPowerConsumptionMicros() {
+        return powerConsumptionMicros;
+    }
+
+    public void setPowerConsumptionMicros(long powerConsumptionMicros) {
+        this.powerConsumptionMicros = powerConsumptionMicros;
+    }
 
     public int getDuration() {
         return duration;
