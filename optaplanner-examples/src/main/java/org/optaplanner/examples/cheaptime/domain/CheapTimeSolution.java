@@ -42,6 +42,7 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
     private List<MachineCapacity> machineCapacityList;
     private List<Task> taskList;
     private List<TaskRequirement> taskRequirementList;
+    private List<PeriodPowerCost> periodPowerCostList;
 
     private List<TaskAssignment> taskAssignmentList;
 
@@ -97,6 +98,14 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
         this.taskRequirementList = taskRequirementList;
     }
 
+    public List<PeriodPowerCost> getPeriodPowerCostList() {
+        return periodPowerCostList;
+    }
+
+    public void setPeriodPowerCostList(List<PeriodPowerCost> periodPowerCostList) {
+        this.periodPowerCostList = periodPowerCostList;
+    }
+
     @PlanningEntityCollectionProperty
     public List<TaskAssignment> getTaskAssignmentList() {
         return taskAssignmentList;
@@ -125,6 +134,7 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
         facts.addAll(machineCapacityList);
         facts.addAll(taskList);
         facts.addAll(taskRequirementList);
+        facts.addAll(periodPowerCostList);
         // Do not add the planning entity's (taskAssignmentList) because that will be done automatically
         return facts;
     }

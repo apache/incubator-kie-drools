@@ -16,14 +16,20 @@
 
 package org.optaplanner.examples.cheaptime.persistence;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.MachineCapacity;
+import org.optaplanner.examples.cheaptime.domain.PeriodPowerCost;
 import org.optaplanner.examples.cheaptime.domain.Resource;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
@@ -99,7 +105,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
 
         private CheapTimeSolution solution;
 
-        private int maximumPeriod;
+        private int maximumEndPeriod;
         private int resourceListSize;
 
         public Solution readSolution() throws IOException {
@@ -107,17 +113,17 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
             solution.setId(0L);
             int timeResolutionInMinutes = readIntegerValue();
             solution.setTimeResolutionInMinutes(timeResolutionInMinutes);
-            maximumPeriod = ((24 * 60) / timeResolutionInMinutes) + 1;
+            maximumEndPeriod = ((24 * 60) / timeResolutionInMinutes) + 1;
             readResourceList();
             readMachineList();
             readTaskList();
-            readForecast();
+            readForecastFile();
             createTaskAssignmentList();
             logger.info("CheapTime {} has {} resources, {} machines, {} periods and {} tasks.",
                     getInputId(),
                     solution.getResourceList().size(),
                     solution.getMachineList().size(),
-                    maximumPeriod,
+                    maximumEndPeriod - 1,
                     solution.getTaskList().size()
             );
             return solution;
@@ -173,7 +179,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
             List<TaskRequirement> taskRequirementList = new ArrayList<TaskRequirement>(taskListSize * resourceListSize);
             long taskRequirementId = 0L;
             for (int i = 0; i < taskListSize; i++) {
-                String[] taskLineTokens = splitBySpace(readStringValue(), 5);
+                String[] taskLineTokens = splitBySpacesOrTabs(readStringValue(), 5);
                 Task task = new Task();
                 task.setId(Long.parseLong(taskLineTokens[0]));
                 int duration = Integer.parseInt(taskLineTokens[1]);
@@ -183,17 +189,17 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
                 }
                 task.setDuration(duration);
                 int earliestStart = Integer.parseInt(taskLineTokens[2]);
-                if (earliestStart < 0 || earliestStart > maximumPeriod) {
+                if (earliestStart < 0 || earliestStart > maximumEndPeriod) {
                     throw new IllegalArgumentException("Task with id (" + task.getId()
                             + ") has a earliestStart (" + earliestStart
-                            + ") which is not between 0 and maximumPeriod (" + maximumPeriod + "), both inclusive.");
+                            + ") which is not between 0 and maximumEndPeriod (" + maximumEndPeriod + "), both inclusive.");
                 }
                 task.setStartPeriodRangeFrom(earliestStart);
                 int latestEnd = Integer.parseInt(taskLineTokens[3]);
-                if (latestEnd < 0 || latestEnd > maximumPeriod) {
+                if (latestEnd < 0 || latestEnd > maximumEndPeriod) {
                     throw new IllegalArgumentException("Task with id (" + task.getId()
                             + ") has a latestEnd (" + latestEnd
-                            + ") which is not between 0 and maximumPeriod (" + maximumPeriod + "), both inclusive.");
+                            + ") which is not between 0 and maximumEndPeriod (" + maximumEndPeriod + "), both inclusive.");
                 }
                 task.setPowerConsumptionMicros(CostCalculator.parseMicroCost(taskLineTokens[4]));
                 // + 1 because rangeTo is exclusive
@@ -218,10 +224,55 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
             solution.setTaskRequirementList(taskRequirementList);
         }
 
-        private void readForecast() {
-            // TODO
+        private void readForecastFile() {
+            File forecastInputFile = new File(inputFile.getParent(), "forecast.txt");
+            if (!forecastInputFile.exists()) {
+                throw new IllegalArgumentException("The forecastInputFile (" + forecastInputFile
+                        + ") for instanceInputFile (" + inputFile + ") does not exist.");
+            }
+            BufferedReader forecastBufferedReader = null;
+            try {
+                forecastBufferedReader = new BufferedReader(new InputStreamReader(
+                        new FileInputStream(forecastInputFile), "UTF-8"));
+                ForecastInputBuilder forecastInputBuilder = new ForecastInputBuilder();
+                forecastInputBuilder.setInputFile(forecastInputFile);
+                forecastInputBuilder.setBufferedReader(forecastBufferedReader);
+                try {
+                    forecastInputBuilder.readSolution();
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException("Exception in forecastInputFile ("
+                            + forecastInputFile + ")", e);
+                } catch (IllegalStateException e) {
+                    throw new IllegalStateException("Exception in forecastInputFile ("
+                            + forecastInputFile + ")", e);
+                }
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Could not read the file (" + forecastInputFile.getName() + ").", e);
+            } finally {
+                IOUtils.closeQuietly(forecastBufferedReader);
+            }
         }
 
+        public class ForecastInputBuilder extends TxtInputBuilder {
+
+            @Override
+            public Solution readSolution() throws IOException {
+                int periodListSize = readIntegerValue();
+                List<PeriodPowerCost> periodPowerCostList = new ArrayList<PeriodPowerCost>(periodListSize);
+                for (int i = 0; i < periodListSize; i++) {
+                    String[] taskLineTokens = splitBySpacesOrTabs(readStringValue(), 2);
+                    PeriodPowerCost periodPowerCost = new PeriodPowerCost();
+                    int period = Integer.parseInt(taskLineTokens[0]);
+                    periodPowerCost.setId((long) period);
+                    periodPowerCost.setPeriod(period);
+                    periodPowerCost.setPowerCostMicros(CostCalculator.parseMicroCost(taskLineTokens[1]));
+                    periodPowerCostList.add(periodPowerCost);
+                }
+                solution.setPeriodPowerCostList(periodPowerCostList);
+                return null; // Hack so the code can reuse read methods from TxtInputBuilder
+            }
+
+        }
 
         private void createTaskAssignmentList() {
             List<Task> taskList = solution.getTaskList();
