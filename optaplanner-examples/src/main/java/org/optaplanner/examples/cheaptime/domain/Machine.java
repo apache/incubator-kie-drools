@@ -1,0 +1,69 @@
+/*
+ * Copyright 2014 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.optaplanner.examples.cheaptime.domain;
+
+import java.util.List;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+@XStreamAlias("CtMachine")
+public class Machine extends AbstractPersistable {
+
+    private long energyUsage; // when it's up
+    private long spinUpDownCost; // sum of upCost and downCost
+
+    // Order is equal to resourceList so resource.getIndex() can be used
+    private List<MachineCapacity> machineCapacityList;
+
+    public long getEnergyUsage() {
+        return energyUsage;
+    }
+
+    public void setEnergyUsage(long energyUsage) {
+        this.energyUsage = energyUsage;
+    }
+
+    public long getSpinUpDownCost() {
+        return spinUpDownCost;
+    }
+
+    public void setSpinUpDownCost(long spinUpDownCost) {
+        this.spinUpDownCost = spinUpDownCost;
+    }
+
+    public List<MachineCapacity> getMachineCapacityList() {
+        return machineCapacityList;
+    }
+
+    public void setMachineCapacityList(List<MachineCapacity> machineCapacityList) {
+        this.machineCapacityList = machineCapacityList;
+    }
+
+    public MachineCapacity getMachineCapacity(Resource resource) {
+        return machineCapacityList.get(resource.getIndex());
+    }
+
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
+    public String getLabel() {
+        return "Machine " + id;
+    }
+
+}
