@@ -37,7 +37,7 @@ public class CloudBalancingApp extends CommonApp {
     public CloudBalancingApp() {
         super("Cloud balancing",
                 "Assign processes to computers.\n\n" +
-                "Each computer must have enough hardware to run all of it's processes.\n" +
+                "Each computer must have enough hardware to run all of its processes.\n" +
                 "Each used computer inflicts a maintenance cost.",
                 CloudBalancingPanel.LOGO_PATH);
     }
