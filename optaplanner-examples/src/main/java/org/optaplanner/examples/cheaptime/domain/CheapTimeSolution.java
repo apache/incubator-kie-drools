@@ -61,7 +61,7 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
         return resourceList;
     }
 
-    @ValueRangeProvider(id = "computerRange")
+    @ValueRangeProvider(id = "machineRange")
     public List<Machine> getMachineList() {
         return machineList;
     }

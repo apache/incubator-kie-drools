@@ -80,6 +80,14 @@ public class Task extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    public int getResourceUsageMultiplicand() {
+        int multiplicand = 1;
+        for (TaskRequirement taskRequirement : taskRequirementList) {
+            multiplicand *= taskRequirement.getResourceUsage();
+        }
+        return multiplicand;
+    }
+
     public String getLabel() {
         return "Task " + id;
     }

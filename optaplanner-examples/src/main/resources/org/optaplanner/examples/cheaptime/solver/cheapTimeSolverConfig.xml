@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+
+  <!-- Domain model configuration -->
+  <solutionClass>org.optaplanner.examples.cheaptime.domain.CheapTimeSolution</solutionClass>
+  <entityClass>org.optaplanner.examples.cheaptime.domain.TaskAssignment</entityClass>
+
+  <!-- Score configuration -->
+  <scoreDirectorFactory>
+    <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
+    <scoreDrl>org/optaplanner/examples/cheaptime/solver/cheapTimeScoreRules.drl</scoreDrl>
+    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+  </scoreDirectorFactory>
+
+  <!-- Optimization algorithms configuration -->
+  <termination>
+    <secondsSpentLimit>120</secondsSpentLimit>
+  </termination>
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+  </constructionHeuristic>
+  <localSearch>
+    <unionMoveSelector>
+      <changeMoveSelector>
+        <valueSelector>
+          <variableName>startPeriod</variableName>
+        </valueSelector>
+      </changeMoveSelector>
+      <changeMoveSelector>
+        <valueSelector>
+          <variableName>machine</variableName>
+        </valueSelector>
+      </changeMoveSelector>
+      <swapMoveSelector/>
+    </unionMoveSelector>
+    <acceptor>
+      <lateAcceptanceSize>400</lateAcceptanceSize>
+      <entityTabuRatio>0.3</entityTabuRatio>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>2</acceptedCountLimit>
+    </forager>
+  </localSearch>
+</solver>
