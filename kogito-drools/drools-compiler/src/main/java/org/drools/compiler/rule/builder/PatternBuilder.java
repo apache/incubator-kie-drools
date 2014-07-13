@@ -206,8 +206,9 @@ public class PatternBuilder
             }
 
             if ( rce == null ) {
+                // look up the query in the current package
                 RuleImpl rule = context.getPkg().getRule( patternDescr.getObjectType() );
-                if ( rule instanceof QueryImpl) {
+                if ( rule instanceof QueryImpl ) {
                     // it's a query so delegate to the QueryElementBuilder
                     QueryElementBuilder qeBuilder = QueryElementBuilder.getInstance();
                     rce = qeBuilder.build( context,
@@ -215,8 +216,10 @@ public class PatternBuilder
                                            prefixPattern,
                                            (QueryImpl) rule );
                 }
+            }
 
-                // try package imports
+            if ( rce == null ) {
+                // the query may have been imported, so try package imports
                 for ( String importName : context.getDialect().getTypeResolver().getImports() ) {
                     importName = importName.trim();
                     int pos = importName.indexOf( '*' );
@@ -225,7 +228,7 @@ public class PatternBuilder
                                                                pos - 1 );
                         PackageRegistry pkgReg = context.getKnowledgeBuilder().getPackageRegistry( pkgName );
                         if ( pkgReg != null ) {
-                            rule = pkgReg.getPackage().getRule( patternDescr.getObjectType() );
+                            RuleImpl rule = pkgReg.getPackage().getRule( patternDescr.getObjectType() );
                             if ( rule instanceof QueryImpl) {
                                 // it's a query so delegate to the QueryElementBuilder
                                 QueryElementBuilder qeBuilder = QueryElementBuilder.getInstance();
@@ -238,7 +241,6 @@ public class PatternBuilder
                         }
                     }
                 }
-
             }
 
             if ( rce == null ) {
