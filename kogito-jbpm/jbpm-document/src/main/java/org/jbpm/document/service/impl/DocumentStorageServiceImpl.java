@@ -54,8 +54,14 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
 
             document.setIdentifier(Base64.encodeBase64String(destinationPath.getBytes()));
 
+            String appURL = document.getAttribute("app.url");
+
+            if (appURL == null) appURL = "";
+
+            if (!appURL.isEmpty() && !appURL.endsWith("/")) appURL += "/";
+
             // Generating a default download link, don't use this donwloader in real environments use it as an example
-            String link = "Controller?_fb=fdch&_fp=download&content=" + document.getIdentifier();
+            String link = appURL + "Controller?_fb=fdch&_fp=download&content=" + document.getIdentifier();
             document.setLink(link);
 
         } catch (IOException e) {
@@ -135,9 +141,8 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
         String destinationPath = storagePath + "/";
 
         destinationPath += UUID.randomUUID().toString();
-        destinationPath = destinationPath.replaceAll("-", "/");
         if (!destinationPath.endsWith("/")) destinationPath += "/";
 
-        return destinationPath + "/" + fileName;
+        return destinationPath + fileName;
     }
 }
