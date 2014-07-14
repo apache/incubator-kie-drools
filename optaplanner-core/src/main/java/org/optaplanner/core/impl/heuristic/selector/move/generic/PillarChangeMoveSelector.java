@@ -20,19 +20,21 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.common.collect.Iterators;
+import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 public class PillarChangeMoveSelector extends GenericMoveSelector {
 
     protected final PillarSelector pillarSelector;
-    protected final EntityIndependentValueSelector valueSelector;
+    protected final ValueSelector valueSelector;
     protected final boolean randomSelection;
 
-    public PillarChangeMoveSelector(PillarSelector pillarSelector, EntityIndependentValueSelector valueSelector,
+    public PillarChangeMoveSelector(PillarSelector pillarSelector, ValueSelector valueSelector,
             boolean randomSelection) {
         this.pillarSelector = pillarSelector;
         this.valueSelector = valueSelector;
@@ -60,7 +62,12 @@ public class PillarChangeMoveSelector extends GenericMoveSelector {
     }
 
     public long getSize() {
-        return pillarSelector.getSize() * valueSelector.getSize();
+        if (!(valueSelector instanceof EntityIndependentValueSelector)) {
+            throw new IllegalArgumentException("To use the method getSize(), the moveSelector (" + this
+                    + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
+                    + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
+        }
+        return pillarSelector.getSize() * ((EntityIndependentValueSelector) valueSelector).getSize();
     }
 
     public Iterator<Move> iterator() {
@@ -91,7 +98,7 @@ public class PillarChangeMoveSelector extends GenericMoveSelector {
                     return noUpcomingSelection();
                 }
                 upcomingPillar = pillarIterator.next();
-                valueIterator = valueSelector.iterator();
+                valueIterator = valueSelector.iterator(upcomingPillar.get(0));
                 if (!valueIterator.hasNext()) {
                     // valueSelector is completely empty
                     return noUpcomingSelection();
@@ -131,7 +138,7 @@ public class PillarChangeMoveSelector extends GenericMoveSelector {
             List<Object> pillar = pillarIterator.next();
 
             if (!valueIterator.hasNext()) {
-                valueIterator = valueSelector.iterator();
+                valueIterator = valueSelector.iterator(pillar.get(0));
                 if (!valueIterator.hasNext()) {
                     // valueSelector is completely empty
                     return noUpcomingSelection();

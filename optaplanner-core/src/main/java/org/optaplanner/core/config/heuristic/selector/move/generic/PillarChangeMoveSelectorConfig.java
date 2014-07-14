@@ -75,13 +75,7 @@ public class PillarChangeMoveSelectorConfig extends MoveSelectorConfig {
         ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(configPolicy,
                 pillarSelector.getEntityDescriptor(),
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        if (!(valueSelector instanceof EntityIndependentValueSelector)) {
-            throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                    + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
-                    + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
-        }
-        return new PillarChangeMoveSelector(pillarSelector, (EntityIndependentValueSelector) valueSelector,
-                randomSelection);
+        return new PillarChangeMoveSelector(pillarSelector, valueSelector, randomSelection);
     }
 
     public void inherit(PillarChangeMoveSelectorConfig inheritedConfig) {

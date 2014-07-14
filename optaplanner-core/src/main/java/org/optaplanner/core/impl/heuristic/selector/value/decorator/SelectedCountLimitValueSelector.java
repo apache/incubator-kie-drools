@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
@@ -69,6 +70,11 @@ public class SelectedCountLimitValueSelector extends AbstractValueSelector imple
     }
 
     public long getSize() {
+        if (!(childValueSelector instanceof EntityIndependentValueSelector)) {
+            throw new IllegalArgumentException("To use the method getSize(), the moveSelector (" + this
+                    + ") needs to be based on a EntityIndependentValueSelector (" + childValueSelector + ")."
+                    + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
+        }
         long childSize = ((EntityIndependentValueSelector) childValueSelector).getSize();
         return Math.min(selectedCountLimit, childSize);
     }
