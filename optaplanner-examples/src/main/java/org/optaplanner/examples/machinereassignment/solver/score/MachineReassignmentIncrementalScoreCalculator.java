@@ -337,9 +337,9 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
 
         private void doBalancePenaltyCosts() {
             for (MrBalancePenalty balancePenalty : machineReassignment.getBalancePenaltyList()) {
-                long originAvailable =  machineCapacityScorePartList.get(balancePenalty.getOriginResource().getIndex())
+                long originAvailable = machineCapacityScorePartList.get(balancePenalty.getOriginResource().getIndex())
                         .getBalanceAvailable();
-                long targetAvailable =  machineCapacityScorePartList.get(balancePenalty.getTargetResource().getIndex())
+                long targetAvailable = machineCapacityScorePartList.get(balancePenalty.getTargetResource().getIndex())
                         .getBalanceAvailable();
                 if (originAvailable > 0L) {
                     long minimumTargetAvailable = originAvailable * balancePenalty.getMultiplicand();
@@ -353,9 +353,9 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
 
         private void undoBalancePenaltyCosts() {
             for (MrBalancePenalty balancePenalty : machineReassignment.getBalancePenaltyList()) {
-                long originAvailable =  machineCapacityScorePartList.get(balancePenalty.getOriginResource().getIndex())
+                long originAvailable = machineCapacityScorePartList.get(balancePenalty.getOriginResource().getIndex())
                         .getBalanceAvailable();
-                long targetAvailable =  machineCapacityScorePartList.get(balancePenalty.getTargetResource().getIndex())
+                long targetAvailable = machineCapacityScorePartList.get(balancePenalty.getTargetResource().getIndex())
                         .getBalanceAvailable();
                 if (originAvailable > 0L) {
                     long minimumTargetAvailable = originAvailable * balancePenalty.getMultiplicand();
