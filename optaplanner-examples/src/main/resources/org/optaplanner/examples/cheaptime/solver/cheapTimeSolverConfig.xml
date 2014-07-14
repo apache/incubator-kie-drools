@@ -9,7 +9,11 @@
   <!-- Score configuration -->
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
-    <scoreDrl>org/optaplanner/examples/cheaptime/solver/cheapTimeScoreRules.drl</scoreDrl>
+    <easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>
+    <!--<scoreDrl>org/optaplanner/examples/cheaptime/solver/cheapTimeScoreRules.drl</scoreDrl>-->
+    <!--<assertionScoreDirectorFactory>-->
+    <!--<easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>-->
+    <!--</assertionScoreDirectorFactory>-->
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
 

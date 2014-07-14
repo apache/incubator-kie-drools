@@ -24,18 +24,18 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("CtMachine")
 public class Machine extends AbstractPersistable {
 
-    private long energyUsage; // when it's up
+    private long powerConsumptionMicros; // when it's up
     private long spinUpDownCostMicros; // In micro's, sum of upCost and downCost
 
-    // Order is equal to resourceList so resource.getIndex() can be used
+    // Order is equal to resourceList so Resource.getIndex() can be used for the index
     private List<MachineCapacity> machineCapacityList;
 
-    public long getEnergyUsage() {
-        return energyUsage;
+    public long getPowerConsumptionMicros() {
+        return powerConsumptionMicros;
     }
 
-    public void setEnergyUsage(long energyUsage) {
-        this.energyUsage = energyUsage;
+    public void setPowerConsumptionMicros(long powerConsumptionMicros) {
+        this.powerConsumptionMicros = powerConsumptionMicros;
     }
 
     public long getSpinUpDownCostMicros() {

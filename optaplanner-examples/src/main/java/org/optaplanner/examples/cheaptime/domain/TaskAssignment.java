@@ -68,6 +68,17 @@ public class TaskAssignment extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    /**
+     * Exclusive
+     * @return null if {@link #getStartPeriod()} is null
+     */
+    public Integer getEndPeriod() {
+        if (startPeriod == null) {
+            return null;
+        }
+        return startPeriod + task.getDuration();
+    }
+
     public String getLabel() {
         return task.getLabel();
     }

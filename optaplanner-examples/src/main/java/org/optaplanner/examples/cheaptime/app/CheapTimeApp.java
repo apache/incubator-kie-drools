@@ -19,8 +19,12 @@ package org.optaplanner.examples.cheaptime.app;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.cheaptime.persistence.CheapTimeDao;
+import org.optaplanner.examples.cheaptime.persistence.CheapTimeExporter;
+import org.optaplanner.examples.cheaptime.persistence.CheapTimeImporter;
 import org.optaplanner.examples.cheaptime.swingui.CheapTimePanel;
 import org.optaplanner.examples.common.app.CommonApp;
+import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 
@@ -56,6 +60,16 @@ public class CheapTimeApp extends CommonApp {
     @Override
     protected SolutionDao createSolutionDao() {
         return new CheapTimeDao();
+    }
+
+    @Override
+    protected AbstractSolutionImporter createSolutionImporter() {
+        return new CheapTimeImporter();
+    }
+
+    @Override
+    protected AbstractSolutionExporter createSolutionExporter() {
+        return new CheapTimeExporter();
     }
 
 }

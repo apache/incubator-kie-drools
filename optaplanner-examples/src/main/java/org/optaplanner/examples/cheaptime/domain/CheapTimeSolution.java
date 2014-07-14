@@ -36,12 +36,15 @@ import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 public class CheapTimeSolution extends AbstractPersistable implements Solution<HardSoftLongScore> {
 
     private int timeResolutionInMinutes;
+    private int globalPeriodRangeFrom; // Inclusive
+    private int globalPeriodRangeTo; // Exclusive
 
     private List<Resource> resourceList;
     private List<Machine> machineList;
     private List<MachineCapacity> machineCapacityList;
     private List<Task> taskList;
     private List<TaskRequirement> taskRequirementList;
+    // Order is equal to global periodRange so int period can be used for the index
     private List<PeriodPowerCost> periodPowerCostList;
 
     private List<TaskAssignment> taskAssignmentList;
@@ -55,6 +58,22 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
 
     public void setTimeResolutionInMinutes(int timeResolutionInMinutes) {
         this.timeResolutionInMinutes = timeResolutionInMinutes;
+    }
+
+    public int getGlobalPeriodRangeFrom() {
+        return globalPeriodRangeFrom;
+    }
+
+    public void setGlobalPeriodRangeFrom(int globalPeriodRangeFrom) {
+        this.globalPeriodRangeFrom = globalPeriodRangeFrom;
+    }
+
+    public int getGlobalPeriodRangeTo() {
+        return globalPeriodRangeTo;
+    }
+
+    public void setGlobalPeriodRangeTo(int globalPeriodRangeTo) {
+        this.globalPeriodRangeTo = globalPeriodRangeTo;
     }
 
     public List<Resource> getResourceList() {

@@ -41,6 +41,15 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
 
     public static void main(String[] args) {
         CheapTimeImporter importer = new CheapTimeImporter();
+        importer.convert("sample01/instance.txt", "sample01.xml");
+        importer.convert("sample02/instance.txt", "sample02.xml");
+        importer.convert("sample03/instance.txt", "sample03.xml");
+        importer.convert("sample04/instance.txt", "sample04.xml");
+        importer.convert("sample05/instance.txt", "sample05.xml");
+        importer.convert("sample06/instance.txt", "sample06.xml");
+        importer.convert("sample07/instance.txt", "sample07.xml");
+        importer.convert("sample08/instance.txt", "sample08.xml");
+        importer.convert("sample09/instance.txt", "sample09.xml");
         importer.convert("instance00/instance.txt", "instance00.xml");
         importer.convert("instance01/instance.txt", "instance01.xml");
         importer.convert("instance02/instance.txt", "instance02.xml");
@@ -97,6 +106,11 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
         super(new CheapTimeDao());
     }
 
+    @Override
+    public String getInputFileSuffix() {
+        return CheapTimeSolutionFileIO.FILE_EXTENSION;
+    }
+
     public TxtInputBuilder createTxtInputBuilder() {
         return new CheapTimeInputBuilder();
     }
@@ -105,7 +119,6 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
 
         private CheapTimeSolution solution;
 
-        private int maximumEndPeriod;
         private int resourceListSize;
 
         public Solution readSolution() throws IOException {
@@ -113,7 +126,8 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
             solution.setId(0L);
             int timeResolutionInMinutes = readIntegerValue();
             solution.setTimeResolutionInMinutes(timeResolutionInMinutes);
-            maximumEndPeriod = ((24 * 60) / timeResolutionInMinutes) + 1;
+            solution.setGlobalPeriodRangeFrom(0);
+            solution.setGlobalPeriodRangeTo(((24 * 60) / timeResolutionInMinutes));
             readResourceList();
             readMachineList();
             readTaskList();
@@ -123,7 +137,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
                     getInputId(),
                     solution.getResourceList().size(),
                     solution.getMachineList().size(),
-                    maximumEndPeriod - 1,
+                    solution.getGlobalPeriodRangeTo(),
                     solution.getTaskList().size()
             );
             return solution;
@@ -151,7 +165,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
                 Machine machine = new Machine();
                 String[] machineLineTokens = splitBySpacesOrTabs(readStringValue(), 4);
                 machine.setId(Long.parseLong(machineLineTokens[0]));
-                machine.setEnergyUsage(Integer.parseInt(machineLineTokens[1]));
+                machine.setPowerConsumptionMicros(CostCalculator.parseMicroCost(machineLineTokens[1]));
                 machine.setSpinUpDownCostMicros(CostCalculator.parseMicroCost(machineLineTokens[2])
                         + CostCalculator.parseMicroCost(machineLineTokens[3]));
                 String[] capacityLineTokens = splitBySpacesOrTabs(readStringValue(), resourceListSize);
@@ -189,17 +203,21 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
                 }
                 task.setDuration(duration);
                 int earliestStart = Integer.parseInt(taskLineTokens[2]);
-                if (earliestStart < 0 || earliestStart > maximumEndPeriod) {
+                if (earliestStart < solution.getGlobalPeriodRangeFrom()
+                        || earliestStart >= solution.getGlobalPeriodRangeTo()) {
                     throw new IllegalArgumentException("Task with id (" + task.getId()
                             + ") has a earliestStart (" + earliestStart
-                            + ") which is not between 0 and maximumEndPeriod (" + maximumEndPeriod + "), both inclusive.");
+                            + ") which is not between globalPeriodRangeFrom (" + solution.getGlobalPeriodRangeFrom()
+                            + ") and globalPeriodRangeTo (" + solution.getGlobalPeriodRangeTo() + ").");
                 }
                 task.setStartPeriodRangeFrom(earliestStart);
                 int latestEnd = Integer.parseInt(taskLineTokens[3]);
-                if (latestEnd < 0 || latestEnd > maximumEndPeriod) {
+                if (latestEnd < solution.getGlobalPeriodRangeFrom()
+                        || latestEnd > solution.getGlobalPeriodRangeTo()) {
                     throw new IllegalArgumentException("Task with id (" + task.getId()
                             + ") has a latestEnd (" + latestEnd
-                            + ") which is not between 0 and maximumEndPeriod (" + maximumEndPeriod + "), both inclusive.");
+                            + ") which is not between globalPeriodRangeFrom (" + solution.getGlobalPeriodRangeFrom()
+                            + ") and globalPeriodRangeTo (" + solution.getGlobalPeriodRangeTo() + ").");
                 }
                 task.setPowerConsumptionMicros(CostCalculator.parseMicroCost(taskLineTokens[4]));
                 // + 1 because rangeTo is exclusive
@@ -263,6 +281,11 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
                     String[] taskLineTokens = splitBySpacesOrTabs(readStringValue(), 2);
                     PeriodPowerCost periodPowerCost = new PeriodPowerCost();
                     int period = Integer.parseInt(taskLineTokens[0]);
+                    if (periodPowerCostList.size() != period) {
+                        throw new IllegalStateException("The forecast period (" + period
+                                + ") does not increment normally and gets a different list index ("
+                                + periodPowerCostList.size() + ").");
+                    }
                     periodPowerCost.setId((long) period);
                     periodPowerCost.setPeriod(period);
                     periodPowerCost.setPowerCostMicros(CostCalculator.parseMicroCost(taskLineTokens[1]));

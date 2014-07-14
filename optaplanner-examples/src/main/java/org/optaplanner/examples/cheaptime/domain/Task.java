@@ -29,7 +29,7 @@ public class Task extends AbstractPersistable {
     private int startPeriodRangeFrom; // Inclusive
     private int startPeriodRangeTo; // Exclusive
 
-    // Order is equal to resourceList so resource.getIndex() can be used
+    // Order is equal to resourceList so Resource.getIndex() can be used for the index
     private List<TaskRequirement> taskRequirementList;
 
     public long getPowerConsumptionMicros() {

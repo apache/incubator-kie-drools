@@ -39,13 +39,6 @@ public class CostCalculator {
         return Math.round(result * ONE_MILLION_DOUBLE);
     }
 
-    public static long multiplyWithOneMicros(long a, long bMicros) {
-        double aDouble = (double) (a);
-        double bDouble = ((double) (bMicros)) / ONE_MILLION_DOUBLE;
-        double result = aDouble * bDouble;
-        return Math.round(result * ONE_MILLION_DOUBLE);
-    }
-
     private CostCalculator() {}
 
 }
