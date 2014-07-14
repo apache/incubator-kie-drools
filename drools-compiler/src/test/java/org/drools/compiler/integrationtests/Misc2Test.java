@@ -6268,4 +6268,31 @@ public class Misc2Test extends CommonTestMethodBase {
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
         assertEquals(1, results.getMessages().size());
     }
+
+    @Test @Ignore("Fixed with mvel 2.2.1")
+    public void testFieldNameStartingWithUnderscore() throws Exception {
+        // DROOLS-554
+        String str = "import " + Underscore.class.getCanonicalName() + ";\n" +
+                     "rule R when\n" +
+                     "    Underscore( _id == \"test\" )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        assertEquals(0, results.getMessages().size());
+    }
+
+    public static class Underscore {
+        private String _id;
+
+        public String get_id() {
+            return _id;
+        }
+
+        public void set_id(String _id) {
+            this._id = _id;
+        }
+    }
 }
