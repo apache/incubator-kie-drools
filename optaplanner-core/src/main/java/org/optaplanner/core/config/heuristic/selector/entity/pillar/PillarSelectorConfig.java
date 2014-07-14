@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.heuristic.selector.entity.pillar;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.BooleanUtils;
@@ -37,10 +38,6 @@ public class PillarSelectorConfig extends SelectorConfig {
     @XStreamAlias("entitySelector")
     protected EntitySelectorConfig entitySelectorConfig = null;
 
-    // TODO add variableName but do not duplicate from PillarSwapMoveSelectorConfig
-//    @XStreamImplicit(itemFieldName = "variableName")
-//    private List<String> variableNameList = null;
-
     protected Boolean subPillarEnabled = null;
     protected Integer minimumSubPillarSize = null;
     protected Integer maximumSubPillarSize = null;
@@ -52,14 +49,6 @@ public class PillarSelectorConfig extends SelectorConfig {
     public void setEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
         this.entitySelectorConfig = entitySelectorConfig;
     }
-
-//    public List<String> getVariableNameList() {
-//        return variableNameList;
-//    }
-//
-//    public void setVariableNameList(List<String> variableNameList) {
-//        this.variableNameList = variableNameList;
-//    }
 
     public Boolean getSubPillarEnabled() {
         return subPillarEnabled;
@@ -98,7 +87,8 @@ public class PillarSelectorConfig extends SelectorConfig {
      * @return never null
      */
     public PillarSelector buildPillarSelector(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
+            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder,
+            List<String> variableNameIncludeList) {
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
             throw new IllegalArgumentException("The pillarSelectorConfig (" + this
                     + ")'s minimumCacheType (" + minimumCacheType
@@ -110,8 +100,8 @@ public class PillarSelectorConfig extends SelectorConfig {
                 : entitySelectorConfig;
         EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
                 minimumCacheType, SelectionOrder.ORIGINAL);
-        Collection<GenuineVariableDescriptor> variableDescriptors = entitySelector.getEntityDescriptor()
-                .getGenuineVariableDescriptors();
+        Collection<GenuineVariableDescriptor> variableDescriptors = deduceVariableDescriptors(
+                entitySelector.getEntityDescriptor(), variableNameIncludeList);
         if (BooleanUtils.isFalse(subPillarEnabled)
                 && (minimumSubPillarSize != null || maximumSubPillarSize != null)) {
             throw new IllegalArgumentException("The pillarSelectorConfig (" + this
@@ -133,8 +123,6 @@ public class PillarSelectorConfig extends SelectorConfig {
         } else if (inheritedConfig.getEntitySelectorConfig() != null) {
             entitySelectorConfig.inherit(inheritedConfig.getEntitySelectorConfig());
         }
-//        variableNameList = ConfigUtils.inheritMergeableListProperty(variableNameList,
-//                inheritedConfig.getVariableNameList());
         subPillarEnabled = ConfigUtils.inheritOverwritableProperty(subPillarEnabled,
                 inheritedConfig.getSubPillarEnabled());
         minimumSubPillarSize = ConfigUtils.inheritOverwritableProperty(minimumSubPillarSize,

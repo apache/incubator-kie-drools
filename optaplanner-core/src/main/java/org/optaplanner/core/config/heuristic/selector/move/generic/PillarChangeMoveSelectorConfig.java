@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.generic;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
@@ -62,8 +65,11 @@ public class PillarChangeMoveSelectorConfig extends MoveSelectorConfig {
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         PillarSelectorConfig pillarSelectorConfig_ = pillarSelectorConfig == null ? new PillarSelectorConfig()
                 : pillarSelectorConfig;
+        List<String> variableNameIncludeList = valueSelectorConfig == null ? null
+                : valueSelectorConfig.getVariableName() == null ? null
+                : Collections.singletonList(valueSelectorConfig.getVariableName());
         PillarSelector pillarSelector = pillarSelectorConfig_.buildPillarSelector(configPolicy,
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
         ValueSelectorConfig valueSelectorConfig_ = valueSelectorConfig == null ? new ValueSelectorConfig()
                 : valueSelectorConfig;
         ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(configPolicy,
