@@ -5180,6 +5180,56 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       expPart3.getName() );
     }
 
+    @Test
+    public void testLHSMissingConstraints() {
+        String drl = "package org.mortgages;\n" +
+                "import java.lang.Number;\n" +
+                "import org.drools.workbench.models.commons.backend.rule.classes.SearchContext;\n" +
+                "import org.drools.workbench.models.commons.backend.rule.classes.ProducerMasterForRules;\n" +
+                "import org.drools.workbench.models.commons.backend.rule.classes.RuleFactor;\n" +
+
+                "rule \"SecondaryCuisineRepeatUsage\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $searchContext : SearchContext( lastThreeCuisines != null )\n" +
+                "  ProducerMasterForRules( primaryCuisine != null, primaryCuisine != $searchContext.lastThreeCuisines, secondaryCuisine != null, secondaryCuisine == $searchContext.lastThreeCuisines )\n" +
+                "  $secondaryCuisineRepeatUsageFactor : RuleFactor( )\n" +
+                "then\n" +
+                "  modify( $secondaryCuisineRepeatUsageFactor ) {\n" +
+                "    setWeightageImpact(-30)\n" +
+                "  }\n" +
+                "end\n";
+
+        addModelField( "org.drools.workbench.models.commons.backend.rule.classes.SearchContext",
+                       "this",
+                       "org.drools.workbench.models.commons.backend.rule.classes.SearchContext",
+                       DataType.TYPE_THIS );
+
+        addModelField( "org.drools.workbench.models.commons.backend.rule.classes.SearchContext",
+                       "lastThreeCuisines",
+                       "java.lang.String",
+                       DataType.TYPE_STRING );
+
+        addModelField( "org.drools.workbench.models.commons.backend.rule.classes.ProducerMasterForRules",
+                       "primaryCuisine",
+                       "java.lang.String",
+                       DataType.TYPE_STRING );
+
+        addModelField( "org.drools.workbench.models.commons.backend.rule.classes.ProducerMasterForRules",
+                       "secondaryCuisine",
+                       "java.lang.String",
+                       DataType.TYPE_STRING );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",
