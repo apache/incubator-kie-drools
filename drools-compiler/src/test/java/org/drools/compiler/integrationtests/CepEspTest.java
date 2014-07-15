@@ -5260,4 +5260,106 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals(5, list.size());
         assertTrue(list.containsAll(Arrays.asList(1, 3, 5, 7, 9)));
     }
+
+
+    @Test
+    public void testDurationMemoryLeak() throws Exception {
+        String drl = 
+                "import org.drools.compiler.StockTick;\n " +
+                "declare StockTick\n"+
+                "   @role( event )\n"+
+                "   @timestamp( time )\n"+
+                "end\n"+
+                
+                "rule \"announce DROO\"\n"+
+                "   no-loop\n"+
+                "when\n"+
+                "   $droo : StockTick( company == \"DROO\" )\n"+
+                "then\n"+
+                "   System.out.println(\"Received the DROO\");\n"+
+                "end\n"+
+
+                "rule \"delay DROO\"\n"+
+                "    no-loop\n"+
+                "    duration(2s)\n"+
+                "when\n"+
+                "    $droo :  StockTick( company == \"DROO\" )\n"+
+                "then\n"+
+                "    System.out.println(\"forwarding the DROO\");\n"+
+                "    delete($droo);\n"+
+                "end\n"+
+
+                "rule \"cancel RAISE\"\n"+
+                "    no-loop\n"+
+                "when\n"+
+                "    $oord : StockTick( company == \"OORD\" )\n"+
+                "    $droo : StockTick( company == \"DROO\" )\n"+
+                "then\n"+
+                "    System.out.println(\"Canceling the DROO due to a OORD\");\n"+
+                "    delete($droo);\n"+
+                "    delete($oord);\n"+
+                "end";
+
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KieSession ksession = kbase.newKieSession();
+        StatefulKnowledgeSessionImpl internalSession = (StatefulKnowledgeSessionImpl) ksession;
+
+        assertEquals("FactCount should be 0[1]", 0, ksession.getFactCount());
+
+        FactHandle hRaise = ksession.insert(new StockTick(0, "DROO", 1.00));
+        ksession.fireAllRules();
+        assertEquals("FactCount should be 1[2]", 1, ksession.getFactCount());
+
+        Thread.sleep(500);
+
+        ksession.insert(new StockTick(1, "OORD", 1.00));
+        ksession.fireAllRules();
+        assertEquals("FactCount should be 0[3]", 0, ksession.getFactCount());
+
+        Thread.sleep(500);
+
+        hRaise = ksession.insert(new StockTick(2, "DROO", 1.00));
+        ksession.fireAllRules();
+        assertEquals("FactCount should be 1[4]", 1, ksession.getFactCount());
+
+        Thread.sleep(2100);
+        
+        ksession.fireAllRules();
+        assertEquals("FactCount should be 0[5]", 0, ksession.getFactCount());
+
+        assertTrue("Object should no longer exist", 
+                null == internalSession.getObjectStore().getObjectForHandle(hRaise));
+
+        /*
+         * Uncomment the following while loop to hold the JVM open so you can 
+         * grab a heap dump using JVisualVM.  Execute the following OQL query
+         * to see that the StockTick(2, "DROO", 1.00) object that was the final
+         * event inserted above is still referenced in memory.  It should not
+         * be.
+         */
+
+        /*
+        while(true){
+            Thread.sleep(10000);
+        }
+        */
+
+        // Final assert needed: need to verify that the StockTock(2, "DROO", 1.00)
+        // object is no longer referenced in any of the internal Drools data 
+        // structures.  Not sure how to do this using the Drools api.
+        
+    }
+
+
 }
