@@ -21,6 +21,7 @@ import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.WriteAccessor;
+import org.drools.core.util.ExternalizableLinkedHashMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
         }
 
         if ( obj._getTraitMap() == null ) {
-            obj._setTraitMap( new TraitTypeMap( new HashMap() ) );
+            obj._setTraitMap( new TraitTypeMap( new ExternalizableLinkedHashMap() ) );
         }
     }
 

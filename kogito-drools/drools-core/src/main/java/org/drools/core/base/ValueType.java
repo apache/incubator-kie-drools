@@ -26,6 +26,7 @@ import java.util.Date;
 
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.facttemplates.FactTemplate;
 
 public class ValueType
@@ -251,7 +252,7 @@ public class ValueType
         } else if ( clazz == Class.class ) {
             return ValueType.CLASS_TYPE;
         } 
-        else if ( Thing.class.isAssignableFrom( clazz )) {
+        else if ( Thing.class.isAssignableFrom( clazz ) || clazz.isAnnotationPresent( Trait.class ) ) {
             return ValueType.TRAIT_TYPE;
         } else {
             return ValueType.OBJECT_TYPE;

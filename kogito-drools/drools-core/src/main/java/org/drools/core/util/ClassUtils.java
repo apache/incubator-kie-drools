@@ -18,6 +18,7 @@ package org.drools.core.util;
 
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
+import org.drools.core.factmodel.traits.Thing;
 import org.kie.api.definition.type.Modifies;
 import org.kie.internal.utils.ClassLoaderUtil;
 
@@ -43,6 +44,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -518,6 +520,26 @@ public final class ClassUtils {
             return double.class;
         }
         return Object.class;
+    }
+
+    public static Set<Class<?>> getAllImplementedInterfaceNames( Class<?> klass ) {
+        Set<Class<?>> interfaces = new HashSet<Class<?>>();
+        while( klass != null ) {
+            Class<?>[] localInterfaces = klass.getInterfaces();
+            for ( Class<?> intf : localInterfaces ) {
+                interfaces.add( intf );
+                exploreSuperInterfaces( intf, interfaces );
+            }
+            klass = klass.getSuperclass();
+        }
+        return interfaces;
+    }
+
+    private static void exploreSuperInterfaces( Class<?> intf, Set<Class<?>> traitInterfaces ) {
+        for ( Class<?> sup : intf.getInterfaces() ) {
+            traitInterfaces.add( sup );
+            exploreSuperInterfaces( sup, traitInterfaces );
+        }
     }
 
     public static boolean isWindows() {

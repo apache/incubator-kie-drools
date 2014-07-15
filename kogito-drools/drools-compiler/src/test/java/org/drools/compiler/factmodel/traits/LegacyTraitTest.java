@@ -2,9 +2,14 @@
 
 package org.drools.compiler.factmodel.traits;
 
+import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -13,8 +18,30 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
+import static org.junit.Assert.assertEquals;
+
+@RunWith(Parameterized.class)
 public class LegacyTraitTest {
+
+    public VirtualPropertyMode mode;
+
+    @Parameterized.Parameters
+    public static Collection modes() {
+        return Arrays.asList( new VirtualPropertyMode[][]
+                                      {
+                                              { VirtualPropertyMode.MAP },
+                                              { VirtualPropertyMode.TRIPLES }
+                                      } );
+    }
+
+    public LegacyTraitTest( VirtualPropertyMode m ) {
+        this.mode = m;
+    }
+
 
 
     private StatefulKnowledgeSession getSessionFromString( String drl ) {
@@ -148,7 +175,7 @@ public class LegacyTraitTest {
                         "\n";
 
         StatefulKnowledgeSession ks = getSessionFromString( source );
-        TraitFactory.setMode( VirtualPropertyMode.MAP, ks.getKieBase() );
+        TraitFactory.setMode( mode, ks.getKieBase() );
 
         ExtendedProcedureImpl procedure1 = new ExtendedProcedureImpl();
         ExtendedProcedureImpl procedure2 = new ExtendedProcedureImpl();
@@ -167,6 +194,88 @@ public class LegacyTraitTest {
         ks.insert( procedure2 );
 
         ks.fireAllRules( 500 );
+    }
+
+
+    @Traitable
+    @PropertyReactive
+    public static class BarImpl implements Foo {
+
+    }
+
+
+
+
+    public static interface Root {
+
+    }
+
+    public static interface Trunk extends Root {
+
+    }
+
+    @PropertyReactive
+    @Trait
+    public static interface Foo extends Trunk {
+
+    }
+
+    @Test
+    public void traitWithMixedInterfacesExtendingEachOther() {
+        String source = "package org.drools.compiler.test;" +
+                        "import " + LegacyTraitTest.class.getName() + ".BarImpl; " +
+                        "import " + LegacyTraitTest.class.getName() + ".Foo; " +
+                        "import " + LegacyTraitTest.class.getName() + ".Trunk; " +
+                        "global java.util.List list; " +
+
+                        // We need to redeclare the interfaces as traits, the annotation on the original class is not enough here
+                        "declare trait Foo end " +
+                        // notice that the declarations do not include supertypes, and are out of order. The engine will figure out what to do
+                        "declare trait Root end " +
+
+                        "declare trait Foo2 extends Foo " +
+                        "  @propertyReactive " +
+                        "end " +
+
+                        "rule 'Bar Don' " +
+                        "when " +
+                        "   $b : BarImpl( this isA Foo.class, this not isA Foo2.class ) " +
+                        "then " +
+                        "   list.add( 3 ); " +
+                        "   retract( $b ); " +
+                        "end " +
+
+                        "rule 'Don Bar' " +
+                        "no-loop " +
+                        "when " +
+                        "    $b : Foo( ) " +
+                        "then " +
+                        "    list.add( 1 ); " +
+                        "    don( $b, Foo2.class ); " +
+                        "end " +
+
+                        "rule 'Cant really shed Foo but Foo2' " +
+                        "when " +
+                        "   $b : Foo2() " +
+                        "then " +
+                        "   list.add( 2 ); " +
+                        "   shed( $b, Foo.class ); " +
+                         "end " +
+
+                        "";
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+        TraitFactory.setMode( mode, ks.getKieBase() );
+        ArrayList list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        ks.insert( new BarImpl() );
+
+        int n = ks.fireAllRules();
+
+        System.out.println( list );
+        assertEquals( Arrays.asList( 1, 2, 3 ), list );
+        assertEquals( 3, n );
     }
 
 }

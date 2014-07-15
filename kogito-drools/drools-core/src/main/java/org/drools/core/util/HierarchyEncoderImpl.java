@@ -31,7 +31,7 @@ import java.util.Set;
 /**
  * Encodes a hierachy using bit masks, according to the algorithm described in
  * M.F. van Bommel, P. Wang, Encoding Multiple Inheritance Hierarchies for Lattice Operations
- * Data & Knowledge Enfineering 50 (2004) 175-194
+ * Data & Knowledge Engineering 50 (2004) 175-194
  *
  * @param <T>
  */

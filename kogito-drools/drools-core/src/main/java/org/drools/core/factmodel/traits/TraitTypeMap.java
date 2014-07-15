@@ -16,6 +16,10 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
     private BitSet currentTypeCode = new BitSet();
     private transient Collection<K> mostSpecificTraits = new LinkedList<K>();
 
+    private static final BitSet NO_STATIC = new BitSet();
+    private BitSet staticTypeCode;
+    private Map<String,BitSet> staticTypes;
+
     public TraitTypeMap() {
     }
 
@@ -99,6 +103,12 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
 
     public Collection<K> removeCascade( String traitName ) {
         if ( ! innerMap.containsKey( traitName ) ) {
+            if ( staticTypes != null ) {
+                BitSet staticCode = staticTypes.get( traitName );
+                if ( staticCode != null ) {
+                    return removeCascade( staticTypes.get( traitName ) );
+                }
+            }
             return Collections.emptyList();
         }
         K thing = innerMap.get( traitName );
@@ -128,6 +138,9 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
 
     private void resetCurrentCode() {
         currentTypeCode = new BitSet( currentTypeCode.length() );
+        if ( staticTypeCode != null && staticTypeCode != NO_STATIC ) {
+            currentTypeCode.or( staticTypeCode );
+        }
         if ( ! this.values().isEmpty() ) {
             for ( Thing x : this.values() ) {
                 currentTypeCode.or( ((TraitType) x).getTypeCode() );
@@ -178,6 +191,7 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         }
 
         objectOutput.writeObject( currentTypeCode );
+        objectOutput.writeObject( staticTypeCode );
         objectOutput.writeObject( mostSpecificTraits );
     }
 
@@ -193,6 +207,7 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         }
 
         currentTypeCode = (BitSet) objectInput.readObject();
+        staticTypeCode = (BitSet) objectInput.readObject();
         mostSpecificTraits = (Collection<K>) objectInput.readObject();
     }
 
@@ -225,6 +240,25 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         return currentTypeCode;
     }
 
+    public BitSet getStaticTypeCode() {
+        return staticTypeCode;
+    }
+
+    public void setStaticTypeCode( BitSet staticTypeCode ) {
+        if ( staticTypeCode != null ) {
+            this.staticTypeCode = staticTypeCode;
+            currentTypeCode.or( staticTypeCode );
+        } else {
+            this.staticTypeCode = NO_STATIC;
+        }
+    }
+
+    public void addStaticTrait( String name, BitSet code ) {
+        if ( staticTypes == null ) {
+            staticTypes = new HashMap<String, BitSet>();
+        }
+        staticTypes.put( name, code );
+    }
 
 
 }
