@@ -20,6 +20,8 @@ import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.MapCore;
 import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.HierNode;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.HierarchyEncoderImpl;
 import org.kie.api.definition.type.FactField;
@@ -33,14 +35,17 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class TraitRegistry implements Externalizable {
 
 
     private Map<String, ClassDefinition> traits;
     private Map<String, ClassDefinition> traitables;
+    private Map<String, Set<String>> staticTraitTypes;
 
     private int codeSize = 0;
 
@@ -50,7 +55,6 @@ public class TraitRegistry implements Externalizable {
 
 
     public TraitRegistry() {
-
         init();
     }
 
@@ -86,6 +90,11 @@ public class TraitRegistry implements Externalizable {
     }
 
     public void merge( TraitRegistry other ) {
+        if ( staticTraitTypes == null && other.staticTraitTypes != null ) {
+            staticTraitTypes = new HashMap<String, Set<String>>();
+            staticTraitTypes.putAll( other.staticTraitTypes );
+        }
+
         if ( traits == null ) {
             traits = new HashMap<String, ClassDefinition>();
         }
@@ -177,8 +186,14 @@ public class TraitRegistry implements Externalizable {
             traitables = new HashMap<String, ClassDefinition>();
         }
         this.traitables.put( traitable.getClassName(), traitable );
+        Set<String> staticTraits = detectStaticallyImplementedTraits( traitable );
+        if ( ! staticTraits.isEmpty() ) {
+            if ( staticTraitTypes == null ) {
+                staticTraitTypes = new HashMap<String, Set<String>>();
+            }
+            staticTraitTypes.put( traitable.getClassName(), staticTraits );
+        }
     }
-
 
 
     public static boolean isSoftField( FieldDefinition field, int index, BitSet mask ) {
@@ -254,11 +269,74 @@ public class TraitRegistry implements Externalizable {
 
     public HierarchyEncoder<String> getHierarchy() {
         if ( hierarchy == null ) {
-            hierarchy = new HierarchyEncoderImpl<String>();
+            hierarchy = new CachingHierarcyEncoderImpl();
         }
         return hierarchy;
     }
 
+    protected Set<String> detectStaticallyImplementedTraits( ClassDefinition traitable ) {
+        Set<String> traitInterfaces = new HashSet<String>( 3 );
+        for ( Class<?> intf : ClassUtils.getAllImplementedInterfaceNames( traitable.getDefinedClass() ) ) {
+            if ( Thing.class.isAssignableFrom( intf ) || intf.getAnnotation( Trait.class ) != null ) {
+                traitInterfaces.add( intf.getName() );
+            }
+        }
+        return traitInterfaces;
+    }
 
+    public BitSet getStaticTypeCode( String className ) {
+        if ( staticTraitTypes != null && staticTraitTypes.containsKey( className ) ) {
+            CachingHierarcyEncoderImpl cachingHierarcyEncoder = (CachingHierarcyEncoderImpl) hierarchy;
+            if ( cachingHierarcyEncoder.hasCodeForClass( className ) ) {
+                return cachingHierarcyEncoder.getCodeForClass( className );
+            } else {
+                return cachingHierarcyEncoder.cacheAndGetCode( className, staticTraitTypes.get( className ) );
+            }
+        } else {
+            return null;
+        }
+    }
 
+    public Set<String> getStaticTypes( String name ) {
+        return staticTraitTypes.get( name );
+    }
+
+    public static class CachingHierarcyEncoderImpl extends HierarchyEncoderImpl<String> {
+
+        private Map<String,BitSet> cache;
+
+        @Override
+        protected void encode( HierNode<String> node ) {
+            super.encode( node );
+            invalidateCache();
+        }
+
+        private void invalidateCache() {
+            if ( cache != null ) {
+                cache.clear();
+            }
+        }
+
+        public boolean hasCodeForClass( String className ) {
+            return cache != null && cache.containsKey( className );
+        }
+
+        public BitSet getCodeForClass( String className ) {
+            return cache.get( className );
+        }
+
+        public BitSet cacheAndGetCode( String className, Set<String> parents ) {
+            BitSet bitSet = new BitSet( this.getBottom().length() );
+            for ( String parent : parents ) {
+                bitSet.or( getCode( parent ) );
+            }
+            if ( cache == null ) {
+                cache = new HashMap<String, BitSet>();
+            }
+            cache.put( className, bitSet );
+            return bitSet;
+        }
+    }
 }
+
+
