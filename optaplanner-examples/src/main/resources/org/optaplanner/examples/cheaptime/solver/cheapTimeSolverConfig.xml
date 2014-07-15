@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+  <!--<environmentMode>FULL_ASSERT</environmentMode>-->
 
   <!-- Domain model configuration -->
   <solutionClass>org.optaplanner.examples.cheaptime.domain.CheapTimeSolution</solutionClass>
@@ -9,12 +9,12 @@
   <!-- Score configuration -->
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
-    <easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>
-    <!--<scoreDrl>org/optaplanner/examples/cheaptime/solver/cheapTimeScoreRules.drl</scoreDrl>-->
-    <!--<assertionScoreDirectorFactory>-->
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>-->
-    <!--</assertionScoreDirectorFactory>-->
+    <incrementalScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeIncrementalScoreCalculator</incrementalScoreCalculatorClass>
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+    <!--<assertionScoreDirectorFactory>-->
+      <!--<easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>-->
+    <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
   <!-- Optimization algorithms configuration -->
@@ -23,6 +23,9 @@
   </termination>
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+    <forager>
+      <pickEarlyType>FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD</pickEarlyType>
+    </forager>
   </constructionHeuristic>
   <localSearch>
     <unionMoveSelector>

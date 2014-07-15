@@ -50,6 +50,8 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
             }
             machinePeriodListMap.put(machine, machinePeriodList);
         }
+        long softScore = 0L;
+        List<PeriodPowerCost> periodPowerCostList = solution.getPeriodPowerCostList();
         for (TaskAssignment taskAssignment : solution.getTaskAssignmentList()) {
             Machine machine = taskAssignment.getMachine();
             Integer startPeriod = taskAssignment.getStartPeriod();
@@ -59,26 +61,24 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
                 for (int period = startPeriod; period < endPeriod; period++) {
                     MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
                     machinePeriodPart.addTaskAssignment(taskAssignment);
+                    PeriodPowerCost periodPowerCost = periodPowerCostList.get(period);
+                    softScore -= CostCalculator.multiplyTwoMicros(taskAssignment.getTask().getPowerConsumptionMicros(),
+                            periodPowerCost.getPowerCostMicros());
                 }
             }
         }
         long hardScore = 0L;
-        long softScore = 0L;
-        List<PeriodPowerCost> periodPowerCostList = solution.getPeriodPowerCostList();
         for (int period = 0; period < globalPeriodRangeTo; period++) {
-            long powerConsumptionTotalMicros = 0L;
             PeriodPowerCost periodPowerCost = periodPowerCostList.get(period);
             for (Map.Entry<Machine, List<MachinePeriodPart>> entry : machinePeriodListMap.entrySet()) {
                 Machine machine = entry.getKey();
                 MachinePeriodPart machinePeriodPart = entry.getValue().get(period);
                 if (machinePeriodPart.isActive()) {
-                    powerConsumptionTotalMicros += machine.getPowerConsumptionMicros();
-                    powerConsumptionTotalMicros += machinePeriodPart.getTaskPowerConsumptionTotalMicros();
                     hardScore += machinePeriodPart.getHardScore();
+                    softScore -= CostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
+                            periodPowerCost.getPowerCostMicros());
                 }
             }
-            softScore -= CostCalculator.multiplyTwoMicros(powerConsumptionTotalMicros,
-                    periodPowerCost.getPowerCostMicros());
         }
         return HardSoftLongScore.valueOf(hardScore, softScore);
     }
@@ -89,14 +89,12 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
         private final int period;
 
         private boolean active;
-        private long taskPowerConsumptionTotalMicros;
         private List<Integer> resourceAvailableList;
 
         private MachinePeriodPart(Machine machine, int period, int resourceListSize) {
             this.machine = machine;
             this.period = period;
             active = false;
-            taskPowerConsumptionTotalMicros = 0L;
             resourceAvailableList = new ArrayList<Integer>(resourceListSize);
             for (int i = 0; i < resourceListSize; i++) {
                 resourceAvailableList.add(machine.getMachineCapacityList().get(i).getCapacity());
@@ -107,14 +105,9 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
             return active;
         }
 
-        public long getTaskPowerConsumptionTotalMicros() {
-            return taskPowerConsumptionTotalMicros;
-        }
-
         public void addTaskAssignment(TaskAssignment taskAssignment) {
             active = true;
             Task task = taskAssignment.getTask();
-            taskPowerConsumptionTotalMicros += task.getPowerConsumptionMicros();
             for (int i = 0; i < resourceAvailableList.size(); i++) {
                 int resourceAvailable = resourceAvailableList.get(i);
                 TaskRequirement taskRequirement = task.getTaskRequirementList().get(i);

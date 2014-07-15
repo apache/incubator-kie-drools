@@ -23,6 +23,8 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -39,23 +41,36 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.builder.CompareToBuilder;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.CombinedDomainCategoryPlot;
+import org.jfree.chart.plot.CombinedDomainXYPlot;
+import org.jfree.chart.plot.CombinedRangeXYPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.YIntervalRenderer;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.data.xy.YIntervalSeries;
 import org.jfree.data.xy.YIntervalSeriesCollection;
+import org.jfree.util.ShapeUtilities;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
+import org.optaplanner.examples.cheaptime.domain.PeriodPowerCost;
+import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 
 public class CheapTimePanel extends SolutionPanel {
+
+    private PlotTaskAssignmentComparator plotTaskAssignmentComparator = new PlotTaskAssignmentComparator();
 
 //    public static final String LOGO_PATH = "/org/optaplanner/examples/cheapTime/swingui/cheapTimeLogo.png";
 
@@ -79,6 +94,20 @@ public class CheapTimePanel extends SolutionPanel {
     }
 
     private JFreeChart createChart(CheapTimeSolution solution) {
+        NumberAxis rangeAxis = new NumberAxis("Period");
+        rangeAxis.setRange(-0.5, solution.getGlobalPeriodRangeTo() + 0.5);
+        XYPlot taskAssignmentPlot = createTaskAssignmentPlot(solution);
+        XYPlot periodCostPlot = createPeriodCostPlot(solution);
+        CombinedRangeXYPlot combinedPlot = new CombinedRangeXYPlot(rangeAxis);
+        combinedPlot.add(taskAssignmentPlot, 5);
+        combinedPlot.add(periodCostPlot, 1);
+
+        combinedPlot.setOrientation(PlotOrientation.HORIZONTAL);
+        return new JFreeChart("Cheap Power Time Scheduling", JFreeChart.DEFAULT_TITLE_FONT,
+                combinedPlot, true);
+    }
+
+    private XYPlot createTaskAssignmentPlot(CheapTimeSolution solution) {
         YIntervalSeriesCollection seriesCollection = new YIntervalSeriesCollection();
         Map<Machine, YIntervalSeries> machineSeriesMap = new LinkedHashMap<Machine, YIntervalSeries>(
                 solution.getMachineList().size());
@@ -97,7 +126,10 @@ public class CheapTimePanel extends SolutionPanel {
         machineSeriesMap.put(null, unassignedProjectSeries);
         renderer.setSeriesShape(seriesIndex, new Rectangle());
         renderer.setSeriesStroke(seriesIndex, new BasicStroke(3.0f));
-        for (TaskAssignment taskAssignment : solution.getTaskAssignmentList()) {
+        List<TaskAssignment> taskAssignmentList = new ArrayList<TaskAssignment>(solution.getTaskAssignmentList());
+        Collections.sort(taskAssignmentList, plotTaskAssignmentComparator);
+        int pixelIndex = 0;
+        for (TaskAssignment taskAssignment : taskAssignmentList) {
             Integer startPeriod = taskAssignment.getStartPeriod();
             Integer endPeriod = taskAssignment.getEndPeriod();
             if (startPeriod == null) {
@@ -105,20 +137,44 @@ public class CheapTimePanel extends SolutionPanel {
                 endPeriod = 0;
             }
             YIntervalSeries machineSeries = machineSeriesMap.get(taskAssignment.getMachine());
-            machineSeries.add(taskAssignment.getId(), (startPeriod + endPeriod) / 2.0,
+            machineSeries.add(pixelIndex, (startPeriod + endPeriod) / 2.0,
                     startPeriod, endPeriod);
+            pixelIndex++;
         }
         NumberAxis domainAxis = new NumberAxis("Task");
         domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        domainAxis.setRange(-0.5, solution.getTaskAssignmentList().size() - 0.5);
+        domainAxis.setRange(-0.5, taskAssignmentList.size() - 0.5);
         domainAxis.setInverted(true);
-        NumberAxis rangeAxis = new NumberAxis("Period");
-        rangeAxis.setRange(-0.5, solution.getGlobalPeriodRangeTo() + 0.5);
-        XYPlot plot = new XYPlot(seriesCollection, domainAxis, rangeAxis, renderer);
-        plot.setOrientation(PlotOrientation.HORIZONTAL);
-        return new JFreeChart("Project Job Scheduling", JFreeChart.DEFAULT_TITLE_FONT,
-                plot, true);
+        return new XYPlot(seriesCollection, domainAxis, null, renderer);
     }
 
+    private XYPlot createPeriodCostPlot(CheapTimeSolution solution) {
+        XYSeries series = new XYSeries("Power cost");
+        for (PeriodPowerCost periodPowerCost : solution.getPeriodPowerCostList()) {
+            series.add((double) periodPowerCost.getPowerCostMicros() / 1000000.0, periodPowerCost.getPeriod());
+        }
+        XYSeriesCollection seriesCollection = new XYSeriesCollection();
+        seriesCollection.addSeries(series);
+        XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES);
+        renderer.setSeriesShape(0, ShapeUtilities.createDiamond(2.0F));
+        NumberAxis domainAxis = new NumberAxis("Power cost");
+        return new XYPlot(seriesCollection, domainAxis, null, renderer);
+    }
+
+    private static class PlotTaskAssignmentComparator implements Comparator<TaskAssignment> {
+
+        @Override
+        public int compare(TaskAssignment a, TaskAssignment b) {
+            Machine aMachine = a.getMachine();
+            Machine bMachine = b.getMachine();
+            return new CompareToBuilder()
+                    .append(aMachine == null ? null : aMachine.getId(), bMachine == null ? null : bMachine.getId())
+                    .append(a.getStartPeriod(), b.getStartPeriod())
+                    .append(a.getTask().getDuration(), b.getTask().getDuration())
+                    .append(a.getId(), b.getId())
+                    .toComparison();
+        }
+
+    }
 
 }

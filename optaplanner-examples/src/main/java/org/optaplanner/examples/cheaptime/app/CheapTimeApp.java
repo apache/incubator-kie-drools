@@ -39,7 +39,7 @@ public class CheapTimeApp extends CommonApp {
     }
 
     public CheapTimeApp() {
-        super("Cheap time scheduling",
+        super("Cheap power time scheduling",
                 "Assign tasks to machines and time.\n\n" +
                 "Each machine must have enough hardware to run all of its tasks.\n" +
                 "Each task inflicts a power cost. Power costs differ over time.",
