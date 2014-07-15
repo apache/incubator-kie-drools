@@ -9,7 +9,7 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.sonatype.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystem;
 import org.sonatype.plexus.components.cipher.PlexusCipher;
 
 import java.io.File;
@@ -78,20 +78,21 @@ public class MavenEmbedderUtils {
         DefaultContainerConfiguration conf = new DefaultContainerConfiguration();
 
         conf.setContainerConfigurationURL( mavenRequest.getOverridingComponentsXml() )
-            .setRealm(classRealm)
-            .setClassWorld(world);
+            .setRealm( classRealm )
+            .setClassWorld(world)
+            .setClassPathScanning(mavenRequest.getContainerClassPathScanning())
+            .setComponentVisibility(mavenRequest.getContainerComponentVisibility());
         
         return buildPlexusContainer(mavenRequest,conf);
     }
 
     public static PlexusContainer buildPlexusContainer(ClassLoader mavenClassLoader, ClassLoader parent, MavenRequest mavenRequest) throws MavenEmbedderException {
         DefaultContainerConfiguration conf = new DefaultContainerConfiguration();
-        
-        conf.setAutoWiring( mavenRequest.isContainerAutoWiring() );
-        conf.setClassPathScanning( mavenRequest.getContainerClassPathScanning() );
-        conf.setComponentVisibility( mavenRequest.getContainerComponentVisibility() );
 
-        conf.setContainerConfigurationURL( mavenRequest.getOverridingComponentsXml() );
+        conf.setAutoWiring( mavenRequest.isContainerAutoWiring() )
+            .setClassPathScanning( mavenRequest.getContainerClassPathScanning() )
+            .setComponentVisibility( mavenRequest.getContainerComponentVisibility() )
+            .setContainerConfigurationURL(mavenRequest.getOverridingComponentsXml());
 
         ClassWorld classWorld = new ClassWorld();
 
@@ -105,7 +106,7 @@ public class MavenEmbedderUtils {
         conf.setRealm( classRealm );
 
         conf.setClassWorld( classWorld );
-        
+
         return buildPlexusContainer(mavenRequest,conf);
     }
 

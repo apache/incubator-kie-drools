@@ -1,90 +1,120 @@
 package org.kie.scanner.embedder;
 
+import java.net.URL;
+import java.util.List;
+import java.util.Properties;
+
 import org.apache.maven.execution.ExecutionListener;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.logging.LoggerManager;
-import org.sonatype.aether.repository.WorkspaceReader;
-import org.sonatype.aether.transfer.TransferListener;
-
-import java.net.URL;
-import java.util.List;
-import java.util.Properties;
+import org.eclipse.aether.repository.WorkspaceReader;
+import org.eclipse.aether.transfer.TransferListener;
 
 public class MavenRequest {
 
     private String globalSettingsFile;
-    
+
     private String userSettingsFile;
-    
+
     private String localRepositoryPath;
-    
+
     private boolean offline;
-    
+
     private TransferListener transferListener;
-    
+
     private String baseDirectory;
-    
+
     private List<String> goals;
-    
+
     private Properties systemProperties;
-    
+
     private Properties userProperties;
-    
+
     private String failureBehavior;
-    
+
     private List<String> selectedProjects;
-    
+
     private String resumeFromProject;
-    
+
     private String makeBehavior;
-    
+
     private String threadCount;
-    
+
     private boolean recursive;
-    
+
     private String pom;
-    
+
     private boolean showErrors;
 
+    /**
+     * @see org.apache.maven.execution.MavenExecutionRequest
+     */
     private int loggingLevel = MavenExecutionRequest.LOGGING_LEVEL_INFO;
-    
+
     private boolean updateSnapshots;
-    
+
     private boolean noSnapshotUpdates;
-    
+
     private String globalChecksumPolicy;
-    
+
     private boolean interactive;
-    
+
     private boolean cacheTransferError = true;
-    
+
     private boolean cacheNotFound = true;
-    
+
     private List<String> profiles;
-    
+
     private ExecutionListener executionListener;
-    
+
     private WorkspaceReader workspaceReader;
-    
+
     private LoggerManager mavenLoggerManager;
-    
+
+    /**
+     * plexus configuration override
+     */
     private URL overridingComponentsXml;
-    
+
+    /**
+     * will processPlugins during project reading
+     * @since 3.2
+     */
     private boolean processPlugins;
-    
+
+    /**
+     * will resolve dependencies during project reading
+     * @since 3.2
+     */
     private boolean resolveDependencies;
-    
+
+    /**
+     * level of validation when reading pom (ie model building request)
+     * default {@link ModelBuildingRequest#VALIDATION_LEVEL_MAVEN_2_0} etc...
+     * @since 3.2
+     */
     private int validationLevel = ModelBuildingRequest.VALIDATION_LEVEL_MAVEN_2_0;
-    
+
+    /**
+     * @since 3.3
+     */
     private boolean containerAutoWiring = false;
 
+    /**
+     * @since 3.3
+     */
     private String containerComponentVisibility = PlexusConstants.REALM_VISIBILITY;
 
-    private String containerClassPathScanning = PlexusConstants.SCANNING_OFF;
-    
-    public MavenRequest() { }
+    /**
+     * @since 3.3
+     */
+    private String containerClassPathScanning = PlexusConstants.SCANNING_INDEX;
+
+    public MavenRequest() {
+        // no op
+    }
 
     public String getGlobalSettingsFile() {
         return globalSettingsFile;
@@ -165,7 +195,7 @@ public class MavenRequest {
     public Properties getUserProperties() {
         if (this.userProperties == null) {
             this.userProperties = new Properties();
-        }        
+        }
         return userProperties;
     }
 
