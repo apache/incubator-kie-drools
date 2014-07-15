@@ -257,7 +257,8 @@ public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRunt
     }
 
     public FactHandle getFactHandle(Object object) {
-        return new FactHandleAdapter(delegate.getFactHandle(object));
+        org.kie.api.runtime.rule.FactHandle factHandle = delegate.getFactHandle(object);
+        return factHandle != null ? new FactHandleAdapter(factHandle) : null;
     }
 
     public Object getObject(FactHandle factHandle) {
