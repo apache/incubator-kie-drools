@@ -30,7 +30,13 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,8 +134,9 @@ public class I18nTest extends CommonTestMethodBase {
                 "end";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(dsl.getBytes()), ResourceType.DSL );
-        kbuilder.add( ResourceFactory.newByteArrayResource( dslr.getBytes() ), ResourceType.DSLR );
+        // Here I should explicitly set "UTF-8" because String.getBytes() depends on platform encoding and is not dealt by Drools side.
+        kbuilder.add( ResourceFactory.newByteArrayResource(dsl.getBytes("UTF-8")), ResourceType.DSL );
+        kbuilder.add( ResourceFactory.newByteArrayResource( dslr.getBytes("UTF-8") ), ResourceType.DSLR );
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
@@ -147,6 +154,97 @@ public class I18nTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertTrue(messages.contains("メッセージ　ルールにヒットしました"));
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testNewClassPathResource() {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        // newClassPathResource without specifying encoding
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_I18nPerson_utf8_forTestNewClassPathResource.drl", getClass() ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        I18nPerson i18nPerson = new I18nPerson();
+        i18nPerson.set名称("山田花子");
+        ksession.insert(i18nPerson);
+        ksession.fireAllRules();
+
+        assertTrue(list.contains("名称は山田花子です"));
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testKieFileSystem() {
+        String str = "package org.drools.compiler.i18ntest;\n" +
+                "import org.drools.compiler.I18nPerson;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "rule \"名称 is 山田花子\"\n" +
+                "    when\n" +
+                "        p : I18nPerson( 名称 == \"山田花子\" )\n" +
+                "    then\n" +
+                "        list.add( \"名称は山田花子です\" );\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        ks.newKieBuilder( kfs ).buildAll();
+        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        I18nPerson i18nPerson = new I18nPerson();
+        i18nPerson.set名称("山田花子");
+        ksession.insert(i18nPerson);
+        ksession.fireAllRules();
+
+        assertTrue(list.contains("名称は山田花子です"));
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testKieModuleJar() {
+        String str = "package org.drools.compiler.i18ntest;\n" +
+                "import org.drools.compiler.I18nPerson;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "rule \"名称 is 山田花子\"\n" +
+                "    when\n" +
+                "        p : I18nPerson( 名称 == \"山田花子\" )\n" +
+                "    then\n" +
+                "        list.add( \"名称は山田花子です\" );\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "118ntest", "1.0.0");
+        byte[] jar = createKJar(ks, releaseId, null, str);
+        KieModule km = deployJar(ks, jar);
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieSession ksession = kc.newKieSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        I18nPerson i18nPerson = new I18nPerson();
+        i18nPerson.set名称("山田花子");
+        ksession.insert(i18nPerson);
+        ksession.fireAllRules();
+
+        assertTrue(list.contains("名称は山田花子です"));
 
         ksession.dispose();
     }
