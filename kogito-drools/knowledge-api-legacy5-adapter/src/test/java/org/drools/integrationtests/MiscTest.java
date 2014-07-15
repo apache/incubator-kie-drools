@@ -12,6 +12,7 @@ import org.drools.model.Person;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.runtime.rule.Variable;
@@ -279,4 +280,22 @@ public class MiscTest {
                       names.size() );
         assertTrue( names.contains( "darth" ) );
     }
+
+    @Test
+    public void testNotExistingFactHandle() {
+        // BZ-1119731
+        String str =
+                "package foo.bar\n" +
+                "rule R\n" +
+                "when\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactHandle handle = ksession.getFactHandle("fact");
+        assertNull(handle);
+    }
+
 }
