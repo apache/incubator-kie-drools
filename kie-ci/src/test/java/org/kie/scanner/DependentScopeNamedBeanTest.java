@@ -12,7 +12,6 @@ import static org.junit.Assert.*;
 public class DependentScopeNamedBeanTest {
 
     @Test
-    @Ignore
     public void testPlexusBeanScanning() {
         //This is the shortest way I can find a root to com.google.inject.internal.Scoping#makeInjectable()
         //where the @Dependent scoped bean on the classpath causes guice to fail. The below call goes through
