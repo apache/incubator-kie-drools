@@ -543,13 +543,15 @@ public class TypeDeclarationBuilder {
      *
      *
      *
+     *
      * @param typeDescr
      *            The base class descriptor, to be completed with the inherited
      *            fields descriptors
      * @param unprocessableDescrs
+     * @param typeResolver
      * @return true if all went well
      */
-    private boolean mergeInheritedFields( TypeDeclarationDescr typeDescr, List<TypeDefinition> unresolvedTypes, Map<String,TypeDeclarationDescr> unprocessableDescrs ) {
+    private boolean mergeInheritedFields( TypeDeclarationDescr typeDescr, List<TypeDefinition> unresolvedTypes, Map<String, TypeDeclarationDescr> unprocessableDescrs, TypeResolver typeResolver ) {
 
         if (typeDescr.getSuperTypes().isEmpty())
             return false;
@@ -561,36 +563,41 @@ public class TypeDeclarationBuilder {
             String superTypePackageName = qname.getNamespace();
             String fullSuper = qname.getFullName();
 
-            merge = mergeInheritedFields(simpleSuperTypeName,
-                                         superTypePackageName,
-                                         fullSuper,
-                                         typeDescr,
-                                         unresolvedTypes,
-                                         unprocessableDescrs) || merge;
+            merge = mergeFields( simpleSuperTypeName,
+                                 superTypePackageName,
+                                 fullSuper,
+                                 typeDescr,
+                                 unresolvedTypes,
+                                 unprocessableDescrs,
+                                 typeResolver ) || merge;
         }
 
         return merge;
     }
 
-    private boolean mergeInheritedFields( String simpleSuperTypeName,
-                                          String superTypePackageName,
-                                          String fullSuper,
-                                          TypeDeclarationDescr typeDescr,
-                                          List<TypeDefinition> unresolvedTypes,
-                                          Map<String,TypeDeclarationDescr> unprocessableDescrs ) {
+    private boolean mergeFields( String simpleSuperTypeName,
+                                 String superTypePackageName,
+                                 String fullSuper,
+                                 TypeDeclarationDescr typeDescr,
+                                 List<TypeDefinition> unresolvedTypes,
+                                 Map<String,TypeDeclarationDescr> unprocessableDescrs,
+                                 TypeResolver resolver ) {
 
         Map<String, TypeFieldDescr> fieldMap = new LinkedHashMap<String, TypeFieldDescr>();
+        boolean isNovel = isNovelClass( typeDescr );
 
         PackageRegistry registry = kbuilder.getPackageRegistry(superTypePackageName);
-        InternalKnowledgePackage pack;
+        InternalKnowledgePackage pack = null;
         if (registry != null) {
             pack = registry.getPackage();
         } else {
             // If there is no regisrty the type isn't a DRL-declared type, which is forbidden.
             // Avoid NPE JIRA-3041 when trying to access the registry. Avoid subsequent problems.
             // DROOLS-536 At this point, the declarations might exist, but the package might not have been processed yet
-            unprocessableDescrs.put( typeDescr.getType().getFullName(), typeDescr );
-            return false;
+            if ( isNovel ) {
+                unprocessableDescrs.put( typeDescr.getType().getFullName(), typeDescr );
+                return false;
+            }
         }
 
         if ( unprocessableDescrs.containsKey( fullSuper ) ) {
@@ -636,9 +643,15 @@ public class TypeDeclarationBuilder {
         }
 
         // look for the class externally
-        if (!isSuperClassDeclared || isSuperClassTagged) {
+        if ( !isSuperClassDeclared || isSuperClassTagged ) {
             try {
-                Class superKlass = registry.getTypeResolver().resolveType(fullSuper);
+                Class superKlass;
+                if ( registry != null ) {
+                    superKlass = registry.getTypeResolver().resolveType(fullSuper);
+                } else {
+                    // if the supertype has not been declared, and we have got so far, it means that this class is not novel
+                    superKlass = resolver.resolveType( fullSuper );
+                }
                 ClassFieldInspector inspector = new ClassFieldInspector(superKlass);
                 for (String name : inspector.getGetterMethods().keySet()) {
                     // classFieldAccessor requires both getter and setter
@@ -1038,6 +1051,10 @@ public class TypeDeclarationBuilder {
                 if (typeDescr instanceof TypeDeclarationDescr) {
                     fillSuperType((TypeDeclarationDescr) typeDescr,
                                   packageDescr);
+                    AnnotationDescr kind = typeDescr.getAnnotation( TypeDeclaration.Kind.ID );
+                    if ( typeClass != null && kind != null && kind.hasValue() && TypeDeclaration.Kind.TRAIT == TypeDeclaration.Kind.parseKind( kind.getSingleValue() ) ) {
+                        fillStaticInterfaces( (TypeDeclarationDescr) typeDescr, typeClass );
+                    }
                 }
 
                 //identify field types as well
@@ -1104,6 +1121,13 @@ public class TypeDeclarationBuilder {
         return unresolvedTypes;
     }
 
+    private void fillStaticInterfaces( TypeDeclarationDescr typeDescr, Class<?> typeClass ) {
+        for ( Class iKlass : ClassUtils.getAllImplementedInterfaceNames( typeClass ) ) {
+            typeDescr.addSuperType( iKlass.getName() );
+        }
+
+    }
+
     public void processTypeDeclaration( PackageRegistry pkgRegistry,
                                         AbstractClassTypeDeclarationDescr typeDescr,
                                         Collection<AbstractClassTypeDeclarationDescr> sortedTypeDescriptors,
@@ -1112,9 +1136,12 @@ public class TypeDeclarationBuilder {
         //descriptor needs fields inherited from superclass
         if (typeDescr instanceof TypeDeclarationDescr) {
             TypeDeclarationDescr tDescr = (TypeDeclarationDescr) typeDescr;
+            boolean isNovel = isNovelClass( typeDescr );
+            boolean inferFields = ! isNovel && typeDescr.getFields().isEmpty();
+
             for (QualifiedName qname : tDescr.getSuperTypes()) {
                 //descriptor needs fields inherited from superclass
-                if (mergeInheritedFields(tDescr, unresolvedTypes, unprocessableDescrs)) {
+                if (mergeInheritedFields(tDescr, unresolvedTypes, unprocessableDescrs, pkgRegistry.getTypeResolver())) {
                     //descriptor also needs metadata from superclass
                     for (AbstractClassTypeDeclarationDescr descr : sortedTypeDescriptors) {
                         // sortedTypeDescriptors are sorted by inheritance order, so we'll always find the superClass (if any) before the subclass
@@ -1126,6 +1153,33 @@ public class TypeDeclarationBuilder {
                         }
 
                     }
+                }
+            }
+
+            if ( inferFields ) {
+                // not novel, but only an empty declaration was provided.
+                // after inheriting the fields from supertypes, now we fill in the locally declared fields
+                try {
+                Class existingClass = getExistingDeclarationClass( typeDescr );
+                ClassFieldInspector inspector = new ClassFieldInspector( existingClass );
+                    for (String name : inspector.getGetterMethods().keySet()) {
+                        // classFieldAccessor requires both getter and setter
+                        if (inspector.getSetterMethods().containsKey(name)) {
+                            if (!inspector.isNonGetter(name) && !"class".equals(name)) {
+                                TypeFieldDescr inheritedFlDescr = new TypeFieldDescr(
+                                        name,
+                                        new PatternDescr(
+                                                inspector.getFieldTypes().get(name).getName()));
+                                inheritedFlDescr.setInherited(!Modifier.isAbstract(inspector.getGetterMethods().get(name).getModifiers()));
+
+                                if (!tDescr.getFields().containsKey(inheritedFlDescr.getFieldName()))
+                                    tDescr.getFields().put(inheritedFlDescr.getFieldName(),
+                                                 inheritedFlDescr);
+                            }
+                        }
+                    }
+                } catch ( Exception e ) {
+                    // can't happen as we know that the class is not novel - that is, it has been resolved before
                 }
             }
         }
@@ -1155,7 +1209,8 @@ public class TypeDeclarationBuilder {
                     }
                 }
                 if (parent == null) {
-                    kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, "Declared class " + typeDescr.getTypeName() + " can't extend class " + typeDescr.getSuperTypeName() + ", it should be declared"));
+                    // FIXME Does this behavior still make sense? The need to redeclare an existing (java) class in order to be able to extend it...
+                    // kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, "Declared class " + typeDescr.getTypeName() + " can't extend class " + typeDescr.getSuperTypeName() + ", it should be declared"));
                 } else {
                     if (parent.getNature() == TypeDeclaration.Nature.DECLARATION && kbuilder.getKnowledgeBase() != null) {
                         // trying to find a definition
@@ -1171,6 +1226,7 @@ public class TypeDeclarationBuilder {
         if (role != null) {
             type.setRole(TypeDeclaration.Role.parseRole(role));
         } else if (parent != null) {
+            // FIXME : Should this be here, since Drools 6 does not namely support annotation inheritance?
             type.setRole(parent.getRole());
         }
 
@@ -1179,6 +1235,7 @@ public class TypeDeclarationBuilder {
         if (typesafe != null) {
             type.setTypesafe(Boolean.parseBoolean(typesafe));
         } else if (parent != null && isSet(parent.getSetMask(), TypeDeclaration.TYPESAFE_BIT)) {
+            // FIXME : Should this be here, since Drools 6 does not namely support annotation inheritance?
             type.setTypesafe(parent.isTypesafe());
         }
 
@@ -1578,7 +1635,7 @@ public class TypeDeclarationBuilder {
 
             try {
 
-                if (!type.getTypeClassDef().getFields().isEmpty()) {
+                if ( type.isNovel() ) {
                     //since the declaration defines one or more fields, it is a DEFINITION
                     type.setNature(TypeDeclaration.Nature.DEFINITION);
                 } else {
@@ -1591,8 +1648,10 @@ public class TypeDeclarationBuilder {
                 if (previousTypeDeclaration == null) {
                     // new declarations of a POJO can't declare new fields,
                     // except if the POJO was previously generated/compiled and saved into the kjar
-                    if (!kbuilder.getBuilderConfiguration().isPreCompiled() &&
-                        !GeneratedFact.class.isAssignableFrom(existingDeclarationClass) && !type.getTypeClassDef().getFields().isEmpty()) {
+                    if ( !kbuilder.getBuilderConfiguration().isPreCompiled() &&
+                         !GeneratedFact.class.isAssignableFrom(existingDeclarationClass) &&
+                         !type.getTypeClassDef().getFields().isEmpty()
+                    ) {
                         try {
                             Class existingClass = pkgRegistry.getPackage().getTypeResolver().resolveType( typeDescr.getType().getFullName() );
                             ClassFieldInspector cfi = new ClassFieldInspector( existingClass );
@@ -2052,7 +2111,7 @@ public class TypeDeclarationBuilder {
 
             Set<String> interfaces = new HashSet<String>();
             Collections.addAll(interfaces, type.getTypeClassDef().getInterfaces());
-            for (Class iKlass : concrete.getInterfaces()) {
+            for ( Class iKlass : ClassUtils.getAllImplementedInterfaceNames( concrete ) ) {
                 interfaces.add(iKlass.getName());
             }
             type.getTypeClassDef().setInterfaces(interfaces.toArray(new String[interfaces.size()]));

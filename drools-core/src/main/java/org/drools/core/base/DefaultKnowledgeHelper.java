@@ -16,6 +16,8 @@
 
 package org.drools.core.base;
 
+import org.drools.core.factmodel.traits.TraitRegistry;
+import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.BeliefSet;
@@ -643,7 +645,6 @@ public class DefaultKnowledgeHelper
     /* Trait helper methods */
 
     protected <T> void configureTrait( T thing, Object value ) {
-
     }
 
     public <T, K> T don( Thing<K> core, Class<T> trait, boolean logical ) {
@@ -733,6 +734,8 @@ public class DefaultKnowledgeHelper
         T firstThing = null;
         Map<Thing, BitSet> things = new HashMap<Thing, BitSet>( traits.size() );
 
+        checkStaticTypeCode( inner );
+
         for ( Class<?> trait : traits ) {
             boolean needsProxy = trait.isAssignableFrom( inner.getClass() );
             boolean hasTrait = inner.hasTrait( trait.getName() );
@@ -769,6 +772,22 @@ public class DefaultKnowledgeHelper
         return firstThing;
     }
 
+    private void checkStaticTypeCode( TraitableBean inner ) {
+        if ( ! inner.hasTraits() ) {
+            TraitTypeMap ttm = (TraitTypeMap) inner._getTraitMap();
+            if ( ttm != null && ttm.getStaticTypeCode() == null ) {
+                TraitRegistry registry = this.workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry();
+                // code that summarizes ALL the static types
+                BitSet staticCode = registry.getStaticTypeCode( inner.getClass().getName() );
+                ttm.setStaticTypeCode( staticCode );
+                if ( staticCode != null ) {
+                    for ( String staticTrait : registry.getStaticTypes( inner.getClass().getName() ) ) {
+                        ttm.addStaticTrait( staticTrait, registry.getHierarchy().getCode( staticTrait ) );
+                    }
+                }
+            }
+        }
+    }
 
     protected <T, K> T applyTrait( K core, Class<T> trait, Object value, boolean logical ) throws LogicalTypeInconsistencyException {
         if ( identityMap == null ) {
@@ -782,6 +801,8 @@ public class DefaultKnowledgeHelper
         boolean needsProxy = trait.isAssignableFrom( inner.getClass() );
         boolean hasTrait = inner.hasTrait( trait.getName() );
         boolean needsUpdate = needsProxy || core != inner;
+
+        checkStaticTypeCode( inner );
 
         BitSet boundary = inner.getCurrentTypeCode() != null ? (BitSet) inner.getCurrentTypeCode().clone() : null;
 
@@ -835,7 +856,11 @@ public class DefaultKnowledgeHelper
                 update( core, Long.MIN_VALUE, core.getClass() );
                 //updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null, ((TraitableBean) core).getMostSpecificTraits()  );
             }
-            return (Thing<K>) core;
+            if ( core instanceof Thing ) {
+                return (Thing<K>) core;
+            } else {
+                return null;
+            }
         } else {
             Collection<Thing<K>> removedTypes;
             Thing<K> thing = core.getTrait( Thing.class.getName() );

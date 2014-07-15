@@ -319,9 +319,11 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         // now we need to sort TypeDeclarations based on the mutual, cross-package dependencies.
         // This can't be done at the beginning, before the build pass, since the names are not yet fully qualified there.
         // TODO there may be more efficient ways to do it (?)
-        int j = 0;
-        for ( AbstractClassTypeDeclarationDescr descr : TypeDeclarationBuilder.sortByHierarchy( kBuilder, allDescrs ) ) {
-            kBuilder.getPackageRegistry( descr.getNamespace() ).getPackage().getTypeDeclaration( descr.getTypeName() ).setOrder( j++ );
+        if ( ! kBuilder.hasErrors() ) {
+            int j = 0;
+            for ( AbstractClassTypeDeclarationDescr descr : TypeDeclarationBuilder.sortByHierarchy( kBuilder, allDescrs ) ) {
+                kBuilder.getPackageRegistry( descr.getNamespace() ).getPackage().getTypeDeclaration( descr.getTypeName() ).setOrder( j++ );
+            }
         }
 
         for (CompositePackageDescr packageDescr : packages) {

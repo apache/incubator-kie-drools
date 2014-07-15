@@ -19,7 +19,6 @@ package org.drools.core.reteoo;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.factmodel.traits.Key;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitTypeMap;
