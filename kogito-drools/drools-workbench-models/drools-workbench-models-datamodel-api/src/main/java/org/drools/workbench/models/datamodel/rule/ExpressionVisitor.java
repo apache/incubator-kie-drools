@@ -34,5 +34,8 @@ public interface ExpressionVisitor {
 
     void visit( ExpressionText part );
 
+    void visit( ExpressionMethodParameter part );
+
     void visit( ExpressionUnboundFact part );
+
 }

@@ -41,6 +41,7 @@ import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
+import org.drools.workbench.models.datamodel.rule.visitors.ToStringExpressionVisitor;
 
 /**
  * A Rule Model Visitor to extract Interpolation Variables (Template Keys). This version
@@ -229,7 +230,8 @@ public class GeneratorContextRuleModelVisitor {
 
     private void visitFromCompositeFactPattern( final FromCompositeFactPattern pattern ) {
         visit( pattern.getFactPattern() );
-        parseStringPattern( pattern.getExpression().getText() );
+        ToStringExpressionVisitor visitor = new ToStringExpressionVisitor( pattern.getExpression().getBinding() );
+        parseStringPattern( pattern.getExpression().getText( visitor ) );
     }
 
     private void visitRuleModel( final RuleModel model ) {

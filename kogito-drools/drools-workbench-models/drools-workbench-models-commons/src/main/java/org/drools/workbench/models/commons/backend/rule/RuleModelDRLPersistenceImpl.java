@@ -88,6 +88,7 @@ import org.drools.workbench.models.datamodel.rule.ExpressionCollection;
 import org.drools.workbench.models.datamodel.rule.ExpressionField;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
 import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
+import org.drools.workbench.models.datamodel.rule.ExpressionMethodParameter;
 import org.drools.workbench.models.datamodel.rule.ExpressionPart;
 import org.drools.workbench.models.datamodel.rule.ExpressionText;
 import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
@@ -109,6 +110,8 @@ import org.drools.workbench.models.datamodel.rule.RuleMetadata;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
+import org.drools.workbench.models.datamodel.rule.builder.DRLConstraintValueBuilder;
+import org.drools.workbench.models.datamodel.rule.visitors.ToStringExpressionVisitor;
 import org.drools.workbench.models.datamodel.workitems.HasBinding;
 import org.drools.workbench.models.datamodel.workitems.PortableBooleanParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableFloatParameterDefinition;
@@ -129,14 +132,11 @@ public class RuleModelDRLPersistenceImpl
         RuleModelPersistence {
 
     private static final String WORKITEM_PREFIX = "wi";
-    private static final String DATE_FORMAT = "drools.dateformat";
 
     private static final RuleModelPersistence INSTANCE = new RuleModelDRLPersistenceImpl();
 
-    public static final String DEFAULT_DIALECT = "mvel";
-
     //This is the default dialect for rules not specifying one explicitly
-    protected DRLConstraintValueBuilder constraintValueBuilder = DRLConstraintValueBuilder.getBuilder( DEFAULT_DIALECT );
+    protected DRLConstraintValueBuilder constraintValueBuilder = DRLConstraintValueBuilder.getBuilder( DRLConstraintValueBuilder.DEFAULT_DIALECT );
 
     //Keep a record of all variable bindings for Actions that depend on them
     protected Map<String, IFactPattern> bindingsPatterns;
@@ -277,7 +277,7 @@ public class RuleModelDRLPersistenceImpl
         // Un comment below for mvel
         if ( !hasDialect ) {
             RuleAttribute attr = new RuleAttribute( "dialect",
-                                                    DEFAULT_DIALECT );
+                                                    DRLConstraintValueBuilder.DEFAULT_DIALECT );
             buf.append( "\t" );
             buf.append( attr );
             buf.append( "\n" );
@@ -776,7 +776,9 @@ public class RuleModelDRLPersistenceImpl
         }
 
         private void renderExpression( final ExpressionFormLine expression ) {
-            buf.append( expression.getText() );
+            final ToStringExpressionVisitor visitor = new ToStringExpressionVisitor( expression.getBinding(),
+                                                                                     constraintValueBuilder );
+            buf.append( expression.getText( visitor ) );
         }
 
         public void visitDSLSentence( final DSLSentence sentence ) {
@@ -917,7 +919,10 @@ public class RuleModelDRLPersistenceImpl
 
                 if ( isConstraintComplete( constr ) ) {
                     if ( constr instanceof SingleFieldConstraintEBLeftSide ) {
-                        buf.append( ( (SingleFieldConstraintEBLeftSide) constr ).getExpressionLeftSide().getText() );
+                        final SingleFieldConstraintEBLeftSide sfcexp = ( (SingleFieldConstraintEBLeftSide) constr );
+                        final ToStringExpressionVisitor visitor = new ToStringExpressionVisitor( sfcexp.getExpressionLeftSide().getBinding(),
+                                                                                                 constraintValueBuilder );
+                        buf.append( sfcexp.getExpressionLeftSide().getText( visitor ) );
                     } else {
                         SingleFieldConstraint parent = (SingleFieldConstraint) constr.getParent();
                         StringBuilder parentBuf = new StringBuilder();
@@ -1207,7 +1212,9 @@ public class RuleModelDRLPersistenceImpl
                                                   final StringBuilder buf ) {
             if ( expression != null ) {
                 buf.append( " " );
-                buf.append( expression.getText() );
+                final ToStringExpressionVisitor visitor = new ToStringExpressionVisitor( expression.getBinding(),
+                                                                                         constraintValueBuilder );
+                buf.append( expression.getText( visitor ) );
                 buf.append( " " );
             }
         }
@@ -1807,6 +1814,7 @@ public class RuleModelDRLPersistenceImpl
                                                  ruleDescr.getAttributes() );
         Map<String, String> boundParams = parseLhs( model,
                                                     ruleDescr.getLhs(),
+                                                    isJavaDialect,
                                                     expandedDRLInfo,
                                                     dmo );
         parseRhs( model,
@@ -2097,6 +2105,7 @@ public class RuleModelDRLPersistenceImpl
 
     private Map<String, String> parseLhs( final RuleModel m,
                                           final AndDescr lhs,
+                                          final boolean isJavaDialect,
                                           final ExpandedDRLInfo expandedDRLInfo,
                                           final PackageDataModelOracle dmo ) {
         Map<String, String> boundParams = new HashMap<String, String>();
@@ -2107,6 +2116,7 @@ public class RuleModelDRLPersistenceImpl
                                             lineCounter );
             IPattern pattern = parseBaseDescr( m,
                                                descr,
+                                               isJavaDialect,
                                                boundParams,
                                                dmo );
             if ( pattern != null ) {
@@ -2161,17 +2171,20 @@ public class RuleModelDRLPersistenceImpl
 
     private IPattern parseBaseDescr( final RuleModel m,
                                      final BaseDescr descr,
+                                     final boolean isJavaDialect,
                                      final Map<String, String> boundParams,
                                      final PackageDataModelOracle dmo ) {
         if ( descr instanceof PatternDescr ) {
             return parsePatternDescr( m,
                                       (PatternDescr) descr,
+                                      isJavaDialect,
                                       boundParams,
                                       dmo );
         } else if ( descr instanceof AndDescr ) {
             AndDescr andDescr = (AndDescr) descr;
             return parseBaseDescr( m,
                                    andDescr.getDescrs().get( 0 ),
+                                   isJavaDialect,
                                    boundParams,
                                    dmo );
         } else if ( descr instanceof EvalDescr ) {
@@ -2181,6 +2194,7 @@ public class RuleModelDRLPersistenceImpl
         } else if ( descr instanceof ConditionalElementDescr ) {
             return parseExistentialElementDescr( m,
                                                  (ConditionalElementDescr) descr,
+                                                 isJavaDialect,
                                                  boundParams,
                                                  dmo );
         }
@@ -2189,23 +2203,27 @@ public class RuleModelDRLPersistenceImpl
 
     private IFactPattern parsePatternDescr( final RuleModel m,
                                             final PatternDescr pattern,
+                                            final boolean isJavaDialect,
                                             final Map<String, String> boundParams,
                                             final PackageDataModelOracle dmo ) {
         if ( pattern.getSource() != null ) {
             return parsePatternSource( m,
                                        pattern,
                                        pattern.getSource(),
+                                       isJavaDialect,
                                        boundParams,
                                        dmo );
         }
         return getFactPattern( m,
                                pattern,
+                               isJavaDialect,
                                boundParams,
                                dmo );
     }
 
     private FactPattern getFactPattern( final RuleModel m,
                                         final PatternDescr pattern,
+                                        final boolean isJavaDialect,
                                         final Map<String, String> boundParams,
                                         final PackageDataModelOracle dmo ) {
         String type = pattern.getObjectType();
@@ -2221,6 +2239,7 @@ public class RuleModelDRLPersistenceImpl
         parseConstraint( m,
                          factPattern,
                          pattern.getConstraint(),
+                         isJavaDialect,
                          boundParams,
                          dmo );
 
@@ -2246,6 +2265,7 @@ public class RuleModelDRLPersistenceImpl
     private IFactPattern parsePatternSource( final RuleModel m,
                                              final PatternDescr pattern,
                                              final PatternSourceDescr patternSource,
+                                             final boolean isJavaDialect,
                                              final Map<String, String> boundParams,
                                              final PackageDataModelOracle dmo ) {
         if ( patternSource instanceof AccumulateDescr ) {
@@ -2253,6 +2273,7 @@ public class RuleModelDRLPersistenceImpl
             FromAccumulateCompositeFactPattern fac = new FromAccumulateCompositeFactPattern();
             fac.setSourcePattern( parseBaseDescr( m,
                                                   accumulate.getInput(),
+                                                  isJavaDialect,
                                                   boundParams,
                                                   dmo ) );
 
@@ -2263,6 +2284,7 @@ public class RuleModelDRLPersistenceImpl
             parseConstraint( m,
                              factPattern,
                              pattern.getConstraint(),
+                             isJavaDialect,
                              boundParams,
                              dmo );
 
@@ -2288,10 +2310,12 @@ public class RuleModelDRLPersistenceImpl
             FromCollectCompositeFactPattern fac = new FromCollectCompositeFactPattern();
             fac.setRightPattern( parseBaseDescr( m,
                                                  collect.getInputPattern(),
+                                                 isJavaDialect,
                                                  boundParams,
                                                  dmo ) );
             fac.setFactPattern( getFactPattern( m,
                                                 pattern,
+                                                isJavaDialect,
                                                 boundParams,
                                                 dmo ) );
             return fac;
@@ -2301,6 +2325,7 @@ public class RuleModelDRLPersistenceImpl
             fep.setEntryPointName( entryPoint.getText() );
             fep.setFactPattern( getFactPattern( m,
                                                 pattern,
+                                                isJavaDialect,
                                                 boundParams,
                                                 dmo ) );
             return fep;
@@ -2312,6 +2337,7 @@ public class RuleModelDRLPersistenceImpl
             parseConstraint( m,
                              factPattern,
                              pattern.getConstraint(),
+                             isJavaDialect,
                              boundParams,
                              dmo );
 
@@ -2377,6 +2403,7 @@ public class RuleModelDRLPersistenceImpl
 
     private CompositeFactPattern parseExistentialElementDescr( final RuleModel m,
                                                                final ConditionalElementDescr conditionalDescr,
+                                                               final boolean isJavaDialect,
                                                                final Map<String, String> boundParams,
                                                                final PackageDataModelOracle dmo ) {
         CompositeFactPattern comp = conditionalDescr instanceof NotDescr ?
@@ -2387,6 +2414,7 @@ public class RuleModelDRLPersistenceImpl
         addPatternToComposite( m,
                                conditionalDescr,
                                comp,
+                               isJavaDialect,
                                boundParams,
                                dmo );
         IFactPattern[] patterns = comp.getPatterns();
@@ -2396,18 +2424,21 @@ public class RuleModelDRLPersistenceImpl
     private void addPatternToComposite( final RuleModel m,
                                         final ConditionalElementDescr conditionalDescr,
                                         final CompositeFactPattern comp,
+                                        final boolean isJavaDialect,
                                         final Map<String, String> boundParams,
                                         final PackageDataModelOracle dmo ) {
         for ( Object descr : conditionalDescr.getDescrs() ) {
             if ( descr instanceof PatternDescr ) {
                 comp.addFactPattern( parsePatternDescr( m,
                                                         (PatternDescr) descr,
+                                                        isJavaDialect,
                                                         boundParams,
                                                         dmo ) );
             } else if ( descr instanceof ConditionalElementDescr ) {
                 addPatternToComposite( m,
                                        (ConditionalElementDescr) descr,
                                        comp,
+                                       isJavaDialect,
                                        boundParams,
                                        dmo );
             }
@@ -2417,12 +2448,14 @@ public class RuleModelDRLPersistenceImpl
     private void parseConstraint( final RuleModel m,
                                   final FactPattern factPattern,
                                   final ConditionalElementDescr constraint,
+                                  final boolean isJavaDialect,
                                   final Map<String, String> boundParams,
                                   final PackageDataModelOracle dmo ) {
         for ( BaseDescr descr : constraint.getDescrs() ) {
             if ( descr instanceof ExprConstraintDescr ) {
                 ExprConstraintDescr exprConstraint = (ExprConstraintDescr) descr;
                 Expr expr = parseExpr( exprConstraint.getExpression(),
+                                       isJavaDialect,
                                        boundParams,
                                        dmo );
                 factPattern.addConstraint( expr.asFieldConstraint( m,
@@ -2992,6 +3025,7 @@ public class RuleModelDRLPersistenceImpl
     }
 
     private Expr parseExpr( final String expr,
+                            final boolean isJavaDialect,
                             final Map<String, String> boundParams,
                             final PackageDataModelOracle dmo ) {
         List<String> splittedExpr = splitExpression( expr );
@@ -2999,12 +3033,14 @@ public class RuleModelDRLPersistenceImpl
             String singleExpr = splittedExpr.get( 0 );
             if ( singleExpr.startsWith( "(" ) ) {
                 return parseExpr( singleExpr.substring( 1 ),
+                                  isJavaDialect,
                                   boundParams,
                                   dmo );
             } else if ( singleExpr.startsWith( "eval" ) ) {
                 return new EvalExpr( unwrapParenthesis( singleExpr ) );
             } else {
                 return new SimpleExpr( singleExpr,
+                                       isJavaDialect,
                                        boundParams,
                                        dmo );
             }
@@ -3012,6 +3048,7 @@ public class RuleModelDRLPersistenceImpl
         ComplexExpr complexExpr = new ComplexExpr( splittedExpr.get( 1 ) );
         for ( int i = 0; i < splittedExpr.size(); i += 2 ) {
             complexExpr.subExprs.add( parseExpr( splittedExpr.get( i ),
+                                                 isJavaDialect,
                                                  boundParams,
                                                  dmo ) );
         }
@@ -3129,13 +3166,16 @@ public class RuleModelDRLPersistenceImpl
     private static class SimpleExpr implements Expr {
 
         private final String expr;
+        private final boolean isJavaDialect;
         private final Map<String, String> boundParams;
         private final PackageDataModelOracle dmo;
 
         private SimpleExpr( final String expr,
+                            final boolean isJavaDialect,
                             final Map<String, String> boundParams,
                             final PackageDataModelOracle dmo ) {
             this.expr = expr;
+            this.isJavaDialect = isJavaDialect;
             this.boundParams = boundParams;
             this.dmo = dmo;
         }
@@ -3345,7 +3385,21 @@ public class RuleModelDRLPersistenceImpl
 
             //Handle all but last expression part
             for ( int i = 0; i < splits.length - 1; i++ ) {
-                String expressionPart = normalizeExpressionPart( splits[ i ] );
+                String expressionPart = splits[ i ];
+
+                //The first part of the expression may be a bound variable
+                if ( boundParams.containsKey( expressionPart ) ) {
+                    factType = getFQFactType( m,
+                                              boundParams.get( expressionPart ) );
+                    isBoundParam = true;
+
+                    typeFields = findFields( m,
+                                             dmo,
+                                             factType );
+                    methodInfos = getMethodInfosForType( m,
+                                                         dmo,
+                                                         factType );
+                }
                 if ( "this".equals( expressionPart ) ) {
                     expression.appendPart( new ExpressionField( expressionPart,
                                                                 factType,
@@ -3380,7 +3434,7 @@ public class RuleModelDRLPersistenceImpl
                                            expression,
                                            expressionPart );
 
-                    //Refresh field and method information based
+                    //Refresh field and method information based on current expression part
                     typeFields = findFields( m,
                                              dmo,
                                              currentClassName );
@@ -3391,7 +3445,7 @@ public class RuleModelDRLPersistenceImpl
             }
 
             //Handle last expression part
-            String expressionPart = normalizeExpressionPart( splits[ splits.length - 1 ] );
+            String expressionPart = splits[ splits.length - 1 ];
             ModelField currentField = findField( typeFields,
                                                  expressionPart );
             MethodInfo currentMethodInfo = findMethodInfo( methodInfos,
@@ -3407,15 +3461,6 @@ public class RuleModelDRLPersistenceImpl
             return expression;
         }
 
-        private String normalizeExpressionPart( String expressionPart ) {
-            int parenthesisPos = expressionPart.indexOf( '(' );
-            if ( parenthesisPos > 0 ) {
-                expressionPart = expressionPart.substring( 0,
-                                                           parenthesisPos );
-            }
-            return expressionPart.trim();
-        }
-
         private void processExpressionPart( final RuleModel m,
                                             final String factType,
                                             final ModelField currentField,
@@ -3425,10 +3470,27 @@ public class RuleModelDRLPersistenceImpl
             if ( currentField == null ) {
                 boolean isMethod = currentMethodInfo != null;
                 if ( isMethod ) {
-                    expression.appendPart( new ExpressionMethod( currentMethodInfo.getName(),
-                                                                 currentMethodInfo.getReturnClassType(),
-                                                                 currentMethodInfo.getGenericType(),
-                                                                 currentMethodInfo.getParametricReturnType() ) );
+                    final ExpressionMethod em = new ExpressionMethod( currentMethodInfo.getName(),
+                                                                      currentMethodInfo.getReturnClassType(),
+                                                                      currentMethodInfo.getGenericType(),
+                                                                      currentMethodInfo.getParametricReturnType() );
+                    //Add applicable parameter values
+                    final List<String> parameters = parseExpressionParameters( expressionPart );
+                    for ( int index = 0; index < currentMethodInfo.getParams().size(); index++ ) {
+                        final String paramDataType = currentMethodInfo.getParams().get( index );
+                        final String paramValue = getParameterValue( paramDataType,
+                                                                     parameters,
+                                                                     index );
+                        if ( paramValue != null ) {
+                            final ExpressionFormLine param = new ExpressionFormLine( index );
+                            param.appendPart( new ExpressionMethodParameter( paramValue,
+                                                                             paramDataType,
+                                                                             paramDataType ) );
+                            em.putParam( paramDataType,
+                                         param );
+                        }
+                    }
+                    expression.appendPart( em );
                 } else {
                     expression.appendPart( new ExpressionText( expressionPart ) );
                 }
@@ -3445,6 +3507,22 @@ public class RuleModelDRLPersistenceImpl
                                                             currentField.getType() ) );
             }
 
+        }
+
+        private String getParameterValue( final String paramDataType,
+                                          final List<String> parameters,
+                                          final int index ) {
+            if ( parameters == null || parameters.isEmpty() ) {
+                return null;
+            }
+            if ( index < 0 || index > parameters.size() - 1 ) {
+                return null;
+            }
+
+            return RuleModelPersistenceHelper.adjustParam( paramDataType,
+                                                           parameters.get( index ).trim(),
+                                                           boundParams,
+                                                           isJavaDialect );
         }
 
         private String getFQFactType( final RuleModel ruleModel,

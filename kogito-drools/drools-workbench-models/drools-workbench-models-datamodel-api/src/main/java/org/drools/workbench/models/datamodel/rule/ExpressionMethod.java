@@ -16,7 +16,11 @@
 
 package org.drools.workbench.models.datamodel.rule;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ExpressionMethod extends ExpressionPart {
@@ -29,14 +33,19 @@ public class ExpressionMethod extends ExpressionPart {
     public ExpressionMethod( String methodName,
                              String returnClassType,
                              String returnGenericType ) {
-        super( methodName, returnClassType, returnGenericType );
+        super( methodName,
+               returnClassType,
+               returnGenericType );
     }
 
     public ExpressionMethod( String name,
                              String classType,
                              String genericType,
                              String parametricType ) {
-        super( name, classType, genericType, parametricType );
+        super( name,
+               classType,
+               genericType,
+               parametricType );
     }
 
     public Map<String, ExpressionFormLine> getParams() {
@@ -49,19 +58,31 @@ public class ExpressionMethod extends ExpressionPart {
 
     public void putParam( String name,
                           ExpressionFormLine expression ) {
-        this.params.put( name, expression );
+        this.params.put( name,
+                         expression );
     }
 
-    protected String paramsToString() {
-        if ( params.isEmpty() ) {
-            return "";
+    public List<ExpressionFormLine> getOrderedParams() {
+        final List<ExpressionFormLine> orderedParams = new ArrayList<ExpressionFormLine>();
+        orderedParams.addAll( params.values() );
+        Collections.sort( orderedParams,
+                          new Comparator<ExpressionFormLine>() {
+                              @Override
+                              public int compare( final ExpressionFormLine o1,
+                                                  final ExpressionFormLine o2 ) {
+                                  return o1.getIndex() - o2.getIndex();
+                              }
+                          } );
+        return orderedParams;
+    }
+
+    public String getParameterDataType( final ExpressionFormLine efl ) {
+        for ( Map.Entry<String, ExpressionFormLine> e : params.entrySet() ) {
+            if ( e.getValue().equals( efl ) ) {
+                return e.getKey();
+            }
         }
-        String sep = ", ";
-        StringBuilder s = new StringBuilder();
-        for ( ExpressionFormLine expr : params.values() ) {
-            s.append( sep ).append( expr.getText() );
-        }
-        return s.substring( sep.length() );
+        return null;
     }
 
     @Override

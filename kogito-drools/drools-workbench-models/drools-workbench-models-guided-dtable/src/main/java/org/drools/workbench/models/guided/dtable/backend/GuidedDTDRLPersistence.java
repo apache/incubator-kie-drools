@@ -44,7 +44,7 @@ import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleMetadata;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
-import org.drools.workbench.models.datamodel.rule.RuleModelVisitor;
+import org.drools.workbench.models.datamodel.rule.visitors.RuleModelVisitor;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDTBRDRLPersistence;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDTDRLOtherwiseHelper;
