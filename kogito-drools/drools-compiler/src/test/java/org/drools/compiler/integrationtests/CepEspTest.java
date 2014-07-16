@@ -16,13 +16,17 @@ import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Memory;
+import org.drools.core.common.NodeMemories;
 import org.drools.core.common.RightTupleSets;
+import org.drools.core.common.StreamTupleEntryQueue;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
@@ -67,6 +71,7 @@ import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 
 import java.io.File;
@@ -5259,5 +5264,56 @@ public class CepEspTest extends CommonTestMethodBase {
 
         assertEquals(5, list.size());
         assertTrue(list.containsAll(Arrays.asList(1, 3, 5, 7, 9)));
+    }
+
+    @Test
+    public void testDurationMemoryLeakWithAlwaysLinkedRules() throws Exception {
+        String drl =
+                "import org.drools.compiler.StockTick;\n " +
+
+                "declare StockTick\n"+
+                " @role( event )\n"+
+                " @timestamp( time )\n"+
+                "end\n"+
+
+                "rule Clear \n"+
+                "when\n"+
+                " $droo : StockTick( company == \"DROO\" )\n"+
+                "then\n"+
+                " delete($droo);\n"+
+                "end\n"+
+
+                "rule Cancel\n"+
+                "when\n"+
+                " $oord : StockTick( company != \"DROO\" )\n"+
+                " not StockTick( company == \"DROO\" )\n"+
+                "then\n"+
+                "end";
+
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession ksession = helper.build( EventProcessingOption.STREAM ).newKieSession();
+
+        assertEquals("FactCount should be 0[1]", 0, ksession.getFactCount());
+
+        for ( int j = 0; j < 100; j++ ) {
+            ksession.insert(new StockTick(0, "DROO", 1.00));
+        }
+        ksession.fireAllRules();
+        assertEquals("FactCount should still be 0[2]", 0, ksession.getFactCount());
+
+        ((DefaultAgenda)ksession.getAgenda()).getGarbageCollector().forceGcUnlinkedRules();
+
+        NodeMemories nm = ( (StatefulKnowledgeSessionImpl) ksession ).getNodeMemories();
+        for ( int j = 0; j < nm.length(); j++ ) {
+            Memory mem = nm.peekNodeMemory( j );
+            if ( mem != null && mem instanceof PathMemory) {
+                PathMemory pathMemory = (PathMemory) mem;
+                StreamTupleEntryQueue kiu = pathMemory.getStreamQueue();
+                System.out.println( kiu + " >> " + kiu.size() );
+                assertEquals( 0, kiu.size() );
+            }
+        }
     }
 }

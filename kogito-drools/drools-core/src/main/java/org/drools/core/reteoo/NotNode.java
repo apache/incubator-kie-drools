@@ -185,6 +185,7 @@ public class NotNode extends BetaNode {
             PropagationContext pctx = rightTuple.getPropagationContext();
             stagedDeleteWasEmpty = memory.getSegmentMemory().getStreamQueue().addDelete(new RightTupleEntry(rightTuple, pctx, memory, pctx.getType()));
             //log.trace( "NotNode delete queue={} size={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), rightTuple );
+            registerUnlinkedPaths(wm, memory, stagedDeleteWasEmpty);
         } else {
             stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );
         }
