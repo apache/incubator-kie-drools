@@ -92,4 +92,9 @@ public class TaskAssignment extends AbstractPersistable {
         return ValueRangeFactory.createIntValueRange(task.getStartPeriodRangeFrom(), task.getStartPeriodRangeTo());
     }
 
+    @Override
+    public String toString() {
+        return super.toString() + "@" + machine + "+" + startPeriod;
+    }
+
 }

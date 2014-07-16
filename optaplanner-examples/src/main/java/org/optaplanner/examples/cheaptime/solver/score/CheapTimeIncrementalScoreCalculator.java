@@ -17,17 +17,13 @@
 package org.optaplanner.examples.cheaptime.solver.score;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import com.google.common.collect.Sets;
+import org.apache.commons.lang.ObjectUtils;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
-import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.PeriodPowerCost;
@@ -35,15 +31,6 @@ import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 import org.optaplanner.examples.cheaptime.solver.CostCalculator;
-import org.optaplanner.examples.machinereassignment.domain.MrBalancePenalty;
-import org.optaplanner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
-import org.optaplanner.examples.machinereassignment.domain.MrLocation;
-import org.optaplanner.examples.machinereassignment.domain.MrMachine;
-import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
-import org.optaplanner.examples.machinereassignment.domain.MrNeighborhood;
-import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
-import org.optaplanner.examples.machinereassignment.domain.MrResource;
-import org.optaplanner.examples.machinereassignment.domain.MrService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +46,13 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
 
     private long hardScore;
     private long softScore;
+
+    private Machine oldMachine = null;
+    private Integer oldStartPeriod = null;
+
+    // ************************************************************************
+    // Lifecycle methods
+    // ************************************************************************
 
     public void resetWorkingSolution(CheapTimeSolution solution) {
         this.cheapTimeSolution = solution;
@@ -80,8 +74,15 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             }
             machinePeriodListMap.put(machine, machinePeriodList);
         }
+        List<MachinePeriodPart> unassignedMachinePeriodList = new ArrayList<MachinePeriodPart>(globalPeriodRangeTo);
+        for (int period = 0; period < globalPeriodRangeTo; period++) {
+            unassignedMachinePeriodList.add(new MachinePeriodPart(null, periodPowerCostList.get(period)));
+        }
+        machinePeriodListMap.put(null, unassignedMachinePeriodList);
         for (TaskAssignment taskAssignment : solution.getTaskAssignmentList()) {
-            insert(taskAssignment);
+            // Do not do modifyMachine(taskAssignment, null, taskAssignment.getMachine());
+            // because modifyStartPeriod does all it's effects too
+            modifyStartPeriod(taskAssignment, null, taskAssignment.getStartPeriod());
         }
     }
 
@@ -90,48 +91,126 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
     }
 
     public void afterEntityAdded(Object entity) {
-        insert((TaskAssignment) entity);
+        TaskAssignment taskAssignment = (TaskAssignment) entity;
+        modifyMachine(taskAssignment, null, taskAssignment.getMachine());
+        modifyStartPeriod(taskAssignment, null, taskAssignment.getStartPeriod());
     }
 
     public void beforeVariableChanged(Object entity, String variableName) {
-        retract((TaskAssignment) entity);
+        TaskAssignment taskAssignment = (TaskAssignment) entity;
+        if (variableName.equals("machine")) {
+            oldMachine = taskAssignment.getMachine();
+        } else if (variableName.equals("startPeriod")) {
+            oldStartPeriod = taskAssignment.getStartPeriod();
+        } else {
+            throw new IllegalArgumentException("The variableName (" + variableName + ") is not supported.");
+        }
     }
 
     public void afterVariableChanged(Object entity, String variableName) {
-        insert((TaskAssignment) entity);
+        TaskAssignment taskAssignment = (TaskAssignment) entity;
+        if (variableName.equals("machine")) {
+            modifyMachine(taskAssignment, oldMachine, taskAssignment.getMachine());
+        } else if (variableName.equals("startPeriod")) {
+            modifyStartPeriod(taskAssignment, oldStartPeriod, taskAssignment.getStartPeriod());
+        } else {
+            throw new IllegalArgumentException("The variableName (" + variableName + ") is not supported.");
+        }
     }
 
     public void beforeEntityRemoved(Object entity) {
-        retract((TaskAssignment) entity);
+        TaskAssignment taskAssignment = (TaskAssignment) entity;
+        oldMachine = taskAssignment.getMachine();
+        oldStartPeriod = taskAssignment.getStartPeriod();
     }
 
     public void afterEntityRemoved(Object entity) {
-        // Do nothing
+        TaskAssignment taskAssignment = (TaskAssignment) entity;
+        modifyMachine(taskAssignment, oldMachine, null);
+        modifyStartPeriod(taskAssignment, oldStartPeriod, null);
     }
 
-    private void insert(TaskAssignment taskAssignment) {
-        Machine machine = taskAssignment.getMachine();
+    // ************************************************************************
+    // Modify methods
+    // ************************************************************************
+
+    private void modifyMachine(TaskAssignment taskAssignment, Machine oldMachine, Machine newMachine) {
+        if (ObjectUtils.equals(oldMachine, newMachine)) {
+            return;
+        }
         Integer startPeriod = taskAssignment.getStartPeriod();
-        if (machine != null && startPeriod != null) {
-            List<MachinePeriodPart> machinePeriodList = machinePeriodListMap.get(machine);
-            int endPeriod = taskAssignment.getEndPeriod();
-            for (int period = startPeriod; period < endPeriod; period++) { // TODO Use sublist iterator?
+        if (startPeriod == null) {
+            return;
+        }
+        Integer endPeriod = taskAssignment.getEndPeriod();
+        if (oldMachine != null) {
+            List<MachinePeriodPart> machinePeriodList = machinePeriodListMap.get(oldMachine);
+            for (int period = startPeriod; period < endPeriod; period++) {
+                MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
+                machinePeriodPart.removeTaskAssignment(taskAssignment);
+            }
+        }
+        if (newMachine != null) {
+            List<MachinePeriodPart> machinePeriodList = machinePeriodListMap.get(newMachine);
+            for (int period = startPeriod; period < endPeriod; period++) {
                 MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
                 machinePeriodPart.addTaskAssignment(taskAssignment);
             }
         }
     }
 
-    private void retract(TaskAssignment taskAssignment) {
-        Machine machine = taskAssignment.getMachine();
-        Integer startPeriod = taskAssignment.getStartPeriod();
-        if (machine != null && startPeriod != null) {
-            List<MachinePeriodPart> machinePeriodList = machinePeriodListMap.get(machine);
-            int endPeriod = taskAssignment.getEndPeriod();
-            for (int period = startPeriod; period < endPeriod; period++) { // TODO Use sublist iterator?
-                MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
-                machinePeriodPart.removeTaskAssignment(taskAssignment);
+    private void modifyStartPeriod(TaskAssignment taskAssignment, Integer oldStartPeriod, Integer newStartPeriod) {
+        if (ObjectUtils.equals(oldStartPeriod, newStartPeriod)) {
+            return;
+        }
+        Task task = taskAssignment.getTask();
+        int duration = task.getDuration();
+        int retractStart;
+        int retractEnd;
+        int insertStart;
+        int insertEnd;
+        if (oldStartPeriod == null) {
+            retractStart = -1;
+            retractEnd = -1;
+            insertStart = newStartPeriod;
+            insertEnd = insertStart + duration;
+        } else if (newStartPeriod == null) {
+            retractStart = oldStartPeriod;
+            retractEnd = retractStart + duration;
+            insertStart = -1;
+            insertEnd = -1;
+        } else {
+            retractStart = oldStartPeriod;
+            retractEnd = retractStart + duration;
+            insertStart = newStartPeriod;
+            insertEnd = insertStart + duration;
+            if (oldStartPeriod < newStartPeriod) {
+                if (insertStart < retractEnd) {
+                    int overlap = retractEnd - insertStart;
+                    retractEnd -= overlap;
+                    insertStart += overlap;
+                }
+            } else {
+                if (retractStart < insertEnd) {
+                    int overlap = insertEnd - retractStart;
+                    insertEnd -= overlap;
+                    retractStart += overlap;
+                }
             }
+        }
+        Machine machine = taskAssignment.getMachine();
+        List<MachinePeriodPart> machinePeriodList = machinePeriodListMap.get(machine);
+        for (int period = retractStart; period < retractEnd; period++) {
+            MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
+            machinePeriodPart.removeTaskAssignment(taskAssignment);
+            softScore += CostCalculator.multiplyTwoMicros(task.getPowerConsumptionMicros(),
+                    machinePeriodPart.periodPowerCostMicros);
+        }
+        for (int period = insertStart; period < insertEnd; period++) {
+            MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
+            machinePeriodPart.addTaskAssignment(taskAssignment);
+            softScore -= CostCalculator.multiplyTwoMicros(task.getPowerConsumptionMicros(),
+                    machinePeriodPart.periodPowerCostMicros);
         }
     }
 
@@ -153,13 +232,18 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             this.period = periodPowerCost.getPeriod();
             this.periodPowerCostMicros = periodPowerCost.getPowerCostMicros();
             taskCount = 0;
-            resourceAvailableList = new ArrayList<Integer>(resourceListSize);
-            for (int i = 0; i < resourceListSize; i++) {
-                resourceAvailableList.add(machine.getMachineCapacityList().get(i).getCapacity());
+            if (machine != null) {
+                resourceAvailableList = new ArrayList<Integer>(resourceListSize);
+                for (int i = 0; i < resourceListSize; i++) {
+                    resourceAvailableList.add(machine.getMachineCapacityList().get(i).getCapacity());
+                }
             }
         }
 
         public void addTaskAssignment(TaskAssignment taskAssignment) {
+            if (machine == null) {
+                return;
+            }
             Task task = taskAssignment.getTask();
             if (taskCount == 0) {
                 softScore -= CostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
@@ -174,11 +258,12 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
                 resourceAvailableList.set(i, resourceAvailable);
                 hardScore += Math.min(resourceAvailable, 0);
             }
-            softScore -= CostCalculator.multiplyTwoMicros(task.getPowerConsumptionMicros(),
-                    periodPowerCostMicros);
         }
 
         public void removeTaskAssignment(TaskAssignment taskAssignment) {
+            if (machine == null) {
+                return;
+            }
             Task task = taskAssignment.getTask();
             if (taskCount == 1) {
                 softScore += CostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
@@ -193,8 +278,6 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
                 resourceAvailableList.set(i, resourceAvailable);
                 hardScore += Math.min(resourceAvailable, 0);
             }
-            softScore += CostCalculator.multiplyTwoMicros(task.getPowerConsumptionMicros(),
-                    periodPowerCostMicros);
         }
 
     }
