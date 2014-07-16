@@ -68,11 +68,12 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
             }
         }
         long hardScore = 0L;
-        for (int period = 0; period < globalPeriodRangeTo; period++) {
-            PeriodPowerCost periodPowerCost = periodPowerCostList.get(period);
-            for (Map.Entry<Machine, List<MachinePeriodPart>> entry : machinePeriodListMap.entrySet()) {
-                Machine machine = entry.getKey();
-                MachinePeriodPart machinePeriodPart = entry.getValue().get(period);
+        for (Map.Entry<Machine, List<MachinePeriodPart>> entry : machinePeriodListMap.entrySet()) {
+            Machine machine = entry.getKey();
+            List<MachinePeriodPart> machinePeriodList = entry.getValue();
+            for (int period = 0; period < globalPeriodRangeTo; period++) {
+                PeriodPowerCost periodPowerCost = periodPowerCostList.get(period);
+                MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
                 if (machinePeriodPart.isActive()) {
                     hardScore += machinePeriodPart.getHardScore();
                     softScore -= CostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
