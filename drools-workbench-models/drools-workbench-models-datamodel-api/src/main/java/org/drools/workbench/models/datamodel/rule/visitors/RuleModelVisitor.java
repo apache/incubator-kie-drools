@@ -13,12 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.models.datamodel.rule;
-
-import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.DataType;
+package org.drools.workbench.models.datamodel.rule.visitors;
 
 import java.util.Map;
+
+import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
+import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
+import org.drools.workbench.models.datamodel.rule.ActionSetField;
+import org.drools.workbench.models.datamodel.rule.ActionUpdateField;
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.ConnectiveConstraint;
+import org.drools.workbench.models.datamodel.rule.DSLSentence;
+import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.FieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FieldNatureType;
+import org.drools.workbench.models.datamodel.rule.FreeFormLine;
+import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromCollectCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.IAction;
+import org.drools.workbench.models.datamodel.rule.IFactPattern;
+import org.drools.workbench.models.datamodel.rule.IPattern;
+import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 
 /**
  * A Rule Model Visitor to extract Interpolation Variables (Template Keys)
@@ -200,7 +222,8 @@ public class RuleModelVisitor {
 
     private void visitFromCompositeFactPattern( FromCompositeFactPattern pattern ) {
         visit( pattern.getFactPattern() );
-        parseStringPattern( pattern.getExpression().getText() );
+        ToStringExpressionVisitor visitor = new ToStringExpressionVisitor( pattern.getExpression().getBinding() );
+        parseStringPattern( pattern.getExpression().getText( visitor ) );
     }
 
     private void visitRuleModel( RuleModel model ) {

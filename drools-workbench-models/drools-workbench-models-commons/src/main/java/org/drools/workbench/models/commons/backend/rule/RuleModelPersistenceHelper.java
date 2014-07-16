@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -202,16 +203,43 @@ class RuleModelPersistenceHelper {
     }
 
     static MethodInfo findMethodInfo( final List<MethodInfo> methodInfos,
-                                      final String fieldName ) {
-        if ( methodInfos != null && fieldName != null ) {
+                                      final String expressionPart ) {
+        if ( methodInfos != null && expressionPart != null ) {
+            //Find a MethodInfo that matches name and parameter count
+            final int expressionParameterCount = parseExpressionParameters( expressionPart ).size();
+            final String normalizedExpressionPart = normalizeExpressionPart( expressionPart );
             for ( MethodInfo methodInfo : methodInfos ) {
-                if ( methodInfo.getName().equals( fieldName ) ) {
+                if ( methodInfo.getName().equals( normalizedExpressionPart ) && methodInfo.getParams().size() == expressionParameterCount ) {
                     return methodInfo;
                 }
             }
         }
         return null;
 
+    }
+
+    //TODO This is a naive implementation that won't handle parameter values containing ","
+    //TODO for example callMyMethod("Anstis, Michael", 41). This would parse as 3 parameters
+    static List<String> parseExpressionParameters( String expressionPart ) {
+        int parenthesisOpenPos = expressionPart.indexOf( '(' );
+        int parenthesisClosePos = expressionPart.lastIndexOf( ')' );
+        if ( parenthesisOpenPos > 0 && parenthesisClosePos > 0 ) {
+            expressionPart = expressionPart.substring( parenthesisOpenPos + 1,
+                                                       parenthesisClosePos );
+        }
+        if ( expressionPart.isEmpty() ) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList( expressionPart.split( "," ) );
+    }
+
+    private static String normalizeExpressionPart( String expressionPart ) {
+        int parenthesisPos = expressionPart.indexOf( '(' );
+        if ( parenthesisPos > 0 ) {
+            expressionPart = expressionPart.substring( 0,
+                                                       parenthesisPos );
+        }
+        return expressionPart.trim();
     }
 
     static String inferDataType( final ActionFieldList action,

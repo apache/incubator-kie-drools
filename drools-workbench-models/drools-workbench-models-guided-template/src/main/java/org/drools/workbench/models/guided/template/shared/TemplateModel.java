@@ -25,7 +25,7 @@ import java.util.Set;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
-import org.drools.workbench.models.datamodel.rule.RuleModelVisitor;
+import org.drools.workbench.models.datamodel.rule.visitors.RuleModelVisitor;
 
 public class TemplateModel
         extends RuleModel {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,30 @@
 
 package org.drools.workbench.models.datamodel.rule;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
+/**
+ * ExpressionPart representing a ExpressionMethod parameter
+ */
+public class ExpressionMethodParameter extends ExpressionPart {
 
-public class ExpressionText extends ExpressionPart {
-
-    public ExpressionText() {
+    public ExpressionMethodParameter() {
     }
 
-    public ExpressionText( final String text,
-                           final String classType,
-                           final String genericType ) {
-        super( text,
+    public ExpressionMethodParameter( String name,
+                                      String classType,
+                                      String genericType ) {
+        super( name,
                classType,
                genericType );
     }
 
-    public ExpressionText( final String text ) {
-        super( text,
-               "java.lang.String",
-               DataType.TYPE_STRING );
+    public ExpressionMethodParameter( String name,
+                                      String classType,
+                                      String genericType,
+                                      String parametricType ) {
+        super( name,
+               classType,
+               genericType,
+               parametricType );
     }
 
     public void setText( final String text ) {
@@ -42,7 +47,7 @@ public class ExpressionText extends ExpressionPart {
     }
 
     @Override
-    public void accept( final ExpressionVisitor visitor ) {
+    public void accept( ExpressionVisitor visitor ) {
         visitor.visit( this );
     }
 
