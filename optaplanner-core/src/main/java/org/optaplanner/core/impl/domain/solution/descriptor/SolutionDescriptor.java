@@ -413,6 +413,30 @@ public class SolutionDescriptor {
      * @param solution never null
      * @return >= 0
      */
+    public long getVariableCount(Solution solution) {
+        long variableCount = 0L;
+        for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
+            Object entity = extractEntity(entityPropertyAccessor, solution);
+            if (entity != null) {
+                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+                variableCount += entityDescriptor.getVariableCount();
+            }
+        }
+        for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
+            Collection<?> entityCollection = extractEntityCollection(
+                    entityCollectionPropertyAccessor, solution);
+            for (Object entity : entityCollection) {
+                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+                variableCount += entityDescriptor.getVariableCount();
+            }
+        }
+        return variableCount;
+    }
+
+    /**
+     * @param solution never null
+     * @return >= 0
+     */
     public int getValueCount(Solution solution) {
         int valueCount = 0;
         // TODO FIXME for ValueRatioTabuSizeStrategy

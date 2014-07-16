@@ -385,6 +385,10 @@ public class EntityDescriptor {
         return solutionDescriptor.getEntityListByEntityClass(solution, entityClass);
     }
 
+    public long getVariableCount() {
+        return effectiveGenuineVariableDescriptorMap.size();
+    }
+
     public long getProblemScale(Solution solution, Object entity) {
         long problemScale = 1L;
         for (GenuineVariableDescriptor variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {

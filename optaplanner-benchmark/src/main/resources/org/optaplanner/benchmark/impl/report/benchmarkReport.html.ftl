@@ -436,10 +436,15 @@
                             <p>${problemBenchmarkResult.failureCount} benchmarks have failed!</p>
                         </div>
                     </#if>
-                    <#if problemBenchmarkResult.averageUsedMemoryAfterInputSolution??>
-                        <p>Memory usage after loading the inputSolution (before creating the Solver): ${problemBenchmarkResult.averageUsedMemoryAfterInputSolution?string.number} bytes on average.</p>
-                    </#if>
-                    <#if problemBenchmarkResult.hasAnySuccess() && problemBenchmarkResult.hasAnyProblemStatistic()>
+                    <p>
+                        Entity count: ${problemBenchmarkResult.entityCount!""}<br/>
+                        Variable count: ${problemBenchmarkResult.variableCount!""}<br/>
+                        Problem scale: ${problemBenchmarkResult.problemScale!""}
+                        <#if problemBenchmarkResult.averageUsedMemoryAfterInputSolution??>
+                            <br/>Memory usage after loading the inputSolution (before creating the Solver): ${problemBenchmarkResult.averageUsedMemoryAfterInputSolution?string.number} bytes on average.
+                        </#if>
+                    </p>
+                    <#if problemBenchmarkResult.hasAnySuccess() && problemBenchmarkResult.hasAnyStatistic()>
                         <div class="tabbable">
                             <ul class="nav nav-tabs">
                                 <#assign firstRow = true>

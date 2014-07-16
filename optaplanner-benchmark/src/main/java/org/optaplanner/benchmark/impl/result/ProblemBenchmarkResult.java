@@ -77,6 +77,8 @@ public class ProblemBenchmarkResult {
     @XStreamImplicit()
     private List<SingleBenchmarkResult> singleBenchmarkResultList = null;
 
+    private Long entityCount = null;
+    private Long variableCount = null;
     private Long problemScale = null;
 
     // ************************************************************************
@@ -148,6 +150,14 @@ public class ProblemBenchmarkResult {
         this.singleBenchmarkResultList = singleBenchmarkResultList;
     }
 
+    public Long getEntityCount() {
+        return entityCount;
+    }
+
+    public Long getVariableCount() {
+        return variableCount;
+    }
+
     public Long getProblemScale() {
         return problemScale;
     }
@@ -188,8 +198,16 @@ public class ProblemBenchmarkResult {
         return singleBenchmarkResultList.size() - failureCount > 0;
     }
 
-    public boolean hasAnyProblemStatistic() {
-        return problemStatisticList.size() > 0;
+    public boolean hasAnyStatistic() {
+        if (problemStatisticList.size() > 0) {
+            return true;
+        }
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            if (singleBenchmarkResult.getPureSingleStatisticList().size() > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean hasProblemStatisticType(ProblemStatisticType problemStatisticType) {
@@ -357,9 +375,28 @@ public class ProblemBenchmarkResult {
      * HACK to avoid loading the planningProblem just to extract it's problemScale.
      * Called multiple times, for every {@link SingleBenchmarkResult} of this {@link ProblemBenchmarkResult}.
      *
+     * @param registeringEntityCount >= 0
+     * @param registeringVariableCount >= 0
      * @param registeringProblemScale >= 0
      */
-    public void registerProblemScale(long registeringProblemScale) {
+    public void registerScale(long registeringEntityCount, long registeringVariableCount,
+            long registeringProblemScale) {
+        if (entityCount == null) {
+            entityCount = registeringEntityCount;
+        } else if (entityCount.longValue() != registeringEntityCount) {
+            logger.warn("The problemBenchmarkResult ({}) has different entityCount values ([{},{}]).",
+                    getName(), entityCount, registeringEntityCount);
+            // The entityCount is not unknown (null), but known to be ambiguous
+            entityCount = -1L;
+        }
+        if (variableCount == null) {
+            variableCount = registeringVariableCount;
+        } else if (variableCount.longValue() != registeringVariableCount) {
+            logger.warn("The problemBenchmarkResult ({}) has different variableCount values ([{},{}]).",
+                    getName(), variableCount, registeringVariableCount);
+            // The variableCount is not unknown (null), but known to be ambiguous
+            variableCount = -1L;
+        }
         if (problemScale == null) {
             problemScale = registeringProblemScale;
         } else if (problemScale.longValue() != registeringProblemScale) {
@@ -418,6 +455,8 @@ public class ProblemBenchmarkResult {
                     }
                     newResult.singleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>(
                             oldResult.singleBenchmarkResultList.size());
+                    newResult.entityCount = oldResult.entityCount;
+                    newResult.variableCount = oldResult.variableCount;
                     newResult.problemScale = oldResult.problemScale;
                     fileToNewResultMap.put(oldResult.inputSolutionFile, newResult);
                     newPlannerBenchmarkResult.getUnifiedProblemBenchmarkResultList().add(newResult);
@@ -435,6 +474,8 @@ public class ProblemBenchmarkResult {
                             it.remove();
                         }
                     }
+                    newResult.entityCount = ConfigUtils.mergeProperty(oldResult.entityCount, newResult.entityCount);
+                    newResult.variableCount = ConfigUtils.mergeProperty(oldResult.variableCount, newResult.variableCount);
                     newResult.problemScale = ConfigUtils.mergeProperty(oldResult.problemScale, newResult.problemScale);
                 }
                 mergeMap.put(oldResult, newResult);

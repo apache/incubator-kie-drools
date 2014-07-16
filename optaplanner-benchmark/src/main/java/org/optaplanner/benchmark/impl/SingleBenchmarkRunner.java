@@ -81,8 +81,9 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
 
         DefaultSolverScope solverScope = ((DefaultSolver) solver).getSolverScope();
         SolutionDescriptor solutionDescriptor = solverScope.getSolutionDescriptor();
-        singleBenchmarkResult.setEntityCount(solutionDescriptor.getEntityCount(outputSolution));
-        problemBenchmarkResult.registerProblemScale(solutionDescriptor.getProblemScale(outputSolution));
+        problemBenchmarkResult.registerScale(solutionDescriptor.getEntityCount(outputSolution),
+                solutionDescriptor.getVariableCount(outputSolution),
+                solutionDescriptor.getProblemScale(outputSolution));
         singleBenchmarkResult.setScore(outputSolution.getScore());
         singleBenchmarkResult.setTimeMillisSpent(timeMillisSpent);
         singleBenchmarkResult.setCalculateCount(solverScope.getCalculateCount());

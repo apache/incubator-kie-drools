@@ -495,8 +495,10 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
     private MixedCheckBox createProblemBenchmarkCheckBox(ProblemBenchmarkResult problemBenchmarkResult) {
         String problemBenchmarkDetail = String.format(
-                "Problem scale: %d%n"
+                "Entity count: %d%n"
+                + "Problem scale: %d%n"
                 + "Used memory: %s",
+                problemBenchmarkResult.getEntityCount(),
                 problemBenchmarkResult.getProblemScale(),
                 toEmptyStringIfNull(problemBenchmarkResult.getAverageUsedMemoryAfterInputSolution()));
         return new MixedCheckBox(problemBenchmarkResult.getName(), problemBenchmarkDetail);
@@ -506,11 +508,9 @@ public class BenchmarkAggregatorFrame extends JFrame {
         String singleCheckBoxName = singleBenchmarkResult.getName() + " (" + singleBenchmarkResult.getRanking() + ")";
         String singleBenchmarkDetail = String.format(
                 "Score: %s%n"
-                + "Planning entity count: %d%n"
                 + "Used memory: %s%n"
                 + "Time spent: %s",
                 singleBenchmarkResult.getScore(),
-                singleBenchmarkResult.getEntityCount(),
                 toEmptyStringIfNull(singleBenchmarkResult.getUsedMemoryAfterInputSolution()),
                 millisecondsSpentNumberFormat.format(singleBenchmarkResult.getTimeMillisSpent()));
         return new MixedCheckBox(singleCheckBoxName, singleBenchmarkDetail, singleBenchmarkResult);
