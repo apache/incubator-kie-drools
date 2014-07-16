@@ -5230,6 +5230,115 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                       RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
     }
 
+    @Test
+    public void testLHSNestedMethodOneParameter() {
+        String drl = "package org.mortgages;\n" +
+                "import java.lang.Number;\n" +
+                "import java.util.List;\n" +
+                "import org.drools.workbench.models.commons.backend.rule.classes.MyListContainerClass;\n" +
+                "import org.drools.workbench.models.commons.backend.rule.classes.MyStringContainerClass;\n" +
+                "rule \"r1\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $foo : MyListContainerClass()\n" +
+                "  $bar : MyStringContainerClass( myString == $foo.myList.get(1))\n" +
+                "then\n" +
+                "end\n";
+
+        addModelField( "org.drools.workbench.models.commons.backend.rule.classes.MyListContainerClass",
+                       "this",
+                       "org.drools.workbench.models.commons.backend.rule.classes.MyListContainerClass",
+                       DataType.TYPE_THIS );
+        addModelField( "org.drools.workbench.models.commons.backend.rule.classes.MyListContainerClass",
+                       "myList",
+                       "java.util.List",
+                       "java.util.List" );
+
+        addModelField( "org.drools.workbench.models.commons.backend.rule.classes.MyStringContainerClass",
+                       "this",
+                       "org.drools.workbench.models.commons.backend.rule.classes.MyStringContainerClass",
+                       DataType.TYPE_THIS );
+        addModelField( "org.drools.workbench.models.commons.backend.rule.classes.MyStringContainerClass",
+                       "myString",
+                       "java.lang.String",
+                       DataType.TYPE_STRING );
+
+        addMethodInformation( "java.util.List",
+                              "get",
+                              new ArrayList<String>() {{
+                                  add( "Integer" );
+                              }},
+                              "java.lang.Object",
+                              null,
+                              "java.lang.Object" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    public void testLHSNestedMethodTwoParameters() {
+        String drl = "package org.mortgages;\n" +
+                "import java.lang.Number;\n" +
+                "import java.util.List;\n" +
+                "import org.drools.workbench.models.commons.backend.rule.classes.MyListContainerClass;\n" +
+                "import org.drools.workbench.models.commons.backend.rule.classes.MyStringContainerClass;\n" +
+                "rule \"r1\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $foo : MyListContainerClass()\n" +
+                "  $bar : MyStringContainerClass( $foo.myList.set(1, \"hello\" ) == true )\n" +
+                "then\n" +
+                "end\n";
+
+        addModelField( "org.drools.workbench.models.commons.backend.rule.classes.MyListContainerClass",
+                       "this",
+                       "org.drools.workbench.models.commons.backend.rule.classes.MyListContainerClass",
+                       DataType.TYPE_THIS );
+        addModelField( "org.drools.workbench.models.commons.backend.rule.classes.MyListContainerClass",
+                       "myList",
+                       "java.util.List",
+                       "java.util.List" );
+
+        addModelField( "org.drools.workbench.models.commons.backend.rule.classes.MyStringContainerClass",
+                       "this",
+                       "org.drools.workbench.models.commons.backend.rule.classes.MyStringContainerClass",
+                       DataType.TYPE_THIS );
+        addModelField( "org.drools.workbench.models.commons.backend.rule.classes.MyStringContainerClass",
+                       "myString",
+                       "java.lang.String",
+                       DataType.TYPE_STRING );
+
+        addModelField( "java.util.List",
+                       "this",
+                       "java.util.List",
+                       DataType.TYPE_THIS );
+        addMethodInformation( "java.util.List",
+                              "set",
+                              new ArrayList<String>() {{
+                                  add( "Integer" );
+                                  add( "String" );
+                              }},
+                              DataType.TYPE_BOOLEAN,
+                              null,
+                              DataType.TYPE_BOOLEAN );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",

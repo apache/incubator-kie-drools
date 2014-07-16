@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.models.commons.backend.rule;
+package org.drools.workbench.models.datamodel.rule.builder;
 
 /**
  * A Helper class for building parts of DRL from higher-order representations
@@ -22,8 +22,10 @@ package org.drools.workbench.models.commons.backend.rule;
  */
 public abstract class DRLConstraintValueBuilder {
 
+    public static final String DEFAULT_DIALECT = "mvel";
+
     public static DRLConstraintValueBuilder getBuilder( String dialect ) {
-        if ( RuleModelDRLPersistenceImpl.DEFAULT_DIALECT.equalsIgnoreCase( dialect ) ) {
+        if ( DEFAULT_DIALECT.equalsIgnoreCase( dialect ) ) {
             return new MvelDRLConstraintValueBuilder();
         }
         return new JavaDRLConstraintValueBuilder();
