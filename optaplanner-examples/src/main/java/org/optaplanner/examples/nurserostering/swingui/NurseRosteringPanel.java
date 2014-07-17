@@ -16,6 +16,7 @@
 
 package org.optaplanner.examples.nurserostering.swingui;
 
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -87,11 +88,12 @@ public class NurseRosteringPanel extends SolutionPanel {
     }
 
     private JPanel createHeaderPanel() {
-        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        headerPanel.add(new JLabel("Planning window start:"));
+        JPanel headerPanel = new JPanel(new BorderLayout(20, 0));
+        JPanel planningWindowPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        planningWindowPanel.add(new JLabel("Planning window start:"));
         planningWindowStartField = new JTextField(10);
         planningWindowStartField.setEditable(false);
-        headerPanel.add(planningWindowStartField);
+        planningWindowPanel.add(planningWindowStartField);
         advancePlanningWindowStartAction = new AbstractAction("Advance 1 day into the future") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -99,7 +101,10 @@ public class NurseRosteringPanel extends SolutionPanel {
             }
         };
         advancePlanningWindowStartAction.setEnabled(false);
-        headerPanel.add(new JButton(advancePlanningWindowStartAction));
+        planningWindowPanel.add(new JButton(advancePlanningWindowStartAction));
+        headerPanel.add(planningWindowPanel, BorderLayout.WEST);
+        JLabel shiftTypeExplanation = new JLabel("E = Early shift, L = Late shift, ...");
+        headerPanel.add(shiftTypeExplanation, BorderLayout.CENTER);
         return headerPanel;
     }
 

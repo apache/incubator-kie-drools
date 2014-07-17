@@ -197,8 +197,8 @@ public class EmployeePanel extends JPanel {
         }
         int colorIndex = shift.getShiftType().getIndex() % TangoColorFactory.SEQUENCE_1.length;
         shiftAssignmentButton.setBackground(TangoColorFactory.SEQUENCE_1[colorIndex]);
-        shiftAssignmentButton.setToolTipText((employee == null ? "Unassigned" : employee.getLabel())
-                + " on " + shift.getLabel());
+        shiftAssignmentButton.setToolTipText(shift.getLabel() + " @ "
+                        + (employee == null ? "unassigned" : employee.getLabel()));
         shiftPanel.add(shiftAssignmentButton);
         shiftPanel.repaint();
         shiftAssignmentButtonMap.put(shiftAssignment, shiftAssignmentButton);

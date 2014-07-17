@@ -61,7 +61,7 @@ public class Shift extends AbstractPersistable {
     }
 
     public String getLabel() {
-        return shiftDate.getLabel() + " - " + shiftType.getCode();
+        return shiftType.getLabel() + " of " + shiftDate.getLabel() ;
     }
 
     @Override

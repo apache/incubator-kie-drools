@@ -77,6 +77,10 @@ public class ShiftType extends AbstractPersistable {
         this.description = description;
     }
 
+    public String getLabel() {
+        return code + " (" + description + ")";
+    }
+
     @Override
     public String toString() {
         return code;
