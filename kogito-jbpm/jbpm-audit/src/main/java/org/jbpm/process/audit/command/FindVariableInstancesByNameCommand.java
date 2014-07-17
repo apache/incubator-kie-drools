@@ -35,11 +35,11 @@ public class FindVariableInstancesByNameCommand extends AuditCommand<List<Variab
     private static final long serialVersionUID = 7087452375594067164L;
 
     @XmlAttribute(required=true)
-    @XmlSchemaType(name="String")
+    @XmlSchemaType(name="string")
     private String variableId;
     
     @XmlAttribute(required=false)
-    @XmlSchemaType(name="String")
+    @XmlSchemaType(name="string")
     private String value = null;
     
     @XmlAttribute(required=true)

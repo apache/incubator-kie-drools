@@ -39,7 +39,7 @@ public class FindVariableInstancesCommand extends AuditCommand<List<VariableInst
     private Long processInstanceId;
     
     @XmlAttribute(required=true)
-    @XmlSchemaType(name="String")
+    @XmlSchemaType(name="string")
     private String variableId;
     
     public FindVariableInstancesCommand() { 
