@@ -65,7 +65,7 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     private Long processInstanceId;
 
     @XmlElement(name = "document-type")
-    @XmlSchemaType(name = "String")
+    @XmlSchemaType(name = "string")
     private String documentType;
 
     @XmlElement(name = "document-content-id")
@@ -73,7 +73,7 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     private Long documentContentId;
 
     @XmlElement(name = "output-type")
-    @XmlSchemaType(name = "String")
+    @XmlSchemaType(name = "string")
     private String outputType;
 
     @XmlElement(name = "output-content-id")
@@ -81,11 +81,11 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     private Long outputContentId;
 
     @XmlElement(name = "fault-name")
-    @XmlSchemaType(name = "String")
+    @XmlSchemaType(name = "string")
     private String faultName;
 
     @XmlElement(name = "fault-type")
-    @XmlSchemaType(name = "String")
+    @XmlSchemaType(name = "string")
     private String faultType;
 
     @XmlElement(name = "fault-content-id")
@@ -97,7 +97,7 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     private Long parentId;
 
     @XmlElement(name = "process-id")
-    @XmlSchemaType(name = "String")
+    @XmlSchemaType(name = "string")
     private String processId;
 
     @XmlElement(name = "process-session-id")
@@ -111,7 +111,7 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     private List<JaxbAttachment> jaxbAttachments;
     
     @XmlElement(name = "deployment-id")
-    @XmlSchemaType(name = "String")
+    @XmlSchemaType(name = "string")
     private String deploymentId;
 
     public JaxbTaskData() {
