@@ -42,6 +42,14 @@
     @end{}
  end
 
+rule "Own @{context}"
+ when
+    $obj  : @{context}@if{ traitMode }Trait@end{}()
+    $mark : org.drools.pmml.pmml_4_1.ModelMarker( enabled == true, modelName == "@{context}" )
+ then
+    modify( $mark ) { setBoundInput( $obj ); }
+ end
+
 
  @foreach{ fieldName : predFields.keySet() }
 
@@ -49,6 +57,7 @@
  when
      @{compactUpperCase(fieldName)}( $val : value)
      $x : @{context}@if{ traitMode }Trait@end{}( @{fieldName} != $val )
+     $mark : org.drools.pmml.pmml_4_1.ModelMarker( modelName == "@{context}", boundInput == $x )
  then
      modify ( $x ) { set@{compactUpperCase(fieldName)}( $val ); }
  end

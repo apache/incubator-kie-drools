@@ -35,6 +35,7 @@ public class ModelMarker {
     @Position(3)
     private String modelUrl;
 
+    private Object boundInput;
 
     public ModelMarker() { }
 
@@ -102,4 +103,11 @@ public class ModelMarker {
         return modelName != null ? modelName.hashCode() : 0;
     }
 
+    public Object getBoundInput() {
+        return boundInput;
+    }
+
+    public void setBoundInput( Object boundInput ) {
+        this.boundInput = boundInput;
+    }
 }
