@@ -84,7 +84,7 @@ when
                  $ccounts : java.util.Map() from accumulate (
                     ScoreDistribution( $val : value, $num : confidence ) from $scores,
                     init( java.util.Map n = new java.util.HashMap(); ),
-                    action( n.put( $val, $num ); ),
+                    action( n.put( $val, $num != null ? $num : 1.0 ); ),
                     result( n )
                  ),
                  init( java.util.Map m = new java.util.HashMap(); ),
