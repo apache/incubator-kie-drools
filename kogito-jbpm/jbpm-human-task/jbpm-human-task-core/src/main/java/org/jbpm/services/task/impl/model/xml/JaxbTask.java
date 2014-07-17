@@ -53,15 +53,15 @@ public class JaxbTask implements InternalTask {
     private String taskType; 
     
     @XmlElement(name="name")
-    @XmlSchemaType(name="String")
+    @XmlSchemaType(name="string")
     private String name;
     
     @XmlElement(name="subject")
-    @XmlSchemaType(name="String")
+    @XmlSchemaType(name="string")
     private String subject;
     
     @XmlElement(name="description")
-    @XmlSchemaType(name="String")
+    @XmlSchemaType(name="string")
     private String description;
     
     @XmlElement(name="names")
@@ -84,7 +84,7 @@ public class JaxbTask implements InternalTask {
     private JaxbDeadlines deadlines = new JaxbDeadlines();
     
     @XmlElement(name="form-name")
-    @XmlSchemaType(name="String")
+    @XmlSchemaType(name="string")
     private String formName;
  
     public JaxbTask() { 

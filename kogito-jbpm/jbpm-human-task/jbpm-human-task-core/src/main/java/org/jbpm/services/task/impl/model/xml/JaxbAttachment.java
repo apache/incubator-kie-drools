@@ -36,7 +36,7 @@ public class JaxbAttachment extends AbstractJaxbTaskObject<Attachment> implement
     private String attachedBy;
 
     @XmlElement
-    @XmlSchemaType(name = "size")
+    @XmlSchemaType(name = "int")
     private Integer size;
 
     @XmlElement(name="attachment-content-id")
