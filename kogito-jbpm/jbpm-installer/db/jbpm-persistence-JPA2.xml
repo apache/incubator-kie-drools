@@ -57,6 +57,9 @@
     <class>org.jbpm.process.audit.ProcessInstanceLog</class>
     <class>org.jbpm.process.audit.NodeInstanceLog</class>
     <class>org.jbpm.process.audit.VariableInstanceLog</class>
+    
+    <!-- deployment store -->
+    <class>org.jbpm.kie.services.impl.store.DeploymentStoreEntry</class>
 
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />

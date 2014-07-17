@@ -111,7 +111,7 @@ public class DeploymentServiceCDIImpl extends KModuleDeploymentService {
 	@Override
 	public void setIdentityProvider(IdentityProvider identityProvider) {
 
-		super.setIdentityProvider(identityProvider);
+		super.setIdentityProvider(new IdentityProviderCDIWrapper(identityProvider, backupProviders));
 	}
 	
 	@Override
@@ -123,11 +123,7 @@ public class DeploymentServiceCDIImpl extends KModuleDeploymentService {
         
 	}
 
-	@Override
-	protected AuditEventBuilder setupAuditLogger(IdentityProvider identityProvider, String deploymentUnitId) {
-		
-		return super.setupAuditLogger(new IdentityProviderCDIWrapper(identityProvider, backupProviders), deploymentUnitId);
-	}
+
 	
 	
 }

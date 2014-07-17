@@ -37,6 +37,7 @@ import org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl;
 import org.jbpm.services.api.DefinitionService;
 import org.jbpm.services.api.DeploymentEventListener;
 import org.jbpm.services.api.DeploymentService;
+import org.jbpm.services.api.ListenerSupport;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.ejb.api.DefinitionServiceEJBLocal;
@@ -48,7 +49,7 @@ import org.jbpm.services.ejb.impl.identity.EJBContextIdentityProvider;
 @Singleton
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
 @Lock(LockType.WRITE)
-public class DeploymentServiceEJBImpl extends KModuleDeploymentService implements DeploymentService, DeploymentServiceEJBLocal, DeploymentServiceEJBRemote {
+public class DeploymentServiceEJBImpl extends KModuleDeploymentService implements ListenerSupport, DeploymentService, DeploymentServiceEJBLocal, DeploymentServiceEJBRemote {
 
 	@Inject
 	private Instance<IdentityProvider> identityProvider;

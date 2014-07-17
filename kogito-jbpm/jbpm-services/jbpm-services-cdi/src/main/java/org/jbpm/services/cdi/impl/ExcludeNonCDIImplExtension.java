@@ -41,6 +41,7 @@ public class ExcludeNonCDIImplExtension implements Extension {
 		excluded.add("org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl");
 		excluded.add("org.jbpm.services.task.wih.ExternalTaskEventListener");
 		excluded.add("org.jbpm.services.task.events.DefaultTaskEventListener");
+		excluded.add("org.jbpm.kie.services.impl.store.DeploymentSynchronizer");
 	}
 
 

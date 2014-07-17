@@ -100,6 +100,16 @@
         entity_id varchar(255) not null
     );
 
+    create table DeploymentStore (
+        id bigint identity not null,
+        attributes varchar(255),
+        DEPLOYMENT_ID varchar(255),
+        deploymentUnit varchar(MAX),
+        state int,
+        updateDate datetime2,
+        primary key (id)
+    );
+
     create table ErrorInfo (
         id bigint identity not null,
         message varchar(255),
@@ -278,9 +288,12 @@
         id bigint identity not null,
         archived smallint,
         allowedToDelegate varchar(255),
+        description varchar(255),
         formName varchar(255),
+        name varchar(255),
         priority int not null,
         subTaskStrategy varchar(255),
+        subject varchar(255),
         activationTime datetime2,
         createdOn datetime2,
         deploymentId varchar(255),
@@ -412,6 +425,9 @@
         add constraint FK47485D57786553A5 
         foreign key (task_id) 
         references Task;
+
+    alter table DeploymentStore 
+        add constraint UK_DeploymentStore_1 unique (DEPLOYMENT_ID);
 
     alter table ErrorInfo 
         add constraint FK8B1186B6724A467 

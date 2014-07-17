@@ -68,7 +68,6 @@ import org.slf4j.LoggerFactory;
 public class KModuleDeploymentService extends AbstractDeploymentService {
 
     private static Logger logger = LoggerFactory.getLogger(KModuleDeploymentService.class);
-    
     private static final String DEFAULT_KBASE_NAME = "defaultKieBase";
     
     private DefinitionService bpmn2Service;

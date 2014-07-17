@@ -8,6 +8,12 @@
   </parent>
   <artifactId>jbpm-services-ejb-impl</artifactId>
   <name>jBPM :: EJB Services Implementation</name>
+  
+  <!--  skip tests from maven build for now as they require server installation -->
+  <properties>
+    <skipTests>true</skipTests>
+  </properties>
+  
   <dependencies>
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -117,12 +123,20 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
-          <excludes>
-          <!--  exclude tests from maven build for now as they require server installation -->
-            <exclude>org/jbpm/services/ejb/test/*.java</exclude>
-          </excludes>
+          <finalName>sample-war</finalName>
+          <descriptors>
+            <descriptor>src/main/assembly/assembly-ejb-war.xml</descriptor>
+          </descriptors>          
         </configuration>
       </plugin>
     </plugins>

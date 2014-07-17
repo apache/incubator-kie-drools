@@ -425,7 +425,7 @@
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
   
-    <named-query name="getTaskInstanceByWorkItemId">
+  <named-query name="getTaskInstanceByWorkItemId">
     <query>
         select 
 	      new org.jbpm.kie.services.impl.model.UserTaskInstanceDesc(
@@ -453,5 +453,5 @@
     </query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
-  
+
 </entity-mappings>

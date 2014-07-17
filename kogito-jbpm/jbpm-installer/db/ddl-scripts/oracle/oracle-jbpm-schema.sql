@@ -1,4 +1,4 @@
-   create table Attachment (
+    create table Attachment (
         id number(19,0) not null,
         accessType number(10,0),
         attachedAt timestamp,
@@ -98,6 +98,16 @@
     create table Delegation_delegates (
         task_id number(19,0) not null,
         entity_id varchar2(255 char) not null
+    );
+
+    create table DeploymentStore (
+        id number(19,0) not null,
+        attributes varchar2(255 char),
+        DEPLOYMENT_ID varchar2(255 char),
+        deploymentUnit clob,
+        state number(10,0),
+        updateDate timestamp,
+        primary key (id)
     );
 
     create table ErrorInfo (
@@ -278,9 +288,12 @@
         id number(19,0) not null,
         archived number(5,0),
         allowedToDelegate varchar2(255 char),
+        description varchar2(255 char),
         formName varchar2(255 char),
+        name varchar2(255 char),
         priority number(10,0) not null,
         subTaskStrategy varchar2(255 char),
+        subject varchar2(255 char),
         activationTime timestamp,
         createdOn timestamp,
         deploymentId varchar2(255 char),
@@ -412,6 +425,9 @@
         add constraint FK47485D57786553A5 
         foreign key (task_id) 
         references Task;
+
+    alter table DeploymentStore 
+        add constraint UK_DeploymentStore_1 unique (DEPLOYMENT_ID);
 
     alter table ErrorInfo 
         add constraint FK8B1186B6724A467 
@@ -620,6 +636,8 @@
     create sequence CORRELATION_PROP_ID_SEQ;
 
     create sequence DEADLINE_ID_SEQ;
+
+    create sequence DEPLOY_STORE_ID_SEQ;
 
     create sequence EMAILNOTIFHEAD_ID_SEQ;
 

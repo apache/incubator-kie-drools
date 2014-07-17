@@ -100,6 +100,16 @@
         entity_id varchar(255) not null
     ) ENGINE=InnoDB;
 
+    create table DeploymentStore (
+        id bigint not null auto_increment,
+        attributes varchar(255),
+        DEPLOYMENT_ID varchar(255),
+        deploymentUnit longtext,
+        state integer,
+        updateDate datetime,
+        primary key (id)
+    ) ENGINE=InnoDB;
+
     create table ErrorInfo (
         id bigint not null auto_increment,
         message varchar(255),
@@ -278,9 +288,12 @@
         id bigint not null auto_increment,
         archived smallint,
         allowedToDelegate varchar(255),
+        description varchar(255),
         formName varchar(255),
+        name varchar(255),
         priority integer not null,
         subTaskStrategy varchar(255),
+        subject varchar(255),
         activationTime datetime,
         createdOn datetime,
         deploymentId varchar(255),
@@ -420,6 +433,9 @@
         add constraint FK47485D57786553A5 
         foreign key (task_id) 
         references Task (id);
+
+    alter table DeploymentStore 
+        add constraint UK_DeploymentStore_1 unique (DEPLOYMENT_ID);
 
     alter table ErrorInfo 
         add index FK8B1186B6724A467 (REQUEST_ID), 

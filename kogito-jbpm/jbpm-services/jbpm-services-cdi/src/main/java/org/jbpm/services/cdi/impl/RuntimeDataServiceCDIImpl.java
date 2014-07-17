@@ -18,18 +18,23 @@ package org.jbpm.services.cdi.impl;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.kie.services.impl.RuntimeDataServiceImpl;
 import org.jbpm.services.api.DeploymentEvent;
 import org.jbpm.services.cdi.Deploy;
+import org.jbpm.services.cdi.RequestScopedBackupIdentityProvider;
 import org.jbpm.services.cdi.Undeploy;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.kie.api.task.TaskService;
 
 @ApplicationScoped
 public class RuntimeDataServiceCDIImpl extends RuntimeDataServiceImpl {
+	
+	@Inject
+    private Instance<RequestScopedBackupIdentityProvider> backupProviders;
 
 	@Override
     public void onDeploy(@Observes@Deploy DeploymentEvent event) {
@@ -50,7 +55,7 @@ public class RuntimeDataServiceCDIImpl extends RuntimeDataServiceImpl {
     @Inject
 	@Override
 	public void setIdentityProvider(IdentityProvider identityProvider) {
-		super.setIdentityProvider(identityProvider);
+		super.setIdentityProvider(new IdentityProviderCDIWrapper(identityProvider, backupProviders));
 	}
 
     @Inject

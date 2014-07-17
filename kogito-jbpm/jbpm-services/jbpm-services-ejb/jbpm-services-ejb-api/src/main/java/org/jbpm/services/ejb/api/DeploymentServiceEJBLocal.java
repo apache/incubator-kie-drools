@@ -19,8 +19,9 @@ package org.jbpm.services.ejb.api;
 import javax.ejb.Local;
 
 import org.jbpm.services.api.DeploymentService;
+import org.jbpm.services.api.ListenerSupport;
 
 @Local
-public interface DeploymentServiceEJBLocal extends DeploymentService {
+public interface DeploymentServiceEJBLocal extends DeploymentService, ListenerSupport {
 
 }

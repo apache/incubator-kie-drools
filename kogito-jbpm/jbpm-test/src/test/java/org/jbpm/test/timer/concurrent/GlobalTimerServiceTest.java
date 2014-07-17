@@ -271,10 +271,11 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
                 // wait for amount of time timer expires and plus 1s initially
                 Thread.sleep(wait * 1000 + 1000);
                 long processInstanceId = counter+1;
-                RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
+                
 
                 for (int y = 0; y<wait; y++) {
-                    try {
+                	RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
+                	try {
                         testCompleteTaskByProcessInstance(manager, runtime, processInstanceId);
                     } catch (Throwable e) {
                         if (checkOptimiticLockException(e)) {
@@ -286,8 +287,9 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
                             throw e;
                         }
                     }
+                	manager.disposeRuntimeEngine(runtime);
                 }
-                manager.disposeRuntimeEngine(runtime);
+                
 
                 completedTask++;
             } catch (Throwable t) {

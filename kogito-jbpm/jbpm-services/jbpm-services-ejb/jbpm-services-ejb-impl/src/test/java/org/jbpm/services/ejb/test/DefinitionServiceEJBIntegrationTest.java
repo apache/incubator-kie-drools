@@ -33,11 +33,8 @@ import javax.ejb.EJB;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.UserTaskDefinition;
@@ -51,27 +48,17 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.scanner.MavenRepository;
 
 @RunWith(Arquillian.class)
-public class DefinitionServiceEJBTest extends AbstractTestSupport {
+public class DefinitionServiceEJBIntegrationTest extends AbstractTestSupport {
 
 	@Deployment
 	public static WebArchive createDeployment() {
-		File[] libs = Maven.resolver().loadPomFromFile("pom.xml")
-				.importRuntimeDependencies().resolve().withTransitivity()
-				.asFile();
 
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
-		for (File file : libs) {
-			war.addAsLibrary(file);
+		File archive = new File("target/sample-war-ejb-app.war");
+		if (!archive.exists()) {
+			throw new IllegalStateException("There is no archive yet generated, run maven build or mvn assembly:assembly");
 		}
-		war.addPackage("org.jbpm.services.ejb")
-				.addPackage("org.jbpm.services.ejb.api")
-				.addPackage("org.jbpm.services.ejb.impl")
-				.addPackage("org.jbpm.services.ejb.impl.tx")
-				.addPackage("org.jbpm.services.ejb.impl.identity")
-				.addPackage("org.jbpm.services.ejb.test") // test cases
-				.addAsResource("META-INF/persistence.xml", ArchivePaths.create("META-INF/persistence.xml"))
-				.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");	
-
+		WebArchive war = ShrinkWrap.createFromZipFile(WebArchive.class, archive);
+		war.addPackage("org.jbpm.services.ejb.test"); // test cases
 		// deploy test kjar
 		deployKjar();
 		

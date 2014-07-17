@@ -100,6 +100,16 @@
         entity_id varchar(255) not null
     );
 
+    create table DeploymentStore (
+        id int8 not null,
+        attributes varchar(255),
+        DEPLOYMENT_ID varchar(255),
+        deploymentUnit text,
+        state int4,
+        updateDate timestamp,
+        primary key (id)
+    );
+
     create table ErrorInfo (
         id int8 not null,
         message varchar(255),
@@ -278,9 +288,12 @@
         id int8 not null,
         archived int2,
         allowedToDelegate varchar(255),
+        description varchar(255),
         formName varchar(255),
+        name varchar(255),
         priority int4 not null,
         subTaskStrategy varchar(255),
+        subject varchar(255),
         activationTime timestamp,
         createdOn timestamp,
         deploymentId varchar(255),
@@ -412,6 +425,9 @@
         add constraint FK47485D57786553A5 
         foreign key (task_id) 
         references Task;
+
+    alter table DeploymentStore 
+        add constraint UK_DeploymentStore_1 unique (DEPLOYMENT_ID);
 
     alter table ErrorInfo 
         add constraint FK8B1186B6724A467 
@@ -620,6 +636,8 @@
     create sequence CORRELATION_PROP_ID_SEQ;
 
     create sequence DEADLINE_ID_SEQ;
+
+    create sequence DEPLOY_STORE_ID_SEQ;
 
     create sequence EMAILNOTIFHEAD_ID_SEQ;
 

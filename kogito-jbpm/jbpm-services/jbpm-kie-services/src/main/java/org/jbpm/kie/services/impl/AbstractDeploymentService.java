@@ -35,6 +35,7 @@ import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
 import org.jbpm.services.api.DeploymentEvent;
 import org.jbpm.services.api.DeploymentEventListener;
 import org.jbpm.services.api.DeploymentService;
+import org.jbpm.services.api.ListenerSupport;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
@@ -46,7 +47,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 
-public abstract class AbstractDeploymentService implements DeploymentService {
+public abstract class AbstractDeploymentService implements DeploymentService, ListenerSupport {
     
     protected RuntimeManagerFactory managerFactory;     
     protected RuntimeDataService runtimeDataService;    
@@ -55,14 +56,17 @@ public abstract class AbstractDeploymentService implements DeploymentService {
     
     protected Set<DeploymentEventListener> listeners = new HashSet<DeploymentEventListener>();
     
+    @Override
     public void addListener(DeploymentEventListener listener) {
     	this.listeners.add(listener);
     }
 
+    @Override
     public void removeListener(DeploymentEventListener listener) {
     	this.listeners.remove(listener);
     }
     
+    @Override
     public Collection<DeploymentEventListener> getListeners() {
     	return Collections.unmodifiableSet(listeners);
     }

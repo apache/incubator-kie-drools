@@ -56,6 +56,9 @@
     
     <!-- Task Audit Classes --> 
     <class>org.jbpm.services.task.audit.impl.model.AuditTaskImpl</class>
+    
+    <!-- deployment store -->
+    <class>org.jbpm.kie.services.impl.store.DeploymentStoreEntry</class>
 
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />

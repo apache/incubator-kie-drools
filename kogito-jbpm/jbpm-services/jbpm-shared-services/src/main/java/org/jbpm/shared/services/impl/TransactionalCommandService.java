@@ -41,7 +41,7 @@ public class TransactionalCommandService implements CommandService {
             context.joinTransaction();
             result = ((GenericCommand<T>)command).execute(context);
             txm.commit( transactionOwner );
-            context.close();
+            context.close(transactionOwner);
             return result;
 
         } catch ( RuntimeException re ) {
