@@ -15,8 +15,6 @@
  */
 package org.jbpm.services.task.identity;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -63,6 +61,7 @@ public class LDAPUserInfoImpl extends AbstractUserGroupInfo implements UserInfo 
     public static final String ROLE_ATTR_ID = "ldap.role.attr.id";
     
     public static final String IS_ENTITY_ID_DN = "ldap.entity.id.dn";
+    public static final String SEARCH_SCOPE = "ldap.search.scope";
     
     protected static final String[] requiredProperties = {USER_CTX, ROLE_CTX, USER_FILTER, ROLE_FILTER};
 
@@ -115,6 +114,10 @@ public class LDAPUserInfoImpl extends AbstractUserGroupInfo implements UserInfo 
             roleFilter = roleFilter.replaceAll("\\{0\\}", group.getId());
             
             SearchControls constraints = new SearchControls();
+            String searchScope  = this.config.getProperty(SEARCH_SCOPE);
+            if (searchScope != null) {
+            	constraints.setSearchScope(parseSearchScope(searchScope));
+            }
             
             NamingEnumeration<SearchResult> result = ctx.search(roleContext, roleFilter, constraints);
             while (result.hasMore()) {
@@ -157,6 +160,10 @@ public class LDAPUserInfoImpl extends AbstractUserGroupInfo implements UserInfo 
             roleFilter = roleFilter.replaceAll("\\{0\\}", group.getId());
             
             SearchControls constraints = new SearchControls();
+            String searchScope  = this.config.getProperty(SEARCH_SCOPE);
+            if (searchScope != null) {
+            	constraints.setSearchScope(parseSearchScope(searchScope));
+            }
             
             NamingEnumeration<SearchResult> result = ctx.search(roleContext, roleFilter, constraints);
             if (result.hasMore()) {
@@ -313,6 +320,10 @@ public class LDAPUserInfoImpl extends AbstractUserGroupInfo implements UserInfo 
             filter = filter.replaceAll("\\{0\\}",entityId);
             
             SearchControls constraints = new SearchControls();
+            String searchScope  = this.config.getProperty(SEARCH_SCOPE);
+            if (searchScope != null) {
+            	constraints.setSearchScope(parseSearchScope(searchScope));
+            }
             
             NamingEnumeration<SearchResult> ldapResult = ctx.search(context, filter, constraints);
             if (ldapResult.hasMore()) {
@@ -363,5 +374,17 @@ public class LDAPUserInfoImpl extends AbstractUserGroupInfo implements UserInfo 
         }
         return null;
     }
+    
+	protected int parseSearchScope(String searchScope) {
+		logger.debug("Search scope: {}", searchScope);
+		if ("OBJECT_SCOPE".equals(searchScope))
+			return 0;
+		else if ("ONELEVEL_SCOPE".equals(searchScope))
+			return 1;
+		else if ("SUBTREE_SCOPE".equals(searchScope))
+			return 2;
 
+		// Default set to OBJECT_SCOPE
+		return 0;
+	}
 }

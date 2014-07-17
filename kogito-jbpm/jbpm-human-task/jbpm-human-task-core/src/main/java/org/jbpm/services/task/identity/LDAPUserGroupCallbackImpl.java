@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
  *  <li>ldap.user.attr.id (optional, if not given 'uid' will be used)</li>
  *  <li>ldap.roles.attr.id (optional, if not given 'cn' will be used)</li>
  *  <li>ldap.user.id.dn (optional, is user id a DN, instructs the callback to query for user DN before searching for roles, default false)</li>
+ *  <li>ldap.search.scope (optional, if not given 'OBJECT_SCOPE' will be used) possible values are: OBJECT_SCOPE, ONELEVEL_SCOPE, SUBTREE_SCOPE</li>
  *  <li>java.naming.factory.initial</li>
  *  <li>java.naming.security.authentication</li>
  *  <li>java.naming.security.protocol</li>
@@ -73,6 +74,7 @@ public class LDAPUserGroupCallbackImpl extends AbstractUserGroupInfo implements 
     public static final String USER_ATTR_ID = "ldap.user.attr.id";
     public static final String ROLE_ATTR_ID = "ldap.roles.attr.id";
     public static final String IS_USER_ID_DN = "ldap.user.id.dn";
+    public static final String SEARCH_SCOPE = "ldap.search.scope";
     
     protected static final String[] requiredProperties = {USER_CTX, ROLE_CTX, USER_FILTER, ROLE_FILTER, USER_ROLES_FILTER};
 
@@ -108,6 +110,10 @@ public class LDAPUserGroupCallbackImpl extends AbstractUserGroupInfo implements 
             logger.debug("Seaching for user existence with filter {} on context {}", userFilter, userContext);            
             
             SearchControls constraints = new SearchControls();
+            String searchScope  = this.config.getProperty(SEARCH_SCOPE);
+            if (searchScope != null) {
+            	constraints.setSearchScope(parseSearchScope(searchScope));
+            }
             
             NamingEnumeration<SearchResult> result = ctx.search(userContext, userFilter, constraints);
             if (result.hasMore()) {
@@ -153,6 +159,10 @@ public class LDAPUserGroupCallbackImpl extends AbstractUserGroupInfo implements 
             roleFilter = roleFilter.replaceAll("\\{0\\}", groupId);
             
             SearchControls constraints = new SearchControls();
+            String searchScope  = this.config.getProperty(SEARCH_SCOPE);
+            if (searchScope != null) {
+            	constraints.setSearchScope(parseSearchScope(searchScope));
+            }
             
             NamingEnumeration<SearchResult> result = ctx.search(roleContext, roleFilter, constraints);
             if (result.hasMore()) {
@@ -200,6 +210,10 @@ public class LDAPUserGroupCallbackImpl extends AbstractUserGroupInfo implements 
                 
                 userFilter = userFilter.replaceAll("\\{0\\}", userId);
                 SearchControls constraints = new SearchControls();
+                String searchScope  = this.config.getProperty(SEARCH_SCOPE);
+                if (searchScope != null) {
+                	constraints.setSearchScope(parseSearchScope(searchScope));
+                }
 
                 logger.debug("Searching for user DN with filter {} on context {}", userFilter, userContext);                
                 
@@ -219,7 +233,12 @@ public class LDAPUserGroupCallbackImpl extends AbstractUserGroupInfo implements 
             
             roleFilter = roleFilter.replaceAll("\\{0\\}", (userDN != null ? userDN : userId));
             SearchControls constraints = new SearchControls();
-            logger.debug("Searching for groups for user with filter {} on context {}", roleFilter, roleContext);
+            String searchScope  = this.config.getProperty(SEARCH_SCOPE);
+            if (searchScope != null) {
+            	constraints.setSearchScope(parseSearchScope(searchScope));
+            }
+
+			logger.debug("Searching for groups for user with filter {} on context {}", roleFilter, roleContext);
             
             NamingEnumeration<SearchResult> result = ctx.search(roleContext, roleFilter, constraints);
             if (result.hasMore()) {
@@ -323,5 +342,16 @@ public class LDAPUserGroupCallbackImpl extends AbstractUserGroupInfo implements 
         return new InitialLdapContext(this.config, null);
     }
     
+	protected int parseSearchScope(String searchScope) {
+		logger.debug("Search scope: {}", searchScope);
+		if ("OBJECT_SCOPE".equals(searchScope))
+			return 0;
+		else if ("ONELEVEL_SCOPE".equals(searchScope))
+			return 1;
+		else if ("SUBTREE_SCOPE".equals(searchScope))
+			return 2;
 
+		// Default set to OBJECT_SCOPE
+		return 0;
+	}
 }
