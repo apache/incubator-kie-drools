@@ -832,13 +832,14 @@ public class PMML4Helper {
 
     }
 
-    public String compact(String s) {
+    public String compactAsJavaId(String s) {
         java.util.StringTokenizer tok = new java.util.StringTokenizer(s);
         StringBuilder sb = new StringBuilder();
         boolean first = true;
 
         while ( tok.hasMoreTokens() ) {
-            sb.append( first ? lowerCase( tok.nextToken() ) : capitalize( tok.nextToken() ) );
+            String nt = tok.nextToken();
+            sb.append( (first && ! allCapital( nt ) ) ? lowerCase( nt ) : capitalize( nt ) );
             first = false;
         }
 
@@ -847,6 +848,10 @@ public class PMML4Helper {
             out = "DF_" + out;
         return out;
 
+    }
+
+    private boolean allCapital( String s ) {
+        return s.length() >= 2 && Character.isUpperCase( s.charAt( 0 ) ) && Character.isUpperCase( s.charAt( 1 ) );
     }
 
     public String lowerCase(String s) {
