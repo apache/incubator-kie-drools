@@ -1,0 +1,66 @@
+package org.drools.pmml.pmml_4_1.compiler;
+
+import org.drools.pmml.pmml_4_1.extensions.*;
+import org.dmg.pmml.pmml_4_1.descr.*;
+import org.drools.pmml.pmml_4_1.ModelMarker;
+
+import java.util.*;
+
+
+declare FieldMarker
+    name : String   @key
+    dataType : DATATYPE
+end
+
+declare FieldScope
+    name          : String   @key
+    functionLocal : boolean
+end
+
+declare TypeOfField
+    name : String     @key
+    dataType : DATATYPE
+end
+
+
+
+declare QueryMarker
+    name : String
+    context : String
+end
+
+
+declare FunctionResult
+    expr            : String
+    father          : Apply
+    fields          : Collection
+    simple          : boolean       = false
+    parents         : List
+    index           : int
+end
+
+declare MapSupportBean
+   ref : MapValues
+   columns : Map
+   types : Map
+end
+
+
+
+declare DataMatrix
+    rows    : int
+    cols    : int
+    src     : Matrix
+end
+
+declare StringMatrix extends DataMatrix
+    data    : String[][]
+end
+
+declare IntMatrix extends DataMatrix
+    data    : Integer[][]
+end
+
+declare DoubleMatrix extends DataMatrix
+    data    : Double[][]
+end

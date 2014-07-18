@@ -24,7 +24,7 @@ import org.mvel2.templates.*;
 import java.util.*;
 
 global StringBuilder theory;
-global TemplateRegistry registry;
+global org.mvel2.templates.TemplateRegistry registry;
 global java.util.Map fld2var;
 global org.drools.pmml.pmml_4_1.PMML4Helper utils;
 
@@ -129,31 +129,6 @@ end
 
 
 //*********************************** DATA DICTIONARY ****************************************************//
-
-
-
-declare FieldMarker
-    name : String   @key
-    dataType : DATATYPE
-end
-
-declare FieldScope
-    name          : String   @key
-    functionLocal : boolean
-end
-
-declare TypeOfField
-    name : String     @key
-    dataType : DATATYPE
-end
-
-
-
-declare QueryMarker
-    name : String
-    context : String
-end
-
 
 
 
@@ -711,11 +686,6 @@ end
  //
  //******************************************************************************************************************
 
-declare MapSupportBean
-   ref : MapValues
-   columns : Map
-   types : Map
-end
 
 rule "processDerivedField_MapValues_support_init"
 when
@@ -867,15 +837,6 @@ end
  //
  //******************************************************************************************************************
 
-
-declare FunctionResult
-    expr            : String
-    father          : Apply
-    fields          : Collection
-    simple          : boolean       = false
-    parents         : List
-    index           : int
-end
 
 query isInFunction( Apply $a )
     DefineFunction( apply == $a )
@@ -1243,25 +1204,6 @@ end
 //  GENERAL STRUCTURE
 //
 //**********************************************************************************************************
-
-
-declare DataMatrix
-    rows    : int
-    cols    : int
-    src     : Matrix
-end
-
-declare StringMatrix extends DataMatrix
-    data    : String[][]
-end
-
-declare IntMatrix extends DataMatrix
-    data    : Integer[][]
-end
-
-declare DoubleMatrix extends DataMatrix
-    data    : Double[][]
-end
 
 
 rule "Support Matrix Runtime"
