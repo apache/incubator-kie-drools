@@ -145,17 +145,11 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
         Integer endPeriod = taskAssignment.getEndPeriod();
         if (oldMachine != null) {
             List<MachinePeriodPart> machinePeriodList = machinePeriodListMap.get(oldMachine);
-            for (int period = startPeriod; period < endPeriod; period++) {
-                MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
-                machinePeriodPart.removeTaskAssignment(taskAssignment);
-            }
+            retractRange(taskAssignment, machinePeriodList, startPeriod, endPeriod, false);
         }
         if (newMachine != null) {
             List<MachinePeriodPart> machinePeriodList = machinePeriodListMap.get(newMachine);
-            for (int period = startPeriod; period < endPeriod; period++) {
-                MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
-                machinePeriodPart.addTaskAssignment(taskAssignment);
-            }
+            insertRange(taskAssignment, machinePeriodList, startPeriod, endPeriod, false);
         }
     }
 
@@ -200,17 +194,173 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
         }
         Machine machine = taskAssignment.getMachine();
         List<MachinePeriodPart> machinePeriodList = machinePeriodListMap.get(machine);
-        for (int period = retractStart; period < retractEnd; period++) {
-            MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
-            machinePeriodPart.removeTaskAssignment(taskAssignment);
-            softScore += CostCalculator.multiplyTwoMicros(task.getPowerConsumptionMicros(),
-                    machinePeriodPart.periodPowerCostMicros);
+        if (retractStart != retractEnd) {
+            retractRange(taskAssignment, machinePeriodList, retractStart, retractEnd, true);
         }
-        for (int period = insertStart; period < insertEnd; period++) {
-            MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
-            machinePeriodPart.addTaskAssignment(taskAssignment);
-            softScore -= CostCalculator.multiplyTwoMicros(task.getPowerConsumptionMicros(),
-                    machinePeriodPart.periodPowerCostMicros);
+        if (insertStart != insertEnd) {
+            insertRange(taskAssignment, machinePeriodList, insertStart, insertEnd, true);
+        }
+    }
+
+    private void retractRange(TaskAssignment taskAssignment, List<MachinePeriodPart> machinePeriodList,
+            int startPeriod, int endPeriod, boolean retractTaskCost) {
+        long powerConsumptionMicros = taskAssignment.getTask().getPowerConsumptionMicros();
+        long spinUpDownCostMicros = taskAssignment.getMachine().getSpinUpDownCostMicros();
+
+        MachinePeriodStatus previousStatus;
+        int idlePeriodStart = Integer.MIN_VALUE;
+        long idleAvailable;
+        if (startPeriod == 0) {
+            previousStatus = MachinePeriodStatus.OFF;
+            idleAvailable = Long.MIN_VALUE;
+        } else {
+            previousStatus = machinePeriodList.get(startPeriod - 1).status;
+            if (previousStatus == MachinePeriodStatus.IDLE) {
+                idleAvailable = spinUpDownCostMicros;
+                for (int i = startPeriod - 1; i >= 0 && idleAvailable >= 0L; i--) {
+                    MachinePeriodPart machinePeriod = machinePeriodList.get(i);
+                    if (machinePeriod.status.isActive()) {
+                        idlePeriodStart = i + 1;
+                        break;
+                    }
+                    idleAvailable -= machinePeriod.machineCostMicros;
+                }
+            } else {
+                idleAvailable = Long.MIN_VALUE;
+            }
+        }
+        for (int i = startPeriod; i < endPeriod; i++) {
+            MachinePeriodPart machinePeriod = machinePeriodList.get(i);
+            machinePeriod.retractTaskAssignment(taskAssignment);
+            if (retractTaskCost) {
+                softScore += CostCalculator.multiplyTwoMicros(powerConsumptionMicros,
+                        machinePeriod.periodPowerCostMicros);
+            }
+            // SpinUp vs idle
+            if (machinePeriod.status.isActive()) {
+                if (previousStatus == MachinePeriodStatus.OFF) {
+                    // Only if (startPeriod == i), it could be SPIN_UP_AND_ACTIVE
+                    if (machinePeriod.status != MachinePeriodStatus.SPIN_UP_AND_ACTIVE) {
+                        machinePeriod.spinUp();
+                    }
+                } else if (previousStatus == MachinePeriodStatus.IDLE) {
+                    // Create idle period
+                    for (int j = idlePeriodStart; j < i; j++) {
+                        machinePeriodList.get(j).makeIdle();
+                    }
+                    idlePeriodStart = Integer.MIN_VALUE;
+                    idleAvailable = Long.MIN_VALUE;
+                }
+                previousStatus = MachinePeriodStatus.STILL_ACTIVE;
+            } else if (machinePeriod.status == MachinePeriodStatus.OFF) {
+                if (previousStatus != MachinePeriodStatus.OFF) {
+                    if (previousStatus.isActive()) {
+                        idlePeriodStart = i;
+                        idleAvailable = spinUpDownCostMicros;
+                    }
+                    idleAvailable -= machinePeriod.machineCostMicros;
+                    if (idleAvailable < 0) {
+                        previousStatus = MachinePeriodStatus.OFF;
+                        idlePeriodStart = Integer.MIN_VALUE;
+                        idleAvailable = Long.MIN_VALUE;
+                    } else {
+                        previousStatus = MachinePeriodStatus.IDLE;
+                    }
+                }
+            } else {
+                throw new IllegalStateException("Impossible status (" + machinePeriod.status + ").");
+            }
+        }
+        if (endPeriod < globalPeriodRangeTo && machinePeriodList.get(endPeriod).status != MachinePeriodStatus.OFF
+                && !previousStatus.isActive()) {
+            for (int i = endPeriod; i < globalPeriodRangeTo; i++) {
+                MachinePeriodPart machinePeriod = machinePeriodList.get(i);
+                if (machinePeriod.status.isActive()) {
+                    if (previousStatus == MachinePeriodStatus.OFF) {
+                        machinePeriod.spinUp();
+                    } else if (previousStatus == MachinePeriodStatus.IDLE) {
+                        // Create idle period
+                        for (int j = idlePeriodStart; j < i; j++) {
+                            machinePeriodList.get(j).makeIdle();
+                        }
+                    }
+                    break;
+                } else if (machinePeriod.status == MachinePeriodStatus.IDLE) {
+                    machinePeriod.status = MachinePeriodStatus.OFF;
+                    if (previousStatus == MachinePeriodStatus.IDLE) {
+                        idleAvailable -= machinePeriod.machineCostMicros;
+                        if (idleAvailable < 0) {
+                            previousStatus = MachinePeriodStatus.OFF;
+                            idlePeriodStart = Integer.MIN_VALUE;
+                            idleAvailable = Long.MIN_VALUE;
+                        }
+                    }
+                } else {
+                    throw new IllegalStateException("Impossible status (" + machinePeriod.status + ").");
+                }
+            }
+        }
+
+
+    }
+
+    private void insertRange(TaskAssignment taskAssignment, List<MachinePeriodPart> machinePeriodList,
+            int startPeriod, int endPeriod, boolean insertTaskCost) {
+        long powerConsumptionMicros = taskAssignment.getTask().getPowerConsumptionMicros();
+        MachinePeriodPart startMachinePeriod = machinePeriodList.get(startPeriod);
+        boolean startIsOff = startMachinePeriod.status == MachinePeriodStatus.OFF;
+        boolean lastIsOff = machinePeriodList.get(endPeriod - 1).status == MachinePeriodStatus.OFF;
+        for (int i = startPeriod; i < endPeriod; i++) {
+            MachinePeriodPart machinePeriod = machinePeriodList.get(i);
+            machinePeriod.insertTaskAssignment(taskAssignment);
+            if (insertTaskCost) {
+                softScore -= CostCalculator.multiplyTwoMicros(powerConsumptionMicros,
+                        machinePeriod.periodPowerCostMicros);
+            }
+            // SpinUp vs idle
+            if (machinePeriod.status == MachinePeriodStatus.SPIN_UP_AND_ACTIVE && i != startPeriod) {
+                machinePeriod.undoSpinUp();
+            }
+        }
+        // SpinUp vs idle
+        if (startIsOff) {
+            long idleAvailable = taskAssignment.getMachine().getSpinUpDownCostMicros();
+            int idlePeriodStart = Integer.MIN_VALUE;
+            for (int i = startPeriod - 1; i >= 0 && idleAvailable >= 0L; i--) {
+                MachinePeriodPart machinePeriod = machinePeriodList.get(i);
+                if (machinePeriod.status.isActive()) {
+                    idlePeriodStart = i + 1;
+                    break;
+                }
+                idleAvailable -= machinePeriod.machineCostMicros;
+            }
+            if (idlePeriodStart >= 0) {
+                // Create idle period
+                for (int i = idlePeriodStart; i < startPeriod; i++) {
+                    machinePeriodList.get(i).makeIdle();
+                }
+            } else {
+                startMachinePeriod.spinUp();
+            }
+        }
+        if (lastIsOff) {
+            long idleAvailable = taskAssignment.getMachine().getSpinUpDownCostMicros();
+            int idlePeriodEnd = Integer.MIN_VALUE;
+            for (int i = endPeriod; i < globalPeriodRangeTo && idleAvailable >= 0L; i++) {
+                MachinePeriodPart machinePeriod = machinePeriodList.get(i);
+                if (machinePeriod.status.isActive()) {
+                    idlePeriodEnd = i;
+                    machinePeriod.undoSpinUp();
+                    break;
+                }
+                idleAvailable -= machinePeriod.machineCostMicros;
+            }
+            if (idlePeriodEnd >= 0) {
+                // Create idle period
+                for (int i = endPeriod; i < idlePeriodEnd; i++) {
+                    machinePeriodList.get(i).makeIdle();
+                }
+            }
         }
     }
 
@@ -223,8 +373,10 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
         private final Machine machine;
         private final int period;
         private final long periodPowerCostMicros;
+        private final long machineCostMicros;
 
         private int taskCount;
+        private MachinePeriodStatus status;
         private List<Integer> resourceAvailableList;
 
         private MachinePeriodPart(Machine machine, PeriodPowerCost periodPowerCost) {
@@ -232,22 +384,53 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             this.period = periodPowerCost.getPeriod();
             this.periodPowerCostMicros = periodPowerCost.getPowerCostMicros();
             taskCount = 0;
+            status = MachinePeriodStatus.OFF;
             if (machine != null) {
                 resourceAvailableList = new ArrayList<Integer>(resourceListSize);
                 for (int i = 0; i < resourceListSize; i++) {
                     resourceAvailableList.add(machine.getMachineCapacityList().get(i).getCapacity());
                 }
+                machineCostMicros = CostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
+                        periodPowerCostMicros);
+            } else {
+                machineCostMicros = Long.MIN_VALUE;
             }
         }
 
-        public void addTaskAssignment(TaskAssignment taskAssignment) {
+        public void spinUp() {
+            if (status != MachinePeriodStatus.STILL_ACTIVE) {
+                throw new IllegalStateException("Impossible status (" + status + ").");
+            }
+            softScore -= machine.getSpinUpDownCostMicros();
+            status = MachinePeriodStatus.SPIN_UP_AND_ACTIVE;
+        }
+
+        public void undoSpinUp() {
+            if (status != MachinePeriodStatus.SPIN_UP_AND_ACTIVE) {
+                throw new IllegalStateException("Impossible status (" + status + ").");
+            }
+            softScore += machine.getSpinUpDownCostMicros();
+            status = MachinePeriodStatus.STILL_ACTIVE;
+        }
+
+        public void makeIdle() {
+            if (status != MachinePeriodStatus.OFF) {
+                throw new IllegalStateException("Impossible status (" + status + ").");
+            }
+            softScore -= machineCostMicros;
+            status = MachinePeriodStatus.IDLE;
+        }
+
+        public void insertTaskAssignment(TaskAssignment taskAssignment) {
             if (machine == null) {
                 return;
             }
             Task task = taskAssignment.getTask();
-            if (taskCount == 0) {
-                softScore -= CostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
-                        periodPowerCostMicros);
+            if (status == MachinePeriodStatus.OFF) {
+                softScore -= machineCostMicros;
+                status = MachinePeriodStatus.STILL_ACTIVE;
+            } else if (status == MachinePeriodStatus.IDLE) {
+                status = MachinePeriodStatus.STILL_ACTIVE;
             }
             taskCount++;
             for (int i = 0; i < resourceAvailableList.size(); i++) {
@@ -260,16 +443,22 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             }
         }
 
-        public void removeTaskAssignment(TaskAssignment taskAssignment) {
+        public void retractTaskAssignment(TaskAssignment taskAssignment) {
             if (machine == null) {
                 return;
             }
             Task task = taskAssignment.getTask();
-            if (taskCount == 1) {
-                softScore += CostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
-                        periodPowerCostMicros);
+            if (status == MachinePeriodStatus.OFF || status == MachinePeriodStatus.IDLE) {
+                throw new IllegalStateException("Impossible status (" + status + ").");
             }
             taskCount--;
+            if (taskCount == 0) {
+                softScore += machineCostMicros;
+                if (status == MachinePeriodStatus.SPIN_UP_AND_ACTIVE) {
+                    softScore += machine.getSpinUpDownCostMicros();
+                }
+                status = MachinePeriodStatus.OFF;
+            }
             for (int i = 0; i < resourceAvailableList.size(); i++) {
                 int resourceAvailable = resourceAvailableList.get(i);
                 TaskRequirement taskRequirement = task.getTaskRequirementList().get(i);
@@ -278,6 +467,23 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
                 resourceAvailableList.set(i, resourceAvailable);
                 hardScore += Math.min(resourceAvailable, 0);
             }
+        }
+
+        @Override
+        public String toString() {
+            return status.name() + " (" + taskCount + " tasks)";
+        }
+
+    }
+
+    private enum MachinePeriodStatus {
+        OFF,
+        IDLE,
+        SPIN_UP_AND_ACTIVE,
+        STILL_ACTIVE;
+
+        public boolean isActive() {
+            return this == MachinePeriodStatus.STILL_ACTIVE || this == MachinePeriodStatus.SPIN_UP_AND_ACTIVE;
         }
 
     }

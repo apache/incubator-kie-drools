@@ -71,17 +71,46 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
         for (Map.Entry<Machine, List<MachinePeriodPart>> entry : machinePeriodListMap.entrySet()) {
             Machine machine = entry.getKey();
             List<MachinePeriodPart> machinePeriodList = entry.getValue();
+            MachinePeriodStatus previousStatus = MachinePeriodStatus.OFF;
+            long idleCostMicros = 0L;
             for (int period = 0; period < globalPeriodRangeTo; period++) {
                 PeriodPowerCost periodPowerCost = periodPowerCostList.get(period);
                 MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
-                if (machinePeriodPart.isActive()) {
+                boolean active = machinePeriodPart.isActive();
+                if (active) {
+                    if (previousStatus == MachinePeriodStatus.OFF) {
+                        // Spin up
+                        softScore -= machine.getSpinUpDownCostMicros();
+                    } else if (previousStatus == MachinePeriodStatus.IDLE) {
+                        // Pay idle cost
+                        softScore -= idleCostMicros;
+                        idleCostMicros = 0L;
+                    }
                     hardScore += machinePeriodPart.getHardScore();
                     softScore -= CostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
                             periodPowerCost.getPowerCostMicros());
+                    previousStatus = MachinePeriodStatus.ACTIVE;
+                } else {
+                    if (previousStatus != MachinePeriodStatus.OFF) {
+                        idleCostMicros += CostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
+                                periodPowerCost.getPowerCostMicros());
+                        if (idleCostMicros > machine.getSpinUpDownCostMicros()) {
+                            idleCostMicros = 0L;
+                            previousStatus = MachinePeriodStatus.OFF;
+                        } else {
+                            previousStatus = MachinePeriodStatus.IDLE;
+                        }
+                    }
                 }
             }
         }
         return HardSoftLongScore.valueOf(hardScore, softScore);
+    }
+
+    private enum MachinePeriodStatus {
+        OFF,
+        IDLE,
+        ACTIVE;
     }
 
     private class MachinePeriodPart {
