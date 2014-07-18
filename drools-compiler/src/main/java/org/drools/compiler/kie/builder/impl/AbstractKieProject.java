@@ -38,9 +38,21 @@ public abstract class AbstractKieProject implements KieProject {
         return messages;
     }
 
+    public ResultsImpl verify(String... kBaseNames) {
+        ResultsImpl messages = new ResultsImpl();
+        verify(kBaseNames, messages);
+        return messages;
+    }
+
     public void verify(ResultsImpl messages) {
         for ( KieBaseModel model : kBaseModels.values() ) {
             buildKnowledgePackages((KieBaseModelImpl) model, this, messages);
+        }
+    }
+
+    public void verify(String[] kBaseNames, ResultsImpl messages) {
+        for ( String modelName : kBaseNames ) {
+            buildKnowledgePackages( (KieBaseModelImpl) kBaseModels.get( modelName ), this, messages);
         }
     }
 

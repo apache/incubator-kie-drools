@@ -339,6 +339,10 @@ public class KieContainerImpl
         return this.kProject.verify();
     }
 
+    public Results verify(String... kModelNames) {
+        return this.kProject.verify( kModelNames );
+    }
+
     public KieBase getKieBase(String kBaseName) {
         KieBase kBase = kBases.get( kBaseName );
         if ( kBase == null ) {
