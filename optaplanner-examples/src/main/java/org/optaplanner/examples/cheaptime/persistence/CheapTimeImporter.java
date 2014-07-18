@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
@@ -141,6 +142,11 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
                     solution.getTaskList().size()
             );
             return solution;
+        }
+
+        @Override
+        public String getInputId() {
+            return FilenameUtils.getBaseName(inputFile.getParentFile().getPath());
         }
 
         private void readResourceList() throws IOException {
