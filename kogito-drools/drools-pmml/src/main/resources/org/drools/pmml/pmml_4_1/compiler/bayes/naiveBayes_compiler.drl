@@ -10,7 +10,7 @@ global StringBuilder theory;
 global org.mvel2.templates.TemplateRegistry registry;
 
 
-rule "SVMRoot"
+rule "Naive Bayes Root"
 when
     $nbm : NaiveBayesModel()
 then

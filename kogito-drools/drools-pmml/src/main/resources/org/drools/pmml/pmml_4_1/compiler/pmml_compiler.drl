@@ -1187,9 +1187,6 @@ end
 //
 //**********************************************************************************************************
 
-declare ModelStat
-    neuralNetwork : boolean
-end
 
 rule "InitStats"
 when
@@ -1346,122 +1343,6 @@ then
         $data[ rowIndex ][ j ] = row[ j ];
     }
 end
-
-
-
-query formatArray( Array $arr, String $out )
-    $arr := Array( $type : type, $content : content )
-    $out := String() from accumulate (
-        $s : String() from utils.tokenize( $content ),
-        init( String x = ""; ),
-        action( x += ( "".equals(x) ? "" : ", " ) + utils.format( $type, $s ); ),
-        result( x )
-    )
-end
-
-
-
-
-
-
-
-query compilePredicate( java.util.List $parent, String $pred, Object $src )
-    (
-      $src  := SimplePredicate( this memberOf $parent, $fld := field, $op : operator, $val : value )
-      and
-      TypeOfField( $fld, $type ; )
-      and
-      $pred := String() from "( " +
-                                "m" + utils.compactUpperCase( $fld ) + " == " + "isMissing".equals( $op ) +
-                                 ( "isMissing".equals( $op ) ? "" :
-                                        " && v" + utils.compactUpperCase( $fld ) + " " + utils.mapOperator( $op ) + " " + utils.format( $type, $val )
-                                 ) +
-                             " )"
-    )
-    or
-    (
-      $src  := SimpleSetPredicate( this memberOf $parent, $fld := field, $op : booleanOperator, $arr : array )
-      and
-      formatArray( $arr, $out ; )
-      and
-      $pred := String() from "( " + "m" + utils.compactUpperCase( $fld ) + " == false && " +
-                                    "v" + utils.compactUpperCase( $fld ) + ( "isNotIn".equals( $op ) ? " not" : "" ) + " in ( " + $out + " ) )"
-    )
-    or
-    ( $src  := True( this memberOf $parent ) and $pred := String() from "1 == 1" )
-    or
-    ( $src  := False( this memberOf $parent ) and $pred := String() from "1 == 0" )
-    or
-    ( (
-        $src  := CompoundPredicate( this memberOf $parent, $sub : simplePredicatesAndCompoundPredicatesAndSimpleSetPredicates, booleanOperator != "surrogate")
-        and
-        $pred := String() from accumulate( CompoundPredicate( this == $src, $bop : booleanOperator )
-                                           and
-                                           compilePredicate( $sub, $p, $fld2 ; ),
-                                           init( String x = "" ),
-                                           action( x = "( " + $p + " )"
-                                                       + ( "".equals(x) ? "" : utils.mapTreeOp( $bop ) )
-                                                       + x; ),
-                                           result( x )
-                                         )
-    ) )
-    or
-    ( (
-        $src  := CompoundPredicate( this memberOf $parent, $sub : simplePredicatesAndCompoundPredicatesAndSimpleSetPredicates, booleanOperator == "surrogate" )
-        and
-        $pred := String() from accumulate( $xx := Object() from $sub
-                                           and
-                                           compilePredicate( $sub, $p, $xx ; )
-                                           and
-                                           ?compilePredicateForMissing( $sub, $m, $xx ; ),
-                                           init( String x = ""; String m = "true"; boolean first = true; ),
-                                           action(
-                                                   x = $p
-                                                       + ( first ? "" : " || "
-                                                       + "( " + m + " && ( " + x + " ) )" );
-                                                   m = $m;
-                                                   first = false;
-                                           ),
-                                           result( x )
-                                         )
-    ) )
-end
-
-
-
-query compilePredicateForMissing( java.util.List $parent, String $pred, Object $src )
-    (
-      $src  := SimplePredicate( this memberOf $parent, $fld := field, $op : operator, $val : value )
-      and
-      $pred := String() from "( " + "m" + utils.compactUpperCase( $fld ) + " == true " + " )"
-    )
-    or
-    (
-      $src  := SimpleSetPredicate( this memberOf $parent, $fld := field )
-      and
-      $pred := String() from "( " + "m" + utils.compactUpperCase( $fld ) + " == true " + " )"
-    )
-    or
-    ( $src  := True( this memberOf $parent ) and $pred := String() from "false" )
-    or
-    ( $src  := False( this memberOf $parent ) and $pred := String() from "false" )
-//    or
-//    ( $src  := CompoundPredicate( this memberOf $parent, booleanOperator == "surrogate" ) and $pred := String() from "false" )
-    or
-    ( (
-        $src  := CompoundPredicate( this memberOf $parent, $sub : simplePredicatesAndCompoundPredicatesAndSimpleSetPredicates )
-        and
-        $pred := String() from accumulate( compilePredicateForMissing( $sub, $p, $fld2 ; ),
-                                           init( String x = "" ),
-                                           action( x = "( " + $p + " )"
-                                                       + ( "".equals(x) ? "" : " || " )
-                                                       + x; ),
-                                           result( x )
-                                         )
-    ) )
-end
-
-
 
 
 
