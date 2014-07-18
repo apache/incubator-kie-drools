@@ -30,6 +30,8 @@ public interface KieProject {
 
     ResultsImpl verify();
 
+    ResultsImpl verify( String... kModelNames );
+
     long getCreationTimestamp();
 
     Set<String> getTransitiveIncludes(String kBaseName);
