@@ -396,6 +396,58 @@ public final class ClassUtils {
         }
     }
 
+    public static boolean isTypeCompatibleWithArgumentType( Class actual, Class formal ) {
+        if ( actual.isPrimitive() && formal.isPrimitive() ) {
+            return isConvertible( actual, formal );
+        } else if ( actual.isPrimitive() ) {
+            return isConvertible( actual, convertToPrimitiveType( formal ) );
+        } else if ( formal.isPrimitive() ) {
+            return isConvertible( convertToPrimitiveType( actual ), formal );
+        } else {
+            return formal.isAssignableFrom( actual );
+        }
+    }
+
+    public static boolean isConvertible( Class srcPrimitive, Class tgtPrimitive ) {
+        if ( Boolean.TYPE.equals( srcPrimitive ) ) {
+            return Boolean.TYPE.equals( tgtPrimitive );
+        } else if ( Byte.TYPE.equals( tgtPrimitive ) ) {
+            return Byte.TYPE.equals( tgtPrimitive )
+                   || Short.TYPE.equals( tgtPrimitive )
+                   || Integer.TYPE.equals( tgtPrimitive )
+                   || Long.TYPE.equals( tgtPrimitive )
+                   || Float.TYPE.equals( tgtPrimitive )
+                   || Double.TYPE.equals( tgtPrimitive );
+        } else if ( Character.TYPE.equals( srcPrimitive ) ) {
+            return Character.TYPE.equals( tgtPrimitive )
+                   || Integer.TYPE.equals( tgtPrimitive )
+                   || Long.TYPE.equals( tgtPrimitive )
+                   || Float.TYPE.equals( tgtPrimitive )
+                   || Double.TYPE.equals( tgtPrimitive );
+        } else if ( Double.TYPE.equals( srcPrimitive ) ) {
+            return Double.TYPE.equals( tgtPrimitive );
+        } else if ( Float.TYPE.equals( srcPrimitive ) ) {
+            return Float.TYPE.equals( tgtPrimitive )
+                   || Double.TYPE.equals( tgtPrimitive );
+        } else if ( Integer.TYPE.equals( srcPrimitive ) ) {
+            return Integer.TYPE.equals( tgtPrimitive )
+                   || Long.TYPE.equals( tgtPrimitive )
+                   || Float.TYPE.equals( tgtPrimitive )
+                   || Double.TYPE.equals( tgtPrimitive );
+        } else if ( Long.TYPE.equals( srcPrimitive ) ) {
+            return Long.TYPE.equals( tgtPrimitive )
+                   || Float.TYPE.equals( tgtPrimitive )
+                   || Double.TYPE.equals( tgtPrimitive );
+        } else if ( Short.TYPE.equals( srcPrimitive ) ) {
+            return Short.TYPE.equals( tgtPrimitive )
+                   || Integer.TYPE.equals( tgtPrimitive )
+                   || Long.TYPE.equals( tgtPrimitive )
+                   || Float.TYPE.equals( tgtPrimitive )
+                   || Double.TYPE.equals( tgtPrimitive );
+        }
+        return false;
+    }
+
     private static class SetterInClass implements Comparable {
         private final String setter;
         private final Class<?> clazz;
