@@ -374,6 +374,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
     private static void linkBoundaryEscalationEvent(NodeContainer nodeContainer, Node node, String attachedTo, Node attachedNode) {
         boolean cancelActivity = (Boolean) node.getMetaData().get("CancelActivity");
         String escalationCode = (String) node.getMetaData().get("EscalationEvent");
+        String escalationStructureRef = (String) node.getMetaData().get("EscalationStructureRef");
         
         ContextContainer compositeNode = (ContextContainer) attachedNode;
         ExceptionScope exceptionScope = (ExceptionScope) 
@@ -390,6 +391,9 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         
         exceptionHandler.setAction(action);
         exceptionScope.setExceptionHandler(escalationCode, exceptionHandler);
+        if (escalationStructureRef != null) {
+        	exceptionScope.setExceptionHandler(escalationStructureRef, exceptionHandler);
+        }
         
         if (cancelActivity) {
             List<DroolsAction> actions = ((EventNode)node).getActions(EndNode.EVENT_NODE_EXIT);
@@ -424,7 +428,9 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         exceptionHandler.setAction(action);
         exceptionHandler.setFaultVariable(variable);
         exceptionScope.setExceptionHandler(errorCode, exceptionHandler);
-        exceptionScope.setExceptionHandler(errorStructureRef, exceptionHandler);
+        if (errorStructureRef != null) {
+        	exceptionScope.setExceptionHandler(errorStructureRef, exceptionHandler);
+        }
 
         List<DroolsAction> actions = ((EventNode)node).getActions(EndNode.EVENT_NODE_EXIT);
         if (actions == null) {

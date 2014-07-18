@@ -101,6 +101,8 @@ public class CompensationTest extends AbstractBaseTest {
         CompensationHandler handler = new CompensationHandler();
         handler.setNode(node);
         scope.setExceptionHandler(compensationHandlerId, handler);
+        
+        node.setMetaData("isForCompensation", Boolean.TRUE);
     }
 
     private Node findNode(RuleFlowProcess process, String nodeName) { 

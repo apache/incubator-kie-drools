@@ -107,6 +107,10 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 
     public void internalTrigger(final NodeInstance from, String type) {
         super.internalTrigger(from, type);
+        // if node instance was cancelled, abort
+		if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
+			return;
+		}
         // TODO this should be included for ruleflow only, not for BPEL
 //        if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
 //            throw new IllegalArgumentException(

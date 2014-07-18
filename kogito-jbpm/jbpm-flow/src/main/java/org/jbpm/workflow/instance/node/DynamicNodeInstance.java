@@ -37,6 +37,10 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
 	
     public void internalTrigger(NodeInstance from, String type) {
     	triggerEvent(ExtendedNodeImpl.EVENT_NODE_ENTER);
+    	// if node instance was cancelled, abort
+		if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
+			return;
+		}
     	InternalAgenda agenda =  (InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda();
     	agenda.getRuleFlowGroup(getRuleFlowGroupName()).setAutoDeactivate(false);
     	agenda.activateRuleFlowGroup(
@@ -47,6 +51,14 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
     }
 
 	public void nodeInstanceCompleted(org.jbpm.workflow.instance.NodeInstance nodeInstance, String outType) {
+	    Node nodeInstanceNode = nodeInstance.getNode();
+	    if( nodeInstanceNode != null ) { 
+	        Object compensationBoolObj =  nodeInstanceNode.getMetaData().get("isForCompensation");
+	        boolean isForCompensation = compensationBoolObj == null ? false : ((Boolean) compensationBoolObj);
+	        if( isForCompensation ) { 
+	            return;
+	        }
+	    }
 		// TODO what if we reach the end of one branch but others might still need to be created ?
 		// TODO are we sure there will always be node instances left if we are not done yet?
 		if (getDynamicNode().isAutoComplete() && getNodeInstances(false).isEmpty()) {

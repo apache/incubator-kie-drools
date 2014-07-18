@@ -68,6 +68,10 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     
 	public void internalTrigger(NodeInstance from, String type) {
 		super.internalTrigger(from, type);
+		// if node instance was cancelled, abort
+		if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
+			return;
+		}
 		// activate timers
 		Map<Timer, DroolsAction> timers = getEventBasedNode().getTimers();
 		if (timers != null) {

@@ -107,6 +107,10 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     
     public void internalTrigger(final org.kie.api.runtime.process.NodeInstance from, String type) {
     	super.internalTrigger(from, type);
+    	// if node instance was cancelled, abort
+		if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
+			return;
+		}
         CompositeNode.NodeAndType nodeAndType = getCompositeNode().internalGetLinkedIncomingNode(type);
         if (nodeAndType != null) {
 	        List<Connection> connections = nodeAndType.getNode().getIncomingConnections(nodeAndType.getType());
@@ -347,8 +351,8 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 	            return;
 	        }
 	    }
-	    if(nodeInstance instanceof EndNodeInstance || nodeInstance instanceof EventSubProcessNodeInstance ) {
-             if (((org.jbpm.workflow.core.WorkflowProcess) getProcessInstance().getProcess()).isAutoComplete()) {
+	    if (nodeInstance instanceof EndNodeInstance || nodeInstance instanceof EventSubProcessNodeInstance ) {
+            if (((org.jbpm.workflow.core.WorkflowProcess) getProcessInstance().getProcess()).isAutoComplete()) {
                 if (nodeInstances.isEmpty()) {
                     triggerCompleted(
                         org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);

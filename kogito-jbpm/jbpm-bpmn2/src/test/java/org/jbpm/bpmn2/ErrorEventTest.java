@@ -300,6 +300,33 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
 
     }
     
+    @Test
+    public void testErrorBoundaryEventOnEntry() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-BoundaryErrorEventCatchingOnEntryException.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",handler);
+        
+        ProcessInstance processInstance = ksession
+            .startProcess("BoundaryErrorEventOnEntry");
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        assertEquals(1, handler.getWorkItems().size());
+    } 
     
+    @Test
+    public void testErrorBoundaryEventOnExit() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-BoundaryErrorEventCatchingOnExitException.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",handler);
+        
+        ProcessInstance processInstance = ksession
+            .startProcess("BoundaryErrorEventOnExit");
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        WorkItem workItem = handler.getWorkItem(); 
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        
+        assertEquals(1, handler.getWorkItems().size());
+    } 
     
 }

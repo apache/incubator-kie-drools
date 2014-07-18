@@ -88,24 +88,9 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
     }
     
     @Override
-    public void internalTrigger(org.kie.api.runtime.process.NodeInstance from,
-            String type) {
-        super.internalTrigger(from, type);
-    }
-    
-
-    @Override
-    public void cancel() {
-        super.cancel();
-    }
-    
-
-    @Override
     public ContextContainer getContextContainer() {
         return (ContextContainer) getForEachNode().getCompositeNode();
     }
-    
-    
     
     private Collection<?> evaluateCollectionExpression(String collectionExpression) {
         // TODO: should evaluate this expression using MVEL

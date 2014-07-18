@@ -199,11 +199,26 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     }
     
     protected void triggerCompleted(String type, boolean remove) {
+        Node node = getNode();
+        if (node != null) {
+	    	String uniqueId = (String) node.getMetaData().get("UniqueId");
+	    	if( uniqueId == null ) { 
+	    	    uniqueId = ((NodeImpl) node).getUniqueId();
+	    	}
+	    	((WorkflowProcessInstanceImpl) processInstance).addCompletedNodeId(uniqueId);
+        }
+
+        // if node instance was cancelled, or containing container instance was cancelled
+    	if ((getNodeInstanceContainer().getNodeInstance(getId()) == null)
+    			|| (((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer()).getState() != ProcessInstance.STATE_ACTIVE)) {
+    		return;
+    	}
+    	
         if (remove) {
             ((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
             	.removeNodeInstance(this);
         }
-        Node node = getNode();
+
         List<Connection> connections = null;
         if (node != null) {
         	if ("true".equals(System.getProperty("jbpm.enable.multi.con")) && ((NodeImpl) node).getConstraints().size() > 0) {
@@ -265,11 +280,6 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         	} else {
         		connections = node.getOutgoingConnections(type); 
         	}
-        	String uniqueId = (String) node.getMetaData().get("UniqueId");
-        	if( uniqueId == null ) { 
-        	    uniqueId = ((NodeImpl) node).getUniqueId();
-        	}
-        	((WorkflowProcessInstanceImpl) processInstance).addCompletedNodeId(uniqueId);
         }
         if (connections == null || connections.isEmpty() ) {
         	boolean hidden = false;

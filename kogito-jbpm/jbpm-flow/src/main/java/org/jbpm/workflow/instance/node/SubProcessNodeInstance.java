@@ -75,6 +75,10 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 
     public void internalTrigger(final NodeInstance from, String type) {
     	super.internalTrigger(from, type);
+    	// if node instance was cancelled, abort
+		if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
+			return;
+		}
         if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "A SubProcess node only accepts default incoming connections!");

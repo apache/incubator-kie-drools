@@ -58,7 +58,9 @@ public class EndNodeInstance extends ExtendedNodeInstanceImpl {
         	    if (getEndNode().getScope() == EndNode.PROCESS_SCOPE) {
                     getProcessInstance().setState( ProcessInstance.STATE_COMPLETED );
                 } else {
-                    ((CompositeNodeInstance) getNodeInstanceContainer()).cancel();
+                	while (!getNodeInstanceContainer().getNodeInstances().isEmpty()) {
+                		((org.jbpm.workflow.instance.NodeInstance) getNodeInstanceContainer().getNodeInstances().iterator().next()).cancel();
+                	}
                     ((NodeInstanceContainer) getNodeInstanceContainer()).nodeInstanceCompleted(this, null);
                 }
         	} else {

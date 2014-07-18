@@ -39,7 +39,11 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
     
 	public void internalTrigger(NodeInstance from, String type) {
 		super.internalTrigger(from, type);
-        // TODO: composite states trigger
+		// if node instance was cancelled, abort
+		if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
+			return;
+		}        
+		// TODO: composite states trigger
         StateNode stateNode = getStateNode();
         Connection selected = null;
         int priority = Integer.MAX_VALUE;

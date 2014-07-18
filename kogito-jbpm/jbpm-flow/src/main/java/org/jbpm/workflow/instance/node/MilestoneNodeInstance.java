@@ -48,7 +48,11 @@ public class MilestoneNodeInstance extends StateBasedNodeInstance implements Age
 
     public void internalTrigger(final NodeInstance from, String type) {
     	super.internalTrigger(from, type);
-        if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+    	// if node instance was cancelled, abort
+		if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
+			return;
+		}
+		if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "A MilestoneNode only accepts default incoming connections!");
         }
