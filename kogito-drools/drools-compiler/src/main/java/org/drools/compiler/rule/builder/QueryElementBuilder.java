@@ -24,6 +24,7 @@ import org.drools.core.rule.QueryElement;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
+import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
 import org.kie.api.runtime.rule.Variable;
@@ -212,7 +213,7 @@ public class QueryElementBuilder
 
             // with queries invoking each other, we won't know until runtime whether a declaration is input, output or else
             // input argument require a broader type, while output types require a narrower type, so we check for both.
-            if ( ! isCompatible( actual, formal ) && ! isCompatible( formal, actual ) ) {
+            if ( ! ClassUtils.isTypeCompatibleWithArgumentType( actual, formal ) && ! ClassUtils.isTypeCompatibleWithArgumentType( formal, actual ) ) {
                 context.addError( new DescrBuildError( context.getParentDescr(),
                                                        descr,
                                                            null,
@@ -229,82 +230,6 @@ public class QueryElementBuilder
                                  varIndexesArray,
                                  !patternDescr.isQuery(),
                                  query.isAbductive() );
-    }
-
-    // FIXME : These methods do not belong here, but where?
-    private boolean isCompatible( Class actual, Class formal ) {
-        if ( actual.isPrimitive() && formal.isPrimitive() ) {
-            return isConvertible( actual, formal );
-        } else if ( actual.isPrimitive() ) {
-            return isConvertible( actual, unbox( formal ) );
-        } else if ( formal.isPrimitive() ) {
-            return isConvertible( unbox( actual ), formal );
-        } else {
-            return formal.isAssignableFrom( actual );
-        }
-    }
-
-    private boolean isConvertible( Class srcPrimitive, Class tgtPrimitive ) {
-        if ( Boolean.TYPE.equals( srcPrimitive ) ) {
-            return Boolean.TYPE.equals( tgtPrimitive );
-        } else if ( Byte.TYPE.equals( tgtPrimitive ) ) {
-            return Byte.TYPE.equals( tgtPrimitive )
-                    || Short.TYPE.equals( tgtPrimitive )
-                    || Integer.TYPE.equals( tgtPrimitive )
-                    || Long.TYPE.equals( tgtPrimitive )
-                    || Float.TYPE.equals( tgtPrimitive )
-                    || Double.TYPE.equals( tgtPrimitive );
-        } else if ( Character.TYPE.equals( srcPrimitive ) ) {
-            return Character.TYPE.equals( tgtPrimitive )
-                   || Integer.TYPE.equals( tgtPrimitive )
-                   || Long.TYPE.equals( tgtPrimitive )
-                   || Float.TYPE.equals( tgtPrimitive )
-                   || Double.TYPE.equals( tgtPrimitive );
-        } else if ( Double.TYPE.equals( srcPrimitive ) ) {
-            return Double.TYPE.equals( tgtPrimitive );
-        } else if ( Float.TYPE.equals( srcPrimitive ) ) {
-            return Float.TYPE.equals( tgtPrimitive )
-                   || Double.TYPE.equals( tgtPrimitive );
-        } else if ( Integer.TYPE.equals( srcPrimitive ) ) {
-            return Integer.TYPE.equals( tgtPrimitive )
-                   || Long.TYPE.equals( tgtPrimitive )
-                   || Float.TYPE.equals( tgtPrimitive )
-                   || Double.TYPE.equals( tgtPrimitive );
-        } else if ( Long.TYPE.equals( srcPrimitive ) ) {
-            return Long.TYPE.equals( tgtPrimitive )
-                   || Float.TYPE.equals( tgtPrimitive )
-                   || Double.TYPE.equals( tgtPrimitive );
-        } else if ( Short.TYPE.equals( srcPrimitive ) ) {
-            return Short.TYPE.equals( tgtPrimitive )
-                   || Integer.TYPE.equals( tgtPrimitive )
-                   || Long.TYPE.equals( tgtPrimitive )
-                   || Float.TYPE.equals( tgtPrimitive )
-                   || Double.TYPE.equals( tgtPrimitive );
-        }
-        return false;
-    }
-
-    private Class unbox( Class boxed ) {
-        if ( Boolean.class.equals( boxed ) ) {
-            return Boolean.TYPE;
-        } else if ( Byte.class.equals( boxed ) ) {
-            return Byte.TYPE;
-        } else if ( Character.class.equals( boxed ) ) {
-            return Character.TYPE;
-        } else if ( Double.class.equals( boxed ) ) {
-            return Double.TYPE;
-        } else if ( Float.class.equals( boxed ) ) {
-            return Float.TYPE;
-        } else if ( Integer.class.equals( boxed ) ) {
-            return Integer.TYPE;
-        } else if ( Long.class.equals( boxed ) ) {
-            return Long.TYPE;
-        } else if ( Short.class.equals( boxed ) ) {
-            return Short.TYPE;
-        } else if ( Number.class.equals( boxed ) ) {
-            return Double.TYPE;
-        }
-        return boxed;
     }
 
     @SuppressWarnings("unchecked")
