@@ -30,7 +30,7 @@ import org.optaplanner.examples.cheaptime.domain.PeriodPowerCost;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
-import org.optaplanner.examples.cheaptime.solver.CostCalculator;
+import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -233,7 +233,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             MachinePeriodPart machinePeriod = machinePeriodList.get(i);
             machinePeriod.retractTaskAssignment(taskAssignment);
             if (retractTaskCost) {
-                softScore += CostCalculator.multiplyTwoMicros(powerConsumptionMicros,
+                softScore += CheapTimeCostCalculator.multiplyTwoMicros(powerConsumptionMicros,
                         machinePeriod.periodPowerCostMicros);
             }
             // SpinUp vs idle
@@ -314,7 +314,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             MachinePeriodPart machinePeriod = machinePeriodList.get(i);
             machinePeriod.insertTaskAssignment(taskAssignment);
             if (insertTaskCost) {
-                softScore -= CostCalculator.multiplyTwoMicros(powerConsumptionMicros,
+                softScore -= CheapTimeCostCalculator.multiplyTwoMicros(powerConsumptionMicros,
                         machinePeriod.periodPowerCostMicros);
             }
             // SpinUp vs idle
@@ -390,7 +390,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
                 for (int i = 0; i < resourceListSize; i++) {
                     resourceAvailableList.add(machine.getMachineCapacityList().get(i).getCapacity());
                 }
-                machineCostMicros = CostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
+                machineCostMicros = CheapTimeCostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
                         periodPowerCostMicros);
             } else {
                 machineCostMicros = Long.MIN_VALUE;

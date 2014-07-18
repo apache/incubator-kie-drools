@@ -35,7 +35,7 @@ import org.optaplanner.examples.cheaptime.domain.Resource;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
-import org.optaplanner.examples.cheaptime.solver.CostCalculator;
+import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 
 public class CheapTimeImporter extends AbstractTxtSolutionImporter {
@@ -171,9 +171,9 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
                 Machine machine = new Machine();
                 String[] machineLineTokens = splitBySpacesOrTabs(readStringValue(), 4);
                 machine.setId(Long.parseLong(machineLineTokens[0]));
-                machine.setPowerConsumptionMicros(CostCalculator.parseMicroCost(machineLineTokens[1]));
-                machine.setSpinUpDownCostMicros(CostCalculator.parseMicroCost(machineLineTokens[2])
-                        + CostCalculator.parseMicroCost(machineLineTokens[3]));
+                machine.setPowerConsumptionMicros(CheapTimeCostCalculator.parseMicroCost(machineLineTokens[1]));
+                machine.setSpinUpDownCostMicros(CheapTimeCostCalculator.parseMicroCost(machineLineTokens[2])
+                        + CheapTimeCostCalculator.parseMicroCost(machineLineTokens[3]));
                 String[] capacityLineTokens = splitBySpacesOrTabs(readStringValue(), resourceListSize);
                 List<MachineCapacity> machineCapacityListOfMachine = new ArrayList<MachineCapacity>(resourceListSize);
                 for (int j = 0; j < resourceListSize; j++) {
@@ -225,7 +225,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
                             + ") which is not between globalPeriodRangeFrom (" + solution.getGlobalPeriodRangeFrom()
                             + ") and globalPeriodRangeTo (" + solution.getGlobalPeriodRangeTo() + ").");
                 }
-                task.setPowerConsumptionMicros(CostCalculator.parseMicroCost(taskLineTokens[4]));
+                task.setPowerConsumptionMicros(CheapTimeCostCalculator.parseMicroCost(taskLineTokens[4]));
                 // + 1 because rangeTo is exclusive
                 // (the fact that latestEnd is exclusive is irrelevant because start = end - duration)
                 task.setStartPeriodRangeTo(latestEnd - duration + 1);
@@ -294,7 +294,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
                     }
                     periodPowerCost.setId((long) period);
                     periodPowerCost.setPeriod(period);
-                    periodPowerCost.setPowerCostMicros(CostCalculator.parseMicroCost(taskLineTokens[1]));
+                    periodPowerCost.setPowerCostMicros(CheapTimeCostCalculator.parseMicroCost(taskLineTokens[1]));
                     periodPowerCostList.add(periodPowerCost);
                 }
                 solution.setPeriodPowerCostList(periodPowerCostList);

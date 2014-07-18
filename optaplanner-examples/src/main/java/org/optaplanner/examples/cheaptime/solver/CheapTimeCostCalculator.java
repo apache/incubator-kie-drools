@@ -18,7 +18,7 @@ package org.optaplanner.examples.cheaptime.solver;
 
 import java.math.BigDecimal;
 
-public class CostCalculator {
+public class CheapTimeCostCalculator {
 
     public static final BigDecimal ONE_MILLION_BIG_DECIMAL = new BigDecimal(1000000);
     public static final double ONE_MILLION_DOUBLE = 1000000.0;
@@ -39,6 +39,6 @@ public class CostCalculator {
         return Math.round(result * ONE_MILLION_DOUBLE);
     }
 
-    private CostCalculator() {}
+    private CheapTimeCostCalculator() {}
 
 }

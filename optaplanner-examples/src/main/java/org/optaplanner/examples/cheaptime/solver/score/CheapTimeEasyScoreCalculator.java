@@ -29,7 +29,7 @@ import org.optaplanner.examples.cheaptime.domain.PeriodPowerCost;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
-import org.optaplanner.examples.cheaptime.solver.CostCalculator;
+import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
 
 public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTimeSolution> {
 
@@ -62,7 +62,7 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
                     MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
                     machinePeriodPart.addTaskAssignment(taskAssignment);
                     PeriodPowerCost periodPowerCost = periodPowerCostList.get(period);
-                    softScore -= CostCalculator.multiplyTwoMicros(taskAssignment.getTask().getPowerConsumptionMicros(),
+                    softScore -= CheapTimeCostCalculator.multiplyTwoMicros(taskAssignment.getTask().getPowerConsumptionMicros(),
                             periodPowerCost.getPowerCostMicros());
                 }
             }
@@ -87,12 +87,12 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
                         idleCostMicros = 0L;
                     }
                     hardScore += machinePeriodPart.getHardScore();
-                    softScore -= CostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
+                    softScore -= CheapTimeCostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
                             periodPowerCost.getPowerCostMicros());
                     previousStatus = MachinePeriodStatus.ACTIVE;
                 } else {
                     if (previousStatus != MachinePeriodStatus.OFF) {
-                        idleCostMicros += CostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
+                        idleCostMicros += CheapTimeCostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
                                 periodPowerCost.getPowerCostMicros());
                         if (idleCostMicros > machine.getSpinUpDownCostMicros()) {
                             idleCostMicros = 0L;
