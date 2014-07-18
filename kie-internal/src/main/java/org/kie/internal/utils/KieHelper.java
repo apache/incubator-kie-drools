@@ -57,6 +57,11 @@ public class KieHelper {
         return kieContainer.newKieBase(kieBaseConf);
     }
 
+    public Results verify() {
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        return kieBuilder.getResults();
+    }
+
     public KieHelper addContent(String content, ResourceType type) {
         kfs.write(generateResourceName(type), content);
         return this;
