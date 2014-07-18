@@ -5,6 +5,11 @@ import java.util.*;
 
 dialect "mvel"
 
+global org.drools.pmml.pmml_4_1.PMML4Helper utils;
+global StringBuilder theory;
+global org.mvel2.templates.TemplateRegistry registry;
+
+
 rule "SVMRoot"
 when
     $nbm : NaiveBayesModel()
