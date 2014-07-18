@@ -377,7 +377,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
 
         private int taskCount;
         private MachinePeriodStatus status;
-        private List<Integer> resourceAvailableList;
+        private int[] resourceAvailableList;
 
         private MachinePeriodPart(Machine machine, PeriodPowerCost periodPowerCost) {
             this.machine = machine;
@@ -386,9 +386,9 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             taskCount = 0;
             status = MachinePeriodStatus.OFF;
             if (machine != null) {
-                resourceAvailableList = new ArrayList<Integer>(resourceListSize);
+                resourceAvailableList = new int[resourceListSize];
                 for (int i = 0; i < resourceListSize; i++) {
-                    resourceAvailableList.add(machine.getMachineCapacityList().get(i).getCapacity());
+                    resourceAvailableList[i] = machine.getMachineCapacityList().get(i).getCapacity();
                 }
                 machineCostMicros = CheapTimeCostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
                         periodPowerCostMicros);
@@ -433,13 +433,17 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
                 status = MachinePeriodStatus.STILL_ACTIVE;
             }
             taskCount++;
-            for (int i = 0; i < resourceAvailableList.size(); i++) {
-                int resourceAvailable = resourceAvailableList.get(i);
+            for (int i = 0; i < resourceAvailableList.length; i++) {
+                int resourceAvailable = resourceAvailableList[i];
                 TaskRequirement taskRequirement = task.getTaskRequirementList().get(i);
-                hardScore -= Math.min(resourceAvailable, 0);
+                if (resourceAvailable < 0) {
+                    hardScore -= resourceAvailable;
+                }
                 resourceAvailable -= taskRequirement.getResourceUsage();
-                resourceAvailableList.set(i, resourceAvailable);
-                hardScore += Math.min(resourceAvailable, 0);
+                if (resourceAvailable < 0) {
+                    hardScore += resourceAvailable;
+                }
+                resourceAvailableList[i] = resourceAvailable;
             }
         }
 
@@ -459,13 +463,17 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
                 }
                 status = MachinePeriodStatus.OFF;
             }
-            for (int i = 0; i < resourceAvailableList.size(); i++) {
-                int resourceAvailable = resourceAvailableList.get(i);
+            for (int i = 0; i < resourceAvailableList.length; i++) {
+                int resourceAvailable = resourceAvailableList[i];
                 TaskRequirement taskRequirement = task.getTaskRequirementList().get(i);
-                hardScore -= Math.min(resourceAvailable, 0);
+                if (resourceAvailable < 0) {
+                    hardScore -= resourceAvailable;
+                }
                 resourceAvailable += taskRequirement.getResourceUsage();
-                resourceAvailableList.set(i, resourceAvailable);
-                hardScore += Math.min(resourceAvailable, 0);
+                if (resourceAvailable < 0) {
+                    hardScore += resourceAvailable;
+                }
+                resourceAvailableList[i] = resourceAvailable;
             }
         }
 
