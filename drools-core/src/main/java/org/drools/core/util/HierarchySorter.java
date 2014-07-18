@@ -4,6 +4,20 @@ import java.util.*;
 
 public class HierarchySorter<K> {
 
+    public List<K> sort( Collection<K> sortables, Comparator<K> comparator ) {
+        Map<K,Collection<K>> hierarchy = new HashMap<K, Collection<K>>( sortables.size() );
+        for ( K item : sortables ) {
+            Collection<K> parents = new ArrayList<K>(  );
+            for ( K other : sortables ) {
+                if ( comparator.compare( item, other ) == -1 ) {
+                    parents.add( other );
+                }
+            }
+            hierarchy.put( item, parents );
+        }
+        return sort( hierarchy );
+    }
+
     public List<K> sort( Map<K,Collection<K>> hierarchy ) {
         Node<K,K> root = new Node<K,K>( null );
         Map<K, Node<K,K>> map = new HashMap<K, Node<K,K>>();
