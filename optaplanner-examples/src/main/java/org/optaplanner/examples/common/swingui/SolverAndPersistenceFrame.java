@@ -324,13 +324,11 @@ public class SolverAndPersistenceFrame extends JFrame {
     private class OpenAction extends AbstractAction {
 
         private static final String NAME = "Open...";
+        private JFileChooser fileChooser;
 
         public OpenAction() {
             super(NAME, new ImageIcon(SolverAndPersistenceFrame.class.getResource("openAction.png")));
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            JFileChooser fileChooser = new JFileChooser(solutionBusiness.getSolvedDataDir());
+            fileChooser = new JFileChooser(solutionBusiness.getSolvedDataDir());
             fileChooser.setFileFilter(new FileFilter() {
                 public boolean accept(File file) {
                     return file.isDirectory() || file.getName().endsWith(".xml");
@@ -341,6 +339,9 @@ public class SolverAndPersistenceFrame extends JFrame {
                 }
             });
             fileChooser.setDialogTitle(NAME);
+        }
+
+        public void actionPerformed(ActionEvent e) {
             int approved = fileChooser.showOpenDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -358,13 +359,11 @@ public class SolverAndPersistenceFrame extends JFrame {
     private class SaveAction extends AbstractAction {
 
         private static final String NAME = "Save as...";
+        private JFileChooser fileChooser;
 
         public SaveAction() {
             super(NAME, new ImageIcon(SolverAndPersistenceFrame.class.getResource("saveAction.png")));
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            JFileChooser fileChooser = new JFileChooser(solutionBusiness.getSolvedDataDir());
+            fileChooser = new JFileChooser(solutionBusiness.getSolvedDataDir());
             fileChooser.setFileFilter(new FileFilter() {
                 public boolean accept(File file) {
                     return file.isDirectory() || file.getName().endsWith(".xml");
@@ -375,6 +374,9 @@ public class SolverAndPersistenceFrame extends JFrame {
                 }
             });
             fileChooser.setDialogTitle(NAME);
+        }
+
+        public void actionPerformed(ActionEvent e) {
             fileChooser.setSelectedFile(new File(solutionBusiness.getSolvedDataDir(),
                     FilenameUtils.getBaseName(solutionBusiness.getSolutionFileName()) + ".xml"));
             int approved = fileChooser.showSaveDialog(SolverAndPersistenceFrame.this);
@@ -398,13 +400,11 @@ public class SolverAndPersistenceFrame extends JFrame {
     private class ImportAction extends AbstractAction {
 
         private static final String NAME = "Import...";
+        private JFileChooser fileChooser;
 
         public ImportAction() {
             super(NAME, new ImageIcon(SolverAndPersistenceFrame.class.getResource("importAction.png")));
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            JFileChooser fileChooser = new JFileChooser(solutionBusiness.getImportDataDir());
+            fileChooser = new JFileChooser(solutionBusiness.getImportDataDir());
             fileChooser.setFileFilter(new FileFilter() {
                 public boolean accept(File file) {
                     return file.isDirectory() || solutionBusiness.acceptImportFile(file);
@@ -415,6 +415,9 @@ public class SolverAndPersistenceFrame extends JFrame {
                 }
             });
             fileChooser.setDialogTitle(NAME);
+        }
+
+        public void actionPerformed(ActionEvent e) {
             int approved = fileChooser.showOpenDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -432,25 +435,28 @@ public class SolverAndPersistenceFrame extends JFrame {
     private class ExportAction extends AbstractAction {
 
         private static final String NAME = "Export as...";
+        private JFileChooser fileChooser;
 
         public ExportAction() {
             super(NAME, new ImageIcon(SolverAndPersistenceFrame.class.getResource("exportAction.png")));
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            JFileChooser fileChooser = new JFileChooser(solutionBusiness.getExportDataDir());
+            fileChooser = new JFileChooser(solutionBusiness.getExportDataDir());
             fileChooser.setFileFilter(new FileFilter() {
                 public boolean accept(File file) {
                     return file.isDirectory() || file.getName().endsWith("." + solutionBusiness.getExportFileSuffix());
                 }
+
                 public String getDescription() {
                     return "Export files (*." + solutionBusiness.getExportFileSuffix() + ")";
                 }
             });
             fileChooser.setDialogTitle(NAME);
+        }
+
+        public void actionPerformed(ActionEvent e) {
             fileChooser.setSelectedFile(new File(solutionBusiness.getExportDataDir(),
                     FilenameUtils.getBaseName(solutionBusiness.getSolutionFileName())
-                            + "." + solutionBusiness.getExportFileSuffix()));
+                            + "." + solutionBusiness.getExportFileSuffix()
+            ));
             int approved = fileChooser.showSaveDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
