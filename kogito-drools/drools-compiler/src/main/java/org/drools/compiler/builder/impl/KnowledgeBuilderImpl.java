@@ -703,12 +703,14 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     void addPackageFromXSD(Resource resource,
                            JaxbConfigurationImpl configuration) throws IOException {
-        String[] classes = DroolsJaxbHelperProviderImpl.addXsdModel(resource,
-                                                                    this,
-                                                                    configuration.getXjcOpts(),
-                                                                    configuration.getSystemId());
-        for (String cls : classes) {
-            configuration.getClasses().add(cls);
+        if (configuration != null) {
+            String[] classes = DroolsJaxbHelperProviderImpl.addXsdModel(resource,
+                                                                        this,
+                                                                        configuration.getXjcOpts(),
+                                                                        configuration.getSystemId());
+            for (String cls : classes) {
+                configuration.getClasses().add(cls);
+            }
         }
     }
 
