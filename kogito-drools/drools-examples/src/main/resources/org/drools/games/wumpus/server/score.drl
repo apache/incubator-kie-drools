@@ -32,7 +32,8 @@ rule "Gold Win +100" salience 100 agenda-group "Score" when
     $s : Score()
 then
     modify( $s ) { value = $s.value  + 100 };
-end     
+    setFocus( "EndGame" );
+end
    
 rule "Pit Death -1000" salience 100 agenda-group "Score" when
          PitDeath()
