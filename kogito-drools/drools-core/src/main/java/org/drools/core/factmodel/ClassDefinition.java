@@ -181,13 +181,14 @@ public class ClassDefinition
      * @return    the index-th field
      */
     public FieldDefinition getField(int index) {
-        if (index >= fields.size() || index < 0)
-            throw new IndexOutOfBoundsException("Error trying to access field at position " + index);
+        if (index >= fields.size() || index < 0) {
+            return null;
+        }
         Iterator<FieldDefinition> iter = fields.values().iterator();
-        for (int j = 0; j < index ; j++)
+        for (int j = 0; j < index ; j++) {
             iter.next();
+        }
         return iter.next();
-
     }
 
 

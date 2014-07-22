@@ -213,7 +213,7 @@ public class TypeDeclarationBuilder {
         if (typeDeclaration.isPropertyReactive()) {
             processModifiedProps(cls, clsDef);
         }
-        processFieldsPosition(cls, clsDef);
+        processFieldsPosition(cls, clsDef, typeDeclaration);
 
         // build up a set of all the super classes and interfaces
         Set<TypeDeclaration> tdecls = new LinkedHashSet<TypeDeclaration>();
@@ -249,7 +249,8 @@ public class TypeDeclarationBuilder {
     }
 
     private void processFieldsPosition(Class<?> cls,
-                                       ClassDefinition clsDef) {
+                                       ClassDefinition clsDef,
+                                       TypeDeclaration typeDeclaration) {
         // it's a new type declaration, so generate the @Position for it
         Collection<Field> fields = new LinkedList<Field>();
         Class<?> tempKlass = cls;
@@ -258,21 +259,27 @@ public class TypeDeclarationBuilder {
             tempKlass = tempKlass.getSuperclass();
         }
 
-        List<FieldDefinition> orderedFields = new ArrayList<FieldDefinition>(fields.size());
-        for (int i = 0; i < fields.size(); i++) {
-            // as these could be set in any order, initialise first, to allow setting later.
-            orderedFields.add(null);
-        }
+        FieldDefinition[] orderedFields = new FieldDefinition[fields.size()];
 
         for (Field fld : fields) {
             Position pos = fld.getAnnotation(Position.class);
             if (pos != null) {
+                if (pos.value() < 0 || pos.value() >= fields.size()) {
+                    kbuilder.addBuilderResult(new TypeDeclarationError(typeDeclaration,
+                                                                       "Out of range position " + pos.value() + " for field '" + fld.getName() + "' on class " + cls.getName()));
+                    continue;
+                }
+                if (orderedFields[pos.value()] != null) {
+                    kbuilder.addBuilderResult(new TypeDeclarationError(typeDeclaration,
+                                                                       "Duplicated position " + pos.value() + " for field '" + fld.getName() + "' on class " + cls.getName()));
+                    continue;
+                }
                 FieldDefinition fldDef = clsDef.getField(fld.getName());
                 if (fldDef == null) {
                     fldDef = new FieldDefinition(fld.getName(), fld.getType().getName());
                 }
                 fldDef.setIndex(pos.value());
-                orderedFields.set(pos.value(), fldDef);
+                orderedFields[pos.value()] = fldDef;
             }
         }
         for (FieldDefinition fld : orderedFields) {

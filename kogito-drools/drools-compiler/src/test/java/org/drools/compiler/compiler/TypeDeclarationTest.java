@@ -18,6 +18,7 @@ import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -33,8 +34,10 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -740,16 +743,11 @@ public class TypeDeclarationTest {
                      "end \n" +
 
                      "";
-        KieServices kieServices = KieServices.Factory.get();
-        KieFileSystem kfs = kieServices.newKieFileSystem();
-        kfs.write( kieServices.getResources().newByteArrayResource( drl.getBytes() )
-                           .setSourcePath( "test.drl" )
-                           .setResourceType( ResourceType.DRL ) );
-        KieBuilder kieBuilder = kieServices.newKieBuilder( kfs );
-        kieBuilder.buildAll();
+
+        KieBuilder kieBuilder = build(drl);
 
         assertFalse( kieBuilder.getResults().hasMessages( Message.Level.ERROR ) );
-        KieBase kieBase = kieServices.newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
+        KieBase kieBase = KieServices.Factory.get().newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
 
         FactType type = kieBase.getFactType( "org.drools.compiler", "Person" );
 
@@ -834,6 +832,148 @@ public class TypeDeclarationTest {
                      " " +
                      "end \n";
 
+        KieBuilder kieBuilder = build(drl);
+
+        assertFalse( kieBuilder.getResults().hasMessages( Message.Level.ERROR ) );
+        KieBase kieBase = KieServices.Factory.get().newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
+
+        FactType factType = kieBase.getFactType("org.test", "Pet");
+        Object instance = factType.newInstance();
+        factType.get(instance, "unknownField");
+        factType.set(instance, "unknownField", "myValue");
+    }
+
+    @Test
+    public void testPositionalArguments() throws InstantiationException, IllegalAccessException {
+        String drl = "package org.test;\n" +
+                     "global java.util.List names;\n" +
+                     "declare Person\n" +
+                     "    name : String\n" +
+                     "    age : int\n" +
+                     "end\n" +
+                     "rule R when \n" +
+                     "    $p : Person( \"Mark\", 37; )\n" +
+                     "then\n" +
+                     "    names.add( $p.getName() );\n" +
+                     "end\n";
+
+        KieBuilder kieBuilder = build(drl);
+
+        assertFalse(kieBuilder.getResults().hasMessages(Message.Level.ERROR));
+        KieBase kieBase = KieServices.Factory.get().newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
+
+        FactType factType = kieBase.getFactType("org.test", "Person");
+        Object instance = factType.newInstance();
+        factType.set(instance, "name", "Mark");
+        factType.set(instance, "age", 37);
+
+        List<String> names = new ArrayList<String>();
+        KieSession ksession = kieBase.newKieSession();
+        ksession.setGlobal("names", names);
+
+        ksession.insert(instance);
+        ksession.fireAllRules();
+
+        assertEquals(1, names.size());
+        assertEquals("Mark", names.get(0));
+    }
+
+    @Test
+    public void testExplictPositionalArguments() throws InstantiationException, IllegalAccessException {
+        String drl = "package org.test;\n" +
+                     "global java.util.List names;\n" +
+                     "declare Person\n" +
+                     "    name : String @position(1)\n" +
+                     "    age : int @position(0)\n" +
+                     "end\n" +
+                     "rule R when \n" +
+                     "    $p : Person( 37, \"Mark\"; )\n" +
+                     "then\n" +
+                     "    names.add( $p.getName() );\n" +
+                     "end\n";
+
+        KieBuilder kieBuilder = build(drl);
+
+        assertFalse(kieBuilder.getResults().hasMessages(Message.Level.ERROR));
+        KieBase kieBase = KieServices.Factory.get().newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
+
+        FactType factType = kieBase.getFactType("org.test", "Person");
+        Object instance = factType.newInstance();
+        factType.set(instance, "name", "Mark");
+        factType.set(instance, "age", 37);
+
+        List<String> names = new ArrayList<String>();
+        KieSession ksession = kieBase.newKieSession();
+        ksession.setGlobal("names", names);
+
+        ksession.insert(instance);
+        ksession.fireAllRules();
+
+        assertEquals(1, names.size());
+        assertEquals("Mark", names.get(0));
+    }
+
+    @Test
+    public void testTooManyPositionalArguments() throws InstantiationException, IllegalAccessException {
+        // DROOLS-559
+        String drl = "package org.test;\n" +
+                     "global java.util.List names;\n" +
+                     "declare Person\n" +
+                     "    name : String\n" +
+                     "    age : int\n" +
+                     "end\n" +
+                     "rule R when \n" +
+                     "    $p : Person( \"Mark\", 37, 42; )\n" +
+                     "then\n" +
+                     "    names.add( $p.getName() );\n" +
+                     "end\n";
+
+        KieBuilder kieBuilder = build(drl);
+
+        assertTrue( kieBuilder.getResults().hasMessages( Message.Level.ERROR ) );
+    }
+
+    @Test
+    public void testOutOfRangePositions() throws InstantiationException, IllegalAccessException {
+        // DROOLS-559
+        String drl = "package org.test;\n" +
+                     "global java.util.List names;\n" +
+                     "declare Person\n" +
+                     "    name : String @position(3)\n" +
+                     "    age : int @position(1)\n" +
+                     "end\n" +
+                     "rule R when \n" +
+                     "    $p : Person( 37, \"Mark\"; )\n" +
+                     "then\n" +
+                     "    names.add( $p.getName() );\n" +
+                     "end\n";
+
+        KieBuilder kieBuilder = build(drl);
+
+        assertTrue( kieBuilder.getResults().hasMessages( Message.Level.ERROR ) );
+    }
+
+    @Test
+    public void testDuplicatedPositions() throws InstantiationException, IllegalAccessException {
+        // DROOLS-559
+        String drl = "package org.test;\n" +
+                     "global java.util.List names;\n" +
+                     "declare Person\n" +
+                     "    name : String @position(1)\n" +
+                     "    age : int @position(1)\n" +
+                     "end\n" +
+                     "rule R when \n" +
+                     "    $p : Person( 37, \"Mark\"; )\n" +
+                     "then\n" +
+                     "    names.add( $p.getName() );\n" +
+                     "end\n";
+
+        KieBuilder kieBuilder = build(drl);
+
+        assertTrue( kieBuilder.getResults().hasMessages( Message.Level.ERROR ) );
+    }
+
+    private KieBuilder build(String drl) {
         KieServices kieServices = KieServices.Factory.get();
         KieFileSystem kfs = kieServices.newKieFileSystem();
         kfs.write( kieServices.getResources().newByteArrayResource( drl.getBytes() )
@@ -841,13 +981,6 @@ public class TypeDeclarationTest {
                               .setResourceType( ResourceType.DRL ) );
         KieBuilder kieBuilder = kieServices.newKieBuilder( kfs );
         kieBuilder.buildAll();
-
-        assertFalse( kieBuilder.getResults().hasMessages( Message.Level.ERROR ) );
-        KieBase kieBase = kieServices.newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
-
-        FactType factType = kieBase.getFactType("org.test", "Pet");
-        Object instance = factType.newInstance();
-        factType.get(instance, "unknownField");
-        factType.set(instance, "unknownField", "myValue");
+        return kieBuilder;
     }
 }
