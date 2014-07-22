@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.internal.task.api;
+package org.kie.internal.query;
 
-import java.util.Map;
+public interface QueryContext {
 
-/**
- *
- * @author salaboy
- */
-public interface QueryFilter {
-    int getOffset();
-    int getCount();
-    boolean isSingleResult();
-    String getLanguage();
-    String getOrderBy();
-    String getFilterParams();
-    Map<String, Object> getParams();
-    boolean isAscending();
+	 Integer getOffset();
+	 Integer getCount();
+	 String getOrderBy();
+	 Boolean isAscending();
 }
