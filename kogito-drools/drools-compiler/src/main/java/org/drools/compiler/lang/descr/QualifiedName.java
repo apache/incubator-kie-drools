@@ -24,14 +24,7 @@ public class QualifiedName {
     private String namespace;
 
     public QualifiedName(String name) {
-        int pos = name.lastIndexOf( '.' );
-        if ( pos < 0 ) {
-            this.name = name;
-            this.namespace = "";
-        } else {
-            this.name = name.substring( pos + 1 );
-            this.namespace = name.substring( 0, pos );
-        }
+        setName( name );
     }
 
     public QualifiedName(String name, String namespace) {
@@ -44,7 +37,13 @@ public class QualifiedName {
     }
 
     public void setName(String name) {
-        this.name = name;
+        int pos = name.lastIndexOf( '.' );
+        if ( pos < 0 ) {
+            this.name = name;
+        } else {
+            this.name = name.substring( pos + 1 );
+            this.namespace = name.substring( 0, pos );
+        }
     }
 
     public String getNamespace() {
@@ -82,5 +81,9 @@ public class QualifiedName {
 
     public String toString() {
         return getFullName();
+    }
+
+    public boolean isFullyQualified() {
+        return ! StringUtils.isEmpty( namespace );
     }
 }

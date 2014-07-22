@@ -8,8 +8,8 @@ class TypeDefinition {
     final AbstractClassTypeDeclarationDescr typeDescr;
     final TypeDeclaration type;
 
-    TypeDefinition(TypeDeclaration type,
-                           AbstractClassTypeDeclarationDescr typeDescr) {
+    TypeDefinition( TypeDeclaration type,
+                    AbstractClassTypeDeclarationDescr typeDescr ) {
         this.type = type;
         this.typeDescr = typeDescr;
     }

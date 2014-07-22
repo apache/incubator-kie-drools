@@ -7,6 +7,7 @@ import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.compiler.compiler.DeprecatedResourceTypeWarning;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.compiler.DisabledPropertyReactiveWarning;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.DroolsErrorWrapper;
@@ -31,9 +32,12 @@ import org.drools.compiler.compiler.ScoreCardFactory;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.lang.ExpanderException;
+import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.AccumulateImportDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
+import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
+import org.drools.compiler.lang.descr.EnumDeclarationDescr;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.FunctionImportDescr;
 import org.drools.compiler.lang.descr.GlobalDescr;
@@ -846,6 +850,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     void compileAllRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         pkgRegistry.setDialect(getPackageDialect(packageDescr));
 
+        validateUniqueRuleNames( packageDescr );
         compileRules(packageDescr, pkgRegistry);
 
         compileAll();
@@ -891,7 +896,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         if (isEmpty(packageDescr.getNamespace())) {
             packageDescr.setNamespace(this.configuration.getDefaultPackageName());
         }
-        validateUniqueRuleNames(packageDescr);
+
         if (!checkNamespace(packageDescr.getNamespace())) {
             return null;
         }
@@ -1442,9 +1447,19 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
         processEntryPointDeclarations(pkgRegistry, packageDescr);
 
-        Map<String,TypeDeclarationDescr> unprocessableDescrs = new HashMap<String, TypeDeclarationDescr>();
-        typeBuilder.processTypes(pkgRegistry, packageDescr, unprocessableDescrs);
-        for ( TypeDeclarationDescr descr : unprocessableDescrs.values() ) {
+
+        Map<String,AbstractClassTypeDeclarationDescr> unprocesseableDescrs = new HashMap<String,AbstractClassTypeDeclarationDescr>();
+        List<TypeDefinition> unresolvedTypes = new ArrayList<TypeDefinition>();
+        List<AbstractClassTypeDeclarationDescr> unsortedDescrs = new ArrayList<AbstractClassTypeDeclarationDescr>();
+        for ( TypeDeclarationDescr typeDeclarationDescr : packageDescr.getTypeDeclarations() ) {
+            unsortedDescrs.add( typeDeclarationDescr );
+        }
+        for ( EnumDeclarationDescr enumDeclarationDescr : packageDescr.getEnumDeclarations() ) {
+            unsortedDescrs.add( enumDeclarationDescr );
+        }
+
+        typeBuilder.processTypeDeclarations( Arrays.asList( packageDescr ), unsortedDescrs, unresolvedTypes, unprocesseableDescrs );
+        for ( AbstractClassTypeDeclarationDescr descr : unprocesseableDescrs.values() ) {
             this.addBuilderResult( new TypeDeclarationError( descr, "Unable to process type " + descr.getTypeName() ) );
         }
 
@@ -2137,5 +2152,16 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     public TypeDeclaration getTypeDeclaration(Class<?> cls) {
         return typeBuilder.getTypeDeclaration(cls);
+    }
+
+    void setPropertyReactive(Resource resource,
+                                     TypeDeclaration type,
+                                     boolean propertyReactive) {
+        if (propertyReactive && type.getSettableProperties().size() >= 64) {
+            addBuilderResult(new DisabledPropertyReactiveWarning(resource, type.getTypeName()));
+            type.setPropertyReactive(false);
+        } else {
+            type.setPropertyReactive(propertyReactive);
+        }
     }
 }

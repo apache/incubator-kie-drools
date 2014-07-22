@@ -375,7 +375,7 @@ public class KnowledgePackageImpl
         if (typeDeclaration == null) {
             // check if clazz is resolved by any of the type declarations
             for ( TypeDeclaration type : this.typeDeclarations.values() ) {
-                if ( type.matches( clazz ) ) {
+                if ( type.isValid() && type.matches( clazz ) ) {
                     typeDeclaration = type;
                     break;
                 }
@@ -700,8 +700,12 @@ public class KnowledgePackageImpl
         if (!typesToBeRemoved.isEmpty()) {
             JavaDialectRuntimeData dialect = (JavaDialectRuntimeData) getDialectRuntimeRegistry().getDialectData( "java" );
             for (TypeDeclaration type : typesToBeRemoved) {
-                classFieldAccessorStore.removeType(type);
-                dialect.remove(type.getTypeClassName());
+                if ( type.getTypeClassName() != null ) {
+                    // the type declaration might not have been built up to actual class, if an error was found first
+                    // in this case, no accessor would have been wired
+                    classFieldAccessorStore.removeType(type);
+                    dialect.remove(type.getTypeClassName());
+                }
                 removeTypeDeclaration(type.getTypeName());
             }
             dialect.reload();

@@ -170,22 +170,6 @@ public class BuildUtils {
         return dim;
     }
 
-    public static String resolveDeclaredType( String className ) {
-        int arrayDim = externalArrayDimSize( className );
-        String prefix = "L";
-        String coreType = arrayDim == 0 ? className : className.substring( 0, className.indexOf( "[" ) );
-
-        if ( arrayDim > 0 ) {
-            for ( int j = 0; j < arrayDim; j++ ) {
-                prefix = "[" + prefix;
-            }
-        } else {
-            return className;
-        }
-
-        return prefix + coreType + ";";
-    }
-
     // Can only be used with internal names, i.e. after [ has been prefix
     public static int arrayDimSize(String type) {
         int j = 0;

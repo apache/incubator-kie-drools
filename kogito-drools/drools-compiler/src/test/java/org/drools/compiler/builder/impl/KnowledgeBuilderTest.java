@@ -1302,7 +1302,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors().getErrors() );
 
-        InternalKnowledgePackage pkg = builder.getPackage();
+        InternalKnowledgePackage pkg = builder.getPackageRegistry().get( "p1" ).getPackage();
         final RuleImpl rule = pkg.getRule( "rule-1" );
         assertNotNull( rule );
 
