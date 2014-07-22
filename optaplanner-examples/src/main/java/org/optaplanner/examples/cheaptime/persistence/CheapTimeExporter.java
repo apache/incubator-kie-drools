@@ -42,7 +42,7 @@ public class CheapTimeExporter extends AbstractTxtSolutionExporter {
 
     @Override
     public String getOutputFileSuffix() {
-        return CheapTimeSolutionFileIO.FILE_EXTENSION;
+        return CheapTimeSolutionFileIO.OUTPUT_FILE_EXTENSION;
     }
 
     public TxtOutputBuilder createTxtOutputBuilder() {

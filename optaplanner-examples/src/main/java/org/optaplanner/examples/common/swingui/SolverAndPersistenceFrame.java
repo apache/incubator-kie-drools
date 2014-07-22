@@ -405,15 +405,30 @@ public class SolverAndPersistenceFrame extends JFrame {
         public ImportAction() {
             super(NAME, new ImageIcon(SolverAndPersistenceFrame.class.getResource("importAction.png")));
             fileChooser = new JFileChooser(solutionBusiness.getImportDataDir());
-            fileChooser.setFileFilter(new FileFilter() {
-                public boolean accept(File file) {
-                    return file.isDirectory() || solutionBusiness.acceptImportFile(file);
-                }
+            FileFilter filter;
+            if (solutionBusiness.isImportFileDirectory()) {
+                filter = new FileFilter() {
+                    public boolean accept(File file) {
+                        return file.isDirectory();
+                    }
 
-                public String getDescription() {
-                    return "Import files (*." + solutionBusiness.getImportFileSuffix() + ")";
-                }
-            });
+                    public String getDescription() {
+                        return "Import directory";
+                    }
+                };
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            } else {
+                filter = new FileFilter() {
+                    public boolean accept(File file) {
+                        return file.isDirectory() || solutionBusiness.acceptImportFile(file);
+                    }
+
+                    public String getDescription() {
+                        return "Import files (*." + solutionBusiness.getImportFileSuffix() + ")";
+                    }
+                };
+            }
+            fileChooser.setFileFilter(filter);
             fileChooser.setDialogTitle(NAME);
         }
 

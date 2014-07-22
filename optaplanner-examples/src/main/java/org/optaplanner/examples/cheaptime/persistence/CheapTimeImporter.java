@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,65 +42,65 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
 
     public static void main(String[] args) {
         CheapTimeImporter importer = new CheapTimeImporter();
-        importer.convert("sample01/instance.txt", "sample01.xml");
-        importer.convert("sample02/instance.txt", "sample02.xml");
-        importer.convert("sample03/instance.txt", "sample03.xml");
-        importer.convert("sample04/instance.txt", "sample04.xml");
-        importer.convert("sample05/instance.txt", "sample05.xml");
-        importer.convert("sample06/instance.txt", "sample06.xml");
-        importer.convert("sample07/instance.txt", "sample07.xml");
-        importer.convert("sample08/instance.txt", "sample08.xml");
-        importer.convert("sample09/instance.txt", "sample09.xml");
-        importer.convert("instance00/instance.txt", "instance00.xml");
-        importer.convert("instance01/instance.txt", "instance01.xml");
-        importer.convert("instance02/instance.txt", "instance02.xml");
-        importer.convert("instance03/instance.txt", "instance03.xml");
-        importer.convert("instance04/instance.txt", "instance04.xml");
-        importer.convert("instance05/instance.txt", "instance05.xml");
-        importer.convert("instance06/instance.txt", "instance06.xml");
-        importer.convert("instance07/instance.txt", "instance07.xml");
-        importer.convert("instance08/instance.txt", "instance08.xml");
-        importer.convert("instance09/instance.txt", "instance09.xml");
-        importer.convert("instance10/instance.txt", "instance10.xml");
-        importer.convert("instance11/instance.txt", "instance11.xml");
-        importer.convert("instance12/instance.txt", "instance12.xml");
-        importer.convert("instance13/instance.txt", "instance13.xml");
-        importer.convert("instance14/instance.txt", "instance14.xml");
-        importer.convert("instance15/instance.txt", "instance15.xml");
-        importer.convert("instance16/instance.txt", "instance16.xml");
-        importer.convert("instance17/instance.txt", "instance17.xml");
-        importer.convert("instance18/instance.txt", "instance18.xml");
-        importer.convert("instance19/instance.txt", "instance19.xml");
-        importer.convert("instance20/instance.txt", "instance20.xml");
-        importer.convert("instance21/instance.txt", "instance21.xml");
-        importer.convert("instance22/instance.txt", "instance22.xml");
-        importer.convert("instance23/instance.txt", "instance23.xml");
-        importer.convert("instance24/instance.txt", "instance24.xml");
-        importer.convert("instance25/instance.txt", "instance25.xml");
-        importer.convert("instance26/instance.txt", "instance26.xml");
-        importer.convert("instance27/instance.txt", "instance27.xml");
-        importer.convert("instance28/instance.txt", "instance28.xml");
-        importer.convert("instance29/instance.txt", "instance29.xml");
-        importer.convert("instance30/instance.txt", "instance30.xml");
-        importer.convert("instance31/instance.txt", "instance31.xml");
-        importer.convert("instance32/instance.txt", "instance32.xml");
-        importer.convert("instance33/instance.txt", "instance33.xml");
-        importer.convert("instance34/instance.txt", "instance34.xml");
-        importer.convert("instance35/instance.txt", "instance35.xml");
-        importer.convert("instance36/instance.txt", "instance36.xml");
-        importer.convert("instance37/instance.txt", "instance37.xml");
-        importer.convert("instance38/instance.txt", "instance38.xml");
-        importer.convert("instance39/instance.txt", "instance39.xml");
-        importer.convert("instance40/instance.txt", "instance40.xml");
-        importer.convert("instance41/instance.txt", "instance41.xml");
-        importer.convert("instance42/instance.txt", "instance42.xml");
-        importer.convert("instance43/instance.txt", "instance43.xml");
-        importer.convert("instance44/instance.txt", "instance44.xml");
-        importer.convert("instance45/instance.txt", "instance45.xml");
-        importer.convert("instance46/instance.txt", "instance46.xml");
-        importer.convert("instance47/instance.txt", "instance47.xml");
-        importer.convert("instance48/instance.txt", "instance48.xml");
-        importer.convert("instance49/instance.txt", "instance49.xml");
+        importer.convert("sample01", "sample01.xml");
+        importer.convert("sample02", "sample02.xml");
+        importer.convert("sample03", "sample03.xml");
+        importer.convert("sample04", "sample04.xml");
+        importer.convert("sample05", "sample05.xml");
+        importer.convert("sample06", "sample06.xml");
+        importer.convert("sample07", "sample07.xml");
+        importer.convert("sample08", "sample08.xml");
+        importer.convert("sample09", "sample09.xml");
+        importer.convert("instance00", "instance00.xml");
+        importer.convert("instance01", "instance01.xml");
+        importer.convert("instance02", "instance02.xml");
+        importer.convert("instance03", "instance03.xml");
+        importer.convert("instance04", "instance04.xml");
+        importer.convert("instance05", "instance05.xml");
+        importer.convert("instance06", "instance06.xml");
+        importer.convert("instance07", "instance07.xml");
+        importer.convert("instance08", "instance08.xml");
+        importer.convert("instance09", "instance09.xml");
+        importer.convert("instance10", "instance10.xml");
+        importer.convert("instance11", "instance11.xml");
+        importer.convert("instance12", "instance12.xml");
+        importer.convert("instance13", "instance13.xml");
+        importer.convert("instance14", "instance14.xml");
+        importer.convert("instance15", "instance15.xml");
+        importer.convert("instance16", "instance16.xml");
+        importer.convert("instance17", "instance17.xml");
+        importer.convert("instance18", "instance18.xml");
+        importer.convert("instance19", "instance19.xml");
+        importer.convert("instance20", "instance20.xml");
+        importer.convert("instance21", "instance21.xml");
+        importer.convert("instance22", "instance22.xml");
+        importer.convert("instance23", "instance23.xml");
+        importer.convert("instance24", "instance24.xml");
+        importer.convert("instance25", "instance25.xml");
+        importer.convert("instance26", "instance26.xml");
+        importer.convert("instance27", "instance27.xml");
+        importer.convert("instance28", "instance28.xml");
+        importer.convert("instance29", "instance29.xml");
+        importer.convert("instance30", "instance30.xml");
+        importer.convert("instance31", "instance31.xml");
+        importer.convert("instance32", "instance32.xml");
+        importer.convert("instance33", "instance33.xml");
+        importer.convert("instance34", "instance34.xml");
+        importer.convert("instance35", "instance35.xml");
+        importer.convert("instance36", "instance36.xml");
+        importer.convert("instance37", "instance37.xml");
+        importer.convert("instance38", "instance38.xml");
+        importer.convert("instance39", "instance39.xml");
+        importer.convert("instance40", "instance40.xml");
+        importer.convert("instance41", "instance41.xml");
+        importer.convert("instance42", "instance42.xml");
+        importer.convert("instance43", "instance43.xml");
+        importer.convert("instance44", "instance44.xml");
+        importer.convert("instance45", "instance45.xml");
+        importer.convert("instance46", "instance46.xml");
+        importer.convert("instance47", "instance47.xml");
+        importer.convert("instance48", "instance48.xml");
+        importer.convert("instance49", "instance49.xml");
     }
 
     public CheapTimeImporter() {
@@ -109,12 +108,24 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
     }
 
     @Override
+    public boolean isInputFileDirectory() {
+        return true;
+    }
+
+    @Override
     public String getInputFileSuffix() {
-        return CheapTimeSolutionFileIO.FILE_EXTENSION;
+        throw new IllegalStateException("The inputFile is a directory, so there is no suffix.");
     }
 
     public TxtInputBuilder createTxtInputBuilder() {
         return new CheapTimeInputBuilder();
+    }
+
+    @Override
+    public Solution readSolution(File inputFile) {
+        // TODO Bridging hack because InputBuilder is designed for a single File.
+        File instanceFile = new File(inputFile, "instance.txt");
+        return super.readSolution(instanceFile);
     }
 
     public static class CheapTimeInputBuilder extends TxtInputBuilder {

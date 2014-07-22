@@ -125,6 +125,10 @@ public class SolutionBusiness {
         return importer.acceptInputFile(file);
     }
 
+    public boolean isImportFileDirectory() {
+        return importer.isInputFileDirectory();
+    }
+
     public String getImportFileSuffix() {
         return importer.getInputFileSuffix();
     }

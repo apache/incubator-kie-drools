@@ -23,17 +23,17 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class CheapTimeSolutionFileIO implements SolutionFileIO {
 
-    public static final String FILE_EXTENSION = "txt";
+    public static final String OUTPUT_FILE_EXTENSION = "txt";
 
     private CheapTimeImporter importer = new CheapTimeImporter();
     private CheapTimeExporter exporter = new CheapTimeExporter();
 
     public String getInputFileExtension() {
-        return FILE_EXTENSION;
+        return null;
     }
 
     public String getOutputFileExtension() {
-        return FILE_EXTENSION;
+        return OUTPUT_FILE_EXTENSION;
     }
 
     public Solution read(File inputSolutionFile) {

@@ -61,6 +61,10 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
         return outputDir;
     }
 
+    public boolean isInputFileDirectory() {
+        return false;
+    }
+
     public abstract String getInputFileSuffix();
 
     protected String getOutputFileSuffix() {
