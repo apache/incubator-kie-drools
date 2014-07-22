@@ -4,10 +4,12 @@ import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
+import org.drools.compiler.lang.descr.EnumDeclarationDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
+import org.drools.core.util.StringUtils;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
@@ -99,8 +101,15 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     private void buildPackages() {
         Collection<CompositePackageDescr> packages = buildPackageDescr();
         buildTypeDeclarations(packages);
+        buildEntryPoints( packages );
         buildOtherDeclarations(packages);
         buildRules(packages);
+    }
+
+    private void buildEntryPoints( Collection<CompositePackageDescr> packages ) {
+        for (CompositePackageDescr packageDescr : packages) {
+            kBuilder.processEntryPointDeclarations(kBuilder.getPackageRegistry( packageDescr.getNamespace() ), packageDescr);
+        }
     }
 
     private void registerDSL() {
@@ -109,8 +118,8 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
             for (ResourceDescr resourceDescr : resourcesByType) {
                 try {
                     kBuilder.setAssetFilter(resourceDescr.getFilter());
-                    kBuilder.addDsl(resourceDescr.resource);
-                    kBuilder.setAssetFilter(null);
+                    kBuilder.addDsl( resourceDescr.resource );
+                    kBuilder.setAssetFilter( null );
                 } catch (RuntimeException e) {
                     if (buildException == null) {
                         buildException = e;
@@ -267,7 +276,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         for (CompositePackageDescr packageDescr : packages) {
             kBuilder.setAssetFilter(packageDescr.getFilter());
             PackageRegistry pkgRegistry = kBuilder.getPackageRegistry(packageDescr.getNamespace());
-            kBuilder.processOtherDeclarations(pkgRegistry, packageDescr);
+            kBuilder.processOtherDeclarations( pkgRegistry, packageDescr );
             kBuilder.setAssetFilter(null);
         }
     }
@@ -281,69 +290,35 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
-    private void buildTypeDeclarations(Collection<CompositePackageDescr> packages) {
-        List<AbstractClassTypeDeclarationDescr> allDescrs = new ArrayList<AbstractClassTypeDeclarationDescr>();
+    private void buildTypeDeclarations( Collection<CompositePackageDescr> packages ) {
+        for ( CompositePackageDescr packageDescr : packages ) {
+            if ( kBuilder.getPackageRegistry( packageDescr.getName() ) == null ) {
+                if ( StringUtils.isEmpty( packageDescr.getName() ) ) {
+                    packageDescr.setName( kBuilder.getBuilderConfiguration().getDefaultPackageName() );
+                }
+                kBuilder.createPackageRegistry( packageDescr );
+            }
+        }
+
+        Map<String,AbstractClassTypeDeclarationDescr> unprocesseableDescrs = new HashMap<String,AbstractClassTypeDeclarationDescr>();
+        List<TypeDefinition> unresolvedTypes = new ArrayList<TypeDefinition>();
+        List<AbstractClassTypeDeclarationDescr> unsortedDescrs = new ArrayList<AbstractClassTypeDeclarationDescr>();
         for (CompositePackageDescr packageDescr : packages) {
             for (TypeDeclarationDescr typeDeclarationDescr : packageDescr.getTypeDeclarations()) {
-                if (isEmpty( typeDeclarationDescr.getNamespace() )) {
-                    typeDeclarationDescr.setNamespace( packageDescr.getNamespace() ); // set the default namespace
-                }
-                kBuilder.getTypeBuilder().registerGeneratedType( typeDeclarationDescr );
-                allDescrs.add( typeDeclarationDescr );
+                unsortedDescrs.add( typeDeclarationDescr );
+            }
+            for (EnumDeclarationDescr enumDeclarationDescr : packageDescr.getEnumDeclarations()) {
+                unsortedDescrs.add( enumDeclarationDescr );
             }
         }
 
-        Map<String, TypeDeclarationDescr> unprocesseableDescrs = new HashMap<String, TypeDeclarationDescr>();
-        List<TypeDefinition> unresolvedTypes = new ArrayList<TypeDefinition>();
-        for (CompositePackageDescr packageDescr : packages) {
-            buildTypeDeclarations(packageDescr, unresolvedTypes, unprocesseableDescrs);
-        }
+        kBuilder.getTypeBuilder().processTypeDeclarations( packages, unsortedDescrs, unresolvedTypes, unprocesseableDescrs );
 
-        if ( ! unprocesseableDescrs.isEmpty() ) {
-            Collection<AbstractClassTypeDeclarationDescr> sortedDescrs = TypeDeclarationBuilder.sortByHierarchy( kBuilder, unprocesseableDescrs.values() );
-            for ( AbstractClassTypeDeclarationDescr descr : sortedDescrs ) {
-                unprocesseableDescrs.remove( descr.getType().getFullName() );
-                PackageRegistry pkg = kBuilder.getPackageRegistry().get( descr.getType().getNamespace() );
-                kBuilder.getTypeBuilder().processTypeDeclaration( pkg,
-                                                                  descr,
-                                                                  sortedDescrs,
-                                                                  unresolvedTypes,
-                                                                  unprocesseableDescrs );
+        for ( CompositePackageDescr packageDescr : packages ) {
+            for ( ImportDescr importDescr : packageDescr.getImports() ) {
+                kBuilder.getPackageRegistry( packageDescr.getNamespace() ).addImport( importDescr );
             }
         }
-
-        for (TypeDefinition unresolvedType : unresolvedTypes) {
-            kBuilder.getTypeBuilder().processUnresolvedType(kBuilder.getPackageRegistry(unresolvedType.getNamespace()), unresolvedType);
-        }
-
-        // now we need to sort TypeDeclarations based on the mutual, cross-package dependencies.
-        // This can't be done at the beginning, before the build pass, since the names are not yet fully qualified there.
-        // TODO there may be more efficient ways to do it (?)
-        if ( ! kBuilder.hasErrors() ) {
-            int j = 0;
-            for ( AbstractClassTypeDeclarationDescr descr : TypeDeclarationBuilder.sortByHierarchy( kBuilder, allDescrs ) ) {
-                kBuilder.getPackageRegistry( descr.getNamespace() ).getPackage().getTypeDeclaration( descr.getTypeName() ).setOrder( j++ );
-            }
-        }
-
-        for (CompositePackageDescr packageDescr : packages) {
-            for (ImportDescr importDescr : packageDescr.getImports()) {
-                kBuilder.getPackageRegistry(packageDescr.getNamespace()).addImport( importDescr );
-            }
-        }
-    }
-
-    private List<TypeDefinition> buildTypeDeclarations(CompositePackageDescr packageDescr, List<TypeDefinition> unresolvedTypes, Map<String, TypeDeclarationDescr> unprocessableDescrs) {
-        kBuilder.setAssetFilter(packageDescr.getFilter());
-        PackageRegistry pkgRegistry = kBuilder.createPackageRegistry(packageDescr);
-        if (pkgRegistry == null) {
-            return null;
-        }
-
-        kBuilder.processEntryPointDeclarations(pkgRegistry, packageDescr);
-        List<TypeDefinition> defsWithUnresolvedTypes = kBuilder.getTypeBuilder().processTypeDeclarations(pkgRegistry, packageDescr, unresolvedTypes, unprocessableDescrs);
-        kBuilder.setAssetFilter(null);
-        return defsWithUnresolvedTypes;
     }
 
     private Collection<CompositePackageDescr> buildPackageDescr() {

@@ -4,8 +4,14 @@ import java.util.*;
 
 public class HierarchySorter<K> {
 
+    private Map<K,Collection<K>> hierarchy;
+
+    public Map<K, Collection<K>> getHierarchy() {
+        return hierarchy;
+    }
+
     public List<K> sort( Collection<K> sortables, Comparator<K> comparator ) {
-        Map<K,Collection<K>> hierarchy = new HashMap<K, Collection<K>>( sortables.size() );
+        hierarchy = new HashMap<K, Collection<K>>( sortables.size() );
         for ( K item : sortables ) {
             Collection<K> parents = new ArrayList<K>(  );
             for ( K other : sortables ) {
