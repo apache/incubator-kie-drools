@@ -1173,4 +1173,68 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         ksession.insert( new Message( "Hello World" ) );
         assertEquals( 2, ksession.fireAllRules() );
     }
+
+    public static class FooEvent {
+        private long mytime;
+
+        public FooEvent(long mytime) {
+            this.mytime = mytime;
+        }
+
+        public long getMytime() {
+            return mytime;
+        }
+    }
+
+    @Test
+    public void testUpdateWithDeclarationPresent() throws Exception {
+        // DROOLS-560
+        String header = "package org.drools.compiler\n"
+                        + "import org.drools.compiler.integrationtests.IncrementalCompilationTest.FooEvent\n";
+
+        String declaration = "declare FooEvent\n"
+                             + " @timestamp( mytime )\n"
+                             + " @role( event )\n"
+                             + "end\n";
+
+        String rule1 = "rule R1 when\n" +
+                       " $e : FooEvent( )\n" +
+                       "then\n" +
+                       " insert(new Message(\"Hello R1\"));\n" +
+                       "end\n";
+
+        String rule2 = "rule R1 when\n" +
+                       " $e : FooEvent( )\n" +
+                       "then\n" +
+                       " insert(new Message(\"Hello R2\"));\n" +
+                       "end\n";
+
+        String file1 = header + declaration + rule1;
+        String file2 = header + declaration + rule2;
+
+        KieServices ks = KieServices.Factory.get();
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, file1 );
+
+        // Create a session and fire rules
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+        KieSession ksession = kc.newKieSession();
+        ksession.insert( new FooEvent( 0 ) );
+        assertEquals( 1, ksession.fireAllRules() );
+
+        // Create a new jar for version 1.1.0
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        km = createAndDeployJar( ks, releaseId2, file2 );
+
+        // try to update the container to version 1.1.0
+        Results results = kc.updateToVersion( releaseId2 );
+
+        assertFalse("Errors detected on updateToVersion: " + results.getMessages(org.kie.api.builder.Message.Level.ERROR), results.hasMessages(org.kie.api.builder.Message.Level.ERROR));
+
+        // continue working with the session
+        ksession.insert( new FooEvent( 1 ) );
+        assertEquals( 2, ksession.fireAllRules() );
+    }
 }
