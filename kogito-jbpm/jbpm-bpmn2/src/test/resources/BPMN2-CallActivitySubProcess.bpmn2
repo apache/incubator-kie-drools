@@ -24,6 +24,9 @@
     <startEvent id="_1" name="StartProcess" />
     <scriptTask id="_2" name="Hello" >
       <script>System.out.println("subX=" + subX);
+System.out.println("ParentProcessInstanceId=" + kcontext.getProcessInstance().getMetaData().get("ParentProcessInstanceId"));
+System.out.println("ParentNodeInstanceId=" + kcontext.getProcessInstance().getMetaData().get("ParentNodeInstanceId"));
+System.out.println("ParentNodeId=" + kcontext.getProcessInstance().getMetaData().get("ParentNodeId"));
 kcontext.setVariable("subY", "new value");</script>
     </scriptTask>
     <endEvent id="_3" name="EndProcess" >
