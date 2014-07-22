@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -282,6 +283,9 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
             @Override
             public Solution readSolution() throws IOException {
                 int periodListSize = readIntegerValue();
+                long periodDurationPerHour = CheapTimeCostCalculator.divideTwoMicros(
+                        CheapTimeCostCalculator.toMicroCost(1440),
+                        CheapTimeCostCalculator.toMicroCost(periodListSize * 60L));
                 List<PeriodPowerCost> periodPowerCostList = new ArrayList<PeriodPowerCost>(periodListSize);
                 for (int i = 0; i < periodListSize; i++) {
                     String[] taskLineTokens = splitBySpacesOrTabs(readStringValue(), 2);
@@ -294,7 +298,9 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
                     }
                     periodPowerCost.setId((long) period);
                     periodPowerCost.setPeriod(period);
-                    periodPowerCost.setPowerCostMicros(CheapTimeCostCalculator.parseMicroCost(taskLineTokens[1]));
+                    long hourlyPowerCostMicros = CheapTimeCostCalculator.parseMicroCost(taskLineTokens[1]);
+                    periodPowerCost.setPowerCostMicros(
+                            CheapTimeCostCalculator.multiplyTwoMicros(hourlyPowerCostMicros, periodDurationPerHour));
                     periodPowerCostList.add(periodPowerCost);
                 }
                 solution.setPeriodPowerCostList(periodPowerCostList);

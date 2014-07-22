@@ -20,15 +20,21 @@ import java.math.BigDecimal;
 
 public class CheapTimeCostCalculator {
 
-    public static final BigDecimal ONE_MILLION_BIG_DECIMAL = new BigDecimal(1000000);
-    public static final double ONE_MILLION_DOUBLE = 1000000.0;
+    public static final long ONE_MILLION_LONG = 100000000000L;
+    public static final double ONE_MILLION_DOUBLE = 100000000000.0;
+    public static final BigDecimal ONE_MILLION_BIG_DECIMAL = new BigDecimal(ONE_MILLION_LONG);
+
+    public static long toMicroCost(long cost) {
+        return cost * ONE_MILLION_LONG;
+    }
 
     public static long parseMicroCost(String costString) {
         BigDecimal costBigDecimal = new BigDecimal(costString);
-        if (costBigDecimal.scale() > 6) {
+        if (costBigDecimal.scale() > 11) {
             throw new IllegalArgumentException("The costString (" + costString + ") has a scale ("
-                    + costBigDecimal.scale() + ") higher than 6.");
+                    + costBigDecimal.scale() + ") higher than 10.");
         }
+        costBigDecimal = costBigDecimal.setScale(11);
         return costBigDecimal.multiply(ONE_MILLION_BIG_DECIMAL).longValueExact();
     }
 
@@ -36,6 +42,13 @@ public class CheapTimeCostCalculator {
         double aDouble = ((double) (aMicros)) / ONE_MILLION_DOUBLE;
         double bDouble = ((double) (bMicros)) / ONE_MILLION_DOUBLE;
         double result = aDouble * bDouble;
+        return Math.round(result * ONE_MILLION_DOUBLE);
+    }
+
+    public static long divideTwoMicros(long aMicros, long bMicros) {
+        double aDouble = ((double) (aMicros)) / ONE_MILLION_DOUBLE;
+        double bDouble = ((double) (bMicros)) / ONE_MILLION_DOUBLE;
+        double result = aDouble / bDouble;
         return Math.round(result * ONE_MILLION_DOUBLE);
     }
 
