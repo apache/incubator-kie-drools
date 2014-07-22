@@ -30,7 +30,8 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.task.api.QueryFilter;
+import org.kie.internal.query.QueryContext;
+import org.kie.internal.query.QueryFilter;
 
 /**
  * This service provides an interface to retrieve data about the runtime, including the following:
@@ -66,7 +67,7 @@ public interface RuntimeDataService {
     /**
      * @return A list of {@link ProcessInstanceDesc} instances representing the available process instances.
      */
-    Collection<ProcessInstanceDesc> getProcessInstances();
+    Collection<ProcessInstanceDesc> getProcessInstances(QueryContext queryContext);
    
     /**
      * @param states A list of possible state (int) values that the {@link ProcessInstance} can have. 
@@ -74,7 +75,7 @@ public interface RuntimeDataService {
      * @return A list of {@link ProcessInstanceDesc} instances representing the process instances that match
      *         the given criteria (states and initiator).
      */
-    Collection<ProcessInstanceDesc> getProcessInstances(List<Integer> states, String initiator);
+    Collection<ProcessInstanceDesc> getProcessInstances(List<Integer> states, String initiator, QueryContext queryContext);
    
     /**
      * @param states A list of possible state (int) values that the {@link ProcessInstance} can have. 
@@ -83,7 +84,7 @@ public interface RuntimeDataService {
      * @return A list of {@link ProcessInstanceDesc} instances representing the process instances that match
      *         the given criteria (states, processId, and initiator).
      */
-    Collection<ProcessInstanceDesc> getProcessInstancesByProcessId(List<Integer> states, String processId, String initiator);
+    Collection<ProcessInstanceDesc> getProcessInstancesByProcessId(List<Integer> states, String processId, String initiator, QueryContext queryContext);
    
     /**
      * @param states A list of possible state (int) values that the {@link ProcessInstance} can have. 
@@ -92,7 +93,7 @@ public interface RuntimeDataService {
      * @return A list of {@link ProcessInstanceDesc} instances representing the process instances that match
      *         the given criteria (states, processName and initiator).
      */
-    Collection<ProcessInstanceDesc> getProcessInstancesByProcessName(List<Integer> states, String processName, String initiator);
+    Collection<ProcessInstanceDesc> getProcessInstancesByProcessName(List<Integer> states, String processName, String initiator, QueryContext queryContext);
     
     /**
      * @param deploymentId The deployment id of the runtime. 
@@ -100,7 +101,7 @@ public interface RuntimeDataService {
      * @return A list of {@link ProcessInstanceDesc} instances representing the process instances that match
      *         the given criteria (deploymentId and states).
      */
-    Collection<ProcessInstanceDesc> getProcessInstancesByDeploymentId(String deploymentId, List<Integer> states);
+    Collection<ProcessInstanceDesc> getProcessInstancesByDeploymentId(String deploymentId, List<Integer> states, QueryContext queryContext);
     
     /**
      * @param processId The id of the process (definition) used to start the {@link ProcessInstance}.
@@ -113,7 +114,7 @@ public interface RuntimeDataService {
      * @return A list of {@link ProcessInstanceDesc} instances representing the process instances that match
      *         the given criteria (deploymentId and states).
      */
-    Collection<ProcessInstanceDesc> getProcessInstancesByProcessDefinition(String processDefId);
+    Collection<ProcessInstanceDesc> getProcessInstancesByProcessDefinition(String processDefId, QueryContext queryContext);
 
     
     // Node and Variable instance information
@@ -131,7 +132,7 @@ public interface RuntimeDataService {
      * @param processInstanceId unique identifier of process instance
      * @return
      */
-    Collection<NodeInstanceDesc> getProcessInstanceHistoryActive(String deploymentId, long processInstanceId);
+    Collection<NodeInstanceDesc> getProcessInstanceHistoryActive(String deploymentId, long processInstanceId, QueryContext queryContext);
 
     /**
      * Returns trace of all executed (completed) for given process instance id
@@ -139,7 +140,7 @@ public interface RuntimeDataService {
      * @param processInstanceId unique identifier of process instance
      * @return
      */
-    Collection<NodeInstanceDesc> getProcessInstanceHistoryCompleted(String deploymentId, long processInstanceId);
+    Collection<NodeInstanceDesc> getProcessInstanceHistoryCompleted(String deploymentId, long processInstanceId, QueryContext queryContext);
 
     /**
      * Returns complete trace of all executed (completed) and active nodes for given process instance id
@@ -148,7 +149,7 @@ public interface RuntimeDataService {
      * @return The {@link NodeInstance} information, in the form of a list of {@link NodeInstanceDesc} instances, 
      *         that comes from a process instance that matches the given criteria (deploymentId, processId).
      */
-    Collection<NodeInstanceDesc> getProcessInstanceFullHistory(String deploymentId, long processInstanceId);
+    Collection<NodeInstanceDesc> getProcessInstanceFullHistory(String deploymentId, long processInstanceId, QueryContext queryContext);
     
     /**
      * Returns complete trace of all events of given type (START or END) for given process instance.
@@ -157,7 +158,7 @@ public interface RuntimeDataService {
      * @param type type of events that shall be returned (START or END) - to return both use {@link #getProcessInstanceFullHistory(String, long)}
      * @return
      */
-    Collection<NodeInstanceDesc> getProcessInstanceFullHistoryByType(String deploymentId, long processInstanceId, EntryType type);
+    Collection<NodeInstanceDesc> getProcessInstanceFullHistoryByType(String deploymentId, long processInstanceId, EntryType type, QueryContext queryContext);
 
 
     /**
@@ -175,7 +176,7 @@ public interface RuntimeDataService {
      * @return Information about the variable with the given id in the specified process instance, 
      *         represented by a list of {@link VariableStateDesc} instances.
      */
-    Collection<VariableDesc> getVariableHistory(long processInstanceId, String variableId);
+    Collection<VariableDesc> getVariableHistory(long processInstanceId, String variableId, QueryContext queryContext);
 
     
     // Process information
@@ -186,24 +187,24 @@ public interface RuntimeDataService {
      * @return A list of {@link ProcessAssetDesc} instances representing processes that match
      *         the given criteria (deploymentId)
      */
-    Collection<ProcessDefinition> getProcessesByDeploymentId(String deploymentId);   
+    Collection<ProcessDefinition> getProcessesByDeploymentId(String deploymentId, QueryContext queryContext);   
     
     /**
      * @param filter A regular expression.
      * @return A list of {@link ProcessAssetDesc} instances whose name or id matches the given regular expression.
      */
-    Collection<ProcessDefinition> getProcessesByFilter(String filter);
+    Collection<ProcessDefinition> getProcessesByFilter(String filter, QueryContext queryContext);
 
     /**
      * @return A list of all available processes, in the form a of a list of {@link ProcessAssetDesc} instances.
      */
-    Collection<ProcessDefinition> getProcesses();
+    Collection<ProcessDefinition> getProcesses(QueryContext queryContext);
    
     /**
      * @param deploymentId The deployment id of the runtime.
      * @return A list of all available process id's for a particular deployment/runtime.
      */
-    Collection<String> getProcessIds(String deploymentId);
+    Collection<String> getProcessIds(String deploymentId, QueryContext queryContext);
    
     /**
     * @param processId The id of the process

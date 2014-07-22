@@ -29,7 +29,7 @@ public class WebSphereUserGroupAdapter implements UserGroupAdapter {
 	@Override
     public List<String> getGroupsForUser(String userId) {
         List<String> roles = new ArrayList<String>();
-        if (registry == null) {
+        if (registry == null || userId == null || !userId.isEmpty()) {
             return roles;
         }
         try {
@@ -41,7 +41,7 @@ public class WebSphereUserGroupAdapter implements UserGroupAdapter {
                 }
             }
         } catch (Exception e) {
-            logger.error("Unable to get roles from registry due to {}", e.getMessage(), e);
+            logger.error("Unable to get roles for user {} from registry due to {}", userId, e.getMessage(), e);
         }
 
         return roles;

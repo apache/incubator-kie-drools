@@ -21,11 +21,24 @@ public class JpaPersistenceContext implements Context {
 		this.em = em;
 	}
 	
+	protected Query getQueryByName(String queryName, Map<String, Object> params) {
+		String queryStr = QueryManager.get().getQuery(queryName, params);
+		Query query = null;
+		if (queryStr != null) {
+			query = this.em.createQuery(queryStr);
+		} else {
+			query = this.em.createNamedQuery(queryName);
+		}
+		
+		return query;
+	}
+	
 	
 	public <T> T queryWithParametersInTransaction(String queryName,
 			Map<String, Object> params, Class<T> clazz) {
 		check();
-		Query query = this.em.createNamedQuery(queryName);
+		
+		Query query = getQueryByName(queryName, params);
 		return queryStringWithParameters(params, false, LockModeType.NONE, clazz, query);
 	}
 
@@ -33,7 +46,7 @@ public class JpaPersistenceContext implements Context {
 	public <T> T queryAndLockWithParametersInTransaction(String queryName,
 			Map<String, Object> params, boolean singleResult, Class<T> clazz) {
 		check();
-		Query query = this.em.createNamedQuery(queryName);
+		Query query = getQueryByName(queryName, params);
 		return queryStringWithParameters(params, singleResult, LockModeType.PESSIMISTIC_WRITE, clazz, query);
 	}
 
@@ -140,8 +153,14 @@ public class JpaPersistenceContext implements Context {
 					query.setFirstResult((Integer) params.get(name));
 					continue;
 				}
-				if (MAX_RESULTS.equals(name)) {
+				else if (MAX_RESULTS.equals(name)) {
 					query.setMaxResults((Integer) params.get(name));
+					continue;
+				} 
+				// skip control parameters
+				else if (QueryManager.ASCENDING_KEY.equals(name) 
+						|| QueryManager.DESCENDING_KEY.equals(name)
+						|| QueryManager.ORDER_BY_KEY.equals(name)) {
 					continue;
 				}
 				query.setParameter(name, params.get(name));

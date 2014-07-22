@@ -372,7 +372,9 @@
       from
         VariableInstanceLog log
       where
-        log.processInstanceId =:processInstanceId AND log.id in (select max(vss.id) FROM VariableInstanceLog vss WHERE vss.processInstanceId =:processInstanceId group by vss.variableId ) order by log.id
+        log.processInstanceId =:processInstanceId AND log.id in 
+        (select max(vss.id) FROM VariableInstanceLog vss WHERE vss.processInstanceId =:processInstanceId group by vss.variableId ) 
+        order by log.id
     </query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>

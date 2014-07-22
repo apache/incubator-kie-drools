@@ -40,6 +40,7 @@ import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.model.NodeInstanceDesc;
+import org.jbpm.services.api.model.QueryContextImpl;
 import org.jbpm.services.cdi.impl.manager.InjectableRegisterableItemsFactory;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -178,7 +179,7 @@ public class RuntimeDataServiceTest extends AbstractBaseTest {
         ProcessInstance processInstance = ksession.startProcess("hello");
 
         Collection<NodeInstanceDesc> nodeInstanceLogs = runtimeDataService.getProcessInstanceHistoryCompleted(
-                manager.getIdentifier(), processInstance.getId());
+                manager.getIdentifier(), processInstance.getId(), new QueryContextImpl());
 
         // assert if logs are ordered by log.date DESC, log.id DESC
         Iterator<NodeInstanceDesc> iterator = nodeInstanceLogs.iterator();
@@ -192,7 +193,7 @@ public class RuntimeDataServiceTest extends AbstractBaseTest {
         assertEquals("Start", log2.getName());
 
         Collection<NodeInstanceDesc> fullNodeInstanceLogs = runtimeDataService.getProcessInstanceFullHistory(
-                manager.getIdentifier(), processInstance.getId());
+                manager.getIdentifier(), processInstance.getId(), new QueryContextImpl());
 
         // assert if logs are ordered by log.date DESC, log.id DESC
         Iterator<NodeInstanceDesc> fullIterator = fullNodeInstanceLogs.iterator();

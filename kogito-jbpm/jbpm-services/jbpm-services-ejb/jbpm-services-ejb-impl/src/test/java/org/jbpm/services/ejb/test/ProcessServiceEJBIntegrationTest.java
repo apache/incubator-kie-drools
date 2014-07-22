@@ -41,6 +41,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
+import org.jbpm.services.api.model.QueryContextImpl;
 import org.jbpm.services.ejb.api.DefinitionServiceEJBLocal;
 import org.jbpm.services.ejb.api.DeploymentServiceEJBLocal;
 import org.jbpm.services.ejb.api.ProcessServiceEJBLocal;
@@ -355,7 +356,7 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
     	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
     	assertNotNull(pi);
     	
-    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId);
+    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId, new QueryContextImpl());
     	assertNotNull(activeNodes);
     	assertEquals(1, activeNodes.size());    	
     	assertEquals("Write a Document", activeNodes.iterator().next().getName());
@@ -364,7 +365,7 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
     	outcome.put("Result", "here is my first document");
     	processService.completeWorkItem(activeNodes.iterator().next().getWorkItemId(), outcome);
     	
-    	activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId);
+    	activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId, new QueryContextImpl());
     	assertNotNull(activeNodes);
     	assertEquals(2, activeNodes.size()); 
     	
@@ -395,14 +396,14 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
     	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
     	assertNotNull(pi);
     	
-    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId);
+    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId, new QueryContextImpl());
     	assertNotNull(activeNodes);
     	assertEquals(1, activeNodes.size());    	
     	assertEquals("Write a Document", activeNodes.iterator().next().getName());
     	 
     	processService.abortWorkItem(activeNodes.iterator().next().getWorkItemId());
     	
-    	activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId);
+    	activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId, new QueryContextImpl());
     	assertNotNull(activeNodes);
     	assertEquals(2, activeNodes.size()); 
     	
@@ -432,7 +433,7 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
     	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
     	assertNotNull(pi);
     	
-    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId);
+    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId, new QueryContextImpl());
     	assertNotNull(activeNodes);
     	assertEquals(1, activeNodes.size());    	
     	assertEquals("Write a Document", activeNodes.iterator().next().getName());
@@ -464,7 +465,7 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
     	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
     	assertNotNull(pi);
     	
-    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId);
+    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId, new QueryContextImpl());
     	assertNotNull(activeNodes);
     	assertEquals(1, activeNodes.size());    	
     	assertEquals("Write a Document", activeNodes.iterator().next().getName());

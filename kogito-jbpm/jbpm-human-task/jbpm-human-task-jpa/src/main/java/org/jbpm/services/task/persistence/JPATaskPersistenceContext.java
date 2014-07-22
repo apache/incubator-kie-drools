@@ -3,11 +3,13 @@ package org.jbpm.services.task.persistence;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
+
 import org.drools.core.util.StringUtils;
 import org.jbpm.services.task.impl.model.AttachmentImpl;
 import org.jbpm.services.task.impl.model.CommentImpl;
@@ -17,7 +19,6 @@ import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.OrganizationalEntityImpl;
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
-import org.jbpm.services.task.utils.CollectionUtils;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.Content;
@@ -33,6 +34,8 @@ import org.slf4j.LoggerFactory;
 public class JPATaskPersistenceContext implements TaskPersistenceContext {
 
 	private static Logger logger = LoggerFactory.getLogger(JPATaskPersistenceContext.class);
+	
+	private static TaskQueryManager querymanager = TaskQueryManager.get();
 	
 	public final static String FIRST_RESULT = "firstResult";
     public final static String MAX_RESULTS = "maxResults";
@@ -340,7 +343,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public <T> T queryWithParametersInTransaction(String queryName,
 			Map<String, Object> params, Class<T> clazz) {
 		check();
-		Query query = this.em.createNamedQuery(queryName);
+		Query query = getQueryByName(queryName, params);
 		return queryStringWithParameters(params, false, LockModeType.NONE, clazz, query);
 	}
 
@@ -348,7 +351,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public <T> T queryWithParametersInTransaction(String queryName, boolean singleResult,
 			Map<String, Object> params, Class<T> clazz) {
 		check();
-		Query query = this.em.createNamedQuery(queryName);
+		Query query = getQueryByName(queryName, params);
 		return queryStringWithParameters(params, singleResult, LockModeType.NONE, clazz, query);
 	}
         
@@ -356,7 +359,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public <T> T queryAndLockWithParametersInTransaction(String queryName,
 			Map<String, Object> params, boolean singleResult, Class<T> clazz) {
 		check();
-		Query query = this.em.createNamedQuery(queryName);
+		Query query = getQueryByName(queryName, params);
 		return queryStringWithParameters(params, singleResult, LockModeType.NONE, clazz, query);
 	}
 
@@ -400,7 +403,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 			String queryName, Map<String, Object> params, boolean singleResult,
 			Class<T> clazz) {
 		check();
-		Query query = this.em.createNamedQuery(queryName);
+		Query query = getQueryByName(queryName, params);
 		return queryStringWithParameters(params, singleResult, LockModeType.PESSIMISTIC_FORCE_INCREMENT, clazz, query);	
 	}
 
@@ -482,12 +485,18 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 				if (FLUSH_MODE.equals(name)) {
 					query.setFlushMode(FlushModeType.valueOf((String) params.get(name)));
 					continue;
+				}// skip control parameters
+				else if (TaskQueryManager.ASCENDING_KEY.equals(name) 
+						|| TaskQueryManager.DESCENDING_KEY.equals(name)
+						|| TaskQueryManager.ORDER_BY_KEY.equals(name)
+						|| TaskQueryManager.FILTER_KEY.equals(name)) {
+					continue;
 				}
 				query.setParameter(name, params.get(name));
 			}
 		}
 		if (singleResult) {
-                    List results = query.getResultList();
+                    List<T> results = query.getResultList();
                     return (T) ((results.isEmpty() )? null : results.get(0));
 		}
 		return (T) query.getResultList();
@@ -521,6 +530,18 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		if (em == null || !em.isOpen()) {
 			throw new IllegalStateException("Entity manager is null or is closed, exiting...");
 		}
+	}
+	
+	protected Query getQueryByName(String queryName, Map<String, Object> params) {
+		String queryStr = querymanager.getQuery(queryName, params);
+		Query query = null;
+		if (queryStr != null) {
+			query = this.em.createQuery(queryStr);
+		} else {
+			query = this.em.createNamedQuery(queryName);
+		}
+		
+		return query;
 	}
 
 }

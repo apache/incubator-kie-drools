@@ -365,7 +365,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         try {
         	List<WorkItem> workItems = new ArrayList<WorkItem>();
         	
-        	Collection<NodeInstanceDesc> nodes = dataService.getProcessInstanceHistoryActive(piDesc.getDeploymentId(), processInstanceId);
+        	Collection<NodeInstanceDesc> nodes = dataService.getProcessInstanceHistoryActive(piDesc.getDeploymentId(), processInstanceId, null);
         	
         	for (NodeInstanceDesc node : nodes) {
         		if (node.getWorkItemId() != null) {

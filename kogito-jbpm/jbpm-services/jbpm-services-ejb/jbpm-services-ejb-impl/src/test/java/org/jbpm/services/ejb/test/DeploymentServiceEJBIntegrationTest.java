@@ -41,6 +41,7 @@ import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessDefinition;
+import org.jbpm.services.api.model.QueryContextImpl;
 import org.jbpm.services.ejb.api.DeploymentServiceEJBLocal;
 import org.jbpm.services.ejb.api.RuntimeDataServiceEJBLocal;
 import org.junit.After;
@@ -152,15 +153,15 @@ public class DeploymentServiceEJBIntegrationTest extends AbstractTestSupport {
         assertNotNull(deployed.getRuntimeManager());
         
         assertNotNull(runtimeDataService);
-        Collection<ProcessDefinition> processes = runtimeDataService.getProcesses();
+        Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContextImpl());
         assertNotNull(processes);
         assertEquals(5, processes.size());
         
-        processes = runtimeDataService.getProcessesByFilter("custom");
+        processes = runtimeDataService.getProcessesByFilter("custom", new QueryContextImpl());
         assertNotNull(processes);
         assertEquals(1, processes.size());
         
-        processes = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier());
+        processes = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier(), new QueryContextImpl());
         assertNotNull(processes);
         assertEquals(5, processes.size());
         

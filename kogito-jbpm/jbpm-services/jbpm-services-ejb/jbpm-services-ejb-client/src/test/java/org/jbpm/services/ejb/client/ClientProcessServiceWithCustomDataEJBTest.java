@@ -52,7 +52,7 @@ import org.kie.scanner.MavenRepository;
 
 public class ClientProcessServiceWithCustomDataEJBTest extends AbstractBaseTest {
 	
-	private static final String application = "ejb-app";
+	private static final String application = "sample-war-ejb-app";
 	
     private List<DeploymentUnit> units = new ArrayList<DeploymentUnit>();
     

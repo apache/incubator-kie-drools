@@ -40,6 +40,7 @@ import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
+import org.jbpm.services.api.model.QueryContextImpl;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
@@ -145,7 +146,7 @@ public abstract class AbstractDeploymentService implements DeploymentService, Li
         states.add(ProcessInstance.STATE_ACTIVE);
         states.add(ProcessInstance.STATE_PENDING);
         states.add(ProcessInstance.STATE_SUSPENDED);
-        Collection<ProcessInstanceDesc> activeProcesses = runtimeDataService.getProcessInstancesByDeploymentId(unit.getIdentifier(), states);
+        Collection<ProcessInstanceDesc> activeProcesses = runtimeDataService.getProcessInstancesByDeploymentId(unit.getIdentifier(), states, new QueryContextImpl());
         if (!activeProcesses.isEmpty()) {
             throw new IllegalStateException("Undeploy forbidden - there are active processes instances for deployment " 
                                             + unit.getIdentifier());

@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.QueryFilter;
+import org.kie.internal.query.QueryFilter;
 
 @XmlRootElement(name = "get-task-by-owner-command")
 @XmlAccessorType(XmlAccessType.NONE)

@@ -28,7 +28,7 @@ import org.junit.Before;
 
 public class ClientRuntimeDataServiceEJBTest extends RuntimeDataServiceImplTest {
 	
-	private static final String application = "ejb-app";
+	private static final String application = "sample-war-ejb-app";
 	
 	@Before
     public void prepare() {

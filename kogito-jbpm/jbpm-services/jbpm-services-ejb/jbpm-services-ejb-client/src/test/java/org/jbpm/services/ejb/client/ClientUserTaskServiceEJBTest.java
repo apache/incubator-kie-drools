@@ -26,7 +26,7 @@ import org.jbpm.services.ejb.client.helper.DeploymentServiceWrapper;
 
 public class ClientUserTaskServiceEJBTest extends UserTaskServiceImplTest {
 	
-	private static final String application = "ejb-app";
+	private static final String application = "sample-war-ejb-app";
 
 	@Override
 	protected void close() {

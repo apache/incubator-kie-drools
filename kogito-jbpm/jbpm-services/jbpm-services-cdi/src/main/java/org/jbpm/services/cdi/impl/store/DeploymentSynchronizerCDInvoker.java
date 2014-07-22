@@ -13,6 +13,8 @@ import javax.ejb.Startup;
 import javax.ejb.Timeout;
 import javax.ejb.Timer;
 import javax.ejb.TimerService;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.inject.Inject;
 
 import org.jbpm.kie.services.impl.store.DeploymentSynchronizer;
@@ -21,6 +23,7 @@ import org.jbpm.kie.services.impl.store.DeploymentSynchronizer;
 @Startup
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
 @Lock(LockType.WRITE)
+@TransactionManagement(TransactionManagementType.BEAN)
 public class DeploymentSynchronizerCDInvoker {
 	
 	private Timer timer;

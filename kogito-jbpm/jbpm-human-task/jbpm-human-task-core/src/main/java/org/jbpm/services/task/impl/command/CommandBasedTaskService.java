@@ -102,10 +102,10 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
+import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.EventService;
 import org.kie.internal.task.api.InternalTaskService;
-import org.kie.internal.task.api.QueryFilter;
 import org.kie.internal.task.api.UserInfo;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.FaultData;
@@ -205,7 +205,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
                         Map<String, Object> params = new HashMap<String, Object>();
                         params.put("expirationDate", expirationDate);
 		return getTasksAssignedAsPotentialOwner(userId, null, statuses, 
-                        new QueryFilterImpl( "t.taskData.expirationTime = :expirationDate", params, "order by t.id", false));
+                        new QueryFilterImpl( "t.taskData.expirationTime = :expirationDate", params, "t.id", false));
 	}
 
 	@Override
@@ -214,7 +214,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("expirationDate", expirationDate);
 		return getTasksAssignedAsPotentialOwner(userId, null, statuses, 
-                        new QueryFilterImpl( "(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "order by t.id", false));
+                        new QueryFilterImpl( "(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "t.id", false));
 	}
         
         @Override
@@ -424,7 +424,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 		
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put("expirationDate", expirationDate);
-                return getTasksOwned(userId, statuses, new QueryFilterImpl("t.taskData.expirationTime = :expirationDate", params, "order by t.id", false));
+                return getTasksOwned(userId, statuses, new QueryFilterImpl("t.taskData.expirationTime = :expirationDate", params, "t.id", false));
 	}
 
 	@Override
@@ -432,7 +432,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 			String userId, List<Status> statuses, Date expirationDate) {
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put("expirationDate", expirationDate);
-                return getTasksOwned(userId, statuses, new QueryFilterImpl("(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "order by t.id", false));
+                return getTasksOwned(userId, statuses, new QueryFilterImpl("(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "t.id", false));
 	}
 
 	@Override

@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.internal.task.api.QueryFilter;
+import org.kie.internal.query.QueryFilter;
 
 
 public class QueryFilterImpl implements QueryFilter, Serializable {
@@ -81,12 +81,12 @@ public class QueryFilterImpl implements QueryFilter, Serializable {
     
 
     @Override
-    public int getOffset() {
+    public Integer getOffset() {
         return offset;
     }
 
     @Override
-    public int getCount() {
+    public Integer getCount() {
         return count;
     }
 
@@ -114,7 +114,7 @@ public class QueryFilterImpl implements QueryFilter, Serializable {
         return params;
     }
 
-    public boolean isAscending() {
+    public Boolean isAscending() {
       return ascending;
     }
 

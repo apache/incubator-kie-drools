@@ -23,5 +23,20 @@
       <unpack>false</unpack>
       <scope>runtime</scope>
     </dependencySet>
+    
+    <!-- added only for the purpose of tests for remote client invocation -->
+    <dependencySet>
+      <includes>
+        <include>org.jbpm:jbpm-kie-services:test-jar</include>
+      </includes>
+      <unpack>true</unpack>
+      <scope>test</scope>
+      <outputDirectory>WEB-INF/classes</outputDirectory>
+      <unpackOptions>
+        <includes>
+          <include>org/jbpm/kie/services/helper/*</include>
+        </includes>
+      </unpackOptions>
+    </dependencySet>
   </dependencySets>
 </assembly>

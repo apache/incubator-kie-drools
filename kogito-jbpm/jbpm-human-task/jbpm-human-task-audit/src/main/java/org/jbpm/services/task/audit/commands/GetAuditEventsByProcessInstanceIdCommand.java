@@ -10,7 +10,7 @@ import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.query.QueryFilterImpl;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.QueryFilter;
+import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.TaskContext;
 import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.model.TaskEvent;

@@ -36,6 +36,7 @@ import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.test.util.AbstractBaseTest;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
+import org.jbpm.services.api.model.QueryContextImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -328,7 +329,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
     	assertNotNull(pi);
     	
-    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId);
+    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId, new QueryContextImpl());
     	assertNotNull(activeNodes);
     	assertEquals(1, activeNodes.size());    	
     	assertEquals("Write a Document", activeNodes.iterator().next().getName());
@@ -337,7 +338,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	outcome.put("Result", "here is my first document");
     	processService.completeWorkItem(activeNodes.iterator().next().getWorkItemId(), outcome);
     	
-    	activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId);
+    	activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId, new QueryContextImpl());
     	assertNotNull(activeNodes);
     	assertEquals(2, activeNodes.size()); 
     	
@@ -368,14 +369,14 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
     	assertNotNull(pi);
     	
-    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId);
+    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId, new QueryContextImpl());
     	assertNotNull(activeNodes);
     	assertEquals(1, activeNodes.size());    	
     	assertEquals("Write a Document", activeNodes.iterator().next().getName());
     	 
     	processService.abortWorkItem(activeNodes.iterator().next().getWorkItemId());
     	
-    	activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId);
+    	activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId, new QueryContextImpl());
     	assertNotNull(activeNodes);
     	assertEquals(2, activeNodes.size()); 
     	
@@ -405,7 +406,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
     	assertNotNull(pi);
     	
-    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId);
+    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId, new QueryContextImpl());
     	assertNotNull(activeNodes);
     	assertEquals(1, activeNodes.size());    	
     	assertEquals("Write a Document", activeNodes.iterator().next().getName());
@@ -437,7 +438,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
     	assertNotNull(pi);
     	
-    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId);
+    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId, new QueryContextImpl());
     	assertNotNull(activeNodes);
     	assertEquals(1, activeNodes.size());    	
     	assertEquals("Write a Document", activeNodes.iterator().next().getName());

@@ -35,6 +35,7 @@ import org.jbpm.kie.test.util.AbstractBaseTest;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessDefinition;
+import org.jbpm.services.api.model.QueryContextImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -122,15 +123,15 @@ public class DeploymentServiceTest extends AbstractBaseTest {
         assertNotNull(deployed.getRuntimeManager());
         
         assertNotNull(runtimeDataService);
-        Collection<ProcessDefinition> processes = runtimeDataService.getProcesses();
+        Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContextImpl());
         assertNotNull(processes);
         assertEquals(5, processes.size());
         
-        processes = runtimeDataService.getProcessesByFilter("custom");
+        processes = runtimeDataService.getProcessesByFilter("custom", new QueryContextImpl());
         assertNotNull(processes);
         assertEquals(1, processes.size());
         
-        processes = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier());
+        processes = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier(), new QueryContextImpl());
         assertNotNull(processes);
         assertEquals(5, processes.size());
         

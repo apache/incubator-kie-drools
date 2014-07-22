@@ -25,14 +25,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.jbpm.services.task.query.QueryFilterImpl;
 
+import org.jbpm.services.task.query.QueryFilterImpl;
 import org.jbpm.services.task.utils.ClassUtil;
-import org.kie.internal.task.api.QueryFilter;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.TaskQueryService;
 import org.kie.internal.task.api.model.InternalTaskSummary;
@@ -47,6 +47,30 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     private static final Logger logger = LoggerFactory.getLogger(TaskQueryServiceImpl.class);
     
     private TaskPersistenceContext persistenceContext;
+    
+    protected void applyQueryFilter(Map<String, Object> params, QueryFilter queryContext) {
+    	if (queryContext != null) {
+        	params.put("firstResult", queryContext.getOffset());
+        	params.put("maxResults", queryContext.getCount());
+        	
+        	if (queryContext.getOrderBy() != null && !queryContext.getOrderBy().isEmpty()) {
+        		params.put("orderby", queryContext.getOrderBy());
+        	
+	        	if (queryContext.isAscending()) {
+	        		params.put("asc", "true");
+	        	} else {
+	        		params.put("desc", "true");        	
+	        	}
+        	}
+        	
+        	if (queryContext.getFilterParams() != null && !queryContext.getFilterParams().isEmpty()) {
+        		params.put("filter", queryContext.getFilterParams());
+        		for(String key : queryContext.getParams().keySet()){
+                    params.put(key, queryContext.getParams().get(key));
+                }
+        	}
+        }
+    }
     
     private static final List<Status> allActiveStatus = new ArrayList<Status>(){{
         this.add(Status.Created);
@@ -290,56 +314,15 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         params.put("userId", userId);
         params.put("status", status);
         params.put("groupIds", groupIds);
-        if(filter != null){
-           params.put("firstResult",filter.getOffset());
-           params.put("maxResults", filter.getCount());
-           if(!"".equals(filter.getFilterParams()) && !filter.getOrderBy().equals("")){
-               for(String key : filter.getParams().keySet()){
-                   params.put(key, filter.getParams().get(key));
-               }
-               String orderBy = adaptOrderBy(filter.getOrderBy());
-               return (List<TaskSummary>) persistenceContext
-                       .queryStringWithParametersInTransaction(TASKS_ASSIGNED_AS_POTENTIALOWNER_TEMPLATE +
-                                          " and " + filter.getFilterParams() + "order by " +orderBy +" "+ ((filter.isAscending())?"ASC":"DESC"), 
-                                        params,
-                                        ClassUtil.<List<TaskSummary>>castClass(List.class));
-           
-           }else if(!filter.getOrderBy().equals("")){
-             String orderBy = adaptOrderBy(filter.getOrderBy());
-             return (List<TaskSummary>) persistenceContext
-                       .queryStringWithParametersInTransaction(TASKS_ASSIGNED_AS_POTENTIALOWNER_TEMPLATE + " order by " +orderBy +" "+ ((filter.isAscending())?"ASC":"DESC"), 
-                                        params,
-                                        ClassUtil.<List<TaskSummary>>castClass(List.class));
-           }
-        }
+        applyQueryFilter(params, filter);
+
         return (List<TaskSummary>) persistenceContext.queryWithParametersInTransaction("NewTasksAssignedAsPotentialOwner", 
                                         params,
                                         ClassUtil.<List<TaskSummary>>castClass(List.class));
                 
     }
 
-    private String adaptOrderBy(String orderBy){
-      if(orderBy != null){
-        if(orderBy.equals("Task")){
-          return "t.name";
-        }else if(orderBy.equals("Description")){
-          return "t.description";
-        }else if(orderBy.equals("Id")){
-          return "t.id";
-        }else if(orderBy.equals("Priority")){
-          return "t.priority";
-        }else if(orderBy.equals("Status")){
-          return "t.taskData.status";
-        }else if(orderBy.equals("Created On")){
-          return "t.taskData.createdOn";
-        }else if(orderBy.equals("Created By")){
-          return "t.taskData.createdBy.id";
-        }else if(orderBy.equals("Due On")){
-          return "t.taskData.expirationTime";
-        }
-      }
-      return orderBy;
-    }
+
     public List<TaskSummary> getTasksOwned(String userId, List<Status> status, QueryFilter filter) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);
@@ -349,20 +332,8 @@ public class TaskQueryServiceImpl implements TaskQueryService {
             status.add(Status.InProgress);
         }
         params.put("status", status);
-        if(filter != null){
-           params.put("firstResult",filter.getOffset());
-           params.put("maxResults", filter.getCount());
-           if(!"".equals(filter.getFilterParams())){
-               for(String key : filter.getParams().keySet()){
-                   params.put(key, filter.getParams().get(key));
-               }
-               return (List<TaskSummary>) persistenceContext
-                       .queryStringWithParametersInTransaction(TASKS_OWNED_TEMPLATE + filter.getFilterParams() + " " +filter.getOrderBy(), 
-                                        params,
-                                        ClassUtil.<List<TaskSummary>>castClass(List.class));
-           
-           } 
-        }
+        applyQueryFilter(params, filter);
+
         return (List<TaskSummary>) persistenceContext.queryWithParametersInTransaction("NewTasksOwned", 
                                         params,
                                         ClassUtil.<List<TaskSummary>>castClass(List.class));
@@ -653,54 +624,6 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         return tasksAssigned.size();
     }
     
-    private static String TASKS_ASSIGNED_AS_POTENTIALOWNER_TEMPLATE = "select distinct \n" +
-"                new org.jbpm.services.task.query.TaskSummaryImpl(\n" +
-"                    t.id,\n" +
-"                    t.name,\n" +
-"                    t.description,\n" +
-"                    t.taskData.status,\n" +
-"                    t.priority,\n" +
-"                    t.taskData.actualOwner.id,\n" +
-"                    t.taskData.createdBy.id,\n" +
-"                    t.taskData.createdOn,\n" +
-"                    t.taskData.activationTime,\n" +
-"                    t.taskData.expirationTime,\n" +
-"                    t.taskData.processId,\n" +
-"                    t.taskData.processInstanceId,\n" +
-"                    t.taskData.parentId,\n" +
-"                    t.taskData.deploymentId              )\n" +
-"            from\n" +
-"                TaskImpl t,\n" +
-"                OrganizationalEntityImpl potentialOwners\n" +
-"            where\n" +
-"                t.archived = 0 and\n" +
-"                ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and\n" +
-"                potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and\n" +
-"                t.taskData.status in (:status) \n";
-
-    
-    private static String TASKS_OWNED_TEMPLATE = "select distinct \n" +
-"                new org.jbpm.services.task.query.TaskSummaryImpl(\n" +
-"                    t.id,\n" +
-"                    t.name,\n" +
-"                    t.description,\n" +
-"                    t.taskData.status,\n" +
-"                    t.priority,\n" +
-"                    t.taskData.actualOwner.id,\n" +
-"                    t.taskData.createdBy.id,\n" +
-"                    t.taskData.createdOn,\n" +
-"                    t.taskData.activationTime,\n" +
-"                    t.taskData.expirationTime,\n" +
-"                    t.taskData.processId,\n" +
-"                    t.taskData.processInstanceId,\n" +
-"                    t.taskData.parentId,\n" +
-"                    t.taskData.deploymentId              )\n" +
-"            from\n" +
-"                TaskImpl t\n" +
-"            where\n" +
-"                t.archived = 0 and\n" +
-"                t.taskData.actualOwner.id = :userId and\n" +
-"                t.taskData.status in (:status) and \n";
     
     private static String VARIOUS_FIELDS_TASKSUM_QUERY = 
             "select distinct"

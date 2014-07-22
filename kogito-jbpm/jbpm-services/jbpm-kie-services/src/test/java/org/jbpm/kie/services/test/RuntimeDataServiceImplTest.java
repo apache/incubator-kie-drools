@@ -39,6 +39,7 @@ import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
+import org.jbpm.services.api.model.QueryContextImpl;
 import org.jbpm.services.api.model.UserTaskInstanceDesc;
 import org.jbpm.services.api.model.VariableDesc;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
@@ -127,7 +128,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     
     @Test
     public void testGetProcessByDeploymentId() {
-    	Collection<ProcessDefinition> definitions = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier());
+    	Collection<ProcessDefinition> definitions = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier(), new QueryContextImpl());
     	assertNotNull(definitions);
     	
     	assertEquals(2, definitions.size());
@@ -151,7 +152,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     
     @Test
     public void testGetProcessByFilter() {
-    	Collection<ProcessDefinition> definitions = runtimeDataService.getProcessesByFilter("org.jbpm");
+    	Collection<ProcessDefinition> definitions = runtimeDataService.getProcessesByFilter("org.jbpm", new QueryContextImpl());
     	
     	assertNotNull(definitions);
     	assertEquals(2, definitions.size());
@@ -174,7 +175,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     
     @Test
     public void testGetProcesses() {
-    	Collection<ProcessDefinition> definitions = runtimeDataService.getProcesses();
+    	Collection<ProcessDefinition> definitions = runtimeDataService.getProcesses(new QueryContextImpl());
     	assertNotNull(definitions);
     	
     	assertEquals(2, definitions.size());
@@ -189,7 +190,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     
     @Test
     public void testGetProcessIds() {
-    	Collection<String> definitions = runtimeDataService.getProcessIds(deploymentUnit.getIdentifier());
+    	Collection<String> definitions = runtimeDataService.getProcessIds(deploymentUnit.getIdentifier(), new QueryContextImpl());
     	assertNotNull(definitions);
     	
     	assertEquals(2, definitions.size());
@@ -200,14 +201,14 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     
     @Test
     public void testGetProcessInstances() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances();
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
     	assertNotNull(processInstanceId);
     	
-    	instances = runtimeDataService.getProcessInstances();
+    	instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(1, (int)instances.iterator().next().getState());
@@ -215,7 +216,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstances();
+    	instances = runtimeDataService.getProcessInstances(new QueryContextImpl("log.processName", false));
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(3, (int)instances.iterator().next().getState());
@@ -223,7 +224,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     
     @Test
     public void testGetProcessInstancesByState() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances();
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -233,14 +234,14 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	// search for aborted only
     	states.add(3);
     	
-    	instances = runtimeDataService.getProcessInstances(states, null);
+    	instances = runtimeDataService.getProcessInstances(states, null, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstances(states, null);
+    	instances = runtimeDataService.getProcessInstances(states, null, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(3, (int)instances.iterator().next().getState());
@@ -248,7 +249,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     
     @Test
     public void testGetProcessInstancesByStateAndInitiator() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances();
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -258,26 +259,26 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	// search for active only
     	states.add(1);
     	
-    	instances = runtimeDataService.getProcessInstances(states, correctUser);
+    	instances = runtimeDataService.getProcessInstances(states, correctUser, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(1, (int)instances.iterator().next().getState());
     	
-    	instances = runtimeDataService.getProcessInstances(states, wrongUser);
+    	instances = runtimeDataService.getProcessInstances(states, wrongUser, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size()); 
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstances(states, correctUser);
+    	instances = runtimeDataService.getProcessInstances(states, correctUser, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());    	
     }
     
     @Test
     public void testGetProcessInstancesByDeploymentIdAndState() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances();
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -287,14 +288,14 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	// search for aborted only
     	states.add(3);
     	
-    	instances = runtimeDataService.getProcessInstancesByDeploymentId(deploymentUnit.getIdentifier(), states);
+    	instances = runtimeDataService.getProcessInstancesByDeploymentId(deploymentUnit.getIdentifier(), states, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByDeploymentId(deploymentUnit.getIdentifier(), states);
+    	instances = runtimeDataService.getProcessInstancesByDeploymentId(deploymentUnit.getIdentifier(), states, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(3, (int)instances.iterator().next().getState());
@@ -302,14 +303,14 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     
     @Test
     public void testGetProcessInstancesByProcessId() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances();
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
     	assertNotNull(processInstanceId);
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessDefinition("org.jbpm.writedocument");
+    	instances = runtimeDataService.getProcessInstancesByProcessDefinition("org.jbpm.writedocument", new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	
@@ -320,7 +321,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessDefinition("org.jbpm.writedocument");
+    	instances = runtimeDataService.getProcessInstancesByProcessDefinition("org.jbpm.writedocument", new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	instance = instances.iterator().next();
@@ -330,7 +331,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     
     @Test
     public void testGetProcessInstanceById() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances();
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -354,7 +355,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     
     @Test
     public void testGetProcessInstancesByProcessIdAndState() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances();
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -364,14 +365,14 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	// search for aborted only
     	states.add(3);
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", null);
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", null, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", null);
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", null, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(3, (int)instances.iterator().next().getState());
@@ -379,7 +380,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     
     @Test
     public void testGetProcessInstancesByPartialProcessIdAndState() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances();
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -389,14 +390,14 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	// search for aborted only
     	states.add(3);
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm", null);
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm", null, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm", null);
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm", null, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(3, (int)instances.iterator().next().getState());
@@ -404,7 +405,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     
     @Test
     public void testGetProcessInstancesByProcessIdAndStateAndInitiator() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances();
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -414,26 +415,26 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	// search for active only
     	states.add(1);
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", correctUser);
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", correctUser, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(1, (int)instances.iterator().next().getState());
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", wrongUser);
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", wrongUser, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size()); 
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", correctUser);
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", correctUser, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());    	
     }
     
     @Test
     public void testGetProcessInstancesByProcessNameAndState() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances();
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -443,14 +444,14 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	// search for aborted only
     	states.add(3);
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", null);
+    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", null, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", null);
+    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", null, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(3, (int)instances.iterator().next().getState());
@@ -458,7 +459,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     
     @Test
     public void testGetProcessInstancesByPartialProcessNameAndState() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances();
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -468,14 +469,14 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	// search for aborted only
     	states.add(3);
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "human", null);
+    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "human", null, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "human", null);
+    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "human", null, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(3, (int)instances.iterator().next().getState());
@@ -483,7 +484,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     
     @Test
     public void testGetProcessInstancesByProcessNameAndStateAndInitiator() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances();
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -493,19 +494,19 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	// search for active only
     	states.add(1);
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", correctUser);
+    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", correctUser, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(1, (int)instances.iterator().next().getState());
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", wrongUser);
+    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", wrongUser, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size()); 
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", correctUser);
+    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", correctUser, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());    	
     }
@@ -517,27 +518,27 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	assertNotNull(processInstanceId);
     	
     	// get active nodes as history view
-    	Collection<NodeInstanceDesc> instances = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId);
+    	Collection<NodeInstanceDesc> instances = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	
     	// get completed nodes as history view
-    	instances = runtimeDataService.getProcessInstanceHistoryCompleted(deploymentUnit.getIdentifier(), processInstanceId);
+    	instances = runtimeDataService.getProcessInstanceHistoryCompleted(deploymentUnit.getIdentifier(), processInstanceId, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	
     	// get both active and completed nodes as history view
-    	instances = runtimeDataService.getProcessInstanceFullHistory(deploymentUnit.getIdentifier(), processInstanceId);
+    	instances = runtimeDataService.getProcessInstanceFullHistory(deploymentUnit.getIdentifier(), processInstanceId, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(3, instances.size());
     	
     	// get nodes filtered by type - start
-    	instances = runtimeDataService.getProcessInstanceFullHistoryByType(deploymentUnit.getIdentifier(), processInstanceId, EntryType.START);
+    	instances = runtimeDataService.getProcessInstanceFullHistoryByType(deploymentUnit.getIdentifier(), processInstanceId, EntryType.START, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(2, instances.size());
     	
     	// get nodes filtered by type - end
-    	instances = runtimeDataService.getProcessInstanceFullHistoryByType(deploymentUnit.getIdentifier(), processInstanceId, EntryType.END);
+    	instances = runtimeDataService.getProcessInstanceFullHistoryByType(deploymentUnit.getIdentifier(), processInstanceId, EntryType.END, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());  
     }
@@ -576,13 +577,13 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", params);
     	assertNotNull(processInstanceId);
     	
-    	Collection<VariableDesc> variableLogs = runtimeDataService.getVariableHistory(processInstanceId, "approval_document");
+    	Collection<VariableDesc> variableLogs = runtimeDataService.getVariableHistory(processInstanceId, "approval_document", new QueryContextImpl());
     	assertNotNull(variableLogs);
     	assertEquals(1, variableLogs.size());
     	
     	processService.setProcessVariable(processInstanceId, "approval_document", "updated content");
     	
-    	variableLogs = runtimeDataService.getVariableHistory(processInstanceId, "approval_document");
+    	variableLogs = runtimeDataService.getVariableHistory(processInstanceId, "approval_document", new QueryContextImpl());
     	assertNotNull(variableLogs);
     	assertEquals(2, variableLogs.size());
     	
