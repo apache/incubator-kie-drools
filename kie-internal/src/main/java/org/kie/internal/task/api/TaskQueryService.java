@@ -19,10 +19,12 @@ package org.kie.internal.task.api;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.query.QueryFilter;
 
 
 /**
