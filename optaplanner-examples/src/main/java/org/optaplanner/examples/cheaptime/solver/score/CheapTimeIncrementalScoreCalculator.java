@@ -217,13 +217,20 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             previousStatus = machinePeriodList.get(startPeriod - 1).status;
             if (previousStatus == MachinePeriodStatus.IDLE) {
                 idleAvailable = spinUpDownCostMicros;
-                for (int i = startPeriod - 1; i >= 0 && idleAvailable >= 0L; i--) {
+                for (int i = startPeriod - 1; i >= 0; i--) {
                     MachinePeriodPart machinePeriod = machinePeriodList.get(i);
                     if (machinePeriod.status.isActive()) {
                         idlePeriodStart = i + 1;
                         break;
                     }
+                    machinePeriod.status = MachinePeriodStatus.OFF;
                     idleAvailable -= machinePeriod.machineCostMicros;
+                }
+                if (idleAvailable < 0L) {
+                    throw new IllegalStateException("The range of idlePeriodStart (" + idlePeriodStart
+                            + ") to startPeriod (" + startPeriod
+                            + ") should have been IDLE because the idleAvailable (" + idleAvailable
+                            + ") is negative.");
                 }
             } else {
                 idleAvailable = Long.MIN_VALUE;
@@ -300,8 +307,6 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
                 }
             }
         }
-
-
     }
 
     private void insertRange(TaskAssignment taskAssignment, List<MachinePeriodPart> machinePeriodList,
