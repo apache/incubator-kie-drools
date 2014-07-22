@@ -18,6 +18,7 @@ package org.drools.compiler.compiler;
 
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
+import org.drools.core.rule.TypeDeclaration;
 
 public class TypeDeclarationError extends DroolsError {
     private String errorMessage;
@@ -36,6 +37,13 @@ public class TypeDeclarationError extends DroolsError {
         this.errorMessage = errorMessage;
         this.line = new int[] { fieldDescr.getLine() };
         this.namespace = fieldDescr.getNamespace();
+    }
+
+    public TypeDeclarationError(TypeDeclaration typeDeclaration, String errorMessage) {
+        super(typeDeclaration.getResource());
+        this.errorMessage = errorMessage;
+        this.line = new int[0];
+        this.namespace = typeDeclaration.getNamespace();
     }
 
     @Override
