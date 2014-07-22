@@ -47,8 +47,7 @@ public class PlannerBenchmarkConfig {
      * @see Runtime#availableProcessors()
      */
     public static final String AVAILABLE_PROCESSOR_COUNT = "availableProcessorCount";
-
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger logger = LoggerFactory.getLogger(PlannerBenchmarkConfig.class);
 
     private String name = null;
     private File benchmarkDirectory = null;

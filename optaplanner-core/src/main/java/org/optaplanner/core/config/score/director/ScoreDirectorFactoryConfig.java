@@ -67,7 +67,7 @@ import org.slf4j.LoggerFactory;
 @XStreamAlias("scoreDirectorFactory")
 public class ScoreDirectorFactoryConfig {
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger logger = LoggerFactory.getLogger(ScoreDirectorFactoryConfig.class);
 
     protected Class<? extends ScoreDefinition> scoreDefinitionClass = null;
     protected ScoreDefinitionType scoreDefinitionType = null;
