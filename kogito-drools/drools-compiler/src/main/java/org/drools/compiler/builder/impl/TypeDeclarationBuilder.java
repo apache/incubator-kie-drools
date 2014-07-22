@@ -990,111 +990,109 @@ public class TypeDeclarationBuilder {
         Map<String, PackageDescr> foreignPackages = null;
 
         for (AbstractClassTypeDeclarationDescr typeDescr : packageDescr.getClassAndEnumDeclarationDescrs()) {
-            if (kbuilder.filterAccepts(typeDescr.getNamespace(), typeDescr.getTypeName()) ) {
 
-                String qName = typeDescr.getType().getFullName();
-                Class<?> typeClass = getClassForType(qName);
-                if (typeClass == null) {
-                    typeClass = getClassForType(typeDescr.getTypeName());
-                }
-                if (typeClass == null) {
-                    for (ImportDescr id : packageDescr.getImports()) {
-                        String imp = id.getTarget();
-                        int separator = imp.lastIndexOf('.');
-                        String tail = imp.substring(separator + 1);
-                        if (tail.equals(typeDescr.getTypeName())) {
-                            typeDescr.setNamespace(imp.substring(0, separator));
-                            typeClass = getClassForType(typeDescr.getType().getFullName());
-                            break;
-                        } else if (tail.equals("*")) {
-                            typeClass = getClassForType(imp.substring(0, imp.length() - 1) + typeDescr.getType().getName());
-                            if (typeClass != null) {
-                                String resolvedNamespace = imp.substring(0, separator);
-                                if ( resolvedNamespace.equals( typeDescr.getNamespace() ) ) {
-                                    // the class was found in the declared namespace, so stop here
-                                    break;
-                                    // here, the class was found in a different namespace. It means that the class was declared
-                                    // with no namespace and the initial guess was wrong, or that there is an ambiguity.
-                                    // So, we need to check that the resolved class is compatible with the declaration.
-                                } else if ( isCompatible( typeClass, typeDescr ) ) {
-                                    typeDescr.setNamespace( resolvedNamespace );
-                                } else {
-                                    typeClass = null;
-                                }
+            String qName = typeDescr.getType().getFullName();
+            Class<?> typeClass = getClassForType(qName);
+            if (typeClass == null) {
+                typeClass = getClassForType(typeDescr.getTypeName());
+            }
+            if (typeClass == null) {
+                for (ImportDescr id : packageDescr.getImports()) {
+                    String imp = id.getTarget();
+                    int separator = imp.lastIndexOf('.');
+                    String tail = imp.substring(separator + 1);
+                    if (tail.equals(typeDescr.getTypeName())) {
+                        typeDescr.setNamespace(imp.substring(0, separator));
+                        typeClass = getClassForType(typeDescr.getType().getFullName());
+                        break;
+                    } else if (tail.equals("*")) {
+                        typeClass = getClassForType(imp.substring(0, imp.length() - 1) + typeDescr.getType().getName());
+                        if (typeClass != null) {
+                            String resolvedNamespace = imp.substring(0, separator);
+                            if ( resolvedNamespace.equals( typeDescr.getNamespace() ) ) {
+                                // the class was found in the declared namespace, so stop here
+                                break;
+                                // here, the class was found in a different namespace. It means that the class was declared
+                                // with no namespace and the initial guess was wrong, or that there is an ambiguity.
+                                // So, we need to check that the resolved class is compatible with the declaration.
+                            } else if ( isCompatible( typeClass, typeDescr ) ) {
+                                typeDescr.setNamespace( resolvedNamespace );
+                            } else {
+                                typeClass = null;
                             }
                         }
                     }
                 }
-                String className = typeClass != null ? typeClass.getName() : qName;
-                int dotPos = className.lastIndexOf('.');
-                if (dotPos >= 0) {
-                    typeDescr.setNamespace(className.substring(0, dotPos));
-                    typeDescr.setTypeName(className.substring(dotPos + 1));
-                }
+            }
+            String className = typeClass != null ? typeClass.getName() : qName;
+            int dotPos = className.lastIndexOf('.');
+            if (dotPos >= 0) {
+                typeDescr.setNamespace(className.substring(0, dotPos));
+                typeDescr.setTypeName(className.substring(dotPos + 1));
+            }
 
-                if (isEmpty(typeDescr.getNamespace()) && typeDescr.getFields().isEmpty()) {
-                    // might be referencing a class imported with a package import (.*)
-                    PackageRegistry pkgReg = kbuilder.getPackageRegistry(packageDescr.getName());
-                    if (pkgReg != null) {
-                        try {
-                            Class<?> clz = pkgReg.getTypeResolver().resolveType(typeDescr.getTypeName());
-                            java.lang.Package pkg = clz.getPackage();
-                            if (pkg != null) {
-                                typeDescr.setNamespace(pkg.getName());
-                                int index = typeDescr.getNamespace() != null && !typeDescr.getNamespace().isEmpty() ? typeDescr.getNamespace().length() + 1 : 0;
-                                typeDescr.setTypeName(clz.getCanonicalName().substring(index));
-                            }
-                        } catch (Exception e) {
-                            // intentionally eating the exception as we will fallback to default namespace
+            if (isEmpty(typeDescr.getNamespace()) && typeDescr.getFields().isEmpty()) {
+                // might be referencing a class imported with a package import (.*)
+                PackageRegistry pkgReg = kbuilder.getPackageRegistry(packageDescr.getName());
+                if (pkgReg != null) {
+                    try {
+                        Class<?> clz = pkgReg.getTypeResolver().resolveType(typeDescr.getTypeName());
+                        java.lang.Package pkg = clz.getPackage();
+                        if (pkg != null) {
+                            typeDescr.setNamespace(pkg.getName());
+                            int index = typeDescr.getNamespace() != null && !typeDescr.getNamespace().isEmpty() ? typeDescr.getNamespace().length() + 1 : 0;
+                            typeDescr.setTypeName(clz.getCanonicalName().substring(index));
                         }
+                    } catch (Exception e) {
+                        // intentionally eating the exception as we will fallback to default namespace
                     }
                 }
+            }
 
-                if (isEmpty(typeDescr.getNamespace())) {
-                    typeDescr.setNamespace(packageDescr.getNamespace()); // set the default namespace
+            if (isEmpty(typeDescr.getNamespace())) {
+                typeDescr.setNamespace(packageDescr.getNamespace()); // set the default namespace
+            }
+
+            //identify superclass type and namespace
+            if (typeDescr instanceof TypeDeclarationDescr) {
+                fillSuperType((TypeDeclarationDescr) typeDescr,
+                              packageDescr);
+                AnnotationDescr kind = typeDescr.getAnnotation( TypeDeclaration.Kind.ID );
+                if ( typeClass != null && kind != null && kind.hasValue() && TypeDeclaration.Kind.TRAIT == TypeDeclaration.Kind.parseKind( kind.getSingleValue() ) ) {
+                    fillStaticInterfaces( (TypeDeclarationDescr) typeDescr, typeClass );
+                }
+            }
+
+            //identify field types as well
+            fillFieldTypes(typeDescr,
+                           packageDescr);
+
+            if (!typeDescr.getNamespace().equals(packageDescr.getNamespace())) {
+                // If the type declaration is for a different namespace, process that separately.
+                PackageDescr altDescr;
+
+                if ( foreignPackages == null ) {
+                    foreignPackages = new HashMap<String, PackageDescr>(  );
                 }
 
-                //identify superclass type and namespace
+                if ( foreignPackages.containsKey( typeDescr.getNamespace() ) ) {
+                    altDescr = foreignPackages.get( typeDescr.getNamespace() );
+                } else {
+                    altDescr = new PackageDescr(typeDescr.getNamespace());
+                    foreignPackages.put( typeDescr.getNamespace(), altDescr );
+                }
+
                 if (typeDescr instanceof TypeDeclarationDescr) {
-                    fillSuperType((TypeDeclarationDescr) typeDescr,
-                                  packageDescr);
-                    AnnotationDescr kind = typeDescr.getAnnotation( TypeDeclaration.Kind.ID );
-                    if ( typeClass != null && kind != null && kind.hasValue() && TypeDeclaration.Kind.TRAIT == TypeDeclaration.Kind.parseKind( kind.getSingleValue() ) ) {
-                        fillStaticInterfaces( (TypeDeclarationDescr) typeDescr, typeClass );
-                    }
+                    altDescr.addTypeDeclaration((TypeDeclarationDescr) typeDescr);
+                } else if (typeDescr instanceof EnumDeclarationDescr) {
+                    altDescr.addEnumDeclaration((EnumDeclarationDescr) typeDescr);
                 }
 
-                //identify field types as well
-                fillFieldTypes(typeDescr,
-                               packageDescr);
-
-                if (!typeDescr.getNamespace().equals(packageDescr.getNamespace())) {
-                    // If the type declaration is for a different namespace, process that separately.
-                    PackageDescr altDescr;
-
-                    if ( foreignPackages == null ) {
-                        foreignPackages = new HashMap<String, PackageDescr>(  );
-                    }
-
-                    if ( foreignPackages.containsKey( typeDescr.getNamespace() ) ) {
-                        altDescr = foreignPackages.get( typeDescr.getNamespace() );
-                    } else {
-                        altDescr = new PackageDescr(typeDescr.getNamespace());
-                        foreignPackages.put( typeDescr.getNamespace(), altDescr );
-                    }
-
-                    if (typeDescr instanceof TypeDeclarationDescr) {
-                        altDescr.addTypeDeclaration((TypeDeclarationDescr) typeDescr);
-                    } else if (typeDescr instanceof EnumDeclarationDescr) {
-                        altDescr.addEnumDeclaration((EnumDeclarationDescr) typeDescr);
-                    }
-
-                    for (ImportDescr imp : packageDescr.getImports()) {
-                        altDescr.addImport(imp);
-                    }
-                    if (!kbuilder.getPackageRegistry().containsKey(altDescr.getNamespace())) {
-                        kbuilder.newPackage(altDescr);
-                    }
+                for (ImportDescr imp : packageDescr.getImports()) {
+                    altDescr.addImport(imp);
+                }
+                if (!kbuilder.getPackageRegistry().containsKey(altDescr.getNamespace())) {
+                    kbuilder.newPackage(altDescr);
                 }
             }
         }
