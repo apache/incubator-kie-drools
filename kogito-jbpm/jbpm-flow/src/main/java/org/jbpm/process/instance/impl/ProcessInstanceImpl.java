@@ -53,6 +53,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     private Map<String, Object> metaData = new HashMap<String, Object>();
     private String outcome;
     private long parentProcessInstanceId;
+    private String description;
 
     public void setId(final long id) {
         this.id = id;
@@ -278,4 +279,11 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
         this.parentProcessInstanceId = parentProcessInstanceId;
     }
     
+    public String getDescription() {
+    	return description;
+    }
+    
+    public void setDescription(String description) {
+    	this.description = description;
+    }
 }
