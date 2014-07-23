@@ -87,7 +87,7 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>FFFD - LA (400) TS (0.3)</name>
+    <name>FFFD - LA (400-1)</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -111,10 +111,9 @@
         </unionMoveSelector>
         <acceptor>
           <lateAcceptanceSize>400</lateAcceptanceSize>
-          <entityTabuRatio>0.3</entityTabuRatio>
         </acceptor>
         <forager>
-          <acceptedCountLimit>2</acceptedCountLimit>
+          <acceptedCountLimit>1</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>

@@ -43,10 +43,9 @@
     </unionMoveSelector>
     <acceptor>
       <lateAcceptanceSize>400</lateAcceptanceSize>
-      <entityTabuRatio>0.3</entityTabuRatio>
     </acceptor>
     <forager>
-      <acceptedCountLimit>2</acceptedCountLimit>
+      <acceptedCountLimit>1</acceptedCountLimit>
     </forager>
   </localSearch>
 </solver>
