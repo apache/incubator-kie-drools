@@ -24,11 +24,21 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("CtMachine")
 public class Machine extends AbstractPersistable {
 
+    private int index;
+
     private long powerConsumptionMicros; // when it's up
     private long spinUpDownCostMicros; // In micro's, sum of upCost and downCost
 
     // Order is equal to resourceList so Resource.getIndex() can be used for the index
     private List<MachineCapacity> machineCapacityList;
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
 
     public long getPowerConsumptionMicros() {
         return powerConsumptionMicros;

@@ -183,6 +183,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
                 Machine machine = new Machine();
                 String[] machineLineTokens = splitBySpacesOrTabs(readStringValue(), 4);
                 machine.setId(Long.parseLong(machineLineTokens[0]));
+                machine.setIndex(i);
                 machine.setPowerConsumptionMicros(CheapTimeCostCalculator.parseMicroCost(machineLineTokens[1]));
                 machine.setSpinUpDownCostMicros(CheapTimeCostCalculator.parseMicroCost(machineLineTokens[2])
                         + CheapTimeCostCalculator.parseMicroCost(machineLineTokens[3]));

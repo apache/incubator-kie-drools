@@ -16,10 +16,7 @@
 
 package org.optaplanner.examples.cheaptime.solver.score;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
@@ -42,7 +39,8 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
 
     private int resourceListSize;
     private int globalPeriodRangeTo;
-    private Map<Machine, List<MachinePeriodPart>> machinePeriodListMap;
+    private MachinePeriodPart[][] machineToMachinePeriodListMap; // Map<List<>> replaced by array[][] for performance
+    private MachinePeriodPart[] unassignedMachinePeriodList; // List<> replaced by array[] for performance
 
     private long hardScore;
     private long softScore;
@@ -66,19 +64,18 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
         globalPeriodRangeTo = solution.getGlobalPeriodRangeTo();
         List<Machine> machineList = solution.getMachineList();
         List<PeriodPowerCost> periodPowerCostList = solution.getPeriodPowerCostList();
-        machinePeriodListMap = new LinkedHashMap<Machine, List<MachinePeriodPart>>(machineList.size());
+        machineToMachinePeriodListMap = new MachinePeriodPart[machineList.size()][];
         for (Machine machine : machineList) {
-            List<MachinePeriodPart> machinePeriodList = new ArrayList<MachinePeriodPart>(globalPeriodRangeTo);
+            MachinePeriodPart[] machinePeriodList = new MachinePeriodPart[globalPeriodRangeTo];
             for (int period = 0; period < globalPeriodRangeTo; period++) {
-                machinePeriodList.add(new MachinePeriodPart(machine, periodPowerCostList.get(period)));
+                machinePeriodList[period] = new MachinePeriodPart(machine, periodPowerCostList.get(period));
             }
-            machinePeriodListMap.put(machine, machinePeriodList);
+            machineToMachinePeriodListMap[machine.getIndex()] = machinePeriodList;
         }
-        List<MachinePeriodPart> unassignedMachinePeriodList = new ArrayList<MachinePeriodPart>(globalPeriodRangeTo);
+        unassignedMachinePeriodList = new MachinePeriodPart[globalPeriodRangeTo];
         for (int period = 0; period < globalPeriodRangeTo; period++) {
-            unassignedMachinePeriodList.add(new MachinePeriodPart(null, periodPowerCostList.get(period)));
+            unassignedMachinePeriodList[period] = new MachinePeriodPart(null, periodPowerCostList.get(period));
         }
-        machinePeriodListMap.put(null, unassignedMachinePeriodList);
         for (TaskAssignment taskAssignment : solution.getTaskAssignmentList()) {
             // Do not do modifyMachine(taskAssignment, null, taskAssignment.getMachine());
             // because modifyStartPeriod does all it's effects too
@@ -144,11 +141,11 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
         }
         Integer endPeriod = taskAssignment.getEndPeriod();
         if (oldMachine != null) {
-            List<MachinePeriodPart> machinePeriodList = machinePeriodListMap.get(oldMachine);
+            MachinePeriodPart[] machinePeriodList = machineToMachinePeriodListMap[oldMachine.getIndex()];
             retractRange(taskAssignment, machinePeriodList, startPeriod, endPeriod, false);
         }
         if (newMachine != null) {
-            List<MachinePeriodPart> machinePeriodList = machinePeriodListMap.get(newMachine);
+            MachinePeriodPart[] machinePeriodList = machineToMachinePeriodListMap[newMachine.getIndex()];
             insertRange(taskAssignment, machinePeriodList, startPeriod, endPeriod, false);
         }
     }
@@ -193,7 +190,12 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             }
         }
         Machine machine = taskAssignment.getMachine();
-        List<MachinePeriodPart> machinePeriodList = machinePeriodListMap.get(machine);
+        MachinePeriodPart[] machinePeriodList;
+        if (machine != null) {
+            machinePeriodList = machineToMachinePeriodListMap[machine.getIndex()];
+        } else {
+            machinePeriodList = unassignedMachinePeriodList;
+        }
         if (retractStart != retractEnd) {
             retractRange(taskAssignment, machinePeriodList, retractStart, retractEnd, true);
         }
@@ -202,7 +204,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
         }
     }
 
-    private void retractRange(TaskAssignment taskAssignment, List<MachinePeriodPart> machinePeriodList,
+    private void retractRange(TaskAssignment taskAssignment, MachinePeriodPart[] machinePeriodList,
             int startPeriod, int endPeriod, boolean retractTaskCost) {
         long powerConsumptionMicros = taskAssignment.getTask().getPowerConsumptionMicros();
         long spinUpDownCostMicros = taskAssignment.getMachine().getSpinUpDownCostMicros();
@@ -214,11 +216,11 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             previousStatus = MachinePeriodStatus.OFF;
             idleAvailable = Long.MIN_VALUE;
         } else {
-            previousStatus = machinePeriodList.get(startPeriod - 1).status;
+            previousStatus = machinePeriodList[startPeriod - 1].status;
             if (previousStatus == MachinePeriodStatus.IDLE) {
                 idleAvailable = spinUpDownCostMicros;
                 for (int i = startPeriod - 1; i >= 0; i--) {
-                    MachinePeriodPart machinePeriod = machinePeriodList.get(i);
+                    MachinePeriodPart machinePeriod = machinePeriodList[i];
                     if (machinePeriod.status.isActive()) {
                         idlePeriodStart = i + 1;
                         break;
@@ -237,7 +239,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             }
         }
         for (int i = startPeriod; i < endPeriod; i++) {
-            MachinePeriodPart machinePeriod = machinePeriodList.get(i);
+            MachinePeriodPart machinePeriod = machinePeriodList[i];
             machinePeriod.retractTaskAssignment(taskAssignment);
             if (retractTaskCost) {
                 softScore += CheapTimeCostCalculator.multiplyTwoMicros(powerConsumptionMicros,
@@ -253,7 +255,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
                 } else if (previousStatus == MachinePeriodStatus.IDLE) {
                     // Create idle period
                     for (int j = idlePeriodStart; j < i; j++) {
-                        machinePeriodList.get(j).makeIdle();
+                        machinePeriodList[j].makeIdle();
                     }
                     idlePeriodStart = Integer.MIN_VALUE;
                     idleAvailable = Long.MIN_VALUE;
@@ -278,17 +280,17 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
                 throw new IllegalStateException("Impossible status (" + machinePeriod.status + ").");
             }
         }
-        if (endPeriod < globalPeriodRangeTo && machinePeriodList.get(endPeriod).status != MachinePeriodStatus.OFF
+        if (endPeriod < globalPeriodRangeTo && machinePeriodList[endPeriod].status != MachinePeriodStatus.OFF
                 && !previousStatus.isActive()) {
             for (int i = endPeriod; i < globalPeriodRangeTo; i++) {
-                MachinePeriodPart machinePeriod = machinePeriodList.get(i);
+                MachinePeriodPart machinePeriod = machinePeriodList[i];
                 if (machinePeriod.status.isActive()) {
                     if (previousStatus == MachinePeriodStatus.OFF) {
                         machinePeriod.spinUp();
                     } else if (previousStatus == MachinePeriodStatus.IDLE) {
                         // Create idle period
                         for (int j = idlePeriodStart; j < i; j++) {
-                            machinePeriodList.get(j).makeIdle();
+                            machinePeriodList[j].makeIdle();
                         }
                     }
                     break;
@@ -309,14 +311,14 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
         }
     }
 
-    private void insertRange(TaskAssignment taskAssignment, List<MachinePeriodPart> machinePeriodList,
+    private void insertRange(TaskAssignment taskAssignment, MachinePeriodPart[] machinePeriodList,
             int startPeriod, int endPeriod, boolean insertTaskCost) {
         long powerConsumptionMicros = taskAssignment.getTask().getPowerConsumptionMicros();
-        MachinePeriodPart startMachinePeriod = machinePeriodList.get(startPeriod);
+        MachinePeriodPart startMachinePeriod = machinePeriodList[startPeriod];
         boolean startIsOff = startMachinePeriod.status == MachinePeriodStatus.OFF;
-        boolean lastIsOff = machinePeriodList.get(endPeriod - 1).status == MachinePeriodStatus.OFF;
+        boolean lastIsOff = machinePeriodList[endPeriod - 1].status == MachinePeriodStatus.OFF;
         for (int i = startPeriod; i < endPeriod; i++) {
-            MachinePeriodPart machinePeriod = machinePeriodList.get(i);
+            MachinePeriodPart machinePeriod = machinePeriodList[i];
             machinePeriod.insertTaskAssignment(taskAssignment);
             if (insertTaskCost) {
                 softScore -= CheapTimeCostCalculator.multiplyTwoMicros(powerConsumptionMicros,
@@ -332,7 +334,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             long idleAvailable = taskAssignment.getMachine().getSpinUpDownCostMicros();
             int idlePeriodStart = Integer.MIN_VALUE;
             for (int i = startPeriod - 1; i >= 0 && idleAvailable >= 0L; i--) {
-                MachinePeriodPart machinePeriod = machinePeriodList.get(i);
+                MachinePeriodPart machinePeriod = machinePeriodList[i];
                 if (machinePeriod.status.isActive()) {
                     idlePeriodStart = i + 1;
                     break;
@@ -342,7 +344,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             if (idlePeriodStart >= 0) {
                 // Create idle period
                 for (int i = idlePeriodStart; i < startPeriod; i++) {
-                    machinePeriodList.get(i).makeIdle();
+                    machinePeriodList[i].makeIdle();
                 }
             } else {
                 startMachinePeriod.spinUp();
@@ -352,7 +354,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             long idleAvailable = taskAssignment.getMachine().getSpinUpDownCostMicros();
             int idlePeriodEnd = Integer.MIN_VALUE;
             for (int i = endPeriod; i < globalPeriodRangeTo && idleAvailable >= 0L; i++) {
-                MachinePeriodPart machinePeriod = machinePeriodList.get(i);
+                MachinePeriodPart machinePeriod = machinePeriodList[i];
                 if (machinePeriod.status.isActive()) {
                     idlePeriodEnd = i;
                     machinePeriod.undoSpinUp();
@@ -363,7 +365,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             if (idlePeriodEnd >= 0) {
                 // Create idle period
                 for (int i = endPeriod; i < idlePeriodEnd; i++) {
-                    machinePeriodList.get(i).makeIdle();
+                    machinePeriodList[i].makeIdle();
                 }
             }
         }
@@ -382,7 +384,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
 
         private int taskCount;
         private MachinePeriodStatus status;
-        private int[] resourceAvailableList;
+        private int[] resourceAvailableList; // List<> replaced by array[] for performance
 
         private MachinePeriodPart(Machine machine, PeriodPowerCost periodPowerCost) {
             this.machine = machine;
