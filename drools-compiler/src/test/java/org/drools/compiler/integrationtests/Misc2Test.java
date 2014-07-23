@@ -6268,4 +6268,61 @@ public class Misc2Test extends CommonTestMethodBase {
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
         assertEquals(1, results.getMessages().size());
     }
+
+    @Test
+    public void testFieldNameStartingWithUnderscore() throws Exception {
+        // DROOLS-554
+        String str = "import " + Underscore.class.getCanonicalName() + ";\n" +
+                     "rule R when\n" +
+                     "    Underscore( _id == \"test\" )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        assertEquals(0, results.getMessages().size());
+    }
+
+    public static class Underscore {
+        private String _id;
+
+        public String get_id() {
+            return _id;
+        }
+
+        public void set_id(String _id) {
+            this._id = _id;
+        }
+    }
+
+    @Test @Ignore
+    public void testSharedQueryNode() throws Exception {
+        // DROOLS-561
+        String drl =
+                "query find( Integer $i, String $s )\n" +
+                "    $i := Integer( toString() == $s )\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 salience -1 when\n" +
+                "    $s : String()\n" +
+                "    ?find( i, $s; )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R1 when\n" +
+                "    $s : String()\n" +
+                "    ?find( i, $s; )\n" +
+                "    $i : Integer( this == 1 ) from i\n" +
+                "then\n" +
+                "    delete( $s );\n" +
+                "end\n";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession ksession = helper.build().newKieSession();
+
+        ksession.insert("1");
+        ksession.insert(1);
+        ksession.fireAllRules();
+    }
 }
