@@ -20,6 +20,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -49,11 +50,20 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import net.miginfocom.layout.ConstraintParser;
 import net.miginfocom.swing.MigLayout;
 
+import org.drools.games.adventures.model.DropCommand;
+import org.drools.games.adventures.model.GiveCommand;
+import org.drools.games.adventures.model.LookCommand;
+import org.drools.games.adventures.model.MoveCommand;
+import org.drools.games.adventures.model.PickupCommand;
+import org.drools.games.adventures.model.Room;
+import org.drools.games.adventures.model.Thing;
+import org.drools.games.adventures.model.Character;
 import org.kie.api.runtime.Channel;
 
 public class AdventureFrame extends JFrame {
@@ -73,7 +83,7 @@ public class AdventureFrame extends JFrame {
     private JTable                   inventoryTable;
     private JFormattedTextField      cmdTextField;
 
-    private JTextArea                globalEventsTextArea;
+    //private JTextArea                globalEventsTextArea;
 
     private GameEngine               gameEngine;
 
@@ -86,7 +96,11 @@ public class AdventureFrame extends JFrame {
      * Create the frame.
      */
     public AdventureFrame(UserSession session,
+                          final GameEngine gameEngine,
                           int onClose) {
+
+        this.session = session;
+        this.gameEngine = gameEngine;
         setDefaultCloseOperation( onClose );
         setBounds( 100,
                    100,
@@ -131,9 +145,6 @@ public class AdventureFrame extends JFrame {
         createCharacterPanel( test );
         createBuildActionsPanel( test );
         createSendCommandPanel( test );
-
-        this.session = session;
-
     }
 
     public UserSession getSession() {
@@ -179,9 +190,10 @@ public class AdventureFrame extends JFrame {
     private Component createEventsAndInvetoryPanel() {
         JSplitPane leftSplitPanel = new JSplitPane();
         leftSplitPanel.setOrientation( JSplitPane.VERTICAL_SPLIT );
-        leftSplitPanel.setDividerLocation( 500 );
+        leftSplitPanel.setDividerLocation( 400 );
 
-        Component eventsPanel = createEventsPanel();
+        //Component eventsPanel = createEventsPanel();
+        Component eventsPanel = createLocalEventsPanel();
         leftSplitPanel.setLeftComponent( eventsPanel );
 
         Component inventoryPanel = createInventoryPanel();
@@ -195,7 +207,7 @@ public class AdventureFrame extends JFrame {
         splitPanel.setResizeWeight( 0.4 );
         splitPanel.setOrientation( JSplitPane.VERTICAL_SPLIT );
 
-        splitPanel.setRightComponent( createGlobalEventsPanel() );
+        //splitPanel.setRightComponent( createGlobalEventsPanel() );
 
         splitPanel.setLeftComponent( createLocalEventsPanel() );
 
@@ -216,7 +228,7 @@ public class AdventureFrame extends JFrame {
                                                   50,
                                                   true,
                                                   true );
-        globalEventsTextArea = (JTextArea) ((JViewport) pane1.getComponents()[0]).getComponents()[0];
+        //globalEventsTextArea = (JTextArea) ((JViewport) pane1.getComponents()[0]).getComponents()[0];
         globalEventsPanel.add( pane1 );
         return globalEventsPanel;
     }
@@ -227,7 +239,7 @@ public class AdventureFrame extends JFrame {
         localEventsPanel.setLayout( new BoxLayout( localEventsPanel,
                                                    BoxLayout.Y_AXIS ) );
 
-        JLabel localEventsLabel = new JLabel( "Local Events" );
+        JLabel localEventsLabel = new JLabel( "Events" );
         localEventsPanel.add( localEventsLabel );
 
         //        JScrollPane pane2 = createTextAreaScroll( "",
@@ -282,10 +294,10 @@ public class AdventureFrame extends JFrame {
                 }
                 int row = inventoryTable.rowAtPoint( e.getPoint() );
                 int col = inventoryTable.columnAtPoint( e.getPoint() );
-                Object o = inventoryTable.getModel().getValueAt( row,
+                Thing t = (Thing) inventoryTable.getModel().getValueAt( row,
                                                                  col );
-                cmdTextField.setText( cmdTextField.getText() + o.toString() + " " );
-                cmd.add( o );
+                cmdTextField.setText( cmdTextField.getText() + t.getName() + " " );
+                cmd.add( t );
             }
         } );
 
@@ -325,11 +337,23 @@ public class AdventureFrame extends JFrame {
         characterSelectCombo.setModel( new DefaultComboBoxModel( new Object[]{null, null} ) );
         parent.add( characterSelectCombo,
                     "top, left" );
+
+        Map<String, Character> characterMap = ( Map<String, Character> ) gameEngine.getData().get("characters");
+        Character[] characters = characterMap.values().toArray( new Character[characterMap.size()] );
+
+        characterSelectCombo.setModel( new DefaultComboBoxModel( characters ) );
+        characterSelectCombo.setSelectedItem( characterMap.get("hero"));
+
         characterSelectCombo.addActionListener( new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+
+                Character c = (Character) characterSelectCombo.getSelectedObjects()[0];
+                org.kie.api.runtime.rule.FactHandle fh = gameEngine.getKieSession().getFactHandle(session);
+                session.setCharacter(c);
+                gameEngine.getKieSession().update(fh, session);
+
                 cmd = new ArrayList();
-                cmd.add( Action.SELECT_CHARACTER );
-                cmd.add( session );
+                cmd.add( LookCommand.class );
                 cmd.add( characterSelectCombo.getSelectedObjects()[0] );
                 gameEngine.receiveMessage( session,
                                            cmd );
@@ -368,6 +392,7 @@ public class AdventureFrame extends JFrame {
                                                BoxLayout.Y_AXIS ) );
 
         JButton moveBtn = new JButton( "Move" );
+        moveBtn.setToolTipText("Select one Room from the Exits, then press Send");
         actionsPanel.add( moveBtn );
 //        msg = new ACLMessage();
 //        msg.setPerformative( Performative.REQUEST );
@@ -376,51 +401,55 @@ public class AdventureFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 cmdTextField.setText( "Move " );
                 cmd = new ArrayList();
-                cmd.add( Action.MOVE );
+                cmd.add(MoveCommand.class );
                 cmd.add( characterSelectCombo.getSelectedObjects()[0] );
             }
         } );
 
         JButton pickupBtn = new JButton( "Pick Up" );
+        pickupBtn.setToolTipText("Select one from the Items list, then press Send");
         actionsPanel.add( pickupBtn );
         pickupBtn.addActionListener( new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 cmdTextField.setText( "Pickup " );
                 cmd = new ArrayList();
-                cmd.add( Action.PICKUP );
+                cmd.add(PickupCommand.class);
                 cmd.add( characterSelectCombo.getSelectedObjects()[0] );
             }
         } );
 
         JButton dropBtn = new JButton( "Drop" );
+        dropBtn.setToolTipText("Select one from the Inventory, then press Send");
         actionsPanel.add( dropBtn );
         dropBtn.addActionListener( new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 cmdTextField.setText( "Drop " );
                 cmd = new ArrayList();
-                cmd.add( Action.DROP );
+                cmd.add(DropCommand.class);
                 cmd.add( characterSelectCombo.getSelectedObjects()[0] );
             }
         } );
 
         JButton giveBtn = new JButton( "Give" );
+        giveBtn.setToolTipText("Select one from the Inventory, then Select the target Character, then press Send");
         actionsPanel.add( giveBtn );
         giveBtn.addActionListener( new ActionListener() {
             public void actionPerformed(ActionEvent e) {                
                 cmdTextField.setText( "Request Give " );
                 cmd = new ArrayList();
-                cmd.add( Action.GIVE );
+                cmd.add(GiveCommand.class);
                 cmd.add( characterSelectCombo.getSelectedObjects()[0] );
             }
         } );
 
         JButton lookBtn = new JButton( "Look" );
+        giveBtn.setToolTipText("Just press Send");
         actionsPanel.add( lookBtn );
         lookBtn.addActionListener( new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 cmdTextField.setText( "Look " );
                 cmd = new ArrayList();
-                cmd.add( Action.LOOK );
+                cmd.add( LookCommand.class );
                 cmd.add( characterSelectCombo.getSelectedObjects()[0] );
             }
         } );
@@ -459,10 +488,10 @@ public class AdventureFrame extends JFrame {
                 }
                 int row = thingsTable.rowAtPoint( e.getPoint() );
                 int col = thingsTable.columnAtPoint( e.getPoint() );
-                Object o = thingsTable.getModel().getValueAt( row,
+                Thing t = (Thing) thingsTable.getModel().getValueAt( row,
                                                               col );
-                cmdTextField.setText( cmdTextField.getText() + o.toString() + " " );
-                cmd.add( o );
+                cmdTextField.setText( cmdTextField.getText() + t.getName() + " " );
+                cmd.add( t );
             }
         } );
 
@@ -502,10 +531,10 @@ public class AdventureFrame extends JFrame {
                 }
                 int row = exitsTable.rowAtPoint( e.getPoint() );
                 int col = exitsTable.columnAtPoint( e.getPoint() );
-                Object o = exitsTable.getModel().getValueAt( row,
+                Room r = (Room) exitsTable.getModel().getValueAt( row,
                                                              col );
-                cmdTextField.setText( cmdTextField.getText() + o.toString() + " " );
-                cmd.add( o );
+                cmdTextField.setText( cmdTextField.getText() + r.getName() + " " );
+                cmd.add( r );
             }
         } );
 
@@ -875,35 +904,46 @@ public class AdventureFrame extends JFrame {
         }
     }
 
-    public static class JComboBoxChannel
-        implements
-        Channel {
-        private JComboBox jcomboBox;
-
-        public JComboBoxChannel(JComboBox jcomboBox) {
-            this.jcomboBox = jcomboBox;
-        }
-
-        public void send(Object object) {
-            List list = (List) object;
-            jcomboBox.setModel( new DefaultComboBoxModel( list.toArray() ) );
-            //jcomboBox.setModel( new DefaultComboBoxModel( new Object[] { "xxxxx", "yyyyyy" } ) ) ;
-        }
-    }
+//    public static class JComboBoxChannel
+//        implements
+//        Channel {
+//        private JComboBox jcomboBox;
+//
+//        public JComboBoxChannel(JComboBox jcomboBox) {
+//            this.jcomboBox = jcomboBox;
+//        }
+//
+//        public void send(Object object) {
+//            List list = (List) object;
+//            jcomboBox.setModel( new DefaultComboBoxModel( list.toArray() ) );
+//            //jcomboBox.setModel( new DefaultComboBoxModel( new Object[] { "xxxxx", "yyyyyy" } ) ) ;
+//        }
+//    }
 
     public static class JTableChannel
         implements
         Channel {
         private JTable jTable;
 
-        public JTableChannel(JTable exitsTable) {
-            this.jTable = exitsTable;
+        public JTableChannel(JTable jTable) {
+            this.jTable = jTable;
+            String name = jTable.getColumnName(0);
+            jTable.getColumn( name ).setCellRenderer(new DefaultTableCellRenderer() {
+                public void setValue(Object value) {
+                    setText(((Thing) value).getName());
+                }
+            });
+
         }
 
         public void send(Object object) {
+            List<Thing> things = (List<Thing>) object;
+            addRows( things );
+        }
+
+        public void addRows(List list) {
             DefaultTableModel model = (DefaultTableModel) jTable.getModel();
 
-            List list = (List) object;
 
             if ( model.getRowCount() < list.size() ) {
                 Object[][] exits = new Object[list.size()][];
@@ -929,4 +969,5 @@ public class AdventureFrame extends JFrame {
             }
         }
     }
+
 }
