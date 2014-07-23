@@ -2,7 +2,6 @@ import org.drools.games.adventures.model.Thing;
 import org.drools.games.adventures.model.Character;
 import org.drools.games.adventures.model.Item;
 import org.drools.games.adventures.model.Key;
-import org.drools.games.adventures.model.Lock;
 import org.drools.games.adventures.model.Room;
 import org.drools.games.adventures.model.Door;
 import org.drools.games.adventures.model.Location;
