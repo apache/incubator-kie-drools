@@ -1,129 +1,132 @@
 package org.drools.games.adventures
 
-import org.drools.games.adventures.Room;
-import org.drools.games.adventures.Thing;
+//import org.drools.games.adventures.Room;
+//import org.drools.games.adventures.Thing;
+//
+//import org.drools.games.adventures.Request;
+//import org.drools.games.adventures.Response;
+//import org.drools.games.adventures.SessionCharacter
+//
+//import org.drools.games.adventures.MoveCommand
+//import org.drools.games.adventures.Command
+//import org.drools.games.adventures.PickupCommand
+//import org.drools.games.adventures.DropCommand
+//import org.drools.games.adventures.LookCommand
+//import org.drools.games.adventures.SetSessionCharacterCommand
+//import org.drools.games.adventures.model.EnterEvent
+//import org.drools.games.adventures.model.ExitEvent
 
-import org.drools.games.adventures.Request;
-import org.drools.games.adventures.Response;
-import org.drools.games.adventures.SessionCharacter
-
-import org.drools.games.adventures.MoveCommand
-import org.drools.games.adventures.Command
-import org.drools.games.adventures.PickupCommand
-import org.drools.games.adventures.DropCommand
-import org.drools.games.adventures.LookCommand
-import org.drools.games.adventures.SetSessionCharacterCommand
+import org.drools.games.adventures.model.*;
+import java.util.List;
 
 global org.drools.games.adventures.Counter counter
 
 dialect "mvel"
 
+function String thingsToString(List list) {
+    StringBuilder s = new StringBuilder();
+    for( int i = 0; i < list.size(); i++ ) {
+        if ( i != 0 ) {
+            s.append( ", " );
+        }
+        s.append( ((Thing)list.get(i)).getName() );
+    }
 
-rule lookCmd agenda-group "commands" lock-on-active auto-focus  when
+    return s.toString();
+}
+
+rule processCommand  when
+    Command()
+then
+    setFocus( "commands" );
+end
+
+
+rule lookCmd agenda-group "commands"  when
     lc : LookCommand(  c : character )
     Location( thing == c, $room : target )
     ?look( c, things, exits; )
 then
-    str = "You are in the " + $room + "\n";
-    str +="You can see " + things + "\n";
-    str +="Available exits are  " + exits + "\n";
+    str = "You are in the " + $room.name + "\n";
+    str +="You can see " + thingsToString( things ) + "\n";
+    str +="Available exits are  " + thingsToString( exits ) + "\n";
     str +="\n";
 
-    res = new Response( str );
-    res.localId = lc.requestId;
-    insert( res );    
+    lc.session.channels["output"].send( str );
 end
 
-rule setUserSessionCharacter agenda-group "commands" lock-on-active auto-focus  when
-    $c : SetSessionCharacterCommand()    
-    $sc : SessionCharacter( session == $c.session, character !=  $c.character )
+rule validMove agenda-group "commands" when
+    mc : MoveCommand( c : character, r : room )
+    l  : Location( thing == c, ltarget : target ) @watch( !target )
+    ?connect( d, r, ltarget; )
 then
-    modify( $sc ) { character = $c.character }; 
-    insert( new CharacterSelectedEvent( $c.character ) );   
-    
-    res = new Response( "You have selected the character " + $c.character + "\n" );
-    res.localId = $c.requestId;
-    insert( res );     
-end
-
-rule validMove agenda-group "commands" lock-on-active auto-focus  when
-    mc : MoveCommand( c : character, r : room )    
-    l  : Location( thing == c, ltarget : target )
-    exists ?connect( r, ltarget; ) 
-then
-    exit = new ExitEvent( c, (Room) l.target )
+    exit = new ExitEvent( c, (Room) l.target );
     enter = new EnterEvent( c, r );
-        
+
     modify( l ) { target = r };
-            
+
     insert( exit );
-    insert( enter );    
-    
-    res = new Response( "You have entered the " + l.target + "\n" );
-    res.localId = mc.requestId;
-    insert( res );    
+    insert( enter );
+
+    mc.session.channels["output"].send( "You have entered the " + l.target.name + "\n" );
 end
 
-rule validPickup agenda-group "commands" lock-on-active auto-focus  when
-    pc : PickupCommand( c : character, t : thing)    
-    
+rule roomLocked  agenda-group "commands" salience 10 when
+    eval( true )
+    mc : MoveCommand( c : character, r : room )
+    l  : Location( thing == c, ltarget : target ) @watch( !target )
+    ?connect( d, r, ltarget; )
+    Door( lockStatus == LockStatus.LOCKED ) from d
+then
+    mc.session.channels["output"].send( "The room " + l.target.name + " is locked\n" );
+    delete( mc );
+end
+
+rule validPickup agenda-group "commands"  when
+    pc : PickupCommand( c : character, t : thing)
+
     cl  : Location( thing == c )
-    tl : Location( thing == t, target == cl.target ) 
+    tl : Location( thing == t, target == cl.target ) @watch( !target )
 then
     insert( new Holding(  c, t ) );
     modify( tl ) { target =  c };
     insert( new PickupEvent( c, t ) );
-    
-    res = new Response( "You have picked up the " + t + "\n" );
-    res.localId = pc.requestId;
-    insert( res );  
+
+    pc.session.channels["output"].send(  "You have picked up the " + t.name + "\n" );
 end
 
-rule validDrop agenda-group "commands" lock-on-active auto-focus  when
-    dc : DropCommand( c : character, t : thing)    
-    
-    cl  : Location( thing == c )    
-    tl  : Location( thing == t ) 
+rule validDrop agenda-group "commands" when
+    dc : DropCommand( c : character, t : thing)
+
+    cl  : Location( thing == c )
+    tl  : Location( thing == t ) @watch( !target )
     h : Holding( c, t;)
 then
     modify( tl ) { target = cl.target };
     retract ( h );
-    insert( new DropEvent( c, t ) );    
-    
-    res = new Response( "You have droped the " + t + "\n" );
-    res.localId = dc.requestId;
-    insert( res );      
+    insert( new DropEvent( c, t ) );
+
+    dc.session.channels["output"].send( "You have dropped the " + t.name + "\n" );
 end
 
-rule validGive agenda-group "commands" lock-on-active auto-focus  when
-    gc : GiveCommand( $giver : giver, $thing : thing )    
-    
+rule validGive agenda-group "commands" when
+    gc : GiveCommand( $giver : giver, $thing : thing )
+
     // They are in the same room
     giverl  : Location( thing == gc.giver )
               Location( thing == gc.receiver, target == giverl.target )
 
-    // The giver must be holding the thing                   
-    h : Holding( $giver, $thing;)
+    // The giver must be holding the thing
+    h : Holding( $giver, $thing;) @watch( !character )
 then
     modify( h ) { character = gc.receiver };
-    insert( new GiveEvent( gc.giver, gc.thing, gc.receiver ) );    
-    
-    res = new Response( "You have given the " + gc.thing + " to " + gc.receiver + "\n" );
-    res.localId = gc.requestId;
-    insert( res );      
-end    
+    insert( new GiveEvent( gc.giver, gc.thing, gc.receiver ) );
 
-rule invalidCommand  agenda-group "commands" lock-on-active auto-focus  when
-    $cmd : Command()
-    not Response( localId == $cmd.requestId )
-then
-    res = new Response( "Invalid Command: " + $cmd );
-    res.localId = $cmd.requestId;
-    insert( res ); 
-end               
+    gc.session.channels["output"].send( "You have given the " + gc.thing.name + " to " + gc.receiver.name + "\n" );
+end
 
 rule retractCommand agenda-group "commands" lock-on-active auto-focus salience -100 when
     c : Command()
 then
-    retract( c );
+    delete( c );
 end

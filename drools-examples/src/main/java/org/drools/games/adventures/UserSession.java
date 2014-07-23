@@ -3,28 +3,38 @@ package org.drools.games.adventures;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.drools.games.adventures.model.Character;
 
 import org.kie.api.runtime.Channel;
 
 public class UserSession {
-    private int id;
+    private int                  id;
     private Map<String, Channel> channels;
-    
-    private static AtomicInteger counter = new AtomicInteger(); 
-    
+    private Character            character;
+
+    private static AtomicInteger counter = new AtomicInteger();
+
     public UserSession() {
         this.id = counter.getAndIncrement();
         this.channels = new HashMap<String, Channel>();
     }
-    
+
     public int getId() {
         return id;
     }
-    
+
     public void setId(int id) {
         this.id = id;
     }
-    
+
+    public Character getCharacter() {
+        return character;
+    }
+
+    public void setCharacter(Character character) {
+        this.character = character;
+    }
+
     public Map<String, Channel> getChannels() {
         return channels;
     }

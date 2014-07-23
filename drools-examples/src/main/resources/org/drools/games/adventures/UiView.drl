@@ -1,10 +1,12 @@
 package org.drools.games.adventures
 
-import org.drools.games.adventures.Room;
-import org.drools.games.adventures.Thing;
+//import org.drools.games.adventures.Room;
+//import org.drools.games.adventures.Thing;
+import org.drools.games.adventures.model.*;
 
 dialect "mvel"
 
+/*
 rule updateOnCharacterSelected salience 5  when
     SessionCharacter( $char : character, $us : session )
     Location( thing == $char, $room : target )
@@ -16,25 +18,26 @@ then
     str +="\n";
     
     $us.channels["output"].send( str ); 
-end  
+end
+ */
 
 rule updateThings salience 5  when                            
-    SessionCharacter( $char : character, $us : session )                          
+    session : UserSession( $char : character )
     things( $char, $things; )                                                      
 then
-    $us.channels["things"].send( $things ); 
+    session.channels["things"].send( $things );
 end
 
 rule updateInventory salience 5  when                            
-    SessionCharacter( $char : character, $us : session )                          
+    session : UserSession( $char : character )
     inventory( $char, $things; )                                                      
 then
-    $us.channels["inventory"].send( $things ); 
+    session.channels["inventory"].send( $things );
 end
 
 rule updateExits salience 5  when                            
-    SessionCharacter($char : character, $us : session )                          
+    session : UserSession( $char : character )
     exits( $char, $exits; )                                                      
 then
-    $us.channels["exits"].send( $exits ); 
+    session.channels["exits"].send( $exits );
 end

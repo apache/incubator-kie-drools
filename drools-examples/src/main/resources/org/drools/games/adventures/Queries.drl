@@ -2,14 +2,16 @@ package org.drools.games.adventures
 
 import java.util.List
 
-import org.drools.games.adventures.Character
-import org.drools.games.adventures.Room
-import org.drools.games.adventures.Location
+//import org.drools.games.adventures.Character
+//import org.drools.games.adventures.Room
+//import org.drools.games.adventures.Location
+import org.drools.games.adventures.model.*;
+import org.drools.games.adventures.UserSession;
 
-query connect( Room $x, Room $y ) 
-    Door($id, $x, $y;)
+query connect( Door $d, Room $x, Room $y )
+    $d := Door($id, $name, $x, $y;)
     or 
-    Door($id, $y, $x;)
+    $d :=Door($id, $name, $y, $x;)
 end
 
 query isContainedIn( Thing $x, Thing $y ) 
@@ -28,7 +30,7 @@ end
 query exits(Character $char, List $exits)
     $char := Character()
     Location( $char, $room; )
-    $exits := List() from accumulate( connect($room, $exit;),
+    $exits := List() from accumulate( connect($door, $room, $exit;),
                                       collectList( $exit ) )      
 end
 
