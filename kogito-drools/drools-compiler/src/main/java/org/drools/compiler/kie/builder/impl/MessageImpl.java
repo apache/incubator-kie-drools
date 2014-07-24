@@ -12,7 +12,7 @@ import java.util.List;
 
 public class MessageImpl implements Message {
 
-    protected static transient Logger logger = LoggerFactory.getLogger( MessageImpl.class );
+    protected static final transient Logger logger = LoggerFactory.getLogger( MessageImpl.class );
 
     private final long id;
     private final Level level;

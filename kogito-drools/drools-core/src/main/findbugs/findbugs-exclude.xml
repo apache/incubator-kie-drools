@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FindBugsFilter>
   <Match>
-    <Class name="~org.drools.core.marshalling.impl.ProtobufMessages.*" />
+    <Class name="~org\.drools\.core\.marshalling\.impl\.ProtobufMessages.*" />
   </Match>
-</FindBugsFilter>
 
+  <!-- As discussed with Mario Fusco, following fields are used as a configuration mean
+       and thus can't be changed to final. -->
+  <Match>
+    <Class name="~org\.drools\.core\.beliefsystem\.jtms\.JTMSBeliefSystem"/>
+    <Field name="STRICT"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+  <Match>
+    <Class name="~org\.drools\.core\.command\.runtime\.rule\.ModifyCommand"/>
+    <Field name="ALLOW_MODIFY_EXPRESSIONS"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+</FindBugsFilter>

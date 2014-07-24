@@ -47,7 +47,7 @@ public class DateFormatsImpl
      * This is here for any static classes, such as MVEL DataConverters, to access.
      * It is expected this will be set, before access.
      */
-    public static ThreadLocal<DateFormats> dateFormats = new ThreadLocal<DateFormats>() {
+    public static final ThreadLocal<DateFormats> DATE_FORMATS = new ThreadLocal<DateFormats>() {
 
     };
 

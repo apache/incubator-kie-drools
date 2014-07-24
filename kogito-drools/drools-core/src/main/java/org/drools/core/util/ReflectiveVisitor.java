@@ -36,7 +36,7 @@ public abstract class ReflectiveVisitor
     implements
         Visitor {
 
-    protected static transient Logger logger = LoggerFactory.getLogger(ReflectiveVisitor.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(ReflectiveVisitor.class);
 
     static final String newline = System.getProperty( "line.separator" );
     private Map<Class<?>, Method> methodCache = new HashMap<Class<?>, Method>();

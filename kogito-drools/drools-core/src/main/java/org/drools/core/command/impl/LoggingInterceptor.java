@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 public class LoggingInterceptor extends AbstractInterceptor {
 
-    protected static transient Logger logger = LoggerFactory.getLogger(LoggingInterceptor.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(LoggingInterceptor.class);
 
     public <T> T execute(Command<T> command) {
         logger.info("Executing --> " + command);

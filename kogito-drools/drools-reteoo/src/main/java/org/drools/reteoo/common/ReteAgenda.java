@@ -97,7 +97,7 @@ public class ReteAgenda
         Externalizable,
         InternalAgenda {
 
-    protected static transient Logger log = LoggerFactory.getLogger(ReteAgenda.class);
+    protected static final transient Logger log = LoggerFactory.getLogger(ReteAgenda.class);
 
     private static final long serialVersionUID = 510l;
 

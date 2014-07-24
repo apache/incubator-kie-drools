@@ -34,7 +34,7 @@ import java.util.List;
 
 public class RuleExecutor {
 
-    protected static transient Logger         log               = LoggerFactory.getLogger(RuleExecutor.class);
+    protected static final transient Logger   log               = LoggerFactory.getLogger(RuleExecutor.class);
     private static final RuleNetworkEvaluator NETWORK_EVALUATOR = new RuleNetworkEvaluator();
     private final PathMemory                  pmem;
     private RuleAgendaItem                    ruleAgendaItem;

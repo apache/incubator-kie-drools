@@ -26,9 +26,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public abstract class CellGroup extends SetOfNine {
 
-    public static Set<Integer> allNine = new CopyOnWriteArraySet<Integer>();
+    public static final Set<Integer> ALL_NINE = new CopyOnWriteArraySet<Integer>();
     static {
-        for (int i = 1; i <= 9; i++) allNine.add(i);
+        for (int i = 1; i <= 9; i++) ALL_NINE.add(i);
     }
 
     private List<Cell> cells = new ArrayList<Cell>();

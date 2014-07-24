@@ -41,7 +41,7 @@ public class JavaDialectConfiguration
     implements
     DialectConfiguration {
 
-    protected static transient Logger logger = LoggerFactory.getLogger(JavaDialectConfiguration.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(JavaDialectConfiguration.class);
     
     public static final String          JAVA_COMPILER_PROPERTY = "drools.dialect.java.compiler";
 

@@ -34,7 +34,7 @@ public class MVELDateCoercion implements ConversionHandler {
 
     public Object convertFrom(Object o) {
         if (o instanceof String) {
-            return DateUtils.parseDate( (String) o, DateFormatsImpl.dateFormats.get() );
+            return DateUtils.parseDate( (String) o, DateFormatsImpl.DATE_FORMATS.get() );
         } else {
             return o;
         }

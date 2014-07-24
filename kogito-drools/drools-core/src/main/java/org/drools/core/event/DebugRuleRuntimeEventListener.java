@@ -25,7 +25,7 @@ public class DebugRuleRuntimeEventListener
     implements
     RuleRuntimeEventListener {
 
-    protected static transient Logger logger = LoggerFactory.getLogger(org.kie.api.event.rule.DebugRuleRuntimeEventListener.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(org.kie.api.event.rule.DebugRuleRuntimeEventListener.class);
 
     public DebugRuleRuntimeEventListener() {
         // intentionally left blank

@@ -120,7 +120,7 @@ import static org.drools.core.util.StringUtils.isEmpty;
 
 public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
-    protected static transient Logger logger = LoggerFactory.getLogger(KnowledgeBuilderImpl.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(KnowledgeBuilderImpl.class);
 
     private final Map<String, PackageRegistry> pkgRegistryMap;
 

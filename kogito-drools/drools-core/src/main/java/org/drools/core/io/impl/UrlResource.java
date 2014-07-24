@@ -58,7 +58,7 @@ public class UrlResource extends BaseResource
 
     private static final int    DEFAULT_BUFFER_SIZE      = 1024 * 4;
 
-    public static File          CACHE_DIR                = getCacheDir();
+    public static final File    CACHE_DIR                = getCacheDir();
 
     private URL                 url;
     private long                lastRead                 = -1;

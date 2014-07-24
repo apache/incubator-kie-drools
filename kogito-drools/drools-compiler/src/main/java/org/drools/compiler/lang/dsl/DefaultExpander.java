@@ -45,7 +45,7 @@ public class DefaultExpander
     implements
     Expander {
 
-    protected static transient Logger logger = LoggerFactory.getLogger(DefaultExpander.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(DefaultExpander.class);
 
     private static final String         ruleOrQuery  =
                                                                  "^(?:                         " + // alternatives rule...end, query...end

@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 public class WorkingMemoryConsoleLogger extends WorkingMemoryLogger {
 
-    protected static transient Logger logger = LoggerFactory.getLogger(WorkingMemoryConsoleLogger.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(WorkingMemoryConsoleLogger.class);
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);

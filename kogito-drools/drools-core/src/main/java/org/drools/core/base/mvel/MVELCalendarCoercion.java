@@ -35,7 +35,7 @@ public class MVELCalendarCoercion implements ConversionHandler {
     public Object convertFrom(Object o) {
         if (o instanceof String) {
             Calendar cal = Calendar.getInstance();
-            cal.setTime( DateUtils.parseDate( (String) o, DateFormatsImpl.dateFormats.get() ) );
+            cal.setTime( DateUtils.parseDate( (String) o, DateFormatsImpl.DATE_FORMATS.get() ) );
             return cal;
         } else {
             return o;
