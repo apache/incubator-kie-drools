@@ -122,7 +122,7 @@ public class ClassCacheManager {
         List<CommandCallback> callbackList = new ArrayList<CommandCallback>();
         if (ctx != null && ctx.getData("callbacks") != null) {
             logger.debug("Callback: {}", ctx.getData("callbacks"));
-            String[] callbacksArray = ((String) ctx.getData("callbacks")).split(",");;
+            String[] callbacksArray = ((String) ctx.getData("callbacks")).split(",");
             List<String> callbacks = (List<String>) Arrays.asList(callbacksArray);
             for (String callbackName : callbacks) {
                 CommandCallback handler = findCommandCallback(callbackName, cl);

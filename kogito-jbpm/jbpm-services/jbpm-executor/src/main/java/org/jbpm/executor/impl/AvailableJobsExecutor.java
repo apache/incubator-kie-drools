@@ -116,10 +116,12 @@ public class AvailableJobsExecutor {
                     // add class loader so internally classes can be created with valid (kjar) deployment
                     ctx.setData("ClassLoader", cl);
                     
-                    callbacks = classCacheManager.buildCommandCallback(ctx, cl);                
                     
                     Command cmd = classCacheManager.findCommand(request.getCommandName(), cl);
                     ExecutionResults results = cmd.execute(ctx);
+                    
+                    callbacks = classCacheManager.buildCommandCallback(ctx, cl);                
+                    
                     for (CommandCallback handler : callbacks) {
                         
                         handler.onCommandDone(ctx, results);

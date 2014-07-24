@@ -19,6 +19,9 @@ package org.jbpm.executor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ErrorInfo;
+import org.kie.internal.executor.api.ExecutionResults;
 import org.kie.internal.executor.api.ExecutorService;
 import org.kie.internal.executor.api.RequestInfo;
 import org.slf4j.Logger;
@@ -105,6 +109,51 @@ public abstract class BasicExecutorBaseTest {
 
 
 
+    }
+    
+    @Test
+    public void addAnotherCallbackTest() throws InterruptedException {
+
+        CommandContext commandContext = new CommandContext();
+        commandContext.setData("businessKey", UUID.randomUUID().toString());
+        cachedEntities.put((String) commandContext.getData("businessKey"), new AtomicLong(1));
+
+        commandContext.setData("callbacks", "org.jbpm.executor.SimpleIncrementCallback");
+        executorService.scheduleRequest("org.jbpm.executor.test.AddAnotherCallbackCommand", commandContext);
+
+        Thread.sleep(10000);
+
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests();
+        assertEquals(0, inErrorRequests.size());
+        List<RequestInfo> queuedRequests = executorService.getQueuedRequests();
+        assertEquals(0, queuedRequests.size());
+        List<RequestInfo> executedRequests = executorService.getCompletedRequests();
+        assertEquals(1, executedRequests.size());
+
+        assertEquals(2, ((AtomicLong) cachedEntities.get((String) commandContext.getData("businessKey"))).longValue());
+
+        ExecutionResults results = null;
+        byte[] responseData = executedRequests.get(0).getResponseData();
+        ObjectInputStream in = null;
+        try {
+            in = new ObjectInputStream(new ByteArrayInputStream(responseData));
+            results = (ExecutionResults) in.readObject();
+        } catch (Exception e) {                        
+            logger.warn("Exception while serializing context data", e);
+            return;
+        } finally {
+            if (in != null) {
+                try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+            }
+        }
+        
+        String result = (String)results.getData("custom");
+        assertNotNull(result);
+        assertEquals("custom callback invoked", result);
     }
 
     @Test
