@@ -82,8 +82,6 @@ public class KnowledgeBuilderHelper {
      * 
      * @param classNames
      *     An array of class names that can be resolved by this JAXBContext
-     * @param properties
-     *     JAXB properties
      * @param kbase
      *     The KnowledgeBase
      * @return

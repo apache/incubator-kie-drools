@@ -80,7 +80,7 @@ public interface FactType
     public FactField getField(String name);
 
     /**
-     * Returns the Class<?> for this FactType. The class object can be used through reflection.
+     * Returns the Class&lt;?&gt; for this FactType. The class object can be used through reflection.
      * 
      * @return the generated class for this FactType
      */

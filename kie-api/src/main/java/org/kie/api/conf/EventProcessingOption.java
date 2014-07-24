@@ -28,10 +28,12 @@ package org.kie.api.conf;
  * assumptions are made. These assumptions allow the engine to perform a few optimisations
  * like:
  * 
+ * <ul>
  * <li> reasoning over absence of events (NOT CE), automatically adds an appropriate duration attribute
  * to the rule in order to avoid early rule firing. </li>
  * <li> memory management techniques may be employed when an event no longer can match other events
  * due to session clock continuous increment. </li>
+ * </ul>
  */
 public enum EventProcessingOption
         implements SingleValueKieBaseOption {

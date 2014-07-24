@@ -20,7 +20,7 @@ import org.kie.api.PropertiesConfiguration;
 
 /**
  * 
- * drools.resource.scanner.interval = <number of seconds> : default 60s
+ * drools.resource.scanner.interval = number of seconds : default 60s
  */
 public interface ResourceChangeScannerConfiguration
     extends

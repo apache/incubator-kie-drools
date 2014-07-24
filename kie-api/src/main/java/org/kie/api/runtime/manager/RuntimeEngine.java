@@ -23,7 +23,7 @@ import org.kie.api.task.TaskService;
  * RuntimeEngine is the main entry point to interact with the process engine and task
  * service. It's responsibility is to ensure that process engine and task service
  * are properly configured and know about each other which eliminate the need to 
- * manually setup the integration between these two.<br/>
+ * manually setup the integration between these two.<br>
  * RuntimeEngines are always produced by <code>RuntimeManager</code> and thus shall never be
  * created manually. <code>RuntimeManager</code> provides all required information to build
  * and bootstrap the <code>RuntimeEngine</code> so it is configured and ready to be used

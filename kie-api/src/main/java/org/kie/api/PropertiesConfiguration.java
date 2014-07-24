@@ -24,8 +24,8 @@ public interface PropertiesConfiguration {
     /**
      * Sets a property value
      * 
-     * @param name
-     * @param value
+     * @param name name
+     * @param value value
      */
     public void setProperty(String name,
                             String value);
@@ -33,8 +33,8 @@ public interface PropertiesConfiguration {
     /**
      * Gets a property value
      * 
-     * @param name
-     * @return
+     * @param name name
+     * @return property
      */
     public String getProperty(String name);
 }

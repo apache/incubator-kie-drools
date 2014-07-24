@@ -44,6 +44,7 @@ import org.kie.api.conf.KieBaseOptionsConfiguration;
  * 
  * <p>
  * The following properties are supported:
+ * </p>
  * <ul>
  * <li>drools.maintainTms = &lt;true|false&gt;</li>
  * <li>drools.assertBehaviour = &lt;identity|equality&gt;</li>
@@ -60,17 +61,15 @@ import org.kie.api.conf.KieBaseOptionsConfiguration;
  * <li>drools.consequenceExceptionHandler = &lt;qualified class name&gt;</li>
  * <li>drools.mbeans = &lt;enabled|disabled&gt;</li>
  * </ul>
- * </p>
- * 
  * 
  * <p>
  * The follow properties have not yet been migrated from the Drools 4.0 api:
+ * </p>
  * <ul>
  * <li>drools.executorService = &lt;qualified class name&gt;</li>
  * <li>drools.conflictResolver = &lt;qualified class name&gt;</li>
  * <li>drools.ruleBaseUpdateHandler = &lt;qualified class name&gt;</li>
  * </ul>
- * </p>
  */
 public interface KieBaseConfiguration
     extends

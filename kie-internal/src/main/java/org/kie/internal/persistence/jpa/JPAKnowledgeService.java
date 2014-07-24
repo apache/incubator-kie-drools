@@ -24,7 +24,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**
  * <p>
- * Long term out of the box persistence of runtime state with JPA is possible with Drools & jBPM.
+ * Long term out of the box persistence of runtime state with JPA is possible with Drools and jBPM.
  * You will need to configure a JPA entity manager (e.g. using hibernate) and have a JTA transaction
  * manager (for development/testing purposes we recommend Bitronix as it's simple to setup and works
  * embedded, but for production the use of JBoss Transactions is recommended).

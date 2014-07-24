@@ -34,7 +34,7 @@ public interface ProcessContext extends KieContext {
 
     /**
      * Returns the node instance that is currently being
-     * executed in this context, or <code>null</node> if no
+     * executed in this context, or <code>null</code> if no
      * node instance is currently being executed.
      *
      * @return the node instance that is currently being

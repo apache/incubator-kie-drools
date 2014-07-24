@@ -20,7 +20,7 @@ import org.kie.api.runtime.manager.Context;
 /**
  * <code>Mapper</code> responsibility is to provide correlation between context 
  * identifier and ksession identifier to effectively keep track of what context
- * has been mapped to given ksession.<br/>
+ * has been mapped to given ksession.<br>
  * Mapper covers entire life cycle of the mapping which consists of:
  * <ul>
  * 	<li>storing the mapping</li>

@@ -18,7 +18,7 @@ package org.kie.api.runtime.manager;
 /**
  * RuntimeManager manages <code>RuntimeEngine</code>s that are esentially build with
  * <code>KieSession</code> and <code>TaskService</code> to deliver executable environments for
- * processes and user tasks.<br/>
+ * processes and user tasks.<br>
  * Moreover <code>RuntimeManager</code> ensures that all components are configured and bootstrapped 
  * as soon as manager is instantiated to ensure its fully featured functionality right from the start. 
  * That includes:
@@ -27,9 +27,9 @@ package org.kie.api.runtime.manager;
  * 	<li>task service</li>
  * 	<li>finds and initializes timer start events based processes</li>
  * </ul>
- * RuntimeManager shall always be closed whenever it's not needed any more to free up resources it allocated.<br/>
+ * RuntimeManager shall always be closed whenever it's not needed any more to free up resources it allocated.<br>
  * <code>RuntimeManager</code>s are identified by unique identifiers and thus there cannot be two RuntimeManagers
- * with the same id active at the same time in the same system. <br/>
+ * with the same id active at the same time in the same system. <br>
  * RuntimeManager implements runtime strategy that provides certain management capabilities to reduce manual 
  * work needed to control ksession behavior. Which mainly covers when to create, dispose and when to use which ksession.
  * Currently there are three predefined strategies:
@@ -69,9 +69,9 @@ public interface RuntimeManager {
     /**
      * Disposes <code>RuntimeEngine</code> and notifies all listeners about that fact.
      * This method should always be used to dispose <code>RuntimeEngine</code> that is not needed
-     * anymore. <br/>
+     * anymore. <br>
      * ksession.dispose() shall never be used with RuntimeManager as it will break the internal
-     * mechanisms of the manager responsible for clear and efficient disposal.<br/>
+     * mechanisms of the manager responsible for clear and efficient disposal.<br>
      * Dispose is not needed if <code>RuntimeEngine</code> was obtained within active JTA transaction, 
      * this means that when getRuntimeEngine method was invoked during active JTA transaction then dispose of
      * the runtime engine will happen automatically on transaction completion.

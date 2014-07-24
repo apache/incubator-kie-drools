@@ -20,7 +20,7 @@ import org.kie.api.runtime.manager.Context;
 /**
  * Process instance id aware implementation of the <code>Context</code> interface.
  * It's main responsibility is to be the data holder between caller and runtime manager
- * to obtain proper instances of <code>RuntimeEngine</code>.<br/>
+ * to obtain proper instances of <code>RuntimeEngine</code>.<br>
  * Used by strategy:
  * <ul>
  * 	<li>PerProcessInstance</li>

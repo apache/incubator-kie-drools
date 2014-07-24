@@ -30,7 +30,7 @@ import org.kie.api.task.model.User;
 public interface InternalTaskData extends TaskData {
 
     /**
-     * Initializes the state of the TaskData, i.e. sets the <field>createdOn</field>, <field>activationTime</field>
+     * Initializes the state of the TaskData, i.e. sets the createdOn, activationTime
      * and sets the state to <code>Status.Created</code>.
      *
      * @return returns the current state of the TaskData
@@ -64,8 +64,8 @@ public interface InternalTaskData extends TaskData {
 	void setProcessSessionId(int processSessionId);
 
 	/**
-     * Sets the document content data for this task data. It will set the <field>documentContentId</field> from the specified
-     * documentID, <field>documentAccessType</field>, <field>documentType</field> from the specified
+     * Sets the document content data for this task data. It will set the documentContentId from the specified
+     * documentID, documentAccessType, documentType from the specified
      * documentConentData.
      * @param documentID id of document content
      * @param documentConentData ContentData
@@ -81,8 +81,8 @@ public interface InternalTaskData extends TaskData {
     void setDocumentType(String documentType);
 
     /**
-     * Sets the content data for this task data. It will set the <field>outputContentId</field> from the specified
-     * outputContentId, <field>outputAccessType</field>, <field>outputType</field> from the specified
+     * Sets the content data for this task data. It will set the outputContentId from the specified
+     * outputContentId, outputAccessType, outputType from the specified
      * outputContentData.
      * @param outputContentId id of output content
      * @param outputContentData contentData
@@ -98,8 +98,8 @@ public interface InternalTaskData extends TaskData {
     void setOutputContentId(long outputContentId);
 
     /**
-     * Sets the fault data for this task data. It will set the <field>faultContentId</field> from the specified
-     * faultContentId, <field>faultAccessType</field>, <field>faultType</field>, <field>faultName</field> from the
+     * Sets the fault data for this task data. It will set the faultContentId from the specified
+     * faultContentId, faultAccessType, faultType, faultName from the
      * specified faultData.
      * @param faultContentId id of fault content
      * @param faultData FaultData

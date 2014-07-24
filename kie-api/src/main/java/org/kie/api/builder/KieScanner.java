@@ -26,7 +26,7 @@ public interface KieScanner {
 
     /**
      * Starts this KieScanner polling the maven repositories with the given interval expressed in milliseconds
-     * @throws An IllegalStateException if this KieScanner has been already started
+     * throws An IllegalStateException if this KieScanner has been already started
      */
     void start(long pollingInterval);
 

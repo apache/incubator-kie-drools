@@ -17,7 +17,7 @@
 package org.kie.api.command;
 
 /**
- * @BETA
+ *
  */
 public interface Setter {
     String getAccessor();

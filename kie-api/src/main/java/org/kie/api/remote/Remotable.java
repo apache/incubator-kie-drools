@@ -11,12 +11,12 @@ import java.lang.annotation.Target;
 /**
  * This annotation should be used by users to specify (user-defined) classes that 
  * should be available to remote services (REST, JMS, WS) when using a workbench. 
- * </p> 
+ * <br> 
  * A user will use this annotation on a class that's either part of a kjar or deployment
  * or on a class that is a dependency of the aforementioned kjar or deployment. When this deployment
  * is deployed, the workbench will scan the deployment and the dependency tree of the deployment
  * for classes marked with this annotation. 
- * </p>
+ * <br>
  * While classes at the top level in the deployment itself marked with the appropriate JAXB annotations
  * are always available for use with the remote services (regardless of whether the classes
  * are annotated with the {@code @Remotable} annotation, in the dependency tree of the deployment, 

@@ -47,14 +47,13 @@ import org.kie.internal.builder.conf.KnowledgeBuilderOptionsConfiguration;
  * <ul>
  * <li>drools.dialect.default = &lt;String&gt;</li>
  * <li>drools.accumulate.function.&lt;function name&gt; = &lt;qualified class&gt;</li>
- * <li>drools.evaluator.<ident> = &lt;qualified class&gt;</li>
+ * <li>drools.evaluator.&lt;ident&gt; = &lt;qualified class&gt;</li>
  * <li>drools.dump.dir = &lt;String&gt;</li>
  * <li>drools.parser.processStringEscapes = &lt;true|false&gt;</li>
  * </ul>
- * </p>
  * 
  * <p>
- * Two dialects are supported, Java and MVEL. Java is the default dialect.<br/>
+ * Two dialects are supported, Java and MVEL. Java is the default dialect.<br>
  * The Java dialect supports the following configurations:
  * <ul>
  * <li>drools.dialect.java.compiler = &lt;ECLIPSE|JANINO&gt;</li>
@@ -65,16 +64,14 @@ import org.kie.internal.builder.conf.KnowledgeBuilderOptionsConfiguration;
  * <ul>
  * <li>drools.dialect.mvel.strict = &lt;true|false&gt;</li>
  * </ul>
- * </p>
  * 
  * <p>
- * So for example if we wanted to create a new KnowledgeBuilder that used Janino as the default compiler we would do the following:<br/>
+ * So for example if we wanted to create a new KnowledgeBuilder that used Janino as the default compiler we would do the following:<br>
  * <pre>
  * KnowledgeBuilderConfiguration config = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
  * config.setProperty("drools.dialect.java.compiler", "JANINO");
  * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( config );
  * </pre>
- * </p>
  * 
  * <p>
  * Remember the KnowledgeBuilderConfiguration could have taken a Properties instance with that setting in it at constructor time,
@@ -92,7 +89,6 @@ import org.kie.internal.builder.conf.KnowledgeBuilderOptionsConfiguration;
  * <li>drools.accumulate.function.collectSet = org.kie.base.accumulators.CollectSetAccumulateFunction</li>
  * <li>drools.accumulate.function.collectList = org.kie.base.accumulators.CollectListAccumulateFunction</li>
  * </ul>
- * </p>
  */
 public interface KnowledgeBuilderConfiguration
     extends

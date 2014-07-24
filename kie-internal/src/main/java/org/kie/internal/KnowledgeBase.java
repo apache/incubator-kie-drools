@@ -32,8 +32,8 @@ import org.kie.api.runtime.KieSessionConfiguration;
 
 
 /**
- * Will be removed immenently
- * @Deprecated
+ * Will be removed imminently
+ * @deprecated
  *
  */
 
@@ -45,7 +45,7 @@ public interface KnowledgeBase
     /**
      * Add the collection of KnowledgePackages to the KnowledgeBase. It is recommended that you
      * ALWAYS check KnowledgeBuilder.hasErrors() first before doing this.
-     * @param knowledgePackage
+     * @param kpackages
      */
     void addKnowledgePackages(Collection<KnowledgePackage> kpackages);
 
@@ -92,7 +92,7 @@ public interface KnowledgeBase
      * Returns a reference to the Rule identified by the given package and rule names.
      * 
      * @param packageName the package name to which the rule belongs to.
-     * @param ruleName the name of the rule.
+     * @param queryName the name of the rule.
      * 
      * @return the Rule object or null if not found.
      */
@@ -101,7 +101,7 @@ public interface KnowledgeBase
     /**
      * Remove a rule from the specified package.
      * @param packageName
-     * @param ruleName
+     * @param queryName
      */
     void removeQuery(String packageName,
                     String queryName);

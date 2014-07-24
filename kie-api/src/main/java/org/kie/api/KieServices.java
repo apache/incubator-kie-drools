@@ -51,42 +51,51 @@ public interface KieServices {
 
     /**
      * Returns the KieResources, a factory that provides Resource implementations for the desired IO resource
+     * @return resources
      */
     KieResources getResources();
 
     /**
      * Returns the KieRepository, a singleton acting as a repository for all the available KieModules
+     * @return repository
      */
     KieRepository getRepository();
 
     /**
      * Returns the KieCommands, a factory for Commands
+     * @return commands
      */
     KieCommands getCommands();
 
     /**
      * Returns the KieMarshallers service
+     * @return marshallers
      */
     KieMarshallers getMarshallers();
 
     /**
      * Returns KieLoggers, a factory for KieRuntimeLogger
+     * @return loggers
      */
     KieLoggers getLoggers();
 
     /**
      * Returns KieStoreServices
+     * @return store services
      */
     KieStoreServices getStoreServices();
 
     /**
      * Returns KieContainer for the classpath, this a global singleton
+     * @return kie classpath container 
      */
     KieContainer getKieClasspathContainer();
 
     /**
      * Returns KieContainer for the classpath using the given classLoader,
      * this a global singleton
+     * @param classLoader classLoader
+     * @return kie classpath container
      *
      * #throw IllegalStateException if this method get called twice with 2 different ClassLoaders
      */
@@ -94,65 +103,87 @@ public interface KieServices {
 
     /**
      * Creates a new KieContainer for the classpath, regardless if there's already an existing one
+     * @return new kie classpath container 
      */
     KieContainer newKieClasspathContainer();
 
     /**
      * Creates a new KieContainer for the classpath using the given classLoader,
      * regardless if there's already an existing one
+     * @param classLoader classLoader
+     * @return new kie classpath container 
      */
     KieContainer newKieClasspathContainer(ClassLoader classLoader);
 
     /**
      * Creates a new KieContainer wrapping the KieModule with the given ReleaseId
+     * @param releaseId releaseId
+     * @return new kie container 
      */
     KieContainer newKieContainer(ReleaseId releaseId);
 
     /**
      * Creates a KieScanner to automatically discover if there are new releases of the KieModule
      * (and its dependencies) wrapped by the given KieContainer
+     * @param kieContainer kieContainer
+     * @return new kie scanner 
      */
     KieScanner newKieScanner(KieContainer kieContainer);
 
     /**
      * Creates a new KieBuilder to build the KieModule contained in the given folder
+     * @param rootFolder rootFolder
+     * @return new kie builder 
      */
     KieBuilder newKieBuilder(File rootFolder);
 
     /**
      * Creates a new KieBuilder to build the KieModule contained in the given KieFileSystem
+     * @return new kie builder 
      */
     KieBuilder newKieBuilder(KieFileSystem kieFileSystem);
 
     /**
      * Creates a new ReleaseId with the given groupId, artifactId and version
+     * @param groupId groupId
+     * @param artifactId artifactId
+     * @param version version
+     * @return new release id 
      */
     ReleaseId newReleaseId(String groupId, String artifactId, String version);
 
     /**
      * Creates a new KieFileSystem used to programmatically define the resources composing a KieModule
+     * @return new kie file system 
      */
     KieFileSystem newKieFileSystem( );
 
     /**
      * Creates a new KieModuleModel to programmatically define a KieModule
+     * @return new kie module model 
      */
     KieModuleModel newKieModuleModel();
 
     /**
      * Create a KieBaseConfiguration on which properties can be set.
+     * @return new kiebase configuration 
      */
     KieBaseConfiguration newKieBaseConfiguration();
 
     /**
      * Create a KieBaseConfiguration on which properties can be set. Use
      * the given properties file.
+     * @param properties properties
+     * @return new kiebase configuration 
      */
     KieBaseConfiguration newKieBaseConfiguration(Properties properties);
 
     /**
      * Create a KieBaseConfiguration on which properties can be set. Use
      * the given properties file and ClassLoader - either of which can be null.
+     * @param properties properties
+     * @param classLoader classLoader
+     * @return new kiebase configuration 
      *
      * @deprecated The classLoader has to be defined when creating the KieContainer,
      * so the one passed here will be just ignored
@@ -161,11 +192,14 @@ public interface KieServices {
 
     /**
      * Create a KieSessionConfiguration on which properties can be set.
+     * @return new kiesession configuration 
      */
     KieSessionConfiguration newKieSessionConfiguration();
 
     /**
      * Create a KieSessionConfiguration on which properties can be set.
+     * @param properties properties
+     * @return new kiesession configuration 
      */
     KieSessionConfiguration newKieSessionConfiguration(Properties properties);
 

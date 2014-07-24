@@ -21,11 +21,11 @@ import org.kie.api.PropertiesConfiguration;
 /**
  * <p> This class configures and allows inspection of the current configuration of a {@link org.kie.internal.agent.KnowledgeAgent KnowledgeAgent}</p>
  * <ul>
- * <li><code><b>drools.agent.scanResources</b> = &lt;<b>true</b>|false&gt;</code></li>
- * Enables(true) or Disables(false) the continuous scan of resources.
- * <li><code><b>drools.agent.scanDirectories</b> = &lt;<b>true</b>|false&gt;</code></li>
- * Enables(true) or Disables(false) the scan of directories. 
- * <li><code><b>drools.agent.newInstance</b> = &lt;<b>true</b>|false&gt;</code></li>
+ * <li><code><b>drools.agent.scanResources</b> = &lt;<b>true</b>|false&gt;</code>
+ * Enables(true) or Disables(false) the continuous scan of resources.</li>
+ * <li><code><b>drools.agent.scanDirectories</b> = &lt;<b>true</b>|false&gt;</code>
+ * Enables(true) or Disables(false) the scan of directories. </li>
+ * <li><code><b>drools.agent.newInstance</b> = &lt;<b>true</b>|false&gt;</code>
  * Setting the newInstance option to true (default) will make the agent to create a brand new KnowledgeBase 
  * every time there is a change to the source assets. Previously created sessions will continue
  * to reference and use the previously existing KnowledgeBase, so this option should be
@@ -33,15 +33,15 @@ import org.kie.api.PropertiesConfiguration;
  * Setting this option to false will make the agent keep and incrementally update the existing 
  * knowledge base, automatically updating all existing sessions. This option should be used for
  * scenarios with long living sessions that should be updated automatically when the source
- * assets change. 
- * <li><code><b>drools.agent.monitorChangeSetEvents</b> = &lt;<b>true</b>|false&gt;</code></li>
- * Enables(true) the monitoring of changes in the resources.
- * <li><code><b>drools.agent.useKBaseClassLoaderForCompiling</b> = &lt;<b>false</b>|true&gt;</code></li>
+ * assets change. </li>
+ * <li><code><b>drools.agent.monitorChangeSetEvents</b> = &lt;<b>true</b>|false&gt;</code>
+ * Enables(true) the monitoring of changes in the resources.</li>
+ * <li><code><b>drools.agent.useKBaseClassLoaderForCompiling</b> = &lt;<b>false</b>|true&gt;</code>
  * If this option is set to true, the agent will use the same classloader to compile the resources
  * that it uses on the knowledge base. If false (default), it will use an exclusive classloader for
- * compilation.
- * <li><code><b>drools.agent.validationTimeout</b> = &lt;milliseconds&gt;</code></li>
- * Sets the timeout for the validation of remote XML schemas. Default is 0 (that means no timeout).
+ * compilation.</li>
+ * <li><code><b>drools.agent.validationTimeout</b> = &lt;milliseconds&gt;</code>
+ * Sets the timeout for the validation of remote XML schemas. Default is 0 (that means no timeout).</li>
  * </ul>
  * @see org.kie.internal.agent.KnowledgeAgent
  */
