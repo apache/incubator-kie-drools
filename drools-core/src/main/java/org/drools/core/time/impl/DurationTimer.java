@@ -16,21 +16,21 @@
 
 package org.drools.core.time.impl;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Map;
-
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
-import org.drools.core.util.NumberUtils;
 import org.drools.core.spi.Activation;
 import org.drools.core.time.Trigger;
+import org.drools.core.util.NumberUtils;
 import org.kie.api.runtime.Calendars;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Map;
 
 public class DurationTimer extends BaseTimer
     implements
@@ -88,11 +88,13 @@ public class DurationTimer extends BaseTimer
                                  Calendars calendars,
                                  Declaration[][] declrs,
                                  InternalWorkingMemory wm) {
-        if ( eventFactHandle != null ) {
-            EventFactHandle  fh = (EventFactHandle) leftTuple.get(eventFactHandle);
-            timestamp = fh.getStartTimestamp();
-        }
-        return createTrigger(timestamp, calendarNames, calendars);
+        return createTrigger(getEventTimestamp(leftTuple, timestamp), calendarNames, calendars);
+    }
+
+    long getEventTimestamp(LeftTuple leftTuple, long timestamp) {
+        return eventFactHandle != null ?
+               ((EventFactHandle) leftTuple.get(eventFactHandle)).getStartTimestamp() :
+               timestamp;
     }
 
     public Trigger createTrigger(long timestamp,
