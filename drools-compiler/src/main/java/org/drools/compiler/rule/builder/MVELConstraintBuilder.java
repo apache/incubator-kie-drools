@@ -48,7 +48,7 @@ import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 public class MVELConstraintBuilder implements ConstraintBuilder {
 
     public static final boolean USE_MVEL_EXPRESSION = true;
-    protected static Set<String> mvelOperators;
+    protected static final Set<String> MVEL_OPERATORS;
 
     static {
         if (USE_MVEL_EXPRESSION) {
@@ -56,7 +56,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             DataConversion.addConversionHandler(Boolean.class, BooleanConversionHandler.INSTANCE);
             DataConversion.addConversionHandler(boolean.class, BooleanConversionHandler.INSTANCE);
 
-            mvelOperators = new HashSet<String>() {{
+            MVEL_OPERATORS = new HashSet<String>() {{
                 add("==");
                 add("!=");
                 add(">");
@@ -75,7 +75,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
     }
 
     public boolean isMvelOperator(String operator) {
-        return mvelOperators.contains(operator);
+        return MVEL_OPERATORS.contains(operator);
     }
 
     public boolean useMvelExpression() {

@@ -62,7 +62,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class ExtensibleXmlParser extends DefaultHandler {
 
-    protected static transient Logger logger = LoggerFactory.getLogger(ExtensibleXmlParser.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(ExtensibleXmlParser.class);
 
     // ----------------------------------------------------------------------
     // Constants

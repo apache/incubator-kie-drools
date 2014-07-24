@@ -161,7 +161,7 @@ public class ObjectTypeNode extends ObjectSource
         }
     }
 
-    public static Id DEFAULT_ID = new Id(-1, 0);
+    public static final Id DEFAULT_ID = new Id(-1, 0);
 
     public static class Id {
 

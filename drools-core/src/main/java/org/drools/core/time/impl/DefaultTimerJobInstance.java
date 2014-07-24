@@ -20,7 +20,7 @@ public class DefaultTimerJobInstance
 
     private static final long serialVersionUID = -4441139572159254264L;
 
-    protected static transient Logger logger = LoggerFactory.getLogger(DefaultTimerJobInstance.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(DefaultTimerJobInstance.class);
     
     private final Job                         job;
     private final Trigger                     trigger;

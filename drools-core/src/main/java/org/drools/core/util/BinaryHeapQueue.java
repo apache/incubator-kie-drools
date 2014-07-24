@@ -49,7 +49,7 @@ public class BinaryHeapQueue
     implements
     Queue,
     Externalizable {
-    protected static transient Logger log = LoggerFactory.getLogger(BinaryHeapQueue.class);
+    protected static final transient Logger log = LoggerFactory.getLogger(BinaryHeapQueue.class);
 
     /** The default capacity for a binary heap. */
     private final static int DEFAULT_CAPACITY = 13;

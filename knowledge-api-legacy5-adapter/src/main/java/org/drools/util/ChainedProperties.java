@@ -42,7 +42,7 @@ public class ChainedProperties
     implements
     Externalizable {
 
-    protected static transient Logger logger = LoggerFactory.getLogger(ChainedProperties.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(ChainedProperties.class);
 
     private List<Properties> props;
     private List<Properties> defaultProps;

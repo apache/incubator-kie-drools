@@ -25,15 +25,13 @@ import org.kie.api.runtime.ObjectFilter;
 public class JavaIteratorAdapter
     implements
     java.util.Iterator {
-    public static int    OBJECT = 0;
-    public static int    FACT_HANDLE = 1;
+    public static final int    OBJECT = 0;
+    public static final int    FACT_HANDLE = 1;
 
-    private Iterator     iterator;
-    private ObjectEntry  nextEntry;
-    //    private Object  nextObject;
-    //    private InternalFactHandle  nextHandle;
-    private ObjectFilter filter;
-    private int          type;
+    private Iterator           iterator;
+    private ObjectEntry        nextEntry;
+    private ObjectFilter       filter;
+    private int                type;
 
     public JavaIteratorAdapter(Iterator iterator,
                                int type) {

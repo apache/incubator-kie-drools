@@ -139,7 +139,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
                     aSet.addAll(cell.getFree());
                 }
             }
-            if (! aSet.equals(CellGroup.allNine)) {
+            if (! aSet.equals(CellGroup.ALL_NINE)) {
                 throw new IllegalStateException("deficit in row");
             }
         }
@@ -155,7 +155,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
                     aSet.addAll(cell.getFree());
                 }
             }
-            if (! aSet.equals(CellGroup.allNine)) {
+            if (! aSet.equals(CellGroup.ALL_NINE)) {
                 throw new IllegalStateException("deficit in column");
             }
         }
@@ -172,7 +172,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
                         aSet.addAll(cell.getFree());
                     }
                 }
-                if (! aSet.equals(CellGroup.allNine)) {
+                if (! aSet.equals(CellGroup.ALL_NINE)) {
                     throw new IllegalStateException("deficit in square");
                 }
             }

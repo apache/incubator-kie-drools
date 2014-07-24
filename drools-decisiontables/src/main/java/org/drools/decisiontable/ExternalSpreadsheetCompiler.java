@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 public class ExternalSpreadsheetCompiler {
 
-    protected static transient Logger logger = LoggerFactory.getLogger(ExternalSpreadsheetCompiler.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(ExternalSpreadsheetCompiler.class);
 
     public String compile(final String xls,
                           final String template,

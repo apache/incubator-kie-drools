@@ -59,7 +59,7 @@ public class NamedEntryPoint
     WorkingMemoryEntryPoint,
     PropertyChangeListener  {
 
-    protected static transient Logger log = LoggerFactory.getLogger(NamedEntryPoint.class);
+    protected static final transient Logger log = LoggerFactory.getLogger(NamedEntryPoint.class);
 
     protected static final Class<?>[] ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
 

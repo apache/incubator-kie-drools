@@ -6,7 +6,7 @@ public interface FormatConverter {
 
     static class DummyConverter implements FormatConverter {
 
-        public static FormatConverter INSTANCE = new DummyConverter();
+        public static final FormatConverter INSTANCE = new DummyConverter();
 
         private DummyConverter() { }
 
