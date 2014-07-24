@@ -3146,7 +3146,8 @@ public class Misc2Test extends CommonTestMethodBase {
     public void testReportErrorOnWrongDateEffective() {
         // BZ-1013545
         String drl =
-                 "rule X date-effective \"9-Luglio-1974\" when\n" +
+                // ensure no Locale can parse the Date
+                 "rule X date-effective \"9-asbrdfh-1974\" when\n" +
                  "    $s : String() " +
                  "then\n" +
                  "end\n";

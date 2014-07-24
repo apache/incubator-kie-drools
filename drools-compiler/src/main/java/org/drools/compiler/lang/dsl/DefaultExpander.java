@@ -188,7 +188,7 @@ public class DefaultExpander
             int offset = 0;
             int nlPos;
             int iLine = 1;
-            while ( (nlPos = buf.indexOf( "\n",
+            while ( (nlPos = buf.indexOf( nl,
                                           offset )) >= 0 ) {
                 fmt.format( "%4d  %s%n",
                             iLine++,
@@ -544,7 +544,7 @@ public class DefaultExpander
 
         //        logger.info( "*** LHS>" + lhs + "<" );
         final StringBuilder buf = new StringBuilder();
-        final String[] lines = lhs.split( "\n",
+        final String[] lines = lhs.split( nl,
                                           -1 ); // since we assembled the string, we know line breaks are \n
         final String[] expanded = new String[lines.length]; // buffer for expanded lines
         int lastExpanded = -1;
@@ -599,7 +599,7 @@ public class DefaultExpander
         }
         for ( int i = 0; i <= lastExpanded; i++ ) {
             buf.append( expanded[i] );
-            buf.append( "\n" );
+            buf.append( nl );
         }
 
         return buf.toString();
@@ -614,7 +614,7 @@ public class DefaultExpander
     private String expandRHS(final String lhs,
                              int lineOffset) {
         final StringBuilder buf = new StringBuilder();
-        final String[] lines = lhs.split( "\n",
+        final String[] lines = lhs.split( nl,
                                           -1 ); // since we assembled the string, we know line breaks are \n
 
         final String[] expanded = new String[lines.length]; // buffer for expanded lines
@@ -681,11 +681,11 @@ public class DefaultExpander
 
         for ( int i = 0; i <= lastExpanded; i++ ) {
             buf.append( expanded[i] );
-            buf.append( "\n" );
+            buf.append( nl );
         }
 
         if ( lines.length == 0 ) {
-            buf.append( "\n" );
+            buf.append( nl );
         }
         return buf.toString();
     }
@@ -697,7 +697,7 @@ public class DefaultExpander
         String line;
         while ( (line = input.readLine()) != null ) {
             buf.append( line );
-            buf.append( "\n" );
+            buf.append( nl );
         }
         return buf.toString();
     }

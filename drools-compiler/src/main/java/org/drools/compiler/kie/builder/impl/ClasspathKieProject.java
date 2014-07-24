@@ -2,6 +2,7 @@ package org.drools.compiler.kie.builder.impl;
 
 import org.drools.compiler.kie.builder.impl.event.KieModuleDiscovered;
 import org.drools.compiler.kie.builder.impl.event.KieServicesEventListerner;
+import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
@@ -174,7 +175,7 @@ public class ClasspathKieProject extends AbstractKieProject {
 
         String rootPath = fixedURL;
         if ( rootPath.lastIndexOf( ':' ) > 0 ) {
-            rootPath = fixedURL.substring( rootPath.lastIndexOf( ':' ) + 1 );
+            rootPath = IoUtils.asSystemSpecificPath( rootPath, rootPath.lastIndexOf( ':') );
         }
 
         return createInternalKieModule(url, fixedURL, kieProject, releaseId, rootPath);
@@ -191,7 +192,7 @@ public class ClasspathKieProject extends AbstractKieProject {
         String pomProperties = null;
         String rootPath = urlPathToAdd;
         if ( rootPath.lastIndexOf( ':' ) > 0 ) {
-            rootPath = urlPathToAdd.substring( rootPath.lastIndexOf( ':' ) + 1 );
+            rootPath = IoUtils.asSystemSpecificPath( rootPath, rootPath.lastIndexOf( ':' ) );
         }
 
         if ( urlPathToAdd.endsWith( ".jar" ) || urlPathToAdd.endsWith( "/content" ) ) {
@@ -354,7 +355,7 @@ public class ClasspathKieProject extends AbstractKieProject {
         int firstSlash = urlPath.indexOf( '/' );
         colonIndex = firstSlash > 0 ? urlPath.lastIndexOf( ":", firstSlash ) : urlPath.lastIndexOf( ":" );
         if ( colonIndex >= 0 ) {
-            urlPath = urlPath.substring( colonIndex + 1 );
+            urlPath = IoUtils.asSystemSpecificPath(urlPath, colonIndex);
         }
 
         try {
