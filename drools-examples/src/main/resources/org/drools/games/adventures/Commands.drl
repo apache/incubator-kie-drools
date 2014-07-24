@@ -71,11 +71,7 @@ then
     mc.session.channels["output"].send( "You have entered the " + l.target.name + "\n" );
 end
 
-rule roomLocked  agenda-group "commands" salience 10 when
-    eval( true )
-    mc : MoveCommand( c : character, r : room )
-    l  : Location( thing == c, ltarget : target ) @watch( !target )
-    ?connect( d, r, ltarget; )
+rule roomLocked extends validMove agenda-group "commands" salience 10 when
     Door( lockStatus == LockStatus.LOCKED ) from d
 then
     mc.session.channels["output"].send( "The room " + l.target.name + " is locked\n" );

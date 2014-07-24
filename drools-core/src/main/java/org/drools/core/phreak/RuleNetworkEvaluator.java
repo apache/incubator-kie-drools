@@ -350,7 +350,7 @@ public class RuleNetworkEvaluator {
                         break;
                     }
                     case NodeTypeEnums.QueryElementNode: {
-                        exitInnerEval =  evalQueryNode(liaNode, pmem, node, bit, nodeMem, smems, smemIndex, trgTuples, wm, stack, visitedRules, srcTuples, sink);
+                        exitInnerEval =  evalQueryNode(liaNode, pmem, node, bit, nodeMem, smems, smemIndex, trgTuples, wm, stack, visitedRules, srcTuples, sink, stagedLeftTuples);
                         break;
                     }
                     case NodeTypeEnums.TimerConditionNode: {
@@ -429,7 +429,8 @@ public class RuleNetworkEvaluator {
                                   LinkedList<StackEntry> stack,
                                   Set<String> visitedRules,
                                   LeftTupleSets srcTuples,
-                                  LeftTupleSinkNode sink) {
+                                  LeftTupleSinkNode sink,
+                                  LeftTupleSets stagedLeftTuples) {
         QueryElementNodeMemory qmem = (QueryElementNodeMemory) nodeMem;
 
         if (srcTuples.isEmpty() && qmem.getResultLeftTuples().isEmpty()) {
@@ -462,7 +463,7 @@ public class RuleNetworkEvaluator {
             stack.add(stackEntry);
 
             pQueryNode.doNode(qnode, (QueryElementNodeMemory) nodeMem, stackEntry, sink,
-                              wm, srcTuples, trgTuples, getTargetStagedLeftTuples(node, wm, smems[smemIndex]));
+                              wm, srcTuples, trgTuples, stagedLeftTuples);
 
             SegmentMemory qsmem = ((QueryElementNodeMemory) nodeMem).getQuerySegmentMemory();
             List<PathMemory> qpmems = qsmem.getPathMemories();
