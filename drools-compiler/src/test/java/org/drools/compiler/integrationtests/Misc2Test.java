@@ -6296,7 +6296,7 @@ public class Misc2Test extends CommonTestMethodBase {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testSharedQueryNode() throws Exception {
         // DROOLS-561
         String drl =
