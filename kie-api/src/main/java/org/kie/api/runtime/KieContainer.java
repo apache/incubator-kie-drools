@@ -38,6 +38,12 @@ public interface KieContainer {
     Results verify();
 
     /**
+     * Builds the KieBases with the given name(s) in the KieModule wrapped by this KieContainer
+     * and return te Results of this building process
+     */
+    Results verify(String... kBaseNames);
+
+    /**
      * Updates this KieContainer to a KieModule with the given ReleaseId
      */
     Results updateToVersion(ReleaseId version);
