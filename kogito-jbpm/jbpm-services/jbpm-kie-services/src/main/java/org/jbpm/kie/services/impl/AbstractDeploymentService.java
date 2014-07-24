@@ -32,6 +32,8 @@ import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
 import org.jbpm.kie.services.impl.security.IdentityRolesSecurityManager;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
+import org.jbpm.runtime.manager.impl.SimpleRegisterableItemsFactory;
+import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.services.api.DeploymentEvent;
 import org.jbpm.services.api.DeploymentEventListener;
 import org.jbpm.services.api.DeploymentService;
@@ -41,6 +43,7 @@ import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.jbpm.services.api.model.QueryContextImpl;
+import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
@@ -105,6 +108,7 @@ public abstract class AbstractDeploymentService implements DeploymentService, Li
             }
             RuntimeManager manager = null;
             deploymentsMap.put(unit.getIdentifier(), deployedUnit);
+            ((SimpleRuntimeEnvironment) environemnt).addToEnvironment("IdentityProvider", identityProvider);
             try {
                 switch (unit.getStrategy()) {
             

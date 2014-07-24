@@ -151,6 +151,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     		KieContainer kieContainer,KModuleDeploymentUnit unit) {
     	KModuleRegisterableItemsFactory factory = new KModuleRegisterableItemsFactory(kieContainer, unit.getKsessionName());
     	factory.setAuditBuilder(auditLoggerBuilder);
+    	factory.addProcessListener(IdentityProviderAwareProcessListener.class);
     	return factory;
     }
     

@@ -16,6 +16,8 @@
 
 package org.jbpm.process.instance;
 
+import java.util.Map;
+
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.kie.api.definition.process.Process;
 
@@ -51,4 +53,7 @@ public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInst
     long getParentProcessInstanceId();
     
     void setParentProcessInstanceId(long parentId);
+    
+    Map<String, Object> getMetaData();
+    
 }
