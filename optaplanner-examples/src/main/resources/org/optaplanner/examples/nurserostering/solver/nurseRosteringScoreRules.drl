@@ -470,9 +470,6 @@ rule "identicalShiftTypesDuringWeekend"
                 ($weekendAssignmentTotal.intValue() - $weekendLength) * $contractLine.getWeight());
 end
 
-// Two free days after a night shift
-// TODO
-
 // Requested day on/off
 rule "dayOffRequest"
     when
