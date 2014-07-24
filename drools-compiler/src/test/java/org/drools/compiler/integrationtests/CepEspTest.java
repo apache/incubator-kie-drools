@@ -5316,4 +5316,54 @@ public class CepEspTest extends CommonTestMethodBase {
             }
         }
     }
+
+    @Test
+    public void test2NotsWithTemporalConstraints() {
+        // BZ-1122738 DROOLS-479
+        String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
+                     "import java.util.Date\n" +
+                     "\n" +
+                     "declare OtherFact\n" +
+                     "    @role( event )\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare SimpleEvent\n" +
+                     "    @role( event )\n" +
+                     "    @timestamp( dateEvt )\n" +
+                     "end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule R\n" +
+                     "    when\n" +
+                     "        $e : SimpleEvent()\n" +
+                     "        not OtherFact( this after[0, 1h] $e )\n" +
+                     "        not OtherFact( this after[0, 1h] $e )\n" +
+                     "    then\n" +
+                     "        $e.setCode(\"code2\");\n" +
+                     "    end\n " +
+                     "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        final KieSession ksession = kbase.newKieSession(sessionConfig, null);
+        PseudoClockScheduler clock = ksession.getSessionClock();
+        clock.setStartupTime(System.currentTimeMillis());
+
+        SimpleEvent event = new SimpleEvent("code1");
+        event.setDateEvt(System.currentTimeMillis() - (2 * 60 * 60 * 1000));
+        ksession.insert(event);
+        ksession.fireAllRules();
+        assertEquals("code2", event.getCode());
+    }
 }
