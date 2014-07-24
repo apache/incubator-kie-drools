@@ -125,7 +125,7 @@ public class ClassCacheManager {
             String[] callbacksArray = ((String) ctx.getData("callbacks")).split(",");
             List<String> callbacks = (List<String>) Arrays.asList(callbacksArray);
             for (String callbackName : callbacks) {
-                CommandCallback handler = findCommandCallback(callbackName, cl);
+                CommandCallback handler = findCommandCallback(callbackName.trim(), cl);
                 callbackList.add(handler);
             }
         }
