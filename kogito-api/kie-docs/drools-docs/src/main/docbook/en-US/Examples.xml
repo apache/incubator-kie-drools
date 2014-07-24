@@ -35,5 +35,6 @@
   <xi:include href="TextAdventureExample.xml" />
   <xi:include href="WumpusWorldExample.xml" />
   <xi:include href="MannersExample.xml" />
+  <xi:include href="BackwardChaining.xml" />
 
 </chapter>
