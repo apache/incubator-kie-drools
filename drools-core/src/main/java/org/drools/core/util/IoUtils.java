@@ -143,7 +143,7 @@ public class IoUtils {
             }
         }
         return files;
-    }    
+    }
 
     public static List<String> recursiveListFile(File folder) {
         return recursiveListFile(folder, "", Predicate.PassAll.INSTANCE);
@@ -318,5 +318,14 @@ public class IoUtils {
         }
 
         return true;
+    }
+
+    public static String asSystemSpecificPath(String urlPath, int colonIndex) {
+        String ic = urlPath.substring( Math.max( 0, colonIndex - 2 ), colonIndex + 1 );
+        if  ( ic.matches( "\\/[A-Z]:" ) ) {
+            return urlPath.substring( colonIndex - 2 );
+        } else {
+            return urlPath.substring( colonIndex + 1 );
+        }
     }
 }
