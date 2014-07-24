@@ -6,7 +6,7 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Demo Setup</title>
 <para>The easiest way to get started is to simply run the installation script to install the demo setup.
-The demo install will setup all the web tooling (on top of JBoss AS) and Eclipse tooling in a pre-configured
+The demo install will setup all the web tooling (on top of WildFly) and Eclipse tooling in a pre-configured
 setup.  Go into the jbpm-installer folder where you unzipped the installer and (from a command prompt)
 run:</para>
 
@@ -14,7 +14,7 @@ run:</para>
 
     <para>This will:</para>
       <itemizedlist>
-        <listitem><para>Download JBoss AS</para></listitem>
+        <listitem><para>Download WildFly application server</para></listitem>
         <listitem><para>Configure and deploy the web tooling</para></listitem>
         <listitem><para>Download Eclipse</para></listitem>
         <listitem><para>Install the Drools and jBPM Eclipse plugin</para></listitem>
@@ -22,7 +22,8 @@ run:</para>
       </itemizedlist>
 
     <para>Running this command could take a while (REALLY, not kidding, we are for example downloading an 
-    Eclipse installation, even if you downloaded the full installer).</para>
+    Eclipse installation, even if you downloaded the full installer, specifically for your operating
+    system).</para>
     
     <tip><para>The script always shows which file it is downloading (you could for example check
     whether it is still downloading by checking the whether the size of the file in question in the 
@@ -39,10 +40,23 @@ run:</para>
     <para>This will:
       <itemizedlist>
         <listitem><para>Start H2 database server</para></listitem>
-        <listitem><para>Start the JBoss AS</para></listitem>
+        <listitem><para>Start WildFly application server</para></listitem>
         <listitem><para>Start Eclipse</para></listitem>
       </itemizedlist>
     </para>
+
+    <para>Now wait until the process management console comes up:</para>
+    <para><link xlink:href="http://localhost:8080/jbpm-console">http://localhost:8080/jbpm-console</link></para>
+  
+    <note><para>It could take a minute to start up the application server and web application.  If the web
+    page doesn't show up after a while, make sure you don't have a firewall blocking that port, or another
+    application already using the port 8080.  You can always take a look at the server
+    log jbpm-installer/wildfly-8.1.0.Final/standalone/log/server.log</para></note>
+    
+    <para>Finally, if you also want to use the DashBuilder for reporting (which is implemented
+    as a separate war), you can now also install this:</para>
+
+    <programlisting>ant install.dashboard.into.jboss</programlisting>
 
     <para>Once everything is started, you can start playing with the Eclipse and web tooling,
     as explained in the following sections.</para>
