@@ -37,6 +37,6 @@ public class ProcessNodeLeftEventImpl extends ProcessEvent implements ProcessNod
 
     public String toString() {
         return "==>[ProcessNodeLeft(nodeId=" + nodeInstance.getNodeId() + "; id=" + nodeInstance.getId() 
-            + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId() + ")]";
+            + "; nodeName=" + getNodeInstance().getNodeName() + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId() + ")]";
     }
 }
