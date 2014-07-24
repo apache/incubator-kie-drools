@@ -22,7 +22,7 @@ import org.kie.api.runtime.process.WorkItemHandler;
 /**
  * Allows to provide custom implementations to deliver WorkItem name and WorkItemHandler instance pairs
  * for the runtime.
- * <br/>
+ * <br>
  * It will be invoked by RegisterableItemsFactory implementation (especially InjectableRegisterableItemsFactory 
  * in CDI world) for every KieSession. Recommendation is to always produce new instances to avoid unexpected 
  * results. 
@@ -33,7 +33,7 @@ public interface WorkItemHandlerProducer {
     /**
      * Returns map of (key = work item name, value work item handler instance) of work items 
      * to be registered on KieSession
-     * <br/>
+     * <br>
      * Parameters that might be given are as follows:
      * <ul>
      *  <li>ksession</li>

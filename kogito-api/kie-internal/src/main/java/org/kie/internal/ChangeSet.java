@@ -28,7 +28,7 @@ import org.kie.api.io.Resource;
  * </p>
  * 
  * <p>
- * The xml format has a root level <change-set> element and then it can contain &lt;add&gt;, &lt;modified&gt;, &lt;removed&gt; elements - each one can only be used once.
+ * The xml format has a root level &lt;change-set&gt; element and then it can contain &lt;add&gt;, &lt;modified&gt;, &lt;removed&gt; elements - each one can only be used once.
  * add, modified, removed then contain a list of &lt;resource&gt; elements. Resources may take a configuration, currently only decision table resources use that.
  * </p>
  *

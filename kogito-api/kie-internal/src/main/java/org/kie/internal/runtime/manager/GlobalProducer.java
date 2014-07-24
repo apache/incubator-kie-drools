@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Allows to provide global instances for <code>KieSession</code> to be registered on time when <code>RuntimeEngine</code>
  * is created.
- * <br/>
+ * <br>
  * It will be invoked by RegisterableItemsFactory implementation (especially InjectableRegisterableItemsFactory 
  * in CDI world) for every KieSession.
  *
@@ -30,7 +30,7 @@ public interface GlobalProducer {
     /**
      * Returns map of (key = global name, value global instance) of globals 
      * to be registered on KieSession
-     * <br/>
+     * <br>
      * Parameters that might be given are as follows:
      * <ul>
      *  <li>ksession</li>

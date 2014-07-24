@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Allows do define custom producers for know EventListeners. Intention of this is that there might be several 
  * implementations that might provide different listener instance based on the context they are executed in. 
- * <br/>
+ * <br>
  * It will be invoked by RegisterableItemsFactory implementation (especially InjectableRegisterableItemsFactory 
  * in CDI world) for every KieSession. Recommendation is to always produce new instances to avoid unexpected 
  * results.
@@ -32,7 +32,7 @@ public interface EventListenerProducer<T> {
 
     /**
      * Returns list of instances for given (T) type of listeners
-     * <br/>
+     * <br>
      * Parameters that might be given are as follows:
      * <ul>
      *  <li>ksession</li>

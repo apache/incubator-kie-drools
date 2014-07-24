@@ -36,7 +36,6 @@ import org.kie.api.io.Resource;
  * part of the ResourceType api when adding to KnowledgeBuilder, which is considered stable. KnowledgeBuilder currently ignored Added/Modified xml elements,
  * the KnowledgeAgent will use them, when rebuilding the KnowledgeBase.
  * </p>
- * @BETA
  */
 public interface ResourceChangeNotifier {
     void subscribeResourceChangeListener(ResourceChangeListener listener,

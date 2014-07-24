@@ -19,7 +19,7 @@ package org.kie.internal.executor.api;
 /**
  * CommandCallback represents logic that shall be executed after command invocation.
  * Depending on the result of invocation either <code>onCommandDone</code> or <code>onCommandError</code> will be called.
- * <br/>
+ * <br>
  * Important note about implementations is that it shall always be possible to be initialized with default constructor
  * as executor service is an async component so it will initialize the command on demand using reflection.
  * In case there is a heavy logic on initialization it should be placed in another service implementation that 

@@ -65,8 +65,6 @@ public interface KnowledgeBaseFactoryService extends Service {
      * 
      * @param properties
      *     Properties file to process, can be null;
-     * @param classLoader
-     *     Provided ClassLoader, can be null and then ClassLoader defaults to Thread.currentThread().getContextClassLoader()
      * @return
      *     The KnowledgeSessionConfiguration
      */

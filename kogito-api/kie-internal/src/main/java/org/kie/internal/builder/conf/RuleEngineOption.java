@@ -34,7 +34,7 @@ public enum RuleEngineOption implements SingleValueKieBaseOption {
     PHREAK("phreak"), RETEOO("reteoo");
 
     /**
-     * The property name for the L&R Unlinking option
+     * The property name for the L and R Unlinking option
      */
     public static final String PROPERTY_NAME = "drools.ruleEngine";
 

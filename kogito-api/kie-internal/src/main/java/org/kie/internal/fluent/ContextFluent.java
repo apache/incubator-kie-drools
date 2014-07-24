@@ -28,7 +28,7 @@ public interface ContextFluent<T>{
     
     /**
      * Indicates that output from the last command should be returned (default is no).
-     * </p>
+     * <br>
      * A call to this method <i>must</i> follow a call to {@link #set(String)} method in order to 
      * set the name for the result.
      * @return this

@@ -23,7 +23,7 @@ import org.kie.api.task.UserGroupCallback;
 /**
  * Definition of the runtime environment that will be used by instance of <code>RuntimeManager</code>.
  * <code>RuntimeEnvironment</code> delivers all information to the runtime manager to be able to properly 
- * configure and bootstrap the manager and then runtime engine instances.<br/>
+ * configure and bootstrap the manager and then runtime engine instances.<br>
  * It shall be considered as template of the configuration used by the manager that is read only and shall 
  * not be changed once <code>RuntimeManager</code> has been created.
  */

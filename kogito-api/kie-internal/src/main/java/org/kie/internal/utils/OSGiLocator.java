@@ -39,16 +39,16 @@ import java.util.concurrent.Callable;
 /**
  * Maintains a mapping of service names to an ordered set of service
  * providers when running in an OSGi container.
- * <p/>
+ * <br>
  * It is expected that a bundle using Drools will populate this map
  * with properties from its own ClassLoader.
- * <p/>
+ * <br>
  * This is an adaptation of the technique described by Guillaume Nodet
  * in his article<i>
  * <a href='http://gnodet.blogspot.com/2008/05/jee-specs-in-osgi.html'>
  * Java EE specs in OSGi</a></i>. The main changes were to add comments.
  *
- * @see {@linkplain http://gnodet.blogspot.com/2008/05/jee-specs-in-osgi.html}
+ * see http://gnodet.blogspot.com/2008/05/jee-specs-in-osgi.html
  */
 public final class OSGiLocator {
 

@@ -19,7 +19,7 @@ package org.kie.internal.task.exception;
 /**
  * Base class for all exceptions for the task related activities
  *
- * @see org.jbpm.services.task.service.TaskServiceSession#addTask(org.jbpm.services.task.Task, ContentData)
+ * see org.jbpm.services.task.service.TaskServiceSession#addTask(org.jbpm.services.task.Task, ContentData)
  */
 public abstract class TaskException extends RuntimeException {
 

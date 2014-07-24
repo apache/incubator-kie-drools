@@ -28,15 +28,15 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 /**
- * Object model that defines how and of what type the object instance should be created.<br/>
+ * Object model that defines how and of what type the object instance should be created.<br>
  * The how is actually delegated to resolved implementation <code>ObjectModelResolver</code>
  * that default to Java Reflection based resolver but might utilize others (such as MVEL, Spring, CDI, etc).
- * <br/>
+ * <br>
  * The what type is derived from identifier (which should be FQCN in case of reflection) that is then used 
  * to create instance of that object using constructor. Which constructor is taken depends on defined parameters
  * which might be again an ObjectModel for complex types.
  * String types are supported directly, all other should be represented as ObjectModel.
- * <br/>
+ * <br>
  * There are some key words acceptable that directly will refer to available instances:
  * <ul>
  * 	<li>runtimeManager - to get RuntimeManager instance injected</li>

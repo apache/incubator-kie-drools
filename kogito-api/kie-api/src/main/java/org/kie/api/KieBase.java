@@ -150,7 +150,7 @@ public interface KieBase extends KieBaseEventManager {
      * 
      * Don't forget to {@link KieSession#dispose()} session when you are done.
      * @param conf session configuration
-     * @param environment
+     * @param environment environment
      * 
      * @return created {@link KieSession}
      */

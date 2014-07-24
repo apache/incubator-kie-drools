@@ -31,6 +31,7 @@ public interface KieBaseOptionsConfiguration {
      * @param option the option to be set. As options are type safe, the option
      *               itself contains the option key, and so a single parameter
      *               is enough.
+     * @param <T> T
      */
     public <T extends KieBaseOption> void setOption( T option );
 
@@ -38,6 +39,7 @@ public interface KieBaseOptionsConfiguration {
      * Gets an option value
      * 
      * @param option the option class for the option being requested
+     * @param <T> T
      * 
      * @return the Option value for the given option. Returns null if option is 
      *         not configured.
@@ -52,6 +54,7 @@ public interface KieBaseOptionsConfiguration {
      * 
      * @param option the option class for the option being requested
      * @param key the key for the option being requested
+     * @param <T> T
      * 
      * @return the Option value for the given option + key. Returns null if option is 
      *         not configured.

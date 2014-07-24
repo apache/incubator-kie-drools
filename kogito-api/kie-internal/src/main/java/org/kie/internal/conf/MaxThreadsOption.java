@@ -49,7 +49,7 @@ public class MaxThreadsOption implements SingleValueKieBaseOption {
      * The factory method is a best practice for the case where the 
      * actual object construction is changed in the future.
      * 
-     * @param maxThreads the maximum number of threads for partition evaluation
+     * @param threshold the maximum number of threads for partition evaluation
      * 
      * @return the actual type safe max threads configuration.
      */

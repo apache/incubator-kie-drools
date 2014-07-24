@@ -20,7 +20,7 @@ package org.kie.internal.executor.api;
  * Executor's Command are dedicated to contain purely business logic that should be executed. 
  * It should not have any reference to underlying process engine and should not be concerned
  * with any process runtime related logic such us completing work item, sending signals, etc.
- * <br/>
+ * <br>
  * Information that are taken from process will be delivered as part of data instance of 
  * <code>CommandContext</code>. Depending on the execution context that data can vary but 
  * in most of the cases following will be given:

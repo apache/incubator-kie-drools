@@ -53,7 +53,7 @@ import com.thoughtworks.xstream.XStream;
  * </pre>
  * <p>
  * The insert element supports an 'out-identifier' attribute, this means the inserted object's FactHandle will be returned 
- * and optionally the object itself as part of the <batch-execution-results> payload. To return the object use the attribute 'return-object' which takes a boolean
+ * and optionally the object itself as part of the &lt;batch-execution-results&gt; payload. To return the object use the attribute 'return-object' which takes a boolean
  * 'true'|'false' value, by default this is true.
  * The 
  * </p>
@@ -101,8 +101,8 @@ import com.thoughtworks.xstream.XStream;
  * </pre>
  * <p>
  * &lt;set-global&gt; also supports two other optional attributes 'out' and 'out-identifier'. 'out' is a boolean and when set the global will be added to the 
- * &lt;batch-execution-results&g; payload using the name from the 'identifier' attribute. 'out-identifier' works like 'out' but additionally allows you to 
- * override the identifier used in the &lt;batch-execution-results&g; payload.
+ * &lt;batch-execution-results&gt; payload using the name from the 'identifier' attribute. 'out-identifier' works like 'out' but additionally allows you to 
+ * override the identifier used in the &lt;batch-execution-results&gt; payload.
  * </p>
  * <pre>
  * &lt;batch-execution&gt;
@@ -145,8 +145,8 @@ import com.thoughtworks.xstream.XStream;
  * &lt;batch-execution&gt;
  *     &lt;query out-identifier='cheeses' name='cheeses'/&gt;
  *     &lt;query out-identifier='cheeses2' name='cheesesWithParams'&gt;
- *         &lt;string>stilton&lt;/string&gt;
- *         &lt;string>cheddar&lt;/string&gt;
+ *         &lt;string&gt;stilton&lt;/string&gt;
+ *         &lt;string&gt;cheddar&lt;/string&gt;
  *     &lt;/query&gt;;
  * &lt;/batch-execution&gt;
  * </pre>
@@ -179,7 +179,7 @@ import com.thoughtworks.xstream.XStream;
  *    &lt;result identifier='Result'&gt;
  *         &lt;string&gt;SomeOtherString&lt;/string&gt;
  *     &lt;/result&gt;
- * &lt;/complete-work-item>
+ * &lt;/complete-work-item&gt;
  * </pre>
  * 
  * <p>AbortWorkItem</p>

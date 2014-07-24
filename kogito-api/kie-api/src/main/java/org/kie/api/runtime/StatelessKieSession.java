@@ -80,7 +80,7 @@ import org.kie.api.runtime.rule.StatelessRuleSession;
  * </p>
  *
  * <pre>
- * List<Command> cmds = new ArrayList<Command>();
+ * List&lt;Command&gt; cmds = new ArrayList&lt;Command&gt;();
  * cmds.add( CommandFactory.newSetGlobal( "list1", new ArrayList() ) );
  * cmds.add( CommandFactory.newInsert( new Person( "jon", 102 ) ) );
  *
@@ -92,7 +92,7 @@ import org.kie.api.runtime.rule.StatelessRuleSession;
  * </p>
  *
  * <pre>
- * List<Command> cmds = new ArrayList<Command>();
+ * List&lt;Command&gt; cmds = new ArrayList&lt;Command&gt;();
  * cmds.add( CommandFactory.newSetGlobal( "list1", new ArrayList(), true ) );
  * cmds.add( CommandFactory.newInsert( new Person( "jon", 102 ), "person" ) );
  * cmds.add( CommandFactory.newQuery( "Get People" "getPeople" );

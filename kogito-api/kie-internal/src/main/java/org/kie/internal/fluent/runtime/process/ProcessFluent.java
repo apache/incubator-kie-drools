@@ -110,7 +110,7 @@ public interface ProcessFluent<T> {
      * (or aborted), or the process instance cannot be found, this method will throw an
      * <code>IllegalArgumentException</code>.
      * 
-     * @param id the id of the process instance
+     * @param processInstanceId the id of the process instance
      */
     T abortProcessInstance(long processInstanceId);
 

@@ -42,10 +42,10 @@ public interface Query
     String getName();
 
     /**
-     * Returns an immutable Map<String key, Object value> of all meta data attributes associated with 
+     * Returns an immutable Map&lt;String key, Object value&gt; of all meta data attributes associated with 
      * this query object.
      * 
-     * @return an immutable Map<String key, Object value> of meta data attributes.
+     * @return an immutable Map&lt;String key, Object value&gt; of meta data attributes.
      */
     Map<String, Object> getMetaData();
 

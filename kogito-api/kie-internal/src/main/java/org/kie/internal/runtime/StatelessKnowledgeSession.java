@@ -84,7 +84,7 @@ import org.kie.api.runtime.StatelessKieSession;
  * </p>
  * 
  * <pre>
- * List<Command> cmds = new ArrayList<Command>();
+ * List&lt;Command&gt; cmds = new ArrayList&lt;Command&gt;();
  * cmds.add( CommandFactory.newSetGlobal( "list1", new ArrayList() ) );
  * cmds.add( CommandFactory.newInsert( new Person( "jon", 102 ) ) );
  * 
@@ -96,7 +96,7 @@ import org.kie.api.runtime.StatelessKieSession;
  * </p>
  * 
  * <pre>
- * List<Command> cmds = new ArrayList<Command>();
+ * List&lt;Command&gt; cmds = new ArrayList&lt;Command&gt;();
  * cmds.add( CommandFactory.newSetGlobal( "list1", new ArrayList(), true ) );
  * cmds.add( CommandFactory.newInsert( new Person( "jon", 102 ), "person" ) );
  * cmds.add( CommandFactory.newQuery( "Get People" "getPeople" );
@@ -109,11 +109,9 @@ import org.kie.api.runtime.StatelessKieSession;
  * 
  * 
  * @see org.kie.api.runtime.CommandExecutor
- * @see org.kie.api.runtime.command.CommandFactory
- * @see org.kie.api.runtime.command.BatchExecution
- * @see org.kie.api.runtime.ExecutionResults.BatchExecutionResults
- * @see org.kie.api.runtime.help.BatchExecutionHelp
- * @see org.kie.api.runtime.pipeline.PipelineFactory
+ * @see org.kie.internal.command.CommandFactory
+ * @see org.kie.api.command.BatchExecutionCommand
+ * @see org.kie.internal.runtime.helper.BatchExecutionHelper
  * @see org.kie.api.runtime.Globals
  */
 public interface StatelessKnowledgeSession
