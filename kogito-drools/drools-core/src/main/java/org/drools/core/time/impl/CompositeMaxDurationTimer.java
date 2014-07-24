@@ -16,15 +16,6 @@
 
 package org.drools.core.time.impl;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ConditionalElement;
@@ -32,6 +23,14 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * While a rule might have multiple DurationTimers, due to LHS CEP rules, there can only ever
@@ -72,7 +71,7 @@ public class CompositeMaxDurationTimer extends BaseTimer
         long timestamp = ((InternalWorkingMemory) wm).getTimerService().getCurrentTime();
         String[] calendarNames = item.getRule().getCalendars();
         Calendars calendars = ((InternalWorkingMemory) wm).getCalendars();
-        return createTrigger( timestamp, calendarNames, calendars );
+        return createTrigger( getMaxTimestamp(item.getTuple(), timestamp), calendarNames, calendars );
     }
 
     public Trigger createTrigger(long timestamp,
@@ -82,7 +81,7 @@ public class CompositeMaxDurationTimer extends BaseTimer
                                  Calendars calendars,
                                  Declaration[][] declrs,
                                  InternalWorkingMemory wm) {
-        return createTrigger( timestamp, calendarNames, calendars );
+        return createTrigger( getMaxTimestamp(leftTuple, timestamp), calendarNames, calendars );
     }
 
     public Trigger createTrigger( long timestamp, // current time
@@ -92,7 +91,7 @@ public class CompositeMaxDurationTimer extends BaseTimer
             throw new IllegalStateException( "CompositeMaxDurationTimer cannot have no durations" );
         }
         
-        Date maxDurationDate = new Date( getMaxDuration() + timestamp );
+        Date maxDurationDate = new Date( timer != null ? getMaxDuration() + timestamp : timestamp );
         
         return new CompositeMaxDurationTrigger( maxDurationDate,
                                                 timer != null ? timer.createTrigger( timestamp,
@@ -100,6 +99,18 @@ public class CompositeMaxDurationTimer extends BaseTimer
                                                                                      calendars ) : null,
                                                 calendarNames,
                                                 calendars );
+    }
+
+    private long getMaxTimestamp(LeftTuple leftTuple, long timestamp) {
+        if (timer != null) {
+            return timestamp;
+        }
+        long result = 0;
+        for ( DurationTimer durationTimer : durations ) {
+            result = Math.max( result,
+                               durationTimer.getDuration() + durationTimer.getEventTimestamp(leftTuple, timestamp) );
+        }
+        return result;
     }
 
     private long getMaxDuration() {
