@@ -328,7 +328,7 @@
 
         <listitem>
           <para><literal>HARD_SOFT_BIG_DECIMAL</literal>: Uses <literal>HardSoftBigDecimalScore</literal> which has
-          <literal>BigDecimal</literal> values instead of <literal>int</literal> values..</para>
+          <literal>BigDecimal</literal> values instead of <literal>int</literal> values.</para>
         </listitem>
       </itemizedlist>
     </section>
