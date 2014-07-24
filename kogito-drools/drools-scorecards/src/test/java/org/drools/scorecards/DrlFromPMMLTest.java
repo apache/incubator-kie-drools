@@ -51,7 +51,7 @@ public class DrlFromPMMLTest {
 
     @Test
     public void testRuleCount() throws Exception {
-        assertEquals( 55, StringUtil.countMatches( drl, "rule \"" ) );
+        assertEquals( 56, StringUtil.countMatches( drl, "rule \"" ) );
     }
 
     @Test
