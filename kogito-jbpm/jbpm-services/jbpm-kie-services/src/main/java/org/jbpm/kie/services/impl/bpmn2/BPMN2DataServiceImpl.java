@@ -146,7 +146,7 @@ public class BPMN2DataServiceImpl implements DefinitionService {
 	        return Collections.unmodifiableMap(helper.getServiceTasks());
         }
         
-        return null;
+        return Collections.emptyMap();
     }
 
 	@Override
@@ -180,10 +180,13 @@ public class BPMN2DataServiceImpl implements DefinitionService {
 	        if (helper == null) {
 	            throw new IllegalStateException("No process available with given id : " + processId);
 	        }
-	        return new ArrayList<String>(helper.getReusableSubProcesses());
+	        
+	        if (helper.getReusableSubProcesses() != null) {
+	        	return new ArrayList<String>(helper.getReusableSubProcesses());
+	        }
         }
         
-        return null;
+        return Collections.emptyList();
 	}
 
 
@@ -199,10 +202,12 @@ public class BPMN2DataServiceImpl implements DefinitionService {
 	        if (helper == null) {
 	            throw new IllegalStateException("No process available with given id : " + processId);
 	        }
-	        return Collections.unmodifiableMap(helper.getInputs());
+	        if (helper.getInputs() != null) {
+	        	return Collections.unmodifiableMap(helper.getInputs());
+	        }
         }
         
-        return null;
+        return Collections.emptyMap();
 	}
 
 	
@@ -218,10 +223,13 @@ public class BPMN2DataServiceImpl implements DefinitionService {
 	        if (helper == null) {
 	            throw new IllegalStateException("No process available with given id : " + processId);
 	        }
-	        return Collections.unmodifiableMap(helper.getTaskAssignments());
+	        
+	        if (helper.getTaskAssignments() != null) {
+	        	return Collections.unmodifiableMap(helper.getTaskAssignments());
+	        }
         }
         
-        return null;
+        return Collections.emptyMap();
 	}
 
 
@@ -238,10 +246,12 @@ public class BPMN2DataServiceImpl implements DefinitionService {
 	        if (helper == null) {
 	            throw new IllegalStateException("No process available with given id : " + processId);
 	        }
-	        return new ArrayList<UserTaskDefinition>(helper.getTasks().values());
+	        if (helper.getTasks() != null) {
+	        	return new ArrayList<UserTaskDefinition>(helper.getTasks().values());
+	        }
         }
         
-        return null;
+        return Collections.emptyList();
 	}
 
 
@@ -257,10 +267,12 @@ public class BPMN2DataServiceImpl implements DefinitionService {
 	        if (helper == null) {
 	            throw new IllegalStateException("No process available with given id : " + processId);
 	        }
-	        return Collections.unmodifiableMap(helper.getTaskInputMappings().get(taskName));
+	        if (helper.getTaskInputMappings().containsKey(taskName)) {
+	        	return Collections.unmodifiableMap(helper.getTaskInputMappings().get(taskName));
+	        }
         }
         
-        return null;
+        return Collections.emptyMap();
 	}
 
 
@@ -277,9 +289,12 @@ public class BPMN2DataServiceImpl implements DefinitionService {
 	        if (helper == null) {
 	            throw new IllegalStateException("No process available with given id : " + processId);
 	        }
-	        return Collections.unmodifiableMap(helper.getTaskOutputMappings().get(taskName));
+	        
+	        if (helper.getTaskOutputMappings().containsKey(taskName)) {
+	        	return Collections.unmodifiableMap(helper.getTaskOutputMappings().get(taskName));
+	        }
         }
         
-        return null;
+        return Collections.emptyMap();
 	}
 }

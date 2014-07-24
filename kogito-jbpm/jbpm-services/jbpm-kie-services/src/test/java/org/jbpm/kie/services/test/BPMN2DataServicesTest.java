@@ -56,6 +56,7 @@ public class BPMN2DataServicesTest extends AbstractBaseTest {
         processes.add("repo/processes/general/signal.bpmn");
         processes.add("repo/processes/general/import.bpmn");
         processes.add("repo/processes/general/callactivity.bpmn");
+        processes.add("repo/processes/general/BPMN2-UserTask.bpmn2");
         processes.add("repo/processes/itemrefissue/itemrefissue.bpmn");
         
         InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
@@ -116,8 +117,7 @@ public class BPMN2DataServicesTest extends AbstractBaseTest {
         Map<String, Collection<String>> associatedEntities = bpmn2Service.getAssociatedEntities(deploymentUnit.getIdentifier(), processId);
         
         assertEquals(3, associatedEntities.keySet().size());
-        
-        
+ 
     }
     
     @Test
@@ -191,5 +191,38 @@ public class BPMN2DataServicesTest extends AbstractBaseTest {
         Map<String, String> processData = bpmn2Service.getProcessVariables(deploymentUnit.getIdentifier(), processId);
         assertNotNull(processData);
         
+    }
+    
+    @Test
+    public void testHumanTaskProcessNoIO() throws IOException {
+      
+        assertNotNull(deploymentService);
+        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+      
+        String processId = "UserTask";
+        
+
+        Collection<UserTaskDefinition> processTasks = bpmn2Service.getTasksDefinitions(deploymentUnit.getIdentifier(), processId);
+        
+        assertEquals(1, processTasks.size());
+        Map<String, String> processData = bpmn2Service.getProcessVariables(deploymentUnit.getIdentifier(), processId);
+        
+        assertEquals(0, processData.keySet().size());
+        Map<String, String> taskInputMappings = bpmn2Service.getTaskInputMappings(deploymentUnit.getIdentifier(), processId, "Hello" );
+        
+        assertEquals(0, taskInputMappings.keySet().size());
+        
+        Map<String, String> taskOutputMappings = bpmn2Service.getTaskOutputMappings(deploymentUnit.getIdentifier(), processId, "Hello" );
+        
+        assertEquals(0, taskOutputMappings.keySet().size());
+        
+        Map<String, Collection<String>> associatedEntities = bpmn2Service.getAssociatedEntities(deploymentUnit.getIdentifier(), processId);
+        
+        assertEquals(1, associatedEntities.keySet().size());
+ 
     }
 }

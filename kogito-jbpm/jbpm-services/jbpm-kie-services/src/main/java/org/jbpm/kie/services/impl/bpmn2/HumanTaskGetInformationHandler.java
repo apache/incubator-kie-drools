@@ -76,12 +76,18 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
         NamedNodeMap map = xmlNode.getParentNode().getAttributes();
         Node nodeName = map.getNamedItem("name");
         String name = nodeName.getNodeValue();
-        UserTaskDefinitionImpl task = new UserTaskDefinitionImpl();
-        task.setName(name);
+        
+        String mainProcessId = repositoryHelper.getProcess().getId();
+        UserTaskDefinitionImpl task = (UserTaskDefinitionImpl)repository.getProcessDesc(mainProcessId).getTasks().get(name);
+        if (task == null) {
+        	task = new UserTaskDefinitionImpl();
+        	task.setName(name);
+            repository.getProcessDesc(mainProcessId).getTasks().put(task.getName(), task);
+        }
 
         Map<String, String> inputParams = new HashMap<String, String>();
         
-        String mainProcessId = repositoryHelper.getProcess().getId();
+        
         for (Map.Entry<String, String> in : dataInputs.entrySet()) {
         	inputParams.put(in.getKey(), in.getValue());
         }
@@ -89,9 +95,7 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
         for (Map.Entry<String, String> out : dataOutputs.entrySet()) {
             outputParams.put(out.getKey(), out.getValue());
         }
-        
 
-        repository.getProcessDesc(mainProcessId).getTasks().put(task.getName(), task);
         task.setTaskInputMappings(inputParams);
         task.setTaskOutputMappings(outputParams);
         task.setComment(inputParams.get("Comment"));
@@ -109,6 +113,15 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
         WorkItemNode humanTaskNode = (WorkItemNode) node;
         Map<String, Object> parameters = humanTaskNode.getWork().getParameters();
         String mainProcessId = repositoryHelper.getProcess().getId();
+        
+        String name = humanTaskNode.getName();
+        UserTaskDefinitionImpl task = (UserTaskDefinitionImpl)repository.getProcessDesc(mainProcessId).getTasks().get(name);
+        if (task == null) {
+        	task = new UserTaskDefinitionImpl();
+        	task.setName(name);
+            repository.getProcessDesc(mainProcessId).getTasks().put(task.getName(), task);
+        }
+        
         Collection<String> currentAssignment = repository.getProcessDesc(mainProcessId).getTaskAssignments().get(humanTaskNode.getName());
         for(String parameter : parameters.keySet()){
             if(parameter.equals("GroupId")){
@@ -128,13 +141,21 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
     protected String readPotentialOwner(org.w3c.dom.Node xmlNode, HumanTaskNode humanTaskNode) {
         String user = xmlNode.getFirstChild().getFirstChild().getFirstChild().getTextContent();
         String mainProcessId = repositoryHelper.getProcess().getId();
+        
+        String name = humanTaskNode.getName();
+        UserTaskDefinitionImpl task = (UserTaskDefinitionImpl)repository.getProcessDesc(mainProcessId).getTasks().get(name);
+        if (task == null) {
+        	task = new UserTaskDefinitionImpl();
+        	task.setName(name);
+            repository.getProcessDesc(mainProcessId).getTasks().put(task.getName(), task);
+        }
         Collection<String> currentAssignment = repository.getProcessDesc(mainProcessId).getTaskAssignments().get(humanTaskNode.getName());
         if(currentAssignment == null) {
         	currentAssignment = new ArrayList<String>();
             repository.getProcessDesc(mainProcessId).getTaskAssignments().put(humanTaskNode.getName(), currentAssignment);
         }
         currentAssignment.add(user);
-        ((UserTaskDefinitionImpl)repository.getProcessDesc(mainProcessId).getTasks().get(humanTaskNode.getName())).setAssociatedEntities(currentAssignment);
+        task.setAssociatedEntities(currentAssignment);
         return user;
     }
 
