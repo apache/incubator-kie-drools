@@ -54,6 +54,7 @@ public class TypeFieldDescr extends AnnotatedBaseDescr
         fieldName = (String) in.readObject();
         initExpr = (String) in.readObject();
         pattern = (PatternDescr) in.readObject();
+        inherited = in.readBoolean();
     }
     
     @Override
@@ -63,6 +64,7 @@ public class TypeFieldDescr extends AnnotatedBaseDescr
         out.writeObject( fieldName );
         out.writeObject( initExpr );
         out.writeObject( pattern );
+        out.writeBoolean( inherited );
     }
 
     /**
