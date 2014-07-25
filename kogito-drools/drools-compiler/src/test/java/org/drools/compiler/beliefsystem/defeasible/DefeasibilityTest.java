@@ -16,6 +16,7 @@
 package org.drools.compiler.beliefsystem.defeasible;
 
 import org.drools.core.BeliefSystemType;
+import org.drools.core.ClassObjectFilter;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.defeasible.DefeasibilityStatus;
@@ -849,5 +850,64 @@ public class DefeasibilityTest {
     }
 
 
+    @Test
+    public void testManyDefeasibles() {
+        String drl = "package org.drools.defeasible; " +
+                     "declare Fact " +
+                     "     fact: String @key " +
+                     "end " +
+                     " " +
+                     "rule init " +
+                     "     when " +
+                     "     then " +
+                     "         insert( new Fact( 'one' ) ); " +
+                     "         insert( new Fact( 'two' ) ); " +
+                     "         insert( new Fact( 'two' ) ); " +
+                     "end " +
+                     " " +
+                     "rule rule1 " +
+                     "     @Defeasible " +
+                     "     enabled true " +
+                     "     when " +
+                     "         Fact( \"one\"; ) " +
+                     "     then " +
+                     "         System.out.println(\"one causes wibble\"); " +
+                     "         insertLogical( new Fact( \"wibble\") ); " +
+                     "end " +
+                     " " +
+                     "rule rule2 " +
+                     "     @Defeasible " +
+                     "     when " +
+                     "         Fact( \"two\"; ) " +
+                     "     then " +
+                     "         System.out.println(\"two causes wibble\"); " +
+                     "         insertLogical( new Fact( \"wibble\") ); " +
+                     "end " +
+                     " " +
+                     "rule rule3 " +
+                     "     @Defeater " +
+                     "     @Defeats( \"rule2\" ) " +
+                     "     when " +
+                     "         Fact( \"two\"; ) " +
+                     "     then " +
+                     "         System.out.println(\"two negates wibble\"); " +
+                     "         insertLogical( new Fact( \"wibble\"), \"neg\" ); " +
+                     "end";
+
+        StatefulKnowledgeSession session = getSessionFromString( drl );
+        session.fireAllRules();
+
+        FactType factType = session.getKieBase().getFactType( "org.drools.defeasible", "Fact" );
+        for ( Object o : session.getObjects( new ClassObjectFilter( factType.getFactClass() ) ) ) {
+            if ( "wibble".equals( factType.get( o, "fact" ) ) ) {
+                InternalFactHandle handle = (InternalFactHandle) session.getFactHandle( o );
+                DefeasibleBeliefSet dbs = (DefeasibleBeliefSet) handle.getEqualityKey().getBeliefSet();
+
+                assertEquals( 3, dbs.size() );
+                assertTrue( dbs.isConflicting() );
+            }
+        }
+
+    }
 
 }
