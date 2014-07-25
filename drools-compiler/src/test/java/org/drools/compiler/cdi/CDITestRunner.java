@@ -77,7 +77,7 @@ public class CDITestRunner extends BlockJUnit4ClassRunner {
 
     public static void tearDown() {
         try {
-            if ( CDITestRunner.weld != null ) { 
+            if ( CDITestRunner.weld != null ) {
                 CDITestRunner.weld.shutdown();
              
                 CDITestRunner.weld = null;
@@ -87,7 +87,21 @@ public class CDITestRunner extends BlockJUnit4ClassRunner {
             }
         } finally {
             try {
-                Thread.currentThread().setContextClassLoader( origCl );                
+                // FIXME Java 7+
+                // on Windows, the URLClassLoader will not release all resources,
+                // so the attempt to delete the temporary files will fail.
+                // an explicit dispose call is needed, but it has not been introduced until Java7+
+                // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4950148
+
+                /*
+                try {
+                    ((URLClassLoader) Thread.currentThread().getContextClassLoader()).close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                */
+
+                Thread.currentThread().setContextClassLoader( origCl );
             } finally {
                 fileManager.tearDown();
             }            
