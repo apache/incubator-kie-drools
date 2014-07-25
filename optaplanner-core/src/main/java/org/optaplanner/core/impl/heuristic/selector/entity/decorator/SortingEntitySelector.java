@@ -42,7 +42,7 @@ public class SortingEntitySelector extends AbstractCachingEntitySelector {
     public void constructCache(DefaultSolverScope solverScope) {
         super.constructCache(solverScope);
         sorter.sort(solverScope.getScoreDirector(), cachedEntityList);
-        logger.trace("    Sorted cachedEntityList with size ({}) in entitySelector({}).",
+        logger.trace("    Sorted cachedEntityList: size ({}), entitySelector ({}).",
                 cachedEntityList.size(), this);
     }
 

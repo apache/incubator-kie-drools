@@ -58,7 +58,7 @@ public abstract class AbstractCachingMoveSelector extends AbstractMoveSelector i
         }
         cachedMoveList = new ArrayList<Move>((int) childSize);
         Iterators.addAll(cachedMoveList, childMoveSelector.iterator());
-        logger.trace("    Created cachedMoveList with size ({}) in moveSelector({}).",
+        logger.trace("    Created cachedMoveList: size ({}), moveSelector ({}).",
                 cachedMoveList.size(), this);
     }
 

@@ -42,7 +42,7 @@ public class SortingMoveSelector extends AbstractCachingMoveSelector {
     public void constructCache(DefaultSolverScope solverScope) {
         super.constructCache(solverScope);
         sorter.sort(solverScope.getScoreDirector(), cachedMoveList);
-        logger.trace("    Sorted cachedMoveList with size ({}) in moveSelector({}).",
+        logger.trace("    Sorted cachedMoveList: size ({}), moveSelector ({}).",
                 cachedMoveList.size(), this);
     }
 

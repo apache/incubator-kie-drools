@@ -61,7 +61,7 @@ public abstract class AbstractCachingValueSelector extends AbstractValueSelector
         cachedValueList = new ArrayList<Object>((int) childSize);
         // TODO Fail-faster if a non FromSolutionPropertyValueSelector is used
         Iterators.addAll(cachedValueList, childValueSelector.iterator());
-        logger.trace("    Created cachedValueList with size ({}) in valueSelector({}).",
+        logger.trace("    Created cachedValueList: size ({}), valueSelector ({}).",
                 cachedValueList.size(), this);
     }
 

@@ -41,7 +41,7 @@ public class SortingValueSelector extends AbstractCachingValueSelector implement
     public void constructCache(DefaultSolverScope solverScope) {
         super.constructCache(solverScope);
         sorter.sort(solverScope.getScoreDirector(), cachedValueList);
-        logger.trace("    Sorted cachedValueList with size ({}) in valueSelector({}).",
+        logger.trace("    Sorted cachedValueList: size ({}), valueSelector ({}).",
                 cachedValueList.size(), this);
     }
 

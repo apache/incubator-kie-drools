@@ -59,7 +59,7 @@ public abstract class AbstractCachingEntitySelector extends AbstractEntitySelect
         }
         cachedEntityList = new ArrayList<Object>((int) childSize);
         Iterators.addAll(cachedEntityList, childEntitySelector.iterator());
-        logger.trace("    Created cachedEntityList with size ({}) in entitySelector({}).",
+        logger.trace("    Created cachedEntityList: size ({}), entitySelector ({}).",
                 cachedEntityList.size(), this);
     }
 

@@ -105,10 +105,10 @@ public class EntityDependentSortingValueSelector extends AbstractValueSelector {
         }
         List<Object> cachedValueList = new ArrayList<Object>((int) childSize);
         Iterators.addAll(cachedValueList, childValueSelector.iterator(entity));
-        logger.trace("    Created cachedValueList with size ({}) in valueSelector ({}).",
+        logger.trace("    Created cachedValueList: size ({}), valueSelector ({}).",
                 cachedValueList.size(), this);
         sorter.sort(scoreDirector, cachedValueList);
-        logger.trace("    Sorted cachedValueList with size ({}) in valueSelector({}).",
+        logger.trace("    Sorted cachedValueList: size ({}), valueSelector ({}).",
                 cachedValueList.size(), this);
         return cachedValueList.iterator();
     }

@@ -63,7 +63,7 @@ public class MoveListFactoryToMoveSelectorBridge extends AbstractMoveSelector
 
     public void constructCache(DefaultSolverScope solverScope) {
         cachedMoveList = moveListFactory.createMoveList(solverScope.getScoreDirector().getWorkingSolution());
-        logger.trace("    Created cachedMoveList with size ({}) in moveSelector({}).",
+        logger.trace("    Created cachedMoveList: size ({}), moveSelector ({}).",
                 cachedMoveList.size(), this);
     }
 
