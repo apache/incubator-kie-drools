@@ -14,6 +14,8 @@ import static org.junit.Assert.assertEquals;
 
 public class DefaultKieSessionFromFSExampleTest {
 
+    private static final String NL = System.getProperty("line.separator");
+
     @Test
     public void testGo() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -22,13 +24,10 @@ public class DefaultKieSessionFromFSExampleTest {
         ps.close();
 
         String actual = new String(baos.toByteArray());
-        if (File.separatorChar == '\\') {
-            actual = actual.replaceAll("\r\n", "\n");
-        }
 
         String expected = "" +
-                          "Dave: Hello, HAL. Do you read me, HAL?\n" +
-                          "HAL: Dave. I read you.\n";
+                          "Dave: Hello, HAL. Do you read me, HAL?" + NL +
+                          "HAL: Dave. I read you." + NL;
 
         assertEquals(expected, actual);
     }

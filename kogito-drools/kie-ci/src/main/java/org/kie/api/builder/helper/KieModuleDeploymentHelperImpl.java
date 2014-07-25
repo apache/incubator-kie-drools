@@ -421,7 +421,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
                 if (resourcePath.startsWith("/")) {
                     resourcePath = resourcePath.substring(1);
                 }
-                int depth = resourcePath.split(File.separator).length + 1;
+                int depth = resourcePath.split("/").length + 1;
 
                 String jarUrlString = urlString.substring("jar:".length(), jarPathIndex);
                 url = new URL(jarUrlString);
@@ -430,8 +430,8 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
                 ZipEntry ze = zip.getNextEntry();
                 while (ze != null) {
                     String name = ze.getName();
-                    if (name.startsWith(resourcePath) && !name.endsWith(File.separator)
-                            && (name.split(File.separator).length == depth)) {
+                    if (name.startsWith(resourcePath) && !name.endsWith("/")
+                            && (name.split("/").length == depth)) {
                         String shortName = name.substring(name.lastIndexOf("/") + 1);
                         String content = convertFileToString(zip);
                         output.add(new KJarResource(shortName, content));
@@ -546,16 +546,15 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
                 throw new RuntimeException("Unable to read from " + jarPath, e);
             }
         }
-    
+
         String pkgFolder = userClass.getPackage().toString();
-        
+
         // @#$%ing Eclipe classloader!! The following 2 lines "normalize" the package name from what Eclipse (and other IDE's?) do with it
         pkgFolder = pkgFolder.replace("package ", "");
         pkgFolder = pkgFolder.replaceAll(",.+$", "");
-        
-        pkgFolder = pkgFolder.replaceAll("\\.", File.separator);
+        pkgFolder = pkgFolder.replaceAll("\\.", "/" );
         String classFilePath = pkgFolder + "/" + classSimpleName + ".class";
-        
+
         if( classFilePath.contains(" " ) ) { 
             throw new RuntimeException("Invalid class name ('" + classFilePath + "'), contact the developers.");
         }

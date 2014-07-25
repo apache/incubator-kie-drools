@@ -51,7 +51,7 @@ public class FieldFactoryTest {
 
     @Test
     public void testDate() throws Exception {
-        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.UK);
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
         String s = df.format(df.parse("10-Jul-1974"));
         final FieldValue val = FieldFactory.getInstance().getFieldValue( s,
                                                                          ValueType.DATE_TYPE,

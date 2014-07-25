@@ -90,7 +90,7 @@ public class FunctionsTest extends DroolsAbstractPMMLTest {
         assertEquals("(\"testString\".toString().substring(2,6))" , ctx.mapFunction("substring","\"testString\"","3","4"));
         assertEquals("(new java.util.Formatter(new StringBuilder(),java.util.Locale.getDefault()).format(\"%3d\",3.0))" , ctx.mapFunction("formatNumber","\"%3d\"","3.0"));
 
-        assertEquals("(new java.text.SimpleDateFormat(\"format\").format(new SimpleDateFormat().parse(\"date\")))" , ctx.mapFunction("formatDatetime","\"date\"","\"format\""));
+        assertEquals("(new java.text.SimpleDateFormat(\"format\").format(new SimpleDateFormat().parse(\"date\", java.util.Locale.ENGLISH)))" , ctx.mapFunction("formatDatetime","\"date\"","\"format\""));
 
         assertEquals("(( (new java.text.SimpleDateFormat()).parse(\"date\").getTime() - (new java.text.SimpleDateFormat()).parse(\"01/01/1956\").getTime() ) / (1000*60*60*24))", ctx.mapFunction("dateDaysSinceYear","\"date\"","1956"));
         assertEquals("(( (new java.text.SimpleDateFormat()).parse(\"date\").getTime() - (new java.text.SimpleDateFormat()).parse(\"01/01/1956\").getTime() ) / 1000)", ctx.mapFunction("dateSecondsSinceYear","\"date\"","1956"));

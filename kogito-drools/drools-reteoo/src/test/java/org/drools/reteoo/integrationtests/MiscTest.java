@@ -92,6 +92,7 @@ import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.MapBackedClassLoader;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.command.Setter;
@@ -5891,7 +5892,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test @Ignore
     public void testFireAllWhenFiringUntilHalt() {
         KnowledgeBase kbase = getKnowledgeBase();
         final StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
