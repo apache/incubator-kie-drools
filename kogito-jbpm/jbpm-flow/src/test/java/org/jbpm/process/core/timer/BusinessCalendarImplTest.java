@@ -254,6 +254,34 @@ public class BusinessCalendarImplTest extends AbstractBaseTest {
         assertEquals(expectedDate, formatDate("yyyy-MM-dd HH:mm", result));
     }
     
+    @Test
+    public void testCalculateISOHours() {
+        Properties config = new Properties();
+        String expectedDate = "2012-05-04 16:45";
+        SessionPseudoClock clock = new StaticPseudoClock(parseToDateWithTime("2012-05-04 13:45").getTime());
+        
+        BusinessCalendarImpl businessCal = new BusinessCalendarImpl(config, clock);
+        
+        Date result = businessCal.calculateBusinessTimeAsDate("PT3H");
+        
+        assertEquals(expectedDate, formatDate("yyyy-MM-dd HH:mm", result));
+    }
+    
+    @Test
+    public void testCalculateISODaysAndHours() {
+        Properties config = new Properties();
+        config.setProperty(BusinessCalendarImpl.HOLIDAYS, "2012-05-09");
+        String expectedDate = "2012-05-10 15:30";
+        
+        SessionPseudoClock clock = new StaticPseudoClock(parseToDateWithTime("2012-05-08 11:10").getTime());
+        
+        BusinessCalendarImpl businessCal = new BusinessCalendarImpl(config, clock);
+        
+        Date result = businessCal.calculateBusinessTimeAsDate("P1DT4H20M");
+        
+        assertEquals(expectedDate, formatDate("yyyy-MM-dd HH:mm", result));
+    }
+    
     private Date parseToDate(String dateString) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         

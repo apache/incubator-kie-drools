@@ -52,22 +52,31 @@ public class DateTimeUtils extends TimeUtils {
         }
     }
     
+    public static String[] parseISORepeatable(String isoString) {
+    	String[] result = new String[3];
+    	String[] elements = isoString.split("/");
+        if (elements.length==3) {
+        	result[0] = elements[0].substring(1);
+        	result[1] = elements[1];
+        	result[2] = elements[2];
+        } else {
+        	result[0] = elements[0].substring(1);
+        	result[1] = new DateTime().toString();
+        	result[2] = elements[1];
+        }
+        
+        return result;
+    }
+    
     public static long[] parseRepeatableDateTime(String dateTimeStr) {
         long[] result = new long[3];
         if (isRepeatable(dateTimeStr)) {
-            String repeats = null;
-            String delayIn = null;
-            String periodIn = null;
-            String[] elements = dateTimeStr.split("/");
-            if (elements.length==3) {
-                repeats = elements[0].substring(1);
-                delayIn = elements[1];
-                periodIn = elements[2];
-            } else {
-                repeats = elements[0].substring(1);
-                delayIn = new DateTime().toString();
-                periodIn = elements[1];
-            }
+        	
+        	String[] parsed = parseISORepeatable(dateTimeStr);
+            String repeats = parsed[0];
+            String delayIn = parsed[1];
+            String periodIn = parsed[2];
+ 
             DateTime startAtDelay =  ISODateTimeFormat.dateTimeParser().parseDateTime(delayIn);
             Duration startAtDelayDur = new Duration(System.currentTimeMillis(), startAtDelay.getMillis());
             if (startAtDelayDur.getMillis() <= 0) {

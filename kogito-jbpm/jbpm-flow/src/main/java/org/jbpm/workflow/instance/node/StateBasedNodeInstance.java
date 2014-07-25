@@ -107,17 +107,52 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     	KnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
     	if (kruntime != null && kruntime.getEnvironment().get("jbpm.business.calendar") != null){
         	BusinessCalendar businessCalendar = (BusinessCalendar) kruntime.getEnvironment().get("jbpm.business.calendar");
-        	
-        	String delay = resolveVariable(timer.getDelay());
-        	
-        	timerInstance.setDelay(businessCalendar.calculateBusinessTimeAsDuration(delay));
-        	
-        	if (timer.getPeriod() == null) {
-                timerInstance.setPeriod(0);
-            } else {
-                String period = resolveVariable(timer.getPeriod());
-                timerInstance.setPeriod(businessCalendar.calculateBusinessTimeAsDuration(period));
+        	String delay = null;
+        	switch (timer.getTimeType()) {
+            case Timer.TIME_CYCLE:
+            	
+            	String tempDelay = resolveVariable(timer.getDelay());
+            	String tempPeriod = resolveVariable(timer.getPeriod());
+            	if (DateTimeUtils.isRepeatable(tempDelay)) {
+            		String[] values = DateTimeUtils.parseISORepeatable(tempDelay);
+            		String tempRepeatLimit = values[0];
+            		tempDelay = values[1];
+            		tempPeriod = values[2];
+            		
+            		if (!tempRepeatLimit.isEmpty()) {
+            			try {
+            				int repeatLimit = Integer.parseInt(tempRepeatLimit);
+            				if (repeatLimit > -1) {
+            					timerInstance.setRepeatLimit(repeatLimit+1);
+            				}
+            			} catch (NumberFormatException e) {
+            				// ignore
+            			}
+            		}
+            	}
+            	
+            	
+            	timerInstance.setDelay(businessCalendar.calculateBusinessTimeAsDuration(tempDelay));
+            	
+            	if (tempPeriod == null) {
+                    timerInstance.setPeriod(0);
+                } else {
+                    timerInstance.setPeriod(businessCalendar.calculateBusinessTimeAsDuration(tempPeriod));
+                }
+                break;
+            case Timer.TIME_DURATION:
+            	delay = resolveVariable(timer.getDelay());
+            	
+            	timerInstance.setDelay(businessCalendar.calculateBusinessTimeAsDuration(delay));
+            	timerInstance.setPeriod(0);
+            	break;
+            case Timer.TIME_DATE:
+            	// even though calendar is available concrete date was provided so it shall be used
+            	configureTimerInstance(timer, timerInstance);
+            default:
+                break;
             }
+        	
     	} else {
     	    configureTimerInstance(timer, timerInstance);
     	}
@@ -203,6 +238,9 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     }
     
     private String resolveVariable(String s) {
+    	if (s == null) {
+    		return null;
+    	}
     	// cannot parse delay, trying to interpret it
 		Map<String, String> replacements = new HashMap<String, String>();
 		Matcher matcher = PARAMETER_MATCHER.matcher(s);
