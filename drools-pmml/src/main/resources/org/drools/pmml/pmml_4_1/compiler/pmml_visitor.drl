@@ -883,8 +883,8 @@ salience -11
 when
     $bin : BayesInput( $dfld : derivedField != null, $fld : fieldName )
 then
+    // only discretization allowed here
     if ( $dfld.getName() == null ) {
-        // only allowed derivation is discretization
         $dfld.setName( $fld + "__Discrete" );
     }
     insertLogical( $dfld );
