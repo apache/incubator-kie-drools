@@ -23,20 +23,22 @@ import org.kie.api.io.ResourceType;
 
 public class DrlParserTest {
 
+    private static final String NL = System.getProperty("line.separator");
+
     @Test
     public void testExpandDRL() throws Exception {
-        String dsl = "[condition]Something=Something()\n[then]another=another();";
-        String drl = "rule 'foo' \n when \n Something \n then \n another \nend";
+        String dsl = "[condition]Something=Something()" + NL + "[then]another=another();";
+        String drl = "rule 'foo' " + NL + " when " + NL + " Something " + NL + " then " + NL + " another " + NL + "end";
         
         DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         String result = parser.getExpandedDRL( drl, new StringReader(dsl));
-        assertEqualsIgnoreWhitespace( "rule 'foo' \n when \n Something() \n then \n another(); \nend", result );
+        assertEqualsIgnoreWhitespace( "rule 'foo' " + NL + " when " + NL + " Something() " + NL + " then " + NL + " another(); " + NL + "end", result );
     }
     
     @Test
     public void testExpandDRLUsingInjectedExpander() throws Exception {
-        String dsl = "[condition]Something=Something()\n[then]another=another();";
-        String drl = "rule 'foo' \n when \n Something \n then \n another \nend";
+        String dsl = "[condition]Something=Something()" + NL + "[then]another=another();";
+        String drl = "rule 'foo' " + NL + " when " + NL + " Something " + NL + " then " + NL + " another " + NL + "end";
         
         
         DefaultExpanderResolver resolver = new DefaultExpanderResolver(new StringReader(dsl));
@@ -53,7 +55,7 @@ public class DrlParserTest {
 
         DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         String result = parser.getExpandedDRL( drl, resolver);
-        assertEqualsIgnoreWhitespace( "rule 'foo' \n when \n Something() \n then \n another(); \nend", result );
+        assertEqualsIgnoreWhitespace( "rule 'foo' " + NL + " when " + NL + " Something() " + NL + " then " + NL + " another(); " + NL + "end", result );
     }
 
     private void assertEqualsIgnoreWhitespace(final String expected,
