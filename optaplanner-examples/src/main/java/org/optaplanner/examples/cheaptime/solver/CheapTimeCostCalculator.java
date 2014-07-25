@@ -39,6 +39,7 @@ public class CheapTimeCostCalculator {
     }
 
     public static long multiplyTwoMicros(long aMicros, long bMicros) {
+        // Long arithmetic overflows because maxPowerConsumption (675.4800000000) * maxPowerCost (0.0228608333)
         double aDouble = ((double) (aMicros)) / ONE_MILLION_DOUBLE;
         double bDouble = ((double) (bMicros)) / ONE_MILLION_DOUBLE;
         double result = aDouble * bDouble;
