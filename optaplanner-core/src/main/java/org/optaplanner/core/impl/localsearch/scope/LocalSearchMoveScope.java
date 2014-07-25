@@ -99,7 +99,7 @@ public class LocalSearchMoveScope {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + moveIndex + ")";
+        return getClass().getSimpleName() + "(" + stepScope.getStepIndex() + "/" + moveIndex + ")";
     }
 
 }
