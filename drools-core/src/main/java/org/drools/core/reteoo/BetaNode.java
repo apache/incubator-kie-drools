@@ -21,8 +21,6 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DoubleBetaConstraints;
 import org.drools.core.common.DoubleNonIndexSkipBetaConstraints;
-import org.drools.core.common.GarbageCollector;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
@@ -360,7 +358,7 @@ public abstract class BetaNode extends LeftTupleSource
                 log.trace( "{} delete queue={} size={} pctx={} lt={}", getClass().getSimpleName(), System.identityHashCode( memory.getSegmentMemory().getStreamQueue() ), memory.getSegmentMemory().getStreamQueue().size(), PhreakPropagationContext.intEnumToString(rightTuple.getPropagationContext()), rightTuple );
             }
 
-            registerUnlinkedPaths(wm, memory, stagedDeleteWasEmpty);
+            registerUnlinkedPaths(wm, memory.getSegmentMemory(), stagedDeleteWasEmpty);
         } else {
             stagedDeleteWasEmpty = stagedRightTuples.addDelete(rightTuple);
         }
@@ -371,20 +369,6 @@ public abstract class BetaNode extends LeftTupleSource
             // nothing staged before, notify rule, so it can evaluate network
             memory.setNodeDirty( wm );
         };
-    }
-
-    protected void registerUnlinkedPaths(InternalWorkingMemory wm, BetaMemory memory, boolean stagedDeleteWasEmpty) {
-        if (stagedDeleteWasEmpty && !memory.getSegmentMemory().isSegmentLinked()) {
-            GarbageCollector garbageCollector = ((InternalAgenda)wm.getAgenda()).getGarbageCollector();
-            synchronized (garbageCollector) {
-                for (PathMemory pmem : memory.getSegmentMemory().getPathMemories()) {
-                    if (pmem.getNodeType() == NodeTypeEnums.RuleTerminalNode) {
-                        garbageCollector.add(pmem.getOrCreateRuleAgendaItem(wm));
-                    }
-                }
-                garbageCollector.increaseDeleteCounter();
-            }
-        }
     }
 
     public void doUpdateRightTuple(final RightTuple rightTuple,

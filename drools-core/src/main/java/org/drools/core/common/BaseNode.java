@@ -17,9 +17,11 @@
 package org.drools.core.common;
 
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.NodeSet;
+import org.drools.core.reteoo.NodeTypeEnums;
+import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuleRemovalContext;
+import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.RuleComponent;
 import org.kie.api.definition.rule.Rule;
@@ -197,5 +199,21 @@ public abstract class BaseNode
      */
     public void removeAssociation( Rule rule ) {
         this.associations.remove( rule );
-    }   
+    }
+
+    protected static void registerUnlinkedPaths(InternalWorkingMemory wm, SegmentMemory smem, boolean stagedDeleteWasEmpty) {
+        if (!smem.isSegmentLinked()) {
+            GarbageCollector garbageCollector = ((InternalAgenda)wm.getAgenda()).getGarbageCollector();
+            garbageCollector.increaseDeleteCounter();
+            if (stagedDeleteWasEmpty) {
+                synchronized (garbageCollector) {
+                    for (PathMemory pmem : smem.getPathMemories()) {
+                        if (pmem.getNodeType() == NodeTypeEnums.RuleTerminalNode) {
+                            garbageCollector.add(pmem.getOrCreateRuleAgendaItem(wm));
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
