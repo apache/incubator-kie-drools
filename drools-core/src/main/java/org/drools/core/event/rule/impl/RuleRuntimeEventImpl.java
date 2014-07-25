@@ -16,6 +16,7 @@
 
 package org.drools.core.event.rule.impl;
 
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.RuleRuntimeEvent;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.api.runtime.rule.PropagationContext;
@@ -45,6 +46,10 @@ public class RuleRuntimeEventImpl implements RuleRuntimeEvent, Externalizable {
     
     public PropagationContext getPropagationContext() {
         return this.propagationContext;
+    }
+
+    public Rule getRule() {
+        return this.propagationContext != null ? this.getPropagationContext().getRule() : null;
     }
     
     public void writeExternal(ObjectOutput out) throws IOException {
