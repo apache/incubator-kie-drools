@@ -1,11 +1,8 @@
 package org.drools.core.beliefsystem.defeasible;
 
-import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSet;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
-import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
-import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
@@ -108,8 +105,9 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         boolean wasDefeated = false;
         for (LinkedListEntry<DefeasibleLogicalDependency> existingNode = rootUndefeated; existingNode != null; existingNode = existingNode.getNext()) {
             DefeasibleLogicalDependency existingDep = existingNode.getObject();
-            wasDefeated = checkAndApplyIsDefeated(newDep, rule, existingDep);
+            wasDefeated = checkIsDefeated( newDep, rule, existingDep );
             if (wasDefeated) {
+                existingDep.addDefeated( newDep );
                 break;
             }
         }
@@ -121,9 +119,10 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
                 LinkedListEntry<DefeasibleLogicalDependency> next = existingNode.getNext();
                 DefeasibleLogicalDependency existingDep = existingNode.getObject();
 
-                if (checkAndApplyIsDefeated(existingDep, existingDep.getJustifier().getRule(), newDep)) {
+                if ( checkIsDefeated( existingDep, existingDep.getJustifier().getRule(), newDep ) ) {
                     // fist remove it from the undefeated list
                     removeUndefeated(existingDep, existingNode);
+                    newDep.addDefeated(existingDep);
                     if (existingDep.getRootDefeated() != null) {
                         // build up the list of staged deps, that will need to be reprocessed
                         if (stagedDeps == null) {
@@ -170,19 +169,17 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         updateStatus();
     }
 
-    private boolean checkAndApplyIsDefeated(DefeasibleLogicalDependency potentialInferior, RuleImpl rule, DefeasibleLogicalDependency potentialSuperior) {
+    private boolean checkIsDefeated( DefeasibleLogicalDependency potentialInferior, RuleImpl rule, DefeasibleLogicalDependency potentialSuperior ) {
         if ( potentialSuperior.getDefeats() == null ) {
             return false;
         }
         if ( potentialSuperior.getStatus() == DefeasibilityStatus.DEFINITELY && potentialInferior.getStatus() != DefeasibilityStatus.DEFINITELY ) {
-            potentialSuperior.addDefeated(potentialInferior);
             return true;
         }
         // adds the references that defeat the current node
         if (Arrays.binarySearch(potentialSuperior.getDefeats(), rule.getName()) >= 0 ||
             Arrays.binarySearch(potentialSuperior.getDefeats(), rule.getPackage() + "." + rule.getName()) >= 0) {
             if ( "neg".equals( potentialSuperior.getValue() ) ^ "neg".equals( potentialInferior.getValue() ) ) {
-                potentialSuperior.addDefeated(potentialInferior);
                 return true;
             }
         }
