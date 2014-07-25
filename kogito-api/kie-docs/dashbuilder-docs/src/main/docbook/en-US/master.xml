@@ -39,4 +39,5 @@
   <xi:include href="FirstSteps.xml"/>
   <xi:include href="Security.xml"/>
   <xi:include href="LookAndFeel.xml"/>
+  <xi:include href="Integration.xml"/>
 </book>
