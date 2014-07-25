@@ -4086,9 +4086,10 @@ public class CepEspTest extends CommonTestMethodBase {
 
         //init session clock
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get("realtime") );
+        sessionConfig.setOption( ClockTypeOption.get("pseudo") );
         //init stateful knowledge session
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(sessionConfig, null);
+        SessionPseudoClock clock = ksession.getSessionClock();
         ArrayList list = new ArrayList(  );
         ksession.setGlobal( "list", list );
 
@@ -4106,11 +4107,11 @@ public class CepEspTest extends CommonTestMethodBase {
             System.out.println(i + ". fireAllRules()");
             ksession.fireAllRules();
 
-            Thread.sleep(105);
+            clock.advanceTime(105, TimeUnit.MILLISECONDS);
         }
 
         //let thread sleep for another 1m to see if dereffered rules fire (timers, (not) after rules)
-        Thread.sleep(100*40*1);
+        clock.advanceTime(100*40*1, TimeUnit.MILLISECONDS);
         ksession.fireAllRules();
 
         assertEquals( Arrays.asList( 1L, 2L, 3L, 3L, 3L, 3L, -1 ), list );
