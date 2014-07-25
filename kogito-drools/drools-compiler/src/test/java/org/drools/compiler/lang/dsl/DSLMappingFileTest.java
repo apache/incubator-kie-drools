@@ -16,6 +16,8 @@ import static org.junit.Assert.*;
 public class DSLMappingFileTest {
     private DSLMappingFile file     = null;
     private final String   filename = "test_metainfo.dsl";
+    private static final String NL = System.getProperty("line.separator");
+
 
     @Test
     public void testParseFile() {
@@ -102,8 +104,8 @@ public class DSLMappingFileTest {
             assertEquals( "modify(policy) \\{price = {surcharge}\\}",
                           entry.getMappingValue() );
             
-            String input = "rule x\nwhen\nthen\nAdd surcharge 300 to Policy\nend\n";
-            String expected = "rule x\nwhen\nthen\nmodify(policy) {price = 300}\nend\n";
+            String input = "rule x" + NL + "when" + NL + "then" + NL + "Add surcharge 300 to Policy" + NL + "end" + NL + "";
+            String expected = "rule x" + NL + "when" + NL + "then" + NL + "modify(policy) {price = 300}" + NL + "end" + NL + "";
             
             DefaultExpander de = new DefaultExpander();
             de.addDSLMapping( this.file.getMapping() );
@@ -126,9 +128,9 @@ public class DSLMappingFileTest {
      */
     @Test
     public void testNoRHS() {
-        String file = "[then]TEST=System.out.println(\"DO_SOMETHING\");\n" +
-        "[when]code {code1} occurs and sum of all digit not equal \\( {code2} \\+ {code3} \\)=AAAA( cd1 == {code1}, cd2 != ( {code2} + {code3} ))\n"
-                      + "[when]code {code1} occurs=BBBB\n";
+        String file = "[then]TEST=System.out.println(\"DO_SOMETHING\");" + NL + "" +
+        "[when]code {code1} occurs and sum of all digit not equal \\( {code2} \\+ {code3} \\)=AAAA( cd1 == {code1}, cd2 != ( {code2} + {code3} ))" + NL + ""
+                      + "[when]code {code1} occurs=BBBB" + NL + "";
         try {
             final Reader reader = new StringReader( file );
             this.file = new DSLTokenizedMappingFile();
@@ -141,14 +143,14 @@ public class DSLMappingFileTest {
             assertTrue( this.file.getErrors().isEmpty() );
 
             final String LHS = "code 1041 occurs and sum of all digit not equal ( 1034 + 1035 )";
-            final String rule = "rule \"x\"\nwhen\n" + LHS + "\nthen\nend";
+            final String rule = "rule \"x\"" + NL + "when" + NL + "" + LHS + "" + NL + "then" + NL + "end";
 
             DefaultExpander de = new DefaultExpander();
             de.addDSLMapping( this.file.getMapping() );
 
             final String ruleAfterExpansion = de.expand( rule );
 
-            final String expected = "rule \"x\"\nwhen\nAAAA( cd1 == 1041, cd2 != ( 1034 + 1035 ))\nthen\nend";
+            final String expected = "rule \"x\"" + NL + "when" + NL + "AAAA( cd1 == 1041, cd2 != ( 1034 + 1035 ))" + NL + "then" + NL + "end";
 
             assertEquals( expected,
                           ruleAfterExpansion );
@@ -162,8 +164,8 @@ public class DSLMappingFileTest {
 
     @Test
     public void testParseFileWithEscapes() {
-        String file = "[then]TEST=System.out.println(\"DO_SOMETHING\");\n" + "[when]code {code1} occurs and sum of all digit not equal \\( {code2} \\+ {code3} \\)=AAAA( cd1 == {code1}, cd2 != ( {code2} + {code3} ))\n"
-                      + "[when]code {code1} occurs=BBBB\n";
+        String file = "[then]TEST=System.out.println(\"DO_SOMETHING\");" + NL + "" + "[when]code {code1} occurs and sum of all digit not equal \\( {code2} \\+ {code3} \\)=AAAA( cd1 == {code1}, cd2 != ( {code2} + {code3} ))" + NL + ""
+                      + "[when]code {code1} occurs=BBBB" + NL + "";
         try {
             final Reader reader = new StringReader( file );
             this.file = new DSLTokenizedMappingFile();
@@ -176,14 +178,14 @@ public class DSLMappingFileTest {
             assertTrue( this.file.getErrors().isEmpty() );
 
             final String LHS = "code 1041 occurs and sum of all digit not equal ( 1034 + 1035 )";
-            final String rule = "rule \"x\"\nwhen\n" + LHS + "\nthen\nTEST\nend";
+            final String rule = "rule \"x\"" + NL + "when" + NL + "" + LHS + "" + NL + "then" + NL + "TEST" + NL + "end";
 
             DefaultExpander de = new DefaultExpander();
             de.addDSLMapping( this.file.getMapping() );
 
             final String ruleAfterExpansion = de.expand( rule );
 
-            final String expected = "rule \"x\"\nwhen\nAAAA( cd1 == 1041, cd2 != ( 1034 + 1035 ))\nthen\nSystem.out.println(\"DO_SOMETHING\");\nend";
+            final String expected = "rule \"x\"" + NL + "when" + NL + "AAAA( cd1 == 1041, cd2 != ( 1034 + 1035 ))" + NL + "then" + NL + "System.out.println(\"DO_SOMETHING\");" + NL + "end";
 
             assertEquals( expected,
                           ruleAfterExpansion );

@@ -18,6 +18,7 @@ public class DSLTokenizedMappingFileTest {
     // Due to a bug in JDK 5, a workaround for zero-widht lookbehind has to be used.
     // JDK works correctly with "(?<=^|\\W)"
     private static final String lookbehind = "(?:(?<=^)|(?<=\\W))";
+    private static final String NL = System.getProperty("line.separator");
 
     private DSLMappingFile file     = null;
     private final String   filename = "test_metainfo.dsl";
@@ -118,9 +119,9 @@ public class DSLTokenizedMappingFileTest {
 
     @Test
     public void testParseFileWithEscapes() {
-        String file = "[then]TEST=System.out.println(\"DO_SOMETHING\");\n" + 
-                      "[when]code {code1} occurs and sum of all digit not equal \\( {code2} \\+ {code3} \\)=AAAA( cd1 == {code1}, cd2 != ( {code2} + {code3} ))\n" + 
-                      "[when]code {code1} occurs=BBBB\n";
+        String file = "[then]TEST=System.out.println(\"DO_SOMETHING\");" + NL + "" +
+                      "[when]code {code1} occurs and sum of all digit not equal \\( {code2} \\+ {code3} \\)=AAAA( cd1 == {code1}, cd2 != ( {code2} + {code3} ))" + NL + "" +
+                      "[when]code {code1} occurs=BBBB" + NL + "";
         try {
             final Reader reader = new StringReader( file );
             this.file = new DSLTokenizedMappingFile();
@@ -133,14 +134,14 @@ public class DSLTokenizedMappingFileTest {
             assertTrue( this.file.getErrors().isEmpty() );
             
             final String LHS = "code 1041 occurs and sum of all digit not equal ( 1034 + 1035 )";
-            final String rule = "rule \"x\"\nwhen\n" + LHS + "\nthen\nTEST\nend";
+            final String rule = "rule \"x\"" + NL + "when" + NL + "" + LHS + "" + NL + "then" + NL + "TEST" + NL + "end";
 
             DefaultExpander de = new DefaultExpander();
             de.addDSLMapping(this.file.getMapping());
                     
             final String ruleAfterExpansion = de.expand(rule);
             
-            final String expected = "rule \"x\"\nwhen\nAAAA( cd1 == 1041, cd2 != ( 1034 + 1035 ))\nthen\nSystem.out.println(\"DO_SOMETHING\");\nend";
+            final String expected = "rule \"x\"" + NL + "when" + NL + "AAAA( cd1 == 1041, cd2 != ( 1034 + 1035 ))" + NL + "then" + NL + "System.out.println(\"DO_SOMETHING\");" + NL + "end";
             
             assertEquals( expected, ruleAfterExpansion );
             
