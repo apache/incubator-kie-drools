@@ -4223,13 +4223,14 @@ public class CepEspTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get("realtime") );
+        sessionConfig.setOption( ClockTypeOption.get("pseudo") );
         //init stateful knowledge session
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sessionConfig, null );
+        SessionPseudoClock clock = ksession.getSessionClock();
         ArrayList list = new ArrayList(  );
         ksession.setGlobal( "list", list );
 
-        long now = new Date().getTime();
+        long now = 0;
 
         StockTick event1 = new StockTick( 1, "XXX", 1.0, now );
         StockTick event2 = new StockTick( 2, "XXX", 1.0, now + 240 );
@@ -4241,11 +4242,11 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.insert( event3 );
         ksession.insert( event4 );
 
-        Thread.sleep( 220 );
+        clock.advanceTime( 220, TimeUnit.MILLISECONDS );
 
         ksession.fireAllRules();
 
-        Thread.sleep( 400 );
+        clock.advanceTime( 400, TimeUnit.MILLISECONDS );
 
         ksession.fireAllRules();
 
