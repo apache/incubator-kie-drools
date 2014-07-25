@@ -902,7 +902,6 @@ then
     String expr = utils.mapFunction( $f2, $args );
     String bit = expr;
     if ( ! utils.isBuiltIn( $f2 ) ) {
-        // saving one rule
         bit = "$" + $f2 + "_return";
         $deps.add(  utils.mapFunctionAsQuery( $f2, $args ) );
     }
