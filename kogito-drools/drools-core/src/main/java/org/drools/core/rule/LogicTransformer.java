@@ -72,7 +72,7 @@ public class LogicTransformer {
                                     method );
     }
 
-    public GroupElement[] transform(final GroupElement cloned) throws InvalidPatternException {
+    public GroupElement[] transform( final GroupElement cloned, Map<String, Class<?>> globals ) throws InvalidPatternException {
         //moved cloned to up
         //final GroupElement cloned = (GroupElement) and.clone();
 
@@ -96,7 +96,7 @@ public class LogicTransformer {
 
         for ( int i = 0; i < ands.length; i++ ) {
             // fix the cloned declarations
-            this.fixClonedDeclarations( ands[i] );
+            this.fixClonedDeclarations( ands[i], globals );
             ands[i].setRoot( true );
         }
 
@@ -124,10 +124,11 @@ public class LogicTransformer {
      * specially patterns and corresponding declarations. So now
      * we need to fix any references to cloned declarations.
      * @param and
+     * @param globals
      */
-    protected void fixClonedDeclarations(GroupElement and) {
+    protected void fixClonedDeclarations( GroupElement and, Map<String, Class<?>> globals ) {
         Stack contextStack = new Stack();
-        DeclarationScopeResolver resolver = new DeclarationScopeResolver( Collections.<String, Class<?>>emptyMap(),
+        DeclarationScopeResolver resolver = new DeclarationScopeResolver( globals,
                                                                           contextStack );
 
         contextStack.push( and );
@@ -235,7 +236,7 @@ public class LogicTransformer {
             for ( int i = 0; i < qe.getDeclIndexes().length; i++ ) {
                 Declaration declr = (Declaration) qe.getArgTemplate()[qe.getDeclIndexes()[i]];
                 Declaration resolved = resolver.getDeclaration( null,
-                                                                    declr.getIdentifier() );
+                                                                declr.getIdentifier() );
                 if ( resolved != null && resolved != declr && resolved.getPattern() != pattern ) {
                     qe.getArgTemplate()[qe.getDeclIndexes()[i]] = resolved;
                 }

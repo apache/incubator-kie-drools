@@ -36,8 +36,8 @@ public class ConsequenceGenerator {
         RuleTerminalNode rtn = (RuleTerminalNode) knowledgeHelper.getMatch().getTuple().getLeftTupleSink();
         final Declaration[] declarations = rtn.getDeclarations();
         final boolean isOrRule = rtn.getRule().getTransformedLhs(
-                workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getLogicTransformerFactory().getLogicTransformer()
-        ).length > 1;
+                workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getLogicTransformerFactory().getLogicTransformer(),
+                workingMemory.getKnowledgeBase().getGlobals() ).length > 1;
         final LeftTuple tuple = (LeftTuple)knowledgeHelper.getTuple();
 
         // Sort declarations based on their offset, so it can ascend the tuple's parents stack only once

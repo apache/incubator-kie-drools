@@ -102,7 +102,8 @@ public class ReteooRuleBuilder implements RuleBuilder {
         final List<TerminalNode> nodes = new ArrayList<TerminalNode>();
 
         // transform rule and gets the array of subrules
-        final GroupElement[] subrules = rule.getTransformedLhs( kBase.getConfiguration().getComponentFactory().getLogicTransformerFactory().getLogicTransformer() );
+        final GroupElement[] subrules = rule.getTransformedLhs( kBase.getConfiguration().getComponentFactory().getLogicTransformerFactory().getLogicTransformer(),
+                                                                kBase.getGlobals() );
 
         for (int i = 0; i < subrules.length; i++) {
 

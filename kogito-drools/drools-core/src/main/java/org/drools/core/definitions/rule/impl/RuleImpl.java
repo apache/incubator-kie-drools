@@ -555,10 +555,11 @@ public class RuleImpl implements Externalizable,
      * @return
      * @throws org.drools.core.rule.InvalidPatternException
      */
-    public GroupElement[] getTransformedLhs( LogicTransformer transformer ) throws InvalidPatternException {
+    public GroupElement[] getTransformedLhs( LogicTransformer transformer, Map<String, Class<?>> globals ) throws InvalidPatternException {
         //Moved to getExtendedLhs --final GroupElement cloned = (GroupElement) this.lhsRoot.clone();
         return transformer.transform( getExtendedLhs( this,
-                                                      null ) );
+                                                      null ),
+                                      globals );
     }
 
     public int getSpecifity() {

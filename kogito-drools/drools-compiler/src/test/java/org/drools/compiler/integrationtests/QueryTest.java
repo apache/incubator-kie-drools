@@ -28,6 +28,7 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.QueryListenerOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
@@ -43,6 +44,7 @@ import org.kie.internal.utils.KieHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -942,4 +944,50 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 1, results.getMessages( Message.Level.ERROR ).size() );
     }
 
+
+
+    @Test
+    public void testGlobalsInQueries() {
+        String drl = "\n" +
+                     "package com.sample\n" +
+                     "\n" +
+                     "global java.lang.String AString;\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare AThing\n" +
+                     "     name: String @key\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule init\n" +
+                     "     when\n" +
+                     "     then\n" +
+                     "         insert( new AThing( AString ) );\n" +
+                     "         insert( new AThing( 'Holla' ) );\n" +
+                     "end\n" +
+                     "\n" +
+                     "query test( String $in ) \n" +
+                     "     AThing( $in; )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule spot\n" +
+                     "     when\n" +
+                     "         test( \"Hello\"; )\n" +
+                     "         AThing( \"Hello\"; )\n" +
+                     "         test( AString; )\n" +
+                     "         AThing( AString; )" +
+                     "     then\n" +
+                     "         list.add( AString + \" World\" );\n" +
+                     "end\n";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession ks = helper.build(  ).newKieSession();
+
+        ArrayList list = new ArrayList();
+        ks.setGlobal( "AString", "Hello" );
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+
+        assertEquals( Arrays.asList( "Hello World" ), list );
+    }
 }
