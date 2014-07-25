@@ -34,13 +34,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.*;
 
 
 public class PMML4Helper {
@@ -581,7 +575,7 @@ public class PMML4Helper {
         } else if ("formatDatetime".equals(functor)) {
             //TODO : PMML Uses Posix
             ans += "new java.text.SimpleDateFormat(" + posix2Java(args[1]) +
-                    ").format(new SimpleDateFormat().parse(" + args[0] +"))";
+                    ").format(new SimpleDateFormat().parse(" + args[0] +", java.util.Locale.ENGLISH))";
         } else if ("dateDaysSinceYear".equals(functor)) {
             ans += "( (new java.text.SimpleDateFormat()).parse(" + args[0] + ").getTime()" +
                     " - (new java.text.SimpleDateFormat()).parse(\"01/01/" + args[1] + "\").getTime() ) / (1000*60*60*24)";

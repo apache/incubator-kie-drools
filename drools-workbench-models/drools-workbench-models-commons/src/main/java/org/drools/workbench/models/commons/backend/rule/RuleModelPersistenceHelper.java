@@ -4,10 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang.NumberUtils;
 import org.apache.commons.lang.StringUtils;
@@ -74,12 +71,13 @@ class RuleModelPersistenceHelper {
 
         } else if ( DataType.TYPE_DATE.equals( dataType ) ) {
             try {
-                new SimpleDateFormat( DateUtils.getDateFormatMask() ).parse( adjustParam( dataType,
-                                                                                          value,
-                                                                                          Collections.EMPTY_MAP,
-                                                                                          isJavaDialect ) );
+                new SimpleDateFormat( DateUtils.getDateFormatMask(), Locale.ENGLISH ).parse(adjustParam(dataType,
+                                                                                            value,
+                                                                                            Collections.EMPTY_MAP,
+                                                                                            isJavaDialect));
                 return FieldNatureType.TYPE_LITERAL;
             } catch ( ParseException e ) {
+                e.printStackTrace();
                 return FieldNatureType.TYPE_FORMULA;
             }
 

@@ -10,8 +10,9 @@ import static org.junit.Assert.assertEquals;
 
 public class KieModuleModelExampleTest {
 
+    private static final String NL = System.getProperty("line.separator");
+
     @Test
-    @Ignore
     public void testGo() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
@@ -20,12 +21,12 @@ public class KieModuleModelExampleTest {
 
         String actual = new String(baos.toByteArray());
         String expected = "" +
-                          "Dave: Hello, HAL. Do you read me, HAL?\n" +
-                          "HAL: Dave. I read you.\n" +
-                          "Dave: Open the pod bay doors, HAL.\n" +
-                          "HAL: I'm sorry, Dave. I'm afraid I can't do that.\n" +
-                          "Dave: What's the problem?\n" +
-                          "HAL: I think you know what the problem is just as well as I do.\n";
+                          "Dave: Hello, HAL. Do you read me, HAL?" + NL +
+                          "HAL: Dave. I read you." + NL +
+                          "Dave: Open the pod bay doors, HAL." + NL +
+                          "HAL: I'm sorry, Dave. I'm afraid I can't do that." + NL +
+                          "Dave: What's the problem?" + NL +
+                          "HAL: I think you know what the problem is just as well as I do." + NL;
         assertEquals(expected, actual);
     }
 }
