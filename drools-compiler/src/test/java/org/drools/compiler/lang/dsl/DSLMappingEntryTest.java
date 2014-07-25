@@ -17,6 +17,7 @@ public class DSLMappingEntryTest {
     // Due to a bug in JDK 5, a workaround for zero-width lookbehind has to be used.
     // JDK works correctly with "(?<=^|\\W)"
     private static final String lookbehind = "(?:(?<=^)|(?<=\\W))";
+    private static final String NL = System.getProperty("line.separator");
 
     private DSLMappingEntry createEntry(final String inputKey,
                                         final String inputValue) throws IOException {
@@ -133,7 +134,7 @@ public class DSLMappingEntryTest {
                                       "0_sp_3   ", "0_sp 1_sp 2_sp", "   3_sp   3_sp 1_sp 1_sp_2  " };
         StringBuilder sb = new StringBuilder( "rule x\n" + "when\n" );
         for( String str: strs ){
-            sb.append( "String is \"" + str + "\"\n" );
+            sb.append( "String is \"" + str + "\"" + NL );
         }
         sb.append( "then\n" + "end\n" );
         String dslr = sb.toString();
@@ -151,10 +152,10 @@ public class DSLMappingEntryTest {
         DSLMappingEntry entry3 = this.createEntry( "- {prop} is_not {val} ", "{prop} != {val}" );
         DefaultExpander ex = makeExpander( entry1, entry2, entry3 );
         StringBuilder sb = new StringBuilder( "rule x\n" ).append( "when\n" );
-        sb.append( "> Foo()").append( "\n" );
-        sb.append( "- type1 is ClientServiceType.TypeGOLD" ).append( "\n" );
-        sb.append( "- type2 is_not ClientServiceType.TypeGOLD" ).append( "\n" );
-        sb.append( "- type3 is not ClientServiceType.TypeGOLD" ).append( "\n" );
+        sb.append( "> Foo()").append( NL );
+        sb.append( "- type1 is ClientServiceType.TypeGOLD" ).append( NL );
+        sb.append( "- type2 is_not ClientServiceType.TypeGOLD" ).append( NL );
+        sb.append( "- type3 is not ClientServiceType.TypeGOLD" ).append( NL );
         sb.append( "then\n" ).append( "end\n" );
         String dslr = sb.toString();
         String drl = ex.expand( dslr );
@@ -205,13 +206,13 @@ public class DSLMappingEntryTest {
                                            entry5, entry6, entry7 );
         StringBuilder sb = new StringBuilder( "rule x\n" ).append( "when\n" );
         
-        sb.append( "attr name is in [ 'Edson', 'Bob' ]" ).append( "\n" );
-        sb.append( "he (is) a $xx handsome man" ).append( "\n" );
-        sb.append( "DSL sentence with mykey myvalue" ).append( "\n" );
-        sb.append( "When the credit rating is AA" ).append( "\n" );
-        sb.append( "When the credit rating is 555" ).append( "\n" );
-        sb.append( "This is a sentence with line breaks" ).append( "\n" );
-        sb.append( "Bedingung-#19-MKM4" ).append( "\n" );
+        sb.append( "attr name is in [ 'Edson', 'Bob' ]" ).append( NL );
+        sb.append( "he (is) a $xx handsome man" ).append( NL );
+        sb.append( "DSL sentence with mykey myvalue" ).append( NL );
+        sb.append( "When the credit rating is AA" ).append( NL );
+        sb.append( "When the credit rating is 555" ).append( NL );
+        sb.append( "This is a sentence with line breaks" ).append( NL );
+        sb.append( "Bedingung-#19-MKM4" ).append( NL );
         sb.append( "then\n" + "end\n" );
         String dslr = sb.toString();
         String drl = ex.expand( dslr );
