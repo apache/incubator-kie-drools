@@ -1508,5 +1508,8 @@ public class ReteAgenda
 
         @Override
         public void add(RuleAgendaItem item) { }
+
+        @Override
+        public int getDeleteCounter() { return 0; }
     }
 }

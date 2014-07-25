@@ -1316,5 +1316,9 @@ public class DefaultAgenda
         public synchronized void add(RuleAgendaItem item) {
             unlinked.add(item);
         }
+
+        public int getDeleteCounter() {
+            return deleteCounter;
+        }
     }
 }

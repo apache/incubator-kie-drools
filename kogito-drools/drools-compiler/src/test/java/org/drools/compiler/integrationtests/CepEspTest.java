@@ -14,6 +14,8 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.GarbageCollector;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
@@ -5093,7 +5095,9 @@ public class CepEspTest extends CommonTestMethodBase {
         }
 
         // force gc
-        ((DefaultAgenda)ksession.getAgenda()).getGarbageCollector().forceGcUnlinkedRules();
+        GarbageCollector gc = ((InternalAgenda) ksession.getAgenda()).getGarbageCollector();
+        assertEquals(10, gc.getDeleteCounter());
+        gc.forceGcUnlinkedRules();
 
         Rete rete = ((KnowledgeBaseImpl)kbase).getRete();
         JoinNode joinNode = null;

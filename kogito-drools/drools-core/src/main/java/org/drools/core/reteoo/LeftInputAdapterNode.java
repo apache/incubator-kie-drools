@@ -331,6 +331,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             if ( log.isTraceEnabled() ) {
                 log.trace( "LeftInputAdapterNode delete size={}  queue={} pctx={} lt={}", System.identityHashCode( sm.getStreamQueue() ), sm.getStreamQueue().size(), PhreakPropagationContext.intEnumToString(pctx), leftTuple );
             }
+            registerUnlinkedPaths(wm, sm, stagedDeleteWasEmpty);
         } else {
             stagedDeleteWasEmpty = leftTuples.addDelete(leftTuple);
         }
