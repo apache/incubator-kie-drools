@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collections;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.test.model.DroolsTestCase;
@@ -347,7 +348,7 @@ public class LogicTransformerTest extends DroolsTestCase {
         and.addChild( a );
         and.addChild( b );
 
-        GroupElement[] transformed = LogicTransformer.getInstance().transform( not );
+        GroupElement[] transformed = LogicTransformer.getInstance().transform( not, Collections.EMPTY_MAP );
         GroupElement wrapper = transformed[0];
         GroupElement notR = (GroupElement) wrapper.getChildren().get( 0 );
 
@@ -469,7 +470,7 @@ public class LogicTransformerTest extends DroolsTestCase {
         final GroupElement or = GroupElementFactory.newOrInstance();
         and1.addChild( or );
 
-        final GroupElement[] result = LogicTransformer.getInstance().transform( and1 );
+        final GroupElement[] result = LogicTransformer.getInstance().transform( and1, Collections.EMPTY_MAP );
 
         assertLength( 1,
                       result );
@@ -588,7 +589,7 @@ public class LogicTransformerTest extends DroolsTestCase {
         root.addChild( and3 );
         root.addChild( not3 );
 
-        final GroupElement[] result = LogicTransformer.getInstance().transform( root );
+        final GroupElement[] result = LogicTransformer.getInstance().transform( root, Collections.EMPTY_MAP );
 
         // ----------------------------------------------------------------------------------
         // Now construct the result tree so we can test root against what it
@@ -774,7 +775,7 @@ public class LogicTransformerTest extends DroolsTestCase {
         and2.addChild( or3 );
         and.addChild( and2 );
 
-        final GroupElement[] ands = LogicTransformer.getInstance().transform( and );
+        final GroupElement[] ands = LogicTransformer.getInstance().transform( and, Collections.EMPTY_MAP );
 
         // Uncomment this when you need to output a new known correct tree
         // result

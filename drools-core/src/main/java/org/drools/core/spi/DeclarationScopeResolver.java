@@ -102,19 +102,19 @@ public class DeclarationScopeResolver {
 
         // it may be a global or something
         if ( this.map.containsKey( (identifier) ) ) {
+            Class<?> cls = this.map.get( identifier );
+            ClassObjectType classObjectType = new ClassObjectType( cls );
+
+            Declaration declaration;
+            final Pattern dummy = new Pattern( 0,
+                                               classObjectType );
+
+            InternalReadAccessor globalExtractor = getReadAcessor( identifier,
+                                                                   classObjectType );
+            declaration = new Declaration( identifier,
+                                           globalExtractor,
+                                           dummy );
             if ( pkg != null ) {
-                Class<?> cls = this.map.get( identifier );
-                ClassObjectType classObjectType = new ClassObjectType( cls );
-
-                Declaration declaration;
-                final Pattern dummy = new Pattern( 0,
-                                                   classObjectType );
-
-                InternalReadAccessor globalExtractor = getReadAcessor( identifier,
-                                                                       classObjectType );
-                declaration = new Declaration( identifier,
-                                               globalExtractor,
-                                               dummy );
 
                 // make sure dummy and globalExtractor are wired up to correct ClassObjectType
                 // and set as targets for rewiring
@@ -122,11 +122,8 @@ public class DeclarationScopeResolver {
                                                                      dummy );
                 pkg.getClassFieldAccessorStore().getClassObjectType( classObjectType,
                                                                      ( AcceptsClassObjectType ) globalExtractor );
-
-                return declaration;
-            } else {
-                throw new UnsupportedOperationException( "This shoudln't happen outside of PackageBuilder" );
             }
+            return declaration;
         }
         return null;
     }
