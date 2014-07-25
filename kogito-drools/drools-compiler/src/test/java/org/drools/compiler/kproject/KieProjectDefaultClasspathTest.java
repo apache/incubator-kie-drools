@@ -71,6 +71,16 @@ public class KieProjectDefaultClasspathTest extends AbstractKnowledgeTest {
             testEntry(new KProjectTestClassImpl( "fol4", kContainer ), "fol4");
 
         } finally {
+            // FIXME Java 7+
+            // on Windows, the URLClassLoader will not release all resources,
+            // so the attempt to delete the temporary files will fail.
+            // an explicit dispose call is needed, but it has not been introduced until Java7+
+            // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4950148
+
+            /*
+            ((URLClassLoader) Thread.currentThread().getContextClassLoader()).close();
+            */
+
             Thread.currentThread().setContextClassLoader( origCl );
         }
     }

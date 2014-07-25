@@ -126,7 +126,13 @@ public class FileManager {
         
         if ( file.exists() ) {
             try {
-                throw new RuntimeException( "Unable to delete file:" + file.getCanonicalPath() );
+                if ( System.getProperty( "os.name" ).toLowerCase().contains( "win" ) ) {
+                    // on windows platforms with JDK 6 or lower, a known bug will prevent
+                    // the files from being released until the JVM terminates
+                    // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4950148
+                } else {
+                    throw new RuntimeException("Unable to delete file:" + file.getCanonicalPath());
+                }
             } catch ( IOException e ) {
                 throw new RuntimeException( "Unable to delete file", e);
             }
