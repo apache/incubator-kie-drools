@@ -73,7 +73,7 @@
       <solutionClass>org.optaplanner.examples.cheaptime.domain.CheapTimeSolution</solutionClass>
       <entityClass>org.optaplanner.examples.cheaptime.domain.TaskAssignment</entityClass>
       <scoreDirectorFactory>
-        <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
+        <scoreDefinitionType>HARD_MEDIUM_SOFT_LONG</scoreDefinitionType>
         <incrementalScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeIncrementalScoreCalculator</incrementalScoreCalculatorClass>
         <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
         <!--<assertionScoreDirectorFactory>-->

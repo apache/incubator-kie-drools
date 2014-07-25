@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
@@ -33,7 +33,7 @@ import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
 
 public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTimeSolution> {
 
-    public HardSoftLongScore calculateScore(CheapTimeSolution solution) {
+    public HardMediumSoftLongScore calculateScore(CheapTimeSolution solution) {
         if (solution.getGlobalPeriodRangeFrom() != 0) {
             throw new IllegalStateException("The globalPeriodRangeFrom (" + solution.getGlobalPeriodRangeFrom()
                     + ") should be 0.");
@@ -50,6 +50,7 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
             }
             machinePeriodListMap.put(machine, machinePeriodList);
         }
+        long mediumScore = 0L;
         long softScore = 0L;
         List<PeriodPowerCost> periodPowerCostList = solution.getPeriodPowerCostList();
         for (TaskAssignment taskAssignment : solution.getTaskAssignmentList()) {
@@ -62,9 +63,10 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
                     MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
                     machinePeriodPart.addTaskAssignment(taskAssignment);
                     PeriodPowerCost periodPowerCost = periodPowerCostList.get(period);
-                    softScore -= CheapTimeCostCalculator.multiplyTwoMicros(taskAssignment.getTask().getPowerConsumptionMicros(),
+                    mediumScore -= CheapTimeCostCalculator.multiplyTwoMicros(taskAssignment.getTask().getPowerConsumptionMicros(),
                             periodPowerCost.getPowerCostMicros());
                 }
+                softScore -= startPeriod;
             }
         }
         long hardScore = 0L;
@@ -80,14 +82,14 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
                 if (active) {
                     if (previousStatus == MachinePeriodStatus.OFF) {
                         // Spin up
-                        softScore -= machine.getSpinUpDownCostMicros();
+                        mediumScore -= machine.getSpinUpDownCostMicros();
                     } else if (previousStatus == MachinePeriodStatus.IDLE) {
                         // Pay idle cost
-                        softScore -= idleCostMicros;
+                        mediumScore -= idleCostMicros;
                         idleCostMicros = 0L;
                     }
                     hardScore += machinePeriodPart.getHardScore();
-                    softScore -= CheapTimeCostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
+                    mediumScore -= CheapTimeCostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
                             periodPowerCost.getPowerCostMicros());
                     previousStatus = MachinePeriodStatus.ACTIVE;
                 } else {
@@ -104,7 +106,7 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
                 }
             }
         }
-        return HardSoftLongScore.valueOf(hardScore, softScore);
+        return HardMediumSoftLongScore.valueOf(hardScore, mediumScore, softScore);
     }
 
     private enum MachinePeriodStatus {

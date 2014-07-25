@@ -19,7 +19,7 @@ package org.optaplanner.examples.cheaptime.solver.score;
 import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
@@ -43,6 +43,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
     private MachinePeriodPart[] unassignedMachinePeriodList; // List<> replaced by array[] for performance
 
     private long hardScore;
+    private long mediumScore;
     private long softScore;
 
     private Machine oldMachine = null;
@@ -55,6 +56,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
     public void resetWorkingSolution(CheapTimeSolution solution) {
         this.cheapTimeSolution = solution;
         hardScore = 0L;
+        mediumScore = 0L;
         softScore = 0L;
         if (solution.getGlobalPeriodRangeFrom() != 0) {
             throw new IllegalStateException("The globalPeriodRangeFrom (" + solution.getGlobalPeriodRangeFrom()
@@ -189,6 +191,12 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
                 }
             }
         }
+        if (oldStartPeriod != null) {
+            softScore += oldStartPeriod;
+        }
+        if (newStartPeriod != null) {
+            softScore -= newStartPeriod;
+        }
         Machine machine = taskAssignment.getMachine();
         MachinePeriodPart[] machinePeriodList;
         if (machine != null) {
@@ -242,7 +250,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             MachinePeriodPart machinePeriod = machinePeriodList[i];
             machinePeriod.retractTaskAssignment(taskAssignment);
             if (retractTaskCost) {
-                softScore += CheapTimeCostCalculator.multiplyTwoMicros(powerConsumptionMicros,
+                mediumScore += CheapTimeCostCalculator.multiplyTwoMicros(powerConsumptionMicros,
                         machinePeriod.periodPowerCostMicros);
             }
             // SpinUp vs idle
@@ -321,7 +329,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             MachinePeriodPart machinePeriod = machinePeriodList[i];
             machinePeriod.insertTaskAssignment(taskAssignment);
             if (insertTaskCost) {
-                softScore -= CheapTimeCostCalculator.multiplyTwoMicros(powerConsumptionMicros,
+                mediumScore -= CheapTimeCostCalculator.multiplyTwoMicros(powerConsumptionMicros,
                         machinePeriod.periodPowerCostMicros);
             }
             // SpinUp vs idle
@@ -371,8 +379,8 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
         }
     }
 
-    public HardSoftLongScore calculateScore() {
-        return HardSoftLongScore.valueOf(hardScore, softScore);
+    public HardMediumSoftLongScore calculateScore() {
+        return HardMediumSoftLongScore.valueOf(hardScore, mediumScore, softScore);
     }
 
     private class MachinePeriodPart {
@@ -408,7 +416,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             if (status != MachinePeriodStatus.STILL_ACTIVE) {
                 throw new IllegalStateException("Impossible status (" + status + ").");
             }
-            softScore -= machine.getSpinUpDownCostMicros();
+            mediumScore -= machine.getSpinUpDownCostMicros();
             status = MachinePeriodStatus.SPIN_UP_AND_ACTIVE;
         }
 
@@ -416,7 +424,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             if (status != MachinePeriodStatus.SPIN_UP_AND_ACTIVE) {
                 throw new IllegalStateException("Impossible status (" + status + ").");
             }
-            softScore += machine.getSpinUpDownCostMicros();
+            mediumScore += machine.getSpinUpDownCostMicros();
             status = MachinePeriodStatus.STILL_ACTIVE;
         }
 
@@ -424,7 +432,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             if (status != MachinePeriodStatus.OFF) {
                 throw new IllegalStateException("Impossible status (" + status + ").");
             }
-            softScore -= machineCostMicros;
+            mediumScore -= machineCostMicros;
             status = MachinePeriodStatus.IDLE;
         }
 
@@ -434,7 +442,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             }
             Task task = taskAssignment.getTask();
             if (status == MachinePeriodStatus.OFF) {
-                softScore -= machineCostMicros;
+                mediumScore -= machineCostMicros;
                 status = MachinePeriodStatus.STILL_ACTIVE;
             } else if (status == MachinePeriodStatus.IDLE) {
                 status = MachinePeriodStatus.STILL_ACTIVE;
@@ -464,9 +472,9 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             }
             taskCount--;
             if (taskCount == 0) {
-                softScore += machineCostMicros;
+                mediumScore += machineCostMicros;
                 if (status == MachinePeriodStatus.SPIN_UP_AND_ACTIVE) {
-                    softScore += machine.getSpinUpDownCostMicros();
+                    mediumScore += machine.getSpinUpDownCostMicros();
                 }
                 status = MachinePeriodStatus.OFF;
             }

@@ -26,14 +26,14 @@ import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
+import org.optaplanner.core.impl.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("CtCheapTimeSolution")
-public class CheapTimeSolution extends AbstractPersistable implements Solution<HardSoftLongScore> {
+public class CheapTimeSolution extends AbstractPersistable implements Solution<HardMediumSoftLongScore> {
 
     private int timeResolutionInMinutes;
     private int globalPeriodRangeFrom; // Inclusive
@@ -49,8 +49,8 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
 
     private List<TaskAssignment> taskAssignmentList;
 
-    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftLongScoreDefinition.class})
-    private HardSoftLongScore score;
+    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardMediumSoftLongScoreDefinition.class})
+    private HardMediumSoftLongScore score;
 
     public int getTimeResolutionInMinutes() {
         return timeResolutionInMinutes;
@@ -134,11 +134,11 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
         this.taskAssignmentList = taskAssignmentList;
     }
 
-    public HardSoftLongScore getScore() {
+    public HardMediumSoftLongScore getScore() {
         return score;
     }
 
-    public void setScore(HardSoftLongScore score) {
+    public void setScore(HardMediumSoftLongScore score) {
         this.score = score;
     }
 
