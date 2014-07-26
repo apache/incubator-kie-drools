@@ -220,6 +220,8 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
         addIfPresent("IS_JTA_TRANSACTION", copy);
 		addIfPresent("IS_SHARED_ENTITY_MANAGER", copy);
 		addIfPresent("TRANSACTION_LOCK_ENABLED", copy);
+		addIfPresent("IdentityProvider", copy);
+
         return copy;
     }
     @Override
