@@ -233,7 +233,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
                         idlePeriodStart = i + 1;
                         break;
                     }
-                    machinePeriod.status = MachinePeriodStatus.OFF;
+                    machinePeriod.undoMakeIdle();
                     idleAvailable -= machinePeriod.machineCostMicros;
                 }
                 if (idleAvailable < 0L) {
@@ -303,7 +303,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
                     }
                     break;
                 } else if (machinePeriod.status == MachinePeriodStatus.IDLE) {
-                    machinePeriod.status = MachinePeriodStatus.OFF;
+                    machinePeriod.undoMakeIdle();
                     if (previousStatus == MachinePeriodStatus.IDLE) {
                         idleAvailable -= machinePeriod.machineCostMicros;
                         if (idleAvailable < 0) {
@@ -434,6 +434,14 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             }
             mediumScore -= machineCostMicros;
             status = MachinePeriodStatus.IDLE;
+        }
+
+        public void undoMakeIdle() {
+            if (status != MachinePeriodStatus.IDLE) {
+                throw new IllegalStateException("Impossible status (" + status + ").");
+            }
+            mediumScore += machineCostMicros;
+            status = MachinePeriodStatus.OFF;
         }
 
         public void insertTaskAssignment(TaskAssignment taskAssignment) {
