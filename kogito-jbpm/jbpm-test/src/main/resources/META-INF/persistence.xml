@@ -56,9 +56,6 @@
     <!-- Task Audit Classes --> 
     <class>org.jbpm.services.task.audit.impl.model.AuditTaskImpl</class>
     
-    <!-- deployment store -->
-    <class>org.jbpm.kie.services.impl.store.DeploymentStoreEntry</class>
-    
     <properties>
       <property name="hibernate.max_fetch_depth" value="3"/>
       <property name="hibernate.hbm2ddl.auto" value="update" />
