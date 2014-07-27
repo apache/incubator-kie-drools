@@ -31,36 +31,24 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.swing.AbstractAction;
-import javax.swing.GroupLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.CombinedDomainCategoryPlot;
-import org.jfree.chart.plot.CombinedDomainXYPlot;
 import org.jfree.chart.plot.CombinedRangeXYPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.HighLowRenderer;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.chart.renderer.xy.YIntervalRenderer;
+import org.jfree.data.time.FixedMillisecond;
+import org.jfree.data.time.ohlc.OHLCSeries;
+import org.jfree.data.time.ohlc.OHLCSeriesCollection;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.data.xy.YIntervalSeries;
-import org.jfree.data.xy.YIntervalSeriesCollection;
 import org.jfree.util.ShapeUtilities;
 import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.PeriodPowerCost;
@@ -108,23 +96,22 @@ public class CheapTimePanel extends SolutionPanel {
     }
 
     private XYPlot createTaskAssignmentPlot(CheapTimeSolution solution) {
-        YIntervalSeriesCollection seriesCollection = new YIntervalSeriesCollection();
-        Map<Machine, YIntervalSeries> machineSeriesMap = new LinkedHashMap<Machine, YIntervalSeries>(
+        OHLCSeriesCollection seriesCollection = new OHLCSeriesCollection();
+        Map<Machine, OHLCSeries> machineSeriesMap = new LinkedHashMap<Machine, OHLCSeries>(
                 solution.getMachineList().size());
-        YIntervalRenderer renderer = new YIntervalRenderer();
+        HighLowRenderer renderer = new HighLowRenderer();
+        renderer.setTickLength(0.0);
         int seriesIndex = 0;
         for (Machine machine : solution.getMachineList()) {
-            YIntervalSeries projectSeries = new YIntervalSeries(machine.getLabel());
+            OHLCSeries projectSeries = new OHLCSeries(machine.getLabel());
             seriesCollection.addSeries(projectSeries);
             machineSeriesMap.put(machine, projectSeries);
-            renderer.setSeriesShape(seriesIndex, new Rectangle());
             renderer.setSeriesStroke(seriesIndex, new BasicStroke(3.0f));
             seriesIndex++;
         }
-        YIntervalSeries unassignedProjectSeries = new YIntervalSeries("Unassigned");
+        OHLCSeries unassignedProjectSeries = new OHLCSeries("Unassigned");
         seriesCollection.addSeries(unassignedProjectSeries);
         machineSeriesMap.put(null, unassignedProjectSeries);
-        renderer.setSeriesShape(seriesIndex, new Rectangle());
         renderer.setSeriesStroke(seriesIndex, new BasicStroke(3.0f));
         List<TaskAssignment> taskAssignmentList = new ArrayList<TaskAssignment>(solution.getTaskAssignmentList());
         Collections.sort(taskAssignmentList, plotTaskAssignmentComparator);
@@ -136,9 +123,10 @@ public class CheapTimePanel extends SolutionPanel {
                 startPeriod = 0;
                 endPeriod = 0;
             }
-            YIntervalSeries machineSeries = machineSeriesMap.get(taskAssignment.getMachine());
-            machineSeries.add(pixelIndex, (startPeriod + endPeriod) / 2.0,
-                    startPeriod, endPeriod);
+            OHLCSeries machineSeries = machineSeriesMap.get(taskAssignment.getMachine());
+            Task task = taskAssignment.getTask();
+            machineSeries.add(new FixedMillisecond(pixelIndex), task.getStartPeriodRangeFrom(),
+                    startPeriod, endPeriod, task.getStartPeriodRangeTo() + task.getDuration());
             pixelIndex++;
         }
         NumberAxis domainAxis = new NumberAxis("Task");
