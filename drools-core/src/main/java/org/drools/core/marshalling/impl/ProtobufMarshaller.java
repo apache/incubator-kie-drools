@@ -63,12 +63,10 @@ public class ProtobufMarshaller
         TIMER_READERS.put( ProtobufMessages.Timers.TimerType.TIMER_NODE_VALUE, new TimerNodeTimerInputMarshaller() );
     }
     
-    KieBase                       kbase;
-    GlobalResolver                      globalResolver;
-    RuleBaseConfiguration ruleBaseConfig;
+    KieBase                             kbase;
+    RuleBaseConfiguration               ruleBaseConfig;
     MarshallingConfiguration            marshallingConfig;
     ObjectMarshallingStrategyStore      strategyStore;
-    ;
 
     public ProtobufMarshaller(KieBase kbase,
                               MarshallingConfiguration marshallingConfig) {
