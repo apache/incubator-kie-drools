@@ -106,7 +106,7 @@ public class PropertiesSheetListener implements DataListener {
         final Integer rowInt = new Integer( row );
         if ( this._rowProperties.containsKey( rowInt ) ) {
             final String[] keyValue = (String[]) this._rowProperties.get( rowInt );
-            if ( keyValue[1] == PropertiesSheetListener.EMPTY_STRING ) {
+            if ( PropertiesSheetListener.EMPTY_STRING.equals( keyValue[1] ) ) {
                 keyValue[1] = value;
                 keyValue[2] = RuleSheetParserUtil.rc2name(row, column);
             }
@@ -172,7 +172,7 @@ public class PropertiesSheetListener implements DataListener {
 
         public String getSingleProperty( String key, String defaultValue ){
             String r = getSingleProperty( key );
-            if( r == null || r == "" ) r = defaultValue;
+            if( r == null || "".equals( r ) ) r = defaultValue;
             return r;
         }
 
