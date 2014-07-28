@@ -15,13 +15,7 @@
  */
 package org.drools.workbench.models.guided.scorecard.backend.base;
 
-import org.dmg.pmml.pmml_4_1.descr.PMML;
-import org.dmg.pmml.pmml_4_1.descr.Scorecard;
-import org.drools.pmml.pmml_4_1.PMML4Compiler;
-import org.drools.scorecards.ScorecardCompiler;
 import org.drools.scorecards.StringUtil;
-import org.drools.scorecards.pmml.ScorecardPMMLGenerator;
-import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardDRLPersistence;
 import org.drools.workbench.models.guided.scorecard.shared.Attribute;

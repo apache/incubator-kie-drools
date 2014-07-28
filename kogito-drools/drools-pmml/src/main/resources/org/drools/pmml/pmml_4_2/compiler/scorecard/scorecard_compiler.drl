@@ -1,0 +1,231 @@
+package org.drools.pmml.pmml_4_2.compiler;
+
+import org.dmg.pmml.pmml_4_2.descr.*;
+import java.util.*;
+
+dialect "mvel"
+
+global org.drools.pmml.pmml_4_2.PMML4Helper utils;
+global StringBuilder theory;
+global org.mvel2.templates.TemplateRegistry registry;
+
+query weight( Attribute $attr, String $wgt )
+    $attr := Attribute( $ext : extensions )
+    and
+    (
+        Extension( name == "weight", $wgt := value ) from $ext
+        or
+        not Extension( name == "weight" ) from $ext
+    )
+end
+
+query aggregator( Scorecard $sco, String $agg )
+    $sco := Scorecard( $ext : extensionsAndCharacteristicsAndMiningSchemas )
+    and
+    (
+        Extension( name == "scoringStrategy", $agg := value ) from $ext
+        or
+        not Extension( name == "scoringStrategy" ) from $ext
+    )
+end
+
+
+
+rule "Scorecard Declare"
+when
+    exists $sc : Scorecard( )
+then
+    utils.applyTemplate( "scorecardDeclare.drlt", utils, registry, null, theory );
+end
+
+
+rule "Scorecard_context"
+salience -9
+when
+    $sco : Scorecard( $name : modelName )
+    ?aggregator( $sco, $agg ; )
+then
+    utils.context = utils.compactUpperCase( $name );
+
+    HashMap map = new HashMap( 3 );
+        map.put( "name", utils.context );
+        map.put( "type", "Scorecard" );
+        map.put( "aggregator", utils.mapWeightStrategy( $agg ) );
+        map.put( "weighted", utils.isWeighted( $agg ) );
+
+    utils.applyTemplate( "modelMark.drlt", null, registry, map, theory );
+    utils.applyTemplate( "scorecardScoring.drlt", utils, registry, map, theory );
+end
+
+rule "Inherit baseline score"
+salience 1
+when
+    $net : Scorecard( $info : extensionsAndCharacteristicsAndMiningSchemas, $name : modelName, $base : baselineScore != null )
+    $cx  : Characteristics( this memberOf $info, $charz : characteristics )
+    $c   : Characteristic( this memberOf $charz, baselineScore == null )
+then
+    modify ( $c ) {
+        setBaselineScore( $base );
+    }
+end
+
+rule "Inherit reasonCodes"
+salience 1
+when
+    $c   : Characteristic( $attz : attributes, $code : reasonCode != null && != "" )
+    $att : Attribute( this memberOf $attz, reasonCode == null || == "" )
+then
+    modify ( $att ) {
+        setReasonCode( $code );
+    }
+end
+
+
+rule "ScoreCard Attributes : Simple Predicate"
+salience -12
+when
+    $char   : Characteristic( $attz : attributes, $charName : name, $base : baselineScore )
+    $attr   : Attribute( this memberOf $attz, $code : reasonCode, $score : partialScore, $simple : simplePredicate != null )
+    $mock   : List() from collect( SimplePredicate() from $simple )
+    compilePredicate( $mock, $pred, $simple ; )
+    ?weight( $attr, $w ; )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "name", utils.context );
+        map.put( "char", $char );
+        map.put( "attr", $attr );
+        map.put( "predicate", $pred );
+        map.put( "weight", $w );
+    utils.applyTemplate( "scorecardPartialScore.drlt", utils, registry, map, theory );
+end
+
+rule "ScoreCard Attributes : Compound Predicate"
+salience -12
+when
+    $char   : Characteristic( $attz : attributes, $charName : name, $base : baselineScore )
+    $attr   : Attribute( this memberOf $attz, $code : reasonCode, $score : partialScore, $comp : compoundPredicate != null )
+    $mock   : List() from collect( CompoundPredicate() from $comp )
+    compilePredicate( $mock, $pred, $comp ; )
+    ?weight( $attr, $w ; )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "name", utils.context );
+        map.put( "char", $char );
+        map.put( "attr", $attr );
+        map.put( "predicate", $pred );
+        map.put( "weight", $w );
+    utils.applyTemplate( "scorecardPartialScore.drlt", utils, registry, map, theory );
+end
+
+rule "ScoreCard Attributes : Set Predicate"
+salience -12
+when
+    $char   : Characteristic( $attz : attributes, $charName : name, $base : baselineScore )
+    $attr   : Attribute( this memberOf $attz, $code : reasonCode, $score : partialScore, $set : simpleSetPredicate != null )
+    $mock   : List() from collect( SimpleSetPredicate() from $set )
+    compilePredicate( $mock, $pred, $set ; )
+    ?weight( $attr, $w ; )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "name", utils.context );
+        map.put( "char", $char );
+        map.put( "attr", $attr );
+        map.put( "predicate", $pred );
+        map.put( "weight", $w );
+    utils.applyTemplate( "scorecardPartialScore.drlt", utils, registry, map, theory );
+end
+
+
+rule "Create Scorecard"
+dialect "mvel"
+salience -10
+when
+    Scorecard( $modelName : modelName, $info : extensionsAndCharacteristicsAndMiningSchemas, $zero : initialScore,
+               $useRC : useReasonCodes, $rcAlgo : reasonCodeAlgorithm )
+    MiningSchema( this memberOf $info, $miningFields : miningFields )
+    accumulate( $mf : MiningField( usageType == FIELDUSAGETYPE.ACTIVE ) from $miningFields, $expNum : count( $mf ) )
+    $fields : java.util.Map( size == $expNum ) from accumulate (
+            MiningField( this memberOf $miningFields, $name : name, usageType == FIELDUSAGETYPE.ACTIVE ) from $miningFields
+            and
+            TypeOfField( $n : name == $name, $type : dataType )
+         ,
+        init( java.util.Map map = new java.util.LinkedHashMap(); ),
+        action( map.put( utils.compactUpperCase( $n ), $type ); ),
+        result( map )
+    )
+then
+    HashMap map = new HashMap( 5 );
+        map.put( "context", utils.context );
+        map.put( "name", utils.compactUpperCase( $modelName ) );
+        map.put( "fields", $fields );
+        map.put( "zero", $zero );
+        map.put( "useRC", $useRC );
+        map.put( "pointsBelow", $rcAlgo == null || "pointsBelow".equals( $rcAlgo ) );
+    utils.applyTemplate( "scorecardDataDeclare.drlt", utils, registry, map, theory );
+
+    utils.applyTemplate( "scorecardInit.drlt", utils, registry, map, theory );
+end
+
+
+
+rule "ScoreCard Attributes Parameter"
+salience -12
+when
+    $scard : Scorecard( $modelName : modelName, $info : extensionsAndCharacteristicsAndMiningSchemas )
+    $chars : Characteristics( this memberOf $info )
+    accumulate(
+        $char : Characteristic( this memberOf $chars.characteristics ),
+        $list : collectList( $char );
+        $list.size() > 0
+    )
+then
+    HashMap map = new HashMap( 3 );
+        map.put( "context", utils.context );
+        map.put( "name", utils.compactUpperCase( $modelName ) );
+        map.put( "characteristics", $list );
+    utils.applyTemplate( "scorecardParamsInit.drlt", utils, registry, map, theory );
+end
+
+
+
+rule "Scorecard Output"
+salience -9
+when
+    Scorecard( $name : modelName, $info : extensionsAndCharacteristicsAndMiningSchemas )
+    MiningSchema( this memberOf $info, $mfs : miningFields )
+    MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $tgtName : name )
+then
+    HashMap map = new HashMap( 3 );
+        map.put( "context", utils.context );
+        map.put( "target", utils.compactUpperCase( $tgtName ) );
+    utils.applyTemplate( "scorecardOutputGeneration.drlt", utils, registry, map, theory );
+end
+
+
+
+rule "Scorecard output feature rank"
+dialect "mvel"
+when
+    $of : OutputField( $tgt : targetField != null, $name : name,
+                       feature != null, $feat : feature.value(),
+                       feature == RESULTFEATURE.REASON_CODE, $index : rank )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "context", utils.context );
+        map.put( "origField", utils.compactUpperCase( $tgt ) );
+        map.put( "name", utils.compactUpperCase( $name ) );
+        map.put( "index", $index );
+        map.put( "target", utils.compactUpperCase( $name ) );
+    utils.applyTemplate( "scorecardOutputRankCode.drlt", utils, registry, map, theory );
+end
+
+
+rule "Scorecard_Cleanup"
+salience -21
+when
+    $sc : Scorecard( )
+then
+    utils.context = null;
+    retract( $sc );
+end
+

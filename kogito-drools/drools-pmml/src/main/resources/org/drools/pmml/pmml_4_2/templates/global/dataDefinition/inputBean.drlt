@@ -1,0 +1,73 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+@declare{'inputBeanRule'}
+
+ declare @if{ traitMode }trait@end{} @{context}@if{ traitMode }Trait@end{}
+ @propertyReactive
+
+     @foreach{ fldName : fields.keySet() }
+        @{fldName}   :  @{mapDatatype(fields.get(fldName))}
+     @end{}
+     @foreach{ fldName : predFields.keySet() }
+        @{fldName}   :  @{mapDatatype(fields.get(fldName))}
+     @end{}
+
+ end
+
+ rule "Link @{context} @if{ traitMode }Trait@end{} Bean Input"
+ when
+    @{context}@if{ traitMode }Trait@end{}(
+       @foreach{ fldName : fields.keySet() }
+          _@{fldName}   :  @{fldName}
+       @end{','}
+    )
+ then
+    @foreach{ fldName : fields.keySet() }
+        drools.getEntryPoint("in_@{compactUpperCase(fldName)}").insert(_@{fldName});
+    @end{}
+ end
+
+rule "Own @{context}"
+ when
+    $obj  : @{context}@if{ traitMode }Trait@end{}()
+    $mark : org.drools.pmml.pmml_4_2.ModelMarker( enabled == true, modelName == "@{context}" )
+ then
+    modify( $mark ) { setBoundInput( $obj ); }
+ end
+
+
+ @foreach{ fieldName : predFields.keySet() }
+
+ rule "Link @{context} @if{ traitMode }Trait@end{} Predicted Fields @{fieldName} "
+ when
+     @{compactUpperCase(fieldName)}( $val : value)
+     $x : @{context}@if{ traitMode }Trait@end{}( @{fieldName} != $val )
+     $mark : org.drools.pmml.pmml_4_2.ModelMarker( modelName == "@{context}", boundInput == $x )
+ then
+     modify ( $x ) { set@{compactUpperCase(fieldName)}( $val ); }
+ end
+
+ @end{}
+
+
+@end{}
+
+
+
+@includeNamed{'inputBeanRule'}
+

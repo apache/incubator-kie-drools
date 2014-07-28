@@ -1,0 +1,63 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header copyright="JBoss" description="Clustering Test"/>
+  <DataDictionary numberOfFields="3">
+    <DataField dataType="string" name="fld0" optype="categorical">
+      <Value value="x"/>
+      <Value value="y"/>
+      <Value value="z"/>
+    </DataField>
+    <DataField dataType="double" name="fld1" optype="continuous"/>
+    <DataField dataType="double" name="fld2" optype="continuous">
+      <Value property="missing" value="-1"/>
+      <Value property="valid" value="0.3"/>
+      <Value property="valid" value="0.4"/>
+      <Value property="valid" value="0.5"/>
+      <Value property="valid" value="0.6"/>
+      <Value property="valid" value="0.7"/>
+    </DataField>
+  </DataDictionary>
+  <ClusteringModel functionName="clustering" modelClass="centerBased" modelName="CenterClustering" numberOfClusters="2">
+    <MiningSchema>
+      <MiningField name="fld0"/>
+      <MiningField name="fld1"/>
+      <MiningField name="fld2"/>
+    </MiningSchema>
+    <LocalTransformations>
+      <DerivedField dataType="double" name="fld3" optype="continuous">
+        <NormDiscrete field="fld0" value="x"/>
+      </DerivedField>
+      <DerivedField dataType="double" name="fld4" optype="continuous">
+        <NormDiscrete field="fld0" value="y"/>
+      </DerivedField>
+      <DerivedField dataType="double" name="fld5" optype="continuous">
+        <NormDiscrete field="fld0" value="z"/>
+      </DerivedField>
+    </LocalTransformations>
+    <ComparisonMeasure compareFunction="absDiff" kind="distance">
+      <squaredEuclidean/>
+    </ComparisonMeasure>
+    <ClusteringField field="fld1" fieldWeight="0.8" isCenterField="true"/>
+    <ClusteringField compareFunction="gaussSim" field="fld2" isCenterField="true" similarityScale="0.99"/>
+    <ClusteringField compareFunction="equal" field="fld3" isCenterField="true"/>
+    <ClusteringField compareFunction="delta" field="fld4" fieldWeight="0.6"/>
+    <ClusteringField compareFunction="table" field="fld5">
+      <Comparisons>
+        <Matrix diagDefault="-1" kind="symmetric" nbCols="3" nbRows="3" offDiagDefault="99">
+          <MatCell col="1" row="1">4.0</MatCell>
+          <MatCell col="2" row="1">5.0</MatCell>
+          <MatCell col="2" row="2">6.0</MatCell>
+        </Matrix>
+      </Comparisons>
+    </ClusteringField>
+    <MissingValueWeights>
+      <Array n="5" type="real">1 0.5 1 1 1</Array>
+    </MissingValueWeights>
+    <Cluster name="Klust1">
+      <KohonenMap coord1="3" coord3="7"/>
+      <Array n="5" type="real">0.5 0.4 0.1 0.3 1</Array>
+    </Cluster>
+    <Cluster name="Klust2">
+      <Array n="5" type="real">0.7 0.4 0.5 0.1 2</Array>
+    </Cluster>
+  </ClusteringModel>
+</PMML>

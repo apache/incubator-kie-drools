@@ -16,7 +16,7 @@
 
 package org.drools.scorecards.pmml;
 
-import org.dmg.pmml.pmml_4_1.descr.*;
+import org.dmg.pmml.pmml_4_2.descr.*;
 import org.drools.scorecards.parser.xls.XLSKeywords;
 
 import java.util.List;

@@ -1,13 +1,13 @@
 package org.drools.scorecards;
 
-import org.dmg.pmml.pmml_4_1.descr.Extension;
-import org.dmg.pmml.pmml_4_1.descr.Output;
-import org.dmg.pmml.pmml_4_1.descr.OutputField;
-import org.dmg.pmml.pmml_4_1.descr.PMML;
-import org.dmg.pmml.pmml_4_1.descr.Scorecard;
-import org.drools.pmml.pmml_4_1.PMML4Compiler;
-import org.drools.pmml.pmml_4_1.PMML4Helper;
-import org.drools.pmml.pmml_4_1.extensions.PMMLExtensionNames;
+import org.dmg.pmml.pmml_4_2.descr.Extension;
+import org.dmg.pmml.pmml_4_2.descr.Output;
+import org.dmg.pmml.pmml_4_2.descr.OutputField;
+import org.dmg.pmml.pmml_4_2.descr.PMML;
+import org.dmg.pmml.pmml_4_2.descr.Scorecard;
+import org.drools.pmml.pmml_4_2.PMML4Compiler;
+import org.drools.pmml.pmml_4_2.PMML4Helper;
+import org.drools.pmml.pmml_4_2.extensions.PMMLExtensionNames;
 import org.drools.scorecards.example.Applicant;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 import org.junit.Assert;

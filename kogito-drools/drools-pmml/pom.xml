@@ -90,9 +90,9 @@
         </executions>
         <configuration>
           <outputDirectory>${basedir}/target/generated-sources/java</outputDirectory>
-          <packageName>org.dmg.pmml.pmml_4_1.descr</packageName>
-          <schemaDirectory>${basedir}/src/main/resources/xsd/org/dmg/pmml/pmml_4_1</schemaDirectory>
-          <bindingDirectory>${basedir}/src/main/resources/xsd/org/dmg/pmml/pmml_4_1</bindingDirectory>
+          <packageName>org.dmg.pmml.pmml_4_2.descr</packageName>
+          <schemaDirectory>${basedir}/src/main/resources/xsd/org/dmg/pmml/pmml_4_2</schemaDirectory>
+          <bindingDirectory>${basedir}/src/main/resources/xsd/org/dmg/pmml/pmml_4_2</bindingDirectory>
           <extension>true</extension>
           <clearOutputDir>false</clearOutputDir>
           <arguments>-no-header</arguments>

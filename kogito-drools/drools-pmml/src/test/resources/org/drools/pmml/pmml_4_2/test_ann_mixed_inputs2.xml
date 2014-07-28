@@ -1,0 +1,328 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header copyright="JBoss"/>
+  <DataDictionary numberOfFields="15">
+    <DataField dataType="double" name="feat1" optype="continuous"></DataField>
+    <DataField dataType="double" name="feat2" optype="continuous"></DataField>
+    <DataField dataType="double" name="feat3" optype="continuous"></DataField>
+    <DataField dataType="string" name="feat4" optype="categorical">
+      <Value property="valid" value="asympt"/>
+      <Value property="valid" value="atyp_angina"/>
+      <Value property="valid" value="non_anginal"/>
+      <Value property="valid" value="typ_angina"/>
+    </DataField>
+    <DataField dataType="string" name="feat5" optype="categorical">
+      <Value property="valid" value="no"/>
+      <Value property="valid" value="yes"/>
+    </DataField>
+    <DataField dataType="string" name="feat6" optype="categorical">
+      <Value property="valid" value="f"/>
+      <Value property="valid" value="t"/>
+    </DataField>
+    <DataField dataType="double" name="feat7" optype="continuous">
+      <Extension name="storageType" value="numeric"/>
+      <Extension name="measure" value="range"/>
+    </DataField>
+    <DataField dataType="string" name="feat8" optype="categorical">
+      <Value property="valid" value="left_vent_hyper"/>
+      <Value property="valid" value="normal"/>
+      <Value property="valid" value="st_t_wave_abnormality"/>
+    </DataField>
+    <DataField dataType="string" name="feat9" optype="categorical">
+      <Value property="valid" value="female"/>
+      <Value property="valid" value="male"/>
+    </DataField>
+    <DataField dataType="string" name="feat10" optype="categorical">
+      <Value property="valid" value="down"/>
+      <Value property="valid" value="flat"/>
+      <Value property="valid" value="up"/>
+    </DataField>
+    <DataField dataType="string" name="feat11" optype="categorical">
+      <Value property="valid" value="fixed_defect"/>
+      <Value property="valid" value="normal"/>
+      <Value property="valid" value="reversable_defect"/>
+    </DataField>
+    <DataField dataType="double" name="feat12" optype="continuous"/>
+    <DataField dataType="double" name="feat13" optype="continuous"/>
+    <DataField dataType="string" name="feat14" optype="categorical">
+      <Value property="valid" value="&lt;50"/>
+      <Value property="valid" value=">50_1"/>
+    </DataField>
+    <DataField dataType="double" name="feat15" optype="continuous"/>
+  </DataDictionary>
+  <NeuralNetwork activationFunction="logistic" algorithmName="Neural Net" functionName="classification" modelName="HEART_MLP">
+    <Extension name="normalizationMethod" value="limitedDifference"/>
+    <MiningSchema>
+      <MiningField highValue="77.0" lowValue="29.0" missingValueReplacement="53.0" missingValueTreatment="asMedian" name="feat1" outliers="asExtremeValues" usageType="active"/>
+      <MiningField highValue="3.0" lowValue="0.0" missingValueReplacement="1.5" missingValueTreatment="asMedian" name="feat2" outliers="asExtremeValues" usageType="active"/>
+      <MiningField highValue="564.0" lowValue="126.0" missingValueReplacement="345.0" missingValueTreatment="asMedian" name="feat3" outliers="asExtremeValues" usageType="active"/>
+      <MiningField name="feat4" usageType="active"/>
+      <MiningField name="feat5" usageType="active"/>
+      <MiningField name="feat6" usageType="active"/>
+      <MiningField highValue="6.2" lowValue="0.0" missingValueReplacement="3.1" missingValueTreatment="asMedian" name="feat7" outliers="asExtremeValues" usageType="active"/>
+      <MiningField name="feat8" usageType="active"/>
+      <MiningField name="feat9" usageType="active"/>
+      <MiningField name="feat10" usageType="active"/>
+      <MiningField name="feat11" usageType="active"/>
+      <MiningField highValue="202.0" lowValue="71.0" missingValueReplacement="136.5" missingValueTreatment="asMedian" name="feat12" outliers="asExtremeValues" usageType="active"/>
+      <MiningField highValue="200.0" lowValue="94.0" missingValueReplacement="147.0" missingValueTreatment="asMedian" name="feat13" outliers="asExtremeValues" usageType="active"/>
+      <MiningField name="feat14" usageType="predicted"/>
+      <MiningField name="feat15" usageType="supplementary"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="OutP" targetField="feat14" feature="probability"/>
+      <OutputField name="OutN" targetField="feat14"/>
+    </Output>
+    <NeuralInputs>
+      <NeuralInput id="0">
+        <DerivedField dataType="double" optype="continuous">
+          <NormContinuous field="feat1">
+            <LinearNorm norm="0" orig="29"/>
+            <LinearNorm norm="1" orig="77"/>
+          </NormContinuous>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="1">
+        <DerivedField dataType="double" optype="continuous">
+          <NormContinuous field="feat2">
+            <LinearNorm norm="0" orig="0"/>
+            <LinearNorm norm="1" orig="3"/>
+          </NormContinuous>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="2">
+        <DerivedField dataType="double" optype="continuous">
+          <NormContinuous field="feat3">
+            <LinearNorm norm="0" orig="126"/>
+            <LinearNorm norm="1" orig="564"/>
+          </NormContinuous>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="3">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat4" value="asympt"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="4">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat4" value="atyp_angina"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="5">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat4" value="non_anginal"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="6">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat4" value="typ_angina"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="7">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat5" value="no"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="8">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat5" value="yes"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="9">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat6" value="f"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="10">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat6" value="t"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="11">
+        <DerivedField dataType="double" optype="continuous">
+          <NormContinuous field="feat7">
+            <LinearNorm norm="0" orig="0"/>
+            <LinearNorm norm="1" orig="6.2"/>
+          </NormContinuous>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="12">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat8" value="left_vent_hyper"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="13">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat8" value="normal"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="14">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat8" value="st_t_wave_abnormality"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="15">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat9" value="female"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="16">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat9" value="male"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="17">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat10" value="down"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="18">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat10" value="flat"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="19">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat10" value="up"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="20">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat11" value="fixed_defect"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="21">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat11" value="normal"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="22">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="feat11" value="reversable_defect"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="23">
+        <DerivedField dataType="double" optype="continuous">
+          <NormContinuous field="feat12">
+            <LinearNorm norm="0" orig="71"/>
+            <LinearNorm norm="1" orig="202"/>
+          </NormContinuous>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="24">
+        <DerivedField dataType="double" optype="continuous">
+          <NormContinuous field="feat13">
+            <LinearNorm norm="0" orig="94"/>
+            <LinearNorm norm="1" orig="200"/>
+          </NormContinuous>
+        </DerivedField>
+      </NeuralInput>
+    </NeuralInputs>
+    <NeuralLayer>
+      <Neuron bias="0.423" id="25">
+        <Con from="0" weight="-0.543"/>
+        <Con from="1" weight="-5.5326"/>
+        <Con from="2" weight="0.234"/>
+        <Con from="3" weight="-6.765"/>
+        <Con from="4" weight="2.534"/>
+        <Con from="5" weight="3.56"/>
+        <Con from="6" weight="2.756"/>
+        <Con from="7" weight="2.643"/>
+        <Con from="8" weight="-0.6853"/>
+        <Con from="9" weight="1.2754"/>
+        <Con from="10" weight="-0.5445"/>
+        <Con from="11" weight="-0.5462"/>
+        <Con from="12" weight="-1.645"/>
+        <Con from="13" weight="3.642"/>
+        <Con from="14" weight="-0.6452"/>
+        <Con from="15" weight="2.6645"/>
+        <Con from="16" weight="-1.86976"/>
+        <Con from="17" weight="-1.078"/>
+        <Con from="18" weight="1.234"/>
+        <Con from="19" weight="1.645"/>
+        <Con from="20" weight="1.8563"/>
+        <Con from="21" weight="2.453"/>
+        <Con from="22" weight="-3.753"/>
+        <Con from="23" weight="1.5436"/>
+        <Con from="24" weight="0.643"/>
+      </Neuron>
+      <Neuron bias="-0.753" id="26">
+        <Con from="0" weight="0.6425"/>
+        <Con from="1" weight="0.645"/>
+        <Con from="2" weight="-0.23"/>
+        <Con from="3" weight="-0.323"/>
+        <Con from="4" weight="-0.1543"/>
+        <Con from="5" weight="-0.75"/>
+        <Con from="6" weight="0.8764"/>
+        <Con from="7" weight="-0.3434"/>
+        <Con from="8" weight="-0.4652"/>
+        <Con from="9" weight="-0.856"/>
+        <Con from="10" weight="0.452456"/>
+        <Con from="11" weight="-0.85"/>
+        <Con from="12" weight="-0.6"/>
+        <Con from="13" weight="-0.765"/>
+        <Con from="14" weight="-0.341"/>
+        <Con from="15" weight="-0.543"/>
+        <Con from="16" weight="-0.435"/>
+        <Con from="17" weight="-0.654"/>
+        <Con from="18" weight="-0.43"/>
+        <Con from="19" weight="-0.75347"/>
+        <Con from="20" weight="-0.43"/>
+        <Con from="21" weight="0.432"/>
+        <Con from="22" weight="-0.756"/>
+        <Con from="23" weight="0.876"/>
+        <Con from="24" weight="-0.424"/>
+      </Neuron>
+      <Neuron bias="-1.756" id="27">
+        <Con from="0" weight="2.543"/>
+        <Con from="1" weight="7.23"/>
+        <Con from="2" weight="0.43"/>
+        <Con from="3" weight="4.543"/>
+        <Con from="4" weight="-1.43"/>
+        <Con from="5" weight="-2.756"/>
+        <Con from="6" weight="-0.43"/>
+        <Con from="7" weight="-2.32"/>
+        <Con from="8" weight="1.6542"/>
+        <Con from="9" weight="1.62"/>
+        <Con from="10" weight="-0.54"/>
+        <Con from="11" weight="2.56"/>
+        <Con from="12" weight="-1.34"/>
+        <Con from="13" weight="-0.856"/>
+        <Con from="14" weight="1.23"/>
+        <Con from="15" weight="-2.75"/>
+        <Con from="16" weight="1.43"/>
+        <Con from="17" weight="0.6753"/>
+        <Con from="18" weight="2.54"/>
+        <Con from="19" weight="-4.24"/>
+        <Con from="20" weight="-2.534"/>
+        <Con from="21" weight="-3.43"/>
+        <Con from="22" weight="5.876"/>
+        <Con from="23" weight="-2.34"/>
+        <Con from="24" weight="1.876"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralLayer>
+      <Neuron bias="0.534" id="28">
+        <Con from="25" weight="2.65"/>
+        <Con from="26" weight="-0.754"/>
+        <Con from="27" weight="-3.34"/>
+      </Neuron>
+      <Neuron bias="-0.54" id="29">
+        <Con from="25" weight="-2.567"/>
+        <Con from="26" weight="0.86"/>
+        <Con from="27" weight="3.23"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralOutputs>
+      <NeuralOutput outputNeuron="28">
+        <DerivedField dataType="string" optype="categorical">
+          <NormDiscrete field="feat14" value="&lt;50"/>
+        </DerivedField>
+      </NeuralOutput>
+      <NeuralOutput outputNeuron="29">
+        <DerivedField dataType="string" optype="categorical">
+          <NormDiscrete field="feat14" value=">50_1"/>
+        </DerivedField>
+      </NeuralOutput>
+    </NeuralOutputs>
+  </NeuralNetwork>
+</PMML>

@@ -16,10 +16,10 @@
 
 package org.drools.scorecards.pmml;
 
-import org.dmg.pmml.pmml_4_1.descr.*;
+import org.dmg.pmml.pmml_4_2.descr.*;
 import org.drools.core.util.StringUtils;
-import org.drools.pmml.pmml_4_1.extensions.PMMLExtensionNames;
-import org.drools.pmml.pmml_4_1.extensions.PMMLIOAdapterMode;
+import org.drools.pmml.pmml_4_2.extensions.PMMLExtensionNames;
+import org.drools.pmml.pmml_4_2.extensions.PMMLIOAdapterMode;
 import org.drools.scorecards.StringUtil;
 import org.drools.scorecards.parser.xls.XLSKeywords;
 
@@ -115,7 +115,7 @@ public class ScorecardPMMLGenerator {
         for (Object obj : pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas()) {
             if (obj instanceof Characteristics) {
                 Characteristics characteristics = (Characteristics) obj;
-                for (org.dmg.pmml.pmml_4_1.descr.Characteristic characteristic : characteristics.getCharacteristics()) {
+                for (org.dmg.pmml.pmml_4_2.descr.Characteristic characteristic : characteristics.getCharacteristics()) {
                     for (Attribute attribute : characteristic.getAttributes()) {
                         Extension fieldExtension = ScorecardPMMLUtils.getExtension(attribute.getExtensions(), ScorecardPMMLExtensionNames.CHARACTERTISTIC_FIELD);
                         if ( fieldExtension != null ) {
@@ -136,7 +136,7 @@ public class ScorecardPMMLGenerator {
         for (Object obj : pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas()) {
             if (obj instanceof Characteristics) {
                 Characteristics characteristics = (Characteristics) obj;
-                for (org.dmg.pmml.pmml_4_1.descr.Characteristic characteristic : characteristics.getCharacteristics()) {
+                for (org.dmg.pmml.pmml_4_2.descr.Characteristic characteristic : characteristics.getCharacteristics()) {
 
                     DataField dataField = new DataField();
                     Extension dataTypeExtension = ScorecardPMMLUtils.getExtension(characteristic.getExtensions(), ScorecardPMMLExtensionNames.CHARACTERTISTIC_DATATYPE);
@@ -235,7 +235,7 @@ public class ScorecardPMMLGenerator {
         for (Object obj : pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas()) {
             if (obj instanceof Characteristics) {
                 Characteristics characteristics = (Characteristics) obj;
-                for (org.dmg.pmml.pmml_4_1.descr.Characteristic characteristic : characteristics.getCharacteristics()) {
+                for (org.dmg.pmml.pmml_4_2.descr.Characteristic characteristic : characteristics.getCharacteristics()) {
                     String dataType = ScorecardPMMLUtils.getExtensionValue(characteristic.getExtensions(), ScorecardPMMLExtensionNames.CHARACTERTISTIC_DATATYPE);
                     Extension predicateExtension = null;
                     for (Attribute attribute : characteristic.getAttributes()) {
@@ -366,7 +366,7 @@ public class ScorecardPMMLGenerator {
         for (Object obj : pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas()) {
             if (obj instanceof Characteristics) {
                 Characteristics characteristics = (Characteristics) obj;
-                for (org.dmg.pmml.pmml_4_1.descr.Characteristic characteristic : characteristics.getCharacteristics()) {
+                for (org.dmg.pmml.pmml_4_2.descr.Characteristic characteristic : characteristics.getCharacteristics()) {
                     List<Extension> toRemoveExtensionsList = new ArrayList<Extension>();
                     for (Extension extension : characteristic.getExtensions()) {
                         if (StringUtils.isEmpty(extension.getValue())) {

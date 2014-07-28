@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+ ~ Copyright 2011 JBoss Inc
+ ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~ you may not use this file except in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~       http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing, software
+ ~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~ See the License for the specific language governing permissions and
+ ~ limitations under the License.
+
+-->
+
+
+<bindings xmlns="http://java.sun.com/xml/ns/jaxb"
+            xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance"
+            xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+            xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            xsi:schemaLocation="
+http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd"
+version="2.1">
+
+
+    <globalBindings choiceContentProperty="true" fixedAttributeAsConstantProperty="true">
+     <xjc:simple />	
+     <serializable uid="145235" />
+     
+    </globalBindings>
+     
+    <bindings schemaLocation="./pmml-4-2.xsd" node="/xs:schema">
+
+        <bindings node=".//xs:simpleType[@name='DELIMITER']">
+                   <typesafeEnumClass name = "ENUM_DELIMITER"/>
+        </bindings>
+        <bindings node=".//xs:simpleType[@name='TIME-ANCHOR']">
+                   <typesafeEnumClass name = "ENUM_TIMEANCHOR"/>   
+        </bindings>
+        <bindings node=".//xs:element[@name='Con']">
+                   <class name = "Synapse"/>
+        </bindings>
+        
+    </bindings>
+
+</bindings>

@@ -1,0 +1,72 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header copyright="JBoss" description="Mock PTSD Model"></Header>
+  <DataDictionary numberOfFields="2">
+    <DataField dataType="string" displayName="Number of Deployments" name="deployments" optype="categorical">
+      <Value value="0"/>
+      <Value value="1"/>
+      <Value value="2+"/>
+    </DataField>
+    <DataField dataType="string" displayName="Alcoholic" name="alcohol" optype="categorical">
+      <Value value="yes"/>
+      <Value value="no"/>
+    </DataField>
+  </DataDictionary>
+  <NeuralNetwork activationFunction="identity" algorithmName="neuralNetwork" functionName="regression" modelName="MockDiag">
+    <MiningSchema>
+      <MiningField name="deployments"/>
+      <MiningField name="alcohol"/>
+      <MiningField name="diag" usageType="predicted"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="diagnosis" targetField="diag"/>
+    </Output>
+    <NeuralInputs>
+      <NeuralInput id="0">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="deployments" value="0"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="1">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="deployments" value="1"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="2">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="deployments" value="2+"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="3">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="alcohol" method="indicator" value="yes"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="4">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="alcohol" method="indicator" value="no"/>
+        </DerivedField>
+      </NeuralInput>
+    </NeuralInputs>
+    <NeuralLayer>
+      <Neuron bias="0" id="5">
+        <Con from="0" weight="0.2"/>
+        <Con from="1" weight="0"/>
+        <Con from="2" weight="0"/>
+        <Con from="3" weight="0.1"/>
+        <Con from="4" weight="0.2"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralLayer>
+      <Neuron bias="0.0" id="6">
+        <Con from="5" weight="1.0"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralOutputs>
+      <NeuralOutput outputNeuron="6">
+        <DerivedField dataType="double" optype="continuous">
+          <FieldRef field="diag"/>
+        </DerivedField>
+      </NeuralOutput>
+    </NeuralOutputs>
+  </NeuralNetwork>
+</PMML>
