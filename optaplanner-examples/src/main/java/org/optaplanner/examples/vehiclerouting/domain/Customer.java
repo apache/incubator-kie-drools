@@ -23,12 +23,13 @@ import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.vehiclerouting.domain.solver.DepotAngleCustomerDifficultyWeightFactory;
 import org.optaplanner.examples.vehiclerouting.domain.solver.DepotDistanceCustomerDifficultyWeightFactory;
 import org.optaplanner.examples.vehiclerouting.domain.solver.LatitudeCustomerDifficultyComparator;
 import org.optaplanner.examples.vehiclerouting.domain.solver.VehicleUpdatingVariableListener;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 
-@PlanningEntity(difficultyWeightFactoryClass = DepotDistanceCustomerDifficultyWeightFactory.class)
+@PlanningEntity(difficultyWeightFactoryClass = DepotAngleCustomerDifficultyWeightFactory.class)
 @XStreamAlias("VrpCustomer")
 @XStreamInclude({
         TimeWindowedCustomer.class

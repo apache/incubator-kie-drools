@@ -18,41 +18,41 @@ package org.optaplanner.examples.vehiclerouting.domain.solver;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
-import org.optaplanner.examples.pas.domain.Room;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
 /**
- * On large datasets, the constructed solution looks like a Matryoshka doll.
+ * On large datasets, the constructed solution looks like pizza slices.
  */
-public class DepotDistanceCustomerDifficultyWeightFactory
+public class DepotAngleCustomerDifficultyWeightFactory
         implements SelectionSorterWeightFactory<VehicleRoutingSolution, Customer> {
 
     public Comparable createSorterWeight(VehicleRoutingSolution vehicleRoutingSolution, Customer customer) {
         Depot depot = vehicleRoutingSolution.getDepotList().get(0);
-        return new DepotDistanceCustomerDifficultyWeight(customer,
+        return new DepotAngleCustomerDifficultyWeight(customer,
+                customer.getLocation().getAngle(depot.getLocation()),
                 customer.getLocation().getDistance(depot.getLocation()));
     }
 
-    public static class DepotDistanceCustomerDifficultyWeight
-            implements Comparable<DepotDistanceCustomerDifficultyWeight> {
+    public static class DepotAngleCustomerDifficultyWeight
+            implements Comparable<DepotAngleCustomerDifficultyWeight> {
 
         private final Customer customer;
+        private final double depotAngle;
         private final int depotDistance;
 
-        public DepotDistanceCustomerDifficultyWeight(Customer customer,
-                int depotDistance) {
+        public DepotAngleCustomerDifficultyWeight(Customer customer,
+                double depotAngle, int depotDistance) {
             this.customer = customer;
+            this.depotAngle = depotAngle;
             this.depotDistance = depotDistance;
         }
 
-        public int compareTo(DepotDistanceCustomerDifficultyWeight other) {
+        public int compareTo(DepotAngleCustomerDifficultyWeight other) {
             return new CompareToBuilder()
+                    .append(depotAngle, other.depotAngle)
                     .append(depotDistance, other.depotDistance) // Ascending (further from the depot are more difficult)
-                    .append(customer.getDemand(), other.customer.getDemand())
-                    .append(customer.getLocation().getLatitude(), other.customer.getLocation().getLatitude())
-                    .append(customer.getLocation().getLongitude(), other.customer.getLocation().getLongitude())
                     .append(customer.getId(), other.customer.getId())
                     .toComparison();
         }

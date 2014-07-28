@@ -69,6 +69,13 @@ public class Location extends AbstractPersistable {
         return (int) (distance * 1000.0 + 0.5);
     }
 
+    public double getAngle(Location location) {
+        // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
+        double latitudeDifference = location.latitude - latitude;
+        double longitudeDifference = location.longitude - longitude;
+        return Math.atan2(latitudeDifference, longitudeDifference);
+    }
+
     @Override
     public String toString() {
         if (name == null) {
