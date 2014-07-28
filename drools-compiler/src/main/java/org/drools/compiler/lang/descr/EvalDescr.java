@@ -88,7 +88,7 @@ public class EvalDescr extends BaseDescr
     public static final EvalDescr TRUE = new DummyEvalDescr();
 
     private static class DummyEvalDescr extends EvalDescr {
-        private DummyEvalDescr() {
+        public DummyEvalDescr() {
             super("true");
         }
     }

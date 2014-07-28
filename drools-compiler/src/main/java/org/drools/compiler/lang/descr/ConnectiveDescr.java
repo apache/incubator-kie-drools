@@ -16,11 +16,14 @@
 
 package org.drools.compiler.lang.descr;
 
+import org.drools.core.util.StringUtils;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.drools.core.util.StringUtils;
 
 /**
  * This is used to connect restrictions together for a single field
@@ -39,11 +42,32 @@ public class ConnectiveDescr extends RestrictionDescr {
     private String                                prefix;
     private boolean                               paren;
 
+    public ConnectiveDescr() { }
+
     public ConnectiveDescr(final RestrictionConnectiveType connective) {
         super();
         this.connective = connective;
         this.children = Collections.emptyList();
         this.paren = true;
+    }
+
+    @Override
+    public void readExternal( ObjectInput in ) throws IOException,
+                                                      ClassNotFoundException {
+        super.readExternal( in );
+        this.connective = (RestrictionConnectiveType) in.readObject();
+        this.children = (List<Object>) in.readObject();
+        this.prefix = (String) in.readObject();
+        this.paren = in.readBoolean();
+    }
+
+    @Override
+    public void writeExternal( ObjectOutput out ) throws IOException {
+        super.writeExternal( out );
+        out.writeObject(connective);
+        out.writeObject( children );
+        out.writeObject( prefix );
+        out.writeBoolean( paren );
     }
 
     public RestrictionConnectiveType getConnective() {

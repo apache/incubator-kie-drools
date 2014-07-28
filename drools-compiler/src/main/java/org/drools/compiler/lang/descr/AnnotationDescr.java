@@ -1,5 +1,8 @@
 package org.drools.compiler.lang.descr;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +26,7 @@ public class AnnotationDescr extends BaseDescr {
     private static final String VALUE            = "value";
     private static final long   serialVersionUID = 520l;
 
-    private final String        name;
+    private String        name;
     private Map<String, String> values;
 
     private boolean duplicated = false;
@@ -37,6 +40,8 @@ public class AnnotationDescr extends BaseDescr {
             return s;
         }
     }
+
+    public AnnotationDescr() { }
     
     public AnnotationDescr(final String name) {
         this.name = name;
@@ -48,6 +53,21 @@ public class AnnotationDescr extends BaseDescr {
         this.name = name;
         this.values = new HashMap<String, String>();
         this.values.put( VALUE, value );
+    }
+
+    @Override
+    public void readExternal( ObjectInput in ) throws IOException,
+                                                      ClassNotFoundException {
+        super.readExternal( in );
+        this.name = (String) in.readObject();
+        this.values = (Map<String, String>) in.readObject();
+    }
+
+    @Override
+    public void writeExternal( ObjectOutput out ) throws IOException {
+        super.writeExternal( out );
+        out.writeObject( name );
+        out.writeObject( values );
     }
 
     public String getName() {

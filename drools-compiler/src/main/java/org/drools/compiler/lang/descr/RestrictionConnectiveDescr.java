@@ -16,6 +16,9 @@
 
 package org.drools.compiler.lang.descr;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -36,10 +39,27 @@ public class RestrictionConnectiveDescr extends RestrictionDescr {
     private RestrictionConnectiveType             connective;
     private List<RestrictionDescr>                restrictions;
 
+    public RestrictionConnectiveDescr() { }
+
     public RestrictionConnectiveDescr(final RestrictionConnectiveType connective) {
         super();
         this.connective = connective;
         this.restrictions = Collections.emptyList();
+    }
+
+    @Override
+    public void readExternal( ObjectInput in ) throws IOException,
+                                                      ClassNotFoundException {
+        super.readExternal( in );
+        this.connective = (RestrictionConnectiveType) in.readObject();
+        this.restrictions = (List<RestrictionDescr>) in.readObject();
+    }
+
+    @Override
+    public void writeExternal( ObjectOutput out ) throws IOException {
+        super.writeExternal( out );
+        out.writeObject( connective );
+        out.writeObject( restrictions );
     }
 
     public RestrictionConnectiveType getConnective() {
