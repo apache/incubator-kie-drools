@@ -3,10 +3,11 @@ package org.drools.games.invaders6;
 import org.drools.games.Run
 
 import org.drools.games.invaders.Ship
-import org.drools.games.invaders.Invader1
+import org.drools.games.invaders.Invader
 
 import org.drools.games.invaders.InvadersConfiguration
-import org.drools.games.invaders.Invader1
+import org.drools.games.invaders.Invader
+import org.drools.games.invaders.Invader
 
 global InvadersConfiguration conf
 
@@ -28,7 +29,7 @@ rule InitInvader agenda-group "Init" when
     i : Integer() from [1, 2, 3, 4, 5, 6]
     Run()
 then
-    invader = new Invader1();
+    invader = new Invader();
     invader.width = conf.invader1Width;
     invader.height = conf.invader1Height;
     invader.speed = conf.invader1Speed;

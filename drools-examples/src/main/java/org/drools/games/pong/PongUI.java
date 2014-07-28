@@ -38,8 +38,7 @@ public class PongUI extends GameUI {
         drawBall(ball);
         drawBat(bat1);
         drawBat(bat2);
-
-        show();
+        repaint();
     }
 
     public void clearBall(Ball ball) {
