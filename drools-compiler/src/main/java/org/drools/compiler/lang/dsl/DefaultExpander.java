@@ -544,7 +544,8 @@ public class DefaultExpander
 
         //        logger.info( "*** LHS>" + lhs + "<" );
         final StringBuilder buf = new StringBuilder();
-        final String[] lines = lhs.split( nl,
+        
+        final String[] lines = lhs.split( (lhs.indexOf("\r\n") >= 0 ? "\r\n":"\n"),
                                           -1 ); // since we assembled the string, we know line breaks are \n
         final String[] expanded = new String[lines.length]; // buffer for expanded lines
         int lastExpanded = -1;
@@ -614,7 +615,7 @@ public class DefaultExpander
     private String expandRHS(final String lhs,
                              int lineOffset) {
         final StringBuilder buf = new StringBuilder();
-        final String[] lines = lhs.split( nl,
+        final String[] lines = lhs.split((lhs.indexOf("\r\n") >= 0 ? "\r\n":"\n"),
                                           -1 ); // since we assembled the string, we know line breaks are \n
 
         final String[] expanded = new String[lines.length]; // buffer for expanded lines
