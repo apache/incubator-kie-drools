@@ -1,11 +1,11 @@
 package org.drools.scorecards;
 
-import org.dmg.pmml.pmml_4_1.descr.Attribute;
-import org.dmg.pmml.pmml_4_1.descr.Characteristic;
-import org.dmg.pmml.pmml_4_1.descr.Characteristics;
-import org.dmg.pmml.pmml_4_1.descr.PMML;
-import org.dmg.pmml.pmml_4_1.descr.Scorecard;
-import org.drools.pmml.pmml_4_1.PMML4Helper;
+import org.dmg.pmml.pmml_4_2.descr.Attribute;
+import org.dmg.pmml.pmml_4_2.descr.Characteristic;
+import org.dmg.pmml.pmml_4_2.descr.Characteristics;
+import org.dmg.pmml.pmml_4_2.descr.PMML;
+import org.dmg.pmml.pmml_4_2.descr.Scorecard;
+import org.drools.pmml.pmml_4_2.PMML4Helper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;

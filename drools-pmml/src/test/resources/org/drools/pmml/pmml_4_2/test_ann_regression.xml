@@ -1,0 +1,154 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header copyright="JBoss"/>
+  <DataDictionary numberOfFields="6">
+    <DataField dataType="string" name="gender" optype="categorical">
+      <Value value="female"/>
+      <Value value="male"/>
+    </DataField>
+    <DataField dataType="string" name="no of claims" optype="categorical">
+      <Value value="0"/>
+      <Value value="1"/>
+      <Value value="3"/>
+      <Value value="> 3"/>
+      <Value value="2"/>
+    </DataField>
+    <DataField dataType="integer" name="scrambled" optype="ordinal">
+      <Value value="4"/>
+      <Value value="3"/>
+      <Value value="7"/>
+      <Value value="2"/>
+      <Value value="9"/>
+    </DataField>
+    <DataField dataType="string" name="domicile" optype="categorical">
+      <Value value="suburban"/>
+      <Value value="urban"/>
+      <Value value="rural"/>
+    </DataField>
+    <DataField dataType="double" name="age of car" optype="continuous"/>
+    <DataField dataType="double" isCyclic="1" name="amount of claims" optype="continuous"/>
+  </DataDictionary>
+  <NeuralNetwork activationFunction="logistic" functionName="regression" modelName="Neural Insurance" numberOfLayers="2" threshold="1">
+    <MiningSchema>
+      <MiningField name="gender" usageType="active"/>
+      <MiningField invalidValueTreatment="asMissing" missingValueReplacement="3" name="no of claims"/>
+      <MiningField name="domicile"/>
+      <MiningField highValue="90" lowValue="-90" name="age of car" outliers="asExtremeValues"/>
+      <MiningField name="amount of claims" usageType="predicted"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="outAmOfClaims" targetField="amount of claims"/>
+    </Output>
+    <NeuralInputs numberOfInputs="10">
+      <NeuralInput id="0">
+        <DerivedField dataType="double" optype="continuous">
+          <NormContinuous field="age of car">
+            <LinearNorm norm="0" orig="0.01"/>
+            <LinearNorm norm="0.5" orig="3.07897"/>
+            <LinearNorm norm="1" orig="11.44"/>
+          </NormContinuous>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="1">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="gender" value="male"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="2">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="no of claims" value="0"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="3">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="no of claims" value="1"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="4">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="no of claims" value="3"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="5">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="no of claims" value="> 3"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="6">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="no of claims" value="2"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="7">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="domicile" value="suburban"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="8">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="domicile" value="urban"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="9">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="domicile" value="rural"/>
+        </DerivedField>
+      </NeuralInput>
+    </NeuralInputs>
+    <NeuralLayer normalizationMethod="softmax" numberOfNeurons="3">
+      <Neuron id="10">
+        <Con from="0" weight="-2.08148"/>
+        <Con from="1" weight="3.69657"/>
+        <Con from="2" weight="-1.89986"/>
+        <Con from="3" weight="5.61779"/>
+        <Con from="4" weight="0.427558"/>
+        <Con from="5" weight="-1.25971"/>
+        <Con from="6" weight="-6.55549"/>
+        <Con from="7" weight="-4.62773"/>
+        <Con from="8" weight="1.97525"/>
+        <Con from="9" weight="-1.0962"/>
+      </Neuron>
+      <Neuron id="11">
+        <Con from="0" weight="-0.698997"/>
+        <Con from="1" weight="-3.54943"/>
+        <Con from="2" weight="-3.29632"/>
+        <Con from="3" weight="-1.20931"/>
+        <Con from="4" weight="1.00497"/>
+        <Con from="5" weight="0.033502"/>
+        <Con from="6" weight="1.12016"/>
+        <Con from="7" weight="0.523197"/>
+        <Con from="8" weight="-2.96135"/>
+        <Con from="9" weight="-0.398626"/>
+      </Neuron>
+      <Neuron id="12">
+        <Con from="0" weight="0.904057"/>
+        <Con from="1" weight="1.75084"/>
+        <Con from="2" weight="2.51658"/>
+        <Con from="3" weight="-0.151895"/>
+        <Con from="4" weight="-2.88008"/>
+        <Con from="5" weight="0.920063"/>
+        <Con from="6" weight="-3.30742"/>
+        <Con from="7" weight="-1.72251"/>
+        <Con from="8" weight="-1.13156"/>
+        <Con from="9" weight="-0.758563"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralLayer activationFunction="identity" numberOfNeurons="1" threshold="1000">
+      <Neuron id="13">
+        <Con from="10" weight="0.76617"/>
+        <Con from="11" weight="-1.5065"/>
+        <Con from="12" weight="0.999797"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralOutputs numberOfOutputs="1">
+      <NeuralOutput outputNeuron="13">
+        <DerivedField dataType="double" optype="continuous">
+          <NormContinuous field="amount of claims">
+            <LinearNorm norm="0.1" orig="0"/>
+            <LinearNorm norm="0.5" orig="1291.68"/>
+            <LinearNorm norm="0.9" orig="5327.26"/>
+          </NormContinuous>
+        </DerivedField>
+      </NeuralOutput>
+    </NeuralOutputs>
+  </NeuralNetwork>
+</PMML>

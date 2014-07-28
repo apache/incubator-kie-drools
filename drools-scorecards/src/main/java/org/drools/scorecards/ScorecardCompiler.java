@@ -16,27 +16,21 @@
 
 package org.drools.scorecards;
 
-import org.dmg.pmml.pmml_4_1.descr.PMML;
+import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.drools.core.util.IoUtils;
-import org.drools.pmml.pmml_4_1.PMML4Compiler;
+import org.drools.pmml.pmml_4_2.PMML4Compiler;
 import org.drools.scorecards.parser.AbstractScorecardParser;
 import org.drools.scorecards.parser.ScorecardParseException;
 import org.drools.scorecards.parser.xls.XLSScorecardParser;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.util.List;
 
 public class ScorecardCompiler {

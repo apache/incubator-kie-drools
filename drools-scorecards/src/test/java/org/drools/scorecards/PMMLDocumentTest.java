@@ -1,8 +1,8 @@
 package org.drools.scorecards;
 
 import org.junit.Assert;
-import org.dmg.pmml.pmml_4_1.descr.*;
-import org.drools.pmml.pmml_4_1.extensions.PMMLExtensionNames;
+import org.dmg.pmml.pmml_4_2.descr.*;
+import org.drools.pmml.pmml_4_2.extensions.PMMLExtensionNames;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 import org.junit.Before;
 import org.junit.Test;

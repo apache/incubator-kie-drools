@@ -16,7 +16,7 @@
 
 package org.drools.scorecards.parser;
 
-import org.dmg.pmml.pmml_4_1.descr.PMML;
+import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.drools.scorecards.ScorecardError;
 
 import java.io.InputStream;

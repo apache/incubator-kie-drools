@@ -1,0 +1,891 @@
+/*
+ * Copyright 2011 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.pmml.pmml_4_2.compiler;
+
+import org.dmg.pmml.pmml_4_2.descr.*;
+import org.drools.pmml.pmml_4_2.ModelMarker;
+
+import org.mvel2.templates.*;
+
+import java.util.*;
+
+dialect "mvel"
+
+
+//**********************************************************************************************************
+//
+//  VISIT RULES
+//
+//**********************************************************************************************************
+
+
+
+rule "visitPMML"
+salience -1
+when
+    $pmml : PMML(
+        $header : header,
+        $dataDic : dataDictionary,
+        $tranDic : transformationDictionary
+    )
+then
+   insert( $header );
+   insert( $dataDic );
+   insert( $tranDic );
+end
+
+
+rule "main_cleanup"
+salience -9999
+when
+    $p: PMML( )
+then
+   retract( $p );
+end
+
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+rule "visitDataDictionary"
+//after visitHeader
+salience -10
+when
+    $dataDic : DataDictionary( $flds : dataFields )
+    $fld     : DataField() from $flds
+then
+//System.err.println("INSERT FIELD " + $fld);
+   insert($fld);
+end
+
+rule "visitDataDictionary_cleanup"
+//after visitHeader
+salience -11
+when
+    $dataDic : DataDictionary( )
+then
+    retract( $dataDic );
+end
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+rule "visitTransformationDictionary"
+// after visitDataDictionary
+salience -20
+when
+    TransformationDictionary( $flds : derivedFields )
+    $fld : DerivedField( ) from $flds
+then
+   //System.err.println("INSERT DERIVED FIELD " + $fld);
+   insert( $fld );
+end
+
+rule "visitTransformationDictionary_cleanup"
+// after visitDataDictionary
+salience -21
+when
+    $tranDic : TransformationDictionary( )
+then
+   retract( $tranDic );
+end
+
+
+rule "visitLocalTransformation"
+salience -15
+when
+    LocalTransformations( $flds : derivedFields )
+    $fld : DerivedField( ) from $flds
+then
+   //System.err.println("INSERT DERIVED FIELD " + $fld);
+   insert( $fld );
+end
+
+rule "visitLocalTransformation_cleanup"
+// after visitDataDictionary
+salience -21
+when
+    $local : LocalTransformations( )
+then
+   retract( $local );
+end
+
+
+
+ //------------------------------------------------------------------------------------------------------------//
+
+
+
+
+rule "visitDerivedField_NormContinuous"
+salience -1
+when
+    $fld : DerivedField( $nc : normContinuous != null )
+then
+    insertLogical( $nc );
+end
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+rule "visitDerivedField_Constant"
+salience -1
+when
+    $fld : DerivedField( $c : constant != null )
+then
+    insertLogical( $c );
+end
+
+ //------------------------------------------------------------------------------------------------------------//
+
+rule "visitDerivedField_Reference"
+salience -1
+when
+    $fld : DerivedField( $f : fieldRef != null )
+then
+    insertLogical( $f );
+end
+
+//------------------------------------------------------------------------------------------------------------//
+
+rule "visitDerivedField_NormDiscrete"
+salience -1
+when
+    $fld : DerivedField( $nd : normDiscrete != null )
+then
+    insertLogical( $nd );
+end
+
+ //------------------------------------------------------------------------------------------------------------//
+
+rule "visitDerivedField_Discretize"
+salience -1
+when
+    $fld : DerivedField( $dx : discretize != null )
+then
+    insertLogical( $dx );
+end
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+
+rule "visitDerivedField_MapValues"
+salience -1
+when
+    $fld : DerivedField( $map : mapValues != null )
+then
+    insertLogical( $map );
+end
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+
+rule "visitDerivedField_Aggregate"
+salience -1
+when
+    $fld : DerivedField( $agg : aggregate != null )
+then
+    insertLogical( $agg );
+end
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+
+rule "visitDerivedField_Apply"
+salience -1
+when
+    $fld : DerivedField( $app : apply != null )
+then
+    insertLogical( $app );
+end
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+
+rule "visitDefFunctTransform"
+salience -1
+when
+           TransformationDictionary( $funs : defineFunctions )
+    $fun : DefineFunction() from $funs
+then
+    insert( $fun );
+end
+
+
+
+
+rule "visitDefineFunction_Apply_normalize"
+salience 15
+no-loop
+when
+    $def : DefineFunction( $apply : apply != null, apply.function != "identity" )
+then
+    Apply idApply = new Apply();
+          idApply.setFunction( "identity" );
+          idApply.getConstantsAndFieldRevesAndNormContinuouses().add( $apply );
+    modify ( $def ) {
+        setApply( idApply );
+    }
+end
+
+rule "visitDefineFunction_Apply"
+salience 15
+when
+    $def : DefineFunction( $apply : apply != null, apply.function == "identity" )
+then
+    insertLogical( $apply );
+end
+
+rule "visitDefineFunction_NormCont"
+salience 15
+no-loop
+when
+    $def : DefineFunction( $name : name, $nc : normContinuous != null, $fld : normContinuous.field )
+then
+    Apply idApply = new Apply();
+          idApply.setFunction("identity");
+          idApply.getConstantsAndFieldRevesAndNormContinuouses().add( $nc );
+
+    modify ( $def ) {
+        setApply( idApply );
+    }
+
+    $nc.setField( $name + "_" + $fld );
+
+    insertLogical( idApply );
+end
+
+
+rule "visitDefineFunction_Aggregate"
+salience 15
+no-loop
+when
+    $def : DefineFunction( $name : name, $agg : aggregate != null, $fld : aggregate.field )
+then
+    Apply idApply = new Apply();
+         idApply.setFunction( "identity" );
+         idApply.getConstantsAndFieldRevesAndNormContinuouses().add( $agg );
+
+    modify ( $def ) {
+        setApply( idApply );
+    }
+
+    $agg.setField( $name + "_" + $fld );
+
+    insertLogical( idApply );
+end
+
+rule "visitDefineFunction_Mapvalue"
+salience 15
+no-loop
+when
+    $def : DefineFunction( $name : name, $map : mapValues != null )
+then
+    Apply idApply = new Apply();
+          idApply.setFunction( "identity" );
+          idApply.getConstantsAndFieldRevesAndNormContinuouses().add( $map );
+
+    modify ( $def ) {
+        setApply( idApply );
+    }
+
+    insertLogical( idApply );
+end
+
+rule "visitDefineFunction_Mapvalue_FixLocalFieldNames"
+salience 14
+no-loop
+when
+    $def : DefineFunction( $name : name, $map : mapValues != null, $rows : mapValues.fieldColumnPairs )
+    $fcp : FieldColumnPair( $fld : field ) from $rows
+then
+    $fcp.setField( $name + "_" + $fld );
+end
+
+
+
+rule "visitDefineFunction_Discretize"
+salience 15
+no-loop
+when
+    $def : DefineFunction( $name : name, $dx : discretize != null, $fld : discretize.field )
+then
+    Apply idApply = new Apply();
+          idApply.setFunction( "identity" );
+          idApply.getConstantsAndFieldRevesAndNormContinuouses().add( $dx );
+
+    modify ( $def ) {
+        setApply( idApply );
+    }
+
+    $dx.setField( $name + "_" + $fld );
+
+    insertLogical( idApply );
+end
+
+rule "visitDefineFunction_NormDiscrete"
+salience 15
+no-loop
+when
+    $def : DefineFunction( $name : name, $nd : normDiscrete != null, $fld : normDiscrete.field )
+then
+    Apply idApply = new Apply();
+          idApply.setFunction( "identity" );
+          idApply.getConstantsAndFieldRevesAndNormContinuouses().add( $nd );
+
+    modify ( $def ) {
+        setApply( idApply );
+    }
+
+    $nd.setField( $name + "_" + $fld );
+
+    insertLogical( idApply );
+end
+
+rule "visitDefineFunction_FldRef"
+salience 15
+no-loop
+when
+    $def : DefineFunction( $name : name, $ref : fieldRef != null, $fld : fieldRef.field )
+then
+    Apply idApply = new Apply();
+          idApply.setFunction( "identity" );
+          idApply.getConstantsAndFieldRevesAndNormContinuouses().add( $ref );
+
+    modify ( $def ) {
+        setApply( idApply );
+    }
+
+//    $ref.setField( $name + "_" + $fld );
+
+    insertLogical( idApply );
+end
+
+rule "visitDefineFunction_Const"
+salience 15
+no-loop
+when
+    $def : DefineFunction( $k : constant != null )
+then
+    Apply idApply = new Apply();
+          idApply.setFunction( "identity" );
+          idApply.getConstantsAndFieldRevesAndNormContinuouses().add( $k );
+
+    modify ( $def ) {
+        setApply( idApply );
+    }
+
+    insertLogical( idApply );
+end
+
+
+
+
+
+
+
+rule "visitApply"
+salience 0
+when
+    Apply( $args : constantsAndFieldRevesAndNormContinuouses, $fun : this.function )
+then
+    // ensure insertion in order
+    for ( int j = 0; j < $args.size(); j++ ) {
+        insertLogical( $args.get( j ) );
+    }
+end
+
+
+
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+
+
+rule "visitModels"
+salience -50
+when
+   PMML( $modelList : associationModelsAndBaselineModelsAndClusteringModels )
+   $model : Object() from $modelList
+then
+   insert( $model );
+end
+
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+
+rule "MiningSchema"
+salience -7
+when
+    $m : MiningSchema( $fields : miningFields )
+    $o : Object() from $fields
+then
+    insertLogical( $o );
+end
+
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+
+
+rule "Targets"
+when
+    Targets( $tgts : targets )
+    $t : Target() from $tgts
+then
+    insertLogical( $t );
+end
+
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+declare OutputParentModel
+    field       : OutputField     @key
+    modelType   : String
+    miningFunc  : String
+end
+
+rule "Outputs_Neural"
+when
+    $out : Output( $outs : outputFields )
+    $of  : OutputField() from $outs
+           NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs contains $out, $func : functionName.value() )
+then
+    insertLogical( $of );
+    insertLogical( new OutputParentModel( $of, "NeuralNetwork", $func ) );
+end
+
+rule "Outputs_Association"
+when
+    $out : Output( $outs : outputFields )
+    $of  : OutputField() from $outs
+    AssociationModel( $info : extensionsAndMiningSchemasAndOutputs contains $out, $func : functionName.value() )
+then
+    insertLogical( $of );
+    insertLogical( new OutputParentModel( $of, "Association", $func  ) );
+end
+
+rule "Outputs_Clustering"
+when
+    $out : Output( $outs : outputFields )
+    $of  : OutputField() from $outs
+    ClusteringModel( $info : extensionsAndClustersAndClusteringFields contains $out, $func : functionName.value()  )
+then
+    insertLogical( $of );
+    insertLogical( new OutputParentModel( $of, "Clustering", $func  ) );
+end
+
+rule "Outputs_Regression"
+when
+    $out : Output( $outs : outputFields )
+    $of  : OutputField() from $outs
+    RegressionModel( $info : extensionsAndRegressionTablesAndMiningSchemas contains $out, $func : functionName.value()  )
+then
+    insertLogical( $of );
+    insertLogical( new OutputParentModel( $of, "Regression", $func  ) );
+end
+
+
+rule "Outputs_GenRegression"
+when
+    $out : Output( $outs : outputFields )
+    $of  : OutputField() from $outs
+    GeneralRegressionModel( $info : extensionsAndParamMatrixesAndPPMatrixes contains $out, $func : functionName.value()  )
+then
+    insertLogical( $of );
+    insertLogical( new OutputParentModel( $of, "GeneralRegression", $func  ) );
+end
+
+
+rule "Outputs_NaiveBayes"
+when
+    $out : Output( $outs : outputFields )
+    $of  : OutputField() from $outs
+    NaiveBayesModel( $info : extensionsAndBayesOutputsAndBayesInputs contains $out, $func : functionName.value()  )
+then
+    insertLogical( $of );
+    insertLogical( new OutputParentModel( $of, "NaiveBayes", $func  ) );
+end
+
+rule "Outputs_RuleSet"
+when
+    $out : Output( $outs : outputFields )
+    $of  : OutputField() from $outs
+    RuleSetModel( $info : extensionsAndRuleSetsAndMiningSchemas contains $out, $func : functionName.value()  )
+then
+    insertLogical( $of );
+    insertLogical( new OutputParentModel( $of, "RuleSet", $func  ) );
+end
+
+rule "Outputs_SVM"
+when
+    $out : Output( $outs : outputFields )
+    $of  : OutputField() from $outs
+    SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries contains $out, $func : functionName.value()  )
+then
+    insertLogical( $of );
+    insertLogical( new OutputParentModel( $of, "SVM", $func  ) );
+end
+
+rule "Outputs_Tree"
+when
+    $out : Output( $outs : outputFields )
+    $of  : OutputField() from $outs
+    TreeModel( $info : extensionsAndNodesAndMiningSchemas contains $out, $func : functionName.value()  )
+then
+    insertLogical( $of );
+    insertLogical( new OutputParentModel( $of, "Tree", $func  ) );
+end
+
+
+rule "Outputs_Scorecard"
+when
+    $out : Output( $outs : outputFields )
+    $of  : OutputField() from $outs
+    Scorecard( $info : extensionsAndCharacteristicsAndMiningSchemas contains $out, $func : functionName.value()  )
+then
+    insertLogical( $of );
+    insertLogical( new OutputParentModel( $of, "Scorecard", $func ) );
+end
+
+
+
+
+
+
+
+
+ //------------------------------------------------------------------------------------------------------------//
+
+
+
+
+rule "visitNeuralNetwork"
+salience -10
+when
+    $net : NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs, $name : modelName )
+    $o : Object() from $info
+then
+    insertLogical( $o );
+end
+
+
+
+
+rule "Neural_InputFields"
+salience -8
+when
+    //NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs , $nn : modelName)
+    NeuralInputs( $nis : neuralInputs )
+    $ni : NeuralInput( $fld : derivedField, $id : id) from $nis
+then
+    insertLogical( $ni );
+end
+
+
+
+rule "Neural_Layers"
+salience -9
+when
+    //NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs , $nn : modelName)
+    NeuralLayer( $ns : neurons, activationFunction != null, threshold != null )
+    $n : Neuron( ) from $ns
+then
+    insertLogical( $n );
+end
+
+
+
+rule "Neural_Outputs"
+salience -9
+when
+    //NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs , $nn : modelName)
+    NeuralOutputs( $outs : neuralOutputs )
+    $out : NeuralOutput() from $outs
+then
+    insertLogical( $out );
+end
+
+
+
+ //------------------------------------------------------------------------------------------------------------//
+
+
+
+
+rule "visitTree"
+salience -10
+when
+    $tree : TreeModel( $info : extensionsAndNodesAndMiningSchemas, $name : modelName )
+    $o : Object() from $info
+then
+    insertLogical( $o );
+end
+
+
+rule "visitChildrenNodes"
+salience -8
+when
+    $node  : Node( $children : nodes )
+    $child : Node() from $children
+then
+    insertLogical( $child );
+end
+
+rule "Visit Node Predicates"
+salience -9
+when
+    $node  : Node( $children : extensionsAndSimplePredicatesAndCompoundPredicates )
+    $child : Object() from $children
+then
+    insertLogical( $child );
+end
+
+rule "Visit Compound Predicates"
+salience -9
+when
+    $node  : CompoundPredicate( $children : simplePredicatesAndCompoundPredicatesAndSimpleSetPredicates )
+    $child : Object() from $children
+then
+    insertLogical( $child );
+end
+
+rule "Visit Set Predicates"
+salience -9
+when
+    $node  : SimpleSetPredicate( $arr : array )
+then
+    insertLogical( $arr );
+end
+
+
+ //------------------------------------------------------------------------------------------------------------//
+
+
+rule "visitSVM"
+salience -10
+when
+    $net : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries, $name : modelName )
+    $o   : Object() from $info
+then
+    insertLogical( $o );
+end
+
+
+rule "visitVectorDictionary"
+salience -11
+when
+    $vd : VectorDictionary( $info : vectorInstances, $nrvect : numberOfVectors )
+    $ls : VectorInstance() from $info
+then
+    insertLogical( $ls );
+end
+
+rule "visitCoefficients"
+salience -13
+when
+    $net : SupportVectorMachine( $cfs : coefficients, $svs : supportVectors )
+then
+    insertLogical( $cfs );
+    insertLogical( $svs );
+end
+
+rule "visitCoefficient"
+salience -14
+when
+    $coe : Coefficients( $info : coefficients )
+    $ls  : Coefficient() from $info
+then
+    insertLogical( $ls );
+end
+
+rule "visitSupportVector"
+salience -15
+when
+    $svs : SupportVectors( $info : supportVectors )
+    $sv  : SupportVector() from $info
+then
+    insertLogical( $sv );
+end
+
+
+ //------------------------------------------------------------------------------------------------------------//
+
+
+rule "visitRegression"
+salience -11
+when
+    $reg : RegressionModel( $info : extensionsAndRegressionTablesAndMiningSchemas, $name : modelName )
+    $o   : Object() from $info
+then
+    insertLogical( $o );
+end
+
+rule "visitRegressionTable Numeric"
+salience -11
+when
+    $tab : RegressionTable( $nums : numericPredictors )
+    $num : NumericPredictor() from $nums
+then
+    insertLogical( $num );
+end
+
+rule "visitRegressionTable Categorical"
+salience -11
+when
+    $tab : RegressionTable( $cats : categoricalPredictors )
+    $cat : CategoricalPredictor() from $cats
+then
+    insertLogical( $cat );
+end
+
+rule "visitRegressionTable Terms"
+salience -11
+when
+    $tab : RegressionTable( $trms : predictorTerms )
+    $trm : PredictorTerm() from $trms
+then
+    insertLogical( $trm );
+end
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+
+rule "visitClustering"
+salience -11
+when
+    $reg : ClusteringModel( $info : extensionsAndClustersAndClusteringFields, $name : modelName )
+    $o   : Object() from $info
+then
+    insertLogical( $o );
+end
+
+
+
+rule "visitClusteringComparison"
+salience -11
+when
+    $fld : ClusteringField( $cmp : comparisons )
+then
+    insertLogical( $cmp );
+end
+
+rule "visitClusteringComparisonMatrixes"
+when
+    $cmp : Comparisons( $mat : matrix )
+then
+    insertLogical( $mat );
+end
+
+
+ //------------------------------------------------------------------------------------------------------------//
+
+
+rule "visitScorecard"
+salience -10
+when
+    $net : Scorecard( $info : extensionsAndCharacteristicsAndMiningSchemas, $name : modelName )
+    $o   : Object() from $info
+then
+    insertLogical( $o );
+end
+
+rule "visitScorecard Characteristics"
+salience -10
+when
+    $net : Scorecard( $info : extensionsAndCharacteristicsAndMiningSchemas, $name : modelName )
+    $cx  : Characteristics( this memberOf $info, $charz : characteristics )
+    $c   : Characteristic() from $charz
+
+then
+    insertLogical( $c );
+end
+
+rule "visitScorecard Characteristic Attributes"
+salience -10
+when
+    $c   : Characteristic( $atts : attributes )
+    $a   : Attribute() from $atts
+then
+    insertLogical( $a );
+end
+
+rule "visitScorecard Attributes Simple Predicate"
+salience -10
+when
+    $a   : Attribute( $simple : simplePredicate != null  )
+then
+    insertLogical( $simple );
+end
+
+rule "visitScorecard Attributes Comp Predicate"
+salience -10
+when
+    $a   : Attribute( $comp : compoundPredicate != null  )
+then
+    insertLogical( $comp );
+end
+rule "visitScorecard Attributes Set Predicate"
+salience -10
+when
+    $a   : Attribute( $set : simpleSetPredicate != null  )
+then
+    insertLogical( $set );
+end
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+rule "visitNaiveBayes"
+salience -10
+when
+    $nbm : NaiveBayesModel( $info : extensionsAndBayesOutputsAndBayesInputs, $name : modelName )
+    $o   : Object() from $info
+then
+    insertLogical( $o );
+end
+
+rule "visitBayesInputs"
+salience -11
+when
+    $bis : BayesInputs( $in : bayesInputs )
+    $bin : BayesInput() from $in
+then
+    insertLogical( $bin );
+end
+
+rule "visitBayesDerivedField"
+salience -11
+when
+    $bin : BayesInput( $dfld : derivedField != null, $fld : fieldName )
+then
+    // only discretization allowed here
+    if ( $dfld.getName() == null ) {
+        $dfld.setName( $fld + "__Discrete" );
+    }
+    insertLogical( $dfld );
+end

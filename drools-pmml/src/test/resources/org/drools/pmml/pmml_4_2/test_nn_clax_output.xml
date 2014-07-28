@@ -1,0 +1,62 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header copyright="JBoss" description="Mock Cold Risk Prediction Model"/>
+  <DataDictionary numberOfFields="2">
+    <DataField dataType="double" displayName="Outside Temperature" name="temp" optype="continuous">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="40.0"/>
+    </DataField>
+    <DataField dataType="string" displayName="Cold Risk Factor" name="coldRisk" optype="categorical">
+      <Value value="SURE"/>
+      <Value value="NOPE"/>
+      <Value value="MAYBE"/>
+    </DataField>
+  </DataDictionary>
+  <NeuralNetwork activationFunction="logistic" algorithmName="neuralNetwork" functionName="classification" modelName="MockCold">
+    <MiningSchema>
+      <MiningField name="temp"/>
+      <MiningField name="coldRisk" usageType="predicted"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="ColdCat" targetField="coldRisk" feature="predictedValue" />
+      <OutputField name="ColdYES" targetField="coldRisk" value="SURE" feature="probability"/>
+      <OutputField name="ColdNO" targetField="coldRisk" value="NOPE" feature="probability"/>
+    </Output>
+    <Targets>
+      <Target field="coldRisk">
+        <TargetValue value="SURE" priorProbability="0.4" />
+        <TargetValue value="NOPE" priorProbability="0.6" />
+      </Target>
+    </Targets>
+    <NeuralInputs>
+      <NeuralInput id="0">
+        <DerivedField dataType="double" optype="continuous">
+          <FieldRef field="temp"/>
+        </DerivedField>
+      </NeuralInput>
+    </NeuralInputs>
+    <NeuralLayer>
+      <Neuron bias="1.0" id="1">
+        <Con from="0" weight="-0.02"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralLayer>
+      <Neuron bias="0.0" id="2">
+        <Con from="1" weight="1.0"/>
+      </Neuron>
+      <Neuron bias="-5.0" id="3">
+        <Con from="1" weight="-1.0"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralOutputs>
+      <NeuralOutput outputNeuron="2">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="coldRisk" value="SURE" />
+        </DerivedField>
+      </NeuralOutput>
+      <NeuralOutput outputNeuron="3">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="coldRisk" value="NOPE" />
+        </DerivedField>
+      </NeuralOutput>
+    </NeuralOutputs>
+  </NeuralNetwork>
+</PMML>

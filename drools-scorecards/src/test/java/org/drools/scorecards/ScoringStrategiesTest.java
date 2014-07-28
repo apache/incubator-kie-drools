@@ -1,9 +1,9 @@
 package org.drools.scorecards;
 
-import org.dmg.pmml.pmml_4_1.descr.Extension;
-import org.dmg.pmml.pmml_4_1.descr.PMML;
-import org.dmg.pmml.pmml_4_1.descr.Scorecard;
-import org.drools.pmml.pmml_4_1.extensions.AggregationStrategy;
+import org.dmg.pmml.pmml_4_2.descr.Extension;
+import org.dmg.pmml.pmml_4_2.descr.PMML;
+import org.dmg.pmml.pmml_4_2.descr.Scorecard;
+import org.drools.pmml.pmml_4_2.extensions.AggregationStrategy;
 import org.drools.scorecards.pmml.ScorecardPMMLExtensionNames;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 import org.junit.Before;

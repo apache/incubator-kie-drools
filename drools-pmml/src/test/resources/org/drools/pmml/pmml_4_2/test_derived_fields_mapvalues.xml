@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  ~ Copyright 2011 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header copyright="JBoss"/>
+  <DataDictionary>
+    <DataField dataType="integer" name="Age" optype="continuous">
+      <Value property="missing" value="-1"/>
+    </DataField>
+    <DataField dataType="double" name="Height" optype="continuous">
+      <Interval closure="closedClosed" leftMargin="30" rightMargin="200"/>
+    </DataField>
+    <DataField dataType="string" name="HairColor" optype="categorical"/>
+  </DataDictionary>
+  <TransformationDictionary>
+    <DerivedField dataType="string" name="Mapped" optype="categorical">
+      <MapValues outputColumn="out">
+        <FieldColumnPair column="in1" field="Age"/>
+        <FieldColumnPair column="in2" field="Height"/>
+        <FieldColumnPair column="in3" field="HairColor"/>
+        <InlineTable>
+          <row>
+            <in1>18</in1>
+            <in2>80</in2>
+            <in3>red</in3>
+            <out>klass1</out>
+          </row>
+          <row>
+            <in1>33</in1>
+            <in2>120</in2>
+            <in3>black</in3>
+            <out>klass2</out>
+          </row>
+        </InlineTable>
+      </MapValues>
+    </DerivedField>
+  </TransformationDictionary>
+</PMML>

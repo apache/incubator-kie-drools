@@ -20,7 +20,7 @@ import org.kie.internal.utils.ServiceRegistryImpl;
 
 public class PMMLCompilerFactory {
 
-    private static final String PROVIDER_CLASS = "org.drools.pmml.pmml_4_1.PMML4Compiler";
+    private static final String PROVIDER_CLASS = "org.drools.pmml.pmml_4_2.PMML4Compiler";
 
     private static PMMLCompiler provider;
 

@@ -1,0 +1,80 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header copyright="JBOSS"/>
+  <DataDictionary numberOfFields="5">
+    <DataField dataType="double" name="fld1" optype="continuous"/>
+    <DataField dataType="double" name="fld2" optype="continuous"/>
+    <DataField dataType="string" name="fld3" optype="categorical">
+      <Value value="true"/>
+      <Value value="false"/>
+    </DataField>
+    <DataField dataType="string" name="fld4" optype="categorical">
+      <Value value="optA"/>
+      <Value value="optB"/>
+      <Value value="optC"/>
+    </DataField>
+    <DataField dataType="string" name="fld5" optype="categorical">
+      <Value value="tgtX"/>
+      <Value value="tgtY"/>
+      <Value value="tgtZ"/>
+    </DataField>
+  </DataDictionary>
+  <TreeModel functionName="classification" modelName="TreeTest">
+    <MiningSchema>
+      <MiningField name="fld1"/>
+      <MiningField name="fld2"/>
+      <MiningField name="fld3"/>
+      <MiningField name="fld4"/>
+      <MiningField name="fld5" usageType="predicted"/>
+    </MiningSchema>
+    <Node score="tgtX">
+      <True/>
+      <Node score="tgtX">
+        <SimplePredicate field="fld4" operator="equal" value="optA"/>
+        <Node score="tgtX">
+          <CompoundPredicate booleanOperator="surrogate">
+            <SimplePredicate field="fld1" operator="lessThan" value="30"/>
+            <SimplePredicate field="fld2" operator="greaterThan" value="20"/>
+          </CompoundPredicate>
+          <Node score="tgtX">
+            <SimplePredicate field="fld2" operator="lessThan" value="40"/>
+          </Node>
+          <Node score="tgtZ">
+            <SimplePredicate field="fld2" operator="greaterOrEqual" value="10"/>
+          </Node>
+        </Node>
+        <Node score="tgtZ">
+          <CompoundPredicate booleanOperator="or">
+            <SimplePredicate field="fld1" operator="greaterOrEqual" value="60"/>
+            <SimplePredicate field="fld1" operator="lessOrEqual" value="70"/>
+          </CompoundPredicate>
+          <Node score="tgtZ">
+            <SimpleSetPredicate booleanOperator="isNotIn" field="fld4">
+              <Array type="string">optA optB</Array>
+            </SimpleSetPredicate>
+          </Node>
+        </Node>
+      </Node>
+      <Node score="tgtY">
+        <CompoundPredicate booleanOperator="or">
+          <SimplePredicate field="fld4" operator="equal" value="optA"/>
+          <SimplePredicate field="fld4" operator="equal" value="optC"/>
+        </CompoundPredicate>
+        <Node score="tgtY">
+          <CompoundPredicate booleanOperator="and">
+            <SimplePredicate field="fld1" operator="greaterThan" value="10"/>
+            <SimplePredicate field="fld1" operator="lessThan" value="50"/>
+            <SimplePredicate field="fld4" operator="equal" value="optA"/>
+            <SimplePredicate field="fld2" operator="lessThan" value="100"/>
+            <SimplePredicate field="fld3" operator="equal" value="false"/>
+          </CompoundPredicate>
+        </Node>
+        <Node score="tgtZ">
+          <CompoundPredicate booleanOperator="and">
+            <SimplePredicate field="fld4" operator="equal" value="optC"/>
+            <SimplePredicate field="fld2" operator="lessThan" value="30"/>
+          </CompoundPredicate>
+        </Node>
+      </Node>
+    </Node>
+  </TreeModel>
+</PMML>

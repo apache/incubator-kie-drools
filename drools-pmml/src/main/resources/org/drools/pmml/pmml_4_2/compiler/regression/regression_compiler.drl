@@ -1,0 +1,177 @@
+package org.drools.pmml.pmml_4_2.compiler;
+
+import org.dmg.pmml.pmml_4_2.descr.*;
+import java.util.*;
+
+dialect "mvel"
+
+global org.drools.pmml.pmml_4_2.PMML4Helper utils;
+global StringBuilder theory;
+global org.mvel2.templates.TemplateRegistry registry;
+
+rule "Regression Root"
+when
+    $reg : RegressionModel()
+then
+    utils.applyTemplate( "regDeclare.drlt", utils, registry, null, theory );
+end
+
+rule "visitRegression_context"
+salience -9
+when
+    $reg : RegressionModel( $name : modelName )
+then
+    utils.context = utils.compactUpperCase( $name );
+
+    HashMap map = new HashMap( 3 );
+        map.put( "name", utils.context );
+        map.put( "type","SimpleRegression" );
+    utils.applyTemplate( "modelMark.drlt", null, registry, map, theory );
+end
+
+
+
+rule "Regression Table"
+salience -15
+when
+    $reg : RegressionModel( $regTables : extensionsAndRegressionTablesAndMiningSchemas )
+    $tab : RegressionTable( this memberOf $regTables,
+                            $c0 : intercept, $tgtCat : targetCategory, $num : numericPredictors, $cat : categoricalPredictors, $trm : predictorTerms )
+    accumulate( NumericPredictor( this memberOf $num, $c : coefficient, $e : exponent ), $numC : collectList( $c ), $numE : collectList( $e.doubleValue() ) )
+    accumulate( CategoricalPredictor( this memberOf $cat, $c : coefficient ), $catC : collectList( $c ) )
+    accumulate( PredictorTerm( this memberOf $trm, $c : coefficient ), $trmC : collectList( $c ) )
+           MiningSchema( $mfs : miningFields, this memberOf $regTables )
+           MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $tgt : name )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "context", utils.context );
+        map.put( "c0", $c0 );
+        map.put( "numCoeffs", $numC );
+        map.put( "catCoeffs", $catC );
+        map.put( "trmCoeffs", $trmC );
+        map.put( "numExps", $numE );
+        map.put( "target", utils.compactUpperCase( $tgt ) );
+        map.put( "category", $tgtCat );
+        map.put( "index", $regTables.indexOf( $tab ) );
+    utils.applyTemplate( "regParams.drlt", utils, registry, map, theory );
+end
+
+
+
+rule "Regression Table : regression"
+salience -15
+when
+    $reg : RegressionModel( $regTables : extensionsAndRegressionTablesAndMiningSchemas, functionName == MININGFUNCTION.REGRESSION,
+                            $norm : normalizationMethod == null
+                                                     || == REGRESSIONNORMALIZATIONMETHOD.NONE
+                                                     || == REGRESSIONNORMALIZATIONMETHOD.EXP
+                                                     || == REGRESSIONNORMALIZATIONMETHOD.SOFTMAX
+                                                     || == REGRESSIONNORMALIZATIONMETHOD.LOGIT )
+    $tab : RegressionTable( this memberOf $regTables, $c0 : intercept, $cat : targetCategory,
+                            $nps : numericPredictors, $cps : categoricalPredictors, $tps : predictorTerms )
+           accumulate( $np : NumericPredictor( this memberOf $nps ), $numPs : collectList( $np ) )
+           accumulate( $cp : CategoricalPredictor( this memberOf $cps ), $catPs : collectList( $cp ) )
+           accumulate( $tp : PredictorTerm( this memberOf $tps ), $trmPs : collectList( $tp ) )
+           MiningSchema( $mfs : miningFields, this memberOf $regTables )
+           accumulate( $mf : MiningField( this memberOf $mfs, usageType != FIELDUSAGETYPE.PREDICTED, $fldName : name ), $flds : collectList( $mf ) )
+           MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $tgt : name )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "context", utils.context );
+        map.put( "inputFields", $flds );
+        map.put( "numPredictors", $numPs );
+        map.put( "catPredictors", $catPs );
+        map.put( "trmPredictors", $trmPs );
+        map.put( "normalization", $norm );
+        map.put( "isRegression", true );
+        map.put( "category", $cat );
+        map.put( "target", utils.compactUpperCase( $tgt ) );
+    utils.applyTemplate( "regEval.drlt", utils, registry, map, theory );
+end
+
+
+rule "Regression Table : classification"
+salience -15
+when
+    $reg : RegressionModel( $regTables : extensionsAndRegressionTablesAndMiningSchemas, functionName == MININGFUNCTION.CLASSIFICATION,
+                            $norm : normalizationMethod  )
+    $tab : RegressionTable( this memberOf $regTables, $c0 : intercept, $cat : targetCategory,
+                            $nps : numericPredictors, $cps : categoricalPredictors, $tps : predictorTerms )
+           accumulate( $np : NumericPredictor( this memberOf $nps ), $numPs : collectList( $np ) )
+           accumulate( $cp : CategoricalPredictor( this memberOf $cps ), $catPs : collectList( $cp ) )
+           accumulate( $tp : PredictorTerm( this memberOf $tps ), $trmPs : collectList( $tp ) )
+           MiningSchema( $mfs : miningFields, this memberOf $regTables )
+           accumulate( $mf : MiningField( this memberOf $mfs, usageType != FIELDUSAGETYPE.PREDICTED, $fldName : name ), $flds : collectList( $mf ) )
+           MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $tgt : name )
+           (
+             DataField( name == $tgt, $opType : optype )
+             or
+             DerivedField( name == $tgt, $opType : optype )
+           )
+then
+    HashMap map = new HashMap( 11 );
+        map.put( "context", utils.context );
+        map.put( "inputFields", $flds );
+        map.put( "numPredictors", $numPs );
+        map.put( "catPredictors", $catPs );
+        map.put( "trmPredictors", $trmPs );
+        map.put( "normalization", $norm );
+        map.put( "isRegression", false );
+        map.put( "isCategorical", OPTYPE.CATEGORICAL.equals( $opType ) );
+        map.put( "category", $cat );
+        map.put( "target", utils.compactUpperCase( $tgt ) );
+    utils.applyTemplate( "regEval.drlt", utils, registry, map, theory );
+end
+
+rule "Regression Model Output Reconciliation"
+salience -15
+when
+    $reg : RegressionModel( $regTables : extensionsAndRegressionTablesAndMiningSchemas, functionName == MININGFUNCTION.CLASSIFICATION,
+                            $norm : normalizationMethod  )
+           accumulate( $rt : RegressionTable( this memberOf $regTables ), $numTabs : count( $rt ) )
+           MiningSchema( $mfs : miningFields, this memberOf $regTables )
+           MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $tgt : name )
+then
+    HashMap map = new HashMap( 3 );
+        map.put( "context", utils.context );
+        map.put( "target", utils.compactUpperCase( $tgt ) );
+        map.put( "num", $numTabs );
+    utils.applyTemplate( "regClaxOutput.drlt", utils, registry, map, theory );
+    utils.applyTemplate( "regNormalization.drlt", utils, registry, map, theory );
+end
+
+
+rule "Regression Model Ordinal Output"
+salience -15
+when
+    $reg : RegressionModel( $regTables : extensionsAndRegressionTablesAndMiningSchemas, functionName == MININGFUNCTION.CLASSIFICATION,
+                            $norm : normalizationMethod  )
+           accumulate( $rt : RegressionTable( this memberOf $regTables ), $numTabs : count( $rt ) )
+           MiningSchema( $mfs : miningFields, this memberOf $regTables )
+           MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $tgt : name )
+           (
+             DataField( name == $tgt, $opType : optype == OPTYPE.ORDINAL )
+             or
+             DerivedField( name == $tgt, $opType : optype == OPTYPE.ORDINAL )
+           )
+then
+    HashMap map = new HashMap( 3 );
+        map.put( "context", utils.context );
+        map.put( "target", utils.compactUpperCase( $tgt ) );
+        map.put( "num", $numTabs );
+    utils.applyTemplate( "regDecumulation.drlt", utils, registry, map, theory );
+end
+//
+
+
+rule "Regression_Cleanup"
+salience -20
+when
+    $reg : RegressionModel( )
+then
+    utils.context = null;
+    retract( $reg );
+end
+
+
+

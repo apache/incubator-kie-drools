@@ -16,13 +16,13 @@
 
 package org.drools.scorecards.parser.xls;
 
-import org.dmg.pmml.pmml_4_1.descr.Attribute;
-import org.dmg.pmml.pmml_4_1.descr.Characteristic;
-import org.dmg.pmml.pmml_4_1.descr.Characteristics;
-import org.dmg.pmml.pmml_4_1.descr.Scorecard;
+import org.dmg.pmml.pmml_4_2.descr.Attribute;
+import org.dmg.pmml.pmml_4_2.descr.Characteristic;
+import org.dmg.pmml.pmml_4_2.descr.Characteristics;
+import org.dmg.pmml.pmml_4_2.descr.Scorecard;
 import org.drools.core.util.StringUtils;
-import org.drools.pmml.pmml_4_1.extensions.AggregationStrategy;
-import org.drools.pmml.pmml_4_1.PMML4Helper;
+import org.drools.pmml.pmml_4_2.extensions.AggregationStrategy;
+import org.drools.pmml.pmml_4_2.PMML4Helper;
 import org.drools.scorecards.ScorecardError;
 import org.drools.scorecards.StringUtil;
 import org.drools.scorecards.pmml.ScorecardPMMLExtensionNames;
