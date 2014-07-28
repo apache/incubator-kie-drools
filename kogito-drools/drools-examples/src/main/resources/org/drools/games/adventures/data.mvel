@@ -13,7 +13,7 @@ rooms = [
     "lounge" : new Room("lounge"),
     "kitchen" : new Room("kitchen"),
     "ground floor hallway" : new Room("ground floor hallway"),
-    "bedroom1" : new Room("bedroom"),
+    "bedroom" : new Room("bedroom"),
     "office" : new Room("office"),
     "first floor hallway" : new Room("first floor hallway")
 ];
@@ -27,7 +27,7 @@ doors = [
     "d2" : new Door( rooms["ground floor hallway"], rooms["lounge"]),
     "d4" : new Door( rooms["ground floor hallway"], rooms["kitchen"]),
     "d5" : new Door( rooms["ground floor hallway"], rooms[ "first floor hallway"] ),
-    "d8" : new Door( rooms["first floor hallway"], rooms[ "bathroom"] ),
+    "d8" : new Door( rooms["first floor hallway"], rooms[ "bedroom"] ),
     "d9" : new Door( rooms["first floor hallway"], rooms[ "office"] )
 ];
 
