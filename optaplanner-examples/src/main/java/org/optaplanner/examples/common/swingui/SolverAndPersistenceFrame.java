@@ -404,6 +404,10 @@ public class SolverAndPersistenceFrame extends JFrame {
 
         public ImportAction() {
             super(NAME, new ImageIcon(SolverAndPersistenceFrame.class.getResource("importAction.png")));
+            if (!solutionBusiness.hasImporter()) {
+                fileChooser = null;
+                return;
+            }
             fileChooser = new JFileChooser(solutionBusiness.getImportDataDir());
             FileFilter filter;
             if (solutionBusiness.isImportFileDirectory()) {
@@ -450,10 +454,14 @@ public class SolverAndPersistenceFrame extends JFrame {
     private class ExportAction extends AbstractAction {
 
         private static final String NAME = "Export as...";
-        private JFileChooser fileChooser;
+        private final JFileChooser fileChooser;
 
         public ExportAction() {
             super(NAME, new ImageIcon(SolverAndPersistenceFrame.class.getResource("exportAction.png")));
+            if (!solutionBusiness.hasExporter()) {
+                fileChooser = null;
+                return;
+            }
             fileChooser = new JFileChooser(solutionBusiness.getExportDataDir());
             fileChooser.setFileFilter(new FileFilter() {
                 public boolean accept(File file) {
