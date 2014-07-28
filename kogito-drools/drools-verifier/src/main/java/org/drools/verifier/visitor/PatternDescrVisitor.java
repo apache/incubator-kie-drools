@@ -21,7 +21,6 @@ import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.BindingDescr;
 import org.drools.compiler.lang.descr.CollectDescr;
-import org.drools.compiler.lang.descr.DeclarativeInvokerDescr;
 import org.drools.compiler.lang.descr.EntryPointDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.FieldConstraintDescr;
@@ -254,10 +253,6 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
     private VerifierFromDescr visitFromDescr(FromDescr descr) throws UnknownDescriptionException {
         VerifierFromDescr from = new VerifierFromDescr(pattern);
 
-        VerifierComponent ds = visit(descr.getDataSource());
-
-        from.setDataSourcePath(ds.getPath());
-        from.setDataSourceType(ds.getVerifierComponentType());
         from.setParentPath(rule.getPath());
         from.setParentType(rule.getVerifierComponentType());
 
@@ -313,14 +308,6 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
         data.add(accumulate);
 
         return accumulate;
-    }
-
-    protected VerifierComponent visit(DeclarativeInvokerDescr descr) throws UnknownDescriptionException {
-
-        DeclarativeInvokerDescrVisitor visitor = new DeclarativeInvokerDescrVisitor(data,
-                rule);
-
-        return visitor.visit(descr);
     }
 
     @Override

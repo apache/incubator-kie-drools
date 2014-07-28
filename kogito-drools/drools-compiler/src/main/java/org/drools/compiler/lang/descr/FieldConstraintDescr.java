@@ -15,6 +15,9 @@
  */
 package org.drools.compiler.lang.descr;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.List;
 
 
@@ -29,8 +32,25 @@ public class FieldConstraintDescr extends BaseDescr {
     private String            fieldName;
     private RestrictionConnectiveDescr restriction     = new RestrictionConnectiveDescr( RestrictionConnectiveDescr.AND );
 
+    public FieldConstraintDescr() { }
+
     public FieldConstraintDescr(final String fieldName) {
         this.fieldName = fieldName;
+    }
+
+    @Override
+    public void readExternal( ObjectInput in ) throws IOException,
+                                                      ClassNotFoundException {
+        super.readExternal( in );
+        this.fieldName = (String) in.readObject();
+        this.restriction = (RestrictionConnectiveDescr) in.readObject();
+    }
+
+    @Override
+    public void writeExternal( ObjectOutput out ) throws IOException {
+        super.writeExternal( out );
+        out.writeObject(fieldName);
+        out.writeObject( restriction );
     }
 
     public String getFieldName() {
