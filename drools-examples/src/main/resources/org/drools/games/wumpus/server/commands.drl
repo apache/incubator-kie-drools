@@ -44,7 +44,6 @@ then
     retract ( $sc );
     modify( $h ) { arrows = 0 };
     insert( new Arrow($h.row, $h.col, $h.direction) );
-    System.out.println( kcontext.rule );
     setFocus( "Shoot" );
 end
 

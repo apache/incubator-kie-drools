@@ -1,9 +1,6 @@
 package org.drools.games.wumpus.view;
 
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -18,6 +15,8 @@ import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.drools.games.GameFrame;
+import org.drools.games.GamePanel;
 import org.drools.games.wumpus.ClimbCommand;
 import org.drools.games.wumpus.GrabCommand;
 import org.drools.games.wumpus.Move;
@@ -27,44 +26,37 @@ import org.drools.games.wumpus.Score;
 import org.drools.games.wumpus.ShootCommand;
 import org.drools.games.wumpus.WumpusWorldConfiguration;
 import org.kie.api.runtime.Channel;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class GameUI {
 
     private final WumpusWorldConfiguration wumpusWorldConfiguration;
 
-    private JFrame      frame;
+    private GameFrame frame;
 
-    private GameView    gameView;
+    private GameView gameView;
 
-    private CavePanel   cavePanel;
+    private GamePanel cavePanel;
 
-    private SensorPanel sensorPanel;
-
-    public GameUI(WumpusWorldConfiguration wumpusWorldConfiguration) {
-        this.wumpusWorldConfiguration = wumpusWorldConfiguration;
-    }
+    private GamePanel sensorPanel;
 
     /**
      * @wbp.parser.entryPoint
      */
-    public GameUI(WumpusWorldConfiguration wumpusWorldConfiguration, GameView gameView) {
-        this(wumpusWorldConfiguration);
-        this.gameView = gameView;
-        if (this.gameView == null ) {
-                this.gameView = new GameView();
-                this.gameView.init( 50, 50, 3, 20, 5, 5 );
-        }
+    public GameUI(KieSession ksession, WumpusWorldConfiguration wumpusWorldConfiguration) {
+        this.wumpusWorldConfiguration = wumpusWorldConfiguration;
+        this.gameView = new GameView();
+        this.gameView.setKsession((StatefulKnowledgeSession) ksession);
+        this.gameView.init(50, 50, 3, 20, 5, 5);
         initialize();
     }
 
     public void setGameView(GameView gameView) {
         this.gameView = gameView;
-        if ( frame == null ) {
-            initialize();
-        }
     }
-    
+
     public JFrame getParentJFrame() {
         return frame;
     }
@@ -73,11 +65,11 @@ public class GameUI {
         return gameView;
     }
 
-    public CavePanel getCavePanel() {
+    public GamePanel getCavePanel() {
         return cavePanel;
     }
 
-    public SensorPanel getSensorPanel() {
+    public GamePanel getSensorPanel() {
         return sensorPanel;
     }
 
@@ -85,12 +77,12 @@ public class GameUI {
      * Initialize the contents of the frame.
      */
     private void initialize() {
-        frame = new JFrame( "Wumpus World" );
+        frame = new GameFrame( "Wumpus World" );
         frame.getContentPane().setBackground( Color.WHITE );
         frame.setDefaultCloseOperation(wumpusWorldConfiguration.isExitOnClose() ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
-
+        frame.setLayout(new MigLayout("", "[540px:n][grow,fill]", "[30px,top][300px,top][100px,top][grow]"));
         frame.setSize( 926, 603 );
-        frame.getContentPane().setLayout( new MigLayout("", "[540px:n][grow,fill]", "[30px,top][300px,top][100px,top][grow]") );
+        frame.setLocationRelativeTo(null); // Center in screen
         
         JPanel scorePanel = new JPanel();
         FlowLayout flowLayout = (FlowLayout) scorePanel.getLayout();
@@ -117,7 +109,7 @@ public class GameUI {
 
         JPanel actionPanel = new JPanel();
         actionPanel.setBackground( Color.WHITE );
-        frame.getContentPane().add( actionPanel, "cell 0 1,grow" );
+        frame.getContentPane().add(actionPanel, "cell 0 1,grow");
         actionPanel.setLayout( new MigLayout("", "[200px,left][320px:n]", "[grow]") );
 
         JPanel controls = new JPanel();
@@ -130,43 +122,43 @@ public class GameUI {
         actionPanel.add( controls, "cell 0 0,grow" );
 
         cavePanel = drawCave();
-        actionPanel.add( cavePanel, "cell 1 0,grow" );
+        actionPanel.add(cavePanel, "cell 1 0,grow" );
 
         sensorPanel = drawSensorPanel();
-        
-        frame.getContentPane().add( sensorPanel, "cell 0 2,grow" );
+
+        frame.getContentPane().add(sensorPanel, "cell 0 2,grow");
         
         JPanel blank = new JPanel();
         blank.setBackground(Color.WHITE);
-        frame.getContentPane().add(blank, "cell 0 3,grow");
+        frame.add(blank, "cell 0 3,grow");
 
-        frame.setLocationRelativeTo(null); // Center in screen
         frame.setVisible( true );
-        
-        updateCave();
-        updateSensors();
+
+        cavePanel.getBufferedImage();
+        sensorPanel.getBufferedImage();
+
+        repaint();
+
     }
 
-    public synchronized void updateCave() {
-        cavePanel.repaint();
-        cavePanel.revalidate();
+    public void repaint() {
+        cavePanel.disposeGraphics2D();
+        sensorPanel.disposeGraphics2D();
+        //frame.repaint();
+        frame.waitForPaint();
     }
 
-    public synchronized void updateSensors() {
-        sensorPanel.repaint();
-        sensorPanel.revalidate();
-    }
 
-    public SensorPanel drawSensorPanel() {
-        SensorPanel sensorPanel = new SensorPanel( this );
+    public GamePanel drawSensorPanel() {
+        GamePanel sensorPanel = new GamePanel("sensor", Color.WHITE ); //new SensorPanel( this );
         FlowLayout flowLayout = (FlowLayout) sensorPanel.getLayout();
         flowLayout.setVgap( 10 );
         sensorPanel.setBackground( Color.WHITE );
         return sensorPanel;
     }
 
-    public CavePanel drawCave() {
-        CavePanel cavelPanel = new CavePanel( this );
+    public GamePanel drawCave() {
+        GamePanel cavelPanel = new GamePanel("cave", Color.WHITE );
         FlowLayout flowLayout = (FlowLayout) cavelPanel.getLayout();
         flowLayout.setVgap( 10 );
         cavelPanel.setBackground( Color.WHITE );
@@ -334,74 +326,6 @@ public class GameUI {
             gameView.getKsession().insert( new MoveCommand( move ) );
 
             gameView.getKsession().fireAllRules();
-        }
-    }
-
-    public static class SensorPanel extends JPanel {
-        private GameUI        gameUI;
-
-        private BufferedImage bi;
-        private Graphics      sensorG;
-
-        public SensorPanel(GameUI gameUI) {
-            setOpaque( true );
-            this.gameUI = gameUI;
-        }
-        
-        public Graphics getSensorG() {
-            return sensorG;
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            if ( bi == null ) { // prepare BufferdImage
-                bi = new BufferedImage( getWidth(), getHeight(),
-                                        BufferedImage.TYPE_INT_RGB );
-                sensorG = bi.createGraphics();
-                sensorG.setColor( Color.WHITE ); // background
-                sensorG.fillRect( 0, 0, getWidth(), getHeight() );
-                if ( gameUI != null ) {
-                    // we need this to trigger the ksession drawing, otherwise the engine doesn't know it's ready                    
-                    gameUI.getGameView().getKsession().update( gameUI.getGameView().getKsession().getFactHandle( gameUI ), gameUI );
-                    gameUI.getGameView().getKsession().fireAllRules();
-                }
-            }
-
-            g.drawImage( bi, 0, 0, null );
-        }
-    }
-
-    public static class CavePanel extends JPanel {
-        private GameUI        gameUI;
-
-        private BufferedImage bi;
-        private Graphics      caveG;
-
-        public CavePanel(GameUI gameUI) {
-            setOpaque( true );
-            this.gameUI = gameUI;
-        }
-        
-        public Graphics getCaveG() {
-            return caveG;
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            if ( bi == null ) { // prepare BufferdImage
-                bi = new BufferedImage( getWidth(), getHeight(),
-                                        BufferedImage.TYPE_INT_RGB );
-                caveG = bi.createGraphics();
-                caveG.setColor( Color.WHITE ); // background
-                caveG.fillRect( 0, 0, getWidth(), getHeight() );
-                if ( gameUI != null ) {                
-                    // we need this to trigger the ksession drawing, otherwise the engine doesn't know it's ready                    
-                    gameUI.getGameView().getKsession().update( gameUI.getGameView().getKsession().getFactHandle( gameUI ), gameUI );
-                    gameUI.getGameView().getKsession().fireAllRules();
-                }
-            }
-            
-            g.drawImage( bi, 0, 0, null );
         }
     }
 

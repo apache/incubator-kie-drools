@@ -26,7 +26,7 @@ function void paintCaveCell(String image, Cell cell, GameView gv, GameUI gui) {
      int y = (4 - cell.getRow()) * 50 - rowPad + rowIndent;
      int x = cell.getCol() * 50 + colPad + colIndent;
      
-     Graphics caveG = gui.getCavePanel().getCaveG();
+     Graphics caveG = gui.getCavePanel().getGraphics2D();
      caveG.setColor( Color.WHITE ); // background
      caveG.fillRect( x, y,  gv.getCellWidth(), gv.getCellHeight() );
      caveG.drawImage( ImageIO.read( GameView.class.getResource( image ) ), x, y, gv.getCellHeight(), gv.getCellWidth(), gui.getCavePanel() );
@@ -126,7 +126,7 @@ then
 end   
 
 rule "Paint Hidden Room" agenda-group "PaintCave" when
-    $gui : GameUI( cavePanel != null && cavePanel.caveG != null  )
+    $gui : GameUI( )
     $gv : GameView(showAllCells == false)
     $c : Cell(hidden == true) 
 then
@@ -135,7 +135,7 @@ end
 
 
 rule "Paint Empty Room" agenda-group "PaintCave" when
-   $gui : GameUI( cavePanel != null && cavePanel.caveG != null )
+   $gui : GameUI( )
    ($gv : GameView(showAllCells == true) and $c : Cell() ) or
    ($gv : GameView(showAllCells == false) and $c : Cell(hidden == false) )      
    CompositeImageName( cell == $c, pit == "", wumpus == "", gold == "", hero == "" )
@@ -144,7 +144,7 @@ then
 end 
 
 rule "Paint Non Empty Room" agenda-group "PaintCave" when
-   $gui : GameUI( cavePanel != null && cavePanel.caveG != null )
+   $gui : GameUI()
    ($gv : GameView(showAllCells == true) and $c : Cell() ) or
    ($gv : GameView(showAllCells == false) and $c : Cell(hidden == false) )    
    $cin : CompositeImageName( cell == $c, ( !(hero != "" && pit != "")  &&  // don't draw a hero on the same square as a pit or an alive wumpus, as the game is over
