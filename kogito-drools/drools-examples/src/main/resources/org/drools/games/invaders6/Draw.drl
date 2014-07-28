@@ -4,7 +4,7 @@ import org.drools.games.KeyPressed
 import org.drools.games.Run
 import org.drools.games.invaders.Ship
 import org.drools.games.invaders.Bullet
-import org.drools.games.invaders.Invader1
+import org.drools.games.invaders.Invader
 import org.drools.games.GameUI
 import org.drools.games.invaders.InvadersConfiguration
 
@@ -29,7 +29,7 @@ then
 end
 
 rule DrawLiveInvader agenda-group "Draw" when
-  i : Invader1( alive == true)
+  i : Invader( alive == true)
       Run()
 then
    g = ui.getGraphics();
@@ -39,7 +39,7 @@ then
 end
 
 rule DrawDeadInvader agenda-group "Draw" when
-  i : Invader1( alive == false)
+  i : Invader( alive == false)
       Run()
 then
    g = ui.getGraphics();
@@ -59,12 +59,18 @@ then
    g.fillRect( b.x , b.y, b.width, b.height );
 end
 
-rule DrawBulletOffscreen agenda-group "Bullet" when
+rule DrawBulletOffscreen agenda-group "Draw" when
     b : Bullet( y <= 0 )
     Run()
 then
    g = ui.getGraphics();
    g.setColor( Color.BLACK ); // background
-   g.fillRect( b.x - b.dx , b.y - b.dy , b.width, b.height ); // restore the previous blackground
+   g.fillRect( b.x , b.y, b.width, b.height ); // restore the background
    retract( b )
+end
+
+rule Repaint agenda-group "Draw"  salience -100 when
+    Run()
+then
+   ui.repaint();
 end

@@ -18,7 +18,6 @@ public class GameView {
     KnowledgeRuntimeLogger           klogger;
 
     private StatefulKnowledgeSession ksession;
-    private KnowledgeBase            kbase;
     private boolean                  showAllCells;
 
     private int                      pittPercentage;
@@ -27,14 +26,6 @@ public class GameView {
 
     public GameView() {
 
-    }
-
-    public KnowledgeBase getKbase() {
-        return kbase;
-    }
-
-    public void setKbase(KnowledgeBase kbase) {
-        this.kbase = kbase;
     }
 
     public void init(Cell[][] cells) {

@@ -24,7 +24,7 @@ public class GameEngine {
     public void createGame() {
 
         KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
-        System.out.println(kc.verify().getMessages().toString());
+        //System.out.println(kc.verify().getMessages().toString());
         ksession = kc.newKieSession("TextAdventureKS");
 
         Counter c = new Counter();
@@ -56,9 +56,9 @@ public class GameEngine {
             ksession.insert( o );
         }
 
-        for ( Object o : data.get( "keys" ).values() ) {
-            ksession.insert( o );
-        }
+//        for ( Object o : data.get( "keys" ).values() ) {
+//            ksession.insert( o );
+//        }
 //
 //        for ( Object o : data.get( "locks" ).values() ) {
 //            ksession.insert( o );

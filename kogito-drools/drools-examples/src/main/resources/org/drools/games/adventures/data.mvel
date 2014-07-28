@@ -11,12 +11,9 @@ import java.util.HashMap;
 rooms = [
     "basement" : new Room("basement"),
     "lounge" : new Room("lounge"),
-    "dining room" : new Room("dining room"),
     "kitchen" : new Room("kitchen"),
     "ground floor hallway" : new Room("ground floor hallway"),
-    "bedroom1" : new Room("bedroom1"),
-    "bedroom2" : new Room("bedroom2"),
-    "bathroom" : new Room("bathroom"),
+    "bedroom1" : new Room("bedroom"),
     "office" : new Room("office"),
     "first floor hallway" : new Room("first floor hallway")
 ];
@@ -27,24 +24,12 @@ foreach( room : rooms.values ) {
 
 doors = [
     "d1" : new Door( rooms["kitchen"], rooms["basement"] ),
-
     "d2" : new Door( rooms["ground floor hallway"], rooms["lounge"]),
-    "d3" : new Door( rooms["ground floor hallway"], rooms["dining room"] ),
     "d4" : new Door( rooms["ground floor hallway"], rooms["kitchen"]),
     "d5" : new Door( rooms["ground floor hallway"], rooms[ "first floor hallway"] ),
-
-    "d6" : new Door( rooms["first floor hallway"], rooms[ "bedroom1"] ),
-    "d7" : new Door( rooms["first floor hallway"], rooms[ "bedroom2"] ),
     "d8" : new Door( rooms["first floor hallway"], rooms[ "bathroom"] ),
     "d9" : new Door( rooms["first floor hallway"], rooms[ "office"] )
 ];
-
-keys = [ "key1" : new Key("basement key") ];
-for( key : keys.values ) {
-    key.id = c.getAndIncrement();
-}
-
-with(doors["d1"]){ lockStatus =  LockStatus.LOCKED, key = keys["key1"] };
 
 characters = [ "hero" : new Character( "hero" ), "monster" : new Character( "monster" ) ];
 for( character : characters.values ) {
@@ -52,25 +37,22 @@ for( character : characters.values ) {
 }
 
 items = [
-    "mace" : new Item( "mace" ),
-    "cucumber" : new Item( "cucumber" ),
-    "torch" : new Item( "torch" ),
-    "umbrella" : new Item( "umbrella" )
+    "umbrella" : new Item( "umbrella" ),
+    "key1" : new Key("basement key")
 ];
 
 for( item : items.values ) {
     item.id = c.getAndIncrement();
-    item.fixed = false;
 }
 
+with(doors["d1"]){ lockStatus =  LockStatus.LOCKED, key = items["key1"] };
+
 locations = [
-    "mace" : new Location( items["mace"], rooms["basement"] ),
     "monster" :  new Location( characters["monster"], rooms["basement"] ),
-    "cucumber" : new Location( items["cucumber"], rooms["kitchen"] ),
-    "torch" : new Location( items["torch"], rooms["office"] ),
     "hero" :  new Location( characters["hero"], rooms["ground floor hallway"] ),
-    "umbrella" :  new Location( items["umbrella"], rooms["ground floor hallway"] )
+    "umbrella" :  new Location( items["umbrella"], rooms["bedroom"] ),
+    "key1" :  new Location( items["key1"], rooms["office"] )
 ];
 
 return [ "rooms" : rooms, "doors" : doors, "characters" : characters,
-         "items" : items, "locations" : locations, "keys" : keys ];
+         "items" : items, "locations" : locations ];

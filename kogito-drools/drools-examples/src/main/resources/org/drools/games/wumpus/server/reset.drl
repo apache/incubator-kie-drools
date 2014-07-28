@@ -43,7 +43,6 @@ rule "Reset Cells"  agenda-group "Reset" when
     $c : Cell()
 then
     retract( $c );
-    System.out.println( kcontext );
 end
 
 rule "Reset Pits"  agenda-group "Reset" when

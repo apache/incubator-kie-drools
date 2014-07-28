@@ -21,6 +21,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -64,6 +65,7 @@ import org.drools.games.adventures.model.PickupCommand;
 import org.drools.games.adventures.model.Room;
 import org.drools.games.adventures.model.Thing;
 import org.drools.games.adventures.model.Character;
+import org.drools.games.adventures.model.UseCommand;
 import org.kie.api.runtime.Channel;
 
 public class AdventureFrame extends JFrame {
@@ -267,7 +269,7 @@ public class AdventureFrame extends JFrame {
     private Component createInventoryPanel() {
         inventoryTable = new JTable();
         inventoryTable.setBorder( null );
-        inventoryTable.setModel( new DefaultTableModel(
+        inventoryTable.setModel( new NonEditableTableMode(
                                                         new Object[][]{
                                                         },
                                                         new String[]{
@@ -365,7 +367,7 @@ public class AdventureFrame extends JFrame {
         characterPropertiesTable.setPreferredScrollableViewportSize( new Dimension( 240,
                                                                                     200 ) );
         characterPropertiesTable.setBorder( null );
-        characterPropertiesTable.setModel( new DefaultTableModel(
+        characterPropertiesTable.setModel( new NonEditableTableMode(
                                                                   new Object[][]{
                                                                           {"strength", "100"},
                                                                           {"health", "100"},
@@ -435,9 +437,21 @@ public class AdventureFrame extends JFrame {
         actionsPanel.add( giveBtn );
         giveBtn.addActionListener( new ActionListener() {
             public void actionPerformed(ActionEvent e) {                
-                cmdTextField.setText( "Request Give " );
+                cmdTextField.setText( "Give " );
                 cmd = new ArrayList();
                 cmd.add(GiveCommand.class);
+                cmd.add( characterSelectCombo.getSelectedObjects()[0] );
+            }
+        } );
+
+        JButton useBtn = new JButton( "Use" );
+        useBtn.setToolTipText("Select one from the Inventory, then Select the target Thing or Room");
+        actionsPanel.add( useBtn );
+        useBtn.addActionListener( new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cmdTextField.setText( "Use " );
+                cmd = new ArrayList();
+                cmd.add(UseCommand.class);
                 cmd.add( characterSelectCombo.getSelectedObjects()[0] );
             }
         } );
@@ -461,7 +475,7 @@ public class AdventureFrame extends JFrame {
         thingsTable.setPreferredScrollableViewportSize( new Dimension( 245,
                                                                        250 ) );
         thingsTable.setBorder( null );
-        thingsTable.setModel( new DefaultTableModel(
+        thingsTable.setModel( new NonEditableTableMode(
                                                      new Object[][]{
                                                      },
                                                      new String[]{
@@ -503,7 +517,7 @@ public class AdventureFrame extends JFrame {
         exitsTable.setPreferredScrollableViewportSize( new Dimension( 245,
                                                                       250 ) );
         exitsTable.setBorder( null );
-        exitsTable.setModel( new DefaultTableModel(
+        exitsTable.setModel( new NonEditableTableMode(
                                                     new Object[][]{
                                                     },
                                                     new String[]{
@@ -928,9 +942,16 @@ public class AdventureFrame extends JFrame {
         public JTableChannel(JTable jTable) {
             this.jTable = jTable;
             String name = jTable.getColumnName(0);
+
             jTable.getColumn( name ).setCellRenderer(new DefaultTableCellRenderer() {
                 public void setValue(Object value) {
-                    setText(((Thing) value).getName());
+                    if ( value == null ) {
+                        return;
+                    } else if ( value instanceof Thing ) {
+                        setText(((Thing) value).getName());
+                    } else {
+                        setText( value.toString() );
+                    }
                 }
             });
 
@@ -953,11 +974,17 @@ public class AdventureFrame extends JFrame {
                                       0 );
                 }
                 for ( int i = model.getRowCount(), length = exits.length; i < length; i++ ) {
+                    if ( list.get( i ) == null ) {
+                        continue;
+                    }
                     model.addRow( new Object[]{list.get( i )} );
                 }
             } else {
                 Object[][] exits = new Object[list.size()][];
                 for ( int i = 0; i < exits.length; i++ ) {
+                    if ( list.get( i ) == null ) {
+                        continue;
+                    }
                     model.setValueAt( list.get( i ),
                                       i,
                                       0 );
@@ -967,6 +994,37 @@ public class AdventureFrame extends JFrame {
                     model.removeRow( i );
                 }
             }
+        }
+    }
+
+    public static class NonEditableTableMode extends DefaultTableModel {
+        public NonEditableTableMode() {
+        }
+
+        public NonEditableTableMode(int rowCount, int columnCount) {
+            super(rowCount, columnCount);
+        }
+
+        public NonEditableTableMode(Vector columnNames, int rowCount) {
+            super(columnNames, rowCount);
+        }
+
+        public NonEditableTableMode(Object[] columnNames, int rowCount) {
+            super(columnNames, rowCount);
+        }
+
+        public NonEditableTableMode(Vector data, Vector columnNames) {
+            super(data, columnNames);
+        }
+
+        public NonEditableTableMode(Object[][] data, Object[] columnNames) {
+            super(data, columnNames);
+        }
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            //all cells false
+            return false;
         }
     }
 

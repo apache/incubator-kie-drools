@@ -23,15 +23,15 @@ import java.awt.Graphics
 
 import javax.swing.JPanel;
 
-function void paintSensorCell(String image, int x, int y,  GameUI gui, Graphics sensorG) {     
-     sensorG.setColor( Color.WHITE ); // background
-     sensorG.fillRect( x, y,  100, 100);
-     sensorG.drawImage( ImageIO.read( GameView.class.getResource( image ) ), x, y,100,100, gui.getSensorPanel() );
+function void paintSensorCell(String image, int x, int y,  GameUI gui, Graphics graphics2D) {     
+     graphics2D.setColor( Color.WHITE ); // background
+     graphics2D.fillRect( x, y,  100, 100);
+     graphics2D.drawImage( ImageIO.read( GameView.class.getResource( image ) ), x, y,100,100, gui.getSensorPanel() );
 }
 
-function void clearSensorCell(int x, int y,  Graphics sensorG) {     
-     sensorG.setColor( Color.WHITE ); // background
-     sensorG.fillRect( x, y,  100, 100);
+function void clearSensorCell(int x, int y,  Graphics graphics2D) {     
+     graphics2D.setColor( Color.WHITE ); // background
+     graphics2D.fillRect( x, y,  100, 100);
 }
 
 dialect "mvel"
@@ -45,69 +45,59 @@ end
 rule "Feel Breeze" extends "Base Sensor" agenda-group "PaintSensor" when
     FeelBreeze()
 then
-    paintSensorCell("breeze.png", 0, 0, $gui, $gui.sensorPanel.sensorG );
+    paintSensorCell("breeze.png", 0, 0, $gui, $gui.sensorPanel.graphics2D );
 end
 
 rule "Breeze Gone" extends "Base Sensor" agenda-group "PaintSensor" when
     not FeelBreeze()
 then
-    clearSensorCell( 0, 0, $gui.sensorPanel.sensorG );
+    clearSensorCell( 0, 0, $gui.sensorPanel.graphics2D );
 end
 
 rule "Smell Stench" extends "Base Sensor" agenda-group "PaintSensor"when
     SmellStench()
 then
-    paintSensorCell("stench.png", 103, 0, $gui, $gui.sensorPanel.sensorG );
+    paintSensorCell("stench.png", 103, 0, $gui, $gui.sensorPanel.graphics2D );
 end
 
 rule "Stench Gone" extends "Base Sensor" agenda-group "PaintSensor"when
     not SmellStench()
 then
-    clearSensorCell( 103, 0, $gui.sensorPanel.sensorG );
+    clearSensorCell( 103, 0, $gui.sensorPanel.graphics2D );
 end
 
 rule "See Glitter" extends "Base Sensor" agenda-group "PaintSensor"when
     SeeGlitter()
 then
-    paintSensorCell("glitter.png", 206, 0, $gui, $gui.sensorPanel.sensorG );
+    paintSensorCell("glitter.png", 206, 0, $gui, $gui.sensorPanel.graphics2D );
 end
 
 rule "Glitter Gone" extends "Base Sensor"  agenda-group "PaintSensor" when
     not SeeGlitter()
 then
-    clearSensorCell( 206, 0, $gui.sensorPanel.sensorG );
+    clearSensorCell( 206, 0, $gui.sensorPanel.graphics2D );
 end
 
 rule "Feel Bump" extends "Base Sensor" agenda-group "PaintSensor"when
     FeelBump()
 then
-    paintSensorCell("bump.png", 309, 0, $gui, $gui.sensorPanel.sensorG );
+    paintSensorCell("bump.png", 309, 0, $gui, $gui.sensorPanel.graphics2D );
 end
 
 rule "Bump Gone"  extends "Base Sensor" agenda-group "PaintSensor" when
     not FeelBump()
 then
-    clearSensorCell( 309, 0, $gui.sensorPanel.sensorG );
+    clearSensorCell( 309, 0, $gui.sensorPanel.graphics2D );
 end
 
 rule "Hear Scream"  extends "Base Sensor" agenda-group "PaintSensor" when
     HearScream()
 then
-    paintSensorCell("scream.png", 412, 0, $gui, $gui.sensorPanel.sensorG );
+    paintSensorCell("scream.png", 412, 0, $gui, $gui.sensorPanel.graphics2D );
 end
 
 rule "Scream Gone"  extends "Base Sensor" agenda-group "PaintSensor" when
     not HearScream()
 then
-    clearSensorCell( 412, 0, $gui.sensorPanel.sensorG );
+    clearSensorCell( 412, 0, $gui.sensorPanel.graphics2D );
 end
-
-/*
-rule "Redraw Sensors" no-loop salience -100 when
-   $gui : GameUI() 
-   $sd : SensorDirty( dirty == true )
-then
-   $gui.updateSensors();
-   modify( $sd ) { dirty = false };
-end
-*/

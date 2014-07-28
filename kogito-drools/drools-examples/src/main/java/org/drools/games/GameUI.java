@@ -12,8 +12,8 @@ import java.awt.event.MouseListener;
 
 public class GameUI {
     private GameConfiguration conf;
-
-    private Canvas     canvas;
+    private GameFrame   frame;
+    private MyJPanel    panel;
 
     KieSession ksession;
 
@@ -22,69 +22,42 @@ public class GameUI {
         this.conf = conf;
     }
 
-    public Graphics getGraphics() {
-        return canvas.getBufferStrategy().getDrawGraphics();
-    }
-
-    public Canvas getCanvas() {
-        return canvas;
-    }
-
     /**
      * Initialize the contents of the frame.
      */
     public void init() {
-        canvas = new Canvas();
-        canvas.setBackground(Color.BLACK);
-        canvas.setSize(new Dimension(conf.getWindowWidth(), conf.getWindowHeight()));
-
-        KeyListener klistener = new GameKeyListener( ksession.getEntryPoint( "KeyPressedStream" ), ksession.getEntryPoint( "KeyReleasedStream" ) );
-        canvas.addKeyListener(klistener);
-
-        canvas.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                canvas.requestFocus();
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
-        });
-
-
-        JFrame frame = new JFrame();
-        frame.setResizable(false);
+        frame = new GameFrame();
         frame.setDefaultCloseOperation(conf.isExitOnClose() ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(new Dimension(conf.getWindowWidth(), conf.getWindowHeight()));
+        frame.setResizable( false );
         frame.setBackground(Color.BLACK);
-        frame.add(canvas);
-        frame.pack();
-        frame.setVisible(true);
-        frame.setLocationRelativeTo(null); // Center in screen
+        frame.getContentPane().setBackground(Color.BLACK);
+        frame.setSize(new Dimension(conf.getWindowWidth(), conf.getWindowHeight()));
 
-        canvas.createBufferStrategy(2);
-        canvas.requestFocus();
+        panel = new MyJPanel("", Color.BLACK);
+        frame.add( panel );
+        panel.init();
+        panel.getBufferedImage();
+
+        frame.setLocationRelativeTo(null); // Center in screen
+        frame.pack();
+        frame.setVisible( true );
+    }
+
+
+    public JPanel getCanvas() {
+        return panel;
+    }
+
+    public Graphics getGraphics() {
+        return panel.getGraphics2D();
+    }
+
+    public void repaint() {
+        panel.disposeGraphics2D();
+        frame.waitForPaint();
     }
 
     public static class GameKeyListener implements KeyListener {
-        
         EntryPoint keyPressedEntryPoint;
         EntryPoint keyReleasedEntryPoint;
 
@@ -106,8 +79,52 @@ public class GameUI {
         }        
     }
 
-    public synchronized void show() {
-        canvas.getBufferStrategy().show();
-        Toolkit.getDefaultToolkit().sync();
+    public class MyJPanel extends GamePanel {
+
+        public MyJPanel(String name, Color color) {
+            super(name, color);
+        }
+
+        public void init() {
+            KeyListener klistener = new GameKeyListener( ksession.getEntryPoint( "KeyPressedStream" ), ksession.getEntryPoint( "KeyReleasedStream" ) );
+            addKeyListener(klistener);
+
+            addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    requestFocus();
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+
+                }
+            });
+
+            setPreferredSize(new Dimension(conf.getWindowWidth(), conf.getWindowHeight()));
+            setSize(new Dimension(conf.getWindowWidth(), conf.getWindowHeight()));
+            setBackground(Color.BLACK);
+            setDoubleBuffered(true);
+
+
+            setFocusable(true);
+            requestFocus();
+        }
+
     }
 }

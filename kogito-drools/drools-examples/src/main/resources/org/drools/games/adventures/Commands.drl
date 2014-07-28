@@ -1,20 +1,5 @@
 package org.drools.games.adventures
 
-//import org.drools.games.adventures.Room;
-//import org.drools.games.adventures.Thing;
-//
-//import org.drools.games.adventures.Request;
-//import org.drools.games.adventures.Response;
-//import org.drools.games.adventures.SessionCharacter
-//
-//import org.drools.games.adventures.MoveCommand
-//import org.drools.games.adventures.Command
-//import org.drools.games.adventures.PickupCommand
-//import org.drools.games.adventures.DropCommand
-//import org.drools.games.adventures.LookCommand
-//import org.drools.games.adventures.SetSessionCharacterCommand
-//import org.drools.games.adventures.model.EnterEvent
-//import org.drools.games.adventures.model.ExitEvent
 
 import org.drools.games.adventures.model.*;
 import java.util.List;
@@ -74,15 +59,14 @@ end
 rule roomLocked extends validMove agenda-group "commands" salience 10 when
     Door( lockStatus == LockStatus.LOCKED ) from d
 then
-    mc.session.channels["output"].send( "The room " + l.target.name + " is locked\n" );
+    mc.session.channels["output"].send( "The  " + r.name + " Door is locked\n" );
     delete( mc );
 end
 
 rule validPickup agenda-group "commands"  when
     pc : PickupCommand( c : character, t : thing)
-
-    cl  : Location( thing == c )
-    tl : Location( thing == t, target == cl.target ) @watch( !target )
+    cl  : Location( thing == pc.character )
+    tl : Location( thing == pc.thing, target == cl.target ) @watch( !target )
 then
     insert( new Holding(  c, t ) );
     modify( tl ) { target =  c };
@@ -90,6 +74,41 @@ then
 
     pc.session.channels["output"].send(  "You have picked up the " + t.name + "\n" );
 end
+
+rule unlockingDoors agenda-group "commands"  when
+    uc : UseCommand( c : character, t : thing)
+    k : Key() from uc.thing
+    r : Room() from uc.target
+    cl  : Location( thing == c, ltarget : target  )
+    ?connect( door, ltarget, r; )
+    if( door.key != k) break[wrongKey]
+    if( door.lockStatus == LockStatus.UNLOCKED) break[alreadyUnlocked]
+then
+    modify(door){ lockStatus = LockStatus.UNLOCKED };
+    uc.session.channels["output"].send(  "You have unlocked the " + r.name + " door\n" );
+    retract ( uc );
+then[wrongKey]
+    uc.session.channels["output"].send(  "The selected key cannot open the " + r.name + " door\n" );
+    retract ( uc );
+then[alreadyUnlocked]
+    uc.session.channels["output"].send(  "The " + r.name + " door is already unlocked\n" );
+    retract ( uc );
+end
+
+rule killMonster agenda-group "commands"  when
+    uc : UseCommand( c : character, thing.name == "umbrella", uc.target.name == "monster")
+then
+    uc.session.channels["output"].send(  "You have killed the Monster\n" );
+    retract ( uc );
+end
+
+rule invalidUse agenda-group "commands" when
+    uc : UseCommand( c : character)
+then
+    uc.session.channels["output"].send(  "The " + uc.thing.name + " cannot be used with the " + uc.target.name + "\n" );
+    retract ( uc );
+end
+
 
 rule validDrop agenda-group "commands" when
     dc : DropCommand( c : character, t : thing)

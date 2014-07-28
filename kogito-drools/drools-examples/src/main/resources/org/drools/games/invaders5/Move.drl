@@ -5,7 +5,7 @@ import org.drools.games.Run
 
 import org.drools.games.invaders.Ship
 import org.drools.games.invaders.Unit
-import org.drools.games.invaders.Invader1
+import org.drools.games.invaders.Invader
 import org.drools.games.GameUI
 import org.drools.games.invaders.InvadersConfiguration
 

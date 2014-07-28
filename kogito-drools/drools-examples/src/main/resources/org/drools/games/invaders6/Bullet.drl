@@ -6,7 +6,7 @@ import org.drools.games.Run
 import org.drools.games.invaders.Ship
 import org.drools.games.invaders.Unit
 import org.drools.games.invaders.Bullet
-import org.drools.games.invaders.Invader1
+import org.drools.games.invaders.Invader
 import org.drools.games.GameUI
 import org.drools.games.invaders.InvadersConfiguration
 
@@ -31,20 +31,17 @@ end
 
 
 rule BulletMove agenda-group "Bullet" when
-    b : Bullet( )
+    b : Bullet( y > 0 ) @watch( !y )
     Run()
 then
-    //System.out.println( b + ":" + b.y + ":" + b.speed);
     modify( b ) { y = b.y + b.dy }
 end
 
 rule Collision agenda-group "Bullet" when
     b : Bullet( ) @watch( y )
-    i : Invader1( x < b.x, x + width > b.x, y > b.y)
+    i : Invader( x < b.x, x + width > b.x, y > b.y)
     Run()
 then
-
-    //System.out.println( "collision" + i.y + ":" +  b.y );
     modify( i ) { alive = false }
 end
 

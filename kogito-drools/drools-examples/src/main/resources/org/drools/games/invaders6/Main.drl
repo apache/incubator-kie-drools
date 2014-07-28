@@ -27,6 +27,5 @@ end
 rule Draw when
     r : Run()
 then
-    ui.show();
     modify( r ) {} // force loop
 end

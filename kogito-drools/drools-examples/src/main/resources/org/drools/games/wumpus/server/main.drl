@@ -27,7 +27,6 @@ rule "Redraw Cave" when
    $gui : GameUI()
    $r : Run()
 then
-   $gui.updateCave();
-   $gui.updateSensors();
+   $gui.repaint();
    modify( $r ) {}
 end

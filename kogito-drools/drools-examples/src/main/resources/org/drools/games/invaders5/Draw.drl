@@ -3,7 +3,7 @@ package org.drools.games.invaders5;
 import org.drools.games.KeyPressed
 import org.drools.games.Run
 import org.drools.games.invaders.Ship
-import org.drools.games.invaders.Invader1
+import org.drools.games.invaders.Invader
 import org.drools.games.GameUI
 import org.drools.games.invaders.InvadersConfiguration
 
@@ -28,7 +28,7 @@ then
 end
 
 rule DrawInvader agenda-group "Draw" when
-  i : Invader1()
+  i : Invader()
       Run()
 then
    g = ui.getGraphics();

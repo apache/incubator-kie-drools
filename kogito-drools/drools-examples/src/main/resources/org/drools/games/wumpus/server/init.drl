@@ -41,31 +41,6 @@ rule "Insert Score" agenda-group "Init" when
 then
     insert( new Score() );
 end
-
-rule "Create GUI"  agenda-group "Init" when
-    not GameUI()
-then
-    insert( new GameUI(wumpusWorldConfiguration) );
-end
-
-rule "Init Game View"   agenda-group "Init" when
-    Play()
-    $ui : GameUI()
-    not GameView()
-then
-    GameView $gv = new GameView();
-    $gv.init(50, 50, 3, 20, 5, 5);
-    $gv.setKsession( (StatefulKnowledgeSession) kcontext.knowledgeRuntime );
-    $gv.setKbase( ((StatefulKnowledgeSession) kcontext.knowledgeRuntime).getKieBase() );
-
-//    new java.io.File("log").mkdir();
-//    KnowledgeRuntimeLogger klogger = KnowledgeRuntimeLoggerFactory.newThreadedFileLogger((StatefulKnowledgeSession) kcontext.knowledgeRuntime, "log/wumpus", 500);
-//    $gv.setKlogger( klogger );
-
-    $ui.gameView = $gv;
-    insert( $gv );
-end
-
 	
 rule "Create Cells" agenda-group "Init" when
     Init()
