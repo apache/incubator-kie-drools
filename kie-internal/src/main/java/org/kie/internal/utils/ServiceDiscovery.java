@@ -4,6 +4,8 @@ import org.kie.internal.assembler.KieAssemblerService;
 import org.kie.internal.assembler.KieAssemblers;
 import org.kie.internal.runtime.KieRuntimeService;
 import org.kie.internal.runtime.KieRuntimes;
+import org.kie.internal.runtime.beliefs.KieBeliefService;
+import org.kie.internal.runtime.beliefs.KieBeliefs;
 import org.kie.internal.utils.ServiceRegistryImpl.ReturnInstance;
 import org.kie.internal.weaver.KieWeaverService;
 import org.kie.internal.weaver.KieWeavers;
@@ -93,6 +95,7 @@ public class ServiceDiscovery {
 
         processKieWeavers(map, serviceRegistry);
 
+        processKieBeliefs(map, serviceRegistry);
 
         processRuntimes(map, serviceRegistry);
     }
@@ -132,6 +135,18 @@ public class ServiceDiscovery {
                 log.info("Adding Weaver {} ", weavers.getClass().getName());
                 weavers.getWeavers().put( weaver.getResourceType(),
                                           weaver );
+            }
+        }
+    }
+
+    private static void processKieBeliefs(Map map, ServiceRegistry serviceRegistry) {
+        List<KieBeliefService> beliefsList = ( List<KieBeliefService> ) map.get( "beliefs" );
+        if ( beliefsList != null && beliefsList.size() > 0 ) {
+            KieBeliefs beliefs = (KieBeliefs) serviceRegistry.get(KieBeliefs.class);
+            for ( KieBeliefService belief : beliefsList ) {
+                log.info("Adding Belief {} ", beliefs.getClass().getName());
+                beliefs.getBeliefs().put( belief.getBeliefType(),
+                                          belief );
             }
         }
     }
