@@ -43,6 +43,7 @@
               org.jbpm.marshalling.impl;resolution:=optional,
               org.jbpm.process.builder;resolution:=optional,
               org.jbpm.runtime.manager.impl;resolution:=optional,
+              org.jbpm.services.task.persistence;resolution:=optional,
               org.kie.api,
               org.kie.api.builder,
               org.kie.api.command,
