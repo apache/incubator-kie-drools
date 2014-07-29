@@ -26,7 +26,6 @@ then
     setFocus( "commands" );
 end
 
-
 rule lookCmd agenda-group "commands"  when
     lc : LookCommand(  c : character )
     Location( thing == c, $room : target )
@@ -63,18 +62,6 @@ then
     delete( mc );
 end
 
-rule validPickup agenda-group "commands"  when
-    pc : PickupCommand( c : character, t : thing)
-    cl  : Location( thing == pc.character )
-    tl : Location( thing == pc.thing, target == cl.target ) @watch( !target )
-then
-    insert( new Holding(  c, t ) );
-    modify( tl ) { target =  c };
-    insert( new PickupEvent( c, t ) );
-
-    pc.session.channels["output"].send(  "You have picked up the " + t.name + "\n" );
-end
-
 rule unlockingDoors agenda-group "commands"  when
     uc : UseCommand( c : character, t : thing)
     k : Key() from uc.thing
@@ -109,13 +96,24 @@ then
     retract ( uc );
 end
 
+rule validPickup agenda-group "commands"  when
+    pc : PickupCommand( c : character, t : thing)
+    cl  : Location( thing == c )
+    tl : Location( thing == t, target == cl.target )
+then
+    insert( new Holding(  c, t ) );
+    modify( tl ) { target =  c };
+    insert( new PickupEvent( c, t ) );
+
+    pc.session.channels["output"].send(  "You have picked up the " + t.name + "\n" );
+end
 
 rule validDrop agenda-group "commands" when
     dc : DropCommand( c : character, t : thing)
 
-    cl  : Location( thing == c )
-    tl  : Location( thing == t ) @watch( !target )
-    h : Holding( c, t;)
+    cl : Location( thing == c )
+    tl : Location( thing == t ) @watch( !target )
+    h  : Holding( c, t;)
 then
     modify( tl ) { target = cl.target };
     retract ( h );
@@ -140,7 +138,7 @@ then
     gc.session.channels["output"].send( "You have given the " + gc.thing.name + " to " + gc.receiver.name + "\n" );
 end
 
-rule retractCommand agenda-group "commands" lock-on-active auto-focus salience -100 when
+rule retractCommand agenda-group "commands" salience -100 when
     c : Command()
 then
     delete( c );

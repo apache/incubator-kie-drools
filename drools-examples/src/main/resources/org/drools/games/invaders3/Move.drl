@@ -38,7 +38,7 @@ then
 end
 
 rule ShipMove agenda-group "Move" when
-    s : Unit( dx != 0 )
+    s : Ship( dx != 0 )
     Run()
 then
     modify( s ) { x = s.x + s.dx }

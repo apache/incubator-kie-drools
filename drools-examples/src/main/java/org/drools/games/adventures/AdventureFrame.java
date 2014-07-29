@@ -479,7 +479,7 @@ public class AdventureFrame extends JFrame {
                                                      new Object[][]{
                                                      },
                                                      new String[]{
-                                                             "Items"
+                                                             "Things"
                                                      }
                 ) );
         thingsTable.addMouseListener( new MouseListener() {
