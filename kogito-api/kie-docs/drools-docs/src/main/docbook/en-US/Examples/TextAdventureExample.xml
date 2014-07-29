@@ -17,13 +17,18 @@
 
   <programlisting><emphasis role="bold">Name:</emphasis> Example Text Adventure
 <emphasis role="bold">Main class:</emphasis> org.drools.games.adventure.TextAdventure</programlisting>
+  <para>The game allows you to play as the hero or the monster. If you click "New Window" you can open one window as the
+    hero and another as the monster, and play them both at the same time. The game allows either character to move
+    around rooms, pick up, drop or use things. Doors can be locked and unlocked, by using the key on teh exit room, and
+    the hero can kill the monster by using the umbrella on the monster.</para>
 
   <para>You can view the 8 minute demonstration and introduction for the
   example at <link
-  xlink:href="http://downloads.jboss.org/drools/videos/text-adventures.swf">http://downloads.jboss.org/drools/videos/text-adventures.swf</link></para>
+  xlink:href="http://downloads.jboss.org/drools/videos/text-adventures.swf">http://downloads.jboss.org/drools/videos/text-adventures.swf</link>. Be aware the video is now much 
+    older than the current improved example.</para>
 
   <figure>
-    <title>Pong Screenshot</title>
+    <title>Text Adventure Screenshot</title>
 
     <mediaobject>
       <imageobject>
@@ -32,4 +37,185 @@
       </imageobject>
     </mediaobject>
   </figure>
+  
+  <section>
+    <title>Using the game.</title>
+  <para>Each action follows the constructor arguments of the associated Command java class.</para>
+  <example>
+    <title>MoveCommand</title>
+    <programlisting language="Java">
+  @PropertyReactive
+  public class MoveCommand extends Command {
+  
+      @Position(1)
+      private Character character;
+  
+      @Position(2)
+      private Room      room;
+  
+      public MoveCommand(Character character, Room room) {
+          this.character = character;
+          this.room = room;
+      }    
+    </programlisting>
+  </example>
+  
+  <para>To issue a move action, select the "Move" button, then select the exit room. Notice when you press "Move" it adds the text to the white bar at the bottom.
+    When the exit room is selected, it also is added to the white bar. Then press send and the game engine will execute the command. Internally it uses reflection to
+    instantiate the Command and insert it into the engine. If you select incorrect arguments, such as pressing exits multiple times, the reflection will fail and you can attempt it again.
+  </para>
+  
+  <figure>
+    <title>Move Action</title>
+    
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Examples/TextAdventureExample/MoveCommand.png"
+          width="100%"/>
+      </imageobject>
+    </mediaobject>
+  </figure>  
+  
+  <para>The Things list displays anything you can see in the room, not all things can be picked up. For instance you can pick up the key and the torch, but not the monster.
+  When something is picked up it moves from the Things list to the Inventory List. The reverse is true when something is dropped.</para>
+  
+  <figure>
+    <title>Pickup Action</title>
+    
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Examples/TextAdventureExample/PickUpCommand.png"
+          width="100%"/>
+      </imageobject>
+    </mediaobject>
+  </figure>  
+  
+  <para>The key is in the office, move upstairs and into the office. Then pick up the key. Move back downstairs and into the kitchen. Try and walk into the basement, notice it's locked.</para>
+  <para>Select the "Use" action, the select the key and then the basement exit. This will unlock the door and you can now walk through.</para>
+  <para>To kill the monster pick up the umbrella from the lounge and then select "Use", then select the imbrella and
+      finally select the monster.</para>
+    <para>Don't forget to open a "New Window" to play as the monster, although you will not be able to exit the basement
+      until the hero has opened it with the key. The monster and the hero can also give items to each other, moving
+      items between each playsers inventory.</para>
+  </section>
+  
+  <section>
+    <title>The code</title>
+    
+    <para>The model is written in Java classes. Each classes uses @PropertyReactive and @Position. @PropertyReactive allows control of which fields patterns react to, and @Position maps
+      a field to a argument position allowing positional as well as named arguments for patterns.</para>
+    <example>
+      <title>Game World Data Example</title>
+      <programlisting language="Java">
+@PropertyReactive
+public class Thing {
+    @Position(0)
+    private long id;
+
+    @Position(1)
+    private String name;
+
+    public Thing(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+    ...
+}
+    </programlisting>
+    </example>     
+    
+    <para>An MVEL data file is used to populate our world, see "data.mvel". You can edit this file to add new rooms,
+      items and characters, as well as locks for doors.</para>
+    
+    <example>
+      <title>Game World Data Example</title>
+    <programlisting language="XML">
+rooms = [
+    "basement" : new Room("basement"),
+    "lounge" : new Room("lounge"),
+    "kitchen" : new Room("kitchen"),
+    "ground floor hallway" : new Room("ground floor hallway"),
+    "bedroom" : new Room("bedroom"),
+    "office" : new Room("office"),
+    "first floor hallway" : new Room("first floor hallway")
+];
+
+doors = [
+    "d1" : new Door( rooms["kitchen"], rooms["basement"] ),
+    "d2" : new Door( rooms["ground floor hallway"], rooms["lounge"]),
+    "d4" : new Door( rooms["ground floor hallway"], rooms["kitchen"]),
+    "d5" : new Door( rooms["ground floor hallway"], rooms[ "first floor hallway"] ),
+    "d8" : new Door( rooms["first floor hallway"], rooms[ "bedroom"] ),
+    "d9" : new Door( rooms["first floor hallway"], rooms[ "office"] )
+];
+
+locations = [
+    "monster" :  new Location( characters["monster"], rooms["basement"] ),
+    "hero" :  new Location( characters["hero"], rooms["ground floor hallway"] ),
+    "umbrella" :  new Location( items["umbrella"], rooms["lounge"] ),
+    "key1" :  new Location( items["key1"], rooms["office"] )
+];
+    </programlisting>
+    </example> 
+    
+    <para>The game creates commands, which it inserts into the engine. These commands are then used to change the state
+      of the world and that state is reflected back in the UI. The commands can be found in the "commands.drl" file. The
+      following rule matches the MoveCommand and if it's valid it will make the move happen.</para>
+    <example>
+      <title>Move a Characters</title>
+      <programlisting language="DRL">
+rule validMove agenda-group "commands" when
+    mc : MoveCommand( c : character, r : room )
+    l  : Location( thing == c, ltarget : target ) @watch( !target )
+    ?connect( d, r, ltarget; )
+then
+    exit = new ExitEvent( c, (Room) l.target );
+    enter = new EnterEvent( c, r );
+
+    modify( l ) { target = r };
+
+    insert( exit );
+    insert( enter );
+
+    mc.session.channels["output"].send( "You have entered the " + l.target.name + "\n" );
+end
+    </programlisting>
+    </example> 
+    <para>In the above rules notice the "connect" pattern, this is actually a query. In the MVEL data file doors are
+      only described one way, we can use a query to check connections bi-directionally. The queries can be found in the
+      "queries.drl" file.</para>
+    <example>
+      <title>connect</title>
+      <programlisting language="DRL">
+query connect( Door $d, Room $x, Room $y )
+    $d := Door($id, $name, $x, $y;)
+    or 
+    $d :=Door($id, $name, $y, $x;)
+end
+    </programlisting>
+    </example>
+    
+    <para>The UI has its list boxes populated by rules found in "UiView.drl", those rules in turn use queries. Here is
+      how the "Things" list box is populated, when ever the world changes.</para>
+    
+    <example>
+      <title>Update the UI</title>
+      <programlisting language="DRL">
+rule updateThings salience 5  when                            
+    session : UserSession( $char : character )
+    things( $char, $things; )                                                      
+then
+    session.channels["things"].send( $things );
+end
+
+query things(Character $char, List $things)
+    $char := Character()
+    Location( $char, $room; )
+    $things := List() from accumulate( Location($thing, $room; thing != $char),
+                                       collectList( $thing ) )      
+end
+    </programlisting>
+    </example>    
+  </section>
+  
 </section>

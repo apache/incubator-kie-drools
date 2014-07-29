@@ -31,8 +31,9 @@
   <xi:include href="SudokuExample.xml" />
   <xi:include href="NumberGuessExample.xml" />
   <xi:include href="ConwaysGameOfLifeExample.xml" />
+  <xi:include href="Invaders.xml" />
+  <xi:include href="TextAdventureExample.xml" />  
   <xi:include href="PongExample.xml" />
-  <xi:include href="TextAdventureExample.xml" />
   <xi:include href="WumpusWorldExample.xml" />
   <xi:include href="MannersExample.xml" />
   <xi:include href="BackwardChaining.xml" />
