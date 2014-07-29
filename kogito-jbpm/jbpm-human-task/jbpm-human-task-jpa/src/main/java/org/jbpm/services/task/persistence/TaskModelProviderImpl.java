@@ -7,7 +7,6 @@ public class TaskModelProviderImpl implements TaskModelProviderService {
 
 	@Override
 	public TaskModelFactory getTaskModelFactory() {
-    	System.out.println("Loading JPATaskModelFactory");
 		return new JPATaskModelFactory();
 	}
 
