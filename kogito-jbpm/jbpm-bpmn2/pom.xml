@@ -148,9 +148,9 @@
             <Bundle-Activator>org.jbpm.osgi.bpmn2.Activator</Bundle-Activator>
             <Import-Package>
               !org.jbpm.compiler
-              org.drools.core*;version=6.0.0,
-              org.drools.compiler*;version=6.0.0,
-              org.kie.api*;version=6.0.0,
+              org.drools.core*,
+              org.drools.compiler*,
+              org.kie.api*,
               *
             </Import-Package>
             <Export-Package>

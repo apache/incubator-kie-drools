@@ -48,13 +48,16 @@
           <instructions>
             <Bundle-SymbolicName>org.jbpm.services.task.jpa;singleton:=true</Bundle-SymbolicName>
             <Import-Package>
+              javassist.util.proxy;resolution:=optional,
               javax.transaction.*;resolution:=optional,
+              org.hibernate.proxy;resolution:=optional,
               *
             </Import-Package>
             <Export-Package>
               org.jbpm.services.task.*,
               org.jbpm.services.task.persistence.*
             </Export-Package>
+            <Bundle-Activator>org.jbpm.osgi.services.task.Activator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>

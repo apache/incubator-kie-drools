@@ -144,6 +144,8 @@
             <Bundle-SymbolicName>org.jbpm.services.task.audit</Bundle-SymbolicName>
             <Import-Package>
               !org.jbpm.services.task,
+              javassist.util.proxy;resolution:=optional,
+              org.hibernate.proxy;resolution:=optional,
               *
             </Import-Package>
             <Private-Package></Private-Package>
