@@ -50,7 +50,7 @@ with(doors["d1"]){ lockStatus =  LockStatus.LOCKED, key = items["key1"] };
 locations = [
     "monster" :  new Location( characters["monster"], rooms["basement"] ),
     "hero" :  new Location( characters["hero"], rooms["ground floor hallway"] ),
-    "umbrella" :  new Location( items["umbrella"], rooms["bedroom"] ),
+    "umbrella" :  new Location( items["umbrella"], rooms["lounge"] ),
     "key1" :  new Location( items["key1"], rooms["office"] )
 ];
 

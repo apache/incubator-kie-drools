@@ -13,8 +13,6 @@ public class MoveCommand extends Command {
     @Position(2)
     private Room      room;
 
-
-
     public MoveCommand(Character character, Room room) {
         this.character = character;
         this.room = room;
