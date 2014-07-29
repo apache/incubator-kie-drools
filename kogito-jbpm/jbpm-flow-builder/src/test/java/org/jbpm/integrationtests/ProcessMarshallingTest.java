@@ -515,7 +515,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
         int sleeps = 3;
         int procInstsAlive = session2.getProcessInstances().size();
         while( procInstsAlive > 0 && sleeps > 0 ) { 
-            Thread.sleep(400);
+            Thread.sleep(1000);
             --sleeps;
             procInstsAlive = session2.getProcessInstances().size();
         }

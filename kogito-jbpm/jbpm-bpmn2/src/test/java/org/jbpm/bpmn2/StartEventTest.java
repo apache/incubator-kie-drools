@@ -106,7 +106,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
             }
         });
         System.out.println("About to start ###### " + new Date());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         
         assertEquals(0, list.size());
         
@@ -390,7 +390,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         assertEquals(0, list.size());
         for (int i = 0; i < 2; i++) {
-            Thread.sleep(600);
+            Thread.sleep(1000);
         }
 
         assertEquals(2, list.size());
