@@ -185,7 +185,6 @@
               org.kie.internal.query,
               org.kie.internal.builder,
               org.kie.internal.command,
-              org.kie.internal.deployment,
               org.kie.internal.executor.api,
               org.kie.internal.persistence.jpa,
               org.kie.internal.process,
