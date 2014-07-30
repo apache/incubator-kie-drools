@@ -3,17 +3,16 @@ package org.drools.compiler.integrationtests;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.io.impl.ByteArrayResource;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -1051,17 +1050,10 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add( 3 );\n" +
                 "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(rule1.getBytes()), ResourceType.DRL );
+        KieHelper helper = new KieHelper();
+        helper.addContent(rule1, ResourceType.DRL);
+        KieSession ksession = helper.build().newKieSession();
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
         ksession.setGlobal("list", list);
 
@@ -1161,5 +1153,53 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         public String getFullName(){
             return this.name + " "+ this.lastName;
         }
+    }
+
+    @Test
+    public void testIndexedNotWatchedProperty() {
+        // DROOLS-569
+        String rule1 =
+                "package com.sample;\n" +
+                "import " + MyClass.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R1 when\n" +
+                "    $s : String()\n" +
+                "    $m : MyClass( data != null, value == $s ) @watch( !* )\n" +
+                "then \n" +
+                "    list.add($s);\n" +
+                "    modify( $m ) { setValue(\"2\") };\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "    $i : Integer()\n" +
+                "    $m : MyClass( value == $i.toString(), data == \"x\" ) @watch( !value )\n" +
+                "then \n" +
+                "    modify( $m ) { setValue(\"3\"), setData(\"y\") };\n" +
+                "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent(rule1, ResourceType.DRL);
+        KieSession ksession = helper.build().newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        MyClass myClass = new MyClass();
+        myClass.setValue("1");
+        myClass.setData("x");
+        ksession.insert(myClass);
+        ksession.insert("1");
+        ksession.insert(2);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals("1", list.get(0));
+        list.clear();
+
+        ksession.insert("3");
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals("3", list.get(0));
     }
 }

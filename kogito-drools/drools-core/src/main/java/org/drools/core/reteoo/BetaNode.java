@@ -333,6 +333,8 @@ public abstract class BetaNode extends LeftTupleSource
                 BetaMemory bm = getBetaMemory( this, wm );
                 rightTuple.setPropagationContext( context );
                 doUpdateRightTuple(rightTuple, wm, bm);
+            } else if (rightTuple.getMemory() != null) {
+                getBetaMemory( this, wm ).getRightTupleMemory().removeAdd(rightTuple);
             }
         } else {
             if ( intersect( context.getModificationMask(), getRightInferredMask() ) ) {
