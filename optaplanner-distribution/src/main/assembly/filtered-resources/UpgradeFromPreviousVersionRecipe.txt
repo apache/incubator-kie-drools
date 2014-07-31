@@ -4539,3 +4539,11 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <pillarChangeMoveSelector/>
       <pillarSwapMoveSelector/>
+
+[MINOR] ConstraintMatchTotal are now naturally compared by scoreLevel, then constraintPackage, then constraintName
+(instead of by constraintPackage, then constraintName, then scoreLevel) for readability.
+
+[MINOR] The optional method IncrementalScoreCalculator.buildScoreCorruptionAnalysis(IncrementalScoreCalculator) has been removed.
+Instead, to get a pretty score corruption analysis, implement the new interface ConstraintMatchAwareIncrementalScoreCalculator.
+This also enable your GUI to explain the score with an IncrementalScoreCalculator.
+See the example code in MachineReassignmentIncrementalScoreCalculator.getConstraintMatchTotals().

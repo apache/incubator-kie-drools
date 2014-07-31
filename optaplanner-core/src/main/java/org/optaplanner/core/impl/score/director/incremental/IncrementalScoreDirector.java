@@ -158,22 +158,4 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
         super.afterProblemFactRemoved(problemFact);
     }
 
-    // ************************************************************************
-    // Assert methods
-    // ************************************************************************
-
-    @Override
-    protected String buildScoreCorruptionAnalysis(ScoreDirector uncorruptedScoreDirector) {
-        if (!(uncorruptedScoreDirector instanceof IncrementalScoreDirector)) {
-            return "  Score corruption analysis could not be generated because "
-                    + "the uncorruptedScoreDirector class (" + uncorruptedScoreDirector.getClass()
-                    + ") is not an instance of the scoreDirector class (" + IncrementalScoreDirector.class + ").\n"
-                    + "  Check your score constraints manually.";
-        }
-        IncrementalScoreDirector uncorruptedIncrementalScoreDirector
-                = (IncrementalScoreDirector) uncorruptedScoreDirector;
-        return incrementalScoreCalculator.buildScoreCorruptionAnalysis(
-                uncorruptedIncrementalScoreDirector.incrementalScoreCalculator);
-    }
-
 }

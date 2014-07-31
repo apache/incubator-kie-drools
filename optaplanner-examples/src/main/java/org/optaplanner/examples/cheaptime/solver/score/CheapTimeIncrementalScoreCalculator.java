@@ -576,6 +576,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             }
 
         }
+
         List<ConstraintMatchTotal> constraintMatchTotalList = new ArrayList<ConstraintMatchTotal>(4);
         constraintMatchTotalList.add(resourceCapacityMatchTotal);
         constraintMatchTotalList.add(spinUpDownMatchTotal);

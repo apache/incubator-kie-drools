@@ -69,9 +69,9 @@ public abstract class ConstraintMatchTotal implements Serializable, Comparable<C
     @Override
     public int compareTo(ConstraintMatchTotal other) {
         return new CompareToBuilder()
+                .append(getScoreLevel(), other.getScoreLevel())
                 .append(getConstraintPackage(), other.getConstraintPackage())
                 .append(getConstraintName(), other.getConstraintName())
-                .append(getScoreLevel(), other.getScoreLevel())
                 .append(getWeightTotalAsNumber(), other.getWeightTotalAsNumber())
                 .toComparison();
     }

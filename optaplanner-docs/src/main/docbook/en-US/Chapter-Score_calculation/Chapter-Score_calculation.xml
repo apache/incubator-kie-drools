@@ -713,10 +713,18 @@
     &lt;incrementalScoreCalculatorClass&gt;org.optaplanner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator&lt;/incrementalScoreCalculatorClass&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
-      <para>Optionally, to get better output when the <literal>IncrementalScoreCalculator</literal> is corrupted in
-      <literal>environmentMode</literal> <literal>FAST_ASSERT</literal> or <literal>FULL_ASSERT</literal>, you can
-      overwrite the method <literal>buildScoreCorruptionAnalysis</literal> from
-      <literal>AbstractIncrementalScoreCalculator</literal>.</para>
+      <para>Optionally, to explain a score with <literal>ScoreDirector.getConstraintMatchTotals()</literal> or to get
+      better output when the <literal>IncrementalScoreCalculator</literal> is corrupted in
+      <literal>environmentMode</literal> <literal>FAST_ASSERT</literal> or <literal>FULL_ASSERT</literal>, implement the
+      interface <literal>ConstraintMatchAwareIncrementalScoreCalculator</literal> too:</para>
+
+      <programlisting language="java">public interface ConstraintMatchAwareIncrementalScoreCalculator&lt;Sol extends Solution&gt; {
+
+    void resetWorkingSolution(Sol workingSolution, boolean constraintMatchEnabled);
+
+    Collection&lt;ConstraintMatchTotal&gt; getConstraintMatchTotals();
+    
+}</programlisting>
     </section>
 
     <section xml:id="droolsScoreCalculation">
@@ -1363,8 +1371,8 @@ end</programlisting>
     </section>
   </section>
 
-  <section xml:id="reusingTheScoreCalculationOutsideTheSolver">
-    <title>Reusing the score calculation outside the Solver</title>
+  <section xml:id="explainingTheScore">
+    <title>Explaining the score: using score calculation outside the <literal>Solver</literal></title>
 
     <para>Other parts of your application, for example your webUI, might need to calculate the score too. Do that by
     reusing the <literal>ScoreDirectorFactory</literal> of the <literal>Solver</literal> to build a separate
@@ -1391,5 +1399,11 @@ Score score = guiScoreDirector.calculateScore();</programlisting>
         ...
     }
 }</programlisting>
+
+    <note>
+      <para><link linkend="droolsScoreCalculation">Drools score calculation</link> supports constraint matches
+      automatically, but <link linkend="incrementalJavaScoreCalculation">incremental Java score calculation</link>
+      requires requires implementing an extra interface (see that section).</para>
+    </note>
   </section>
 </chapter>
