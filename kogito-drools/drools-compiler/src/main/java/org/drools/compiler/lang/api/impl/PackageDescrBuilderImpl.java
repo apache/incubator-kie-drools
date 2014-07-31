@@ -26,7 +26,7 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
 
     private Resource resource;
 
-    private PackageDescrBuilderImpl() {
+    protected PackageDescrBuilderImpl() {
         super( null,
                new PackageDescr() );
     }

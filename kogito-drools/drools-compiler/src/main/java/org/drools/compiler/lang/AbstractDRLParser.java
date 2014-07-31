@@ -78,11 +78,11 @@ public abstract class AbstractDRLParser implements DRLParser {
      *
      * @throws RecognitionException
      */
-    public final PackageDescr compilationUnit() throws RecognitionException {
+    public PackageDescr compilationUnit() throws RecognitionException {
         return compilationUnit(DescrFactory.newPackage());
     }
 
-    public final PackageDescr compilationUnit(Resource resource) throws RecognitionException {
+    public PackageDescr compilationUnit(Resource resource) throws RecognitionException {
         return compilationUnit(DescrFactory.newPackage(resource));
     }
 

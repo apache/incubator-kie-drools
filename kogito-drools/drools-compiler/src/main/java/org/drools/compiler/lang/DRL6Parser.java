@@ -1350,7 +1350,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      * @return
      * @throws org.antlr.runtime.RecognitionException
      */
-    private String stringId() throws RecognitionException {
+    String stringId() throws RecognitionException {
         if (input.LA(1) == DRL6Lexer.ID) {
             Token id = match(input,
                     DRL6Lexer.ID,
@@ -1380,7 +1380,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      * @param rule
      * @throws org.antlr.runtime.RecognitionException
      */
-    private void attributes(RuleDescrBuilder rule) throws RecognitionException {
+    void attributes( RuleDescrBuilder rule ) throws RecognitionException {
         if (helper.validateIdentifierKey(DroolsSoftKeywords.ATTRIBUTES)) {
             match(input,
                     DRL6Lexer.ID,
@@ -1970,7 +1970,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      * @param rule
      * @throws org.antlr.runtime.RecognitionException
      */
-    private void lhs(RuleDescrBuilder rule) throws RecognitionException {
+    void lhs( RuleDescrBuilder rule ) throws RecognitionException {
         match(input,
                 DRL6Lexer.ID,
                 DroolsSoftKeywords.WHEN,
@@ -3229,7 +3229,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    private void failMissingTokenException() throws MissingTokenException {
+    void failMissingTokenException() throws MissingTokenException {
         if (state.backtracking > 0) {
             state.failed = true;
         } else {
@@ -3249,8 +3249,8 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      * @param isUnification
      * @throws org.antlr.runtime.RecognitionException
      */
-    private void lhsPattern(PatternDescrBuilder<?> pattern,
-            String label,
+     void lhsPattern(PatternDescrBuilder<?> pattern,
+                     String label,
             boolean isUnification) throws RecognitionException {
         boolean query = false;
         if (input.LA(1) == DRL6Lexer.QUESTION) {
@@ -3327,7 +3327,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      * @return
      * @throws org.antlr.runtime.RecognitionException
      */
-    private String label(DroolsEditorType edType) throws RecognitionException {
+    String label( DroolsEditorType edType ) throws RecognitionException {
         Token label = match(input,
                 DRL6Lexer.ID,
                 null,
@@ -4231,7 +4231,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      * rhs := defaultConsequence namedConsequence* (~END)*
      * @param rule
      */
-    private void rhs(RuleDescrBuilder rule) {
+    void rhs( RuleDescrBuilder rule ) {
         defaultConsequence(rule);
         while (input.LA(1) != DRL6Lexer.EOF && helper.validateIdentifierKey(DroolsSoftKeywords.THEN)) {
             namedConsequence(rule);
@@ -4316,7 +4316,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    private String getConsequenceCode(int first) {
+    protected String getConsequenceCode( int first ) {
         while (input.LA(1) != DRL6Lexer.EOF &&
                 !helper.validateIdentifierKey(DroolsSoftKeywords.END) &&
                 !helper.validateIdentifierKey(DroolsSoftKeywords.THEN)) {
@@ -4348,7 +4348,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
     /**
      * annotation := fullAnnotation | AT ID chunk_(_)?
      */
-    private void annotation(AnnotatedDescrBuilder<?> adb) {
+    void annotation( AnnotatedDescrBuilder<?> adb ) {
         AnnotationDescrBuilder<?> annotation = null;
 
         try {
@@ -4784,11 +4784,11 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      *  single token insertion or deletion error recovery.  If
      *  that fails, throw MismatchedTokenException.
      */
-    private Token match(TokenStream input,
-            int ttype,
-            String text,
-            int[] follow,
-            DroolsEditorType etype) throws RecognitionException {
+    Token match( TokenStream input,
+                 int ttype,
+                 String text,
+                 int[] follow,
+                 DroolsEditorType etype ) throws RecognitionException {
         Token matchedSymbol = null;
         matchedSymbol = input.LT(1);
         if (input.LA(1) == ttype && (text == null || text.equals(matchedSymbol.getText()))) {
