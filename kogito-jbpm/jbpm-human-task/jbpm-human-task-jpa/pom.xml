@@ -51,11 +51,13 @@
               javassist.util.proxy;resolution:=optional,
               javax.transaction.*;resolution:=optional,
               org.hibernate.proxy;resolution:=optional,
+              org.jbpm.services.task.utils;
+              org.kie.spring.persistence;resolution:=optional,
               *
             </Import-Package>
             <Export-Package>
-              org.jbpm.services.task.*,
-              org.jbpm.services.task.persistence.*
+              org.jbpm.services.task.impl*,
+              org.jbpm.services.task.persistence*
             </Export-Package>
             <Bundle-Activator>org.jbpm.osgi.services.task.Activator</Bundle-Activator>
           </instructions>

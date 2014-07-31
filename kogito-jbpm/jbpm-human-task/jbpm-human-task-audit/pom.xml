@@ -143,14 +143,15 @@
           <instructions>
             <Bundle-SymbolicName>org.jbpm.services.task.audit</Bundle-SymbolicName>
             <Import-Package>
-              !org.jbpm.services.task,
+              !org.jbpm.services.task.audit,
               javassist.util.proxy;resolution:=optional,
               org.hibernate.proxy;resolution:=optional,
+              org.jbpm.services.task.lifecycle.listeners,
               *
             </Import-Package>
             <Private-Package></Private-Package>
             <Export-Package>
-              org.jbpm.services.task*
+              org.jbpm.services.task.audit*
             </Export-Package>
           </instructions>
         </configuration>

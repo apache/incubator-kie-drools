@@ -24,12 +24,16 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class TaskQueryManager {
 	
 	public static final String FILTER_KEY = "filter";
 	public static final String ORDER_BY_KEY = "orderby";
 	public static final String ASCENDING_KEY = "asc";
 	public static final String DESCENDING_KEY = "desc";
+	private static final Logger logger = LoggerFactory.getLogger(TaskQueryManager.class);
 	
 	private Map<String, String> queries = new ConcurrentHashMap<String, String>();
 	
@@ -50,8 +54,9 @@ public class TaskQueryManager {
 	public synchronized void addNamedQueries(String ormFile) {
 		try {
 			parse(ormFile);
-		} catch (XMLStreamException e) {
-			throw new RuntimeException("Unable to read orm file due to " + e.getMessage(), e);
+		} catch (Exception e) {
+			logger.debug("TaskQueryManager unable to read Taskorm file due to " + e.getMessage(), e);
+			logger.warn("TaskQueryManager unable to read Taskorm file due to " + e.getMessage());
 		}
 	}
 	

@@ -26,6 +26,7 @@
             <Bundle-SymbolicName>org.jbpm.flow.core</Bundle-SymbolicName>
             <Import-Package>
                 javax.swing.*;resolution:=optional,
+                org.jbpm.persistence.timer;resolution:=optional,
                 *
             </Import-Package>
             <Private-Package></Private-Package>
