@@ -17,19 +17,23 @@ package org.jbpm.services.task.audit.test;
 
 import java.util.HashMap;
 import java.util.List;
+
 import javax.inject.Inject;
+
 import org.jbpm.services.task.HumanTaskServicesBaseTest;
 import org.jbpm.services.task.audit.commands.DeleteAuditEventsCommand;
+import org.jbpm.services.task.audit.commands.DeleteBAMTaskSummariesCommand;
 import org.jbpm.services.task.audit.commands.GetAuditEventsCommand;
+import org.jbpm.services.task.audit.commands.GetBAMTaskSummariesCommand;
 import org.jbpm.services.task.audit.impl.model.BAMTaskSummaryImpl;
 import org.jbpm.services.task.audit.impl.model.api.AuditTask;
 import org.jbpm.services.task.audit.service.TaskAuditService;
-import org.jbpm.services.task.impl.model.command.DeleteBAMTaskSummariesCommand;
-import org.jbpm.services.task.impl.model.command.GetBAMTaskSummariesCommand;
 import org.jbpm.services.task.query.QueryFilterImpl;
 import org.jbpm.services.task.utils.TaskFluent;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
