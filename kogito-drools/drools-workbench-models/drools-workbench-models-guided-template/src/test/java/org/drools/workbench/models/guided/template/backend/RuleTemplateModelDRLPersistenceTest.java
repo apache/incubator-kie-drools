@@ -34,7 +34,6 @@ import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -1491,7 +1490,6 @@ public class RuleTemplateModelDRLPersistenceTest {
     }
 
     @Test
-    @Ignore("Second CompositeFieldConstraint is incorrectly prefixed with ',' separator from the first CompositeFieldConstraint")
     public void testNestedCompositeConstraints4ThirdValue() {
         TemplateModel m = new TemplateModel();
         m.name = "t1";
@@ -1556,7 +1554,6 @@ public class RuleTemplateModelDRLPersistenceTest {
     }
 
     @Test
-    @Ignore("Second CompositeFieldConstraint is incorrectly prefixed with ',' separator from the first CompositeFieldConstraint")
     public void testNestedCompositeConstraints4FourthValue() {
         TemplateModel m = new TemplateModel();
         m.name = "t1";
@@ -1958,7 +1955,6 @@ public class RuleTemplateModelDRLPersistenceTest {
         String expected = "rule \"t1_0\"\n" +
                 "dialect \"mvel\"\n" +
                 "when\n" +
-                "Person( )\n" +
                 "then\n" +
                 "end\n";
 
@@ -3776,6 +3772,396 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         checkMarshall( expected,
                        m );
+    }
+
+    @Test
+    public void testLHSNonEmptyStringValues() {
+
+        FactPattern fp = new FactPattern( "Smurf" );
+        fp.setBoundName( "p1" );
+
+        SingleFieldConstraint sfc1 = new SingleFieldConstraint();
+        sfc1.setOperator( "==" );
+        sfc1.setFactType( "Smurf" );
+        sfc1.setFieldName( "name" );
+        sfc1.setFieldType( DataType.TYPE_STRING );
+        sfc1.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
+        sfc1.setValue( "$f1" );
+
+        SingleFieldConstraint sfc2 = new SingleFieldConstraint();
+        sfc2.setOperator( "==" );
+        sfc2.setFactType( "Smurf" );
+        sfc2.setFieldName( "age" );
+        sfc2.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
+        sfc2.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
+        sfc2.setValue( "$f2" );
+
+        fp.addConstraint( sfc1 );
+        fp.addConstraint( sfc2 );
+
+        //Test 1
+        TemplateModel m1 = new TemplateModel();
+        m1.addLhsItem( fp );
+        m1.name = "r1";
+
+        m1.addRow( new String[]{ null, null } );
+
+        final String expected1 = "rule \"r1_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "  then\n" +
+                "end";
+
+        checkMarshall( expected1,
+                       m1 );
+
+        //Test 2
+        TemplateModel m2 = new TemplateModel();
+        m2.addLhsItem( fp );
+        m2.name = "r2";
+
+        m2.addRow( new String[]{ "   ", "35" } );
+
+        final String expected2 = "rule \"r2_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Smurf( age == 35 )\n" +
+                "  then\n" +
+                "end";
+
+        checkMarshall( expected2,
+                       m2 );
+
+        //Test 3
+        TemplateModel m3 = new TemplateModel();
+        m3.addLhsItem( fp );
+        m3.name = "r3";
+
+        m3.addRow( new String[]{ "", null } );
+
+        final String expected3 = "rule \"r3_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "  then\n" +
+                "end";
+
+        checkMarshall( expected3,
+                       m3 );
+
+        //Test 4
+        TemplateModel m4 = new TemplateModel();
+        m4.addLhsItem( fp );
+        m4.name = "r4";
+
+        m4.addRow( new String[]{ "", "35" } );
+
+        final String expected4 = "rule \"r4_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Smurf( age == 35 )\n" +
+                "  then\n" +
+                "end";
+
+        checkMarshall( expected4,
+                       m4 );
+    }
+
+    @Test
+    public void testLHSDelimitedNonEmptyStringValues() {
+
+        FactPattern fp = new FactPattern( "Smurf" );
+        fp.setBoundName( "p1" );
+
+        SingleFieldConstraint sfc1 = new SingleFieldConstraint();
+        sfc1.setOperator( "==" );
+        sfc1.setFactType( "Smurf" );
+        sfc1.setFieldName( "name" );
+        sfc1.setFieldType( DataType.TYPE_STRING );
+        sfc1.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
+        sfc1.setValue( "$f1" );
+
+        SingleFieldConstraint sfc2 = new SingleFieldConstraint();
+        sfc2.setOperator( "==" );
+        sfc2.setFactType( "Smurf" );
+        sfc2.setFieldName( "age" );
+        sfc2.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
+        sfc2.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
+        sfc2.setValue( "$f2" );
+
+        fp.addConstraint( sfc1 );
+        fp.addConstraint( sfc2 );
+
+        //Test 1
+        TemplateModel m1 = new TemplateModel();
+        m1.addLhsItem( fp );
+        m1.name = "r1";
+
+        m1.addRow( new String[]{ null, null } );
+
+        final String expected1 = "rule \"r1_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "  then\n" +
+                "end";
+
+        checkMarshall( expected1,
+                       m1 );
+
+        //Test 2
+        TemplateModel m2 = new TemplateModel();
+        m2.addLhsItem( fp );
+        m2.name = "r2";
+
+        m2.addRow( new String[]{ "\"   \"", "35" } );
+
+        final String expected2 = "rule \"r2_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Smurf( name == \"   \", age == 35 )\n" +
+                "  then\n" +
+                "end";
+
+        checkMarshall( expected2,
+                       m2 );
+
+        //Test 3
+        TemplateModel m3 = new TemplateModel();
+        m3.addLhsItem( fp );
+        m3.name = "r3";
+
+        m3.addRow( new String[]{ "\"\"", null } );
+
+        final String expected3 = "rule \"r3_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Smurf( name == \"\" )\n" +
+                "  then\n" +
+                "end";
+
+        checkMarshall( expected3,
+                       m3 );
+
+        //Test 4
+        TemplateModel m4 = new TemplateModel();
+        m4.addLhsItem( fp );
+        m4.name = "r4";
+
+        m4.addRow( new String[]{ "\"\"", "35" } );
+
+        final String expected4 = "rule \"r4_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Smurf( name == \"\", age == 35 )\n" +
+                "  then\n" +
+                "end";
+
+        checkMarshall( expected4,
+                       m4 );
+    }
+
+    @Test
+    public void testRHSNonEmptyStringValues() {
+        FactPattern fp = new FactPattern( "Smurf" );
+        fp.setBoundName( "p1" );
+
+        ActionUpdateField auf1 = new ActionUpdateField( "p1" );
+        auf1.addFieldValue( new ActionFieldValue( "name",
+                                                  "$name",
+                                                  DataType.TYPE_STRING ) );
+        auf1.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        ActionUpdateField auf2 = new ActionUpdateField( "p1" );
+        auf2.addFieldValue( new ActionFieldValue( "age",
+                                                  "$age",
+                                                  DataType.TYPE_NUMERIC_INTEGER ) );
+        auf2.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        //Test 1
+        TemplateModel m1 = new TemplateModel();
+        m1.addLhsItem( fp );
+        m1.addRhsItem( auf1 );
+        m1.addRhsItem( auf2 );
+        m1.name = "r1";
+
+        m1.addRow( new String[]{ null, null } );
+
+        final String expected1 = "rule \"r1_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Smurf()\n" +
+                "  then\n" +
+                "end";
+
+        checkMarshall( expected1,
+                       m1 );
+
+        //Test 2
+        TemplateModel m2 = new TemplateModel();
+        m2.addLhsItem( fp );
+        m2.addRhsItem( auf1 );
+        m2.addRhsItem( auf2 );
+        m2.name = "r2";
+
+        m2.addRow( new String[]{ "   ", "35" } );
+
+        final String expected2 = "rule \"r2_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Smurf()\n" +
+                "  then\n" +
+                "    modify( p1 ) {\n" +
+                "      setAge( 35 )\n" +
+                "    }\n" +
+                "end";
+
+        checkMarshall( expected2,
+                       m2 );
+
+        //Test 3
+        TemplateModel m3 = new TemplateModel();
+        m3.addLhsItem( fp );
+        m3.addRhsItem( auf1 );
+        m3.addRhsItem( auf2 );
+        m3.name = "r3";
+
+        m3.addRow( new String[]{ "", null } );
+
+        final String expected3 = "rule \"r3_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Smurf()\n" +
+                "  then\n" +
+                "end";
+
+        checkMarshall( expected3,
+                       m3 );
+
+        //Test 4
+        TemplateModel m4 = new TemplateModel();
+        m4.addLhsItem( fp );
+        m4.addRhsItem( auf1 );
+        m4.addRhsItem( auf2 );
+        m4.name = "r4";
+
+        m4.addRow( new String[]{ "", "35" } );
+
+        final String expected4 = "rule \"r4_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Smurf()\n" +
+                "  then\n" +
+                "    modify( p1 ) {\n" +
+                "      setAge( 35 )\n" +
+                "    }\n" +
+                "end";
+
+        checkMarshall( expected4,
+                       m4 );
+    }
+
+    @Test
+    public void testRHSDelimitedNonEmptyStringValues() {
+        FactPattern fp = new FactPattern( "Smurf" );
+        fp.setBoundName( "p1" );
+
+        ActionUpdateField auf1 = new ActionUpdateField( "p1" );
+        auf1.addFieldValue( new ActionFieldValue( "name",
+                                                  "$name",
+                                                  DataType.TYPE_STRING ) );
+        auf1.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        ActionUpdateField auf2 = new ActionUpdateField( "p1" );
+        auf2.addFieldValue( new ActionFieldValue( "age",
+                                                  "$age",
+                                                  DataType.TYPE_NUMERIC_INTEGER ) );
+        auf2.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        //Test 1
+        TemplateModel m1 = new TemplateModel();
+        m1.addLhsItem( fp );
+        m1.addRhsItem( auf1 );
+        m1.addRhsItem( auf2 );
+        m1.name = "r1";
+
+        m1.addRow( new String[]{ null, null } );
+
+        final String expected1 = "rule \"r1_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Smurf()\n" +
+                "  then\n" +
+                "end";
+
+        checkMarshall( expected1,
+                       m1 );
+
+        //Test 2
+        TemplateModel m2 = new TemplateModel();
+        m2.addLhsItem( fp );
+        m2.addRhsItem( auf1 );
+        m2.addRhsItem( auf2 );
+        m2.name = "r2";
+
+        m2.addRow( new String[]{ "\"   \"", "35" } );
+
+        final String expected2 = "rule \"r2_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Smurf()\n" +
+                "  then\n" +
+                "    modify( p1 ) {\n" +
+                "      setName( \"   \" ),\n" +
+                "      setAge( 35 )\n" +
+                "    }\n" +
+                "end";
+
+        checkMarshall( expected2,
+                       m2 );
+
+        //Test 3
+        TemplateModel m3 = new TemplateModel();
+        m3.addLhsItem( fp );
+        m3.addRhsItem( auf1 );
+        m3.addRhsItem( auf2 );
+        m3.name = "r3";
+
+        m3.addRow( new String[]{ "\"\"", null } );
+
+        final String expected3 = "rule \"r3_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Smurf()\n" +
+                "  then\n" +
+                "    modify( p1 ) {\n" +
+                "      setName( \"\" )\n" +
+                "    }\n" +
+                "end";
+
+        checkMarshall( expected3,
+                       m3 );
+
+        //Test 4
+        TemplateModel m4 = new TemplateModel();
+        m4.addLhsItem( fp );
+        m4.addRhsItem( auf1 );
+        m4.addRhsItem( auf2 );
+        m4.name = "r4";
+
+        m4.addRow( new String[]{ "\"\"", "35" } );
+
+        final String expected4 = "rule \"r4_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Smurf()\n" +
+                "  then\n" +
+                "    modify( p1 ) {\n" +
+                "      setName( \"\" ),\n" +
+                "      setAge( 35 )\n" +
+                "    }\n" +
+                "end";
+
+        checkMarshall( expected4,
+                       m4 );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,

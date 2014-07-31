@@ -15,26 +15,90 @@
  */
 package org.drools.workbench.models.commons.backend.rule.context;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
+import org.drools.workbench.models.datamodel.rule.IAction;
+import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
+
 /**
  * RHS DRL generation context object
  */
 public class RHSGeneratorContext {
 
+    private Set<String> varsInScope = new HashSet<String>();
+    private IAction action;
+    private ActionFieldValue afv;
     private RHSGeneratorContext parent;
+    private int depth;
     private int offset;
     private boolean hasOutput;
+    private boolean hasNonTemplateOutput;
 
     RHSGeneratorContext() {
     }
 
     RHSGeneratorContext( final RHSGeneratorContext parent,
+                         final IAction action,
+                         final int depth,
                          final int offset ) {
         this.parent = parent;
+        this.depth = depth;
         this.offset = offset;
+        setAction( action );
+    }
+
+    private void setAction( final IAction action ) {
+        this.action = action;
+        final Set<InterpolationVariable> vars = new HashSet<InterpolationVariable>();
+        final GeneratorContextRuleModelVisitor visitor = new GeneratorContextRuleModelVisitor( vars );
+        visitor.visit( action );
+        for ( InterpolationVariable var : vars ) {
+            varsInScope.add( var.getVarName() );
+        }
+        hasNonTemplateOutput = visitor.hasNonTemplateOutput();
+    }
+
+    RHSGeneratorContext( final RHSGeneratorContext parent,
+                         final ActionFieldValue afv,
+                         final int depth,
+                         final int offset ) {
+        this.parent = parent;
+        this.depth = depth;
+        this.offset = offset;
+        setActionFieldValue( afv );
+    }
+
+    private void setActionFieldValue( final ActionFieldValue afv ) {
+        this.afv = afv;
+        final Set<InterpolationVariable> vars = new HashSet<InterpolationVariable>();
+        final GeneratorContextRuleModelVisitor visitor = new GeneratorContextRuleModelVisitor( vars );
+        visitor.visit( afv );
+        for ( InterpolationVariable var : vars ) {
+            varsInScope.add( var.getVarName() );
+        }
+        hasNonTemplateOutput = visitor.hasNonTemplateOutput();
+    }
+
+    public IAction getAction() {
+        return action;
+    }
+
+    public ActionFieldValue getActionFieldValue() {
+        return afv;
     }
 
     public RHSGeneratorContext getParent() {
         return parent;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public int getOffset() {
+        return offset;
     }
 
     public boolean isHasOutput() {
@@ -45,8 +109,12 @@ public class RHSGeneratorContext {
         this.hasOutput = hasOutput;
     }
 
-    public int getOffset() {
-        return offset;
+    public Set<String> getVarsInScope() {
+        return this.varsInScope;
+    }
+
+    public boolean hasNonTemplateOutput() {
+        return hasNonTemplateOutput;
     }
 
 }

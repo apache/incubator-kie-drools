@@ -528,6 +528,8 @@ public class RuleModelDRLPersistenceImpl
         protected DRLConstraintValueBuilder constraintValueBuilder;
         protected LHSGeneratorContextFactory generatorContextFactory;
 
+        protected final LHSGeneratorContext rootContext;
+
         public LHSPatternVisitor( final boolean isDSLEnhanced,
                                   final Map<String, IFactPattern> bindingsPatterns,
                                   final Map<String, FieldConstraint> bindingsFields,
@@ -541,9 +543,34 @@ public class RuleModelDRLPersistenceImpl
             this.bindingsFields = bindingsFields;
             this.constraintValueBuilder = constraintValueBuilder;
             this.generatorContextFactory = generatorContextFactory;
+            this.rootContext = generatorContextFactory.newGeneratorContext();
             this.indentation = indentation;
             this.isPatternNegated = isPatternNegated;
             this.buf = b;
+        }
+
+        protected void preGeneratePattern( final LHSGeneratorContext gctx ) {
+            // empty, overridden by rule templates
+        }
+
+        protected void postGeneratePattern( final LHSGeneratorContext gctx ) {
+            // empty, overridden by rule templates
+        }
+
+        protected void preGenerateNestedConnector( final LHSGeneratorContext gctx ) {
+            // empty, overridden by rule templates
+        }
+
+        protected void postGenerateNestedConnector( final LHSGeneratorContext gctx ) {
+            // empty, overridden by rule templates
+        }
+
+        protected void preGenerateNestedConstraint( final LHSGeneratorContext gctx ) {
+            // empty, overridden by rule templates
+        }
+
+        protected void postGenerateNestedConstraint( final LHSGeneratorContext gctx ) {
+            // empty, overridden by rule templates
         }
 
         public void visitFactPattern( final FactPattern pattern ) {
@@ -552,10 +579,18 @@ public class RuleModelDRLPersistenceImpl
                 // adding passthrough markup
                 buf.append( ">" );
             }
-            generateFactPattern( pattern );
+
+            final LHSGeneratorContext gctx = generatorContextFactory.newChildGeneratorContext( rootContext,
+                                                                                               pattern );
+            preGeneratePattern( gctx );
+
+            generateFactPattern( pattern,
+                                 gctx );
             if ( isPatternNegated ) {
                 buf.append( " and " );
             }
+
+            postGeneratePattern( gctx );
             buf.append( "\n" );
         }
 
@@ -612,12 +647,17 @@ public class RuleModelDRLPersistenceImpl
                 // adding passthrough markup
                 buf.append( ">" );
             }
+
             if ( pattern.getFactPattern() != null ) {
-                generateFactPattern( pattern.getFactPattern() );
+                final LHSGeneratorContext gctx = generatorContextFactory.newChildGeneratorContext( rootContext,
+                                                                                                   pattern.getFactPattern() );
+                generateFactPattern( pattern.getFactPattern(),
+                                     gctx );
+
+                buf.append( " from " );
+                renderExpression( pattern.getExpression() );
+                buf.append( "\n" );
             }
-            buf.append( " from " );
-            renderExpression( pattern.getExpression() );
-            buf.append( "\n" );
         }
 
         public void visitFromCollectCompositeFactPattern( final FromCollectCompositeFactPattern pattern ) {
@@ -632,32 +672,38 @@ public class RuleModelDRLPersistenceImpl
                 // adding passthrough markup
                 buf.append( ">" );
             }
+
             if ( pattern.getFactPattern() != null ) {
-                generateFactPattern( pattern.getFactPattern() );
-            }
-            buf.append( " from collect ( " );
-            if ( pattern.getRightPattern() != null ) {
-                if ( pattern.getRightPattern() instanceof FactPattern ) {
-                    generateFactPattern( (FactPattern) pattern.getRightPattern() );
-                } else if ( pattern.getRightPattern() instanceof FromAccumulateCompositeFactPattern ) {
-                    visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) pattern.getRightPattern(),
-                                                             isSubPattern );
-                } else if ( pattern.getRightPattern() instanceof FromCollectCompositeFactPattern ) {
-                    visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) pattern.getRightPattern(),
-                                                          isSubPattern );
-                } else if ( pattern.getRightPattern() instanceof FromEntryPointFactPattern ) {
-                    visitFromEntryPointFactPattern( (FromEntryPointFactPattern) pattern.getRightPattern(),
-                                                    isSubPattern );
-                } else if ( pattern.getRightPattern() instanceof FromCompositeFactPattern ) {
-                    visitFromCompositeFactPattern( (FromCompositeFactPattern) pattern.getRightPattern(),
-                                                   isSubPattern );
-                } else if ( pattern.getRightPattern() instanceof FreeFormLine ) {
-                    visitFreeFormLine( (FreeFormLine) pattern.getRightPattern() );
-                } else {
-                    throw new IllegalArgumentException( "Unsupported pattern " + pattern.getRightPattern() + " for FROM COLLECT" );
+                final LHSGeneratorContext gctx = generatorContextFactory.newChildGeneratorContext( rootContext,
+                                                                                                   pattern.getFactPattern() );
+                generateFactPattern( pattern.getFactPattern(),
+                                     gctx );
+
+                buf.append( " from collect ( " );
+                if ( pattern.getRightPattern() != null ) {
+                    if ( pattern.getRightPattern() instanceof FactPattern ) {
+                        generateFactPattern( (FactPattern) pattern.getRightPattern(),
+                                             generatorContextFactory.newGeneratorContext() );
+                    } else if ( pattern.getRightPattern() instanceof FromAccumulateCompositeFactPattern ) {
+                        visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) pattern.getRightPattern(),
+                                                                 isSubPattern );
+                    } else if ( pattern.getRightPattern() instanceof FromCollectCompositeFactPattern ) {
+                        visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) pattern.getRightPattern(),
+                                                              isSubPattern );
+                    } else if ( pattern.getRightPattern() instanceof FromEntryPointFactPattern ) {
+                        visitFromEntryPointFactPattern( (FromEntryPointFactPattern) pattern.getRightPattern(),
+                                                        isSubPattern );
+                    } else if ( pattern.getRightPattern() instanceof FromCompositeFactPattern ) {
+                        visitFromCompositeFactPattern( (FromCompositeFactPattern) pattern.getRightPattern(),
+                                                       isSubPattern );
+                    } else if ( pattern.getRightPattern() instanceof FreeFormLine ) {
+                        visitFreeFormLine( (FreeFormLine) pattern.getRightPattern() );
+                    } else {
+                        throw new IllegalArgumentException( "Unsupported pattern " + pattern.getRightPattern() + " for FROM COLLECT" );
+                    }
                 }
+                buf.append( ") \n" );
             }
-            buf.append( ") \n" );
         }
 
         public void visitFromAccumulateCompositeFactPattern( final FromAccumulateCompositeFactPattern pattern ) {
@@ -672,52 +718,63 @@ public class RuleModelDRLPersistenceImpl
                 // adding passthrough markup
                 buf.append( ">" );
             }
+
             if ( pattern.getFactPattern() != null ) {
-                generateFactPattern( pattern.getFactPattern() );
-            }
-            buf.append( " from accumulate ( " );
-            if ( pattern.getSourcePattern() != null ) {
-                if ( pattern.getSourcePattern() instanceof FactPattern ) {
-                    generateFactPattern( (FactPattern) pattern.getSourcePattern() );
-                } else if ( pattern.getSourcePattern() instanceof FromAccumulateCompositeFactPattern ) {
-                    visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) pattern.getSourcePattern(),
-                                                             isSubPattern );
-                } else if ( pattern.getSourcePattern() instanceof FromCollectCompositeFactPattern ) {
-                    visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) pattern.getSourcePattern(),
-                                                          isSubPattern );
-                } else if ( pattern.getSourcePattern() instanceof FromEntryPointFactPattern ) {
-                    visitFromEntryPointFactPattern( (FromEntryPointFactPattern) pattern.getSourcePattern(),
-                                                    isSubPattern );
-                } else if ( pattern.getSourcePattern() instanceof FromCompositeFactPattern ) {
-                    visitFromCompositeFactPattern( (FromCompositeFactPattern) pattern.getSourcePattern(),
-                                                   isSubPattern );
+                final LHSGeneratorContext gctx = generatorContextFactory.newChildGeneratorContext( rootContext,
+                                                                                                   pattern.getFactPattern() );
+                generateFactPattern( pattern.getFactPattern(),
+                                     gctx );
+
+                buf.append( " from accumulate ( " );
+                if ( pattern.getSourcePattern() != null ) {
+                    if ( pattern.getSourcePattern() instanceof FactPattern ) {
+                        final LHSGeneratorContext soucrceGctx = generatorContextFactory.newGeneratorContext();
+                        generateFactPattern( (FactPattern) pattern.getSourcePattern(),
+                                             soucrceGctx );
+
+                    } else if ( pattern.getSourcePattern() instanceof FromAccumulateCompositeFactPattern ) {
+                        visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) pattern.getSourcePattern(),
+                                                                 isSubPattern );
+
+                    } else if ( pattern.getSourcePattern() instanceof FromCollectCompositeFactPattern ) {
+                        visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) pattern.getSourcePattern(),
+                                                              isSubPattern );
+
+                    } else if ( pattern.getSourcePattern() instanceof FromEntryPointFactPattern ) {
+                        visitFromEntryPointFactPattern( (FromEntryPointFactPattern) pattern.getSourcePattern(),
+                                                        isSubPattern );
+
+                    } else if ( pattern.getSourcePattern() instanceof FromCompositeFactPattern ) {
+                        visitFromCompositeFactPattern( (FromCompositeFactPattern) pattern.getSourcePattern(),
+                                                       isSubPattern );
+
+                    } else {
+                        throw new IllegalArgumentException( "Unsupported pattern " + pattern.getSourcePattern() + " for FROM ACCUMULATE" );
+                    }
+                }
+                buf.append( ",\n" );
+
+                if ( pattern.useFunctionOrCode().equals( FromAccumulateCompositeFactPattern.USE_FUNCTION ) ) {
+                    buf.append( indentation + "\t" );
+                    buf.append( pattern.getFunction() );
                 } else {
-                    throw new IllegalArgumentException( "Unsupported pattern " + pattern.getSourcePattern() + " for FROM ACCUMULATE" );
-                }
-            }
-            buf.append( ",\n" );
-
-            if ( pattern.useFunctionOrCode().equals( FromAccumulateCompositeFactPattern.USE_FUNCTION ) ) {
-                buf.append( indentation + "\t" );
-                buf.append( pattern.getFunction() );
-            } else {
-                buf.append( indentation + "\tinit( " );
-                buf.append( pattern.getInitCode() );
-                buf.append( " ),\n" );
-                buf.append( indentation + "\taction( " );
-                buf.append( pattern.getActionCode() );
-                buf.append( " ),\n" );
-                if ( pattern.getReverseCode() != null && !pattern.getReverseCode().trim().equals( "" ) ) {
-                    buf.append( indentation + "\treverse( " );
-                    buf.append( pattern.getReverseCode() );
+                    buf.append( indentation + "\tinit( " );
+                    buf.append( pattern.getInitCode() );
                     buf.append( " ),\n" );
+                    buf.append( indentation + "\taction( " );
+                    buf.append( pattern.getActionCode() );
+                    buf.append( " ),\n" );
+                    if ( pattern.getReverseCode() != null && !pattern.getReverseCode().trim().equals( "" ) ) {
+                        buf.append( indentation + "\treverse( " );
+                        buf.append( pattern.getReverseCode() );
+                        buf.append( " ),\n" );
+                    }
+                    buf.append( indentation + "\tresult( " );
+                    buf.append( pattern.getResultCode() );
+                    buf.append( " )\n" );
                 }
-                buf.append( indentation + "\tresult( " );
-                buf.append( pattern.getResultCode() );
-                buf.append( " )\n" );
+                buf.append( ") \n" );
             }
-            buf.append( ") \n" );
-
         }
 
         public void visitFromEntryPointFactPattern( final FromEntryPointFactPattern pattern ) {
@@ -732,10 +789,14 @@ public class RuleModelDRLPersistenceImpl
                 // adding passthrough markup
                 buf.append( ">" );
             }
+
             if ( pattern.getFactPattern() != null ) {
-                generateFactPattern( pattern.getFactPattern() );
+                final LHSGeneratorContext gctx = generatorContextFactory.newChildGeneratorContext( rootContext,
+                                                                                                   pattern.getFactPattern() );
+                generateFactPattern( pattern.getFactPattern(),
+                                     gctx );
+                buf.append( " from entry-point \"" + pattern.getEntryPointName() + "\"\n" );
             }
-            buf.append( " from entry-point \"" + pattern.getEntryPointName() + "\"\n" );
         }
 
         private void renderCompositeFOL( final CompositeFactPattern pattern ) {
@@ -760,16 +821,23 @@ public class RuleModelDRLPersistenceImpl
             }
             IFactPattern subPattern = pattern.getPatterns()[ subIndex ];
             if ( subPattern instanceof FactPattern ) {
-                this.generateFactPattern( (FactPattern) subPattern );
+                final LHSGeneratorContext gctx = generatorContextFactory.newChildGeneratorContext( rootContext,
+                                                                                                   subPattern );
+                this.generateFactPattern( (FactPattern) subPattern,
+                                          gctx );
+
             } else if ( subPattern instanceof FromAccumulateCompositeFactPattern ) {
                 this.visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) subPattern,
                                                               true );
+
             } else if ( subPattern instanceof FromCollectCompositeFactPattern ) {
                 this.visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) subPattern,
                                                            true );
+
             } else if ( subPattern instanceof FromCompositeFactPattern ) {
                 this.visitFromCompositeFactPattern( (FromCompositeFactPattern) subPattern,
                                                     true );
+
             } else {
                 throw new IllegalStateException( "Unsupported Pattern: " + subPattern.getClass().getName() );
             }
@@ -787,7 +855,8 @@ public class RuleModelDRLPersistenceImpl
             buf.append( "\n" );
         }
 
-        private void generateFactPattern( final FactPattern pattern ) {
+        private void generateFactPattern( final FactPattern pattern,
+                                          final LHSGeneratorContext gctx ) {
             if ( pattern.isNegated() ) {
                 buf.append( "not " );
             } else if ( pattern.isBound() ) {
@@ -803,7 +872,8 @@ public class RuleModelDRLPersistenceImpl
 
             // top level constraints
             if ( pattern.getConstraintList() != null ) {
-                generateConstraints( pattern );
+                generateConstraints( pattern,
+                                     gctx );
             }
             buf.append( ")" );
 
@@ -816,50 +886,48 @@ public class RuleModelDRLPersistenceImpl
             }
         }
 
-        private void generateConstraints( final FactPattern pattern ) {
-            LHSGeneratorContext gctx = generatorContextFactory.newGeneratorContext();
-            preGenerateConstraints( gctx );
+        private void generateConstraints( final FactPattern pattern,
+                                          final LHSGeneratorContext parentContext ) {
+            LHSGeneratorContext gctx = null;
             for ( int constraintIndex = 0; constraintIndex < pattern.getFieldConstraints().length; constraintIndex++ ) {
                 FieldConstraint constr = pattern.getConstraintList().getConstraints()[ constraintIndex ];
-                gctx.setFieldConstraint( constr );
+
+                if ( constraintIndex == 0 ) {
+                    gctx = generatorContextFactory.newChildGeneratorContext( parentContext,
+                                                                             constr );
+                } else {
+                    gctx = generatorContextFactory.newPeerGeneratorContext( gctx,
+                                                                            constr );
+                }
+
                 generateConstraint( constr,
                                     gctx );
             }
         }
 
-        public void preGenerateConstraints( LHSGeneratorContext gctx ) {
-            // empty, overridden by rule templates
-        }
-
-        public void preGenerateNestedConnector( LHSGeneratorContext gctx ) {
-            // empty, overridden by rule templates
-        }
-
-        public void postGenerateNestedConnector( LHSGeneratorContext gctx ) {
-            // empty, overridden by rule templates
-        }
-
-        public void preGenerateNestedConstraint( LHSGeneratorContext gctx ) {
-            // empty, overridden by rule templates
-        }
-
-        public void postGenerateNestedConstraint( LHSGeneratorContext gctx ) {
-            // empty, overridden by rule templates
-        }
-
-        public void generateSeparator( FieldConstraint constr,
-                                       LHSGeneratorContext gctx ) {
-            if ( !gctx.isHasOutput() ) {
+        public void generateSeparator( final FieldConstraint constr,
+                                       final LHSGeneratorContext gctx ) {
+            if ( !doesPeerHaveOutput( gctx ) ) {
                 return;
             }
-            if ( gctx.getDepth() == 0 ) {
+            if ( gctx.getParent().getFieldConstraint() instanceof CompositeFieldConstraint ) {
+                CompositeFieldConstraint cconstr = (CompositeFieldConstraint) gctx.getParent().getFieldConstraint();
+                buf.append( cconstr.getCompositeJunctionType() + " " );
+            } else {
                 if ( buf.length() > 2 && !( buf.charAt( buf.length() - 2 ) == ',' ) ) {
                     buf.append( ", " );
                 }
-            } else {
-                CompositeFieldConstraint cconstr = (CompositeFieldConstraint) gctx.getParent().getFieldConstraint();
-                buf.append( cconstr.getCompositeJunctionType() + " " );
             }
+        }
+
+        protected boolean doesPeerHaveOutput( final LHSGeneratorContext gctx ) {
+            final List<LHSGeneratorContext> peers = generatorContextFactory.getPeers( gctx );
+            for ( LHSGeneratorContext c : peers ) {
+                if ( c.isHasOutput() ) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /**
@@ -868,34 +936,42 @@ public class RuleModelDRLPersistenceImpl
          * readable DRL in the most common cases.
          */
         protected void generateConstraint( final FieldConstraint con,
-                                           final LHSGeneratorContext gctx ) {
+                                           final LHSGeneratorContext parentContext ) {
             generateSeparator( con,
-                               gctx );
+                               parentContext );
             if ( con instanceof CompositeFieldConstraint ) {
                 CompositeFieldConstraint cfc = (CompositeFieldConstraint) con;
                 FieldConstraint[] nestedConstraints = cfc.getConstraints();
                 if ( nestedConstraints != null ) {
-                    LHSGeneratorContext nestedGctx = generatorContextFactory.newChildGeneratorContext( gctx );
-                    preGenerateConstraints( nestedGctx );
-                    preGenerateNestedConstraint( gctx );
-                    if ( gctx.getDepth() > 0 ) {
+                    LHSGeneratorContext nestedGctx = generatorContextFactory.newChildGeneratorContext( parentContext,
+                                                                                                       con );
+                    preGenerateNestedConstraint( nestedGctx );
+                    if ( parentContext.getParent().getFieldConstraint() instanceof CompositeFieldConstraint ) {
                         buf.append( "( " );
                     }
+                    LHSGeneratorContext gctx = null;
                     for ( int nestedConstraintIndex = 0; nestedConstraintIndex < nestedConstraints.length; nestedConstraintIndex++ ) {
                         FieldConstraint nestedConstr = nestedConstraints[ nestedConstraintIndex ];
-                        nestedGctx.setFieldConstraint( nestedConstr );
+
+                        if ( nestedConstraintIndex == 0 ) {
+                            gctx = generatorContextFactory.newChildGeneratorContext( nestedGctx,
+                                                                                     nestedConstr );
+                        } else {
+                            gctx = generatorContextFactory.newPeerGeneratorContext( gctx,
+                                                                                    nestedConstr );
+                        }
+
                         generateConstraint( nestedConstr,
-                                            nestedGctx );
+                                            gctx );
                     }
-                    gctx.setHasOutput( nestedGctx.isHasOutput() );
-                    if ( gctx.getDepth() > 0 ) {
+                    if ( parentContext.getParent().getFieldConstraint() instanceof CompositeFieldConstraint ) {
                         buf.append( ")" );
                     }
-                    postGenerateNestedConstraint( gctx );
+                    postGenerateNestedConstraint( parentContext );
                 }
             } else {
                 generateSingleFieldConstraint( (SingleFieldConstraint) con,
-                                               gctx );
+                                               parentContext );
             }
         }
 
@@ -951,8 +1027,8 @@ public class RuleModelDRLPersistenceImpl
             }
         }
 
-        private void generateNormalFieldRestriction( SingleFieldConstraint constr,
-                                                     Map<String, String> parameters ) {
+        private void generateNormalFieldRestriction( final SingleFieldConstraint constr,
+                                                     final Map<String, String> parameters ) {
             if ( constr instanceof SingleFieldConstraintEBLeftSide ) {
                 SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) constr;
                 addFieldRestriction( buf,
@@ -978,9 +1054,8 @@ public class RuleModelDRLPersistenceImpl
         private void generateConnectiveFieldRestriction( final SingleFieldConstraint constr,
                                                          final Map<String, String> parameters,
                                                          final LHSGeneratorContext gctx ) {
-            LHSGeneratorContext cctx = generatorContextFactory.newChildGeneratorContext( gctx );
-            preGenerateConstraints( cctx );
-            cctx.setFieldConstraint( constr );
+            LHSGeneratorContext cctx = generatorContextFactory.newChildGeneratorContext( gctx,
+                                                                                         constr );
             if ( constr instanceof SingleFieldConstraintEBLeftSide ) {
                 SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) constr;
                 addConnectiveFieldRestriction( buf,
@@ -1227,7 +1302,7 @@ public class RuleModelDRLPersistenceImpl
             constraintValueBuilder.buildLHSFieldValue( buf,
                                                        type,
                                                        fieldType,
-                                                       "@{" + value + "}" );
+                                                       "@{removeDelimitingQuotes(" + value + ")}" );
             buf.append( " " );
         }
 
@@ -1276,6 +1351,8 @@ public class RuleModelDRLPersistenceImpl
         protected DRLConstraintValueBuilder constraintValueBuilder;
         protected RHSGeneratorContextFactory generatorContextFactory;
 
+        protected final RHSGeneratorContext rootContext;
+
         //Keep a record of Work Items that are instantiated for Actions that depend on them
         private Set<String> instantiatedWorkItems;
 
@@ -1291,9 +1368,23 @@ public class RuleModelDRLPersistenceImpl
             this.bindingsFields = bindingsFields;
             this.constraintValueBuilder = constraintValueBuilder;
             this.generatorContextFactory = generatorContextFactory;
+            this.rootContext = generatorContextFactory.newGeneratorContext();
             this.indentation = indentation;
             this.instantiatedWorkItems = new HashSet<String>();
             this.buf = b;
+        }
+
+        protected void preGenerateAction( final RHSGeneratorContext gctx ) {
+            // empty, overridden by rule templates
+        }
+
+        protected void postGenerateAction( final RHSGeneratorContext gctx ) {
+            // empty, overridden by rule templates
+        }
+
+        protected void preGenerateSetMethodCallParameterValue( final RHSGeneratorContext gctx,
+                                                               final ActionFieldValue fieldValue ) {
+            gctx.setHasOutput( true );
         }
 
         public void visitActionInsertFact( final ActionInsertFact action ) {
@@ -1359,17 +1450,24 @@ public class RuleModelDRLPersistenceImpl
         }
 
         public void visitActionUpdateField( final ActionUpdateField action ) {
+            final RHSGeneratorContext gctx = generatorContextFactory.newChildGeneratorContext( rootContext,
+                                                                                               action );
+            preGenerateAction( gctx );
+
             buf.append( indentation );
             if ( isDSLEnhanced ) {
                 buf.append( ">" );
             }
             buf.append( "modify( " ).append( action.getVariable() ).append( " ) {\n" );
-            this.generateModifyMethodCalls( action.getFieldValues() );
+            this.generateModifyMethodCalls( action.getFieldValues(),
+                                            gctx );
             buf.append( "\n" ).append( indentation );
             if ( isDSLEnhanced ) {
                 buf.append( ">" );
             }
             buf.append( "}\n" );
+
+            postGenerateAction( gctx );
         }
 
         public void visitActionGlobalCollectionAdd( final ActionGlobalCollectionAdd add ) {
@@ -1514,23 +1612,26 @@ public class RuleModelDRLPersistenceImpl
             }
         }
 
-        private void generateModifyMethodCalls( final ActionFieldValue[] fieldValues ) {
-            RHSGeneratorContext gctx = generatorContextFactory.newGeneratorContext();
+        private void generateModifyMethodCalls( final ActionFieldValue[] fieldValues,
+                                                final RHSGeneratorContext parentContext ) {
+            RHSGeneratorContext gctx = null;
             for ( int index = 0; index < fieldValues.length; index++ ) {
                 final ActionFieldValue fieldValue = fieldValues[ index ];
-                preGenerateSetMethodCallParameterValue( fieldValue,
-                                                        gctx );
+                if ( index == 0 ) {
+                    gctx = generatorContextFactory.newChildGeneratorContext( parentContext,
+                                                                             fieldValue );
+                } else {
+                    gctx = generatorContextFactory.newPeerGeneratorContext( gctx,
+                                                                            fieldValue );
+                }
+
+                preGenerateSetMethodCallParameterValue( gctx,
+                                                        fieldValue );
                 generateModifyMethodSeparator( gctx,
                                                fieldValue );
                 generateModifyMethodCall( gctx,
                                           fieldValue );
-                gctx = generatorContextFactory.newChildGeneratorContext( gctx );
             }
-        }
-
-        protected void preGenerateSetMethodCallParameterValue( final ActionFieldValue fieldValue,
-                                                               final RHSGeneratorContext gctx ) {
-            gctx.setHasOutput( true );
         }
 
         protected void generateModifyMethodCall( final RHSGeneratorContext gctx,
@@ -1555,21 +1656,17 @@ public class RuleModelDRLPersistenceImpl
 
         protected void generateModifyMethodSeparator( final RHSGeneratorContext gctx,
                                                       final ActionFieldValue fieldValue ) {
-            if ( gctx.getParent() == null ) {
-                return;
-            }
-            if ( doesParentHaveOutput( gctx ) && gctx.isHasOutput() ) {
+            if ( doesPeerHaveOutput( gctx ) ) {
                 buf.append( ", \n" );
             }
         }
 
-        private boolean doesParentHaveOutput( final RHSGeneratorContext gctx ) {
-            RHSGeneratorContext parent = gctx.getParent();
-            while ( parent != null ) {
-                if ( parent.isHasOutput() ) {
+        private boolean doesPeerHaveOutput( final RHSGeneratorContext gctx ) {
+            final List<RHSGeneratorContext> peers = generatorContextFactory.getPeers( gctx );
+            for ( RHSGeneratorContext c : peers ) {
+                if ( c.isHasOutput() ) {
                     return true;
                 }
-                parent = parent.getParent();
             }
             return false;
         }
@@ -1588,7 +1685,7 @@ public class RuleModelDRLPersistenceImpl
                                                 final StringBuilder buf ) {
             constraintValueBuilder.buildRHSFieldValue( buf,
                                                        fieldValue.getType(),
-                                                       "@{" + fieldValue.getValue() + "}" );
+                                                       "@{removeDelimitingQuotes(" + fieldValue.getValue() + ")}" );
         }
 
         protected void buildWorkItemFieldValue( final ActionWorkItemFieldValue afv,
@@ -1645,7 +1742,6 @@ public class RuleModelDRLPersistenceImpl
                 }
             }
             buf.append( " );\n" );
-
         }
     }
 

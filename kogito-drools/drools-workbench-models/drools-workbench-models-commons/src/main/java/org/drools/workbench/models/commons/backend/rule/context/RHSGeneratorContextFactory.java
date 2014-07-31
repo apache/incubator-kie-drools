@@ -18,6 +18,9 @@ package org.drools.workbench.models.commons.backend.rule.context;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
+import org.drools.workbench.models.datamodel.rule.IAction;
+
 /**
  * Factory for Generator Contexts
  */
@@ -31,15 +34,58 @@ public class RHSGeneratorContextFactory {
         return gc;
     }
 
-    public RHSGeneratorContext newChildGeneratorContext( final RHSGeneratorContext parent ) {
+    public RHSGeneratorContext newChildGeneratorContext( final RHSGeneratorContext parent,
+                                                         final IAction action ) {
         final RHSGeneratorContext gc = new RHSGeneratorContext( parent,
-                                                                parent.getOffset() + 1 );
+                                                                action,
+                                                                getMaximumDepth() + 1,
+                                                                parent.getOffset() );
+        contexts.add( gc );
+        return gc;
+    }
+
+    public RHSGeneratorContext newChildGeneratorContext( final RHSGeneratorContext parent,
+                                                         final ActionFieldValue afv ) {
+        final RHSGeneratorContext gc = new RHSGeneratorContext( parent,
+                                                                afv,
+                                                                getMaximumDepth() + 1,
+                                                                parent.getOffset() );
+        contexts.add( gc );
+        return gc;
+    }
+
+    public RHSGeneratorContext newPeerGeneratorContext( final RHSGeneratorContext peer,
+                                                        final ActionFieldValue afv ) {
+        final RHSGeneratorContext gc = new RHSGeneratorContext( peer.getParent(),
+                                                                afv,
+                                                                peer.getDepth(),
+                                                                peer.getOffset() + 1 );
         contexts.add( gc );
         return gc;
     }
 
     public List<RHSGeneratorContext> getGeneratorContexts() {
         return contexts;
+    }
+
+    private int getMaximumDepth() {
+        int depth = 0;
+        for ( RHSGeneratorContext gctx : contexts ) {
+            depth = Math.max( depth,
+                              gctx.getDepth() );
+        }
+        return depth;
+    }
+
+    public List<RHSGeneratorContext> getPeers( final RHSGeneratorContext peer ) {
+        final List<RHSGeneratorContext> peers = new ArrayList<RHSGeneratorContext>();
+        for ( RHSGeneratorContext c : contexts ) {
+            if ( c.getDepth() == peer.getDepth() ) {
+                peers.add( c );
+            }
+        }
+        peers.remove( peer );
+        return peers;
     }
 
 }

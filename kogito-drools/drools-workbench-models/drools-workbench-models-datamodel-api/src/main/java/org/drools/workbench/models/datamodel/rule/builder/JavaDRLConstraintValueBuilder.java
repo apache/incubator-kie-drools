@@ -36,16 +36,19 @@ public class JavaDRLConstraintValueBuilder extends MvelDRLConstraintValueBuilder
     public void buildRHSFieldValue( StringBuilder buf,
                                     String fieldType,
                                     String fieldValue ) {
+
+        final boolean isDelimitedString = isDelimitedString( fieldValue );
+
         if ( fieldType == null || fieldType.length() == 0 ) {
             //This should ideally be an error however we show leniency to legacy code
             if ( fieldValue == null ) {
                 return;
             }
-            if ( !fieldValue.startsWith( "\"" ) ) {
+            if ( !isDelimitedString ) {
                 buf.append( "\"" );
             }
             buf.append( fieldValue );
-            if ( !fieldValue.endsWith( "\"" ) ) {
+            if ( !isDelimitedString ) {
                 buf.append( "\"" );
             }
             return;
@@ -74,9 +77,13 @@ public class JavaDRLConstraintValueBuilder extends MvelDRLConstraintValueBuilder
         } else if ( fieldType.equals( DataType.TYPE_NUMERIC_SHORT ) ) {
             buf.append( fieldValue );
         } else if ( fieldType.equals( DataType.TYPE_STRING ) ) {
-            buf.append( "\"" );
+            if ( !isDelimitedString ) {
+                buf.append( "\"" );
+            }
             buf.append( fieldValue );
-            buf.append( "\"" );
+            if ( !isDelimitedString ) {
+                buf.append( "\"" );
+            }
         } else if ( fieldType.equals( DataType.TYPE_COMPARABLE ) ) {
             buf.append( fieldValue );
         } else {
