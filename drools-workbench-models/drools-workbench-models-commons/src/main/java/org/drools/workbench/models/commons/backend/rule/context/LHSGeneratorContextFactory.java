@@ -18,6 +18,9 @@ package org.drools.workbench.models.commons.backend.rule.context;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.workbench.models.datamodel.rule.FieldConstraint;
+import org.drools.workbench.models.datamodel.rule.IPattern;
+
 /**
  * Factory for Generator Contexts
  */
@@ -31,16 +34,58 @@ public class LHSGeneratorContextFactory {
         return gc;
     }
 
-    public LHSGeneratorContext newChildGeneratorContext( final LHSGeneratorContext parent ) {
+    public LHSGeneratorContext newChildGeneratorContext( final LHSGeneratorContext parent,
+                                                         final IPattern pattern ) {
         final LHSGeneratorContext gc = new LHSGeneratorContext( parent,
-                                                                parent.getDepth() + 1,
-                                                                parent.getOffset() + 1 );
+                                                                pattern,
+                                                                getMaximumDepth() + 1,
+                                                                parent.getOffset() );
+        contexts.add( gc );
+        return gc;
+    }
+
+    public LHSGeneratorContext newChildGeneratorContext( final LHSGeneratorContext parent,
+                                                         final FieldConstraint fieldConstraint ) {
+        final LHSGeneratorContext gc = new LHSGeneratorContext( parent,
+                                                                fieldConstraint,
+                                                                getMaximumDepth() + 1,
+                                                                parent.getOffset() );
+        contexts.add( gc );
+        return gc;
+    }
+
+    public LHSGeneratorContext newPeerGeneratorContext( final LHSGeneratorContext peer,
+                                                        final FieldConstraint fieldConstraint ) {
+        final LHSGeneratorContext gc = new LHSGeneratorContext( peer.getParent(),
+                                                                fieldConstraint,
+                                                                peer.getDepth(),
+                                                                peer.getOffset() + 1 );
         contexts.add( gc );
         return gc;
     }
 
     public List<LHSGeneratorContext> getGeneratorContexts() {
         return contexts;
+    }
+
+    private int getMaximumDepth() {
+        int depth = 0;
+        for ( LHSGeneratorContext gctx : contexts ) {
+            depth = Math.max( depth,
+                              gctx.getDepth() );
+        }
+        return depth;
+    }
+
+    public List<LHSGeneratorContext> getPeers( final LHSGeneratorContext peer ) {
+        final List<LHSGeneratorContext> peers = new ArrayList<LHSGeneratorContext>();
+        for ( LHSGeneratorContext c : contexts ) {
+            if ( c.getDepth() == peer.getDepth() ) {
+                peers.add( c );
+            }
+        }
+        peers.remove( peer );
+        return peers;
     }
 
 }

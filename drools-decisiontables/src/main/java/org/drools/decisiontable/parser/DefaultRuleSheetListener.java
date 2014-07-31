@@ -144,7 +144,7 @@ implements RuleSheetListener {
 
     /**
      * Add a new rule to the current list of rules
-     * @param rule
+     * @param newRule
      */
     protected void addRule(final Rule newRule) {
         this._ruleList.add( newRule );

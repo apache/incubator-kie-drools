@@ -119,7 +119,7 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
 
         @Override
         protected void generateConstraint( final FieldConstraint constr,
-                                           LHSGeneratorContext gctx ) {
+                                           final LHSGeneratorContext gctx ) {
             if ( isValidFieldConstraint( constr ) ) {
                 super.generateConstraint( constr,
                                           gctx );
@@ -129,17 +129,26 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
         protected void addConnectiveFieldRestriction( final StringBuilder buf,
                                                       final int type,
                                                       final String fieldType,
-                                                      String operator,
+                                                      final String operator,
                                                       final Map<String, String> parameters,
                                                       final String value,
                                                       final ExpressionFormLine expression,
-                                                      LHSGeneratorContext gctx,
+                                                      final LHSGeneratorContext gctx,
                                                       final boolean spaceBeforeOperator ) {
+            String _operator = operator;
             boolean generateTemplateCheck = type == BaseSingleFieldConstraint.TYPE_TEMPLATE;
             if ( generateTemplateCheck && !gctx.isHasOutput() && operator.startsWith( "||" ) || operator.startsWith( "&&" ) ) {
-                operator = operator.substring( 2 );
+                _operator = _operator.substring( 2 );
             }
-            super.addConnectiveFieldRestriction( buf, type, fieldType, operator, parameters, value, expression, gctx, true );
+            super.addConnectiveFieldRestriction( buf,
+                                                 type,
+                                                 fieldType,
+                                                 _operator,
+                                                 parameters,
+                                                 value,
+                                                 expression,
+                                                 gctx,
+                                                 true );
         }
 
         @Override
@@ -251,8 +260,8 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
         }
 
         @Override
-        protected void preGenerateSetMethodCallParameterValue( final ActionFieldValue fieldValue,
-                                                               final RHSGeneratorContext gctx ) {
+        protected void preGenerateSetMethodCallParameterValue( final RHSGeneratorContext gctx,
+                                                               final ActionFieldValue fieldValue ) {
             gctx.setHasOutput( isValidFieldConstraint( fieldValue ) );
         }
 

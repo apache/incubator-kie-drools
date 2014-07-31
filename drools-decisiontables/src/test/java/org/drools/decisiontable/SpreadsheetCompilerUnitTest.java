@@ -16,11 +16,6 @@
 
 package org.drools.decisiontable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +30,7 @@ import org.drools.template.model.Global;
 import org.drools.template.model.Import;
 import org.drools.template.parser.DataListener;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.DecisionTableConfiguration;
@@ -45,7 +41,8 @@ import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
+
+import static org.junit.Assert.*;
 
 /**
  * Some basic unit tests for converter utility. Note that some of this may still
@@ -58,7 +55,7 @@ public class SpreadsheetCompilerUnitTest {
     public void testLoadFromClassPath() {
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
         String drl = converter.compile( "/data/MultiSheetDST.xls",
-                                              InputType.XLS );
+                                        InputType.XLS );
 
         assertNotNull( drl );
 
@@ -410,36 +407,204 @@ public class SpreadsheetCompilerUnitTest {
 
         assertNotNull( drl );
     }
-    
+
+    @Test
+    public void testNoConstraintsEmptyCells() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        /**
+         * +--------------+--------------+
+         * | CONDITION    | CONDITION    |
+         * +--------------+--------------+
+         * |           Person            |
+         * +--------------+--------------+
+         * |	name      |    age       |
+         * +--------------+--------------+
+         * | <empty>      | 55           |
+         * | Fred         | <empty>      |
+         * | Fred         | 55           |
+         * | <empty>      | <empty>      |
+         * +--------------+--------------+
+         */
+        String drl = converter.compile( "/data/NoConstraintsEmptyCells.xls",
+                                        InputType.XLS );
+
+        assertNotNull( drl );
+
+        final String expected = "package Some_business_rules;\n" +
+                "//generated from Decision Table\n" +
+                "import org.drools.decisiontable.Person;\n" +
+                "// rule values at C10, header at C5\n" +
+                "rule \"Cheese fans_10\"\n" +
+                "  when\n" +
+                "    Person(age == \"55\")\n" +
+                "  then\n" +
+                "end\n" +
+                "// rule values at C11, header at C5\n" +
+                "rule \"Cheese fans_11\"\n" +
+                "  when\n" +
+                "    Person(name == \"Fred\")\n" +
+                "  then\n" +
+                "end\n" +
+                "// rule values at C12, header at C5\n" +
+                "rule \"Cheese fans_12\"\n" +
+                "  when\n" +
+                "    Person(name == \"Fred\", age == \"55\")\n" +
+                "  then\n" +
+                "end";
+        //No Pattern generated when all constraints have empty values
+
+        assertEqualsIgnoreWhitespace( expected,
+                                      drl );
+    }
+
+    @Test
+    public void testNoConstraintsSpacesInCells() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        /**
+         * +--------------+--------------+
+         * | CONDITION    | CONDITION    |
+         * +--------------+--------------+
+         * |           Person            |
+         * +--------------+--------------+
+         * |	name      |    age       |
+         * +--------------+--------------+
+         * | <spaces>     | 55           |
+         * | Fred         | <spaces>     |
+         * | Fred         | 55           |
+         * | <spaces>     | <spaces>     |
+         * +--------------+--------------+
+         */
+        String drl = converter.compile( "/data/NoConstraintsSpacesInCells.xls",
+                                        InputType.XLS );
+
+        assertNotNull( drl );
+
+        final String expected = "package Some_business_rules;\n" +
+                "//generated from Decision Table\n" +
+                "import org.drools.decisiontable.Person;\n" +
+                "// rule values at C10, header at C5\n" +
+                "rule \"Cheese fans_10\"\n" +
+                "  when\n" +
+                "    Person(age == \"55\")\n" +
+                "  then\n" +
+                "end\n" +
+                "// rule values at C11, header at C5\n" +
+                "rule \"Cheese fans_11\"\n" +
+                "  when\n" +
+                "    Person(name == \"Fred\")\n" +
+                "  then\n" +
+                "end\n" +
+                "// rule values at C12, header at C5\n" +
+                "rule \"Cheese fans_12\"\n" +
+                "  when\n" +
+                "    Person(name == \"Fred\", age == \"55\")\n" +
+                "  then\n" +
+                "end";
+        //No Pattern generated when all constraints have empty values
+
+        assertEqualsIgnoreWhitespace( expected,
+                                      drl );
+    }
+
+    @Test
+    public void testNoConstraintsDelimitedSpacesInCells() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        /**
+         * +--------------+--------------+
+         * | CONDITION    | CONDITION    |
+         * +--------------+--------------+
+         * |           Person            |
+         * +--------------+--------------+
+         * |	name      |    age       |
+         * +--------------+--------------+
+         * | "     "      | 55           |
+         * | Fred         | "     "      |
+         * | Fred         | 55           |
+         * | "     "      | "     "      |
+         * | ""           | 55           |
+         * | Fred         | ""           |
+         * +--------------+--------------+
+         */
+        String drl = converter.compile( "/data/NoConstraintsDelimitedSpacesInCells.xls",
+                                        InputType.XLS );
+
+        assertNotNull( drl );
+
+        final String expected = "package Some_business_rules;\n" +
+                "//generated from Decision Table\n" +
+                "import org.drools.decisiontable.Person;\n" +
+                "// rule values at C10, header at C5\n" +
+                "rule \"Cheese fans_10\"\n" +
+                "  when\n" +
+                "    Person(name == \"     \", age == \"55\")\n" +
+                "  then\n" +
+                "end\n" +
+                "// rule values at C11, header at C5\n" +
+                "rule \"Cheese fans_11\"\n" +
+                "  when\n" +
+                "    Person(name == \"Fred\", age == \"\")\n" +
+                "  then\n" +
+                "end\n" +
+                "// rule values at C12, header at C5\n" +
+                "rule \"Cheese fans_12\"\n" +
+                "  when\n" +
+                "    Person(name == \"Fred\", age == \"55\")\n" +
+                "  then\n" +
+                "end\n" +
+                "// rule values at C13, header at C5\n" +
+                "rule \"Cheese fans_13\"\n" +
+                "  when\n" +
+                "    Person(name == \"     \", age == \"\")\n" +
+                "  then\n" +
+                "end\n" +
+                "// rule values at C14, header at C5\n" +
+                "rule \"Cheese fans_14\"\n" +
+                "  when\n" +
+                "    Person(name == \"\", age == \"55\")\n" +
+                "  then\n" +
+                "end\n" +
+                "// rule values at C15, header at C5\n" +
+                "rule \"Cheese fans_15\"\n" +
+                "  when\n" +
+                "    Person(name == \"Fred\", age == \"\")\n" +
+                "  then\n" +
+                "end";
+
+        assertEqualsIgnoreWhitespace( expected,
+                                      drl );
+    }
+
     public static class IntHolder {
+
         private int value;
-        public IntHolder(int i) {
+
+        public IntHolder( int i ) {
             value = i;
         }
+
         public int getValue() {
             return value;
         }
+
         public void setValue( int value ) {
             this.value = value;
         }
+
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "IntHolder [value=" + value + "]";
-        }        
+        }
     }
-    
+
     private KnowledgeBase readKnowledgeBase( String resource ) throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         DecisionTableConfiguration config = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         config.setInputType( DecisionTableInputType.XLS );
         kbuilder.add( ResourceFactory.newClassPathResource( resource, getClass() ), ResourceType.DTABLE,
-                config );
+                      config );
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if( errors.size() > 0 )
-        {
-            for( KnowledgeBuilderError error : errors )
-            {
+        if ( errors.size() > 0 ) {
+            for ( KnowledgeBuilderError error : errors ) {
                 System.err.println( error );
             }
             throw new IllegalArgumentException( "Could not parse knowledge." );
@@ -448,5 +613,16 @@ public class SpreadsheetCompilerUnitTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         return kbase;
     }
-    
+
+    private void assertEqualsIgnoreWhitespace( final String expected,
+                                               final String actual ) {
+        final String cleanExpected = expected.replaceAll( "\\s+",
+                                                          "" );
+        final String cleanActual = actual.replaceAll( "\\s+",
+                                                      "" );
+
+        assertEquals( cleanExpected,
+                      cleanActual );
+    }
+
 }

@@ -19,6 +19,7 @@ package org.drools.workbench.models.guided.template.backend;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -122,12 +123,26 @@ public class RuleTemplateModelDRLPersistenceImpl
         }
 
         @Override
-        public void preGenerateConstraints( LHSGeneratorContext gctx ) {
-            buf.append( "@code{hasOutput" + gctx.getDepth() + "_" + gctx.getOffset() + " = false}" );
+        protected void preGeneratePattern( final LHSGeneratorContext gctx ) {
+            buf.append( "@if{(" );
+            if ( gctx.getVarsInScope().size() == 0 ) {
+                buf.append( "true)}" );
+            } else {
+                for ( String var : gctx.getVarsInScope() ) {
+                    buf.append( var + " != empty || " );
+                }
+                buf.delete( buf.length() - 4, buf.length() );
+                buf.append( ") || hasLHSNonTemplateOutput" ).append( gctx.getDepth() + "_" + gctx.getOffset() ).append( "}" );
+            }
         }
 
         @Override
-        public void preGenerateNestedConnector( LHSGeneratorContext gctx ) {
+        protected void postGeneratePattern( final LHSGeneratorContext gctx ) {
+            buf.append( "@end{}" );
+        }
+
+        @Override
+        protected void preGenerateNestedConnector( final LHSGeneratorContext gctx ) {
             if ( gctx.getVarsInScope().size() > 0 ) {
                 buf.append( "@if{(" );
                 for ( String var : gctx.getVarsInScope() ) {
@@ -147,7 +162,7 @@ public class RuleTemplateModelDRLPersistenceImpl
                         buf.delete( buf.length() - 4, buf.length() );
                     }
                 }
-                buf.append( ") || hasNonTemplateOutput" ).append( gctx.getDepth() + "_" + gctx.getOffset() ).append( "}" );
+                buf.append( ") || hasLHSNonTemplateOutput" ).append( gctx.getDepth() + "_" + gctx.getOffset() ).append( "}" );
             } else {
                 LHSGeneratorContext parentContext = gctx.getParent();
                 if ( parentContext != null ) {
@@ -166,7 +181,7 @@ public class RuleTemplateModelDRLPersistenceImpl
         }
 
         @Override
-        public void postGenerateNestedConnector( LHSGeneratorContext gctx ) {
+        protected void postGenerateNestedConnector( final LHSGeneratorContext gctx ) {
             if ( gctx.getVarsInScope().size() > 0 ) {
                 buf.append( "@end{}" );
             } else {
@@ -182,19 +197,19 @@ public class RuleTemplateModelDRLPersistenceImpl
         }
 
         @Override
-        public void preGenerateNestedConstraint( LHSGeneratorContext gctx ) {
+        protected void preGenerateNestedConstraint( final LHSGeneratorContext gctx ) {
             if ( gctx.getVarsInScope().size() > 0 ) {
                 buf.append( "@if{!(" );
                 for ( String var : gctx.getVarsInScope() ) {
                     buf.append( var + " == empty && " );
                 }
                 buf.delete( buf.length() - 4, buf.length() );
-                buf.append( ") || hasNonTemplateOutput" ).append( gctx.getDepth() + "_" + gctx.getOffset() ).append( "}" );
+                buf.append( ") || hasLHSNonTemplateOutput" ).append( gctx.getDepth() + "_" + gctx.getOffset() ).append( "}" );
             }
         }
 
         @Override
-        public void postGenerateNestedConstraint( LHSGeneratorContext gctx ) {
+        protected void postGenerateNestedConstraint( final LHSGeneratorContext gctx ) {
             if ( gctx.getVarsInScope().size() > 0 ) {
                 buf.append( "@end{}" );
             }
@@ -202,7 +217,7 @@ public class RuleTemplateModelDRLPersistenceImpl
 
         @Override
         protected void generateConstraint( final FieldConstraint constr,
-                                           LHSGeneratorContext gctx ) {
+                                           final LHSGeneratorContext gctx ) {
             boolean generateTemplateCheck = isTemplateKey( constr );
 
             if ( generateTemplateCheck ) {
@@ -222,37 +237,48 @@ public class RuleTemplateModelDRLPersistenceImpl
                     buf.append( "@if{" + ( (SingleFieldConstraint) constr ).getValue() + " != empty}" );
                 }
             }
+            buf.append( "@code{hasLHSOutput" + gctx.getDepth() + "_" + gctx.getOffset() + " = true}" );
             super.generateConstraint( constr,
                                       gctx );
-            buf.append( "@code{hasOutput" + gctx.getDepth() + "_" + gctx.getOffset() + " = true}" );
             if ( generateTemplateCheck ) {
                 buf.append( "@end{}" );
             }
         }
 
-        private boolean isTemplateKey( FieldConstraint nestedConstr ) {
+        private boolean isTemplateKey( final FieldConstraint nestedConstr ) {
             return nestedConstr instanceof BaseSingleFieldConstraint && ( (BaseSingleFieldConstraint) nestedConstr ).getConstraintValueType() == BaseSingleFieldConstraint.TYPE_TEMPLATE;
         }
 
-        public void generateSeparator( FieldConstraint constr,
-                                       LHSGeneratorContext gctx ) {
-            if ( !gctx.isHasOutput() ) {
+        public void generateSeparator( final FieldConstraint constr,
+                                       final LHSGeneratorContext gctx ) {
+            final List<LHSGeneratorContext> peers = generatorContextFactory.getPeers( gctx );
+            if ( peers.size() == 0 ) {
                 return;
             }
 
             boolean generateTemplateCheck = isTemplateKey( constr );
             if ( generateTemplateCheck ) {
-                buf.append( "@if{ hasOutput" + gctx.getDepth() + "_" + gctx.getOffset() + "}" );
+                buf.append( "@if{(" );
+                buf.append( "hasLHSOutput" + gctx.getDepth() + "_" + gctx.getOffset() ).append( " && (" );
+                for ( int i = 0; i < peers.size(); i++ ) {
+                    final LHSGeneratorContext peer = peers.get( i );
+                    buf.append( "hasLHSOutput" + peer.getDepth() + "_" + peer.getOffset() );
+                    buf.append( ( i < peers.size() - 1 ? " || " : ")" ) );
+                }
+                buf.append( ")}" );
             }
 
             preGenerateNestedConnector( gctx );
-            if ( gctx.getDepth() == 0 ) {
-                buf.append( ", " );
-            } else {
+            if ( gctx.getParent().getFieldConstraint() instanceof CompositeFieldConstraint ) {
                 CompositeFieldConstraint cconstr = (CompositeFieldConstraint) gctx.getParent().getFieldConstraint();
                 buf.append( cconstr.getCompositeJunctionType() + " " );
+            } else {
+                if ( buf.length() > 2 && !( buf.charAt( buf.length() - 2 ) == ',' ) ) {
+                    buf.append( ", " );
+                }
             }
             postGenerateNestedConnector( gctx );
+
             if ( generateTemplateCheck ) {
                 buf.append( "@end{}" );
             }
@@ -262,7 +288,7 @@ public class RuleTemplateModelDRLPersistenceImpl
         protected void addConnectiveFieldRestriction( final StringBuilder buf,
                                                       final int type,
                                                       final String fieldType,
-                                                      String operator,
+                                                      final String operator,
                                                       final Map<String, String> parameters,
                                                       final String value,
                                                       final ExpressionFormLine expression,
@@ -273,18 +299,28 @@ public class RuleTemplateModelDRLPersistenceImpl
                 buf.append( "@if{" + value + " != empty}" );
             }
 
-            if ( generateTemplateCheck && operator.startsWith( "||" ) || operator.startsWith( "&&" ) ) {
+            String _operator = operator;
+            if ( generateTemplateCheck && _operator.startsWith( "||" ) || _operator.startsWith( "&&" ) ) {
                 spaceBeforeOperator = false;
-                buf.append( "@if{ hasOutput" + gctx.getDepth() + "_" + gctx.getOffset() + "} " );// add space here, due to split operator
-                buf.append( operator.substring( 0, 2 ) );
+                buf.append( "@if{hasLHSOutput" + gctx.getDepth() + "_" + gctx.getOffset() + "} " );// add space here, due to split operator
+                buf.append( _operator.substring( 0,
+                                                 2 ) );
                 buf.append( "@end{}" );
-                operator = operator.substring( 2 );
+                _operator = _operator.substring( 2 );
             }
 
-            super.addConnectiveFieldRestriction( buf, type, fieldType, operator, parameters, value, expression, gctx, spaceBeforeOperator );
+            super.addConnectiveFieldRestriction( buf,
+                                                 type,
+                                                 fieldType,
+                                                 _operator,
+                                                 parameters,
+                                                 value,
+                                                 expression,
+                                                 gctx,
+                                                 spaceBeforeOperator );
 
             if ( generateTemplateCheck ) {
-                buf.append( "@code{hasOutput" + gctx.getDepth() + "_" + gctx.getOffset() + " = true}" );
+                buf.append( "@code{hasLHSOutput" + gctx.getDepth() + "_" + gctx.getOffset() + " = true}" );
                 buf.append( "@end{}" );
             }
         }
@@ -379,6 +415,41 @@ public class RuleTemplateModelDRLPersistenceImpl
         }
 
         @Override
+        protected void preGenerateAction( final RHSGeneratorContext gctx ) {
+            buf.append( "@if{(" );
+            if ( gctx.getVarsInScope().size() == 0 ) {
+                buf.append( "true)}" );
+            } else {
+                for ( String var : gctx.getVarsInScope() ) {
+                    buf.append( var + " != empty || " );
+                }
+                buf.delete( buf.length() - 4, buf.length() );
+                buf.append( ") || hasRHSNonTemplateOutput" ).append( gctx.getDepth() + "_" + gctx.getOffset() ).append( "}" );
+            }
+        }
+
+        @Override
+        protected void postGenerateAction( final RHSGeneratorContext gctx ) {
+            buf.append( "@end{}" );
+        }
+
+        @Override
+        protected void preGenerateSetMethodCallParameterValue( final RHSGeneratorContext gctx,
+                                                               final ActionFieldValue fieldValue ) {
+            if ( fieldValue.getNature() == FieldNatureType.TYPE_TEMPLATE ) {
+                buf.append( "@if{" + fieldValue.getValue() + " != empty}" );
+                buf.append( "@code{hasRHSOutput" + gctx.getDepth() + "_" + gctx.getOffset() + " = true}" );
+                super.preGenerateSetMethodCallParameterValue( gctx,
+                                                              fieldValue );
+                buf.append( "@end{}" );
+            } else {
+                buf.append( "@code{hasRHSOutput" + gctx.getDepth() + "_" + gctx.getOffset() + " = true}" );
+                super.preGenerateSetMethodCallParameterValue( gctx,
+                                                              fieldValue );
+            }
+        }
+
+        @Override
         protected void generateSetMethodCall( final String variableName,
                                               final ActionFieldValue fieldValue ) {
             if ( fieldValue.getNature() == FieldNatureType.TYPE_TEMPLATE ) {
@@ -389,23 +460,6 @@ public class RuleTemplateModelDRLPersistenceImpl
             } else {
                 super.generateSetMethodCall( variableName,
                                              fieldValue );
-
-            }
-        }
-
-        @Override
-        protected void preGenerateSetMethodCallParameterValue( final ActionFieldValue fieldValue,
-                                                               final RHSGeneratorContext gctx ) {
-            if ( fieldValue.getNature() == FieldNatureType.TYPE_TEMPLATE ) {
-                buf.append( "@if{" + fieldValue.getValue() + " != empty}" );
-                buf.append( "@code{hasOutput" + gctx.getOffset() + " = true}" );
-                super.preGenerateSetMethodCallParameterValue( fieldValue,
-                                                              gctx );
-                buf.append( "@end{}" );
-            } else {
-                buf.append( "@code{hasOutput" + gctx.getOffset() + " = true}" );
-                super.preGenerateSetMethodCallParameterValue( fieldValue,
-                                                              gctx );
             }
         }
 
@@ -427,14 +481,16 @@ public class RuleTemplateModelDRLPersistenceImpl
         @Override
         protected void generateModifyMethodSeparator( final RHSGeneratorContext gctx,
                                                       final ActionFieldValue fieldValue ) {
-            if ( gctx.getParent() == null ) {
+            final List<RHSGeneratorContext> peers = generatorContextFactory.getPeers( gctx );
+            if ( peers.size() == 0 ) {
                 return;
             }
-            buf.append( "@if{hasOutput" + gctx.getOffset() + " && (" );
-            RHSGeneratorContext parent = gctx.getParent();
-            while ( parent != null ) {
-                buf.append( "hasOutput" + parent.getOffset() + ( parent.getParent() != null ? " || " : "" ) );
-                parent = parent.getParent();
+            buf.append( "@if{(" );
+            buf.append( "hasRHSOutput" + gctx.getDepth() + "_" + gctx.getOffset() ).append( " && (" );
+            for ( int i = 0; i < peers.size(); i++ ) {
+                final RHSGeneratorContext peer = peers.get( i );
+                buf.append( "hasRHSOutput" + peer.getDepth() + "_" + peer.getOffset() );
+                buf.append( ( i < peers.size() - 1 ? " || " : ")" ) );
             }
             buf.append( ")}" );
             buf.append( ", \n" );
@@ -442,7 +498,7 @@ public class RuleTemplateModelDRLPersistenceImpl
         }
 
         @Override
-        public void visitFreeFormLine( FreeFormLine ffl ) {
+        public void visitFreeFormLine( final FreeFormLine ffl ) {
             if ( ffl.getText() == null ) {
                 return;
             }
@@ -526,11 +582,27 @@ public class RuleTemplateModelDRLPersistenceImpl
         this.marshalFooter( buf );
 
         for ( LHSGeneratorContext gc : lhsGeneratorContextFactory.getGeneratorContexts() ) {
-            header.append( "@code{hasNonTemplateOutput" + gc.getDepth() + "_" + gc.getOffset() + " = " + gc.hasNonTemplateOutput() + "}" );
+            header.append( "@code{hasLHSOutput" + gc.getDepth() + "_" + gc.getOffset() + " = false}\n" );
+            header.append( "@code{hasLHSNonTemplateOutput" + gc.getDepth() + "_" + gc.getOffset() + " = " + gc.hasNonTemplateOutput() + "}\n" );
         }
         for ( RHSGeneratorContext gc : rhsGeneratorContextFactory.getGeneratorContexts() ) {
-            header.append( "@code{hasOutput" + gc.getOffset() + " = false}" );
+            header.append( "@code{hasRHSOutput" + gc.getDepth() + "_" + gc.getOffset() + " = false}\n" );
+            header.append( "@code{hasRHSNonTemplateOutput" + gc.getDepth() + "_" + gc.getOffset() + " = " + gc.hasNonTemplateOutput() + "}\n" );
         }
+
+        header.append( "@code{\n" +
+                               "  def removeDelimitingQuotes(value) {\n" +
+                               "    if(value.startsWith('\"') && value.endsWith('\"')) {\n" +
+                               "      return value.substring(1, value.length() - 1);\n" +
+                               "    }\n" +
+                               "  value;\n" +
+                               "  }\n" +
+                               "}\n" );
+
+        header.append( "@code{\n" +
+                               "def capitals(value) {\n" +
+                               "  value.toUpperCase();\n" +
+                               "}}\n" );
 
         return header.append( buf ).toString();
     }

@@ -38,16 +38,19 @@ public class MvelDRLConstraintValueBuilder extends DRLConstraintValueBuilder {
                                     int constraintType,
                                     String fieldType,
                                     String fieldValue ) {
+
+        final boolean isDelimitedString = isDelimitedString( fieldValue );
+
         if ( fieldType == null || fieldType.length() == 0 ) {
             //This should ideally be an error however we show leniency to legacy code
             if ( fieldValue == null ) {
                 return;
             }
-            if ( !fieldValue.startsWith( "\"" ) ) {
+            if ( !isDelimitedString ) {
                 buf.append( "\"" );
             }
             buf.append( fieldValue );
-            if ( !fieldValue.endsWith( "\"" ) ) {
+            if ( !isDelimitedString ) {
                 buf.append( "\"" );
             }
             return;
@@ -76,17 +79,25 @@ public class MvelDRLConstraintValueBuilder extends DRLConstraintValueBuilder {
         } else if ( fieldType.equals( DataType.TYPE_NUMERIC_SHORT ) ) {
             buf.append( fieldValue );
         } else if ( fieldType.equals( DataType.TYPE_STRING ) ) {
-            buf.append( "\"" );
+            if ( !isDelimitedString ) {
+                buf.append( "\"" );
+            }
             buf.append( fieldValue );
-            buf.append( "\"" );
+            if ( !isDelimitedString ) {
+                buf.append( "\"" );
+            }
         } else if ( fieldType.equals( DataType.TYPE_COMPARABLE ) ) {
             buf.append( fieldValue );
         } else {
-            addQuote( constraintType,
-                      buf );
+            if ( !isDelimitedString ) {
+                addQuote( constraintType,
+                          buf );
+            }
             buf.append( fieldValue );
-            addQuote( constraintType,
-                      buf );
+            if ( !isDelimitedString ) {
+                addQuote( constraintType,
+                          buf );
+            }
         }
 
     }
@@ -105,16 +116,19 @@ public class MvelDRLConstraintValueBuilder extends DRLConstraintValueBuilder {
     public void buildRHSFieldValue( StringBuilder buf,
                                     String fieldType,
                                     String fieldValue ) {
+
+        final boolean isDelimitedString = isDelimitedString( fieldValue );
+
         if ( fieldType == null || fieldType.length() == 0 ) {
             //This should ideally be an error however we show leniency to legacy code
             if ( fieldValue == null ) {
                 return;
             }
-            if ( !fieldValue.startsWith( "\"" ) ) {
+            if ( !isDelimitedString ) {
                 buf.append( "\"" );
             }
             buf.append( fieldValue );
-            if ( !fieldValue.endsWith( "\"" ) ) {
+            if ( !isDelimitedString ) {
                 buf.append( "\"" );
             }
             return;
@@ -143,9 +157,13 @@ public class MvelDRLConstraintValueBuilder extends DRLConstraintValueBuilder {
         } else if ( fieldType.equals( DataType.TYPE_NUMERIC_SHORT ) ) {
             buf.append( fieldValue );
         } else if ( fieldType.equals( DataType.TYPE_STRING ) ) {
-            buf.append( "\"" );
+            if ( !isDelimitedString ) {
+                buf.append( "\"" );
+            }
             buf.append( fieldValue );
-            buf.append( "\"" );
+            if ( !isDelimitedString ) {
+                buf.append( "\"" );
+            }
         } else if ( fieldType.equals( DataType.TYPE_COMPARABLE ) ) {
             buf.append( fieldValue );
         } else {
@@ -160,6 +178,10 @@ public class MvelDRLConstraintValueBuilder extends DRLConstraintValueBuilder {
         if ( constraintType == BaseSingleFieldConstraint.TYPE_LITERAL ) {
             buf.append( "\"" );
         }
+    }
+
+    protected boolean isDelimitedString( final String content ) {
+        return content.startsWith( "\"" ) && content.endsWith( "\"" );
     }
 
 }

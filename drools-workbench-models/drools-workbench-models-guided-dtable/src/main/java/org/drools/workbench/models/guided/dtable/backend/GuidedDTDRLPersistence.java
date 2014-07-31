@@ -24,6 +24,7 @@ import java.util.StringTokenizer;
 
 import org.drools.workbench.models.commons.backend.imports.ImportsWriter;
 import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
+import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
 import org.drools.workbench.models.datamodel.rule.ActionFieldList;
@@ -44,8 +45,8 @@ import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleMetadata;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
-import org.drools.workbench.models.datamodel.rule.visitors.RuleModelVisitor;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.visitors.RuleModelVisitor;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDTBRDRLPersistence;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDTDRLOtherwiseHelper;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDTDRLUtilities;
@@ -192,7 +193,8 @@ public class GuidedDTDRLPersistence {
                     cell = GuidedDTDRLUtilities.convertDTCellValueToString( dcv );
                 }
 
-                if ( validCell( cell ) ) {
+                if ( validCell( cell,
+                                dcv.getDataType() ) ) {
                     if ( c instanceof ActionWorkItemInsertFactCol52 ) {
                         doAction( actions,
                                   (ActionWorkItemInsertFactCol52) c,
@@ -272,13 +274,27 @@ public class GuidedDTDRLPersistence {
 
             for ( IAction action : column.getDefinition() ) {
 
-                boolean addAction = true;
+                boolean addAction = false;
 
                 //Get interpolation variables used by the Action
                 Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
                 RuleModelVisitor rmv = new RuleModelVisitor( action,
                                                              ivs );
                 rmv.visit( action );
+
+                if ( ivs.size() == 0 ) {
+                    addAction = true;
+                } else if ( ivs.size() > 0 ) {
+
+                    //Ensure every key has a value and substitute keys for values
+                    for ( InterpolationVariable variable : ivs.keySet() ) {
+                        String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
+                        if ( !"".equals( value ) ) {
+                            addAction = true;
+                            break;
+                        }
+                    }
+                }
 
                 if ( addAction ) {
                     addAction( action,
@@ -568,13 +584,27 @@ public class GuidedDTDRLPersistence {
 
             for ( IPattern pattern : column.getDefinition() ) {
 
-                boolean addPattern = true;
+                boolean addPattern = false;
 
                 //Get interpolation variables used by the Pattern
                 Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
                 RuleModelVisitor rmv = new RuleModelVisitor( pattern,
                                                              ivs );
                 rmv.visit( pattern );
+
+                if ( ivs.size() == 0 ) {
+                    addPattern = true;
+                } else if ( ivs.size() > 0 ) {
+
+                    //Ensure every key has a value and substitute keys for values
+                    for ( InterpolationVariable variable : ivs.keySet() ) {
+                        String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
+                        if ( !"".equals( value ) ) {
+                            addPattern = true;
+                            break;
+                        }
+                    }
+                }
 
                 if ( addPattern ) {
                     patterns.add( pattern );
@@ -629,7 +659,8 @@ public class GuidedDTDRLPersistence {
 
             //Otherwise values are automatically valid as they're constructed from the other rules
             if ( !isOtherwise ) {
-                isValid = validCell( cell );
+                isValid = validCell( cell,
+                                     dcv.getDataType() );
             }
 
             //If operator is "== null" or "!= null" add constraint if table value is true
@@ -768,10 +799,10 @@ public class GuidedDTDRLPersistence {
         for ( int j = 0; j < attributeCols.size(); j++ ) {
             AttributeCol52 at = attributeCols.get( j );
             int index = allColumns.indexOf( at );
+            final DTCellValue52 dcv = row.get( index );
+            String cell = GuidedDTDRLUtilities.convertDTCellValueToString( dcv );
 
-            String cell = GuidedDTDRLUtilities.convertDTCellValueToString( row.get( index ) );
-
-            if ( validCell( cell ) ) {
+            if ( validateAttributeCell( cell ) ) {
 
                 //If instance of "otherwise" column then flag RuleModel as being negated
                 if ( at.getAttribute().equals( GuidedDecisionTable52.NEGATE_RULE_ATTR ) ) {
@@ -798,10 +829,10 @@ public class GuidedDTDRLPersistence {
         for ( int j = 0; j < metadataCols.size(); j++ ) {
             MetadataCol52 meta = metadataCols.get( j );
             int index = allColumns.indexOf( meta );
+            final DTCellValue52 dcv = row.get( index );
+            String cell = GuidedDTDRLUtilities.convertDTCellValueToString( dcv );
 
-            String cell = GuidedDTDRLUtilities.convertDTCellValueToString( row.get( index ) );
-
-            if ( validCell( cell ) ) {
+            if ( validateMetadataCell( cell ) ) {
                 metadataList.add( new RuleMetadata( meta.getMetadata(),
                                                     cell ) );
             }
@@ -816,7 +847,20 @@ public class GuidedDTDRLPersistence {
         return "Row " + num.longValue() + " " + tableName;
     }
 
-    boolean validCell( String c ) {
+    boolean validCell( String c,
+                       DataType.DataTypes dataType ) {
+        if ( dataType.equals( DataType.DataTypes.STRING ) ) {
+            //TODO {manstis} This is consistent with XLS handling at the moment
+            return ( c != null ) && ( !c.trim().equals( "" ) );
+        }
+        return ( c != null ) && ( !c.trim().equals( "" ) );
+    }
+
+    boolean validateAttributeCell( String c ) {
+        return ( c != null ) && ( !c.trim().equals( "" ) );
+    }
+
+    boolean validateMetadataCell( String c ) {
         return ( c != null ) && ( !c.trim().equals( "" ) );
     }
 
