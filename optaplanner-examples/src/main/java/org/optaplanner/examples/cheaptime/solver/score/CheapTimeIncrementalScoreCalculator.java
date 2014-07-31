@@ -16,14 +16,21 @@
 
 package org.optaplanner.examples.cheaptime.solver.score;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.primlong.LongConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
+import org.optaplanner.core.impl.score.director.incremental.ConstraintMatchAwareIncrementalScoreCalculator;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.PeriodPowerCost;
+import org.optaplanner.examples.cheaptime.domain.Resource;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
@@ -31,7 +38,10 @@ import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<CheapTimeSolution> {
+public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<CheapTimeSolution>
+        implements ConstraintMatchAwareIncrementalScoreCalculator<CheapTimeSolution> {
+
+    protected static final String CONSTRAINT_PACKAGE = "org.optaplanner.examples.cheaptime.solver";
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -505,6 +515,74 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             return status.name() + " (" + taskCount + " tasks)";
         }
 
+    }
+
+    // ************************************************************************
+    // ConstraintMatchAwareIncrementalScoreCalculator methods
+    // ************************************************************************
+
+    @Override
+    public void resetWorkingSolution(CheapTimeSolution workingSolution, boolean constraintMatchEnabled) {
+        resetWorkingSolution(workingSolution);
+        // ignore constraintMatchEnabled, it is always presumed enabled
+    }
+
+    @Override
+    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
+        List<Resource> resourceList = cheapTimeSolution.getResourceList();
+        LongConstraintMatchTotal resourceCapacityMatchTotal = new LongConstraintMatchTotal(
+                CONSTRAINT_PACKAGE, "resourceCapacity", 0);
+        LongConstraintMatchTotal spinUpDownMatchTotal = new LongConstraintMatchTotal(
+                CONSTRAINT_PACKAGE, "spinUpDown", 1);
+        LongConstraintMatchTotal machineConsumptionMatchTotal = new LongConstraintMatchTotal(
+                CONSTRAINT_PACKAGE, "machineConsumption", 1);
+        LongConstraintMatchTotal taskConsumptionMatchTotal = new LongConstraintMatchTotal(
+                CONSTRAINT_PACKAGE, "taskConsumption", 1);
+        LongConstraintMatchTotal minimizeTaskStartPeriodMatchTotal = new LongConstraintMatchTotal(
+                CONSTRAINT_PACKAGE, "minimizeTaskStartPeriod", 2);
+        for (Machine machine : cheapTimeSolution.getMachineList()) {
+            for (int period = 0; period < globalPeriodRangeTo; period++) {
+                MachinePeriodPart machinePeriod = machineToMachinePeriodListMap[machine.getIndex()][period];
+                for (int i = 0; i < machinePeriod.resourceAvailableList.length; i++) {
+                    int resourceAvailable = machinePeriod.resourceAvailableList[i];
+                    if (resourceAvailable < 0) {
+                        resourceCapacityMatchTotal.addConstraintMatch(
+                                Arrays.<Object>asList(machine, period, resourceList.get(i)),
+                                resourceAvailable);
+                    }
+                }
+                if (machinePeriod.status == MachinePeriodStatus.SPIN_UP_AND_ACTIVE) {
+                    spinUpDownMatchTotal.addConstraintMatch(
+                            Arrays.<Object>asList(machine, period),
+                            - machine.getSpinUpDownCostMicros());
+                }
+                if (machinePeriod.status != MachinePeriodStatus.OFF) {
+                    machineConsumptionMatchTotal.addConstraintMatch(
+                            Arrays.<Object>asList(machine, period),
+                            - machinePeriod.machineCostMicros);
+                }
+            }
+        }
+        // Individual taskConsumption isn't tracked for performance
+        taskConsumptionMatchTotal.addConstraintMatch(Arrays.<Object>asList(),
+                mediumScore - spinUpDownMatchTotal.getWeightTotal() - machineConsumptionMatchTotal.getWeightTotal());
+        // Individual taskStartPeriod isn't tracked for performance
+        // but we mimic it
+        for (TaskAssignment taskAssignment : cheapTimeSolution.getTaskAssignmentList()) {
+            Integer startPeriod = taskAssignment.getStartPeriod();
+            if (startPeriod != null) {
+                minimizeTaskStartPeriodMatchTotal.addConstraintMatch(Arrays.<Object>asList(taskAssignment),
+                        - startPeriod);
+            }
+
+        }
+        List<ConstraintMatchTotal> constraintMatchTotalList = new ArrayList<ConstraintMatchTotal>(4);
+        constraintMatchTotalList.add(resourceCapacityMatchTotal);
+        constraintMatchTotalList.add(spinUpDownMatchTotal);
+        constraintMatchTotalList.add(machineConsumptionMatchTotal);
+        constraintMatchTotalList.add(taskConsumptionMatchTotal);
+        constraintMatchTotalList.add(minimizeTaskStartPeriodMatchTotal);
+        return constraintMatchTotalList;
     }
 
     private enum MachinePeriodStatus {

@@ -16,7 +16,10 @@
 
 package org.optaplanner.core.impl.score.director.incremental;
 
+import java.util.Collection;
+
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -51,13 +54,31 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
     @Override
     public void setWorkingSolution(Solution workingSolution) {
         super.setWorkingSolution(workingSolution);
-        incrementalScoreCalculator.resetWorkingSolution(workingSolution);
+        if (incrementalScoreCalculator instanceof ConstraintMatchAwareIncrementalScoreCalculator) {
+            ((ConstraintMatchAwareIncrementalScoreCalculator) incrementalScoreCalculator)
+                    .resetWorkingSolution(workingSolution, constraintMatchEnabledPreference);
+        } else {
+            incrementalScoreCalculator.resetWorkingSolution(workingSolution);
+        }
     }
 
     public Score calculateScore() {
         Score score = incrementalScoreCalculator.calculateScore();
         setCalculatedScore(score);
         return score;
+    }
+
+    public boolean isConstraintMatchEnabled() {
+        return constraintMatchEnabledPreference
+                && incrementalScoreCalculator instanceof ConstraintMatchAwareIncrementalScoreCalculator;
+    }
+
+    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
+        if (!isConstraintMatchEnabled()) {
+            throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
+                    + ") is disabled, this method should not be called.");
+        }
+        return ((ConstraintMatchAwareIncrementalScoreCalculator) incrementalScoreCalculator).getConstraintMatchTotals();
     }
 
     // ************************************************************************

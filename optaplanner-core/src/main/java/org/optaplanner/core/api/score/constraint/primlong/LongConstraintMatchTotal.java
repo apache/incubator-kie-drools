@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.constraint.primlong;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,7 +31,7 @@ public class LongConstraintMatchTotal extends ConstraintMatchTotal {
 
     public LongConstraintMatchTotal(String constraintPackage, String constraintName, int scoreLevel) {
         super(constraintPackage, constraintName, scoreLevel);
-        constraintMatchSet = new HashSet<LongConstraintMatch>();
+        constraintMatchSet = new LinkedHashSet<LongConstraintMatch>();
         weightTotal = 0;
     }
 
@@ -53,8 +54,12 @@ public class LongConstraintMatchTotal extends ConstraintMatchTotal {
     // ************************************************************************
 
     public LongConstraintMatch addConstraintMatch(RuleContext kcontext, long weight) {
-        weightTotal += weight;
         List<Object> justificationList = extractJustificationList(kcontext);
+        return addConstraintMatch(justificationList, weight);
+    }
+
+    public LongConstraintMatch addConstraintMatch(List<Object> justificationList, long weight) {
+        weightTotal += weight;
         LongConstraintMatch constraintMatch = new LongConstraintMatch(constraintPackage, constraintName, scoreLevel,
                 justificationList, weight);
         boolean added = constraintMatchSet.add(constraintMatch);

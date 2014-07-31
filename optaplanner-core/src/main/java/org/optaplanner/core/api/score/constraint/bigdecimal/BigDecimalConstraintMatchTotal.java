@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.constraint.bigdecimal;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,7 +32,7 @@ public class BigDecimalConstraintMatchTotal extends ConstraintMatchTotal {
 
     public BigDecimalConstraintMatchTotal(String constraintPackage, String constraintName, int scoreLevel) {
         super(constraintPackage, constraintName, scoreLevel);
-        constraintMatchSet = new HashSet<BigDecimalConstraintMatch>();
+        constraintMatchSet = new LinkedHashSet<BigDecimalConstraintMatch>();
         weightTotal = BigDecimal.ZERO;
     }
 
@@ -54,8 +55,12 @@ public class BigDecimalConstraintMatchTotal extends ConstraintMatchTotal {
     // ************************************************************************
 
     public BigDecimalConstraintMatch addConstraintMatch(RuleContext kcontext, BigDecimal weight) {
-        weightTotal = weightTotal.add(weight);
         List<Object> justificationList = extractJustificationList(kcontext);
+        return addConstraintMatch(justificationList, weight);
+    }
+
+    public BigDecimalConstraintMatch addConstraintMatch(List<Object> justificationList, BigDecimal weight) {
+        weightTotal = weightTotal.add(weight);
         BigDecimalConstraintMatch constraintMatch = new BigDecimalConstraintMatch(
                 constraintPackage, constraintName, scoreLevel,
                 justificationList, weight);

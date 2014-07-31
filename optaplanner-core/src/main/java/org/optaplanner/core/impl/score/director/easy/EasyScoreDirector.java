@@ -16,7 +16,10 @@
 
 package org.optaplanner.core.impl.score.director.easy;
 
+import java.util.Collection;
+
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.api.domain.solution.Solution;
@@ -44,6 +47,15 @@ public class EasyScoreDirector extends AbstractScoreDirector<EasyScoreDirectorFa
         Score score = easyScoreCalculator.calculateScore(workingSolution);
         setCalculatedScore(score);
         return score;
+    }
+
+    public boolean isConstraintMatchEnabled() {
+        return false;
+    }
+
+    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
+        throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
+                + ") is disabled, this method should not be called.");
     }
 
 }

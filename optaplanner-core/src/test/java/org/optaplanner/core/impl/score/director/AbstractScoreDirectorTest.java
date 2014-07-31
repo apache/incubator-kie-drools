@@ -17,10 +17,12 @@
 package org.optaplanner.core.impl.score.director;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
@@ -59,6 +61,12 @@ public class AbstractScoreDirectorTest {
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         AbstractScoreDirector scoreDirector = new AbstractScoreDirector<AbstractScoreDirectorFactory>(
                 scoreDirectorFactory, false) {
+            public boolean isConstraintMatchEnabled() {
+                return false;
+            }
+            public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
+                throw new IllegalStateException();
+            }
             public Score calculateScore() {
                 return SimpleScore.valueOf(-100);
             }

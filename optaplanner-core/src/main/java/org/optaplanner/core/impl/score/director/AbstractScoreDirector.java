@@ -155,21 +155,6 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         calculateCount++;
     }
 
-    public boolean isConstraintMatchEnabled() {
-        // Doesn't return constraintMatchEnabledPreference because the implementation needs to implement it
-        return false;
-    }
-
-    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
-        if (isConstraintMatchEnabled()) {
-            throw new IllegalStateException("Subclass (" + getClass()
-                    + ") which overwrote constraintMatchEnabled (" + isConstraintMatchEnabled()
-                    + ") should also overwrite this method.");
-        }
-        throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
-                + ") is disabled, this method should not be called.");
-    }
-
     public AbstractScoreDirector clone() {
         // Breaks incremental score calculation.
         // Subclasses should overwrite this method to avoid breaking it if possible.
