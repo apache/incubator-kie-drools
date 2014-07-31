@@ -121,30 +121,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <!-- temp fix until ${version.org.jboss.as} in ip-bom gets corrected -->  
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.jboss.as</groupId>
-        <artifactId>jboss-as-arquillian-container-managed</artifactId>
-        <version>${version.org.jboss.as}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.as</groupId>
-        <artifactId>jboss-as-server</artifactId>
-        <version>${version.org.jboss.as}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.as</groupId>
-        <artifactId>jboss-as-naming</artifactId>
-        <version>${version.org.jboss.as}</version>
-        <scope>test</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement> 
   
   <build>
     <plugins>
