@@ -43,6 +43,7 @@
               org.drools.core.marshalling.impl;resolution:=optional,
               org.hibernate.proxy;resolution:=optional,
               org.kie.spring.persistence;resolution:=optional,
+              org.hibernate;resolution:=optional,
               *
             </Import-Package>
             <Export-Package>
