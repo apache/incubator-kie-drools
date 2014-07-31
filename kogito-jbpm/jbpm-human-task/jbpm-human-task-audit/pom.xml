@@ -151,7 +151,8 @@
             </Import-Package>
             <Private-Package></Private-Package>
             <Export-Package>
-              org.jbpm.services.task.audit*
+              org.jbpm.services.task.audit*,
+              org.jbpm.services.task.lifecycle.listeners
             </Export-Package>
           </instructions>
         </configuration>
