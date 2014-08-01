@@ -16,6 +16,7 @@
 
 package org.drools.workbench.models.testscenarios.backend.util;
 
+import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Expectation;
 import org.drools.workbench.models.testscenarios.shared.FactData;
@@ -94,7 +95,14 @@ public class ScenarioXMLPersistence {
         if (xml == null) return new Scenario();
         if (xml.trim().equals("")) return new Scenario();
         Object o = xt.fromXML(xml);
-        return (Scenario) o;
+
+        Scenario scenario = (Scenario) o;
+
+        if (scenario.getImports() == null) {
+            scenario.setImports(new Imports());
+        }
+
+        return scenario;
     }
 
 }
