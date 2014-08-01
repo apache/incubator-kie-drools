@@ -126,6 +126,7 @@ public class KieContainerImpl
         List<String> modifiedClasses = getModifiedClasses(cs);
 
         ((KieModuleKieProject) kProject).updateToModule( newKM );
+        containerReleaseId = newReleaseId;
 
         ResultsImpl results = new ResultsImpl();
 
