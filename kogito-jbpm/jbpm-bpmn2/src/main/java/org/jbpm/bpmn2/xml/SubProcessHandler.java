@@ -153,6 +153,9 @@ public class SubProcessHandler extends AbstractNodeHandler {
             }
             xmlNode = xmlNode.getNextSibling();
         }
+        handleScript(forEachNode, element, "onEntry");
+        handleScript(forEachNode, element, "onExit");
+        
     	List<SequenceFlow> connections = (List<SequenceFlow>)
 			forEachNode.getMetaData(ProcessHandler.CONNECTIONS);
     	ProcessHandler.linkConnections(forEachNode, connections);

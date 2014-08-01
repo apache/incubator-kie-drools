@@ -1185,6 +1185,28 @@ public class FlowTest extends JbpmBpmn2TestCase {
         assertEquals(2, myListOut.size());
 
     }
+    
+    @Test
+    public void testMultiInstanceLoopCharacteristicsProcessWithOutputAndScripts()
+            throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsProcessWithOutputAndScripts.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        Map<String, Object> params = new HashMap<String, Object>();
+        List<String> myList = new ArrayList<String>();
+        List<String> myListOut = new ArrayList<String>();
+        List<String> scriptList = new ArrayList<String>();
+        myList.add("First Item");
+        myList.add("Second Item");
+        params.put("list", myList);
+        params.put("listOut", myListOut);
+        params.put("scriptList", scriptList);
+        assertEquals(0, myListOut.size());
+        ProcessInstance processInstance = ksession.startProcess("MultiInstanceLoopCharacteristicsProcessWithOutput", params);
+        assertProcessInstanceCompleted(processInstance);
+        assertEquals(2, myListOut.size());
+        assertEquals(2, scriptList.size());
+
+    }
 
     @Test
     public void testMultiInstanceLoopCharacteristicsTaskWithOutput()
