@@ -179,7 +179,8 @@ public class ProcessInstanceResolverStrategy
                                                     ClassNotFoundException {
         long processInstanceId = PersisterHelper.byteArrayToLong( object );
         ProcessInstanceManager pim = retrieveProcessInstanceManager( is );
-        ProcessInstance processInstance = pim.getProcessInstance( processInstanceId );
+        // load it as read only to avoid any updates to the data base
+        ProcessInstance processInstance = pim.getProcessInstance( processInstanceId, true );
         if (processInstance == null) {
         	RuleFlowProcessInstance result = new RuleFlowProcessInstance();
         	result.setId( processInstanceId );
