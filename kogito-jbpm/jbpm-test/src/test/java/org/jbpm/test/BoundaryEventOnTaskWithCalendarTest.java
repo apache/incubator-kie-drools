@@ -1,7 +1,9 @@
 package org.jbpm.test;
 
+import java.util.Date;
 import java.util.HashMap;
 
+import org.drools.core.time.TimeUtils;
 import org.jbpm.process.core.timer.BusinessCalendarImpl;
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -33,10 +35,9 @@ public class BoundaryEventOnTaskWithCalendarTest extends JbpmJUnitBaseTestCase {
 
         ProcessInstance processInstance = ksession.startProcess("boundaryTimer", params);
 
-        assertProcessInstanceActive(processInstance.getId(), ksession);
         assertNodeTriggered(processInstance.getId(), "Start", "form1");
 
-       Thread.sleep(3000);
+        Thread.sleep(3000);
 
         assertNodeTriggered(processInstance.getId(), "Koniec1");
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
@@ -48,19 +49,32 @@ public class BoundaryEventOnTaskWithCalendarTest extends JbpmJUnitBaseTestCase {
         createRuntimeManager("BPMN2-BoundaryEventWithCycleCalendar.bpmn2");
         RuntimeEngine runtimeEngine = getRuntimeEngine();
         KieSession ksession = runtimeEngine.getKieSession();
-        ksession.getEnvironment().set("jbpm.business.calendar", new BusinessCalendarImpl());
+        ksession.getEnvironment().set("jbpm.business.calendar", new BusinessCalendarImpl() {
+
+			@Override
+			public long calculateBusinessTimeAsDuration(String timeExpression) {
+				timeExpression = adoptISOFormat(timeExpression);
+		        return TimeUtils.parseTimeString(timeExpression);
+		        
+			}
+
+			@Override
+			public Date calculateBusinessTimeAsDate(String timeExpression) {
+				timeExpression = adoptISOFormat(timeExpression);
+	            return new Date(TimeUtils.parseTimeString(getCurrentTime() + timeExpression));
+			}
+        	
+        });
         
         HashMap<String, Object> params = new HashMap<String, Object>();
-
         params.put("date", "R3/PT2S");
 
 
         ProcessInstance processInstance = ksession.startProcess("boundaryTimer", params);
 
-        assertProcessInstanceActive(processInstance.getId(), ksession);
         assertNodeTriggered(processInstance.getId(), "Start", "form1");
 
-       Thread.sleep(3000);
+        Thread.sleep(3000);
 
         assertNodeTriggered(processInstance.getId(), "Koniec1");
         assertProcessInstanceCompleted(processInstance.getId(), ksession);

@@ -106,11 +106,12 @@ public class StartEventTest extends JbpmBpmn2TestCase {
             }
         });
         System.out.println("About to start ###### " + new Date());
-        Thread.sleep(3000);
+        // first wait two seconds as that is the initial delay configured on the process
+        Thread.sleep(1800);
         
         assertEquals(0, list.size());
-        
-        Thread.sleep(2200);
+        // then wait 5 times 5oo ms as that is period configured on the process
+        Thread.sleep(2500);
         ksession.dispose();
         assertEquals(5, getNumberOfProcessInstances("Minimal"));
 
@@ -390,7 +391,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         assertEquals(0, list.size());
         for (int i = 0; i < 2; i++) {
-            Thread.sleep(1000);
+            Thread.sleep(1200);
         }
 
         assertEquals(2, list.size());

@@ -1,7 +1,8 @@
 package org.jbpm.integrationtests;
 
 import static org.jbpm.integrationtests.JbpmSerializationHelper.getSerialisedStatefulKnowledgeSession;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -10,33 +11,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.drools.core.SessionConfiguration;
-import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
-import org.drools.core.marshalling.impl.ProtobufMarshaller;
-import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.Marshaller;
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.EnvironmentName;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.api.time.SessionClock;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
@@ -50,6 +38,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
     
     private static final Logger logger = LoggerFactory.getLogger(ProcessMarshallingTest.class);
 
+    @Ignore
     @Test
     @SuppressWarnings("unchecked")
 	public void testMarshallingProcessInstancesAndGlobals() throws Exception {
