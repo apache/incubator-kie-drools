@@ -77,8 +77,18 @@ public class CheapTimePillarSlideMoveIteratorFactory implements MoveIteratorFact
                 }
             }
         }
-        List<List<TaskAssignment>> positivePillarList = new ArrayList<List<TaskAssignment>>(positivePillarMap.values());
-        List<List<TaskAssignment>> negativePillarList = new ArrayList<List<TaskAssignment>>(negativePillarMap.values());
+        List<List<TaskAssignment>> positivePillarList = new ArrayList<List<TaskAssignment>>(positivePillarMap.size());
+        for (List<TaskAssignment> pillar : positivePillarMap.values()) {
+            if (pillar.size() > 1) {
+                positivePillarList.add(pillar);
+            }
+        }
+        List<List<TaskAssignment>> negativePillarList = new ArrayList<List<TaskAssignment>>(negativePillarMap.size());
+        for (List<TaskAssignment> pillar : negativePillarMap.values()) {
+            if (pillar.size() > 1) {
+                negativePillarList.add(pillar);
+            }
+        }
         return new RandomCheapTimePillarSlideMoveIterator(positivePillarList, negativePillarList, workingRandom);
     }
 
