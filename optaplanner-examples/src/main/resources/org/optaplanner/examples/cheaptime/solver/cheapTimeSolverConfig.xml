@@ -40,6 +40,9 @@
         </valueSelector>
       </changeMoveSelector>
       <swapMoveSelector/>
+      <!--<moveIteratorFactory>-->
+        <!--<moveIteratorFactoryClass>org.optaplanner.examples.cheaptime.solver.move.factory.CheapTimePillarSlideMoveIteratorFactory</moveIteratorFactoryClass>-->
+      <!--</moveIteratorFactory>-->
     </unionMoveSelector>
     <acceptor>
       <lateAcceptanceSize>400</lateAcceptanceSize>
