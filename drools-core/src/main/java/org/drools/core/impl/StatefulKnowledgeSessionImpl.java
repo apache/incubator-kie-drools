@@ -387,6 +387,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         if ( initInitFactHandle ) {
             initInitialFact(kBase, null);
         }
+        
+        setKnowledgeRuntime(this);
     }
 
     public EntryPoint getEntryPoint(String name) {
