@@ -48,6 +48,7 @@ public class DumperTestHelper {
         String result1 = dumper.dump( pkgOriginal );
         final PackageDescr pkgDerivated = parser.parse( new StringReader( result1 ) );
         String result2 = dumper.dump( pkgDerivated );
+        System.out.println( result1 );
 
         assertEqualsIgnoreWhitespace( result1,
                                       result2 );
