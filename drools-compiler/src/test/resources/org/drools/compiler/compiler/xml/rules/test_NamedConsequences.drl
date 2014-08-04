@@ -1,0 +1,10 @@
+package foo;
+
+rule "simple_rule"
+when
+    String() do[x]
+then
+    System.out.println( "bar" );
+then[x]
+    System.out.println( "foo" );
+end
