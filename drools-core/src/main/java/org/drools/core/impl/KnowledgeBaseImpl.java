@@ -885,7 +885,6 @@ public class KnowledgeBaseImpl
             if (newDecl.getTypeClassDef() == null) {
                 newDecl.setTypeClassDef( new ClassDefinition() );
             }
-            newDecl.getTypeClassDef().setDefinedClass( definedKlass );
             newDecl.setTypeClass( definedKlass );
 
             this.classTypeDeclaration.put( className, newDecl );

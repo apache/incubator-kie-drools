@@ -264,6 +264,9 @@ public class TypeDeclarationUtils {
         if (expr == null) {
             return null;
         }
+        if ( typeResolver == null ) {
+            return expr;
+        }
         StringBuilder sb = new StringBuilder();
         boolean inQuotes = false;
         boolean inTypeName = false;
