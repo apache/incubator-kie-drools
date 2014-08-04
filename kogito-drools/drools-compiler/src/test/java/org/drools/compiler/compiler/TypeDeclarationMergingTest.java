@@ -273,5 +273,13 @@ public class TypeDeclarationMergingTest {
         public String getArg0() {
             return arg0;
         }
+
+        public void setArg1( String arg1 ) {
+            this.arg1 = arg1;
+        }
+
+        public void setArg0( String arg0 ) {
+            this.arg0 = arg0;
+        }
     }
 }

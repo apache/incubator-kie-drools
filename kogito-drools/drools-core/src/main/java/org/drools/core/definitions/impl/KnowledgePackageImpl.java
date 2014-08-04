@@ -186,7 +186,7 @@ public class KnowledgePackageImpl
         for (TypeDeclaration typeDeclaration : typeDeclarations.values()) {
             FactType factType = typeDeclaration.getTypeClassDef();
             // avoid native class definitions
-            if (factType != null && factType.getName() != null) {
+            if ( typeDeclaration.isNovel() ) {
                 list.add(factType);
             }
         }

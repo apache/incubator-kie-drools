@@ -6,6 +6,7 @@ import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
 import org.drools.compiler.lang.descr.EnumLiteralDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.QualifiedName;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
@@ -15,25 +16,30 @@ import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.EnumClassDefinition;
 import org.drools.core.factmodel.EnumLiteralDefinition;
 import org.drools.core.factmodel.FieldDefinition;
-import org.drools.core.factmodel.GeneratedFact;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.util.ClassUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
-import org.kie.internal.builder.KnowledgeBuilder;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 public class ClassDefinitionFactory {
 
@@ -185,7 +191,8 @@ public class ClassDefinitionFactory {
                 }
             }
             PriorityQueue<FieldDefinition> fieldDefs = sortFields( typeDescr.getFields(),
-                                                                   pkgRegistry );
+                                                                   pkgRegistry.getTypeResolver(),
+                                                                   kbuilder );
             int n = fieldDefs.size();
             for (int k = 0; k < n; k++) {
                 FieldDefinition fld = fieldDefs.poll();
@@ -203,7 +210,9 @@ public class ClassDefinitionFactory {
      * resulting from the inspection of an external java superclass, if
      * applicable (iii) in declaration order, superclasses first
      */
-    protected PriorityQueue<FieldDefinition> sortFields(Map<String, TypeFieldDescr> flds, PackageRegistry pkgRegistry) {
+    protected static PriorityQueue<FieldDefinition> sortFields( Map<String, TypeFieldDescr> flds,
+                                                                TypeResolver typeResolver,
+                                                                KnowledgeBuilderImpl kbuilder ) {
         PriorityQueue<FieldDefinition> queue = new PriorityQueue<FieldDefinition>(flds.size());
         int maxDeclaredPos = 0;
         int curr = 0;
@@ -222,7 +231,9 @@ public class ClassDefinitionFactory {
             String typeName = field.getPattern().getObjectType();
             String typeNameKey = typeName;
 
-            String fullFieldType = TypeDeclarationUtils.toBuildableType( typeNameKey, kbuilder.getRootClassLoader() );
+            String fullFieldType = kbuilder != null ?
+                                   TypeDeclarationUtils.toBuildableType( typeNameKey, kbuilder.getRootClassLoader() ) :
+                                   typeNameKey;
 
             FieldDefinition fieldDef = new FieldDefinition( field.getFieldName(),
                                                             fullFieldType );
@@ -244,18 +255,19 @@ public class ClassDefinitionFactory {
             }
             fieldDef.setInherited( field.isInherited() );
             fieldDef.setRecursive(  field.isRecursive() );
-            fieldDef.setInitExpr( TypeDeclarationUtils.rewriteInitExprWithImports( field.getInitExpr(), pkgRegistry.getTypeResolver() ) );
+            fieldDef.setInitExpr( TypeDeclarationUtils.rewriteInitExprWithImports( field.getInitExpr(), typeResolver ) );
 
             for (String annotationName : field.getAnnotationNames()) {
                 Class annotation = TypeDeclarationUtils.resolveAnnotation( annotationName,
-                                                                           pkgRegistry.getTypeResolver() );
+                                                                           typeResolver );
                 if (annotation != null && annotation.isAnnotation()) {
                     try {
                         AnnotationDefinition annotationDefinition = AnnotationDefinition.build( annotation,
                                                                                                 field.getAnnotations().get( annotationName ).getValueMap(),
-                                                                                                pkgRegistry.getTypeResolver() );
+                                                                                                typeResolver );
                         fieldDef.addAnnotation( annotationDefinition );
                     } catch ( NoSuchMethodException nsme ) {
+
                         kbuilder.addBuilderResult( new TypeDeclarationError( field,
                                                                              "Annotated field " + field.getFieldName() +
                                                                              "  - undefined property in @annotation " +
@@ -274,4 +286,66 @@ public class ClassDefinitionFactory {
         return queue;
     }
 
+
+    public static void populateDefinitionFromClass( ClassDefinition def, Class<?> concrete, boolean asTrait ) {
+        try {
+            def.setClassName( concrete.getName() );
+            if ( concrete.getSuperclass() != null ) {
+                def.setSuperClass( concrete.getSuperclass().getName() );
+            }
+
+            ClassFieldInspector inspector = new ClassFieldInspector(concrete);
+            Map<String, Method> methods = inspector.getGetterMethods();
+            Map<String, Method> setters = inspector.getSetterMethods();
+            int j = 0;
+            Map<String,TypeFieldDescr> fields = new HashMap<String,TypeFieldDescr>();
+            for ( String fieldName : methods.keySet() ) {
+                if ( asTrait && ( "core".equals(fieldName) || "fields".equals(fieldName) ) ) {
+                    continue;
+                }
+                if ( !inspector.isNonGetter( fieldName ) && setters.keySet().contains( fieldName ) ) {
+
+                    Position position = null;
+                    if ( ! concrete.isInterface() ) {
+                        try {
+                            Field fld = concrete.getDeclaredField( fieldName );
+                            position = fld.getAnnotation( Position.class );
+                        } catch ( NoSuchFieldException nsfe ) {
+                            // @Position can only annotate fields. This x means that a getter/setter pair was found with no field
+                        }
+                    }
+
+                    Class ret = methods.get( fieldName ).getReturnType();
+                    TypeFieldDescr field = new TypeFieldDescr(  );
+                    field.setFieldName( fieldName );
+                    field.setPattern( new PatternDescr( ret.getName() ) );
+                    field.setIndex( position != null ? position.value() : -1 );
+                    fields.put( fieldName, field );
+                }
+            }
+            if ( ! fields.isEmpty() ) {
+                PriorityQueue<FieldDefinition> fieldDefs = sortFields( fields,
+                                                                       null,
+                                                                       null );
+                int n = fieldDefs.size();
+                for (int k = 0; k < n; k++) {
+                    FieldDefinition fld = fieldDefs.poll();
+                    fld.setIndex( k );
+                    def.addField( fld );
+                }
+            }
+
+            Set<String> interfaces = new HashSet<String>();
+            Collections.addAll( interfaces, def.getInterfaces() );
+            for ( Class iKlass : ClassUtils.getAllImplementedInterfaceNames( concrete ) ) {
+                interfaces.add(iKlass.getName());
+            }
+            def.setInterfaces( interfaces.toArray( new String[ interfaces.size() ] ) );
+
+            def.setDefinedClass( concrete );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 }

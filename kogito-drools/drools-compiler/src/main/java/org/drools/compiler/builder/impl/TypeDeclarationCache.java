@@ -6,6 +6,7 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.ClassUtils;
 import org.kie.api.definition.type.ClassReactive;
@@ -155,13 +156,16 @@ public class TypeDeclarationCache {
         ClassDefinition clsDef = typeDeclaration.getTypeClassDef();
         if (clsDef == null) {
             clsDef = new ClassDefinition();
+            ClassDefinitionFactory.populateDefinitionFromClass( clsDef, cls, cls.getAnnotation( Trait.class ) != null );
             typeDeclaration.setTypeClassDef(clsDef);
+        } else {
+            processFieldsPosition( cls, clsDef, typeDeclaration );
         }
 
         if (typeDeclaration.isPropertyReactive()) {
             processModifiedProps(cls, clsDef);
         }
-        processFieldsPosition(cls, clsDef, typeDeclaration);
+
 
         // build up a set of all the super classes and interfaces
         Set<TypeDeclaration> tdecls = new LinkedHashSet<TypeDeclaration>();

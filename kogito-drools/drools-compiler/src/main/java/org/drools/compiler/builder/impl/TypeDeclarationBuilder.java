@@ -258,7 +258,8 @@ public class TypeDeclarationBuilder {
                     String availableName = typeDescr.getType().getFullName();
                     Class<?> resolvedType = reg.getTypeResolver().resolveType( availableName );
                     updateTraitDefinition( type,
-                                           resolvedType );
+                                           resolvedType,
+                                           false );
                 } catch ( ClassNotFoundException cnfe ) {
                     // we already know the class exists
                 }
@@ -273,8 +274,9 @@ public class TypeDeclarationBuilder {
                     String availableName = typeDescr.getType().getFullName();
                     Class<?> resolvedType = reg.getTypeResolver().resolveType(availableName);
                     if (!Thing.class.isAssignableFrom(resolvedType)) {
-                        updateTraitDefinition(type,
-                                              resolvedType);
+                        updateTraitDefinition( type,
+                                               resolvedType,
+                                               false );
 
                         String target = typeDescr.getTypeName() + TraitFactory.SUFFIX;
                         TypeDeclarationDescr tempDescr = new TypeDeclarationDescr();
@@ -325,8 +327,9 @@ public class TypeDeclarationBuilder {
                         }
 
                     } else {
-                        updateTraitDefinition(type,
-                                              resolvedType);
+                        updateTraitDefinition( type,
+                                               resolvedType,
+                                               true );
                         pkgRegistry.getTraitRegistry().addTrait( def );
                     }
                 } catch (ClassNotFoundException cnfe) {
@@ -344,39 +347,10 @@ public class TypeDeclarationBuilder {
         }
     }
 
-    protected void updateTraitDefinition(TypeDeclaration type,
-                                       Class concrete) {
-        try {
-
-            ClassFieldInspector inspector = new ClassFieldInspector(concrete);
-            Map<String, Method> methods = inspector.getGetterMethods();
-            Map<String, Method> setters = inspector.getSetterMethods();
-            int j = 0;
-            for (String fieldName : methods.keySet()) {
-                if ("core".equals(fieldName) || "fields".equals(fieldName)) {
-                    continue;
-                }
-                if (!inspector.isNonGetter(fieldName) && setters.keySet().contains(fieldName)) {
-
-                    Class ret = methods.get(fieldName).getReturnType();
-                    FieldDefinition field = new FieldDefinition();
-                    field.setName(fieldName);
-                    field.setTypeName(ret.getName());
-                    field.setIndex(j++);
-                    type.getTypeClassDef().addField(field);
-                }
-            }
-
-            Set<String> interfaces = new HashSet<String>();
-            Collections.addAll(interfaces, type.getTypeClassDef().getInterfaces());
-            for ( Class iKlass : ClassUtils.getAllImplementedInterfaceNames( concrete ) ) {
-                interfaces.add(iKlass.getName());
-            }
-            type.getTypeClassDef().setInterfaces(interfaces.toArray(new String[interfaces.size()]));
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    protected void updateTraitDefinition( TypeDeclaration type,
+                                          Class concrete,
+                                          boolean asTrait ) {
+        classDefinitionFactory.populateDefinitionFromClass( type.getTypeClassDef(), concrete, asTrait );
     }
 
 }
