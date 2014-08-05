@@ -6326,4 +6326,29 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.insert(1);
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testLeftTupleGetIndex() throws Exception {
+        // DROOLS-570
+        String drl =
+                "rule R1 when\n" +
+                "    $s : String()\n" +
+                "    (or Long(this == 1) Long(this == 2) )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 extends R1 when\n" +
+                "    $n : Number() from accumulate( Integer($value : this) sum($value) )\n" +
+                "then\n" +
+                "    System.out.println($n);\n" +
+                "end\n";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession ksession = helper.build().newKieSession();
+
+        ksession.insert("1");
+        ksession.insert(1L);
+        ksession.insert(1);
+        ksession.fireAllRules();
+    }
 }
