@@ -670,11 +670,10 @@ public class PhreakAccumulateNode {
                                           final LeftTupleSets trgLeftTuples,
                                           final LeftTupleSets stagedLeftTuples) {
         // get the actual result
-        final Object[] resultArray = accumulate.getResult(memory.workingMemoryContext,
-                                                          accctx.context,
-                                                          leftTuple,
-                                                          workingMemory);
-        Object result = accumulate.isMultiFunction() ? resultArray : resultArray[0];
+        Object result = accumulate.getResult(memory.workingMemoryContext,
+                                             accctx.context,
+                                             leftTuple,
+                                             workingMemory);
         if (result == null) {
             return;
         }

@@ -16,34 +16,30 @@
 
 package org.drools.core.reteoo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.spi.Accumulator;
+import org.drools.core.rule.SingleAccumulate;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.test.model.DroolsTestCase;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
+
+import static org.junit.Assert.*;
 
 /**
  * A test case for AccumulateNode
@@ -88,10 +84,9 @@ public class AccumulateNodeTest extends DroolsTestCase {
         final ObjectType srcObjType = new ClassObjectType(String.class);
         final Pattern sourcePattern = new Pattern(0,
                                                   srcObjType);
-        this.accumulate = new Accumulate(sourcePattern,
-                                         new Declaration[0],
-                                         new Accumulator[]{this.accumulator},
-                                         false);
+        this.accumulate = new SingleAccumulate( sourcePattern,
+                                                new Declaration[0],
+                                                this.accumulator );
 
         this.node = new AccumulateNode(15,
                                        this.tupleSource,

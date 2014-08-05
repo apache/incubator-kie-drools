@@ -4,27 +4,25 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.core.WorkingMemory;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.core.base.mvel.MVELCompileable;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.reteoo.MockLeftTupleSink;
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.core.base.mvel.MVELCompileable;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftTupleImpl;
-import org.drools.compiler.reteoo.MockLeftTupleSink;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
+
+import static org.junit.Assert.assertEquals;
 
 public class MVELAccumulateBuilderTest {
 
@@ -76,8 +74,8 @@ public class MVELAccumulateBuilderTest {
                                                sink,
                                                true );
 
-        Object[] wmContext = acc.createWorkingMemoryContext();
-        Object[] accContext = acc.createContext();
+        Object wmContext = acc.createWorkingMemoryContext();
+        Object accContext = acc.createContext();
         acc.init( wmContext,
                   accContext,
                   tuple,
@@ -98,7 +96,7 @@ public class MVELAccumulateBuilderTest {
                       acc.getResult( wmContext,
                                      accContext,
                                      tuple,
-                                     ksession )[0] );
+                                     ksession ) );
 
         acc.reverse( wmContext,
                      accContext,
@@ -110,7 +108,7 @@ public class MVELAccumulateBuilderTest {
                       acc.getResult( wmContext,
                                      accContext,
                                      tuple,
-                                     ksession )[0] );
+                                     ksession ) );
     }
 
 }

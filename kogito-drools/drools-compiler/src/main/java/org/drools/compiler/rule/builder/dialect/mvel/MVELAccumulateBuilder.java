@@ -16,12 +16,6 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -43,12 +37,20 @@ import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
+import org.drools.core.rule.MultiAccumulate;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
+import org.drools.core.rule.SingleAccumulate;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.KnowledgeHelper;
 import org.kie.api.runtime.rule.AccumulateFunction;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A builder for the java dialect accumulate version
@@ -126,17 +128,26 @@ public class MVELAccumulateBuilder
                                                       readLocalsFromTuple );
             }
 
-            final Accumulate accumulate = new Accumulate( source,
-                                                          null,
-                                                          accumulators,
-                                                          accumDescr.isMultiFunction() );
-
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
-            int index = 0;
-            for ( Accumulator accumulator : accumulators ) {
-                data.addCompileable( accumulate.new Wirer( index++ ),
-                                     (MVELCompileable) accumulator );
-                ((MVELCompileable) accumulator).compile( data );
+
+            Accumulate accumulate = null;
+            if (accumDescr.isMultiFunction()) {
+                accumulate = new MultiAccumulate( source,
+                                                  null,
+                                                  accumulators );
+                int index = 0;
+                for ( Accumulator accumulator : accumulators ) {
+                    data.addCompileable( ((MultiAccumulate)accumulate).new Wirer( index++ ),
+                                         (MVELCompileable) accumulator );
+                    ((MVELCompileable) accumulator).compile( data );
+                }
+            } else {
+                accumulate = new SingleAccumulate( source,
+                                                   null,
+                                                   accumulators[0] );
+                    data.addCompileable( ((SingleAccumulate)accumulate).new Wirer( ),
+                                         (MVELCompileable) accumulators[0] );
+                    ((MVELCompileable) accumulators[0]).compile( data );
             }
 
             return accumulate;

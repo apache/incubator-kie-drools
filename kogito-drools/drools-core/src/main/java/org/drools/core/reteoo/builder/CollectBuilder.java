@@ -16,9 +16,6 @@
 
 package org.drools.core.reteoo.builder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.core.base.accumulators.CollectAccumulator;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.TupleStartEqualsConstraint;
@@ -30,8 +27,11 @@ import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Collect;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.spi.Accumulator;
+import org.drools.core.rule.SingleAccumulate;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CollectBuilder
     implements
@@ -98,10 +98,9 @@ public class CollectBuilder
 
         CollectAccumulator accumulator = new CollectAccumulator( collect, 
                                                                  existSubNetwort );
-        Accumulate accumulate = new Accumulate( sourcePattern,
-                                                sourcePattern.getRequiredDeclarations(),
-                                                new Accumulator[] { accumulator },
-                                                false );
+        Accumulate accumulate = new SingleAccumulate( sourcePattern,
+                                                      sourcePattern.getRequiredDeclarations(),
+                                                      accumulator );
 
         AccumulateNode accNode = context.getComponentFactory().getNodeFactoryService().buildAccumulateNode( context.getNextId(),
                                                                                                             context.getTupleSource(),

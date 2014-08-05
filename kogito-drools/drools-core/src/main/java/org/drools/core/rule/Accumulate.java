@@ -16,236 +16,110 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.WorkingMemory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.Tuple;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.Accumulator.SafeAccumulator;
-import org.drools.core.spi.CompiledInvoker;
-import org.drools.core.spi.Tuple;
-import org.drools.core.spi.Wireable;
-import org.kie.internal.security.KiePolicyHelper;
-
 /**
  * A class to represent the Accumulate CE
  */
-public class Accumulate extends ConditionalElement
+public abstract class Accumulate extends ConditionalElement
     implements
     PatternSource {
 
     private static final long    serialVersionUID = 510l;
 
-    private Accumulator[]        accumulators;
-    private RuleConditionElement source;
-    private Declaration[]        requiredDeclarations;
-    private Declaration[]        innerDeclarationCache;
-    private boolean              multiFunction;
+    protected RuleConditionElement source;
+    protected Declaration[]        requiredDeclarations;
+    protected Declaration[]        innerDeclarationCache;
 
-    private List<Accumulate>     cloned           = Collections.<Accumulate> emptyList();
+    protected List<Accumulate>     cloned           = Collections.<Accumulate> emptyList();
 
-    public Accumulate() {
-
-    }
-
-    public Accumulate(final RuleConditionElement source) {
-
-        this( source,
-              new Declaration[0],
-              new Accumulator[1], // default is 1 accumulator
-              false );
-    }
+    public Accumulate() { }
 
     public Accumulate(final RuleConditionElement source,
                       final Declaration[] requiredDeclarations ) {
 
-        this( source,
-              requiredDeclarations,
-              new Accumulator[1], // default is 1 accumulator
-              false );
-    }
-
-    public Accumulate(final RuleConditionElement source,
-                      final Declaration[] requiredDeclarations,
-                      final Accumulator[] accumulators,
-                      final boolean multiFunction ) {
-
         this.source = source;
         this.requiredDeclarations = requiredDeclarations;
-        this.accumulators = accumulators;
-        this.multiFunction = multiFunction;
     }
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        this.accumulators = new Accumulator[in.readInt()];
-        for ( int i = 0; i < this.accumulators.length; i++ ) {
-            this.accumulators[i] = (Accumulator) in.readObject();
-        }
-        this.multiFunction = in.readBoolean();
         source = (RuleConditionElement) in.readObject();
         requiredDeclarations = (Declaration[]) in.readObject();
         this.cloned = (List<Accumulate>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeInt( accumulators.length );
-        for ( Accumulator acc : accumulators ) {
-            if ( acc instanceof CompiledInvoker ) {
-                out.writeObject( null );
-            } else {
-                out.writeObject( acc );
-            }
-        }
-        out.writeBoolean( multiFunction );
         out.writeObject( this.source );
         out.writeObject( this.requiredDeclarations );
         out.writeObject( this.cloned );
     }
 
-    public Accumulator[] getAccumulators() {
-        return this.accumulators;
-    }
+    public abstract Accumulator[] getAccumulators();
 
-    public void setAccumulators(final Accumulator[] accumulators) {
-        this.accumulators = accumulators;
-    }
-
-    public Serializable[] createContext() {
-        Serializable[] ctxs = new Serializable[this.accumulators.length];
-        for ( int i = 0; i < ctxs.length; i++ ) {
-            ctxs[i] = this.accumulators[i].createContext();
-        }
-        return ctxs;
-    }
+    public abstract Object createContext();
 
     /**
      * Executes the initialization block of code
      */
-    public void init(final Object[] workingMemoryContext,
-                     final Object[] context,
-                     final Tuple leftTuple,
-                     final WorkingMemory workingMemory) {
-        try {
-            for ( int i = 0; i < this.accumulators.length; i++ ) {
-                this.accumulators[i].init( workingMemoryContext[i],
-                                           context[i],
-                                           leftTuple,
-                                           this.requiredDeclarations,
-                                           workingMemory );
-            }
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
-        }
-    }
+    public abstract void init(final Object workingMemoryContext,
+                              final Object context,
+                              final Tuple leftTuple,
+                              final WorkingMemory workingMemory);
 
     /**
      * Executes the accumulate (action) code for the given fact handle
      */
-    public void accumulate(final Object[] workingMemoryContext,
-                           final Object[] context,
-                           final Tuple leftTuple,
-                           final InternalFactHandle handle,
-                           final WorkingMemory workingMemory) {
-        try {
-            for ( int i = 0; i < this.accumulators.length; i++ ) {
-                this.accumulators[i].accumulate( workingMemoryContext[i],
-                                                 context[i],
-                                                 leftTuple,
-                                                 handle,
-                                                 this.requiredDeclarations,
-                                                 getInnerDeclarationCache(),
-                                                 workingMemory );
-            }
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
-        }
-    }
+    public abstract void accumulate(final Object workingMemoryContext,
+                                    final Object context,
+                                    final Tuple leftTuple,
+                                    final InternalFactHandle handle,
+                                    final WorkingMemory workingMemory);
 
     /**
      * Executes the reverse (action) code for the given fact handle
      */
-    public void reverse(final Object[] workingMemoryContext,
-                        final Object[] context,
-                        final Tuple leftTuple,
-                        final InternalFactHandle handle,
-                        final WorkingMemory workingMemory) {
-        try {
-            for ( int i = 0; i < this.accumulators.length; i++ ) {
-                this.accumulators[i].reverse( workingMemoryContext[i],
-                                              context[i],
-                                              leftTuple,
-                                              handle,
-                                              this.requiredDeclarations,
-                                              getInnerDeclarationCache(),
-                                              workingMemory );
-            }
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
-        }
-    }
+    public abstract void reverse(final Object workingMemoryContext,
+                                 final Object context,
+                                 final Tuple leftTuple,
+                                 final InternalFactHandle handle,
+                                 final WorkingMemory workingMemory);
 
     /**
      * Gets the result of the accumulation
      */
-    public Object[] getResult(final Object[] workingMemoryContext,
-                            final Object[] context,
-                            final Tuple leftTuple,
-                            final WorkingMemory workingMemory) {
-        try {
-            Object[] results = new Object[this.accumulators.length];
-            for ( int i = 0; i < this.accumulators.length; i++ ) {
-                results[i] = this.accumulators[i].getResult( workingMemoryContext[i],
-                                                             context[i],
-                                                             leftTuple,
-                                                             this.requiredDeclarations,
-                                                             workingMemory );
-            }
-            return results;
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
-        }
-    }
+    public abstract Object getResult(final Object workingMemoryContext,
+                                     final Object context,
+                                     final Tuple leftTuple,
+                                     final WorkingMemory workingMemory);
 
     /**
      * Returns true if this accumulate supports reverse
      * @return
      */
-    public boolean supportsReverse() {
-        boolean supports = true;
-        for( Accumulator acc : this.accumulators ) {
-            if( ! acc.supportsReverse() ) {
-                supports = false;
-                break;
-            }
-        }
-        return supports;
-    }
+    public abstract boolean supportsReverse();
 
-    public Accumulate clone() {
-        RuleConditionElement clonedSource = source instanceof GroupElement ? ((GroupElement) source).cloneOnlyGroup() : source.clone();
-        Accumulate clone = new Accumulate( clonedSource,
-                                           this.requiredDeclarations,
-                                           this.accumulators,
-                                           this.multiFunction );
+    public abstract Accumulate clone();
 
+    protected void registerClone(Accumulate clone) {
         if ( this.cloned == Collections.EMPTY_LIST ) {
             this.cloned = new ArrayList<Accumulate>( 1 );
         }
-
         this.cloned.add( clone );
-
-        return clone;
     }
 
     public RuleConditionElement getSource() {
@@ -267,13 +141,7 @@ public class Accumulate extends ConditionalElement
         return (Declaration) this.source.getInnerDeclarations().get( identifier );
     }
 
-    public Object[] createWorkingMemoryContext() {
-        Object[] ctx = new Object[ this.accumulators.length ];
-        for( int i = 0; i < this.accumulators.length; i++ ) {
-            ctx[i] = this.accumulators[i].createWorkingMemoryContext();
-        }
-        return ctx;
-    }
+    public abstract Object createWorkingMemoryContext();
 
     public List<RuleConditionElement> getNestedElements() {
         return Collections.singletonList( this.source );
@@ -283,20 +151,8 @@ public class Accumulate extends ConditionalElement
         return true;
     }
 
-    /**
-     * @return the multiFunction
-     */
-    public boolean isMultiFunction() {
-        return multiFunction;
-    }
+    public abstract boolean isMultiFunction();
 
-    /**
-     * @param multiFunction the multiFunction to set
-     */
-    public void setMultiFunction( boolean multiFunction ) {
-        this.multiFunction = multiFunction;
-    }
-    
     public void replaceDeclaration(Declaration declaration,
                                    Declaration resolved) {
         for ( int i = 0; i < this.requiredDeclarations.length; i++ ) {
@@ -310,7 +166,7 @@ public class Accumulate extends ConditionalElement
         this.innerDeclarationCache = null;
     }
     
-    private Declaration[] getInnerDeclarationCache() {
+    protected Declaration[] getInnerDeclarationCache() {
         if( this.innerDeclarationCache == null ) {
             Map<String, Declaration> innerDeclarations = this.source.getInnerDeclarations();
             this.innerDeclarationCache = innerDeclarations.values().toArray( new Declaration[innerDeclarations.size()] );
@@ -318,49 +174,4 @@ public class Accumulate extends ConditionalElement
         }
         return this.innerDeclarationCache;
     }
-    
-    public final class Wirer implements Wireable, Serializable {
-        private static final long serialVersionUID = -9072646735174734614L;
-        
-        private final int index;
-        
-        public Wirer( int index ) {
-            this.index = index;
-        }
-
-        public void wire( Object object ) {
-            Accumulator accumulator = KiePolicyHelper.isPolicyEnabled() ? new SafeAccumulator((Accumulator) object) : (Accumulator) object;
-            accumulators[index] = accumulator;
-            for ( Accumulate clone : cloned ) {
-                clone.accumulators[index] = accumulator;
-            }
-        }
-    }
-
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + Arrays.hashCode( accumulators );
-        //result = prime * result + Arrays.hashCode( localDeclarations );
-        result = prime * result + (multiFunction ? 1231 : 1237);
-        result = prime * result + Arrays.hashCode( requiredDeclarations );
-        result = prime * result + ((source == null) ? 0 : source.hashCode());
-        return result;
-    }
-
-    public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
-        Accumulate other = (Accumulate) obj;
-        if ( !Arrays.equals( accumulators, other.accumulators ) ) return false;
-        //if ( !Arrays.equals( localDeclarations, other.localDeclarations ) ) return false;
-        if ( multiFunction != other.multiFunction ) return false;
-        if ( !Arrays.equals( requiredDeclarations, other.requiredDeclarations ) ) return false;
-        if ( source == null ) {
-            if ( other.source != null ) return false;
-        } else if ( !source.equals( other.source ) ) return false;
-        return true;
-    }
-
 }

@@ -39,7 +39,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -188,10 +187,11 @@ public class AccumulateNode extends BetaNode {
      * Creates a BetaMemory for the BetaNode's memory.
      */
     public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
-        AccumulateMemory memory = new AccumulateMemory();
-        memory.betaMemory = this.constraints.createBetaMemory( config,
-                                                               NodeTypeEnums.AccumulateNode );
-        memory.accumulators = this.accumulate.getAccumulators();
+        AccumulateMemory memory = this.accumulate.isMultiFunction() ?
+                                  new MultiAccumulateMemory(this.accumulate.getAccumulators()) :
+                                  new SingleAccumulateMemory(this.accumulate.getAccumulators()[0]);
+        memory.betaMemory = this.constraints.createBetaMemory(config,
+                                                              NodeTypeEnums.AccumulateNode);
         memory.workingMemoryContext = this.accumulate.createWorkingMemoryContext();
         memory.resultsContext = this.resultBinder.createContext();
         memory.alphaContexts = new ContextEntry[this.resultConstraints.length];
@@ -205,12 +205,11 @@ public class AccumulateNode extends BetaNode {
 
     }
 
-    public static class AccumulateMemory extends AbstractBaseLinkedListNode<Memory>
+    public static abstract class AccumulateMemory extends AbstractBaseLinkedListNode<Memory>
         implements
         Memory {
 
-        private Accumulator[]     accumulators;
-        public Object[]           workingMemoryContext;
+        public Object             workingMemoryContext;
         public BetaMemory         betaMemory;
         public ContextEntry[]     resultsContext;
         public ContextEntry[]     alphaContexts;
@@ -231,11 +230,36 @@ public class AccumulateNode extends BetaNode {
             betaMemory.setSegmentMemory(segmentMemory);
         }
 
+        public abstract void reset();
+    }
+
+    public static class SingleAccumulateMemory extends AccumulateMemory {
+
+        private final Accumulator accumulator;
+
+        public SingleAccumulateMemory(Accumulator accumulator) {
+            this.accumulator = accumulator;
+        }
+
+        public void reset() {
+            betaMemory.reset();
+            workingMemoryContext = this.accumulator.createWorkingMemoryContext();
+        }
+    }
+
+    public static class MultiAccumulateMemory extends AccumulateMemory {
+
+        private final Accumulator[] accumulators;
+
+        public MultiAccumulateMemory(Accumulator[] accumulators) {
+            this.accumulators = accumulators;
+        }
+
         public void reset() {
             betaMemory.reset();
             workingMemoryContext = new Object[ this.accumulators.length ];
             for( int i = 0; i < this.accumulators.length; i++ ) {
-                workingMemoryContext[i] = this.accumulators[i].createWorkingMemoryContext();
+                ((Object[])workingMemoryContext)[i] = this.accumulators[i].createWorkingMemoryContext();
             }
         }
     }
@@ -243,7 +267,7 @@ public class AccumulateNode extends BetaNode {
     public static class AccumulateContext
         implements
         Externalizable {
-        public  Serializable[]      context;
+        public  Object              context;
         public  RightTuple          result;
         public  InternalFactHandle  resultFactHandle;
         public  LeftTuple           resultLeftTuple;
@@ -252,7 +276,7 @@ public class AccumulateNode extends BetaNode {
 
         public void readExternal(ObjectInput in) throws IOException,
                 ClassNotFoundException {
-            context = (Serializable[]) in.readObject();
+            context = in.readObject();
             result = (RightTuple) in.readObject();
             propagated = in.readBoolean();
         }

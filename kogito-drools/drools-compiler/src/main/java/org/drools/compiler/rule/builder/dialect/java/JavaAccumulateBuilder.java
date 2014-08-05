@@ -16,8 +16,32 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.createVariableContext;
-import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.generateTemplates;
+import org.drools.compiler.compiler.AnalysisResult;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.rule.builder.AccumulateBuilder;
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.compiler.rule.builder.RuleConditionBuilder;
+import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
+import org.drools.compiler.rule.builder.util.PackageBuilderUtil;
+import org.drools.core.base.accumulators.JavaAccumulatorFunctionExecutor;
+import org.drools.core.base.extractors.ArrayElementReader;
+import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.rule.Accumulate;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.MultiAccumulate;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.RuleConditionElement;
+import org.drools.core.rule.SingleAccumulate;
+import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.DeclarationScopeResolver;
+import org.drools.core.spi.InternalReadAccessor;
+import org.kie.api.runtime.rule.AccumulateFunction;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -29,30 +53,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.drools.core.base.accumulators.JavaAccumulatorFunctionExecutor;
-import org.drools.core.base.extractors.ArrayElementReader;
-import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
-import org.drools.compiler.compiler.AnalysisResult;
-import org.drools.compiler.compiler.BoundIdentifiers;
-import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.lang.descr.AccumulateDescr;
-import org.drools.compiler.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.rule.builder.AccumulateBuilder;
-import org.drools.compiler.rule.builder.util.PackageBuilderUtil;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.rule.Accumulate;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.RuleConditionElement;
-import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.compiler.rule.builder.RuleConditionBuilder;
-import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
-import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.DeclarationScopeResolver;
-import org.drools.core.spi.InternalReadAccessor;
-import org.kie.api.runtime.rule.AccumulateFunction;
+import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.createVariableContext;
+import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.generateTemplates;
 
 /**
  * A builder for the java dialect accumulate version
@@ -197,10 +199,15 @@ public class JavaAccumulateBuilder
                                                                       readLocalsFromTuple );
         }
 
-        return new Accumulate(source,
-                requiredDecl.toArray(new Declaration[requiredDecl.size()]),
-                accumulators,
-                accumDescr.isMultiFunction());
+        if (accumDescr.isMultiFunction()) {
+            return new MultiAccumulate( source,
+                                        requiredDecl.toArray(new Declaration[requiredDecl.size()]),
+                                        accumulators );
+        } else {
+            return new SingleAccumulate( source,
+                                         requiredDecl.toArray(new Declaration[requiredDecl.size()]),
+                                         accumulators[0] );
+        }
     }
 
     private Declaration[] collectRequiredDeclarations( Map<String, Declaration> declsInScope,
@@ -371,14 +378,14 @@ public class JavaAccumulateBuilder
         map.put( "hashCode",
                 actionCode.hashCode());
 
-        Accumulate accumulate = new Accumulate(source, declarations);
+        SingleAccumulate accumulate = new SingleAccumulate(source, declarations);
 
         generateTemplates("accumulateInnerClass",
                 "accumulateInvoker",
                 context,
                 className,
                 map,
-                accumulate.new Wirer(0),
+                accumulate.new Wirer(),
                 accumDescr);
         return accumulate;
     }
