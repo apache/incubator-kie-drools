@@ -16,24 +16,6 @@
 
 package org.drools.core.definitions.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.TypeResolver;
@@ -53,16 +35,33 @@ import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.util.ClassUtils;
-import org.kie.api.definition.type.Role;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.rule.Global;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.definition.type.Role;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.io.ResourceTypePackage;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class KnowledgePackageImpl
     implements
@@ -180,15 +179,10 @@ public class KnowledgePackageImpl
         return Collections.unmodifiableCollection(list);
     }
 
-
     public Collection<FactType> getFactTypes() {
         List<FactType> list = new ArrayList<FactType>(typeDeclarations.size());
         for (TypeDeclaration typeDeclaration : typeDeclarations.values()) {
-            FactType factType = typeDeclaration.getTypeClassDef();
-            // avoid native class definitions
-            if ( typeDeclaration.isNovel() ) {
-                list.add(factType);
-            }
+            list.add(typeDeclaration.getTypeClassDef());
         }
         return Collections.unmodifiableCollection(list);
     }

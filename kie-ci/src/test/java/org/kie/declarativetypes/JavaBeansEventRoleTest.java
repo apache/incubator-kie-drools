@@ -2,7 +2,6 @@ package org.kie.declarativetypes;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.rule.TypeMetaInfo;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -13,7 +12,6 @@ import org.kie.scanner.KieModuleMetaData;
 public class JavaBeansEventRoleTest extends CommonTestMethodBase {
 
     @Test
-    @Ignore("https://issues.jboss.org/browse/DROOLS-572")
     public void testFullyQualifiedDeclarativeTypeName() throws Exception {
         String declaration = "package org.drools.compiler;\n" +
                 "public class Bean {}";
@@ -41,7 +39,6 @@ public class JavaBeansEventRoleTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("https://issues.jboss.org/browse/DROOLS-572")
     public void testBeanAndDeclarativeTypeInSamePackage() throws Exception {
         String declaration = "package org.drools.compiler;\n" +
                 "public class Bean {}";
@@ -70,7 +67,6 @@ public class JavaBeansEventRoleTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("https://issues.jboss.org/browse/DROOLS-572")
     public void testImportBean() throws Exception {
         String declaration = "package org.drools.compiler;\n" +
                 "public class Bean {}";
