@@ -189,3 +189,7 @@ message IterationLevel {
     optional int32 level = 2;
 }
 
+message VariableContainer {
+    repeated Variable variable = 1;
+}
+

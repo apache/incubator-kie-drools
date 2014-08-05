@@ -20,6 +20,7 @@ import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.Builder;
 import org.jbpm.marshalling.impl.JBPMMessages.Variable;
+import org.jbpm.marshalling.impl.JBPMMessages.VariableContainer;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
@@ -265,6 +266,28 @@ public class ProtobufProcessMarshaller
         
         return marshallVariable(context, "variablesMap" ,marshalledVariables);
     }
+    
+    public static VariableContainer marshallVariablesContainer(MarshallerWriteContext context, Map<String, Object> variables) throws IOException{
+    	JBPMMessages.VariableContainer.Builder vcbuilder = JBPMMessages.VariableContainer.newBuilder();
+        for(String key : variables.keySet()){
+            JBPMMessages.Variable.Builder builder = JBPMMessages.Variable.newBuilder().setName( key );
+            if(variables.get(key) != null){
+                ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategyObject( variables.get(key) );
+                Integer index = context.getStrategyIndex( strategy );
+                builder.setStrategyIndex( index )
+                   .setValue( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
+                                                                     context,
+                                                                     variables.get(key) ) ) );
+                
+            } 
+                                     
+           
+            
+            vcbuilder.addVariable(builder.build());
+        }
+        
+        return vcbuilder.build();
+    }
 
     public static Object unmarshallVariableValue(MarshallerReaderContext context,
                                                   JBPMMessages.Variable _variable) throws IOException,
@@ -279,6 +302,22 @@ public class ProtobufProcessMarshaller
                                            (context.kBase == null)?null:context.kBase.getRootClassLoader() );
         return value;
     }
+    
+	public static Map<String, Object> unmarshallVariableContainerValue(MarshallerReaderContext context, JBPMMessages.VariableContainer _variableContiner)
+			throws IOException, ClassNotFoundException {
+		Map<String, Object> variables = new HashMap<String, Object>();
+		if (_variableContiner.getVariableCount() == 0) {
+			return variables;
+		}
+		
+		for (Variable _variable : _variableContiner.getVariableList()) {
+		
+			Object value = ProtobufProcessMarshaller.unmarshallVariableValue(context, _variable);
+			
+			variables.put(_variable.getName(), value);
+		}
+		return variables;
+	}
 
     public void init(MarshallerReaderContext context) {
         ExtensionRegistry registry = (ExtensionRegistry) context.parameterObject;
