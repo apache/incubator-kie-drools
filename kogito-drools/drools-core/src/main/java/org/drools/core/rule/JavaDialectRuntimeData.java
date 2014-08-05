@@ -16,6 +16,16 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.common.ProjectClassLoader;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.spi.Constraint;
+import org.drools.core.spi.Wireable;
+import org.drools.core.util.KeyStoreHelper;
+import org.drools.core.util.StringUtils;
+import org.kie.internal.concurrent.ExecutorProviderFactory;
+import org.kie.internal.utils.FastClassLoader;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
@@ -45,16 +55,6 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ConcurrentSkipListSet;
-
-import org.drools.core.common.ProjectClassLoader;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.spi.Constraint;
-import org.drools.core.spi.Wireable;
-import org.drools.core.util.KeyStoreHelper;
-import org.drools.core.util.StringUtils;
-import org.kie.internal.concurrent.ExecutorProviderFactory;
-import org.kie.internal.utils.FastClassLoader;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
@@ -384,9 +384,6 @@ public class JavaDialectRuntimeData
         }
         if (bytecode == null && rootClassLoader instanceof ProjectClassLoader) {
             bytecode = ((ProjectClassLoader)rootClassLoader).getBytecode(resourceName);
-            if (bytecode != null) {
-                store.put(resourceName, bytecode);
-            }
         }
         return bytecode;
     }
