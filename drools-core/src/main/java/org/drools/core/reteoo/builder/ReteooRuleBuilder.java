@@ -27,7 +27,6 @@ import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuleBuilder;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.WindowNode;
-import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Collect;
 import org.drools.core.rule.ConditionalBranch;
 import org.drools.core.rule.EntryPointId;
@@ -36,9 +35,11 @@ import org.drools.core.rule.Forall;
 import org.drools.core.rule.From;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.InvalidPatternException;
+import org.drools.core.rule.MultiAccumulate;
 import org.drools.core.rule.NamedConsequence;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryElement;
+import org.drools.core.rule.SingleAccumulate;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.rule.WindowReference;
 import org.drools.core.time.TemporalDependencyMatrix;
@@ -67,7 +68,9 @@ public class ReteooRuleBuilder implements RuleBuilder {
                                new FromBuilder() );
         this.utils.addBuilder( Collect.class,
                                new CollectBuilder() );
-        this.utils.addBuilder( Accumulate.class,
+        this.utils.addBuilder( SingleAccumulate.class,
+                               new AccumulateBuilder() );
+        this.utils.addBuilder( MultiAccumulate.class,
                                new AccumulateBuilder() );
         this.utils.addBuilder( Timer.class,
                                new TimerBuilder() );

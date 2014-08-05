@@ -588,11 +588,10 @@ public class ReteAccumulateNode extends AccumulateNode {
                                            final boolean useLeftMemory ) {
 
         // get the actual result
-        final Object[] resultArray = this.accumulate.getResult( memory.workingMemoryContext,
-                                                                accctx.context,
-                                                                leftTuple,
-                                                                workingMemory );
-        Object result = this.accumulate.isMultiFunction() ? resultArray : resultArray[0];
+        Object result = accumulate.getResult(memory.workingMemoryContext,
+                                             accctx.context,
+                                             leftTuple,
+                                             workingMemory);
         if (result == null) {
             return;
         }

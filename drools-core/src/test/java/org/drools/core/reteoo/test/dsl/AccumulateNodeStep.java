@@ -16,12 +16,6 @@
 
 package org.drools.core.reteoo.test.dsl;
 
-import java.beans.IntrospectionException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import org.antlr.tool.Rule;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.EvaluatorWrapper;
@@ -47,11 +41,18 @@ import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Pattern;
+import org.drools.core.rule.SingleAccumulate;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.KnowledgeHelper;
 import org.kie.api.runtime.rule.AccumulateFunction;
+
+import java.beans.IntrospectionException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class AccumulateNodeStep
     implements
@@ -223,10 +224,9 @@ public class AccumulateNodeStep
                                                                            accFunction );
             ((MVELCompileable) accumulator).compile( data );
 
-            Accumulate accumulate = new Accumulate( sourcePattern,
-                                                    new Declaration[]{}, // required declaration
-                                                    new Accumulator[]{accumulator},
-                                                    false );
+            Accumulate accumulate = new SingleAccumulate( sourcePattern,
+                                                          new Declaration[]{}, // required declaration
+                                                          accumulator );
             AccumulateNode accNode = new AccumulateNode( buildContext.getNextId(),
                                                          leftTupleSource,
                                                          rightObjectSource,
