@@ -373,6 +373,13 @@ end
       entries in the following table. Notice, however, that the proper keyword must be used. Also, each of these
       attributes may be used only once.</para>
 
+      <important>
+        <para>Rule attributes specified in a Rule Set area will affect all rule assets in the same package (not only
+        in the spreadsheet). Unless you are sure that the spreadsheet is the only one rule asset in the package, the
+        recommendation is to specify rule attributes not in a Rule Set area but in a Rule Table columns for each
+        rule instead.</para>
+      </important>
+
       <table>
         <title>Rule attribute entries in the Rule Set area</title>
 
