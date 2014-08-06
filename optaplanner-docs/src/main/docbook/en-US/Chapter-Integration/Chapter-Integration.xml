@@ -86,6 +86,90 @@
   <section xml:id="integrationWithOtherEnvironments">
     <title>Other environments</title>
 
+    <section xml:id="integrationWithJBossModules">
+      <title>JBoss modules, WildFly and JBoss EAP</title>
+
+      <para>To deploy an OptaPlanner web application on WildFly, simply include the optaplanner dependency jars in the
+      <literal>war</literal> file's <literal>WEB-INF/lib</literal> directory (just like any other dependency) as shown
+      in the <literal>optaplanner-webexamples-*.war</literal>. However, in this approach the war file can easily grow to
+      several MB in size, which is fine for a one-time deployment, but too heavyweight for frequent redeployments
+      (especially over a slow network connection).</para>
+
+      <para>The remedy is to use deliver the optaplanner jars in a JBoss module to WildFly and create a skinny war.
+      Let's create an Optaplanner module called <emphasis>org.optaplanner</emphasis>:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Navigate to the directory <literal role="bold">${WILDFLY_HOME}/modules/system/layers/base/</literal>.
+          This directory contains the JBoss modules of WildFly. Create directory structure
+          <literal>org/optaplanner/main</literal> for our new module.</para>
+
+          <orderedlist>
+            <listitem>
+              <para>Copy <literal>optaplanner-core-${version}.jar</literal> and all its direct and transitive dependency
+              jars into that new directory. Use "mvn dependency:tree" on each optaplanner artifact to discover all
+              dependencies.</para>
+            </listitem>
+
+            <listitem>
+              <para>Create the file <literal>module.xml</literal> in that new directory. Give it this content:</para>
+
+              <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;module xmlns="urn:jboss:module:1.3" name="org.optaplanner"&gt;
+  &lt;resources&gt;
+    ...
+    &lt;resource-root path="kie-api-${version}.jar"/&gt;
+    ...
+    &lt;resource-root path="optaplanner-core-${version}.jar"/&gt;
+    ...
+    &lt;resource-root path="."/&gt; 
+  &lt;/resources&gt;
+  &lt;dependencies&gt;
+    &lt;module name="javaee.api"/&gt;
+  &lt;/dependencies&gt;
+&lt;/module&gt;</programlisting>
+            </listitem>
+          </orderedlist>
+        </listitem>
+
+        <listitem>
+          <para>Navigate to the deployed <literal>war</literal> file.</para>
+
+          <orderedlist>
+            <listitem>
+              <para>Remove <literal>optaplanner-core-${version}.jar</literal> and all its direct and transitive
+              dependency jars from the <literal>WEB-INF/lib</literal> directory in the <literal>war</literal>
+              file.</para>
+            </listitem>
+
+            <listitem>
+              <para>Create the file <literal>jboss-deployment-structure.xml</literal> in the
+              <literal>WEB-INF/lib</literal> directory. Give it this content:</para>
+
+              <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;jboss-deployment-structure&gt;
+   &lt;deployment&gt;
+      &lt;dependencies&gt;
+         &lt;module name="org.optaplanner" export="true"/&gt;
+      &lt;/dependencies&gt;
+   &lt;/deployment&gt;
+&lt;/jboss-deployment-structure&gt;</programlisting>
+            </listitem>
+          </orderedlist>
+        </listitem>
+      </orderedlist>
+
+      <important>
+        <para>Because of <link xlink:href="WildFly's class loading">WildFly's class loading</link>, the method
+        <literal>SolverFactory.createFromXmlResource()</literal> might not find the solver configuration and throw an
+        <literal>IllegalArgumentException</literal>. Instead use:</para>
+
+        <programlisting>        SolverFactory solverFactory = SolverFactory.createFromXmlInputStream(
+                getClass().getClassLoader().getResourceAsStream(
+                        "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml"));</programlisting>
+      </important>
+    </section>
+
     <section xml:id="integrationWithOSGi">
       <title>OSGi</title>
 
