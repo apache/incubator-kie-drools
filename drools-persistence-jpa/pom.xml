@@ -42,6 +42,7 @@
               org.drools.container.spring.beans.persistence;resolution:=optional,
               org.drools.core.marshalling.impl;resolution:=optional,
               org.hibernate.proxy;resolution:=optional,
+              org.hibernate;resolution:=optional,
               org.kie.spring.persistence;resolution:=optional,
               *
             </Import-Package>
