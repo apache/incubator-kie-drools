@@ -24,13 +24,57 @@
   </section>
 
   <section>
-    <title>Improved Wizards</title>
-    <para>TODO</para>
+    <title>Unify validation style in Guided Decision Table Wizard.</title>
+    <para>All of our new screens use GWT-Bootstrap widgets and alert users to input errors in a consistent way.</para>
+    <para>One of the most noticable differences was the Guided Decision Table Wizard that alerted errors in a way inconsistent with our use of GWT-Bootstrap.</para>
+    <para>This Wizard has been updated to use the new look and feel.</para>
+    <figure>
+      <title>New Guided Decision Table Wizard validation</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Workbench/ReleaseNotes/NewGuidedDecisionTableWizardValidation.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
   </section>
 
   <section>
+    <title>Improved Wizards</title>
+    <para>During the re-work of the Guided Decision Table's Wizard to make it's validation
+      consistent with other areas of the application we took the opportunity to move the Wizard
+      Framework to GWT-Bootstrap too.</para>
+    <para>The resulting appearance is much more pleasing. We hope to migrate more legacy editors to
+      GWT-Bootstrap as time and priorities permit.</para>
+    <figure>
+      <title>New Wizard Framework</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Workbench/ReleaseNotes/NewGuidedDecisionTableWizard.png"
+              format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+  </section>
+  
+  <section>
     <title>Consistent behaviour of XLS, Guided Decision Tables and Guided Templates</title>
-    <para>TODO</para>
+    <para>Consistency is a good thing for everybody. Users can expect different authoring metaphores to produce the same rule behaviour (and developers know when something is a bug!).</para>
+    <para>There were a few inconsistencies in the way XLS Decision Tables, Guidied Decision Tables and Guided Rule Templates generated the underlying rules for empty cells. These have been eliminated making their operation consistent.</para>
+    <itemizedlist>
+      <listitem>
+        <para>If all constraints have null values (empty cells) the Pattern is not created.</para>
+        <para>Should you need the Pattern but no constraints; you will need to include the constraint <code>this != null</code>.</para>
+        <para>This operation is consistent with how XLS and Guided Decision Tables have always worked.</para>
+      </listitem>
+      <listitem>
+        <para>You can define a constraint on a String field for an empty String or white-space by delimiting it with double-quotation marks. The enclosing quotation-marks are removed from the value when generating the rules.</para>
+        <para>The use of quotation marks for other String values is not required and they can be omitted. Their use is however essential to differentiate a constraint for an empty String from an empty cell - in which case the constraint is omitted.</para>
+      </listitem>
+    </itemizedlist>
   </section>
   
 </section>
