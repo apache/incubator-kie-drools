@@ -20,7 +20,32 @@
 
   <section>
     <title>Project Editor permissions</title>
-    <para>TODO</para>
+    <para>The ability to configure role-based permissions for the Project Editor have been added.</para>
+    <para>Permissions can be configured using the <code>WEB-INF/classes/workbench-policy.properties</code> file.</para>
+    <para>The following permissions are supported:-
+    <itemizedlist>
+      <listitem>
+        <para>Save button</para>
+        <para><code>feature.wb_project_authoring_save</code></para>
+      </listitem>
+      <listitem>
+        <para>Delete button</para>
+        <para><code>feature.wb_project_authoring_delete</code></para>
+      </listitem>
+      <listitem>
+        <para>Copy button</para>
+        <para><code>feature.wb_project_authoring_copy</code></para>
+      </listitem>
+      <listitem>
+        <para>Rename button</para>
+        <para><code>feature.wb_project_authoring_rename</code></para>
+      </listitem>
+      <listitem>
+        <para>Build &amp; Deploy button</para>
+        <para><code>feature.wb_project_authoring_buildAndDeploy</code></para>
+      </listitem>
+    </itemizedlist>
+    </para>
   </section>
 
   <section>
