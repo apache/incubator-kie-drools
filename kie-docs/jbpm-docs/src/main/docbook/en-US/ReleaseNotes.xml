@@ -7,11 +7,18 @@
   <title>Release Notes</title>
 
   <section>
+    <title>jBPM 6.2</title>
+
+    <xi:include href="../../../../../shared/Workbench/ReleaseNotes/ReleaseNotesWorkbench.6.2.0.Beta1.xml" />
+
+  </section>
+
+  <section>
     <title>jBPM 6.1</title>
     
     <xi:include href="ReleaseNotes/Release.6.1.0.Final.xml" />  
     <xi:include href="../../../../../shared/Workbench/ReleaseNotes/ReleaseNotesWorkbench.6.1.0.Final.xml" />
-
+    
   </section>
   
   <section>
