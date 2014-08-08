@@ -18,7 +18,6 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.Marshaller;
@@ -38,7 +37,6 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
     
     private static final Logger logger = LoggerFactory.getLogger(ProcessMarshallingTest.class);
 
-    @Ignore
     @Test
     @SuppressWarnings("unchecked")
 	public void testMarshallingProcessInstancesAndGlobals() throws Exception {
