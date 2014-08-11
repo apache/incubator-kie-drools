@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 /**
- * An AcceptedForager is a Forager which forages accepted moves and ignores unaccepted moves.
+ * A {@link Forager} which forages accepted moves and ignores unaccepted moves.
  * @see Forager
  * @see Acceptor
  */
@@ -50,8 +50,8 @@ public class AcceptedForager extends AbstractForager {
 
     protected LocalSearchMoveScope earlyPickedMoveScope;
 
-    public AcceptedForager(DeciderScoreComparatorFactory deciderScoreComparatorFactory, LocalSearchPickEarlyType pickEarlyType,
-            int acceptedCountLimit) {
+    public AcceptedForager(DeciderScoreComparatorFactory deciderScoreComparatorFactory,
+            LocalSearchPickEarlyType pickEarlyType, int acceptedCountLimit) {
         this.deciderScoreComparatorFactory = deciderScoreComparatorFactory;
         this.pickEarlyType = pickEarlyType;
         this.acceptedCountLimit = acceptedCountLimit;
