@@ -836,4 +836,105 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         manager.disposeRuntimeEngine(runtime2);
         manager.close();
     }
+
+    @Test
+    public void testIndependentSubprocessAbort() {
+        // independent = true
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-CallActivity.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-CallActivitySubProcess.bpmn2"), ResourceType.BPMN2)
+                .get();
+
+        manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);
+        assertNotNull(manager);
+        // since there is no process instance yet we need to get new session
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        KieSession ksession = runtime.getKieSession();
+
+        assertNotNull(ksession);
+        int ksession1Id = ksession.getId();
+        assertTrue(ksession1Id == 2);
+
+        ProcessInstance pi1 = ksession.startProcess("ParentProcess");
+
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
+
+        // Aborting the parent process
+        ksession.abortProcessInstance(pi1.getId());
+
+        AuditService logService = runtime.getAuditLogService();
+
+        List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("ParentProcess");
+        assertNotNull(logs);
+        assertEquals(0, logs.size());
+
+        logs = logService.findActiveProcessInstances("SubProcess");
+        assertNotNull(logs);
+        assertEquals(1, logs.size());
+
+        logs = logService.findProcessInstances("ParentProcess");
+        assertNotNull(logs);
+        assertEquals(1, logs.size());
+        assertEquals(ProcessInstance.STATE_ABORTED, (int)logs.get(0).getStatus());
+
+        logs = logService.findProcessInstances("SubProcess");
+        assertNotNull(logs);
+        assertEquals(1, logs.size());
+        assertEquals(ProcessInstance.STATE_ACTIVE, (int)logs.get(0).getStatus());
+
+        manager.close();
+    }
+
+    @Test
+    public void testDependentSubprocessAbort() {
+        // independent = false
+        // JBPM-4422
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-DependentCallActivity.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-DependentCallActivitySubProcess.bpmn2"), ResourceType.BPMN2)
+                .get();
+
+        manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);
+        assertNotNull(manager);
+        // since there is no process instance yet we need to get new session
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        KieSession ksession = runtime.getKieSession();
+
+        assertNotNull(ksession);
+        int ksession1Id = ksession.getId();
+        assertTrue(ksession1Id == 2);
+
+        ProcessInstance pi1 = ksession.startProcess("ParentProcess");
+
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
+
+        // Aborting the parent process
+        ksession.abortProcessInstance(pi1.getId());
+
+        AuditService logService = runtime.getAuditLogService();
+
+        List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("ParentProcess");
+        assertNotNull(logs);
+        assertEquals(0, logs.size());
+
+        logs = logService.findActiveProcessInstances("SubProcess");
+        assertNotNull(logs);
+        assertEquals(0, logs.size());
+
+        logs = logService.findProcessInstances("ParentProcess");
+        assertNotNull(logs);
+        assertEquals(1, logs.size());
+        assertEquals(ProcessInstance.STATE_ABORTED, (int)logs.get(0).getStatus());
+
+        logs = logService.findProcessInstances("SubProcess");
+        assertNotNull(logs);
+        assertEquals(1, logs.size());
+        assertEquals(ProcessInstance.STATE_ABORTED, (int)logs.get(0).getStatus());
+
+        manager.close();
+    }
 }
