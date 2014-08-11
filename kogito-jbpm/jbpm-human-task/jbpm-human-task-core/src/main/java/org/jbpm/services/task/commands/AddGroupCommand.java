@@ -31,7 +31,10 @@ import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 @XmlAccessorType(XmlAccessType.NONE)
 public class AddGroupCommand extends TaskCommand<Void> {
 
-	@XmlElement
+	/** generated serial version UID */
+    private static final long serialVersionUID = 8723206149543662492L;
+    
+    @XmlElement
     @XmlSchemaType(name="string")
 	private String groupId;
     

@@ -60,31 +60,31 @@ public abstract class TaskCommand<T> implements GenericCommand<T> {
         return this.taskId;
     }
 
-    public void setTaskId(Long taskId) {
+    public final void setTaskId(Long taskId) {
         this.taskId = taskId;
     }
 
-    public String getUserId() {
+    public final String getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public final void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public List<String> getGroupsIds() {
+    public final List<String> getGroupsIds() {
         return this.groupsIds;
     }
 
-    public void setGroupsIds(List<String> groupsIds) {
+    public final void setGroupsIds(List<String> groupsIds) {
         this.groupsIds = groupsIds;
     }
 
-    public String getTargetEntityId() {
+    public final String getTargetEntityId() {
         return this.targetEntityId;
     }
 
-    public void setTargetEntityId(String targetEntityId) {
+    public final void setTargetEntityId(String targetEntityId) {
         this.targetEntityId = targetEntityId;
     }
 }

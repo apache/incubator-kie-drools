@@ -30,7 +30,6 @@ import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
 import org.jbpm.services.task.rule.TaskRuleService;
 import org.kie.api.task.model.Group;
-import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;

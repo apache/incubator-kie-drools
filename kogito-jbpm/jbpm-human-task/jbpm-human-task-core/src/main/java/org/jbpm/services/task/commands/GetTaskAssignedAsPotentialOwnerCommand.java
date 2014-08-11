@@ -8,10 +8,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.kie.internal.query.QueryFilter;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
+import org.kie.internal.query.QueryFilter;
 
 @XmlRootElement(name = "get-task-assigned-pot-owner-command")
 @XmlAccessorType(XmlAccessType.NONE)

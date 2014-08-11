@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.jbpm.services.task.impl.model.xml.JaxbAttachment;
@@ -34,10 +33,6 @@ import org.kie.internal.command.Context;
 public class AddAttachmentCommand extends UserGroupCallbackTaskCommand<Long> {
 
 	private static final long serialVersionUID = -1295175842745522756L;
-	
-	@XmlElement
-    @XmlSchemaType(name="long")
-	private Long taskId;
 	
 	@XmlElement
     private JaxbAttachment jaxbAttachment;
@@ -79,14 +74,6 @@ public class AddAttachmentCommand extends UserGroupCallbackTaskCommand<Long> {
         return context.getTaskAttachmentService().addAttachment(taskId, attachmentImpl, contentImpl);
     	 
     }
-
-	public Long getTaskId() {
-		return taskId;
-	}
-
-	public void setTaskId(Long taskId) {
-		this.taskId = taskId;
-	}
 
 	public void setAttachment(Attachment attachment) {
 		this.attachment = attachment;

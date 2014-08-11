@@ -1,6 +1,12 @@
 package org.jbpm.services.task.commands;
 
-import static org.kie.internal.task.api.TaskQueryService.*;
+import static org.kie.internal.task.api.TaskQueryService.ACTUAL_OWNER_ID_LIST;
+import static org.kie.internal.task.api.TaskQueryService.BUSINESS_ADMIN_ID_LIST;
+import static org.kie.internal.task.api.TaskQueryService.POTENTIAL_OWNER_ID_LIST;
+import static org.kie.internal.task.api.TaskQueryService.PROCESS_INST_ID_LIST;
+import static org.kie.internal.task.api.TaskQueryService.STATUS_LIST;
+import static org.kie.internal.task.api.TaskQueryService.TASK_ID_LIST;
+import static org.kie.internal.task.api.TaskQueryService.WORK_ITEM_ID_LIST;
 
 import java.util.ArrayList;
 import java.util.Arrays;

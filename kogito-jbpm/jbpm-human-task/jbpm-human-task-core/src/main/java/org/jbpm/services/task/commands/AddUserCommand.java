@@ -17,9 +17,7 @@ package org.jbpm.services.task.commands;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 
 import org.kie.api.task.model.User;
 import org.kie.internal.command.Context;
@@ -33,10 +31,6 @@ public class AddUserCommand extends TaskCommand<Void> {
 
 	private static final long serialVersionUID = 5800835226386301758L;
 
-	@XmlElement
-    @XmlSchemaType(name="string")
-	private String userId;
-    
     public AddUserCommand() {
     }
 
@@ -56,13 +50,4 @@ public class AddUserCommand extends TaskCommand<Void> {
     	 
     }
 
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-    
 }

@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -36,11 +35,7 @@ import org.kie.internal.command.Context;
 public class AddContentCommand extends TaskCommand<Long> {
 
 	private static final long serialVersionUID = -1295175858745522756L;
-	
-	@XmlElement
-    @XmlSchemaType(name="long")
-	private Long taskId;
-	
+
 	@XmlElement
     private JaxbContent jaxbContent;
 
@@ -78,14 +73,6 @@ public class AddContentCommand extends TaskCommand<Long> {
 	        return context.getTaskContentService().addContent(taskId, comentImpl);
         }
     }
-
-	public Long getTaskId() {
-		return taskId;
-	}
-
-	public void setTaskId(Long taskId) {
-		this.taskId = taskId;
-	}
 
 	public Content getContent() {
 		return content;

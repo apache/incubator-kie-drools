@@ -67,13 +67,4 @@ public class AddUsersGroupsCommand extends TaskCommand<Void> {
     	 
     }
 
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-    
 }
