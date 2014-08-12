@@ -16,28 +16,16 @@ public class GetTaskAssignedByGroupsCommand extends TaskCommand<List<TaskSummary
 
     private static final long serialVersionUID = 6296898155907765061L;
 
-    @XmlElement
-    private List<String> groupIds;
-
     public GetTaskAssignedByGroupsCommand() {
     }
 
     public GetTaskAssignedByGroupsCommand(List<String> groupIds) {
-        this.groupIds = groupIds;
-
-    }
-
-    public List<String> getGroupIds() {
-        return groupIds;
-    }
-
-    public void setGroupIds(List<String> groupIds) {
-        this.groupIds = groupIds;
+        this.groupsIds = groupIds;
     }
 
     public List<TaskSummary> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        return context.getTaskQueryService().getTasksAssignedByGroups(groupIds);
+        return context.getTaskQueryService().getTasksAssignedByGroups(groupsIds);
     }
 
 }
