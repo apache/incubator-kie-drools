@@ -1632,8 +1632,8 @@ INFO  Solving ended: time spent (24), best score (0), average calculate count pe
 
 &lt;configuration&gt;</programlisting>
 
-      <para>If instead, you're still using Log4J (and you don't want to switch to its faster successor, Logback), add
-      the bridge dependency:</para>
+      <para>If instead, you're still using Log4J 1.x (and you don't want to switch to its faster successor, Logback),
+      add the bridge dependency:</para>
 
       <programlisting language="xml">    &lt;dependency&gt;
       &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
@@ -1653,6 +1653,33 @@ INFO  Solving ended: time spent (24), best score (0), average calculate count pe
   ...
 
 &lt;/log4j:configuration&gt;</programlisting>
+
+      <note>
+        <para>In a multitenant application, multiple <literal>Solver</literal> instances might be running at the same
+        time. To separate their logging into distinct files, surround the <literal>solve()</literal> call with an <link
+        xlink:href="http://logback.qos.ch/manual/mdc.html">MDC</link>:</para>
+
+        <programlisting language="java">        MDC.put("tenant.name",tenantName);
+        solver.solve(planningProblem);
+        Solution bestSolution = solver.getBestSolution();
+        MDC.remove("tenant.name");</programlisting>
+
+        <para>Then configure your logger to use different files for each <literal>${tenant.name}</literal>. For example
+        in Logback, use a <literal>SiftingAppender</literal> in <literal>logback.xml</literal>:</para>
+
+        <programlisting language="xml">  &lt;appender name="fileAppender" class="ch.qos.logback.classic.sift.SiftingAppender"&gt;
+    &lt;discriminator&gt;
+      &lt;key&gt;tenant.name&lt;/key&gt;
+      &lt;defaultValue&gt;unknown&lt;/defaultValue&gt;
+    &lt;/discriminator&gt;
+    &lt;sift&gt;
+      &lt;appender name="fileAppender.${tenant.name}" class="...FileAppender"&gt;
+        &lt;file&gt;local/log/optaplanner-${tenant.name}.log&lt;/file&gt;
+        ...
+      &lt;/appender&gt;
+    &lt;/sift&gt;
+  &lt;/appender&gt;</programlisting>
+      </note>
     </section>
 
     <section xml:id="randomNumberGenerator">

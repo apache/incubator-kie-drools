@@ -186,6 +186,9 @@ public class SingleBenchmarkResult {
     // Smart getters
     // ************************************************************************
 
+    /**
+     * @return never null, filename safe
+     */
     public String getName() {
         return problemBenchmarkResult.getName() + "_" + solverBenchmarkResult.getName();
     }

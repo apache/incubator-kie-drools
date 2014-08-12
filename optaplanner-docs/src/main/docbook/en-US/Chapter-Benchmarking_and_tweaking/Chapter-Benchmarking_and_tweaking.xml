@@ -327,6 +327,30 @@
       ...
     &lt;/problemBenchmarks&gt;</programlisting>
     </section>
+
+    <section xml:id="benchmarkLogging">
+      <title>Benchmark logging</title>
+
+      <para>Benchmark logging is configured like <link linkend="logging">the <literal>Solver</literal>
+      logging</link>.</para>
+
+      <para>To separate the log messages of each single benchmark run into a separate file, use the <link
+      xlink:href="http://logback.qos.ch/manual/mdc.html">MDC</link> with key <literal>singleBenchmark.name</literal> in
+      a sifting appender. For example with Logback in <literal>logback.xml</literal>:</para>
+
+      <programlisting language="xml">  &lt;appender name="fileAppender" class="ch.qos.logback.classic.sift.SiftingAppender"&gt;
+    &lt;discriminator&gt;
+      &lt;key&gt;singleBenchmark.name&lt;/key&gt;
+      &lt;defaultValue&gt;app&lt;/defaultValue&gt;
+    &lt;/discriminator&gt;
+    &lt;sift&gt;
+      &lt;appender name="fileAppender.${singleBenchmark.name}" class="...FileAppender"&gt;
+        &lt;file&gt;local/log/optaplannerBenchmark-${singleBenchmark.name}.log&lt;/file&gt;
+        ...
+      &lt;/appender&gt;
+    &lt;/sift&gt;
+  &lt;/appender&gt;</programlisting>
+    </section>
   </section>
 
   <section xml:id="benchmarkReport">
@@ -752,7 +776,7 @@
   ...
 &lt;/plannerBenchmark&gt;</programlisting>
 
-      <para>Multiple <literal>singleStatisticType</literal> elements are allowed. </para>
+      <para>Multiple <literal>singleStatisticType</literal> elements are allowed.</para>
 
       <note>
         <para>These statistic per single benchmark can slow down the solver noticeably, which affects the benchmark
@@ -777,7 +801,8 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/pickedMoveTypeBestScoreDiffStatistic.png" format="PNG"/>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/pickedMoveTypeBestScoreDiffStatistic.png"
+                       format="PNG"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -798,7 +823,8 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/pickedMoveTypeStepScoreDiffStatistic.png" format="PNG"/>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/pickedMoveTypeStepScoreDiffStatistic.png"
+                       format="PNG"/>
           </imageobject>
         </mediaobject>
       </figure>

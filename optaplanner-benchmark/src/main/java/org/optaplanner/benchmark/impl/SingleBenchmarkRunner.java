@@ -28,8 +28,11 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
+
+    public static final String NAME_MDC = "singleBenchmark.name";
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -58,6 +61,7 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
     // ************************************************************************
 
     public SingleBenchmarkRunner call() {
+        MDC.put(NAME_MDC, singleBenchmarkResult.getName());
         Runtime runtime = Runtime.getRuntime();
         ProblemBenchmarkResult problemBenchmarkResult = singleBenchmarkResult.getProblemBenchmarkResult();
         Solution inputSolution = problemBenchmarkResult.readPlanningProblem();
@@ -93,6 +97,7 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
             singleStatistic.writeCsvStatisticFile();
         }
         problemBenchmarkResult.writeOutputSolution(singleBenchmarkResult, outputSolution);
+        MDC.remove(NAME_MDC);
         return this;
     }
 

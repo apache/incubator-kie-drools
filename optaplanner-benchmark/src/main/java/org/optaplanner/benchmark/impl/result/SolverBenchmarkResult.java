@@ -84,6 +84,9 @@ public class SolverBenchmarkResult {
         this.plannerBenchmarkResult = plannerBenchmarkResult;
     }
 
+    /**
+     * @return never null, filename safe
+     */
     public String getName() {
         return name;
     }
