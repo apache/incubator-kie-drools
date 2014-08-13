@@ -15,15 +15,6 @@
  */
 package org.jbpm.compiler;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.parsers.FactoryConfigurationError;
-
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
@@ -38,7 +29,6 @@ import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.io.internal.InternalResource;
 import org.jbpm.compiler.xml.ProcessSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.processes.RuleFlowMigrator;
@@ -80,6 +70,14 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.parsers.FactoryConfigurationError;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * A ProcessBuilder can be used to build processes based on XML files
  * containing a process definition.
@@ -108,7 +106,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
     }
 
     public void buildProcess(final Process process, Resource resource) {
-        if ( resource != null && ((InternalResource) resource).hasURL()) {
+        if ( resource != null ) {
             ((org.jbpm.process.core.Process) process).setResource(resource);
         }
         boolean hasErrors = false;
@@ -265,11 +263,13 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         }
     }
 
-    public List<BaseKnowledgeBuilderResultImpl> addProcessFromXml(final Resource resource) throws IOException {
+    public List<Process> addProcessFromXml(final Resource resource) throws IOException {
     	Reader reader = resource.getReader();
         KnowledgeBuilderConfigurationImpl configuration = knowledgeBuilder.getBuilderConfiguration();
         XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules(), knowledgeBuilder.getRootClassLoader() );
-        
+
+        List<Process> processes = null;
+
         try {
             String portRuleFlow = System.getProperty( "drools.ruleflow.port", "false" );
             Reader portedReader = null;
@@ -278,7 +278,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
             } else {
                 portedReader = reader;
             }
-            List<Process> processes = xmlReader.read(portedReader);
+            processes = xmlReader.read(portedReader);
             if (processes != null) {
                 // it is possible an xml file could not be parsed, so we need to
                 // stop null pointers
@@ -298,7 +298,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
             reader.close();
         }
 
-        return this.errors;
+        return processes;
     }
                                    
   

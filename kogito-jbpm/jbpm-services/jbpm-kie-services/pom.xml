@@ -134,7 +134,20 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
-  
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-ci</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
     <!-- test: arquillian -->
     <dependency>
     	<groupId>org.jbpm</groupId>
