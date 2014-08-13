@@ -719,23 +719,23 @@ public class KnowledgePackageImpl
     }
 
     public List<RuleImpl> getRulesGeneratedFromResource(Resource resource) {
-        List<RuleImpl> rulesToBeRemoved = new ArrayList<RuleImpl>();
+        List<RuleImpl> rulesFromResource = new ArrayList<RuleImpl>();
         for (RuleImpl rule : rules.values()) {
             if (resource.equals(rule.getResource())) {
-                rulesToBeRemoved.add(rule);
+                rulesFromResource.add(rule);
             }
         }
-        return rulesToBeRemoved;
+        return rulesFromResource;
     }
 
     public List<TypeDeclaration> getTypesGeneratedFromResource(Resource resource) {
-        List<TypeDeclaration> typesToBeRemoved = new ArrayList<TypeDeclaration>();
+        List<TypeDeclaration> typesFromResource = new ArrayList<TypeDeclaration>();
         for (TypeDeclaration type : typeDeclarations.values()) {
             if (resource.equals(type.getResource())) {
-                typesToBeRemoved.add(type);
+                typesFromResource.add(type);
             }
         }
-        return typesToBeRemoved;
+        return typesFromResource;
     }
 
     public List<Function> removeFunctionsGeneratedFromResource(Resource resource) {
@@ -747,13 +747,35 @@ public class KnowledgePackageImpl
     }
 
     public List<Function> getFunctionsGeneratedFromResource(Resource resource) {
-        List<Function> functionsToBeRemoved = new ArrayList<Function>();
+        List<Function> functionsFromResource = new ArrayList<Function>();
         for (Function function : functions.values()) {
             if (resource.equals(function.getResource())) {
-                functionsToBeRemoved.add(function);
+                functionsFromResource.add(function);
             }
         }
-        return functionsToBeRemoved;
+        return functionsFromResource;
+    }
+
+    public List<Process> removeProcessesGeneratedFromResource(Resource resource) {
+        List<Process> processesToBeRemoved = getProcessesGeneratedFromResource(resource);
+        for (Process process : processesToBeRemoved) {
+            removeProcess(process);
+        }
+        return processesToBeRemoved;
+    }
+
+    private void removeProcess(Process process) {
+        ruleFlows.remove(process.getId());
+    }
+
+    public List<Process> getProcessesGeneratedFromResource(Resource resource) {
+        List<Process> processesFromResource = new ArrayList<Process>();
+        for (Process process : ruleFlows.values()) {
+            if (resource.equals(process.getResource())) {
+                processesFromResource.add(process);
+            }
+        }
+        return processesFromResource;
     }
 
     public boolean needsStreamMode() {

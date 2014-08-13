@@ -1784,7 +1784,8 @@ public class KnowledgeBaseImpl
     }
 
 
-    public void removeObjectsGeneratedFromResource(Resource resource) {
+    public boolean removeObjectsGeneratedFromResource(Resource resource) {
+        boolean modified = false;
         for (InternalKnowledgePackage pkg : pkgs.values()) {
             List<RuleImpl> rulesToBeRemoved = pkg.removeRulesGeneratedFromResource(resource);
             for (RuleImpl rule : rulesToBeRemoved) {
@@ -1794,6 +1795,16 @@ public class KnowledgeBaseImpl
             for (Function function : functionsToBeRemoved) {
                 removeFunction(function.getName());
             }
+            List<Process> processesToBeRemoved = pkg.removeProcessesGeneratedFromResource(resource);
+            for (Process process : processesToBeRemoved) {
+                removeProcess(process);
+            }
+            modified |= !rulesToBeRemoved.isEmpty() || !functionsToBeRemoved.isEmpty() || !processesToBeRemoved.isEmpty();
         }
+        return modified;
+    }
+
+    private void removeProcess(Process process) {
+        processes.remove(process.getId());
     }
 }

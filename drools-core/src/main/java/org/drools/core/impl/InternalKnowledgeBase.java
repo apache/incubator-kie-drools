@@ -18,6 +18,7 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.TripleStore;
+import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.rule.FactHandle;
@@ -104,9 +105,12 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
     void addRule( InternalKnowledgePackage pkg, RuleImpl rule ) throws InvalidPatternException;
     void removeRule( InternalKnowledgePackage pkg, RuleImpl rule ) throws InvalidPatternException;
 
+    void addProcess( Process process );
+    void removeProcess( final String id );
+
     void addGlobal(String identifier, Class clazz);
 
-    void removeObjectsGeneratedFromResource(Resource resource);
+    boolean removeObjectsGeneratedFromResource(Resource resource);
 
     TypeDeclaration getTypeDeclaration( Class<?> clazz );
     Collection<TypeDeclaration> getTypeDeclarations();
