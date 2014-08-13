@@ -68,6 +68,7 @@ public interface InternalKnowledgePackage extends KnowledgePackage, Externalizab
     boolean removeObjectsGeneratedFromResource(Resource resource);
     List<RuleImpl> removeRulesGeneratedFromResource(Resource resource);
     List<Function> removeFunctionsGeneratedFromResource(Resource resource);
+    List<Process> removeProcessesGeneratedFromResource(Resource resource);
 
     DialectRuntimeRegistry getDialectRuntimeRegistry();
     void setDialectRuntimeRegistry(DialectRuntimeRegistry dialectRuntimeRegistry);

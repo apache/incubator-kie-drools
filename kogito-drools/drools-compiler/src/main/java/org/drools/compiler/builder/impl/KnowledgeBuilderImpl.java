@@ -35,7 +35,6 @@ import org.drools.compiler.lang.ExpanderException;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.AccumulateImportDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
 import org.drools.compiler.lang.descr.FunctionDescr;
@@ -585,8 +584,20 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         this.resource = resource;
 
         try {
-            this.results.addAll(processBuilder.addProcessFromXml(resource));
-            processBuilder.getErrors().clear();
+            List<Process> processes = processBuilder.addProcessFromXml(resource);
+            List<BaseKnowledgeBuilderResultImpl> errors = processBuilder.getErrors();
+            if ( errors.isEmpty() ) {
+                if ( this.kBase != null && processes != null ) {
+                    for (Process process : processes) {
+                        if ( filterAccepts( process.getNamespace(), process.getId() ) ) {
+                            this.kBase.addProcess(process);
+                        }
+                    }
+                }
+            } else {
+                this.results.addAll(errors);
+                errors.clear();
+            }
         } catch (Exception e) {
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
@@ -2046,7 +2057,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
 
         if (kBase != null) {
-            kBase.removeObjectsGeneratedFromResource(resource);
+            modified = kBase.removeObjectsGeneratedFromResource(resource) || modified;
         }
 
         return modified;
