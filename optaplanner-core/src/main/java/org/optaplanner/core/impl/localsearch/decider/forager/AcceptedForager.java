@@ -108,14 +108,14 @@ public class AcceptedForager extends AbstractForager {
                 break;
             case FIRST_BEST_SCORE_IMPROVING:
                 Score bestScore = moveScope.getStepScope().getPhaseScope().getBestScore();
-                if (scoreComparator.compare(moveScope.getScore(), bestScore) > 0) {
+                if (moveScope.getScore().compareTo(bestScore) > 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
             case FIRST_LAST_STEP_SCORE_IMPROVING:
                 Score lastStepScore = moveScope.getStepScope().getPhaseScope()
                         .getLastCompletedStepScope().getScore();
-                if (scoreComparator.compare(moveScope.getScore(), lastStepScore) > 0) {
+                if (moveScope.getScore().compareTo(lastStepScore) > 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
