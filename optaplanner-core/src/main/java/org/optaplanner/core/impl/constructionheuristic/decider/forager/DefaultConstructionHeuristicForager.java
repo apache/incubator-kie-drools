@@ -72,7 +72,7 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
             case FIRST_NON_DETERIORATING_SCORE:
                 Score lastStepScore = moveScope.getStepScope().getPhaseScope()
                         .getLastCompletedStepScope().getScore();
-                if (scoreComparator.compare(moveScope.getScore(), lastStepScore) >= 0) {
+                if (moveScope.getScore().compareTo(lastStepScore) >= 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
