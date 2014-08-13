@@ -173,8 +173,8 @@ public class BenchmarkReport {
     // ************************************************************************
 
     public String getRelativePathToBenchmarkReportDirectory(File file) {
-        String benchmarkReportDirectoryPath = plannerBenchmarkResult.getBenchmarkReportDirectory().getAbsolutePath();
-        String filePath = file.getAbsolutePath();
+        String benchmarkReportDirectoryPath = plannerBenchmarkResult.getBenchmarkReportDirectory().getAbsoluteFile().toURI().getPath();
+        String filePath = file.getAbsoluteFile().toURI().getPath();
         if (!filePath.startsWith(benchmarkReportDirectoryPath)) {
             throw new IllegalArgumentException("The filePath (" + filePath
                     + ") does not start with the benchmarkReportDirectoryPath (" + benchmarkReportDirectoryPath + ").");
