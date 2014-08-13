@@ -29,7 +29,7 @@ public interface Marshaller {
     /**
      * Marshalls the given StatefulKnowledgeSession into the provided OutputStream
      * @param stream
-     * @param session
+     * @param ksession
      * @throws java.io.IOException
      */
     void marshall(OutputStream stream,
@@ -69,7 +69,7 @@ public interface Marshaller {
      * Unmarshall the stream into the StatefulKnowledgeSession. All existing state in the session will be lost.
      *  
      * @param stream
-     * @param session
+     * @param ksession
      * @throws java.io.IOException
      * @throws ClassNotFoundException
      */
