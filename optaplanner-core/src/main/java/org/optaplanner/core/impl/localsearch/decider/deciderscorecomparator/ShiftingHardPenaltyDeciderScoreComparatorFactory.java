@@ -118,6 +118,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactory extends AbstractDe
     }
 
     public Comparator<Score> createDeciderScoreComparator() {
+        // TODO BROKEN because createDeciderScoreComparator() is only called once per phase...
         if (shiftingPenaltyActive) {
             return new FlatteningHardSoftScoreComparator(hardWeight);
         } else {
