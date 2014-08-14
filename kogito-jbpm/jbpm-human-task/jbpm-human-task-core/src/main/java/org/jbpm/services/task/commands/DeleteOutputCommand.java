@@ -26,9 +26,7 @@ import org.kie.internal.command.Context;
 @XmlAccessorType(XmlAccessType.NONE)
 public class DeleteOutputCommand extends UserGroupCallbackTaskCommand<Void> {
 
-	/**
-	 * 
-	 */
+	/** generated serial version UID */
 	private static final long serialVersionUID = 5656199063761548979L;
 
 	public DeleteOutputCommand() {

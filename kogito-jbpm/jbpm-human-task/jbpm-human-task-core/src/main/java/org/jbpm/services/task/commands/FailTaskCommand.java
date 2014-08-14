@@ -19,8 +19,11 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
 import org.kie.internal.command.Context;
 
 /**
@@ -33,6 +36,8 @@ public class FailTaskCommand extends UserGroupCallbackTaskCommand<Void> {
 
 	private static final long serialVersionUID = -1749562224208571352L;
 
+    @XmlJavaTypeAdapter(JaxbMapAdapter.class)
+    @XmlElement
 	private Map<String, Object> data;
 
     public FailTaskCommand() {

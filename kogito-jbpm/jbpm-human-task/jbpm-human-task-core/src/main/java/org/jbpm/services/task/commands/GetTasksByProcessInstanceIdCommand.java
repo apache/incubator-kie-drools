@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 
 import org.kie.internal.command.Context;
 
-@XmlRootElement(name="get-task-by-proc-inst-id-command")
+@XmlRootElement(name="get-tasks-by-process-instance-id-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetTasksByProcessInstanceIdCommand extends TaskCommand<List<Long>> {
 

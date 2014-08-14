@@ -12,7 +12,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
 
-@XmlRootElement(name = "get-task-by-status-proc-inst-id-command")
+@XmlRootElement(name = "get-tasks-by-status-by-process-instance-id-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetTasksByStatusByProcessInstanceIdCommand extends TaskCommand<List<TaskSummary>> {
 
@@ -27,19 +27,19 @@ public class GetTasksByStatusByProcessInstanceIdCommand extends TaskCommand<List
     private String taskName;
 
     @XmlElement
-    private List<Status> status;
+    private List<Status> statuses;
 
     public GetTasksByStatusByProcessInstanceIdCommand() {
     }
 
     public GetTasksByStatusByProcessInstanceIdCommand(long processInstanceId, List<Status> status) {
         this.processInstanceId = processInstanceId;
-        this.status = status;
+        this.statuses = status;
     }
 
     public GetTasksByStatusByProcessInstanceIdCommand(long processInstanceId, List<Status> status, String taskName) {
         this.processInstanceId = processInstanceId;
-        this.status = status;
+        this.statuses = status;
         this.taskName = taskName;
     }
 
@@ -52,19 +52,19 @@ public class GetTasksByStatusByProcessInstanceIdCommand extends TaskCommand<List
     }
 
     public List<Status> getStatus() {
-        return status;
+        return statuses;
     }
 
     public void setStatus(List<Status> status) {
-        this.status = status;
+        this.statuses = status;
     }
 
     public List<TaskSummary> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         if (taskName != null) {
-            return context.getTaskQueryService().getTasksByStatusByProcessInstanceIdByTaskName(processInstanceId, status, taskName);
+            return context.getTaskQueryService().getTasksByStatusByProcessInstanceIdByTaskName(processInstanceId, statuses, taskName);
         } else {
-            return context.getTaskQueryService().getTasksByStatusByProcessInstanceId(processInstanceId, status);
+            return context.getTaskQueryService().getTasksByStatusByProcessInstanceId(processInstanceId, statuses);
         }
     }
 

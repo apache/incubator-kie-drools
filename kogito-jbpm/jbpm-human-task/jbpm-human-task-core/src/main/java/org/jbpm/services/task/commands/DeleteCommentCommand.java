@@ -17,6 +17,7 @@ package org.jbpm.services.task.commands;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.kie.internal.command.Context;
@@ -28,6 +29,7 @@ public class DeleteCommentCommand extends TaskCommand<Void> {
 
 	private static final long serialVersionUID = 5656199063761548979L;
 
+	@XmlElement
 	private Long commentId;
 	
 	public DeleteCommentCommand() {

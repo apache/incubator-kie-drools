@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.event.DefaultProcessEventListener;
+import org.jbpm.services.task.commands.GetTasksForProcessCommand;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;

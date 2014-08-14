@@ -42,7 +42,7 @@ public class AddContentCommand extends TaskCommand<Long> {
 	@XmlTransient
 	private Content content;
 	
-	@XmlJavaTypeAdapter(JaxbMapAdapter.class)
+    @XmlJavaTypeAdapter(JaxbMapAdapter.class)
     @XmlElement(name="parameter")
     private Map<String, Object> params;
     

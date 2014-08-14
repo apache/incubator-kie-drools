@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
 
-@XmlRootElement(name = "get-tasks-assigned-bus-admin-command")
+@XmlRootElement(name = "get-task-assigned-as-business-admin-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetTaskAssignedAsBusinessAdminCommand extends UserGroupCallbackTaskCommand<List<TaskSummary>> {
 

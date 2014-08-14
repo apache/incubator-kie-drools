@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
 import org.jbpm.services.task.impl.model.xml.adapter.StringObjectMapXmlAdapter;
 import org.kie.api.task.model.Content;
 
@@ -25,9 +26,6 @@ public class JaxbContent implements Content {
     @XmlElement
     private Long id;
 
-    @XmlElement(name="class-name")
-    private String className = null;
-    
     @XmlElement
     @XmlSchemaType(name="base64Binary")
     private byte[] serializedContent = null;

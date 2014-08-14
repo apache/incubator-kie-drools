@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import org.kie.api.task.model.Task;
 import org.kie.internal.command.Context;
 
-@XmlRootElement(name="get-task-by-work-item-command")
+@XmlRootElement(name="get-task-by-work-item-id-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetTaskByWorkItemIdCommand extends TaskCommand<Task> {
 

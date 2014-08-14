@@ -15,6 +15,10 @@
  */
 package org.jbpm.process.audit.command;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.drools.core.command.impl.FixedKnowledgeCommandContext;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
@@ -24,8 +28,10 @@ import org.jbpm.process.audit.strategy.PersistenceStrategyType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.Context;
 
+@XmlAccessorType(XmlAccessType.NONE)
 public abstract class AuditCommand<T> implements GenericCommand<T> {
 
+    @XmlTransient
     protected AuditLogService auditLogService = null;
     
     public AuditCommand() {

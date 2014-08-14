@@ -11,10 +11,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.jbpm.services.task.impl.model.xml.adapter.StatusXmlAdapter;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.Status;
@@ -27,11 +25,9 @@ import org.kie.api.task.model.User;
 public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements TaskData {
 
     @XmlElement
-    @XmlJavaTypeAdapter(value = StatusXmlAdapter.class)
     private Status status;
 
-    @XmlElement(name = "previous-status")
-    @XmlJavaTypeAdapter(value = StatusXmlAdapter.class)
+    @XmlElement
     private Status previousStatus;
 
     @XmlElement(name = "actual-owner")

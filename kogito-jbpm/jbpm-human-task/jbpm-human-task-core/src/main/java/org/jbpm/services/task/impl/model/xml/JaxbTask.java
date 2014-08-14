@@ -45,11 +45,11 @@ public class JaxbTask implements InternalTask {
     private Long id;
     
     @XmlElement
-    @XmlSchemaType(name="long")
+    @XmlSchemaType(name="int")
     private Integer priority;
 
     @XmlElement(name="task-type")
-    @XmlSchemaType(name="int")
+    @XmlSchemaType(name="string")
     private String taskType; 
     
     @XmlElement(name="name")
@@ -77,7 +77,7 @@ public class JaxbTask implements InternalTask {
     private JaxbPeopleAssignments jaxbPeopleAssignments;
     
     @XmlElement
-    private JaxbTaskData jaxbTaskData;
+    private JaxbTaskData taskData;
     
     @XmlElement
     @JsonIgnore
@@ -111,7 +111,7 @@ public class JaxbTask implements InternalTask {
         this.jaxbSubjects = JaxbI18NText.convertListFromInterfaceToJaxbImpl(task.getSubjects());
         this.jaxbDescriptions = JaxbI18NText.convertListFromInterfaceToJaxbImpl(task.getDescriptions());
         
-        this.jaxbTaskData = new JaxbTaskData(task.getTaskData());
+        this.taskData = new JaxbTaskData(task.getTaskData());
         this.taskType = task.getTaskType();
         this.formName = ((InternalTask)task).getFormName();
         this.name = ((InternalTask)task).getName();
@@ -238,23 +238,23 @@ public class JaxbTask implements InternalTask {
     @Override
     @JsonIgnore
     public TaskData getTaskData() {
-        return jaxbTaskData;
+        return taskData;
     }
 
     public void setTaskData(TaskData taskData) {
         if( taskData instanceof JaxbTaskData ) { 
-            this.jaxbTaskData = (JaxbTaskData) taskData;
+            this.taskData = (JaxbTaskData) taskData;
         } else { 
-            this.jaxbTaskData = new JaxbTaskData(taskData);
+            this.taskData = new JaxbTaskData(taskData);
         }
     }
 
     public JaxbTaskData getJaxbTaskData() {
-        return jaxbTaskData;
+        return taskData;
     }
 
     public void setJaxbTaskData(JaxbTaskData jaxbTaskData) {
-        this.jaxbTaskData = jaxbTaskData;
+        this.taskData = jaxbTaskData;
     }
 
     @Override

@@ -12,14 +12,14 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
 
-@XmlRootElement(name="get-task-owned-exp-date-command")
+@XmlRootElement(name="get-task-owned-by-exp-date-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetTaskOwnedByExpDateCommand extends UserGroupCallbackTaskCommand<List<TaskSummary>> {
 
 	private static final long serialVersionUID = 5077599352603072633L;
 	
     @XmlElement
-	private List<Status> status;
+	private List<Status> statuses;
     
     @XmlElement
     private Date expirationDate;
@@ -32,17 +32,17 @@ public class GetTaskOwnedByExpDateCommand extends UserGroupCallbackTaskCommand<L
 	
 	public GetTaskOwnedByExpDateCommand(String userId, List<Status> status, Date expirationDate, boolean optional) {
 		this.userId = userId;
-		this.status = status;
+		this.statuses = status;
 		this.expirationDate = expirationDate;
 		this.optional = optional;
     }
 	
 	public List<Status> getStatuses() {
-		return status;
+		return statuses;
 	}
 	
 	public void setStatuses(List<Status> status) {
-		this.status = status;
+		this.statuses = status;
 	}
 
     public Date getExpirationDate() {
@@ -66,9 +66,9 @@ public class GetTaskOwnedByExpDateCommand extends UserGroupCallbackTaskCommand<L
         doCallbackUserOperation(userId, context);
         
         if (optional) {
-        	return context.getTaskQueryService().getTasksOwnedByExpirationDateOptional(userId, status, expirationDate);
+        	return context.getTaskQueryService().getTasksOwnedByExpirationDateOptional(userId, statuses, expirationDate);
         } else {
-        	return context.getTaskQueryService().getTasksOwnedByExpirationDate(userId, status, expirationDate);
+        	return context.getTaskQueryService().getTasksOwnedByExpirationDate(userId, statuses, expirationDate);
         }
     }
 

@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.kie.internal.task.api.model.Deadline;
 import org.kie.internal.task.api.model.Deadlines;
 
-@XmlRootElement(name="dummy-deadlines")
+@XmlRootElement(name="task-deadlines")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxbDeadlines implements Deadlines {
 

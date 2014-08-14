@@ -2,6 +2,7 @@ package org.jbpm.services.task.commands;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.kie.api.task.model.Group;
@@ -13,6 +14,7 @@ public class GetGroupCommand extends TaskCommand<Group> {
 
 	private static final long serialVersionUID = -836520791223188840L;
 
+    @XmlElement
 	private String groupId;
 	
 	public GetGroupCommand() {

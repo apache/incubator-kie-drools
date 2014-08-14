@@ -12,9 +12,17 @@ import java.util.Map.Entry;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This is a {@link XmlAdapter} for mapping Map<String, Object> instances 
+ * to classes/instances that <b>both</b> JAXB/XML and JSON can deal with. 
+ * <p>
+ * The most important reason for the existence of this class is that it works well
+ * with jackson JSON! {@link JaxbMapAdapter}, on the other hand, does <b>not</b>!
+ */
 public class StringObjectMapXmlAdapter extends XmlAdapter<JaxbStringObjectMap, Map<String, Object>> {
 
     private static final Logger logger = LoggerFactory.getLogger(StringObjectMapXmlAdapter.class);

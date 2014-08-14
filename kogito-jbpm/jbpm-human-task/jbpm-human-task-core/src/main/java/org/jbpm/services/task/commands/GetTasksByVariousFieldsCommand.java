@@ -26,7 +26,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
 
-@XmlRootElement(name="get-task-by-various-fields-command")
+@XmlRootElement(name="get-tasks-by-various-fields-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand<List<TaskSummary>> {
 
@@ -38,19 +38,19 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
     @XmlElement
     private List<Long> taskIds;
     
-    @XmlElement(name="process-instance-ids")
-    private List<Long> procInstIds;
+    @XmlElement
+    private List<Long> processInstanceIds;
     
-    @XmlElement(name="business-admin")
-    private List<String> busAdmins;
+    @XmlElement
+    private List<String> businessAdmins;
     
-    @XmlElement(name="potential-owner")
-    private List<String> potOwners;
+    @XmlElement
+    private List<String> potentialOwners;
     
-    @XmlElement(name="task-owner")
+    @XmlElement
     private List<String> taskOwners;
     
-    @XmlElement(name="status")
+    @XmlElement
     private List<Status> statuses;
     
     @XmlElement
@@ -58,7 +58,7 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
     private Boolean union;
     
     @XmlElement
-    private List<String> language;
+    private List<String> languages;
     
     @XmlElement
     private Integer maxResults;
@@ -84,12 +84,12 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
 	        List<String> language, boolean union, Integer maxResults) { 
 		this.workItemIds = workItemIds;
 		this.taskIds = taskIds;
-		this.procInstIds = procInstIds;
-		this.busAdmins = busAdmins;
-		this.potOwners = potOwners;
+		this.processInstanceIds = procInstIds;
+		this.businessAdmins = busAdmins;
+		this.potentialOwners = potOwners;
 		this.taskOwners = taskOwners;
 		this.statuses = statuses;
-		this.language = language;
+		this.languages = language;
 		this.union = union;
 		this.maxResults = maxResults;
 	}
@@ -108,9 +108,9 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
 	    } else { 
 	        this.workItemIds = (List<Long>) params.get(WORK_ITEM_ID_LIST);
 	        this.taskIds = (List<Long>) params.get(TASK_ID_LIST);
-	        this.procInstIds = (List<Long>) params.get(PROCESS_INST_ID_LIST);
-	        this.busAdmins = (List<String>) params.get(BUSINESS_ADMIN_ID_LIST);
-	        this.potOwners = (List<String>) params.get(POTENTIAL_OWNER_ID_LIST);
+	        this.processInstanceIds = (List<Long>) params.get(PROCESS_INST_ID_LIST);
+	        this.businessAdmins = (List<String>) params.get(BUSINESS_ADMIN_ID_LIST);
+	        this.potentialOwners = (List<String>) params.get(POTENTIAL_OWNER_ID_LIST);
 	        this.taskOwners = (List<String>) params.get(ACTUAL_OWNER_ID_LIST);
 	        this.statuses = (List<Status>) params.get(STATUS_LIST);
 	    }
@@ -119,15 +119,15 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
 	public List<TaskSummary> execute(Context cntxt) {
 	    TaskContext context = (TaskContext) cntxt;
         
-        potOwners = populateOrganizationalEntityWithGroupInfo(potOwners, context);
-    	busAdmins = populateOrganizationalEntityWithGroupInfo(busAdmins, context);
+        potentialOwners = populateOrganizationalEntityWithGroupInfo(potentialOwners, context);
+    	businessAdmins = populateOrganizationalEntityWithGroupInfo(businessAdmins, context);
     	
         Map<String, List<?>> params = new HashMap<String, List<?>>();
         params.put(WORK_ITEM_ID_LIST, workItemIds);
         params.put(TASK_ID_LIST, taskIds);
-        params.put(PROCESS_INST_ID_LIST, procInstIds);
-        params.put(BUSINESS_ADMIN_ID_LIST, busAdmins);
-        params.put(POTENTIAL_OWNER_ID_LIST, potOwners);
+        params.put(PROCESS_INST_ID_LIST, processInstanceIds);
+        params.put(BUSINESS_ADMIN_ID_LIST, businessAdmins);
+        params.put(POTENTIAL_OWNER_ID_LIST, potentialOwners);
         params.put(ACTUAL_OWNER_ID_LIST, taskOwners);
         params.put(STATUS_LIST, statuses);
         if( maxResults != null && maxResults.intValue() > 0 ) {
@@ -155,27 +155,27 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
     }
 
     public List<Long> getProcInstIds() {
-        return procInstIds;
+        return processInstanceIds;
     }
 
     public void setProcInstIds(List<Long> procInstIds) {
-        this.procInstIds = procInstIds;
+        this.processInstanceIds = procInstIds;
     }
 
     public List<String> getBusAdmins() {
-        return busAdmins;
+        return businessAdmins;
     }
 
     public void setBusAdmins(List<String> busAdmins) {
-        this.busAdmins = busAdmins;
+        this.businessAdmins = busAdmins;
     }
 
     public List<String> getPotOwners() {
-        return potOwners;
+        return potentialOwners;
     }
 
     public void setPotOwners(List<String> potOwners) {
-        this.potOwners = potOwners;
+        this.potentialOwners = potOwners;
     }
 
     public List<String> getTaskOwners() {
@@ -195,11 +195,11 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
     }
 
     public List<String> getLanguage() {
-        return language;
+        return languages;
     }
 
     public void setLanguage(List<String> language) {
-        this.language = language;
+        this.languages = language;
     }
 
     public Boolean getUnion() {

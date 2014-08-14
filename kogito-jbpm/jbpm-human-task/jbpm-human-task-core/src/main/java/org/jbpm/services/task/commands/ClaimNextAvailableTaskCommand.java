@@ -24,7 +24,7 @@ import org.kie.internal.command.Context;
 /**
  *
  */
-@XmlRootElement(name = "claim-next-task-command")
+@XmlRootElement(name = "claim-next-available-task-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ClaimNextAvailableTaskCommand extends UserGroupCallbackTaskCommand<Void> {
 

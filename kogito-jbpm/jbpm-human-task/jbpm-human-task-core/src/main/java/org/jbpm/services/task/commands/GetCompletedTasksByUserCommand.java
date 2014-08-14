@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.kie.internal.command.Context;
 
-@XmlRootElement(name="get-completed-tasks-user-command")
+@XmlRootElement(name="get-completed-tasks-by-user-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetCompletedTasksByUserCommand extends TaskCommand<Integer> {
 

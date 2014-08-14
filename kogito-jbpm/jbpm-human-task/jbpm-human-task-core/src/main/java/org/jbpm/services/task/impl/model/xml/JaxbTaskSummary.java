@@ -34,7 +34,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.GetterUser;
-import org.jbpm.services.task.impl.model.xml.adapter.StatusXmlAdapter;
 import org.jbpm.services.task.impl.model.xml.adapter.SubTasksStrategyXmlAdapter;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
@@ -75,7 +74,6 @@ public class JaxbTaskSummary implements TaskSummary {
     private String description;
     
     @XmlElement
-    @XmlJavaTypeAdapter(value=StatusXmlAdapter.class, type=Status.class)
     private Status status;
     
     @XmlElement

@@ -39,6 +39,7 @@ public class AddUsersGroupsCommand extends TaskCommand<Void> {
 	@XmlJavaTypeAdapter(JaxbMapAdapter.class)
 	@XmlElement
 	private Map<String, User> users;
+	
 	@XmlJavaTypeAdapter(JaxbMapAdapter.class)
 	@XmlElement
 	private Map<String, Group> groups;

@@ -12,7 +12,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
 
-@XmlRootElement(name="get-task-assigned-pot-owner-exp-date-command")
+@XmlRootElement(name="get-task-assigned-as-potential-owner-by-exp-date-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetTaskAssignedAsPotentialOwnerByExpDateCommand extends UserGroupCallbackTaskCommand<List<TaskSummary>> {
 

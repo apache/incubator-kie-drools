@@ -20,21 +20,57 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
+import org.jbpm.services.task.impl.model.xml.adapter.JaxbStringObjectMap;
+import org.jbpm.services.task.impl.model.xml.adapter.StringObjectMapXmlAdapter;
 import org.kie.internal.query.QueryFilter;
 
 
+@XmlRootElement(name = "query-filter")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class QueryFilterImpl implements QueryFilter, Serializable {
 
 	private static final long serialVersionUID = -6228032000092881493L;
 
+    @XmlElement 
 	private int offset = 0;
+    
+    @XmlElement 
     private int count = 0;
+    
+    @XmlElement 
     private boolean singleResult = false;
+    
+    @XmlElement 
+    @XmlSchemaType(name="string")
     private String language ="";
+    
+    @XmlElement 
+    @XmlSchemaType(name="string")
     private String orderBy = "";
+    
+    @XmlElement 
+    @XmlSchemaType(name="string")
     private String filterParams = "";
-    private boolean ascending;
+    
+    @XmlElement 
+    @XmlSchemaType(name="boolean")
+    private Boolean ascending;
+
+    @XmlElement 
+    @XmlJavaTypeAdapter(JaxbMapAdapter.class)
     private Map<String, Object> params = new HashMap<String, Object>();
+
+    public QueryFilterImpl() {
+        // default constructor for JAXB
+    }
 
     public QueryFilterImpl(int offset, int count) {
         this.offset = offset;
@@ -53,7 +89,6 @@ public class QueryFilterImpl implements QueryFilter, Serializable {
       this.orderBy = orderBy;
       this.ascending = ascending;
     }
-    
 
     public QueryFilterImpl(int offset, int count, boolean singleResult, String filterParams, String language, String orderBy) {
         this.offset = offset;
@@ -78,7 +113,6 @@ public class QueryFilterImpl implements QueryFilter, Serializable {
         this.offset = offset;
         this.count = count;
     }
-    
 
     @Override
     public Integer getOffset() {
@@ -95,7 +129,6 @@ public class QueryFilterImpl implements QueryFilter, Serializable {
         return singleResult;
     }
 
-   
     @Override
     public String getLanguage() {
         return language;

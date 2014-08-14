@@ -1,17 +1,22 @@
 package org.jbpm.services.task.jaxb;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 import org.jbpm.services.task.MvelFilePath;
 import org.jbpm.services.task.commands.CancelDeadlineCommand;
 import org.jbpm.services.task.commands.CompositeCommand;
+import org.jbpm.services.task.commands.GetTaskAssignedAsPotentialOwnerCommand;
 import org.jbpm.services.task.commands.ProcessSubTaskCommand;
 import org.jbpm.services.task.commands.SkipTaskCommand;
 import org.jbpm.services.task.commands.StartTaskCommand;
@@ -21,13 +26,14 @@ import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
 import org.jbpm.services.task.impl.model.xml.JaxbTaskSummary;
+import org.jbpm.services.task.query.QueryFilterImpl;
 import org.jbpm.services.task.query.TaskSummaryImpl;
-import static org.junit.Assert.*;
 import org.junit.Assume;
 import org.junit.Test;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.User;
+import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.InternalAttachment;
 import org.kie.internal.task.api.model.InternalComment;
@@ -62,8 +68,7 @@ public abstract class AbstractTaskSerializationTest {
         JAXB, JSON, YAML;
     }
 
-    protected Reflections reflections = new Reflections(ClasspathHelper.forPackage("org.jbpm.services.task"),
-            new TypeAnnotationsScanner(), new FieldAnnotationsScanner(), new MethodAnnotationsScanner(), new SubTypesScanner());
+
 
     // TESTS ----------------------------------------------------------------------------------------------------------------------
 
@@ -119,26 +124,6 @@ public abstract class AbstractTaskSerializationTest {
         assertEquals(((InternalTask) xmlTask).getFormName(), ((InternalTask) bornAgainTask).getFormName());
     }
 
-    @Test
-    public void taskCommandSubTypesCanBeSerialized() throws Exception {
-        // Yaml serialization not required for commands
-        Assume.assumeTrue(!getType().equals(TestType.YAML));
-
-        for (Class<?> jaxbClass : reflections.getSubTypesOf(TaskCommand.class)) {
-            if (jaxbClass.equals(UserGroupCallbackTaskCommand.class)) {
-                continue;
-            }
-            addClassesToSerializationContext(jaxbClass);
-            Constructor<?> construct = jaxbClass.getConstructor(new Class[] {});
-            Object jaxbInst = construct.newInstance(new Object[] {});
-            try {
-                testRoundTrip(jaxbInst);
-            } catch (Exception e) {
-                logger.warn("Testing failed for" + jaxbClass.getName());
-                throw e;
-            }
-        }
-    }
 
     @Test
     public void taskCompositeCommandCanBeSerialized() throws Exception {
@@ -154,7 +139,7 @@ public abstract class AbstractTaskSerializationTest {
         assertTrue(returned.getMainCommand() instanceof StartTaskCommand);
         assertEquals(Long.valueOf(1), returned.getTaskId());
         assertNotNull(returned.getCommands());
-        assertEquals(1, returned.getCommands().length);
+        assertEquals(1, returned.getCommands().size());
 
     }
 
@@ -173,7 +158,7 @@ public abstract class AbstractTaskSerializationTest {
         assertTrue(returned.getMainCommand() instanceof SkipTaskCommand);
         assertEquals(Long.valueOf(1), returned.getTaskId());
         assertNotNull(returned.getCommands());
-        assertEquals(2, returned.getCommands().length);
+        assertEquals(2, returned.getCommands().size());
     }
 
     @Test
@@ -195,5 +180,24 @@ public abstract class AbstractTaskSerializationTest {
         JaxbTaskSummary jaxbTaskSumCopy = testRoundTrip(jaxbTaskSum);
 
         ComparePair.compareObjectsViaFields(jaxbTaskSum, jaxbTaskSumCopy, "subTaskStrategy", "potentialOwners");
+    }
+    
+    @Test 
+    public void statusInCommandSerialization() throws Exception { 
+        Assume.assumeTrue(getType().equals(TestType.JAXB));
+        addClassesToSerializationContext(GetTaskAssignedAsPotentialOwnerCommand.class);
+  
+        List<Status> statuses = new ArrayList<Status>();
+        statuses.add(Status.Completed);
+        statuses.add(Status.Exited);
+        List<String> groupIds = new ArrayList<String>();
+        groupIds.add("team");
+        groupIds.add("region");
+        
+        QueryFilterImpl filter = new QueryFilterImpl( 0, 0, "order", false);
+        GetTaskAssignedAsPotentialOwnerCommand cmd = new GetTaskAssignedAsPotentialOwnerCommand( "user", groupIds, statuses, filter );
+        GetTaskAssignedAsPotentialOwnerCommand copyCmd = testRoundTrip(cmd);
+        
+        ComparePair.compareObjectsViaFields(cmd, copyCmd);
     }
 }

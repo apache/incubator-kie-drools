@@ -11,13 +11,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.internal.command.Context;
 
-@XmlRootElement(name="get-pot-owners-for-task-command")
+@XmlRootElement(name="get-potential-owners-for-task-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetPotentialOwnersForTaskCommand extends TaskCommand<Map<Long, List<OrganizationalEntity>>> {
 
 	private static final long serialVersionUID = 6296898155907765061L;
 
-	@XmlElement
+    @XmlElement(name="task-id")
 	private List<Long> taskIds;
 	
 	public GetPotentialOwnersForTaskCommand() {

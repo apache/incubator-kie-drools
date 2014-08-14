@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.kie.internal.command.Context;
 
-@XmlRootElement(name="get-pending-tasks-user-command")
+@XmlRootElement(name="get-pending-tasks-by-user-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetPendingTasksByUserCommand extends TaskCommand<Integer> {
 

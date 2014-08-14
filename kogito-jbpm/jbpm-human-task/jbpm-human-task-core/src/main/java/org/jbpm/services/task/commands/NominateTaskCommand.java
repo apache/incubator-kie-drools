@@ -45,7 +45,7 @@ public class NominateTaskCommand extends UserGroupCallbackTaskCommand<Void> {
 
 	private static final long serialVersionUID = 1874781422343631410L;
 
-	@XmlElement(name="potential-owner")
+	@XmlElement
     private List<JaxbOrganizationalEntity> potentialOwners;
     
     public NominateTaskCommand() {

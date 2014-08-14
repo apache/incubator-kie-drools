@@ -67,6 +67,7 @@ public class AddTaskCommand extends UserGroupCallbackTaskCommand<Long> {
     private Map<String, Object> params;
     
     // TODO support ContentData marshalling
+    @XmlTransient // remove and add @XmlElement when done
     private ContentData data;
     
     public AddTaskCommand() {

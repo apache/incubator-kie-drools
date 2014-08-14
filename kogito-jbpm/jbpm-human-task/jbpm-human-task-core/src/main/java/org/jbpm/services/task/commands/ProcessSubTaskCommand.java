@@ -18,7 +18,7 @@ import org.kie.internal.task.api.TaskQueryService;
 import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.SubTasksStrategy;
 
-@XmlRootElement(name="process-sub-tasks-command")
+@XmlRootElement(name="process-sub-task-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ProcessSubTaskCommand extends UserGroupCallbackTaskCommand<Void> {
 

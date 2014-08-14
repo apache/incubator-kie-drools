@@ -1,4 +1,4 @@
-package org.jbpm.services.task.admin.listener;
+package org.jbpm.services.task.commands;
 
 import java.util.List;
 
@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
-import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
@@ -16,7 +15,7 @@ import org.kie.internal.command.Context;
 import org.kie.internal.task.api.TaskContext;
 import org.kie.internal.task.api.TaskPersistenceContext;
 
-@XmlRootElement(name="get-task-for-proc-inst-id-command")
+@XmlRootElement(name="get-tasks-for-process-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetTasksForProcessCommand extends TaskCommand<List<TaskSummary>> {
 
@@ -26,7 +25,7 @@ public class GetTasksForProcessCommand extends TaskCommand<List<TaskSummary>> {
 	@XmlSchemaType(name="long")
 	private Long processInstanceId;
 	
-	@XmlElement(name="status")
+	@XmlElement
 	private List<Status> statuses;
 	
 	@XmlElement(name="language")

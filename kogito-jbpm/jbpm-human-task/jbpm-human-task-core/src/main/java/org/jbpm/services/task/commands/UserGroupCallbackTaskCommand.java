@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @XmlTransient
-@XmlRootElement(name="user-group-callback-command")
+@XmlRootElement(name="user-group-callback-task-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class UserGroupCallbackTaskCommand<T> extends TaskCommand<T> {
 

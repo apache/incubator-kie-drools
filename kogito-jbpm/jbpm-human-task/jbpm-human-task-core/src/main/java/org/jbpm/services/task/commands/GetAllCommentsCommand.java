@@ -14,7 +14,6 @@ import org.kie.internal.command.Context;
 public class GetAllCommentsCommand extends TaskCommand<List<Comment>> {
 
 	private static final long serialVersionUID = 5911387213149078240L;
-
 	
 	public GetAllCommentsCommand() {
 	}
