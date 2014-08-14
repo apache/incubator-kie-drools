@@ -26,7 +26,9 @@ import org.kie.api.runtime.rule.FactHandle;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class DeleteCommand
         implements GenericCommand<Void> {

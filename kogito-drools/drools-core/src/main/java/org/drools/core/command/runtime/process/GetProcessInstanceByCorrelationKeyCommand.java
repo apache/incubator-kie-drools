@@ -19,6 +19,7 @@ package org.drools.core.command.runtime.process;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.core.command.impl.GenericCommand;
@@ -29,6 +30,7 @@ import org.kie.internal.command.Context;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetProcessInstanceByCorrelationKeyCommand implements GenericCommand<ProcessInstance> {
 

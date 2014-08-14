@@ -19,6 +19,8 @@ package org.drools.core.command.runtime.rule;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.drools.core.command.IdentifiableResult;
 import org.drools.core.command.impl.GenericCommand;
@@ -29,13 +31,14 @@ import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AgendaFilter;
 
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class FireAllRulesCommand
-    implements
-    GenericCommand<Integer>, IdentifiableResult {
+public class FireAllRulesCommand implements GenericCommand<Integer>, IdentifiableResult {
 
     @XmlAttribute
     private int          max          = -1;
+   
+    @XmlTransient // TODO: no easy/obvious way to serialize AgendaFilter instances at the moment
     private AgendaFilter agendaFilter = null;
     
     @XmlAttribute(name="out-identifier")

@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.core.command.IdentifiableResult;
@@ -35,6 +36,7 @@ import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+@XmlRootElement(name="insert-object-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class InsertObjectCommand
     implements
@@ -130,7 +132,9 @@ public class InsertObjectCommand
         this.returnObject = returnObject;
     }
     
-    
+    public boolean isDisconnected() {
+        return disconnected;
+    }
 
     public String getEntryPoint() {
         return entryPoint;

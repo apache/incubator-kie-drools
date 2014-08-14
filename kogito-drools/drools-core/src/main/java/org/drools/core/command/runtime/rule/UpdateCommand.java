@@ -18,6 +18,9 @@ package org.drools.core.command.runtime.rule;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
@@ -26,14 +29,20 @@ import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-@XmlAccessorType(XmlAccessType.NONE)
-public class UpdateCommand
-        implements GenericCommand<Void> {
+@XmlRootElement(name="update-command")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class UpdateCommand implements GenericCommand<Void> {
 
     private static final long serialVersionUID = 3255044102543531497L;
     
+    @XmlElement
     private DisconnectedFactHandle handle;
+    
+    @XmlElement
     private Object object;
+   
+    @XmlElement
+    @XmlSchemaType(name="string")
     private String entryPoint = "DEFAULT";
     
     public UpdateCommand() {
@@ -51,7 +60,6 @@ public class UpdateCommand
         ksession.getEntryPoint( handle.getEntryPointId() ).update( handle, object );
         return null;
     }
-    
 
     public String getEntryPoint() {
         return entryPoint;
@@ -70,5 +78,9 @@ public class UpdateCommand
 
     public Object getObject() { 
         return object;
+    }
+    
+    public DisconnectedFactHandle getHandle() { 
+        return this.handle;
     }
 }

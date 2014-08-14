@@ -21,12 +21,14 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.api.definition.process.Process;
 import org.kie.internal.command.Context;
 
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetProcessIdsCommand
     implements
