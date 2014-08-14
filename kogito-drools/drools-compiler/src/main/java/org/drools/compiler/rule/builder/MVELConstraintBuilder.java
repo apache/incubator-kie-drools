@@ -110,6 +110,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         if (isUnification) {
             expression = resolveUnificationAmbiguity(expression, declarations, leftValue, rightValue);
         }
+        expression = normalizeMVELVariableExpression(expression, leftValue, rightValue, relDescr);
         IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operatorDescr.getOperator());
         MVELCompilationUnit compilationUnit = isUnification ? null : buildCompilationUnit(context, pattern, expression, null);
         return new MvelConstraint(context.getPkg().getName(), expression, declarations, compilationUnit, constraintType, requiredDeclaration, extractor, isUnification);
@@ -198,6 +199,20 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             expr = "isEmpty()" + expr.substring(5);
         }
 
+        return expr;
+    }
+
+    protected static String normalizeMVELVariableExpression(String expr,
+                                                            String leftValue,
+                                                            String rightValue,
+                                                            RelationalExprDescr relDescr) {
+        if (relDescr.getOperator().equals("str")) {
+            String method = relDescr.getParametersText();
+            if (method.equals("length")) {
+                return leftValue + ".length()" + (relDescr.isNegated() ? " != " : " == ") + rightValue;
+            }
+            return (relDescr.isNegated() ? "!" : "") + leftValue + "." + method + "(" + rightValue + ")";
+        }
         return expr;
     }
 
