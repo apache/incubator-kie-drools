@@ -72,7 +72,7 @@ public class NodeInstanceLog implements Serializable, AuditEvent, org.kie.api.ru
         this.date = new Date();
     }
 	
-	public int getType() {
+	public Integer getType() {
 		return type;
 	}
 	
@@ -88,7 +88,7 @@ public class NodeInstanceLog implements Serializable, AuditEvent, org.kie.api.ru
 		this.id = id;
 	}
 
-    public long getProcessInstanceId() {
+    public Long getProcessInstanceId() {
         return processInstanceId;
     }
     

@@ -83,7 +83,7 @@ public class VariableInstanceLog implements Serializable, AuditEvent, org.kie.ap
 		this.id = id;
 	}
 
-    public long getProcessInstanceId() {
+    public Long getProcessInstanceId() {
         return processInstanceId;
     }
     

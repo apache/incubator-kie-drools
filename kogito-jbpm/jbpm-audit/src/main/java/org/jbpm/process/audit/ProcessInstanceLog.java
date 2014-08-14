@@ -81,7 +81,7 @@ public class ProcessInstanceLog implements Serializable, AuditEvent, org.kie.api
 		this.id = id;
 	}
 
-    public long getProcessInstanceId() {
+    public Long getProcessInstanceId() {
         return processInstanceId;
     }
     
