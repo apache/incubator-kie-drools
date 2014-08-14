@@ -381,7 +381,7 @@ when
     NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs , $nn : modelName )
     $ms :  MiningSchema( this memberOf $info, $fields : miningFields )
     $fld : MiningField( usageType != null &&
-                        ( usageType == FIELDUSAGETYPE.PREDICTED || usageType == FIELDUSAGETYPE.SUPPLEMENTARY )
+                        ( usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET || usageType == FIELDUSAGETYPE.SUPPLEMENTARY )
            ) from $fields
 then
     $fields.remove( $fld );

@@ -831,7 +831,8 @@ public class PMML4Helper {
     }
     
     public String compactAsJavaId(String s, boolean forceCapital) {
-        java.util.StringTokenizer tok = new java.util.StringTokenizer(s.trim(), " ,");
+        s = s.replaceAll( ",", "_" );
+        java.util.StringTokenizer tok = new java.util.StringTokenizer(s.trim());
         StringBuilder sb = new StringBuilder();
         boolean first = true;
 

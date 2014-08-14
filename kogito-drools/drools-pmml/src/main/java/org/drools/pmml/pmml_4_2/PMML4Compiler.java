@@ -294,7 +294,7 @@ public class PMML4Compiler implements PMMLCompiler {
 
         visitorSession.dispose();
 
-        //System.out.println( modelEvaluatingRules );
+        System.out.println( modelEvaluatingRules );
         return modelEvaluatingRules;
 	}
 
