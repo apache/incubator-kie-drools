@@ -1374,7 +1374,8 @@ rule "Create Input Structures"
 salience -10
 when
     $mns : MiningSchema( $miningFields : miningFields, $ext : extensions )
-    Extension( name == PMMLExtensionNames.IO_ADAPTER, $mode : value == PMMLIOAdapterMode.TRAIT.name() || == PMMLIOAdapterMode.BEAN.name() ) from $ext
+    $xt : Extension( name == PMMLExtensionNames.IO_ADAPTER,
+                     $mode : value == PMMLIOAdapterMode.TRAIT.name() || == PMMLIOAdapterMode.BEAN.name() ) from $ext
     accumulate( $mf : MiningField( usageType == FIELDUSAGETYPE.ACTIVE ) from $miningFields, $expNum : count( $mf ); $expNum > 0 )
     accumulate( $pf : MiningField( usageType == FIELDUSAGETYPE.PREDICTED ) from $miningFields, $expPNum : count( $pf ) )
     $fields : java.util.Map( size == $expNum ) from accumulate (
@@ -1401,6 +1402,7 @@ then
         map.put( "fields", $fields );
         map.put( "predFields", $predFields );
         map.put( "traitMode", PMMLIOAdapterMode.TRAIT.name().equals( $mode ) );
+        map.put( "adapterName", $xt.content.isEmpty() ? null : $xt.content[0] );
     utils.applyTemplate( "inputBean.drlt", utils, registry, map, theory );
 end
 
@@ -1736,10 +1738,11 @@ end
 
 rule "Create Output Structures"
 no-loop
-salience -20
+salience -18
 when
     $ot : Output( $outs : outputFields, $ext : extensions )
-    Extension( name == PMMLExtensionNames.IO_ADAPTER, $mode : value == PMMLIOAdapterMode.TRAIT.name() || == PMMLIOAdapterMode.BEAN.name() ) from $ext
+    $xt : Extension( name == PMMLExtensionNames.IO_ADAPTER,
+                     $mode : value == PMMLIOAdapterMode.TRAIT.name() || == PMMLIOAdapterMode.BEAN.name() ) from $ext
     accumulate( $of : OutputField() from $outs, $expOuts : count( 1 ); $expOuts > 0 )
     $outFields : java.util.Map( size == $expOuts ) from accumulate (
             OutputField( this memberOf $outs, $name : name )
@@ -1754,8 +1757,8 @@ then
     HashMap map = new HashMap( 7 );
         map.put( "context", utils.context );
         map.put( "fields", $outFields );
-        map.put( "traitMode", "trait".equals( $mode ) );
-    map.put( "traitMode", PMMLIOAdapterMode.TRAIT.name().equals( $mode ) );
+        map.put( "traitMode", PMMLIOAdapterMode.TRAIT.name().equals( $mode ) );
+        map.put( "adapterName", $xt.content.isEmpty() ? null : $xt.content[0] );
     utils.applyTemplate( "outputBean.drlt", utils, registry, map, theory );
 end
 

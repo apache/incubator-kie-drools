@@ -17,7 +17,7 @@
 
 @declare{'inputBeanRule'}
 
- declare @if{ traitMode }trait@end{} @{context}@if{ traitMode }Trait@end{}
+ declare @if{ traitMode }trait@end{} @if{ adapterName != null }@{ adapterName }@else{} @{context}@if{ traitMode }Trait@end{} @end{}
  @propertyReactive
 
      @foreach{ fldName : fields.keySet() }
@@ -29,9 +29,9 @@
 
  end
 
- rule "Link @{context} @if{ traitMode }Trait@end{} Bean Input"
+ rule "Link @if{ adapterName != null }@{ adapterName }@else{} @{context}@if{ traitMode }Trait@end{} @end{} Bean Input"
  when
-    @{context}@if{ traitMode }Trait@end{}(
+    @if{ adapterName != null }@{ adapterName }@else{}@{context}@if{ traitMode }Trait@end{}@end{}(
        @foreach{ fldName : fields.keySet() }
           _@{fldName}   :  @{fldName}
        @end{','}
@@ -44,7 +44,7 @@
 
 rule "Own @{context}"
  when
-    $obj  : @{context}@if{ traitMode }Trait@end{}()
+    $obj  : @if{ adapterName != null }@{ adapterName }@else{}@{context}@if{ traitMode }Trait@end{}@end{}()
     $mark : org.drools.pmml.pmml_4_2.ModelMarker( enabled == true, modelName == "@{context}" )
  then
     modify( $mark ) { setBoundInput( $obj ); }
@@ -53,10 +53,10 @@ rule "Own @{context}"
 
  @foreach{ fieldName : predFields.keySet() }
 
- rule "Link @{context} @if{ traitMode }Trait@end{} Predicted Fields @{fieldName} "
+ rule "Link @if{ adapterName != null }@{ adapterName }@else{} @{context}@if{ traitMode }Trait@end{} @end{} Predicted Fields @{fieldName} "
  when
      @{compactUpperCase(fieldName)}( $val : value)
-     $x : @{context}@if{ traitMode }Trait@end{}( @{fieldName} != $val )
+     $x : @if{ adapterName != null }@{ adapterName }@else{}@{context}@if{ traitMode }Trait@end{}@end{}( @{fieldName} != $val )
      $mark : org.drools.pmml.pmml_4_2.ModelMarker( modelName == "@{context}", boundInput == $x )
  then
      modify ( $x ) { set@{compactUpperCase(fieldName)}( $val ); }
