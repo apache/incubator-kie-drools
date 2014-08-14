@@ -6351,4 +6351,61 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.insert(1);
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testStrOperatorInAccumulate() throws Exception {
+        // DROOLS-574
+        String drl =
+                "declare Message\n" +
+                "    text : String\n" +
+                "end\n" +
+                "\n" +
+                "declare GroupByString\n" +
+                "    groupId : String\n" +
+                "    groups : String[]\n" +
+                "end\n" +
+                "\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule \"init words of my interest\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                "then\n" +
+                "    GroupByString grp = new GroupByString();\n" +
+                "    grp.setGroupId(\"wordGroup\");\n" +
+                "    grp.setGroups(new String[]{\"hi\", \"hello\"});\n" +
+                "    insert(grp);\n" +
+                "    insert(new Message(\"hi all\"));\n" +
+                "    insert(new Message(\"hello world\"));\n" +
+                "    insert(new Message(\"bye\"));\n" +
+                "    insert(new Message(\"hello everybody\"));\n" +
+                "end\n" +
+                "\n" +
+                "rule \"group by word and count if >=2 then \"\n" +
+                "no-loop\n" +
+                "when\n" +
+                "    $group : GroupByString( groupId == \"wordGroup\")\n" +
+                "    $word : String() from $group.groups\n" +
+                "    acc ( $msg : Message( text str[startsWith] $word );\n" +
+                "        $list : collectList( $msg ),\n" +
+                "        $count : count( $msg );\n" +
+                "        $count >= 1\n" +
+                "        )\n" +
+                "then\n" +
+                "    list.add(\"group by \" + $word + \" count is \"+ $count);\n" +
+                "end\n";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession ksession = helper.build().newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+
+        assertEquals(2, list.size());
+        assertTrue(list.contains("group by hello count is 2"));
+        assertTrue(list.contains("group by hi count is 1"));
+    }
 }
