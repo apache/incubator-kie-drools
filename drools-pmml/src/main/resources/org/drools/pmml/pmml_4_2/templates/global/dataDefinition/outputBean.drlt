@@ -17,7 +17,7 @@
 
 @declare{'outputBeanRule'}
 
- declare @if{ traitMode }trait@end{} @{context}Output@if{ traitMode }Trait@end{}
+ declare @if{ traitMode }trait@end{} @if{ adapterName != null }@{ adapterName }@else{} @{context}Output@if{ traitMode }Trait@end{} @end{}
  @propertyReactive
 
      @foreach{ fldName : fields.keySet() }
@@ -41,7 +41,7 @@
  rule "Link @{context} @if{ traitMode }Trait@end{} Output Fields @{fieldName} "
  when
      @{compactUpperCase(fieldName)}( $val : value)
-     $x : @{context}Output@if{ traitMode }Trait@end{}( @{fieldName} != $val )
+     $x :@if{ adapterName != null }@{ adapterName }@else{} @{context}Output@if{ traitMode }Trait@end{} @end{}( @{fieldName} != $val )
  then
      modify ( $x ) { set@{compactUpperCase(fieldName)}( $val ); }
  end

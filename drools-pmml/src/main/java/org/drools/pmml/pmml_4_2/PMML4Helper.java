@@ -819,26 +819,32 @@ public class PMML4Helper {
         }
 
         String out = sb.toString();
-        if( out.matches( "\\d.*" ) )
+        if( out.matches( "\\d.*" ) ) {
             out = "DF_" + out;
+        }
         return out;
 
     }
 
     public String compactAsJavaId(String s) {
-        java.util.StringTokenizer tok = new java.util.StringTokenizer(s);
+        return compactAsJavaId( s, false );
+    }
+    
+    public String compactAsJavaId(String s, boolean forceCapital) {
+        java.util.StringTokenizer tok = new java.util.StringTokenizer(s.trim(), " ,");
         StringBuilder sb = new StringBuilder();
         boolean first = true;
 
         while ( tok.hasMoreTokens() ) {
             String nt = tok.nextToken();
-            sb.append( (first && ! allCapital( nt ) ) ? lowerCase( nt ) : capitalize( nt ) );
+            sb.append( (first && ! allCapital( nt ) && ! forceCapital ) ? lowerCase( nt ) : capitalize( nt ) );
             first = false;
         }
 
         String out = sb.toString();
-        if( out.matches( "\\d.*" ) )
+        if( out.matches( "\\d.*" ) ) {
             out = "DF_" + out;
+        }
         return out;
 
     }

@@ -2,7 +2,6 @@ package org.drools.pmml.pmml_4_2.compiler;
 
 import org.dmg.pmml.pmml_4_2.descr.*;
 import java.util.*;
-
 dialect "mvel"
 
 global org.drools.pmml.pmml_4_2.PMML4Helper utils;
@@ -46,7 +45,7 @@ when
     NeuralInputs( this memberOf $info, $nis : neuralInputs )
     $ni : NeuralInput( this memberOf $nis, $fld : derivedField, $id : id )
 then
-    String name = utils.compactUpperCase( $nn ) + "_" + $id;
+    String name = utils.compactAsJavaId( $nn + "_" + $id, true );
     $fld.setName( name );
     insertLogical( $fld );
 
@@ -227,7 +226,7 @@ when
     NeuralOutputs( this memberOf $info, $outs : neuralOutputs )
     $out : NeuralOutput( $id : outputNeuron, $fld : derivedField )
 then
-    String name = utils.compactUpperCase( $nn ) + "_" + $id;
+    String name = utils.compactAsJavaId( $nn + "_" + $id, true );
 
     insertLogical( new TypeOfField( name, DATATYPE.DOUBLE ) );
 
@@ -285,10 +284,10 @@ then
     //insert( new QueryMarker(utils.compactUpperCase($field),utils.context) );
 
     LinearNorm orig = null;
-    LinearNorm inv = null
+    LinearNorm inv = null;
     NormContinuous invertedNC = new NormContinuous();
         invertedNC.setMapMissingTo( $mmt );
-        invertedNC.setField( utils.compactUpperCase( $nn ) + "_" + $id );
+        invertedNC.setField( utils.compactAsJavaId( $nn + "_" + $id, true ) );
         invertedNC.setOutliers( $outl );
         for ( int j = 0; j < $ls.size(); j++ ) {
             orig = (LinearNorm) $ls.get( j );
@@ -335,7 +334,7 @@ then
         map.put( "type", $type );
         map.put( "model", utils.context );
         map.put( "target", $val );
-        map.put( "origField", utils.compactUpperCase( $nn )+"_"+$id );
+        map.put( "origField", utils.compactAsJavaId( $nn + "_" + $id, true ) );
     utils.applyTemplate( "predicateField.drlt", utils, registry, map, theory );
 end
 
@@ -354,7 +353,7 @@ then
     //insert( new QueryMarker(utils.compactUpperCase($field),utils.context) );
 
     $df.setName( $field );
-    $ref.setField( utils.compactUpperCase( $nn ) + "_" + $id );
+    $ref.setField( utils.compactAsJavaId( $nn + "_" + $id, true ) );
 
     insertLogical( $ref );
     insertLogical( $fld );
