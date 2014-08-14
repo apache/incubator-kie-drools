@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.localsearch.decider.forager;
 
+import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.localsearch.event.LocalSearchPhaseLifecycleListener;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
@@ -26,12 +27,25 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
  */
 public interface Forager extends LocalSearchPhaseLifecycleListener {
 
+    /**
+     * @return true if it can be combined with a {@link MoveSelector#isNeverEnding()} that returns true.
+     */
     boolean supportsNeverEndingMoveSelector();
 
+    /**
+     * @param moveScope never null
+     */
     void addMove(LocalSearchMoveScope moveScope);
 
+    /**
+     * @return true if no further moves should be selected (and evaluated) for this step.
+     */
     boolean isQuitEarly();
 
+    /**
+     * @param stepScope never null
+     * @return sometimes null, for example if no move is selected
+     */
     LocalSearchMoveScope pickMove(LocalSearchStepScope stepScope);
 
 }
