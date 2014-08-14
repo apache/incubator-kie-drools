@@ -1,34 +1,55 @@
 package org.drools.core.common;
 
-import org.drools.core.factmodel.traits.TraitFactory;
-import org.drools.core.factmodel.traits.TraitProxy;
-import org.drools.core.factmodel.traits.TraitTypeEnum;
-import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.RightTuple;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.EntryPoint;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-@XmlAccessorType(XmlAccessType.NONE)
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+
+import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.factmodel.traits.TraitTypeEnum;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.RightTuple;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
+
+@XmlRootElement(name="disconnected-fact-handle")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class DisconnectedFactHandle
         implements
         InternalFactHandle,
         Externalizable {
 
+    @XmlElement
+    @XmlSchemaType(name="int")
     private int    id;
+    
+    @XmlElement
+    @XmlSchemaType(name="int")
     private int    identityHashCode;
+    
+    @XmlElement
+    @XmlSchemaType(name="int")
     private int    objectHashCode;
+    
+    @XmlElement
+    @XmlSchemaType(name="long")
     private long   recency;
+    
+    @XmlElement
     private Object object;
+    
+    @XmlElement
+    @XmlSchemaType(name="string")
     private String entryPointId;
+    
+    @XmlElement
     private TraitTypeEnum traitType;
 
     public DisconnectedFactHandle() {

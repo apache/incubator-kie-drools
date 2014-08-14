@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.core.command.IdentifiableResult;
@@ -38,6 +39,7 @@ import org.kie.internal.command.Context;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class StartCorrelatedProcessCommand implements GenericCommand<ProcessInstance>, IdentifiableResult {
 

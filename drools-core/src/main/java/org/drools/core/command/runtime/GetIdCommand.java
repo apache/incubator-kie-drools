@@ -18,6 +18,7 @@ package org.drools.core.command.runtime;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
@@ -25,6 +26,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 
+@XmlRootElement(name="get-id-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetIdCommand
     implements

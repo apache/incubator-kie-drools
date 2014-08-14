@@ -37,6 +37,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.command.Context;
 
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class StartProcessCommand implements GenericCommand<ProcessInstance>, IdentifiableResult {
 

@@ -32,12 +32,13 @@ import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
 import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 
-@XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class CompleteWorkItemCommand implements GenericCommand<Void> {
 
     @XmlAttribute(name="id", required = true)
-    private long workItemId;
+    private Long workItemId;
+    
     @XmlJavaTypeAdapter(JaxbMapAdapter.class)
     @XmlElement(name="result")
     private Map<String, Object> results = new HashMap<String, Object>();

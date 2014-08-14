@@ -21,6 +21,7 @@ import java.util.Collection;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
@@ -28,6 +29,7 @@ import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetProcessInstancesCommand
     implements

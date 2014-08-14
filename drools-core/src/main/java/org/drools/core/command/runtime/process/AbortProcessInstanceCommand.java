@@ -19,12 +19,14 @@ package org.drools.core.command.runtime.process;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class AbortProcessInstanceCommand implements GenericCommand<Void> {
 
