@@ -106,13 +106,13 @@ public abstract class AbstractWorkingMemoryDbLoggerTest extends AbstractBaseTest
         logger.info("{}", processInstance);
         assertNotNull(processInstance.getStart());
         assertNotNull(processInstance.getEnd());
-        assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+        assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
         assertEquals("com.sample.ruleflow", processInstance.getProcessId());
         List<NodeInstanceLog> nodeInstances = logService.findNodeInstances(processInstanceId);
         assertEquals(6, nodeInstances.size());
         for (NodeInstanceLog nodeInstance: nodeInstances) {
             logger.info("{}", nodeInstance);
-            assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+            assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
             assertEquals("com.sample.ruleflow", processInstance.getProcessId());
             assertNotNull(nodeInstance.getDate());
         }
@@ -155,13 +155,13 @@ public abstract class AbstractWorkingMemoryDbLoggerTest extends AbstractBaseTest
         logger.info(" -> {} - {} ", processInstance.getStart(), processInstance.getEnd());
         assertNotNull(processInstance.getStart());
         assertNotNull(processInstance.getEnd());
-        assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+        assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
         assertEquals("com.sample.ruleflow2", processInstance.getProcessId());
         List<NodeInstanceLog> nodeInstances = logService.findNodeInstances(processInstanceId);
         for (NodeInstanceLog nodeInstance: nodeInstances) {
             logger.info("{}", nodeInstance);
             logger.info(" -> {}", nodeInstance.getDate());
-            assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+            assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
             assertEquals("com.sample.ruleflow2", processInstance.getProcessId());
             assertNotNull(nodeInstance.getDate());
         }

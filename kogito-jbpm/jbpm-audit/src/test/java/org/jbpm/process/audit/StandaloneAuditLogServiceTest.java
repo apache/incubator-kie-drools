@@ -76,7 +76,7 @@ public class StandaloneAuditLogServiceTest extends AbstractAuditLogServiceTest {
         
         assertNotNull(processInstance.getStart());
         assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
-        assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+        assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
         assertEquals(PROCESS_ID, processInstance.getProcessId());
         List<NodeInstanceLog> nodeInstances = setAuditLogServiceAndExecute(new FindNodeInstancesCommand(processInstanceId));
         assertEquals(6, nodeInstances.size()); 

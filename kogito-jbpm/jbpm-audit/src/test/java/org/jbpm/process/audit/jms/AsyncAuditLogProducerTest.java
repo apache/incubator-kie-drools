@@ -224,7 +224,7 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
         assertEquals(6, nodeInstances.size());
         for (NodeInstanceLog nodeInstance: nodeInstances) {
 
-            assertEquals(processInstance.getId(), nodeInstance.getProcessInstanceId());
+            assertEquals(processInstance.getId(), nodeInstance.getProcessInstanceId().longValue());
             assertEquals("com.sample.ruleflow", nodeInstance.getProcessId());
             assertNotNull(nodeInstance.getDate());
         }
@@ -262,7 +262,7 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
         assertEquals(6, nodeInstances.size());
         for (NodeInstanceLog nodeInstance: nodeInstances) {
 
-            assertEquals(processInstance.getId(), nodeInstance.getProcessInstanceId());
+            assertEquals(processInstance.getId(), nodeInstance.getProcessInstanceId().longValue());
             assertEquals("com.sample.ruleflow", nodeInstance.getProcessId());
             assertNotNull(nodeInstance.getDate());
         }

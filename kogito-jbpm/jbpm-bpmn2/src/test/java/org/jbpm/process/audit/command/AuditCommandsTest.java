@@ -58,7 +58,7 @@ public class AuditCommandsTest extends JbpmBpmn2TestCase {
         List<ProcessInstanceLog> logList = (List<ProcessInstanceLog>) result;
         assertEquals( "Log list size is incorrect.", 1, logList.size() );
         ProcessInstanceLog log = logList.get(0);
-        assertEquals(log.getProcessInstanceId(), processInstance.getId());
+        assertEquals(log.getProcessInstanceId().longValue(), processInstance.getId());
         assertEquals(log.getProcessId(), processInstance.getProcessId());
         
         cmd = new FindActiveProcessInstancesCommand(processId);
@@ -68,7 +68,7 @@ public class AuditCommandsTest extends JbpmBpmn2TestCase {
         logList = (List<ProcessInstanceLog>) result;
         assertEquals( "Log list size is incorrect.", 1, logList.size() );
         log = logList.get(0);
-        assertEquals("Process instance id", log.getProcessInstanceId(), processInstance.getId());
+        assertEquals("Process instance id", log.getProcessInstanceId().longValue(), processInstance.getId());
         assertEquals("Process id", log.getProcessId(), processInstance.getProcessId());
         assertEquals("Status", log.getStatus().intValue(), ProcessInstance.STATE_ACTIVE );
         
@@ -77,7 +77,7 @@ public class AuditCommandsTest extends JbpmBpmn2TestCase {
         assertNotNull( "Command result is empty!", result );
         assertTrue( result instanceof ProcessInstanceLog );
         log = (ProcessInstanceLog) result;
-        assertEquals(log.getProcessInstanceId(), processInstance.getId());
+        assertEquals(log.getProcessInstanceId().longValue(), processInstance.getId());
         assertEquals(log.getProcessId(), processInstance.getProcessId());
         
         cmd = new ClearHistoryLogsCommand();

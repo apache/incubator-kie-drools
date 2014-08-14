@@ -97,13 +97,13 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         
         assertNotNull(processInstance.getStart());
         assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
-        assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+        assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
         assertEquals("com.sample.ruleflow", processInstance.getProcessId());
         List<NodeInstanceLog> nodeInstances = auditLogService.findNodeInstances(processInstanceId);
         assertEquals(6, nodeInstances.size());
         for (NodeInstanceLog nodeInstance: nodeInstances) {
             logger.debug(nodeInstance.toString());
-            assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+            assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
             assertEquals("com.sample.ruleflow", processInstance.getProcessId());
             assertNotNull(nodeInstance.getDate());
         }
@@ -155,12 +155,12 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         logger.debug("{} -> {} - {}", processInstance.toString(), processInstance.getStart(), processInstance.getEnd());
         assertNotNull(processInstance.getStart());
         assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
-        assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+        assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
         assertEquals("com.sample.ruleflow2", processInstance.getProcessId());
         List<NodeInstanceLog> nodeInstances = auditLogService.findNodeInstances(processInstanceId);
         for (NodeInstanceLog nodeInstance: nodeInstances) {
             logger.debug("{} -> {}", nodeInstance.toString(), nodeInstance.getDate());
-            assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+            assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
             assertEquals("com.sample.ruleflow2", processInstance.getProcessId());
             assertNotNull(nodeInstance.getDate());
         }
@@ -208,13 +208,13 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         logger.debug("{} -> {} - {}", processInstance.toString(), processInstance.getStart(), processInstance.getEnd());
         assertNotNull(processInstance.getStart());
         assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
-        assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+        assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
         assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
         List<VariableInstanceLog> variableInstances = auditLogService.findVariableInstances(processInstanceId);
         assertEquals(9, variableInstances.size());
         for (VariableInstanceLog variableInstance: variableInstances) {
             logger.debug(variableInstance.toString());
-            assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+            assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
             assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
             assertNotNull(variableInstance.getDate());
         }
@@ -280,13 +280,13 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         logger.debug("{} -> {} - {}",processInstance.toString(), processInstance.getStart(), processInstance.getEnd());
         assertNotNull(processInstance.getStart());
         assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
-        assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+        assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
         assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
         List<VariableInstanceLog> variableInstances = auditLogService.findVariableInstances(processInstanceId);
         assertEquals(6, variableInstances.size());
         for (VariableInstanceLog variableInstance: variableInstances) {
             logger.debug(variableInstance.toString());
-            assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+            assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
             assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
             assertNotNull(variableInstance.getDate());
         }
@@ -312,14 +312,14 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         logger.debug("{} -> {} - {}", processInstance.toString(), processInstance.getStart(), processInstance.getEnd());
         assertNotNull(processInstance.getStart());
         assertNotNull(processInstance.getEnd());
-        assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+        assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
         assertEquals("com.sample.ruleflow", processInstance.getProcessId());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getStatus().intValue());
         List<NodeInstanceLog> nodeInstances = auditLogService.findNodeInstances(processInstanceId);
         assertEquals(6, nodeInstances.size());
         for (NodeInstanceLog nodeInstance: nodeInstances) {
             logger.debug(nodeInstance.toString());
-            assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+            assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
             assertEquals("com.sample.ruleflow", processInstance.getProcessId());
             assertNotNull(nodeInstance.getDate());
         }
@@ -377,13 +377,13 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         logger.debug("{} -> {} - {}", processInstance.toString(), processInstance.getStart(), processInstance.getEnd());
         assertNotNull(processInstance.getStart());
         assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
-        assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+        assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
         assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
         List<VariableInstanceLog> variableInstances = auditLogService.findVariableInstances(processInstanceId);
         assertEquals(10, variableInstances.size());
         for (VariableInstanceLog variableInstance: variableInstances) {
             logger.debug(variableInstance.toString());
-            assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+            assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
             assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
             assertNotNull(variableInstance.getDate());
         }
