@@ -40,7 +40,7 @@ public interface NodeInstanceLog {
 	 * Process instance identifier
 	 * @return
 	 */
-    long getProcessInstanceId();
+    Long getProcessInstanceId();
 
     /**
 	 * Process id of the definition
@@ -110,6 +110,6 @@ public interface NodeInstanceLog {
      * @see NodeInstanceLog#TYPE_ENTER
      * @see NodeInstanceLog#TYPE_EXIT
      */
-	int getType();
+	Integer getType();
     
 }

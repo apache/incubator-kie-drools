@@ -28,7 +28,7 @@ public interface ProcessInstanceLog {
 	 * Process instance identifier
 	 * @return
 	 */
-	long getProcessInstanceId();
+	Long getProcessInstanceId();
 
 	/**
 	 * Process id of the definition

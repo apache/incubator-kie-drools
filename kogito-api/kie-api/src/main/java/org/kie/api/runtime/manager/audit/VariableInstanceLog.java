@@ -29,7 +29,7 @@ public interface VariableInstanceLog {
 	 * Process instance identifier
 	 * @return
 	 */
-	long getProcessInstanceId();
+	Long getProcessInstanceId();
 
 	/**
 	 * Process id of the definition
