@@ -41,7 +41,7 @@ when
     accumulate( CategoricalPredictor( this memberOf $cat, $c : coefficient ), $catC : collectList( $c ) )
     accumulate( PredictorTerm( this memberOf $trm, $c : coefficient ), $trmC : collectList( $c ) )
            MiningSchema( $mfs : miningFields, this memberOf $regTables )
-           MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $tgt : name )
+           MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $tgt : name )
 then
     HashMap map = new HashMap( 7 );
         map.put( "context", utils.context );
@@ -73,8 +73,8 @@ when
            accumulate( $cp : CategoricalPredictor( this memberOf $cps ), $catPs : collectList( $cp ) )
            accumulate( $tp : PredictorTerm( this memberOf $tps ), $trmPs : collectList( $tp ) )
            MiningSchema( $mfs : miningFields, this memberOf $regTables )
-           accumulate( $mf : MiningField( this memberOf $mfs, usageType != FIELDUSAGETYPE.PREDICTED, $fldName : name ), $flds : collectList( $mf ) )
-           MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $tgt : name )
+           accumulate( $mf : MiningField( this memberOf $mfs, usageType != FIELDUSAGETYPE.PREDICTED && != FIELDUSAGETYPE.TARGET, $fldName : name ), $flds : collectList( $mf ) )
+           MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $tgt : name )
 then
     HashMap map = new HashMap( 7 );
         map.put( "context", utils.context );
@@ -101,8 +101,8 @@ when
            accumulate( $cp : CategoricalPredictor( this memberOf $cps ), $catPs : collectList( $cp ) )
            accumulate( $tp : PredictorTerm( this memberOf $tps ), $trmPs : collectList( $tp ) )
            MiningSchema( $mfs : miningFields, this memberOf $regTables )
-           accumulate( $mf : MiningField( this memberOf $mfs, usageType != FIELDUSAGETYPE.PREDICTED, $fldName : name ), $flds : collectList( $mf ) )
-           MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $tgt : name )
+           accumulate( $mf : MiningField( this memberOf $mfs, usageType != FIELDUSAGETYPE.PREDICTED && != FIELDUSAGETYPE.TARGET, $fldName : name ), $flds : collectList( $mf ) )
+           MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $tgt : name )
            (
              DataField( name == $tgt, $opType : optype )
              or
@@ -130,7 +130,7 @@ when
                             $norm : normalizationMethod  )
            accumulate( $rt : RegressionTable( this memberOf $regTables ), $numTabs : count( $rt ) )
            MiningSchema( $mfs : miningFields, this memberOf $regTables )
-           MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $tgt : name )
+           MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $tgt : name )
 then
     HashMap map = new HashMap( 3 );
         map.put( "context", utils.context );
@@ -148,7 +148,7 @@ when
                             $norm : normalizationMethod  )
            accumulate( $rt : RegressionTable( this memberOf $regTables ), $numTabs : count( $rt ) )
            MiningSchema( $mfs : miningFields, this memberOf $regTables )
-           MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $tgt : name )
+           MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $tgt : name )
            (
              DataField( name == $tgt, $opType : optype == OPTYPE.ORDINAL )
              or

@@ -193,7 +193,7 @@ salience -9
 when
     Scorecard( $name : modelName, $info : extensionsAndCharacteristicsAndMiningSchemas )
     MiningSchema( this memberOf $info, $mfs : miningFields )
-    MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $tgtName : name )
+    MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $tgtName : name )
 then
     HashMap map = new HashMap( 3 );
         map.put( "context", utils.context );

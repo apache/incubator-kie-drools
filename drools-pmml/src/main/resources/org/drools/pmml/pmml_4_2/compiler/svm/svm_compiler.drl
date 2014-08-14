@@ -195,7 +195,7 @@ when
                                   $posCat : targetCategory, $altCat : alternateTargetCategory
                                 )
             MiningSchema( this memberOf $info, $mfs : miningFields )
-            MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $name : name )
+            MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $name : name )
             TypeOfField( name == $name, $type : dataType )
 then
     HashMap map = new HashMap( 7 );
@@ -218,7 +218,7 @@ when
     $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries )
             accumulate( SupportVectorMachine( this memberOf $info ), $num : count(1); $num > 1 )
             MiningSchema( this memberOf $info, $mfs : miningFields )
-            MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $name : name )
+            MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $name : name )
             TypeOfField( name == $name, $type : dataType )
 then
     HashMap map = new HashMap( 3 );
@@ -234,7 +234,7 @@ when
     $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries, classificationMethod == SVMCLASSIFICATIONMETHOD.ONE_AGAINST_ALL )
             accumulate( SupportVectorMachine( this memberOf $info ), $num : count(1); $num > 1 )
             MiningSchema( this memberOf $info, $mfs : miningFields )
-            MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $name : name )
+            MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $name : name )
             TypeOfField( name == $name, $type : dataType )
 then
     HashMap map = new HashMap( 7 );
@@ -250,7 +250,7 @@ when
     $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries, classificationMethod == SVMCLASSIFICATIONMETHOD.ONE_AGAINST_ONE )
             accumulate( SupportVectorMachine( this memberOf $info ), $num : count(1); $num > 1 )
             MiningSchema( this memberOf $info, $mfs : miningFields )
-            MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $name : name )
+            MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $name : name )
             TypeOfField( name == $name, $type : dataType )
 then
     HashMap map = new HashMap( 7 );

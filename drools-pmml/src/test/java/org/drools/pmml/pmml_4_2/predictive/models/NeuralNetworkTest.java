@@ -35,12 +35,14 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
     private static final String source1 = "org/drools/pmml/pmml_4_2/test_ann_regression.xml";
 
     //
-    private static final String source3 = "org/drools/pmml/pmml_4_2/test_miningSchema.xml";
     private static final String source2 = "org/drools/pmml/pmml_4_2/test_ann_iris.xml";
 
     private static final String source22 = "org/drools/pmml/pmml_4_2/test_ann_iris_v2.xml";
     private static final String source23 = "org/drools/pmml/pmml_4_2/test_ann_iris_prediction.xml";
     private static final String source4 = "org/drools/pmml/pmml_4_2/test_ann_mixed_inputs2.xml";
+
+    private static final String source3 = "org/drools/pmml/pmml_4_2/test_miningSchema.xml";
+    private static final String source3c = "org/drools/pmml/pmml_4_2/test_annCommas.xml";
 
     private static final String source6 = "org/drools/pmml/pmml_4_2/mock_ptsd.xml";
     private static final String source7 = "org/drools/pmml/pmml_4_2/mock_cold.xml";
@@ -318,6 +320,25 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
     public void testSimpleANN() throws Exception {
         // from mining schema test, simple network with fieldRef as output
         setKSession( getModelSession( source3, VERBOSE ) );
+        setKbase(getKSession().getKieBase());
+
+
+        getKSession().getEntryPoint( "in_Feat2" ).insert( 4 );
+        getKSession().getEntryPoint( "in_Feat1" ).insert( 3.5 );
+        getKSession().fireAllRules();
+
+        checkFirstDataFieldOfTypeStatus( getKbase().getFactType( packageName, "MockOutput2" ),
+                true, false, "Test_MLP",1.0 );
+        checkFirstDataFieldOfTypeStatus( getKbase().getFactType( packageName, "MockOutput1" ),
+                true, false, "Test_MLP",0.0 );
+
+    }
+
+
+    @Test
+    public void testSimpleANNWithCommasInIds() throws Exception {
+        // from mining schema test, simple network with fieldRef as output
+        setKSession( getModelSession( source3c, VERBOSE ) );
         setKbase(getKSession().getKieBase());
 
 

@@ -1377,7 +1377,7 @@ when
     $xt : Extension( name == PMMLExtensionNames.IO_ADAPTER,
                      $mode : value == PMMLIOAdapterMode.TRAIT.name() || == PMMLIOAdapterMode.BEAN.name() ) from $ext
     accumulate( $mf : MiningField( usageType == FIELDUSAGETYPE.ACTIVE ) from $miningFields, $expNum : count( $mf ); $expNum > 0 )
-    accumulate( $pf : MiningField( usageType == FIELDUSAGETYPE.PREDICTED ) from $miningFields, $expPNum : count( $pf ) )
+    accumulate( $pf : MiningField( usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET ) from $miningFields, $expPNum : count( $pf ) )
     $fields : java.util.Map( size == $expNum ) from accumulate (
             MiningField( this memberOf $miningFields, $name : name, usageType == FIELDUSAGETYPE.ACTIVE ) from $miningFields
             and
@@ -1388,7 +1388,7 @@ when
         result( map )
     )
     $predFields : java.util.Map( size == $expPNum ) from accumulate (
-            MiningField( this memberOf $miningFields, $name : name, usageType == FIELDUSAGETYPE.PREDICTED ) from $miningFields
+            MiningField( this memberOf $miningFields, $name : name, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET ) from $miningFields
             and
             TypeOfField( $n : name == $name, $type : dataType )
          ,
@@ -1546,7 +1546,7 @@ rule "Generic_Target"
 when
     $t: Target( $field : field, targetValues.size() == 0,
                  $cast : castInteger, $max : max, $min : min, $offset : rescaleConstant, $scale : rescaleFactor  )
-    MiningField( name == $field, usageType == FIELDUSAGETYPE.PREDICTED )
+    MiningField( name == $field, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET )
     TypeOfField( name == $field, $type : dataType )
 then
     HashMap map = new HashMap( 11 );
@@ -1569,7 +1569,7 @@ when
     $t      : Target( $field : field, $tgtValues : targetValues,
                   $cast : castInteger, $max : max, $min : min, $offset : rescaleConstant, $scale : rescaleFactor  )
     $tgt    : TargetValue( $tgtVal : value ) from $tgtValues
-    MiningField( name == $field, usageType == FIELDUSAGETYPE.PREDICTED )
+    MiningField( name == $field, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET )
     TypeOfField( name == $field, $dataType : dataType )
 then
     HashMap map = new HashMap( 11 );
@@ -1599,10 +1599,10 @@ salience 100
 //TODO Should check the scope: same model
 when
     $of : OutputField( targetField == null )
-          accumulate ( MiningField( usageType == FIELDUSAGETYPE.PREDICTED ),
+          accumulate ( MiningField( usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET ),
                        $num : count( 1 );
                        $num == 1 )
-          MiningField( $name : name, usageType == FIELDUSAGETYPE.PREDICTED )
+          MiningField( $name : name, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET )
 then
     modify ( $of ) {
         setTargetField( $name );
@@ -1738,7 +1738,7 @@ end
 
 rule "Create Output Structures"
 no-loop
-salience -18
+salience -19
 when
     $ot : Output( $outs : outputFields, $ext : extensions )
     $xt : Extension( name == PMMLExtensionNames.IO_ADAPTER,
