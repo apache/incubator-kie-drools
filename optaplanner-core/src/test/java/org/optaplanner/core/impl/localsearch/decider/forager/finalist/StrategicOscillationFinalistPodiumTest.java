@@ -1,0 +1,94 @@
+/*
+ * Copyright 2014 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.optaplanner.core.impl.localsearch.decider.forager.finalist;
+
+import org.junit.Test;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+
+public class StrategicOscillationFinalistPodiumTest {
+
+    @Test
+    public void comparison() {
+        StrategicOscillationFinalistPodium finalistPodium = new StrategicOscillationFinalistPodium(1);
+
+        DefaultSolverScope solverScope = new DefaultSolverScope();
+        solverScope.setBestScore(HardSoftScore.valueOf(-200, -5000));
+        LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
+        LocalSearchStepScope lastCompletedStepScope = new LocalSearchStepScope(phaseScope, -1);
+        lastCompletedStepScope.setScore(solverScope.getBestScore());
+        phaseScope.setLastCompletedStepScope(lastCompletedStepScope);
+        finalistPodium.phaseStarted(phaseScope);
+
+        LocalSearchStepScope stepScope0 = new LocalSearchStepScope(phaseScope);
+        finalistPodium.stepStarted(stepScope0);
+        LocalSearchMoveScope moveScope0 = buildMoveScope(stepScope0, -100, -7000);
+        finalistPodium.addMove(buildMoveScope(stepScope0, -150, -2000));
+        finalistPodium.addMove(moveScope0);
+        finalistPodium.addMove(buildMoveScope(stepScope0, -100, -7100));
+        finalistPodium.addMove(buildMoveScope(stepScope0, -200, -1000));
+        assertSame(moveScope0, finalistPodium.pickMove(stepScope0));
+        stepScope0.setScore(moveScope0.getScore());
+        finalistPodium.stepEnded(stepScope0);
+        phaseScope.setLastCompletedStepScope(stepScope0);
+
+        LocalSearchStepScope stepScope1 = new LocalSearchStepScope(phaseScope);
+        finalistPodium.stepStarted(stepScope1);
+        LocalSearchMoveScope moveScope1 = buildMoveScope(stepScope1, -120, -4000);
+        finalistPodium.addMove(buildMoveScope(stepScope1, -100, -8000));
+        finalistPodium.addMove(buildMoveScope(stepScope1, -100, -7000));
+        finalistPodium.addMove(buildMoveScope(stepScope1, -150, -3000));
+        finalistPodium.addMove(moveScope1);
+        finalistPodium.addMove(buildMoveScope(stepScope1, -150, -2000));
+        finalistPodium.addMove(buildMoveScope(stepScope1, -200, -1000));
+        assertSame(moveScope1, finalistPodium.pickMove(stepScope1));
+        stepScope1.setScore(moveScope1.getScore());
+        finalistPodium.stepEnded(stepScope1);
+        phaseScope.setLastCompletedStepScope(stepScope1);
+
+        LocalSearchStepScope stepScope2 = new LocalSearchStepScope(phaseScope);
+        finalistPodium.stepStarted(stepScope2);
+        LocalSearchMoveScope moveScope2 = buildMoveScope(stepScope2, -150, -1000);
+        finalistPodium.addMove(buildMoveScope(stepScope2, -120, -4000));
+        finalistPodium.addMove(buildMoveScope(stepScope2, -120, -5000));
+        finalistPodium.addMove(buildMoveScope(stepScope2, -150, -3000));
+        finalistPodium.addMove(moveScope2);
+        finalistPodium.addMove(buildMoveScope(stepScope2, -150, -2000));
+        finalistPodium.addMove(buildMoveScope(stepScope2, -160, -500));
+        assertSame(moveScope2, finalistPodium.pickMove(stepScope2));
+        stepScope2.setScore(moveScope2.getScore());
+        finalistPodium.stepEnded(stepScope2);
+        phaseScope.setLastCompletedStepScope(stepScope2);
+    }
+
+    protected LocalSearchMoveScope buildMoveScope(LocalSearchStepScope stepScope, int hardScore, int softScore) {
+        LocalSearchMoveScope moveScope = new LocalSearchMoveScope(stepScope);
+        Move move = mock(Move.class);
+        moveScope.setAccepted(true);
+        moveScope.setMove(move);
+        moveScope.setScore(HardSoftScore.valueOf(hardScore, softScore));
+        return moveScope;
+    }
+
+}
