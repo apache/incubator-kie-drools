@@ -4547,3 +4547,22 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
 Instead, to get a pretty score corruption analysis, implement the new interface ConstraintMatchAwareIncrementalScoreCalculator.
 This also enable your GUI to explain the score with an IncrementalScoreCalculator.
 See the example code in MachineReassignmentIncrementalScoreCalculator.getConstraintMatchTotals().
+
+
+From 6.2.0.Beta1 to 6.2.0.Beta2
+-------------------------------
+
+[MINOR] The element <deciderScoreComparatorFactory> (which was deprecated, not documented, broken and clearly marked as not backwards compatible) has been removed.
+Instead, use TODO
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+  <localSearch>
+    ...
+    <forager>
+      <deciderScoreComparatorFactory>
+        ...
+      </deciderScoreComparatorFactory>
+    </forager>
+  </localSearch>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+
+TODO

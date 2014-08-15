@@ -27,15 +27,12 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
  */
 public class StrategicOscillationFinalistPodium extends AbstractFinalistPodium {
 
-    protected final int retention;
-
     protected Number[] lastStepLevelNumbers;
 
     protected Score finalistScore;
     protected Number[] finalistLevelNumbers;
 
-    public StrategicOscillationFinalistPodium(int retention) {
-        this.retention = retention;
+    public StrategicOscillationFinalistPodium() {
     }
 
     @Override

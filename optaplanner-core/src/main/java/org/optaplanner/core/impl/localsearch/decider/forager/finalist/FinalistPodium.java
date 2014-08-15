@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 /**
  * @see AbstractFinalistPodium
- * @see DefaultFinalistPodium
+ * @see HighestScoreFinalistPodium
  */
 public interface FinalistPodium extends LocalSearchPhaseLifecycleListener {
 

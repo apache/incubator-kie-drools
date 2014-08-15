@@ -18,23 +18,20 @@ package org.optaplanner.core.config.localsearch.decider.forager;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.config.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactoryConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
 import org.optaplanner.core.impl.localsearch.decider.forager.AcceptedForager;
 import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
+import org.optaplanner.core.impl.localsearch.decider.forager.finalist.HighestScoreFinalistPodium;
+import org.optaplanner.core.impl.localsearch.decider.forager.finalist.FinalistPodium;
 
 @XStreamAlias("localSearchForagerConfig")
 public class LocalSearchForagerConfig {
 
     private Class<? extends Forager> foragerClass = null;
 
-    @XStreamAlias("deciderScoreComparatorFactory")
-    @Deprecated // Experimental feature (no backwards compatibility guarantee)
-    private DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig = null;
-
     protected LocalSearchPickEarlyType pickEarlyType = null;
     protected Integer acceptedCountLimit = null;
+    protected FinalistPodiumType finalistPodiumType = null;
 
     public Class<? extends Forager> getForagerClass() {
         return foragerClass;
@@ -42,17 +39,6 @@ public class LocalSearchForagerConfig {
 
     public void setForagerClass(Class<? extends Forager> foragerClass) {
         this.foragerClass = foragerClass;
-    }
-
-    @Deprecated // Experimental feature (no backwards compatibility guarantee)
-    public DeciderScoreComparatorFactoryConfig getDeciderScoreComparatorFactoryConfig() {
-        return deciderScoreComparatorFactoryConfig;
-    }
-
-    @Deprecated // Experimental feature (no backwards compatibility guarantee)
-    public void setDeciderScoreComparatorFactoryConfig(
-            DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig) {
-        this.deciderScoreComparatorFactoryConfig = deciderScoreComparatorFactoryConfig;
     }
 
     public LocalSearchPickEarlyType getPickEarlyType() {
@@ -71,38 +57,45 @@ public class LocalSearchForagerConfig {
         this.acceptedCountLimit = acceptedCountLimit;
     }
 
+    public FinalistPodiumType getFinalistPodiumType() {
+        return finalistPodiumType;
+    }
+
+    public void setFinalistPodiumType(FinalistPodiumType finalistPodiumType) {
+        this.finalistPodiumType = finalistPodiumType;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
 
     public Forager buildForager(HeuristicConfigPolicy configPolicy) {
         if (foragerClass != null) {
+            if (pickEarlyType != null || acceptedCountLimit != null || finalistPodiumType != null) {
+                throw new IllegalArgumentException("The foragerConfig with foragerClass (" + foragerClass
+                        + ") must not also have a pickEarlyType (" + pickEarlyType
+                        + "), acceptedCountLimit (" + acceptedCountLimit
+                        + ") or finalistPodiumType (" + finalistPodiumType + ").");
+            }
             return ConfigUtils.newInstance(this, "foragerClass", foragerClass);
         }
-        LocalSearchPickEarlyType pickEarlyType_ = (this.pickEarlyType == null)
-                ? LocalSearchPickEarlyType.NEVER : this.pickEarlyType;
-        int acceptedCountLimit = (this.acceptedCountLimit == null) ? Integer.MAX_VALUE : this.acceptedCountLimit;
-
-        DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig_
-                = deciderScoreComparatorFactoryConfig == null ? new DeciderScoreComparatorFactoryConfig()
-                : deciderScoreComparatorFactoryConfig;
-        DeciderScoreComparatorFactory deciderScoreComparatorFactory
-                = deciderScoreComparatorFactoryConfig_.buildDeciderScoreComparatorFactory();
-        return new AcceptedForager(deciderScoreComparatorFactory, pickEarlyType_, acceptedCountLimit);
+        LocalSearchPickEarlyType pickEarlyType_ = (pickEarlyType == null)
+                ? LocalSearchPickEarlyType.NEVER : pickEarlyType;
+        int acceptedCountLimit_ = (acceptedCountLimit == null) ? Integer.MAX_VALUE : acceptedCountLimit;
+        FinalistPodium finalistPodium = finalistPodiumType == null ? new HighestScoreFinalistPodium()
+                : finalistPodiumType.buildFinalistPodium();
+        return new AcceptedForager(finalistPodium, pickEarlyType_, acceptedCountLimit_);
     }
 
     public void inherit(LocalSearchForagerConfig inheritedConfig) {
-        // TODO this is messed up
-        if (foragerClass == null && pickEarlyType == null && acceptedCountLimit == null) {
-            foragerClass = inheritedConfig.getForagerClass();
-            pickEarlyType = inheritedConfig.getPickEarlyType();
-            acceptedCountLimit = inheritedConfig.getAcceptedCountLimit();
-        }
-        if (deciderScoreComparatorFactoryConfig == null) {
-            deciderScoreComparatorFactoryConfig = inheritedConfig.getDeciderScoreComparatorFactoryConfig();
-        } else if (inheritedConfig.getDeciderScoreComparatorFactoryConfig() != null) {
-            deciderScoreComparatorFactoryConfig.inherit(inheritedConfig.getDeciderScoreComparatorFactoryConfig());
-        }
+        foragerClass = ConfigUtils.inheritOverwritableProperty(foragerClass,
+                inheritedConfig.getForagerClass());
+        pickEarlyType = ConfigUtils.inheritOverwritableProperty(pickEarlyType,
+                inheritedConfig.getPickEarlyType());
+        acceptedCountLimit = ConfigUtils.inheritOverwritableProperty(acceptedCountLimit,
+                inheritedConfig.getAcceptedCountLimit());
+        finalistPodiumType = ConfigUtils.inheritOverwritableProperty(finalistPodiumType,
+                inheritedConfig.getFinalistPodiumType());
     }
 
 }

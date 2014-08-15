@@ -80,7 +80,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactory extends AbstractDe
 
     @Override
     public void stepEnded(LocalSearchStepScope stepScope) {
-        if (stepScope.getStepIndex() == stepScope.getPhaseScope().getBestSolutionStepIndex()) {
+        if (stepScope.getBestScoreImproved()) {
             successiveNoHardScoreChange = 0;
             shiftingPenaltyActive = false;
         } else {

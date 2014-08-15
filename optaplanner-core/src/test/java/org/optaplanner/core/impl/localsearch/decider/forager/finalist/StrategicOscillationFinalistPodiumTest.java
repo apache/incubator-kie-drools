@@ -31,7 +31,7 @@ public class StrategicOscillationFinalistPodiumTest {
 
     @Test
     public void comparison() {
-        StrategicOscillationFinalistPodium finalistPodium = new StrategicOscillationFinalistPodium(1);
+        StrategicOscillationFinalistPodium finalistPodium = new StrategicOscillationFinalistPodium();
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
         solverScope.setBestScore(HardSoftScore.valueOf(-200, -5000));

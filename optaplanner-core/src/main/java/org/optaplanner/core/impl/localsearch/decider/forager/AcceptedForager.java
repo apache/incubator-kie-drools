@@ -16,17 +16,14 @@
 
 package org.optaplanner.core.impl.localsearch.decider.forager;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchPickEarlyType;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
-import org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
+import org.optaplanner.core.impl.localsearch.decider.forager.finalist.FinalistPodium;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * A {@link Forager} which forages accepted moves and ignores unaccepted moves.
@@ -35,24 +32,18 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
  */
 public class AcceptedForager extends AbstractForager {
 
-    protected final DeciderScoreComparatorFactory deciderScoreComparatorFactory;
+    protected final FinalistPodium finalistPodium;
     protected final LocalSearchPickEarlyType pickEarlyType;
     protected final int acceptedCountLimit;
 
-    protected Comparator<Score> scoreComparator;
-
     protected long selectedMoveCount;
     protected long acceptedMoveCount;
-    protected List<LocalSearchMoveScope> maxScoreAcceptedList;
-    protected Score maxAcceptedScore;
-    protected List<LocalSearchMoveScope> maxScoreUnacceptedList;
-    protected Score maxUnacceptedScore;
 
     protected LocalSearchMoveScope earlyPickedMoveScope;
 
-    public AcceptedForager(DeciderScoreComparatorFactory deciderScoreComparatorFactory,
+    public AcceptedForager(FinalistPodium finalistPodium,
             LocalSearchPickEarlyType pickEarlyType, int acceptedCountLimit) {
-        this.deciderScoreComparatorFactory = deciderScoreComparatorFactory;
+        this.finalistPodium = finalistPodium;
         this.pickEarlyType = pickEarlyType;
         this.acceptedCountLimit = acceptedCountLimit;
         if (acceptedCountLimit < 1) {
@@ -66,22 +57,23 @@ public class AcceptedForager extends AbstractForager {
     // ************************************************************************
 
     @Override
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        super.solvingStarted(solverScope);
+        finalistPodium.solvingStarted(solverScope);
+    }
+
+    @Override
     public void phaseStarted(LocalSearchPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
-        deciderScoreComparatorFactory.phaseStarted(phaseScope);
+        finalistPodium.phaseStarted(phaseScope);
     }
 
     @Override
     public void stepStarted(LocalSearchStepScope stepScope) {
         super.stepStarted(stepScope);
-        deciderScoreComparatorFactory.stepStarted(stepScope);
-        scoreComparator = deciderScoreComparatorFactory.createDeciderScoreComparator();
+        finalistPodium.stepStarted(stepScope);
         selectedMoveCount = 0L;
         acceptedMoveCount = 0L;
-        maxScoreAcceptedList = new ArrayList<LocalSearchMoveScope>(1024);
-        maxAcceptedScore = null;
-        maxScoreUnacceptedList = new ArrayList<LocalSearchMoveScope>(1024);
-        maxUnacceptedScore = null;
         earlyPickedMoveScope = null;
     }
 
@@ -95,11 +87,8 @@ public class AcceptedForager extends AbstractForager {
         if (moveScope.getAccepted()) {
             acceptedMoveCount++;
             checkPickEarly(moveScope);
-            addToMaxScoreAcceptedList(moveScope);
-            maxScoreUnacceptedList = null;
-        } else if (acceptedMoveCount == 0L) {
-            addToMaxScoreUnacceptedList(moveScope);
         }
+        finalistPodium.addMove(moveScope);
     }
 
     protected void checkPickEarly(LocalSearchMoveScope moveScope) {
@@ -124,26 +113,6 @@ public class AcceptedForager extends AbstractForager {
         }
     }
 
-    protected void addToMaxScoreAcceptedList(LocalSearchMoveScope moveScope) {
-        if (maxAcceptedScore == null || scoreComparator.compare(moveScope.getScore(), maxAcceptedScore) > 0) {
-            maxAcceptedScore = moveScope.getScore();
-            maxScoreAcceptedList.clear();
-            maxScoreAcceptedList.add(moveScope);
-        } else if (moveScope.getScore().equals(maxAcceptedScore)) {
-            maxScoreAcceptedList.add(moveScope);
-        }
-    }
-
-    protected void addToMaxScoreUnacceptedList(LocalSearchMoveScope moveScope) {
-        if (maxUnacceptedScore == null || scoreComparator.compare(moveScope.getScore(), maxUnacceptedScore) > 0) {
-            maxUnacceptedScore = moveScope.getScore();
-            maxScoreUnacceptedList.clear();
-            maxScoreUnacceptedList.add(moveScope);
-        } else if (moveScope.getScore().equals(maxUnacceptedScore)) {
-            maxScoreUnacceptedList.add(moveScope);
-        }
-    }
-
     public boolean isQuitEarly() {
         return earlyPickedMoveScope != null || acceptedMoveCount >= acceptedCountLimit;
     }
@@ -153,47 +122,29 @@ public class AcceptedForager extends AbstractForager {
         stepScope.setAcceptedMoveCount(acceptedMoveCount);
         if (earlyPickedMoveScope != null) {
             return earlyPickedMoveScope;
-        } else {
-            return pickMaxScoreMoveScope(stepScope);
         }
-    }
-
-    protected LocalSearchMoveScope pickMaxScoreMoveScope(LocalSearchStepScope stepScope) {
-        List<LocalSearchMoveScope> maxScoreList;
-        if (maxScoreAcceptedList.isEmpty()) {
-            if (maxScoreUnacceptedList.isEmpty()) {
-                return null;
-            } else {
-                maxScoreList = maxScoreUnacceptedList;
-            }
-        } else {
-            maxScoreList = maxScoreAcceptedList;
-        }
-        if (maxScoreList.size() == 1) {
-            return maxScoreList.get(0);
-        }
-        int randomIndex = stepScope.getWorkingRandom().nextInt(maxScoreList.size());
-        return maxScoreList.get(randomIndex);
+        return finalistPodium.pickMove(stepScope);
     }
 
     @Override
     public void stepEnded(LocalSearchStepScope stepScope) {
         super.stepEnded(stepScope);
-        deciderScoreComparatorFactory.stepEnded(stepScope);
+        finalistPodium.stepEnded(stepScope);
     }
 
     @Override
     public void phaseEnded(LocalSearchPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
-        deciderScoreComparatorFactory.phaseEnded(phaseScope);
-        scoreComparator = null;
+        finalistPodium.phaseEnded(phaseScope);
         selectedMoveCount = 0L;
         acceptedMoveCount = 0L;
-        maxScoreAcceptedList = null;
-        maxAcceptedScore = null;
-        maxScoreUnacceptedList = null;
-        maxUnacceptedScore = null;
         earlyPickedMoveScope = null;
+    }
+
+    @Override
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        super.solvingEnded(solverScope);
+        finalistPodium.solvingEnded(solverScope);
     }
 
     @Override
