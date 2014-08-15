@@ -23,6 +23,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.score.ScoreUtils;
 
+@Deprecated
 public class LateSimulatedAnnealingAcceptor extends AbstractAcceptor {
 
     protected int lateSimulatedAnnealingSize = -1;
