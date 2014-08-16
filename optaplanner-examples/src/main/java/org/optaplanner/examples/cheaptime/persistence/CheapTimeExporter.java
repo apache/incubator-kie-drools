@@ -40,6 +40,10 @@ public class CheapTimeExporter extends AbstractTxtSolutionExporter {
         super(new CheapTimeDao());
     }
 
+    public CheapTimeExporter(boolean withoutDao) {
+        super(withoutDao);
+    }
+
     @Override
     public String getOutputFileSuffix() {
         return CheapTimeSolutionFileIO.OUTPUT_FILE_EXTENSION;

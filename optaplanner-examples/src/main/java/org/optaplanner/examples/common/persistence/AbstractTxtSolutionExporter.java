@@ -33,6 +33,10 @@ public abstract class AbstractTxtSolutionExporter extends AbstractSolutionExport
         super(solutionDao);
     }
 
+    protected AbstractTxtSolutionExporter(boolean withoutDao) {
+        super(withoutDao);
+    }
+
     public String getOutputFileSuffix() {
         return DEFAULT_OUTPUT_FILE_SUFFIX;
     }

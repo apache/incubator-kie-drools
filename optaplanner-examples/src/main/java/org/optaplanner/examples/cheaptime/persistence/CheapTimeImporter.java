@@ -107,6 +107,10 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
         super(new CheapTimeDao());
     }
 
+    public CheapTimeImporter(boolean withoutDao) {
+        super(withoutDao);
+    }
+
     @Override
     public boolean isInputFileDirectory() {
         return true;

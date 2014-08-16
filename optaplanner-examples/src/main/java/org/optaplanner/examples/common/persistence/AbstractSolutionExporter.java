@@ -32,6 +32,13 @@ public abstract class AbstractSolutionExporter extends LoggingMain {
         this.solutionDao = solutionDao;
     }
 
+    public AbstractSolutionExporter(boolean withoutDao) {
+        if (!withoutDao) {
+            throw new IllegalArgumentException("The parameter withoutDao (" + withoutDao + ") must be true.");
+        }
+        solutionDao = null;
+    }
+
     protected File getInputDir() {
         return new File(solutionDao.getDataDir(), "solved");
     }
