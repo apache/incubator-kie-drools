@@ -40,6 +40,9 @@ public class ScoreCardModel implements HasImports,
 
     private Imports imports = new Imports();
 
+    private String agendaGroup="";
+    private String ruleFlowGroup="";
+
     public ScoreCardModel() {
     }
 
@@ -133,5 +136,21 @@ public class ScoreCardModel implements HasImports,
     @Override
     public void setImports( final Imports imports ) {
         this.imports = imports;
+    }
+
+    public String getRuleFlowGroup() {
+        return ruleFlowGroup;
+    }
+
+    public void setRuleFlowGroup(String ruleFlowGroup) {
+        this.ruleFlowGroup = ruleFlowGroup;
+    }
+
+    public String getAgendaGroup() {
+        return agendaGroup;
+    }
+
+    public void setAgendaGroup(String agendaGroup) {
+        this.agendaGroup = agendaGroup;
     }
 }
