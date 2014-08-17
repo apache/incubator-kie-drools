@@ -24,4 +24,6 @@ public class PMMLExtensionNames {
 
     public static final String EXTERNAL_CLASS = "externalClass";
 
+    public static final String RULEFLOW_GROUP = "ruleflow-group";
+    public static final String AGENDA_GROUP = "agenda-group";
 }
