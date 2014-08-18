@@ -18,18 +18,25 @@ package org.optaplanner.core.config.localsearch.decider.forager;
 
 import org.optaplanner.core.impl.localsearch.decider.forager.finalist.HighestScoreFinalistPodium;
 import org.optaplanner.core.impl.localsearch.decider.forager.finalist.FinalistPodium;
-import org.optaplanner.core.impl.localsearch.decider.forager.finalist.StrategicOscillationFinalistPodium;
+import org.optaplanner.core.impl.localsearch.decider.forager.finalist.StrategicOscillationByLevelFinalistPodium;
 
 public enum FinalistPodiumType {
     HIGHEST_SCORE,
-    STRATEGIC_OSCILLATION;
+    STRATEGIC_OSCILLATION,
+    STRATEGIC_OSCILLATION_BY_LEVEL,
+    STRATEGIC_OSCILLATION_BY_LEVEL_ON_LAST_STEP_SCORE,
+    STRATEGIC_OSCILLATION_BY_LEVEL_ON_BEST_SCORE;
 
     public FinalistPodium buildFinalistPodium() {
         switch (this) {
             case HIGHEST_SCORE:
                 return new HighestScoreFinalistPodium();
             case STRATEGIC_OSCILLATION:
-                return new StrategicOscillationFinalistPodium();
+            case STRATEGIC_OSCILLATION_BY_LEVEL:
+            case STRATEGIC_OSCILLATION_BY_LEVEL_ON_LAST_STEP_SCORE:
+                return new StrategicOscillationByLevelFinalistPodium(false);
+            case STRATEGIC_OSCILLATION_BY_LEVEL_ON_BEST_SCORE:
+                return new StrategicOscillationByLevelFinalistPodium(true);
             default:
                 throw new IllegalStateException("The finalistPodiumType (" + this + ") is not implemented.");
         }

@@ -22,6 +22,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 /**
+ * A podium gathers the finalists (the {@link LocalSearchMoveScope}s which might win) and picks the winner.
  * @see AbstractFinalistPodium
  * @see HighestScoreFinalistPodium
  */

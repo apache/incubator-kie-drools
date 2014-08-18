@@ -25,20 +25,25 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
  * Strategic oscillation, works well with Tabu search.
  * @see FinalistPodium
  */
-public class StrategicOscillationFinalistPodium extends AbstractFinalistPodium {
+public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistPodium {
 
-    protected Number[] lastStepLevelNumbers;
+    protected final boolean referenceBestScoreInsteadOfLastStepScore;
+
+    protected Number[] referenceLevelNumbers;
 
     protected Score finalistScore;
     protected Number[] finalistLevelNumbers;
 
-    public StrategicOscillationFinalistPodium() {
+    public StrategicOscillationByLevelFinalistPodium(boolean referenceBestScoreInsteadOfLastStepScore) {
+        this.referenceBestScoreInsteadOfLastStepScore = referenceBestScoreInsteadOfLastStepScore;
     }
 
     @Override
     public void stepStarted(LocalSearchStepScope stepScope) {
         super.stepStarted(stepScope);
-        lastStepLevelNumbers = stepScope.getPhaseScope().getLastCompletedStepScope().getScore().toLevelNumbers();
+        referenceLevelNumbers = referenceBestScoreInsteadOfLastStepScore
+            ? stepScope.getPhaseScope().getBestScore().toLevelNumbers()
+            : stepScope.getPhaseScope().getLastCompletedStepScope().getScore().toLevelNumbers();
         finalistScore = null;
         finalistLevelNumbers = null;
     }
@@ -70,9 +75,9 @@ public class StrategicOscillationFinalistPodium extends AbstractFinalistPodium {
         if (finalistScore == null) {
             return 1;
         }
-        for (int i = 0; i < lastStepLevelNumbers.length; i++) {
-            boolean moveIsHigher = ((Comparable) moveLevelNumbers[i]).compareTo(lastStepLevelNumbers[i]) > 0;
-            boolean finalistIsHigher = ((Comparable) finalistLevelNumbers[i]).compareTo(lastStepLevelNumbers[i]) > 0;
+        for (int i = 0; i < referenceLevelNumbers.length; i++) {
+            boolean moveIsHigher = ((Comparable) moveLevelNumbers[i]).compareTo(referenceLevelNumbers[i]) > 0;
+            boolean finalistIsHigher = ((Comparable) finalistLevelNumbers[i]).compareTo(referenceLevelNumbers[i]) > 0;
             if (moveIsHigher) {
                 if (finalistIsHigher) {
                     break;
@@ -89,7 +94,7 @@ public class StrategicOscillationFinalistPodium extends AbstractFinalistPodium {
     @Override
     public void phaseEnded(LocalSearchPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
-        lastStepLevelNumbers = null;
+        referenceLevelNumbers = null;
         finalistScore = null;
         finalistLevelNumbers = null;
     }

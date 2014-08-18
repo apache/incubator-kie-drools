@@ -4553,16 +4553,22 @@ From 6.2.0.Beta1 to 6.2.0.Beta2
 -------------------------------
 
 [MINOR] The element <deciderScoreComparatorFactory> (which was deprecated, not documented, broken and clearly marked as not backwards compatible) has been removed.
-Instead, use TODO
+Instead, use strategic oscillation.
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
   <localSearch>
     ...
     <forager>
+      ...
       <deciderScoreComparatorFactory>
         ...
       </deciderScoreComparatorFactory>
     </forager>
   </localSearch>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
-
-TODO
+  <localSearch>
+    ...
+    <forager>
+      ...
+      <finalistPodiumType>STRATEGIC_OSCILLATION</finalistPodiumType>
+    </forager>
+  </localSearch>

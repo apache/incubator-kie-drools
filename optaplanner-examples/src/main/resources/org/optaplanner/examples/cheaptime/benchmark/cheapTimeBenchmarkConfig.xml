@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>local/data/cheaptime</benchmarkDirectory>
-  <!--<parallelBenchmarkCount>AUTO</parallelBenchmarkCount>-->
+  <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
   <warmUpSecondsSpentLimit>30</warmUpSecondsSpentLimit>
 
   <inheritedSolverBenchmark>
@@ -87,7 +87,7 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>FFFD - LA (400-1)</name>
+    <name>FFFD - LA 400-1</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -114,6 +114,39 @@
         </acceptor>
         <forager>
           <acceptedCountLimit>1</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>FFFD - TS 7-2000 SO</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <forager>
+          <pickEarlyType>FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD</pickEarlyType>
+        </forager>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector>
+            <valueSelector>
+              <variableName>startPeriod</variableName>
+            </valueSelector>
+          </changeMoveSelector>
+          <changeMoveSelector>
+            <valueSelector>
+              <variableName>machine</variableName>
+            </valueSelector>
+          </changeMoveSelector>
+          <swapMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <entityTabuSize>7</entityTabuSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>2000</acceptedCountLimit>
+          <finalistPodiumType>STRATEGIC_OSCILLATION</finalistPodiumType>
         </forager>
       </localSearch>
     </solver>
