@@ -24,7 +24,6 @@ public enum FinalistPodiumType {
     HIGHEST_SCORE,
     STRATEGIC_OSCILLATION,
     STRATEGIC_OSCILLATION_BY_LEVEL,
-    STRATEGIC_OSCILLATION_BY_LEVEL_ON_LAST_STEP_SCORE,
     STRATEGIC_OSCILLATION_BY_LEVEL_ON_BEST_SCORE;
 
     public FinalistPodium buildFinalistPodium() {
@@ -33,7 +32,6 @@ public enum FinalistPodiumType {
                 return new HighestScoreFinalistPodium();
             case STRATEGIC_OSCILLATION:
             case STRATEGIC_OSCILLATION_BY_LEVEL:
-            case STRATEGIC_OSCILLATION_BY_LEVEL_ON_LAST_STEP_SCORE:
                 return new StrategicOscillationByLevelFinalistPodium(false);
             case STRATEGIC_OSCILLATION_BY_LEVEL_ON_BEST_SCORE:
                 return new StrategicOscillationByLevelFinalistPodium(true);

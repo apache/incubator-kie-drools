@@ -592,6 +592,61 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
     </section>
   </section>
 
+  <section xml:id="strategicOscillation">
+    <title>Strategic Oscillation</title>
+
+    <section>
+      <title>Algorithm description</title>
+
+      <para>Strategic Oscillation is an add-on, which works especially well with <link linkend="tabuSearch">Tabu
+      Search</link>. Instead of picking the accepted move with the highest score, it employs a different mechanism: If
+      there's an improving move, it picks it. If there's no improving move however, it prefers moves which improve a
+      softer score level, over moves which break a harder score level less.</para>
+    </section>
+
+    <section>
+      <title>Configuration</title>
+
+      <para>Configure a <literal>finalistPodiumType</literal>, for example in a Tabu Search configuration:</para>
+
+      <programlisting language="xml">  &lt;localSearch&gt;
+    ...
+    &lt;acceptor&gt;
+      &lt;entityTabuSize&gt;7&lt;/entityTabuSize&gt;
+    &lt;/acceptor&gt;
+    &lt;forager&gt;
+      &lt;acceptedCountLimit&gt;1000&lt;/acceptedCountLimit&gt;
+      &lt;finalistPodiumType&gt;STRATEGIC_OSCILLATION&lt;/finalistPodiumType&gt;
+    &lt;/forager&gt;
+  &lt;/localSearch&gt;</programlisting>
+
+      <para>The following <literal>finalistPodiumType</literal>s are supported:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>HIGHEST_SCORE</literal> (default): Pick the accepted move with the highest score.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>STRATEGIC_OSCILLATION</literal>: Alias for the default strategic oscillation variant.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>STRATEGIC_OSCILLATION_BY_LEVEL</literal>: If there is an accepted improving move, pick it. If
+          no such move exists, prefer an accepted move which improves a softer score level over one that doesn't (even
+          if it has a better harder score level). A move is improving if it's better than the last completed step
+          score.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>STRATEGIC_OSCILLATION_BY_LEVEL_ON_BEST_SCORE</literal>: Like
+          <literal>STRATEGIC_OSCILLATION_BY_LEVEL</literal>, but define improving as better than the bet score (instead
+          of the last completed step score).</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+  </section>
+
   <section>
     <title>Using a custom Termination, MoveSelector, EntitySelector, ValueSelector or Acceptor</title>
 
