@@ -128,19 +128,16 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
                     + ") has an entitySize (" + entitySize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
-        int entitySizeInt = (int) entitySize;
-        List<ExhaustiveSearchLayer> layerList = new ArrayList<ExhaustiveSearchLayer>(entitySizeInt);
+        List<ExhaustiveSearchLayer> layerList = new ArrayList<ExhaustiveSearchLayer>((int) entitySize);
         int depth = 0;
+        int uninitializedVariableCount = phaseScope.getSolutionDescriptor()
+                .countUninitializedVariables(phaseScope.getWorkingSolution());
         for (Object entity : entitySelector) {
-            ExhaustiveSearchLayer layer = new ExhaustiveSearchLayer(depth, entity, entitySizeInt - depth);
+            ExhaustiveSearchLayer layer = new ExhaustiveSearchLayer(depth, entity, uninitializedVariableCount - depth);
             layerList.add(layer);
             depth++;
         }
-        if ((entitySizeInt - depth) != 0) {
-            throw new IllegalStateException("The entitySelector (" + entitySelector + ")'s size ("
-                    + entitySizeInt + ") is not accurate enough for exhaustive search.");
-        }
-        ExhaustiveSearchLayer layer = new ExhaustiveSearchLayer(depth, null, entitySizeInt - depth);
+        ExhaustiveSearchLayer layer = new ExhaustiveSearchLayer(depth, null, uninitializedVariableCount - depth);
         layerList.add(layer);
         entitySelector.stepEnded(stepScope);
         phaseScope.setLayerList(layerList);
