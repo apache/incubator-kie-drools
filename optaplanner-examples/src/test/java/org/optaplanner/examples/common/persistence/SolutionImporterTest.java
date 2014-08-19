@@ -39,8 +39,16 @@ public abstract class SolutionImporterTest extends LoggingTest {
 
     protected static Collection<Object[]> getInputFilesAsParameters(AbstractSolutionImporter solutionImporter) {
         File importDir = solutionImporter.getInputDir();
-        List<File> fileList = new ArrayList<File>(
-                FileUtils.listFiles(importDir, new String[]{solutionImporter.getInputFileSuffix()}, true));
+        List<File> fileList;
+        if (solutionImporter.isInputFileDirectory()) {
+            // Non recursively
+            fileList = new ArrayList<File>(Arrays.asList(
+                    importDir.listFiles((FileFilter) DirectoryFileFilter.INSTANCE)));
+        } else {
+            // recursively
+            fileList = new ArrayList<File>(
+                    FileUtils.listFiles(importDir, new String[]{solutionImporter.getInputFileSuffix()}, true));
+        }
         Collections.sort(fileList, new ProblemFileComparator());
         List<Object[]> filesAsParameters = new ArrayList<Object[]>();
         for (File file : fileList) {
