@@ -173,8 +173,10 @@ public class PMML4Compiler implements PMMLCompiler {
     protected static boolean naiveBayesLoaded = false;
     protected static final String[] NAIVE_BAYES_TEMPLATES = new String[] {
             "models/bayes/naiveBayesDeclare.drlt",
-            "models/bayes/naiveBayesEval.drlt",
+            "models/bayes/naiveBayesEvalDiscrete.drlt",
+            "models/bayes/naiveBayesEvalContinuous.drlt",
             "models/bayes/naiveBayesBuildCounts.drlt",
+            "models/bayes/naiveBayesBuildDistrs.drlt",
             "models/bayes/naiveBayesBuildOuts.drlt",
     };
 

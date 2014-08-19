@@ -16,11 +16,15 @@
 
 package org.drools.pmml.pmml_4_2;
 
+import org.dmg.pmml.pmml_4_2.descr.AnyDistribution;
 import org.dmg.pmml.pmml_4_2.descr.COMPAREFUNCTION;
 import org.dmg.pmml.pmml_4_2.descr.DATATYPE;
 import org.dmg.pmml.pmml_4_2.descr.DataField;
+import org.dmg.pmml.pmml_4_2.descr.GaussianDistribution;
+import org.dmg.pmml.pmml_4_2.descr.PoissonDistribution;
 import org.dmg.pmml.pmml_4_2.descr.REGRESSIONNORMALIZATIONMETHOD;
 import org.dmg.pmml.pmml_4_2.descr.RESULTFEATURE;
+import org.dmg.pmml.pmml_4_2.descr.UniformDistribution;
 import org.dmg.pmml.pmml_4_2.descr.Value;
 import org.drools.pmml.pmml_4_2.extensions.AggregationStrategy;
 import org.mvel2.templates.CompiledTemplate;
@@ -1091,5 +1095,34 @@ public class PMML4Helper {
 
     public String mapWeightStrategy( String strat ) {
         return resolveAggregationStrategy( strat ).getAggregator();
+    }
+
+    public String extractDistributionParameters( Object d ) {
+        if ( d instanceof GaussianDistribution ) {
+            GaussianDistribution gd = (GaussianDistribution) d;
+            return "new Double[] { " + gd.getMean() + ", " + gd.getVariance() + " }";
+        } else if ( d instanceof PoissonDistribution ) {
+            PoissonDistribution pd = (PoissonDistribution) d;
+            return "new Double[] { " + pd.getMean() + " }";
+        } else if ( d instanceof UniformDistribution ) {
+            UniformDistribution ud = (UniformDistribution) d;
+            return "new Double[] { " + ud.getLower() + ", " + ud.getUpper() + " }";
+        } else if ( d instanceof AnyDistribution ) {
+            AnyDistribution ad = (AnyDistribution) d;
+            return "new Double[] { " + ad.getMean() + ", " + ad.getVariance() + " }";
+        }
+        throw new IllegalStateException( "Unrecognized Distribution type " + d.getClass().getName() );
+    }
+
+    public String evaluateDistribution( String x, String type ) {
+        if ( "Poisson".equals( type ) ) {
+            throw new UnsupportedOperationException( "TODO" );
+        } else if ( "Uniform".equals( type ) ) {
+            throw new UnsupportedOperationException( "TODO" );
+        } else {
+            // Gauss and Any
+            return " Math.exp( -( " + x + " - p[0] ) * ( " + x + " - p[0] ) / 2 * p[1] ) / Math.sqrt( 2 * Math.PI * p[1] ) ";
+        }
+
     }
 }

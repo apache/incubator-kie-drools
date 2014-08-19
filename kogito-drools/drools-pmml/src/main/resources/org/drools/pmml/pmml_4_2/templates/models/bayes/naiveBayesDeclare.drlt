@@ -32,6 +32,19 @@ declare @{ pmmlPackageName }.BayesCounts
     aggregates      : java.util.List
 end
 
+@comment{
+    Unfortunately, distributions in PMML do not have a clear taxonomy..
+}
+
+declare @{ pmmlPackageName }.BayesDistribution
+@propertyReactive
+    context         : String        @key
+    field           : String        @key
+    params          : java.util.Map      // value -> parameters map. TODO improve
+end
+
+
+
 declare @{ pmmlPackageName }.BayesPriors
 @propertyReactive
     context         : String        @key
