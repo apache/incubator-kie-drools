@@ -107,4 +107,27 @@ public class PMMLUsageDemoTest extends DroolsAbstractPMMLTest {
         Assert.assertEquals( 0.56, val );
     }
 
+
+    @Test
+    public void invokePmmlWithTraitMissing() {
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+
+        kfs.write( ResourceFactory.newClassPathResource( pmmlSource ).setResourceType( ResourceType.PMML ) );
+
+        Results res = ks.newKieBuilder( kfs ).buildAll().getResults();
+        if ( res.hasMessages( Message.Level.ERROR ) ) {
+            System.out.println( res.getMessages( Message.Level.ERROR ) );
+        }
+        assertEquals( 0, res.getMessages( Message.Level.ERROR ).size() );
+
+        KieSession kSession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
+
+        kSession.insert( "trigger" );
+        kSession.fireAllRules();
+
+        System.out.println( reportWMObjects( kSession ) );
+    }
+
 }

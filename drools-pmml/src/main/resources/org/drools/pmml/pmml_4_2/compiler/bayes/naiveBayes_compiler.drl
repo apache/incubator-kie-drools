@@ -31,7 +31,7 @@ then
     utils.applyTemplate( "modelMark.drlt", utils, registry, map, theory );
 end
 
-rule "visitNaiveBayes_inputs"
+rule "visitNaiveBayes_inputs - discrete"
 salience -9
 when
     $nbm : NaiveBayesModel( $name : modelName, $info : extensionsAndBayesOutputsAndBayesInputs, $thold : threshold )
@@ -39,7 +39,7 @@ when
            TypeOfField( $tgtFld, $type ; )
 
            BayesInputs( this memberOf $info, $inputs : bayesInputs )
-    $bin : BayesInput( this memberOf $inputs, $fld : fieldName, $pairs : pairCounts, $dfld : derivedField == null )
+    $bin : BayesInput( this memberOf $inputs, $fld : fieldName, $pairs : pairCounts != null && ! pairCounts.isEmpty(), $dfld : derivedField == null )
 then
     utils.context = utils.compactUpperCase( $name );
 
@@ -50,13 +50,20 @@ then
         map.put( "datatype", $type );
         map.put( "pairs", $pairs );
 
-    utils.applyTemplate( "naiveBayesBuildCounts.drlt", utils, registry, map, theory );
+    utils.applyTemplate( "naiveBayesBuildCounts.drlt" , utils, registry, map, theory );
 
-    utils.applyTemplate( "naiveBayesEval.drlt", utils, registry, map, theory );
+    utils.applyTemplate( "naiveBayesEvalDiscrete.drlt", utils, registry, map, theory );
 
 end
 
-rule "visitNaiveBayes_inputs_with_discretized_fields"
+query extractDistribution( java.util.List $content, Object $dist )
+    $dist := GaussianDistribution() from $content
+    or
+    $dist := PoissonDistribution() from $content
+end
+
+
+rule "visitNaiveBayes_inputs - continuous"
 salience -9
 when
     $nbm : NaiveBayesModel( $name : modelName, $info : extensionsAndBayesOutputsAndBayesInputs, $thold : threshold )
@@ -64,7 +71,43 @@ when
            TypeOfField( $tgtFld, $type ; )
 
            BayesInputs( this memberOf $info, $inputs : bayesInputs )
-    $bin : BayesInput( this memberOf $inputs, $pairs : pairCounts, $dfld : derivedField != null )
+    $bin : BayesInput( this memberOf $inputs, $fld : fieldName, $tvs : targetValueStats != null, $dfld : derivedField == null )
+    $sts : java.util.Map( size == $tvs.targetValueStats.size() ) from accumulate (
+                 $t : TargetValueStat( $val : value, $content : extensionsAndAnyDistributionsAndGaussianDistributions ) from $tvs.targetValueStats
+                 and
+                 extractDistribution( $content, $dist ; )
+             ,
+            init( java.util.Map map = new java.util.LinkedHashMap(); ),
+            action( map.put( $val, $dist ); ),
+            result( map )
+        )
+then
+    utils.context = utils.compactUpperCase( $name );
+
+    HashMap map = new HashMap( 7 );
+        map.put( "name", utils.context );
+        map.put( "threshold", $thold );
+        map.put( "field", utils.compactUpperCase( $fld ) );
+        map.put( "datatype", $type );
+        map.put( "stats", $sts );
+
+    utils.applyTemplate( "naiveBayesBuildDistrs.drlt", utils, registry, map, theory );
+
+    utils.applyTemplate( "naiveBayesEvalContinuous.drlt", utils, registry, map, theory );
+
+end
+
+
+
+rule "visitNaiveBayes_inputs_with_discretized_fields - discrete"
+salience -9
+when
+    $nbm : NaiveBayesModel( $name : modelName, $info : extensionsAndBayesOutputsAndBayesInputs, $thold : threshold )
+           BayesOutput( this memberOf $info, $tgtFld : fieldName )
+           TypeOfField( $tgtFld, $type ; )
+
+           BayesInputs( this memberOf $info, $inputs : bayesInputs )
+    $bin : BayesInput( this memberOf $inputs, $pairs : pairCounts != null, $dfld : derivedField != null )
     $dfl : DerivedField( this == $dfld, $fld : name )
 then
     utils.context = utils.compactUpperCase( $name );
@@ -77,7 +120,41 @@ then
 
     utils.applyTemplate( "naiveBayesBuildCounts.drlt", utils, registry, map, theory );
 
-    utils.applyTemplate( "naiveBayesEval.drlt", utils, registry, map, theory );
+    utils.applyTemplate( "naiveBayesEvalDiscrete.drlt", utils, registry, map, theory );
+
+end
+
+rule "visitNaiveBayes_inputs_with_discretized_fields - continuous"
+salience -9
+when
+    $nbm : NaiveBayesModel( $name : modelName, $info : extensionsAndBayesOutputsAndBayesInputs, $thold : threshold )
+           BayesOutput( this memberOf $info, $tgtFld : fieldName )
+           TypeOfField( $tgtFld, $type ; )
+
+           BayesInputs( this memberOf $info, $inputs : bayesInputs )
+    $bin : BayesInput( this memberOf $inputs, $tvs : targetValueStats != null, $dfld : derivedField != null )
+    $dfl : DerivedField( this == $dfld, $fld : name )
+    $sts : java.util.Map( size == $tvs.targetValueStats.size() ) from accumulate (
+                 $t : TargetValueStat( $val : value, $content : extensionsAndAnyDistributionsAndGaussianDistributions ) from $tvs.targetValueStats
+                 and
+                 extractDistribution( $content, $dist ; )
+             ,
+            init( java.util.Map map = new java.util.LinkedHashMap(); ),
+            action( map.put( $val, $dist ); ),
+            result( map )
+        )
+then
+    utils.context = utils.compactUpperCase( $name );
+
+    HashMap map = new HashMap( 5 );
+        map.put( "name", utils.context );
+        map.put( "field", utils.compactUpperCase( $fld ) );
+        map.put( "datatype", $type );
+        map.put( "stats", $sts );
+
+    utils.applyTemplate( "naiveBayesBuildDistrs.drlt", utils, registry, map, theory );
+
+    utils.applyTemplate( "naiveBayesEvalContinuous.drlt", utils, registry, map, theory );
 
 end
 
