@@ -18,19 +18,12 @@ package org.optaplanner.examples.cheaptime.swingui;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.jfree.chart.ChartPanel;
@@ -51,7 +44,7 @@ import org.jfree.util.ShapeUtilities;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
-import org.optaplanner.examples.cheaptime.domain.PeriodPowerCost;
+import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
@@ -139,8 +132,8 @@ public class CheapTimePanel extends SolutionPanel {
 
     private XYPlot createPeriodCostPlot(CheapTimeSolution solution) {
         XYSeries series = new XYSeries("Power price");
-        for (PeriodPowerCost periodPowerCost : solution.getPeriodPowerCostList()) {
-            series.add((double) periodPowerCost.getPowerCostMicros() / 1000000.0, periodPowerCost.getPeriod());
+        for (PeriodPowerPrice periodPowerPrice : solution.getPeriodPowerPriceList()) {
+            series.add((double) periodPowerPrice.getPowerPriceMicros() / 1000000.0, periodPowerPrice.getPeriod());
         }
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         seriesCollection.addSeries(series);

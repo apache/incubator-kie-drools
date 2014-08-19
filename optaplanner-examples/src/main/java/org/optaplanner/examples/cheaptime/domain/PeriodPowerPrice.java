@@ -19,11 +19,11 @@ package org.optaplanner.examples.cheaptime.domain;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("CtPeriodPowerCost")
-public class PeriodPowerCost extends AbstractPersistable {
+@XStreamAlias("CtPeriodPowerPrice")
+public class PeriodPowerPrice extends AbstractPersistable {
 
     private int period;
-    private long powerCostMicros;
+    private long powerPriceMicros;
 
     public int getPeriod() {
         return period;
@@ -33,12 +33,12 @@ public class PeriodPowerCost extends AbstractPersistable {
         this.period = period;
     }
 
-    public long getPowerCostMicros() {
-        return powerCostMicros;
+    public long getPowerPriceMicros() {
+        return powerPriceMicros;
     }
 
-    public void setPowerCostMicros(long powerCostMicros) {
-        this.powerCostMicros = powerCostMicros;
+    public void setPowerPriceMicros(long powerPriceMicros) {
+        this.powerPriceMicros = powerPriceMicros;
     }
 
     // ************************************************************************

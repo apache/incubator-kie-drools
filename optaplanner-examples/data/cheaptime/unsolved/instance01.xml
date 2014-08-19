@@ -3367,1448 +3367,1448 @@
     <CtTaskRequirement reference="633"/>
     <CtTaskRequirement reference="636"/>
   </taskRequirementList>
-  <periodPowerCostList id="638">
-    <CtPeriodPowerCost id="639">
+  <periodPowerPriceList id="638">
+    <CtPeriodPowerPrice id="639">
       <id>0</id>
       <period>0</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="640">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="640">
       <id>1</id>
       <period>1</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="641">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="641">
       <id>2</id>
       <period>2</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="642">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="642">
       <id>3</id>
       <period>3</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="643">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="643">
       <id>4</id>
       <period>4</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="644">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="644">
       <id>5</id>
       <period>5</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="645">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="645">
       <id>6</id>
       <period>6</period>
-      <powerCostMicros>399416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="646">
+      <powerPriceMicros>399416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="646">
       <id>7</id>
       <period>7</period>
-      <powerCostMicros>399416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="647">
+      <powerPriceMicros>399416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="647">
       <id>8</id>
       <period>8</period>
-      <powerCostMicros>399416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="648">
+      <powerPriceMicros>399416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="648">
       <id>9</id>
       <period>9</period>
-      <powerCostMicros>399416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="649">
+      <powerPriceMicros>399416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="649">
       <id>10</id>
       <period>10</period>
-      <powerCostMicros>399416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="650">
+      <powerPriceMicros>399416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="650">
       <id>11</id>
       <period>11</period>
-      <powerCostMicros>399416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="651">
+      <powerPriceMicros>399416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="651">
       <id>12</id>
       <period>12</period>
-      <powerCostMicros>399416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="652">
+      <powerPriceMicros>399416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="652">
       <id>13</id>
       <period>13</period>
-      <powerCostMicros>399416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="653">
+      <powerPriceMicros>399416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="653">
       <id>14</id>
       <period>14</period>
-      <powerCostMicros>399416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="654">
+      <powerPriceMicros>399416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="654">
       <id>15</id>
       <period>15</period>
-      <powerCostMicros>399416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="655">
+      <powerPriceMicros>399416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="655">
       <id>16</id>
       <period>16</period>
-      <powerCostMicros>399416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="656">
+      <powerPriceMicros>399416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="656">
       <id>17</id>
       <period>17</period>
-      <powerCostMicros>399416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="657">
+      <powerPriceMicros>399416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="657">
       <id>18</id>
       <period>18</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="658">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="658">
       <id>19</id>
       <period>19</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="659">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="659">
       <id>20</id>
       <period>20</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="660">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="660">
       <id>21</id>
       <period>21</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="661">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="661">
       <id>22</id>
       <period>22</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="662">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="662">
       <id>23</id>
       <period>23</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="663">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="663">
       <id>24</id>
       <period>24</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="664">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="664">
       <id>25</id>
       <period>25</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="665">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="665">
       <id>26</id>
       <period>26</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="666">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="666">
       <id>27</id>
       <period>27</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="667">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="667">
       <id>28</id>
       <period>28</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="668">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="668">
       <id>29</id>
       <period>29</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="669">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="669">
       <id>30</id>
       <period>30</period>
-      <powerCostMicros>366666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="670">
+      <powerPriceMicros>366666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="670">
       <id>31</id>
       <period>31</period>
-      <powerCostMicros>366666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="671">
+      <powerPriceMicros>366666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="671">
       <id>32</id>
       <period>32</period>
-      <powerCostMicros>366666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="672">
+      <powerPriceMicros>366666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="672">
       <id>33</id>
       <period>33</period>
-      <powerCostMicros>366666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="673">
+      <powerPriceMicros>366666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="673">
       <id>34</id>
       <period>34</period>
-      <powerCostMicros>366666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="674">
+      <powerPriceMicros>366666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="674">
       <id>35</id>
       <period>35</period>
-      <powerCostMicros>366666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="675">
+      <powerPriceMicros>366666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="675">
       <id>36</id>
       <period>36</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="676">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="676">
       <id>37</id>
       <period>37</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="677">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="677">
       <id>38</id>
       <period>38</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="678">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="678">
       <id>39</id>
       <period>39</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="679">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="679">
       <id>40</id>
       <period>40</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="680">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="680">
       <id>41</id>
       <period>41</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="681">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="681">
       <id>42</id>
       <period>42</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="682">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="682">
       <id>43</id>
       <period>43</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="683">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="683">
       <id>44</id>
       <period>44</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="684">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="684">
       <id>45</id>
       <period>45</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="685">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="685">
       <id>46</id>
       <period>46</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="686">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="686">
       <id>47</id>
       <period>47</period>
-      <powerCostMicros>396000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="687">
+      <powerPriceMicros>396000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="687">
       <id>48</id>
       <period>48</period>
-      <powerCostMicros>341833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="688">
+      <powerPriceMicros>341833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="688">
       <id>49</id>
       <period>49</period>
-      <powerCostMicros>341833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="689">
+      <powerPriceMicros>341833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="689">
       <id>50</id>
       <period>50</period>
-      <powerCostMicros>341833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="690">
+      <powerPriceMicros>341833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="690">
       <id>51</id>
       <period>51</period>
-      <powerCostMicros>341833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="691">
+      <powerPriceMicros>341833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="691">
       <id>52</id>
       <period>52</period>
-      <powerCostMicros>341833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="692">
+      <powerPriceMicros>341833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="692">
       <id>53</id>
       <period>53</period>
-      <powerCostMicros>341833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="693">
+      <powerPriceMicros>341833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="693">
       <id>54</id>
       <period>54</period>
-      <powerCostMicros>341666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="694">
+      <powerPriceMicros>341666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="694">
       <id>55</id>
       <period>55</period>
-      <powerCostMicros>341666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="695">
+      <powerPriceMicros>341666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="695">
       <id>56</id>
       <period>56</period>
-      <powerCostMicros>341666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="696">
+      <powerPriceMicros>341666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="696">
       <id>57</id>
       <period>57</period>
-      <powerCostMicros>341666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="697">
+      <powerPriceMicros>341666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="697">
       <id>58</id>
       <period>58</period>
-      <powerCostMicros>341666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="698">
+      <powerPriceMicros>341666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="698">
       <id>59</id>
       <period>59</period>
-      <powerCostMicros>341666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="699">
+      <powerPriceMicros>341666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="699">
       <id>60</id>
       <period>60</period>
-      <powerCostMicros>288416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="700">
+      <powerPriceMicros>288416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="700">
       <id>61</id>
       <period>61</period>
-      <powerCostMicros>288416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="701">
+      <powerPriceMicros>288416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="701">
       <id>62</id>
       <period>62</period>
-      <powerCostMicros>288416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="702">
+      <powerPriceMicros>288416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="702">
       <id>63</id>
       <period>63</period>
-      <powerCostMicros>288416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="703">
+      <powerPriceMicros>288416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="703">
       <id>64</id>
       <period>64</period>
-      <powerCostMicros>288416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="704">
+      <powerPriceMicros>288416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="704">
       <id>65</id>
       <period>65</period>
-      <powerCostMicros>288416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="705">
+      <powerPriceMicros>288416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="705">
       <id>66</id>
       <period>66</period>
-      <powerCostMicros>288416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="706">
+      <powerPriceMicros>288416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="706">
       <id>67</id>
       <period>67</period>
-      <powerCostMicros>288416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="707">
+      <powerPriceMicros>288416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="707">
       <id>68</id>
       <period>68</period>
-      <powerCostMicros>288416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="708">
+      <powerPriceMicros>288416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="708">
       <id>69</id>
       <period>69</period>
-      <powerCostMicros>288416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="709">
+      <powerPriceMicros>288416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="709">
       <id>70</id>
       <period>70</period>
-      <powerCostMicros>288416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="710">
+      <powerPriceMicros>288416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="710">
       <id>71</id>
       <period>71</period>
-      <powerCostMicros>288416667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="711">
+      <powerPriceMicros>288416667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="711">
       <id>72</id>
       <period>72</period>
-      <powerCostMicros>261583333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="712">
+      <powerPriceMicros>261583333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="712">
       <id>73</id>
       <period>73</period>
-      <powerCostMicros>261583333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="713">
+      <powerPriceMicros>261583333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="713">
       <id>74</id>
       <period>74</period>
-      <powerCostMicros>261583333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="714">
+      <powerPriceMicros>261583333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="714">
       <id>75</id>
       <period>75</period>
-      <powerCostMicros>261583333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="715">
+      <powerPriceMicros>261583333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="715">
       <id>76</id>
       <period>76</period>
-      <powerCostMicros>261583333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="716">
+      <powerPriceMicros>261583333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="716">
       <id>77</id>
       <period>77</period>
-      <powerCostMicros>261583333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="717">
+      <powerPriceMicros>261583333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="717">
       <id>78</id>
       <period>78</period>
-      <powerCostMicros>338666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="718">
+      <powerPriceMicros>338666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="718">
       <id>79</id>
       <period>79</period>
-      <powerCostMicros>338666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="719">
+      <powerPriceMicros>338666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="719">
       <id>80</id>
       <period>80</period>
-      <powerCostMicros>338666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="720">
+      <powerPriceMicros>338666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="720">
       <id>81</id>
       <period>81</period>
-      <powerCostMicros>338666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="721">
+      <powerPriceMicros>338666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="721">
       <id>82</id>
       <period>82</period>
-      <powerCostMicros>338666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="722">
+      <powerPriceMicros>338666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="722">
       <id>83</id>
       <period>83</period>
-      <powerCostMicros>338666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="723">
+      <powerPriceMicros>338666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="723">
       <id>84</id>
       <period>84</period>
-      <powerCostMicros>341750000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="724">
+      <powerPriceMicros>341750000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="724">
       <id>85</id>
       <period>85</period>
-      <powerCostMicros>341750000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="725">
+      <powerPriceMicros>341750000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="725">
       <id>86</id>
       <period>86</period>
-      <powerCostMicros>341750000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="726">
+      <powerPriceMicros>341750000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="726">
       <id>87</id>
       <period>87</period>
-      <powerCostMicros>341750000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="727">
+      <powerPriceMicros>341750000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="727">
       <id>88</id>
       <period>88</period>
-      <powerCostMicros>341750000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="728">
+      <powerPriceMicros>341750000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="728">
       <id>89</id>
       <period>89</period>
-      <powerCostMicros>341750000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="729">
+      <powerPriceMicros>341750000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="729">
       <id>90</id>
       <period>90</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="730">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="730">
       <id>91</id>
       <period>91</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="731">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="731">
       <id>92</id>
       <period>92</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="732">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="732">
       <id>93</id>
       <period>93</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="733">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="733">
       <id>94</id>
       <period>94</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="734">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="734">
       <id>95</id>
       <period>95</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="735">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="735">
       <id>96</id>
       <period>96</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="736">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="736">
       <id>97</id>
       <period>97</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="737">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="737">
       <id>98</id>
       <period>98</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="738">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="738">
       <id>99</id>
       <period>99</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="739">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="739">
       <id>100</id>
       <period>100</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="740">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="740">
       <id>101</id>
       <period>101</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="741">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="741">
       <id>102</id>
       <period>102</period>
-      <powerCostMicros>397833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="742">
+      <powerPriceMicros>397833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="742">
       <id>103</id>
       <period>103</period>
-      <powerCostMicros>397833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="743">
+      <powerPriceMicros>397833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="743">
       <id>104</id>
       <period>104</period>
-      <powerCostMicros>397833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="744">
+      <powerPriceMicros>397833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="744">
       <id>105</id>
       <period>105</period>
-      <powerCostMicros>397833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="745">
+      <powerPriceMicros>397833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="745">
       <id>106</id>
       <period>106</period>
-      <powerCostMicros>397833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="746">
+      <powerPriceMicros>397833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="746">
       <id>107</id>
       <period>107</period>
-      <powerCostMicros>397833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="747">
+      <powerPriceMicros>397833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="747">
       <id>108</id>
       <period>108</period>
-      <powerCostMicros>289833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="748">
+      <powerPriceMicros>289833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="748">
       <id>109</id>
       <period>109</period>
-      <powerCostMicros>289833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="749">
+      <powerPriceMicros>289833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="749">
       <id>110</id>
       <period>110</period>
-      <powerCostMicros>289833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="750">
+      <powerPriceMicros>289833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="750">
       <id>111</id>
       <period>111</period>
-      <powerCostMicros>289833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="751">
+      <powerPriceMicros>289833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="751">
       <id>112</id>
       <period>112</period>
-      <powerCostMicros>289833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="752">
+      <powerPriceMicros>289833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="752">
       <id>113</id>
       <period>113</period>
-      <powerCostMicros>289833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="753">
+      <powerPriceMicros>289833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="753">
       <id>114</id>
       <period>114</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="754">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="754">
       <id>115</id>
       <period>115</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="755">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="755">
       <id>116</id>
       <period>116</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="756">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="756">
       <id>117</id>
       <period>117</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="757">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="757">
       <id>118</id>
       <period>118</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="758">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="758">
       <id>119</id>
       <period>119</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="759">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="759">
       <id>120</id>
       <period>120</period>
-      <powerCostMicros>338666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="760">
+      <powerPriceMicros>338666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="760">
       <id>121</id>
       <period>121</period>
-      <powerCostMicros>338666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="761">
+      <powerPriceMicros>338666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="761">
       <id>122</id>
       <period>122</period>
-      <powerCostMicros>338666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="762">
+      <powerPriceMicros>338666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="762">
       <id>123</id>
       <period>123</period>
-      <powerCostMicros>338666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="763">
+      <powerPriceMicros>338666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="763">
       <id>124</id>
       <period>124</period>
-      <powerCostMicros>338666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="764">
+      <powerPriceMicros>338666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="764">
       <id>125</id>
       <period>125</period>
-      <powerCostMicros>338666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="765">
+      <powerPriceMicros>338666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="765">
       <id>126</id>
       <period>126</period>
-      <powerCostMicros>338666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="766">
+      <powerPriceMicros>338666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="766">
       <id>127</id>
       <period>127</period>
-      <powerCostMicros>338666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="767">
+      <powerPriceMicros>338666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="767">
       <id>128</id>
       <period>128</period>
-      <powerCostMicros>338666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="768">
+      <powerPriceMicros>338666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="768">
       <id>129</id>
       <period>129</period>
-      <powerCostMicros>338666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="769">
+      <powerPriceMicros>338666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="769">
       <id>130</id>
       <period>130</period>
-      <powerCostMicros>338666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="770">
+      <powerPriceMicros>338666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="770">
       <id>131</id>
       <period>131</period>
-      <powerCostMicros>338666667</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="771">
+      <powerPriceMicros>338666667</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="771">
       <id>132</id>
       <period>132</period>
-      <powerCostMicros>397833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="772">
+      <powerPriceMicros>397833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="772">
       <id>133</id>
       <period>133</period>
-      <powerCostMicros>397833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="773">
+      <powerPriceMicros>397833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="773">
       <id>134</id>
       <period>134</period>
-      <powerCostMicros>397833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="774">
+      <powerPriceMicros>397833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="774">
       <id>135</id>
       <period>135</period>
-      <powerCostMicros>397833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="775">
+      <powerPriceMicros>397833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="775">
       <id>136</id>
       <period>136</period>
-      <powerCostMicros>397833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="776">
+      <powerPriceMicros>397833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="776">
       <id>137</id>
       <period>137</period>
-      <powerCostMicros>397833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="777">
+      <powerPriceMicros>397833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="777">
       <id>138</id>
       <period>138</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="778">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="778">
       <id>139</id>
       <period>139</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="779">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="779">
       <id>140</id>
       <period>140</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="780">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="780">
       <id>141</id>
       <period>141</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="781">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="781">
       <id>142</id>
       <period>142</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="782">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="782">
       <id>143</id>
       <period>143</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="783">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="783">
       <id>144</id>
       <period>144</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="784">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="784">
       <id>145</id>
       <period>145</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="785">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="785">
       <id>146</id>
       <period>146</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="786">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="786">
       <id>147</id>
       <period>147</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="787">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="787">
       <id>148</id>
       <period>148</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="788">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="788">
       <id>149</id>
       <period>149</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="789">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="789">
       <id>150</id>
       <period>150</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="790">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="790">
       <id>151</id>
       <period>151</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="791">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="791">
       <id>152</id>
       <period>152</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="792">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="792">
       <id>153</id>
       <period>153</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="793">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="793">
       <id>154</id>
       <period>154</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="794">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="794">
       <id>155</id>
       <period>155</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="795">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="795">
       <id>156</id>
       <period>156</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="796">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="796">
       <id>157</id>
       <period>157</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="797">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="797">
       <id>158</id>
       <period>158</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="798">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="798">
       <id>159</id>
       <period>159</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="799">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="799">
       <id>160</id>
       <period>160</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="800">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="800">
       <id>161</id>
       <period>161</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="801">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="801">
       <id>162</id>
       <period>162</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="802">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="802">
       <id>163</id>
       <period>163</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="803">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="803">
       <id>164</id>
       <period>164</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="804">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="804">
       <id>165</id>
       <period>165</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="805">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="805">
       <id>166</id>
       <period>166</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="806">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="806">
       <id>167</id>
       <period>167</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="807">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="807">
       <id>168</id>
       <period>168</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="808">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="808">
       <id>169</id>
       <period>169</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="809">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="809">
       <id>170</id>
       <period>170</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="810">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="810">
       <id>171</id>
       <period>171</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="811">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="811">
       <id>172</id>
       <period>172</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="812">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="812">
       <id>173</id>
       <period>173</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="813">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="813">
       <id>174</id>
       <period>174</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="814">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="814">
       <id>175</id>
       <period>175</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="815">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="815">
       <id>176</id>
       <period>176</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="816">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="816">
       <id>177</id>
       <period>177</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="817">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="817">
       <id>178</id>
       <period>178</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="818">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="818">
       <id>179</id>
       <period>179</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="819">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="819">
       <id>180</id>
       <period>180</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="820">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="820">
       <id>181</id>
       <period>181</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="821">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="821">
       <id>182</id>
       <period>182</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="822">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="822">
       <id>183</id>
       <period>183</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="823">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="823">
       <id>184</id>
       <period>184</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="824">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="824">
       <id>185</id>
       <period>185</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="825">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="825">
       <id>186</id>
       <period>186</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="826">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="826">
       <id>187</id>
       <period>187</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="827">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="827">
       <id>188</id>
       <period>188</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="828">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="828">
       <id>189</id>
       <period>189</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="829">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="829">
       <id>190</id>
       <period>190</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="830">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="830">
       <id>191</id>
       <period>191</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="831">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="831">
       <id>192</id>
       <period>192</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="832">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="832">
       <id>193</id>
       <period>193</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="833">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="833">
       <id>194</id>
       <period>194</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="834">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="834">
       <id>195</id>
       <period>195</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="835">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="835">
       <id>196</id>
       <period>196</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="836">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="836">
       <id>197</id>
       <period>197</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="837">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="837">
       <id>198</id>
       <period>198</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="838">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="838">
       <id>199</id>
       <period>199</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="839">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="839">
       <id>200</id>
       <period>200</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="840">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="840">
       <id>201</id>
       <period>201</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="841">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="841">
       <id>202</id>
       <period>202</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="842">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="842">
       <id>203</id>
       <period>203</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="843">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="843">
       <id>204</id>
       <period>204</period>
-      <powerCostMicros>409250000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="844">
+      <powerPriceMicros>409250000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="844">
       <id>205</id>
       <period>205</period>
-      <powerCostMicros>409250000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="845">
+      <powerPriceMicros>409250000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="845">
       <id>206</id>
       <period>206</period>
-      <powerCostMicros>409250000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="846">
+      <powerPriceMicros>409250000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="846">
       <id>207</id>
       <period>207</period>
-      <powerCostMicros>409250000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="847">
+      <powerPriceMicros>409250000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="847">
       <id>208</id>
       <period>208</period>
-      <powerCostMicros>409250000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="848">
+      <powerPriceMicros>409250000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="848">
       <id>209</id>
       <period>209</period>
-      <powerCostMicros>409250000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="849">
+      <powerPriceMicros>409250000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="849">
       <id>210</id>
       <period>210</period>
-      <powerCostMicros>2286083333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="850">
+      <powerPriceMicros>2286083333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="850">
       <id>211</id>
       <period>211</period>
-      <powerCostMicros>2286083333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="851">
+      <powerPriceMicros>2286083333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="851">
       <id>212</id>
       <period>212</period>
-      <powerCostMicros>2286083333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="852">
+      <powerPriceMicros>2286083333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="852">
       <id>213</id>
       <period>213</period>
-      <powerCostMicros>2286083333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="853">
+      <powerPriceMicros>2286083333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="853">
       <id>214</id>
       <period>214</period>
-      <powerCostMicros>2286083333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="854">
+      <powerPriceMicros>2286083333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="854">
       <id>215</id>
       <period>215</period>
-      <powerCostMicros>2286083333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="855">
+      <powerPriceMicros>2286083333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="855">
       <id>216</id>
       <period>216</period>
-      <powerCostMicros>2286083333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="856">
+      <powerPriceMicros>2286083333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="856">
       <id>217</id>
       <period>217</period>
-      <powerCostMicros>2286083333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="857">
+      <powerPriceMicros>2286083333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="857">
       <id>218</id>
       <period>218</period>
-      <powerCostMicros>2286083333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="858">
+      <powerPriceMicros>2286083333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="858">
       <id>219</id>
       <period>219</period>
-      <powerCostMicros>2286083333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="859">
+      <powerPriceMicros>2286083333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="859">
       <id>220</id>
       <period>220</period>
-      <powerCostMicros>2286083333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="860">
+      <powerPriceMicros>2286083333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="860">
       <id>221</id>
       <period>221</period>
-      <powerCostMicros>2286083333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="861">
+      <powerPriceMicros>2286083333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="861">
       <id>222</id>
       <period>222</period>
-      <powerCostMicros>417333333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="862">
+      <powerPriceMicros>417333333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="862">
       <id>223</id>
       <period>223</period>
-      <powerCostMicros>417333333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="863">
+      <powerPriceMicros>417333333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="863">
       <id>224</id>
       <period>224</period>
-      <powerCostMicros>417333333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="864">
+      <powerPriceMicros>417333333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="864">
       <id>225</id>
       <period>225</period>
-      <powerCostMicros>417333333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="865">
+      <powerPriceMicros>417333333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="865">
       <id>226</id>
       <period>226</period>
-      <powerCostMicros>417333333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="866">
+      <powerPriceMicros>417333333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="866">
       <id>227</id>
       <period>227</period>
-      <powerCostMicros>417333333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="867">
+      <powerPriceMicros>417333333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="867">
       <id>228</id>
       <period>228</period>
-      <powerCostMicros>409250000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="868">
+      <powerPriceMicros>409250000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="868">
       <id>229</id>
       <period>229</period>
-      <powerCostMicros>409250000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="869">
+      <powerPriceMicros>409250000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="869">
       <id>230</id>
       <period>230</period>
-      <powerCostMicros>409250000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="870">
+      <powerPriceMicros>409250000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="870">
       <id>231</id>
       <period>231</period>
-      <powerCostMicros>409250000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="871">
+      <powerPriceMicros>409250000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="871">
       <id>232</id>
       <period>232</period>
-      <powerCostMicros>409250000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="872">
+      <powerPriceMicros>409250000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="872">
       <id>233</id>
       <period>233</period>
-      <powerCostMicros>409250000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="873">
+      <powerPriceMicros>409250000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="873">
       <id>234</id>
       <period>234</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="874">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="874">
       <id>235</id>
       <period>235</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="875">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="875">
       <id>236</id>
       <period>236</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="876">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="876">
       <id>237</id>
       <period>237</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="877">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="877">
       <id>238</id>
       <period>238</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="878">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="878">
       <id>239</id>
       <period>239</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="879">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="879">
       <id>240</id>
       <period>240</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="880">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="880">
       <id>241</id>
       <period>241</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="881">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="881">
       <id>242</id>
       <period>242</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="882">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="882">
       <id>243</id>
       <period>243</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="883">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="883">
       <id>244</id>
       <period>244</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="884">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="884">
       <id>245</id>
       <period>245</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="885">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="885">
       <id>246</id>
       <period>246</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="886">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="886">
       <id>247</id>
       <period>247</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="887">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="887">
       <id>248</id>
       <period>248</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="888">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="888">
       <id>249</id>
       <period>249</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="889">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="889">
       <id>250</id>
       <period>250</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="890">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="890">
       <id>251</id>
       <period>251</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="891">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="891">
       <id>252</id>
       <period>252</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="892">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="892">
       <id>253</id>
       <period>253</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="893">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="893">
       <id>254</id>
       <period>254</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="894">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="894">
       <id>255</id>
       <period>255</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="895">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="895">
       <id>256</id>
       <period>256</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="896">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="896">
       <id>257</id>
       <period>257</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="897">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="897">
       <id>258</id>
       <period>258</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="898">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="898">
       <id>259</id>
       <period>259</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="899">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="899">
       <id>260</id>
       <period>260</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="900">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="900">
       <id>261</id>
       <period>261</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="901">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="901">
       <id>262</id>
       <period>262</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="902">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="902">
       <id>263</id>
       <period>263</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="903">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="903">
       <id>264</id>
       <period>264</period>
-      <powerCostMicros>401500000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="904">
+      <powerPriceMicros>401500000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="904">
       <id>265</id>
       <period>265</period>
-      <powerCostMicros>401500000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="905">
+      <powerPriceMicros>401500000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="905">
       <id>266</id>
       <period>266</period>
-      <powerCostMicros>401500000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="906">
+      <powerPriceMicros>401500000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="906">
       <id>267</id>
       <period>267</period>
-      <powerCostMicros>401500000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="907">
+      <powerPriceMicros>401500000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="907">
       <id>268</id>
       <period>268</period>
-      <powerCostMicros>401500000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="908">
+      <powerPriceMicros>401500000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="908">
       <id>269</id>
       <period>269</period>
-      <powerCostMicros>401500000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="909">
+      <powerPriceMicros>401500000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="909">
       <id>270</id>
       <period>270</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="910">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="910">
       <id>271</id>
       <period>271</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="911">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="911">
       <id>272</id>
       <period>272</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="912">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="912">
       <id>273</id>
       <period>273</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="913">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="913">
       <id>274</id>
       <period>274</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="914">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="914">
       <id>275</id>
       <period>275</period>
-      <powerCostMicros>398000000</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="915">
+      <powerPriceMicros>398000000</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="915">
       <id>276</id>
       <period>276</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="916">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="916">
       <id>277</id>
       <period>277</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="917">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="917">
       <id>278</id>
       <period>278</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="918">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="918">
       <id>279</id>
       <period>279</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="919">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="919">
       <id>280</id>
       <period>280</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="920">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="920">
       <id>281</id>
       <period>281</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="921">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="921">
       <id>282</id>
       <period>282</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="922">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="922">
       <id>283</id>
       <period>283</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="923">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="923">
       <id>284</id>
       <period>284</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="924">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="924">
       <id>285</id>
       <period>285</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="925">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="925">
       <id>286</id>
       <period>286</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-    <CtPeriodPowerCost id="926">
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+    <CtPeriodPowerPrice id="926">
       <id>287</id>
       <period>287</period>
-      <powerCostMicros>405833333</powerCostMicros>
-    </CtPeriodPowerCost>
-  </periodPowerCostList>
+      <powerPriceMicros>405833333</powerPriceMicros>
+    </CtPeriodPowerPrice>
+  </periodPowerPriceList>
   <taskAssignmentList id="927">
     <CtTaskAssignment id="928">
       <id>0</id>

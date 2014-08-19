@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalS
 import org.optaplanner.core.impl.score.director.incremental.ConstraintMatchAwareIncrementalScoreCalculator;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
-import org.optaplanner.examples.cheaptime.domain.PeriodPowerCost;
+import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;
 import org.optaplanner.examples.cheaptime.domain.Resource;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
@@ -75,18 +75,18 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
         resourceListSize = solution.getResourceList().size();
         globalPeriodRangeTo = solution.getGlobalPeriodRangeTo();
         List<Machine> machineList = solution.getMachineList();
-        List<PeriodPowerCost> periodPowerCostList = solution.getPeriodPowerCostList();
+        List<PeriodPowerPrice> periodPowerPriceList = solution.getPeriodPowerPriceList();
         machineToMachinePeriodListMap = new MachinePeriodPart[machineList.size()][];
         for (Machine machine : machineList) {
             MachinePeriodPart[] machinePeriodList = new MachinePeriodPart[globalPeriodRangeTo];
             for (int period = 0; period < globalPeriodRangeTo; period++) {
-                machinePeriodList[period] = new MachinePeriodPart(machine, periodPowerCostList.get(period));
+                machinePeriodList[period] = new MachinePeriodPart(machine, periodPowerPriceList.get(period));
             }
             machineToMachinePeriodListMap[machine.getIndex()] = machinePeriodList;
         }
         unassignedMachinePeriodList = new MachinePeriodPart[globalPeriodRangeTo];
         for (int period = 0; period < globalPeriodRangeTo; period++) {
-            unassignedMachinePeriodList[period] = new MachinePeriodPart(null, periodPowerCostList.get(period));
+            unassignedMachinePeriodList[period] = new MachinePeriodPart(null, periodPowerPriceList.get(period));
         }
         for (TaskAssignment taskAssignment : solution.getTaskAssignmentList()) {
             // Do not do modifyMachine(taskAssignment, null, taskAssignment.getMachine());
@@ -261,7 +261,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             machinePeriod.retractTaskAssignment(taskAssignment);
             if (retractTaskCost) {
                 mediumScore += CheapTimeCostCalculator.multiplyTwoMicros(powerConsumptionMicros,
-                        machinePeriod.periodPowerCostMicros);
+                        machinePeriod.periodPowerPriceMicros);
             }
             // SpinUp vs idle
             if (machinePeriod.status.isActive()) {
@@ -340,7 +340,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             machinePeriod.insertTaskAssignment(taskAssignment);
             if (insertTaskCost) {
                 mediumScore -= CheapTimeCostCalculator.multiplyTwoMicros(powerConsumptionMicros,
-                        machinePeriod.periodPowerCostMicros);
+                        machinePeriod.periodPowerPriceMicros);
             }
             // SpinUp vs idle
             if (machinePeriod.status == MachinePeriodStatus.SPIN_UP_AND_ACTIVE && i != startPeriod) {
@@ -397,17 +397,17 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
 
         private final Machine machine;
         private final int period;
-        private final long periodPowerCostMicros;
+        private final long periodPowerPriceMicros;
         private final long machineCostMicros;
 
         private int taskCount;
         private MachinePeriodStatus status;
         private int[] resourceAvailableList; // List<> replaced by array[] for performance
 
-        private MachinePeriodPart(Machine machine, PeriodPowerCost periodPowerCost) {
+        private MachinePeriodPart(Machine machine, PeriodPowerPrice periodPowerPrice) {
             this.machine = machine;
-            this.period = periodPowerCost.getPeriod();
-            this.periodPowerCostMicros = periodPowerCost.getPowerCostMicros();
+            this.period = periodPowerPrice.getPeriod();
+            this.periodPowerPriceMicros = periodPowerPrice.getPowerPriceMicros();
             taskCount = 0;
             status = MachinePeriodStatus.OFF;
             if (machine != null) {
@@ -416,7 +416,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
                     resourceAvailableList[i] = machine.getMachineCapacityList().get(i).getCapacity();
                 }
                 machineCostMicros = CheapTimeCostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
-                        periodPowerCostMicros);
+                        periodPowerPriceMicros);
             } else {
                 machineCostMicros = Long.MIN_VALUE;
             }

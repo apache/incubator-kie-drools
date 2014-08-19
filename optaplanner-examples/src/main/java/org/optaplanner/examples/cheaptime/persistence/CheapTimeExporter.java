@@ -25,7 +25,7 @@ import java.util.Map;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
-import org.optaplanner.examples.cheaptime.domain.PeriodPowerCost;
+import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
@@ -64,7 +64,7 @@ public class CheapTimeExporter extends AbstractTxtSolutionExporter {
         public void writeSolution() throws IOException {
             int globalPeriodRangeTo = solution.getGlobalPeriodRangeTo();
             List<Machine> machineList = solution.getMachineList();
-            List<PeriodPowerCost> periodPowerCostList = solution.getPeriodPowerCostList();
+            List<PeriodPowerPrice> periodPowerPriceList = solution.getPeriodPowerPriceList();
             bufferedWriter.write(machineList.size() + "\n");
             Map<Machine, List<Boolean>> machinePeriodActiveListMap = createMachinePeriodActiveListMap(machineList);
             for (Machine machine : machineList) {
@@ -94,9 +94,9 @@ public class CheapTimeExporter extends AbstractTxtSolutionExporter {
                             if (previousStatus == MachinePeriodStatus.ACTIVE) {
                                 lastSpinDown = i - 1;
                             }
-                            PeriodPowerCost periodPowerCost = periodPowerCostList.get(i);
+                            PeriodPowerPrice periodPowerPrice = periodPowerPriceList.get(i);
                             idleCostMicros += CheapTimeCostCalculator.multiplyTwoMicros(
-                                    machine.getPowerConsumptionMicros(), periodPowerCost.getPowerCostMicros());
+                                    machine.getPowerConsumptionMicros(), periodPowerPrice.getPowerPriceMicros());
                             if (idleCostMicros > machine.getSpinUpDownCostMicros()) {
                                 idleCostMicros = 0L;
                                 previousStatus = MachinePeriodStatus.OFF;

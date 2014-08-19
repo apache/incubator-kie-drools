@@ -25,7 +25,7 @@ import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftL
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
-import org.optaplanner.examples.cheaptime.domain.PeriodPowerCost;
+import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
@@ -52,7 +52,7 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
         }
         long mediumScore = 0L;
         long softScore = 0L;
-        List<PeriodPowerCost> periodPowerCostList = solution.getPeriodPowerCostList();
+        List<PeriodPowerPrice> periodPowerPriceList = solution.getPeriodPowerPriceList();
         for (TaskAssignment taskAssignment : solution.getTaskAssignmentList()) {
             Machine machine = taskAssignment.getMachine();
             Integer startPeriod = taskAssignment.getStartPeriod();
@@ -62,9 +62,9 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
                 for (int period = startPeriod; period < endPeriod; period++) {
                     MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
                     machinePeriodPart.addTaskAssignment(taskAssignment);
-                    PeriodPowerCost periodPowerCost = periodPowerCostList.get(period);
+                    PeriodPowerPrice periodPowerPrice = periodPowerPriceList.get(period);
                     mediumScore -= CheapTimeCostCalculator.multiplyTwoMicros(taskAssignment.getTask().getPowerConsumptionMicros(),
-                            periodPowerCost.getPowerCostMicros());
+                            periodPowerPrice.getPowerPriceMicros());
                 }
                 softScore -= startPeriod;
             }
@@ -76,7 +76,7 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
             MachinePeriodStatus previousStatus = MachinePeriodStatus.OFF;
             long idleCostMicros = 0L;
             for (int period = 0; period < globalPeriodRangeTo; period++) {
-                PeriodPowerCost periodPowerCost = periodPowerCostList.get(period);
+                PeriodPowerPrice periodPowerPrice = periodPowerPriceList.get(period);
                 MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
                 boolean active = machinePeriodPart.isActive();
                 if (active) {
@@ -90,12 +90,12 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
                     }
                     hardScore += machinePeriodPart.getHardScore();
                     mediumScore -= CheapTimeCostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
-                            periodPowerCost.getPowerCostMicros());
+                            periodPowerPrice.getPowerPriceMicros());
                     previousStatus = MachinePeriodStatus.ACTIVE;
                 } else {
                     if (previousStatus != MachinePeriodStatus.OFF) {
                         idleCostMicros += CheapTimeCostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
-                                periodPowerCost.getPowerCostMicros());
+                                periodPowerPrice.getPowerPriceMicros());
                         if (idleCostMicros > machine.getSpinUpDownCostMicros()) {
                             idleCostMicros = 0L;
                             previousStatus = MachinePeriodStatus.OFF;

@@ -45,7 +45,7 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
     private List<Task> taskList;
     private List<TaskRequirement> taskRequirementList;
     // Order is equal to global periodRange so int period can be used for the index
-    private List<PeriodPowerCost> periodPowerCostList;
+    private List<PeriodPowerPrice> periodPowerPriceList;
 
     private List<TaskAssignment> taskAssignmentList;
 
@@ -117,12 +117,12 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
         this.taskRequirementList = taskRequirementList;
     }
 
-    public List<PeriodPowerCost> getPeriodPowerCostList() {
-        return periodPowerCostList;
+    public List<PeriodPowerPrice> getPeriodPowerPriceList() {
+        return periodPowerPriceList;
     }
 
-    public void setPeriodPowerCostList(List<PeriodPowerCost> periodPowerCostList) {
-        this.periodPowerCostList = periodPowerCostList;
+    public void setPeriodPowerPriceList(List<PeriodPowerPrice> periodPowerPriceList) {
+        this.periodPowerPriceList = periodPowerPriceList;
     }
 
     @PlanningEntityCollectionProperty
@@ -153,7 +153,7 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
         facts.addAll(machineCapacityList);
         facts.addAll(taskList);
         facts.addAll(taskRequirementList);
-        facts.addAll(periodPowerCostList);
+        facts.addAll(periodPowerPriceList);
         // Do not add the planning entity's (taskAssignmentList) because that will be done automatically
         return facts;
     }

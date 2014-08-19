@@ -31,7 +31,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.MachineCapacity;
-import org.optaplanner.examples.cheaptime.domain.PeriodPowerCost;
+import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;
 import org.optaplanner.examples.cheaptime.domain.Resource;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
@@ -258,24 +258,24 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
                 long periodDurationPerHour = CheapTimeCostCalculator.divideTwoMicros(
                         CheapTimeCostCalculator.toMicroCost(1440),
                         CheapTimeCostCalculator.toMicroCost(periodListSize * 60L));
-                List<PeriodPowerCost> periodPowerCostList = new ArrayList<PeriodPowerCost>(periodListSize);
+                List<PeriodPowerPrice> periodPowerPriceList = new ArrayList<PeriodPowerPrice>(periodListSize);
                 for (int i = 0; i < periodListSize; i++) {
-                    String[] taskLineTokens = splitBySpacesOrTabs(readStringValue(), 2);
-                    PeriodPowerCost periodPowerCost = new PeriodPowerCost();
-                    int period = Integer.parseInt(taskLineTokens[0]);
-                    if (periodPowerCostList.size() != period) {
+                    String[] lineTokens = splitBySpacesOrTabs(readStringValue(), 2);
+                    PeriodPowerPrice periodPowerPrice = new PeriodPowerPrice();
+                    int period = Integer.parseInt(lineTokens[0]);
+                    if (periodPowerPriceList.size() != period) {
                         throw new IllegalStateException("The forecast period (" + period
                                 + ") does not increment normally and gets a different list index ("
-                                + periodPowerCostList.size() + ").");
+                                + periodPowerPriceList.size() + ").");
                     }
-                    periodPowerCost.setId((long) period);
-                    periodPowerCost.setPeriod(period);
-                    long hourlyPowerCostMicros = CheapTimeCostCalculator.parseMicroCost(taskLineTokens[1]);
-                    periodPowerCost.setPowerCostMicros(
-                            CheapTimeCostCalculator.multiplyTwoMicros(hourlyPowerCostMicros, periodDurationPerHour));
-                    periodPowerCostList.add(periodPowerCost);
+                    periodPowerPrice.setId((long) period);
+                    periodPowerPrice.setPeriod(period);
+                    long hourlyPowerPriceMicros = CheapTimeCostCalculator.parseMicroCost(lineTokens[1]);
+                    periodPowerPrice.setPowerPriceMicros(
+                            CheapTimeCostCalculator.multiplyTwoMicros(hourlyPowerPriceMicros, periodDurationPerHour));
+                    periodPowerPriceList.add(periodPowerPrice);
                 }
-                solution.setPeriodPowerCostList(periodPowerCostList);
+                solution.setPeriodPowerPriceList(periodPowerPriceList);
                 return null; // Hack so the code can reuse read methods from TxtInputBuilder
             }
 
