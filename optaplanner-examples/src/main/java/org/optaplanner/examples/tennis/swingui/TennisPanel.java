@@ -214,12 +214,14 @@ public class TennisPanel extends SolutionPanel {
         }
         for (List<TeamAssignment> teamAssignmentSubList : dayToTeamAssignmentListMap.values()) {
             for (TeamAssignment left : teamAssignmentSubList) {
-                for (TeamAssignment right : teamAssignmentSubList) {
-                    if (left.getTeam() != right.getTeam()) {
-                        List<Team> teamPair = Arrays.asList(left.getTeam(), right.getTeam());
-                        int confrontationCount = teamPairToConfrontationCountMap.get(teamPair);
-                        confrontationCount++;
-                        teamPairToConfrontationCountMap.put(teamPair, confrontationCount);
+                if (left.getTeam() != null) {
+                    for (TeamAssignment right : teamAssignmentSubList) {
+                        if (right.getTeam() != null && left.getTeam() != right.getTeam()) {
+                            List<Team> teamPair = Arrays.asList(left.getTeam(), right.getTeam());
+                            int confrontationCount = teamPairToConfrontationCountMap.get(teamPair);
+                            confrontationCount++;
+                            teamPairToConfrontationCountMap.put(teamPair, confrontationCount);
+                        }
                     }
                 }
             }
