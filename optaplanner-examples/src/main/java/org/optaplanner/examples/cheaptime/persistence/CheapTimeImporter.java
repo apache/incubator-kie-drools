@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,64 +44,10 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
     public static void main(String[] args) {
         CheapTimeImporter importer = new CheapTimeImporter();
         importer.convert("sample01", "sample01.xml");
-        importer.convert("sample02", "sample02.xml");
-        importer.convert("sample03", "sample03.xml");
-        importer.convert("sample04", "sample04.xml");
-        importer.convert("sample05", "sample05.xml");
-        importer.convert("sample06", "sample06.xml");
-        importer.convert("sample07", "sample07.xml");
-        importer.convert("sample08", "sample08.xml");
-        importer.convert("sample09", "sample09.xml");
         importer.convert("instance00", "instance00.xml");
         importer.convert("instance01", "instance01.xml");
         importer.convert("instance02", "instance02.xml");
         importer.convert("instance03", "instance03.xml");
-        importer.convert("instance04", "instance04.xml");
-        importer.convert("instance05", "instance05.xml");
-        importer.convert("instance06", "instance06.xml");
-        importer.convert("instance07", "instance07.xml");
-        importer.convert("instance08", "instance08.xml");
-        importer.convert("instance09", "instance09.xml");
-        importer.convert("instance10", "instance10.xml");
-        importer.convert("instance11", "instance11.xml");
-        importer.convert("instance12", "instance12.xml");
-        importer.convert("instance13", "instance13.xml");
-        importer.convert("instance14", "instance14.xml");
-        importer.convert("instance15", "instance15.xml");
-        importer.convert("instance16", "instance16.xml");
-        importer.convert("instance17", "instance17.xml");
-        importer.convert("instance18", "instance18.xml");
-        importer.convert("instance19", "instance19.xml");
-        importer.convert("instance20", "instance20.xml");
-        importer.convert("instance21", "instance21.xml");
-        importer.convert("instance22", "instance22.xml");
-        importer.convert("instance23", "instance23.xml");
-        importer.convert("instance24", "instance24.xml");
-        importer.convert("instance25", "instance25.xml");
-        importer.convert("instance26", "instance26.xml");
-        importer.convert("instance27", "instance27.xml");
-        importer.convert("instance28", "instance28.xml");
-        importer.convert("instance29", "instance29.xml");
-        importer.convert("instance30", "instance30.xml");
-        importer.convert("instance31", "instance31.xml");
-        importer.convert("instance32", "instance32.xml");
-        importer.convert("instance33", "instance33.xml");
-        importer.convert("instance34", "instance34.xml");
-        importer.convert("instance35", "instance35.xml");
-        importer.convert("instance36", "instance36.xml");
-        importer.convert("instance37", "instance37.xml");
-        importer.convert("instance38", "instance38.xml");
-        importer.convert("instance39", "instance39.xml");
-        importer.convert("instance40", "instance40.xml");
-        importer.convert("instance41", "instance41.xml");
-        importer.convert("instance42", "instance42.xml");
-        importer.convert("instance43", "instance43.xml");
-        importer.convert("instance44", "instance44.xml");
-        importer.convert("instance45", "instance45.xml");
-        importer.convert("instance46", "instance46.xml");
-        importer.convert("instance47", "instance47.xml");
-        importer.convert("instance48", "instance48.xml");
-        importer.convert("instance49", "instance49.xml");
     }
 
     public CheapTimeImporter() {
@@ -150,13 +97,22 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
             readTaskList();
             readForecastFile();
             createTaskAssignmentList();
-            logger.info("CheapTime {} has {} resources, {} machines, {} periods and {} tasks.",
+
+            BigInteger possibleSolutionSize = BigInteger.ONE;
+            for (Task task : solution.getTaskList()) {
+                possibleSolutionSize = possibleSolutionSize.multiply(
+                        BigInteger.valueOf(task.getStartPeriodRangeTo() - task.getStartPeriodRangeFrom()));
+            }
+            possibleSolutionSize = possibleSolutionSize.multiply(
+                    BigInteger.valueOf(solution.getMachineList().size()).pow(solution.getTaskList().size()));
+            logger.info("CheapTime {} has {} resources, {} machines, {} periods and {} tasks"
+                         + " with a search space of {}.",
                     getInputId(),
                     solution.getResourceList().size(),
                     solution.getMachineList().size(),
                     solution.getGlobalPeriodRangeTo(),
-                    solution.getTaskList().size()
-            );
+                    solution.getTaskList().size(),
+                    getFlooredPossibleSolutionSize(possibleSolutionSize));
             return solution;
         }
 

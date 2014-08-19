@@ -102,6 +102,11 @@ public class CheapTimePanel extends SolutionPanel {
         HighLowRenderer renderer = new HighLowRenderer();
         renderer.setTickLength(0.0);
         int seriesIndex = 0;
+        OHLCSeries unassignedProjectSeries = new OHLCSeries("Unassigned");
+        seriesCollection.addSeries(unassignedProjectSeries);
+        machineSeriesMap.put(null, unassignedProjectSeries);
+        renderer.setSeriesStroke(seriesIndex, new BasicStroke(3.0f));
+        seriesIndex++;
         for (Machine machine : solution.getMachineList()) {
             OHLCSeries projectSeries = new OHLCSeries(machine.getLabel());
             seriesCollection.addSeries(projectSeries);
@@ -109,10 +114,6 @@ public class CheapTimePanel extends SolutionPanel {
             renderer.setSeriesStroke(seriesIndex, new BasicStroke(3.0f));
             seriesIndex++;
         }
-        OHLCSeries unassignedProjectSeries = new OHLCSeries("Unassigned");
-        seriesCollection.addSeries(unassignedProjectSeries);
-        machineSeriesMap.put(null, unassignedProjectSeries);
-        renderer.setSeriesStroke(seriesIndex, new BasicStroke(3.0f));
         List<TaskAssignment> taskAssignmentList = new ArrayList<TaskAssignment>(solution.getTaskAssignmentList());
         Collections.sort(taskAssignmentList, plotTaskAssignmentComparator);
         int pixelIndex = 0;
@@ -137,7 +138,7 @@ public class CheapTimePanel extends SolutionPanel {
     }
 
     private XYPlot createPeriodCostPlot(CheapTimeSolution solution) {
-        XYSeries series = new XYSeries("Power cost");
+        XYSeries series = new XYSeries("Power price");
         for (PeriodPowerCost periodPowerCost : solution.getPeriodPowerCostList()) {
             series.add((double) periodPowerCost.getPowerCostMicros() / 1000000.0, periodPowerCost.getPeriod());
         }
@@ -145,7 +146,7 @@ public class CheapTimePanel extends SolutionPanel {
         seriesCollection.addSeries(series);
         XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES);
         renderer.setSeriesShape(0, ShapeUtilities.createDiamond(2.0F));
-        NumberAxis domainAxis = new NumberAxis("Power cost");
+        NumberAxis domainAxis = new NumberAxis("Power price");
         return new XYPlot(seriesCollection, domainAxis, null, renderer);
     }
 

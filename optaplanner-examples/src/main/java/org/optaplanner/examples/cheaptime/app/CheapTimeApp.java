@@ -39,7 +39,7 @@ public class CheapTimeApp extends CommonApp {
     }
 
     public CheapTimeApp() {
-        super("Cheap power time scheduling",
+        super("Cheap time scheduling",
                 "Official competition name: ICON Challenge on Forecasting and Scheduling\n\n" +
                 "Assign tasks to machines and time.\n\n" +
                 "Each machine must have enough hardware to run all of its tasks.\n" +

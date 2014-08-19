@@ -1,0 +1,2380 @@
+<CtCheapTimeSolution id="1">
+  <id>0</id>
+  <timeResolutionInMinutes>5</timeResolutionInMinutes>
+  <globalPeriodRangeFrom>0</globalPeriodRangeFrom>
+  <globalPeriodRangeTo>288</globalPeriodRangeTo>
+  <resourceList id="2">
+    <CtResource id="3">
+      <id>0</id>
+      <index>0</index>
+    </CtResource>
+    <CtResource id="4">
+      <id>1</id>
+      <index>1</index>
+    </CtResource>
+    <CtResource id="5">
+      <id>2</id>
+      <index>2</index>
+    </CtResource>
+  </resourceList>
+  <machineList id="6">
+    <CtMachine id="7">
+      <id>0</id>
+      <index>0</index>
+      <powerConsumptionMicros>12000000000000</powerConsumptionMicros>
+      <spinUpDownCostMicros>20000000000</spinUpDownCostMicros>
+      <machineCapacityList id="8">
+        <CtMachineCapacity id="9">
+          <id>0</id>
+          <machine reference="7"/>
+          <resource reference="3"/>
+          <capacity>2565</capacity>
+        </CtMachineCapacity>
+        <CtMachineCapacity id="10">
+          <id>1</id>
+          <machine reference="7"/>
+          <resource reference="4"/>
+          <capacity>2465</capacity>
+        </CtMachineCapacity>
+        <CtMachineCapacity id="11">
+          <id>2</id>
+          <machine reference="7"/>
+          <resource reference="5"/>
+          <capacity>2488</capacity>
+        </CtMachineCapacity>
+      </machineCapacityList>
+    </CtMachine>
+    <CtMachine id="12">
+      <id>1</id>
+      <index>1</index>
+      <powerConsumptionMicros>13000000000000</powerConsumptionMicros>
+      <spinUpDownCostMicros>10000000000</spinUpDownCostMicros>
+      <machineCapacityList id="13">
+        <CtMachineCapacity id="14">
+          <id>3</id>
+          <machine reference="12"/>
+          <resource reference="3"/>
+          <capacity>2568</capacity>
+        </CtMachineCapacity>
+        <CtMachineCapacity id="15">
+          <id>4</id>
+          <machine reference="12"/>
+          <resource reference="4"/>
+          <capacity>2408</capacity>
+        </CtMachineCapacity>
+        <CtMachineCapacity id="16">
+          <id>5</id>
+          <machine reference="12"/>
+          <resource reference="5"/>
+          <capacity>2498</capacity>
+        </CtMachineCapacity>
+      </machineCapacityList>
+    </CtMachine>
+  </machineList>
+  <machineCapacityList id="17">
+    <CtMachineCapacity reference="9"/>
+    <CtMachineCapacity reference="10"/>
+    <CtMachineCapacity reference="11"/>
+    <CtMachineCapacity reference="14"/>
+    <CtMachineCapacity reference="15"/>
+    <CtMachineCapacity reference="16"/>
+  </machineCapacityList>
+  <taskList id="18">
+    <CtTask id="19">
+      <id>0</id>
+      <powerConsumptionMicros>5617000000000</powerConsumptionMicros>
+      <duration>171</duration>
+      <startPeriodRangeFrom>5</startPeriodRangeFrom>
+      <startPeriodRangeTo>107</startPeriodRangeTo>
+      <taskRequirementList id="20">
+        <CtTaskRequirement id="21">
+          <id>0</id>
+          <task reference="19"/>
+          <resource reference="3"/>
+          <resourceUsage>91</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="22">
+          <id>1</id>
+          <task reference="19"/>
+          <resource reference="4"/>
+          <resourceUsage>267</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="23">
+          <id>2</id>
+          <task reference="19"/>
+          <resource reference="5"/>
+          <resourceUsage>317</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="24">
+      <id>1</id>
+      <powerConsumptionMicros>1592000000000</powerConsumptionMicros>
+      <duration>18</duration>
+      <startPeriodRangeFrom>2</startPeriodRangeFrom>
+      <startPeriodRangeTo>205</startPeriodRangeTo>
+      <taskRequirementList id="25">
+        <CtTaskRequirement id="26">
+          <id>3</id>
+          <task reference="24"/>
+          <resource reference="3"/>
+          <resourceUsage>51</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="27">
+          <id>4</id>
+          <task reference="24"/>
+          <resource reference="4"/>
+          <resourceUsage>10</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="28">
+          <id>5</id>
+          <task reference="24"/>
+          <resource reference="5"/>
+          <resourceUsage>12</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="29">
+      <id>2</id>
+      <powerConsumptionMicros>52357000000000</powerConsumptionMicros>
+      <duration>3</duration>
+      <startPeriodRangeFrom>6</startPeriodRangeFrom>
+      <startPeriodRangeTo>43</startPeriodRangeTo>
+      <taskRequirementList id="30">
+        <CtTaskRequirement id="31">
+          <id>6</id>
+          <task reference="29"/>
+          <resource reference="3"/>
+          <resourceUsage>1689</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="32">
+          <id>7</id>
+          <task reference="29"/>
+          <resource reference="4"/>
+          <resourceUsage>328</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="33">
+          <id>8</id>
+          <task reference="29"/>
+          <resource reference="5"/>
+          <resourceUsage>310</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="34">
+      <id>3</id>
+      <powerConsumptionMicros>25173000000000</powerConsumptionMicros>
+      <duration>189</duration>
+      <startPeriodRangeFrom>25</startPeriodRangeFrom>
+      <startPeriodRangeTo>100</startPeriodRangeTo>
+      <taskRequirementList id="35">
+        <CtTaskRequirement id="36">
+          <id>9</id>
+          <task reference="34"/>
+          <resource reference="3"/>
+          <resourceUsage>374</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="37">
+          <id>10</id>
+          <task reference="34"/>
+          <resource reference="4"/>
+          <resourceUsage>1824</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="38">
+          <id>11</id>
+          <task reference="34"/>
+          <resource reference="5"/>
+          <resourceUsage>716</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="39">
+      <id>4</id>
+      <powerConsumptionMicros>19697000000000</powerConsumptionMicros>
+      <duration>177</duration>
+      <startPeriodRangeFrom>29</startPeriodRangeFrom>
+      <startPeriodRangeTo>111</startPeriodRangeTo>
+      <taskRequirementList id="40">
+        <CtTaskRequirement id="41">
+          <id>12</id>
+          <task reference="39"/>
+          <resource reference="3"/>
+          <resourceUsage>639</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="42">
+          <id>13</id>
+          <task reference="39"/>
+          <resource reference="4"/>
+          <resourceUsage>113</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="43">
+          <id>14</id>
+          <task reference="39"/>
+          <resource reference="5"/>
+          <resourceUsage>107</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="44">
+      <id>5</id>
+      <powerConsumptionMicros>10828000000000</powerConsumptionMicros>
+      <duration>201</duration>
+      <startPeriodRangeFrom>85</startPeriodRangeFrom>
+      <startPeriodRangeTo>88</startPeriodRangeTo>
+      <taskRequirementList id="45">
+        <CtTaskRequirement id="46">
+          <id>15</id>
+          <task reference="44"/>
+          <resource reference="3"/>
+          <resourceUsage>190</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="47">
+          <id>16</id>
+          <task reference="44"/>
+          <resource reference="4"/>
+          <resourceUsage>194</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="48">
+          <id>17</id>
+          <task reference="44"/>
+          <resource reference="5"/>
+          <resourceUsage>990</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="49">
+      <id>6</id>
+      <powerConsumptionMicros>51026000000000</powerConsumptionMicros>
+      <duration>18</duration>
+      <startPeriodRangeFrom>2</startPeriodRangeFrom>
+      <startPeriodRangeTo>88</startPeriodRangeTo>
+      <taskRequirementList id="50">
+        <CtTaskRequirement id="51">
+          <id>18</id>
+          <task reference="49"/>
+          <resource reference="3"/>
+          <resourceUsage>1652</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="52">
+          <id>19</id>
+          <task reference="49"/>
+          <resource reference="4"/>
+          <resourceUsage>302</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="53">
+          <id>20</id>
+          <task reference="49"/>
+          <resource reference="5"/>
+          <resourceUsage>287</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="54">
+      <id>7</id>
+      <powerConsumptionMicros>67548000000000</powerConsumptionMicros>
+      <duration>10</duration>
+      <startPeriodRangeFrom>1</startPeriodRangeFrom>
+      <startPeriodRangeTo>155</startPeriodRangeTo>
+      <taskRequirementList id="55">
+        <CtTaskRequirement id="56">
+          <id>21</id>
+          <task reference="54"/>
+          <resource reference="3"/>
+          <resourceUsage>1887</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="57">
+          <id>22</id>
+          <task reference="54"/>
+          <resource reference="4"/>
+          <resourceUsage>1636</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="58">
+          <id>23</id>
+          <task reference="54"/>
+          <resource reference="5"/>
+          <resourceUsage>625</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="59">
+      <id>8</id>
+      <powerConsumptionMicros>19446000000000</powerConsumptionMicros>
+      <duration>11</duration>
+      <startPeriodRangeFrom>0</startPeriodRangeFrom>
+      <startPeriodRangeTo>22</startPeriodRangeTo>
+      <taskRequirementList id="60">
+        <CtTaskRequirement id="61">
+          <id>24</id>
+          <task reference="59"/>
+          <resource reference="3"/>
+          <resourceUsage>303</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="62">
+          <id>25</id>
+          <task reference="59"/>
+          <resource reference="4"/>
+          <resourceUsage>502</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="63">
+          <id>26</id>
+          <task reference="59"/>
+          <resource reference="5"/>
+          <resourceUsage>1815</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="64">
+      <id>9</id>
+      <powerConsumptionMicros>12970000000000</powerConsumptionMicros>
+      <duration>60</duration>
+      <startPeriodRangeFrom>25</startPeriodRangeFrom>
+      <startPeriodRangeTo>39</startPeriodRangeTo>
+      <taskRequirementList id="65">
+        <CtTaskRequirement id="66">
+          <id>27</id>
+          <task reference="64"/>
+          <resource reference="3"/>
+          <resourceUsage>221</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="67">
+          <id>28</id>
+          <task reference="64"/>
+          <resource reference="4"/>
+          <resourceUsage>237</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="68">
+          <id>29</id>
+          <task reference="64"/>
+          <resource reference="5"/>
+          <resourceUsage>1225</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="69">
+      <id>10</id>
+      <powerConsumptionMicros>10345000000000</powerConsumptionMicros>
+      <duration>27</duration>
+      <startPeriodRangeFrom>2</startPeriodRangeFrom>
+      <startPeriodRangeTo>134</startPeriodRangeTo>
+      <taskRequirementList id="70">
+        <CtTaskRequirement id="71">
+          <id>30</id>
+          <task reference="69"/>
+          <resource reference="3"/>
+          <resourceUsage>168</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="72">
+          <id>31</id>
+          <task reference="69"/>
+          <resource reference="4"/>
+          <resourceUsage>171</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="73">
+          <id>32</id>
+          <task reference="69"/>
+          <resource reference="5"/>
+          <resourceUsage>1062</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="74">
+      <id>11</id>
+      <powerConsumptionMicros>34218000000000</powerConsumptionMicros>
+      <duration>199</duration>
+      <startPeriodRangeFrom>9</startPeriodRangeFrom>
+      <startPeriodRangeTo>88</startPeriodRangeTo>
+      <taskRequirementList id="75">
+        <CtTaskRequirement id="76">
+          <id>33</id>
+          <task reference="74"/>
+          <resource reference="3"/>
+          <resourceUsage>792</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="77">
+          <id>34</id>
+          <task reference="74"/>
+          <resource reference="4"/>
+          <resourceUsage>1548</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="78">
+          <id>35</id>
+          <task reference="74"/>
+          <resource reference="5"/>
+          <resourceUsage>385</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="79">
+      <id>12</id>
+      <powerConsumptionMicros>36409000000000</powerConsumptionMicros>
+      <duration>196</duration>
+      <startPeriodRangeFrom>8</startPeriodRangeFrom>
+      <startPeriodRangeTo>45</startPeriodRangeTo>
+      <taskRequirementList id="80">
+        <CtTaskRequirement id="81">
+          <id>36</id>
+          <task reference="79"/>
+          <resource reference="3"/>
+          <resourceUsage>1190</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="82">
+          <id>37</id>
+          <task reference="79"/>
+          <resource reference="4"/>
+          <resourceUsage>171</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="83">
+          <id>38</id>
+          <task reference="79"/>
+          <resource reference="5"/>
+          <resourceUsage>193</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="84">
+      <id>13</id>
+      <powerConsumptionMicros>3929000000000</powerConsumptionMicros>
+      <duration>169</duration>
+      <startPeriodRangeFrom>14</startPeriodRangeFrom>
+      <startPeriodRangeTo>105</startPeriodRangeTo>
+      <taskRequirementList id="85">
+        <CtTaskRequirement id="86">
+          <id>39</id>
+          <task reference="84"/>
+          <resource reference="3"/>
+          <resourceUsage>73</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="87">
+          <id>40</id>
+          <task reference="84"/>
+          <resource reference="4"/>
+          <resourceUsage>73</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="88">
+          <id>41</id>
+          <task reference="84"/>
+          <resource reference="5"/>
+          <resourceUsage>327</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="89">
+      <id>14</id>
+      <powerConsumptionMicros>3790000000000</powerConsumptionMicros>
+      <duration>36</duration>
+      <startPeriodRangeFrom>67</startPeriodRangeFrom>
+      <startPeriodRangeTo>253</startPeriodRangeTo>
+      <taskRequirementList id="90">
+        <CtTaskRequirement id="91">
+          <id>42</id>
+          <task reference="89"/>
+          <resource reference="3"/>
+          <resourceUsage>67</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="92">
+          <id>43</id>
+          <task reference="89"/>
+          <resource reference="4"/>
+          <resourceUsage>68</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="93">
+          <id>44</id>
+          <task reference="89"/>
+          <resource reference="5"/>
+          <resourceUsage>343</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="94">
+      <id>15</id>
+      <powerConsumptionMicros>38290000000000</powerConsumptionMicros>
+      <duration>23</duration>
+      <startPeriodRangeFrom>0</startPeriodRangeFrom>
+      <startPeriodRangeTo>50</startPeriodRangeTo>
+      <taskRequirementList id="95">
+        <CtTaskRequirement id="96">
+          <id>45</id>
+          <task reference="94"/>
+          <resource reference="3"/>
+          <resourceUsage>611</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="97">
+          <id>46</id>
+          <task reference="94"/>
+          <resource reference="4"/>
+          <resourceUsage>2004</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="98">
+          <id>47</id>
+          <task reference="94"/>
+          <resource reference="5"/>
+          <resourceUsage>1950</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="99">
+      <id>16</id>
+      <powerConsumptionMicros>19560000000000</powerConsumptionMicros>
+      <duration>52</duration>
+      <startPeriodRangeFrom>20</startPeriodRangeFrom>
+      <startPeriodRangeTo>97</startPeriodRangeTo>
+      <taskRequirementList id="100">
+        <CtTaskRequirement id="101">
+          <id>48</id>
+          <task reference="99"/>
+          <resource reference="3"/>
+          <resourceUsage>633</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="102">
+          <id>49</id>
+          <task reference="99"/>
+          <resource reference="4"/>
+          <resourceUsage>115</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="103">
+          <id>50</id>
+          <task reference="99"/>
+          <resource reference="5"/>
+          <resourceUsage>113</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="104">
+      <id>17</id>
+      <powerConsumptionMicros>1713000000000</powerConsumptionMicros>
+      <duration>3</duration>
+      <startPeriodRangeFrom>13</startPeriodRangeFrom>
+      <startPeriodRangeTo>108</startPeriodRangeTo>
+      <taskRequirementList id="105">
+        <CtTaskRequirement id="106">
+          <id>51</id>
+          <task reference="104"/>
+          <resource reference="3"/>
+          <resourceUsage>55</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="107">
+          <id>52</id>
+          <task reference="104"/>
+          <resource reference="4"/>
+          <resourceUsage>12</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="108">
+          <id>53</id>
+          <task reference="104"/>
+          <resource reference="5"/>
+          <resourceUsage>10</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="109">
+      <id>18</id>
+      <powerConsumptionMicros>23261000000000</powerConsumptionMicros>
+      <duration>63</duration>
+      <startPeriodRangeFrom>25</startPeriodRangeFrom>
+      <startPeriodRangeTo>80</startPeriodRangeTo>
+      <taskRequirementList id="110">
+        <CtTaskRequirement id="111">
+          <id>54</id>
+          <task reference="109"/>
+          <resource reference="3"/>
+          <resourceUsage>364</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="112">
+          <id>55</id>
+          <task reference="109"/>
+          <resource reference="4"/>
+          <resourceUsage>1608</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="113">
+          <id>56</id>
+          <task reference="109"/>
+          <resource reference="5"/>
+          <resourceUsage>649</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="114">
+      <id>19</id>
+      <powerConsumptionMicros>32381000000000</powerConsumptionMicros>
+      <duration>185</duration>
+      <startPeriodRangeFrom>4</startPeriodRangeFrom>
+      <startPeriodRangeTo>104</startPeriodRangeTo>
+      <taskRequirementList id="115">
+        <CtTaskRequirement id="116">
+          <id>57</id>
+          <task reference="114"/>
+          <resource reference="3"/>
+          <resourceUsage>1041</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="117">
+          <id>58</id>
+          <task reference="114"/>
+          <resource reference="4"/>
+          <resourceUsage>218</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="118">
+          <id>59</id>
+          <task reference="114"/>
+          <resource reference="5"/>
+          <resourceUsage>194</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="119">
+      <id>20</id>
+      <powerConsumptionMicros>35366000000000</powerConsumptionMicros>
+      <duration>57</duration>
+      <startPeriodRangeFrom>4</startPeriodRangeFrom>
+      <startPeriodRangeTo>80</startPeriodRangeTo>
+      <taskRequirementList id="120">
+        <CtTaskRequirement id="121">
+          <id>60</id>
+          <task reference="119"/>
+          <resource reference="3"/>
+          <resourceUsage>1143</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="122">
+          <id>61</id>
+          <task reference="119"/>
+          <resource reference="4"/>
+          <resourceUsage>220</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="123">
+          <id>62</id>
+          <task reference="119"/>
+          <resource reference="5"/>
+          <resourceUsage>197</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="124">
+      <id>21</id>
+      <powerConsumptionMicros>13472000000000</powerConsumptionMicros>
+      <duration>185</duration>
+      <startPeriodRangeFrom>44</startPeriodRangeFrom>
+      <startPeriodRangeTo>103</startPeriodRangeTo>
+      <taskRequirementList id="125">
+        <CtTaskRequirement id="126">
+          <id>63</id>
+          <task reference="124"/>
+          <resource reference="3"/>
+          <resourceUsage>233</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="127">
+          <id>64</id>
+          <task reference="124"/>
+          <resource reference="4"/>
+          <resourceUsage>235</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="128">
+          <id>65</id>
+          <task reference="124"/>
+          <resource reference="5"/>
+          <resourceUsage>1265</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="129">
+      <id>22</id>
+      <powerConsumptionMicros>31916000000000</powerConsumptionMicros>
+      <duration>71</duration>
+      <startPeriodRangeFrom>1</startPeriodRangeFrom>
+      <startPeriodRangeTo>218</startPeriodRangeTo>
+      <taskRequirementList id="130">
+        <CtTaskRequirement id="131">
+          <id>66</id>
+          <task reference="129"/>
+          <resource reference="3"/>
+          <resourceUsage>1037</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="132">
+          <id>67</id>
+          <task reference="129"/>
+          <resource reference="4"/>
+          <resourceUsage>170</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="133">
+          <id>68</id>
+          <task reference="129"/>
+          <resource reference="5"/>
+          <resourceUsage>182</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="134">
+      <id>23</id>
+      <powerConsumptionMicros>36293000000000</powerConsumptionMicros>
+      <duration>73</duration>
+      <startPeriodRangeFrom>139</startPeriodRangeFrom>
+      <startPeriodRangeTo>216</startPeriodRangeTo>
+      <taskRequirementList id="135">
+        <CtTaskRequirement id="136">
+          <id>69</id>
+          <task reference="134"/>
+          <resource reference="3"/>
+          <resourceUsage>854</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="137">
+          <id>70</id>
+          <task reference="134"/>
+          <resource reference="4"/>
+          <resourceUsage>1573</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="138">
+          <id>71</id>
+          <task reference="134"/>
+          <resource reference="5"/>
+          <resourceUsage>414</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+    <CtTask id="139">
+      <id>24</id>
+      <powerConsumptionMicros>8860000000000</powerConsumptionMicros>
+      <duration>25</duration>
+      <startPeriodRangeFrom>11</startPeriodRangeFrom>
+      <startPeriodRangeTo>83</startPeriodRangeTo>
+      <taskRequirementList id="140">
+        <CtTaskRequirement id="141">
+          <id>72</id>
+          <task reference="139"/>
+          <resource reference="3"/>
+          <resourceUsage>137</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="142">
+          <id>73</id>
+          <task reference="139"/>
+          <resource reference="4"/>
+          <resourceUsage>357</resourceUsage>
+        </CtTaskRequirement>
+        <CtTaskRequirement id="143">
+          <id>74</id>
+          <task reference="139"/>
+          <resource reference="5"/>
+          <resourceUsage>642</resourceUsage>
+        </CtTaskRequirement>
+      </taskRequirementList>
+    </CtTask>
+  </taskList>
+  <taskRequirementList id="144">
+    <CtTaskRequirement reference="21"/>
+    <CtTaskRequirement reference="22"/>
+    <CtTaskRequirement reference="23"/>
+    <CtTaskRequirement reference="26"/>
+    <CtTaskRequirement reference="27"/>
+    <CtTaskRequirement reference="28"/>
+    <CtTaskRequirement reference="31"/>
+    <CtTaskRequirement reference="32"/>
+    <CtTaskRequirement reference="33"/>
+    <CtTaskRequirement reference="36"/>
+    <CtTaskRequirement reference="37"/>
+    <CtTaskRequirement reference="38"/>
+    <CtTaskRequirement reference="41"/>
+    <CtTaskRequirement reference="42"/>
+    <CtTaskRequirement reference="43"/>
+    <CtTaskRequirement reference="46"/>
+    <CtTaskRequirement reference="47"/>
+    <CtTaskRequirement reference="48"/>
+    <CtTaskRequirement reference="51"/>
+    <CtTaskRequirement reference="52"/>
+    <CtTaskRequirement reference="53"/>
+    <CtTaskRequirement reference="56"/>
+    <CtTaskRequirement reference="57"/>
+    <CtTaskRequirement reference="58"/>
+    <CtTaskRequirement reference="61"/>
+    <CtTaskRequirement reference="62"/>
+    <CtTaskRequirement reference="63"/>
+    <CtTaskRequirement reference="66"/>
+    <CtTaskRequirement reference="67"/>
+    <CtTaskRequirement reference="68"/>
+    <CtTaskRequirement reference="71"/>
+    <CtTaskRequirement reference="72"/>
+    <CtTaskRequirement reference="73"/>
+    <CtTaskRequirement reference="76"/>
+    <CtTaskRequirement reference="77"/>
+    <CtTaskRequirement reference="78"/>
+    <CtTaskRequirement reference="81"/>
+    <CtTaskRequirement reference="82"/>
+    <CtTaskRequirement reference="83"/>
+    <CtTaskRequirement reference="86"/>
+    <CtTaskRequirement reference="87"/>
+    <CtTaskRequirement reference="88"/>
+    <CtTaskRequirement reference="91"/>
+    <CtTaskRequirement reference="92"/>
+    <CtTaskRequirement reference="93"/>
+    <CtTaskRequirement reference="96"/>
+    <CtTaskRequirement reference="97"/>
+    <CtTaskRequirement reference="98"/>
+    <CtTaskRequirement reference="101"/>
+    <CtTaskRequirement reference="102"/>
+    <CtTaskRequirement reference="103"/>
+    <CtTaskRequirement reference="106"/>
+    <CtTaskRequirement reference="107"/>
+    <CtTaskRequirement reference="108"/>
+    <CtTaskRequirement reference="111"/>
+    <CtTaskRequirement reference="112"/>
+    <CtTaskRequirement reference="113"/>
+    <CtTaskRequirement reference="116"/>
+    <CtTaskRequirement reference="117"/>
+    <CtTaskRequirement reference="118"/>
+    <CtTaskRequirement reference="121"/>
+    <CtTaskRequirement reference="122"/>
+    <CtTaskRequirement reference="123"/>
+    <CtTaskRequirement reference="126"/>
+    <CtTaskRequirement reference="127"/>
+    <CtTaskRequirement reference="128"/>
+    <CtTaskRequirement reference="131"/>
+    <CtTaskRequirement reference="132"/>
+    <CtTaskRequirement reference="133"/>
+    <CtTaskRequirement reference="136"/>
+    <CtTaskRequirement reference="137"/>
+    <CtTaskRequirement reference="138"/>
+    <CtTaskRequirement reference="141"/>
+    <CtTaskRequirement reference="142"/>
+    <CtTaskRequirement reference="143"/>
+  </taskRequirementList>
+  <periodPowerCostList id="145">
+    <CtPeriodPowerCost id="146">
+      <id>0</id>
+      <period>0</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="147">
+      <id>1</id>
+      <period>1</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="148">
+      <id>2</id>
+      <period>2</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="149">
+      <id>3</id>
+      <period>3</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="150">
+      <id>4</id>
+      <period>4</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="151">
+      <id>5</id>
+      <period>5</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="152">
+      <id>6</id>
+      <period>6</period>
+      <powerCostMicros>399416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="153">
+      <id>7</id>
+      <period>7</period>
+      <powerCostMicros>399416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="154">
+      <id>8</id>
+      <period>8</period>
+      <powerCostMicros>399416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="155">
+      <id>9</id>
+      <period>9</period>
+      <powerCostMicros>399416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="156">
+      <id>10</id>
+      <period>10</period>
+      <powerCostMicros>399416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="157">
+      <id>11</id>
+      <period>11</period>
+      <powerCostMicros>399416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="158">
+      <id>12</id>
+      <period>12</period>
+      <powerCostMicros>399416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="159">
+      <id>13</id>
+      <period>13</period>
+      <powerCostMicros>399416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="160">
+      <id>14</id>
+      <period>14</period>
+      <powerCostMicros>399416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="161">
+      <id>15</id>
+      <period>15</period>
+      <powerCostMicros>399416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="162">
+      <id>16</id>
+      <period>16</period>
+      <powerCostMicros>399416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="163">
+      <id>17</id>
+      <period>17</period>
+      <powerCostMicros>399416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="164">
+      <id>18</id>
+      <period>18</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="165">
+      <id>19</id>
+      <period>19</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="166">
+      <id>20</id>
+      <period>20</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="167">
+      <id>21</id>
+      <period>21</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="168">
+      <id>22</id>
+      <period>22</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="169">
+      <id>23</id>
+      <period>23</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="170">
+      <id>24</id>
+      <period>24</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="171">
+      <id>25</id>
+      <period>25</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="172">
+      <id>26</id>
+      <period>26</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="173">
+      <id>27</id>
+      <period>27</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="174">
+      <id>28</id>
+      <period>28</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="175">
+      <id>29</id>
+      <period>29</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="176">
+      <id>30</id>
+      <period>30</period>
+      <powerCostMicros>366666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="177">
+      <id>31</id>
+      <period>31</period>
+      <powerCostMicros>366666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="178">
+      <id>32</id>
+      <period>32</period>
+      <powerCostMicros>366666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="179">
+      <id>33</id>
+      <period>33</period>
+      <powerCostMicros>366666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="180">
+      <id>34</id>
+      <period>34</period>
+      <powerCostMicros>366666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="181">
+      <id>35</id>
+      <period>35</period>
+      <powerCostMicros>366666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="182">
+      <id>36</id>
+      <period>36</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="183">
+      <id>37</id>
+      <period>37</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="184">
+      <id>38</id>
+      <period>38</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="185">
+      <id>39</id>
+      <period>39</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="186">
+      <id>40</id>
+      <period>40</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="187">
+      <id>41</id>
+      <period>41</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="188">
+      <id>42</id>
+      <period>42</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="189">
+      <id>43</id>
+      <period>43</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="190">
+      <id>44</id>
+      <period>44</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="191">
+      <id>45</id>
+      <period>45</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="192">
+      <id>46</id>
+      <period>46</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="193">
+      <id>47</id>
+      <period>47</period>
+      <powerCostMicros>396000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="194">
+      <id>48</id>
+      <period>48</period>
+      <powerCostMicros>341833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="195">
+      <id>49</id>
+      <period>49</period>
+      <powerCostMicros>341833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="196">
+      <id>50</id>
+      <period>50</period>
+      <powerCostMicros>341833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="197">
+      <id>51</id>
+      <period>51</period>
+      <powerCostMicros>341833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="198">
+      <id>52</id>
+      <period>52</period>
+      <powerCostMicros>341833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="199">
+      <id>53</id>
+      <period>53</period>
+      <powerCostMicros>341833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="200">
+      <id>54</id>
+      <period>54</period>
+      <powerCostMicros>341666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="201">
+      <id>55</id>
+      <period>55</period>
+      <powerCostMicros>341666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="202">
+      <id>56</id>
+      <period>56</period>
+      <powerCostMicros>341666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="203">
+      <id>57</id>
+      <period>57</period>
+      <powerCostMicros>341666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="204">
+      <id>58</id>
+      <period>58</period>
+      <powerCostMicros>341666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="205">
+      <id>59</id>
+      <period>59</period>
+      <powerCostMicros>341666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="206">
+      <id>60</id>
+      <period>60</period>
+      <powerCostMicros>288416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="207">
+      <id>61</id>
+      <period>61</period>
+      <powerCostMicros>288416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="208">
+      <id>62</id>
+      <period>62</period>
+      <powerCostMicros>288416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="209">
+      <id>63</id>
+      <period>63</period>
+      <powerCostMicros>288416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="210">
+      <id>64</id>
+      <period>64</period>
+      <powerCostMicros>288416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="211">
+      <id>65</id>
+      <period>65</period>
+      <powerCostMicros>288416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="212">
+      <id>66</id>
+      <period>66</period>
+      <powerCostMicros>288416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="213">
+      <id>67</id>
+      <period>67</period>
+      <powerCostMicros>288416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="214">
+      <id>68</id>
+      <period>68</period>
+      <powerCostMicros>288416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="215">
+      <id>69</id>
+      <period>69</period>
+      <powerCostMicros>288416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="216">
+      <id>70</id>
+      <period>70</period>
+      <powerCostMicros>288416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="217">
+      <id>71</id>
+      <period>71</period>
+      <powerCostMicros>288416667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="218">
+      <id>72</id>
+      <period>72</period>
+      <powerCostMicros>261583333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="219">
+      <id>73</id>
+      <period>73</period>
+      <powerCostMicros>261583333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="220">
+      <id>74</id>
+      <period>74</period>
+      <powerCostMicros>261583333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="221">
+      <id>75</id>
+      <period>75</period>
+      <powerCostMicros>261583333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="222">
+      <id>76</id>
+      <period>76</period>
+      <powerCostMicros>261583333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="223">
+      <id>77</id>
+      <period>77</period>
+      <powerCostMicros>261583333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="224">
+      <id>78</id>
+      <period>78</period>
+      <powerCostMicros>338666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="225">
+      <id>79</id>
+      <period>79</period>
+      <powerCostMicros>338666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="226">
+      <id>80</id>
+      <period>80</period>
+      <powerCostMicros>338666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="227">
+      <id>81</id>
+      <period>81</period>
+      <powerCostMicros>338666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="228">
+      <id>82</id>
+      <period>82</period>
+      <powerCostMicros>338666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="229">
+      <id>83</id>
+      <period>83</period>
+      <powerCostMicros>338666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="230">
+      <id>84</id>
+      <period>84</period>
+      <powerCostMicros>341750000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="231">
+      <id>85</id>
+      <period>85</period>
+      <powerCostMicros>341750000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="232">
+      <id>86</id>
+      <period>86</period>
+      <powerCostMicros>341750000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="233">
+      <id>87</id>
+      <period>87</period>
+      <powerCostMicros>341750000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="234">
+      <id>88</id>
+      <period>88</period>
+      <powerCostMicros>341750000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="235">
+      <id>89</id>
+      <period>89</period>
+      <powerCostMicros>341750000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="236">
+      <id>90</id>
+      <period>90</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="237">
+      <id>91</id>
+      <period>91</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="238">
+      <id>92</id>
+      <period>92</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="239">
+      <id>93</id>
+      <period>93</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="240">
+      <id>94</id>
+      <period>94</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="241">
+      <id>95</id>
+      <period>95</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="242">
+      <id>96</id>
+      <period>96</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="243">
+      <id>97</id>
+      <period>97</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="244">
+      <id>98</id>
+      <period>98</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="245">
+      <id>99</id>
+      <period>99</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="246">
+      <id>100</id>
+      <period>100</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="247">
+      <id>101</id>
+      <period>101</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="248">
+      <id>102</id>
+      <period>102</period>
+      <powerCostMicros>397833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="249">
+      <id>103</id>
+      <period>103</period>
+      <powerCostMicros>397833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="250">
+      <id>104</id>
+      <period>104</period>
+      <powerCostMicros>397833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="251">
+      <id>105</id>
+      <period>105</period>
+      <powerCostMicros>397833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="252">
+      <id>106</id>
+      <period>106</period>
+      <powerCostMicros>397833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="253">
+      <id>107</id>
+      <period>107</period>
+      <powerCostMicros>397833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="254">
+      <id>108</id>
+      <period>108</period>
+      <powerCostMicros>289833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="255">
+      <id>109</id>
+      <period>109</period>
+      <powerCostMicros>289833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="256">
+      <id>110</id>
+      <period>110</period>
+      <powerCostMicros>289833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="257">
+      <id>111</id>
+      <period>111</period>
+      <powerCostMicros>289833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="258">
+      <id>112</id>
+      <period>112</period>
+      <powerCostMicros>289833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="259">
+      <id>113</id>
+      <period>113</period>
+      <powerCostMicros>289833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="260">
+      <id>114</id>
+      <period>114</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="261">
+      <id>115</id>
+      <period>115</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="262">
+      <id>116</id>
+      <period>116</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="263">
+      <id>117</id>
+      <period>117</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="264">
+      <id>118</id>
+      <period>118</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="265">
+      <id>119</id>
+      <period>119</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="266">
+      <id>120</id>
+      <period>120</period>
+      <powerCostMicros>338666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="267">
+      <id>121</id>
+      <period>121</period>
+      <powerCostMicros>338666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="268">
+      <id>122</id>
+      <period>122</period>
+      <powerCostMicros>338666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="269">
+      <id>123</id>
+      <period>123</period>
+      <powerCostMicros>338666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="270">
+      <id>124</id>
+      <period>124</period>
+      <powerCostMicros>338666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="271">
+      <id>125</id>
+      <period>125</period>
+      <powerCostMicros>338666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="272">
+      <id>126</id>
+      <period>126</period>
+      <powerCostMicros>338666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="273">
+      <id>127</id>
+      <period>127</period>
+      <powerCostMicros>338666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="274">
+      <id>128</id>
+      <period>128</period>
+      <powerCostMicros>338666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="275">
+      <id>129</id>
+      <period>129</period>
+      <powerCostMicros>338666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="276">
+      <id>130</id>
+      <period>130</period>
+      <powerCostMicros>338666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="277">
+      <id>131</id>
+      <period>131</period>
+      <powerCostMicros>338666667</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="278">
+      <id>132</id>
+      <period>132</period>
+      <powerCostMicros>397833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="279">
+      <id>133</id>
+      <period>133</period>
+      <powerCostMicros>397833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="280">
+      <id>134</id>
+      <period>134</period>
+      <powerCostMicros>397833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="281">
+      <id>135</id>
+      <period>135</period>
+      <powerCostMicros>397833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="282">
+      <id>136</id>
+      <period>136</period>
+      <powerCostMicros>397833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="283">
+      <id>137</id>
+      <period>137</period>
+      <powerCostMicros>397833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="284">
+      <id>138</id>
+      <period>138</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="285">
+      <id>139</id>
+      <period>139</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="286">
+      <id>140</id>
+      <period>140</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="287">
+      <id>141</id>
+      <period>141</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="288">
+      <id>142</id>
+      <period>142</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="289">
+      <id>143</id>
+      <period>143</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="290">
+      <id>144</id>
+      <period>144</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="291">
+      <id>145</id>
+      <period>145</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="292">
+      <id>146</id>
+      <period>146</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="293">
+      <id>147</id>
+      <period>147</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="294">
+      <id>148</id>
+      <period>148</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="295">
+      <id>149</id>
+      <period>149</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="296">
+      <id>150</id>
+      <period>150</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="297">
+      <id>151</id>
+      <period>151</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="298">
+      <id>152</id>
+      <period>152</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="299">
+      <id>153</id>
+      <period>153</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="300">
+      <id>154</id>
+      <period>154</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="301">
+      <id>155</id>
+      <period>155</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="302">
+      <id>156</id>
+      <period>156</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="303">
+      <id>157</id>
+      <period>157</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="304">
+      <id>158</id>
+      <period>158</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="305">
+      <id>159</id>
+      <period>159</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="306">
+      <id>160</id>
+      <period>160</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="307">
+      <id>161</id>
+      <period>161</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="308">
+      <id>162</id>
+      <period>162</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="309">
+      <id>163</id>
+      <period>163</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="310">
+      <id>164</id>
+      <period>164</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="311">
+      <id>165</id>
+      <period>165</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="312">
+      <id>166</id>
+      <period>166</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="313">
+      <id>167</id>
+      <period>167</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="314">
+      <id>168</id>
+      <period>168</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="315">
+      <id>169</id>
+      <period>169</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="316">
+      <id>170</id>
+      <period>170</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="317">
+      <id>171</id>
+      <period>171</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="318">
+      <id>172</id>
+      <period>172</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="319">
+      <id>173</id>
+      <period>173</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="320">
+      <id>174</id>
+      <period>174</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="321">
+      <id>175</id>
+      <period>175</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="322">
+      <id>176</id>
+      <period>176</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="323">
+      <id>177</id>
+      <period>177</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="324">
+      <id>178</id>
+      <period>178</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="325">
+      <id>179</id>
+      <period>179</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="326">
+      <id>180</id>
+      <period>180</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="327">
+      <id>181</id>
+      <period>181</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="328">
+      <id>182</id>
+      <period>182</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="329">
+      <id>183</id>
+      <period>183</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="330">
+      <id>184</id>
+      <period>184</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="331">
+      <id>185</id>
+      <period>185</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="332">
+      <id>186</id>
+      <period>186</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="333">
+      <id>187</id>
+      <period>187</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="334">
+      <id>188</id>
+      <period>188</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="335">
+      <id>189</id>
+      <period>189</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="336">
+      <id>190</id>
+      <period>190</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="337">
+      <id>191</id>
+      <period>191</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="338">
+      <id>192</id>
+      <period>192</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="339">
+      <id>193</id>
+      <period>193</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="340">
+      <id>194</id>
+      <period>194</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="341">
+      <id>195</id>
+      <period>195</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="342">
+      <id>196</id>
+      <period>196</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="343">
+      <id>197</id>
+      <period>197</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="344">
+      <id>198</id>
+      <period>198</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="345">
+      <id>199</id>
+      <period>199</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="346">
+      <id>200</id>
+      <period>200</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="347">
+      <id>201</id>
+      <period>201</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="348">
+      <id>202</id>
+      <period>202</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="349">
+      <id>203</id>
+      <period>203</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="350">
+      <id>204</id>
+      <period>204</period>
+      <powerCostMicros>409250000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="351">
+      <id>205</id>
+      <period>205</period>
+      <powerCostMicros>409250000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="352">
+      <id>206</id>
+      <period>206</period>
+      <powerCostMicros>409250000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="353">
+      <id>207</id>
+      <period>207</period>
+      <powerCostMicros>409250000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="354">
+      <id>208</id>
+      <period>208</period>
+      <powerCostMicros>409250000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="355">
+      <id>209</id>
+      <period>209</period>
+      <powerCostMicros>409250000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="356">
+      <id>210</id>
+      <period>210</period>
+      <powerCostMicros>2286083333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="357">
+      <id>211</id>
+      <period>211</period>
+      <powerCostMicros>2286083333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="358">
+      <id>212</id>
+      <period>212</period>
+      <powerCostMicros>2286083333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="359">
+      <id>213</id>
+      <period>213</period>
+      <powerCostMicros>2286083333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="360">
+      <id>214</id>
+      <period>214</period>
+      <powerCostMicros>2286083333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="361">
+      <id>215</id>
+      <period>215</period>
+      <powerCostMicros>2286083333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="362">
+      <id>216</id>
+      <period>216</period>
+      <powerCostMicros>2286083333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="363">
+      <id>217</id>
+      <period>217</period>
+      <powerCostMicros>2286083333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="364">
+      <id>218</id>
+      <period>218</period>
+      <powerCostMicros>2286083333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="365">
+      <id>219</id>
+      <period>219</period>
+      <powerCostMicros>2286083333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="366">
+      <id>220</id>
+      <period>220</period>
+      <powerCostMicros>2286083333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="367">
+      <id>221</id>
+      <period>221</period>
+      <powerCostMicros>2286083333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="368">
+      <id>222</id>
+      <period>222</period>
+      <powerCostMicros>417333333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="369">
+      <id>223</id>
+      <period>223</period>
+      <powerCostMicros>417333333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="370">
+      <id>224</id>
+      <period>224</period>
+      <powerCostMicros>417333333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="371">
+      <id>225</id>
+      <period>225</period>
+      <powerCostMicros>417333333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="372">
+      <id>226</id>
+      <period>226</period>
+      <powerCostMicros>417333333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="373">
+      <id>227</id>
+      <period>227</period>
+      <powerCostMicros>417333333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="374">
+      <id>228</id>
+      <period>228</period>
+      <powerCostMicros>409250000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="375">
+      <id>229</id>
+      <period>229</period>
+      <powerCostMicros>409250000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="376">
+      <id>230</id>
+      <period>230</period>
+      <powerCostMicros>409250000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="377">
+      <id>231</id>
+      <period>231</period>
+      <powerCostMicros>409250000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="378">
+      <id>232</id>
+      <period>232</period>
+      <powerCostMicros>409250000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="379">
+      <id>233</id>
+      <period>233</period>
+      <powerCostMicros>409250000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="380">
+      <id>234</id>
+      <period>234</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="381">
+      <id>235</id>
+      <period>235</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="382">
+      <id>236</id>
+      <period>236</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="383">
+      <id>237</id>
+      <period>237</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="384">
+      <id>238</id>
+      <period>238</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="385">
+      <id>239</id>
+      <period>239</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="386">
+      <id>240</id>
+      <period>240</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="387">
+      <id>241</id>
+      <period>241</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="388">
+      <id>242</id>
+      <period>242</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="389">
+      <id>243</id>
+      <period>243</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="390">
+      <id>244</id>
+      <period>244</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="391">
+      <id>245</id>
+      <period>245</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="392">
+      <id>246</id>
+      <period>246</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="393">
+      <id>247</id>
+      <period>247</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="394">
+      <id>248</id>
+      <period>248</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="395">
+      <id>249</id>
+      <period>249</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="396">
+      <id>250</id>
+      <period>250</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="397">
+      <id>251</id>
+      <period>251</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="398">
+      <id>252</id>
+      <period>252</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="399">
+      <id>253</id>
+      <period>253</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="400">
+      <id>254</id>
+      <period>254</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="401">
+      <id>255</id>
+      <period>255</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="402">
+      <id>256</id>
+      <period>256</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="403">
+      <id>257</id>
+      <period>257</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="404">
+      <id>258</id>
+      <period>258</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="405">
+      <id>259</id>
+      <period>259</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="406">
+      <id>260</id>
+      <period>260</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="407">
+      <id>261</id>
+      <period>261</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="408">
+      <id>262</id>
+      <period>262</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="409">
+      <id>263</id>
+      <period>263</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="410">
+      <id>264</id>
+      <period>264</period>
+      <powerCostMicros>401500000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="411">
+      <id>265</id>
+      <period>265</period>
+      <powerCostMicros>401500000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="412">
+      <id>266</id>
+      <period>266</period>
+      <powerCostMicros>401500000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="413">
+      <id>267</id>
+      <period>267</period>
+      <powerCostMicros>401500000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="414">
+      <id>268</id>
+      <period>268</period>
+      <powerCostMicros>401500000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="415">
+      <id>269</id>
+      <period>269</period>
+      <powerCostMicros>401500000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="416">
+      <id>270</id>
+      <period>270</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="417">
+      <id>271</id>
+      <period>271</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="418">
+      <id>272</id>
+      <period>272</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="419">
+      <id>273</id>
+      <period>273</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="420">
+      <id>274</id>
+      <period>274</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="421">
+      <id>275</id>
+      <period>275</period>
+      <powerCostMicros>398000000</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="422">
+      <id>276</id>
+      <period>276</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="423">
+      <id>277</id>
+      <period>277</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="424">
+      <id>278</id>
+      <period>278</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="425">
+      <id>279</id>
+      <period>279</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="426">
+      <id>280</id>
+      <period>280</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="427">
+      <id>281</id>
+      <period>281</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="428">
+      <id>282</id>
+      <period>282</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="429">
+      <id>283</id>
+      <period>283</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="430">
+      <id>284</id>
+      <period>284</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="431">
+      <id>285</id>
+      <period>285</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="432">
+      <id>286</id>
+      <period>286</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+    <CtPeriodPowerCost id="433">
+      <id>287</id>
+      <period>287</period>
+      <powerCostMicros>405833333</powerCostMicros>
+    </CtPeriodPowerCost>
+  </periodPowerCostList>
+  <taskAssignmentList id="434">
+    <CtTaskAssignment id="435">
+      <id>0</id>
+      <task reference="19"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="436">
+      <id>1</id>
+      <task reference="24"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="437">
+      <id>2</id>
+      <task reference="29"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="438">
+      <id>3</id>
+      <task reference="34"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="439">
+      <id>4</id>
+      <task reference="39"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="440">
+      <id>5</id>
+      <task reference="44"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="441">
+      <id>6</id>
+      <task reference="49"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="442">
+      <id>7</id>
+      <task reference="54"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="443">
+      <id>8</id>
+      <task reference="59"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="444">
+      <id>9</id>
+      <task reference="64"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="445">
+      <id>10</id>
+      <task reference="69"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="446">
+      <id>11</id>
+      <task reference="74"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="447">
+      <id>12</id>
+      <task reference="79"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="448">
+      <id>13</id>
+      <task reference="84"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="449">
+      <id>14</id>
+      <task reference="89"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="450">
+      <id>15</id>
+      <task reference="94"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="451">
+      <id>16</id>
+      <task reference="99"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="452">
+      <id>17</id>
+      <task reference="104"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="453">
+      <id>18</id>
+      <task reference="109"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="454">
+      <id>19</id>
+      <task reference="114"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="455">
+      <id>20</id>
+      <task reference="119"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="456">
+      <id>21</id>
+      <task reference="124"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="457">
+      <id>22</id>
+      <task reference="129"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="458">
+      <id>23</id>
+      <task reference="134"/>
+    </CtTaskAssignment>
+    <CtTaskAssignment id="459">
+      <id>24</id>
+      <task reference="139"/>
+    </CtTaskAssignment>
+  </taskAssignmentList>
+</CtCheapTimeSolution>
