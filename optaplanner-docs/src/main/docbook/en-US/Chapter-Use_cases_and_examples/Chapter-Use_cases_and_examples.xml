@@ -1985,8 +1985,8 @@ long_late05   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees,
       <section>
         <title>Problem statement</title>
 
-        <para>Schedule all tasks in time and on a machine to minimize energy cost. This is a form of flexible
-        <emphasis>job shop scheduling</emphasis>.</para>
+        <para>Schedule all tasks in time and on a machine to minimize power cost. Power prices differs in time. This is
+        a form of <emphasis>job shop scheduling</emphasis>.</para>
 
         <para>Hard constraints:</para>
 
@@ -2000,8 +2000,8 @@ long_late05   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees,
           </listitem>
 
           <listitem>
-            <para>Startup and shutdown: each machine must be active in the periods that it has assigned tasks. Between
-            tasks it is allowed to be idle to avoid startup and shutdown costs.</para>
+            <para>Startup and shutdown: each machine must be active in the periods during which it has assigned tasks.
+            Between tasks it is allowed to be idle to avoid startup and shutdown costs.</para>
           </listitem>
         </itemizedlist>
 
@@ -2009,22 +2009,21 @@ long_late05   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees,
 
         <itemizedlist>
           <listitem>
-            <para>Energy cost: minimize the total energy cost of the whole schedule. The power price per consumed unit
-            differs per period.</para>
+            <para>Power cost: minimize the total power cost of the whole schedule.</para>
 
             <itemizedlist>
               <listitem>
-                <para>Machine energy cost: Each active or idle machine has a power consumption which infers an energy
-                cost (depending on the power price during its active and idle time).</para>
+                <para>Machine power cost: Each active or idle machine consumes power, which infers a power cost
+                (depending on the power price during that time).</para>
               </listitem>
 
               <listitem>
-                <para>Task energy cost: Each task has a power consumption which infers an energy cost (depending on the
-                power price during its time).</para>
+                <para>Task power cost: Each task consumes power too, which infers a power cost (depending on the power
+                price during its time).</para>
               </listitem>
 
               <listitem>
-                <para>Machine startup and shutdown cost: Every time a machine starts up or shuts down, a extra cost is
+                <para>Machine startup and shutdown cost: Every time a machine starts up or shuts down, an extra cost is
                 inflicted.</para>
               </listitem>
             </itemizedlist>
@@ -2035,7 +2034,7 @@ long_late05   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees,
 
         <itemizedlist>
           <listitem>
-            <para>Start early: prefer starting tasks sooner rather than later.</para>
+            <para>Start early: prefer starting a task sooner rather than later.</para>
           </listitem>
         </itemizedlist>
 

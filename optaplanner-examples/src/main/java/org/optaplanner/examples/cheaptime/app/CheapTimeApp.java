@@ -43,7 +43,8 @@ public class CheapTimeApp extends CommonApp {
                 "Official competition name: ICON Challenge on Forecasting and Scheduling\n\n" +
                 "Assign tasks to machines and time.\n\n" +
                 "Each machine must have enough hardware to run all of its tasks.\n" +
-                "Each task inflicts a power cost. Power costs differ over time.",
+                "Each task and machine consumes power. The power price differs over time.\n" +
+                "Minimize the power cost.",
                 CheapTimePanel.LOGO_PATH);
     }
 

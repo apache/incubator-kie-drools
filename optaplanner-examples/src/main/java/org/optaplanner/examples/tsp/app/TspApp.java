@@ -42,7 +42,7 @@ public class TspApp extends CommonApp {
         super("Traveling salesman",
                 "Official competition name: TSP - Traveling salesman problem\n\n" +
                         "Determine the order in which to visit all cities.\n\n" +
-                        "Find the *shortest route to visit all cities.",
+                        "Find the shortest route to visit all cities.",
                 TspPanel.LOGO_PATH);
     }
 
