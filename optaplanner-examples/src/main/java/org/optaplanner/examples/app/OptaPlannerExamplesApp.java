@@ -38,6 +38,7 @@ import javax.swing.JTextArea;
 import javax.swing.border.TitledBorder;
 
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.examples.cheaptime.app.CheapTimeApp;
 import org.optaplanner.examples.cloudbalancing.app.CloudBalancingApp;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
@@ -154,6 +155,7 @@ public class OptaPlannerExamplesApp extends JFrame {
         panel.add(createExampleButton(new ExaminationApp()));
         panel.add(createExampleButton(new NurseRosteringApp()));
         panel.add(createExampleButton(new TravelingTournamentApp()));
+        panel.add(createExampleButton(new CheapTimeApp()));
         panel.add(new JPanel());
         return panel;
     }

@@ -60,7 +60,7 @@ public class CheapTimePanel extends SolutionPanel {
 
     private PlotTaskAssignmentComparator plotTaskAssignmentComparator = new PlotTaskAssignmentComparator();
 
-//    public static final String LOGO_PATH = "/org/optaplanner/examples/cheapTime/swingui/cheapTimeLogo.png";
+    public static final String LOGO_PATH = "/org/optaplanner/examples/cheaptime/swingui/cheapTimeLogo.png";
 
     public CheapTimePanel() {
         setLayout(new BorderLayout());
