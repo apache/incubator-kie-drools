@@ -37,7 +37,7 @@ public class MachineReassignmentSolveAllTurtleTest extends UnsolvedDirSolveAllTu
 
     @Override
     protected String createSolverConfigResource() {
-        return "org/optaplanner/examples/machinereassignment/solver/machineReassignmentSolverConfig.xml";
+        return MachineReassignmentApp.SOLVER_CONFIG;
     }
 
     @Override

@@ -28,7 +28,7 @@ public class CloudBalancingPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml";
+        return CloudBalancingApp.SOLVER_CONFIG;
     }
 
     @Override

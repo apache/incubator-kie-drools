@@ -37,7 +37,7 @@ public class TennisSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "org/optaplanner/examples/tennis/solver/tennisSolverConfig.xml";
+        return TennisApp.SOLVER_CONFIG;
     }
 
     @Override

@@ -40,7 +40,7 @@ public class CurriculumCourseExhaustiveSearchTest extends ExhaustiveSearchTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "org/optaplanner/examples/curriculumcourse/solver/curriculumCourseSolverConfig.xml";
+        return CurriculumCourseApp.SOLVER_CONFIG;
     }
 
     @Override

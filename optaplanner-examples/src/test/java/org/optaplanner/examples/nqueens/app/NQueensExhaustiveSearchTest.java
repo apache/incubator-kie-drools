@@ -44,7 +44,7 @@ public class NQueensExhaustiveSearchTest extends ExhaustiveSearchTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml";
+        return NQueensApp.SOLVER_CONFIG;
     }
 
     @Override

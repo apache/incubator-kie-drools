@@ -37,7 +37,7 @@ public class ProjectJobSchedulingSolveAllTurtleTest extends UnsolvedDirSolveAllT
 
     @Override
     protected String createSolverConfigResource() {
-        return "org/optaplanner/examples/projectjobscheduling/solver/projectJobSchedulingSolverConfig.xml";
+        return ProjectJobSchedulingApp.SOLVER_CONFIG;
     }
 
     @Override

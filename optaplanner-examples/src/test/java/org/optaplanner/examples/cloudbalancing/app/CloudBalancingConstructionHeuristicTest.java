@@ -41,7 +41,7 @@ public class CloudBalancingConstructionHeuristicTest extends ConstructionHeurist
 
     @Override
     protected String createSolverConfigResource() {
-        return "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml";
+        return CloudBalancingApp.SOLVER_CONFIG;
     }
 
     @Override

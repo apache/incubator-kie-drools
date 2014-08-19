@@ -28,7 +28,7 @@ public class ExaminationPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "org/optaplanner/examples/examination/solver/examinationSolverConfig.xml";
+        return ExaminationApp.SOLVER_CONFIG;
     }
 
     @Override

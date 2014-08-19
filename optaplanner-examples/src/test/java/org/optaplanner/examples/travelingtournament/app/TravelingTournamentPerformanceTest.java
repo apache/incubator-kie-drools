@@ -28,7 +28,7 @@ public class TravelingTournamentPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "org/optaplanner/examples/travelingtournament/solver/travelingTournamentSolverConfig.xml";
+        return TravelingTournamentApp.SOLVER_CONFIG;
     }
 
     @Override

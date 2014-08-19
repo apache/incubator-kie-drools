@@ -37,7 +37,7 @@ public class PatientAdmissionScheduleSolveAllTurtleTest extends UnsolvedDirSolve
 
     @Override
     protected String createSolverConfigResource() {
-        return "org/optaplanner/examples/pas/solver/patientAdmissionScheduleSolverConfig.xml";
+        return PatientAdmissionScheduleApp.SOLVER_CONFIG;
     }
 
     @Override

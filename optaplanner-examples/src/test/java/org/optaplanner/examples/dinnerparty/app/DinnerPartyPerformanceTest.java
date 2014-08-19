@@ -28,7 +28,7 @@ public class DinnerPartyPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "org/optaplanner/examples/dinnerparty/solver/dinnerPartySolverConfig.xml";
+        return DinnerPartyApp.SOLVER_CONFIG;
     }
 
     @Override

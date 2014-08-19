@@ -37,7 +37,7 @@ public class TravelingTournamentSolveAllTurtleTest extends UnsolvedDirSolveAllTu
 
     @Override
     protected String createSolverConfigResource() {
-        return "org/optaplanner/examples/travelingtournament/solver/travelingTournamentSolverConfig.xml";
+        return TravelingTournamentApp.SOLVER_CONFIG;
     }
 
     @Override

@@ -39,7 +39,7 @@ public class TspSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "org/optaplanner/examples/tsp/solver/tspSolverConfig.xml";
+        return TspApp.SOLVER_CONFIG;
     }
 
     @Override
