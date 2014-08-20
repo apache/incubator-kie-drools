@@ -17,20 +17,11 @@
 package org.optaplanner.benchmark.config.statistic;
 
 import org.optaplanner.benchmark.impl.report.ReportHelper;
-import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
-import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.calculatecount.CalculateCountProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.memoryuse.MemoryUseProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.pickedmovetypestepscore.PickedMoveTypeStepScoreDiffSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.stepscore.StepScoreProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypestepscore.PickedMoveTypeStepScoreDiffSingleStatistic;
 
 public enum SingleStatisticType implements StatisticType {
     PICKED_MOVE_TYPE_BEST_SCORE_DIFF,

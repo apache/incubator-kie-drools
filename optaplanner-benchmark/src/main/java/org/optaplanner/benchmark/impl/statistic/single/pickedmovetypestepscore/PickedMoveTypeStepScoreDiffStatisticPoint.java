@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.pickedmovetypestepscore;
+package org.optaplanner.benchmark.impl.statistic.single.pickedmovetypestepscore;
 
 import org.optaplanner.benchmark.impl.aggregator.BenchmarkAggregator;
 import org.optaplanner.benchmark.impl.statistic.StatisticPoint;
