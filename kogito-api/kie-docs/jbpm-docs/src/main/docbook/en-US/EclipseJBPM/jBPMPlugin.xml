@@ -355,7 +355,7 @@
   &lt;description&gt;A sample jBPM Maven project&lt;/description&gt;
 
   &lt;properties&gt;
-    &lt;jbpm.version&gt;6.0.0.Final&lt;/jbpm.version&gt;
+    &lt;version.org.jbpm&gt;6.0.0.Final&lt;/version.org.jbpm&gt;
   &lt;/properties&gt;
 
   &lt;repositories&gt;
@@ -378,7 +378,7 @@
     &lt;dependency&gt;
       &lt;groupId&gt;org.jbpm&lt;/groupId&gt;
       &lt;artifactId&gt;jbpm-test&lt;/artifactId&gt;
-      &lt;version&gt;${jbpm.version}&lt;/version&gt;
+      &lt;version&gt;${version.org.jbpm}&lt;/version&gt;
     &lt;/dependency&gt;
   &lt;/dependencies&gt;
 &lt;/project&gt;</programlisting>
