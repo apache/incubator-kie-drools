@@ -172,8 +172,8 @@
 
     <programlisting language="xml">  &lt;properties&gt;
     &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
-    &lt;drools.version&gt;6.0.0.Final&lt;/drools.version&gt;
-    &lt;jbpm.version&gt;6.0.0.Final&lt;/jbpm.version&gt;
+    &lt;version.org.drools&gt;6.0.0.Final&lt;/version.org.drools&gt;
+    &lt;version.org.jbpm&gt;6.0.0.Final&lt;/version.org.jbpm&gt;
     &lt;hibernate.version&gt;4.2.0.Final&lt;/hibernate.version&gt;
     &lt;hibernate.core.version&gt;4.2.0.Final&lt;/hibernate.core.version&gt;
     &lt;slf4j.version&gt;1.6.4&lt;/slf4j.version&gt;
@@ -190,7 +190,7 @@
         &lt;groupId&gt;org.drools&lt;/groupId&gt;
         &lt;artifactId&gt;drools-bom&lt;/artifactId&gt;
         &lt;type&gt;pom&lt;/type&gt;
-        &lt;version&gt;${drools.version}&lt;/version&gt;
+        &lt;version&gt;${version.org.drools}&lt;/version&gt;
         &lt;scope&gt;import&lt;/scope&gt;
       &lt;/dependency&gt;
       &lt;!-- define drools BOM --&gt;
@@ -198,7 +198,7 @@
         &lt;groupId&gt;org.jbpm&lt;/groupId&gt;
         &lt;artifactId&gt;jbpm-bom&lt;/artifactId&gt;
         &lt;type&gt;pom&lt;/type&gt;
-        &lt;version&gt;${jbpm.version}&lt;/version&gt;
+        &lt;version&gt;${version.org.jbpm}&lt;/version&gt;
         &lt;scope&gt;import&lt;/scope&gt;
       &lt;/dependency&gt;
     &lt;/dependencies&gt;
