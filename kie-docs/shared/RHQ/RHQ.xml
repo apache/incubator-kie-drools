@@ -43,7 +43,7 @@
       
       <para>To enable it in the command line, use:</para>
       
-      <programlisting language="xml"> -Ddrools.mbeans=enabled</programlisting>
+      <programlisting language="xml"> -Dkie.mbeans=enabled</programlisting>
       
       <para>To enable id using the API, use:</para>
       
