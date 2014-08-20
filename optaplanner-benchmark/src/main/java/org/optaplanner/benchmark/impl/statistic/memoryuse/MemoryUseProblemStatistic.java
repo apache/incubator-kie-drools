@@ -68,7 +68,7 @@ public class MemoryUseProblemStatistic extends ProblemStatistic {
         Locale locale = benchmarkReport.getLocale();
         NumberAxis xAxis = new NumberAxis("Time spent");
         xAxis.setNumberFormatOverride(new MillisecondsSpentNumberFormat(locale));
-        NumberAxis yAxis = new NumberAxis("Memory");
+        NumberAxis yAxis = new NumberAxis("Memory (bytes)");
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         plot.setOrientation(PlotOrientation.VERTICAL);
