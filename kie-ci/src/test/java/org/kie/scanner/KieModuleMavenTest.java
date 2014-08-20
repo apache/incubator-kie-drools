@@ -242,7 +242,7 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
             }
         };
 
-        ReleaseId dependency = ks.newReleaseId("org.drools", "drools-core", "${drools.version}");
+        ReleaseId dependency = ks.newReleaseId("org.drools", "drools-core", "${version.org.drools}");
         ReleaseId releaseId = ks.newReleaseId("org.kie.test", "maven-test", "1.0-SNAPSHOT");
         InternalKieModule kJar1 = createKieJarWithProperties(ks, releaseId, true, "5.5.0.Final", new ReleaseId[]{dependency}, "rule1", "rule2");
         String pomText = generatePomXmlWithProperties(releaseId, "5.5.0.Final", dependency);
@@ -304,7 +304,7 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         sBuilder.append(" <packaging>jar</packaging> \n");
         sBuilder.append(" <name>Default</name> \n");
         sBuilder.append(" <properties> \n");
-        sBuilder.append(" <drools.version>"+droolsVersion+"</drools.version> \n");
+        sBuilder.append(" <version.org.drools>"+droolsVersion+"</version.org.drools> \n");
         sBuilder.append(" </properties> \n");
 
         if (dependencies.length > 0) {
