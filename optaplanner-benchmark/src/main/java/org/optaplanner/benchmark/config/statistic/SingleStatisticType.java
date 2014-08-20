@@ -20,16 +20,20 @@ import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
+import org.optaplanner.benchmark.impl.statistic.single.bestconstraintmatchtotal.ConstraintMatchTotalBestScoreSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypestepscore.PickedMoveTypeStepScoreDiffSingleStatistic;
 
 public enum SingleStatisticType implements StatisticType {
+    CONSTRAINT_MATCH_TOTAL_BEST_SCORE,
     PICKED_MOVE_TYPE_BEST_SCORE_DIFF,
     PICKED_MOVE_TYPE_STEP_SCORE_DIFF;
 
     public PureSingleStatistic buildPureSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         // Keep in sync with ProblemStatistic XStreamInclude list
         switch (this) {
+            case CONSTRAINT_MATCH_TOTAL_BEST_SCORE:
+                return new ConstraintMatchTotalBestScoreSingleStatistic(singleBenchmarkResult);
             case PICKED_MOVE_TYPE_BEST_SCORE_DIFF:
                 return new PickedMoveTypeBestScoreDiffSingleStatistic(singleBenchmarkResult);
             case PICKED_MOVE_TYPE_STEP_SCORE_DIFF:

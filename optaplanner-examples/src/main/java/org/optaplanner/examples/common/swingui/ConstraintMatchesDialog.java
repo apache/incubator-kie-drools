@@ -162,7 +162,7 @@ public class ConstraintMatchesDialog extends JDialog {
                 case 2:
                     return constraintMatchTotal.getScoreLevel();
                 case 3:
-                    return constraintMatchTotal.getConstraintMatchSet().size();
+                    return constraintMatchTotal.getConstraintMatchCount();
                 case 4:
                     return constraintMatchTotal.getWeightTotalAsNumber();
                 default:

@@ -24,6 +24,7 @@ import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.GraphSupport;
+import org.optaplanner.benchmark.impl.statistic.single.bestconstraintmatchtotal.ConstraintMatchTotalBestScoreSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypestepscore.PickedMoveTypeStepScoreDiffSingleStatistic;
 
@@ -31,6 +32,7 @@ import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypestepscore.P
  * 1 statistic of {@link SingleBenchmarkResult}
  */
 @XStreamInclude({
+        ConstraintMatchTotalBestScoreSingleStatistic.class,
         PickedMoveTypeBestScoreDiffSingleStatistic.class,
         PickedMoveTypeStepScoreDiffSingleStatistic.class
 })
