@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.exhaustivesearch.node;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.ScoreBounder;
 import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class ExhaustiveSearchNode {
 
@@ -32,7 +33,7 @@ public class ExhaustiveSearchNode {
     private Score score;
     /**
      * Never worse than the best possible score a leaf node below this node might lead to.
-     * @see ScoreBounder#calculateOptimisticBound
+     * @see ScoreBounder#calculateOptimisticBound(ScoreDirector, Score)
      */
     private Score optimisticBound;
 
@@ -102,6 +103,10 @@ public class ExhaustiveSearchNode {
         return layer.getEntity();
     }
 
+    public boolean isLastLayer() {
+        return layer.isLastLayer();
+    }
+
     public long getParentBreadth() {
         return parent == null ? -1 : parent.getBreadth();
     }
@@ -110,5 +115,6 @@ public class ExhaustiveSearchNode {
     public String toString() {
         return layer.getDepth() + "-" + breadth;
     }
+
 
 }

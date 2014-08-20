@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.exhaustivesearch;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecider;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchLayer;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
@@ -132,30 +134,39 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
         int depth = 0;
         int uninitializedVariableCount = phaseScope.getSolutionDescriptor()
                 .countUninitializedVariables(phaseScope.getWorkingSolution());
+        Collection<GenuineVariableDescriptor> genuineVariableDescriptors = entitySelector.getEntityDescriptor()
+                .getGenuineVariableDescriptors();
         for (Object entity : entitySelector) {
-            ExhaustiveSearchLayer layer = new ExhaustiveSearchLayer(depth, entity, uninitializedVariableCount - depth);
+            ExhaustiveSearchLayer layer = new ExhaustiveSearchLayer(depth, entity, uninitializedVariableCount);
             layerList.add(layer);
             depth++;
+            // Keep in sync with ExhaustiveSearchPhaseConfig.buildMoveSelectorConfig()
+            for (GenuineVariableDescriptor genuineVariableDescriptor : genuineVariableDescriptors) {
+                // Movable initialized variables are set uninitialized earlier
+                if (!genuineVariableDescriptor.isInitialized(entity)) {
+                    uninitializedVariableCount--;
+                }
+            }
         }
-        ExhaustiveSearchLayer layer = new ExhaustiveSearchLayer(depth, null, uninitializedVariableCount - depth);
+        ExhaustiveSearchLayer layer = new ExhaustiveSearchLayer(depth, null, uninitializedVariableCount);
         layerList.add(layer);
         entitySelector.stepEnded(stepScope);
         phaseScope.setLayerList(layerList);
     }
 
     private void initStartNode(ExhaustiveSearchPhaseScope phaseScope) {
-        ExhaustiveSearchLayer layer = phaseScope.getLayerList().get(0);
-        ExhaustiveSearchNode startNode = new ExhaustiveSearchNode(layer, null);
+        ExhaustiveSearchLayer startLayer = phaseScope.getLayerList().get(0);
+        ExhaustiveSearchNode startNode = new ExhaustiveSearchNode(startLayer, null);
 
         if (decider.isScoreBounderEnabled()) {
             ScoreDirector scoreDirector = phaseScope.getScoreDirector();
             Score score = scoreDirector.calculateScore();
             startNode.setScore(score);
             ScoreBounder scoreBounder = decider.getScoreBounder();
-            phaseScope.setBestPessimisticBound(scoreBounder.calculatePessimisticBound(
-                    scoreDirector, score, startNode.getUninitializedVariableCount()));
-            startNode.setOptimisticBound(scoreBounder.calculateOptimisticBound(
-                    scoreDirector, score, startNode.getUninitializedVariableCount()));
+            phaseScope.setBestPessimisticBound(startLayer.isLastLayer() ? score
+                    : scoreBounder.calculatePessimisticBound(scoreDirector, score));
+            startNode.setOptimisticBound(startLayer.isLastLayer() ? score
+                    : scoreBounder.calculateOptimisticBound(scoreDirector, score));
         }
 
         phaseScope.getExpandableNodeQueue().add(startNode);

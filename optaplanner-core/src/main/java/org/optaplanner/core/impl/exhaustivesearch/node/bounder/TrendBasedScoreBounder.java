@@ -33,18 +33,12 @@ public class TrendBasedScoreBounder implements ScoreBounder {
     }
 
     @Override
-    public Score calculateOptimisticBound(ScoreDirector scoreDirector, Score score, int uninitializedVariableCount) {
-        if (uninitializedVariableCount == 0) {
-            return score;
-        }
+    public Score calculateOptimisticBound(ScoreDirector scoreDirector, Score score) {
         return scoreDefinition.buildOptimisticBound(initializingScoreTrend, score);
     }
 
     @Override
-    public Score calculatePessimisticBound(ScoreDirector scoreDirector, Score score, int uninitializedVariableCount) {
-        if (uninitializedVariableCount == 0) {
-            return score;
-        }
+    public Score calculatePessimisticBound(ScoreDirector scoreDirector, Score score) {
         return scoreDefinition.buildPessimisticBound(initializingScoreTrend, score);
     }
 

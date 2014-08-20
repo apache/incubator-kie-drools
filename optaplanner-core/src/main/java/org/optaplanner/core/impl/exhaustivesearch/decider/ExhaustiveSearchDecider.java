@@ -26,6 +26,7 @@ import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchStepScop
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.ManualEntityMimicRecorder;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -150,8 +151,9 @@ public class ExhaustiveSearchDecider implements ExhaustiveSearchPhaseLifecycleLi
     private void processMove(ExhaustiveSearchStepScope stepScope, ExhaustiveSearchNode moveNode) {
         ExhaustiveSearchPhaseScope phaseScope = stepScope.getPhaseScope();
         int uninitializedVariableCount = moveNode.getUninitializedVariableCount();
+        boolean lastLayer = moveNode.isLastLayer();
         if (!scoreBounderEnabled) {
-            if (uninitializedVariableCount == 0) {
+            if (lastLayer) {
                 Score score = phaseScope.calculateScore();
                 moveNode.setScore(score);
                 if (assertMoveScoreFromScratch) {
@@ -167,19 +169,18 @@ public class ExhaustiveSearchDecider implements ExhaustiveSearchPhaseLifecycleLi
             if (assertMoveScoreFromScratch) {
                 phaseScope.assertWorkingScoreFromScratch(score, moveNode.getMove());
             }
-            if (uninitializedVariableCount == 0) {
+            if (lastLayer) {
                 // There is no point in bounding a fully initialized score
                 phaseScope.registerPessimisticBound(score);
                 bestSolutionRecaller.processWorkingSolutionDuringMove(uninitializedVariableCount, score, stepScope);
             } else {
-                Score optimisticBound = scoreBounder.calculateOptimisticBound(
-                        phaseScope.getScoreDirector(), score, uninitializedVariableCount);
+                InnerScoreDirector scoreDirector = phaseScope.getScoreDirector();
+                Score optimisticBound = scoreBounder.calculateOptimisticBound(scoreDirector, score);
                 moveNode.setOptimisticBound(optimisticBound);
                 if (optimisticBound.compareTo(phaseScope.getBestPessimisticBound()) > 0) {
                     // It's still worth investigating this node further (no need to prune it)
                     phaseScope.getExpandableNodeQueue().add(moveNode);
-                    Score pessimisticBound = scoreBounder.calculatePessimisticBound(
-                            phaseScope.getScoreDirector(), score, uninitializedVariableCount);
+                    Score pessimisticBound = scoreBounder.calculatePessimisticBound(scoreDirector, score);
                     phaseScope.registerPessimisticBound(pessimisticBound);
                 }
             }

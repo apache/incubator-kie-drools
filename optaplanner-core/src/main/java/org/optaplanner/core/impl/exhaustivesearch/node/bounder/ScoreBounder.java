@@ -27,23 +27,19 @@ public interface ScoreBounder {
      * Because we always maximize the {@link Score}, calling it lower bound would be a contradiction.
      * @param scoreDirector never null, use {@link ScoreDirector#getWorkingSolution()} to get the working {@link Solution}
      * @param score never null, the {@link Score} of the working {@link Solution}
-     * @param uninitializedVariableCount >= 0, the number of uninitialized variables in the working {@link Solution}.
-     * If 0, this method should return the score parameter.
      * @return never null, never worse than the best possible {@link Score} we can get
      * by initializing the uninitialized variables of the working {@link Solution}.
      */
-    Score calculateOptimisticBound(ScoreDirector scoreDirector, Score score, int uninitializedVariableCount);
+    Score calculateOptimisticBound(ScoreDirector scoreDirector, Score score);
 
     /**
      * In OR terms, this is called the upper bound if they minimize, and lower bound if they maximize.
      * Because we always maximize the {@link Score}, calling it upper bound would be a contradiction.
      * @param scoreDirector never null, use {@link ScoreDirector#getWorkingSolution()} to get the working {@link Solution}
      * @param score never null, the {@link Score} of the working {@link Solution}
-     * @param uninitializedVariableCount >= 0, the number of uninitialized variables in the working {@link Solution}.
-     * If 0, this method should return the score parameter.
      * @return never null, never better than the worst possible {@link Score} we can get
      * by initializing the uninitialized variables of the working {@link Solution}.
      */
-    Score calculatePessimisticBound(ScoreDirector scoreDirector, Score score, int uninitializedVariableCount);
+    Score calculatePessimisticBound(ScoreDirector scoreDirector, Score score);
 
 }

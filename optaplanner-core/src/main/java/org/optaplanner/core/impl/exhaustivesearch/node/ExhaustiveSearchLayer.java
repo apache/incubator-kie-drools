@@ -47,6 +47,10 @@ public class ExhaustiveSearchLayer {
     // Calculated methods
     // ************************************************************************
 
+    public boolean isLastLayer() {
+        return entity == null;
+    }
+
     public long assignBreadth() {
         long breadth = nextBreadth;
         nextBreadth++;

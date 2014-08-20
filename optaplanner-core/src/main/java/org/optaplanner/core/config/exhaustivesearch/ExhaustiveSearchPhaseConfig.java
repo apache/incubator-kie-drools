@@ -214,6 +214,7 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
         MoveSelectorConfig moveSelectorConfig_;
         if (moveSelectorConfig == null) {
             EntityDescriptor entityDescriptor = entitySelector.getEntityDescriptor();
+            // Keep in sync with org.optaplanner.core.impl.exhaustivesearch.DefaultExhaustiveSearchPhase.fillLayerList()
             Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
             List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<MoveSelectorConfig>(
                     variableDescriptors.size());
