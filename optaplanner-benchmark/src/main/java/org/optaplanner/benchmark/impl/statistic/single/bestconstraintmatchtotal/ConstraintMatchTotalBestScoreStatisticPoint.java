@@ -24,13 +24,19 @@ import org.optaplanner.core.impl.heuristic.move.CompositeMove;
 public class ConstraintMatchTotalBestScoreStatisticPoint extends StatisticPoint {
 
     private final long timeMillisSpent;
-    private final String constraintId;
+    protected final String constraintPackage;
+    protected final String constraintName;
+    protected final int scoreLevel;
     private final int constraintMatchCount;
     private final double weightTotal;
 
-    public ConstraintMatchTotalBestScoreStatisticPoint(long timeMillisSpent, String constraintId, int constraintMatchCount, double weightTotal) {
+    public ConstraintMatchTotalBestScoreStatisticPoint(long timeMillisSpent,
+            String constraintPackage, String constraintName, int scoreLevel,
+            int constraintMatchCount, double weightTotal) {
         this.timeMillisSpent = timeMillisSpent;
-        this.constraintId = constraintId;
+        this.constraintPackage = constraintPackage;
+        this.constraintName = constraintName;
+        this.scoreLevel = scoreLevel;
         this.constraintMatchCount = constraintMatchCount;
         this.weightTotal = weightTotal;
     }
@@ -39,8 +45,16 @@ public class ConstraintMatchTotalBestScoreStatisticPoint extends StatisticPoint 
         return timeMillisSpent;
     }
 
-    public String getConstraintId() {
-        return constraintId;
+    public String getConstraintPackage() {
+        return constraintPackage;
+    }
+
+    public String getConstraintName() {
+        return constraintName;
+    }
+
+    public int getScoreLevel() {
+        return scoreLevel;
     }
 
     public int getConstraintMatchCount() {
@@ -53,7 +67,7 @@ public class ConstraintMatchTotalBestScoreStatisticPoint extends StatisticPoint 
 
     @Override
     public String toCsvLine() {
-        return buildCsvLineWithStrings(timeMillisSpent, constraintId,
+        return buildCsvLineWithStrings(timeMillisSpent, constraintPackage, constraintName, Integer.toString(scoreLevel),
                 Integer.toString(constraintMatchCount), Double.toString(weightTotal));
     }
 
