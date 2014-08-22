@@ -185,6 +185,7 @@ public class SolverConfig {
                 : scoreDirectorFactoryConfig;
         InnerScoreDirectorFactory scoreDirectorFactory = scoreDirectorFactoryConfig_.buildScoreDirectorFactory(
                 environmentMode, solutionDescriptor);
+        solver.setConstraintMatchEnabledPreference(environmentMode.isAsserted());
         solver.setScoreDirectorFactory(scoreDirectorFactory);
         HeuristicConfigPolicy configPolicy = new HeuristicConfigPolicy(
                 environmentMode, scoreDirectorFactory);

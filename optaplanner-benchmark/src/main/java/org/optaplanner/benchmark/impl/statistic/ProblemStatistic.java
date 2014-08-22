@@ -42,6 +42,8 @@ import org.optaplanner.benchmark.impl.statistic.common.GraphSupport;
 import org.optaplanner.benchmark.impl.statistic.memoryuse.MemoryUseProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.stepscore.StepScoreProblemStatistic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 1 statistic of {@link ProblemBenchmarkResult}
@@ -55,6 +57,8 @@ import org.optaplanner.benchmark.impl.statistic.stepscore.StepScoreProblemStatis
         MemoryUseProblemStatistic.class
 })
 public abstract class ProblemStatistic {
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
     protected ProblemBenchmarkResult problemBenchmarkResult;

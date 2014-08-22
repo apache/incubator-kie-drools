@@ -35,6 +35,8 @@ import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 1 statistic of {@link SingleBenchmarkResult}
@@ -43,6 +45,8 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
         PureSingleStatistic.class
 })
 public abstract class SingleStatistic<P extends StatisticPoint> {
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
     protected SingleBenchmarkResult singleBenchmarkResult;

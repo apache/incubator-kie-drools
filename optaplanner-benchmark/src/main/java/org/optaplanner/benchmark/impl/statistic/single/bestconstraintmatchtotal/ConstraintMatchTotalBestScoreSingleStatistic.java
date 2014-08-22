@@ -34,9 +34,6 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.chart.renderer.xy.YIntervalRenderer;
-import org.jfree.data.xy.XYIntervalSeries;
-import org.jfree.data.xy.XYIntervalSeriesCollection;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
@@ -54,6 +51,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
 @XStreamAlias("constraintMatchTotalBestScoreSingleStatistic")
@@ -82,7 +80,9 @@ public class ConstraintMatchTotalBestScoreSingleStatistic extends PureSingleStat
     // ************************************************************************
 
     public void open(Solver solver) {
-        ((DefaultSolver) solver).addPhaseLifecycleListener(listener);
+        DefaultSolver defaultSolver = (DefaultSolver) solver;
+        defaultSolver.setConstraintMatchEnabledPreference(true);
+        defaultSolver.addPhaseLifecycleListener(listener);
     }
 
     public void close(Solver solver) {
@@ -90,6 +90,18 @@ public class ConstraintMatchTotalBestScoreSingleStatistic extends PureSingleStat
     }
 
     private class ConstraintMatchTotalBestScoreSingleStatisticListener extends PhaseLifecycleListenerAdapter {
+
+        private boolean constraintMatchEnabled;
+
+        @Override
+        public void phaseStarted(AbstractPhaseScope phaseScope) {
+            InnerScoreDirector scoreDirector = phaseScope.getScoreDirector();
+            constraintMatchEnabled = scoreDirector.isConstraintMatchEnabled();
+            if (!constraintMatchEnabled) {
+                logger.warn("The singleStatistic ({}) cannot function properly" +
+                        " because ConstraintMatches are not supported on the ScoreDirector.", singleStatisticType);
+            }
+        }
 
         @Override
         public void stepEnded(AbstractStepScope stepScope) {
@@ -99,7 +111,7 @@ public class ConstraintMatchTotalBestScoreSingleStatistic extends PureSingleStat
         }
 
         private void localSearchStepEnded(LocalSearchStepScope stepScope) {
-            if (stepScope.getBestScoreImproved()) {
+            if (constraintMatchEnabled && stepScope.getBestScoreImproved()) {
                 long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
                 for (ConstraintMatchTotal constraintMatchTotal
                         : stepScope.getScoreDirector().getConstraintMatchTotals()) {

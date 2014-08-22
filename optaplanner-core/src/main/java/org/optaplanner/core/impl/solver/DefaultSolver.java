@@ -49,6 +49,7 @@ public class DefaultSolver implements Solver {
 
     protected EnvironmentMode environmentMode;
     protected RandomFactory randomFactory;
+    protected boolean constraintMatchEnabledPreference = false;
     protected InnerScoreDirectorFactory scoreDirectorFactory;
 
     protected BasicPlumbingTermination basicPlumbingTermination;
@@ -75,6 +76,14 @@ public class DefaultSolver implements Solver {
 
     public void setRandomFactory(RandomFactory randomFactory) {
         this.randomFactory = randomFactory;
+    }
+
+    public boolean isConstraintMatchEnabledPreference() {
+        return constraintMatchEnabledPreference;
+    }
+
+    public void setConstraintMatchEnabledPreference(boolean constraintMatchEnabledPreference) {
+        this.constraintMatchEnabledPreference = constraintMatchEnabledPreference;
     }
 
     public InnerScoreDirectorFactory getScoreDirectorFactory() {
@@ -181,7 +190,7 @@ public class DefaultSolver implements Solver {
 
     public void solvingStarted(DefaultSolverScope solverScope) {
         solverScope.setWorkingRandom(randomFactory.createRandom());
-        solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(environmentMode.isAsserted()));
+        solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(constraintMatchEnabledPreference));
         solverScope.setWorkingSolutionFromBestSolution();
         bestSolutionRecaller.solvingStarted(solverScope);
         for (Phase phase : phaseList) {
