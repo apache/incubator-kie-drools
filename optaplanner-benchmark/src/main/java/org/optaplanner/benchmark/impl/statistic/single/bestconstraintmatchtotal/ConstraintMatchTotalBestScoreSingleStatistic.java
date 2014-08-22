@@ -44,9 +44,6 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
-import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepStatisticPoint;
-import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffStatisticPoint;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
@@ -125,7 +122,7 @@ public class ConstraintMatchTotalBestScoreSingleStatistic extends PureSingleStat
 
     @Override
     protected String getCsvHeader() {
-        return PickedMoveTypeBestScoreDiffStatisticPoint.buildCsvLine(
+        return ConstraintMatchTotalBestScoreStatisticPoint.buildCsvLine(
                 "timeMillisSpent", "constraintPackage", "constraintName", "scoreLevel",
                 "constraintMatchCount", "weightTotal");
     }
