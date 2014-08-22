@@ -11,6 +11,15 @@
       <inputSolutionFile>data/tsp/import/europe40.tsp</inputSolutionFile>
       <inputSolutionFile>data/tsp/import/lu980.tsp</inputSolutionFile>
       <problemStatisticType>BEST_SCORE</problemStatisticType>
+      <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
+      <!--<problemStatisticType>CALCULATE_COUNT_PER_SECOND</problemStatisticType>-->
+      <!--<problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>-->
+      <!--<problemStatisticType>MOVE_COUNT_PER_STEP</problemStatisticType>-->
+      <!--<problemStatisticType>MEMORY_USE</problemStatisticType>-->
+      <!--<singleStatisticType>CONSTRAINT_MATCH_TOTAL_BEST_SCORE</singleStatisticType>-->
+      <!--<singleStatisticType>CONSTRAINT_MATCH_TOTAL_STEP_SCORE</singleStatisticType>-->
+      <!--<singleStatisticType>PICKED_MOVE_TYPE_BEST_SCORE_DIFF</singleStatisticType>-->
+      <!--<singleStatisticType>PICKED_MOVE_TYPE_STEP_SCORE_DIFF</singleStatisticType>-->
     </problemBenchmarks>
 
     <solver>
