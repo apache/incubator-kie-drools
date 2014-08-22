@@ -155,7 +155,7 @@ public class ConstraintMatchTotalStepScoreSingleStatistic extends PureSingleStat
             if (scoreLevel >= BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE) {
                 continue;
             }
-            if (scoreLevel >= constraintIdToWeightSeriesMapList.size()) {
+            while (scoreLevel >= constraintIdToWeightSeriesMapList.size()) {
                 constraintIdToWeightSeriesMapList.add(new LinkedHashMap<String, XYSeries>());
             }
             Map<String, XYSeries> constraintIdToWeightSeriesMap = constraintIdToWeightSeriesMapList.get(scoreLevel);
