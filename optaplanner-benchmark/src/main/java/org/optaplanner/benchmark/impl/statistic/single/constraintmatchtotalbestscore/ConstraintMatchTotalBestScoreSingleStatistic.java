@@ -41,6 +41,7 @@ import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
@@ -117,6 +118,25 @@ public class ConstraintMatchTotalBestScoreSingleStatistic extends PureSingleStat
                             constraintMatchTotal.getScoreLevel(),
                             constraintMatchTotal.getConstraintMatchCount(),
                             constraintMatchTotal.getWeightTotalAsNumber().doubleValue()));
+                }
+            }
+        }
+
+        @Override
+        public void phaseEnded(AbstractPhaseScope phaseScope) {
+            if (phaseScope instanceof LocalSearchPhaseScope) {
+                if (constraintMatchEnabled && !pointList.isEmpty()) {
+                    // Draw horizontal lines from the last new best step to how long the solver actually ran
+                    // HACK because this also adds a entry in the CSV (and it should not do that)
+                    long timeMillisSpent = phaseScope.calculateSolverTimeMillisSpent();
+                    ConstraintMatchTotalBestScoreStatisticPoint previousPoint = pointList.get(pointList.size() - 1);
+                    pointList.add(new ConstraintMatchTotalBestScoreStatisticPoint(
+                            timeMillisSpent,
+                            previousPoint.getConstraintPackage(),
+                            previousPoint.getConstraintName(),
+                            previousPoint.getScoreLevel(),
+                            previousPoint.getConstraintMatchCount(),
+                            previousPoint.getWeightTotal()));
                 }
             }
         }
