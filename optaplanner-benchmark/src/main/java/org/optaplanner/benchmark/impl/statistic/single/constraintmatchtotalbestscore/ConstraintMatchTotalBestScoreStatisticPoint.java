@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.single.bestconstraintmatchtotal;
+package org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalbestscore;
 
-import org.optaplanner.benchmark.impl.aggregator.BenchmarkAggregator;
 import org.optaplanner.benchmark.impl.statistic.StatisticPoint;
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.heuristic.move.CompositeMove;
 
 public class ConstraintMatchTotalBestScoreStatisticPoint extends StatisticPoint {
 
