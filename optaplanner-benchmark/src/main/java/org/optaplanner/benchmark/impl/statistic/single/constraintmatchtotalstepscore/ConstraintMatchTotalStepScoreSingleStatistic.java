@@ -196,7 +196,7 @@ public class ConstraintMatchTotalStepScoreSingleStatistic extends PureSingleStat
         xAxis.setNumberFormatOverride(new MillisecondsSpentNumberFormat(locale));
         NumberAxis yAxis = new NumberAxis("Constraint match total weight level " + scoreLevelIndex);
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
-        yAxis.setAutoRangeIncludesZero(true);
+        yAxis.setAutoRangeIncludesZero(false);
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         plot.setOrientation(PlotOrientation.VERTICAL);
         return plot;
