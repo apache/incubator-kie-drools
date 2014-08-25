@@ -15,30 +15,30 @@ import java.util.Map;
 public class BayesRuntimeImpl implements BayesRuntime {
     private InternalKnowledgeRuntime runtime;
 
-    private Map<String, BayesInstance> instances;
+    //private Map<String, BayesInstance> instances;
 
     public BayesRuntimeImpl(InternalKnowledgeRuntime runtime) {
         this.runtime = runtime;
-        this.instances = new HashMap<String, BayesInstance>();
+        //this.instances = new HashMap<String, BayesInstance>();
     }
 
-    @Override
-    public BayesInstance getInstance(Class cls) {
-        // using the two-tone pattern, to ensure only one is created
-        BayesInstance instance = instances.get( cls.getName() );
-        if ( instance == null ) {
-            instance = createInstance(cls);
-        }
+//    @Override
+//    public BayesInstance createBayesFact(Class cls) {
+//        // using the two-tone pattern, to ensure only one is created
+//        BayesInstance instance = instances.get( cls.getName() );
+//        if ( instance == null ) {
+//            instance = createInstance(cls);
+//        }
+//
+//        return instance;
+//    }
 
-        return instance;
-    }
-
-    private synchronized  BayesInstance createInstance(Class cls) {
+    public  BayesInstance createInstance(Class cls) {
         // synchronised using the two-tone pattern, to ensure only one is created
-        BayesInstance instance = instances.get( cls.getName() );
-        if ( instance != null ) {
-            return instance;
-        }
+//        BayesInstance instance = instances.get( cls.getName() );
+//        if ( instance != null ) {
+//            return instance;
+//        }
 
 
         InternalKnowledgePackage kpkg = (InternalKnowledgePackage) runtime.getKieBase().getKiePackage( cls.getPackage().getName() );
@@ -46,8 +46,8 @@ public class BayesRuntimeImpl implements BayesRuntime {
         BayesPackage bayesPkg  = (BayesPackage) map.get( ResourceType.BAYES );
         JunctionTree jtree =  bayesPkg.getJunctionTree(cls.getSimpleName());
 
-        instance = new BayesInstance( jtree, cls );
-        instances.put( cls.getName() , instance );
+        BayesInstance instance = new BayesInstance( jtree, cls );
+//        instances.put( cls.getName() , instance );
 
         return instance;
     }

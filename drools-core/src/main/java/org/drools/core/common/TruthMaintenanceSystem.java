@@ -24,6 +24,8 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.ObjectHashMap;
+import org.kie.internal.runtime.beliefs.Belief;
+import org.kie.internal.runtime.beliefs.BeliefValue;
 
 /**
  * The Truth Maintenance System is responsible for tracking two things. Firstly
@@ -40,7 +42,7 @@ public class TruthMaintenanceSystem {
 
     private ObjectHashMap         equalityKeyMap;
 
-    private BeliefSystem          beliefSystem;
+    private BeliefSystem          defaultBeliefSystem;
 
     public TruthMaintenanceSystem() {}
 
@@ -53,7 +55,7 @@ public class TruthMaintenanceSystem {
         this.equalityKeyMap.setComparator( EqualityKeyComparator.getInstance() );
 
 
-        beliefSystem = wm.getKnowledgeBase().getConfiguration().getComponentFactory().getBeliefSystemFactory().createBeliefSystem(wm.getSessionConfiguration().getBeliefSystemType(), ep, this);
+        defaultBeliefSystem = wm.getKnowledgeBase().getConfiguration().getComponentFactory().getBeliefSystemFactory().createBeliefSystem(wm.getSessionConfiguration().getBeliefSystemType(), ep, this);
     }
 
     public ObjectHashMap getEqualityKeyMap() {
@@ -115,6 +117,12 @@ public class TruthMaintenanceSystem {
                                      final RuleImpl rule,
                                      final ObjectTypeConf typeConf,
                                      final boolean read) {
+        BeliefSystem beliefSystem = defaultBeliefSystem;
+        if ( value != null && value instanceof Belief) {
+            Belief beliefValue = (Belief) value;
+            beliefSystem = (BeliefSystem) beliefValue.getBeliefSystem();
+        }
+
         BeliefSet beliefSet = handle.getEqualityKey().getBeliefSet();
         if ( beliefSet == null ) {
             if ( context.getType() == PropagationContext.MODIFICATION ) {
@@ -142,6 +150,6 @@ public class TruthMaintenanceSystem {
     }
 
     public BeliefSystem getBeliefSystem() {
-        return beliefSystem;
+        return defaultBeliefSystem;
     } 
 }

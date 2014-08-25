@@ -21,6 +21,11 @@ public class BayesBeliefSet extends LinkedList implements BeliefSet {
 
     private int conflictCounter;
 
+    public BayesBeliefSet(InternalFactHandle rootHandle, BayesBeliefSystem beliefSystem) {
+        this.beliefSystem = beliefSystem;
+        this.rootHandle = rootHandle;
+    }
+
     @Override
     public BeliefSystem getBeliefSystem() {
         return beliefSystem;
@@ -28,6 +33,8 @@ public class BayesBeliefSet extends LinkedList implements BeliefSet {
 
     @Override
     public InternalFactHandle getFactHandle() {
+        LinkedListNode node = getFirst();
+        SimpleLogicalDependency ld = (SimpleLogicalDependency) ((LinkedListEntry) node).getObject();
         return rootHandle;
     }
 
@@ -37,7 +44,7 @@ public class BayesBeliefSet extends LinkedList implements BeliefSet {
         BayesHardEvidence evidence = (BayesHardEvidence) ld.getValue();
         if ( !isEmpty() ) {
             BayesHardEvidence firstEvidence = (BayesHardEvidence) ((SimpleLogicalDependency)((LinkedListEntry) getFirst() ).getObject()).getValue();
-            if (Arrays.equals( evidence.getDistribution(), firstEvidence.getDistribution()) ) {
+            if ( !Arrays.equals( evidence.getDistribution(), firstEvidence.getDistribution()) ) {
                 conflictCounter++;
             }
         }
@@ -48,6 +55,11 @@ public class BayesBeliefSet extends LinkedList implements BeliefSet {
     public void remove( LinkedListNode node ) {
         boolean wasFirst = getFirst() == node;
         super.remove(node);
+
+        if ( isEmpty() ) {
+            conflictCounter = 0;
+            return;
+        }
 
         LogicalDependency ld = (LogicalDependency) ((LinkedListEntry) node).getObject();
         BayesHardEvidence evidence = (BayesHardEvidence) ld.getValue();
@@ -64,7 +76,7 @@ public class BayesBeliefSet extends LinkedList implements BeliefSet {
                 }
             }
         } else if ( !Arrays.equals( evidence.getDistribution(), firstEvidence.getDistribution() ) ) {
-                conflictCounter--;
+            conflictCounter--;
         }
     }
 

@@ -72,7 +72,9 @@ public class JunctionTreeClique {
         return new CliqueState(this, Arrays.copyOf(potentials, potentials.length));
     }
 
-
+    public void resetState(CliqueState cliqueState) {
+        cliqueState.setPotentials( Arrays.copyOf(potentials, potentials.length) );
+    }
 
     @Override
     public String toString() {

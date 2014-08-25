@@ -2,10 +2,12 @@ package org.drools.beliefs.bayes;
 
 import org.drools.beliefs.graph.Graph;
 import org.drools.beliefs.graph.GraphNode;
+import org.drools.core.util.BitMaskUtil;
+import org.kie.api.runtime.rule.FactHandle;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,61 +18,94 @@ public class BayesInstance<T> {
     private Graph<BayesVariable>       graph;
     private JunctionTree               tree;
     private Map<String, BayesVariable> variables;
+    private Map<String, BayesVariable> fieldNames;
     private BayesLikelyhood[]          likelyhoods;
-    private boolean                    dirty;
+    private long                       dirty;
+    private long                       decided;
 
-    private CliqueState[]              cliqueStates;
-    private SeparatorState[]           sparatorStates;
-    private BayesVariableState[]       varStates;
+    private CliqueState[]        cliqueStates;
+    private SeparatorState[]     separatorStates;
+    private BayesVariableState[] varStates;
 
     private GlobalUpdateListener globalUpdateListener;
     private PassMessageListener  passMessageListener;
 
-    private int[]                targetParameterMap;
-    private Class<T>             targetClass;
-    private Constructor<T>       targetConstructor;
+    private int[]          targetParameterMap;
+    private Class<T>       targetClass;
+    private Constructor<T> targetConstructor;
 
     public BayesInstance(JunctionTree tree, Class<T> targetClass) {
-        this( tree );
+        this(tree);
         this.targetClass = targetClass;
-        buildParameterMapping( targetClass );
+        buildParameterMapping(targetClass);
+        buildFieldMappings( targetClass );
     }
 
     public BayesInstance(JunctionTree tree) {
         this.graph = tree.getGraph();
         this.tree = tree;
         variables = new HashMap<String, BayesVariable>();
-        varStates =  new BayesVariableState[graph.size()];
-        for (GraphNode<BayesVariable> node : graph) {
-            BayesVariable var = node.getContent();
-            variables.put(var.getName(), var);
-            varStates[var.getId()] = var.createState();
-        }
+        fieldNames = new HashMap<String, BayesVariable>();
+        likelyhoods = new BayesLikelyhood[graph.size()];
 
         cliqueStates = new CliqueState[tree.getJunctionTreeNodes().length];
         for (JunctionTreeClique clique : tree.getJunctionTreeNodes()) {
             cliqueStates[clique.getId()] = clique.createState();
         }
 
-        sparatorStates = new SeparatorState[tree.getJunctionTreeSeparators().length];
+        separatorStates = new SeparatorState[tree.getJunctionTreeSeparators().length];
         for ( JunctionTreeSeparator sep : tree.getJunctionTreeSeparators() ) {
-            sparatorStates[sep.getId()] = sep.createState();
+            separatorStates[sep.getId()] = sep.createState();
         }
 
-        likelyhoods = new BayesLikelyhood[graph.size()];
+        varStates = new BayesVariableState[graph.size()];
+        for (GraphNode<BayesVariable> node : graph) {
+            BayesVariable var = node.getContent();
+            variables.put(var.getName(), var);
+            varStates[var.getId()] = var.createState();
+        }
+    }
+
+    public void reset() {
+        for (JunctionTreeClique clique : tree.getJunctionTreeNodes()) {
+            clique.resetState(cliqueStates[clique.getId()]);
+        }
+
+        for ( JunctionTreeSeparator sep : tree.getJunctionTreeSeparators() ) {
+            sep.resetState(separatorStates[sep.getId()]);
+        }
+
+        for (GraphNode<BayesVariable> node : graph) {
+            BayesVariable var = node.getContent();
+            BayesVariableState varState =  varStates[var.getId()];
+            varState.setDistribution( new double[ varState.getDistribution().length]);
+        }
     }
 
     public void setTargetClass(Class<T> targetClass) {
         this.targetClass = targetClass;
         buildParameterMapping( targetClass );
+        buildFieldMappings( targetClass );
+    }
+
+    public void buildFieldMappings(Class<T> target) {
+        for ( Field field : target.getDeclaredFields() ) {
+            Annotation[] anns = field.getDeclaredAnnotations();
+            for ( Annotation ann : anns ) {
+                if (ann.annotationType() == VarName.class) {
+                    String varName = ((VarName)ann).value();
+                    BayesVariable var = variables.get(varName);
+                    fieldNames.put( field.getName(), var);
+                }
+            }
+        }
     }
 
     public  void buildParameterMapping(Class<T> target) {
         Constructor[] cons = target.getConstructors();
         if ( cons != null ) {
             for ( Constructor con : cons ) {
-                Annotation[] anns = con.getDeclaredAnnotations();
-                for ( Annotation ann : anns ) {
+                for ( Annotation ann : con.getDeclaredAnnotations() ) {
                     if ( ann.annotationType() == BayesVariableConstructor.class ) {
                         Class[] paramTypes = con.getParameterTypes();
 
@@ -124,17 +159,72 @@ public class BayesInstance<T> {
         return variables;
     }
 
+    public Map<String, BayesVariable> getFieldNames() {
+        return fieldNames;
+    }
+
+    public void setDecided(String varName, boolean bool) {
+
+    }
+
+    public void setDecided(BayesVariable var, boolean bool) {
+        // note this is reversed, when the bit is on, the var is undecided. Default state is decided
+        if ( !bool ) {
+            decided = BitMaskUtil.set(decided, var.getId());
+        } else {
+            decided = BitMaskUtil.reset(decided, var.getId());
+        }
+    }
+
+    public boolean isDecided() {
+        return decided == 0; // >0 means one ore more variables are undecided
+    }
+
+    public boolean isDirty() {
+        return dirty > 0; // >0 means ore or more variables are dirty
+    }
+
+    public void setLikelyhood(String varName, double[] distribution) {
+        BayesVariable var = variables.get( varName );
+        if (  var == null ) {
+            throw new IllegalArgumentException("Variable name does not exist: " + varName);
+        }
+        setLikelyhood( var, distribution );
+    }
+
+    public void unsetLikelyhood(BayesVariable var) {
+        int id = var.getId();
+        this.likelyhoods[id] = null;
+        dirty = BitMaskUtil.set(dirty, id);
+    }
+
+    public void setLikelyhood(BayesVariable var, double[] distribution) {
+        GraphNode node = graph.getNode( var.getId() );
+        JunctionTreeClique clique = tree.getJunctionTreeNodes( )[var.getFamily()];
+
+        setLikelyhood( new BayesLikelyhood(graph, clique, node, distribution ) );
+    }
+
     public void setLikelyhood(BayesLikelyhood likelyhood) {
-        BayesLikelyhood old = this.likelyhoods[likelyhood.getVariable().getId()];
+        int id = likelyhood.getVariable().getId();
+        BayesLikelyhood old = this.likelyhoods[id];
         if ( old == null || !old.equals( likelyhood ) ) {
             this.likelyhoods[likelyhood.getVariable().getId()] = likelyhood;
-            dirty = true;
+            dirty = BitMaskUtil.set(dirty, id);
         }
     }
 
     public void globalUpdate() {
+        if ( !isDecided() ) {
+            throw new IllegalStateException("Cannot perform global upset, while one ore more variables are undecided" );
+        }
+        if ( isDirty() ) {
+            reset();
+        }
         applyEvidence();
-        recurseGlobalUpdate(tree.getRoot());
+        //recurseGlobalUpdate(tree.getRoot());
+        globalUpdate(tree.getRoot());
+        dirty = 0;
     }
 
     public void applyEvidence() {
@@ -262,7 +352,7 @@ public class BayesInstance<T> {
      * @param targetClique
      */
     public void passMessage( JunctionTreeClique sourceClique, JunctionTreeSeparator sep, JunctionTreeClique targetClique) {
-        double[] sepPots = sparatorStates[sep.getId()].getPotentials();
+        double[] sepPots = separatorStates[sep.getId()].getPotentials();
         double[] oldSepPots = Arrays.copyOf(sepPots, sepPots.length);
 
         BayesVariable[] sepVars = sep.getValues().toArray(new BayesVariable[sep.getValues().size()]);
@@ -271,12 +361,12 @@ public class BayesInstance<T> {
             passMessageListener.beforeProjectAndAbsorb(sourceClique, sep, targetClique, oldSepPots);
         }
 
-        project(sepVars, cliqueStates[sourceClique.getId()], sparatorStates[sep.getId()]);
+        project(sepVars, cliqueStates[sourceClique.getId()], separatorStates[sep.getId()]);
         if ( passMessageListener != null ) {
             passMessageListener.afterProject(sourceClique, sep, targetClique, oldSepPots);
         }
 
-        absorb(sepVars, cliqueStates[targetClique.getId()], sparatorStates[sep.getId()], oldSepPots);
+        absorb(sepVars, cliqueStates[targetClique.getId()], separatorStates[sep.getId()], oldSepPots);
         if ( passMessageListener != null ) {
             passMessageListener.afterAbsorb(sourceClique, sep, targetClique, oldSepPots);
         }
@@ -361,6 +451,16 @@ public class BayesInstance<T> {
         }
     }
 
+//    public T createBayesFact() {
+//        Object[] args = new Object[targetParameterMap.length];
+//        args[0] = this;
+//        try {
+//            return targetConstructor.newInstance( args );
+//        } catch (Exception e) {
+//            throw new RuntimeException( "Unable to instantiate " + targetClass.getSimpleName() + " " + Arrays.asList( args ), e );
+//        }
+//    }
+
     public void marginalize(BayesVariableState varState) {
         CliqueState cliqueState = cliqueStates[varState.getVariable().getFamily()];
         JunctionTreeClique jtNode = cliqueState.getJunctionTreeClique();
@@ -373,8 +473,8 @@ public class BayesInstance<T> {
 //        System.out.println(" ");
     }
 
-    public SeparatorState[] getSparatorStates() {
-        return sparatorStates;
+    public SeparatorState[] getSeparatorStates() {
+        return separatorStates;
     }
 
     public CliqueState[] getCliqueStates() {
