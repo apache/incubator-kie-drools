@@ -96,6 +96,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     }
 
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
+        kieSession.fireAllRules();
         return workingScoreHolder.getConstraintMatchTotals();
     }
 

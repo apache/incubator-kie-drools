@@ -4578,3 +4578,5 @@ no longer have an uninitializedVariableCount parameter.
 Instead, if all the variables for a branch and bound algorithm are initialized,
 those methods are no called to determine the bounds (because the bound is the working score).
 If the uninitializedVariableCount is still needed for some reason, use the ScoreDirector to calculate it accurately.
+
+[MINOR] Before calling ScoreDirector.getConstraintMatchTotals(), it's no longer expected to call ScoreDirector.calculateScore() first.
