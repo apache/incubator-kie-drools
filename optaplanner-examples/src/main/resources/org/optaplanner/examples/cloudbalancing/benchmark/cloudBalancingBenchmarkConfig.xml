@@ -128,7 +128,7 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>Late acceptance</name>
+    <name>Late Acceptance</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>

@@ -59,96 +59,51 @@
         PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark();
         plannerBenchmark.benchmark();</programlisting>
 
-      <para>A basic benchmark configuration file looks something like this:</para>
+      <para>A benchmark configuration file looks like this:</para>
 
       <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;plannerBenchmark&gt;
   &lt;benchmarkDirectory&gt;local/data/nqueens&lt;/benchmarkDirectory&gt;
-  &lt;!--&lt;parallelBenchmarkCount&gt;AUTO&lt;/parallelBenchmarkCount&gt;--&gt;
-  &lt;warmUpSecondsSpentLimit&gt;30&lt;/warmUpSecondsSpentLimit&gt;
 
   &lt;inheritedSolverBenchmark&gt;
     &lt;problemBenchmarks&gt;
-      &lt;xStreamAnnotatedClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/xStreamAnnotatedClass&gt;
+      ...
       &lt;inputSolutionFile&gt;data/nqueens/unsolved/32queens.xml&lt;/inputSolutionFile&gt;
       &lt;inputSolutionFile&gt;data/nqueens/unsolved/64queens.xml&lt;/inputSolutionFile&gt;
-      &lt;problemStatisticType&gt;BEST_SCORE&lt;/problemStatisticType&gt;
     &lt;/problemBenchmarks&gt;
     &lt;solver&gt;
-      &lt;solutionClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
-      &lt;entityClass&gt;org.optaplanner.examples.nqueens.domain.Queen&lt;/entityClass&gt;
-      &lt;scoreDirectorFactory&gt;
-        &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
-        &lt;scoreDrl&gt;org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
-        &lt;initializingScoreTrend&gt;ONLY_DOWN&lt;/initializingScoreTrend&gt;
-      &lt;/scoreDirectorFactory&gt;
-      &lt;termination&gt;
-        &lt;secondsSpentLimit&gt;20&lt;/secondsSpentLimit&gt;
-      &lt;/termination&gt;
-      &lt;constructionHeuristic&gt;
-        &lt;constructionHeuristicType&gt;FIRST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
-      &lt;/constructionHeuristic&gt;
+      ...&lt;!-- Common solver configuration --&gt;
     &lt;/solver&gt;
   &lt;/inheritedSolverBenchmark&gt;
 
   &lt;solverBenchmark&gt;
-    &lt;name&gt;Entity tabu&lt;/name&gt;
+    &lt;name&gt;Tabu Search&lt;/name&gt;
     &lt;solver&gt;
-      &lt;localSearch&gt;
-        &lt;changeMoveSelector&gt;
-          &lt;selectionOrder&gt;ORIGINAL&lt;/selectionOrder&gt;
-        &lt;/changeMoveSelector&gt;
-        &lt;acceptor&gt;
-          &lt;entityTabuSize&gt;5&lt;/entityTabuSize&gt;
-        &lt;/acceptor&gt;
-        &lt;forager&gt;
-          &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
-        &lt;/forager&gt;
-      &lt;/localSearch&gt;
+      ...&lt;!-- Tabu Search specific solver configuration --&gt;
     &lt;/solver&gt;
   &lt;/solverBenchmark&gt;
   &lt;solverBenchmark&gt;
-    &lt;name&gt;Value tabu&lt;/name&gt;
+    &lt;name&gt;Simulated Annealing&lt;/name&gt;
     &lt;solver&gt;
-      &lt;localSearch&gt;
-        &lt;changeMoveSelector&gt;
-          &lt;selectionOrder&gt;ORIGINAL&lt;/selectionOrder&gt;
-        &lt;/changeMoveSelector&gt;
-        &lt;acceptor&gt;
-          &lt;valueTabuSize&gt;5&lt;/valueTabuSize&gt;
-        &lt;/acceptor&gt;
-        &lt;forager&gt;
-          &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
-        &lt;/forager&gt;
-      &lt;/localSearch&gt;
+      ...&lt;!-- Simulated Annealing specific solver configuration --&gt;
     &lt;/solver&gt;
   &lt;/solverBenchmark&gt;
   &lt;solverBenchmark&gt;
-    &lt;name&gt;Move tabu&lt;/name&gt;
+    &lt;name&gt;Late Acceptance&lt;/name&gt;
     &lt;solver&gt;
-      &lt;localSearch&gt;
-        &lt;changeMoveSelector&gt;
-          &lt;selectionOrder&gt;ORIGINAL&lt;/selectionOrder&gt;
-        &lt;/changeMoveSelector&gt;
-        &lt;acceptor&gt;
-          &lt;moveTabuSize&gt;5&lt;/moveTabuSize&gt;
-        &lt;/acceptor&gt;
-        &lt;forager&gt;
-          &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
-        &lt;/forager&gt;
-      &lt;/localSearch&gt;
+      ...&lt;!-- Late Acceptance specific solver configuration --&gt;
     &lt;/solver&gt;
   &lt;/solverBenchmark&gt;
 &lt;/plannerBenchmark&gt;</programlisting>
 
-      <para>This <literal>PlannerBenchmark</literal> will try 3 configurations (1 move tabu, 1 entity tabu and 1 value
-      tabu) on 2 data sets (32 and 64 queens), so it will run 6 solvers.</para>
+      <para>This <literal>PlannerBenchmark</literal> will try 3 configurations (Tabu Search, Simulated Annealing and
+      Late Acceptance) on 2 data sets (32queens and 64queens), so it will run 6 solvers.</para>
 
-      <para>Every <literal>&lt;solverBenchmark&gt;</literal> element contains a solver configuration (for example with a
-      local search solver phase) and one or more <literal>&lt;inputSolutionFile&gt;</literal> elements. It will run the
-      solver configuration on each of those unsolved solution files. The element <literal>name</literal> is optional,
-      because it is generated if absent. The inputSolutionFile is read by a <link
-      linkend="solutionFileIO">SolutionFileIO</link>.</para>
+      <para>Every <literal>&lt;solverBenchmark&gt;</literal> element contains a solver configuration and one or more
+      <literal>&lt;inputSolutionFile&gt;</literal> elements. It will run the solver configuration on each of those
+      unsolved solution files. The element <literal>name</literal> is optional, because it is generated if absent. The
+      <literal>inputSolutionFile</literal> is read by a <link linkend="solutionFileIO">SolutionFileIO</link> (relative
+      to the working directory).</para>
 
       <note>
         <para>Use a forward slash (<literal>/</literal>) as the file separator (for example in the element
@@ -158,14 +113,14 @@
         not work on Linux and Mac.</para>
       </note>
 
-      <para>To lower verbosity, the common part of multiple <literal>&lt;solverBenchmark&gt;</literal> elements can be
-      extracted to the <literal>&lt;inheritedSolverBenchmark&gt;</literal> element. Yet, every property can still be
+      <para>To lower verbosity, the common parts of multiple <literal>&lt;solverBenchmark&gt;</literal> elements are
+      extracted to the <literal>&lt;inheritedSolverBenchmark&gt;</literal> element. Every property can still be
       overwritten per <literal>&lt;solverBenchmark&gt;</literal> element. Note that inherited solver phases such as
       <literal>&lt;constructionHeuristic&gt;</literal> or <literal>&lt;localSearch&gt;</literal> are not overwritten but
       instead are added to the tail of the solver phases list.</para>
 
-      <para>You need to specify a <literal>&lt;benchmarkDirectory&gt;</literal> element (relative to the working
-      directory). A benchmark report will be written in that directory.</para>
+      <para>The benchmark report will be written in the directory specified the
+      <literal>&lt;benchmarkDirectory&gt;</literal> element (relative to the working directory).</para>
 
       <note>
         <para>It's recommended that the <literal>benchmarkDirectory</literal> is a directory ignored for source control
@@ -176,7 +131,121 @@
       <para>If an <literal>Exception</literal> or <literal>Error</literal> occurs in a single benchmark, the entire
       Benchmarker will not fail-fast (unlike everything else in OptaPlanner). Instead, the Benchmarker will continue to
       run all other benchmarks, write the benchmark report and then fail (if there is at least 1 failing single
-      benchmark). The failing benchmarks will be clearly marked in the benchmark report.</para>
+      benchmark). The failing benchmarks will be clearly marked as such in the benchmark report.</para>
+    </section>
+
+    <section xml:id="solutionFileIO">
+      <title>SolutionFileIO: input and output of Solution files</title>
+
+      <section xml:id="solutionFileIOInterface">
+        <title><literal>SolutionFileIO</literal> interface</title>
+
+        <para>The benchmarker needs to be able to read the input files to load a <literal>Solution</literal>. Also, it
+        might need to write the best <literal>Solution</literal> of each benchmark to an output file. For that it uses a
+        class that implements the <literal>SolutionFileIO</literal> interface:</para>
+
+        <programlisting language="java">public interface SolutionFileIO {
+
+    String getInputFileExtension();
+
+    String getOutputFileExtension();
+
+    Solution read(File inputSolutionFile);
+
+    void write(Solution solution, File outputSolutionFile);
+
+}</programlisting>
+      </section>
+
+      <section xml:id="xStreamSolutionFileIO">
+        <title><literal>XStreamSolutionFileIO</literal>: the default <literal>SolutionFileIO</literal></title>
+
+        <para>By default, a benchmarker uses a <literal>XStreamSolutionFileIO</literal> instance to read and write
+        solutions.</para>
+
+        <para>It's required to tell the benchmarker about your <literal>Solution</literal> class which is annotated with
+        XStream annotations:</para>
+
+        <programlisting language="xml">    &lt;problemBenchmarks&gt;
+      &lt;xStreamAnnotatedClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/xStreamAnnotatedClass&gt;
+      &lt;inputSolutionFile&gt;data/nqueens/unsolved/32queens.xml&lt;/inputSolutionFile&gt;
+      ...
+    &lt;/problemBenchmarks&gt;</programlisting>
+
+        <para>Those input files need to have been written with a <literal>XStreamSolutionFileIO</literal> instance, not
+        just any <literal>XStream</literal> instance, because the <literal>XStreamSolutionFileIO</literal> uses a
+        customized <literal>XStream</literal> instance.</para>
+
+        <warning>
+          <para>XStream (and XML in general) is a very verbose format. Reading or writing very large datasets in this
+          format can cause an <literal>OutOfMemoryError</literal> and performance degradation.</para>
+        </warning>
+      </section>
+
+      <section xml:id="customSolutionFileIO">
+        <title>Custom <literal>SolutionFileIO</literal></title>
+
+        <para>Alternatively, implement your own <literal>SolutionFileIO</literal> implementation and configure it with
+        the <literal>solutionFileIOClass</literal> element:</para>
+
+        <programlisting language="xml">    &lt;problemBenchmarks&gt;
+      &lt;solutionFileIOClass&gt;org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO&lt;/solutionFileIOClass&gt;
+      &lt;inputSolutionFile&gt;data/machinereassignment/import/model_a1_1.txt&lt;/inputSolutionFile&gt;
+      ...
+    &lt;/problemBenchmarks&gt;</programlisting>
+
+        <para>It's recommended that output files can be read as input files, which also implies that
+        <literal>getInputFileExtension()</literal> and <literal>getOutputFileExtension()</literal> return the same
+        value.</para>
+
+        <warning>
+          <para>A <literal>SolutionFileIO</literal> implementation must be thread-safe.</para>
+        </warning>
+      </section>
+
+      <section xml:id="readingAnInputSolutionFromADatabase">
+        <title>Reading an input solution from a database (or other repository)</title>
+
+        <para>The benchmark configuration currently expects an <literal>&lt;inputSolutionFile&gt;</literal> element for
+        each dataset. There are 2 ways to deal with this if your dataset is in a database or another type of
+        repository:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Extract the datasets from the database and serialize them to a local file (for example as XML with
+            <literal>XStreamSolutionFileIO</literal>). Then use those files an
+            <literal>&lt;inputSolutionFile&gt;</literal> elements. </para>
+          </listitem>
+
+          <listitem>
+            <para>For each dataset, create a txt file that holds the unique id of the dataset. Write <link
+            linkend="customSolutionFileIO">a custom <literal>SolutionFileIO</literal></link> that reads that identifier,
+            connects to the database and extract the problem identified by that id. Configure those txt files as
+            <literal>&lt;inputSolutionFile&gt;</literal> elements. </para>
+          </listitem>
+        </itemizedlist>
+
+        <note>
+          <para>Local files are always faster and don't require a network connection.</para>
+        </note>
+      </section>
+    </section>
+
+    <section xml:id="warmingUpTheHotSpotCompiler">
+      <title>Warming up the HotSpot compiler</title>
+
+      <para><emphasis role="bold">Without a warm up, the results of the first (or first few) benchmarks are not
+      reliable</emphasis>, because they will have lost CPU time on HotSpot JIT compilation (and possibly DRL compilation
+      too).</para>
+
+      <para>The avoid that distortion, the benchmarker can run some of the benchmarks for a specified amount of time,
+      before running the real benchmarks. Generally, a warm up of 30 seconds suffices:</para>
+
+      <programlisting language="xml">&lt;plannerBenchmark&gt;
+  ...
+  &lt;warmUpSecondsSpentLimit&gt;30&lt;/warmUpSecondsSpentLimit&gt;
+  ...
+&lt;/plannerBenchmark&gt;</programlisting>
     </section>
 
     <section xml:id="benchmarkBlueprint">
@@ -221,93 +290,6 @@
           First Fit Decreasing, Cheapest Insertion, ...).</para>
         </listitem>
       </itemizedlist>
-    </section>
-
-    <section xml:id="solutionFileIO">
-      <title>SolutionFileIO: input and output of Solution files</title>
-
-      <section xml:id="solutionFileIOInterface">
-        <title><literal>SolutionFileIO</literal> interface</title>
-
-        <para>The benchmarker needs to be able to read the input files to load a <literal>Solution</literal>. Also, it
-        might need to write the best <literal>Solution</literal> of each benchmark to an output file. For that it uses a
-        class that implements the <literal>SolutionFileIO</literal> interface:</para>
-
-        <programlisting language="java">public interface SolutionFileIO {
-
-    String getInputFileExtension();
-
-    String getOutputFileExtension();
-
-    Solution read(File inputSolutionFile);
-
-    void write(Solution solution, File outputSolutionFile);
-
-}</programlisting>
-      </section>
-
-      <section xml:id="xStreamSolutionFileIO">
-        <title><literal>XStreamSolutionFileIO</literal>: the default <literal>SolutionFileIO</literal></title>
-
-        <para>By default, a benchmarker uses a <literal>XStreamSolutionFileIO</literal> instance to read and write
-        solutions.</para>
-
-        <para>You need to tell the benchmarker about your <literal>Solution</literal> class which is annotated with
-        XStream annotations:</para>
-
-        <programlisting language="xml">    &lt;problemBenchmarks&gt;
-      &lt;xStreamAnnotatedClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/xStreamAnnotatedClass&gt;
-      &lt;inputSolutionFile&gt;data/nqueens/unsolved/32queens.xml&lt;/inputSolutionFile&gt;
-      ...
-    &lt;/problemBenchmarks&gt;</programlisting>
-
-        <para>Your input files need to have been written with a <literal>XStreamSolutionFileIO</literal> instance, not
-        just any <literal>XStream</literal> instance, because the <literal>XStreamSolutionFileIO</literal> uses a
-        customized <literal>XStream</literal> instance.</para>
-
-        <warning>
-          <para>XStream (and XML in general) is a very verbose format. Reading or writing large datasets in this format
-          can cause an <literal>OutOfMemoryError</literal> and performance degradation.</para>
-        </warning>
-      </section>
-
-      <section xml:id="customSolutionFileIO">
-        <title>Custom <literal>SolutionFileIO</literal></title>
-
-        <para>Alternatively, you can implement your own <literal>SolutionFileIO</literal> implementation and configure
-        it with the <literal>solutionFileIOClass</literal> element:</para>
-
-        <programlisting language="xml">    &lt;problemBenchmarks&gt;
-      &lt;solutionFileIOClass&gt;org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO&lt;/solutionFileIOClass&gt;
-      &lt;inputSolutionFile&gt;data/machinereassignment/import/model_a1_1.txt&lt;/inputSolutionFile&gt;
-      ...
-    &lt;/problemBenchmarks&gt;</programlisting>
-
-        <para>It's highly recommended that output files can be read as input files, which also implies that
-        <literal>getInputFileExtension()</literal> and <literal>getOutputFileExtension()</literal> return the same
-        value.</para>
-
-        <warning>
-          <para>A <literal>SolutionFileIO</literal> implementation must be thread-safe.</para>
-        </warning>
-      </section>
-    </section>
-
-    <section xml:id="warmingUpTheHotSpotCompiler">
-      <title>Warming up the HotSpot compiler</title>
-
-      <para><emphasis role="bold">Without a warm up, the results of the first (or first few) benchmarks are not
-      reliable</emphasis>, because they will have lost CPU time on HotSpot JIT compilation (and possibly DRL compilation
-      too).</para>
-
-      <para>The avoid that distortion, the benchmarker can run some of the benchmarks for a specified amount of time,
-      before running the real benchmarks. Generally, a warm up of 30 seconds suffices:</para>
-
-      <programlisting language="xml">&lt;plannerBenchmark&gt;
-  ...
-  &lt;warmUpSecondsSpentLimit&gt;30&lt;/warmUpSecondsSpentLimit&gt;
-  ...
-&lt;/plannerBenchmark&gt;</programlisting>
     </section>
 
     <section xml:id="writingTheOutputSolutionOfTheBenchmarkRuns">
