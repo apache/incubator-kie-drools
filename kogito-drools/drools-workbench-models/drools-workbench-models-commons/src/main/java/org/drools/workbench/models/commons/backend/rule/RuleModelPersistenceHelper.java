@@ -313,20 +313,20 @@ class RuleModelPersistenceHelper {
                                final String param,
                                final Map<String, String> boundParams,
                                final boolean isJavaDialect ) {
-        if ( dataType == DataType.TYPE_DATE ) {
+        if ( DataType.TYPE_DATE.equals( dataType ) ) {
             return param.substring( "sdf.parse(\"".length(),
                                     param.length() - 2 );
-        } else if ( dataType == DataType.TYPE_STRING ) {
+        } else if ( DataType.TYPE_STRING.equals( dataType ) ) {
             return param.substring( 1,
                                     param.length() - 1 );
-        } else if ( dataType == DataType.TYPE_NUMERIC_BIGDECIMAL ) {
+        } else if ( DataType.TYPE_NUMERIC_BIGDECIMAL.equals( dataType ) ) {
             if ( isJavaDialect ) {
                 return param.substring( "new java.math.BigDecimal(\"".length(),
                                         param.length() - 2 );
             } else {
                 return param.substring( 0, param.length() - 1 );
             }
-        } else if ( dataType == DataType.TYPE_NUMERIC_BIGINTEGER ) {
+        } else if ( DataType.TYPE_NUMERIC_BIGINTEGER.equals( dataType ) ) {
             if ( isJavaDialect ) {
                 return param.substring( "new java.math.BigInteger(\"".length(),
                                         param.length() - 2 );

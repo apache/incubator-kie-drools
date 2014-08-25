@@ -68,7 +68,7 @@ public class Field extends VerifierComponent<BaseDescr>
 
     public void setFieldType(String fieldType) {
         // Only set fieldType to variable if there is no other fieldType found.
-        if ( fieldType == VARIABLE && this.fieldType == null ) {
+        if (VARIABLE.equals(fieldType) && this.fieldType == null) {
             this.fieldType = fieldType;
         } else {
             this.fieldType = fieldType;

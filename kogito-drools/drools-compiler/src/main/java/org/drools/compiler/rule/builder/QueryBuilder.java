@@ -76,7 +76,7 @@ public class QueryBuilder implements EngineElementBuilder {
                                                        queryDescr,
                                                        e,
                                                        "Unable to resolve abducible constructor for type : " + returnName +
-                                                       " with types " + types ) );
+                                                       " with types " + Arrays.toString( types ) ) );
 
             }
         }

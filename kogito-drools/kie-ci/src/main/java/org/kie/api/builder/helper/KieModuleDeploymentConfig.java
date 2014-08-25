@@ -112,7 +112,7 @@ public class KieModuleDeploymentConfig {
                 throw new IllegalStateException("No artifactId has been set yet.");
             } else if (version == null) {
                 throw new IllegalStateException("No version has been set yet.");
-            } else if (groupId == artifactId && artifactId == version && version == null) {
+            } else if (groupId.equals(artifactId) && artifactId.equals(version) && version == null) {
                 throw new IllegalStateException("None of groupId, artifactId, version or releaseId have been set.");
             }
         }

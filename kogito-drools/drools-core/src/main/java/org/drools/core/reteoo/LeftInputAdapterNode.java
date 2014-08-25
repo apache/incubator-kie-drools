@@ -585,8 +585,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         private long              nodePosMaskBit;
 
-        private Deque<RightTuple> dequeu;
-
         public LiaNodeMemory() {
         }
 

@@ -468,7 +468,7 @@ public class GroupElement extends ConditionalElement
         }
 
         private boolean isConsequenceInvoker(RuleConditionElement rce, String consequenceName) {
-            if ( consequenceName == RuleImpl.DEFAULT_CONSEQUENCE_NAME ) {
+            if ( RuleImpl.DEFAULT_CONSEQUENCE_NAME.equals( consequenceName ) ) {
                 return false;
             }
             if ( rce instanceof NamedConsequenceInvoker && ((NamedConsequenceInvoker)rce).invokesConsequence(consequenceName) ) {
