@@ -32,6 +32,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.renderer.xy.XYStepRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
@@ -175,7 +176,8 @@ public class ConstraintMatchTotalStepScoreSingleStatistic extends PureSingleStat
         graphFileList = new ArrayList<File>(constraintIdToWeightSeriesMapList.size());
         for (int scoreLevelIndex = 0; scoreLevelIndex < constraintIdToWeightSeriesMapList.size(); scoreLevelIndex++) {
             XYPlot plot = createPlot(benchmarkReport, scoreLevelIndex);
-            XYItemRenderer renderer = new XYLineAndShapeRenderer(true, false);
+            // No direct ascending lines between 2 points, but a stepping line instead
+            XYItemRenderer renderer = new XYStepRenderer();
             plot.setRenderer(renderer);
             XYSeriesCollection seriesCollection = new XYSeriesCollection();
             for (XYSeries series : constraintIdToWeightSeriesMapList.get(scoreLevelIndex).values()) {
