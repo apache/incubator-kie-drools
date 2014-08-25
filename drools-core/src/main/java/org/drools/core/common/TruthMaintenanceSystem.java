@@ -38,8 +38,6 @@ public class TruthMaintenanceSystem {
 
     private StatefulKnowledgeSessionImpl wm;
 
-    private NamedEntryPoint       ep;
-
     private ObjectHashMap         equalityKeyMap;
 
     private BeliefSystem          defaultBeliefSystem;

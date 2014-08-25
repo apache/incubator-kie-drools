@@ -225,7 +225,8 @@ public class PredicateConstraint extends MutableTypeConstraint
     }
 
     public String toString() {
-        return "[PredicateConstraint previousDeclarations=" + this.previousDeclarations + " localDeclarations=" + this.localDeclarations + "]";
+        return "[PredicateConstraint previousDeclarations=" + Arrays.toString(this.previousDeclarations) +
+                " localDeclarations=" + Arrays.toString(this.localDeclarations) + "]";
     }
 
     public int hashCode() {
