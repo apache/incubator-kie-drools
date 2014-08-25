@@ -16,4 +16,8 @@ public class CliqueState {
     public double[] getPotentials() {
         return potentials;
     }
+
+    public void setPotentials(double[] potentials) {
+        this.potentials = potentials;
+    }
 }

@@ -40,7 +40,7 @@ public class SprinkerTest {
         connectParentToChildren( rainNode, wetGrassNode);
 
         cloudyNode.setContent(cloudy);
-        sprinklerNode.setContent(sprinkler);
+        sprinklerNode.setContent( sprinkler);
         rainNode.setContent( rain );
         wetGrassNode.setContent( wetGrass );
 
@@ -76,6 +76,49 @@ public class SprinkerTest {
         assertArray( new double[]{0.7, 0.3},  scaleDouble(3, bayesInstance.marginalize("Sprinkler").getDistribution()) );
 
         assertArray( new double[]{0.353, 0.647},  scaleDouble( 3,  bayesInstance.marginalize("WetGrass").getDistribution() ) );
+    }
+
+    @Test
+    public void testGrassWetEvidence() {
+        JunctionTreeBuilder jtBuilder = new JunctionTreeBuilder( graph );
+        JunctionTree jTree = jtBuilder.build();
+
+        JunctionTreeClique jtNode = jTree.getRoot();
+        BayesInstance bayesInstance = new BayesInstance(jTree);
+
+        bayesInstance.setLikelyhood( "WetGrass", new double[]{1.0, 0.0} );
+
+        bayesInstance.globalUpdate();
+
+        assertArray(new double[]{0.639, 0.361}, scaleDouble(3, bayesInstance.marginalize("Cloudy").getDistribution()));
+
+        assertArray( new double[]{0.881, 0.119},  scaleDouble( 3,  bayesInstance.marginalize("Rain").getDistribution()  ) );
+
+        assertArray( new double[]{0.938, 0.062},  scaleDouble(3, bayesInstance.marginalize("Sprinkler").getDistribution()) );
+
+        assertArray( new double[]{1.0, 0.0},  scaleDouble( 3,  bayesInstance.marginalize("WetGrass").getDistribution() ) );
+    }
+
+    @Test
+    public void testSprinklerEvidence() {
+        JunctionTreeBuilder jtBuilder = new JunctionTreeBuilder( graph );
+        JunctionTree jTree = jtBuilder.build();
+
+        JunctionTreeClique jtNode = jTree.getRoot();
+        BayesInstance bayesInstance = new BayesInstance(jTree);
+
+        bayesInstance.setLikelyhood( "Sprinkler", new double[]{1.0, 0.0} );
+        bayesInstance.setLikelyhood( "Cloudy", new double[]{1.0, 0.0} );
+
+        bayesInstance.globalUpdate();
+
+        assertArray(new double[]{1.0, 0.0}, scaleDouble(3, bayesInstance.marginalize("Cloudy").getDistribution()));
+
+        assertArray( new double[]{0.8, 0.2},  scaleDouble( 3,  bayesInstance.marginalize("Rain").getDistribution()  ) );
+
+        assertArray( new double[]{1.0, 0.0},  scaleDouble(3, bayesInstance.marginalize("Sprinkler").getDistribution()) );
+
+        assertArray( new double[]{0.82, 0.18},  scaleDouble( 3,  bayesInstance.marginalize("WetGrass").getDistribution() ) );
     }
 
     public static void marginalize(BayesVariableState varState,  CliqueState cliqueState) {

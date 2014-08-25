@@ -18,6 +18,10 @@ public class BayesVariableState {
         return distribution;
     }
 
+    public void setDistribution(double[] distribution) {
+        this.distribution = distribution;
+    }
+
     public Object[] getOutcomes() {
         return outcomes;
     }

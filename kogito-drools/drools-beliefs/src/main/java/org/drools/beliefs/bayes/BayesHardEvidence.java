@@ -1,11 +1,17 @@
 package org.drools.beliefs.bayes;
 
+import org.drools.core.beliefsystem.BeliefSystem;
+import org.kie.internal.runtime.beliefs.Belief;
+
 import java.util.Arrays;
 
-public class BayesHardEvidence {
+public class BayesHardEvidence implements Belief {
     private double[] distribution;
+    private BeliefSystem beliefSystem;
 
-    public BayesHardEvidence(double[] distribution) {
+    public BayesHardEvidence(BeliefSystem beliefSystem,
+                             double[] distribution) {
+        this.beliefSystem = beliefSystem;
         this.distribution = distribution;
     }
 
@@ -28,5 +34,10 @@ public class BayesHardEvidence {
     @Override
     public int hashCode() {
         return Arrays.hashCode(distribution);
+    }
+
+    @Override
+    public Object getBeliefSystem() {
+        return beliefSystem;
     }
 }

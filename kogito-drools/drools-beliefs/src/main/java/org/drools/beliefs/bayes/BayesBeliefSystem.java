@@ -3,6 +3,7 @@ package org.drools.beliefs.bayes;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.simple.SimpleBeliefSet;
+import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
@@ -12,6 +13,7 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedListEntry;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class BayesBeliefSystem implements BeliefSystem {
     private NamedEntryPoint        ep;
@@ -31,48 +33,74 @@ public class BayesBeliefSystem implements BeliefSystem {
 
         beliefSet.add(node.getJustifierEntry());
 
-        PropertyReference evidence = (PropertyReference) beliefSet.getFactHandle().getObject();
-        if (wasEmpty) {
-            InternalFactHandle handle = beliefSet.getFactHandle();
+//        if ( !wasUndecided && !beliefSet.isUndecided() ) {
+//            // was decided before, still decided, so do nothing.
+//            return;
+//        }
 
+        node = (( LinkedListEntry<LogicalDependency>) beliefSet.getFirst()).getObject();
 
-//            ep.insert(handle,
-//                      handle.getObject(),
-//                      node.getJustifier().getRule(),
-//                      node.getJustifier(),
-//                      typeConf,
-//                       null );
-        } else if ( !wasUndecided && beliefSet.isUndecided() ) {
-            // was decided, and now is not, so delete
+        BayesHardEvidence evidence = ( BayesHardEvidence ) node.getValue();
+        PropertyReference propRef = (PropertyReference)node.getObject();
+
+        BayesFact bayesFact = (BayesFact) propRef.getInstance();
+        BayesInstance bayesInstance = bayesFact.getBayesInstance();
+
+        FactHandle fh = beliefSet.getFactHandle();
+
+        BayesVariable var = ( BayesVariable ) bayesInstance.getFieldNames().get( propRef.getName() );
+        if ( !wasUndecided && beliefSet.isUndecided() ) {
+            // was decided, not undecided
+            bayesInstance.setDecided(var, false);
+            bayesInstance.setLikelyhood( var,null );
+        } else {
+            // either it was empty, or it was undecided and now decided.
+            bayesInstance.setDecided(var, true);
+            bayesInstance.setLikelyhood( var, evidence.getDistribution() );
         }
     }
 
     @Override
     public void delete(LogicalDependency node, BeliefSet beliefSet, PropagationContext context) {
-        SimpleBeliefSet sBeliefSet = (SimpleBeliefSet) beliefSet;
+        boolean wasUndecided = beliefSet.isUndecided();
+
         beliefSet.remove( node.getJustifierEntry() );
 
-        InternalFactHandle bfh = beliefSet.getFactHandle();
+//        if ( !wasUndecided && !beliefSet.isUndecided() ) {
+//            // was decided before, still decided, so do nothing.
+//            return;
+//        }
 
-        if ( beliefSet.isEmpty() && bfh.getEqualityKey().getStatus() != EqualityKey.STATED &&
-             !((context.getType() == PropagationContext.DELETION || context.getType() == PropagationContext.MODIFICATION) // retract and modifies clean up themselves
-               &&
-               context.getFactHandle() == bfh) ) {
+        PropertyReference propRef = (PropertyReference)node.getObject();
+        BayesFact bayesFact = (BayesFact) propRef.getInstance();
+        BayesInstance bayesInstance = bayesFact.getBayesInstance();
+        BayesVariable var = ( BayesVariable ) bayesInstance.getFieldNames().get( propRef.getName() );
 
-            ((NamedEntryPoint) bfh.getEntryPoint()).delete( bfh, context.getRuleOrigin(), node.getJustifier());
-
-        } else if ( !beliefSet.isEmpty() && beliefSet.getFactHandle().getObject() == node.getObject() && node.getObject() != bfh.getObject() ) {
-            // prime has changed, to update new object
-            // Equality might have changed on the object, so remove (which uses the handle id) and add back in
-            ((NamedEntryPoint)bfh.getEntryPoint()).getObjectStore().updateHandle( bfh,  ((LinkedListEntry<LogicalDependency>) beliefSet.getFirst()).getObject().getObject() );
-
-            ((NamedEntryPoint) bfh.getEntryPoint() ).update( bfh, true, bfh.getObject(), Long.MAX_VALUE, Object.class, null );
+        boolean empty = beliefSet.isEmpty();
+        if ( empty) {
+            // if the last one was just removed,
+            // then if there was a conflict it was resolved when the second to last was removed
+            bayesInstance.unsetLikelyhood( var );
+            return;
         }
+
+        node = (( LinkedListEntry<LogicalDependency>) beliefSet.getFirst()).getObject();
+        BayesHardEvidence evidence = ( BayesHardEvidence ) node.getValue();
+
+        if ( !wasUndecided && beliefSet.isUndecided() ) {
+            // was decided, now undecided
+            bayesInstance.setDecided(var, false);
+            bayesInstance.unsetLikelyhood( var );
+        } else if ( wasUndecided && !beliefSet.isUndecided() ) {
+            // was undecided, now decided
+            bayesInstance.setDecided(var, true);
+            bayesInstance.setLikelyhood( var, evidence.getDistribution() );
+        }  // else no change
     }
 
     @Override
     public BeliefSet newBeliefSet(InternalFactHandle fh) {
-        return null;
+        return new BayesBeliefSet(fh, this);
     }
 
     @Override

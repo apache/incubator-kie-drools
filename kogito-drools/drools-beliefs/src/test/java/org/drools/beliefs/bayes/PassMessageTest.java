@@ -35,7 +35,7 @@ public class PassMessageTest {
         JunctionTree jtree = new JunctionTree(graph, node1, new JunctionTreeClique[] { node1, node2 }, new JunctionTreeSeparator[] { sep});
         BayesInstance bayesInstance = new BayesInstance(jtree);
 
-        SeparatorState sepState = bayesInstance.getSparatorStates()[0];
+        SeparatorState sepState = bayesInstance.getSeparatorStates()[0];
         sepState.getPotentials()[0] = 0.4;
         sepState.getPotentials()[1] = 0.5;
 

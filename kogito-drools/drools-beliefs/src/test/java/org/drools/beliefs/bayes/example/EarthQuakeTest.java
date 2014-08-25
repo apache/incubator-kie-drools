@@ -26,11 +26,11 @@ public class EarthQuakeTest {
     GraphNode<BayesVariable> johnCallsNode  = graph.addNode();
     GraphNode<BayesVariable> maryCallsNode  = graph.addNode();
 
-    BayesVariable burglary   = new BayesVariable<String>("Burglary", burglaryNode.getId(), new String[]{"true", "false"}, new double[][]{{0.001, 0.999}});
-    BayesVariable earthquake = new BayesVariable<String>("Earthquake", earthquakeNode.getId(), new String[]{"true", "false"}, new double[][]{{0.002, 0.998}});
-    BayesVariable alarm      = new BayesVariable<String>("Alarm", alarmNode.getId(), new String[]{"true", "false"}, new double[][]{{0.95, 0.05}, {0.94, 0.06}, {0.29, 0.71}, {0.001, 0.999}});
-    BayesVariable johnCalls  = new BayesVariable<String>("JohnCalls", johnCallsNode.getId(), new String[]{"true", "false"}, new double[][]{{0.90, 0.1}, {0.05, 0.95}});
-    BayesVariable maryCalls  = new BayesVariable<String>("MaryCalls", maryCallsNode.getId(), new String[]{"true", "false"}, new double[][]{{0.7, 0.3}, {0.01, 0.99}});
+    BayesVariable burglary   = new BayesVariable<String>("Burglary", burglaryNode.getId(), new String[]{"false", "true"}, new double[][]{{0.001, 0.999}});
+    BayesVariable earthquake = new BayesVariable<String>("Earthquake", earthquakeNode.getId(), new String[]{"false", "true"}, new double[][]{{0.002, 0.998}});
+    BayesVariable alarm      = new BayesVariable<String>("Alarm", alarmNode.getId(), new String[]{"false", "true"}, new double[][]{{0.95, 0.05}, {0.94, 0.06}, {0.29, 0.71}, {0.001, 0.999}});
+    BayesVariable johnCalls  = new BayesVariable<String>("JohnCalls", johnCallsNode.getId(), new String[]{"false", "true"}, new double[][]{{0.90, 0.1}, {0.05, 0.95}});
+    BayesVariable maryCalls  = new BayesVariable<String>("MaryCalls", maryCallsNode.getId(), new String[]{"false", "true"}, new double[][]{{0.7, 0.3}, {0.01, 0.99}});
 
     BayesVariableState burglaryState;
     BayesVariableState earthquakeState;
@@ -108,7 +108,7 @@ public class EarthQuakeTest {
     public void testAlarmEvidence() {
         BayesInstance bayesInstance = new BayesInstance(jTree);
 
-        bayesInstance.setLikelyhood(new BayesLikelyhood(graph, jtNode3, alarmNode, new double[]{1.0, 0.0}));
+        bayesInstance.setLikelyhood( "Alarm", new double[]{1.0, 0.0} );
 
         bayesInstance.globalUpdate();
 
@@ -126,7 +126,7 @@ public class EarthQuakeTest {
     public void testEathQuakeEvidence() {
         BayesInstance bayesInstance = new BayesInstance(jTree);
 
-        bayesInstance.setLikelyhood(new BayesLikelyhood(graph, jtNode3, earthquakeNode, new double[]{1.0, 0.0}));
+        bayesInstance.setLikelyhood("Earthquake", new double[]{1.0, 0.0});
         bayesInstance.globalUpdate();
 
         assertArray( new double[]{0.297, 0.703}, scaleDouble(3, bayesInstance.marginalize("JohnCalls").getDistribution()) );
@@ -144,7 +144,7 @@ public class EarthQuakeTest {
     public void testJoinCallsEvidence() {
         BayesInstance bayesInstance = new BayesInstance(jTree);
 
-        bayesInstance.setLikelyhood(new BayesLikelyhood(graph, jtNode1, johnCallsNode, new double[]{1.0, 0.0}));
+        bayesInstance.setLikelyhood("JohnCalls", new double[]{1.0, 0.0});
         bayesInstance.globalUpdate();
 
         assertArray( new double[]{1.0, 0.0}, scaleDouble(3, bayesInstance.marginalize("JohnCalls").getDistribution()) );
@@ -161,9 +161,9 @@ public class EarthQuakeTest {
     @Test
     public void testEarthquakeAndJohnCallsEvidence() {
         BayesInstance bayesInstance = new BayesInstance(jTree);
-        bayesInstance.setLikelyhood(new BayesLikelyhood(graph, jtNode1, johnCallsNode, new double[]{1.0, 0.0}));
+        bayesInstance.setLikelyhood("JohnCalls", new double[]{1.0, 0.0});
+        bayesInstance.setLikelyhood("Earthquake", new double[]{1.0, 0.0});
 
-        bayesInstance.setLikelyhood(new BayesLikelyhood(graph, jtNode3, earthquakeNode, new double[]{1.0, 0.0}));
         bayesInstance.globalUpdate();
 
         assertArray( new double[]{1.0, 0.0}, scaleDouble(3, bayesInstance.marginalize("JohnCalls").getDistribution()) );

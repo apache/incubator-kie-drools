@@ -14,6 +14,7 @@ import org.kie.internal.io.ResourceFactory;
 
 import static org.drools.beliefs.bayes.JunctionTreeTest.scaleDouble;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class BayesRuntimeTest {
 
@@ -30,14 +31,8 @@ public class BayesRuntimeTest {
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl) kbase.newStatefulKnowledgeSession();
 
         BayesRuntime bayesRuntime = ksession.getKieRuntime(BayesRuntime.class);
-        BayesInstance<Garden> instance = bayesRuntime.getInstance( Garden.class );
+        BayesInstance<Garden> instance = bayesRuntime.createInstance(Garden.class);
         assertNotNull(  instance );
-
-        instance.globalUpdate();
-
-        Garden garden = instance.marginalize();
-        System.out.println( garden );
-        // Garden{bayesInstance=org.drools.beliefs.bayes.BayesInstance@4633819a, wetGrass=true, cloudy=false, sprinkler=false, rain=false}
     }
 
     protected KnowledgeBase getKnowledgeBase() {

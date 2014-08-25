@@ -53,6 +53,10 @@ public class JunctionTreeSeparator {
         return new SeparatorState(this, potentials);
     }
 
+    public void resetState(SeparatorState sepSet) {
+        Arrays.fill(sepSet.getPotentials(), 1);
+    }
+
     public List<BayesVariable> getValues() {
         return values;
     }
