@@ -16,19 +16,7 @@ import org.mvel2.asm.MethodVisitor;
 
 import java.util.Map;
 
-import static org.mvel2.asm.Opcodes.ACC_PRIVATE;
-import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
-import static org.mvel2.asm.Opcodes.ACONST_NULL;
-import static org.mvel2.asm.Opcodes.ALOAD;
-import static org.mvel2.asm.Opcodes.ARETURN;
-import static org.mvel2.asm.Opcodes.ASTORE;
-import static org.mvel2.asm.Opcodes.ATHROW;
-import static org.mvel2.asm.Opcodes.DUP;
-import static org.mvel2.asm.Opcodes.GOTO;
-import static org.mvel2.asm.Opcodes.IFNONNULL;
-import static org.mvel2.asm.Opcodes.MONITORENTER;
-import static org.mvel2.asm.Opcodes.MONITOREXIT;
-import static org.mvel2.asm.Opcodes.RETURN;
+import static org.mvel2.asm.Opcodes.*;
 
 public class ASMReturnValueStubBuilder extends AbstractASMReturnValueBuilder {
 
@@ -41,7 +29,7 @@ public class ASMReturnValueStubBuilder extends AbstractASMReturnValueBuilder {
 
     private void createStubReturnValue(final ClassGenerator generator, final InvokerDataProvider data, final Map vars) {
         generator.setInterfaces(ReturnValueStub.class, CompiledInvoker.class)
-                .addField(ACC_PRIVATE, "returnValue", ReturnValueExpression.class);
+                .addField(ACC_PRIVATE + ACC_VOLATILE, "returnValue", ReturnValueExpression.class);
 
         generator.addMethod(ACC_PUBLIC, "createContext", generator.methodDescr(Object.class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
@@ -58,6 +46,8 @@ public class ASMReturnValueStubBuilder extends AbstractASMReturnValueBuilder {
                 mv.visitTryCatchBlock(syncStart, l1, l2, null);
                 Label l3 = new Label();
                 mv.visitTryCatchBlock(l2, l3, l2, null);
+                getFieldFromThis("returnValue", ReturnValueExpression.class);
+                mv.visitJumpInsn(IFNONNULL, syncEnd);
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitInsn(DUP);
                 mv.visitVarInsn(ASTORE, 7);

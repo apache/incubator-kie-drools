@@ -16,20 +16,7 @@ import org.mvel2.asm.MethodVisitor;
 
 import java.util.Map;
 
-import static org.mvel2.asm.Opcodes.ACC_PRIVATE;
-import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
-import static org.mvel2.asm.Opcodes.ACONST_NULL;
-import static org.mvel2.asm.Opcodes.ALOAD;
-import static org.mvel2.asm.Opcodes.ARETURN;
-import static org.mvel2.asm.Opcodes.ASTORE;
-import static org.mvel2.asm.Opcodes.ATHROW;
-import static org.mvel2.asm.Opcodes.DUP;
-import static org.mvel2.asm.Opcodes.GOTO;
-import static org.mvel2.asm.Opcodes.IFNONNULL;
-import static org.mvel2.asm.Opcodes.IRETURN;
-import static org.mvel2.asm.Opcodes.MONITORENTER;
-import static org.mvel2.asm.Opcodes.MONITOREXIT;
-import static org.mvel2.asm.Opcodes.RETURN;
+import static org.mvel2.asm.Opcodes.*;
 
 public class ASMPredicateStubBuilder extends AbstractASMPredicateBuilder {
 
@@ -42,7 +29,7 @@ public class ASMPredicateStubBuilder extends AbstractASMPredicateBuilder {
 
     private void createStubPredicate(final ClassGenerator generator, final InvokerDataProvider data, final Map vars) {
         generator.setInterfaces(PredicateStub.class, CompiledInvoker.class)
-                .addField(ACC_PRIVATE, "predicate", PredicateExpression.class);
+                .addField(ACC_PRIVATE + ACC_VOLATILE, "predicate", PredicateExpression.class);
 
         generator.addMethod(ACC_PUBLIC, "createContext", generator.methodDescr(Object.class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
@@ -58,6 +45,8 @@ public class ASMPredicateStubBuilder extends AbstractASMPredicateBuilder {
                 mv.visitTryCatchBlock(syncStart, l1, l2, null);
                 Label l3 = new Label();
                 mv.visitTryCatchBlock(l2, l3, l2, null);
+                getFieldFromThis("predicate", PredicateExpression.class);
+                mv.visitJumpInsn(IFNONNULL, syncEnd);
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitInsn(DUP);
                 mv.visitVarInsn(ASTORE, 7);

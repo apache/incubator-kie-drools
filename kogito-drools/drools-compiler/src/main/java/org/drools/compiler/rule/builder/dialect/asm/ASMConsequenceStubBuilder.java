@@ -15,18 +15,7 @@ import org.mvel2.asm.MethodVisitor;
 
 import java.util.Map;
 
-import static org.mvel2.asm.Opcodes.ACC_PRIVATE;
-import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
-import static org.mvel2.asm.Opcodes.ALOAD;
-import static org.mvel2.asm.Opcodes.ARETURN;
-import static org.mvel2.asm.Opcodes.IFNONNULL;
-import static org.mvel2.asm.Opcodes.RETURN;
-import static org.mvel2.asm.Opcodes.DUP;
-import static org.mvel2.asm.Opcodes.ASTORE;
-import static org.mvel2.asm.Opcodes.MONITORENTER;
-import static org.mvel2.asm.Opcodes.MONITOREXIT;
-import static org.mvel2.asm.Opcodes.GOTO;
-import static org.mvel2.asm.Opcodes.ATHROW;
+import static org.mvel2.asm.Opcodes.*;
 
 public class ASMConsequenceStubBuilder extends ASMConsequenceBuilder {
 
@@ -52,7 +41,7 @@ public class ASMConsequenceStubBuilder extends ASMConsequenceBuilder {
 
     private void createStubConsequence(final ClassGenerator generator, final InvokerDataProvider data, final Map<String, Object> vars) {
         generator.setInterfaces(ConsequenceStub.class, CompiledInvoker.class)
-                .addField(ACC_PRIVATE, "consequence", Consequence.class);
+                .addField(ACC_PRIVATE + ACC_VOLATILE, "consequence", Consequence.class);
 
         generator.addMethod(ACC_PUBLIC, "getName", generator.methodDescr(String.class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
@@ -72,6 +61,8 @@ public class ASMConsequenceStubBuilder extends ASMConsequenceBuilder {
                 mv.visitTryCatchBlock(syncStart, l1, l2, null);
                 Label l3 = new Label();
                 mv.visitTryCatchBlock(l2, l3, l2, null);
+                getFieldFromThis("consequence", Consequence.class);
+                mv.visitJumpInsn(IFNONNULL, syncEnd);
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitInsn(DUP);
                 mv.visitVarInsn(ASTORE, 3);
