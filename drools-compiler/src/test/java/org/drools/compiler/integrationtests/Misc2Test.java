@@ -6408,4 +6408,63 @@ public class Misc2Test extends CommonTestMethodBase {
         assertTrue(list.contains("group by hello count is 2"));
         assertTrue(list.contains("group by hi count is 1"));
     }
+
+    @Test @Ignore
+    public void testKeywordAsAttribute() throws Exception {
+        // DROOLS-577
+        String drl =
+                "package foo.bar;\n" +
+                        "declare Fired\n" +
+                        "        rule: String\n" +
+                        "end\n" +
+                        "global java.util.List list\n" +
+                        "rule \"F060\" dialect \"mvel\"\n" +
+                        "when\n" +
+                        "then\n" +
+                        "    Fired f = new Fired();\n" +
+                        "    f.rule = \"F060\";\n" +
+                        "    insert(f);\n" +
+                        "end\n" +
+                        " \n" +
+                        "rule \"F060b\"  //this prints F060b: Fired( rule=F060 )\n" +
+                        "    dialect \"mvel\"\n" +
+                        "when\n" +
+                        "        $rule: Fired()\n" +
+                        "then\n" +
+                        "    list.add( drools.getRule().getName() )\n" +
+                        "end\n" +
+                        " \n" +
+                        "rule \"F060c\"  //doesn't work\n" +
+                        "    dialect \"mvel\"\n" +
+                        "when\n" +
+                        "        $rule: Fired( rule==\"F060c\" )\n" +
+                        "then\n" +
+                        "    list.add( drools.getRule().getName() )\n" +
+                        "end\n" +
+                        " \n" +
+                        "rule \"F060d\"  //this prints F060d: Fired( rule=F060 )\n" +
+                        "    dialect \"mvel\"\n" +
+                        "when\n" +
+                        "        $rule: Fired()\n" +
+                        "        eval( $rule.rule == \"F060\")\n" +
+                        "then\n" +
+                        "    list.add( drools.getRule().getName() )\n" +
+                        "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession ksession = helper.build().newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+
+        System.out.println(list);
+        assertEquals(3, list.size());
+        assertTrue(list.contains("F060b"));
+        assertTrue(list.contains("F060c"));
+        assertTrue(list.contains("F060d"));
+    }
+
 }
