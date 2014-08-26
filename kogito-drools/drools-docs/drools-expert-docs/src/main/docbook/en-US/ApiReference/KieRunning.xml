@@ -855,7 +855,7 @@ ksession.execute( collection ); </programlisting>
 List cmds = new ArrayList();
 cmds.add( CommandFactory.newSetGlobal( "list1", new ArrayList(), true ) );
 cmds.add( CommandFactory.newInsert( new Person( "jon", 102 ), "person" ) );
-cmds.add( CommandFactory.newQuery( "Get People" "getPeople" );
+cmds.add( CommandFactory.newQuery( "Get People", "getPeople" ));
 
 // Execute the list
 ExecutionResults results =
