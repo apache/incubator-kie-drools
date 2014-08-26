@@ -26,7 +26,11 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
@@ -34,6 +38,7 @@ import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.impl.heuristic.selector.common.iterator.ListIterable;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,8 +150,25 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
                         + ") is expected to be the header line (" + getCsvHeader()
                         + ") for statisticType (" + getStatisticType() + ").");
             }
+            Map<String, String> stringDuplicationRemovalMap = new HashMap<String, String>(1024);
             for (line = reader.readLine(); line != null && !line.isEmpty(); line = reader.readLine()) {
                 List<String> csvLine = StatisticPoint.parseCsvLine(line);
+                // HACK
+                // Some statistics (such as CONSTRAINT_MATCH_TOTAL_STEP_SCORE) contain the same String many times
+                // During generation those are all the same instance to save memory.
+                // During aggregation this code assures they are the same instance too
+                for (ListIterator<String> it = csvLine.listIterator(); it.hasNext(); ) {
+                    String token =  it.next();
+                    if (token == null) {
+                        continue;
+                    }
+                    String originalToken = stringDuplicationRemovalMap.get(token);
+                    if (originalToken == null) {
+                        stringDuplicationRemovalMap.put(token, token);
+                    } else {
+                        it.set(originalToken);
+                    }
+                }
                 pointList.add(createPointFromCsvLine(scoreDefinition, csvLine));
             }
         } catch (RuntimeException e) {
