@@ -31,6 +31,7 @@ import org.dmg.pmml.pmml_4_2.descr.MiningSchema;
 import org.dmg.pmml.pmml_4_2.descr.Output;
 import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.dmg.pmml.pmml_4_2.descr.Scorecard;
+import org.drools.core.util.StringUtils;
 import org.drools.pmml.pmml_4_2.extensions.PMMLExtensionNames;
 import org.drools.scorecards.ScorecardCompiler;
 import org.drools.scorecards.parser.xls.XLSKeywords;
@@ -70,6 +71,22 @@ public class GuidedScoreCardDRLPersistence {
         extension.setValue( model.getFactName() );
 
         pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add( extension );
+
+        String agendaGroup = model.getAgendaGroup();
+        if (!StringUtils.isEmpty(agendaGroup)){
+            extension = new Extension();
+            extension.setName( PMMLExtensionNames.AGENDA_GROUP );
+            extension.setValue(agendaGroup);
+            pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add( extension );
+        }
+
+        String ruleFlowGroup = model.getRuleFlowGroup();
+        if (!StringUtils.isEmpty(ruleFlowGroup)){
+            extension = new Extension();
+            extension.setName( PMMLExtensionNames.RULEFLOW_GROUP );
+            extension.setValue(agendaGroup);
+            pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add( extension );
+        }
 
         extension = new Extension();
         extension.setName( PMMLExtensionNames.MODEL_IMPORTS );
