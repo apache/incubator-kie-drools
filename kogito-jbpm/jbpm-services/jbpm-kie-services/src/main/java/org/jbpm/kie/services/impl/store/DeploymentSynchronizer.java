@@ -79,7 +79,7 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 							deploymentService.deploy(unit);
 						} catch (Exception e) {
 							entries.remove(unit.getIdentifier());
-							logger.warn("Deployment unit {} failed to deploy due to {}", e.getMessage());						
+							logger.warn("Deployment unit {} failed to deploy: {}", unit.getIdentifier(), e.getMessage());						
 						}
 					}
 				}
@@ -89,11 +89,11 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 				for (DeploymentUnit unit : disabledSet) {
 					if (entries.containsKey(unit.getIdentifier())) {
 						try {
-							logger.debug("Existing deployment unit to be undeployed {}", unit);
+							logger.debug("Existing deployment unit {} to be undeployed", unit.getIdentifier());
 							entries.remove(unit.getIdentifier());
 							deploymentService.undeploy(unit);
 						} catch (Exception e) {
-							logger.warn("Deployment unit {} failed to undeploy due to {}", e.getMessage(), e);
+							logger.warn("Deployment unit {} failed to undeploy: {}", unit.getIdentifier(), e.getMessage(), e);
 							entries.put(unit.getIdentifier(), unit);
 							deploymentStore.markDeploymentUnitAsObsolete(unit);
 						}
@@ -101,7 +101,7 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 				}
 			}
 		} catch (Throwable e) {
-			logger.error("Error while synchronizing deployments {}", e.getMessage());
+			logger.error("Error while synchronizing deployments: {}", e.getMessage());
 		}
 		// update last sync date
 		this.lastSync = new Date();
@@ -117,7 +117,7 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 			deploymentStore.enableDeploymentUnit(unit);
 			// when successfully stored add it to local store
 			entries.put(unit.getIdentifier(), unit);
-			logger.info("Deployment unit {} stored successfully", unit);
+			logger.info("Deployment unit {} stored successfully", unit.getIdentifier());
 		}
 		
 	}
@@ -128,7 +128,7 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 			DeploymentUnit unit = event.getDeployedUnit().getDeploymentUnit();
 			deploymentStore.disableDeploymentUnit(unit);
 			entries.remove(unit.getIdentifier());
-			logger.info("Deployment unit {} removed successfully", unit);
+			logger.info("Deployment unit {} removed successfully", unit.getIdentifier());
 		}
 	}
 	
