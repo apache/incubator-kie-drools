@@ -15,7 +15,7 @@
   <itemDefinition id="_xItem" structureRef="String" />
   <itemDefinition id="_yItem" structureRef="String" />
 
-  <process processType="Private" isExecutable="true" id="ParentProcess" name="Parent Process" >
+  <process processType="Private" isExecutable="true" id="DependentParentProcess" name="Parent Process" >
 
     <!-- process variables -->
     <property id="x" itemSubjectRef="_xItem"/>
@@ -23,7 +23,7 @@
 
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess"  isInterrupting="true"/>
-    <callActivity id="_2" name="CallActivity" calledElement="SubProcess" tns:independent="false" >
+    <callActivity id="_2" name="CallActivity" calledElement="DependentSubProcess" tns:independent="false" >
       <ioSpecification>
         <dataInput id="_2_subXInput" name="subX" />
         <dataOutput id="_2_subYOutput" name="subY" />

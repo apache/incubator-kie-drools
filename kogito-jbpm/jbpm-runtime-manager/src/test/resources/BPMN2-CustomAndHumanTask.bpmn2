@@ -14,7 +14,7 @@
 
   <itemDefinition id="_idItem" structureRef="String" />
 
-  <process processType="Private" isExecutable="true" id="customtask" name="flow" tns:packageName="org.drools.integrationtests" >
+  <process processType="Private" isExecutable="true" id="customandhumantask" name="flow" tns:packageName="org.drools.integrationtests" >
 
     <!-- process variables -->
     <property id="id" itemSubjectRef="_idItem"/>

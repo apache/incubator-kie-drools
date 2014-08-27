@@ -150,7 +150,7 @@ public class ConcurrentOperationsTest extends AbstractBaseTest {
         assertEquals(sessionId, ksession.getId());
         
         
-        ProcessInstance processInstance = ksession.startProcess("customtask");
+        ProcessInstance processInstance = ksession.startProcess("customandhumantask");
         System.out.println("Started process, committing...");
         
         TaskService taskService = runtime.getTaskService();

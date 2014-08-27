@@ -908,7 +908,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         int ksession1Id = ksession.getId();
         assertTrue(ksession1Id == 2);
 
-        ProcessInstance pi1 = ksession.startProcess("ParentProcess");
+        ProcessInstance pi1 = ksession.startProcess("DependentParentProcess");
 
         assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
 
@@ -917,20 +917,20 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
 
         AuditService logService = runtime.getAuditLogService();
 
-        List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("ParentProcess");
+        List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("DependentParentProcess");
         assertNotNull(logs);
         assertEquals(0, logs.size());
 
-        logs = logService.findActiveProcessInstances("SubProcess");
+        logs = logService.findActiveProcessInstances("DependentSubProcess");
         assertNotNull(logs);
         assertEquals(0, logs.size());
 
-        logs = logService.findProcessInstances("ParentProcess");
+        logs = logService.findProcessInstances("DependentParentProcess");
         assertNotNull(logs);
         assertEquals(1, logs.size());
         assertEquals(ProcessInstance.STATE_ABORTED, (int)logs.get(0).getStatus());
 
-        logs = logService.findProcessInstances("SubProcess");
+        logs = logService.findProcessInstances("DependentSubProcess");
         assertNotNull(logs);
         assertEquals(1, logs.size());
         assertEquals(ProcessInstance.STATE_ABORTED, (int)logs.get(0).getStatus());
