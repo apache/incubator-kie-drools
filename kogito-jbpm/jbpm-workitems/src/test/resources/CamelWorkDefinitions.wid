@@ -1,0 +1,109 @@
+import org.drools.core.process.core.datatype.impl.type.StringDataType;
+[
+  [
+    "name" : "CamelFTP",
+    "parameters" : [
+      "username" : new StringDataType(),
+      "hostname" : new StringDataType(),
+      "port" : new StringDataType(),
+      "directoryname" : new StringDataType(),
+      "payload" : new StringDataType(),
+      "CamelFileName" : new StringDataType(),
+      "password" : new StringDataType()
+    ],
+    "category" : "Camel",
+    "displayName" : "FTP",
+    "customEditor" : "org.drools.eclipse.flow.common.editor.editpart.work.SampleCustomEditor"
+  ]
+  ,
+  [
+    "name" : "CamelSFTP",
+    "parameters" : [
+      "username" : new StringDataType(),
+      "hostname" : new StringDataType(),
+      "port" : new StringDataType(),
+      "directoryname" : new StringDataType(),
+      "payload" : new StringDataType(),
+      "CamelFileName" : new StringDataType(),
+      "password" : new StringDataType()
+    ],
+    "category" : "Camel",
+    "displayName" : "SFTP",
+    "customEditor" : "org.drools.eclipse.flow.common.editor.editpart.work.SampleCustomEditor"
+  ]
+  ,
+  [
+    "name" : "CamelFTPS",
+    "parameters" : [
+      "username" : new StringDataType(),
+      "hostname" : new StringDataType(),
+      "port" : new StringDataType(),
+      "directoryname" : new StringDataType(),
+      "payload" : new StringDataType(),
+      "CamelFileName" : new StringDataType(),
+      "password" : new StringDataType()
+    ],
+    "category" : "Camel",
+    "displayName" : "FTPS",
+    "customEditor" : "org.drools.eclipse.flow.common.editor.editpart.work.SampleCustomEditor"
+  ]
+  ,
+  [
+    "name" : "CamelFile",
+    "parameters" : [
+      "path" : new StringDataType(),
+      "fileName" : new StringDataType(),
+      "payload" : new StringDataType()
+    ],
+    "category" : "Camel",
+    "displayName" : "File",
+    "customEditor" : "org.drools.eclipse.flow.common.editor.editpart.work.SampleCustomEditor"
+  ]
+  ,
+  [
+    "name" : "CamelJMS",
+    "parameters" : [
+      "payload" : new StringDataType(),
+      "destinationName" : new StringDataType()
+    ],
+    "category" : "Camel",
+    "displayName" : "JMS",
+    "customEditor" : "org.drools.eclipse.flow.common.editor.editpart.work.SampleCustomEditor"
+  ]
+  ,
+  [
+    "name" : "CamelXSLT",
+    "parameters" : [
+      "payload" : new StringDataType(),
+      "templateName" : new StringDataType()
+    ],
+    "category" : "Camel",
+    "displayName" : "XSLT",
+    "customEditor" : "org.drools.eclipse.flow.common.editor.editpart.work.SampleCustomEditor"
+  ]
+  ,
+  [
+    "name" : "CamelCXF",
+    "parameters" : [
+      "payload" : new StringDataType(),
+      "address" : new StringDataType(),
+      "serviceClass" : new StringDataType(),
+      "serviceName" : new StringDataType(),
+      "portName" : new StringDataType()
+    ],
+    "category" : "Camel",
+    "displayName" : "CXF",
+    "customEditor" : "org.drools.eclipse.flow.common.editor.editpart.work.SampleCustomEditor"
+  ]
+  ,
+  [
+    "name" : "GenericCamel",
+    "parameters" : [
+      "path" : new StringDataType(),
+      "payload" : new StringDataType()
+    ],
+    "category" : "Camel",
+    "displayName" : "Generic",
+    "customEditor" : "org.drools.eclipse.flow.common.editor.editpart.work.SampleCustomEditor"
+  ],
+]

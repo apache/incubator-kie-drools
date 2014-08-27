@@ -140,6 +140,12 @@
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Camel -->
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-core</artifactId>
+    </dependency>
+    
   </dependencies>
 
 </project>
