@@ -6467,4 +6467,75 @@ public class Misc2Test extends CommonTestMethodBase {
         assertTrue(list.contains("F060d"));
     }
 
+    @Test
+    public void testRuleExtendsWithNamedConsequence() {
+        // DROOLS-581
+        String drl =
+                "package org.drools.test;\n" +
+                "global java.util.List list;\n" +
+                "rule Base\n" +
+                "when\n" +
+                "  $i : Integer( ) do[x]\n" +
+                "then\n" +
+                "then[x]\n" +
+                "   list.add( $i );\n" +
+                "end\n" +
+                "rule Ext extends Base\n" +
+                "when\n" +
+                "  $d : String()\n" +
+                "then\n" +
+                "   list.add( $d );\n" +
+                "end\n";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession kieSession = helper.build().newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        kieSession.setGlobal( "list", list );
+
+        kieSession.insert( 10 );
+        kieSession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertEquals( 10, (int) list.get(0) );
+        assertEquals( 10, (int) list.get(1) );
+    }
+
+    @Test
+    public void testRuleExtendsWithOverriddenNamedConsequence() {
+        // DROOLS-581
+        String drl =
+                "package org.drools.test;\n" +
+                "global java.util.List list;\n" +
+                "rule Base\n" +
+                "when\n" +
+                "  $i : Integer( ) do[x]\n" +
+                "then\n" +
+                "then[x] " +
+                "   list.add( $i );\n" +
+                "end\n" +
+                "rule Ext extends Base\n" +
+                "when\n" +
+                "  $d : String()\n" +
+                "then\n" +
+                "   list.add( $d );\n" +
+                "then[x]\n" +
+                "   list.add( \"\" + $i );\n" +
+                "end\n";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession kieSession = helper.build().newKieSession();
+
+        List list = new ArrayList();
+        kieSession.setGlobal( "list", list );
+
+        kieSession.insert( 10 );
+        kieSession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertEquals( 10, list.get(0) );
+        assertEquals( "10", list.get(1) );
+    }
 }
