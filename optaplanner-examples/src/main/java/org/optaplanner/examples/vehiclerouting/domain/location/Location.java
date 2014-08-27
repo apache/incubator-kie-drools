@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.vehiclerouting.domain;
+package org.optaplanner.examples.vehiclerouting.domain.location;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("VrpLocation")
-public class Location extends AbstractPersistable {
+@XStreamInclude({
+        AirDistanceLocation.class,
+        RoadDistanceLocation.class
+})
+public abstract class Location extends AbstractPersistable {
 
-    private String name = null;
-    private double latitude;
-    private double longitude;
+    protected String name = null;
+    protected double latitude;
+    protected double longitude;
 
     public String getName() {
         return name;
@@ -59,16 +64,13 @@ public class Location extends AbstractPersistable {
      * @param location never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public int getDistance(Location location) {
-        // Implementation specified by TSPLIB http://www2.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
-        // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
-        double latitudeDifference = location.latitude - latitude;
-        double longitudeDifference = location.longitude - longitude;
-        double distance = Math.sqrt(
-                (latitudeDifference * latitudeDifference) + (longitudeDifference * longitudeDifference));
-        return (int) (distance * 1000.0 + 0.5);
-    }
+    public abstract int getDistance(Location location);
 
+    /**
+     * The angle relative to the direction EAST.
+     * @param location never null
+     * @return in Cartesian coordinates
+     */
     public double getAngle(Location location) {
         // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
         double latitudeDifference = location.latitude - latitude;
@@ -76,19 +78,13 @@ public class Location extends AbstractPersistable {
         return Math.atan2(latitudeDifference, longitudeDifference);
     }
 
+
     @Override
     public String toString() {
         if (name == null) {
             return id.toString();
         }
         return id.toString() + "-" + name;
-    }
-
-    public String getSafeName() {
-        if (name == null) {
-            return id.toString();
-        }
-        return name;
     }
 
 }

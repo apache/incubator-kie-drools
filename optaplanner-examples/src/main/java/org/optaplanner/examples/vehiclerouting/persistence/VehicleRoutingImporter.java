@@ -27,7 +27,8 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
-import org.optaplanner.examples.vehiclerouting.domain.Location;
+import org.optaplanner.examples.vehiclerouting.domain.location.AirDistanceLocation;
+import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
@@ -137,7 +138,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpacesOrTabs(line.trim(), 3);
-                Location location = new Location();
+                Location location = new AirDistanceLocation();
                 location.setId(Long.parseLong(lineTokens[0]));
                 location.setLatitude(Double.parseDouble(lineTokens[1]));
                 location.setLongitude(Double.parseDouble(lineTokens[2]));
@@ -242,7 +243,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpacesOrTabs(line.trim(), 3);
-                Location location = new Location();
+                AirDistanceLocation location = new AirDistanceLocation();
                 location.setId((long) i);
                 location.setLatitude(Double.parseDouble(lineTokens[1]));
                 location.setLongitude(Double.parseDouble(lineTokens[2]));
@@ -309,7 +310,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                 String[] lineTokens = splitBySpacesOrTabs(line.trim(), 7);
                 long id = Long.parseLong(lineTokens[0]);
 
-                Location location = new Location();
+                AirDistanceLocation location = new AirDistanceLocation();
                 location.setId(id);
                 location.setLatitude(Double.parseDouble(lineTokens[1]));
                 location.setLongitude(Double.parseDouble(lineTokens[2]));

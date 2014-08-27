@@ -27,7 +27,8 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
-import org.optaplanner.examples.vehiclerouting.domain.Location;
+import org.optaplanner.examples.vehiclerouting.domain.location.AirDistanceLocation;
+import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
@@ -96,7 +97,8 @@ public class VehicleRoutingPanel extends SolutionPanel {
     }
 
     public void insertLocationAndCustomer(double longitude, double latitude) {
-        final Location newLocation = new Location();
+        // TODO Use RoadDistanceLocation if appropriate
+        final AirDistanceLocation newLocation = new AirDistanceLocation();
         newLocation.setId(nextLocationId);
         nextLocationId++;
         newLocation.setLongitude(longitude);
