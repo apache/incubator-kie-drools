@@ -132,7 +132,7 @@ public abstract class AbstractDeploymentService implements DeploymentService, Li
                 }
                 notifyOnDeploy(unit, deployedUnit);
                 
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 deploymentsMap.remove(unit.getIdentifier());
                 if (manager != null) {
                 	manager.close();
