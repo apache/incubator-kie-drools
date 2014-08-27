@@ -384,7 +384,7 @@ public class LDAPUserInfoImpl extends AbstractUserGroupInfo implements UserInfo 
 		else if ("SUBTREE_SCOPE".equals(searchScope))
 			return 2;
 
-		// Default set to OBJECT_SCOPE
-		return 0;
+		// Default set to ONELEVEL_SCOPE
+		return 1;
 	}
 }
