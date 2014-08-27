@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
@@ -184,9 +185,17 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
     public void cancel() {
         super.cancel();
         if (getSubProcessNode() == null || !getSubProcessNode().isIndependent()) {
-            ProcessInstance processInstance = (ProcessInstance)
-                ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime()
-                    .getProcessInstance(processInstanceId);
+        	ProcessInstance processInstance = null;
+        	InternalKnowledgeRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
+        	RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get("RuntimeManager");
+        	if (manager != null) {
+        		RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
+                KnowledgeRuntime managedkruntime = (KnowledgeRuntime) runtime.getKieSession();
+        		processInstance = (ProcessInstance) managedkruntime.getProcessInstance(processInstanceId);
+        	} else {
+        		processInstance = (ProcessInstance) kruntime.getProcessInstance(processInstanceId);	
+        	}
+            
             if (processInstance != null) {
             	processInstance.setState(ProcessInstance.STATE_ABORTED);
             }
