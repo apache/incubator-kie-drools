@@ -520,7 +520,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
             for (StartNode startNode : startNodes) {
                 if (startNode != null && startNode.getTimer() != null) {
                     TimerInstance timerInstance = null;
-                    if (CronExpression.isValidExpression(startNode.getTimer().getDelay())) {
+                    if (startNode.getTimer().getDelay() != null && CronExpression.isValidExpression(startNode.getTimer().getDelay())) {
                         timerInstance = new TimerInstance();
                         timerInstance.setCronExpression(startNode.getTimer().getDelay());
                         
