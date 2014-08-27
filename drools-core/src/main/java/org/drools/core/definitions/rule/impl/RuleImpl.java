@@ -96,7 +96,7 @@ public class RuleImpl implements Externalizable,
     /** Consequence. */
     private Consequence consequence;
 
-    private Map<String, Consequence> namedConsequence;
+    private Map<String, Consequence> namedConsequences;
 
     /** Timer semantics that controls the firing of a rule */
     private Timer timer;
@@ -201,7 +201,7 @@ public class RuleImpl implements Externalizable,
             out.writeObject( null );
         } else {
             out.writeObject( this.consequence );
-            out.writeObject( this.namedConsequence );
+            out.writeObject( this.namedConsequences);
         }
         out.writeObject( timer );
         out.writeInt(loadOrder);
@@ -239,7 +239,7 @@ public class RuleImpl implements Externalizable,
         requiredDeclarations = (Map<String, String[]>) in.readObject();
 
         consequence = (Consequence) in.readObject();
-        namedConsequence = (Map<String, Consequence>) in.readObject();
+        namedConsequences = (Map<String, Consequence>) in.readObject();
         timer = (Timer) in.readObject();
         loadOrder = in.readInt();
         noLoop = in.readBoolean();
@@ -627,22 +627,23 @@ public class RuleImpl implements Externalizable,
     }
 
     public boolean hasNamedConsequences() {
-        return namedConsequence != null && !namedConsequence.isEmpty();
+        return namedConsequences != null && !namedConsequences.isEmpty();
     }
 
     public Map<String, Consequence> getNamedConsequences() {
-        return this.namedConsequence;
+        return this.namedConsequences;
     }
 
-    public Consequence getNamedConsequence(String consequenceName) {
-        return this.namedConsequence.get(consequenceName);
+    public Consequence getNamedConsequence(String consequenceName)  {
+        Consequence consequence = namedConsequences != null ? namedConsequences.get(consequenceName) : null;
+        return consequence == null && parent != null ? parent.getNamedConsequence(consequenceName) : consequence;
     }
 
     public void addNamedConsequence(String name, Consequence consequence) {
-        if ( this.namedConsequence == null ) {
-            this.namedConsequence = new HashMap<String, Consequence>();
+        if ( this.namedConsequences == null ) {
+            this.namedConsequences = new HashMap<String, Consequence>();
         }
-        this.namedConsequence.put(name, consequence);
+        this.namedConsequences.put(name, consequence);
     }
 
     public int getLoadOrder() {
