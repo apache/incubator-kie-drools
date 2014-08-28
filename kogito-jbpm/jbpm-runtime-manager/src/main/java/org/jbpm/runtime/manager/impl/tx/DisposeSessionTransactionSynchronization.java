@@ -19,6 +19,8 @@ import org.drools.persistence.OrderedTransactionSynchronization;
 import org.jbpm.runtime.manager.impl.RuntimeEngineImpl;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Transaction synchronization that disposes of the <code>KieSession</code> instance on transaction completion during
@@ -26,6 +28,7 @@ import org.kie.api.runtime.manager.RuntimeManager;
  *
  */
 public class DisposeSessionTransactionSynchronization extends OrderedTransactionSynchronization {
+	private static final Logger logger = LoggerFactory.getLogger(DisposeSessionTransactionSynchronization.class);
 
 	private RuntimeEngine runtime;
 	private RuntimeManager manager;
@@ -44,7 +47,7 @@ public class DisposeSessionTransactionSynchronization extends OrderedTransaction
 	    	((RuntimeEngineImpl) runtime).setAfterCompletion(true);
 	        manager.disposeRuntimeEngine(runtime);
 	    } catch (Throwable e) {
-	        // catch exception as it's only clean up and should not affect runtime
+	        logger.debug("Could not dispose runtime engine", e);
 	    }
 	}
 
