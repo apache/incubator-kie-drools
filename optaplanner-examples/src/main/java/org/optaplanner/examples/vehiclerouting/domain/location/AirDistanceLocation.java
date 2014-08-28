@@ -23,14 +23,7 @@ public class AirDistanceLocation extends Location {
 
     @Override
     public int getDistance(Location location) {
-        // Implementation specified by TSPLIB http://www2.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
-        // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
-        double latitudeDifference = location.latitude - latitude;
-        double longitudeDifference = location.longitude - longitude;
-        double distance = Math.sqrt(
-                (latitudeDifference * latitudeDifference) + (longitudeDifference * longitudeDifference));
-        // Multiplied by 1000 to avoid floating point arithmetic rounding errors
-        return (int) (distance * 1000.0 + 0.5);
+       return getAirDistance(location);
     }
 
 }

@@ -17,6 +17,12 @@
 package org.optaplanner.examples.vehiclerouting.domain.location;
 
 public enum DistanceType {
+    /**
+     * Requires that all {@link Location} instances are of type {@link AirDistanceLocation}.
+     */
     AIR_DISTANCE,
+    /**
+     * Requires that all {@link Location} instances are of type {@link RoadDistanceLocation}.
+     */
     ROAD_DISTANCE;
 }

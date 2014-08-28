@@ -30,25 +30,25 @@ import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 public class VehicleRoutingWorldPanel extends JPanel {
     private final VehicleRoutingPanel vehicleRoutingPanel;
 
-    private VehicleRoutingSchedulePainter schedulePainter = new VehicleRoutingSchedulePainter();
+    private VehicleRoutingSolutionPainter solutionPainter = new VehicleRoutingSolutionPainter();
 
     public VehicleRoutingWorldPanel(VehicleRoutingPanel vehicleRoutingPanel) {
         this.vehicleRoutingPanel = vehicleRoutingPanel;
-        schedulePainter = new VehicleRoutingSchedulePainter();
+        solutionPainter = new VehicleRoutingSolutionPainter();
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 // TODO Not thread-safe during solving
-                VehicleRoutingSolution schedule = VehicleRoutingWorldPanel.this.vehicleRoutingPanel.getSchedule();
-                if (schedule != null) {
-                    resetPanel(schedule);
+                VehicleRoutingSolution solution = VehicleRoutingWorldPanel.this.vehicleRoutingPanel.getVehicleRoutingSolution();
+                if (solution != null) {
+                    resetPanel(solution);
                 }
             }
         });
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                LatitudeLongitudeTranslator translator = schedulePainter.getTranslator();
+                LatitudeLongitudeTranslator translator = solutionPainter.getTranslator();
                 if (translator != null) {
                     double longitude = translator.translateXToLongitude(e.getX());
                     double latitude = translator.translateYToLatitude(e.getY());
@@ -58,19 +58,19 @@ public class VehicleRoutingWorldPanel extends JPanel {
         });
     }
 
-    public void resetPanel(VehicleRoutingSolution schedule) {
-        schedulePainter.reset(schedule, getSize(), this);
+    public void resetPanel(VehicleRoutingSolution solution) {
+        solutionPainter.reset(solution, getSize(), this);
         repaint();
     }
 
-    public void updatePanel(VehicleRoutingSolution schedule) {
-        resetPanel(schedule);
+    public void updatePanel(VehicleRoutingSolution solution) {
+        resetPanel(solution);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        BufferedImage canvas = schedulePainter.getCanvas();
+        BufferedImage canvas = solutionPainter.getCanvas();
         if (canvas != null) {
             g.drawImage(canvas, 0, 0, this);
         }

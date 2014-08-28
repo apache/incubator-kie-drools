@@ -19,6 +19,7 @@ package org.optaplanner.examples.vehiclerouting.domain.location;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
 @XStreamAlias("VrpLocation")
 @XStreamInclude({
@@ -60,11 +61,23 @@ public abstract class Location extends AbstractPersistable {
     // ************************************************************************
 
     /**
-     * The distance is not in miles or km, but in the TSPLIB's unit of measurement.
+     * The distance's unit of measurement depends on the {@link VehicleRoutingSolution}'s {@link DistanceType}.
+     * It can be in miles or km, but for most cases it's in the TSPLIB's unit of measurement.
      * @param location never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
     public abstract int getDistance(Location location);
+
+    public int getAirDistance(Location location) {
+        // Implementation specified by TSPLIB http://www2.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
+        // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
+        double latitudeDifference = location.latitude - latitude;
+        double longitudeDifference = location.longitude - longitude;
+        double distance = Math.sqrt(
+                (latitudeDifference * latitudeDifference) + (longitudeDifference * longitudeDifference));
+        // Multiplied by 1000 to avoid floating point arithmetic rounding errors
+        return (int) (distance * 1000.0 + 0.5);
+    }
 
     /**
      * The angle relative to the direction EAST.

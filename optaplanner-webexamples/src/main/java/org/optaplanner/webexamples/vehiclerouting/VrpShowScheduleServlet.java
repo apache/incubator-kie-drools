@@ -27,15 +27,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
-import org.optaplanner.examples.vehiclerouting.swingui.VehicleRoutingSchedulePainter;
+import org.optaplanner.examples.vehiclerouting.swingui.VehicleRoutingSolutionPainter;
 
 public class VrpShowScheduleServlet extends HttpServlet {
 
-    private VehicleRoutingSchedulePainter schedulePainter;
+    private VehicleRoutingSolutionPainter schedulePainter;
 
     @Override
     public void init() {
-        schedulePainter = new VehicleRoutingSchedulePainter();
+        schedulePainter = new VehicleRoutingSolutionPainter();
     }
 
     @Override

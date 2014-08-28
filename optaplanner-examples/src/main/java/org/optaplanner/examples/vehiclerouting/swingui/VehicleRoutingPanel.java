@@ -17,6 +17,8 @@
 package org.optaplanner.examples.vehiclerouting.swingui;
 
 import java.awt.BorderLayout;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import javax.swing.JTabbedPane;
 
@@ -30,6 +32,7 @@ import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.location.AirDistanceLocation;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.domain.location.RoadDistanceLocation;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
@@ -62,19 +65,19 @@ public class VehicleRoutingPanel extends SolutionPanel {
         return true;
     }
 
-    public VehicleRoutingSolution getSchedule() {
+    public VehicleRoutingSolution getVehicleRoutingSolution() {
         return (VehicleRoutingSolution) solutionBusiness.getSolution();
     }
 
-    public void resetPanel(Solution solution) {
-        VehicleRoutingSolution schedule = (VehicleRoutingSolution) solution;
-        vehicleRoutingWorldPanel.resetPanel(schedule);
+    public void resetPanel(Solution solutionObject) {
+        VehicleRoutingSolution solution = (VehicleRoutingSolution) solutionObject;
+        vehicleRoutingWorldPanel.resetPanel(solution);
         resetNextLocationId();
     }
 
     private void resetNextLocationId() {
         long highestLocationId = 0L;
-        for (Location location : getSchedule().getLocationList()) {
+        for (Location location : getVehicleRoutingSolution().getLocationList()) {
             if (highestLocationId < location.getId().longValue()) {
                 highestLocationId = location.getId();
             }
@@ -83,9 +86,9 @@ public class VehicleRoutingPanel extends SolutionPanel {
     }
 
     @Override
-    public void updatePanel(Solution solution) {
-        VehicleRoutingSolution schedule = (VehicleRoutingSolution) solution;
-        vehicleRoutingWorldPanel.updatePanel(schedule);
+    public void updatePanel(Solution solutionObject) {
+        VehicleRoutingSolution solution = (VehicleRoutingSolution) solutionObject;
+        vehicleRoutingWorldPanel.updatePanel(solution);
     }
 
     public void doMove(Move move) {
@@ -97,8 +100,18 @@ public class VehicleRoutingPanel extends SolutionPanel {
     }
 
     public void insertLocationAndCustomer(double longitude, double latitude) {
-        // TODO Use RoadDistanceLocation if appropriate
-        final AirDistanceLocation newLocation = new AirDistanceLocation();
+        final Location newLocation;
+        switch (getVehicleRoutingSolution().getDistanceType()) {
+            case AIR_DISTANCE:
+                newLocation = new AirDistanceLocation();
+                break;
+            case ROAD_DISTANCE:
+                logger.warn("Adding locations for a road distance dataset is not supported.");
+                return;
+            default:
+                throw new IllegalStateException("The distanceType (" + getVehicleRoutingSolution().getDistanceType()
+                        + ") is not implemented.");
+        }
         newLocation.setId(nextLocationId);
         nextLocationId++;
         newLocation.setLongitude(longitude);
@@ -106,33 +119,38 @@ public class VehicleRoutingPanel extends SolutionPanel {
         logger.info("Scheduling insertion of newLocation ({}).", newLocation);
         solutionBusiness.doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
-                VehicleRoutingSolution schedule = (VehicleRoutingSolution) scoreDirector.getWorkingSolution();
+                VehicleRoutingSolution solution = (VehicleRoutingSolution) scoreDirector.getWorkingSolution();
                 scoreDirector.beforeProblemFactAdded(newLocation);
-                schedule.getLocationList().add(newLocation);
+                solution.getLocationList().add(newLocation);
                 scoreDirector.afterProblemFactAdded(newLocation);
-                Customer newCustomer;
-                if (schedule instanceof TimeWindowedVehicleRoutingSolution) {
-                    TimeWindowedCustomer newTimeWindowedCustomer = new TimeWindowedCustomer();
-                    TimeWindowedDepot timeWindowedDepot = (TimeWindowedDepot) schedule.getDepotList().get(0);
-                    int windowTime = (timeWindowedDepot.getDueTime() - timeWindowedDepot.getReadyTime()) / 4;
-                    int readyTime = demandRandom.nextInt(windowTime * 3);
-                    newTimeWindowedCustomer.setReadyTime(readyTime);
-                    newTimeWindowedCustomer.setDueTime(readyTime + windowTime);
-                    newTimeWindowedCustomer.setServiceDuration(Math.min(10000, windowTime / 2));
-                    newCustomer = newTimeWindowedCustomer;
-                } else {
-                    newCustomer = new Customer();
-                }
-                newCustomer.setId(newLocation.getId());
-                newCustomer.setLocation(newLocation);
-                // Demand must not be 0
-                newCustomer.setDemand(demandRandom.nextInt(10) + 1);
+                Customer newCustomer = createCustomer(solution, newLocation);
                 scoreDirector.beforeEntityAdded(newCustomer);
-                schedule.getCustomerList().add(newCustomer);
+                solution.getCustomerList().add(newCustomer);
                 scoreDirector.afterEntityAdded(newCustomer);
             }
         });
         updatePanel(solutionBusiness.getSolution());
+    }
+
+    protected Customer createCustomer(VehicleRoutingSolution solution, Location newLocation) {
+        Customer newCustomer;
+        if (solution instanceof TimeWindowedVehicleRoutingSolution) {
+            TimeWindowedCustomer newTimeWindowedCustomer = new TimeWindowedCustomer();
+            TimeWindowedDepot timeWindowedDepot = (TimeWindowedDepot) solution.getDepotList().get(0);
+            int windowTime = (timeWindowedDepot.getDueTime() - timeWindowedDepot.getReadyTime()) / 4;
+            int readyTime = demandRandom.nextInt(windowTime * 3);
+            newTimeWindowedCustomer.setReadyTime(readyTime);
+            newTimeWindowedCustomer.setDueTime(readyTime + windowTime);
+            newTimeWindowedCustomer.setServiceDuration(Math.min(10000, windowTime / 2));
+            newCustomer = newTimeWindowedCustomer;
+        } else {
+            newCustomer = new Customer();
+        }
+        newCustomer.setId(newLocation.getId());
+        newCustomer.setLocation(newLocation);
+        // Demand must not be 0
+        newCustomer.setDemand(demandRandom.nextInt(10) + 1);
+        return newCustomer;
     }
 
 }

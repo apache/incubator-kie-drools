@@ -33,6 +33,7 @@ import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitu
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
 import org.optaplanner.examples.vehiclerouting.domain.location.AirDistanceLocation;
+import org.optaplanner.examples.vehiclerouting.domain.location.DistanceType;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
@@ -40,7 +41,7 @@ import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedC
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 
-public class VehicleRoutingSchedulePainter {
+public class VehicleRoutingSolutionPainter {
 
     private static final int TEXT_SIZE = 12;
     private static final int TIME_WINDOW_DIAMETER = 26;
@@ -54,7 +55,7 @@ public class VehicleRoutingSchedulePainter {
     private BufferedImage canvas = null;
     private LatitudeLongitudeTranslator translator = null;
 
-    public VehicleRoutingSchedulePainter() {
+    public VehicleRoutingSolutionPainter() {
         depotImageIcon = new ImageIcon(getClass().getResource(IMAGE_PATH_PREFIX + "depot.png"));
         vehicleImageIcons = new ImageIcon[] {
                 new ImageIcon(getClass().getResource(IMAGE_PATH_PREFIX + "vehicleChameleon.png")),
@@ -78,13 +79,13 @@ public class VehicleRoutingSchedulePainter {
         return translator;
     }
 
-    public void reset(VehicleRoutingSolution schedule, Dimension size, ImageObserver imageObserver) {
+    public void reset(VehicleRoutingSolution solution, Dimension size, ImageObserver imageObserver) {
         translator = new LatitudeLongitudeTranslator();
-        for (Location location : schedule.getLocationList()) {
+        for (Location location : solution.getLocationList()) {
             translator.addCoordinates(location.getLatitude(), location.getLongitude());
         }
 
-        int maximumTimeWindowTime = determineMaximumTimeWindowTime(schedule);
+        int maximumTimeWindowTime = determineMaximumTimeWindowTime(solution);
 
         double width = size.getWidth();
         double height = size.getHeight();
@@ -93,7 +94,7 @@ public class VehicleRoutingSchedulePainter {
         Graphics2D g = createCanvas(width, height);
         g.setFont(g.getFont().deriveFont((float) TEXT_SIZE));
         g.setStroke(TangoColorFactory.NORMAL_STROKE);
-        for (Customer customer : schedule.getCustomerList()) {
+        for (Customer customer : solution.getCustomerList()) {
             Location location = customer.getLocation();
             int x = translator.translateLongitudeToX(location.getLongitude());
             int y = translator.translateLatitudeToY(location.getLatitude());
@@ -130,7 +131,7 @@ public class VehicleRoutingSchedulePainter {
             }
         }
         g.setColor(TangoColorFactory.ALUMINIUM_3);
-        for (Depot depot : schedule.getDepotList()) {
+        for (Depot depot : solution.getDepotList()) {
             int x = translator.translateLongitudeToX(depot.getLocation().getLongitude());
             int y = translator.translateLatitudeToY(depot.getLocation().getLatitude());
             g.fillRect(x - 2, y - 2, 5, 5);
@@ -139,12 +140,12 @@ public class VehicleRoutingSchedulePainter {
         }
         int colorIndex = 0;
         // TODO Too many nested for loops
-        for (Vehicle vehicle : schedule.getVehicleList()) {
+        for (Vehicle vehicle : solution.getVehicleList()) {
             g.setColor(TangoColorFactory.SEQUENCE_2[colorIndex]);
             Customer vehicleInfoCustomer = null;
             int longestNonDepotDistance = -1;
             int load = 0;
-            for (Customer customer : schedule.getCustomerList()) {
+            for (Customer customer : solution.getCustomerList()) {
                 if (customer.getPreviousStandstill() != null && customer.getVehicle() == vehicle) {
                     load += customer.getDemand();
                     Location previousLocation = customer.getPreviousStandstill().getLocation();
@@ -204,21 +205,23 @@ public class VehicleRoutingSchedulePainter {
         g.setColor(TangoColorFactory.ALUMINIUM_3);
         g.fillRect(5, (int) height - 12 - TEXT_SIZE - (TEXT_SIZE / 2), 5, 5);
         g.drawString("Depot", 15, (int) height - 10 - TEXT_SIZE);
-        String vehiclesSizeString = schedule.getVehicleList().size() + " vehicles";
+        String vehiclesSizeString = solution.getVehicleList().size() + " vehicles";
         g.drawString(vehiclesSizeString,
                 ((int) width - g.getFontMetrics().stringWidth(vehiclesSizeString)) / 2, (int) height - 10 - TEXT_SIZE);
         g.setColor(TangoColorFactory.ALUMINIUM_4);
         g.fillRect(6, (int) height - 6 - (TEXT_SIZE / 2), 3, 3);
-        g.drawString((schedule instanceof TimeWindowedVehicleRoutingSolution)
+        g.drawString((solution instanceof TimeWindowedVehicleRoutingSolution)
                 ? "Customer: demand, time window and arrival time" : "Customer: demand", 15, (int) height - 5);
-        String customersSizeString = schedule.getCustomerList().size() + " customers";
+        String customersSizeString = solution.getCustomerList().size() + " customers";
         g.drawString(customersSizeString,
                 ((int) width - g.getFontMetrics().stringWidth(customersSizeString)) / 2, (int) height - 5);
-        String clickString = "Click anywhere in the map to add a customer.";
-        g.drawString(clickString, (int) width - 5 - g.getFontMetrics().stringWidth(clickString), (int) height - 5);
+        if (solution.getDistanceType() == DistanceType.AIR_DISTANCE) {
+            String clickString = "Click anywhere in the map to add a customer.";
+            g.drawString(clickString, (int) width - 5 - g.getFontMetrics().stringWidth(clickString), (int) height - 5);
+        }
         // Show soft score
         g.setColor(TangoColorFactory.ORANGE_3);
-        HardSoftScore score = schedule.getScore();
+        HardSoftScore score = solution.getScore();
         if (score != null) {
             String fuelString;
             if (!score.isFeasible()) {
@@ -247,9 +250,9 @@ public class VehicleRoutingSchedulePainter {
         }
     }
 
-    private int determineMaximumTimeWindowTime(VehicleRoutingSolution schedule) {
+    private int determineMaximumTimeWindowTime(VehicleRoutingSolution solution) {
         int maximumTimeWindowTime = 0;
-        for (Depot depot : schedule.getDepotList()) {
+        for (Depot depot : solution.getDepotList()) {
             if (depot instanceof TimeWindowedDepot) {
                 int timeWindowTime = ((TimeWindowedDepot) depot).getDueTime();
                 if (timeWindowTime > maximumTimeWindowTime) {
@@ -257,7 +260,7 @@ public class VehicleRoutingSchedulePainter {
                 }
             }
         }
-        for (Customer customer : schedule.getCustomerList()) {
+        for (Customer customer : solution.getCustomerList()) {
             if (customer instanceof TimeWindowedCustomer) {
                 int timeWindowTime = ((TimeWindowedCustomer) customer).getDueTime();
                 if (timeWindowTime > maximumTimeWindowTime) {

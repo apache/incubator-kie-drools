@@ -31,10 +31,10 @@ import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedV
 
 public class VehicleRoutingEasyScoreCalculator implements EasyScoreCalculator<VehicleRoutingSolution> {
 
-    public HardSoftScore calculateScore(VehicleRoutingSolution schedule) {
-        boolean timeWindowed = schedule instanceof TimeWindowedVehicleRoutingSolution;
-        List<Customer> customerList = schedule.getCustomerList();
-        List<Vehicle> vehicleList = schedule.getVehicleList();
+    public HardSoftScore calculateScore(VehicleRoutingSolution solution) {
+        boolean timeWindowed = solution instanceof TimeWindowedVehicleRoutingSolution;
+        List<Customer> customerList = solution.getCustomerList();
+        List<Vehicle> vehicleList = solution.getVehicleList();
         Map<Vehicle, Integer> vehicleDemandMap = new HashMap<Vehicle, Integer>(vehicleList.size());
         for (Vehicle vehicle : vehicleList) {
             vehicleDemandMap.put(vehicle, 0);
