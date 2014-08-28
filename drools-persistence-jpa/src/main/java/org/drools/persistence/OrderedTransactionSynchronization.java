@@ -21,6 +21,10 @@ public abstract class OrderedTransactionSynchronization implements TransactionSy
         if (this.getClass() != o.getClass()) {
             return this.getOrder().compareTo(o.getOrder()+1);
         }
-        return this.getOrder().compareTo(o.getOrder());
+        int result = this.getOrder().compareTo(o.getOrder());
+        if (result == 0 && !this.equals(o)) {
+        	return 1;
+        }
+        return result;
     }
 }
