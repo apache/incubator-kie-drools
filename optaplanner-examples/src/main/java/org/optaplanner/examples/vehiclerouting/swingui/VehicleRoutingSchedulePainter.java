@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.geom.CubicCurve2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.text.DecimalFormat;
@@ -31,6 +32,7 @@ import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
+import org.optaplanner.examples.vehiclerouting.domain.location.AirDistanceLocation;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
@@ -151,7 +153,7 @@ public class VehicleRoutingSchedulePainter {
                     Location location = customer.getLocation();
                     int x = translator.translateLongitudeToX(location.getLongitude());
                     int y = translator.translateLatitudeToY(location.getLatitude());
-                    g.drawLine(previousX, previousY, x, y);
+                    drawRoute(g, previousX, previousY, x, y, location instanceof AirDistanceLocation);
                     // Determine where to draw the vehicle info
                     int distance = customer.getDistanceToPreviousStandstill();
                     if (customer.getPreviousStandstill() instanceof Customer) {
@@ -169,7 +171,7 @@ public class VehicleRoutingSchedulePainter {
                         int vehicleX = translator.translateLongitudeToX(vehicleLocation.getLongitude());
                         int vehicleY = translator.translateLatitudeToY(vehicleLocation.getLatitude());
                         g.setStroke(TangoColorFactory.FAT_DASHED_STROKE);
-                        g.drawLine(x, y, vehicleX, vehicleY);
+                        drawRoute(g, x, y, vehicleX, vehicleY, location instanceof AirDistanceLocation);
                         g.setStroke(TangoColorFactory.NORMAL_STROKE);
                     }
                 }
@@ -228,6 +230,20 @@ public class VehicleRoutingSchedulePainter {
             g.setFont(g.getFont().deriveFont(Font.BOLD, (float) TEXT_SIZE * 2));
             g.drawString(fuelString,
                     (int) width - g.getFontMetrics().stringWidth(fuelString) - 10, (int) height - 10 - TEXT_SIZE);
+        }
+    }
+
+    protected void drawRoute(Graphics2D g, int x1, int y1, int x2, int y2, boolean straight) {
+        if (straight) {
+            g.drawLine(x1, y1, x2, y2);
+        } else {
+            double xDistPart = (x2 - x1) / 3.0;
+            double yDistPart = (y2 - y1) / 3.0;
+            double ctrlx1 = x1 + xDistPart + yDistPart;
+            double ctrly1 = y1 - xDistPart + yDistPart;
+            double ctrlx2 = x2 - xDistPart - yDistPart;
+            double ctrly2 = y2 + xDistPart - yDistPart;
+            g.draw(new CubicCurve2D.Double(x1, y1, ctrlx1, ctrly1, ctrlx2, ctrly2, x2, y2));
         }
     }
 
