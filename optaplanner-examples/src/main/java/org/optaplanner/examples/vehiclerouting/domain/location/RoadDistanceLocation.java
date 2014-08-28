@@ -23,6 +23,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("VrpRoadDistanceLocation")
 public class RoadDistanceLocation extends Location {
 
+    // Prefer Map over array or List because customers might be added and removed in real-time planning.
     protected Map<RoadDistanceLocation, Double> travelDistanceMap;
 
     public Map<RoadDistanceLocation, Double> getTravelDistanceMap() {
