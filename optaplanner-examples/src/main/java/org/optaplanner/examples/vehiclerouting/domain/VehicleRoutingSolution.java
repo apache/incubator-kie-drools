@@ -30,6 +30,7 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.vehiclerouting.domain.location.DistanceType;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
@@ -42,6 +43,7 @@ import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 public class VehicleRoutingSolution extends AbstractPersistable implements Solution<HardSoftScore> {
 
     protected String name;
+    protected DistanceType distanceType;
     protected List<Location> locationList;
     protected List<Depot> depotList;
     protected List<Vehicle> vehicleList;
@@ -57,6 +59,14 @@ public class VehicleRoutingSolution extends AbstractPersistable implements Solut
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public DistanceType getDistanceType() {
+        return distanceType;
+    }
+
+    public void setDistanceType(DistanceType distanceType) {
+        this.distanceType = distanceType;
     }
 
     public List<Location> getLocationList() {

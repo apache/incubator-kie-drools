@@ -23,14 +23,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
 import org.optaplanner.examples.vehiclerouting.domain.location.AirDistanceLocation;
+import org.optaplanner.examples.vehiclerouting.domain.location.DistanceType;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.domain.location.RoadDistanceLocation;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
@@ -46,6 +49,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         importer.convert("timewindowed/Solomon_100_R101.vrp", "cvrptw-100customers-A.xml");
         importer.convert("timewindowed/Solomon_100_R201.vrp", "cvrptw-100customers-B.xml");
         importer.convert("timewindowed/Homberger_0400_R1_4_1.vrp", "cvrptw-400customers.xml");
+        importer.convert("roaddistance/capacitated/bays-n29-k5.vrp", "road-cvrp-29customers.xml");
     }
 
     public VehicleRoutingImporter() {
@@ -85,6 +89,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             } else if (splitBySpacesOrTabs(firstLine).length == 3) {
                 schedule = new VehicleRoutingSolution();
                 schedule.setId(0L);
+                schedule.setName(FilenameUtils.getBaseName(inputFile.getName()));
                 String[] tokens = splitBySpacesOrTabs(firstLine, 3);
                 locationListSize = Integer.parseInt(tokens[0]);
                 vehicleListSize = Integer.parseInt(tokens[1]);
@@ -124,21 +129,31 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             readUntilConstantLine("TYPE *: CVRP");
             locationListSize = readIntegerValue("DIMENSION *:");
             String edgeWeightType = readStringValue("EDGE_WEIGHT_TYPE *:");
-            if (!edgeWeightType.equalsIgnoreCase("EUC_2D")) {
-                // Only Euclidean distance is implemented in Location.getDistance(Location)
+            if (edgeWeightType.equalsIgnoreCase("EUC_2D")) {
+                schedule.setDistanceType(DistanceType.AIR_DISTANCE);
+            } else if (edgeWeightType.equalsIgnoreCase("EXPLICIT")) {
+                schedule.setDistanceType(DistanceType.ROAD_DISTANCE);
+                String edgeWeightFormat = readStringValue("EDGE_WEIGHT_FORMAT *:");
+                if (edgeWeightFormat.equalsIgnoreCase("FULL_MATRIX")) {
+
+                } else {
+                    throw new IllegalArgumentException("The edgeWeightFormat (" + edgeWeightFormat + ") is not supported.");
+                }
+            } else {
                 throw new IllegalArgumentException("The edgeWeightType (" + edgeWeightType + ") is not supported.");
             }
             capacity = readIntegerValue("CAPACITY *:");
         }
 
         private void readBasicLocationList() throws IOException {
+            boolean roadDistance = schedule.getDistanceType() == DistanceType.ROAD_DISTANCE;
             readConstantLine("NODE_COORD_SECTION");
             List<Location> locationList = new ArrayList<Location>(locationListSize);
             locationMap = new HashMap<Long, Location>(locationListSize);
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpacesOrTabs(line.trim(), 3);
-                Location location = new AirDistanceLocation();
+                Location location = roadDistance ? new RoadDistanceLocation() : new AirDistanceLocation();
                 location.setId(Long.parseLong(lineTokens[0]));
                 location.setLatitude(Double.parseDouble(lineTokens[1]));
                 location.setLongitude(Double.parseDouble(lineTokens[2]));
@@ -149,6 +164,29 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                 locationMap.put(location.getId(), location);
             }
             schedule.setLocationList(locationList);
+            if (roadDistance) {
+                readConstantLine("EDGE_WEIGHT_SECTION");
+                for (int i = 0; i < locationListSize; i++) {
+                    RoadDistanceLocation location = (RoadDistanceLocation) locationList.get(i);
+                    HashMap<RoadDistanceLocation, Double> travelDistanceMap
+                            = new HashMap<RoadDistanceLocation, Double>(locationListSize);
+                    String line = bufferedReader.readLine();
+                    String[] lineTokens = splitBySpacesOrTabs(line.trim(), locationListSize);
+                    for (int j = 0; j < locationListSize; j++) {
+                        double travelDistance = Double.parseDouble(lineTokens[j]);
+                        if (i == j) {
+                            if (travelDistance != 0.0) {
+                                throw new IllegalStateException("The travelDistance (" + travelDistance
+                                        + ") should be zero.");
+                            }
+                        } else {
+                            RoadDistanceLocation otherLocation = (RoadDistanceLocation) locationList.get(j);
+                            travelDistanceMap.put(otherLocation, travelDistance);
+                        }
+                    }
+                    location.setTravelDistanceMap(travelDistanceMap);
+                }
+            }
         }
 
         private void readBasicCustomerList() throws IOException {
@@ -236,6 +274,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         // ************************************************************************
 
         public void readCourseraFormat() throws IOException {
+            schedule.setDistanceType(DistanceType.AIR_DISTANCE);
             List<Location> locationList = new ArrayList<Location>(locationListSize);
             depotList = new ArrayList<Depot>(1);
             List<Customer> customerList = new ArrayList<Customer>(locationListSize);
@@ -286,6 +325,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         }
 
         private void readTimeWindowedHeaders() throws IOException {
+            schedule.setDistanceType(DistanceType.AIR_DISTANCE);
             readEmptyLine();
             readConstantLine("VEHICLE");
             readConstantLine("NUMBER +CAPACITY");
@@ -309,7 +349,6 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             while (line != null && !line.trim().isEmpty()) {
                 String[] lineTokens = splitBySpacesOrTabs(line.trim(), 7);
                 long id = Long.parseLong(lineTokens[0]);
-
                 AirDistanceLocation location = new AirDistanceLocation();
                 location.setId(id);
                 location.setLatitude(Double.parseDouble(lineTokens[1]));

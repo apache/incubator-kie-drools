@@ -1,6 +1,7 @@
 <VrpTimeWindowedVehicleRoutingSolution id="1">
   <id>0</id>
   <name>C101</name>
+  <distanceType>AIR_DISTANCE</distanceType>
   <locationList id="2">
     <VrpAirDistanceLocation id="3">
       <id>0</id>

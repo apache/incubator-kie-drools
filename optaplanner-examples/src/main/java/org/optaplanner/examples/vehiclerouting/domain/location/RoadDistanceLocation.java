@@ -16,16 +16,28 @@
 
 package org.optaplanner.examples.vehiclerouting.domain.location;
 
+import java.util.Map;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("VrpRoadDistanceLocation")
 public class RoadDistanceLocation extends Location {
 
+    protected Map<RoadDistanceLocation, Double> travelDistanceMap;
+
+    public Map<RoadDistanceLocation, Double> getTravelDistanceMap() {
+        return travelDistanceMap;
+    }
+
+    public void setTravelDistanceMap(Map<RoadDistanceLocation, Double> travelDistanceMap) {
+        this.travelDistanceMap = travelDistanceMap;
+    }
+
     @Override
     public int getDistance(Location location) {
-        // TODO implement
-        throw new UnsupportedOperationException();
+        double distance = travelDistanceMap.get((RoadDistanceLocation) location);
         // Multiplied by 1000 to avoid floating point arithmetic rounding errors
+        return (int) (distance * 1000.0 + 0.5);
     }
 
 }
