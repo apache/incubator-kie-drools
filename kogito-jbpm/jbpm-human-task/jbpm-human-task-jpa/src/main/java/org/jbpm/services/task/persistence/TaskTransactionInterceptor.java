@@ -102,7 +102,8 @@ public class TaskTransactionInterceptor extends AbstractInterceptor {
         return new TaskContext() {
 			
 			@Override
-			public void set(String identifier, Object value) {				
+			public void set(String identifier, Object value) {	
+				txm.putResource(identifier, value);
 			}
 			
 			@Override
@@ -121,7 +122,7 @@ public class TaskTransactionInterceptor extends AbstractInterceptor {
 			
 			@Override
 			public Object get(String identifier) {
-				return null;
+				return txm.getResource(identifier);
 			}
 			
 			@Override

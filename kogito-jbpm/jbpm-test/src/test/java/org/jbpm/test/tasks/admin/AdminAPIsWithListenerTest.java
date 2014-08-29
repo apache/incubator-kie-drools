@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.services.task.admin.listener.TaskCleanUpProcessEventListener;
 import org.jbpm.services.task.identity.DefaultUserInfo;
 import org.jbpm.test.JbpmJUnitBaseTestCase;
@@ -19,6 +20,7 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
@@ -204,5 +206,41 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitBaseTestCase {
         Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Stakeholders").getResultList().size());
         Assert.assertEquals(0, em.createQuery("select c from ContentImpl c").getResultList().size());
         em.close();
+    }
+    
+    @Test
+    public void automaticCleanUpWitCallActivityTest() throws Exception {
+
+        createRuntimeManager("BPMN2-CallActivity.bpmn2", "BPMN2-CallActivity2.bpmn2", "BPMN2-CallActivitySubProcess.bpmn2");
+        RuntimeEngine runtimeEngine = getRuntimeEngine();
+        KieSession ksession = runtimeEngine.getKieSession();
+        TaskService taskService = runtimeEngine.getTaskService();        
+
+        ksession.addEventListener(new TaskCleanUpProcessEventListener(taskService));
+        
+        ProcessInstance processInstance = ksession.startProcess("ParentProcessCA");
+        
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
+        assertEquals(1,  tasks.size());
+        
+        long taskId = tasks.get(0).getId();
+        
+        taskService.start(taskId, "john");
+        taskService.complete(taskId, "john", null);
+        
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+
+        final EntityManager em = emfTasks.createEntityManager();
+
+        Assert.assertEquals(0, em.createQuery("select t from TaskImpl t").getResultList().size());
+        Assert.assertEquals(0, em.createQuery("select i from I18NTextImpl i").getResultList().size());
+        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_BAs").getResultList().size());
+        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_ExclOwners").getResultList().size());
+        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_PotOwners").getResultList().size());
+        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Recipients").getResultList().size());
+        Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Stakeholders").getResultList().size());
+        Assert.assertEquals(0, em.createQuery("select c from ContentImpl c").getResultList().size());
+        em.close();
+
     }
 }

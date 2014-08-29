@@ -55,11 +55,14 @@ public class TaskContext implements org.kie.internal.task.api.TaskContext {
     private Environment environment;
     private TaskEventSupport taskEventSupport;
     
+    private org.kie.internal.task.api.TaskContext delegate;
+    
     public TaskContext() {
     }   
     
-    public TaskContext(Context context, Environment environment, TaskEventSupport taskEventSupport) {
+    public TaskContext(Context context, Environment environment, TaskEventSupport taskEventSupport) {    	
     	if (context instanceof org.kie.internal.task.api.TaskContext) {
+    		this.delegate = ((org.kie.internal.task.api.TaskContext) context);
     		this.persistenceContext = ((org.kie.internal.task.api.TaskContext) context).getPersistenceContext();
     	}
     	this.environment = environment;
@@ -67,9 +70,9 @@ public class TaskContext implements org.kie.internal.task.api.TaskContext {
     }  
     
     public TaskInstanceService getTaskInstanceService() {
-        return new TaskInstanceServiceImpl(persistenceContext,
+        return new TaskInstanceServiceImpl(this, persistenceContext,
         		new UserGroupLifeCycleManagerDecorator(getUserGroupCallback(),
-        		new MVELLifeCycleManager(persistenceContext, getTaskContentService(), taskEventSupport)),
+        		new MVELLifeCycleManager(this, persistenceContext, getTaskContentService(), taskEventSupport)),
         		taskEventSupport, environment);
     }
     
@@ -121,10 +124,18 @@ public class TaskContext implements org.kie.internal.task.api.TaskContext {
 	}	
 
     public Object get(String string) {
+    	if (string.startsWith("local:")) {
+    		return delegate.get(string);
+    	}
         return this.environment.get(string);
     }
 
     public void set(String string, Object o) {
+    	if (string.startsWith("local:")) {
+    		delegate.set(string, o);
+    		return;
+    	}
+    	
         if (this.environment.get(string) != null) {
         	throw new IllegalArgumentException("Cannot override value for property " + string);
         }

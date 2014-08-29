@@ -1322,6 +1322,31 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertNodeTriggered(processInstance.getId() + 1, "StartProcess2",
                 "User Task");
     }
+    
+    @Test
+    public void testCallActivityWithSubProcessWaitState() throws Exception {
+        KieBase kbase = createKnowledgeBase(
+                "BPMN2-CallActivity.bpmn2",
+                "BPMN2-CallActivitySubProcessWithBoundaryEvent.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        Map<String, Object> params = new HashMap<String, Object>();
+        ProcessInstance processInstance = ksession.startProcess("ParentProcess", params);
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+
+        WorkItem wi = workItemHandler.getWorkItem();
+        assertNotNull(wi);
+        
+        ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+        
+        assertProcessInstanceFinished(processInstance, ksession);
+        // first check the parent process executed nodes
+        assertNodeTriggered(processInstance.getId(), "StartProcess", "CallActivity", "EndProcess");
+        // then check child process executed nodes - is there better way to get child process id than simply increment?
+        assertNodeTriggered(processInstance.getId() + 1, "StartProcess2", "User Task", "EndProcess");
+    }
 
     @Test
     public void testUserTaskWithBooleanOutput() throws Exception {

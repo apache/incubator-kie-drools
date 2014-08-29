@@ -28,6 +28,7 @@ import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskData;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskContentService;
+import org.kie.internal.task.api.TaskContext;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.model.FaultData;
@@ -51,6 +52,8 @@ public class MVELLifeCycleManager implements LifeCycleManager {
     
     private static final Logger logger = LoggerFactory.getLogger(MVELLifeCycleManager.class);
 
+    private TaskContext context;
+    
     private TaskPersistenceContext persistenceContext;
 
     private TaskContentService taskContentService;
@@ -60,8 +63,9 @@ public class MVELLifeCycleManager implements LifeCycleManager {
     public MVELLifeCycleManager() {
     }
     
-    public MVELLifeCycleManager(TaskPersistenceContext persistenceContext, TaskContentService contentService,
+    public MVELLifeCycleManager(TaskContext context, TaskPersistenceContext persistenceContext, TaskContentService contentService,
     		TaskEventSupport taskEventSupport) {
+    	this.context = context;
     	this.persistenceContext = persistenceContext;
     	this.taskContentService = contentService;
     	this.taskEventSupport = taskEventSupport;
@@ -265,23 +269,23 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
             switch (operation) {    
                 case Activate: {
-                	taskEventSupport.fireBeforeTaskActivated(task, persistenceContext);
+                	taskEventSupport.fireBeforeTaskActivated(task, context);
                     break;
                 }
                 case Claim: {
-                	taskEventSupport.fireBeforeTaskClaimed(task, persistenceContext);
+                	taskEventSupport.fireBeforeTaskClaimed(task, context);
                     break;
                 }
                 case Complete: {
-                	taskEventSupport.fireBeforeTaskCompleted(task, persistenceContext);
+                	taskEventSupport.fireBeforeTaskCompleted(task, context);
                     break;
                 }
                 case Delegate: {
-                	taskEventSupport.fireBeforeTaskDelegated(task, persistenceContext);
+                	taskEventSupport.fireBeforeTaskDelegated(task, context);
                     break;
                 }
                 case Exit: {
-                	taskEventSupport.fireBeforeTaskExited(task, persistenceContext);
+                	taskEventSupport.fireBeforeTaskExited(task, context);
                     break;
                 }
 
@@ -296,39 +300,39 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
 
                     }
-                    taskEventSupport.fireBeforeTaskFailed(task, persistenceContext);
+                    taskEventSupport.fireBeforeTaskFailed(task, context);
                     break;
                 }
                 case Forward: {
-                	taskEventSupport.fireBeforeTaskForwarded(task, persistenceContext);
+                	taskEventSupport.fireBeforeTaskForwarded(task, context);
                     break;
                 }
                 case Nominate: {
-                	taskEventSupport.fireBeforeTaskNominated(task, persistenceContext);
+                	taskEventSupport.fireBeforeTaskNominated(task, context);
                     break;
                 }
                 case Release: {
-                	taskEventSupport.fireBeforeTaskReleased(task, persistenceContext);
+                	taskEventSupport.fireBeforeTaskReleased(task, context);
                     break;
                 }
                 case Resume: {
-                	taskEventSupport.fireBeforeTaskResumed(task, persistenceContext);
+                	taskEventSupport.fireBeforeTaskResumed(task, context);
                     break;
                 }
                 case Skip: {
-                	taskEventSupport.fireBeforeTaskSkipped(task, persistenceContext);
+                	taskEventSupport.fireBeforeTaskSkipped(task, context);
                     break;
                 }
                 case Start: {
-                	taskEventSupport.fireBeforeTaskStarted(task, persistenceContext);
+                	taskEventSupport.fireBeforeTaskStarted(task, context);
                     break;
                 }
                 case Stop: {
-                	taskEventSupport.fireBeforeTaskStopped(task, persistenceContext);
+                	taskEventSupport.fireBeforeTaskStopped(task, context);
                     break;
                 }
                 case Suspend: {
-                	taskEventSupport.fireBeforeTaskSuspended(task, persistenceContext);
+                	taskEventSupport.fireBeforeTaskSuspended(task, context);
                     break;
                 }
 
@@ -338,11 +342,11 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
             switch (operation) {
                 case Activate: {
-                	taskEventSupport.fireAfterTaskActivated(task, persistenceContext);
+                	taskEventSupport.fireAfterTaskActivated(task, context);
                     break;
                 }
                 case Claim: {
-                	taskEventSupport.fireAfterTaskClaimed(task, persistenceContext);
+                	taskEventSupport.fireAfterTaskClaimed(task, context);
                     break;
                 }
                 case Complete: {
@@ -352,52 +356,52 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                         
                     }
 
-                    taskEventSupport.fireAfterTaskCompleted(task, persistenceContext);
+                    taskEventSupport.fireAfterTaskCompleted(task, context);
                     break;
                 }
                 case Delegate: {
-                	taskEventSupport.fireAfterTaskDelegated(task, persistenceContext);
+                	taskEventSupport.fireAfterTaskDelegated(task, context);
                     // This is a really bad hack to execut the correct behavior
                     ((InternalTaskData) task.getTaskData()).setStatus(Status.Reserved);
                 }
                 case Exit: {
-                	taskEventSupport.fireAfterTaskExited(task, persistenceContext);
+                	taskEventSupport.fireAfterTaskExited(task, context);
                     break;
                 }
                 case Fail: {
-                	taskEventSupport.fireAfterTaskFailed(task, persistenceContext);
+                	taskEventSupport.fireAfterTaskFailed(task, context);
                     break;
                 }
                 case Forward: {
-                	taskEventSupport.fireAfterTaskForwarded(task, persistenceContext);
+                	taskEventSupport.fireAfterTaskForwarded(task, context);
                     break;
                 }   
                 case Nominate: {
-                	taskEventSupport.fireAfterTaskNominated(task, persistenceContext);
+                	taskEventSupport.fireAfterTaskNominated(task, context);
                     break;
                 }
                 case Release: {
-                	taskEventSupport.fireAfterTaskReleased(task, persistenceContext);
+                	taskEventSupport.fireAfterTaskReleased(task, context);
                     break;
                 }
                 case Resume: {
-                	taskEventSupport.fireAfterTaskResumed(task, persistenceContext);
+                	taskEventSupport.fireAfterTaskResumed(task, context);
                     break;
                 }
                 case Start: {
-                	taskEventSupport.fireAfterTaskStarted(task, persistenceContext);
+                	taskEventSupport.fireAfterTaskStarted(task, context);
                     break;
                 }
                 case Skip: {
-                	taskEventSupport.fireAfterTaskSkipped(task, persistenceContext);
+                	taskEventSupport.fireAfterTaskSkipped(task, context);
                     break;
                 }
                 case Stop: {
-                	taskEventSupport.fireAfterTaskStopped(task, persistenceContext);
+                	taskEventSupport.fireAfterTaskStopped(task, context);
                     break;
                 }    
                 case Suspend: {
-                	taskEventSupport.fireAfterTaskSuspended(task, persistenceContext);
+                	taskEventSupport.fireAfterTaskSuspended(task, context);
                     break;
                 }
             }

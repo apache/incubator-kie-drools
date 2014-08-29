@@ -93,10 +93,11 @@ public class TaskAdminServiceImpl implements TaskAdminService {
         for (TaskSummary sum : tasks) {
             long taskId = sum.getId();
             Task task = persistenceContext.findTask(taskId);
-            ((InternalTask) task).setArchived(true);
-            persistenceContext.persist(task);
-            archivedTasks++;
-
+            if (task != null) {
+	            ((InternalTask) task).setArchived(true);
+	            persistenceContext.merge(task);
+	            archivedTasks++;
+            }
         }
         return archivedTasks;
     }
@@ -115,16 +116,18 @@ public class TaskAdminServiceImpl implements TaskAdminService {
             long taskId = sum.getId();
             // Only remove archived tasks
             Task task = persistenceContext.findTask(taskId);
-            Content content = persistenceContext.findContent(task.getTaskData().getDocumentContentId());
-            if (((InternalTask) task).isArchived()) {
-                persistenceContext.remove(task);
-                if (content != null) {
-                    persistenceContext.remove(content);
-                }
-                removedTasks++;
-            } else {
-                logger.warn(" The Task cannot be removed if it wasn't archived first !!");
-            }
+        	if (task != null) {
+	            Content content = persistenceContext.findContent(task.getTaskData().getDocumentContentId());
+	            if (((InternalTask) task).isArchived()) {
+	                persistenceContext.remove(task);
+	                if (content != null) {
+	                    persistenceContext.remove(content);
+	                }
+	                removedTasks++;
+	            } else {
+	                logger.warn(" The Task cannot be removed if it wasn't archived first !!");
+	            }
+            } 
         }
 
         return removedTasks;

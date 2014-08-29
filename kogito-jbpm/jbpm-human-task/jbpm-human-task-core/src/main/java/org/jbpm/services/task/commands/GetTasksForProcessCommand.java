@@ -50,8 +50,7 @@ public class GetTasksForProcessCommand extends TaskCommand<List<TaskSummary>> {
 		
 		List<TaskSummary> tasks = (List<TaskSummary>) persistenceContext.queryWithParametersInTransaction("TasksByStatusByProcessId",
                 persistenceContext.addParametersToMap("processInstanceId", processInstanceId, 
-                                        "status", statuses,
-                                        "flushMode", "AUTO"),
+                                        "status", statuses),
                                         ClassUtil.<List<TaskSummary>>castClass(List.class));
     
         return tasks;

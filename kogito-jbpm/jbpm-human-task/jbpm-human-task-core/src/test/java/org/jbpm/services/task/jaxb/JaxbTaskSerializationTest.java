@@ -1,6 +1,9 @@
 package org.jbpm.services.task.jaxb;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
@@ -24,12 +27,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.jbpm.services.task.admin.listener.internal.GetCurrentTxTasksCommand;
 import org.jbpm.services.task.commands.CompositeCommand;
 import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.commands.UserGroupCallbackTaskCommand;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
 import org.jbpm.services.task.impl.model.xml.JaxbTaskSummary;
-import org.junit.Assume;
 import org.junit.Test;
 import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
@@ -70,7 +73,8 @@ public class JaxbTaskSerializationTest extends AbstractTaskSerializationTest {
     @Test
     public void taskCommandSubTypesCanBeSerialized() throws Exception {
         for (Class<?> jaxbClass : reflections.getSubTypesOf(TaskCommand.class)) {
-            if (jaxbClass.equals(UserGroupCallbackTaskCommand.class)) {
+            if (jaxbClass.equals(UserGroupCallbackTaskCommand.class)
+            		|| jaxbClass.equals(GetCurrentTxTasksCommand.class)) {
                 continue;
             }
             addClassesToSerializationContext(jaxbClass);
@@ -98,6 +102,7 @@ public class JaxbTaskSerializationTest extends AbstractTaskSerializationTest {
                Class [] exclTaskCmds = { 
                       UserGroupCallbackTaskCommand.class,
                       CompositeCommand.class,
+                      GetCurrentTxTasksCommand.class
                };
                taskCmdSubTypes.removeAll(Arrays.asList(exclTaskCmds));
                for( XmlElement xmlElemAnno : xmlElemsAnno.value() ) { 
@@ -110,6 +115,7 @@ public class JaxbTaskSerializationTest extends AbstractTaskSerializationTest {
                   taskCmdSubTypes.remove(xmlElemAnnoType);
                }
                if( ! taskCmdSubTypes.isEmpty() ) { 
+            	   System.out.println("##### " + taskCmdSubTypes.iterator().next().getCanonicalName());
                   fail( "(" + taskCmdSubTypes.iterator().next().getSimpleName() + ") Not all " + TaskCommand.class.getSimpleName() + " sub types have been added to the @XmlElements in the CompositeCommand." + field.getName() + " field.");
                }
            } else { 
