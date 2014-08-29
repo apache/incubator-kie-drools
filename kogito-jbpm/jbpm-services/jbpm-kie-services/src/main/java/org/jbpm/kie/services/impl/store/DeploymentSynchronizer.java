@@ -72,7 +72,7 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 			logger.debug("About to synchronize deployment units, found new enabled {}, found new disabled {}", enabledSet, disabledSet);
 			if (enabledSet != null) {
 				for (DeploymentUnit unit : enabledSet) {
-					if (!entries.containsKey(unit.getIdentifier())) {
+					if (!entries.containsKey(unit.getIdentifier()) && deploymentService.getDeployedUnit(unit.getIdentifier()) == null) {
 						try {
 							logger.debug("New deployment unit to be deployed {}", unit);
 							entries.put(unit.getIdentifier(), unit);
@@ -87,7 +87,7 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 			
 			if (disabledSet != null) {
 				for (DeploymentUnit unit : disabledSet) {
-					if (entries.containsKey(unit.getIdentifier())) {
+					if (entries.containsKey(unit.getIdentifier()) && deploymentService.getDeployedUnit(unit.getIdentifier()) != null) {
 						try {
 							logger.debug("Existing deployment unit {} to be undeployed", unit.getIdentifier());
 							entries.remove(unit.getIdentifier());
