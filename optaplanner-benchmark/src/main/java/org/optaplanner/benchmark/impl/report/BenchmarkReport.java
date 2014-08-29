@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NavigableSet;
 import java.util.TreeSet;
 import javax.imageio.ImageIO;
 
@@ -62,7 +63,6 @@ import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.core.impl.score.ScoreUtils;
@@ -513,7 +513,7 @@ public class BenchmarkReport {
             String xAxisLabel, NumberFormat xAxisNumberFormat,
             String yAxisLabel, NumberFormat yAxisNumberFormat) {
         NumberAxis xAxis = new NumberAxis(xAxisLabel);
-        if (areProblemScalesLogarithmic(seriesList)) {
+        if (useLogarithmicProblemScale(seriesList)) {
             xAxis = new LogarithmicAxis(xAxis.getLabel() + " (logarithmic)");
         }
         xAxis.setNumberFormatOverride(xAxisNumberFormat);
@@ -533,23 +533,22 @@ public class BenchmarkReport {
         return plot;
     }
 
-    private boolean areProblemScalesLogarithmic(List<XYSeries> seriesList) {
-        TreeSet<Double> xValues = new TreeSet<Double>();
-        int itemCounter = 0;
+    protected boolean useLogarithmicProblemScale(List<XYSeries> seriesList) {
+        NavigableSet<Double> xValueSet = new TreeSet<Double>();
+        int xValueListSize = 0;
         for (XYSeries series : seriesList) {
             for (XYDataItem dataItem : (List<XYDataItem>) series.getItems()) {
-                xValues.add(dataItem.getXValue());
-                itemCounter++;
+                xValueSet.add(dataItem.getXValue());
+                xValueListSize++;
             }
         }
-        if(itemCounter < 5) return false;
-        double threshold = 0.2 * (xValues.last() - xValues.first());
-        int thresholdCounter = 0;
-        for (Double value : xValues.descendingSet()) {
-            if (value > threshold) thresholdCounter++;
-            else break;
+        if (xValueListSize <= 4) {
+            return false;
         }
-        return thresholdCounter < 0.2 * xValues.size();
+        // If 60% of the points are in 20% of the value space, use a logarithmic scale
+        double threshold = 0.2 * (xValueSet.last() - xValueSet.first());
+        int belowThresholdCount = xValueSet.headSet(threshold).size();
+        return belowThresholdCount >= (0.6 * xValueSet.size());
     }
 
     private XYItemRenderer createScalabilityPlotRenderer(NumberFormat numberFormat) {
