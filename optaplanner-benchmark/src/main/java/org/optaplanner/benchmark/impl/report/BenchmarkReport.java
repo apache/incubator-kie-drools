@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeSet;
 import javax.imageio.ImageIO;
 
 import freemarker.template.Configuration;
@@ -39,6 +40,7 @@ import freemarker.template.TemplateException;
 import org.apache.commons.io.IOUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.LogarithmicAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.ItemLabelAnchor;
 import org.jfree.chart.labels.ItemLabelPosition;
@@ -50,6 +52,7 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.TextAnchor;
@@ -510,6 +513,9 @@ public class BenchmarkReport {
             String xAxisLabel, NumberFormat xAxisNumberFormat,
             String yAxisLabel, NumberFormat yAxisNumberFormat) {
         NumberAxis xAxis = new NumberAxis(xAxisLabel);
+        if (areProblemScalesLogarithmic(seriesList)) {
+            xAxis = new LogarithmicAxis(xAxis.getLabel() + " (logarithmic)");
+        }
         xAxis.setNumberFormatOverride(xAxisNumberFormat);
         NumberAxis yAxis = new NumberAxis(yAxisLabel);
         yAxis.setNumberFormatOverride(yAxisNumberFormat);
@@ -525,6 +531,25 @@ public class BenchmarkReport {
         }
         plot.setOrientation(PlotOrientation.VERTICAL);
         return plot;
+    }
+
+    private boolean areProblemScalesLogarithmic(List<XYSeries> seriesList) {
+        TreeSet<Double> xValues = new TreeSet<Double>();
+        int itemCounter = 0;
+        for (XYSeries series : seriesList) {
+            for (XYDataItem dataItem : (List<XYDataItem>) series.getItems()) {
+                xValues.add(dataItem.getXValue());
+                itemCounter++;
+            }
+        }
+        if(itemCounter < 5) return false;
+        double threshold = 0.2 * (xValues.last() - xValues.first());
+        int thresholdCounter = 0;
+        for (Double value : xValues.descendingSet()) {
+            if (value > threshold) thresholdCounter++;
+            else break;
+        }
+        return thresholdCounter < 0.2 * xValues.size();
     }
 
     private XYItemRenderer createScalabilityPlotRenderer(NumberFormat numberFormat) {
