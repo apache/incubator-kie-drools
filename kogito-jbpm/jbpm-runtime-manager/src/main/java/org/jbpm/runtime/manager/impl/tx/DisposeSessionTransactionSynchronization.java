@@ -30,7 +30,7 @@ public class DisposeSessionTransactionSynchronization extends OrderedTransaction
 	private RuntimeManager manager;
 	
 	public DisposeSessionTransactionSynchronization(RuntimeManager manager, RuntimeEngine runtime) {
-		super(10);
+		super(10, "DestroySessionTransactionSynchronization"+runtime.toString());
 		this.manager = manager;
 	    this.runtime = runtime;
 	}

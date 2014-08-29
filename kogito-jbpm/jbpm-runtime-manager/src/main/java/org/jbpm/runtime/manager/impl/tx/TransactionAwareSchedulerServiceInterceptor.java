@@ -80,7 +80,7 @@ public class TransactionAwareSchedulerServiceInterceptor extends DelegateSchedul
         private TimerJobInstance timerJobInstance;
         
         ScheduleTimerTransactionSynchronization(TimerJobInstance timerJobInstance, GlobalSchedulerService schedulerService) {
-        	super(5);
+        	super(5, "TransactionAwareSchedulerServiceInterceptor");
             this.timerJobInstance = timerJobInstance;
             this.schedulerService = schedulerService;
         }

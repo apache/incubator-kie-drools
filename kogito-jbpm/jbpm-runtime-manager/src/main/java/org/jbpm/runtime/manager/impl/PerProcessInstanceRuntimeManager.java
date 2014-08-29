@@ -347,7 +347,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             if (tm != null && tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
                     && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
                     && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
-            	TransactionManagerHelper.registerTransactionSyncInContainer(tm, new OrderedTransactionSynchronization(5) {
+            	TransactionManagerHelper.registerTransactionSyncInContainer(tm, new OrderedTransactionSynchronization(5, "PPIRM-"+initialKsession.getId()) {
 					
                     @Override
                     public void beforeCompletion() {
@@ -392,7 +392,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             if (tm != null && tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
                     && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
                     && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
-            	TransactionManagerHelper.registerTransactionSyncInContainer(tm, new OrderedTransactionSynchronization(5) {
+            	TransactionManagerHelper.registerTransactionSyncInContainer(tm, new OrderedTransactionSynchronization(5, "PPIRM-"+initialKsession.getId()) {
 					
                     @Override
                     public void beforeCompletion() {                           
