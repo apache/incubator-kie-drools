@@ -416,7 +416,7 @@ public class SingleSessionCommandService
         SingleSessionCommandService service;
 
         public SynchronizationImpl(SingleSessionCommandService service) {
-            super(1);
+            super(1, "SynchronizationImpl-"+service.toString());
             this.service = service;
         }
 

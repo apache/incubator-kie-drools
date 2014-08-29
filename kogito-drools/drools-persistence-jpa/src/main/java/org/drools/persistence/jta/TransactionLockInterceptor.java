@@ -80,7 +80,7 @@ public class TransactionLockInterceptor extends AbstractInterceptor {
 
     protected void release(TransactionManager txm) {
         try {
-            TransactionManagerHelper.registerTransactionSyncInContainer(txm, new OrderedTransactionSynchronization(100) {
+            TransactionManagerHelper.registerTransactionSyncInContainer(txm, new OrderedTransactionSynchronization(100, "tx-unlock") {
 
                 @Override
                 public void beforeCompletion() {
