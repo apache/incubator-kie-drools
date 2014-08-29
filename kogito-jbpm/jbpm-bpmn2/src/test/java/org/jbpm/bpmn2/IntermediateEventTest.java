@@ -1802,6 +1802,29 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         
         ksession.dispose();        
     }
+    
+    @Test
+    public void testIntermediateCatchEventSignalAndBoundarySignalEvent() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-BoundaryEventWithSignals.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        ProcessInstance processInstance = ksession.startProcess("boundaryeventtest");
+        assertProcessInstanceActive(processInstance);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        // now signal process instance
+        ksession.signalEvent("moveon", "", processInstance.getId());
+        assertProcessInstanceActive(processInstance);
+        
+        WorkItem wi = handler.getWorkItem();
+        assertNotNull(wi);
+        
+        // signal boundary event on user task
+        ksession.signalEvent("moveon", "", processInstance.getId());
+        
+        assertProcessInstanceFinished(processInstance, ksession);        
+    }
 
     /*
      * helper methods

@@ -53,7 +53,8 @@ public class BoundaryEventNodeInstance extends EventNodeInstance {
         if (nodeInstances != null && !nodeInstances.isEmpty()) {
             for (NodeInstance nInstance : nodeInstances) {
                 String nodeUniqueId = (String) nInstance.getNode().getMetaData().get("UniqueId");
-                if (attachedTo.equals(nodeUniqueId)) {
+                boolean isActivating = ((WorkflowProcessInstanceImpl)nInstance.getProcessInstance()).getActivatingNodeIds().contains(nodeUniqueId);
+                if (attachedTo.equals(nodeUniqueId) && !isActivating) {
                     return true;
                 }
                 if (nInstance instanceof CompositeNodeInstance) {
