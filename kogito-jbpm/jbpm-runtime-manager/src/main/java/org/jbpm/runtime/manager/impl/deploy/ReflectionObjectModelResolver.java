@@ -26,8 +26,10 @@ import org.kie.api.KieServices;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.task.TaskService;
 import org.kie.internal.executor.api.ExecutorService;
+import org.kie.internal.runtime.Cacheable;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.ObjectModelResolver;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,11 +54,20 @@ public class ReflectionObjectModelResolver implements ObjectModelResolver {
 		knownContextParamMapping.put("executorService", ExecutorService.class);
 		knownContextParamMapping.put("classLoader", ClassLoader.class);
 	}
-
+	
 	@Override
 	public Object getInstance(ObjectModel model, ClassLoader cl, Map<String, Object> contextParams) {
-		Object instance = null;
+		
 		Class<?> clazz = getClassObject(model.getIdentifier(), cl);
+		Object instance = null;
+		InternalRuntimeManager manager = null;
+		if (contextParams.containsKey("runtimeManager")) {
+			manager = (InternalRuntimeManager) contextParams.get("runtimeManager");
+			instance = manager.getCacheManager().get(clazz.getName());
+			if (instance != null) {
+				return instance;
+			}
+		}
 		if (model.getParameters() == null || model.getParameters().isEmpty()) {
 			logger.debug("About to create instance of {} with no arg constructor", model.getIdentifier());
 			// no parameters then use no arg constructor
@@ -112,6 +123,10 @@ public class ReflectionObjectModelResolver implements ObjectModelResolver {
 			}
 		}
 		logger.debug("Created instance : {}", instance);
+		
+		if (manager != null && instance instanceof Cacheable) {
+			manager.getCacheManager().add(instance.getClass().getName(), instance);
+		}
 		return instance;
 	}
 

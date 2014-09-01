@@ -41,6 +41,7 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
+import org.kie.internal.runtime.manager.CacheManager;
 import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.DisposeListener;
 import org.kie.internal.runtime.manager.InternalRegisterableItemsFactory;
@@ -69,6 +70,8 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     protected RuntimeManagerRegistry registry = RuntimeManagerRegistry.get();
     protected RuntimeEnvironment environment;
     protected DeploymentDescriptor deploymentDescriptor;
+    
+    protected CacheManager cacheManager = new CacheManagerImpl();
     
     protected boolean engineInitEager = Boolean.parseBoolean(System.getProperty("org.jbpm.rm.engine.eager", "false"));
 
@@ -163,6 +166,7 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     }
     
     public void close(boolean removeJobs) {
+    	cacheManager.dispose();
         environment.close();
         registry.remove(identifier);
         TimerService timerService = TimerServiceRegistry.getInstance().remove(getIdentifier() + TimerServiceRegistry.TIMER_SERVICE_SUFFIX);
@@ -281,4 +285,18 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     		this.securityManager.checkPermission();
     	}
     }
+
+	@Override
+	public void setCacheManager(CacheManager cacheManager) {
+		if (cacheManager != null) {
+			this.cacheManager = cacheManager;
+		}
+	}
+
+	@Override
+	public CacheManager getCacheManager() {
+		return cacheManager;
+	}
+    
+    
 }

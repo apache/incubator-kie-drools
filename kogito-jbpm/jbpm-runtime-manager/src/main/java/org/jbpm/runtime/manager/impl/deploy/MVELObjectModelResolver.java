@@ -19,8 +19,10 @@ package org.jbpm.runtime.manager.impl.deploy;
 import java.util.Map;
 
 import org.drools.core.util.MVELSafeHelper;
+import org.kie.internal.runtime.Cacheable;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.ObjectModelResolver;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
@@ -35,6 +37,15 @@ public class MVELObjectModelResolver implements ObjectModelResolver {
 	
 	@Override
 	public Object getInstance(ObjectModel model, ClassLoader cl, Map<String, Object> contextParams) {
+		Object instance = null;
+		InternalRuntimeManager manager = null;
+		if (contextParams.containsKey("runtimeManager")) {
+			manager = (InternalRuntimeManager) contextParams.get("runtimeManager");
+			instance = manager.getCacheManager().get(model.getIdentifier());
+			if (instance != null) {
+				return instance;
+			}
+		}
 		ParserConfiguration config = new ParserConfiguration();
         config.setClassLoader(cl);
         ParserContext ctx = new ParserContext(config);
@@ -45,7 +56,12 @@ public class MVELObjectModelResolver implements ObjectModelResolver {
         }
 
         Object compiledExpression = MVEL.compileExpression(model.getIdentifier(), ctx);
-        return MVELSafeHelper.getEvaluator().executeExpression( compiledExpression, contextParams );		
+        instance = MVELSafeHelper.getEvaluator().executeExpression( compiledExpression, contextParams );
+        
+        if (manager != null && instance instanceof Cacheable) {
+			manager.getCacheManager().add(model.getIdentifier(), instance);
+		}
+        return instance;
 	}
 
 	@Override

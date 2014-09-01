@@ -22,11 +22,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.internal.executor.api.Command;
 import org.kie.internal.executor.api.CommandCallback;
 import org.kie.internal.executor.api.CommandContext;
+import org.kie.internal.runtime.Cacheable;
+import org.kie.internal.runtime.Closeable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,6 +133,33 @@ public class ClassCacheManager {
             }
         }
         return callbackList;
+    }
+    
+    protected void closeInstance(Object instance) {
+    	if (instance == null) {
+    		return;
+    	}
+    	
+    	if (instance instanceof Closeable) {
+    		((Closeable) instance).close();
+    	} else if (instance instanceof Cacheable) {
+    		((Cacheable) instance).close();
+    	}
+    }
+    
+    @PreDestroy
+    public void dispose() {
+    	if (commandCache != null) {
+    		for (Object command : commandCache.values()) {
+    			closeInstance(command);
+    		}
+    	}
+    	
+    	if (callbackCache != null) {
+    		for (Object callback : callbackCache.values()) {
+    			closeInstance(callback);
+    		}
+    	}
     }
 
 }

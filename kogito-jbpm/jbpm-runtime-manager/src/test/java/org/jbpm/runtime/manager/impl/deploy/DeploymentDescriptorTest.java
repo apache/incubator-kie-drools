@@ -11,6 +11,7 @@ import java.util.List;
 import org.junit.Test;
 import org.kie.internal.runtime.conf.AuditMode;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
+import org.kie.internal.runtime.conf.NamedObjectModel;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.PersistenceMode;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
@@ -151,5 +152,18 @@ public class DeploymentDescriptorTest {
 		assertEquals(0, descriptor.getTaskEventListeners().size());
 		assertEquals(0, descriptor.getWorkItemHandlers().size());
 		assertEquals(1, descriptor.getRequiredRoles().size());
+	}
+	
+	@Test
+	public void testPringDescriptor() {
+		DeploymentDescriptor descriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
+		
+		descriptor.getBuilder()
+		.addWorkItemHandler(new NamedObjectModel("mvel", "Log", "new org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler()"))
+		.addWorkItemHandler(new NamedObjectModel("mvel", "WebService", "new org.jbpm.process.workitem.webservice.WebServiceWorkItemHandler(ksession)"))
+		.addWorkItemHandler(new NamedObjectModel("mvel", "Rest", "new org.jbpm.process.workitem.rest.RESTWorkItemHandler()"))
+		.addWorkItemHandler(new NamedObjectModel("mvel", "Service Task", "new org.jbpm.process.workitem.bpmn2.ServiceTaskHandler(ksession)"));
+		
+		System.out.println(descriptor.toXml());
 	}
 }

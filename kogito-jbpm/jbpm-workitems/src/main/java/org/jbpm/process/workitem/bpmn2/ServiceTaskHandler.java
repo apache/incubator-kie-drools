@@ -38,12 +38,13 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.internal.runtime.Cacheable;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ServiceTaskHandler extends AbstractLogOrThrowWorkItemHandler {
+public class ServiceTaskHandler extends AbstractLogOrThrowWorkItemHandler implements Cacheable {
     
     public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/";
     
@@ -283,5 +284,14 @@ public class ServiceTaskHandler extends AbstractLogOrThrowWorkItemHandler {
 		}
 		
 		return value;
+	}
+
+	@Override
+	public void close() {
+		if (clients != null) {
+			for (Client client : clients.values()) {
+				client.destroy();
+			}
+		}
 	}
 }

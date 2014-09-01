@@ -217,6 +217,7 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
         parameters.put("ksession", runtime.getKieSession());
         parameters.put("taskService", runtime.getTaskService());
         parameters.put("runtimeManager", manager);
+        parameters.put("classLoader", getRuntimeManager().getEnvironment().getClassLoader());
         parameters.put("entityManagerFactory", 
         		runtime.getKieSession().getEnvironment().get(EnvironmentName.ENTITY_MANAGER_FACTORY));
         

@@ -28,6 +28,7 @@ import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.executor.api.Command;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ExecutionResults;
+import org.kie.internal.runtime.Cacheable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * 
  * Web service call is synchronous but since it's executor command it will be invoked as asynchronous task any way.
  */
-public class WebServiceCommand implements Command {
+public class WebServiceCommand implements Command, Cacheable {
     
     private static final Logger logger = LoggerFactory.getLogger(WebServiceCommand.class);
     private volatile static ConcurrentHashMap<String, Client> clients = new ConcurrentHashMap<String, Client>();
@@ -110,5 +111,14 @@ public class WebServiceCommand implements Command {
 
         return null;
     }
+    
+	@Override
+	public void close() {
+		if (clients != null) {
+			for (Client client : clients.values()) {
+				client.destroy();
+			}
+		}
+	}
 
 }
