@@ -1,6 +1,5 @@
 package org.drools.compiler.integrationtests;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
@@ -19,7 +18,9 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -541,5 +542,54 @@ public class AddRemoveRulesTest {
 
     }
 
+    @Test
+    public void testRemoveWithDuplicatedCondition() {
+        String packageName = "test_same_condition_pk" ;
+        String rule = "package " + packageName + ";" +
+                      "rule 'test_same_condition' \n" +
+                      "when \n" +
+                      " String(this == \"1\") \n" +
+                      " String(this == \"1\") \n" +
+                      "then \n" +
+                      "System.out.println('test same condition rule'); \n"+
+                      "end";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( rule.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.removeKnowledgePackage(packageName);
+    }
 
+    @Test
+    public void testFireAfterRemoveDuplicatedConditionInDifferentPackages() {
+        String packageName = "test_same_condition_pk" ;
+        String packageName2 = "test_same_condition_pk_2" ;
+        String rule1 = "package " + packageName + ";" +
+                       "import java.util.Map; \n" +
+                       "rule 'test_same_condition' \n" +
+                       "when \n" +
+                       " Map(this['name'] == 'Michael') \n" +
+                       "then \n" +
+                       "System.out.println('test same condition rule'); \n"+
+                       "end";
+        String rule2 = "package " + packageName2 + ";" +
+                       "import java.util.Map; \n" +
+                       "rule 'test_same_condition_2' \n" +
+                       "when \n" +
+                       " Map(this['name'] == 'Michael') \n" +
+                       " Map(this['test'] == '1') \n" +
+                       "then \n" +
+                       "System.out.println('test same condition rule 2'); \n"+
+                       "end";
+        StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2 );
+        session.getKieBase().removeKnowledgePackage(packageName);
+        session.fireAllRules();
+        Map<String, Object> fact = new HashMap<String, Object>();
+        fact.put("name", "Michael");
+        session.insert(fact);
+        session.fireAllRules();
+    }
 }

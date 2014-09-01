@@ -25,6 +25,8 @@ import org.drools.core.common.QuadroupleBetaConstraints;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.common.TripleBetaConstraints;
+import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -35,6 +37,8 @@ import org.drools.core.rule.IntervalProviderConstraint;
 import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
+import org.drools.core.rule.constraint.MvelConstraint;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.Interval;
@@ -147,11 +151,29 @@ public class BuildUtils {
             context.getNodes().add( node );
         } else {
             // shared node found
+            mergeNodes(node, candidate);
             // undo previous id assignment
             context.releaseId( candidate.getId() );
         }
         node.addAssociation( context.getRule(), context.peekRuleComponent() );
         return node;
+    }
+
+    private void mergeNodes(BaseNode node, BaseNode duplicate) {
+        if (node instanceof AlphaNode) {
+            AlphaNodeFieldConstraint alphaConstraint = ((AlphaNode) node).getConstraint();
+            if (alphaConstraint instanceof MvelConstraint) {
+                ((MvelConstraint)alphaConstraint).addPackageNames(((MvelConstraint)((AlphaNode) duplicate).getConstraint()).getPackageNames());
+            }
+        } else if (node instanceof BetaNode) {
+            BetaNodeFieldConstraint[] betaConstraints = ((BetaNode) node).getConstraints();
+            int i = 0;
+            for (BetaNodeFieldConstraint betaConstraint : betaConstraints) {
+                if (betaConstraint instanceof MvelConstraint) {
+                    ((MvelConstraint) betaConstraint).addPackageNames(((MvelConstraint) ((BetaNode) duplicate).getConstraints()[i++]).getPackageNames());
+                }
+            }
+        }
     }
 
     /**

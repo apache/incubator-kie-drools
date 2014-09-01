@@ -35,6 +35,8 @@ import org.mvel2.util.CompatibilityStrategy;
 import org.mvel2.util.NullType;
 
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
@@ -113,7 +115,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         expression = normalizeMVELVariableExpression(expression, leftValue, rightValue, relDescr);
         IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operatorDescr.getOperator());
         MVELCompilationUnit compilationUnit = isUnification ? null : buildCompilationUnit(context, pattern, expression, null);
-        return new MvelConstraint(context.getPkg().getName(), expression, declarations, compilationUnit, constraintType, requiredDeclaration, extractor, isUnification);
+        return new MvelConstraint(Arrays.asList(context.getPkg().getName()), expression, declarations, compilationUnit, constraintType, requiredDeclaration, extractor, isUnification);
     }
 
     public Constraint buildMvelConstraint(String packageName, String expression, Declaration[] declarations, MVELCompilationUnit compilationUnit, boolean isDynamic) {
@@ -124,7 +126,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         return new MvelConstraint( packageName, expression, declarations, compilationUnit, isDynamic );
     }
 
-    public Constraint buildMvelConstraint(String packageName, String expression, Declaration[] declarations, MVELCompilationUnit compilationUnit, IndexUtil.ConstraintType constraintType, Declaration indexingDeclaration, InternalReadAccessor extractor, boolean isUnification) {
+    public Constraint buildMvelConstraint(Collection<String> packageName, String expression, Declaration[] declarations, MVELCompilationUnit compilationUnit, IndexUtil.ConstraintType constraintType, Declaration indexingDeclaration, InternalReadAccessor extractor, boolean isUnification) {
         return new MvelConstraint( packageName, expression, declarations, compilationUnit, constraintType, indexingDeclaration, extractor, isUnification );
     }
 
