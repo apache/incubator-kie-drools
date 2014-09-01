@@ -22,6 +22,7 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.util.Entry;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.core.util.ObjectHashSet;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.Message;
@@ -990,4 +991,48 @@ public class QueryTest extends CommonTestMethodBase {
 
         assertEquals( Arrays.asList( "Hello World" ), list );
     }
+
+
+    @Test
+    @Ignore
+    public void testQueryWithClassArg() {
+        //DROOLS-590
+        String drl = "global java.util.List list; " +
+                     "" +
+                     "declare Foo end " +
+                     "" +
+                     "query bar( Class $c ) " +
+                     "  Class( this.getName() == $c.getName() ) " +
+                     "end " +
+                     "query bar2( Class $c ) " +
+                     "  Class( this == $c ) " +
+                     "end " +
+                     "" +
+                     "rule Init when then insert( Foo.class ); end " +
+                     "" +
+                     "rule React1 " +
+                     "when " +
+                     "  bar( Foo.class ; ) " +
+                     "then " +
+                     "  list.add( 'aa' ); " +
+                     "end  " +
+
+                     "rule React2 " +
+                     "when\n" +
+                     "  bar2( Foo.class ; ) " +
+                     "then " +
+                     "  list.add( 'bb' ); " +
+                     "end";
+
+        List list = new ArrayList(  );
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession ks = helper.build(  ).newKieSession();
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+
+        assertEquals( Arrays.asList( "aa", "bb" ), list );
+    }
+
+
 }
