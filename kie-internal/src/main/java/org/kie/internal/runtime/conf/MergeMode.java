@@ -16,6 +16,8 @@
 
 package org.kie.internal.runtime.conf;
 
+import javax.xml.bind.annotation.XmlType;
+
 /**
  * Defines merging strategy of two descriptors:
  * <ul>
@@ -26,6 +28,7 @@ package org.kie.internal.runtime.conf;
  * </ul>
  *
  */
+@XmlType
 public enum MergeMode {
 	KEEP_ALL,
 	OVERRIDE_ALL,
