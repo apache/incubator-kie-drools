@@ -47,9 +47,34 @@ public interface InternalRuntimeManager extends RuntimeManager {
      */
     boolean isClosed();
     
+    /**
+     * Returns current deployment descriptor for this instance of RuntimeManager, might be null if 
+     * descriptors are not used
+     * @return
+     */
     DeploymentDescriptor getDeploymentDescriptor();
     
+    /**
+     * Sets deployment descriptor for this instance of RuntimeManager
+     * @param descriptor
+     */
     void setDeploymentDescriptor(DeploymentDescriptor descriptor);
     
+    /**
+     * Sets Security Manager to be used by this instance of RuntimeManager
+     * @param securityManager
+     */
     void setSecurityManager(SecurityManager securityManager);
+    
+    /**
+     * Sets CacheManager to be used for manager scoped cacheable items
+     * @param cacheManager
+     */
+    void setCacheManager(CacheManager cacheManager);
+    
+    /**
+     * Retrieves instance of cache manager
+     * @return
+     */
+    CacheManager getCacheManager();
 }

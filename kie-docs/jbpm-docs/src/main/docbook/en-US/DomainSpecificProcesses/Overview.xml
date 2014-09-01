@@ -94,10 +94,38 @@ node. For example:</para>
 <programlisting language="java">ksession.getWorkItemManager().registerWorkItemHandler("Notification",
     new NotificationWorkItemHandler());
 </programlisting>
-
-<para>The <code>ksession</code> variable above is a <code>StatefulKnowledgeSession</code> (and also 
-a <code>KieSession</code>) instance. The example code above comes from the example that we will go 
-through in the next session.</para>
+    <para>The <code>ksession</code> variable above is a <code>StatefulKnowledgeSession</code> (and
+      also a <code>KieSession</code>) instance. The example code above comes from the example that
+      we will go through in the next session.</para>
+    <para><emphasis role="bold">Work item handler life cycle management</emphasis></para>
+    <para>Work item handler is registered on kie session and then can be used whenever process
+      engine encounters a node that should be handled by that handler. Depending on the
+      implementation of the handler (e.g. some handler might keep state or depend on some resources
+      such as data base connection) there might be a need to maintain life cycle of the handler. To
+      ease the way of doing that jBPM comes with two additional interfaces that handler might
+      implement:</para>
+    <itemizedlist>
+      <listitem>
+        <para><emphasis role="italic">org.kie.internal.runtime.Closeable</emphasis> - allows auto
+          close of the handler whenever owner (work item handler manager) of it is closed or
+          disposed. This is useful in case a handler can be quickly and frequently recreated so the
+          engine will have it for the execution and when disposed it will dispose as well all
+          handlers of Closeable type.</para>
+      </listitem>
+      <listitem>
+        <para><emphasis role="italic">org.kie.internal.runtime.Cacheable</emphasis> - allows
+          handlers to be cached and resused to avoid recreation of the objects. There might be
+          several reasons of doing so - expensive bootstrap of the handler, dependency to external
+          resources - socket connections, db connections, web service client. While this brings
+          powerful feature to the work item handler management it does put additional requirement on
+          the implementation - needs to deal with exceptions internally and recover from any
+          failures. In case recovery cannot be performed it needs to remove itself from the
+          cache.</para>
+      </listitem>
+    </itemizedlist>
+    <para>Closeable interface is handled for all use cases, while Cacheable is available only when
+      RuntimeManager is used. RuntimeManager provides caching capabilities via its CacheManager
+      (available via InternalRuntimeManager in case self removal is required).</para>
 
   <tip>
 <para>You can use different work item handlers for the same process depending on the
