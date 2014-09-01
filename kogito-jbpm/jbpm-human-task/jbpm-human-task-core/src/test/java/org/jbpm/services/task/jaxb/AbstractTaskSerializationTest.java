@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,33 +19,20 @@ import org.jbpm.services.task.commands.GetTaskAssignedAsPotentialOwnerCommand;
 import org.jbpm.services.task.commands.ProcessSubTaskCommand;
 import org.jbpm.services.task.commands.SkipTaskCommand;
 import org.jbpm.services.task.commands.StartTaskCommand;
-import org.jbpm.services.task.commands.TaskCommand;
-import org.jbpm.services.task.commands.UserGroupCallbackTaskCommand;
 import org.jbpm.services.task.impl.factories.TaskFactory;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
-import org.jbpm.services.task.impl.model.xml.JaxbTaskSummary;
 import org.jbpm.services.task.query.QueryFilterImpl;
-import org.jbpm.services.task.query.TaskSummaryImpl;
 import org.junit.Assume;
 import org.junit.Test;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.User;
-import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.InternalAttachment;
 import org.kie.internal.task.api.model.InternalComment;
 import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
-import org.kie.internal.task.api.model.SubTasksStrategy;
-import org.reflections.Reflections;
-import org.reflections.scanners.FieldAnnotationsScanner;
-import org.reflections.scanners.MethodAnnotationsScanner;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.scanners.TypeAnnotationsScanner;
-import org.reflections.util.ClasspathHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,8 +53,6 @@ public abstract class AbstractTaskSerializationTest {
     public enum TestType {
         JAXB, JSON, YAML;
     }
-
-
 
     // TESTS ----------------------------------------------------------------------------------------------------------------------
 
@@ -161,27 +145,7 @@ public abstract class AbstractTaskSerializationTest {
         assertEquals(2, returned.getCommands().size());
     }
 
-    @Test
-    public void jaxbTaskSummarySerialization() throws Exception {
-        Assume.assumeFalse(getType().equals(TestType.YAML));
 
-        TaskSummaryImpl taskSumImpl = new TaskSummaryImpl(
-                1l, 
-                "a", "b", "c", 
-                Status.Completed, 
-                3, true, 
-                new UserImpl("d"), new UserImpl("e"), 
-                new Date(), new Date(), new Date(), 
-                "f", 5, 2l, "deploymentId",
-                SubTasksStrategy.EndParentOnAllSubTasksEnd, 6l);
-        taskSumImpl.setParentId(4l);
-
-        JaxbTaskSummary jaxbTaskSum = new JaxbTaskSummary(taskSumImpl);
-        JaxbTaskSummary jaxbTaskSumCopy = testRoundTrip(jaxbTaskSum);
-
-        ComparePair.compareObjectsViaFields(jaxbTaskSum, jaxbTaskSumCopy, "subTaskStrategy", "potentialOwners");
-    }
-    
     @Test 
     public void statusInCommandSerialization() throws Exception { 
         Assume.assumeTrue(getType().equals(TestType.JAXB));

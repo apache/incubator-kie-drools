@@ -32,7 +32,6 @@ import org.jbpm.services.task.commands.CompositeCommand;
 import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.commands.UserGroupCallbackTaskCommand;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
-import org.jbpm.services.task.impl.model.xml.JaxbTaskSummary;
 import org.junit.Test;
 import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
@@ -43,7 +42,7 @@ import org.reflections.util.ClasspathHelper;
 
 public class JaxbTaskSerializationTest extends AbstractTaskSerializationTest {
 
-    private Class<?>[] jaxbClasses = { JaxbTask.class, JaxbTaskSummary.class };
+    private Class<?>[] jaxbClasses = { JaxbTask.class };
     
     public TestType getType() {
         return TestType.JAXB;
