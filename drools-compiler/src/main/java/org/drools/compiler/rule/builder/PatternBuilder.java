@@ -543,12 +543,12 @@ public class PatternBuilder
         Set<String> declarationNames = new HashSet<String>();
 
         boolean isFirst = true;
-        String packageName = null;
+        Collection<String> packageNames = null;
         StringBuilder expressionBuilder = new StringBuilder(combinableConstraints.size() * 25);
         for (MvelConstraint constraint : combinableConstraints) {
             pattern.removeConstraint(constraint);
             if (isFirst) {
-                packageName = constraint.getPackageName();
+                packageNames = constraint.getPackageNames();
                 isFirst = false;
             } else {
                 expressionBuilder.append(" && ");
@@ -572,7 +572,7 @@ public class PatternBuilder
         String expression = expressionBuilder.toString();
         MVELCompilationUnit compilationUnit = getConstraintBuilder( context ).buildCompilationUnit(context, pattern, expression, mvelCtx.getAliases());
 
-        Constraint combinedConstraint = getConstraintBuilder( context ).buildMvelConstraint( packageName,
+        Constraint combinedConstraint = getConstraintBuilder( context ).buildMvelConstraint( packageNames,
                                                                                              expression,
                                                                                              declarations.toArray(new Declaration[declarations.size()]),
                                                                                              compilationUnit,

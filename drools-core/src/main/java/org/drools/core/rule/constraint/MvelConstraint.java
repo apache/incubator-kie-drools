@@ -7,6 +7,7 @@ import org.drools.core.base.extractors.MVELObjectClassFieldReader;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
@@ -42,7 +43,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -59,7 +63,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     protected final transient AtomicInteger invocationCounter = new AtomicInteger(1);
     protected transient boolean jitted = false;
 
-    private String packageName;
+    private Set<String> packageNames;
     protected String expression;
     private IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.UNKNOWN;
     private Declaration[] declarations;
@@ -76,13 +80,13 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     public MvelConstraint() {}
 
-    public MvelConstraint(String packageName,
+    public MvelConstraint(final String packageName,
                           String expression,
                           MVELCompilationUnit compilationUnit,
                           IndexUtil.ConstraintType constraintType,
                           FieldValue fieldValue,
                           InternalReadAccessor extractor) {
-        this.packageName = packageName;
+        this.packageNames = new HashSet<String>() {{ add(packageName); }};
         this.expression = expression;
         this.compilationUnit = compilationUnit;
         this.constraintType = constraintType;
@@ -91,19 +95,19 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         this.extractor = extractor;
     }
 
-    public MvelConstraint(String packageName,
+    public MvelConstraint(final String packageName,
                           String expression,
                           Declaration[] declarations,
                           MVELCompilationUnit compilationUnit,
                           boolean isDynamic) {
-        this.packageName = packageName;
+        this.packageNames = new HashSet<String>() {{ add(packageName); }};
         this.expression = expression;
         this.declarations = declarations;
         this.compilationUnit = compilationUnit;
         this.isDynamic = isDynamic;
     }
 
-    public MvelConstraint(String packageName,
+    public MvelConstraint(Collection<String> packageNames,
                           String expression,
                           Declaration[] declarations,
                           MVELCompilationUnit compilationUnit,
@@ -111,7 +115,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                           Declaration indexingDeclaration,
                           InternalReadAccessor extractor,
                           boolean isUnification) {
-        this.packageName = packageName;
+        this.packageNames = new HashSet<String>(packageNames);
         this.expression = expression;
         this.compilationUnit = compilationUnit;
         this.constraintType = indexingDeclaration != null ? constraintType : IndexUtil.ConstraintType.UNKNOWN;
@@ -133,8 +137,12 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         this.extractor = readAccessor;
     }
 
-    public String getPackageName() {
-        return packageName;
+    public Collection<String> getPackageNames() {
+        return packageNames;
+    }
+
+    public void addPackageNames(Collection<String> otherPkgs) {
+        packageNames.addAll(otherPkgs);
     }
 
     public String getExpression() {
@@ -462,7 +470,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
-        out.writeObject(packageName);
+        out.writeObject(packageNames);
         out.writeObject(expression);
         out.writeObject(declarations);
         out.writeObject(indexingDeclaration);
@@ -476,7 +484,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
-        packageName = (String)in.readObject();
+        packageNames = (Set<String>)in.readObject();
         expression = (String)in.readObject();
         declarations = (Declaration[]) in.readObject();
         indexingDeclaration = (Declaration) in.readObject();
@@ -507,7 +515,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
         MvelConstraint clone = new MvelConstraint();
         clone.setType(getType());
-        clone.packageName = packageName;
+        clone.packageNames = packageNames;
         clone.expression = expression;
         clone.constraintType = constraintType;
         clone.declarations = clonedDeclarations;
@@ -575,7 +583,13 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     protected MVELDialectRuntimeData getMVELDialectRuntimeData(InternalWorkingMemory workingMemory) {
-        return ((MVELDialectRuntimeData)workingMemory.getKnowledgeBase().getPackage(packageName).getDialectRuntimeRegistry().getDialectData( "mvel" ));
+        for (String packageName : packageNames) {
+            InternalKnowledgePackage pkg = workingMemory.getKnowledgeBase().getPackage(packageName);
+            if (pkg != null) {
+                return ((MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData("mvel"));
+            }
+        }
+        return null;
     }
 
     // MvelArrayContextEntry

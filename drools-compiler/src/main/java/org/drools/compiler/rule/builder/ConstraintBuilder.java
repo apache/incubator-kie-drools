@@ -1,24 +1,25 @@
 package org.drools.compiler.rule.builder;
 
 
-import org.drools.core.base.EvaluatorWrapper;
-import org.drools.core.base.ValueType;
-import org.drools.core.base.evaluators.EvaluatorDefinition;
-import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.compiler.compiler.AnalysisResult;
-import org.drools.core.util.index.IndexUtil;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.LiteralRestrictionDescr;
 import org.drools.compiler.lang.descr.OperatorDescr;
 import org.drools.compiler.lang.descr.PredicateDescr;
 import org.drools.compiler.lang.descr.RelationalExprDescr;
+import org.drools.core.base.EvaluatorWrapper;
+import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.util.index.IndexUtil;
 
+import java.util.Collection;
 import java.util.Map;
 
 
@@ -80,7 +81,7 @@ public interface ConstraintBuilder {
                                                      PredicateDescr predicateDescr,
                                                      AnalysisResult analysis );
 
-    public Constraint buildMvelConstraint( String packageName, 
+    public Constraint buildMvelConstraint( Collection<String> packageNames,
                                            String expression, 
                                            Declaration[] declarations, 
                                            MVELCompilationUnit compilationUnit,

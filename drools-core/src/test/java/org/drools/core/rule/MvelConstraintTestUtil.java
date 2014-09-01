@@ -1,13 +1,15 @@
 package org.drools.core.rule;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.test.model.Cheese;
-import org.drools.core.util.index.IndexUtil;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.test.model.Cheese;
+import org.drools.core.util.index.IndexUtil;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
+
+import java.util.ArrayList;
 
 public class MvelConstraintTestUtil extends MvelConstraint {
 
@@ -23,7 +25,7 @@ public class MvelConstraintTestUtil extends MvelConstraint {
     }
 
     public MvelConstraintTestUtil(String expression, Declaration declaration, InternalReadAccessor extractor) {
-        super(null, expression, new Declaration[] { declaration }, null, findConstraintTypeForExpression(expression), declaration, extractor, expression.contains(":="));
+        super(new ArrayList<String>(), expression, new Declaration[] { declaration }, null, findConstraintTypeForExpression(expression), declaration, extractor, expression.contains(":="));
     }
 
     public MvelConstraintTestUtil(String expression, String operator, Declaration declaration, InternalReadAccessor extractor) {
@@ -31,7 +33,7 @@ public class MvelConstraintTestUtil extends MvelConstraint {
     }
 
     public MvelConstraintTestUtil(String expression, IndexUtil.ConstraintType constraintType, Declaration declaration, InternalReadAccessor extractor) {
-        super(null, expression, new Declaration[] { declaration }, null, constraintType, declaration, extractor, expression.contains(":="));
+        super(new ArrayList<String>(), expression, new Declaration[] { declaration }, null, constraintType, declaration, extractor, expression.contains(":="));
     }
 
     @Override
