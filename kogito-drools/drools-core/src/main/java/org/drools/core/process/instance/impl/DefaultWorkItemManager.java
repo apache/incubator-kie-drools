@@ -33,6 +33,7 @@ import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.internal.runtime.Closeable;
 
 public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
 
@@ -164,5 +165,15 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         this.kruntime.signalEvent(type, event, processInstanceId);
     }
 
+    @Override
+    public void dispose() {
+        if (workItemHandlers != null) {
+            for (Map.Entry<String, WorkItemHandler> handlerEntry : workItemHandlers.entrySet()) {
+                if (handlerEntry.getValue() instanceof Closeable) {
+                    ((Closeable) handlerEntry.getValue()).close();
+                }
+            }
+        }
+    }
 
 }

@@ -13,6 +13,7 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.internal.runtime.Closeable;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -223,5 +224,16 @@ public class JPAWorkItemManager implements WorkItemManager {
     
     public void signalEvent(String type, Object event, long processInstanceId) { 
         this.kruntime.signalEvent(type, event, processInstanceId);
+    }
+
+    @Override
+    public void dispose() {
+        if (workItemHandlers != null) {
+            for (Map.Entry<String, WorkItemHandler> handlerEntry : workItemHandlers.entrySet()) {
+                if (handlerEntry.getValue() instanceof Closeable) {
+                    ((Closeable) handlerEntry.getValue()).close();
+                }
+            }
+        }
     }
 }

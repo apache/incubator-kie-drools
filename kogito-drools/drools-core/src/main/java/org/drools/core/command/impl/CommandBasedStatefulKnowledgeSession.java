@@ -196,6 +196,11 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
                     SignalEventCommand command = new SignalEventCommand(processInstanceId, type, event);
                     commandService.execute(command);
                 }
+
+                @Override
+                public void dispose() {
+                    // no-op
+                }
             };
         }
         return workItemManager;

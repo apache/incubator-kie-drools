@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.kie.internal.runtime.Closeable;
+
 /**
  * Base class for Thread-safe Event Support in Drools. Note that subclasses wishing to access
  * the listeners should do so via the <method>getEventListenersIterator</method> method. This
@@ -102,6 +104,13 @@ public abstract class AbstractEventSupport<E extends EventListener> implements E
     }
         
     public void clear() {
+        if (listeners != null) {
+            for (EventListener listener : listeners) {
+                if (listener instanceof Closeable) {
+                    ((Closeable) listener).close();
+                }
+            }
+        }
         this.listeners.clear();
     }
 }
