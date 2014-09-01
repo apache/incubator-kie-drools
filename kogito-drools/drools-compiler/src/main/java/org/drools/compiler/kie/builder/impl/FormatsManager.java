@@ -17,6 +17,7 @@ public class FormatsManager {
 
     private Map<String, String> registry = new HashMap<String, String>() {{
         put("gdst", "org.drools.workbench.models.guided.dtable.backend.GuidedDecisionTableConverter");
+        put("dtree", "org.drools.workbench.models.guided.dtree.backend.GuidedDecisionTreeConverter");
         put("scgd", "org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardConverter");
         put("template", "org.drools.workbench.models.guided.template.backend.GuidedRuleTemplateConverter");
     }};
