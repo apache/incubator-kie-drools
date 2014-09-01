@@ -140,7 +140,7 @@ public class JPAAuditLogService implements AuditLogService {
     public List<ProcessInstanceLog> findActiveProcessInstances(String processId) {
         EntityManager em = getEntityManager();
         Object newTx = joinTransaction(em);
-        List<ProcessInstanceLog> result = getEntityManager()
+        List<ProcessInstanceLog> result = em
             .createQuery("FROM ProcessInstanceLog p WHERE p.processId = :processId AND p.end is null")
                 .setParameter("processId", processId).getResultList();
         closeEntityManager(em, newTx);
@@ -155,7 +155,7 @@ public class JPAAuditLogService implements AuditLogService {
         EntityManager em = getEntityManager();
         Object newTx = joinTransaction(em);
         try {
-        	return (ProcessInstanceLog) getEntityManager()
+        	return (ProcessInstanceLog) em
             .createQuery("FROM ProcessInstanceLog p WHERE p.processInstanceId = :processInstanceId")
                 .setParameter("processInstanceId", processInstanceId).getSingleResult();
         } catch (NoResultException e) {
@@ -173,7 +173,7 @@ public class JPAAuditLogService implements AuditLogService {
     public List<ProcessInstanceLog> findSubProcessInstances(long processInstanceId) {
         EntityManager em = getEntityManager();
         Object newTx = joinTransaction(em);
-        List<ProcessInstanceLog> result = getEntityManager()
+        List<ProcessInstanceLog> result = em
             .createQuery("FROM ProcessInstanceLog p WHERE p.parentProcessInstanceId = :processInstanceId")
                 .setParameter("processInstanceId", processInstanceId).getResultList();
         closeEntityManager(em, newTx);
@@ -188,7 +188,7 @@ public class JPAAuditLogService implements AuditLogService {
     public List<NodeInstanceLog> findNodeInstances(long processInstanceId) {
         EntityManager em = getEntityManager();
         Object newTx = joinTransaction(em);
-        List<NodeInstanceLog> result = getEntityManager()
+        List<NodeInstanceLog> result = em
             .createQuery("FROM NodeInstanceLog n WHERE n.processInstanceId = :processInstanceId ORDER BY date,id")
                 .setParameter("processInstanceId", processInstanceId).getResultList();
         closeEntityManager(em, newTx);
@@ -203,7 +203,7 @@ public class JPAAuditLogService implements AuditLogService {
     public List<NodeInstanceLog> findNodeInstances(long processInstanceId, String nodeId) {
         EntityManager em = getEntityManager();
         Object newTx = joinTransaction(em);
-        List<NodeInstanceLog> result = getEntityManager()
+        List<NodeInstanceLog> result = em
             .createQuery("FROM NodeInstanceLog n WHERE n.processInstanceId = :processInstanceId AND n.nodeId = :nodeId ORDER BY date,id")
                 .setParameter("processInstanceId", processInstanceId)
                 .setParameter("nodeId", nodeId).getResultList();
@@ -219,7 +219,7 @@ public class JPAAuditLogService implements AuditLogService {
     public List<VariableInstanceLog> findVariableInstances(long processInstanceId) {
         EntityManager em = getEntityManager();
         Object newTx = joinTransaction(em);
-        List<VariableInstanceLog> result = getEntityManager()
+        List<VariableInstanceLog> result = em
             .createQuery("FROM VariableInstanceLog v WHERE v.processInstanceId = :processInstanceId ORDER BY date")
                 .setParameter("processInstanceId", processInstanceId).getResultList();
         closeEntityManager(em, newTx);
