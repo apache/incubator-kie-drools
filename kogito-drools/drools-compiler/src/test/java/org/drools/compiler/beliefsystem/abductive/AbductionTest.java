@@ -1030,4 +1030,90 @@ public class AbductionTest extends CommonTestMethodBase {
     }
 
 
+    @Test
+    public void testCheckForItemsExample() {
+        String droolsSource =
+                "package org.drools.tms.test; " +
+                "import " + Abducible.class.getName() + "; " +
+                "global java.util.List list; " +
+
+                "declare Fruit id : int @key end " +
+
+                "declare Apple extends Fruit end " +
+                "declare Orange extends Fruit end " +
+                "declare Banana extends Fruit end " +
+
+                "declare Goal " +
+                "   type : Class @key " +
+                "end " +
+
+                "query need( Class $type ) " +
+                "   @Abductive( target = Goal.class ) " +
+                "   not Fruit( $type.getName() == this.getClass().getName() ) " +
+                "end " +
+
+                "query check( Class $type ) " +
+                "   ?need( $type ; ) " +
+                "   or " +
+                "   Fruit( $type.getName() == this.getClass().getName() ) " +
+                "end " +
+
+                "query checkRecipe() " +
+                "   check( Apple.class ; ) " +
+                "   check( Orange.class ; ) " +
+                "   check( Banana.class ; ) " +
+                "end " +
+
+                "rule Fridge " +
+                "   @Direct " +
+                "when " +
+                "then " +
+                "   insert( new Banana( 1 ) ); " +
+                //"   insert( new Apple( 2 ) ); " +
+                "   insert( new Orange( 1 ) ); " +
+                "end " +
+
+                "rule Reminder " +
+                "when " +
+                "   accumulate( $f : Fruit() ," +
+                "       $c : count( $f );" +
+                "       $c == 2 " +         // works also with 1, or no fruit at all
+                "   ) " +
+                "   ?checkRecipe() " +
+                "then " +
+                "   System.out.println( 'You have ' + $c + ' ingredients ' ); " +
+                "end " +
+
+                "rule Suggest " +
+                "when " +
+                "   $g : Goal( $type ; ) " +
+                "then " +
+                "   System.out.println( 'You are missing ' + $type ); " +
+                "   list.add( $type.getSimpleName() ); " +
+                "end " +
+
+                "rule FruitSalad " +
+                "when " +
+                "   Apple() " +
+                "   Banana() " +
+                "   Orange() " +
+                "then " +
+                "   System.out.println( 'Enjoy the salad' ); " +
+                "end ";
+
+        /////////////////////////////////////
+
+        KieSession session = getSessionFromString( droolsSource );
+        List list = new ArrayList(  );
+        session.setGlobal( "list", list );
+
+        session.fireAllRules();
+
+        for ( Object o : session.getObjects() ) {
+            System.out.println( ">>> " + o );
+        }
+
+        assertEquals( Arrays.asList( "Apple" ), list );
+    }
+
 }
