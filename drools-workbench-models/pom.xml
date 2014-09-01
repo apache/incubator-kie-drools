@@ -17,6 +17,7 @@
   <modules>
     <module>drools-workbench-models-commons</module>
     <module>drools-workbench-models-guided-dtable</module>
+    <module>drools-workbench-models-guided-dtree</module>
     <module>drools-workbench-models-guided-template</module>
     <module>drools-workbench-models-guided-scorecard</module>
     <module>drools-workbench-models-test-scenarios</module>
