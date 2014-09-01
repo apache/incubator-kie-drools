@@ -101,14 +101,14 @@ public abstract class AbstractKieProject implements KieProject {
                                 defaultKieSession = kieSessionModel;
                             } else {
                                 defaultKieSession = null;
-                                log.warn("Found more than one defualt KieSession: disabling all. KieSessions will be accessible only by name");
+                                log.warn("Found more than one default KieSession: disabling all. KieSessions will be accessible only by name");
                             }
                         } else {
                             if (defaultStatelessKieSession == null) {
                                 defaultStatelessKieSession = kieSessionModel;
                             } else {
                                 defaultStatelessKieSession = null;
-                                log.warn("Found more than one defualt StatelessKieSession: disabling all. StatelessKieSessions will be accessible only by name");
+                                log.warn("Found more than one default StatelessKieSession: disabling all. StatelessKieSessions will be accessible only by name");
                             }
                         }
                     }
