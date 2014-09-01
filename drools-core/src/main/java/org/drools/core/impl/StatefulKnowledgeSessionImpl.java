@@ -495,6 +495,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.timerService.shutdown();
         }
 
+        if (this.workItemManager != null) {
+            ((org.drools.core.process.instance.WorkItemManager)this.workItemManager).dispose();
+        }
+
         alive = false;
 
         this.kBase.disposeStatefulSession( this );

@@ -36,4 +36,6 @@ public interface WorkItemManager extends org.kie.api.runtime.process.WorkItemMan
     
     public void signalEvent(String type, Object event, long processInstanceId);
 
+    void dispose();
+
 }
