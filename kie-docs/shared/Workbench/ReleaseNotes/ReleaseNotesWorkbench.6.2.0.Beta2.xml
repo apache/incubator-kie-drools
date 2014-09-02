@@ -18,8 +18,54 @@
   </section>
 
   <section>
-    <title>Data Modeller</title>
-    <para>TODO - walter</para>
+    <title>Improved Java Editor</title>
+    <para>The Java editor was unified to the standard workbench editors functioning. It means that and now every Java file is edited on his own editor window.</para>
+
+    <figure>
+      <title>Improved Java Editor</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Workbench/ReleaseNotes/NewJavaEditor.jpg"
+                       format="JPG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+
+    <itemizedlist>
+
+      <listitem>
+        <para>"New -> Java" file option was added to create the java classes.</para>
+      </listitem>
+      <listitem>
+        <para>Overview tab was added for every Java file to manage the file metadata and have access to the file versions history.</para>
+      </listitem>
+      <listitem>
+        <para>Editable "Source Tab" tab was added. Now the Java code can be modified using the workbench.</para>
+      </listitem>
+      <listitem>
+        <para>"Editor" - "Source Tab" round trip is provided. This will let the user to do manual changes on the generated Java code and go back to the editor tab to continue working.</para>
+      </listitem>
+      <listitem>
+        <para>Class usages detection. Whenever a Java file is about to be deleted or renamed, the project will be scanned for the class usages. If usages are found (e.g. in drl files, decision tables, etc.) the user will receive an alert. This will prevent the user from breaking the project build.</para>
+
+        <figure>
+          <title>Usages detection</title>
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/Workbench/ReleaseNotes/UsagesDetection.jpg"
+                           format="JPG"/>
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
+
+      </listitem>
+
+    </itemizedlist>
+
   </section>
 
   <section>
@@ -59,5 +105,5 @@
       </screenshot>
     </figure>
   </section>
-  
+
 </section>
