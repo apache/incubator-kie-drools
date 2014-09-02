@@ -14,7 +14,78 @@
 
   <section>
     <title>Improved Metadata Tab</title>
-    <para>TODO - toni</para>
+    <para>The Metadata tab provided in previous versions was redesigned to provide a better asset versioning information browsing and recovery. Now every workbench editor will provide an "Overview tab" that will enable the user to manage the following information.</para>
+
+    <figure>
+      <title>Improved Metadata Tab</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Workbench/ReleaseNotes/ImprovedMetadataWidget.jpg"
+                       format="JPG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+
+    <itemizedlist>
+
+      <listitem>
+        <para>Versions history</para>
+        <para>The versions history shows a tabular view of the asset versions and provides a "Select" button that will enable the user to load a previously created version.</para>
+        <figure>
+          <title>Versions history</title>
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/Workbench/ReleaseNotes/ImprovedVersionsHistory.jpg"
+                           format="JPG"/>
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
+      </listitem>
+
+      <listitem>
+        <para>Metadata</para>
+        <para>The metadata section gets access to additional file attributes.</para>
+        <figure>
+          <title>Metadata section</title>
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/Workbench/ReleaseNotes/ImprovedMetadatSection.jpg"
+                           format="JPG"/>
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
+
+      </listitem>
+
+      <listitem>
+        <para>Comments area</para>
+        <para>The redesigned comments area enables much clearer discussions on a file.</para>
+      </listitem>
+
+      <listitem>
+        <para>Version selection dropdown</para>
+        <para>The "Version selector dropdown" located at the menu bar provides the ability to load and restore previous versions from the "Editor tab", without having to open the "Overview tab" to load the "Version history".</para>
+        <figure>
+          <title>Version selection dropdown</title>
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/Workbench/ReleaseNotes/ImprovedVersionsSelector.jpg"
+                           format="JPG"/>
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
+      </listitem>
+
+    </itemizedlist>
+
   </section>
 
   <section>
