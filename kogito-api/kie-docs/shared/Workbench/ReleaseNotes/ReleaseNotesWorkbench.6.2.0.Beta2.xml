@@ -77,7 +77,31 @@
     <title>Social Activities</title>
     <para>TODO - eder</para>
   </section>
-  
+
+  <section>
+    <title>Contributions</title>
+    <para>TODO - david</para>
+  </section>
+
+  <section>
+    <title>Package selector</title>
+    <para>The location of new assets whilst authoring was driven by the context of the Project Explorer.</para>
+    <para>This has been replaced with a Package Selector in the New Resource Popup.</para>
+    <para>The location defaults to the Project Explorer context but different packages can now be
+      more easily chosen.</para>
+    <figure>
+      <title>Package selector</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Workbench/ReleaseNotes/PackageSelector.png"
+              format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+  </section>
+    
   <section>
     <title>Improved visual consistency</title>
     <para>All Popups have been refactored to use GWT-Bootstrap widgets.</para>
