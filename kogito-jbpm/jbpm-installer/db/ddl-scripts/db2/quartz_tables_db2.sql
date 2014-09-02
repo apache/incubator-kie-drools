@@ -23,7 +23,7 @@ create table qrtz_job_details (
   is_volatile varchar(1) not null,
   is_stateful varchar(1) not null,
   requests_recovery varchar(1) not null,
-  job_data blob(2000),
+  job_data blob,
     primary key (job_name,job_group)
 );
 
@@ -51,7 +51,7 @@ create table qrtz_triggers(
   end_time bigint,
   calendar_name varchar(80),
   misfire_instr smallint,
-  job_data blob(2000),
+  job_data blob,
     primary key (trigger_name,trigger_group),
     foreign key (job_name,job_group) references qrtz_job_details(job_name,job_group)
 );
@@ -78,7 +78,7 @@ create table qrtz_cron_triggers(
 create table qrtz_blob_triggers(
   trigger_name varchar(80) not null,
   trigger_group varchar(80) not null,
-  blob_data blob(2000) null,
+  blob_data blob null,
     primary key (trigger_name,trigger_group),
     foreign key (trigger_name,trigger_group) references qrtz_triggers(trigger_name,trigger_group)
 );
@@ -93,7 +93,7 @@ create table qrtz_trigger_listeners(
 
 create table qrtz_calendars(
   calendar_name varchar(80) not null,
-  calendar blob(2000) not null,
+  calendar blob not null,
     primary key (calendar_name)
 );
 
