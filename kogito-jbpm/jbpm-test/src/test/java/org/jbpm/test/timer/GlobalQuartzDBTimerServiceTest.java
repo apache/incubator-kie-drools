@@ -209,4 +209,57 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
         
     }
 
+    @Test
+    public void testContinueTimer() throws Exception {
+        // JBPM-4443
+
+        // prepare listener to assert results
+        final List<Long> timerExporations = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener(){
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName().equals("timer")) {
+                    timerExporations.add(event.getProcessInstance().getId());
+                }
+            }
+        };
+
+        // No special configuration for TimerService in order to test RuntimeManager default
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycle4.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
+                .get();
+        manager = getManager(environment);
+
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        KieSession ksession = runtime.getKieSession();
+
+        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
+
+        Thread.sleep(5000); // Make sure a Timer is triggered once
+
+        assertEquals(1, timerExporations.size());
+
+        manager.disposeRuntimeEngine(runtime);
+        manager.close();
+
+        Thread.sleep(5000); // Wait so the timer gets overdue
+
+        // ---- restart ----
+
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycle4.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
+                .get();
+        manager = getManager(environment);
+
+        Thread.sleep(2000);
+
+        assertEquals(2, timerExporations.size());
+
+        manager.disposeRuntimeEngine(runtime);
+        manager.close();
+    }
 }
