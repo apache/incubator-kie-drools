@@ -49,7 +49,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         importer.convert("timewindowed/Solomon_100_R101.vrp", "cvrptw-100customers-A.xml");
         importer.convert("timewindowed/Solomon_100_R201.vrp", "cvrptw-100customers-B.xml");
         importer.convert("timewindowed/Homberger_0400_R1_4_1.vrp", "cvrptw-400customers.xml");
-        importer.convert("roaddistance/capacitated/bays-n29-k5.vrp", "road-cvrp-29customers.xml");
+        importer.convert("roaddistance/capacitated/vrpweb/bays-n29-k5.vrp", "road-cvrp-29customers.xml");
     }
 
     public VehicleRoutingImporter() {
