@@ -79,8 +79,28 @@
   </section>
 
   <section>
-    <title>Contributions</title>
-    <para>TODO - david</para>
+    <title>Contributors Dashboard</title>
+
+    <para>A brand new perspective called <emphasis role="bold">Contributors</emphasis> has been added under
+      a new top level menu item group called <emphasis role="bold">Activity</emphasis>. The perspective itself
+      is a dashboard which shows several indicators about the contributions made to the managed
+      organizations / repositories within the workbench. Every time a organization/repository is added/removed
+      from the workbench the dashboard itself is updated accordingly.</para>
+
+    <para>This new perspective allows for the monitoring of the underlying activity on
+      the managed repositories.</para>
+
+    <figure>
+      <title>Contributors perspective</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Workbench/ReleaseNotes/ContributorsPerspective.png"
+                       format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
   </section>
 
   <section>
