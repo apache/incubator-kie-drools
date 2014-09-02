@@ -1547,7 +1547,7 @@ public class PatternBuilder
                 final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
 
                 if ( !usedIdentifiers.getDeclrClasses().isEmpty() ) {
-                    if ( reportError ) {
+                    if ( reportError && descr instanceof BindingDescr ) {
                         context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                                       descr,
                                                                       null,

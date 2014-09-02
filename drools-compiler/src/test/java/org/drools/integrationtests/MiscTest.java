@@ -9580,4 +9580,26 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals(1, list.size());
         assertEquals("working", list.get(0));
     }
+
+    @Test
+    public void testUsingDeclarationWithOr() {
+        // BZ-1136424
+        String drl = "global java.util.List list\n" +
+                     "rule \"Test rule\"\n" +
+                     "when\n" +
+                     " s: String( s.toString() == \"x\" || s.toString() == \"y\" )\n" +
+                     "then\n" +
+                     " list.add(\"working\");\n" +
+                     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+        ksession.insert("y");
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals("working", list.get(0));
+    }
 }
