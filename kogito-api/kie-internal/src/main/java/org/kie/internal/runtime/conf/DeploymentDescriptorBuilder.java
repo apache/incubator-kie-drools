@@ -51,6 +51,8 @@ public interface DeploymentDescriptorBuilder {
 	
 	DeploymentDescriptorBuilder addRequiredRole(String role);
 	
+	DeploymentDescriptorBuilder addClass(String clazz);
+	
 	DeploymentDescriptorBuilder runtimeStrategy(RuntimeStrategy strategy);
 	
 	DeploymentDescriptorBuilder setConfiguration(List<NamedObjectModel> models);
@@ -68,6 +70,8 @@ public interface DeploymentDescriptorBuilder {
 	DeploymentDescriptorBuilder setMarshalingStrategies(List<ObjectModel> models);
 	
 	DeploymentDescriptorBuilder setRequiredRoles(List<String> roles);
+	
+	DeploymentDescriptorBuilder setClasses(List<String> classes);
 	
 	void setBuildHandler(BuilderHandler handler);
 }

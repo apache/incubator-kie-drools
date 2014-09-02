@@ -124,6 +124,14 @@ public interface DeploymentDescriptor {
 	List<String> getRequiredRoles();
 	
 	/**
+	 * Returns additional classes that shall be added to remote services context.
+	 * All classes that directly belong to kjar (or are declared as dependency of type kjar)
+	 * do not need to be listed as part of this collection.
+	 * @return
+	 */
+	List<String> getClasses();
+	
+	/**
 	 * Returns XML representation of this descriptor instance
 	 * @return
 	 */
