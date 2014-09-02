@@ -152,7 +152,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             locationMap = new HashMap<Long, Location>(locationListSize);
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
-                String[] lineTokens = splitBySpacesOrTabs(line.trim(), 3);
+                String[] lineTokens = splitBySpacesOrTabs(line.trim(), 3, 4);
                 Location location = roadDistance ? new RoadDistanceLocation() : new AirDistanceLocation();
                 location.setId(Long.parseLong(lineTokens[0]));
                 location.setLatitude(Double.parseDouble(lineTokens[1]));
@@ -281,7 +281,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             locationMap = new HashMap<Long, Location>(locationListSize);
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
-                String[] lineTokens = splitBySpacesOrTabs(line.trim(), 3);
+                String[] lineTokens = splitBySpacesOrTabs(line.trim(), 3, 4);
                 AirDistanceLocation location = new AirDistanceLocation();
                 location.setId((long) i);
                 location.setLatitude(Double.parseDouble(lineTokens[1]));

@@ -251,6 +251,11 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             return splitBy(line, "[\\ \\t]+", "spaces or tabs", numberOfTokens, false, false);
         }
 
+        public String[] splitBySpacesOrTabs(String line, Integer minimumNumberOfTokens, Integer maximumNumberOfTokens) {
+            return splitBy(line, "[\\ \\t]+", "spaces or tabs", minimumNumberOfTokens, maximumNumberOfTokens,
+                    false, false);
+        }
+
         public String[] splitByPipelineAndTrim(String line, int numberOfTokens) {
             return splitBy(line, "\\|", "a pipeline (|)", numberOfTokens, true, false);
         }
