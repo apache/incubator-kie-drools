@@ -7,36 +7,36 @@
   <inheritedSolverBenchmark>
     <problemBenchmarks>
       <solutionFileIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n32-k5.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n33-k5.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n33-k6.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n34-k5.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n36-k5.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n37-k5.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n37-k6.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n38-k5.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n39-k5.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n39-k6.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n44-k7.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n45-k6.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n45-k7.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n46-k7.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n48-k7.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n53-k7.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n54-k7.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n55-k9.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n60-k9.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n61-k9.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n62-k8.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n63-k10.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n63-k9.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n64-k9.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n65-k9.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n69-k9.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n80-k10.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/F-n135-k7.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/F-n45-k4.vrp</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/import/capacitated/F-n72-k4.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n32-k5.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n33-k5.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n33-k6.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n34-k5.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n36-k5.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n37-k5.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n37-k6.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n38-k5.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n39-k5.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n39-k6.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n44-k7.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n45-k6.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n45-k7.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n46-k7.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n48-k7.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n53-k7.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n54-k7.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n55-k9.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n60-k9.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n61-k9.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n62-k8.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n63-k10.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n63-k9.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n64-k9.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n65-k9.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n69-k9.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/A-n80-k10.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/F-n135-k7.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/F-n45-k4.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/F-n72-k4.vrp</inputSolutionFile>
       <problemStatisticType>BEST_SCORE</problemStatisticType>
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>CALCULATE_COUNT_PER_SECOND</problemStatisticType>-->

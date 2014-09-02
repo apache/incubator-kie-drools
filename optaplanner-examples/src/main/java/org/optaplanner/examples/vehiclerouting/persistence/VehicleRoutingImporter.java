@@ -42,9 +42,9 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
 
     public static void main(String[] args) {
         VehicleRoutingImporter importer = new VehicleRoutingImporter();
-        importer.convert("capacitated/A-n33-k6.vrp", "cvrp-32customers.xml");
-        importer.convert("capacitated/A-n55-k9.vrp", "cvrp-54customers.xml");
-        importer.convert("capacitated/F-n72-k4.vrp", "cvrp-72customers.xml");
+        importer.convert("capacitated/vrpweb/A-n33-k6.vrp", "cvrp-32customers.xml");
+        importer.convert("capacitated/vrpweb/A-n55-k9.vrp", "cvrp-54customers.xml");
+        importer.convert("capacitated/vrpweb/F-n72-k4.vrp", "cvrp-72customers.xml");
         importer.convert("timewindowed/Solomon_025_C101.vrp", "cvrptw-25customers.xml");
         importer.convert("timewindowed/Solomon_100_R101.vrp", "cvrptw-100customers-A.xml");
         importer.convert("timewindowed/Solomon_100_R201.vrp", "cvrptw-100customers-B.xml");
