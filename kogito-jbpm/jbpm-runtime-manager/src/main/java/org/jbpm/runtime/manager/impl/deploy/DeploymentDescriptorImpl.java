@@ -93,6 +93,10 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 	@XmlElementWrapper(name="required-roles")
 	private Set<String> requiredRoles = new HashSet<String>();
 	
+	@XmlElement(name="remoteable-class")
+	@XmlElementWrapper(name="remoteable-classes")
+	private List<String> classes = new ArrayList<String>();
+	
 	public DeploymentDescriptorImpl() {
 		// fox jaxb only
 	}
@@ -166,6 +170,14 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 	public List<String> getRequiredRoles() {
 		return new ArrayList<String>(requiredRoles);
 	}
+	
+	@Override
+	public List<String> getClasses() {
+		if (classes == null) {
+			return new ArrayList<String>();
+		}
+		return new ArrayList<String>(classes);
+	}
 
 
 	public void setPersistenceUnit(String persistenceUnit) {
@@ -233,6 +245,12 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 	public void setRequiredRoles(List<String> requiredRoles) {
 		if (requiredRoles != null) {
 			this.requiredRoles = new HashSet<String>(requiredRoles);
+		}
+	}
+	
+	public void setClasses(List<String> classes) {
+		if (classes != null) {
+			this.classes = new ArrayList<String>(classes);
 		}
 	}
 
@@ -357,6 +375,14 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 			}
 			
 			@Override
+			public DeploymentDescriptorBuilder addClass(String clazz) {
+				if (handler.accepted(clazz)) {
+					descriptor.classes.add(clazz);
+				}
+				return this;
+			}
+			
+			@Override
 			public DeploymentDescriptorBuilder setConfiguration(List<NamedObjectModel> models) {
 				if (handler.accepted(models)) {
 					descriptor.setConfiguration(models);
@@ -421,6 +447,14 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 			}
 			
 			@Override
+			public DeploymentDescriptorBuilder setClasses(List<String> classes) {
+				if (handler.accepted(classes)) {
+					descriptor.setClasses(classes);
+				}
+				return this;
+			}
+			
+			@Override
 			public void setBuildHandler(BuilderHandler handler) {
 				this.handler = handler;
 			}
@@ -438,5 +472,6 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 	public String toXml() {
 		return DeploymentDescriptorIO.toXml(this);
 	}
+
 
 }

@@ -83,6 +83,8 @@ public class DeploymentDescriptorMerger {
 				builder.setMarshalingStrategies(slave.getMarshallingStrategies());
 				builder.setTaskEventListeners(slave.getTaskEventListeners());
 				builder.setWorkItemHandlers(slave.getWorkItemHandlers());
+				builder.setRequiredRoles(slave.getRequiredRoles());
+				builder.setClasses(slave.getClasses());
 				
 				merged = builder.get();
 				break;
@@ -118,6 +120,9 @@ public class DeploymentDescriptorMerger {
 				}
 				for (String requiredRole : slave.getRequiredRoles()) {
 					builder.addRequiredRole(requiredRole);
+				}
+				for (String clazz : slave.getClasses()) {
+					builder.addClass(clazz);
 				}
 				
 				merged = builder.get();

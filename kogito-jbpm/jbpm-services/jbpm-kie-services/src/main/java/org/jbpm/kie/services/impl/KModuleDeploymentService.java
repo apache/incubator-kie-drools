@@ -18,19 +18,26 @@ package org.jbpm.kie.services.impl;
 
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.persistence.EntityManagerFactory;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.codec.binary.Base64;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.core.util.StringUtils;
@@ -49,6 +56,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.remote.Remotable;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
@@ -61,6 +69,7 @@ import org.kie.internal.runtime.conf.ObjectModelResolver;
 import org.kie.internal.runtime.conf.ObjectModelResolverProvider;
 import org.kie.internal.runtime.conf.PersistenceMode;
 import org.kie.scanner.MavenRepository;
+import org.scannotation.AnnotationDB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,7 +134,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     	        	processResources(depModule, formsData, files, kieContainer, kmoduleUnit, deployedUnit, depModule.getReleaseId());
     	        }
             }
-
+            processClassloader(kieContainer, deployedUnit);
 
             KieBase kbase = kieContainer.getKieBase(kbaseName);        
 
@@ -234,6 +243,21 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 				}
 			}
 		}
+		
+		// process additional classes
+		List<String> remoteableClasses = descriptor.getClasses();
+		if (remoteableClasses != null && !remoteableClasses.isEmpty()) {
+			for (String className : remoteableClasses) {
+				try {
+                    ((DeployedUnitImpl)deployedUnit).addClass(kieContainer.getClassLoader().loadClass(className));
+                    logger.debug( "Loaded {} into the classpath from deployment descriptor {}", className, kieContainer.getReleaseId().toExternalForm());
+                } catch (ClassNotFoundException cnfe) {
+                    throw new IllegalArgumentException("Class " + className + " not found in the project");
+                } catch (NoClassDefFoundError e) {
+                	throw new IllegalArgumentException("Class " + className + " not found in the project");
+				}
+			}
+		}
     		
     	return builder;
     }
@@ -306,6 +330,43 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             }
         }
     }
+	
+	protected void processClassloader(KieContainer kieContainer, DeployedUnitImpl deployedUnit) {
+		if (kieContainer.getClassLoader() instanceof ProjectClassLoader) {
+			ClassLoader parentCl = kieContainer.getClassLoader().getParent();
+			if (parentCl instanceof URLClassLoader) {
+				URL[] urls = ((URLClassLoader) parentCl).getURLs();
+				if (urls == null || urls.length == 0) {
+					return;
+				}
+				
+				AnnotationDB db = new AnnotationDB();
+				try {
+					db.scanArchives(urls);
+					Set<String> jaxbClasses = db.getAnnotationIndex().get(XmlRootElement.class.getName());
+					Set<String> remoteClasses = db.getAnnotationIndex().get(Remotable.class.getName());
+					Set<String> allClasses = new HashSet<String>();
+					if (jaxbClasses != null) {
+						allClasses.addAll(jaxbClasses);
+					}
+					if (remoteClasses != null) {
+						allClasses.addAll(remoteClasses);
+					}
+					for (String className : allClasses) {
+						try {
+		                    deployedUnit.addClass(kieContainer.getClassLoader().loadClass(className));
+		                    logger.debug( "Loaded {} into the classpath from deployment {}", className, kieContainer.getReleaseId().toExternalForm());
+		                } catch (ClassNotFoundException cnfe) {
+		                    throw new IllegalArgumentException("Class " + className + " not found in the project");
+		                }
+					}
+				} catch (IOException e) {
+					logger.warn("Encountered error while scanning classes {}", e.getMessage());
+				}
+				
+			}
+		}
+	}
 
 	public void setBpmn2Service(DefinitionService bpmn2Service) {
 		this.bpmn2Service = bpmn2Service;

@@ -108,6 +108,11 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     
+    <dependency>
+      <groupId>org.scannotation</groupId>
+      <artifactId>scannotation</artifactId>
+    </dependency>
+    
     <!-- test -->
     <dependency>
       <groupId>org.hibernate</groupId>
