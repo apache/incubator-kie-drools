@@ -66,10 +66,10 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
     }
 
     public TxtInputBuilder createTxtInputBuilder() {
-        return new VrpScheduleInputBuilder();
+        return new VehicleRoutingInputBuilder();
     }
 
-    public static class VrpScheduleInputBuilder extends TxtInputBuilder {
+    public static class VehicleRoutingInputBuilder extends TxtInputBuilder {
 
         private VehicleRoutingSolution solution;
 
