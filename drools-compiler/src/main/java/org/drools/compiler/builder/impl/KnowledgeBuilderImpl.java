@@ -74,6 +74,7 @@ import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.type.DateFormats;
 import org.drools.core.type.DateFormatsImpl;
 import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.XmlChangeSetReader;
 import org.kie.api.definition.process.Process;
@@ -101,6 +102,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -118,6 +120,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.UUID;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 import static org.drools.core.util.StringUtils.isEmpty;
@@ -359,15 +362,35 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         DecisionTableConfiguration dtableConfiguration = configuration instanceof DecisionTableConfiguration ?
                                                          (DecisionTableConfiguration) configuration :
                                                          null;
-        String string = DecisionTableFactory.loadFromInputStream(resource.getInputStream(), dtableConfiguration);
+        String generatedDrl = DecisionTableFactory.loadFromInputStream(resource.getInputStream(), dtableConfiguration);
+        // dump the generated DRL if the dump dir was configured
+        if (this.configuration.getDumpDir() != null) {
+            dumpDrlGeneratedFromDTable(this.configuration.getDumpDir(), generatedDrl, resource.getSourcePath());
+        }
 
         DrlParser parser = new DrlParser(this.configuration.getLanguageLevel());
-        PackageDescr pkg = parser.parse(resource, new StringReader(string));
+        PackageDescr pkg = parser.parse(resource, new StringReader(generatedDrl));
         this.results.addAll(parser.getErrors());
         if (pkg == null) {
             addBuilderResult(new ParserError(resource, "Parser returned a null Package", 0, 0));
         }
         return parser.hasErrors() ? null : pkg;
+    }
+
+    private void dumpDrlGeneratedFromDTable(File dumpDir, String generatedDrl, String srcPath) {
+        File dumpFile;
+        if (srcPath != null) {
+            dumpFile = new File(dumpDir, srcPath.replaceAll(File.separator, "_") + ".drl");
+        } else {
+            dumpFile = new File(dumpDir, "decision-table-" + UUID.randomUUID() + ".drl");
+        }
+        try {
+            IoUtils.write(dumpFile, generatedDrl.getBytes(IoUtils.UTF8_CHARSET));
+        } catch (IOException ex) {
+            // nothing serious, just failure when writing the generated DRL to file, just log the exception and continue
+            logger.warn("Can't write the DRL generated from decision table to file " + dumpFile.getAbsolutePath() + "!\n" +
+                    Arrays.toString(ex.getStackTrace()));
+        }
     }
 
     public void addPackageFromScoreCard(Resource resource,
