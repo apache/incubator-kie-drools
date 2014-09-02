@@ -57,7 +57,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
     protected RuntimeManager manager;
     protected RuntimeEnvironment environment;
    
-    protected abstract RuntimeManager getManager(RuntimeEnvironment environment);
+    protected abstract RuntimeManager getManager(RuntimeEnvironment environment, boolean waitOnStart);
       
     
     @After
@@ -97,7 +97,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
                 .get();
 
 
-        manager = getManager(environment);
+        manager = getManager(environment, true);
 
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
@@ -150,7 +150,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
                 .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
                 .get();
         
-        manager = getManager(environment);
+        manager = getManager(environment, false);
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
         
@@ -182,7 +182,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
                 .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
                 .get();
         
-        manager = getManager(environment);
+        manager = getManager(environment, true);
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         
         assertEquals(0, timerExporations.size());
@@ -223,7 +223,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
                 .userGroupCallback(userGroupCallback)
                 .get();
        
-        manager = getManager(environment);
+        manager = getManager(environment, true);
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
         
@@ -293,7 +293,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
                 .userGroupCallback(userGroupCallback)
                 .get();
                 
-        manager = getManager(environment);
+        manager = getManager(environment, true);
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
         
@@ -347,7 +347,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycle3.bpmn2"), ResourceType.BPMN2)
                 .schedulerService(globalScheduler)
                 .get();
-        manager = getManager(environment);
+        manager = getManager(environment, true);
 
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
@@ -395,7 +395,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
                 .userGroupCallback(userGroupCallback)
                 .get();
         
-        manager = getManager(environment);
+        manager = getManager(environment, true);
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
         
@@ -452,7 +452,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
                 .userGroupCallback(userGroupCallback)
                 .get();
 
-        manager = getManager(environment);
+        manager = getManager(environment, true);
 
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
@@ -499,7 +499,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
                 .get();
 
 
-        manager = getManager(environment);
+        manager = getManager(environment, true);
 
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
@@ -568,7 +568,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
                 .get();
 
 
-        manager = getManager(environment);
+        manager = getManager(environment, true);
 
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();

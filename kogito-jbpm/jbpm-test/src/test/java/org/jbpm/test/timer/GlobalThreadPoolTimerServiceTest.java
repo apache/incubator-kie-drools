@@ -57,7 +57,7 @@ public class GlobalThreadPoolTimerServiceTest extends GlobalTimerServiceBaseTest
     }
 
     @Override
-    protected RuntimeManager getManager(RuntimeEnvironment environment) {
+    protected RuntimeManager getManager(RuntimeEnvironment environment, boolean waitOnStart) {
         if (managerType ==1) {
             return RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
         } else if (managerType == 2) {
@@ -94,7 +94,7 @@ public class GlobalThreadPoolTimerServiceTest extends GlobalTimerServiceBaseTest
                 .get();
 
 
-        manager = getManager(environment);
+        manager = getManager(environment, true);
 
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();

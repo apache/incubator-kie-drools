@@ -63,6 +63,8 @@ import org.slf4j.LoggerFactory;
 public class QuartzSchedulerService implements GlobalSchedulerService {
     
     private static final Logger logger = LoggerFactory.getLogger(QuartzSchedulerService.class);
+    
+    private static final Integer START_DELAY = Integer.parseInt(System.getProperty("org.jbpm.timer.delay", "2"));
 
     private AtomicLong idCounter = new AtomicLong();
     private TimerService globalTimerService;
@@ -201,7 +203,7 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
         if (scheduler == null) {            
             try {
                 scheduler = StdSchedulerFactory.getDefaultScheduler();            
-                scheduler.start();
+                scheduler.startDelayed(START_DELAY);
             } catch (SchedulerException e) {
                 throw new RuntimeException("Exception when initializing QuartzSchedulerService", e);
             }

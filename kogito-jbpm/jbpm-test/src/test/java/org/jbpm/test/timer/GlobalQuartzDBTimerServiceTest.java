@@ -68,16 +68,26 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
     }   
     
     @Override
-    protected RuntimeManager getManager(RuntimeEnvironment environment) {
-        if (managerType ==1) {
-            return RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
+    protected RuntimeManager getManager(RuntimeEnvironment environment, boolean waitOnStart) {
+        RuntimeManager manager = null;
+    	if (managerType ==1) {
+    		manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
         } else if (managerType == 2) {
-            return RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);
+        	manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);
         } else if (managerType == 3) {
-            return RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);
+        	manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);
         } else {
             throw new IllegalArgumentException("Invalid runtime maanger type");
         }
+    	if (waitOnStart) {
+	    	// wait for the 2 seconds (default startup delay for quartz)
+	    	try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// do nothing
+			}
+    	}
+    	return manager;
     }
 
     
@@ -105,7 +115,7 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
                 .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
                 .get();
         
-        manager = getManager(environment);
+        manager = getManager(environment, false);
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
         
@@ -230,7 +240,7 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycle4.bpmn2"), ResourceType.BPMN2)
                 .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
                 .get();
-        manager = getManager(environment);
+        manager = getManager(environment, true);
 
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
@@ -253,7 +263,7 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycle4.bpmn2"), ResourceType.BPMN2)
                 .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
                 .get();
-        manager = getManager(environment);
+        manager = getManager(environment, true);
 
         Thread.sleep(2000);
 
