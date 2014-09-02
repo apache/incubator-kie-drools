@@ -13,12 +13,6 @@
   <title>New and Noteworthy in KIE Workbench 6.2.0.Beta1</title>
 
   <section>
-    <title>Improved Metadata Tab</title>
-    <para>TODO</para>
-  </section>
-
-
-  <section>
     <title>Project Editor permissions</title>
     <para>The ability to configure role-based permissions for the Project Editor have been added.</para>
     <para>Permissions can be configured using the <code>WEB-INF/classes/workbench-policy.properties</code> file.</para>

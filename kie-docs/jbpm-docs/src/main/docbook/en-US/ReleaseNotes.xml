@@ -9,6 +9,7 @@
   <section>
     <title>jBPM 6.2</title>
 
+    <xi:include href="../../../../../shared/Workbench/ReleaseNotes/ReleaseNotesWorkbench.6.2.0.Beta2.xml" />
     <xi:include href="../../../../../shared/Workbench/ReleaseNotes/ReleaseNotesWorkbench.6.2.0.Beta1.xml" />
 
   </section>
