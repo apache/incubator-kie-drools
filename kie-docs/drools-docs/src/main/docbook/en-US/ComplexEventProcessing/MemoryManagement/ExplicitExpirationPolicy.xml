@@ -24,4 +24,8 @@ end
   for StockTick events. After that time, assuming no rule still needs the
   event, the engine will expire and remove the event from the session
   automatically.</para>
+  <para>
+    <important><para>An explicit expiration policy for a given event type overrides any inferred expiration offset
+      for that same type.</para></important>
+  </para>
 </section>
