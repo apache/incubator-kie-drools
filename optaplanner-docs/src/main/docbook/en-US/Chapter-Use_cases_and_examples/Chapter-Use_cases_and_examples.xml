@@ -1447,6 +1447,18 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
         naturally, because properties such as <literal>arrivalTime</literal> and <literal>departureTime</literal>, are
         directly available on the domain model.</para>
       </section>
+
+      <section xml:id="roadDistancesInsteadOfAirDistances">
+        <title>Road distances instead of air distances</title>
+
+        <para>In the real world, vehicles can't follow a straight line from location to location: they have to use roads
+        and highways. From a VRP point of view, that doesn't matter much, as long as the distance between 2 points can
+        be looked up (and are preferably precalculated). The road cost doesn't even need to be a distance, it can also
+        be travel time, fuel cost, or a weighted function of distance, fuel and/or time. There are several technologies
+        available to precalculate road costs, such as <link xlink:href="https://graphhopper.com/">GraphHopper</link>
+        (embeddable, offline Java engine) and <link
+        xlink:href="http://open.mapquestapi.com/directions/#matrix">Open MapQuest</link> (webservice).</para>
+      </section>
     </section>
 
     <section xml:id="projectJobScheduling">
