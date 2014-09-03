@@ -53,7 +53,7 @@ public class DeploymentSynchronizerCDInvoker {
 	}
 
 	@Timeout
-	public synchronized void synchronize() {
+	public void synchronize() {
 		deploymentSynchronizer.synchronize();
 	}
 

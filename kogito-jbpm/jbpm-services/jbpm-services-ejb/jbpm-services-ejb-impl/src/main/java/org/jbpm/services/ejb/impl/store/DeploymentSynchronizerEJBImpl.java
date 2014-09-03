@@ -69,7 +69,7 @@ public class DeploymentSynchronizerEJBImpl extends DeploymentSynchronizer {
 	}
 
 	@Timeout
-	public synchronized void synchronize() {
+	public void synchronize() {
 		super.synchronize();
 	}
 
