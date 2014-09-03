@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.jbpm.kie.services.impl.DeployedUnitImpl;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.test.util.AbstractBaseTest;
 import org.jbpm.services.api.model.DeployedUnit;
@@ -121,6 +122,8 @@ public class DeploymentServiceTest extends AbstractBaseTest {
         assertNotNull(deployed);
         assertNotNull(deployed.getDeploymentUnit());
         assertNotNull(deployed.getRuntimeManager());
+        
+        assertEquals(0, ((DeployedUnitImpl) deployed).getDeployedClasses().size());
         
         assertNotNull(runtimeDataService);
         Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContextImpl());

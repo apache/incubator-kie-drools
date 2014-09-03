@@ -134,7 +134,9 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     	        	processResources(depModule, formsData, files, kieContainer, kmoduleUnit, deployedUnit, depModule.getReleaseId());
     	        }
             }
-            processClassloader(kieContainer, deployedUnit);
+            if (module.getJarDependencies() != null && !module.getJarDependencies().isEmpty()) {
+            	processClassloader(kieContainer, deployedUnit);
+            }
 
             KieBase kbase = kieContainer.getKieBase(kbaseName);        
 
