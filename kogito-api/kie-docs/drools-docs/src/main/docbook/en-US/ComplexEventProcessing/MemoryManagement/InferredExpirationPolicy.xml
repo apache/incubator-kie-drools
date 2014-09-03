@@ -29,8 +29,10 @@ end
   match existing BuyOrderEvent's, and so its expiration offset will be zero
   seconds.</para>
 
-  <para>The engine will make this analysis for the whole rulebase and find the
-  offset for every event type. Whenever an implicit expiration offset clashes
-  with the explicit expiration offset, then engine will use the greater of the
-  two.</para>
+  <para>The engine will make this analysis for the whole rulebase and find the offset for every
+        event type. </para>
+    <para>
+        <important><para>An explicit expiration policy for a given event type overrides any inferred expiration offset
+                for that same type.</para></important>
+    </para>
 </section>
