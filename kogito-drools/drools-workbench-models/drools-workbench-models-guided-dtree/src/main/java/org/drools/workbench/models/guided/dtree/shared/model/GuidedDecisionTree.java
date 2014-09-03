@@ -23,7 +23,7 @@ import org.drools.workbench.models.datamodel.util.PortablePreconditions;
 public class GuidedDecisionTree implements HasImports,
                                            HasPackageName {
 
-    private Imports imports;
+    private Imports imports = new Imports();
     private String packageName;
     private String treeName;
 
