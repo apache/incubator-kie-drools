@@ -129,9 +129,18 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
         DefaultExhaustiveSearchPhase phase = new DefaultExhaustiveSearchPhase();
         configurePhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
         boolean scoreBounderEnabled = exhaustiveSearchType_.isScoreBounderEnabled();
-        NodeExplorationType nodeExplorationType_ = nodeExplorationType != null ? nodeExplorationType
-                : (exhaustiveSearchType_ == ExhaustiveSearchType.BRUTE_FORCE
-                ? NodeExplorationType.ORIGINAL_ORDER : NodeExplorationType.DEPTH_FIRST);
+        NodeExplorationType nodeExplorationType_;
+        if (exhaustiveSearchType_ == ExhaustiveSearchType.BRUTE_FORCE) {
+            nodeExplorationType_ = nodeExplorationType != null ? nodeExplorationType : NodeExplorationType.ORIGINAL_ORDER;
+            if (nodeExplorationType_ != NodeExplorationType.ORIGINAL_ORDER) {
+                throw new IllegalArgumentException("The phaseConfig (" + this
+                        + ") has an nodeExplorationType ("  + nodeExplorationType
+                        + ") which is not compatible with its exhaustiveSearchType (" + exhaustiveSearchType
+                        + ").");
+            }
+        } else {
+            nodeExplorationType_ = nodeExplorationType != null ? nodeExplorationType : NodeExplorationType.DEPTH_FIRST;
+        }
         phase.setNodeComparator(nodeExplorationType_.buildNodeComparator(scoreBounderEnabled));
         EntitySelectorConfig entitySelectorConfig_ = buildEntitySelectorConfig(phaseConfigPolicy);
         EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(phaseConfigPolicy,
