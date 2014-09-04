@@ -582,12 +582,12 @@ public class RuleTemplateModelDRLPersistenceImpl
         this.marshalFooter( buf );
 
         for ( LHSGeneratorContext gc : lhsGeneratorContextFactory.getGeneratorContexts() ) {
-            header.append( "@code{hasLHSOutput" + gc.getDepth() + "_" + gc.getOffset() + " = false}\n" );
-            header.append( "@code{hasLHSNonTemplateOutput" + gc.getDepth() + "_" + gc.getOffset() + " = " + gc.hasNonTemplateOutput() + "}\n" );
+            header.append( "@code{hasLHSOutput" + gc.getDepth() + "_" + gc.getOffset() + " = false}" );
+            header.append( "@code{hasLHSNonTemplateOutput" + gc.getDepth() + "_" + gc.getOffset() + " = " + gc.hasNonTemplateOutput() + "}" );
         }
         for ( RHSGeneratorContext gc : rhsGeneratorContextFactory.getGeneratorContexts() ) {
-            header.append( "@code{hasRHSOutput" + gc.getDepth() + "_" + gc.getOffset() + " = false}\n" );
-            header.append( "@code{hasRHSNonTemplateOutput" + gc.getDepth() + "_" + gc.getOffset() + " = " + gc.hasNonTemplateOutput() + "}\n" );
+            header.append( "@code{hasRHSOutput" + gc.getDepth() + "_" + gc.getOffset() + " = false}" );
+            header.append( "@code{hasRHSNonTemplateOutput" + gc.getDepth() + "_" + gc.getOffset() + " = " + gc.hasNonTemplateOutput() + "}" );
         }
 
         header.append( "@code{\n" +
@@ -597,12 +597,12 @@ public class RuleTemplateModelDRLPersistenceImpl
                                "    }\n" +
                                "  value;\n" +
                                "  }\n" +
-                               "}\n" );
+                               "}" );
 
         header.append( "@code{\n" +
                                "def capitals(value) {\n" +
                                "  value.toUpperCase();\n" +
-                               "}}\n" );
+                               "}}" );
 
         return header.append( buf ).toString();
     }
