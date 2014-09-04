@@ -20,17 +20,17 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 
-public class GuidedDTreeXMLPersistence {
+public class GuidedDecisionTreeXMLPersistence {
 
-    private static final GuidedDTreeXMLPersistence INSTANCE = new GuidedDTreeXMLPersistence();
+    private static final GuidedDecisionTreeXMLPersistence INSTANCE = new GuidedDecisionTreeXMLPersistence();
 
     private XStream xt;
 
-    private GuidedDTreeXMLPersistence() {
+    private GuidedDecisionTreeXMLPersistence() {
         xt = new XStream( new DomDriver() );
     }
 
-    public static GuidedDTreeXMLPersistence getInstance() {
+    public static GuidedDecisionTreeXMLPersistence getInstance() {
         return INSTANCE;
     }
 

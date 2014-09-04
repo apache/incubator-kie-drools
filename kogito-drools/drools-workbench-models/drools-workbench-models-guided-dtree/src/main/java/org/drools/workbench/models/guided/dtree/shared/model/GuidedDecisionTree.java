@@ -19,6 +19,7 @@ import org.drools.workbench.models.datamodel.imports.HasImports;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.packages.HasPackageName;
 import org.drools.workbench.models.datamodel.util.PortablePreconditions;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 
 public class GuidedDecisionTree implements HasImports,
                                            HasPackageName {
@@ -26,6 +27,7 @@ public class GuidedDecisionTree implements HasImports,
     private Imports imports = new Imports();
     private String packageName;
     private String treeName;
+    private TypeNode root;
 
     @Override
     public Imports getImports() {
@@ -56,6 +58,15 @@ public class GuidedDecisionTree implements HasImports,
     public void setTreeName( final String treeName ) {
         this.treeName = PortablePreconditions.checkNotNull( "treeName",
                                                             treeName );
+    }
+
+    public TypeNode getRoot() {
+        return this.root;
+    }
+
+    public void setRoot( final TypeNode root ) {
+        this.root = PortablePreconditions.checkNotNull( "root",
+                                                        root );
     }
 
 }

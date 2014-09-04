@@ -26,9 +26,9 @@ public class GuidedDecisionTreeConverter extends BaseConverter {
     public FormatConversionResult convert( String name,
                                            byte[] input ) {
         String xml = new String( input, IoUtils.UTF8_CHARSET );
-        GuidedDecisionTree model = GuidedDTreeXMLPersistence.getInstance().unmarshal( xml );
+        GuidedDecisionTree model = GuidedDecisionTreeXMLPersistence.getInstance().unmarshal( xml );
 
-        String drl = new StringBuilder().append( GuidedDTreeDRLPersistence.getInstance().marshal( model ) ).toString();
+        String drl = new StringBuilder().append( GuidedDecisionTreeDRLPersistence.getInstance().marshal( model ) ).toString();
 
         return new FormatConversionResult( getDestinationName( name,
                                                                hasDSLSentences( model ) ),
