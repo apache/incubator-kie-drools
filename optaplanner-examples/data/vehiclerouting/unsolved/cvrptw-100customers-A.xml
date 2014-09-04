@@ -3,516 +3,516 @@
   <name>R101</name>
   <distanceType>AIR_DISTANCE</distanceType>
   <locationList id="2">
-    <VrpAirDistanceLocation id="3">
+    <VrpAirLocation id="3">
       <id>0</id>
       <latitude>35.0</latitude>
       <longitude>35.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="4">
+    </VrpAirLocation>
+    <VrpAirLocation id="4">
       <id>1</id>
       <latitude>41.0</latitude>
       <longitude>49.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="5">
+    </VrpAirLocation>
+    <VrpAirLocation id="5">
       <id>2</id>
       <latitude>35.0</latitude>
       <longitude>17.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="6">
+    </VrpAirLocation>
+    <VrpAirLocation id="6">
       <id>3</id>
       <latitude>55.0</latitude>
       <longitude>45.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="7">
+    </VrpAirLocation>
+    <VrpAirLocation id="7">
       <id>4</id>
       <latitude>55.0</latitude>
       <longitude>20.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="8">
+    </VrpAirLocation>
+    <VrpAirLocation id="8">
       <id>5</id>
       <latitude>15.0</latitude>
       <longitude>30.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="9">
+    </VrpAirLocation>
+    <VrpAirLocation id="9">
       <id>6</id>
       <latitude>25.0</latitude>
       <longitude>30.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="10">
+    </VrpAirLocation>
+    <VrpAirLocation id="10">
       <id>7</id>
       <latitude>20.0</latitude>
       <longitude>50.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="11">
+    </VrpAirLocation>
+    <VrpAirLocation id="11">
       <id>8</id>
       <latitude>10.0</latitude>
       <longitude>43.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="12">
+    </VrpAirLocation>
+    <VrpAirLocation id="12">
       <id>9</id>
       <latitude>55.0</latitude>
       <longitude>60.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="13">
+    </VrpAirLocation>
+    <VrpAirLocation id="13">
       <id>10</id>
       <latitude>30.0</latitude>
       <longitude>60.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="14">
+    </VrpAirLocation>
+    <VrpAirLocation id="14">
       <id>11</id>
       <latitude>20.0</latitude>
       <longitude>65.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="15">
+    </VrpAirLocation>
+    <VrpAirLocation id="15">
       <id>12</id>
       <latitude>50.0</latitude>
       <longitude>35.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="16">
+    </VrpAirLocation>
+    <VrpAirLocation id="16">
       <id>13</id>
       <latitude>30.0</latitude>
       <longitude>25.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="17">
+    </VrpAirLocation>
+    <VrpAirLocation id="17">
       <id>14</id>
       <latitude>15.0</latitude>
       <longitude>10.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="18">
+    </VrpAirLocation>
+    <VrpAirLocation id="18">
       <id>15</id>
       <latitude>30.0</latitude>
       <longitude>5.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="19">
+    </VrpAirLocation>
+    <VrpAirLocation id="19">
       <id>16</id>
       <latitude>10.0</latitude>
       <longitude>20.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="20">
+    </VrpAirLocation>
+    <VrpAirLocation id="20">
       <id>17</id>
       <latitude>5.0</latitude>
       <longitude>30.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="21">
+    </VrpAirLocation>
+    <VrpAirLocation id="21">
       <id>18</id>
       <latitude>20.0</latitude>
       <longitude>40.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="22">
+    </VrpAirLocation>
+    <VrpAirLocation id="22">
       <id>19</id>
       <latitude>15.0</latitude>
       <longitude>60.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="23">
+    </VrpAirLocation>
+    <VrpAirLocation id="23">
       <id>20</id>
       <latitude>45.0</latitude>
       <longitude>65.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="24">
+    </VrpAirLocation>
+    <VrpAirLocation id="24">
       <id>21</id>
       <latitude>45.0</latitude>
       <longitude>20.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="25">
+    </VrpAirLocation>
+    <VrpAirLocation id="25">
       <id>22</id>
       <latitude>45.0</latitude>
       <longitude>10.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="26">
+    </VrpAirLocation>
+    <VrpAirLocation id="26">
       <id>23</id>
       <latitude>55.0</latitude>
       <longitude>5.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="27">
+    </VrpAirLocation>
+    <VrpAirLocation id="27">
       <id>24</id>
       <latitude>65.0</latitude>
       <longitude>35.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="28">
+    </VrpAirLocation>
+    <VrpAirLocation id="28">
       <id>25</id>
       <latitude>65.0</latitude>
       <longitude>20.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="29">
+    </VrpAirLocation>
+    <VrpAirLocation id="29">
       <id>26</id>
       <latitude>45.0</latitude>
       <longitude>30.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="30">
+    </VrpAirLocation>
+    <VrpAirLocation id="30">
       <id>27</id>
       <latitude>35.0</latitude>
       <longitude>40.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="31">
+    </VrpAirLocation>
+    <VrpAirLocation id="31">
       <id>28</id>
       <latitude>41.0</latitude>
       <longitude>37.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="32">
+    </VrpAirLocation>
+    <VrpAirLocation id="32">
       <id>29</id>
       <latitude>64.0</latitude>
       <longitude>42.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="33">
+    </VrpAirLocation>
+    <VrpAirLocation id="33">
       <id>30</id>
       <latitude>40.0</latitude>
       <longitude>60.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="34">
+    </VrpAirLocation>
+    <VrpAirLocation id="34">
       <id>31</id>
       <latitude>31.0</latitude>
       <longitude>52.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="35">
+    </VrpAirLocation>
+    <VrpAirLocation id="35">
       <id>32</id>
       <latitude>35.0</latitude>
       <longitude>69.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="36">
+    </VrpAirLocation>
+    <VrpAirLocation id="36">
       <id>33</id>
       <latitude>53.0</latitude>
       <longitude>52.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="37">
+    </VrpAirLocation>
+    <VrpAirLocation id="37">
       <id>34</id>
       <latitude>65.0</latitude>
       <longitude>55.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="38">
+    </VrpAirLocation>
+    <VrpAirLocation id="38">
       <id>35</id>
       <latitude>63.0</latitude>
       <longitude>65.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="39">
+    </VrpAirLocation>
+    <VrpAirLocation id="39">
       <id>36</id>
       <latitude>2.0</latitude>
       <longitude>60.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="40">
+    </VrpAirLocation>
+    <VrpAirLocation id="40">
       <id>37</id>
       <latitude>20.0</latitude>
       <longitude>20.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="41">
+    </VrpAirLocation>
+    <VrpAirLocation id="41">
       <id>38</id>
       <latitude>5.0</latitude>
       <longitude>5.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="42">
+    </VrpAirLocation>
+    <VrpAirLocation id="42">
       <id>39</id>
       <latitude>60.0</latitude>
       <longitude>12.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="43">
+    </VrpAirLocation>
+    <VrpAirLocation id="43">
       <id>40</id>
       <latitude>40.0</latitude>
       <longitude>25.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="44">
+    </VrpAirLocation>
+    <VrpAirLocation id="44">
       <id>41</id>
       <latitude>42.0</latitude>
       <longitude>7.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="45">
+    </VrpAirLocation>
+    <VrpAirLocation id="45">
       <id>42</id>
       <latitude>24.0</latitude>
       <longitude>12.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="46">
+    </VrpAirLocation>
+    <VrpAirLocation id="46">
       <id>43</id>
       <latitude>23.0</latitude>
       <longitude>3.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="47">
+    </VrpAirLocation>
+    <VrpAirLocation id="47">
       <id>44</id>
       <latitude>11.0</latitude>
       <longitude>14.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="48">
+    </VrpAirLocation>
+    <VrpAirLocation id="48">
       <id>45</id>
       <latitude>6.0</latitude>
       <longitude>38.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="49">
+    </VrpAirLocation>
+    <VrpAirLocation id="49">
       <id>46</id>
       <latitude>2.0</latitude>
       <longitude>48.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="50">
+    </VrpAirLocation>
+    <VrpAirLocation id="50">
       <id>47</id>
       <latitude>8.0</latitude>
       <longitude>56.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="51">
+    </VrpAirLocation>
+    <VrpAirLocation id="51">
       <id>48</id>
       <latitude>13.0</latitude>
       <longitude>52.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="52">
+    </VrpAirLocation>
+    <VrpAirLocation id="52">
       <id>49</id>
       <latitude>6.0</latitude>
       <longitude>68.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="53">
+    </VrpAirLocation>
+    <VrpAirLocation id="53">
       <id>50</id>
       <latitude>47.0</latitude>
       <longitude>47.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="54">
+    </VrpAirLocation>
+    <VrpAirLocation id="54">
       <id>51</id>
       <latitude>49.0</latitude>
       <longitude>58.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="55">
+    </VrpAirLocation>
+    <VrpAirLocation id="55">
       <id>52</id>
       <latitude>27.0</latitude>
       <longitude>43.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="56">
+    </VrpAirLocation>
+    <VrpAirLocation id="56">
       <id>53</id>
       <latitude>37.0</latitude>
       <longitude>31.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="57">
+    </VrpAirLocation>
+    <VrpAirLocation id="57">
       <id>54</id>
       <latitude>57.0</latitude>
       <longitude>29.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="58">
+    </VrpAirLocation>
+    <VrpAirLocation id="58">
       <id>55</id>
       <latitude>63.0</latitude>
       <longitude>23.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="59">
+    </VrpAirLocation>
+    <VrpAirLocation id="59">
       <id>56</id>
       <latitude>53.0</latitude>
       <longitude>12.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="60">
+    </VrpAirLocation>
+    <VrpAirLocation id="60">
       <id>57</id>
       <latitude>32.0</latitude>
       <longitude>12.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="61">
+    </VrpAirLocation>
+    <VrpAirLocation id="61">
       <id>58</id>
       <latitude>36.0</latitude>
       <longitude>26.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="62">
+    </VrpAirLocation>
+    <VrpAirLocation id="62">
       <id>59</id>
       <latitude>21.0</latitude>
       <longitude>24.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="63">
+    </VrpAirLocation>
+    <VrpAirLocation id="63">
       <id>60</id>
       <latitude>17.0</latitude>
       <longitude>34.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="64">
+    </VrpAirLocation>
+    <VrpAirLocation id="64">
       <id>61</id>
       <latitude>12.0</latitude>
       <longitude>24.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="65">
+    </VrpAirLocation>
+    <VrpAirLocation id="65">
       <id>62</id>
       <latitude>24.0</latitude>
       <longitude>58.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="66">
+    </VrpAirLocation>
+    <VrpAirLocation id="66">
       <id>63</id>
       <latitude>27.0</latitude>
       <longitude>69.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="67">
+    </VrpAirLocation>
+    <VrpAirLocation id="67">
       <id>64</id>
       <latitude>15.0</latitude>
       <longitude>77.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="68">
+    </VrpAirLocation>
+    <VrpAirLocation id="68">
       <id>65</id>
       <latitude>62.0</latitude>
       <longitude>77.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="69">
+    </VrpAirLocation>
+    <VrpAirLocation id="69">
       <id>66</id>
       <latitude>49.0</latitude>
       <longitude>73.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="70">
+    </VrpAirLocation>
+    <VrpAirLocation id="70">
       <id>67</id>
       <latitude>67.0</latitude>
       <longitude>5.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="71">
+    </VrpAirLocation>
+    <VrpAirLocation id="71">
       <id>68</id>
       <latitude>56.0</latitude>
       <longitude>39.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="72">
+    </VrpAirLocation>
+    <VrpAirLocation id="72">
       <id>69</id>
       <latitude>37.0</latitude>
       <longitude>47.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="73">
+    </VrpAirLocation>
+    <VrpAirLocation id="73">
       <id>70</id>
       <latitude>37.0</latitude>
       <longitude>56.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="74">
+    </VrpAirLocation>
+    <VrpAirLocation id="74">
       <id>71</id>
       <latitude>57.0</latitude>
       <longitude>68.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="75">
+    </VrpAirLocation>
+    <VrpAirLocation id="75">
       <id>72</id>
       <latitude>47.0</latitude>
       <longitude>16.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="76">
+    </VrpAirLocation>
+    <VrpAirLocation id="76">
       <id>73</id>
       <latitude>44.0</latitude>
       <longitude>17.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="77">
+    </VrpAirLocation>
+    <VrpAirLocation id="77">
       <id>74</id>
       <latitude>46.0</latitude>
       <longitude>13.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="78">
+    </VrpAirLocation>
+    <VrpAirLocation id="78">
       <id>75</id>
       <latitude>49.0</latitude>
       <longitude>11.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="79">
+    </VrpAirLocation>
+    <VrpAirLocation id="79">
       <id>76</id>
       <latitude>49.0</latitude>
       <longitude>42.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="80">
+    </VrpAirLocation>
+    <VrpAirLocation id="80">
       <id>77</id>
       <latitude>53.0</latitude>
       <longitude>43.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="81">
+    </VrpAirLocation>
+    <VrpAirLocation id="81">
       <id>78</id>
       <latitude>61.0</latitude>
       <longitude>52.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="82">
+    </VrpAirLocation>
+    <VrpAirLocation id="82">
       <id>79</id>
       <latitude>57.0</latitude>
       <longitude>48.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="83">
+    </VrpAirLocation>
+    <VrpAirLocation id="83">
       <id>80</id>
       <latitude>56.0</latitude>
       <longitude>37.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="84">
+    </VrpAirLocation>
+    <VrpAirLocation id="84">
       <id>81</id>
       <latitude>55.0</latitude>
       <longitude>54.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="85">
+    </VrpAirLocation>
+    <VrpAirLocation id="85">
       <id>82</id>
       <latitude>15.0</latitude>
       <longitude>47.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="86">
+    </VrpAirLocation>
+    <VrpAirLocation id="86">
       <id>83</id>
       <latitude>14.0</latitude>
       <longitude>37.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="87">
+    </VrpAirLocation>
+    <VrpAirLocation id="87">
       <id>84</id>
       <latitude>11.0</latitude>
       <longitude>31.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="88">
+    </VrpAirLocation>
+    <VrpAirLocation id="88">
       <id>85</id>
       <latitude>16.0</latitude>
       <longitude>22.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="89">
+    </VrpAirLocation>
+    <VrpAirLocation id="89">
       <id>86</id>
       <latitude>4.0</latitude>
       <longitude>18.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="90">
+    </VrpAirLocation>
+    <VrpAirLocation id="90">
       <id>87</id>
       <latitude>28.0</latitude>
       <longitude>18.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="91">
+    </VrpAirLocation>
+    <VrpAirLocation id="91">
       <id>88</id>
       <latitude>26.0</latitude>
       <longitude>52.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="92">
+    </VrpAirLocation>
+    <VrpAirLocation id="92">
       <id>89</id>
       <latitude>26.0</latitude>
       <longitude>35.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="93">
+    </VrpAirLocation>
+    <VrpAirLocation id="93">
       <id>90</id>
       <latitude>31.0</latitude>
       <longitude>67.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="94">
+    </VrpAirLocation>
+    <VrpAirLocation id="94">
       <id>91</id>
       <latitude>15.0</latitude>
       <longitude>19.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="95">
+    </VrpAirLocation>
+    <VrpAirLocation id="95">
       <id>92</id>
       <latitude>22.0</latitude>
       <longitude>22.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="96">
+    </VrpAirLocation>
+    <VrpAirLocation id="96">
       <id>93</id>
       <latitude>18.0</latitude>
       <longitude>24.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="97">
+    </VrpAirLocation>
+    <VrpAirLocation id="97">
       <id>94</id>
       <latitude>26.0</latitude>
       <longitude>27.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="98">
+    </VrpAirLocation>
+    <VrpAirLocation id="98">
       <id>95</id>
       <latitude>25.0</latitude>
       <longitude>24.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="99">
+    </VrpAirLocation>
+    <VrpAirLocation id="99">
       <id>96</id>
       <latitude>22.0</latitude>
       <longitude>27.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="100">
+    </VrpAirLocation>
+    <VrpAirLocation id="100">
       <id>97</id>
       <latitude>25.0</latitude>
       <longitude>21.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="101">
+    </VrpAirLocation>
+    <VrpAirLocation id="101">
       <id>98</id>
       <latitude>19.0</latitude>
       <longitude>21.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="102">
+    </VrpAirLocation>
+    <VrpAirLocation id="102">
       <id>99</id>
       <latitude>20.0</latitude>
       <longitude>26.0</longitude>
-    </VrpAirDistanceLocation>
-    <VrpAirDistanceLocation id="103">
+    </VrpAirLocation>
+    <VrpAirLocation id="103">
       <id>100</id>
       <latitude>18.0</latitude>
       <longitude>18.0</longitude>
-    </VrpAirDistanceLocation>
+    </VrpAirLocation>
   </locationList>
   <depotList id="104">
     <VrpTimeWindowedDepot id="105">
       <id>0</id>
-      <location class="VrpAirDistanceLocation" reference="3"/>
+      <location class="VrpAirLocation" reference="3"/>
       <readyTime>0</readyTime>
       <dueTime>230000</dueTime>
     </VrpTimeWindowedDepot>
@@ -647,7 +647,7 @@
   <customerList id="132">
     <VrpTimeWindowedCustomer id="133">
       <id>1</id>
-      <location class="VrpAirDistanceLocation" reference="4"/>
+      <location class="VrpAirLocation" reference="4"/>
       <demand>10</demand>
       <readyTime>161000</readyTime>
       <dueTime>171000</dueTime>
@@ -655,7 +655,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="134">
       <id>2</id>
-      <location class="VrpAirDistanceLocation" reference="5"/>
+      <location class="VrpAirLocation" reference="5"/>
       <demand>7</demand>
       <readyTime>50000</readyTime>
       <dueTime>60000</dueTime>
@@ -663,7 +663,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="135">
       <id>3</id>
-      <location class="VrpAirDistanceLocation" reference="6"/>
+      <location class="VrpAirLocation" reference="6"/>
       <demand>13</demand>
       <readyTime>116000</readyTime>
       <dueTime>126000</dueTime>
@@ -671,7 +671,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="136">
       <id>4</id>
-      <location class="VrpAirDistanceLocation" reference="7"/>
+      <location class="VrpAirLocation" reference="7"/>
       <demand>19</demand>
       <readyTime>149000</readyTime>
       <dueTime>159000</dueTime>
@@ -679,7 +679,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="137">
       <id>5</id>
-      <location class="VrpAirDistanceLocation" reference="8"/>
+      <location class="VrpAirLocation" reference="8"/>
       <demand>26</demand>
       <readyTime>34000</readyTime>
       <dueTime>44000</dueTime>
@@ -687,7 +687,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="138">
       <id>6</id>
-      <location class="VrpAirDistanceLocation" reference="9"/>
+      <location class="VrpAirLocation" reference="9"/>
       <demand>3</demand>
       <readyTime>99000</readyTime>
       <dueTime>109000</dueTime>
@@ -695,7 +695,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="139">
       <id>7</id>
-      <location class="VrpAirDistanceLocation" reference="10"/>
+      <location class="VrpAirLocation" reference="10"/>
       <demand>5</demand>
       <readyTime>81000</readyTime>
       <dueTime>91000</dueTime>
@@ -703,7 +703,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="140">
       <id>8</id>
-      <location class="VrpAirDistanceLocation" reference="11"/>
+      <location class="VrpAirLocation" reference="11"/>
       <demand>9</demand>
       <readyTime>95000</readyTime>
       <dueTime>105000</dueTime>
@@ -711,7 +711,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="141">
       <id>9</id>
-      <location class="VrpAirDistanceLocation" reference="12"/>
+      <location class="VrpAirLocation" reference="12"/>
       <demand>16</demand>
       <readyTime>97000</readyTime>
       <dueTime>107000</dueTime>
@@ -719,7 +719,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="142">
       <id>10</id>
-      <location class="VrpAirDistanceLocation" reference="13"/>
+      <location class="VrpAirLocation" reference="13"/>
       <demand>16</demand>
       <readyTime>124000</readyTime>
       <dueTime>134000</dueTime>
@@ -727,7 +727,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="143">
       <id>11</id>
-      <location class="VrpAirDistanceLocation" reference="14"/>
+      <location class="VrpAirLocation" reference="14"/>
       <demand>12</demand>
       <readyTime>67000</readyTime>
       <dueTime>77000</dueTime>
@@ -735,7 +735,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="144">
       <id>12</id>
-      <location class="VrpAirDistanceLocation" reference="15"/>
+      <location class="VrpAirLocation" reference="15"/>
       <demand>19</demand>
       <readyTime>63000</readyTime>
       <dueTime>73000</dueTime>
@@ -743,7 +743,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="145">
       <id>13</id>
-      <location class="VrpAirDistanceLocation" reference="16"/>
+      <location class="VrpAirLocation" reference="16"/>
       <demand>23</demand>
       <readyTime>159000</readyTime>
       <dueTime>169000</dueTime>
@@ -751,7 +751,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="146">
       <id>14</id>
-      <location class="VrpAirDistanceLocation" reference="17"/>
+      <location class="VrpAirLocation" reference="17"/>
       <demand>20</demand>
       <readyTime>32000</readyTime>
       <dueTime>42000</dueTime>
@@ -759,7 +759,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="147">
       <id>15</id>
-      <location class="VrpAirDistanceLocation" reference="18"/>
+      <location class="VrpAirLocation" reference="18"/>
       <demand>8</demand>
       <readyTime>61000</readyTime>
       <dueTime>71000</dueTime>
@@ -767,7 +767,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="148">
       <id>16</id>
-      <location class="VrpAirDistanceLocation" reference="19"/>
+      <location class="VrpAirLocation" reference="19"/>
       <demand>19</demand>
       <readyTime>75000</readyTime>
       <dueTime>85000</dueTime>
@@ -775,7 +775,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="149">
       <id>17</id>
-      <location class="VrpAirDistanceLocation" reference="20"/>
+      <location class="VrpAirLocation" reference="20"/>
       <demand>2</demand>
       <readyTime>157000</readyTime>
       <dueTime>167000</dueTime>
@@ -783,7 +783,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="150">
       <id>18</id>
-      <location class="VrpAirDistanceLocation" reference="21"/>
+      <location class="VrpAirLocation" reference="21"/>
       <demand>12</demand>
       <readyTime>87000</readyTime>
       <dueTime>97000</dueTime>
@@ -791,7 +791,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="151">
       <id>19</id>
-      <location class="VrpAirDistanceLocation" reference="22"/>
+      <location class="VrpAirLocation" reference="22"/>
       <demand>17</demand>
       <readyTime>76000</readyTime>
       <dueTime>86000</dueTime>
@@ -799,7 +799,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="152">
       <id>20</id>
-      <location class="VrpAirDistanceLocation" reference="23"/>
+      <location class="VrpAirLocation" reference="23"/>
       <demand>9</demand>
       <readyTime>126000</readyTime>
       <dueTime>136000</dueTime>
@@ -807,7 +807,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="153">
       <id>21</id>
-      <location class="VrpAirDistanceLocation" reference="24"/>
+      <location class="VrpAirLocation" reference="24"/>
       <demand>11</demand>
       <readyTime>62000</readyTime>
       <dueTime>72000</dueTime>
@@ -815,7 +815,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="154">
       <id>22</id>
-      <location class="VrpAirDistanceLocation" reference="25"/>
+      <location class="VrpAirLocation" reference="25"/>
       <demand>18</demand>
       <readyTime>97000</readyTime>
       <dueTime>107000</dueTime>
@@ -823,7 +823,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="155">
       <id>23</id>
-      <location class="VrpAirDistanceLocation" reference="26"/>
+      <location class="VrpAirLocation" reference="26"/>
       <demand>29</demand>
       <readyTime>68000</readyTime>
       <dueTime>78000</dueTime>
@@ -831,7 +831,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="156">
       <id>24</id>
-      <location class="VrpAirDistanceLocation" reference="27"/>
+      <location class="VrpAirLocation" reference="27"/>
       <demand>3</demand>
       <readyTime>153000</readyTime>
       <dueTime>163000</dueTime>
@@ -839,7 +839,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="157">
       <id>25</id>
-      <location class="VrpAirDistanceLocation" reference="28"/>
+      <location class="VrpAirLocation" reference="28"/>
       <demand>6</demand>
       <readyTime>172000</readyTime>
       <dueTime>182000</dueTime>
@@ -847,7 +847,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="158">
       <id>26</id>
-      <location class="VrpAirDistanceLocation" reference="29"/>
+      <location class="VrpAirLocation" reference="29"/>
       <demand>17</demand>
       <readyTime>132000</readyTime>
       <dueTime>142000</dueTime>
@@ -855,7 +855,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="159">
       <id>27</id>
-      <location class="VrpAirDistanceLocation" reference="30"/>
+      <location class="VrpAirLocation" reference="30"/>
       <demand>16</demand>
       <readyTime>37000</readyTime>
       <dueTime>47000</dueTime>
@@ -863,7 +863,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="160">
       <id>28</id>
-      <location class="VrpAirDistanceLocation" reference="31"/>
+      <location class="VrpAirLocation" reference="31"/>
       <demand>16</demand>
       <readyTime>39000</readyTime>
       <dueTime>49000</dueTime>
@@ -871,7 +871,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="161">
       <id>29</id>
-      <location class="VrpAirDistanceLocation" reference="32"/>
+      <location class="VrpAirLocation" reference="32"/>
       <demand>9</demand>
       <readyTime>63000</readyTime>
       <dueTime>73000</dueTime>
@@ -879,7 +879,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="162">
       <id>30</id>
-      <location class="VrpAirDistanceLocation" reference="33"/>
+      <location class="VrpAirLocation" reference="33"/>
       <demand>21</demand>
       <readyTime>71000</readyTime>
       <dueTime>81000</dueTime>
@@ -887,7 +887,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="163">
       <id>31</id>
-      <location class="VrpAirDistanceLocation" reference="34"/>
+      <location class="VrpAirLocation" reference="34"/>
       <demand>27</demand>
       <readyTime>50000</readyTime>
       <dueTime>60000</dueTime>
@@ -895,7 +895,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="164">
       <id>32</id>
-      <location class="VrpAirDistanceLocation" reference="35"/>
+      <location class="VrpAirLocation" reference="35"/>
       <demand>23</demand>
       <readyTime>141000</readyTime>
       <dueTime>151000</dueTime>
@@ -903,7 +903,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="165">
       <id>33</id>
-      <location class="VrpAirDistanceLocation" reference="36"/>
+      <location class="VrpAirLocation" reference="36"/>
       <demand>11</demand>
       <readyTime>37000</readyTime>
       <dueTime>47000</dueTime>
@@ -911,7 +911,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="166">
       <id>34</id>
-      <location class="VrpAirDistanceLocation" reference="37"/>
+      <location class="VrpAirLocation" reference="37"/>
       <demand>14</demand>
       <readyTime>117000</readyTime>
       <dueTime>127000</dueTime>
@@ -919,7 +919,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="167">
       <id>35</id>
-      <location class="VrpAirDistanceLocation" reference="38"/>
+      <location class="VrpAirLocation" reference="38"/>
       <demand>8</demand>
       <readyTime>143000</readyTime>
       <dueTime>153000</dueTime>
@@ -927,7 +927,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="168">
       <id>36</id>
-      <location class="VrpAirDistanceLocation" reference="39"/>
+      <location class="VrpAirLocation" reference="39"/>
       <demand>5</demand>
       <readyTime>41000</readyTime>
       <dueTime>51000</dueTime>
@@ -935,7 +935,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="169">
       <id>37</id>
-      <location class="VrpAirDistanceLocation" reference="40"/>
+      <location class="VrpAirLocation" reference="40"/>
       <demand>8</demand>
       <readyTime>134000</readyTime>
       <dueTime>144000</dueTime>
@@ -943,7 +943,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="170">
       <id>38</id>
-      <location class="VrpAirDistanceLocation" reference="41"/>
+      <location class="VrpAirLocation" reference="41"/>
       <demand>16</demand>
       <readyTime>83000</readyTime>
       <dueTime>93000</dueTime>
@@ -951,7 +951,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="171">
       <id>39</id>
-      <location class="VrpAirDistanceLocation" reference="42"/>
+      <location class="VrpAirLocation" reference="42"/>
       <demand>31</demand>
       <readyTime>44000</readyTime>
       <dueTime>54000</dueTime>
@@ -959,7 +959,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="172">
       <id>40</id>
-      <location class="VrpAirDistanceLocation" reference="43"/>
+      <location class="VrpAirLocation" reference="43"/>
       <demand>9</demand>
       <readyTime>85000</readyTime>
       <dueTime>95000</dueTime>
@@ -967,7 +967,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="173">
       <id>41</id>
-      <location class="VrpAirDistanceLocation" reference="44"/>
+      <location class="VrpAirLocation" reference="44"/>
       <demand>5</demand>
       <readyTime>97000</readyTime>
       <dueTime>107000</dueTime>
@@ -975,7 +975,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="174">
       <id>42</id>
-      <location class="VrpAirDistanceLocation" reference="45"/>
+      <location class="VrpAirLocation" reference="45"/>
       <demand>5</demand>
       <readyTime>31000</readyTime>
       <dueTime>41000</dueTime>
@@ -983,7 +983,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="175">
       <id>43</id>
-      <location class="VrpAirDistanceLocation" reference="46"/>
+      <location class="VrpAirLocation" reference="46"/>
       <demand>7</demand>
       <readyTime>132000</readyTime>
       <dueTime>142000</dueTime>
@@ -991,7 +991,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="176">
       <id>44</id>
-      <location class="VrpAirDistanceLocation" reference="47"/>
+      <location class="VrpAirLocation" reference="47"/>
       <demand>18</demand>
       <readyTime>69000</readyTime>
       <dueTime>79000</dueTime>
@@ -999,7 +999,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="177">
       <id>45</id>
-      <location class="VrpAirDistanceLocation" reference="48"/>
+      <location class="VrpAirLocation" reference="48"/>
       <demand>16</demand>
       <readyTime>32000</readyTime>
       <dueTime>42000</dueTime>
@@ -1007,7 +1007,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="178">
       <id>46</id>
-      <location class="VrpAirDistanceLocation" reference="49"/>
+      <location class="VrpAirLocation" reference="49"/>
       <demand>1</demand>
       <readyTime>117000</readyTime>
       <dueTime>127000</dueTime>
@@ -1015,7 +1015,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="179">
       <id>47</id>
-      <location class="VrpAirDistanceLocation" reference="50"/>
+      <location class="VrpAirLocation" reference="50"/>
       <demand>27</demand>
       <readyTime>51000</readyTime>
       <dueTime>61000</dueTime>
@@ -1023,7 +1023,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="180">
       <id>48</id>
-      <location class="VrpAirDistanceLocation" reference="51"/>
+      <location class="VrpAirLocation" reference="51"/>
       <demand>36</demand>
       <readyTime>165000</readyTime>
       <dueTime>175000</dueTime>
@@ -1031,7 +1031,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="181">
       <id>49</id>
-      <location class="VrpAirDistanceLocation" reference="52"/>
+      <location class="VrpAirLocation" reference="52"/>
       <demand>30</demand>
       <readyTime>108000</readyTime>
       <dueTime>118000</dueTime>
@@ -1039,7 +1039,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="182">
       <id>50</id>
-      <location class="VrpAirDistanceLocation" reference="53"/>
+      <location class="VrpAirLocation" reference="53"/>
       <demand>13</demand>
       <readyTime>124000</readyTime>
       <dueTime>134000</dueTime>
@@ -1047,7 +1047,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="183">
       <id>51</id>
-      <location class="VrpAirDistanceLocation" reference="54"/>
+      <location class="VrpAirLocation" reference="54"/>
       <demand>10</demand>
       <readyTime>88000</readyTime>
       <dueTime>98000</dueTime>
@@ -1055,7 +1055,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="184">
       <id>52</id>
-      <location class="VrpAirDistanceLocation" reference="55"/>
+      <location class="VrpAirLocation" reference="55"/>
       <demand>9</demand>
       <readyTime>52000</readyTime>
       <dueTime>62000</dueTime>
@@ -1063,7 +1063,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="185">
       <id>53</id>
-      <location class="VrpAirDistanceLocation" reference="56"/>
+      <location class="VrpAirLocation" reference="56"/>
       <demand>14</demand>
       <readyTime>95000</readyTime>
       <dueTime>105000</dueTime>
@@ -1071,7 +1071,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="186">
       <id>54</id>
-      <location class="VrpAirDistanceLocation" reference="57"/>
+      <location class="VrpAirLocation" reference="57"/>
       <demand>18</demand>
       <readyTime>140000</readyTime>
       <dueTime>150000</dueTime>
@@ -1079,7 +1079,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="187">
       <id>55</id>
-      <location class="VrpAirDistanceLocation" reference="58"/>
+      <location class="VrpAirLocation" reference="58"/>
       <demand>2</demand>
       <readyTime>136000</readyTime>
       <dueTime>146000</dueTime>
@@ -1087,7 +1087,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="188">
       <id>56</id>
-      <location class="VrpAirDistanceLocation" reference="59"/>
+      <location class="VrpAirLocation" reference="59"/>
       <demand>6</demand>
       <readyTime>130000</readyTime>
       <dueTime>140000</dueTime>
@@ -1095,7 +1095,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="189">
       <id>57</id>
-      <location class="VrpAirDistanceLocation" reference="60"/>
+      <location class="VrpAirLocation" reference="60"/>
       <demand>7</demand>
       <readyTime>101000</readyTime>
       <dueTime>111000</dueTime>
@@ -1103,7 +1103,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="190">
       <id>58</id>
-      <location class="VrpAirDistanceLocation" reference="61"/>
+      <location class="VrpAirLocation" reference="61"/>
       <demand>18</demand>
       <readyTime>200000</readyTime>
       <dueTime>210000</dueTime>
@@ -1111,7 +1111,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="191">
       <id>59</id>
-      <location class="VrpAirDistanceLocation" reference="62"/>
+      <location class="VrpAirLocation" reference="62"/>
       <demand>28</demand>
       <readyTime>18000</readyTime>
       <dueTime>28000</dueTime>
@@ -1119,7 +1119,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="192">
       <id>60</id>
-      <location class="VrpAirDistanceLocation" reference="63"/>
+      <location class="VrpAirLocation" reference="63"/>
       <demand>3</demand>
       <readyTime>162000</readyTime>
       <dueTime>172000</dueTime>
@@ -1127,7 +1127,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="193">
       <id>61</id>
-      <location class="VrpAirDistanceLocation" reference="64"/>
+      <location class="VrpAirLocation" reference="64"/>
       <demand>13</demand>
       <readyTime>76000</readyTime>
       <dueTime>86000</dueTime>
@@ -1135,7 +1135,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="194">
       <id>62</id>
-      <location class="VrpAirDistanceLocation" reference="65"/>
+      <location class="VrpAirLocation" reference="65"/>
       <demand>19</demand>
       <readyTime>58000</readyTime>
       <dueTime>68000</dueTime>
@@ -1143,7 +1143,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="195">
       <id>63</id>
-      <location class="VrpAirDistanceLocation" reference="66"/>
+      <location class="VrpAirLocation" reference="66"/>
       <demand>10</demand>
       <readyTime>34000</readyTime>
       <dueTime>44000</dueTime>
@@ -1151,7 +1151,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="196">
       <id>64</id>
-      <location class="VrpAirDistanceLocation" reference="67"/>
+      <location class="VrpAirLocation" reference="67"/>
       <demand>9</demand>
       <readyTime>73000</readyTime>
       <dueTime>83000</dueTime>
@@ -1159,7 +1159,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="197">
       <id>65</id>
-      <location class="VrpAirDistanceLocation" reference="68"/>
+      <location class="VrpAirLocation" reference="68"/>
       <demand>20</demand>
       <readyTime>51000</readyTime>
       <dueTime>61000</dueTime>
@@ -1167,7 +1167,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="198">
       <id>66</id>
-      <location class="VrpAirDistanceLocation" reference="69"/>
+      <location class="VrpAirLocation" reference="69"/>
       <demand>25</demand>
       <readyTime>127000</readyTime>
       <dueTime>137000</dueTime>
@@ -1175,7 +1175,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="199">
       <id>67</id>
-      <location class="VrpAirDistanceLocation" reference="70"/>
+      <location class="VrpAirLocation" reference="70"/>
       <demand>25</demand>
       <readyTime>83000</readyTime>
       <dueTime>93000</dueTime>
@@ -1183,7 +1183,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="200">
       <id>68</id>
-      <location class="VrpAirDistanceLocation" reference="71"/>
+      <location class="VrpAirLocation" reference="71"/>
       <demand>36</demand>
       <readyTime>142000</readyTime>
       <dueTime>152000</dueTime>
@@ -1191,7 +1191,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="201">
       <id>69</id>
-      <location class="VrpAirDistanceLocation" reference="72"/>
+      <location class="VrpAirLocation" reference="72"/>
       <demand>6</demand>
       <readyTime>50000</readyTime>
       <dueTime>60000</dueTime>
@@ -1199,7 +1199,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="202">
       <id>70</id>
-      <location class="VrpAirDistanceLocation" reference="73"/>
+      <location class="VrpAirLocation" reference="73"/>
       <demand>5</demand>
       <readyTime>182000</readyTime>
       <dueTime>192000</dueTime>
@@ -1207,7 +1207,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="203">
       <id>71</id>
-      <location class="VrpAirDistanceLocation" reference="74"/>
+      <location class="VrpAirLocation" reference="74"/>
       <demand>15</demand>
       <readyTime>77000</readyTime>
       <dueTime>87000</dueTime>
@@ -1215,7 +1215,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="204">
       <id>72</id>
-      <location class="VrpAirDistanceLocation" reference="75"/>
+      <location class="VrpAirLocation" reference="75"/>
       <demand>25</demand>
       <readyTime>35000</readyTime>
       <dueTime>45000</dueTime>
@@ -1223,7 +1223,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="205">
       <id>73</id>
-      <location class="VrpAirDistanceLocation" reference="76"/>
+      <location class="VrpAirLocation" reference="76"/>
       <demand>9</demand>
       <readyTime>78000</readyTime>
       <dueTime>88000</dueTime>
@@ -1231,7 +1231,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="206">
       <id>74</id>
-      <location class="VrpAirDistanceLocation" reference="77"/>
+      <location class="VrpAirLocation" reference="77"/>
       <demand>8</demand>
       <readyTime>149000</readyTime>
       <dueTime>159000</dueTime>
@@ -1239,7 +1239,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="207">
       <id>75</id>
-      <location class="VrpAirDistanceLocation" reference="78"/>
+      <location class="VrpAirLocation" reference="78"/>
       <demand>18</demand>
       <readyTime>69000</readyTime>
       <dueTime>79000</dueTime>
@@ -1247,7 +1247,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="208">
       <id>76</id>
-      <location class="VrpAirDistanceLocation" reference="79"/>
+      <location class="VrpAirLocation" reference="79"/>
       <demand>13</demand>
       <readyTime>73000</readyTime>
       <dueTime>83000</dueTime>
@@ -1255,7 +1255,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="209">
       <id>77</id>
-      <location class="VrpAirDistanceLocation" reference="80"/>
+      <location class="VrpAirLocation" reference="80"/>
       <demand>14</demand>
       <readyTime>179000</readyTime>
       <dueTime>189000</dueTime>
@@ -1263,7 +1263,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="210">
       <id>78</id>
-      <location class="VrpAirDistanceLocation" reference="81"/>
+      <location class="VrpAirLocation" reference="81"/>
       <demand>3</demand>
       <readyTime>96000</readyTime>
       <dueTime>106000</dueTime>
@@ -1271,7 +1271,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="211">
       <id>79</id>
-      <location class="VrpAirDistanceLocation" reference="82"/>
+      <location class="VrpAirLocation" reference="82"/>
       <demand>23</demand>
       <readyTime>92000</readyTime>
       <dueTime>102000</dueTime>
@@ -1279,7 +1279,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="212">
       <id>80</id>
-      <location class="VrpAirDistanceLocation" reference="83"/>
+      <location class="VrpAirLocation" reference="83"/>
       <demand>6</demand>
       <readyTime>182000</readyTime>
       <dueTime>192000</dueTime>
@@ -1287,7 +1287,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="213">
       <id>81</id>
-      <location class="VrpAirDistanceLocation" reference="84"/>
+      <location class="VrpAirLocation" reference="84"/>
       <demand>26</demand>
       <readyTime>94000</readyTime>
       <dueTime>104000</dueTime>
@@ -1295,7 +1295,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="214">
       <id>82</id>
-      <location class="VrpAirDistanceLocation" reference="85"/>
+      <location class="VrpAirLocation" reference="85"/>
       <demand>16</demand>
       <readyTime>55000</readyTime>
       <dueTime>65000</dueTime>
@@ -1303,7 +1303,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="215">
       <id>83</id>
-      <location class="VrpAirDistanceLocation" reference="86"/>
+      <location class="VrpAirLocation" reference="86"/>
       <demand>11</demand>
       <readyTime>44000</readyTime>
       <dueTime>54000</dueTime>
@@ -1311,7 +1311,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="216">
       <id>84</id>
-      <location class="VrpAirDistanceLocation" reference="87"/>
+      <location class="VrpAirLocation" reference="87"/>
       <demand>7</demand>
       <readyTime>101000</readyTime>
       <dueTime>111000</dueTime>
@@ -1319,7 +1319,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="217">
       <id>85</id>
-      <location class="VrpAirDistanceLocation" reference="88"/>
+      <location class="VrpAirLocation" reference="88"/>
       <demand>41</demand>
       <readyTime>91000</readyTime>
       <dueTime>101000</dueTime>
@@ -1327,7 +1327,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="218">
       <id>86</id>
-      <location class="VrpAirDistanceLocation" reference="89"/>
+      <location class="VrpAirLocation" reference="89"/>
       <demand>35</demand>
       <readyTime>94000</readyTime>
       <dueTime>104000</dueTime>
@@ -1335,7 +1335,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="219">
       <id>87</id>
-      <location class="VrpAirDistanceLocation" reference="90"/>
+      <location class="VrpAirLocation" reference="90"/>
       <demand>26</demand>
       <readyTime>93000</readyTime>
       <dueTime>103000</dueTime>
@@ -1343,7 +1343,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="220">
       <id>88</id>
-      <location class="VrpAirDistanceLocation" reference="91"/>
+      <location class="VrpAirLocation" reference="91"/>
       <demand>9</demand>
       <readyTime>74000</readyTime>
       <dueTime>84000</dueTime>
@@ -1351,7 +1351,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="221">
       <id>89</id>
-      <location class="VrpAirDistanceLocation" reference="92"/>
+      <location class="VrpAirLocation" reference="92"/>
       <demand>15</demand>
       <readyTime>176000</readyTime>
       <dueTime>186000</dueTime>
@@ -1359,7 +1359,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="222">
       <id>90</id>
-      <location class="VrpAirDistanceLocation" reference="93"/>
+      <location class="VrpAirLocation" reference="93"/>
       <demand>3</demand>
       <readyTime>95000</readyTime>
       <dueTime>105000</dueTime>
@@ -1367,7 +1367,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="223">
       <id>91</id>
-      <location class="VrpAirDistanceLocation" reference="94"/>
+      <location class="VrpAirLocation" reference="94"/>
       <demand>1</demand>
       <readyTime>160000</readyTime>
       <dueTime>170000</dueTime>
@@ -1375,7 +1375,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="224">
       <id>92</id>
-      <location class="VrpAirDistanceLocation" reference="95"/>
+      <location class="VrpAirLocation" reference="95"/>
       <demand>2</demand>
       <readyTime>18000</readyTime>
       <dueTime>28000</dueTime>
@@ -1383,7 +1383,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="225">
       <id>93</id>
-      <location class="VrpAirDistanceLocation" reference="96"/>
+      <location class="VrpAirLocation" reference="96"/>
       <demand>22</demand>
       <readyTime>188000</readyTime>
       <dueTime>198000</dueTime>
@@ -1391,7 +1391,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="226">
       <id>94</id>
-      <location class="VrpAirDistanceLocation" reference="97"/>
+      <location class="VrpAirLocation" reference="97"/>
       <demand>27</demand>
       <readyTime>100000</readyTime>
       <dueTime>110000</dueTime>
@@ -1399,7 +1399,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="227">
       <id>95</id>
-      <location class="VrpAirDistanceLocation" reference="98"/>
+      <location class="VrpAirLocation" reference="98"/>
       <demand>20</demand>
       <readyTime>39000</readyTime>
       <dueTime>49000</dueTime>
@@ -1407,7 +1407,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="228">
       <id>96</id>
-      <location class="VrpAirDistanceLocation" reference="99"/>
+      <location class="VrpAirLocation" reference="99"/>
       <demand>11</demand>
       <readyTime>135000</readyTime>
       <dueTime>145000</dueTime>
@@ -1415,7 +1415,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="229">
       <id>97</id>
-      <location class="VrpAirDistanceLocation" reference="100"/>
+      <location class="VrpAirLocation" reference="100"/>
       <demand>12</demand>
       <readyTime>133000</readyTime>
       <dueTime>143000</dueTime>
@@ -1423,7 +1423,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="230">
       <id>98</id>
-      <location class="VrpAirDistanceLocation" reference="101"/>
+      <location class="VrpAirLocation" reference="101"/>
       <demand>10</demand>
       <readyTime>58000</readyTime>
       <dueTime>68000</dueTime>
@@ -1431,7 +1431,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="231">
       <id>99</id>
-      <location class="VrpAirDistanceLocation" reference="102"/>
+      <location class="VrpAirLocation" reference="102"/>
       <demand>9</demand>
       <readyTime>83000</readyTime>
       <dueTime>93000</dueTime>
@@ -1439,7 +1439,7 @@
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="232">
       <id>100</id>
-      <location class="VrpAirDistanceLocation" reference="103"/>
+      <location class="VrpAirLocation" reference="103"/>
       <demand>17</demand>
       <readyTime>185000</readyTime>
       <dueTime>195000</dueTime>

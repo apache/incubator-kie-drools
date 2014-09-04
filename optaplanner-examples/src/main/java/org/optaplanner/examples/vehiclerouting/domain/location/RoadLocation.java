@@ -20,23 +20,28 @@ import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@XStreamAlias("VrpRoadDistanceLocation")
-public class RoadDistanceLocation extends Location {
+/**
+ * The cost between 2 locations was precalculated on a real road network route.
+ * The cost itself might be the distance in km, the travel time, the fuel usage or a weighted function of any of those.
+ * Used with {@link DistanceType#ROAD_DISTANCE}.
+ */
+@XStreamAlias("VrpRoadLocation")
+public class RoadLocation extends Location {
 
     // Prefer Map over array or List because customers might be added and removed in real-time planning.
-    protected Map<RoadDistanceLocation, Double> travelDistanceMap;
+    protected Map<RoadLocation, Double> travelDistanceMap;
 
-    public Map<RoadDistanceLocation, Double> getTravelDistanceMap() {
+    public Map<RoadLocation, Double> getTravelDistanceMap() {
         return travelDistanceMap;
     }
 
-    public void setTravelDistanceMap(Map<RoadDistanceLocation, Double> travelDistanceMap) {
+    public void setTravelDistanceMap(Map<RoadLocation, Double> travelDistanceMap) {
         this.travelDistanceMap = travelDistanceMap;
     }
 
     @Override
     public int getDistance(Location location) {
-        double distance = travelDistanceMap.get((RoadDistanceLocation) location);
+        double distance = travelDistanceMap.get((RoadLocation) location);
         // Multiplied by 1000 to avoid floating point arithmetic rounding errors
         return (int) (distance * 1000.0 + 0.5);
     }

@@ -32,7 +32,7 @@ import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
-import org.optaplanner.examples.vehiclerouting.domain.location.AirDistanceLocation;
+import org.optaplanner.examples.vehiclerouting.domain.location.AirLocation;
 import org.optaplanner.examples.vehiclerouting.domain.location.DistanceType;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
@@ -154,7 +154,7 @@ public class VehicleRoutingSolutionPainter {
                     Location location = customer.getLocation();
                     int x = translator.translateLongitudeToX(location.getLongitude());
                     int y = translator.translateLatitudeToY(location.getLatitude());
-                    drawRoute(g, previousX, previousY, x, y, location instanceof AirDistanceLocation);
+                    drawRoute(g, previousX, previousY, x, y, location instanceof AirLocation);
                     // Determine where to draw the vehicle info
                     int distance = customer.getDistanceToPreviousStandstill();
                     if (customer.getPreviousStandstill() instanceof Customer) {
@@ -172,7 +172,7 @@ public class VehicleRoutingSolutionPainter {
                         int vehicleX = translator.translateLongitudeToX(vehicleLocation.getLongitude());
                         int vehicleY = translator.translateLatitudeToY(vehicleLocation.getLatitude());
                         g.setStroke(TangoColorFactory.FAT_DASHED_STROKE);
-                        drawRoute(g, x, y, vehicleX, vehicleY, location instanceof AirDistanceLocation);
+                        drawRoute(g, x, y, vehicleX, vehicleY, location instanceof AirLocation);
                         g.setStroke(TangoColorFactory.NORMAL_STROKE);
                     }
                 }

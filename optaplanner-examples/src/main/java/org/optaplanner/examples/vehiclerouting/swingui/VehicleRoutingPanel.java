@@ -17,8 +17,6 @@
 package org.optaplanner.examples.vehiclerouting.swingui;
 
 import java.awt.BorderLayout;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 import javax.swing.JTabbedPane;
 
@@ -29,10 +27,9 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
-import org.optaplanner.examples.vehiclerouting.domain.location.AirDistanceLocation;
+import org.optaplanner.examples.vehiclerouting.domain.location.AirLocation;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
-import org.optaplanner.examples.vehiclerouting.domain.location.RoadDistanceLocation;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
@@ -103,10 +100,13 @@ public class VehicleRoutingPanel extends SolutionPanel {
         final Location newLocation;
         switch (getVehicleRoutingSolution().getDistanceType()) {
             case AIR_DISTANCE:
-                newLocation = new AirDistanceLocation();
+                newLocation = new AirLocation();
                 break;
             case ROAD_DISTANCE:
                 logger.warn("Adding locations for a road distance dataset is not supported.");
+                return;
+            case SEGMENTED_ROAD_DISTANCE:
+                logger.warn("Adding locations for a segmented road distance dataset is not supported.");
                 return;
             default:
                 throw new IllegalStateException("The distanceType (" + getVehicleRoutingSolution().getDistanceType()

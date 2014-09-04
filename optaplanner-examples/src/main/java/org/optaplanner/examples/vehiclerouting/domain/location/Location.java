@@ -23,8 +23,8 @@ import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
 @XStreamAlias("VrpLocation")
 @XStreamInclude({
-        AirDistanceLocation.class,
-        RoadDistanceLocation.class
+        AirLocation.class,
+        RoadLocation.class
 })
 public abstract class Location extends AbstractPersistable {
 

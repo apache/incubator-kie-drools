@@ -28,12 +28,12 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
-import org.optaplanner.examples.vehiclerouting.domain.location.AirDistanceLocation;
+import org.optaplanner.examples.vehiclerouting.domain.location.AirLocation;
 import org.optaplanner.examples.vehiclerouting.domain.location.DistanceType;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
-import org.optaplanner.examples.vehiclerouting.domain.location.RoadDistanceLocation;
+import org.optaplanner.examples.vehiclerouting.domain.location.RoadLocation;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
@@ -153,7 +153,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpacesOrTabs(line.trim(), 3, 4);
-                Location location = roadDistance ? new RoadDistanceLocation() : new AirDistanceLocation();
+                Location location = roadDistance ? new RoadLocation() : new AirLocation();
                 location.setId(Long.parseLong(lineTokens[0]));
                 location.setLatitude(Double.parseDouble(lineTokens[1]));
                 location.setLongitude(Double.parseDouble(lineTokens[2]));
@@ -167,9 +167,9 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             if (roadDistance) {
                 readConstantLine("EDGE_WEIGHT_SECTION");
                 for (int i = 0; i < locationListSize; i++) {
-                    RoadDistanceLocation location = (RoadDistanceLocation) locationList.get(i);
-                    HashMap<RoadDistanceLocation, Double> travelDistanceMap
-                            = new HashMap<RoadDistanceLocation, Double>(locationListSize);
+                    RoadLocation location = (RoadLocation) locationList.get(i);
+                    HashMap<RoadLocation, Double> travelDistanceMap
+                            = new HashMap<RoadLocation, Double>(locationListSize);
                     String line = bufferedReader.readLine();
                     String[] lineTokens = splitBySpacesOrTabs(line.trim(), locationListSize);
                     for (int j = 0; j < locationListSize; j++) {
@@ -180,7 +180,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                                         + ") should be zero.");
                             }
                         } else {
-                            RoadDistanceLocation otherLocation = (RoadDistanceLocation) locationList.get(j);
+                            RoadLocation otherLocation = (RoadLocation) locationList.get(j);
                             travelDistanceMap.put(otherLocation, travelDistance);
                         }
                     }
@@ -282,7 +282,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpacesOrTabs(line.trim(), 3, 4);
-                AirDistanceLocation location = new AirDistanceLocation();
+                AirLocation location = new AirLocation();
                 location.setId((long) i);
                 location.setLatitude(Double.parseDouble(lineTokens[1]));
                 location.setLongitude(Double.parseDouble(lineTokens[2]));
@@ -349,7 +349,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             while (line != null && !line.trim().isEmpty()) {
                 String[] lineTokens = splitBySpacesOrTabs(line.trim(), 7);
                 long id = Long.parseLong(lineTokens[0]);
-                AirDistanceLocation location = new AirDistanceLocation();
+                AirLocation location = new AirLocation();
                 location.setId(id);
                 location.setLatitude(Double.parseDouble(lineTokens[1]));
                 location.setLongitude(Double.parseDouble(lineTokens[2]));
