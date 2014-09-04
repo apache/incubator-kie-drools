@@ -33,6 +33,13 @@ public class HubSegmentLocation extends Location {
     protected Map<RoadSegmentLocation, Double> nearbyTravelDistanceMap;
     protected Map<HubSegmentLocation, Double> hubTravelDistanceMap;
 
+    public HubSegmentLocation() {
+    }
+
+    public HubSegmentLocation(long id, double latitude, double longitude) {
+        super(id, latitude, longitude);
+    }
+
     public Map<RoadSegmentLocation, Double> getNearbyTravelDistanceMap() {
         return nearbyTravelDistanceMap;
     }
@@ -51,24 +58,26 @@ public class HubSegmentLocation extends Location {
 
     @Override
     public int getDistance(Location location) {
+        double distance;
         if (location instanceof RoadSegmentLocation) {
-            return getDistanceToRoadLocation((RoadSegmentLocation) location);
+            distance = getDistanceDouble((RoadSegmentLocation) location);
         } else {
-            return getDistanceToHubLocation((HubSegmentLocation) location);
-        }
-    }
-
-    public int getDistanceToRoadLocation(RoadSegmentLocation location) {
-        Double distance = nearbyTravelDistanceMap.get(location);
-        if (distance == null) {
-            // location isn't nearby
-            distance = getShortestDistanceThroughHubs(location);
+            distance = hubTravelDistanceMap.get((HubSegmentLocation) location);
         }
         // Multiplied by 1000 to avoid floating point arithmetic rounding errors
         return (int) (distance * 1000.0 + 0.5);
     }
 
-    protected double getShortestDistanceThroughHubs(RoadSegmentLocation location) {
+    public double getDistanceDouble(RoadSegmentLocation location) {
+        Double distance = nearbyTravelDistanceMap.get(location);
+        if (distance == null) {
+            // location isn't nearby
+            distance = getShortestDistanceDoubleThroughHub(location);
+        }
+        return distance;
+    }
+
+    protected double getShortestDistanceDoubleThroughHub(RoadSegmentLocation location) {
         double shortestDistance = Double.MAX_VALUE;
         for (HubSegmentLocation otherHub : location.getHubTravelDistanceMap().keySet()) {
             double distance = (this == otherHub ? 0.0 : hubTravelDistanceMap.get(otherHub))
@@ -78,12 +87,6 @@ public class HubSegmentLocation extends Location {
             }
         }
         return shortestDistance;
-    }
-
-    public int getDistanceToHubLocation(HubSegmentLocation location) {
-        Double distance = hubTravelDistanceMap.get(location);
-        // Multiplied by 1000 to avoid floating point arithmetic rounding errors
-        return (int) (distance * 1000.0 + 0.5);
     }
 
 }

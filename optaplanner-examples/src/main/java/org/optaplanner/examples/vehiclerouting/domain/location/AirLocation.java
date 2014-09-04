@@ -25,9 +25,18 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("VrpAirLocation")
 public class AirLocation extends Location {
 
+    public AirLocation() {
+    }
+
+    public AirLocation(long id, double latitude, double longitude) {
+        super(id, latitude, longitude);
+    }
+
     @Override
     public int getDistance(Location location) {
-       return getAirDistance(location);
+        double distance = getAirDistanceDouble(location);
+        // Multiplied by 1000 to avoid floating point arithmetic rounding errors
+        return (int) (distance * 1000.0 + 0.5);
     }
 
 }

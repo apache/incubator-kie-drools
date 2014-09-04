@@ -31,6 +31,13 @@ public class RoadLocation extends Location {
     // Prefer Map over array or List because customers might be added and removed in real-time planning.
     protected Map<RoadLocation, Double> travelDistanceMap;
 
+    public RoadLocation() {
+    }
+
+    public RoadLocation(long id, double latitude, double longitude) {
+        super(id, latitude, longitude);
+    }
+
     public Map<RoadLocation, Double> getTravelDistanceMap() {
         return travelDistanceMap;
     }

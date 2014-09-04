@@ -35,6 +35,13 @@ public class RoadSegmentLocation extends Location {
     protected Map<RoadSegmentLocation, Double> nearbyTravelDistanceMap;
     protected Map<HubSegmentLocation, Double> hubTravelDistanceMap;
 
+    public RoadSegmentLocation() {
+    }
+
+    public RoadSegmentLocation(long id, double latitude, double longitude) {
+        super(id, latitude, longitude);
+    }
+
     public Map<RoadSegmentLocation, Double> getNearbyTravelDistanceMap() {
         return nearbyTravelDistanceMap;
     }
@@ -56,17 +63,17 @@ public class RoadSegmentLocation extends Location {
         Double distance = nearbyTravelDistanceMap.get((RoadSegmentLocation) location);
         if (distance == null) {
             // location isn't nearby
-            distance = getShortestDistanceThroughHubs((RoadSegmentLocation) location);
+            distance = getShortestDistanceDoubleThroughHubs((RoadSegmentLocation) location);
         }
         // Multiplied by 1000 to avoid floating point arithmetic rounding errors
         return (int) (distance * 1000.0 + 0.5);
     }
 
-    protected double getShortestDistanceThroughHubs(RoadSegmentLocation location) {
+    protected double getShortestDistanceDoubleThroughHubs(RoadSegmentLocation location) {
         double shortestDistance = Double.MAX_VALUE;
         for (Map.Entry<HubSegmentLocation, Double> entry : hubTravelDistanceMap.entrySet()) {
             double distance = entry.getValue();
-            distance += entry.getKey().getDistanceToRoadLocation(location);
+            distance += entry.getKey().getDistanceDouble(location);
             if (distance < shortestDistance) {
                 shortestDistance = distance;
             }
