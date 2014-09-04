@@ -8,11 +8,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.nio.channels.FileChannel;
@@ -187,19 +185,23 @@ public class IoUtils {
         }
     }
 
-    public static byte[] readBytesFromInputStream(InputStream is) throws IOException {
-        byte[] resultBuff = new byte[0];
-        byte[] buff = new byte[2048];
-        int k = -1;
-        while ((k = is.read(buff, 0, buff.length)) > -1) {
-            byte[] tbuff = new byte[resultBuff.length + k];
-            System.arraycopy(resultBuff, 0, tbuff, 0, resultBuff.length);
-            System.arraycopy(buff, 0, tbuff, resultBuff.length, k);
-            resultBuff = tbuff;
-        }
-        return resultBuff;
-    }
+    public static byte[] readBytesFromInputStream(InputStream input) throws IOException {
+        int length = input.available();
+        byte[] buffer = new byte[Math.max(length, 8192)];
+        ByteArrayOutputStream output = new ByteArrayOutputStream(buffer.length);
 
+        if (length > 0) {
+            int n = input.read(buffer);
+            output.write(buffer, 0, n);
+        }
+
+        int n = 0;
+        while (-1 != (n = input.read(buffer))) {
+            output.write(buffer, 0, n);
+        }
+        return output.toByteArray();
+    }
+    
     public static byte[] readBytesFromZipEntry(File file, ZipEntry entry) throws IOException {
         if ( entry == null ) {
             return null;
