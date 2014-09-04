@@ -77,4 +77,9 @@ public abstract class PhaseConfig {
         }
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
+
 }
