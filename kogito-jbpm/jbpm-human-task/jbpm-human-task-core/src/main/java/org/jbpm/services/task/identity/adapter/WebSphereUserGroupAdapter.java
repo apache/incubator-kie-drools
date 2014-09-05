@@ -29,7 +29,7 @@ public class WebSphereUserGroupAdapter implements UserGroupAdapter {
 	@Override
     public List<String> getGroupsForUser(String userId) {
         List<String> roles = new ArrayList<String>();
-        if (registry == null || userId == null || !userId.isEmpty()) {
+        if (registry == null || userId == null || userId.isEmpty()) {
             return roles;
         }
         try {

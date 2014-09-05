@@ -1,1 +1,2 @@
 org.jbpm.services.task.identity.adapter.WebSphereUserGroupAdapter
+org.jbpm.services.task.identity.adapter.WeblogicUserGroupAdapter
