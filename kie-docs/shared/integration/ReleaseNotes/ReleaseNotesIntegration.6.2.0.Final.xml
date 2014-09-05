@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xml:base="../../" xml:id="kie.ReleaseNotesIntegration.6.0.0"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+  xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>New and Noteworthy in Integration 6.2.0</title>
+  <section>
+    <title>Kie Server</title>
+    <para>A new Kie Execution Server was created with the goal of supporting the deployment of kjars
+      and the automatic creation of REST endpoints for remote rules execution.  This initial
+      implementation supports provisioning and execution of kjars via REST without any glue
+      code.</para>
+    <para>A user interface was also integrated into the workbench for remote provisioning. See the
+      workbench's New&amp;Noteworthy for details. </para>
+    <figure>
+      <title>Kie Server interface</title>
+      <programlisting language="JAVA">@Path("/server")
+public interface KieServer {
+    
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getInfo();
+    
+    @POST
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response execute( CommandScript command );
+    
+    @GET
+    @Path("containers")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response listContainers();
+    
+    @GET
+    @Path("containers/{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getContainerInfo( @PathParam("id") String id );
+    
+    @PUT
+    @Path("containers/{id}")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response createContainer( @PathParam("id") String id, KieContainerResource container );
+    
+    @DELETE
+    @Path("containers/{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response disposeContainer( @PathParam("id") String id );
+    
+    @POST
+    @Path("containers/{id}")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response execute( @PathParam("id") String id, String cmdPayload );
+    
+    @GET
+    @Path("containers/{id}/release-id")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getReleaseId( @PathParam("id") String id);
+
+    @POST
+    @Path("containers/{id}/release-id")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response updateReleaseId( @PathParam("id") String id, ReleaseId releaseId );
+    
+    @GET
+    @Path("containers/{id}/scanner")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getScannerInfo( @PathParam("id") String id );
+    
+    @POST
+    @Path("containers/{id}/scanner")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response updateScanner( @PathParam("id") String id, KieScannerResource resource );
+    
+} 
+</programlisting>
+    </figure>
+  </section>
+</section>

@@ -8,7 +8,8 @@
 
   <xi:include href="../../../../../shared/Workbench/ReleaseNotes/ReleaseNotesWorkbench.6.2.0.Beta2.xml" />
   <xi:include href="../../../../../shared/Workbench/ReleaseNotes/ReleaseNotesWorkbench.6.2.0.Beta1.xml" />
-     
+  <xi:include href="../../../../../shared/integration/ReleaseNotes/ReleaseNotesIntegration.6.2.0.Final.xml" />
+       
   <xi:include href="ReleaseNotes/ReleaseNotesDrools.6.1.0.Final.xml" />  
   <xi:include href="../../../../../shared/Workbench/ReleaseNotes/ReleaseNotesWorkbench.6.1.0.Final.xml" />
        
