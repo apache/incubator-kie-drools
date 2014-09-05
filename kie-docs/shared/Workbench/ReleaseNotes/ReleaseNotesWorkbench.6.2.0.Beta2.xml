@@ -146,9 +146,44 @@
 
   <section>
     <title>Social Activities</title>
-    <para>TODO - eder</para>
+      <para> A brand new feature called  <emphasis role="bold">Social Activities</emphasis> has been added under a new top level menu item group called <emphasis role="bold">Activity</emphasis>.</para>
+      <para> This new feature is divided in two different perspectives: <emphasis role="bold">Timeline Perspective</emphasis>  and <emphasis role="bold">People Perspective</emphasis>.</para>
+      <para>The <emphasis role="bold">Timeline Perspective</emphasis> shows on left side the recent assets created or edited by the logged user. In the main window there is the "Latest Changes" screen, showing all the recent updated assets and an option to filter the recent updates by repository.</para>
+      <figure>
+        <title>Timeline Perspective</title>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/ReleaseNotes/TimelinePerspective.png"
+                         format="PNG"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure> 
+      <para>The <emphasis role="bold">People Perspective</emphasis> is the home page of an user. Showing his infos (including a gravatar picture from user e-mail), user connections (people that user follow) and user recent activities. There is also a way to edit an user info. The search suggestion can be used to navigate to a user profile, follow him and see his updates on your timeline.</para>
+       <figure>
+          <title>People Perspective</title>
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/Workbench/ReleaseNotes/PeoplePerspective.png"
+                           format="PNG"/>
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure> 
+         <figure>
+          <title>Edit User Info</title>
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/Workbench/ReleaseNotes/PeoplePerspective1.png"
+                           format="PNG"/>
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure> 
   </section>
-
   <section>
     <title>Contributors Dashboard</title>
 
