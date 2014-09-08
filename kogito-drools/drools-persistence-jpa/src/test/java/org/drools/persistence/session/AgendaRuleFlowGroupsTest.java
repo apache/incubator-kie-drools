@@ -38,6 +38,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Results;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
@@ -48,6 +50,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.Context;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
+import org.kie.internal.utils.KieHelper;
 
 @RunWith(Parameterized.class)
 public class AgendaRuleFlowGroupsTest {
@@ -233,5 +236,29 @@ public class AgendaRuleFlowGroupsTest {
 	    }
 
 	}
-	
+
+    @Test
+    public void testConflictingAgendaAndRuleflowGroups() throws Exception {
+
+        String drl = "package org.drools.test; " +
+                     "" +
+                     "rule Test " +
+                     "  agenda-group 'ag' " +
+                     "  ruleflow-group 'rf' " +
+                     "when " +
+                     "then " +
+                     "end ";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        Results res = helper.verify();
+
+        System.err.println( res.getMessages() );
+
+        assertEquals( 1, res.getMessages( Message.Level.WARNING ).size() );
+        assertEquals( 0, res.getMessages( Message.Level.ERROR ).size() );
+
+    }
+
+
 }

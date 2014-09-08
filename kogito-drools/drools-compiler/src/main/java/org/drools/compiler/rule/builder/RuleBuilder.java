@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.compiler.RuleBuildError;
+import org.drools.compiler.compiler.RuleBuildWarning;
 import org.drools.compiler.lang.DroolsSoftKeywords;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
@@ -162,12 +164,29 @@ public class RuleBuilder {
             } else if ( name.equals( "agenda-group" ) ) {
                 if ( StringUtils.isEmpty(rule.getRuleFlowGroup())) {
                     rule.setAgendaGroup( attributeDescr.getValue() ); // don't override if RFG has already set this
+                } else {
+                    if ( rule.getRuleFlowGroup().equals( attributeDescr.getValue() ) ) {
+                        DroolsWarning warn = new RuleBuildWarning( rule, context.getParentDescr(), null,
+                                                                   "Both an agenda-group ( " + attributeDescr.getValue() +
+                                                                   " ) and a ruleflow-group ( " + rule.getRuleFlowGroup() +
+                                                                   " ) are defined for rule " + rule.getName() + ". Since version 6.x the " +
+                                                                   "two concepts have been unified, the ruleflow-group name will override the agenda-group. " );
+                        context.addWarning( warn );
+                    }
                 }
             } else if ( name.equals( "activation-group" ) ) {
                 rule.setActivationGroup( attributeDescr.getValue() );
             } else if ( name.equals( "ruleflow-group" ) ) {
                 rule.setRuleFlowGroup( attributeDescr.getValue() );
-                rule.setAgendaGroup( attributeDescr.getValue() ); // assign AG to the same name as AG, as they are aliased to AGs anyway
+                if ( ! StringUtils.isEmpty( rule.getAgendaGroup() ) && ! rule.getAgendaGroup().equals( attributeDescr.getValue() ) ) {
+                    DroolsWarning warn = new RuleBuildWarning( rule, context.getParentDescr(), null,
+                                                               "Both an agenda-group ( " + attributeDescr.getValue() +
+                                                               " ) and a ruleflow-group ( " + rule.getRuleFlowGroup() +
+                                                               " ) are defined for rule " + rule.getName() + ". Since version 6.x the " +
+                                                               "two concepts have been unified, the ruleflow-group name will override the agenda-group. " );
+                    context.addWarning( warn );
+                }
+                rule.setAgendaGroup( attributeDescr.getValue() ); // assign AG to the same name as RFG, as they are aliased to AGs anyway
             } else if ( name.equals( "lock-on-active" ) ) {
                 boolean lockOnActive = getBooleanValue( attributeDescr, true );
                 rule.setLockOnActive( lockOnActive );
