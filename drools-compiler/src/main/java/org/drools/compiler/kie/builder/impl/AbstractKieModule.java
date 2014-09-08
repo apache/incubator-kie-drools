@@ -30,7 +30,9 @@ import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResourceChangeSet;
+import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.io.ResourceTypeImpl;
@@ -220,11 +222,17 @@ public abstract class AbstractKieModule
 
         ckbuilder.build();
 
-        if (kbuilder.hasErrors()) {
-            for (KnowledgeBuilderError error : kbuilder.getErrors()) {
-                messages.addMessage(error);
+        if ( kbuilder.hasErrors() ) {
+            for ( KnowledgeBuilderError error : kbuilder.getErrors() ) {
+                messages.addMessage( error );
             }
             log.error("Unable to build KieBaseModel:" + kBaseModel.getName() + "\n" + kbuilder.getErrors().toString());
+        }
+        if ( kbuilder.hasResults( ResultSeverity.WARNING ) ) {
+            for ( KnowledgeBuilderResult warn : kbuilder.getResults( ResultSeverity.WARNING ) ) {
+                messages.addMessage( warn );
+            }
+            log.warn( "Warning : " + kBaseModel.getName() + "\n" + kbuilder.getResults( ResultSeverity.WARNING ).toString() );
         }
 
         // cache KnowledgeBuilder and results
