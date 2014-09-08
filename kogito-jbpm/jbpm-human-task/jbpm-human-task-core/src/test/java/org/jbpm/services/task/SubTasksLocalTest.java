@@ -51,4 +51,7 @@ public class SubTasksLocalTest extends SubTasksBaseTest {
 		}
 	}
 
+	public EntityManagerFactory getEmf() { 
+	    return emf;
+	}
 }
