@@ -1,5 +1,6 @@
 package org.drools.example.api.kiecontainerfromkierepo;
 
+import org.drools.core.util.Drools;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -12,7 +13,7 @@ public class KieContainerFromKieRepoExample {
         KieServices ks = KieServices.Factory.get();
 
         // Install example1 in the local maven repo before to do this
-        KieContainer kContainer = ks.newKieContainer(ks.newReleaseId("org.drools", "named-kiesession", "6.0.0-SNAPSHOT"));
+        KieContainer kContainer = ks.newKieContainer(ks.newReleaseId("org.drools", "named-kiesession", Drools.getFullVersion()));
 
         KieSession kSession = kContainer.newKieSession("ksession1");
         kSession.setGlobal("out", out);

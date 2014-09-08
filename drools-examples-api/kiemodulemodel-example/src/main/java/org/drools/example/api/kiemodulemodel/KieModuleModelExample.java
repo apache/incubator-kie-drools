@@ -1,5 +1,6 @@
 package org.drools.example.api.kiemodulemodel;
 
+import org.drools.core.util.Drools;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -22,7 +23,7 @@ public class KieModuleModelExample {
         Resource ex1Res = ks.getResources().newFileSystemResource(getFile("named-kiesession"));
         Resource ex2Res = ks.getResources().newFileSystemResource(getFile("kiebase-inclusion"));
 
-        ReleaseId rid = ks.newReleaseId("org.drools", "kiemodulemodel-example", "6.0.0-SNAPSHOT");
+        ReleaseId rid = ks.newReleaseId("org.drools", "kiemodulemodel-example", Drools.getFullVersion());
         kfs.generateAndWritePomXML(rid);
 
         KieModuleModel kModuleModel = ks.newKieModuleModel();
