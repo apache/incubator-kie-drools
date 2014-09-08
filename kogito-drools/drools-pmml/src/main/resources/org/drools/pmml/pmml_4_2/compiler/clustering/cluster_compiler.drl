@@ -24,7 +24,7 @@ when
 then
     utils.context = utils.compactUpperCase( $name );
 
-    HashMap map = new HashMap( 3 );
+    HashMap map = utils.container;
         map.put( "name", utils.context );
         map.put( "type","Clustering" );
     utils.applyTemplate( "modelMark.drlt", null, registry, map, theory );
@@ -67,7 +67,7 @@ when
               )
     extractMissingWeights( $info, $numFields, $missingWgts ; )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "numClusters", $numClusters );
         map.put( "numFields", $numFields );
@@ -97,7 +97,7 @@ when
                 $numFields   : count( $kf )
               )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "numClusters", $numClusters );
         map.put( "numFields", $numFields.intValue() );
@@ -125,7 +125,7 @@ when
     $kf : ClusteringField( $fld : field, $cmp : comparisons != null )  //need 'from' to preserve order!
     $db : DoubleMatrix( src == $cmp.matrix )
 then
-    HashMap map = new HashMap( 3 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "fieldName", $fld );
         map.put( "matrix", $db );

@@ -19,6 +19,7 @@
 @declare{'svmParams'}
 
 rule "Init SvmParams @{modelName}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     ModelMarker( "@{context}" ; enabled == true )
 then

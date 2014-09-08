@@ -23,6 +23,7 @@
 
 @declare{'confirmRule'}
 rule "ConfirmOutput_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -50
 when
  $x : @{name}( valid == true )

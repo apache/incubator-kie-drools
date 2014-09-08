@@ -39,6 +39,7 @@
 @declare{'targetReshapeRule'}
 @code{ boolean affected = false; }
 rule "targetReshape_@{model}_@{field}@if{ tgtValue != null}_@{tgtValue}@end{}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -100
 no-loop
 when

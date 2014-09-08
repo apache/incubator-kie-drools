@@ -50,6 +50,7 @@ public class TargetsAndOutputsTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutNCSP2"),
                 true, false,"IRIS_MLP",4.0);
 
+        checkGeneratedRules();
     }
 
 
@@ -67,6 +68,7 @@ public class TargetsAndOutputsTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutNCSP2"),
                 true, false,"IRIS_MLP",4.0);
 
+        checkGeneratedRules();
     }
 
 
@@ -82,6 +84,7 @@ public class TargetsAndOutputsTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutFeatDV"),
                 true, false,"IRIS_MLP", "NC Species II");
 
+        checkGeneratedRules();
     }
 
     @Test
@@ -96,6 +99,7 @@ public class TargetsAndOutputsTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutResidual"),
                 true, false,"IRIS_MLP", 2.0 );
 
+        checkGeneratedRules();
     }
 
 

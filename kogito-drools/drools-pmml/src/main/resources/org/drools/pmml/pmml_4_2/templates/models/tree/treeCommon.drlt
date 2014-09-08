@@ -25,6 +25,7 @@
 @declare{'treeCommon'}
 
 rule "Eval Tree Node @{context} - Up"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     $node : @{ pmmlPackageName }.TreeNode( context == "@{context}", $id : id, $master : parent )
     $tok  : @{context}TreeToken( context == "@{context}", current == $id )

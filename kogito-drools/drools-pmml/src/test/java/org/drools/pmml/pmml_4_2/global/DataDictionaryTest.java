@@ -105,9 +105,7 @@ public class DataDictionaryTest extends DroolsAbstractPMMLTest {
         //agecar.set(a,"cyclic",true);
         //    assertTrue((Boolean) agecar.get(a,"cyclic"));
 
-
-
-
+        checkGeneratedRules();
 
     }
 
@@ -163,7 +161,7 @@ public class DataDictionaryTest extends DroolsAbstractPMMLTest {
 
         checkFirstDataFieldOfTypeStatus(domicile,false,false,null,"way out");
 
-
+        checkGeneratedRules();
     }
 
 

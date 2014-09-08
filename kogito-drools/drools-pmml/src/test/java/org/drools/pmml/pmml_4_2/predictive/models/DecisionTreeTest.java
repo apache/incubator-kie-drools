@@ -70,6 +70,8 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         kSession.fireAllRules();
 
         checkFirstDataFieldOfTypeStatus( tgt, true, false, "Missing", "tgtY" );
+
+        checkGeneratedRules();
     }
     
     
@@ -80,6 +82,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         Collection c = kSession.getObjects( new ClassObjectFilter( tok.getFactClass() ) );
         assertEquals( 1, c.size() );
         return c.iterator().next();
+
     }
 
 
@@ -105,8 +108,8 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         assertEquals( "null", tok.get( token, "current" ) );
 
         checkFirstDataFieldOfTypeStatus( tgt, true, false, "Missing", "tgtZ" );
-        
-        
+
+        checkGeneratedRules();
     }
 
 
@@ -135,7 +138,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
 
         checkFirstDataFieldOfTypeStatus(tgt, true, false, "Missing", "tgtX" );
 
-
+        checkGeneratedRules();
     }
 
 
@@ -164,6 +167,8 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         assertEquals( 100.0, tok.get( token, "totalCount" ) );
 
         checkFirstDataFieldOfTypeStatus(tgt, true, false, "Missing", "tgtX" );
+
+        checkGeneratedRules();
     }
 
 
@@ -205,6 +210,8 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         assertEquals( 40.0, tok.get( token, "totalCount" ) );
 
         checkFirstDataFieldOfTypeStatus(tgt, true, false, "Missing", "tgtX" );
+
+        checkGeneratedRules();
     }
 
 
@@ -247,6 +254,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         assertEquals( 0.0, tok.get( token, "totalCount" ) );
 
 //        checkFirstDataFieldOfTypeStatus(tgt, true, false, "Missing", "tgtX" );
+        checkGeneratedRules();
     }
 
 
@@ -291,6 +299,8 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         assertEquals( 50.0, tok.get( token, "totalCount" ) );
 
         checkFirstDataFieldOfTypeStatus( tgt, true, false, "Missing", "tgtX" );
+
+        checkGeneratedRules();
     }
 
 
@@ -335,6 +345,8 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         assertEquals( 0.0, tok.get( token, "totalCount" ) );
 
         assertEquals( 0, getKSession().getObjects( new ClassObjectFilter( tgt.getFactClass() ) ).size() );
+
+        checkGeneratedRules();
     }
 
 
@@ -378,6 +390,8 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         assertEquals( 60.0, tok.get( token, "totalCount" ) );
 
         checkFirstDataFieldOfTypeStatus( tgt, true, false, "Missing", "tgtY" );
+
+        checkGeneratedRules();
     }
 
 
@@ -421,6 +435,8 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
         assertEquals( 100.0, tok.get( token, "totalCount" ) );
 
         checkFirstDataFieldOfTypeStatus( tgt, true, false, "Missing", "tgtX" );
+
+        checkGeneratedRules();
     }
 
 
@@ -454,6 +470,7 @@ public class DecisionTreeTest extends DroolsAbstractPMMLTest {
                     true, false, "Missing", 0.8 );
 
 
+        checkGeneratedRules();
     }
 
 }

@@ -66,6 +66,8 @@ public class NaiveBayesTest extends DroolsAbstractPMMLTest {
         assertTrue( a2 instanceof Integer );
         assertEquals( 100, a2 );
 
+        checkGeneratedRules();
+
     }
 
     @Test
@@ -95,6 +97,8 @@ public class NaiveBayesTest extends DroolsAbstractPMMLTest {
         Object a2 = q2.iterator().next().get( q2.getIdentifiers()[ 1 ] );
         assertTrue( a2 instanceof Integer );
         assertEquals( 100, a2 );
+
+        checkGeneratedRules();
 
     }
 

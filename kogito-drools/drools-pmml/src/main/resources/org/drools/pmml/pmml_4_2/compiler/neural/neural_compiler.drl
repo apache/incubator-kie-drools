@@ -14,7 +14,7 @@ when
    NeuralNetwork( $name : modelName )
    $stat : ModelStat( neuralNetwork == false )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "name", utils.compactUpperCase( $name ) );
         map.put( "type","NeuralNetwork" );
     utils.applyTemplate( "modelMark.drlt", null, registry, map, theory );
@@ -49,7 +49,7 @@ then
     $fld.setName( name );
     insertLogical( $fld );
 
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "name", utils.compactUpperCase( name ) );
         map.put( "context", utils.context );
         map.put( "index", $id );
@@ -62,7 +62,7 @@ dialect "mvel"
 when
     NeuralInput( derivedField != null, $fld : derivedField.name != null )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "name", utils.compactUpperCase( $fld ) );
         map.put( "context", utils.context );
     utils.applyTemplate( "updateIOField.drlt", utils, registry, map, theory );
@@ -73,7 +73,7 @@ dialect "mvel"
 when
     NeuralInput( derivedField != null, $fld :derivedField.fieldRef != null )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "name", utils.compactUpperCase( $fld.field ) );
         map.put( "context", utils.context);
     utils.applyTemplate( "updateIOField.drlt", utils, registry, map, theory );
@@ -133,7 +133,7 @@ salience -10
 when
     $n : Neuron( $links : cons, $index : id )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "model", utils.context );
         map.put( "index", $index );
         map.put( "links", $links );
@@ -150,7 +150,7 @@ when
     $layer : NeuralLayer( this memberOf $info, $neurs : neurons, $act : activationFunction != null,
                  $norm : normalizationMethod )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "model", utils.context );
         map.put( "layerIndex", $layers.indexOf( $layer ) );
         map.put( "neurs", $neurs );
@@ -171,7 +171,7 @@ when
 then
     //System.err.println("CREATE NEURON RULE FOR " + $index + " >> " + $act + "  " + $bias + "  " + $thold);
 
-     HashMap map = new HashMap( 7 );
+     HashMap map = utils.container;
         map.put( "model", utils.context );
         map.put( "layerIndex", $layers.indexOf( $layer ) );
         map.put( "needsNormal", $norm != null );
@@ -193,7 +193,7 @@ when
     $nl : NeuralLayer( this memberOf $info, $ns : neurons,
                  normalizationMethod != null && normalizationMethod == NNNORMALIZATIONMETHOD.SIMPLEMAX )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "model", utils.context );
         map.put( "neurons", $ns );
         map.put( "layerIndex", $layers.indexOf( $nl ) );
@@ -210,7 +210,7 @@ when
     $nl : NeuralLayer( this memberOf $info, $ns : neurons,
                  normalizationMethod != null && normalizationMethod == NNNORMALIZATIONMETHOD.SOFTMAX )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "model", utils.context );
         map.put( "neurons", $ns );
         map.put( "layerIndex", $layers.indexOf( $nl ) );
@@ -230,13 +230,13 @@ then
 
     insertLogical( new TypeOfField( name, DATATYPE.DOUBLE ) );
 
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "model", utils.context );
         map.put( "name", name );
         map.put( "index", $id );
     utils.applyTemplate( "neuralOutputField.drlt", utils, registry, map, theory );
 
-    map = new HashMap();
+    map = utils.container;
         map.put( "context", utils.context );
         map.put( "fullName", name );
         map.put( "name", name );
@@ -263,7 +263,7 @@ end
      String name = utils.compactUpperCase($nn)+"_"+$id;
      insert( new QueryMarker(name,utils.context) );
 
-     HashMap map = new HashMap(7);
+     HashMap map = utils.container;
          map.put("name",name);
      utils.applyTemplate("confirm.drlt", utils, registry, map, theory);
  end
@@ -297,7 +297,7 @@ then
             invertedNC.getLinearNorms().add( inv );
         }
 
-//    HashMap map = new HashMap(7);
+//    HashMap map = utils.container;
 //        map.put("name",utils.compactUpperCase($field));
 //    utils.applyTemplate("confirm.drlt", utils, registry, map, theory);
 
@@ -321,7 +321,7 @@ when
     NormDiscrete( $field : field, $val : value ) from $norm
     TypeOfField( name == $field, $type : dataType )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "model", utils.context );
         map.put( "field", utils.compactUpperCase($field) );
         map.put( "label", $val );
@@ -329,7 +329,7 @@ then
         map.put( "target", utils.format( $type,utils.compactUpperCase( $val ) ) );
     utils.applyTemplate( "outputQueryPredicate.drlt", utils, registry, map, theory );
 
-    map = new HashMap( 7 );
+    map = utils.container;
         map.put( "name", utils.compactUpperCase( $field ) );
         map.put( "type", $type );
         map.put( "model", utils.context );
@@ -367,7 +367,7 @@ when
     NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs , $nn : modelName )
     $ms : MiningSchema( this memberOf $info, $fields : miningFields )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "model", utils.context );
         map.put( "fields", $fields );
     utils.applyTemplate( "neuralClean.drlt", utils, registry, map, theory );

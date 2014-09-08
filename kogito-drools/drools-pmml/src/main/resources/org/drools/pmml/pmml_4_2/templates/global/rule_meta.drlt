@@ -13,32 +13,8 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-}
+} @declare{'rule_meta'}  @@Generated @if{attributes['agenda-group'] != null}
+  agenda-group "@{attributes['agenda-group']}"@end{} @if{attributes['ruleflow-group'] != null}
+  ruleflow-group "@{attributes['ruleflow-group']}"@end{} @end{}
 
-
-
-
-@comment{
-
-}
-
-@declare{'naiveBayesBuildDistributions'}
-
-rule "BuildDistrs_@{name}_@{field}"
-@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
-dialect "mvel"
-when
-    ModelMarker( "@{name}" ; enabled == true )
-then
-    map = new java.util.HashMap();
-    bc = new @{ pmmlPackageName }.BayesDistribution( "@{name}", "@{field}", map );
-    @foreach{ stat : stats.keySet() }
-        map.put( "@{ stat }", @{ extractDistributionParameters( stats[ stat ] ) } );
-    @end{}
-    insertLogical( bc );
-end
-
-@end{}
-
-
-@includeNamed{'naiveBayesBuildDistributions'}
+@includeNamed{'rule_meta'}

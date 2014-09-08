@@ -25,6 +25,7 @@
 @declare{'naiveBayesBuildOuts'}
 
 rule "BuildNaiveBayesPriors_@{name}_@{field}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect "mvel"
 when
     ModelMarker( "@{name}" ; enabled == true )
@@ -37,6 +38,7 @@ then
 end
 
 rule "NaiveBayesEvalPosterior_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -20
 when
            @{ pmmlPackageName }.BayesPriors( context == "@{name}", $vals : values, $priors : counts, $thold : threshold )
@@ -61,6 +63,7 @@ end
 
 
 rule "NaiveBayesUpdateAggregates_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 1000
 when
     $bcs : @{ pmmlPackageName }.BayesCounts( context == "@{name}", $cts : counts )
@@ -86,6 +89,7 @@ end
 
 
 rule "NaiveBayesMapToOutput_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     $bcs : @{ pmmlPackageName }.BayesPosterior( context == "@{name}", $wgts : prob )
            @{ pmmlPackageName }.BayesPriors( context == "@{name}", $values : values )

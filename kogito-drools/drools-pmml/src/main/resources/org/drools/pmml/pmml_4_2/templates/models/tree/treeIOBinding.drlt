@@ -25,6 +25,7 @@
 @declare{'treeIOBinding'}
 
 rule "Tree Input Link @{context}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     @foreach{ inputField : fields.keySet() }
         @{inputField}( context == "@{context}", @{inputField} : value, m@{inputField} : missing, valid == true || ( valid == false && missing == true && value != null ) )
@@ -47,6 +48,7 @@ then
 end
 
 rule "Result @{context}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -2
 when
     $tok  : @{ pmmlPackageName }.@{context}TreeToken( context == "@{context}", current == "null", $out : outcome != null, $conf : confidence )

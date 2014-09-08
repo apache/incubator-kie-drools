@@ -25,6 +25,7 @@
 @declare{'svmInitSupportVector'}
 @code{ int ctr = 0; }
 rule "Init SupportVector @{modelName}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     ModelMarker( "@{context}" ; enabled == true )
 then

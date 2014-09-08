@@ -62,6 +62,7 @@ public class AggregateFieldsTest extends DroolsAbstractPMMLTest {
 
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"Summa"),true,false, null,90.0);
 
+        checkGeneratedRules();
     }
 
 

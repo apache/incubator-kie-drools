@@ -23,6 +23,7 @@
 @declare{'neuralBuildSynapsesRule'}
 
 rule "BuildSynapses_@{model}_Neuron@{index}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     ModelMarker( "@{model}" ; enabled == true )
 then

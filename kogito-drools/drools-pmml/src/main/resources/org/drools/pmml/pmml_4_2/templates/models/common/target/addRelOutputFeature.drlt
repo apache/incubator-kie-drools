@@ -25,7 +25,7 @@
 
 @declare{'addRelOutputFeatureRule'}
 rule "outputFeature_@{origField}_to_@{name}_@{feature}"
-
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     $src : @{origField}(   $v : valid, $wgt : weight,
                            @if{ context != null } $ctx : context == @{format("string",context)}, @end{}

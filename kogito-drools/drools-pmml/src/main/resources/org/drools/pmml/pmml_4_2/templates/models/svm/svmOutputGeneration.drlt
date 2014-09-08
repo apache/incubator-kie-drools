@@ -26,6 +26,7 @@
 
 
 rule "SVM Output Generation @{svmId}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     @{ pmmlPackageName }.SvmParams( $ctx : context )
     @{ pmmlPackageName }.SVM( context == $ctx, $svmId : svmId == "@{svmId}", $bias : bias, $numKernel : numSvs, target == "@{posCat}", alt == "@{negCat}" )

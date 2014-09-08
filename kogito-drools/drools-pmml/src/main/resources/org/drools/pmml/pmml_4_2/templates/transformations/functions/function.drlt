@@ -61,6 +61,7 @@ end
 rule "@{name} Goal React"
 @code{ int j = 0; }
 @@Direct
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     $q :  @{ compactUpperCase( name ) }Goal( @foreach{ param : params } @{ param.name } : @{ param.name } @end{ ', ' }, $ctx : ctx )
 then
@@ -82,6 +83,7 @@ end
 @code{ String pn2; }
 rule "@{name}_Clean"
 @code{ int k = 0; }
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -9999
 when
     @foreach{ param : params }

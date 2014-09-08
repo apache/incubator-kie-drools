@@ -27,6 +27,7 @@
 
 @declare{'intervalsOnDomainRestrictionRule'}
 rule "Valid_ContinuousIntervals_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect "mvel"
 no-loop
 salience 100

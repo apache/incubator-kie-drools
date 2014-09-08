@@ -27,7 +27,8 @@
 
 @declare{'indicatorFieldYesRule'}
 rule "indicatorFieldYes_@{name}"
-@if{ isInnerFieldName( name ) } @@activationListener('direct') @end{}
+@if{ isInnerFieldName( name ) } @@Direct @end{}
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
  $src : @{origField}( missing == false, valid == true, value == @{target}, $ctx : context //!= null
                       @if{ context != null } , context == @{format("string",context)} @end{})

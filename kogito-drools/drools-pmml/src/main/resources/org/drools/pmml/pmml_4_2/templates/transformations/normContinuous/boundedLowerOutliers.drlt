@@ -29,7 +29,8 @@
 
 @declare{'boundedLowerOutliersRule'}
 rule "outliersAsExtremesLow_@{name}"
-@if{ isInnerFieldName( name ) } @@activationListener('direct') @end{}
+@if{ isInnerFieldName( name ) } @@Direct @end{}
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
   $src : @{origField}( missing == false, valid == true,
             value < @{xmin}, $ctx : context

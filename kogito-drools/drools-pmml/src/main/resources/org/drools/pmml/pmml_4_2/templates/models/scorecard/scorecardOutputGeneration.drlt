@@ -26,6 +26,7 @@
 
 
 rule "Scorecard @{context} output"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -5
 when
     @{ pmmlPackageName }.ScoreCard( modelName == "@{context}", $score : score )

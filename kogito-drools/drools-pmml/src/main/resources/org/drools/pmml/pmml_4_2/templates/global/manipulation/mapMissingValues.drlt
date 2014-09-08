@@ -27,6 +27,7 @@
 
 @declare{'mapMissingValuesRule'}
 rule "mapMissing_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
   $src : @{origField}( missing == true, $ctx : context
                        @if{ context != null } , context == @{context} @end{})

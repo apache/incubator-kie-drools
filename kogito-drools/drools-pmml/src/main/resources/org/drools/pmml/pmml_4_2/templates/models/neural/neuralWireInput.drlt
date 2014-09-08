@@ -28,6 +28,7 @@
 
 @declare{'neuralWireInputRule'}
 rule "NeuralWireInput_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     $x : @{name}( $v : valid == true, $m : missing == false,
                   $model : context == @{format("string",context)},

@@ -73,7 +73,7 @@ public class MapValuesTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus(out, true, false, null, "klass2");
 
 
-
+        checkGeneratedRules();
 
     }
 

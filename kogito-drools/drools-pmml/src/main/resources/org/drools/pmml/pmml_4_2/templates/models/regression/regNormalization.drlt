@@ -26,6 +26,7 @@
 
 
 rule "Regression Model Normalization Factor @{context} - @{target}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     accumulate( $bit     : @{ pmmlPackageName }.RegTargetBit( context == "@{context}",
                                          target == "@{target}",
@@ -38,6 +39,7 @@ then
 end
 
 rule "Regression Model Normalization @{context} - @{target}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     $bit : @{ pmmlPackageName }.RegTargetBit( context == "@{context}",
                          target == "@{target}",

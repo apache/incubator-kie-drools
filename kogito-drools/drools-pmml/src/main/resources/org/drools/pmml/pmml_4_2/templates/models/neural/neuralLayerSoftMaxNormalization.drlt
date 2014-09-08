@@ -28,6 +28,7 @@
 @code{ String ctx = format("string",model); }
 
 rule "LayerNormalization_@{model}_@{layerIndex}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 100
 when
     accumulate (

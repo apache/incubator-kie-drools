@@ -25,6 +25,7 @@
 @declare{'naiveBayesEval'}
 
 rule "NaiveBayesBuildConditionalsContinuous_@{name}_@{field}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
            @{field}( $name : name, $val : value != null, context == "@{name}" )
            @{ pmmlPackageName }.BayesPriors( context == "@{name}", $vals : values )

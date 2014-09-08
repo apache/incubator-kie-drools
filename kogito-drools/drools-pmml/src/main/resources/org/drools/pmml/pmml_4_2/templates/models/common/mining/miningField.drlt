@@ -28,6 +28,7 @@
 
 @declare{'miningFieldRule'}
 rule "miningField_@{model}_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     $src : @{name}( $m : missing, $v : valid, $x : value, context == null )
 then
@@ -42,6 +43,7 @@ end
 
 
 rule "InitAsMissing_@{model}_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 1000
 when
     ModelMarker( modelName == "@{model}", enabled == true )

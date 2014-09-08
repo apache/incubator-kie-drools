@@ -19,6 +19,7 @@
 
 
  rule "Bind @{fieldName} Output into Fact @{factType}"
+ @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
  dialect "mvel"
  when
     @{compactUpperCase(fieldName)}( $val : value)

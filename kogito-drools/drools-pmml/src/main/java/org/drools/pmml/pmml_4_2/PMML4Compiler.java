@@ -73,6 +73,7 @@ public class PMML4Compiler implements PMMLCompiler {
     protected static final String[] GLOBAL_TEMPLATES = new String[] {
             "global/pmml_header.drlt",
             "global/pmml_import.drlt",
+            "global/rule_meta.drlt",
             "global/modelMark.drlt",
 
             "global/dataDefinition/common.drlt",

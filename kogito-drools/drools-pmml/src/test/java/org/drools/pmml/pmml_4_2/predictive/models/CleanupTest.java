@@ -60,6 +60,8 @@ public class CleanupTest extends DroolsAbstractPMMLTest {
 
         assertEquals( 1, kSession.getObjects().size() );
         kSession.dispose();
+
+        checkGeneratedRules();
     }
 
     private Collection getModelMarker( final KieSession kSession, final String modelName ) {
@@ -101,6 +103,8 @@ public class CleanupTest extends DroolsAbstractPMMLTest {
         assertEquals( 38, getKSession().getObjects().size() );
 
         getKSession().dispose();
+
+        checkGeneratedRules();
     }
 
 
@@ -120,6 +124,8 @@ public class CleanupTest extends DroolsAbstractPMMLTest {
         assertEquals( 1, kSession.getObjects().size() );
 
         kSession.dispose();
+
+        checkGeneratedRules();
     }
 
     @Test
@@ -137,6 +143,8 @@ public class CleanupTest extends DroolsAbstractPMMLTest {
         assertEquals( 1, kSession.getObjects().size() );
 
         kSession.dispose();
+
+        checkGeneratedRules();
     }
 
     @Test
@@ -154,6 +162,8 @@ public class CleanupTest extends DroolsAbstractPMMLTest {
         assertEquals( 1, kSession.getObjects().size() );
 
         kSession.dispose();
+
+        checkGeneratedRules();
     }
 
     @Test
@@ -171,6 +181,8 @@ public class CleanupTest extends DroolsAbstractPMMLTest {
         assertEquals( 1, kSession.getObjects().size() );
 
         kSession.dispose();
+
+        checkGeneratedRules();
     }
 
     @Test
@@ -188,6 +200,8 @@ public class CleanupTest extends DroolsAbstractPMMLTest {
         assertEquals( 1, kSession.getObjects().size() );
 
         kSession.dispose();
+
+        checkGeneratedRules();
     }
 
 

@@ -24,7 +24,7 @@ when
 then
     utils.context = utils.compactUpperCase( $name );
 
-    HashMap map = new HashMap( 3 );
+    HashMap map = utils.container;
         map.put( "name", utils.context );
         map.put( "type","SupportVectorMachine" );
     utils.applyTemplate( "modelMark.drlt", null, registry, map, theory );
@@ -50,7 +50,7 @@ when
                 $mX : max( $index );
                 $ix.size == $nos )
 then
-    HashMap map = new HashMap(7);
+    HashMap map = utils.container;
             map.put( "modelName", utils.context );
             map.put( "svmId", utils.context + $info.indexOf( $svm ) );
             map.put( "absoluteValue", $bias );
@@ -91,7 +91,7 @@ when
     accumulate( $svr : SupportVectorReference( $index : index ),
                 $ix : collectList ( $svr ) )
 then
-    HashMap map = new HashMap(7);
+    HashMap map = utils.container;
             map.put( "modelName", utils.context );
             map.put( "size", $nat.intValue() );
             map.put( "vectors", $ix );
@@ -106,7 +106,7 @@ when
     $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries  )
     $vd   : VectorDictionary( this memberOf $info, $flds : vectorFields.fieldReves )
 then
-    HashMap map = new HashMap(3);
+    HashMap map = utils.container;
             map.put( "modelName", utils.context );
             map.put( "inputVectors", $flds );
     utils.applyTemplate( "svmInitInputVector.drlt", utils, registry, map, theory );
@@ -120,7 +120,7 @@ when
     $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries )
     $rbkt : RadialBasisKernelType ( this memberOf $info, $gamma : gamma )
 then
-    HashMap map = new HashMap(7);
+    HashMap map = utils.container;
             map.put( "modelName", utils.context );
             map.put( "kernelType", "rbf" );
     utils.applyTemplate( "svmKernelEval.drlt", utils, registry, map, theory );
@@ -136,7 +136,7 @@ when
     $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries )
     $pkt : PolynomialKernelType ( this memberOf $info, $gamma : gamma, $coef0 : coef0, $degree : degree )
 then
-    HashMap map = new HashMap(7);
+    HashMap map = utils.container;
             map.put( "modelName", utils.context );
             map.put( "kernelType", "poly" );
     utils.applyTemplate( "svmKernelEval.drlt", utils, registry, map, theory );
@@ -152,7 +152,7 @@ when
    $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries )
    $lkt : LinearKernelType ( this memberOf $info )
 then
-    HashMap map = new HashMap(7);
+    HashMap map = utils.container;
             map.put( "modelName", utils.context );
             map.put( "kernelType", "linear" );
     utils.applyTemplate( "svmKernelEval.drlt", utils, registry, map, theory );
@@ -168,7 +168,7 @@ when
     $svmm : SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries )
     $pkt : SigmoidKernelType ( this memberOf $info, $gamma : gamma, $coef0 : coef0)
 then
-    HashMap map = new HashMap(7);
+    HashMap map = utils.container;
             map.put( "modelName", utils.context );
             map.put( "kernelType", "sigmoid" );
     utils.applyTemplate( "svmKernelEval.drlt", utils, registry, map, theory );
@@ -198,7 +198,7 @@ when
             MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $name : name )
             TypeOfField( name == $name, $type : dataType )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
             map.put( "context", utils.context );
             map.put( "svmId", utils.context + $info.indexOf( $svm ) );
             map.put( "target", utils.compactUpperCase( $name ) );
@@ -221,7 +221,7 @@ when
             MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $name : name )
             TypeOfField( name == $name, $type : dataType )
 then
-    HashMap map = new HashMap( 3 );
+    HashMap map = utils.container;
             map.put( "context", utils.context );
             map.put( "target", utils.compactUpperCase( $name ) );
             map.put( "type", $type );
@@ -237,7 +237,7 @@ when
             MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $name : name )
             TypeOfField( name == $name, $type : dataType )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
             map.put( "context", utils.context );
             map.put( "target", utils.compactUpperCase( $name ) );
             map.put( "type", $type );
@@ -253,7 +253,7 @@ when
             MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $name : name )
             TypeOfField( name == $name, $type : dataType )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
             map.put( "context", utils.context );
             map.put( "target", utils.compactUpperCase( $name ) );
             map.put( "type", $type );

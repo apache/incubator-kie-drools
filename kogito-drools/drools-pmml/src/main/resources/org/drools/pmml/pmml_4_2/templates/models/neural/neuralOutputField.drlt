@@ -28,6 +28,7 @@
  @code{ String ctx = format("string",model); }
 
 rule "NeuralOutput_@{model}_@{index}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     @{ pmmlPackageName }.Stym( context == @{ctx} , index == @{ format( "string", index ) }, $val : value )
 then

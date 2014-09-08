@@ -47,7 +47,7 @@ when
 then
     utils.context = utils.compactUpperCase( $name );
 
-    HashMap map = new HashMap( 3 );
+    HashMap map = utils.container;
         map.put( "name", utils.context );
         map.put( "type", "Scorecard" );
         map.put( "aggregator", utils.mapWeightStrategy( $agg ) );
@@ -90,7 +90,7 @@ when
     compilePredicate( $mock, $pred, $simple ; )
     ?weight( $attr, $w ; )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "name", utils.context );
         map.put( "char", $char );
         map.put( "attr", $attr );
@@ -108,7 +108,7 @@ when
     compilePredicate( $mock, $pred, $comp ; )
     ?weight( $attr, $w ; )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "name", utils.context );
         map.put( "char", $char );
         map.put( "attr", $attr );
@@ -126,7 +126,7 @@ when
     compilePredicate( $mock, $pred, $set ; )
     ?weight( $attr, $w ; )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "name", utils.context );
         map.put( "char", $char );
         map.put( "attr", $attr );
@@ -154,7 +154,7 @@ when
         result( map )
     )
 then
-    HashMap map = new HashMap( 5 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "name", utils.compactUpperCase( $modelName ) );
         map.put( "fields", $fields );
@@ -179,7 +179,7 @@ when
         $list.size() > 0
     )
 then
-    HashMap map = new HashMap( 3 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "name", utils.compactUpperCase( $modelName ) );
         map.put( "characteristics", $list );
@@ -195,7 +195,7 @@ when
     MiningSchema( this memberOf $info, $mfs : miningFields )
     MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $tgtName : name )
 then
-    HashMap map = new HashMap( 3 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "target", utils.compactUpperCase( $tgtName ) );
     utils.applyTemplate( "scorecardOutputGeneration.drlt", utils, registry, map, theory );
@@ -210,7 +210,7 @@ when
                        feature != null, $feat : feature.value(),
                        feature == RESULTFEATURE.REASON_CODE, $index : rank )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "origField", utils.compactUpperCase( $tgt ) );
         map.put( "name", utils.compactUpperCase( $name ) );

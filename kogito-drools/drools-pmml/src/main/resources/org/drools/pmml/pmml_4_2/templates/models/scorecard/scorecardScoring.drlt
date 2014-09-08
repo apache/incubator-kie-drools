@@ -25,6 +25,7 @@
 @declare{'scorecardScoring'}
 
 rule "Score Card @{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -10  // after data are stable
 when
     $card : @{ pmmlPackageName }.ScoreCard( $ctx : modelName )
@@ -41,6 +42,7 @@ end
 
 
 rule "Cumulate Code Scores"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -11
 when
     $card : @{ pmmlPackageName }.ScoreCard( $ctx : modelName, enableRC == true, $below : pointsBelow )
@@ -58,6 +60,7 @@ end
 
 
 rule "Detect Scorecard ReasonCode Change"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -12
 when
     $sc :  @{ pmmlPackageName }.ScoreCard( enableRC == true, $map : ranking )
@@ -68,6 +71,7 @@ end
 
 
 rule "Sort Scorecard Reason Codes"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -14
 when
     $r  : @{ pmmlPackageName }.ScoreRank( $sc : scoreCard, $map : rank )
@@ -81,6 +85,7 @@ end
 
 
 rule "Integrate Scorecard ReasonCode Map"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -15
 when
     $s : ScoreCard( enableRC == true )

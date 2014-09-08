@@ -28,6 +28,7 @@
 
 @code{ String ctx = format( "string", model ); }
 rule "Neural Fire_@{ model }_Layer@{ layerIndex }"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     $neur : @{ pmmlPackageName }.Neuron( context == @{ ctx },
                     layerIndex == @{ layerIndex }
@@ -48,6 +49,7 @@ end
 
 
 rule "Neural Flare @{ model }_Layer@{ layerIndex }"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     $neur : @{ pmmlPackageName }.Neuron( context == @{ ctx },
                     layerIndex == @{ layerIndex },

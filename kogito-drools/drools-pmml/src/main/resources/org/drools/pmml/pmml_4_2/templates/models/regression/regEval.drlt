@@ -26,6 +26,7 @@
 
 rule "Regression Model Output @{context} : @{target} - @{category}"
 @code{ int j = 0; }
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     @{ pmmlPackageName }.RegTable( context == "@{context}",
               target == "@{target}",

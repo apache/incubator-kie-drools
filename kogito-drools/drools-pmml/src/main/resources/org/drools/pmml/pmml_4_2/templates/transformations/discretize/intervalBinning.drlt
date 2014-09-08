@@ -30,6 +30,7 @@
 @declare{'intervalBinningRule'}
 rule "bin_@{name}_@{index}"
 @if{ isInnerFieldName( name ) } @Direct @end{}
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     $in : @{origField}( valid == true, missing == false,
             value @if{intv.closure.startsWith("closed")}>=@else{}>@end{} @{intv.leftMargin} && value @if{intv.closure.endsWith("Closed")}<=@else{}<@end{} @{intv.rightMargin},

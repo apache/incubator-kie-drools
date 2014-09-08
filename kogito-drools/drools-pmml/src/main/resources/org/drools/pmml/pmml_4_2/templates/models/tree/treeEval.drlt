@@ -26,6 +26,7 @@
 
 
 rule "Eval Tree Node @{context} - @{id} - Down"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience $children.size() - $children.indexOf( $child )
 dialect "mvel"
 when
@@ -45,6 +46,7 @@ end
 
 
 rule "Eval Tree Node @{context} - @{id} - True"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 3
 no-loop
 when
@@ -69,6 +71,7 @@ end
 
 
 rule "Eval Tree Node @{context} - @{id} - Unknown Weighted"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 3
 when
     $node : @{ pmmlPackageName }.TreeNode( context == "@{context}", $id : id == "@{id}", $out : outcome )

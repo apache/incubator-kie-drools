@@ -58,7 +58,7 @@ public class AliasedFieldsTest extends DroolsAbstractPMMLTest {
 
         checkFirstDataFieldOfTypeStatus(konst,true,false, null,8);
 
-
+        checkGeneratedRules();
     }
 
 
@@ -82,6 +82,7 @@ public class AliasedFieldsTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus( alias, true, true, null, -1 );
         checkFirstDataFieldOfTypeStatus( aliasmm, true, false, null, 99 );
 
+        checkGeneratedRules();
     }
 
 

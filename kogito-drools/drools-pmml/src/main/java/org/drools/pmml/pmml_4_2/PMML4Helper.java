@@ -50,10 +50,25 @@ public class PMML4Helper {
     private Set<String> definedModelBeans;
     private ClassLoader resolver;
 
+    private String context = null;
+    private String pack;
+
+    private Map<String,Object> container = new HashMap<String, Object>();
+    private Map<String,String> attributes = new HashMap<String, String>();
+
     public int nextCount() {
         return counter++;
     }
 
+    public Map<String,Object> getContainer() {
+        container.clear();
+        container.put( "attributes", attributes );
+        return container;
+    }
+
+    public void addAttribute( String a, String v ) {
+        attributes.put( a, v );
+    }
 
     public String nextInnerFieldName() {
         return innerFieldPrefix + nextCount();
@@ -63,13 +78,9 @@ public class PMML4Helper {
         return name != null && name.startsWith( innerFieldPrefix );
     }
 
-    private String context = null;
-    private String pack;
-
 
     public PMML4Helper() {
         definedModelBeans = new HashSet<String>();
-
     }
 
 
@@ -139,7 +150,7 @@ public class PMML4Helper {
 
     public void applyTemplate(String templateName, Object context, TemplateRegistry registry, Map vars, StringBuilder builder) {
         CompiledTemplate template = registry.getNamedTemplate(templateName);
-        String result = (String) TemplateRuntime.execute( template, context, vars );
+        String result = (String) TemplateRuntime.execute( template, context, vars, registry );
         builder.append( result );
     }
 
@@ -1078,6 +1089,8 @@ public class PMML4Helper {
 
     public void reset() {
         definedModelBeans = new HashSet<String>();
+        attributes.clear();
+        container.clear();
     }
 
 

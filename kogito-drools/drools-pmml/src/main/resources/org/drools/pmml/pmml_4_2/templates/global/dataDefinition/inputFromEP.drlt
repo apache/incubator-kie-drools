@@ -34,6 +34,7 @@
 }
 @declare{'inputFromEPRule'}
 rule "Input_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     $in : @{box(type)}() from entry-point "in_@{name}"
     not @{name}( value == $in, context == null )
@@ -52,6 +53,7 @@ end
 
 
 rule "OverrideInput_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 2
 when
     $new: @{box(type)}() from entry-point "in_@{name}"
