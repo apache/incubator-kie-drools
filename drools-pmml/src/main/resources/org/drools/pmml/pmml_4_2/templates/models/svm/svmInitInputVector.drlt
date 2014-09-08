@@ -26,6 +26,7 @@
 
 rule "Init InputVect"
 @code{ int j = 0; }
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     @foreach{ fld : inputVectors }
     @code{j++;}

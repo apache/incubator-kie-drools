@@ -25,6 +25,7 @@
 
 @declare{'aliasedFieldRule'}
 rule "aliasedField_@{origField}_to_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
  $src : @{origField}( $m : missing, $v : valid, $val : value, $ctx : context
                         @if{ context != null } , context == @{ format( "string", context ) } @end{} )

@@ -32,7 +32,8 @@
 
 @declare{'boundedUpperOutliersRule'}
 rule "outliersAsExtremesUpp_@{name}"
-@if{ isInnerFieldName( name ) } @@activationListener('direct') @end{}
+@if{ isInnerFieldName( name ) } @@Direct @end{}
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
   $src : @{origField}( missing == false, valid == true,
             value > @{xmax}, $ctx : context

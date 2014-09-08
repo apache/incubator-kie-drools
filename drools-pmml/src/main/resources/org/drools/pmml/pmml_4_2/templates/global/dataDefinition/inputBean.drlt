@@ -30,6 +30,7 @@
  end
 
  rule "Link @if{ adapterName != null }@{ adapterName }@else{} @{context}@if{ traitMode }Trait@end{} @end{} Bean Input"
+ @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
  when
     @if{ adapterName != null }@{ adapterName }@else{}@{context}@if{ traitMode }Trait@end{}@end{}(
        @foreach{ fldName : fields.keySet() }
@@ -43,6 +44,7 @@
  end
 
 rule "Own @{context}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
  when
     $obj  : @if{ adapterName != null }@{ adapterName }@else{}@{context}@if{ traitMode }Trait@end{}@end{}()
     $mark : org.drools.pmml.pmml_4_2.ModelMarker( enabled == true, modelName == "@{context}" )
@@ -54,6 +56,7 @@ rule "Own @{context}"
  @foreach{ fieldName : predFields.keySet() }
 
  rule "Link @if{ adapterName != null }@{ adapterName }@else{} @{context}@if{ traitMode }Trait@end{} @end{} Predicted Fields @{fieldName} "
+ @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
  when
      @{compactUpperCase(fieldName)}( $val : value)
      $x : @if{ adapterName != null }@{ adapterName }@else{}@{context}@if{ traitMode }Trait@end{}@end{}( @{fieldName} != $val )

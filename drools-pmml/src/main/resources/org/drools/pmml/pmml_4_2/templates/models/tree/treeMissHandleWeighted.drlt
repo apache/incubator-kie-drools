@@ -27,6 +27,7 @@
 
 
 rule "Handle weighted missing values on my way back @{context}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 5
 when
     $node : @{ pmmlPackageName }.TreeNode( context == "@{context}", $id : id,

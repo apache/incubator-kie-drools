@@ -87,6 +87,7 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         assertEquals( "RES", iter.next() );
         assertEquals( "CX2", iter.next() );
 
+        checkGeneratedRules();
     }
 
     @Test
@@ -110,5 +111,6 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutRC3"),
                         true, false,"SampleScorecard", "RC1" );
 
+        checkGeneratedRules();
     }
 }

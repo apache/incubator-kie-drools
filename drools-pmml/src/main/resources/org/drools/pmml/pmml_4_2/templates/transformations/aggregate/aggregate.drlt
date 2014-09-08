@@ -33,6 +33,7 @@
 @declare{'aggregateRule'}
 rule "aggr_@{name}"
 @if{ isInnerFieldName( name ) } @@Direct @end{}
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     @if{groupBy != null} @{groupBy}( valid == true, missing == false, $gval : value ) @end{}
     accumulate (

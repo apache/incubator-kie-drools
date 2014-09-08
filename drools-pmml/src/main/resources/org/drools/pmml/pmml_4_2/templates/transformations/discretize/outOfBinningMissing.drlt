@@ -32,6 +32,7 @@
 @declare{'outOfBinningMissingRule'}
 rule "noBinMissing_@{name}"
 @if{ isInnerFieldName( name ) } @@activationListener('direct') @end{}
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     $in : @{origField}( valid == true, missing == false,
           @foreach{ bin : bins } (value @if{bin.interval.closure.startsWith("closed")}<@else{}<=@end{} @{bin.interval.leftMargin} || value @if{bin.interval.closure.endsWith("Closed")}>@else{}>=@end{} @{bin.interval.rightMargin}) @end{' && '}

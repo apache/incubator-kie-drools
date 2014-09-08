@@ -127,7 +127,7 @@ public class DiscretizeFieldsTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus(cat, true, false, null, "ancient");
 
 
-
+        checkGeneratedRules();
 
     }
 

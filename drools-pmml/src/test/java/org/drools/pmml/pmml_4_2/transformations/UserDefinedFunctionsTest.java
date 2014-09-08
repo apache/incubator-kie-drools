@@ -57,6 +57,8 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
         System.out.println( reportWMObjects( getKSession() ) );
 
         checkFirstDataFieldOfTypeStatus( userAge1, true, false, null, 22.0 );
+
+        checkGeneratedRules();
     }
 
     @Test
@@ -78,6 +80,8 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
         System.out.println( reportWMObjects( getKSession() ) );
 
         checkFirstDataFieldOfTypeStatus( userAge1, true, false, null, 22.0 );
+
+        checkGeneratedRules();
     }
 
     @Test
@@ -93,6 +97,8 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
         getKSession().fireAllRules();
 
         checkFirstDataFieldOfTypeStatus( userAge1, true, false, null, 22.0 );
+
+        checkGeneratedRules();
     }
 
 
@@ -110,6 +116,7 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
 
         checkFirstDataFieldOfTypeStatus( userAge2, true, false, null, 0.1 );
 
+        checkGeneratedRules();
     }
 
     @Test
@@ -125,6 +132,8 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
         getKSession().fireAllRules();
 
         checkFirstDataFieldOfTypeStatus( userAge3, true, false, null, 10 );
+
+        checkGeneratedRules();
 
     }
 
@@ -142,6 +151,7 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
 
         checkFirstDataFieldOfTypeStatus( userAge4, true, false, null, 24 );
 
+        checkGeneratedRules();
     }
 
     @Test
@@ -157,6 +167,8 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
         getKSession().fireAllRules();
 
         checkFirstDataFieldOfTypeStatus( userAge5, true, false, null, 45.5 );
+
+        checkGeneratedRules();
     }
 
     @Test
@@ -173,6 +185,7 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
 
         checkFirstDataFieldOfTypeStatus( userAge6, true, false, null, 1.0 );
 
+        checkGeneratedRules();
     }
 
     @Test
@@ -191,6 +204,7 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
 
         checkFirstDataFieldOfTypeStatus( userAge1, true, false, null, 130.0 );
 
+        checkGeneratedRules();
     }
 
 
@@ -209,6 +223,7 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
 
         checkFirstDataFieldOfTypeStatus( userAge1, true, false, null, 6270.0 );
 
+        checkGeneratedRules();
     }
 
     @Test
@@ -251,6 +266,7 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
 
         assertEquals( 4, getKSession().getFactCount() );
 
+        checkGeneratedRules();
     }
 
 

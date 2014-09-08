@@ -32,6 +32,7 @@
 @declare{'updateIOFieldRule'}
 
 rule "update_@{name}_@{context}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 2000
 
 when

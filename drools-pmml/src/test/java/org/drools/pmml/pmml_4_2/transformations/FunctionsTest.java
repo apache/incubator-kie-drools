@@ -54,6 +54,7 @@ public class FunctionsTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"MappedAge"),true,false, null,30);
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"NestedAge"),true,false, null,932.0);
 
+        checkGeneratedRules();
     }
 
 
@@ -113,6 +114,7 @@ public class FunctionsTest extends DroolsAbstractPMMLTest {
         assertEquals("(a ? b : c)" , ctx.mapFunction("if","a","b","c"));
         assertEquals("(a ? b : null)" , ctx.mapFunction("if","a","b"));
 
+        checkGeneratedRules();
     }
 
 

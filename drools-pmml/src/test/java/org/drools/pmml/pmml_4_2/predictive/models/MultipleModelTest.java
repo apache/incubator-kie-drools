@@ -58,6 +58,7 @@ public class MultipleModelTest extends DroolsAbstractPMMLTest {
         kb.buildAll();
 
         KieSession kSession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
+        setKbase( kSession.getKieBase() );
 
         kSession.fireAllRules();
 
@@ -65,6 +66,8 @@ public class MultipleModelTest extends DroolsAbstractPMMLTest {
         assertEquals( 11, kSession.getObjects( new ClassObjectFilter( kSession.getKieBase().getFactType( packageName, "Synapse" ).getFactClass() ) ).size() );
 
         kSession.dispose();
+
+        checkGeneratedRules();
     }
 
 
@@ -82,8 +85,8 @@ public class MultipleModelTest extends DroolsAbstractPMMLTest {
 
         KieContainer kc = ks.newKieContainer( releaseId1 );
         KieSession kSession = kc.newKieSession();
+        setKbase( kSession.getKieBase() );
         kSession.fireAllRules();
-
 
         kfs.write( ResourceFactory.newClassPathResource( source2 ).setResourceType( ResourceType.PMML ) );
         IncrementalResults results = (( InternalKieBuilder ) kb ).incrementalBuild();
@@ -95,6 +98,9 @@ public class MultipleModelTest extends DroolsAbstractPMMLTest {
         assertEquals( 11, kSession.getObjects( new ClassObjectFilter( kSession.getKieBase().getFactType( packageName, "Synapse" ).getFactClass() ) ).size() );
 
         kSession.dispose();
+
+
+        checkGeneratedRules();
     }
 
 

@@ -93,6 +93,8 @@ public class ConstrainedDataDictionaryTest extends DroolsAbstractPMMLTest {
         assertEquals( true, ivals.get( data7, "valid" ) );
         assertEquals( false, ivals.get( data8, "valid" ) );
 
+        checkGeneratedRules();
+
     }
 
 
@@ -121,6 +123,7 @@ public class ConstrainedDataDictionaryTest extends DroolsAbstractPMMLTest {
             assertEquals( 1, fact4.size() );
         //assertEquals(true, getKbase().getFactType(packageName,"Sort").get(fact4.iterator().next().getObject(),"ordinal"));
 
+        checkGeneratedRules();
     }
 
 
@@ -170,6 +173,7 @@ public class ConstrainedDataDictionaryTest extends DroolsAbstractPMMLTest {
         assertEquals( false, vals.get( data99, "valid" ) );
         assertEquals( false, vals.get( data99, "missing" ) );
 
+        checkGeneratedRules();
     }
 
 
@@ -193,6 +197,7 @@ public class ConstrainedDataDictionaryTest extends DroolsAbstractPMMLTest {
 
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName, "DefaultInvalid"),false,false, null,1);
 
+        checkGeneratedRules();
 
     }
 

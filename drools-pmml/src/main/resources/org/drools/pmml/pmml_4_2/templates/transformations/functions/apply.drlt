@@ -31,6 +31,7 @@
 
 @declare{ 'applyRule' }
 rule "Fun_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
 
     @foreach{ field : exprFieldList }
@@ -70,7 +71,8 @@ end
 
 @if{ ! exprFieldList.empty }
 rule "Clear Fun_@{name}"
-@Direct
+@@Direct
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     $x : @{name}( $ctx : context )
 

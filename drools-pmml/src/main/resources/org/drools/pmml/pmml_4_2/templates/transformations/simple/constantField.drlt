@@ -26,6 +26,7 @@
 
 @declare{'constantFieldRule'}
 rule "constantField_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
 then
   @{name} x = new @{name}();

@@ -25,6 +25,7 @@
 @declare{'svmKernelEval'}
 
 rule "Kernel_Evals_@{kernelType}_@{modelName}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     @{ pmmlPackageName }.SvmParams( kt == "@{kernelType}", $ctx : context == "@{modelName}", $gamma : gamma, $coef0 : coef0, $degree : degree  )
     @{ pmmlPackageName }.SVM( context == $ctx, $svmId : svmId, $indexes : vectorIndexes, $coeffs : coeffs )

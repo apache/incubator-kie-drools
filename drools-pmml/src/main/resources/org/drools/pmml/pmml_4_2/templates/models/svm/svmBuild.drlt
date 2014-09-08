@@ -25,6 +25,7 @@
 @declare{'svmBuild'}
 
 rule "Init Svm @{svmId}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     ModelMarker( "@{context}" ; enabled == true )
 then

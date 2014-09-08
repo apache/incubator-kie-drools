@@ -25,6 +25,7 @@
 @declare{'treeInit'}
 
 rule " Create tree @{context}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     ModelMarker( "@{context}" ; enabled == true )
 then
@@ -54,6 +55,7 @@ end
 
 
 rule "Ensure Tree Statistics are Filled"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect "mvel"
 when
     $node : @{ pmmlPackageName }.TreeNode( $id : id, $master : counts, $confs : confidence, counts.size() == 0, $children : children, $numChi : children.size() )
@@ -90,6 +92,7 @@ end
 
 
 rule "Ensure Tree Scores are Filled"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect "mvel"
 when
     $node : @{ pmmlPackageName }.TreeNode( $id : id, outcome == null, confidence.size() > 0, $conf : confidence )

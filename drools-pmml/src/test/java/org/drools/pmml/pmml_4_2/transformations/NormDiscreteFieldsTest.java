@@ -95,6 +95,7 @@ public class NormDiscreteFieldsTest extends DroolsAbstractPMMLTest {
 
         refreshKSession();
 
+        checkGeneratedRules();
     }
 
 

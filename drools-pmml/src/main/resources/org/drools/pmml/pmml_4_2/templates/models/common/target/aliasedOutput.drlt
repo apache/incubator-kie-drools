@@ -25,6 +25,7 @@
 
 @declare{'aliasedOutputRule'}
 rule "simpleOutput_@{origField}_to_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -110
 
 when

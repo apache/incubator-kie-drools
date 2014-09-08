@@ -76,6 +76,8 @@ public class SVMTest extends DroolsAbstractPMMLTest {
         kSession.fireAllRules();
         System.out.println( reportWMObjects( kSession ) );
         checkFirstDataFieldOfTypeStatus( ztype, true, false, "SVMXORMODEL", "no" );
+
+        checkGeneratedRules();
     }
 
 
@@ -103,6 +105,7 @@ public class SVMTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus( kSession.getKieBase().getFactType( packageName, "ProbZNo" ),
                                                 true, false, "SVMXORMODEL", 0.7357588 );
 
+        checkGeneratedRules();
     }
 
     @Test
@@ -128,7 +131,7 @@ public class SVMTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus( kSession.getKieBase().getFactType( packageName, "ProbZYes" ),
                                                 true, false, "SVMXORMODEL", 0.872057 );
 
-
+        checkGeneratedRules();
     }
 
 

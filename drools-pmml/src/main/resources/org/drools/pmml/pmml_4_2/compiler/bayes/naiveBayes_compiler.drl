@@ -24,7 +24,7 @@ when
 then
     utils.context = utils.compactUpperCase( $name );
 
-    HashMap map = new HashMap( 3 );
+    HashMap map = utils.container;
         map.put( "type","NaiveBayesModel" );
         map.put( "name", utils.context );
 
@@ -43,7 +43,7 @@ when
 then
     utils.context = utils.compactUpperCase( $name );
 
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "name", utils.context );
         map.put( "threshold", $thold );
         map.put( "field", utils.compactUpperCase( $fld ) );
@@ -84,7 +84,7 @@ when
 then
     utils.context = utils.compactUpperCase( $name );
 
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "name", utils.context );
         map.put( "threshold", $thold );
         map.put( "field", utils.compactUpperCase( $fld ) );
@@ -112,7 +112,7 @@ when
 then
     utils.context = utils.compactUpperCase( $name );
 
-    HashMap map = new HashMap( 5 );
+    HashMap map = utils.container;
         map.put( "name", utils.context );
         map.put( "field", utils.compactUpperCase( $fld ) );
         map.put( "datatype", $type );
@@ -146,7 +146,7 @@ when
 then
     utils.context = utils.compactUpperCase( $name );
 
-    HashMap map = new HashMap( 5 );
+    HashMap map = utils.container;
         map.put( "name", utils.context );
         map.put( "field", utils.compactUpperCase( $fld ) );
         map.put( "datatype", $type );
@@ -170,7 +170,7 @@ when
 then
     utils.context = utils.compactUpperCase( $name );
 
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "name", utils.context );
         map.put( "threshold", $thold );
         map.put( "field", utils.compactUpperCase( $fld ) );

@@ -84,6 +84,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
 
         Assert.assertEquals( 828.0, Math.floor( queryDoubleField( "OutAmOfClaims", "NeuralInsurance" ) ), 0.0);
 
+        checkGeneratedRules();
     }
 
 
@@ -93,6 +94,8 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
     public void testANNCompilation() throws Exception {
         setKSession( getModelSession( source3, VERBOSE ) );
         setKbase( getKSession().getKieBase() );
+
+        checkGeneratedRules();
     }
 
 
@@ -109,6 +112,8 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         getKSession().fireAllRules();
 
         Assert.assertEquals( 0.44, queryDoubleField( "Cold", "MockCold" ), 1e-6 );
+
+        checkGeneratedRules();
     }
 
 
@@ -240,6 +245,8 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName ,"SpecOut"),
                                         true, false,"Test_MLP","virginica");
 
+        checkGeneratedRules();
+
     }
 
 
@@ -282,7 +289,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
 
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName ,"OutProb"),
                                                         true, false,"Test_MLP",0.999999);
-
+        checkGeneratedRules();
 
     }
 
@@ -310,6 +317,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
 
         Assert.assertEquals(24.0, queryIntegerField("OutSepLen", "Neuiris"), 0.0);
 
+        checkGeneratedRules();
     }
 
 
@@ -332,6 +340,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus( getKbase().getFactType( packageName, "MockOutput1" ),
                 true, false, "Test_MLP",0.0 );
 
+        checkGeneratedRules();
     }
 
 
@@ -351,6 +360,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus( getKbase().getFactType( packageName, "MockOutput1" ),
                 true, false, "Test_MLP",0.0 );
 
+        checkGeneratedRules();
     }
 
 
@@ -392,6 +402,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName ,"OutP"),
                 true, false,"HEART_MLP",0.943336);
 
+        checkGeneratedRules();
     }
 
 
@@ -436,7 +447,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         assertEquals(1,getKSession().getObjects(new ClassObjectFilter(out2.getFactClass())).size());
         assertEquals(2,getKSession().getObjects(new ClassObjectFilter(nump.getFactClass())).size());
 
-
+        checkGeneratedRules();
     }
 
 
@@ -488,7 +499,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         assertEquals( 0.4, queryDoubleField("Out_sIT", "SmartVent"), 0.05 );
         assertEquals( -1, queryDoubleField("Out_sFIO2", "SmartVent"), 0.05 );
 
-
+        checkGeneratedRules();
     }
 
 
@@ -512,6 +523,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"ColdNO"),
                         true, false,"MockCold",0.0036540476859388943);
 
+        checkGeneratedRules();
     }
 
 

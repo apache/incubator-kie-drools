@@ -24,7 +24,7 @@ when
 then
     utils.context = utils.compactUpperCase( $name );
 
-    HashMap map = new HashMap( 3 );
+    HashMap map = utils.container;
         map.put( "name", utils.context );
         map.put( "type","DecisionTree" );
     utils.applyTemplate( "modelMark.drlt", null, registry, map, theory );
@@ -43,7 +43,7 @@ when
     MiningSchema( this memberOf $info, $mfs : miningFields )
     MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $tgtName : name )
 then
-    HashMap map = new HashMap( 3 );
+    HashMap map = utils.container;
         map.put( "model", utils.context );
         map.put( "name", utils.compactUpperCase( $tgtName ) );
     utils.applyTemplate( "treeCommon.drlt", utils, registry, map, theory );
@@ -100,7 +100,7 @@ when
     TypeOfField( name == $name, $type : dataType )
 then
     java.util.List orderedNodeList = new java.util.ArrayList( $nodes );
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "tgtType", $type );
         map.put( "parents", $parents );
@@ -130,7 +130,7 @@ when
     MiningField( this memberOf $miningFields, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $tgtName : name )
     TypeOfField( name == $tgtName, $tgtType : dataType )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "fields", $fields );
         map.put( "rootId", $rid );
@@ -166,7 +166,7 @@ when
     MiningField( usageType != null && == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $tgt : name )
     TypeOfField( name == $tgt, $tgtType : dataType )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "id", $id );
         map.put( "constraints", $pred );
@@ -196,7 +196,7 @@ when
     MiningField( usageType != null && == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $tgt : name )
     TypeOfField( name == $tgt, $tgtType : dataType )
 then
-    HashMap map = new HashMap( 3 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "name", utils.compactUpperCase( $tgt ) );
         map.put( "tgtType", $tgtType );
@@ -212,7 +212,7 @@ when
     MiningField( usageType != null && == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $tgt : name )
     TypeOfField( name == $tgt, $tgtType : dataType )
 then
-    HashMap map = new HashMap( 3 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "name", utils.compactUpperCase( $tgt ) );
         map.put( "tgtType", $tgtType );
@@ -227,7 +227,7 @@ when
     MiningField( usageType != null && == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $tgt : name )
     TypeOfField( name == $tgt, $tgtType : dataType )
 then
-    HashMap map = new HashMap( 3 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "name", utils.compactUpperCase( $tgt ) );
         map.put( "tgtType", $tgtType );
@@ -242,7 +242,7 @@ when
     MiningField( usageType != null && == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $tgt : name )
     TypeOfField( name == $tgt, $tgtType : dataType )
 then
-    HashMap map = new HashMap( 3 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "name", utils.compactUpperCase( $tgt ) );
         map.put( "tgtType", $tgtType );
@@ -259,7 +259,7 @@ when
     MiningField( usageType != null && == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $tgt : name )
     TypeOfField( name == $tgt, $tgtType : dataType )
 then
-    HashMap map = new HashMap( 3 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "name", utils.compactUpperCase( $tgt ) );
         map.put( "tgtType", $tgtType );

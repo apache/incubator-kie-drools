@@ -38,6 +38,7 @@ function double probitPhi( double z ) {
 
 
 rule "After Normalization"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -1
 when
     $rnf : @{ pmmlPackageName }.RegNormalizationFactor();

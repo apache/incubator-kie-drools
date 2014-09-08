@@ -29,7 +29,8 @@
 
 @declare{'predicateFieldRule'}
 rule "predicate_@{origField}"
-@if{ isInnerFieldName( name ) } @@activationListener('direct') @end{}
+@if{ isInnerFieldName( name ) } @@Direct @end{}
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
  $src : @{origField}( missing == false, valid == true, $val : value , $ctx : context
                       @if{ context != null } , context == @{format("string",context)} @end{})

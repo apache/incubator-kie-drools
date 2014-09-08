@@ -25,6 +25,7 @@
 @declare{'naiveBayesBuildCounts'}
 
 rule "BuildCounts_@{name}_@{field}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect "mvel"
 when
     ModelMarker( "@{name}" ; enabled == true )

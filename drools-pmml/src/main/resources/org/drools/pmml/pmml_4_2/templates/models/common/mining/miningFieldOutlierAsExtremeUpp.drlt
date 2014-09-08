@@ -28,6 +28,7 @@
 
 @declare{'miningFieldOutlierAsExtremeUppRule'}
 rule "miningFieldOutlierAsExtremeUpp_@{model}_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 999
 when
  $x : @{name}( $m : missing == false, $v : valid == true,

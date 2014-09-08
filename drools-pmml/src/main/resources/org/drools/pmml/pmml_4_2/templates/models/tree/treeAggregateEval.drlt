@@ -26,6 +26,7 @@
 
 
 rule "Eval Tree Node @{context} - @{id} - Down Aggregate Mark"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience $children.size() + 1
 when
     $node : @{ pmmlPackageName }.TreeNode( context == "@{context}", $id : id == "@{id}", $master : parent, $children : children )
@@ -40,6 +41,7 @@ end
 
 
 rule "Eval Tree Node @{context} - @{id} - True On Aggregates"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 3
 no-loop
 when

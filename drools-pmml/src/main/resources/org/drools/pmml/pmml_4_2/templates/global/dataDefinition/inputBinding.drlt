@@ -19,6 +19,7 @@
 
 
  rule "Bind @{fieldName} Input from Fact @{factType}"
+ @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
  dialect "mvel"
  when
     @{factType}( $val : @{fieldName} )

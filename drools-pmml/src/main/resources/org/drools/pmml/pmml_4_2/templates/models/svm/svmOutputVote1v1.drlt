@@ -26,6 +26,7 @@
 
 
 rule "SVM Output Collection @{context}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -1
 when
     accumulate( @{context}SVMVote_@{target}( $out : outcome ), $outcomes : collectSet( $out ) )
@@ -38,6 +39,7 @@ then
 end
 
 rule "Sort @{context}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -2
 when
     accumulate( @{ pmmlPackageName }.@{context}SVMPoll_@{target}( $num : num ), $max : max( $num ) )
@@ -53,6 +55,7 @@ then
 end
 
 rule "Resolve Ties @{context}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 10
 when
     $poll : @{ pmmlPackageName }.@{context}SVMPoll_@{target}( $val : outcome )

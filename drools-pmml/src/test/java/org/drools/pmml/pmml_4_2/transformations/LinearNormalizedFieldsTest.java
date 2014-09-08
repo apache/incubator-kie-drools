@@ -73,7 +73,7 @@ public class LinearNormalizedFieldsTest extends DroolsAbstractPMMLTest {
 
         checkFirstDataFieldOfTypeStatus(age3,true,false, null,789.0);
 
-
+        checkGeneratedRules();
     }
 
 
@@ -118,6 +118,7 @@ public class LinearNormalizedFieldsTest extends DroolsAbstractPMMLTest {
 
         checkFirstDataFieldOfTypeStatus(age3,true,false, null,12.5);
 
+        checkGeneratedRules();
     }
 
 
@@ -148,7 +149,7 @@ public class LinearNormalizedFieldsTest extends DroolsAbstractPMMLTest {
 
         checkFirstDataFieldOfTypeStatus(age1,true,false, null,1.5);
 
-
+        checkGeneratedRules();
     }
 
 

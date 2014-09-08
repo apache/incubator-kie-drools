@@ -38,6 +38,7 @@ end
 
 @foreach{ fieldName : fields.keySet() }
 rule "Bind_Scorecard_@{name}_@{fieldName}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     $in : @{ compactUpperCase( fieldName ) }( context == "@{name}", missing == true || valid == true, $m : missing, $v : value )
     $sc : @{name}ScoreCardData( ( m@{ compactUpperCase( fieldName ) } == true && != $m )

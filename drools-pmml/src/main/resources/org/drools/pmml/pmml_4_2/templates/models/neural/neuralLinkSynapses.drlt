@@ -23,6 +23,7 @@
 @declare{'neuralLinkSynapsesRule'}
 
 rule "LinkSynapses_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     @{ pmmlPackageName }.Stym( $ctx : context == "@{name}", $index : index, $val : value )
     @{ pmmlPackageName }.Synapse( context == $ctx, source == $index, $target : target, $w : weight )

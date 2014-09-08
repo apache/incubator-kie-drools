@@ -19,6 +19,7 @@ package org.drools.pmml.pmml_4_2;
 
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -28,6 +29,7 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
@@ -108,6 +110,8 @@ public abstract class DroolsAbstractPMMLTest {
         KieContainer kContainer = ks.newKieContainer( kr.getDefaultReleaseId() );
 
         KieBase kieBase = kContainer.getKieBase();
+
+        setKbase( kieBase );
         return kieBase.newKieSession();
     }
 
@@ -306,6 +310,14 @@ public abstract class DroolsAbstractPMMLTest {
         return type.get( obj, "value" );
     }
 
+    public void checkGeneratedRules() {
+        checkGeneratedRules( BASE_PACK );
+    }
 
+    public void checkGeneratedRules( String pack ) {
+        for ( Rule r : getKbase().getKiePackage( pack ).getRules() ) {
+            assertTrue( r.getMetaData().containsKey( "Generated" ) );
+        }
+    }
 
 }

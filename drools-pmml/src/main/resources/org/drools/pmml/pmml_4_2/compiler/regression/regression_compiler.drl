@@ -23,7 +23,7 @@ when
 then
     utils.context = utils.compactUpperCase( $name );
 
-    HashMap map = new HashMap( 3 );
+    HashMap map = utils.container;
         map.put( "name", utils.context );
         map.put( "type","SimpleRegression" );
     utils.applyTemplate( "modelMark.drlt", null, registry, map, theory );
@@ -43,7 +43,7 @@ when
            MiningSchema( $mfs : miningFields, this memberOf $regTables )
            MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $tgt : name )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "c0", $c0 );
         map.put( "numCoeffs", $numC );
@@ -76,7 +76,7 @@ when
            accumulate( $mf : MiningField( this memberOf $mfs, usageType != FIELDUSAGETYPE.PREDICTED && != FIELDUSAGETYPE.TARGET, $fldName : name ), $flds : collectList( $mf ) )
            MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $tgt : name )
 then
-    HashMap map = new HashMap( 7 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "inputFields", $flds );
         map.put( "numPredictors", $numPs );
@@ -109,7 +109,7 @@ when
              DerivedField( name == $tgt, $opType : optype )
            )
 then
-    HashMap map = new HashMap( 11 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "inputFields", $flds );
         map.put( "numPredictors", $numPs );
@@ -132,7 +132,7 @@ when
            MiningSchema( $mfs : miningFields, this memberOf $regTables )
            MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED || == FIELDUSAGETYPE.TARGET, $tgt : name )
 then
-    HashMap map = new HashMap( 3 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "target", utils.compactUpperCase( $tgt ) );
         map.put( "num", $numTabs );
@@ -155,7 +155,7 @@ when
              DerivedField( name == $tgt, $opType : optype == OPTYPE.ORDINAL )
            )
 then
-    HashMap map = new HashMap( 3 );
+    HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "target", utils.compactUpperCase( $tgt ) );
         map.put( "num", $numTabs );

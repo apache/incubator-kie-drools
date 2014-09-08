@@ -25,6 +25,7 @@
 }
 @declare{'valuesOnDomainRestrictionInvalidRule'}
 rule "Invalid_Values_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect "mvel"
 no-loop
 salience 99

@@ -28,6 +28,7 @@
 
 @code{ String n; }
 rule "NeuralClean_@{model}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -150
 when
     @foreach{ field : fields }

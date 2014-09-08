@@ -26,6 +26,7 @@
 
 
 rule "SVM Output Collection @{context}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -1
 when
     accumulate( @{ pmmlPackageName }.@{context}SVMVote_@{target}( $wgt : weight ), $minWgt : min( $wgt ) )

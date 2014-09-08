@@ -24,6 +24,7 @@
 }
 @declare{'valuesOnDomainRestrictionMissingRule'}
 rule "Missing_Values_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect "mvel"
 no-loop
 salience 99

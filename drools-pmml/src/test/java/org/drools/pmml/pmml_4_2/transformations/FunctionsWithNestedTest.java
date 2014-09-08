@@ -60,6 +60,7 @@ public class FunctionsWithNestedTest extends DroolsAbstractPMMLTest {
                                          + 1 // from normdiscrete
         );
 
+        checkGeneratedRules();
     }
 
 

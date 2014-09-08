@@ -28,6 +28,7 @@
 
  @if{ ! traitMode }
  rule "Create @{context} Output Bean"
+ @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
  when
     $mark : ModelMarker( modelName == "@{context}", enabled == true )
  then
@@ -39,6 +40,7 @@
  @foreach{ fieldName : fields.keySet() }
 
  rule "Link @{context} @if{ traitMode }Trait@end{} Output Fields @{fieldName} "
+ @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
  when
      @{compactUpperCase(fieldName)}( $val : value)
      $x :@if{ adapterName != null }@{ adapterName }@else{} @{context}Output@if{ traitMode }Trait@end{} @end{}( @{fieldName} != $val )

@@ -25,6 +25,7 @@
 @declare{'scorecardInit'}
 
 rule "Init ScoreCard @{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     ModelMarker( "@{context}" ; enabled == true )
 then

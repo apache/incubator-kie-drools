@@ -26,6 +26,7 @@
 
 
 rule "PartialScore_@{name}_@{char.name}_@{nextCount()}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     @{ pmmlPackageName }.ScoreRow( scoreCard == "@{name}", id == "@{char.name + char.attributes.indexOf( attr )}", $val : value, $char : characteristic, $code : reasonCode )
     $sc : @{name}ScoreCardData( @{predicate} )

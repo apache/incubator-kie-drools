@@ -25,6 +25,7 @@
 @declare{'regParams'}
 
 rule "Init Regression Model @{context} : @{target} - @{category}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     ModelMarker( "@{context}" ; enabled == true )
 then

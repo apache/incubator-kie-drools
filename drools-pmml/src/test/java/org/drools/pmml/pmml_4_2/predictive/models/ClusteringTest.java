@@ -72,6 +72,8 @@ public class ClusteringTest extends DroolsAbstractPMMLTest {
                 assertEquals( 14704.428, m, 0.001 );
             }
         }
+
+        checkGeneratedRules();
     }                         
 
 

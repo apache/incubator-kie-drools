@@ -24,7 +24,8 @@
 }
 @declare{'valuesOnDomainRestrictionRule'}
 rule "Valid_Values_@{name}"
-dialect "mvel"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+dialect 'mvel'
 no-loop
 salience 9999
 when

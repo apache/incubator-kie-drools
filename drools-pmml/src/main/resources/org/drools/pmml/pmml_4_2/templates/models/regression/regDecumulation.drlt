@@ -27,6 +27,7 @@
 
 
 rule "First base value @{context} - @{target}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     $bit : @{ pmmlPackageName }.RegTargetBit( context == "@{context}",
                          target == "@{target}",
@@ -44,6 +45,7 @@ end
 
 
 rule "Regression Model Ordinal Values Decumulation @{context} - @{target}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     $bit  : @{ pmmlPackageName }.RegTargetBit( context == "@{context}",
                           target == "@{target}",

@@ -27,6 +27,7 @@
 
 
 rule "Eval Clusters @{context}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     $set : @{ pmmlPackageName }.ClusterSet( $ctx : context == "@{context}", $clusters : clusters,
                        $wgts : fieldWgts, misses : missingWgts, $scopes : fieldScopes )

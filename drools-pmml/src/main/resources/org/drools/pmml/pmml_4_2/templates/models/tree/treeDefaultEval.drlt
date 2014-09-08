@@ -27,6 +27,7 @@
 
 
 rule "Eval Tree Node @{context} - @{id} - Default Child"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 3
 when
     $node : @{ pmmlPackageName }.TreeNode( context == "@{context}", $id : id == "@{id}", $def : defaultChld != "null" && != null )
@@ -43,6 +44,7 @@ end
 
 
 rule "Eval Tree Node @{context} - @{id} - Default Child Undo Jump"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 5
 no-loop
 when

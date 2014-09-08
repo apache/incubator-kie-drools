@@ -62,6 +62,7 @@ public class SimpleRegressionTest extends DroolsAbstractPMMLTest {
         
         checkFirstDataFieldOfTypeStatus( tgt, true, false, "LinReg", x );
 
+        checkGeneratedRules();
     }
 
 
@@ -89,6 +90,7 @@ public class SimpleRegressionTest extends DroolsAbstractPMMLTest {
                                             true, false, "LinReg", 0.010635 );
 
 
+        checkGeneratedRules();
     }
 
 

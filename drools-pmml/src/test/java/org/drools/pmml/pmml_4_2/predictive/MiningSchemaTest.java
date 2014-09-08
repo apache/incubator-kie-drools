@@ -53,6 +53,8 @@ public class MiningSchemaTest extends DroolsAbstractPMMLTest {
         getKSession().fireAllRules();
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"Feat2"),
                 true, false,"Test_MLP",5);
+
+        checkGeneratedRules();
     }
 
 
@@ -75,7 +77,7 @@ public class MiningSchemaTest extends DroolsAbstractPMMLTest {
                 true, false,"Test_MLP",6.9);
 
 
-
+        checkGeneratedRules();
 
     }
 
@@ -105,6 +107,7 @@ public class MiningSchemaTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"Feat2"),
                 true, false,"Test_MLP",5);
 
+        checkGeneratedRules();
     }
 
 
@@ -123,6 +126,7 @@ public class MiningSchemaTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"Feat2"),
                 true, false,"Test_MLP",5);
 
+        checkGeneratedRules();
     }
 
 
@@ -149,6 +153,7 @@ public class MiningSchemaTest extends DroolsAbstractPMMLTest {
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"Feat3"),
                 false, false,"Test_MLP",6.2);
 
+        checkGeneratedRules();
     }
 
 
