@@ -60,7 +60,11 @@ public class LocalHTWorkItemHandler extends AbstractHTWorkItemHandler {
         try {
             long taskId = ((InternalTaskService) runtime.getTaskService()).addTask(task, content);
             if (isAutoClaim(workItem, task)) {
-                runtime.getTaskService().claim(taskId, (String) workItem.getParameter("SwimlaneActorId"));
+            	try {
+            		runtime.getTaskService().claim(taskId, (String) workItem.getParameter("SwimlaneActorId"));
+            	} catch (PermissionDeniedException e) {
+            		logger.warn("User {} is not allowed to auto claim task due to permission violation", workItem.getParameter("SwimlaneActorId"));
+            	}
             }
         } catch (Exception e) {
             if (action.equals(OnErrorAction.ABORT)) {
