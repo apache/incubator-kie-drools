@@ -1,25 +1,5 @@
 package org.drools.compiler.integrationtests;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Cheesery;
 import org.drools.compiler.CommonTestMethodBase;
@@ -59,8 +39,29 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class AccumulateTest extends CommonTestMethodBase {
 
@@ -2613,6 +2614,42 @@ public class AccumulateTest extends CommonTestMethodBase {
         public Class<?> getResultType() {
             return Number.class;
         }
-    }    
+    }
 
+    @Test
+    public void testAccumulateWithSharedNode() throws Exception {
+        // DROOLS-594
+        String drl =
+                "rule A when" +
+                "   Double() " +
+                "then " +
+                "end " +
+                "rule B  " +
+                "when " +
+                "   Double() " +
+                "   String() " +
+                "   $list : java.util.List(  this not contains \"XX\" ) " +
+                "   $sum  : Double( ) from accumulate ( $i : Integer(), " +
+                "                                       sum( $i ) ) " +
+                "then " +
+                "    $list.add( \"XX\" );\n" +
+                "    update( $list );\n" +
+                "    System.out.println(\"FIRED\");\n" +
+                "end ";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession ksession = helper.build().newKieSession();
+
+        List<String> list = new java.util.ArrayList();
+        ksession.insert(list);
+
+        ksession.insert(42.0);
+        ksession.insert(9000);
+        ksession.insert("a");
+        ksession.insert("b");
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+    }
 }
