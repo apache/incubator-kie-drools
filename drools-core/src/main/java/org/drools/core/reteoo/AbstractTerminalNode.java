@@ -149,9 +149,9 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
             }
 
             if ( updateAllLinkedTest && updateBitInNewSegment && NodeTypeEnums.isBetaNode( tupleSource )) {
-                updateBitInNewSegment = false;
                 BetaNode bn = ( BetaNode) tupleSource;
                 if ( bn.isRightInputIsRiaNode() ) {
+                    updateBitInNewSegment = false;
                     // only ria's without reactive subnetworks can be disabled and thus need checking
                     // The getNodeMemory will7 call this method recursive for sub networks it reaches
                     RiaNodeMemory rnmem = ( RiaNodeMemory ) wm.getNodeMemory((MemoryFactory) bn.getRightInput());
@@ -160,6 +160,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
                     }
                 } else if ( ( !(NodeTypeEnums.NotNode == bn.getType() && !((NotNode)bn).isEmptyBetaConstraints()) &&
                               NodeTypeEnums.AccumulateNode != bn.getType()) )  {
+                    updateBitInNewSegment = false;
                     // non empty not nodes and accumulates can never be disabled and thus don't need checking
                     allLinkedTestMask = allLinkedTestMask | 1;
                 }
