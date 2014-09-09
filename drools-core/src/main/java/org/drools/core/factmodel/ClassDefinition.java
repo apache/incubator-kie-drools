@@ -85,6 +85,20 @@ public class ClassDefinition
         this.setInterfaces( interfaces );
     }
 
+    public ClassDefinition( Class<?> cls ) {
+        this.definedClass = cls;
+        this.setClassName( cls.getCanonicalName() );
+        if (cls.getSuperclass() != null) {
+            this.setSuperClass( cls.getSuperclass().getCanonicalName() );
+        }
+        String[] interfaces = new String[cls.getInterfaces().length];
+        int i = 0;
+        for (Class<?> interfaze : cls.getInterfaces()) {
+            interfaces[i++] = interfaze.getCanonicalName();
+        }
+        this.setInterfaces( interfaces );
+    }
+
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         this.className = (String) in.readObject();
