@@ -12,7 +12,7 @@ public class KieContainerFromKieRepoExample {
         KieServices ks = KieServices.Factory.get();
 
         // Install example1 in the local maven repo before to do this
-        KieContainer kContainer = ks.newKieContainer(ks.newReleaseId("org.drools", "named-kiesession", "6.0.0-SNAPSHOT"));
+        KieContainer kContainer = ks.newKieContainer(ks.newReleaseId("org.drools", "named-kiesession", "6.2.0.Beta2"));
 
         KieSession kSession = kContainer.newKieSession("ksession1");
         kSession.setGlobal("out", out);
