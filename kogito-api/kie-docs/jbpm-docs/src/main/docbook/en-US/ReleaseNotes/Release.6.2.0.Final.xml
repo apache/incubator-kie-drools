@@ -92,16 +92,26 @@
     <para>
     </para>
   </section>
-  <!--TODO krisv section>
+  <section>
     <title>OSGi</title>
-    <para>
+    <para>While a number of core jars were OSGi-ready (in v5 already), a significant number
+    of additional jars were now added to this list, including for example the human task
+    service, the runtime managers, full persistence, etc.  As a result, full core engine
+    functionality is now available on top of OSGi.  Specific extensions and tests showing
+    it in action are available for Apache Karaf and Aries Blueprint (in the droolsjbpm-integration
+    repository).   
     </para>
-  </section-->
-  <!--TODO krisv section>
+  </section>
+  <section>
     <title>Camel handler</title>
-    <para>
+    <para>A new out-of-the-box service task has been implemented for using Apache Camel
+    to connect a process to the outside world using some of the numerous Camel endpoint URIs.
+    The service task allows you to for example specify how to pass data to an FTP endpoint
+    by configuring properties such as hostname, port, username, payload, etc. for some
+    common endpoints like (S)FTP, File, JMS, XSLT, etc. but you can use virtually any of the
+    available endpoints by defining the URI yourself (http://camel.apache.org/uris.html).      
     </para>
-  </section-->
+  </section>
   <section>
     <title>Form Modeler improvements</title>
     <para>
