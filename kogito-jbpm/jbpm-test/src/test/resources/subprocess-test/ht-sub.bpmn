@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="Definition" targetNamespace="http://www.jboss.org/drools"
+  typeLanguage="http://www.java.com/javaTypes" expressionLanguage="http://www.mvel.org/2.0"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+  xmlns:g="http://www.jboss.org/drools/flow/gpd" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:tns="http://www.jboss.org/drools">
+
+  <!-- item definitions -->
+
+
+  <process processType="Private" isExecutable="true"
+    id="com.mycompany.sample.subprocess" name="Sample" tns:packageName="defaultPackage">
+
+    <!-- properties -->
+
+
+    <!-- nodes -->
+    <startEvent id="_ede42873-0fe6-f810-ce8b-28a7d87fe258"
+      name="Start" />
+    <endEvent id="_00f29753-6d33-f875-76da-0b4f9192b286" name="End">
+
+      <terminateEventDefinition />
+
+    </endEvent>
+    <userTask id="_effbf94d-60ef-117c-978d-d45fc36ca924" name="User Task">
+      <ioSpecification>
+
+        <dataInput id="_effbf94d-60ef-117c-978d-d45fc36ca924_Param3Input"
+          name="Param3" />
+
+
+        <inputSet>
+
+          <dataInputRefs>_effbf94d-60ef-117c-978d-d45fc36ca924_Param3Input
+          </dataInputRefs>
+
+        </inputSet>
+        <outputSet>
+
+        </outputSet>
+      </ioSpecification>
+
+
+      <dataInputAssociation>
+        <targetRef>_effbf94d-60ef-117c-978d-d45fc36ca924_Param3Input
+        </targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">testForm</from>
+          <to xsi:type="tFormalExpression">_effbf94d-60ef-117c-978d-d45fc36ca924_Param3Input
+          </to>
+        </assignment>
+      </dataInputAssociation>
+
+
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>john</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+
+
+    <!-- connections -->
+    <sequenceFlow
+      id="_ede42873-0fe6-f810-ce8b-28a7d87fe258__effbf94d-60ef-117c-978d-d45fc36ca924"
+      sourceRef="_ede42873-0fe6-f810-ce8b-28a7d87fe258" targetRef="_effbf94d-60ef-117c-978d-d45fc36ca924"
+      name="" />
+    <sequenceFlow
+      id="_effbf94d-60ef-117c-978d-d45fc36ca924__00f29753-6d33-f875-76da-0b4f9192b286"
+      sourceRef="_effbf94d-60ef-117c-978d-d45fc36ca924" targetRef="_00f29753-6d33-f875-76da-0b4f9192b286"
+      name="" />
+
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="com.mycompany.sample.subprocess">
+      <bpmndi:BPMNShape bpmnElement="_ede42873-0fe6-f810-ce8b-28a7d87fe258">
+        <dc:Bounds x="125" y="100" width="38" height="38" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_00f29753-6d33-f875-76da-0b4f9192b286">
+        <dc:Bounds x="424" y="100" width="38" height="38" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_effbf94d-60ef-117c-978d-d45fc36ca924">
+        <dc:Bounds x="251" y="98" width="102" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge
+        bpmnElement="_ede42873-0fe6-f810-ce8b-28a7d87fe258__effbf94d-60ef-117c-978d-d45fc36ca924">
+        <di:waypoint x="19" y="36" />
+
+        <di:waypoint x="51" y="38" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge
+        bpmnElement="_effbf94d-60ef-117c-978d-d45fc36ca924__00f29753-6d33-f875-76da-0b4f9192b286">
+        <di:waypoint x="51" y="38" />
+
+        <di:waypoint x="19" y="2" />
+      </bpmndi:BPMNEdge>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

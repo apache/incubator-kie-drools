@@ -118,10 +118,14 @@ public class TaskAdminServiceImpl implements TaskAdminService {
             Task task = persistenceContext.findTask(taskId);
         	if (task != null) {
 	            Content content = persistenceContext.findContent(task.getTaskData().getDocumentContentId());
+	            Content outputContent = persistenceContext.findContent(task.getTaskData().getOutputContentId());
 	            if (((InternalTask) task).isArchived()) {
 	                persistenceContext.remove(task);
 	                if (content != null) {
 	                    persistenceContext.remove(content);
+	                }
+	                if (outputContent != null) {
+	                	persistenceContext.remove(outputContent);
 	                }
 	                removedTasks++;
 	            } else {
