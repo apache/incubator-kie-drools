@@ -72,10 +72,15 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         InternalTask task = (InternalTask) TaskModelProvider.getFactory().newTask();
         String taskName = (String) workItem.getParameter("NodeName");
         
+        String locale = (String) workItem.getParameter("Locale");
+        if (locale == null) {
+            locale = "en-UK";
+        }
+        
         if (taskName != null) {
             List<I18NText> names = new ArrayList<I18NText>();
             I18NText text = TaskModelProvider.getFactory().newI18NText();
-            ((InternalI18NText) text).setLanguage("en-UK");
+            ((InternalI18NText) text).setLanguage(locale);
             ((InternalI18NText) text).setText(taskName);
             names.add(text);
             task.setNames(names);
@@ -94,7 +99,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         }
         List<I18NText> descriptions = new ArrayList<I18NText>();
         I18NText descText = TaskModelProvider.getFactory().newI18NText();
-        ((InternalI18NText) descText).setLanguage("en-UK");
+        ((InternalI18NText) descText).setLanguage(locale);
         ((InternalI18NText) descText).setText(comment);
         descriptions.add(descText);
         task.setDescriptions(descriptions);
@@ -103,7 +108,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         
         List<I18NText> subjects = new ArrayList<I18NText>();
         I18NText subjectText = TaskModelProvider.getFactory().newI18NText();
-        ((InternalI18NText) subjectText).setLanguage("en-UK");
+        ((InternalI18NText) subjectText).setLanguage(locale);
         ((InternalI18NText) subjectText).setText(comment);
         subjects.add(subjectText);
         task.setSubjects(subjects);
