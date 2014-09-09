@@ -7,11 +7,91 @@
   xmlns:ns="http://docbook.org/ns/docbook">
   <title>New and Noteworthy in jBPM 6.2.0</title>
   <para>The following features were added to the jBPM core on top of 6.1.</para>
-  <!--TODO maciej section>
-    <title>EJB interface</title>
+  <section>
+    <title>jBPM services</title>
+    <para> jBPM services modules have been significantly refactored to provide clear separation
+      between the logic they bring and various frameworks that can be used to consume those
+      services. With version 6.2 following modules are available:</para>
+    <para>
+      <itemizedlist>
+        <listitem>
+          <para>jbpm-services-api - clear services api that shall be used by any client code that
+            consumes services</para>
+        </listitem>
+        <listitem>
+          <para>jbpm-kie-services - core implementation of the services that do not have any
+            framework specific code (e.g. CDI)</para>
+        </listitem>
+        <listitem>
+          <para>jbpm-services-cdi - CDI specific code on top of jbpm-kie-services</para>
+        </listitem>
+        <listitem>
+          <para>jbpm-services-ejb-api - ejb related extensions to services api - mainly to provide
+            remote capablities for the interfaces</para>
+        </listitem>
+        <listitem>
+          <para>jbpm-services-ejb-impl - ejb specific code on top of jbpm-kie-services</para>
+        </listitem>
+        <listitem>
+          <para>jbpm-services-ejb-client - ejb client implementation to interact with services over
+            remote ejb invocation - currently JBoss specific implementation available</para>          
+        </listitem>
+      </itemizedlist>
+    </para>
+    <para>jBPM services are intended to be base of execution server (regardless of what framework is
+      used to build it up completely) so should be considered as first choice when enbedding jbpm in
+      custom applications. With 6.2 capabilities it already provides support for most common
+      frameworks used - CDI, EJB, Spring (should simply rely on core implementation).</para>
+  </section>
+  <section>
+    <title>Process engine extensions</title>
+    <orderedlist>
+      <listitem>
+        <para>Lazy initialization of runtime engine components by RuntimeManager to make runtime
+          engine creation lightweight </para>
+        <para>RuntimeEngine has been enhanced to lazy initialize its components (KieSession,
+          TaskService, AuditService) to improve overall performance of retriveing RuntimeEngine
+          instances from RuntimeManager.</para>
+      </listitem>
+      <listitem>
+        <para>Life cycle management for work item handlers and event listeners </para>
+        <para>Handler and listeners can implement additional interface to be managed by runtime
+          engine, see <link linkend="sec.workitemhandler.overview">work item handler life cycle management</link> for more
+          details.</para>
+      </listitem>
+      <listitem>
+        <para>Deployments are now by default stored in data base (as deployment descriptors) to
+          servive server restarts</para>
+        <para>Prior to verion 6.2 deployments that were handled by DeploymentService implementation
+          were not persisted so they required to be handled separately - in case of kie-workbench
+          they were stored inside system.git repo. With version 6.2 deployment service will persist
+          that information directly into db which will make it easier in many cases including
+          clustering as it will not require VFS clustering (Zookeeper and Helix) setup.</para>
+      </listitem>
+      <listitem>
+        <para>Extension to deployment descriptor to specify classes (by FQCN) that should be added
+          to JAXB context for remote interfaces interaction </para>
+        <para>Deployment descriptor accept new set of elements </para>
+        <para>
+          <programlisting>&lt;remoteable-classes>
+   ...
+   &lt;remotable-class>org.jbpm.test.CustomClass&lt;/remotable-class>
+   ...
+&lt;/remoteable-classes></programlisting>
+        </para>
+      </listitem>
+      <listitem>
+        <para>Classpath scanning for classes to be included in JAXB context for remote interfaces
+          interaction</para>
+        <para>Classes annotated with javax.xml.bind.annotation.XmlRootElement and
+          org.kie.api.remote.Remotable will be automatically added to JAXB context of given
+          deployment as soon as they are defined as project dependency. At the same time all classes
+          included in project itself are also added to deployment's JAXB context.</para>
+      </listitem>
+    </orderedlist>
     <para>
     </para>
-  </section-->
+  </section>
   <!--TODO krisv section>
     <title>OSGi</title>
     <para>
