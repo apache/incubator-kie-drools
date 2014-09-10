@@ -202,7 +202,76 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         ks.getRepository().removeKieModule(releaseId2);
     }
 
+    @Test
+    public void testScannerOnPomProjectWithFixedVersion() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "scanner-test", "1.0");
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "scanner-test", "2.0");
+
+        MavenRepository repository = getMavenRepository();
+        repository.deployPomArtifact("org.kie", "scanner-master-test", "1.0", createMasterKPom("scanner-test", "1.0"));
+
+        resetFileManager();
+
+        InternalKieModule kJar1 = createKieJarWithClass(ks, releaseId1, false, 2, 7);
+        repository.deployArtifact(releaseId1, kJar1, createKPom(fileManager, releaseId1));
+
+        KieContainer kieContainer = ks.newKieContainer(ks.newReleaseId("org.kie", "scanner-master-test", "LATEST"));
+        KieSession ksession = kieContainer.newKieSession("KSession1");
+        checkKSession(ksession, 14);
+
+        KieScanner scanner = ks.newKieScanner(kieContainer);
+
+        repository.deployPomArtifact("org.kie", "scanner-master-test", "2.0", createMasterKPom("scanner-test", "2.0"));
+        InternalKieModule kJar2 = createKieJarWithClass(ks, releaseId2, false, 3, 5);
+        repository.deployArtifact(releaseId2, kJar2, createKPom(fileManager, releaseId1));
+
+        scanner.scanNow();
+
+        KieSession ksession2 = kieContainer.newKieSession("KSession1");
+        checkKSession(ksession2, 15);
+
+        ks.getRepository().removeKieModule(releaseId1);
+        ks.getRepository().removeKieModule(releaseId2);
+    }
+
+    @Test
+    public void testScannerOnPomProjectSameKieSession() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "scanner-test", "1.0");
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "scanner-test", "2.0");
+
+        MavenRepository repository = getMavenRepository();
+        repository.deployPomArtifact("org.kie", "scanner-master-test", "1.0", createMasterKPom("scanner-test", "1.0"));
+
+        resetFileManager();
+
+        InternalKieModule kJar1 = createKieJarWithClass(ks, releaseId1, true, 2, 7);
+        repository.deployArtifact(releaseId1, kJar1, createKPom(fileManager, releaseId1));
+
+        KieContainer kieContainer = ks.newKieContainer(ks.newReleaseId("org.kie", "scanner-master-test", "LATEST"));
+        KieSession ksession = kieContainer.newKieSession("KSession1");
+        checkKSession(false, ksession, 14);
+
+        KieScanner scanner = ks.newKieScanner(kieContainer);
+
+        repository.deployPomArtifact("org.kie", "scanner-master-test", "2.0", createMasterKPom("scanner-test", "2.0"));
+        InternalKieModule kJar2 = createKieJarWithClass(ks, releaseId2, true, 3, 5);
+        repository.deployArtifact(releaseId2, kJar2, createKPom(fileManager, releaseId1));
+
+        scanner.scanNow();
+
+        checkKSession(ksession, 10, 15);
+
+        ks.getRepository().removeKieModule(releaseId1);
+        ks.getRepository().removeKieModule(releaseId2);
+    }
+
     private File createMasterKPom(String depArtifactId) throws IOException {
+        return createMasterKPom(depArtifactId, "LATEST");
+    }
+
+    private File createMasterKPom(String depArtifactId, String depVersion) throws IOException {
         String pom =
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
@@ -218,7 +287,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
                 "      <dependency>\n" +
                 "        <groupId>org.kie</groupId>\n" +
                 "        <artifactId>" + depArtifactId + "</artifactId>\n" +
-                "        <version>LATEST</version>\n" +
+                "        <version>" + depVersion + "</version>\n" +
                 "      </dependency>\n" +
                 "    </dependencies>\n" +
                 "</project>";
@@ -229,10 +298,16 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
     }
 
     private void checkKSession(KieSession ksession, Object... results) {
+        checkKSession(true, ksession, results);
+    }
+
+    private void checkKSession(boolean dispose, KieSession ksession, Object... results) {
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
-        ksession.dispose();
+        if (dispose) {
+            ksession.dispose();
+        }
 
         assertEquals(results.length, list.size());
         for (Object result : results) {
