@@ -69,6 +69,10 @@ public class DependencyDescriptor {
         return version;
     }
 
+    public ReleaseId getReleaseIdWithoutVersion() {
+        return new ReleaseIdImpl(groupId, artifactId, "0");
+    }
+
     public ReleaseId getReleaseId() {
         return new ReleaseIdImpl(groupId, artifactId, version);
     }
