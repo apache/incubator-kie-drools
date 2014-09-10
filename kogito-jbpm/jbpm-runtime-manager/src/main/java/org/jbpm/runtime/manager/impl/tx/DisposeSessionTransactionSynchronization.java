@@ -16,6 +16,7 @@
 package org.jbpm.runtime.manager.impl.tx;
 
 import org.drools.persistence.OrderedTransactionSynchronization;
+import org.jbpm.runtime.manager.impl.RuntimeEngineImpl;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 
@@ -40,6 +41,7 @@ public class DisposeSessionTransactionSynchronization extends OrderedTransaction
 
 	public void afterCompletion(int status) {
 	    try {
+	    	((RuntimeEngineImpl) runtime).setAfterCompletion(true);
 	        manager.disposeRuntimeEngine(runtime);
 	    } catch (Throwable e) {
 	        // catch exception as it's only clean up and should not affect runtime

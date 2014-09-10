@@ -231,7 +231,7 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     
 
     protected boolean canDestroy(RuntimeEngine runtime) {
-    	if (hasEnvironmentEntry("IS_JTA_TRANSACTION", false)) {
+    	if (hasEnvironmentEntry("IS_JTA_TRANSACTION", false) || ((RuntimeEngineImpl) runtime).isAfterCompletion()) {
     		return false;
     	}
         TransactionManager tm = getTransactionManager(runtime.getKieSession().getEnvironment());

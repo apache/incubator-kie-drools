@@ -197,6 +197,7 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
         addIfPresent(EnvironmentName.GLOBALS, copy);
         addIfPresent(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, copy);
         addIfPresent(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, copy);
+        addIfPresent(EnvironmentName.TASK_PERSISTENCE_CONTEXT_MANAGER, copy);
         addIfPresent(EnvironmentName.TRANSACTION_MANAGER, copy);
         addIfPresent(EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY, copy);
         addIfPresent(EnvironmentName.TRANSACTION, copy);
@@ -218,6 +219,7 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
         
         
         addIfPresent("IS_JTA_TRANSACTION", copy);
+        addIfPresent("IS_TIMER_CMT", copy);
 		addIfPresent("IS_SHARED_ENTITY_MANAGER", copy);
 		addIfPresent("TRANSACTION_LOCK_ENABLED", copy);
 		addIfPresent("IdentityProvider", copy);

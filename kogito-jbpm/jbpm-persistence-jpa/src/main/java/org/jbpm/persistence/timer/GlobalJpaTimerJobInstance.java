@@ -26,6 +26,7 @@ import org.drools.persistence.TransactionManager;
 import org.drools.persistence.jpa.JDKCallableJobCommand;
 import org.drools.persistence.jpa.JpaTimerJobInstance;
 import org.drools.persistence.jta.JtaTransactionManager;
+import org.jbpm.persistence.jta.ContainerManagedTransactionManager;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.process.core.timer.impl.GlobalTimerService.DisposableCommandService;
@@ -59,19 +60,28 @@ public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
     @Override
     public Void call() throws Exception {
         CommandService commandService = null;
+        JtaTransactionManager jtaTm = null;
+        boolean success = false;
         try { 
             JDKCallableJobCommand command = new JDKCallableJobCommand( this );
             if (scheduler == null) {
                 scheduler = (InternalSchedulerService) TimerServiceRegistry.getInstance().get(timerServiceId);
             }
-            commandService = ((GlobalTimerService) scheduler).getCommandService(getJobContext());            
+            if (scheduler == null) {
+            	throw new RuntimeException("No scheduler found for " + timerServiceId);
+            }
+            jtaTm = startTxIfNeeded(((GlobalTimerService) scheduler).getRuntimeManager().getEnvironment().getEnvironment());
+            
+            commandService = ((GlobalTimerService) scheduler).getCommandService(getJobContext());
+            
             commandService.execute( command );
             GlobalJPATimerJobFactoryManager timerService = ((GlobalJPATimerJobFactoryManager)((GlobalTimerService) scheduler).getTimerJobFactoryManager());
             timerService.removeTimerJobInstance(((DefaultJobHandle)getJobHandle()).getTimerJobInstance());
-            
+            success = true;
             return null;
         } catch( Exception e ) { 
         	e.printStackTrace();
+        	success = false;
             throw e;
         } finally {
             if (commandService != null && commandService instanceof DisposableCommandService) {
@@ -80,6 +90,7 @@ public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
             		((DisposableCommandService) commandService).dispose();
             	}
             }
+            closeTansactionIfNeeded(jtaTm, success);
         }
     }
     
@@ -111,6 +122,37 @@ public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
     		return envEntry == null;
     	}
     	return value.equals(envEntry);
+    }
+    
+    protected JtaTransactionManager startTxIfNeeded(Environment environment) {
+
+    	try {	    	
+	    	if (hasEnvironmentEntry(environment, "IS_TIMER_CMT", true)) {
+        		return null;
+        	}
+    		if (environment.get(EnvironmentName.TRANSACTION_MANAGER) instanceof ContainerManagedTransactionManager) {
+    			JtaTransactionManager jtaTm = new JtaTransactionManager(null, null, null);
+    			
+    			if (jtaTm.begin()) {    			
+    				return jtaTm;
+    			}
+    		}
+	    	
+    	} catch (Exception e) {
+    		logger.debug("Unable to optionally start transaction due to {}", e.getMessage(), e);
+    	}
+    	
+    	return null;
+    }
+    
+    protected void closeTansactionIfNeeded(JtaTransactionManager jtaTm, boolean commit) {
+    	if (jtaTm != null) {
+    		if (commit) {
+    			jtaTm.commit(true);
+    		} else {
+    			jtaTm.rollback(true);
+    		}
+    	}
     }
 
 }

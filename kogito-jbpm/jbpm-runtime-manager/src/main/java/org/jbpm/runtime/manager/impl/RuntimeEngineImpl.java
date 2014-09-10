@@ -49,6 +49,7 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
     private RuntimeManager manager;
     
     private boolean disposed = false;
+    private boolean afterCompletion = false;
     
     private List<DisposeListener> listeners = new CopyOnWriteArrayList<DisposeListener>();
     
@@ -151,5 +152,13 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
 
 	public void internalSetKieSession(KieSession ksession) {
 		this.ksession = ksession;
+	}
+
+	public boolean isAfterCompletion() {
+		return afterCompletion;
+	}
+
+	public void setAfterCompletion(boolean completing) {
+		this.afterCompletion = completing;
 	}
 }

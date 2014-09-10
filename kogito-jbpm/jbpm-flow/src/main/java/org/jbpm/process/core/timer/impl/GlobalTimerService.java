@@ -44,6 +44,7 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.internal.command.Context;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 
@@ -202,6 +203,10 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
     
     public JobHandle buildJobHandleForContext(NamedJobContext ctx) {
         return this.schedulerService.buildJobHandleForContext(ctx);
+    }
+    
+    public InternalRuntimeManager getRuntimeManager() {
+    	return (InternalRuntimeManager) manager;
     }
     
     protected CommandService getCommandService(Long processInstanceId, ProcessJobContext ctx) {

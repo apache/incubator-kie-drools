@@ -13,12 +13,18 @@ import javax.naming.InitialContext;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
 
+import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.TimerJobInstance;
+import org.drools.persistence.TransactionManager;
+import org.jbpm.persistence.JpaProcessPersistenceContextManager;
+import org.jbpm.persistence.jta.ContainerManagedTransactionManager;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.services.task.persistence.JPATaskPersistenceContextManager;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.node.HumanTaskNodeInstance;
 import org.junit.After;
@@ -32,6 +38,8 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
@@ -640,6 +648,101 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
 
         manager.disposeRuntimeEngine(runtime);
         
+    }
+    
+    @Test
+    public void testInterediateTiemrWithGlobalTestServiceSimulateCMT() throws Exception {
+        
+        // prepare listener to assert results
+        final List<Long> timerExporations = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener(){
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName().equals("timer")) {
+                    timerExporations.add(event.getProcessInstance().getId());
+                }
+            }
+            
+        };
+        
+        Properties properties= new Properties();
+        properties.setProperty("mary", "HR");
+        properties.setProperty("john", "HR");
+        UserGroupCallback userGroupCallback = new JBossUserGroupCallbackImpl(properties);
+        EntityManagerFactory emf = EntityManagerFactoryManager.get().getOrCreate("org.jbpm.persistence.jpa");
+        TransactionManager tm = new ContainerManagedTransactionManager();
+        Environment env = EnvironmentFactory.newEnvironment();
+        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+        env.set(EnvironmentName.TRANSACTION_MANAGER, tm);
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycleWithHT2.bpmn2"), ResourceType.BPMN2)
+                .addEnvironmentEntry(EnvironmentName.TRANSACTION_MANAGER, tm)
+                .addEnvironmentEntry(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, new JpaProcessPersistenceContextManager(env))
+        		.addEnvironmentEntry(EnvironmentName.TASK_PERSISTENCE_CONTEXT_MANAGER, new JPATaskPersistenceContextManager(env))                
+                .schedulerService(globalScheduler)
+                .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
+                .userGroupCallback(userGroupCallback)
+                .get();
+
+        UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+        ut.begin();
+        manager = getManager(environment, true);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        KieSession ksession = runtime.getKieSession();
+
+        
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "R3/PT1S");
+        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent", params);
+        ut.commit();
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        
+        
+        
+        ut = InitialContext.doLookup("java:comp/UserTransaction");
+        ut.begin();
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+        ksession = runtime.getKieSession();
+        // get tasks
+        
+        List<Status> statuses = new ArrayList<Status>();
+        statuses.add(Status.Reserved);
+        List<TaskSummary> tasks = runtime.getTaskService().getTasksAssignedAsPotentialOwnerByStatus("john", statuses, "en-UK");
+        
+        assertNotNull(tasks);
+        assertEquals(1, tasks.size());        
+        
+        
+        for (TaskSummary task : tasks) {
+            runtime.getTaskService().start(task.getId(), "john");
+            runtime.getTaskService().complete(task.getId(), "john", null);
+        }
+        ut.commit();
+        // now wait for 1 second for first timer to trigger
+        Thread.sleep(1500);
+        
+        Thread.sleep(2000);
+        ut = InitialContext.doLookup("java:comp/UserTransaction");
+        ut.begin();
+        try {
+            runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+            ksession = runtime.getKieSession();
+    
+            processInstance = ksession.getProcessInstance(processInstance.getId());  
+    
+            assertNull(processInstance);
+        } catch (SessionNotFoundException e) {
+            // expected for PerProcessInstanceManagers since process instance is completed
+        }
+        ut.commit();
+        // let's wait to ensure no more timers are expired and triggered
+        Thread.sleep(3000);
+   
+        assertEquals(3, timerExporations.size());
     }
     
     
