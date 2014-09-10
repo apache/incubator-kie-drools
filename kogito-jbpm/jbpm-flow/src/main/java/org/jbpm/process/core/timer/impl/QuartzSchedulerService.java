@@ -72,7 +72,7 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
     
     // global data shared across all scheduler service instances
     private static Scheduler scheduler;    
-    private static AtomicInteger timerServiceCounter = new AtomicInteger();
+    private static AtomicInteger timerServiceCounter = new AtomicInteger(0);
  
     public QuartzSchedulerService() {
         
@@ -219,21 +219,26 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
 
     @Override
     public void shutdown() {
+    	if (scheduler == null) {
+    		return;
+    	}
         int current = timerServiceCounter.decrementAndGet();
         if (scheduler != null && current == 0) {
             try {
-                scheduler.shutdown();
+                scheduler.shutdown();        
             } catch (SchedulerException e) {
                 logger.warn("Error encountered while shutting down the scheduler", e);
             }
             scheduler = null;
         }
+        
     }
     
     public void forceShutdown() {
         if (scheduler != null) {
             try {
                 scheduler.shutdown();
+                timerServiceCounter.set(0);
             } catch (SchedulerException e) {
                 logger.warn("Error encountered while shutting down (forced) the scheduler", e);
             }
