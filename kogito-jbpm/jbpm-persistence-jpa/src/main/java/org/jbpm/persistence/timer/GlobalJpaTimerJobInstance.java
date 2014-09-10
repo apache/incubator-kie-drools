@@ -94,7 +94,13 @@ public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
         }
     }
     
-    protected boolean allowedToDispose(Environment environment) {
+    @Override
+	public String toString() {
+		return "GlobalJpaTimerJobInstance [timerServiceId=" + timerServiceId
+				+ ", getJobHandle()=" + getJobHandle() + "]";
+	}
+
+	protected boolean allowedToDispose(Environment environment) {
     	if (hasEnvironmentEntry(environment, "IS_JTA_TRANSACTION", false)) {
     		return true;
     	}

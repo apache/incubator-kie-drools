@@ -95,7 +95,7 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
             jobname = "Timer-"+ctx.getClass().getSimpleName()+ "-" + id;
         
         }
-        
+        logger.debug("Scheduling timer with name " + jobname);
         // check if this scheduler already has such job registered if so there is no need to schedule it again        
         try {
             JobDetail jobDetail = scheduler.getJobDetail(jobname, "jbpm");
@@ -273,6 +273,43 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
         public void setJobGroup(String jobGroup) {
             this.jobGroup = jobGroup;
         }
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((jobGroup == null) ? 0 : jobGroup.hashCode());
+			result = prime * result
+					+ ((jobName == null) ? 0 : jobName.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (getClass() != obj.getClass())
+				return false;
+			GlobalQuartzJobHandle other = (GlobalQuartzJobHandle) obj;
+			if (jobGroup == null) {
+				if (other.jobGroup != null)
+					return false;
+			} else if (!jobGroup.equals(other.jobGroup))
+				return false;
+			if (jobName == null) {
+				if (other.jobName != null)
+					return false;
+			} else if (!jobName.equals(other.jobName))
+				return false;
+			return true;
+		}
+
+		@Override
+		public String toString() {
+			return "GlobalQuartzJobHandle [jobName=" + jobName + ", jobGroup="
+					+ jobGroup + "]";
+		}
     
     }
     
