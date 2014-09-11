@@ -72,18 +72,22 @@ public class HubSegmentLocation extends Location {
         Double distance = nearbyTravelDistanceMap.get(location);
         if (distance == null) {
             // location isn't nearby
-            distance = getShortestDistanceDoubleThroughHub(location);
+            distance = getShortestDistanceDoubleThroughOtherHub(location);
         }
         return distance;
     }
 
-    protected double getShortestDistanceDoubleThroughHub(RoadSegmentLocation location) {
+    protected double getShortestDistanceDoubleThroughOtherHub(RoadSegmentLocation location) {
         double shortestDistance = Double.MAX_VALUE;
-        for (HubSegmentLocation otherHub : location.getHubTravelDistanceMap().keySet()) {
-            double distance = (this == otherHub ? 0.0 : hubTravelDistanceMap.get(otherHub))
-                    + otherHub.nearbyTravelDistanceMap.get(location);
-            if (distance < shortestDistance) {
-                shortestDistance = distance;
+        // Don't use location.getHubTravelDistanceMap().keySet() instead because distances aren't always paired
+        for (Map.Entry<HubSegmentLocation, Double> otherHubEntry : hubTravelDistanceMap.entrySet()) {
+            HubSegmentLocation otherHub = otherHubEntry.getKey();
+            Double otherHubNearbyDistance = otherHub.nearbyTravelDistanceMap.get(location);
+            if (otherHubNearbyDistance != null) {
+                double distance = otherHubEntry.getValue() + otherHubNearbyDistance;
+                if (distance < shortestDistance) {
+                    shortestDistance = distance;
+                }
             }
         }
         return shortestDistance;
