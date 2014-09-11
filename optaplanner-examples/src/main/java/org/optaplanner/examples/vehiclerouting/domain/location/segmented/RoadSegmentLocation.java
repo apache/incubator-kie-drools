@@ -60,13 +60,18 @@ public class RoadSegmentLocation extends Location {
 
     @Override
     public int getDistance(Location location) {
+        Double distance = getDistanceDouble((RoadSegmentLocation) location);
+        // Multiplied by 1000 to avoid floating point arithmetic rounding errors
+        return (int) (distance * 1000.0 + 0.5);
+    }
+
+    public Double getDistanceDouble(RoadSegmentLocation location) {
         Double distance = nearbyTravelDistanceMap.get((RoadSegmentLocation) location);
         if (distance == null) {
             // location isn't nearby
             distance = getShortestDistanceDoubleThroughHubs((RoadSegmentLocation) location);
         }
-        // Multiplied by 1000 to avoid floating point arithmetic rounding errors
-        return (int) (distance * 1000.0 + 0.5);
+        return distance;
     }
 
     protected double getShortestDistanceDoubleThroughHubs(RoadSegmentLocation location) {
