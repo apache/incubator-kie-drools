@@ -154,11 +154,10 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         private void readVrpWebLocationList() throws IOException {
             DistanceType distanceType = solution.getDistanceType();
             List<HubSegmentLocation> hubLocationList = null;
-            Map<Long, HubSegmentLocation> hubLocationMap = null;
+            locationMap = new HashMap<Long, Location>(customerListSize);
             if (distanceType == DistanceType.SEGMENTED_ROAD_DISTANCE) {
                 int hubListSize= readIntegerValue("HUBS *:");
                 hubLocationList = new ArrayList<HubSegmentLocation>(hubListSize);
-                hubLocationMap = new HashMap<Long, HubSegmentLocation>(hubListSize);
                 readConstantLine("HUB_COORD_SECTION");
                 for (int i = 0; i < hubListSize; i++) {
                     String line = bufferedReader.readLine();
@@ -171,11 +170,10 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                         location.setName(lineTokens[3]);
                     }
                     hubLocationList.add(location);
-                    hubLocationMap.put(location.getId(), location);
+                    locationMap.put(location.getId(), location);
                 }
             }
-            List<Location> locationList = new ArrayList<Location>(customerListSize);
-            locationMap = new HashMap<Long, Location>(customerListSize);
+            List<Location> customerLocationList = new ArrayList<Location>(customerListSize);
             readConstantLine("NODE_COORD_SECTION");
             for (int i = 0; i < customerListSize; i++) {
                 String line = bufferedReader.readLine();
@@ -202,15 +200,14 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                 if (lineTokens.length >= 4) {
                     location.setName(lineTokens[3]);
                 }
-                locationList.add(location);
+                customerLocationList.add(location);
                 locationMap.put(location.getId(), location);
             }
             if (distanceType == DistanceType.ROAD_DISTANCE) {
                 readConstantLine("EDGE_WEIGHT_SECTION");
                 for (int i = 0; i < customerListSize; i++) {
-                    RoadLocation location = (RoadLocation) locationList.get(i);
-                    HashMap<RoadLocation, Double> travelDistanceMap
-                            = new HashMap<RoadLocation, Double>(customerListSize);
+                    RoadLocation location = (RoadLocation) customerLocationList.get(i);
+                    Map<RoadLocation, Double> travelDistanceMap = new HashMap<RoadLocation, Double>(customerListSize);
                     String line = bufferedReader.readLine();
                     String[] lineTokens = splitBySpacesOrTabs(line.trim(), customerListSize);
                     for (int j = 0; j < customerListSize; j++) {
@@ -221,7 +218,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                                         + ") should be zero.");
                             }
                         } else {
-                            RoadLocation otherLocation = (RoadLocation) locationList.get(j);
+                            RoadLocation otherLocation = (RoadLocation) customerLocationList.get(j);
                             travelDistanceMap.put(otherLocation, travelDistance);
                         }
                     }
@@ -229,7 +226,48 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                 }
             }
             if (distanceType == DistanceType.SEGMENTED_ROAD_DISTANCE) {
+                readConstantLine("SEGMENTED_EDGE_WEIGHT_SECTION");
+                int locationListSize = hubLocationList.size() + customerListSize;
+                for (int i = 0; i < locationListSize; i++) {
+                    String line = bufferedReader.readLine();
+                    String[] lineTokens = splitBySpacesOrTabs(line.trim(), 3, null);
+                    if (lineTokens.length % 2 != 1) {
+                        throw new IllegalArgumentException("Invalid SEGMENTED_EDGE_WEIGHT_SECTION line (" + line + ").");
+                    }
+                    long id = Long.parseLong(lineTokens[0]);
+                    Location location = locationMap.get(id);
+                    if (location == null) {
+                        throw new IllegalArgumentException("The location with id (" + id + ") of line (" + line + ") does not exist.");
+                    }
+                    Map<HubSegmentLocation, Double> hubTravelDistanceMap = new HashMap<HubSegmentLocation, Double>(lineTokens.length / 2);
+                    Map<RoadSegmentLocation, Double> nearbyTravelDistanceMap = new HashMap<RoadSegmentLocation, Double>(lineTokens.length / 2);
+                    for (int j = 1; j < lineTokens.length; j += 2) {
+                        Location otherLocation = locationMap.get(Long.parseLong(lineTokens[j]));
+                        double travelDistance = Double.parseDouble(lineTokens[j + 1]);
+                        if (otherLocation instanceof HubSegmentLocation) {
+                            hubTravelDistanceMap.put((HubSegmentLocation) otherLocation, travelDistance);
+                        } else {
+                            nearbyTravelDistanceMap.put((RoadSegmentLocation) otherLocation, travelDistance);
+                        }
+                    }
+                    if (location instanceof HubSegmentLocation) {
+                        HubSegmentLocation hubSegmentLocation = (HubSegmentLocation) location;
+                        hubSegmentLocation.setHubTravelDistanceMap(hubTravelDistanceMap);
+                        hubSegmentLocation.setNearbyTravelDistanceMap(nearbyTravelDistanceMap);
+                    } else {
+                        RoadSegmentLocation roadSegmentLocation = (RoadSegmentLocation) location;
+                        roadSegmentLocation.setHubTravelDistanceMap(hubTravelDistanceMap);
+                        roadSegmentLocation.setNearbyTravelDistanceMap(nearbyTravelDistanceMap);
+                    }
+                }
+            }
+            List<Location> locationList;
+            if (distanceType == DistanceType.SEGMENTED_ROAD_DISTANCE) {
+                locationList = new ArrayList<Location>(hubLocationList.size() + customerListSize);
                 locationList.addAll(hubLocationList);
+                locationList.addAll(customerLocationList);
+            } else {
+                locationList = customerLocationList;
             }
             solution.setLocationList(locationList);
         }
