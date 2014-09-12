@@ -39,6 +39,7 @@ public class KModuleDeploymentUnit implements DeploymentUnit, Serializable {
     
     private DeploymentDescriptor deploymentDescriptor;
     private boolean deployed = false;
+    private boolean strategyUnset = true;
     
     public KModuleDeploymentUnit(String groupId, String artifactId, String version) {
         this.groupId = groupId;
@@ -56,6 +57,7 @@ public class KModuleDeploymentUnit implements DeploymentUnit, Serializable {
             String strategy) {
         this(groupId, artifactId, version, kbaseName, ksessionName);
         this.strategy = RuntimeStrategy.valueOf(strategy);
+        this.strategyUnset = false;
     }
 
     @Override
@@ -81,7 +83,9 @@ public class KModuleDeploymentUnit implements DeploymentUnit, Serializable {
     }
 
     public void setStrategy(RuntimeStrategy strategy) {
-        this.strategy = strategy;
+    	if (strategyUnset) {
+    		this.strategy = strategy;
+    	}
     }
 
     public String getArtifactId() {

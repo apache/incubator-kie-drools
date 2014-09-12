@@ -166,4 +166,36 @@ public class DeploymentDescriptorTest {
 		
 		System.out.println(descriptor.toXml());
 	}
+	
+	@Test
+	public void testWriteDeploymentDescriptorXmlWithDuplicateNamedObjects() {
+		DeploymentDescriptor descriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
+		
+		descriptor.getBuilder()
+		.addWorkItemHandler(new NamedObjectModel("mvel", "Log", "new org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler()"))
+		.addWorkItemHandler(new NamedObjectModel("mvel", "Log", "new org.jbpm.process.instance.impl.demo.CustomSystemOutWorkItemHandler()"))
+		.addRequiredRole("experts");
+		
+		String deploymentDescriptorXml = descriptor.toXml();
+		assertNotNull(deploymentDescriptorXml);
+		logger.info(deploymentDescriptorXml);
+		
+		ByteArrayInputStream stream = new ByteArrayInputStream(deploymentDescriptorXml.getBytes());
+		DeploymentDescriptor fromXml = DeploymentDescriptorIO.fromXml(stream);
+		
+		assertNotNull(fromXml);
+		assertEquals("org.jbpm.domain", fromXml.getPersistenceUnit());
+		assertEquals("org.jbpm.domain", fromXml.getAuditPersistenceUnit());
+		assertEquals(AuditMode.JPA, fromXml.getAuditMode());
+		assertEquals(PersistenceMode.JPA, fromXml.getPersistenceMode());
+		assertEquals(RuntimeStrategy.SINGLETON, fromXml.getRuntimeStrategy());
+		assertEquals(0, fromXml.getMarshallingStrategies().size());
+		assertEquals(0, fromXml.getConfiguration().size());
+		assertEquals(0, fromXml.getEnvironmentEntries().size());
+		assertEquals(0, fromXml.getEventListeners().size());
+		assertEquals(0, fromXml.getGlobals().size());		
+		assertEquals(0, fromXml.getTaskEventListeners().size());
+		assertEquals(1, fromXml.getWorkItemHandlers().size());
+		assertEquals(1, fromXml.getRequiredRoles().size());
+	}
 }
