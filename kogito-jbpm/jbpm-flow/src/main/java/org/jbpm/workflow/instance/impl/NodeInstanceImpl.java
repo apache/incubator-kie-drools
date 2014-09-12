@@ -206,6 +206,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
 	    	    uniqueId = ((NodeImpl) node).getUniqueId();
 	    	}
 	    	((WorkflowProcessInstanceImpl) processInstance).addCompletedNodeId(uniqueId);
+	    	((WorkflowProcessInstanceImpl) processInstance).getIterationLevels().remove(uniqueId);
         }
 
         // if node instance was cancelled, or containing container instance was cancelled
