@@ -61,7 +61,7 @@ public class NamedObjectModel extends ObjectModel {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
+		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -70,8 +70,6 @@ public class NamedObjectModel extends ObjectModel {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
-			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		NamedObjectModel other = (NamedObjectModel) obj;
