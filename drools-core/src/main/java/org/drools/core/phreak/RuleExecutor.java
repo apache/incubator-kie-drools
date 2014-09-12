@@ -26,7 +26,6 @@ import org.kie.api.runtime.rule.AgendaFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -62,12 +61,20 @@ public class RuleExecutor {
             if (tupleEntry.getLeftTuple() != null) {
                 LeftTuple leftTuple = tupleEntry.getLeftTuple();
                 if (leftTuple.getMemory() != null) {
-                    leftTuple.getMemory().remove(leftTuple);
+                    if (tupleEntry.getNodeMemory() instanceof BetaMemory) {
+                        ((BetaMemory)tupleEntry.getNodeMemory()).getLeftTupleMemory().remove(leftTuple);
+                    } else {
+                        leftTuple.getMemory().remove(leftTuple);
+                    }
                 }
             } else {
                 RightTuple rightTuple = tupleEntry.getRightTuple();
                 if (rightTuple.getMemory() != null) {
-                    rightTuple.getMemory().remove(rightTuple);
+                    if (tupleEntry.getNodeMemory() instanceof BetaMemory) {
+                        ((BetaMemory) tupleEntry.getNodeMemory()).getRightTupleMemory().remove(rightTuple);
+                    } else {
+                        rightTuple.getMemory().remove(rightTuple);
+                    }
                 }
             }
         }
