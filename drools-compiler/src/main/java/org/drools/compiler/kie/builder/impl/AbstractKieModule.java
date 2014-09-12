@@ -312,7 +312,8 @@ public abstract class AbstractKieModule
                                              _header.getVersion().getVersionMinor(),
                                              _header.getVersion().getVersionRevision())) {
                         // if cache has been built with an incompatible version avoid to use it
-                        log.warn("Compilation cache has been built with an incompatible version, so don't use it");
+                        log.warn("The compilation cache has been built with an incompatible version. " +
+                                 "You should recompile your project in order to use it with current release.");
                         return null;
                     }
 
