@@ -134,7 +134,12 @@ public class AuditLoggerFactory {
         AsyncAuditLogProducer logger = new AsyncAuditLogProducer();
         boolean transacted = true;
         if (properties.containsKey("jbpm.audit.jms.transacted")) {
-            transacted = (Boolean) properties.get("jbpm.audit.jms.transacted");
+        	Object transactedObj = properties.get("jbpm.audit.jms.transacted");
+        	if (transactedObj instanceof Boolean) {
+        		transacted = (Boolean) properties.get("jbpm.audit.jms.transacted");
+        	} else {
+        		transacted = Boolean.parseBoolean(transactedObj.toString());
+        	}
         }
         
         logger.setTransacted(transacted);

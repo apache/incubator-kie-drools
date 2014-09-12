@@ -20,7 +20,7 @@ public class WeblogicUserGroupAdapter implements UserGroupAdapter {
     	try {
             this.webLogicSecurity = Class.forName("weblogic.security.Security");
         } catch ( Exception e ) {
-            logger.warn( "Unable to find weblogic.security.Security, disabling weblogic adapter" );
+            logger.info( "Unable to find weblogic.security.Security, disabling weblogic adapter" );
         }
     }
 

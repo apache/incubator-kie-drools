@@ -21,7 +21,7 @@ public class WebSphereUserGroupAdapter implements UserGroupAdapter {
         try {
             this.registry = InitialContext.doLookup("UserRegistry");
         } catch (NamingException e) {
-            logger.warn("Unable to look up UserRegistry in JNDI under key 'UserRegistry', disabling websphere adapter");
+            logger.info("Unable to look up UserRegistry in JNDI under key 'UserRegistry', disabling websphere adapter");
         }
     }
 

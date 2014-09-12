@@ -4,6 +4,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.naming.InitialContext;
 
 import org.jbpm.kie.services.impl.store.DeploymentStore;
@@ -13,6 +14,7 @@ import org.jbpm.services.api.DeploymentService;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.kie.internal.runtime.cdi.BootOnLoad;
 
+@Named("DeploymentSyncManager-startable")
 @BootOnLoad
 @ApplicationScoped
 public class DeploymentSyncManager {
