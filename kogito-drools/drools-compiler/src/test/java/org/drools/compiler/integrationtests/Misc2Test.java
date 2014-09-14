@@ -30,12 +30,15 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialectConfiguration;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.RightTupleSets;
 import org.drools.core.conflict.SalienceConflictResolver;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.reteoo.AlphaNode;
@@ -45,6 +48,8 @@ import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
+import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.spi.Salience;
 import org.drools.core.util.FileManager;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -59,6 +64,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.Position;
@@ -76,6 +82,7 @@ import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
+import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -6538,4 +6545,62 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 10, list.get(0) );
         assertEquals( "10", list.get(1) );
     }
+
+    @Test
+    public void testCustomDynamicSalience() {
+        String drl  = "package org.drools.test; " +
+                      "import " + Person.class.getName() + "; " +
+                      "global java.util.List list; " +
+
+                      "rule A " +
+                      "when " +
+                      "     $person : Person( name == 'a' ) " +
+                      "then" +
+                      "     list.add( $person.getAge() ); " +
+                      "end " +
+
+                      "rule B " +
+                      "when " +
+                      "     $person : Person( name == 'b' ) " +
+                      "then" +
+                      "     list.add( $person.getAge() ); " +
+                      "end " +
+                      "";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession session = helper.build().newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        session.setGlobal( "list", list );
+
+        for ( Rule r : session.getKieBase().getKiePackage( "org.drools.test" ).getRules() ) {
+            ((RuleImpl) r).setSalience( new Salience() {
+                @Override
+                public int getValue( KnowledgeHelper khelper, Rule rule, WorkingMemory workingMemory ) {
+                    if ( khelper == null ) { return 0; }
+                    InternalFactHandle h = (InternalFactHandle) khelper.getMatch().getFactHandles().get( 0 );
+                    return ((Person) h.getObject()).getAge();
+                }
+
+                @Override
+                public int getValue() { throw new IllegalStateException( "Should not have been called..." ); }
+
+                @Override
+                public boolean isDynamic() { return true; }
+            } );
+        }
+
+        session.insert(new Person( "a", 1 ) );
+        session.insert(new Person( "a", 5 ) );
+        session.insert(new Person( "a", 3 ) );
+        session.insert(new Person( "b", 4 ) );
+        session.insert(new Person( "b", 2 ) );
+        session.insert(new Person( "b", 6 ) );
+
+        session.fireAllRules();
+
+        assertEquals( Arrays.asList( 6, 5, 4, 3, 2, 1 ), list );
+    }
+
 }

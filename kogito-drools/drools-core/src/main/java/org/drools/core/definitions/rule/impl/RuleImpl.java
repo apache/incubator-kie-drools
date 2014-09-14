@@ -19,7 +19,6 @@ package org.drools.core.definitions.rule.impl;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
-import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.ConsequenceMetaData;
 import org.drools.core.rule.Declaration;
@@ -352,7 +351,7 @@ public class RuleImpl implements Externalizable,
      */
     public void setSalience(final Salience salience) {
         this.salience = salience;
-        if ( salience instanceof MVELSalienceExpression) {
+        if ( salience.isDynamic() ) {
             this.eager = true;
         }
     }
