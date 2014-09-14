@@ -1,0 +1,12 @@
+*~
+.classpath
+.project
+target
+bin
+.settings
+.DS_Store
+.faces-config.xml.jsfdia
+MANIFEST.MF
+.idea
+*.iml
+*.log
