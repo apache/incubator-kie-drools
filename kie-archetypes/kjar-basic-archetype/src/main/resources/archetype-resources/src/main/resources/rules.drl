@@ -1,0 +1,31 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+package ${package};
+
+global java.util.Set controlSet;
+
+#if( $exampleWithCEP=="true" || $exampleWithCEP == "y" ||  $exampleWithCEP == "yes")
+declare Measurement
+	@role(event)
+end
+
+rule "colors seen in the last 2 minutes"
+no-loop
+when
+	accumulate ( Measurement( id == "color", $colorVal : val) over window:time(2m);
+				 $mySet : collectSet( $colorVal )
+				 )  
+then
+	controlSet.clear();
+	controlSet.addAll($mySet);
+end
+#else
+rule "will execute per each Measurement having ID color"
+no-loop
+when
+	Measurement( id == "color", $colorVal : val )
+then
+	controlSet.add($colorVal);
+end
+#end
