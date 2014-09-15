@@ -2,6 +2,7 @@
   <id>0</id>
   <name>F-n72-k4</name>
   <distanceType>AIR_DISTANCE</distanceType>
+  <distanceUnitOfMeasurement>distance</distanceUnitOfMeasurement>
   <locationList id="2">
     <VrpAirLocation id="3">
       <id>1</id>
