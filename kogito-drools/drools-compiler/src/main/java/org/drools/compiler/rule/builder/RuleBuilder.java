@@ -16,12 +16,6 @@
 
 package org.drools.compiler.rule.builder;
 
-import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.StringTokenizer;
-
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.compiler.RuleBuildError;
@@ -38,6 +32,7 @@ import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
+import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.Salience;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.impl.CronExpression;
@@ -48,6 +43,12 @@ import org.drools.core.time.impl.Timer;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
+
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * This builds the rule structure from an AST.
@@ -178,7 +179,7 @@ public class RuleBuilder {
                 rule.setActivationGroup( attributeDescr.getValue() );
             } else if ( name.equals( "ruleflow-group" ) ) {
                 rule.setRuleFlowGroup( attributeDescr.getValue() );
-                if ( ! StringUtils.isEmpty( rule.getAgendaGroup() ) && ! rule.getAgendaGroup().equals( attributeDescr.getValue() ) ) {
+                if ( ! rule.getAgendaGroup().equals( AgendaGroup.MAIN ) && ! rule.getAgendaGroup().equals( attributeDescr.getValue() ) ) {
                     DroolsWarning warn = new RuleBuildWarning( rule, context.getParentDescr(), null,
                                                                "Both an agenda-group ( " + attributeDescr.getValue() +
                                                                " ) and a ruleflow-group ( " + rule.getRuleFlowGroup() +
