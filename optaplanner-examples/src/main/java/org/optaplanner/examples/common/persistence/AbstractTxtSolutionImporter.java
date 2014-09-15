@@ -193,7 +193,6 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
                         + value + ").", e);
             }
         }
-
         public String readStringValue() throws IOException {
             return readStringValue("");
         }
@@ -209,6 +208,35 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
                         + prefixRegex + "<value>" + suffixRegex + ").");
             }
             return removePrefixSuffixFromLine(line, prefixRegex, suffixRegex);
+        }
+        public String readOptionalStringValue(String defaultValue) throws IOException {
+            return readOptionalStringValue("", defaultValue);
+        }
+
+        public String readOptionalStringValue(String prefixRegex, String defaultValue) throws IOException {
+            return readOptionalStringValue(prefixRegex, "", defaultValue);
+        }
+
+        public String readOptionalStringValue(String prefixRegex, String suffixRegex, String defaultValue) throws IOException {
+            bufferedReader.mark(1024);
+            String value = bufferedReader.readLine().trim();
+            boolean valid = true;
+            if (value.matches("^" + prefixRegex + ".*")) {
+                value = value.replaceAll("^" + prefixRegex + "(.*)", "$1");
+            } else {
+                valid = false;
+            }
+            if (value.matches(".*" + suffixRegex + "$")) {
+                value = value.replaceAll("(.*)" + suffixRegex + "$", "$1");
+            } else {
+                valid = false;
+            }
+            if (!valid) {
+                bufferedReader.reset();
+                return defaultValue;
+            }
+            value = value.trim();
+            return value;
         }
 
         public String removePrefixSuffixFromLine(String line, String prefixRegex, String suffixRegex) {

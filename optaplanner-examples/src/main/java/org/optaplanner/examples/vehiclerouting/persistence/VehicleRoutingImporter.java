@@ -148,6 +148,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             } else {
                 throw new IllegalArgumentException("The edgeWeightType (" + edgeWeightType + ") is not supported.");
             }
+            solution.setDistanceUnitOfMeasurement(readOptionalStringValue("EDGE_WEIGHT_UNIT_OF_MEASUREMENT *:", "distance"));
             capacity = readIntegerValue("CAPACITY *:");
         }
 
@@ -358,6 +359,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
 
         public void readCourseraFormat() throws IOException {
             solution.setDistanceType(DistanceType.AIR_DISTANCE);
+            solution.setDistanceUnitOfMeasurement("distance");
             List<Location> locationList = new ArrayList<Location>(customerListSize);
             depotList = new ArrayList<Depot>(1);
             List<Customer> customerList = new ArrayList<Customer>(customerListSize);
@@ -409,6 +411,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
 
         private void readTimeWindowedHeaders() throws IOException {
             solution.setDistanceType(DistanceType.AIR_DISTANCE);
+            solution.setDistanceUnitOfMeasurement("distance");
             readEmptyLine();
             readConstantLine("VEHICLE");
             readConstantLine("NUMBER +CAPACITY");

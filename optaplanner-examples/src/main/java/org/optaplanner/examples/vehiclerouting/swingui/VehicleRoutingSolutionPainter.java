@@ -223,16 +223,16 @@ public class VehicleRoutingSolutionPainter {
         g.setColor(TangoColorFactory.ORANGE_3);
         HardSoftScore score = solution.getScore();
         if (score != null) {
-            String fuelString;
+            String distanceString;
             if (!score.isFeasible()) {
-                fuelString = "Not feasible";
+                distanceString = "Not feasible";
             } else {
-                double fuel = ((double) - score.getSoftScore()) / 1000.0;
-                fuelString = NUMBER_FORMAT.format(fuel) + " fuel";
+                double distance = ((double) - score.getSoftScore()) / 1000.0;
+                distanceString = NUMBER_FORMAT.format(distance) + " " + solution.getDistanceUnitOfMeasurement();
             }
             g.setFont(g.getFont().deriveFont(Font.BOLD, (float) TEXT_SIZE * 2));
-            g.drawString(fuelString,
-                    (int) width - g.getFontMetrics().stringWidth(fuelString) - 10, (int) height - 10 - TEXT_SIZE);
+            g.drawString(distanceString,
+                    (int) width - g.getFontMetrics().stringWidth(distanceString) - 10, (int) height - 10 - TEXT_SIZE);
         }
     }
 

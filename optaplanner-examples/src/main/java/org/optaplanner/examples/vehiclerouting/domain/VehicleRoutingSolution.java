@@ -44,6 +44,7 @@ public class VehicleRoutingSolution extends AbstractPersistable implements Solut
 
     protected String name;
     protected DistanceType distanceType;
+    protected String distanceUnitOfMeasurement;
     protected List<Location> locationList;
     protected List<Depot> depotList;
     protected List<Vehicle> vehicleList;
@@ -67,6 +68,14 @@ public class VehicleRoutingSolution extends AbstractPersistable implements Solut
 
     public void setDistanceType(DistanceType distanceType) {
         this.distanceType = distanceType;
+    }
+
+    public String getDistanceUnitOfMeasurement() {
+        return distanceUnitOfMeasurement;
+    }
+
+    public void setDistanceUnitOfMeasurement(String distanceUnitOfMeasurement) {
+        this.distanceUnitOfMeasurement = distanceUnitOfMeasurement;
     }
 
     public List<Location> getLocationList() {
