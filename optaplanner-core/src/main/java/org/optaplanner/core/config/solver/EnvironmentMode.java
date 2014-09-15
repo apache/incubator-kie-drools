@@ -129,7 +129,7 @@ public enum EnvironmentMode {
         switch (this) {
             case FULL_ASSERT:
             case FAST_ASSERT:
-                return false;
+                return true;
             case NON_INTRUSIVE_FULL_ASSERT:
             case REPRODUCIBLE:
             case PRODUCTION:
