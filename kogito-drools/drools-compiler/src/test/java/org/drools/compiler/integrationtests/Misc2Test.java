@@ -82,7 +82,6 @@ import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -6603,4 +6602,33 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( Arrays.asList( 6, 5, 4, 3, 2, 1 ), list );
     }
 
+    @Test
+    public void testNotWithSubNetwork() {
+        String drl  =
+                "rule R when\n" +
+                "    $s : String( )\n" +
+                "    not (\n" +
+                "        Long( toString() == $s )\n" +
+                "    and\n" +
+                "        Integer( toString() == $s )\n" +
+                "    )\n" +
+                "then\n" +
+                "    delete( $s );\n" +
+                "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession ksession = helper.build().newKieSession();
+
+        ksession.insert("1");
+        FactHandle iFH = ksession.insert(1);
+        FactHandle lFH = ksession.insert(1L);
+        ksession.fireAllRules();
+
+        ksession.delete(iFH);
+        ksession.delete(lFH);
+        ksession.fireAllRules();
+
+        assertEquals( 0, ksession.getFactCount() );
+    }
 }

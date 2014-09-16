@@ -2652,4 +2652,33 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         assertEquals(1, list.size());
     }
+
+    @Test
+    public void testEmptyAccumulateInSubnetwork() {
+        // DROOLS-598
+        String drl =
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "    $count : Number( ) from accumulate (\n" +
+                "        Integer() and\n" +
+                "        $s: String();\n" +
+                "        count($s)\n" +
+                "    )\n" +
+                "then\n" +
+                "    list.add($count);\n" +
+                "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent(drl, ResourceType.DRL);
+        KieSession ksession = helper.build().newKieSession();
+
+        List<Long> list = new ArrayList<Long>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(1);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals(0, (long)list.get(0));
+    }
 }
