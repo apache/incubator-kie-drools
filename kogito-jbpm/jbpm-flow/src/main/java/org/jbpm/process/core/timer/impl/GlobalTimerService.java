@@ -156,7 +156,9 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         List<GlobalJobHandle> jobs = timerJobsPerSession.get(id); {
             if (jobs != null) {
                 for (GlobalJobHandle job : jobs) {
-                    timers.add(job.getTimerJobInstance());
+                	if (schedulerService.isValid(job)) {
+                		timers.add(job.getTimerJobInstance());
+                	}
                 }
             }
         }   

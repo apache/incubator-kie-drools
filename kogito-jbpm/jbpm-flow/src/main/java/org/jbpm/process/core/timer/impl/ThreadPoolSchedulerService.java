@@ -21,7 +21,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -214,5 +213,12 @@ public class ThreadPoolSchedulerService implements GlobalSchedulerService {
 	@Override
 	public boolean retryEnabled() {
 		return true;
+	}
+
+
+	@Override
+	public boolean isValid(GlobalJobHandle jobHandle) {
+		
+		return activeTimer.containsValue(jobHandle);
 	}
 }

@@ -434,4 +434,18 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
 		return false;
 	}
 
+	@Override
+	public boolean isValid(GlobalJobHandle jobHandle) {
+		if (scheduler == null) {
+			return true;
+		}
+		JobDetail jobDetail = null;
+		try {
+			jobDetail = scheduler.getJobDetail(((GlobalQuartzJobHandle)jobHandle).getJobName(), ((GlobalQuartzJobHandle)jobHandle).getJobGroup());
+		} catch (SchedulerException e) {
+			logger.warn("Cannot fetch job detail for job handle {}", jobHandle);
+		}
+		return jobDetail != null;
+	}
+
 }
