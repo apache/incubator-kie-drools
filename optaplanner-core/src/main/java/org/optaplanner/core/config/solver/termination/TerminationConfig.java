@@ -281,15 +281,31 @@ public class TerminationConfig implements Cloneable {
         }
         long timeMillisSpentLimit = 0L;
         if (millisecondsSpentLimit != null) {
+            if (millisecondsSpentLimit < 0L) {
+                throw new IllegalArgumentException("The termination millisecondsSpentLimit (" + millisecondsSpentLimit
+                        + ") cannot be negative.");
+            }
             timeMillisSpentLimit += millisecondsSpentLimit;
         }
         if (secondsSpentLimit != null) {
+            if (secondsSpentLimit < 0L) {
+                throw new IllegalArgumentException("The termination secondsSpentLimit (" + secondsSpentLimit
+                        + ") cannot be negative.");
+            }
             timeMillisSpentLimit += secondsSpentLimit * 1000L;
         }
         if (minutesSpentLimit != null) {
+            if (minutesSpentLimit < 0L) {
+                throw new IllegalArgumentException("The termination minutesSpentLimit (" + minutesSpentLimit
+                        + ") cannot be negative.");
+            }
             timeMillisSpentLimit += minutesSpentLimit * 60000L;
         }
         if (hoursSpentLimit != null) {
+            if (hoursSpentLimit < 0L) {
+                throw new IllegalArgumentException("The termination hoursSpentLimit (" + hoursSpentLimit
+                        + ") cannot be negative.");
+            }
             timeMillisSpentLimit += hoursSpentLimit * 3600000L;
         }
         return timeMillisSpentLimit;
@@ -312,15 +328,31 @@ public class TerminationConfig implements Cloneable {
         }
         long unimprovedTimeMillisSpentLimit = 0L;
         if (unimprovedMillisecondsSpentLimit != null) {
+            if (unimprovedMillisecondsSpentLimit < 0L) {
+                throw new IllegalArgumentException("The termination unimprovedMillisecondsSpentLimit (" + unimprovedMillisecondsSpentLimit
+                        + ") cannot be negative.");
+            }
             unimprovedTimeMillisSpentLimit += unimprovedMillisecondsSpentLimit;
         }
         if (unimprovedSecondsSpentLimit != null) {
+            if (unimprovedSecondsSpentLimit < 0L) {
+                throw new IllegalArgumentException("The termination unimprovedSecondsSpentLimit (" + unimprovedSecondsSpentLimit
+                        + ") cannot be negative.");
+            }
             unimprovedTimeMillisSpentLimit += unimprovedSecondsSpentLimit * 1000L;
         }
         if (unimprovedMinutesSpentLimit != null) {
+            if (unimprovedMinutesSpentLimit < 0L) {
+                throw new IllegalArgumentException("The termination unimprovedMinutesSpentLimit (" + unimprovedMinutesSpentLimit
+                        + ") cannot be negative.");
+            }
             unimprovedTimeMillisSpentLimit += unimprovedMinutesSpentLimit * 60000L;
         }
         if (unimprovedHoursSpentLimit != null) {
+            if (unimprovedHoursSpentLimit < 0L) {
+                throw new IllegalArgumentException("The termination unimprovedHoursSpentLimit (" + unimprovedHoursSpentLimit
+                        + ") cannot be negative.");
+            }
             unimprovedTimeMillisSpentLimit += unimprovedHoursSpentLimit * 3600000L;
         }
         return unimprovedTimeMillisSpentLimit;
