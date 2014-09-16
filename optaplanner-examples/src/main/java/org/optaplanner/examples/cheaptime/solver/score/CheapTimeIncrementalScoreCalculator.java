@@ -101,7 +101,8 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
 
     public void afterEntityAdded(Object entity) {
         TaskAssignment taskAssignment = (TaskAssignment) entity;
-        modifyMachine(taskAssignment, null, taskAssignment.getMachine());
+        // Do not do modifyMachine(taskAssignment, null, taskAssignment.getMachine());
+        // because modifyStartPeriod does all it's effects too
         modifyStartPeriod(taskAssignment, null, taskAssignment.getStartPeriod());
     }
 
@@ -135,7 +136,8 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
 
     public void afterEntityRemoved(Object entity) {
         TaskAssignment taskAssignment = (TaskAssignment) entity;
-        modifyMachine(taskAssignment, oldMachine, null);
+        // Do not do modifyMachine(taskAssignment, oldMachine, null);
+        // because modifyStartPeriod does all it's effects too
         modifyStartPeriod(taskAssignment, oldStartPeriod, null);
     }
 
