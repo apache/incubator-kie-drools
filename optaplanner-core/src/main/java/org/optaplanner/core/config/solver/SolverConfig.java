@@ -214,6 +214,7 @@ public class SolverConfig {
     protected BestSolutionRecaller buildBestSolutionRecaller(EnvironmentMode environmentMode) {
         BestSolutionRecaller bestSolutionRecaller = new BestSolutionRecaller();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
+            bestSolutionRecaller.setAssertInitialScoreFromScratch(true);
             bestSolutionRecaller.setAssertBestScoreIsUnmodified(true);
         }
         return bestSolutionRecaller;

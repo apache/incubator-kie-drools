@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.solver.recaller;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.event.SolverEventSupport;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
@@ -34,9 +35,14 @@ public class BestSolutionRecaller extends PhaseLifecycleListenerAdapter {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
+    protected boolean assertInitialScoreFromScratch = false;
     protected boolean assertBestScoreIsUnmodified = false;
 
     protected SolverEventSupport solverEventSupport;
+
+    public void setAssertInitialScoreFromScratch(boolean assertInitialScoreFromScratch) {
+        this.assertInitialScoreFromScratch = assertInitialScoreFromScratch;
+    }
 
     public void setAssertBestScoreIsUnmodified(boolean assertBestScoreIsUnmodified) {
         this.assertBestScoreIsUnmodified = assertBestScoreIsUnmodified;
@@ -53,9 +59,10 @@ public class BestSolutionRecaller extends PhaseLifecycleListenerAdapter {
     @Override
     public void solvingStarted(DefaultSolverScope solverScope) {
         // Starting bestSolution is already set by Solver.solve(Solution)
-        int uninitializedVariableCount = solverScope.getScoreDirector().countWorkingSolutionUninitializedVariables();
+        InnerScoreDirector scoreDirector = solverScope.getScoreDirector();
+        int uninitializedVariableCount = scoreDirector.countWorkingSolutionUninitializedVariables();
         solverScope.setBestUninitializedVariableCount(uninitializedVariableCount);
-        Score score = solverScope.calculateScore();
+        Score score = scoreDirector.calculateScore();
         solverScope.setBestScore(score);
         solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
         // The original bestSolution might be the final bestSolution and should have an accurate Score
@@ -64,6 +71,9 @@ public class BestSolutionRecaller extends PhaseLifecycleListenerAdapter {
             solverScope.setStartingInitializedScore(score);
         } else {
             solverScope.setStartingInitializedScore(null);
+        }
+        if (assertInitialScoreFromScratch) {
+            scoreDirector.assertWorkingScoreFromScratch(score, "Initial score calculated");
         }
     }
 
