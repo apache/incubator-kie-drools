@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.jbpm.services.task.admin.listener.ContextStorageTaskEventListener;
 import org.jbpm.services.task.admin.listener.TaskCleanUpProcessEventListener;
 import org.jbpm.services.task.identity.DefaultUserInfo;
 import org.jbpm.test.JbpmJUnitBaseTestCase;
@@ -22,11 +23,13 @@ import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.audit.AuditService;
 import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.event.KnowledgeRuntimeEventManager;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
+import org.kie.internal.task.api.EventService;
 import org.kie.internal.task.api.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +66,8 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitBaseTestCase {
 
  
 
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void automaticCleanUpTest() throws Exception {
 
         createRuntimeManager("patient-appointment.bpmn");
@@ -74,6 +78,12 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitBaseTestCase {
         KnowledgeRuntimeLoggerFactory.newConsoleLogger((KnowledgeRuntimeEventManager) ksession);
 
         ksession.addEventListener(new TaskCleanUpProcessEventListener(taskService));
+        
+        // let check how many listeners we have
+        assertEquals(3, ((EventService<TaskLifeCycleEventListener>)taskService).getTaskEventListeners().size());
+        // add the ContextStorageTaskEventListener listener - it should already be there so let's make sure it won't get duplicated
+        ((EventService<TaskLifeCycleEventListener>)taskService).registerTaskEventListener(new ContextStorageTaskEventListener());
+        assertEquals(3, ((EventService<TaskLifeCycleEventListener>)taskService).getTaskEventListeners().size());
 
         logger.info("### Starting process ###");
         Map<String, Object> parameters = new HashMap<String, Object>();

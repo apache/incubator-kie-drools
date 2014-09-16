@@ -34,6 +34,8 @@ import org.kie.internal.task.api.TaskContext;
  */
 public class ContextStorageTaskEventListener extends DefaultTaskEventListener {
 
+	private String identifier = "ContextStorageTaskEventListener";
+	
 	@Override
 	public void beforeTaskSkippedEvent(TaskEvent event) {
 		store(event);
@@ -71,5 +73,31 @@ public class ContextStorageTaskEventListener extends DefaultTaskEventListener {
 		ts.setId(event.getTask().getId());
 		ts.setProcessInstanceId(event.getTask().getTaskData().getProcessInstanceId());
 		completedTasks.add(ts);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((identifier == null) ? 0 : identifier.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ContextStorageTaskEventListener other = (ContextStorageTaskEventListener) obj;
+		if (identifier == null) {
+			if (other.identifier != null)
+				return false;
+		} else if (!identifier.equals(other.identifier))
+			return false;
+		return true;
 	}
 }
