@@ -10,8 +10,8 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.SegmentUtilities;
-import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
+import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
@@ -23,9 +23,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
+import static org.drools.core.reteoo.PropertySpecificUtil.*;
 
 public abstract class AbstractTerminalNode extends BaseNode implements TerminalNode, MemoryFactory, Externalizable {
 
@@ -148,7 +146,9 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
                 updateAllLinkedTest = true;
             }
 
-            if ( updateAllLinkedTest && updateBitInNewSegment && NodeTypeEnums.isBetaNode( tupleSource )) {
+            if ( updateAllLinkedTest && updateBitInNewSegment &&
+                 NodeTypeEnums.isBetaNode( tupleSource ) &&
+                 NodeTypeEnums.AccumulateNode != tupleSource.getType()) { // accumulates can never be disabled
                 BetaNode bn = ( BetaNode) tupleSource;
                 if ( bn.isRightInputIsRiaNode() ) {
                     updateBitInNewSegment = false;
@@ -158,10 +158,9 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
                     if ( rnmem.getRiaPathMemory().getAllLinkedMaskTest() != 0 ) {
                         allLinkedTestMask = allLinkedTestMask | 1;
                     }
-                } else if ( ( !(NodeTypeEnums.NotNode == bn.getType() && !((NotNode)bn).isEmptyBetaConstraints()) &&
-                              NodeTypeEnums.AccumulateNode != bn.getType()) )  {
+                } else if ( NodeTypeEnums.NotNode != bn.getType() || ((NotNode)bn).isEmptyBetaConstraints()) {
                     updateBitInNewSegment = false;
-                    // non empty not nodes and accumulates can never be disabled and thus don't need checking
+                    // non empty not nodes can never be disabled and thus don't need checking
                     allLinkedTestMask = allLinkedTestMask | 1;
                 }
             }
