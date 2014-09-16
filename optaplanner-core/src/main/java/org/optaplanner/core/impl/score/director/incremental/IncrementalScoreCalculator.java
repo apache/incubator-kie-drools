@@ -30,6 +30,11 @@ import org.optaplanner.core.api.domain.solution.Solution;
  */
 public interface IncrementalScoreCalculator<Sol extends Solution> {
 
+    /**
+     * There are no {@link #beforeEntityAdded(Object)} and {@link #afterEntityAdded(Object)} calls
+     * for entities that are already present in the workingSolution.
+     * @param workingSolution never null
+     */
     void resetWorkingSolution(Sol workingSolution);
 
     void beforeEntityAdded(Object entity);
