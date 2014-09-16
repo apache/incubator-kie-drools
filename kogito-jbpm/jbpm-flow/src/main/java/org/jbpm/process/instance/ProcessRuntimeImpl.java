@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.SessionConfiguration;
+import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.WorkingMemoryAction;
@@ -46,11 +48,16 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.internal.command.Context;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.utils.CompositeClassLoader;
 
 public class ProcessRuntimeImpl implements InternalProcessRuntime {
@@ -362,7 +369,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	        return null;
 	    }
 	
-	    public void signalEvent(String type,
+	    public void signalEvent(final String type,
 	                            Object event) {
 	        for ( EventFilter filter : eventFilters ) {
 	            if ( !filter.acceptsEvent( type,
@@ -372,7 +379,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	        }
 	        Map<String, Object> params = null;
 	        if ( inMappings != null && !inMappings.isEmpty() ) {
-	            params = new HashMap<String, Object>();
+	        	params = new HashMap<String, Object>();
 	            for ( Map.Entry<String, String> entry : inMappings.entrySet() ) {
 	                if ( "event".equals( entry.getValue() ) ) {
 	                    params.put( entry.getKey(),
@@ -383,8 +390,16 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	                }
 	            }
 	        }
-	        startProcess( processId,
-	                      params, type );
+	        RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get("RuntimeManager");
+            if (manager != null) {
+                RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+                KieSession ksession = runtime.getKieSession();
+                
+                ksession.execute(new StartProcessWithTypeCommand(processId, params, type));
+                
+            } else {
+            	startProcess( processId, params, type );
+            }
 	    }
 	}
 
@@ -424,6 +439,29 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
             }
         } );
     }
+    
+    private class StartProcessWithTypeCommand implements  GenericCommand<Void> {
+		private static final long serialVersionUID = -8890906804846111698L;
+		
+		private String processId;
+		private Map<String, Object> params;
+		private String type;
+
+		private StartProcessWithTypeCommand(String processId, Map<String, Object> params, String type) {
+			this.processId = processId;
+			this.params = params;
+			this.type = type;
+		}
+		
+		@Override
+		public Void execute(Context context) {
+			KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+			((ProcessRuntimeImpl)((InternalKnowledgeRuntime)ksession).getProcessRuntime()).startProcess( processId,
+                      params, type );
+			
+			return null;
+		}
+	}
 
 	public void abortProcessInstance(long processInstanceId) {
 		ProcessInstance processInstance = getProcessInstance(processInstanceId);

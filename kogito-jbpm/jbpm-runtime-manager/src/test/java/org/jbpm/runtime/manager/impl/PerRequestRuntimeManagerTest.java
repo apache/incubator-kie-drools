@@ -6,7 +6,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.naming.InitialContext;
@@ -18,6 +21,10 @@ import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.event.process.DefaultProcessEventListener;
+import org.kie.api.event.process.ProcessCompletedEvent;
+import org.kie.api.event.process.ProcessEventListener;
+import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -282,5 +289,95 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
         manager.disposeRuntimeEngine(runtime);     
         manager.close();
      
+    }
+    
+    @Test
+    public void testEventSignalingBetweenProcessesWithPeristence() {
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("events/throw-an-event.bpmn"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("events/start-on-event.bpmn"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);        
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);  
+        
+        ksession.startProcess("com.sample.bpmn.hello");
+        
+        AuditService auditService = runtime.getAuditLogService();
+        
+        List<? extends ProcessInstanceLog> throwProcessLogs = auditService.findProcessInstances("com.sample.bpmn.hello");
+        List<? extends ProcessInstanceLog> catchProcessLogs = auditService.findProcessInstances("com.sample.bpmn.Second");
+        
+        assertNotNull(throwProcessLogs);
+        assertEquals(1, throwProcessLogs.size());
+        assertEquals(ProcessInstance.STATE_COMPLETED, throwProcessLogs.get(0).getStatus().intValue());
+        
+        assertNotNull(catchProcessLogs);
+        assertEquals(1, catchProcessLogs.size());
+        assertEquals(ProcessInstance.STATE_COMPLETED, catchProcessLogs.get(0).getStatus().intValue());
+        
+        manager.disposeRuntimeEngine(runtime);     
+        manager.close();
+    }
+    
+    @Test
+    public void testEventSignalingBetweenProcesses() {
+    	final Map<String, Integer> processStates = new HashMap<String, Integer>();
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultInMemoryBuilder()
+    			.persistence(false)
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("events/throw-an-event.bpmn"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("events/start-on-event.bpmn"), ResourceType.BPMN2)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
+
+					@Override
+					public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
+						
+						List<ProcessEventListener> listeners = new ArrayList<ProcessEventListener>();
+						listeners.add(new DefaultProcessEventListener() {
+
+							@Override
+							public void afterProcessCompleted(ProcessCompletedEvent event) {
+								processStates.put(event.getProcessInstance().getProcessId(), event.getProcessInstance().getState());
+							}
+
+							@Override
+							public void beforeProcessStarted(ProcessStartedEvent event) {
+								processStates.put(event.getProcessInstance().getProcessId(), event.getProcessInstance().getState());
+							}
+							
+						});
+					
+						return listeners;
+					}
+                	
+                })
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);        
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);  
+        
+        ksession.startProcess("com.sample.bpmn.hello");
+        
+        assertEquals(2, processStates.size());
+        assertTrue(processStates.containsKey("com.sample.bpmn.hello"));
+        assertTrue(processStates.containsKey("com.sample.bpmn.Second"));
+        
+        assertEquals(ProcessInstance.STATE_COMPLETED, processStates.get("com.sample.bpmn.hello").intValue());
+        assertEquals(ProcessInstance.STATE_COMPLETED, processStates.get("com.sample.bpmn.Second").intValue());
+        
+        manager.disposeRuntimeEngine(runtime);     
+        manager.close();
     }
 }
