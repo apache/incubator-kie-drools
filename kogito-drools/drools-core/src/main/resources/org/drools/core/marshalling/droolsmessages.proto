@@ -398,11 +398,13 @@ message Trigger {
     optional CronTrigger cron = 2;
     optional IntervalTrigger interval = 3;
     optional PointInTimeTrigger pit = 4;
+    optional CompositeMaxDurationTrigger cmdt = 5;
 
     enum TriggerType {
         CRON = 0;
         INTERVAL = 1;
         POINT_IN_TIME = 2;
+        COMPOSITE_MAX_DURATION = 3;
     }
 
     message CronTrigger {
@@ -425,6 +427,11 @@ message Trigger {
     }
     message PointInTimeTrigger {
         optional int64 next_fire_time = 1;
+    }
+    message CompositeMaxDurationTrigger {
+        optional int64 maxDurationTimestamp = 1;
+        optional int64 timerCurrentDate = 2;
+        optional Trigger timerTrigger = 3;
     }
 }
 
