@@ -2,14 +2,13 @@ package org.drools.reteoo.integrationtests;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Cheesery;
-import org.drools.core.command.runtime.rule.InsertElementsCommand;
-import org.drools.reteoo.integrationtests.CommonTestMethodBase;
 import org.drools.compiler.Order;
 import org.drools.compiler.OrderItem;
 import org.drools.compiler.OuterClass;
 import org.drools.compiler.Person;
 import org.drools.compiler.integrationtests.LinkingTest;
 import org.drools.compiler.integrationtests.SerializationHelper;
+import org.drools.core.command.runtime.rule.InsertElementsCommand;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.ObjectSink;
@@ -1903,7 +1902,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                 "when\n" +
                 "    $h : Holder( $l : list )\n" +
                 "    $n : Long() from accumulate (\n" +
-                "                    $b : String( ) from $l\n" +
+                "                    $b : String( ) from $l;\n" +
                 "                    count($b))\n" +
                 "then\n" +
                 "    System.out.println($n);\n" +

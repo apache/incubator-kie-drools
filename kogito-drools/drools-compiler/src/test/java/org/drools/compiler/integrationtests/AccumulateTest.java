@@ -18,7 +18,9 @@ import org.drools.core.time.SessionPseudoClock;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.Results;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
@@ -1910,7 +1912,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                      "when\n" +
                      "    $h : Holder( $l : list )\n" +
                      "    $n : Long() from accumulate (\n" +
-                     "                    $b : String( ) from $l\n" +
+                     "                    $b : String( ) from $l;\n" +
                      "                    count($b))\n" +
                      "then\n" +
                      "    System.out.println($n);\n" +
@@ -2680,5 +2682,47 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         assertEquals(1, list.size());
         assertEquals(0, (long)list.get(0));
+    }
+
+    @Test
+    public void testAccumulateWithoutSeparator() throws Exception {
+        // DROOLS-602
+        String str = "package org.drools.compiler\n" +
+                     "\n" +
+                     "rule \"Constraints everywhere\" \n" +
+                     "    when\n" +
+                     "        $person : Person( $likes : likes )\n" +
+                     "        accumulate( Cheese( type == $likes, $price : price )\n" +
+                     "                    $sum : sum( $price ),\n" +
+                     "                    $avg : average( $price ),\n" +
+                     "                    $min : min( $price );\n" +
+                     "                    $min == 3,\n" +
+                     "                    $sum > 10 )\n" +
+                     "    then\n" +
+                     "        // do something\n" +
+                     "end  ";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        assertFalse(results.getMessages().isEmpty());
+    }
+
+    @Test
+    public void testFromAccumulateWithoutSeparator() throws Exception {
+        // DROOLS-602
+        String str = "rule R when\n" +
+                     "    $count : Number( ) from accumulate (\n" +
+                     "        $s: String()\n" +
+                     "        count($s)\n" +
+                     "    )\n" +
+                     "then\n" +
+                     "    System.out.println($count);\n" +
+                     "end";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        assertFalse(results.getMessages().isEmpty());
     }
 }

@@ -6023,7 +6023,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    $result : Number() from accumulate(\n" +
                 "        $b_acc : TypeB()\n" +
                 "        and\n" +
-                "        $c : TypeC( parentId == $b_acc.id, $value : value )\n" +
+                "        $c : TypeC( parentId == $b_acc.id, $value : value );\n" +
                 "        sum($value)\n" +
                 "    )\n" +
                 "then\n" +
@@ -6343,7 +6343,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n" +
                 "rule R2 extends R1 when\n" +
-                "    $n : Number() from accumulate( Integer($value : this) sum($value) )\n" +
+                "    $n : Number() from accumulate( Integer($value : this); sum($value) )\n" +
                 "then\n" +
                 "    System.out.println($n);\n" +
                 "end\n";
