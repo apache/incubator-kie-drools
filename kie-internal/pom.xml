@@ -30,6 +30,7 @@
               javax.inject.*;resolution:=optional,
               javax.xml.bind;resolution:=optional,
               javax.xml.bind.annotation;resolution:=optional,
+              javax.xml.bind.annotation.adapters;resolution:=optional,
               org.drools.compiler.builder.impl,
               org.drools.core.builder.conf.impl;resolution:=optional,
               org.drools.core.command.impl,
