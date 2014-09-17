@@ -90,12 +90,14 @@ public class HumanTaskHandlerHelper {
 	            Deadline taskDeadline = null;
 	            
 	            for (String expiresAt : expireElements) {
+	            	logger.debug("Expires at is {}", expiresAt);
 	                taskDeadline = TaskModelProvider.getFactory().newDeadline();
 	                if (businessCalendar != null) {
 	                	taskDeadline.setDate(businessCalendar.calculateBusinessTimeAsDate(expiresAt));
 	                } else {
 	                	taskDeadline.setDate(new Date(System.currentTimeMillis() + TimeUtils.parseTimeString(expiresAt)));
 	                }
+	                logger.debug("Calculated date of execution is {} and current date {}", taskDeadline.getDate(), new Date());
 	                List<Escalation> escalations = new ArrayList<Escalation>();
 	                
 	                Escalation escalation = TaskModelProvider.getFactory().newEscalation();

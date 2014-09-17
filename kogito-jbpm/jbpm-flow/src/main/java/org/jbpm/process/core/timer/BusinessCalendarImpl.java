@@ -68,11 +68,12 @@ public class BusinessCalendarImpl implements BusinessCalendar {
     private List<Integer> weekendDays= new ArrayList<Integer>();
     private SessionClock clock;
     
-    private static final Pattern SIMPLE  = Pattern.compile( "([+-])?\\s*((\\d+)[Ww])?\\s*((\\d+)[Dd])?\\s*((\\d+)[Hh])?\\s*((\\d+)[Mm])?" );
+    private static final Pattern SIMPLE  = Pattern.compile( "([+-])?\\s*((\\d+)[Ww])?\\s*((\\d+)[Dd])?\\s*((\\d+)[Hh])?\\s*((\\d+)[Mm])?\\s*((\\d+)[Ss])?" );
     private static final int     SIM_WEEK = 3;
     private static final int     SIM_DAY = 5;
     private static final int     SIM_HOU = 7;
     private static final int     SIM_MIN = 9;
+    private static final int     SIM_SEC = 11;
 
     
     public static final String DAYS_PER_WEEK = "business.hours.per.week";
@@ -202,6 +203,7 @@ public class BusinessCalendarImpl implements BusinessCalendar {
         int days = 0;
         int hours = 0;
         int min = 0;
+        int sec = 0;
         
         if( trimmed.length() > 0 ) {
             Matcher mat = SIMPLE.matcher( trimmed );
@@ -210,6 +212,7 @@ public class BusinessCalendarImpl implements BusinessCalendar {
                 days = (mat.group( SIM_DAY ) != null) ? Integer.parseInt( mat.group( SIM_DAY ) ) : 0;
                 hours = (mat.group( SIM_HOU ) != null) ? Integer.parseInt( mat.group( SIM_HOU ) ) : 0;
                 min = (mat.group( SIM_MIN ) != null) ? Integer.parseInt( mat.group( SIM_MIN ) ) : 0;
+                sec = (mat.group( SIM_SEC ) != null) ? Integer.parseInt( mat.group( SIM_SEC ) ) : 0;
             }
         }
         int time = 0;
@@ -270,6 +273,14 @@ public class BusinessCalendarImpl implements BusinessCalendar {
             min = min-(numberOfHours * 60);
         }
         c.add(Calendar.MINUTE, min);
+        
+        // calculate seconds
+        int numberOfMinutes = sec/60;
+        if (numberOfMinutes > 0) {
+            c.add(Calendar.MINUTE, numberOfMinutes);
+            sec = sec-(numberOfMinutes * 60);
+        }
+        c.add(Calendar.SECOND, sec);
         
         currentCalHour = c.get(Calendar.HOUR_OF_DAY);
         if (currentCalHour >= endHour) {
