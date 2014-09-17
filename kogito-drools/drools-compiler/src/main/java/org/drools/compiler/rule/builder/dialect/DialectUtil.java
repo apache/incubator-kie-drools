@@ -509,7 +509,7 @@ public final class DialectUtil {
             for( JavaLocalDeclarationDescr local : d.getInScopeLocalVars() ) {
                 // these are variables declared in the code itself that are in the scope for this expression
                 try {
-                    Class<?> type = context.getDialect( "java" ).getPackageRegistry().getTypeResolver().resolveType( local.getType() );
+                    Class<?> type = context.getDialect( "java" ).getPackageRegistry().getTypeResolver().resolveType( local.getRawType() );
                     for( IdentifierDescr id : local.getIdentifiers() ) {
                         localTypes.put( id.getIdentifier(), type );
                     }
@@ -517,7 +517,7 @@ public final class DialectUtil {
                     context.addError(new DescrBuildError(context.getRuleDescr(),
                             context.getParentDescr(),
                             null,
-                            "Unable to resolve type " + local.getType() + ":\n" + e.getMessage()));
+                            "Unable to resolve type " + local.getRawType() + ":\n" + e.getMessage()));
                 }
             }
         }
