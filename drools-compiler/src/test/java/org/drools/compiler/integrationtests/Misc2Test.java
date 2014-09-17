@@ -5992,4 +5992,25 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.insert(new Reading("t1", -6));
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testGenericsInRHSWithModify() {
+        // DROOLS-493
+        String drl  =
+                "import java.util.Map;\n" +
+                "import java.util.HashMap;\n" +
+                "rule R no-loop when\n" +
+                "    $s : String( )\n" +
+                "then\n" +
+                "    Map<String,String> a = new HashMap<String,String>();\n" +
+                "    modify( $s ) { };" +
+                "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession ksession = helper.build().newKieSession();
+
+        ksession.insert("1");
+        ksession.fireAllRules();
+    }
 }
