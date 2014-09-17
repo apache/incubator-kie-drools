@@ -65,22 +65,28 @@ public interface RuntimeDataService {
     // Process instance information
     
     /**
+     * Returns list of process instance descriptions
+     * @param queryContext control parameters for the result e.g. sorting, paging
      * @return A list of {@link ProcessInstanceDesc} instances representing the available process instances.
      */
     Collection<ProcessInstanceDesc> getProcessInstances(QueryContext queryContext);
    
     /**
+     * Returns list of process instance descriptions found with given statuses and initiated by <code>initiator</code>.
      * @param states A list of possible state (int) values that the {@link ProcessInstance} can have. 
      * @param initiator The initiator of the {@link ProcessInstance}.
+     * @param queryContext control parameters for the result e.g. sorting, paging
      * @return A list of {@link ProcessInstanceDesc} instances representing the process instances that match
      *         the given criteria (states and initiator).
      */
     Collection<ProcessInstanceDesc> getProcessInstances(List<Integer> states, String initiator, QueryContext queryContext);
    
     /**
+     * Returns list of process instance descriptions found for given process id and statuses and initiated by <code>initiator</code>
      * @param states A list of possible state (int) values that the {@link ProcessInstance} can have. 
      * @param processId The id of the {@link Process} (definition) used when starting the process instance. 
      * @param initiator The initiator of the {@link ProcessInstance}.
+     * @param queryContext control parameters for the result e.g. sorting, paging
      * @return A list of {@link ProcessInstanceDesc} instances representing the process instances that match
      *         the given criteria (states, processId, and initiator).
      */
@@ -90,27 +96,33 @@ public interface RuntimeDataService {
      * @param states A list of possible state (int) values that the {@link ProcessInstance} can have. 
      * @param processName The name (not id!) of the {@link Process} (definition) used when starting the process instance. 
      * @param initiator The initiator of the {@link ProcessInstance}.
+     * @param queryContext control parameters for the result e.g. sorting, paging
      * @return A list of {@link ProcessInstanceDesc} instances representing the process instances that match
      *         the given criteria (states, processName and initiator).
      */
     Collection<ProcessInstanceDesc> getProcessInstancesByProcessName(List<Integer> states, String processName, String initiator, QueryContext queryContext);
     
     /**
+     * Returns list of process instance descriptions found for given deployment id and statuses.
      * @param deploymentId The deployment id of the runtime. 
      * @param states A list of possible state (int) values that the {@link ProcessInstance} can have. 
+     * @param queryContext control parameters for the result e.g. sorting, paging
      * @return A list of {@link ProcessInstanceDesc} instances representing the process instances that match
      *         the given criteria (deploymentId and states).
      */
     Collection<ProcessInstanceDesc> getProcessInstancesByDeploymentId(String deploymentId, List<Integer> states, QueryContext queryContext);
     
     /**
-     * @param processId The id of the process (definition) used to start the {@link ProcessInstance}.
+     * Returns process instance descriptions found for given processInstanceId if found otherwise null. 
+     * @param processInstanceId The id of the process instance to be fetched
      * @return Process instance information, in the form of a {@link ProcessInstanceDesc} instance.
      */
-    ProcessInstanceDesc getProcessInstanceById(long processId);
+    ProcessInstanceDesc getProcessInstanceById(long processInstanceId);
     
     /**
+     * Returns list of process instance descriptions found for given process definition id
      * @param processDefId The id of the process (definition) 
+     * @param queryContext control parameters for the result e.g. sorting, paging
      * @return A list of {@link ProcessInstanceDesc} instances representing the process instances that match
      *         the given criteria (deploymentId and states).
      */
@@ -130,6 +142,7 @@ public interface RuntimeDataService {
      * Returns trace of all active nodes for given process instance id
      * @param deploymentId unique identifier of the deployment unit
      * @param processInstanceId unique identifier of process instance
+     * @param queryContext control parameters for the result e.g. sorting, paging
      * @return
      */
     Collection<NodeInstanceDesc> getProcessInstanceHistoryActive(long processInstanceId, QueryContext queryContext);
@@ -138,6 +151,7 @@ public interface RuntimeDataService {
      * Returns trace of all executed (completed) for given process instance id
      * @param deploymentId unique identifier of the deployment unit
      * @param processInstanceId unique identifier of process instance
+     * @param queryContext control parameters for the result e.g. sorting, paging
      * @return
      */
     Collection<NodeInstanceDesc> getProcessInstanceHistoryCompleted(long processInstanceId, QueryContext queryContext);
@@ -146,6 +160,7 @@ public interface RuntimeDataService {
      * Returns complete trace of all executed (completed) and active nodes for given process instance id
      * @param deploymentId The id of the deployment (runtime).
      * @param processInstanceId The id of the process used to start the process instance.
+     * @param queryContext control parameters for the result e.g. sorting, paging
      * @return The {@link NodeInstance} information, in the form of a list of {@link NodeInstanceDesc} instances, 
      *         that comes from a process instance that matches the given criteria (deploymentId, processId).
      */
@@ -155,6 +170,7 @@ public interface RuntimeDataService {
      * Returns complete trace of all events of given type (START or END) for given process instance.
      * @param deploymentId The id of the deployment (runtime).
      * @param processInstanceId The id of the process used to start the process instance.
+     * @param queryContext control parameters for the result e.g. sorting, paging
      * @param type type of events that shall be returned (START or END) - to return both use {@link #getProcessInstanceFullHistory(String, long)}
      * @return
      */
@@ -173,6 +189,7 @@ public interface RuntimeDataService {
      * Returns collection of changes to given variable within scope of process instance
      * @param processInstanceId The process instance id.
      * @param variableId The id of the variable
+     * @param queryContext control parameters for the result e.g. sorting, paging
      * @return Information about the variable with the given id in the specified process instance, 
      *         represented by a list of {@link VariableStateDesc} instances.
      */
@@ -183,42 +200,52 @@ public interface RuntimeDataService {
   
     
     /**
+     * Returns list of process definitions for given deployment id
      * @param deploymentId The deployment id of the runtime. 
+     * @param queryContext control parameters for the result e.g. sorting, paging
      * @return A list of {@link ProcessAssetDesc} instances representing processes that match
      *         the given criteria (deploymentId)
      */
     Collection<ProcessDefinition> getProcessesByDeploymentId(String deploymentId, QueryContext queryContext);   
     
     /**
+     * Returns list of process definitions that match the given filter
      * @param filter A regular expression.
+     * @param queryContext control parameters for the result e.g. sorting, paging
      * @return A list of {@link ProcessAssetDesc} instances whose name or id matches the given regular expression.
      */
     Collection<ProcessDefinition> getProcessesByFilter(String filter, QueryContext queryContext);
 
     /**
+     * Returns all process definitions available
+     * @param queryContext control parameters for the result e.g. sorting, paging
      * @return A list of all available processes, in the form a of a list of {@link ProcessAssetDesc} instances.
      */
     Collection<ProcessDefinition> getProcesses(QueryContext queryContext);
    
     /**
+     * Returns list of process definition identifiers for given deployment id
      * @param deploymentId The deployment id of the runtime.
+     * @param queryContext control parameters for the result e.g. sorting, paging
      * @return A list of all available process id's for a particular deployment/runtime.
      */
     Collection<String> getProcessIds(String deploymentId, QueryContext queryContext);
    
     /**
-    * @param processId The id of the process
-    * @return A {@link ProcessAssetDesc} instance, representing the {@link Process} 
-    *         with the specified (process) id. 
-    */
+     * Returns process definition for given process id 
+     * @param processId The id of the process
+     * @return A {@link ProcessAssetDesc} instance, representing the {@link Process} 
+     *         with the specified (process) id. 
+     */
     ProcessDefinition getProcessById(String processId);
   
     /**
-    * @param deploymentId The id of the deployment (runtime)
-    * @param processId The id of the process
-    * @return A {@link ProcessAssetDesc} instance, representing the {@link Process} 
-    *         that is present in the specified deployment with the specified (process) id. 
-    */
+     * Returns process definition for given deployment and process identifiers
+     * @param deploymentId The id of the deployment (runtime)
+     * @param processId The id of the process
+     * @return A {@link ProcessAssetDesc} instance, representing the {@link Process} 
+     *         that is present in the specified deployment with the specified (process) id. 
+     */
     ProcessDefinition getProcessesByDeploymentIdProcessId(String deploymentId, String processId);
     
 	// user task query operations
