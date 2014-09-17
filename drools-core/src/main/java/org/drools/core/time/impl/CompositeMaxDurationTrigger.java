@@ -16,17 +16,23 @@
 
 package org.drools.core.time.impl;
 
-import java.util.Date;
-
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Date;
+
 public class CompositeMaxDurationTrigger
     implements
-    Trigger {
+    Trigger, Externalizable {
     private Trigger            timerTrigger;
     private Date               maxDurationTimestamp;
     private Date               timerCurrentDate;
+
+    public CompositeMaxDurationTrigger() { }
 
     public CompositeMaxDurationTrigger(Date maxDurationTimestamp, // this max duration of when rules are allowed to fire (cep rules like 'not')
                                        Trigger timerTrigger, // trigger of when a rule should try to fire, should not execute before maxDurationTimestamp
@@ -64,4 +70,41 @@ public class CompositeMaxDurationTrigger
         }
     }
 
+    public Date getTimerCurrentDate() {
+        return timerCurrentDate;
+    }
+
+    public void setTimerCurrentDate(Date timerCurrentDate) {
+        this.timerCurrentDate = timerCurrentDate;
+    }
+
+    public Trigger getTimerTrigger() {
+        return timerTrigger;
+    }
+
+    public void setTimerTrigger(Trigger timerTrigger) {
+        this.timerTrigger = timerTrigger;
+    }
+
+    public Date getMaxDurationTimestamp() {
+        return maxDurationTimestamp;
+    }
+
+    public void setMaxDurationTimestamp(Date maxDurationTimestamp) {
+        this.maxDurationTimestamp = maxDurationTimestamp;
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject( maxDurationTimestamp );
+        out.writeObject( timerCurrentDate );
+        out.writeObject( timerTrigger );
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        maxDurationTimestamp = ( Date ) in.readObject();
+        timerCurrentDate = ( Date ) in.readObject();
+        timerTrigger = ( Trigger )in.readObject();
+    }
 }

@@ -16,20 +16,7 @@
 
 package org.drools.core.marshalling.impl;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
-
+import com.google.protobuf.ExtensionRegistry;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.ActivationsFilter;
@@ -60,7 +47,6 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.phreak.StackEntry;
 import org.drools.core.process.instance.WorkItem;
-import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.TerminalNode;
@@ -71,6 +57,7 @@ import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.Trigger;
+import org.drools.core.time.impl.CompositeMaxDurationTrigger;
 import org.drools.core.time.impl.CronTrigger;
 import org.drools.core.time.impl.IntervalTrigger;
 import org.drools.core.time.impl.PointInTimeTrigger;
@@ -80,7 +67,19 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.rule.EntryPoint;
 
-import com.google.protobuf.ExtensionRegistry;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An input marshaller that uses protobuf. 
@@ -749,6 +748,20 @@ public class ProtobufInputMarshaller {
             }
             case POINT_IN_TIME : {
                 PointInTimeTrigger trigger = new PointInTimeTrigger( _trigger.getPit().getNextFireTime(), null, null );
+                return trigger;
+            }
+            case COMPOSITE_MAX_DURATION : {
+                ProtobufMessages.Trigger.CompositeMaxDurationTrigger _cmdTrigger = _trigger.getCmdt();
+                CompositeMaxDurationTrigger trigger = new CompositeMaxDurationTrigger();
+                if ( _cmdTrigger.hasMaxDurationTimestamp() ) {
+                    trigger.setMaxDurationTimestamp( new Date( _cmdTrigger.getMaxDurationTimestamp() ) );
+                }
+                if ( _cmdTrigger.hasTimerCurrentDate() ) {
+                    trigger.setTimerCurrentDate( new Date( _cmdTrigger.getTimerCurrentDate() ) );
+                }
+                if ( _cmdTrigger.hasTimerTrigger() ) {
+                    trigger.setTimerTrigger( readTrigger( inCtx, _cmdTrigger.getTimerTrigger() ) );
+                }
                 return trigger;
             }
         }
