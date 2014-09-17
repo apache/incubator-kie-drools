@@ -88,7 +88,6 @@ import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.commands.UndeployTaskDefCommand;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.impl.TaskContentRegistry;
-import org.jbpm.services.task.query.QueryFilterImpl;
 import org.jbpm.services.task.rule.TaskRuleService;
 import org.kie.api.command.Command;
 import org.kie.api.task.TaskLifeCycleEventListener;
@@ -199,13 +198,13 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 		return getTasksAssignedAsPotentialOwner(userId, null, status, null);
 	}
         
-        @Override
+	@Override
 	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDate(
 			String userId, List<Status> statuses, Date expirationDate) {	
                         Map<String, Object> params = new HashMap<String, Object>();
                         params.put("expirationDate", expirationDate);
 		return getTasksAssignedAsPotentialOwner(userId, null, statuses, 
-                        new QueryFilterImpl( "t.taskData.expirationTime = :expirationDate", params, "t.id", false));
+                        new QueryFilter( "t.taskData.expirationTime = :expirationDate", params, "t.id", false));
 	}
 
 	@Override
@@ -214,14 +213,14 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("expirationDate", expirationDate);
 		return getTasksAssignedAsPotentialOwner(userId, null, statuses, 
-                        new QueryFilterImpl( "(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "t.id", false));
+                        new QueryFilter( "(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "t.id", false));
 	}
         
         @Override
 	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId,
 			List<String> groupIds, int firstResult,
 			int maxResults) {
-		return getTasksAssignedAsPotentialOwner(userId, groupIds, null, new QueryFilterImpl(firstResult, maxResults));
+		return getTasksAssignedAsPotentialOwner(userId, groupIds, null, new QueryFilter(firstResult, maxResults));
 	}
 
 	@Override
@@ -424,7 +423,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 		
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put("expirationDate", expirationDate);
-                return getTasksOwned(userId, statuses, new QueryFilterImpl("t.taskData.expirationTime = :expirationDate", params, "t.id", false));
+                return getTasksOwned(userId, statuses, new QueryFilter("t.taskData.expirationTime = :expirationDate", params, "t.id", false));
 	}
 
 	@Override
@@ -432,7 +431,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 			String userId, List<Status> statuses, Date expirationDate) {
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put("expirationDate", expirationDate);
-                return getTasksOwned(userId, statuses, new QueryFilterImpl("(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "t.id", false));
+                return getTasksOwned(userId, statuses, new QueryFilter("(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "t.id", false));
 	}
 
 	@Override

@@ -40,7 +40,6 @@ import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.jbpm.services.api.model.UserTaskInstanceDesc;
 import org.jbpm.services.api.model.VariableDesc;
-import org.jbpm.services.task.query.QueryFilterImpl;
 import org.jbpm.shared.services.impl.QueryManager;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.QueryNameCommand;
@@ -539,13 +538,13 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         if (from != null) {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("expirationDate", from);
-			QueryFilter qf = new QueryFilterImpl( "(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", 
+			QueryFilter qf = new QueryFilter( "(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", 
 	                            params, "order by t.id DESC", filter.getOffset(), filter.getCount());
 	                
 	 
 			taskSummaries = ((InternalTaskService)taskService).getTasksAssignedAsPotentialOwner(userId, null, status, qf);
         } else {
-            QueryFilter qf = new QueryFilterImpl(filter.getOffset(), filter.getCount());
+            QueryFilter qf = new QueryFilter(filter.getOffset(), filter.getCount());
             taskSummaries = ((InternalTaskService)taskService).getTasksAssignedAsPotentialOwner(userId,null, status, qf);
         }
         return taskSummaries;
@@ -558,13 +557,13 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         if (from != null) {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("expirationDate", from);
-			QueryFilter qf = new QueryFilterImpl( "(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", 
+			QueryFilter qf = new QueryFilter( "(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", 
 	                            params, "order by t.id DESC", filter.getOffset(), filter.getCount());
 	                
 	 
 			taskSummaries = ((InternalTaskService)taskService).getTasksOwned(userId, null, qf);
         } else {
-            QueryFilter qf = new QueryFilterImpl(filter.getOffset(), filter.getCount());
+            QueryFilter qf = new QueryFilter(filter.getOffset(), filter.getCount());
             taskSummaries = ((InternalTaskService)taskService).getTasksOwned(userId,null, qf);
         }
         return taskSummaries;

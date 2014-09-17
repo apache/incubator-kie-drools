@@ -32,7 +32,6 @@ import org.jbpm.kie.test.util.AbstractBaseTest;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessDefinition;
-import org.jbpm.services.api.model.QueryContextImpl;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -47,6 +46,7 @@ import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.query.QueryContext;
 import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,15 +113,15 @@ public class FilteredKModuleDeploymentServiceTest extends AbstractBaseTest {
                 deployed.getDeploymentUnit().getIdentifier());
 
         assertNotNull(runtimeDataService);
-        Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContextImpl());
+        Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContext());
         assertNotNull(processes);
         assertEquals(2, processes.size());
         
-        processes = runtimeDataService.getProcessesByFilter("custom", new QueryContextImpl());
+        processes = runtimeDataService.getProcessesByFilter("custom", new QueryContext());
         assertNotNull(processes);
         assertEquals(1, processes.size());
         
-        processes = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier(), new QueryContextImpl());
+        processes = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier(), new QueryContext());
         assertNotNull(processes);
         assertEquals(2, processes.size());
         
@@ -148,15 +148,15 @@ public class FilteredKModuleDeploymentServiceTest extends AbstractBaseTest {
                 deployed.getDeploymentUnit().getIdentifier());
 
         assertNotNull(runtimeDataService);
-        Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContextImpl());
+        Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContext());
         assertNotNull(processes);
         assertEquals(2, processes.size());
         
-        processes = runtimeDataService.getProcessesByFilter("custom", new QueryContextImpl());
+        processes = runtimeDataService.getProcessesByFilter("custom", new QueryContext());
         assertNotNull(processes);
         assertEquals(1, processes.size());
         
-        processes = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier(), new QueryContextImpl());
+        processes = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier(), new QueryContext());
         assertNotNull(processes);
         assertEquals(2, processes.size());
         
@@ -183,11 +183,11 @@ public class FilteredKModuleDeploymentServiceTest extends AbstractBaseTest {
                 deployed.getDeploymentUnit().getIdentifier());
 
         assertNotNull(runtimeDataService);
-        Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContextImpl());
+        Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContext());
         assertNotNull(processes);
         assertEquals(1, processes.size());
         
-        processes = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier(), new QueryContextImpl());
+        processes = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier(), new QueryContext());
         assertNotNull(processes);
         assertEquals(1, processes.size());
         
@@ -214,15 +214,15 @@ public class FilteredKModuleDeploymentServiceTest extends AbstractBaseTest {
                 deployed.getDeploymentUnit().getIdentifier());
 
         assertNotNull(runtimeDataService);
-        Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContextImpl());
+        Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContext());
         assertNotNull(processes);
         assertEquals(2, processes.size());
         
-        processes = runtimeDataService.getProcessesByFilter("custom", new QueryContextImpl());
+        processes = runtimeDataService.getProcessesByFilter("custom", new QueryContext());
         assertNotNull(processes);
         assertEquals(1, processes.size());
         
-        processes = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier(), new QueryContextImpl());
+        processes = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier(), new QueryContext());
         assertNotNull(processes);
         assertEquals(2, processes.size());
         

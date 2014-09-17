@@ -42,6 +42,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
+import org.kie.api.task.query.TaskQueryBuilder;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.InternalTaskService;
@@ -665,6 +666,11 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
 	public ContentMarshallerContext getMarshallerContext(Task task) {
 		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
 	}
+
+    @Override
+    public TaskQueryBuilder taskQuery() {
+        throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+    }
 
 
 }

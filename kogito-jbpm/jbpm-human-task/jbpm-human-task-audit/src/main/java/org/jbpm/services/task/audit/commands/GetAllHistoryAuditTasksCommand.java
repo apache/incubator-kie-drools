@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jbpm.services.task.audit.impl.model.api.AuditTask;
 import org.jbpm.services.task.commands.TaskCommand;
-import org.jbpm.services.task.query.QueryFilterImpl;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.kie.internal.command.Context;
 import org.kie.internal.query.QueryFilter;
@@ -21,7 +20,7 @@ public class GetAllHistoryAuditTasksCommand extends TaskCommand<List<AuditTask>>
         
         private QueryFilter filter;
 	public GetAllHistoryAuditTasksCommand() {
-            this.filter =  new QueryFilterImpl(0,0);
+            this.filter =  new QueryFilter(0,0);
 	}
 
         public GetAllHistoryAuditTasksCommand(QueryFilter filter) {

@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.jbpm.services.task.query.QueryFilterImpl;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
@@ -22,7 +21,7 @@ public class GetTasksOwnedCommand extends UserGroupCallbackTaskCommand<List<Task
     @XmlElement
     private List<Status> statuses;
    
-    @XmlElement(type=QueryFilterImpl.class)
+    @XmlElement(type=QueryFilter.class)
     private QueryFilter filter;
 
     public GetTasksOwnedCommand() {

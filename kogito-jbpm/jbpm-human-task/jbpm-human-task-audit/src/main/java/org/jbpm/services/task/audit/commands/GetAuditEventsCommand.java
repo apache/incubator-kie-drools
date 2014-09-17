@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jbpm.services.task.commands.TaskCommand;
-import org.jbpm.services.task.query.QueryFilterImpl;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.kie.internal.command.Context;
 import org.kie.internal.query.QueryFilter;
@@ -22,7 +21,7 @@ public class GetAuditEventsCommand extends TaskCommand<List<TaskEvent>> {
 	private static final long serialVersionUID = -7929370526623674312L;
         private QueryFilter filter;
 	public GetAuditEventsCommand() {
-            this.filter = new QueryFilterImpl(0,0);
+            this.filter = new QueryFilter(0,0);
 	}
 	
 	public GetAuditEventsCommand(long taskId, QueryFilter filter) {

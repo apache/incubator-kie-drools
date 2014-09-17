@@ -34,7 +34,6 @@ import org.jbpm.kie.test.util.AbstractBaseTest;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessDefinition;
-import org.jbpm.services.api.model.QueryContextImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,6 +43,7 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.query.QueryContext;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.context.EmptyContext;
@@ -102,7 +102,7 @@ public class ClassloaderKModuleDeploymentServiceTest extends AbstractBaseTest {
                 deployed.getDeploymentUnit().getIdentifier());
 
         assertNotNull(runtimeDataService);
-        Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContextImpl());
+        Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContext());
         assertNotNull(processes);
         assertEquals(1, processes.size());
         

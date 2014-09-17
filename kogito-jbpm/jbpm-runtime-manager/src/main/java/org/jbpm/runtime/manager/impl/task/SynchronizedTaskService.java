@@ -34,6 +34,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
+import org.kie.api.task.query.TaskQueryBuilder;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.EventService;
@@ -931,15 +932,20 @@ public class SynchronizedTaskService
         }
 	}
 
-        @Override
-        public List<TaskSummary> getTasksOwned(String userId, List<Status> status, QueryFilter filter) {
-            return taskService.getTasksOwned(userId, status, filter);
-        }
+	@Override
+	public List<TaskSummary> getTasksOwned(String userId, List<Status> status, QueryFilter filter) {
+	    return taskService.getTasksOwned(userId, status, filter);
+	}
 
-        @Override
-        public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, List<Status> status, QueryFilter filter) {
-            return taskService.getTasksAssignedAsPotentialOwner(userId, groupIds, status, filter);
-        }
+	@Override
+	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, List<Status> status, QueryFilter filter) {
+	    return taskService.getTasksAssignedAsPotentialOwner(userId, groupIds, status, filter);
+	}
 
+
+	@Override
+	public TaskQueryBuilder taskQuery() {
+	    return taskService.taskQuery();
+	}
 
 }

@@ -36,7 +36,6 @@ import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.test.util.AbstractBaseTest;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
-import org.jbpm.services.api.model.QueryContextImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,6 +43,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.internal.query.QueryContext;
 import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -329,7 +329,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
     	assertNotNull(pi);
     	
-    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContextImpl());
+    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
     	assertNotNull(activeNodes);
     	assertEquals(1, activeNodes.size());    	
     	assertEquals("Write a Document", activeNodes.iterator().next().getName());
@@ -338,7 +338,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	outcome.put("Result", "here is my first document");
     	processService.completeWorkItem(activeNodes.iterator().next().getWorkItemId(), outcome);
     	
-    	activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContextImpl());
+    	activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
     	assertNotNull(activeNodes);
     	assertEquals(2, activeNodes.size()); 
     	
@@ -369,14 +369,14 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
     	assertNotNull(pi);
     	
-    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContextImpl());
+    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
     	assertNotNull(activeNodes);
     	assertEquals(1, activeNodes.size());    	
     	assertEquals("Write a Document", activeNodes.iterator().next().getName());
     	 
     	processService.abortWorkItem(activeNodes.iterator().next().getWorkItemId());
     	
-    	activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContextImpl());
+    	activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
     	assertNotNull(activeNodes);
     	assertEquals(2, activeNodes.size()); 
     	
@@ -406,7 +406,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
     	assertNotNull(pi);
     	
-    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContextImpl());
+    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
     	assertNotNull(activeNodes);
     	assertEquals(1, activeNodes.size());    	
     	assertEquals("Write a Document", activeNodes.iterator().next().getName());
@@ -438,7 +438,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
     	assertNotNull(pi);
     	
-    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContextImpl());
+    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
     	assertNotNull(activeNodes);
     	assertEquals(1, activeNodes.size());    	
     	assertEquals("Write a Document", activeNodes.iterator().next().getName());

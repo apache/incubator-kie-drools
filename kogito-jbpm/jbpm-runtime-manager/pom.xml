@@ -182,6 +182,7 @@
               org.kie.api.runtime.manager.audit,
               org.kie.api.runtime.process,
               org.kie.api.task,
+              org.kie.api.task.query,
               org.kie.api.task.model,
               org.kie.internal,
               org.kie.internal.query,

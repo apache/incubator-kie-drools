@@ -41,13 +41,13 @@ import org.jbpm.services.ejb.api.RuntimeDataServiceEJBRemote;
 import org.jbpm.services.ejb.api.UserTaskServiceEJBRemote;
 import org.jbpm.services.ejb.client.helper.DeploymentServiceWrapper;
 import org.jbpm.services.ejb.remote.api.RemoteMap;
-import org.jbpm.services.task.query.QueryFilterImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.query.QueryFilter;
 import org.kie.scanner.MavenRepository;
 
 public class ClientProcessServiceWithCustomDataEJBTest extends AbstractBaseTest {
@@ -140,7 +140,7 @@ public class ClientProcessServiceWithCustomDataEJBTest extends AbstractBaseTest 
         processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "custom-data-project.work-on-custom-data", parameters);
         assertNotNull(processInstanceId);
         
-        List<TaskSummary> taskSummaries = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilterImpl(0, 10));
+        List<TaskSummary> taskSummaries = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter(0, 10));
         assertNotNull(taskSummaries);
         assertEquals(1, taskSummaries.size());
         

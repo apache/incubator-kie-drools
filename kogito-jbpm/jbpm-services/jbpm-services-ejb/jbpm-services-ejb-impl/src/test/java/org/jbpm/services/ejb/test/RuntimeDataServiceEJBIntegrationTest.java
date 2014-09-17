@@ -43,7 +43,6 @@ import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
-import org.jbpm.services.api.model.QueryContextImpl;
 import org.jbpm.services.api.model.UserTaskInstanceDesc;
 import org.jbpm.services.api.model.VariableDesc;
 import org.jbpm.services.ejb.api.DeploymentServiceEJBLocal;
@@ -62,6 +61,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.query.QueryContext;
 import org.kie.scanner.MavenRepository;
 
 @RunWith(Arquillian.class)
@@ -157,7 +157,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
 	
 	@Test
     public void testGetProcessByDeploymentId() {
-    	Collection<ProcessDefinition> definitions = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier(), new QueryContextImpl());
+    	Collection<ProcessDefinition> definitions = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier(), new QueryContext());
     	assertNotNull(definitions);
     	
     	assertEquals(2, definitions.size());
@@ -181,7 +181,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     
     @Test
     public void testGetProcessByFilter() {
-    	Collection<ProcessDefinition> definitions = runtimeDataService.getProcessesByFilter("org.jbpm", new QueryContextImpl());
+    	Collection<ProcessDefinition> definitions = runtimeDataService.getProcessesByFilter("org.jbpm", new QueryContext());
     	
     	assertNotNull(definitions);
     	assertEquals(2, definitions.size());
@@ -204,7 +204,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     
     @Test
     public void testGetProcesses() {
-    	Collection<ProcessDefinition> definitions = runtimeDataService.getProcesses(new QueryContextImpl());
+    	Collection<ProcessDefinition> definitions = runtimeDataService.getProcesses(new QueryContext());
     	assertNotNull(definitions);
     	
     	assertEquals(2, definitions.size());
@@ -219,7 +219,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     
     @Test
     public void testGetProcessIds() {
-    	Collection<String> definitions = runtimeDataService.getProcessIds(deploymentUnit.getIdentifier(), new QueryContextImpl());
+    	Collection<String> definitions = runtimeDataService.getProcessIds(deploymentUnit.getIdentifier(), new QueryContext());
     	assertNotNull(definitions);
     	
     	assertEquals(2, definitions.size());
@@ -230,14 +230,14 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     
     @Test
     public void testGetProcessInstances() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
     	assertNotNull(processInstanceId);
     	
-    	instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstances(new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(1, (int)instances.iterator().next().getState());
@@ -245,7 +245,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstances(new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(3, (int)instances.iterator().next().getState());
@@ -253,7 +253,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     
     @Test
     public void testGetProcessInstancesByState() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -263,14 +263,14 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	// search for aborted only
     	states.add(3);
     	
-    	instances = runtimeDataService.getProcessInstances(states, null, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstances(states, null, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstances(states, null, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstances(states, null, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(3, (int)instances.iterator().next().getState());
@@ -278,7 +278,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     
     @Test
     public void testGetProcessInstancesByStateAndInitiator() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -288,26 +288,26 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	// search for active only
     	states.add(1);
     	
-    	instances = runtimeDataService.getProcessInstances(states, "anonymous", new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstances(states, "anonymous", new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(1, (int)instances.iterator().next().getState());
     	
-    	instances = runtimeDataService.getProcessInstances(states, "wrongUser", new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstances(states, "wrongUser", new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size()); 
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstances(states, "anonymous", new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstances(states, "anonymous", new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());    	
     }
     
     @Test
     public void testGetProcessInstancesByDeploymentIdAndState() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -317,14 +317,14 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	// search for aborted only
     	states.add(3);
     	
-    	instances = runtimeDataService.getProcessInstancesByDeploymentId(deploymentUnit.getIdentifier(), states, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstancesByDeploymentId(deploymentUnit.getIdentifier(), states, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByDeploymentId(deploymentUnit.getIdentifier(), states, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstancesByDeploymentId(deploymentUnit.getIdentifier(), states, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(3, (int)instances.iterator().next().getState());
@@ -332,14 +332,14 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     
     @Test
     public void testGetProcessInstancesByProcessId() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
     	assertNotNull(processInstanceId);
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessDefinition("org.jbpm.writedocument", new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstancesByProcessDefinition("org.jbpm.writedocument", new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	
@@ -350,7 +350,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessDefinition("org.jbpm.writedocument", new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstancesByProcessDefinition("org.jbpm.writedocument", new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	instance = instances.iterator().next();
@@ -360,7 +360,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     
     @Test
     public void testGetProcessInstanceById() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -384,7 +384,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     
     @Test
     public void testGetProcessInstancesByProcessIdAndState() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -394,14 +394,14 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	// search for aborted only
     	states.add(3);
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", null, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", null, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", null, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", null, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(3, (int)instances.iterator().next().getState());
@@ -409,7 +409,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     
     @Test
     public void testGetProcessInstancesByPartialProcessIdAndState() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -419,14 +419,14 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	// search for aborted only
     	states.add(3);
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm", null, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm", null, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm", null, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm", null, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(3, (int)instances.iterator().next().getState());
@@ -434,7 +434,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     
     @Test
     public void testGetProcessInstancesByProcessIdAndStateAndInitiator() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -444,26 +444,26 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	// search for active only
     	states.add(1);
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", "anonymous", new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", "anonymous", new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(1, (int)instances.iterator().next().getState());
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", "wrongUser", new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", "wrongUser", new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size()); 
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", "anonymous", new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm.writedocument", "anonymous", new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());    	
     }
     
     @Test
     public void testGetProcessInstancesByProcessNameAndState() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -473,14 +473,14 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	// search for aborted only
     	states.add(3);
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", null, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", null, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", null, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", null, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(3, (int)instances.iterator().next().getState());
@@ -488,7 +488,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     
     @Test
     public void testGetProcessInstancesByPartialProcessNameAndState() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -498,14 +498,14 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	// search for aborted only
     	states.add(3);
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "human", null, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "human", null, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "human", null, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "human", null, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(3, (int)instances.iterator().next().getState());
@@ -513,7 +513,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     
     @Test
     public void testGetProcessInstancesByProcessNameAndStateAndInitiator() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContextImpl());
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
@@ -523,19 +523,19 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	// search for active only
     	states.add(1);
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", "anonymous", new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", "anonymous", new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(1, (int)instances.iterator().next().getState());
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", "wrongUser", new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", "wrongUser", new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size()); 
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", "anonymous", new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstancesByProcessName(states, "humanTaskSample", "anonymous", new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());    	
     }
@@ -547,27 +547,27 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	assertNotNull(processInstanceId);
     	
     	// get active nodes as history view
-    	Collection<NodeInstanceDesc> instances = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContextImpl());
+    	Collection<NodeInstanceDesc> instances = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	
     	// get completed nodes as history view
-    	instances = runtimeDataService.getProcessInstanceHistoryCompleted(processInstanceId, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstanceHistoryCompleted(processInstanceId, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	
     	// get both active and completed nodes as history view
-    	instances = runtimeDataService.getProcessInstanceFullHistory(processInstanceId, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstanceFullHistory(processInstanceId, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(3, instances.size());  
     	
     	// get nodes filtered by type - start
-    	instances = runtimeDataService.getProcessInstanceFullHistoryByType(processInstanceId, EntryType.START, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstanceFullHistoryByType(processInstanceId, EntryType.START, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(2, instances.size());
     	
     	// get nodes filtered by type - end
-    	instances = runtimeDataService.getProcessInstanceFullHistoryByType(processInstanceId, EntryType.END, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstanceFullHistoryByType(processInstanceId, EntryType.END, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());  
     }
@@ -606,13 +606,13 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", params);
     	assertNotNull(processInstanceId);
     	
-    	Collection<VariableDesc> variableLogs = runtimeDataService.getVariableHistory(processInstanceId, "approval_document", new QueryContextImpl());
+    	Collection<VariableDesc> variableLogs = runtimeDataService.getVariableHistory(processInstanceId, "approval_document", new QueryContext());
     	assertNotNull(variableLogs);
     	assertEquals(1, variableLogs.size());
     	
     	processService.setProcessVariable(processInstanceId, "approval_document", "updated content");
     	
-    	variableLogs = runtimeDataService.getVariableHistory(processInstanceId, "approval_document", new QueryContextImpl());
+    	variableLogs = runtimeDataService.getVariableHistory(processInstanceId, "approval_document", new QueryContext());
     	assertNotNull(variableLogs);
     	assertEquals(2, variableLogs.size());
     	

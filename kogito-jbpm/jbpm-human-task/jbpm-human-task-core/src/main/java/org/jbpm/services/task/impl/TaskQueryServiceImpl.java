@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jbpm.services.task.query.QueryFilterImpl;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
@@ -381,7 +380,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("expirationDate", expirationDate);
         return (List<TaskSummary>) getTasksAssignedAsPotentialOwner(userId, groupIds, status,
-                new QueryFilterImpl("t.taskData.expirationTime = :expirationDate", params, "order by t.id", false));
+                new QueryFilter("t.taskData.expirationTime = :expirationDate", params, "order by t.id", false));
         
         
 
@@ -393,7 +392,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("expirationDate", expirationDate);
         return (List<TaskSummary>) getTasksAssignedAsPotentialOwner(userId, groupIds, status,
-                new QueryFilterImpl("(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "order by t.id", false));
+                new QueryFilter("(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "order by t.id", false));
         
     }
     @Override
@@ -401,7 +400,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("expirationDate", expirationDate);
         return (List<TaskSummary>) getTasksOwned(userId, status,
-                new QueryFilterImpl( "t.taskData.expirationTime = :expirationDate", params, "order by t.id", false));
+                new QueryFilter( "t.taskData.expirationTime = :expirationDate", params, "order by t.id", false));
         
         
 
@@ -413,7 +412,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("expirationDate", expirationDate);
         return (List<TaskSummary>) getTasksOwned(userId, status,
-                new QueryFilterImpl( "(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)"
+                new QueryFilter( "(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)"
                         , params, "order by t.id", false));
         
     }

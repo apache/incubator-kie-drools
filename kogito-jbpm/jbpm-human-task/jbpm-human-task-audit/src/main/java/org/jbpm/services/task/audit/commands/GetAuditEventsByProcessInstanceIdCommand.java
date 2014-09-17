@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jbpm.services.task.commands.TaskCommand;
-import org.jbpm.services.task.query.QueryFilterImpl;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.kie.internal.command.Context;
 import org.kie.internal.query.QueryFilter;
@@ -24,7 +23,7 @@ public class GetAuditEventsByProcessInstanceIdCommand extends TaskCommand<List<T
         private long processInstanceId;
         
 	public GetAuditEventsByProcessInstanceIdCommand() {
-            this.filter = new QueryFilterImpl(0,0);
+            this.filter = new QueryFilter(0,0);
 	}
 	
 	public GetAuditEventsByProcessInstanceIdCommand(long processInstanceId, QueryFilter filter) {

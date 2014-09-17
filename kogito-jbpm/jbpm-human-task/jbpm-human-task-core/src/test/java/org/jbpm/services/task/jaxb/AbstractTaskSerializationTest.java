@@ -21,12 +21,12 @@ import org.jbpm.services.task.commands.SkipTaskCommand;
 import org.jbpm.services.task.commands.StartTaskCommand;
 import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
-import org.jbpm.services.task.query.QueryFilterImpl;
 import org.junit.Assume;
 import org.junit.Test;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.User;
+import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.InternalAttachment;
 import org.kie.internal.task.api.model.InternalComment;
@@ -158,7 +158,7 @@ public abstract class AbstractTaskSerializationTest {
         groupIds.add("team");
         groupIds.add("region");
         
-        QueryFilterImpl filter = new QueryFilterImpl( 0, 0, "order", false);
+        QueryFilter filter = new QueryFilter( 0, 0, "order", false);
         GetTaskAssignedAsPotentialOwnerCommand cmd = new GetTaskAssignedAsPotentialOwnerCommand( "user", groupIds, statuses, filter );
         GetTaskAssignedAsPotentialOwnerCommand copyCmd = testRoundTrip(cmd);
         
