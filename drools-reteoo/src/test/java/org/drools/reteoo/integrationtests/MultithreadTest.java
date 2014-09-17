@@ -249,7 +249,7 @@ public class MultithreadTest extends CommonTestMethodBase {
                      "rule \"average temperature\"\n" +
                      "when\n" +
                      " $avg := Number( ) from accumulate ( " +
-                     "      $x : Integer ( ) " +
+                     "      $x : Integer ( ); " +
                      "      average ($x) )\n" +
                      "then\n" +
                      "  System.out.println( $avg );\n" +

@@ -13,11 +13,6 @@
  */
 package org.drools.compiler.lang;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.MismatchedTokenException;
 import org.antlr.runtime.MissingTokenException;
@@ -75,6 +70,11 @@ import org.drools.compiler.lang.descr.WindowDeclarationDescr;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.StringUtils;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 
 public class DRL6Parser extends AbstractDRLParser implements DRLParser {
 
@@ -3928,7 +3928,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
     }
 
     /**
-     * fromAccumulate := ACCUMULATE LEFT_PAREN lhsAnd COMMA
+     * fromAccumulate := ACCUMULATE LEFT_PAREN lhsAnd (COMMA|SEMICOLON)
      *                   ( INIT chunk_(_) COMMA ACTION chunk_(_) COMMA
      *                     ( REVERSE chunk_(_) COMMA)? RESULT chunk_(_)
      *                   | accumulateFunction
@@ -3999,6 +3999,14 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                         null,
                         null,
                         DroolsEditorType.SYMBOL);
+                if (state.failed)
+                    return;
+            } else if (input.LA(-1) != DRL6Lexer.SEMICOLON) {
+                match(input,
+                      DRL6Lexer.SEMICOLON,
+                      null,
+                      null,
+                      DroolsEditorType.SYMBOL);
                 if (state.failed)
                     return;
             }

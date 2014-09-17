@@ -18,6 +18,27 @@
 
 package org.drools.compiler.integrationtests;
 
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.StockTick;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.Variable;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.RuleEngineOption;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,29 +51,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.StockTick;
-import org.drools.core.WorkingMemoryEntryPoint;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.Variable;
-import org.kie.internal.KnowledgeBase;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.EntryPoint;
 
 /**
  * This is a test case for multi-thred issues
@@ -252,7 +250,7 @@ public class MultithreadTest extends CommonTestMethodBase {
                      "rule \"average temperature\"\n" +
                      "when\n" +
                      " $avg := Number( ) from accumulate ( " +
-                     "      $x : Integer ( ) " +
+                     "      $x : Integer ( ); " +
                      "      average ($x) )\n" +
                      "then\n" +
                      "  System.out.println( $avg );\n" +
@@ -329,7 +327,7 @@ public class MultithreadTest extends CommonTestMethodBase {
                      "when\n" +
                      "  $s : Server (hostname == \"hiwaesdk\")\n" +
                      " $avg := Number( ) from accumulate ( " +
-                     "      IntEvent ( $temp : data ) over window:length(10) from entry-point ep01, " +
+                     "      IntEvent ( $temp : data ) over window:length(10) from entry-point ep01; " +
                      "      average ($temp)\n" +
                      "  )\n" +
                      "then\n" +
@@ -409,7 +407,7 @@ public class MultithreadTest extends CommonTestMethodBase {
                      "rule \"Dummy\"\n" +
                      "timer( cron: 0/1 * * * * ? )\n" +
                      "when\n" +
-                     "  Number( $count : intValue ) from accumulate( MyFact( ) over window:time(1s), sum(1) )\n" +
+                     "  Number( $count : intValue ) from accumulate( MyFact( ) over window:time(1s); sum(1) )\n" +
                      "then\n" +
                      "    System.out.println($count+\" myfact(s) seen in the last 1 seconds\");\n" +
                      "    list.add( $count ); \n" +

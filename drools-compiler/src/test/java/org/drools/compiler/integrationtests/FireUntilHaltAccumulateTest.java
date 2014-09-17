@@ -49,7 +49,7 @@ public class FireUntilHaltAccumulateTest {
                                 "rule \"collect events\"\n" +
                                 "when\n" +
                                 "    stocks := List()\n" +
-                                "        from accumulate( $zeroStock : Stock( value == 0.0 )\n" +
+                                "        from accumulate( $zeroStock : Stock( value == 0.0 );\n" +
                                 "                         collectList( $zeroStock ) )\n" +
                                 "then\n" +
                                 "end";
