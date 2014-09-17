@@ -98,7 +98,12 @@ public class JavaLocalDeclarationDescr {
     public void setType(String type) {
         this.type = type;
     }
-    
+
+    public String getRawType() {
+        int genericStart = type.indexOf('<');
+        return genericStart < 0 ? type : type.substring(0, genericStart);
+    }
+
     @Override
     public String toString() {
         return "[Declaration type="+this.type + " identifiers=" + this.identifiers.toString() + "]";
