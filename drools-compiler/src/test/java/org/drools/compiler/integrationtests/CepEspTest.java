@@ -3992,6 +3992,44 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
+    @Test
+    public void testDeserializationWithCompositeTrigger() throws InterruptedException {
+        String drl = "package org.drools.test;\n" +
+                     "import org.drools.compiler.StockTick; \n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare StockTick\n" +
+                     "  @role( event )\n" +
+                     "  @expires( 1s )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"One\"\n" +
+                     "when\n" +
+                     "  $event : StockTick( )\n" +
+                     "  not StockTick( company == \"BBB\", this after[0,96h] $event )\n" +
+                     "  not StockTick( company == \"CCC\", this after[0,96h] $event )\n" +
+                     "then\n" +
+                     "end";
+
+        KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        kbconf.setOption( RuleEngineOption.PHREAK );
+
+        KieSessionConfiguration knowledgeSessionConfiguration = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        knowledgeSessionConfiguration.setOption( TimerJobFactoryOption.get( "trackable" ) );
+
+        KnowledgeBase kb = loadKnowledgeBaseFromString( kbconf, drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession( knowledgeSessionConfiguration, null );
+
+        ks.insert( new StockTick( 2, "AAA", 1.0, 0 ) );
+
+        try {
+            ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true, false );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( e.getMessage() );
+        }
+    }
 
     @Test
     public void testWindowExpireActionDeserialization() throws InterruptedException {

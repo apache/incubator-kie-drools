@@ -54,6 +54,7 @@ import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.Trigger;
+import org.drools.core.time.impl.CompositeMaxDurationTrigger;
 import org.drools.core.time.impl.CronTrigger;
 import org.drools.core.time.impl.IntervalTrigger;
 import org.drools.core.time.impl.PointInTimeTrigger;
@@ -64,7 +65,6 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.Match;
-import org.kie.api.runtime.rule.RuleRuntime;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -745,6 +745,20 @@ public class ProtobufInputMarshaller {
             }
             case POINT_IN_TIME : {
                 PointInTimeTrigger trigger = new PointInTimeTrigger( _trigger.getPit().getNextFireTime(), null, null );
+                return trigger;
+            }
+            case COMPOSITE_MAX_DURATION : {
+                ProtobufMessages.Trigger.CompositeMaxDurationTrigger _cmdTrigger = _trigger.getCmdt();
+                CompositeMaxDurationTrigger trigger = new CompositeMaxDurationTrigger();
+                if ( _cmdTrigger.hasMaxDurationTimestamp() ) {
+                    trigger.setMaxDurationTimestamp( new Date( _cmdTrigger.getMaxDurationTimestamp() ) );
+                }
+                if ( _cmdTrigger.hasTimerCurrentDate() ) {
+                    trigger.setTimerCurrentDate( new Date( _cmdTrigger.getTimerCurrentDate() ) );
+                }
+                if ( _cmdTrigger.hasTimerTrigger() ) {
+                    trigger.setTimerTrigger( readTrigger( inCtx, _cmdTrigger.getTimerTrigger() ) );
+                }
                 return trigger;
             }
         }

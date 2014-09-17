@@ -71,6 +71,7 @@ import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.SelfRemovalJobContext;
 import org.drools.core.time.Trigger;
+import org.drools.core.time.impl.CompositeMaxDurationTrigger;
 import org.drools.core.time.impl.CronTrigger;
 import org.drools.core.time.impl.IntervalTrigger;
 import org.drools.core.time.impl.PointInTimeTrigger;
@@ -934,6 +935,22 @@ public class ProtobufOutputMarshaller {
                             .setNextFireTime( pinTrigger.hasNextFireTime().getTime() )
                             .build() )
                     .build();
+        } else if ( trigger instanceof CompositeMaxDurationTrigger ) {
+            CompositeMaxDurationTrigger cmdTrigger = (CompositeMaxDurationTrigger) trigger;
+            ProtobufMessages.Trigger.CompositeMaxDurationTrigger.Builder _cmdt = ProtobufMessages.Trigger.CompositeMaxDurationTrigger.newBuilder();
+            if ( cmdTrigger.getMaxDurationTimestamp() != null ) {
+                _cmdt.setMaxDurationTimestamp( cmdTrigger.getMaxDurationTimestamp().getTime() );
+            }
+            if ( cmdTrigger.getTimerCurrentDate() != null ) {
+                _cmdt.setTimerCurrentDate( cmdTrigger.getTimerCurrentDate().getTime() );
+            }
+            if ( cmdTrigger.getTimerTrigger() != null ) {
+                _cmdt.setTimerTrigger( writeTrigger(cmdTrigger.getTimerTrigger(), outCtx) );
+            }
+            return ProtobufMessages.Trigger.newBuilder()
+                                           .setType( ProtobufMessages.Trigger.TriggerType.COMPOSITE_MAX_DURATION )
+                                           .setCmdt( _cmdt.build() )
+                                           .build();
         }
         throw new RuntimeException( "Unable to serialize Trigger for type: " + trigger.getClass() );
     }
