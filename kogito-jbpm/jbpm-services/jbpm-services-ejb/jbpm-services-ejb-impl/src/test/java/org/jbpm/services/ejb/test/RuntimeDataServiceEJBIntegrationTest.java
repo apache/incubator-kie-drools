@@ -547,27 +547,27 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	assertNotNull(processInstanceId);
     	
     	// get active nodes as history view
-    	Collection<NodeInstanceDesc> instances = runtimeDataService.getProcessInstanceHistoryActive(deploymentUnit.getIdentifier(), processInstanceId, new QueryContextImpl());
+    	Collection<NodeInstanceDesc> instances = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	
     	// get completed nodes as history view
-    	instances = runtimeDataService.getProcessInstanceHistoryCompleted(deploymentUnit.getIdentifier(), processInstanceId, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstanceHistoryCompleted(processInstanceId, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	
     	// get both active and completed nodes as history view
-    	instances = runtimeDataService.getProcessInstanceFullHistory(deploymentUnit.getIdentifier(), processInstanceId, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstanceFullHistory(processInstanceId, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(3, instances.size());  
     	
     	// get nodes filtered by type - start
-    	instances = runtimeDataService.getProcessInstanceFullHistoryByType(deploymentUnit.getIdentifier(), processInstanceId, EntryType.START, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstanceFullHistoryByType(processInstanceId, EntryType.START, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(2, instances.size());
     	
     	// get nodes filtered by type - end
-    	instances = runtimeDataService.getProcessInstanceFullHistoryByType(deploymentUnit.getIdentifier(), processInstanceId, EntryType.END, new QueryContextImpl());
+    	instances = runtimeDataService.getProcessInstanceFullHistoryByType(processInstanceId, EntryType.END, new QueryContextImpl());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());  
     }

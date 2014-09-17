@@ -370,20 +370,19 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
      * node instances methods
      */    
     @Override
-    public Collection<NodeInstanceDesc> getProcessInstanceHistoryActive(String deploymentId, long processId, QueryContext queryContext) {
-        return getProcessInstanceHistory(deploymentId, processId, false, queryContext);
+    public Collection<NodeInstanceDesc> getProcessInstanceHistoryActive(long processId, QueryContext queryContext) {
+        return getProcessInstanceHistory(processId, false, queryContext);
     }
     
     @Override
-    public Collection<NodeInstanceDesc> getProcessInstanceHistoryCompleted(String deploymentId, long processId, QueryContext queryContext) {
-        return getProcessInstanceHistory(deploymentId, processId, true, queryContext);
+    public Collection<NodeInstanceDesc> getProcessInstanceHistoryCompleted(long processId, QueryContext queryContext) {
+        return getProcessInstanceHistory(processId, true, queryContext);
     }
 
     
-    protected Collection<NodeInstanceDesc> getProcessInstanceHistory(String deploymentId, long processId, boolean completed, QueryContext queryContext) {
+    protected Collection<NodeInstanceDesc> getProcessInstanceHistory(long processId, boolean completed, QueryContext queryContext) {
     	Map<String, Object> params = new HashMap<String, Object>();
     	params.put("processId", processId);
-    	params.put("externalId", deploymentId);
     	applyQueryContext(params, queryContext);
     	List<NodeInstanceDesc> nodeInstances = Collections.emptyList();
         if (completed) {
@@ -400,10 +399,9 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     }
     
     @Override
-    public Collection<NodeInstanceDesc> getProcessInstanceFullHistory(String deploymentId, long processId, QueryContext queryContext) {
+    public Collection<NodeInstanceDesc> getProcessInstanceFullHistory(long processId, QueryContext queryContext) {
     	Map<String, Object> params = new HashMap<String, Object>();
     	params.put("processId", processId);
-    	params.put("externalId", deploymentId);
     	applyQueryContext(params, queryContext);
         List<NodeInstanceDesc> nodeInstances = commandService.execute(
 				new QueryNameCommand<List<NodeInstanceDesc>>("getProcessInstanceFullHistory", 
@@ -413,10 +411,9 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     }
     
     @Override
-    public Collection<NodeInstanceDesc> getProcessInstanceFullHistoryByType(String deploymentId, long processId, EntryType type, QueryContext queryContext) {    	
+    public Collection<NodeInstanceDesc> getProcessInstanceFullHistoryByType(long processId, EntryType type, QueryContext queryContext) {    	
     	Map<String, Object> params = new HashMap<String, Object>();
     	params.put("processId", processId);
-    	params.put("externalId", deploymentId);
     	params.put("type", type.getValue());
     	applyQueryContext(params, queryContext);
         List<NodeInstanceDesc> nodeInstances = commandService.execute(

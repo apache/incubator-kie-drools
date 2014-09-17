@@ -237,7 +237,7 @@
       from
         NodeInstanceLog log
       where
-        log.processInstanceId=:processId AND log.externalId=:externalId 
+        log.processInstanceId=:processId
       ORDER BY 
         log.date DESC, log.id DESC
     </query>
@@ -262,7 +262,7 @@
       from
         NodeInstanceLog log
       where
-        log.processInstanceId=:processId AND log.externalId=:externalId 
+        log.processInstanceId=:processId 
         AND log.type=:type
       ORDER BY 
         log.date DESC, log.id DESC
@@ -289,7 +289,7 @@
       from
         NodeInstanceLog log
       where
-        log.nodeInstanceId in ( select nil.nodeInstanceId from NodeInstanceLog nil where nil.processInstanceId=:processId AND nil.externalId=:externalId 
+        log.nodeInstanceId in ( select nil.nodeInstanceId from NodeInstanceLog nil where nil.processInstanceId=:processId  
                     GROUP BY nil.nodeInstanceId
                     HAVING sum(nil.type) = 0)
         and log.type = 0  
@@ -318,7 +318,7 @@
       from
         NodeInstanceLog log
       where
-        log.nodeInstanceId in (select nodeInstanceId from NodeInstanceLog nid where nid.processInstanceId=:processId AND nid.externalId=:externalId AND nid.type = 1 
+        log.nodeInstanceId in (select nodeInstanceId from NodeInstanceLog nid where nid.processInstanceId=:processId AND nid.type = 1 
         						GROUP BY nid.nodeInstanceId
                     			HAVING sum(nid.type) &gt;= 1) 
        	and log.type = 1 

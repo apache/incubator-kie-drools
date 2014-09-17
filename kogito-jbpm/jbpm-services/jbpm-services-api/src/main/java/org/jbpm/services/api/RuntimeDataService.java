@@ -132,7 +132,7 @@ public interface RuntimeDataService {
      * @param processInstanceId unique identifier of process instance
      * @return
      */
-    Collection<NodeInstanceDesc> getProcessInstanceHistoryActive(String deploymentId, long processInstanceId, QueryContext queryContext);
+    Collection<NodeInstanceDesc> getProcessInstanceHistoryActive(long processInstanceId, QueryContext queryContext);
 
     /**
      * Returns trace of all executed (completed) for given process instance id
@@ -140,7 +140,7 @@ public interface RuntimeDataService {
      * @param processInstanceId unique identifier of process instance
      * @return
      */
-    Collection<NodeInstanceDesc> getProcessInstanceHistoryCompleted(String deploymentId, long processInstanceId, QueryContext queryContext);
+    Collection<NodeInstanceDesc> getProcessInstanceHistoryCompleted(long processInstanceId, QueryContext queryContext);
 
     /**
      * Returns complete trace of all executed (completed) and active nodes for given process instance id
@@ -149,7 +149,7 @@ public interface RuntimeDataService {
      * @return The {@link NodeInstance} information, in the form of a list of {@link NodeInstanceDesc} instances, 
      *         that comes from a process instance that matches the given criteria (deploymentId, processId).
      */
-    Collection<NodeInstanceDesc> getProcessInstanceFullHistory(String deploymentId, long processInstanceId, QueryContext queryContext);
+    Collection<NodeInstanceDesc> getProcessInstanceFullHistory(long processInstanceId, QueryContext queryContext);
     
     /**
      * Returns complete trace of all events of given type (START or END) for given process instance.
@@ -158,7 +158,7 @@ public interface RuntimeDataService {
      * @param type type of events that shall be returned (START or END) - to return both use {@link #getProcessInstanceFullHistory(String, long)}
      * @return
      */
-    Collection<NodeInstanceDesc> getProcessInstanceFullHistoryByType(String deploymentId, long processInstanceId, EntryType type, QueryContext queryContext);
+    Collection<NodeInstanceDesc> getProcessInstanceFullHistoryByType(long processInstanceId, EntryType type, QueryContext queryContext);
 
 
     /**

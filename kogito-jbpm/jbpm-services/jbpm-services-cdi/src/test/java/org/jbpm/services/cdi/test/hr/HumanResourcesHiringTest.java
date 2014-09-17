@@ -229,12 +229,12 @@ public class HumanResourcesHiringTest extends AbstractBaseTest {
         ProcessInstance processInstance = ksession.startProcess("hiring");
 
         Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(
-        															manager.getIdentifier(), processInstance.getId(), new QueryContextImpl());
+        															processInstance.getId(), new QueryContextImpl());
         assertNotNull(activeNodes);
         assertEquals(1, activeNodes.size());
         
         Collection<NodeInstanceDesc> completedNodes = runtimeDataService.getProcessInstanceHistoryCompleted(
-        															manager.getIdentifier(), processInstance.getId(), new QueryContextImpl());
+        															processInstance.getId(), new QueryContextImpl());
         assertNotNull(completedNodes);
         assertEquals(1, completedNodes.size());
         
@@ -255,12 +255,12 @@ public class HumanResourcesHiringTest extends AbstractBaseTest {
         taskService.complete(HRInterview.getId(), "katy", hrOutput);
         
         activeNodes = runtimeDataService.getProcessInstanceHistoryActive(
-						manager.getIdentifier(), processInstance.getId(), new QueryContextImpl());
+						processInstance.getId(), new QueryContextImpl());
 		assertNotNull(activeNodes);
 		assertEquals(1, activeNodes.size());
 		
 		completedNodes = runtimeDataService.getProcessInstanceHistoryCompleted(
-						manager.getIdentifier(), processInstance.getId(), new QueryContextImpl());
+						processInstance.getId(), new QueryContextImpl());
 		assertNotNull(completedNodes);
 		assertEquals(2, completedNodes.size());
 
@@ -298,12 +298,12 @@ public class HumanResourcesHiringTest extends AbstractBaseTest {
         taskService.complete(techInterview.getId(), "salaboy", techOutput);
         
         activeNodes = runtimeDataService.getProcessInstanceHistoryActive(
-						manager.getIdentifier(), processInstance.getId(), new QueryContextImpl());
+						processInstance.getId(), new QueryContextImpl());
 		assertNotNull(activeNodes);
 		assertEquals(1, activeNodes.size());
 		
 		completedNodes = runtimeDataService.getProcessInstanceHistoryCompleted(
-						manager.getIdentifier(), processInstance.getId(), new QueryContextImpl());
+						processInstance.getId(), new QueryContextImpl());
 		assertNotNull(completedNodes);
 		assertEquals(3, completedNodes.size());
 
@@ -335,12 +335,12 @@ public class HumanResourcesHiringTest extends AbstractBaseTest {
         taskService.complete(createProposal.getId(), "john", proposalOutput);
         
         activeNodes = runtimeDataService.getProcessInstanceHistoryActive(
-						manager.getIdentifier(), processInstance.getId(), new QueryContextImpl());
+						processInstance.getId(), new QueryContextImpl());
 		assertNotNull(activeNodes);
 		assertEquals(1, activeNodes.size());
 		
 		completedNodes = runtimeDataService.getProcessInstanceHistoryCompleted(
-						manager.getIdentifier(), processInstance.getId(), new QueryContextImpl());
+						processInstance.getId(), new QueryContextImpl());
 		assertNotNull(completedNodes);
 		assertEquals(5, completedNodes.size());
 
@@ -368,12 +368,12 @@ public class HumanResourcesHiringTest extends AbstractBaseTest {
         taskService.complete(signContract.getId(), "katy", signOutput);
         
         activeNodes = runtimeDataService.getProcessInstanceHistoryActive(
-						manager.getIdentifier(), processInstance.getId(), new QueryContextImpl());
+						processInstance.getId(), new QueryContextImpl());
 		assertNotNull(activeNodes);
 		assertEquals(0, activeNodes.size());
 		
 		completedNodes = runtimeDataService.getProcessInstanceHistoryCompleted(
-						manager.getIdentifier(), processInstance.getId(), new QueryContextImpl());
+						processInstance.getId(), new QueryContextImpl());
 		assertNotNull(completedNodes);
 		assertEquals(8, completedNodes.size());
 

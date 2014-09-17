@@ -19,8 +19,9 @@ package org.jbpm.services.ejb;
 import javax.ejb.Local;
 
 import org.kie.api.task.TaskService;
+import org.kie.internal.task.api.InternalTaskService;
 
 @Local
-public interface TaskServiceEJBLocal extends TaskService {
+public interface TaskServiceEJBLocal extends TaskService, InternalTaskService {
 
 }
