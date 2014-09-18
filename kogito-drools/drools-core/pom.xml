@@ -163,6 +163,39 @@
         </plugins>
       </build>
     </profile>
+
+    <profile>
+      <id>protobufProfile</id>
+      <activation>
+        <property>
+          <name>proto</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.3.2</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <executable>protoc</executable>
+              <arguments>
+                <argument>-I=src/main/resources</argument>
+                <argument>--java_out=src/main/java</argument>
+                <argument>src/main/resources/org/drools/core/marshalling/droolsmessages.proto</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
   <build>
