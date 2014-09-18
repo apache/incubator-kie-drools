@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.vehiclerouting.persistence;
+package org.optaplanner.examples.vehiclerouting.persistence.util;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -29,6 +29,7 @@ import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.tsp.domain.City;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.persistence.TspImporter;
+import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingDao;
 
 public class VehicleRoutingTspBasedGenerator extends LoggingMain {
 
