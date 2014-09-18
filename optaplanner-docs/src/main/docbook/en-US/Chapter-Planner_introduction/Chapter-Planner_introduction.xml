@@ -5,7 +5,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Planner introduction</title>
+  <title>OptaPlanner introduction</title>
 
   <section xml:id="whatIsOptaPlanner">
     <title>What is OptaPlanner?</title>
@@ -84,11 +84,12 @@
   <section xml:id="whatIsAPlanningProblem">
     <title>What is a planning problem?</title>
 
-    <section xml:id="aPlanningProblemIsNPComplete">
-      <title>A planning problem is NP-complete</title>
+    <section xml:id="aPlanningProblemIsNPCompleteOrNPHard">
+      <title>A planning problem is NP-complete or NP-hard</title>
 
       <para>All the use cases above are <emphasis>probably</emphasis> <link
-      xlink:href="http://en.wikipedia.org/wiki/NP-complete">NP-complete</link>. In layman's terms, this means:</para>
+      xlink:href="http://en.wikipedia.org/wiki/NP-complete">NP-complete</link> or harder. In layman's terms, NP-complete
+      means:</para>
 
       <itemizedlist>
         <listitem>
@@ -119,11 +120,11 @@
 
         <listitem>
           <para>A quick algorithm, for example in bin packing, <emphasis>putting in the largest items first</emphasis>,
-          will return a solution that is usually far from optimal.</para>
+          will return a solution that is far from optimal.</para>
         </listitem>
       </itemizedlist>
 
-      <para>By using advanced optimization algorithms, <emphasis role="bold">Planner does find a good solution in
+      <para>By using advanced optimization algorithms, <emphasis role="bold">OptaPlanner does find a good solution in
       reasonable time for such planning problems.</emphasis></para>
     </section>
 
@@ -158,8 +159,8 @@
 
       <para>These constraints define the <emphasis>score calculation</emphasis> (AKA <emphasis>fitness
       function</emphasis>) of a planning problem. Each solution of a planning problem can be graded with a score.
-      <emphasis role="bold">With Planner, score constraints are written in an Object Orientated language, such as Java
-      code or Drools rules</emphasis>. Such code is easy, flexible and scalable.</para>
+      <emphasis role="bold">With OptaPlanner, score constraints are written in an Object Orientated language, such as
+      Java code or Drools rules</emphasis>. Such code is easy, flexible and scalable.</para>
     </section>
 
     <section xml:id="aPlanningProblemHasAHugeSearchSpace">
@@ -201,8 +202,8 @@
 
       <para>OptaPlanner supports several optimization algorithms to efficiently wade through that incredibly large
       number of possible solutions. Depending on the use case, some optimization algorithms perform better than others,
-      but it's impossible to tell in advance. <emphasis role="bold">With Planner, it is easy to switch the optimization
-      algorithm</emphasis>, by changing the solver configuration in a few lines of XML or code.</para>
+      but it's impossible to tell in advance. <emphasis role="bold">With OptaPlanner, it is easy to switch the
+      optimization algorithm</emphasis>, by changing the solver configuration in a few lines of XML or code.</para>
     </section>
   </section>
 
