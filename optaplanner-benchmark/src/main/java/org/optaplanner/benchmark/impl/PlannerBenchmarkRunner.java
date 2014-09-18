@@ -58,6 +58,10 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         this.plannerBenchmarkResult = plannerBenchmarkResult;
     }
 
+    public PlannerBenchmarkResult getPlannerBenchmarkResult() {
+        return plannerBenchmarkResult;
+    }
+
     public File getBenchmarkDirectory() {
         return benchmarkDirectory;
     }
