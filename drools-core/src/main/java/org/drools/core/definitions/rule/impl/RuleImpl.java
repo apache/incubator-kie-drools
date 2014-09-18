@@ -28,6 +28,7 @@ import org.drools.core.rule.GroupElementFactory;
 import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.LogicTransformer;
 import org.drools.core.rule.Pattern;
+import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.CompiledInvoker;
@@ -53,10 +54,13 @@ import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class RuleImpl implements Externalizable,
@@ -136,6 +140,10 @@ public class RuleImpl implements Externalizable,
 
     private ConsequenceMetaData consequenceMetaData = new ConsequenceMetaData();
 
+    private List<QueryImpl> usedQueries;
+
+    private List<QueryImpl> dependingQueries;
+
     public RuleImpl() {
 
     }
@@ -159,7 +167,6 @@ public class RuleImpl implements Externalizable,
         this.salience = SalienceInteger.DEFAULT_SALIENCE;
         this.metaAttributes = new HashMap<String, Object>();
         setActivationListener( "agenda" );
-
     }
 
     /**
@@ -219,6 +226,7 @@ public class RuleImpl implements Externalizable,
         out.writeObject( activationListener );
         out.writeObject( consequenceMetaData );
         out.writeBoolean( eager );
+        out.writeObject( usedQueries );
     }
 
     @SuppressWarnings("unchecked")
@@ -256,6 +264,39 @@ public class RuleImpl implements Externalizable,
         activationListener = ( String ) in.readObject();
         consequenceMetaData = ( ConsequenceMetaData ) in.readObject();
         eager = in.readBoolean();
+        usedQueries = (List<QueryImpl>) in.readObject();
+    }
+
+    public void addUsedQuery(QueryImpl query) {
+        if (usedQueries == null) {
+            usedQueries = new ArrayList<QueryImpl>();
+        }
+        usedQueries.add(query);
+    }
+
+    /**
+     * Returns the lists of queries from which this rule (or query) depends on ordered
+     * by their relative dependencies, e.g. if R1 -> A -> B -> C (where the letter are queries)
+     * it will return [C, B, A]
+     */
+    public List<QueryImpl> getDependingQueries() {
+        if (dependingQueries == null) {
+            dependingQueries = usedQueries == null ? Collections.<QueryImpl>emptyList() : collectDependingQueries(new LinkedList<QueryImpl>());
+        }
+        return dependingQueries;
+    }
+
+    protected List<QueryImpl> collectDependingQueries(LinkedList<QueryImpl> accumulator) {
+        if (usedQueries == null) {
+            return accumulator;
+        }
+        for (QueryImpl query : usedQueries) {
+            if (!accumulator.contains(query)) {
+                accumulator.offerFirst(query);
+                query.collectDependingQueries(accumulator);
+            }
+        }
+        return accumulator;
     }
 
     public Resource getResource() {

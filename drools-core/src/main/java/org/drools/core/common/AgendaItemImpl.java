@@ -16,11 +16,6 @@
 
 package org.drools.core.common;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
@@ -32,7 +27,12 @@ import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Item entry in the <code>Agenda</code>.
@@ -78,7 +78,6 @@ public class AgendaItemImpl
     private           boolean                                        matched;
     private           boolean                                        active;
     private           ActivationUnMatchListener                      activationUnMatchListener;
-    private           RuleAgendaItem                                 ruleAgendaItem;
 
     // ------------------------------------------------------------
     // Constructors
@@ -92,7 +91,6 @@ public class AgendaItemImpl
      * Construct.
      *
      * @param tuple          The tuple.
-     * @param ruleAgendaItem
      * @param agendaGroup
      */
     public AgendaItemImpl(final long activationNumber,
@@ -100,7 +98,6 @@ public class AgendaItemImpl
                           final int salience,
                           final PropagationContext context,
                           final TerminalNode rtn,
-                          final RuleAgendaItem ruleAgendaItem,
                           final InternalAgendaGroup agendaGroup) {
         this.tuple = tuple;
         this.context = context;
@@ -109,7 +106,6 @@ public class AgendaItemImpl
         this.activationNumber = activationNumber;
         this.index = -1;
         this.matched = true;
-        this.ruleAgendaItem = ruleAgendaItem;
         this.agendaGroup = agendaGroup;
     }
 
@@ -171,7 +167,7 @@ public class AgendaItemImpl
 
     @Override
     public RuleAgendaItem getRuleAgendaItem() {
-        return ruleAgendaItem;
+        return null;
     }
 
     /*
@@ -221,7 +217,7 @@ public class AgendaItemImpl
                 removeBlocked(dep);
                 AgendaItem justified = (AgendaItem) dep.getJustified();
                 if (justified.getBlockers().isEmpty()) {
-                    agenda.stageLeftTuple(ruleAgendaItem,justified);
+                    agenda.stageLeftTuple(null,justified);
                 }
                 dep = tmp;
             }

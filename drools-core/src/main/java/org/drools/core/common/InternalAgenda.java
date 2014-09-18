@@ -289,8 +289,10 @@ public interface InternalAgenda
     void addAgendaItemToGroup(AgendaItem item);
 
     void addEagerRuleAgendaItem(RuleAgendaItem item);
-
     void removeEagerRuleAgendaItem(RuleAgendaItem item);
+
+    void addQueryAgendaItem(final RuleAgendaItem item);
+    void removeQueryAgendaItem(final RuleAgendaItem item);
 
     long getNextActivationCounter();
 

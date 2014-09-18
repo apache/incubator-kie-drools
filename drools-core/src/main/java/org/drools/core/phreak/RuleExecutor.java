@@ -206,7 +206,9 @@ public class RuleExecutor {
                         log.trace("Removing RuleAgendaItem " + ruleAgendaItem);
                     }
                     ruleAgendaItem.remove();
-                    if (ruleAgendaItem.getRule().isEager()) {
+                    if ( ruleAgendaItem.getRule().isQuery() ) {
+                        ((InternalAgenda)wm.getAgenda()).removeQueryAgendaItem( ruleAgendaItem );
+                    } else if ( ruleAgendaItem.getRule().isEager() ) {
                         ((InternalAgenda) wm.getAgenda()).removeEagerRuleAgendaItem(ruleAgendaItem);
                     }
                 }

@@ -198,11 +198,7 @@ public class PatternBuilder
             // it might be a recursive query, so check for same names
             if ( context.getRule().getName().equals( patternDescr.getObjectType() ) ) {
                 // it's a query so delegate to the QueryElementBuilder
-                QueryElementBuilder qeBuilder = QueryElementBuilder.getInstance();
-                rce = qeBuilder.build( context,
-                                        descr,
-                                        prefixPattern,
-                                        (QueryImpl) context.getRule() );
+                rce = buildQueryElement(context, descr, prefixPattern, (QueryImpl) context.getRule());
             }
 
             if ( rce == null ) {
@@ -210,11 +206,7 @@ public class PatternBuilder
                 RuleImpl rule = context.getPkg().getRule( patternDescr.getObjectType() );
                 if ( rule instanceof QueryImpl ) {
                     // it's a query so delegate to the QueryElementBuilder
-                    QueryElementBuilder qeBuilder = QueryElementBuilder.getInstance();
-                    rce = qeBuilder.build( context,
-                                           descr,
-                                           prefixPattern,
-                                           (QueryImpl) rule );
+                    rce = buildQueryElement(context, descr, prefixPattern, (QueryImpl) rule);
                 }
             }
 
@@ -231,11 +223,7 @@ public class PatternBuilder
                             RuleImpl rule = pkgReg.getPackage().getRule( patternDescr.getObjectType() );
                             if ( rule instanceof QueryImpl) {
                                 // it's a query so delegate to the QueryElementBuilder
-                                QueryElementBuilder qeBuilder = QueryElementBuilder.getInstance();
-                                rce = qeBuilder.build( context,
-                                                       descr,
-                                                       prefixPattern,
-                                                       (QueryImpl) rule );
+                                rce = buildQueryElement(context, descr, prefixPattern, (QueryImpl) rule);
                                 break;
                             }
                         }
@@ -352,6 +340,13 @@ public class PatternBuilder
         context.getBuildStack().pop();
 
         return pattern;
+    }
+
+    private RuleConditionElement buildQueryElement(RuleBuildContext context, BaseDescr descr, Pattern prefixPattern, QueryImpl rule) {
+        if (context.getRule() != rule) {
+            context.getRule().addUsedQuery(rule);
+        }
+        return QueryElementBuilder.getInstance().build( context, descr, prefixPattern, rule );
     }
 
     protected void processDuplicateBindings( boolean isUnification,
