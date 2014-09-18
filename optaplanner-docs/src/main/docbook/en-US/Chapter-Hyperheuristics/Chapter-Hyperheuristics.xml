@@ -7,14 +7,14 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Hyperheuristics</title>
 
-  <section>
+  <section xml:id="hyperheuristicsOverview">
     <title>Overview</title>
 
     <para>A hyperheuristic automates the decision which heuristic(s) to use on a specific data set.</para>
 
-    <para>A future version of Planner will have native support for hyperheuristics. Meanwhile, it's pretty easy to
+    <para>A future version of OptaPlanner will have native support for hyperheuristics. Meanwhile, it's pretty easy to
     implement it yourself: Based on the size or difficulty of a data set (which is a criterion), use a different Solver
-    configuration (or adjust the default configuration using the Solver configuration API). The
-    <link linkend="benchmarkingAndTweaking">Benchmarker</link> can help to identify such criteria.</para>
+    configuration (or adjust the default configuration using the Solver configuration API). The <link
+    linkend="benchmarkingAndTweaking">Benchmarker</link> can help to identify such criteria.</para>
   </section>
 </chapter>

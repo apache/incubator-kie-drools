@@ -39,11 +39,12 @@
   <xi:include href="Chapter-Score_calculation/Chapter-Score_calculation.xml" />
   <xi:include href="Chapter-Optimization_algorithms/Chapter-Optimization_algorithms.xml" />
   <xi:include href="Chapter-Move_and_neighborhood_selection/Chapter-Move_and_neighborhood_selection.xml" />
+  <xi:include href="Chapter-Exhaustive_search/Chapter-Exhaustive_search.xml" />
   <xi:include href="Chapter-Construction_heuristics/Chapter-Construction_heuristics.xml" />
   <xi:include href="Chapter-Local_search/Chapter-Local_search.xml" />
   <xi:include href="Chapter-Evolutionary_algorithms/Chapter-Evolutionary_algorithms.xml" />
   <xi:include href="Chapter-Hyperheuristics/Chapter-Hyperheuristics.xml" />
-  <xi:include href="Chapter-Exhaustive_search/Chapter-Exhaustive_search.xml" />
+  <xi:include href="Chapter-Partitioned_search/Chapter-Partitioned_search.xml" />
   <xi:include href="Chapter-Benchmarking_and_tweaking/Chapter-Benchmarking_and_tweaking.xml" />
   <xi:include href="Chapter-Repeated_planning/Chapter-Repeated_planning.xml" />
   <xi:include href="Chapter-Integration/Chapter-Integration.xml" />
