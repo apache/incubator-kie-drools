@@ -324,6 +324,16 @@ public class ReteAgenda
         eager.remove(item);
     }
 
+    @Override
+    public void addQueryAgendaItem(final RuleAgendaItem item) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void removeQueryAgendaItem(RuleAgendaItem item) {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Schedule an agenda item for delayed firing.
      *

@@ -109,7 +109,7 @@ public class MVELConsequenceBuilderTest {
 
         final AgendaItem item = new AgendaItemImpl( 0, tuple, 10,
                                                 pctxFactory.createPropagationContext(1, 1, null, tuple, null),
-                                                new RuleTerminalNode(0, new CompositeObjectSinkAdapterTest.MockBetaNode(), context.getRule(), subrule, 0, new BuildContext( kBase, null )), null, null);
+                                                new RuleTerminalNode(0, new CompositeObjectSinkAdapterTest.MockBetaNode(), context.getRule(), subrule, 0, new BuildContext( kBase, null )), null);
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( ksession );
         kbHelper.setActivation( item );
         ((MVELConsequence) context.getRule().getConsequence()).compile(  (MVELDialectRuntimeData) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ));
@@ -177,7 +177,6 @@ public class MVELConsequenceBuilderTest {
         final AgendaItem item = new AgendaItemImpl( 0,
                                                 tuple,
                                                 10,
-                                                null,
                                                 null, null, null);
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( ksession );
         kbHelper.setActivation( item );

@@ -18,6 +18,7 @@ package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
@@ -30,6 +31,7 @@ import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
+import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.ConsequenceException;
@@ -61,7 +63,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -102,7 +105,9 @@ public class DefaultAgenda
 
     private InternalAgendaGroup                                  main;
 
-    private final LinkedList<RuleAgendaItem>                     eager = new LinkedList<RuleAgendaItem>();
+    private final org.drools.core.util.LinkedList<RuleAgendaItem> eager = new org.drools.core.util.LinkedList<RuleAgendaItem>();
+
+    private final ConcurrentMap<QueryImpl, RuleAgendaItem>       queries = new ConcurrentHashMap<QueryImpl, RuleAgendaItem>();
 
     private AgendaGroupFactory                                   agendaGroupFactory;
 
@@ -265,7 +270,7 @@ public class DefaultAgenda
     }
 
     @Override
-    public void addEagerRuleAgendaItem(final RuleAgendaItem item) {
+    public void addEagerRuleAgendaItem(RuleAgendaItem item) {
         if ( workingMemory.getSessionConfiguration().getForceEagerActivationFilter().accept(item.getRule()) ) {
             item.getRuleExecutor().evaluateNetwork(workingMemory);
             return;
@@ -295,6 +300,22 @@ public class DefaultAgenda
         }
         synchronized (eager) {
             eager.remove(item);
+        }
+    }
+
+    @Override
+    public void addQueryAgendaItem(RuleAgendaItem item) {
+        queries.putIfAbsent( (QueryImpl) item.getRule(), item );
+        if ( log.isTraceEnabled() ) {
+            log.trace("Added {} to query evaluation list.", item.getRule().getName() );
+        }
+    }
+
+    @Override
+    public void removeQueryAgendaItem(RuleAgendaItem item) {
+        queries.remove( (QueryImpl) item.getRule() );
+        if ( log.isTraceEnabled() ) {
+            log.trace("Removed {} from query evaluation list.", item.getRule().getName() );
         }
     }
 
@@ -961,6 +982,7 @@ public class DefaultAgenda
                             garbageCollector.remove(item);
                         }
 
+                        evaluateQueriesForRule(item);
                         localFireCount = item.getRuleExecutor().evaluateNetworkAndFire(this.workingMemory, filter,
                                                                                        fireCount, fireLimit);
                         if ( localFireCount == 0 ) {
@@ -985,9 +1007,25 @@ public class DefaultAgenda
     public void evaluateEagerList() {
         synchronized (eager) {
             while ( !eager.isEmpty() ) {
-                RuleExecutor ruleExecutor = eager.removeFirst().getRuleExecutor();
+                RuleAgendaItem item = eager.removeFirst();
+                evaluateQueriesForRule(item);
+                RuleExecutor ruleExecutor = item.getRuleExecutor();
                 ruleExecutor.flushTupleQueue(ruleExecutor.getPathMemory().getStreamQueue());
                 ruleExecutor.evaluateNetwork(this.workingMemory);
+            }
+        }
+    }
+
+    private void evaluateQueriesForRule(RuleAgendaItem item) {
+        RuleImpl rule = item.getRule();
+        if (!rule.isQuery()) {
+            for (QueryImpl query : rule.getDependingQueries()) {
+                RuleAgendaItem queryAgendaItem = queries.remove(query);
+                if (queryAgendaItem != null) {
+                    RuleExecutor ruleExecutor = queryAgendaItem.getRuleExecutor();
+                    ruleExecutor.flushTupleQueue(ruleExecutor.getPathMemory().getStreamQueue());
+                    ruleExecutor.evaluateNetwork(this.workingMemory);
+                }
             }
         }
     }
@@ -1145,7 +1183,7 @@ public class DefaultAgenda
                                          long processInstanceId) {
         final Map<String, Declaration> declarations = activation.getSubRule().getOuterDeclarations();
         for ( Declaration declaration : declarations.values() ) {
-            if ( "processInstance".equals( declaration.getIdentifier() ) ) {
+            if ( "processInstance".equals(declaration.getIdentifier()) ) {
                 Object value = declaration.getValue( workingMemory,
                                                      activation.getTuple().get( declaration ).getObject() );
                 if ( value instanceof ProcessInstance ) {
@@ -1176,7 +1214,7 @@ public class DefaultAgenda
     }
 
     public void fireUntilHalt() {
-        fireUntilHalt( null );
+        fireUntilHalt(null);
     }
 
     public void fireUntilHalt(final AgendaFilter agendaFilter) {

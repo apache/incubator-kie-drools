@@ -140,7 +140,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
                 return;
             }
 
-            if (!agendaItem.isQueued() && !agendaItem.isBlocked()) {
+            if ( !agendaItem.isQueued() && !agendaItem.isBlocked() ) {
                 if ( isLogTraceEnabled ) {
                     log.trace("Queue RuleAgendaItem {}", agendaItem);
                 }
@@ -148,10 +148,13 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
                 ag.add( agendaItem );
             }
         }
-        if ( agendaItem.getRule().isEager() ) {
-            // will return if already added
+
+        if ( agendaItem.getRule().isQuery() ) {
+            ((InternalAgenda)wm.getAgenda()).addQueryAgendaItem( agendaItem );
+        } else if ( agendaItem.getRule().isEager() ) {
             ((InternalAgenda)wm.getAgenda()).addEagerRuleAgendaItem( agendaItem );
         }
+
         agenda.notifyHalt();
     }
 

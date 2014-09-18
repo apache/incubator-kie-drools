@@ -82,6 +82,7 @@ import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
+import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -6651,5 +6652,135 @@ public class Misc2Test extends CommonTestMethodBase {
 
         ksession.insert("1");
         ksession.fireAllRules();
+    }
+
+    @Test
+    public void testQueryWithAgendaGroup() {
+        // DROOLS-601
+        String drl =
+                "package org.drools.test; " +
+                "global java.util.List list; " +
+
+                "query foo( Integer $i ) " +
+                "   $i := Integer() " +
+                "end " +
+
+                "rule Detect " +
+                "agenda-group 'one' " +
+                "when " +
+                "   foo( $i ; ) " +
+                "then " +
+                "   list.add( $i ); " +
+                "end " +
+
+                "rule OnceMore " +
+                "agenda-group 'two' " +
+                "no-loop " +
+                "when " +
+                "   $i : Integer() " +
+                "then " +
+                "   update( $i );" +
+                "end " +
+                "";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession kieSession = helper.build().newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        kieSession.setGlobal( "list", list );
+
+        FactHandle handle = kieSession.insert( 42 );
+
+        Agenda agenda = kieSession.getAgenda();
+        agenda.getAgendaGroup("two").setFocus();
+        agenda.getAgendaGroup("one").setFocus();
+
+        kieSession.fireAllRules();
+        assertEquals( Arrays.asList( 42 ), list );
+
+        kieSession.delete( handle );
+
+        kieSession.insert( 99 );
+
+        agenda.getAgendaGroup("two").setFocus();
+        agenda.getAgendaGroup("one").setFocus();
+
+        kieSession.fireAllRules();
+        assertEquals( Arrays.asList( 42, 99 ), list );
+    }
+
+    @Test
+    public void testQueryUsingQueryWithAgendaGroup() {
+        // DROOLS-601
+        String drl =
+                "package org.drools.test; " +
+                "global java.util.List list; " +
+
+                "query bar( String $s ) " +
+                "   $s := String() " +
+                "end " +
+                "query foo( Integer $i, String $s ) " +
+                "   bar( $s ; ) " +
+                "   $i := Integer( toString() == $s ) " +
+                "end " +
+
+                "rule Detect " +
+                "agenda-group 'one' " +
+                "when " +
+                "   foo( $i, $s ; ) " +
+                "then " +
+                "   list.add( $i ); " +
+                "end " +
+
+                "rule UpdateInt " +
+                "agenda-group 'two' " +
+                "no-loop " +
+                "when " +
+                "   $i : Integer() " +
+                "then " +
+                "   update( $i );" +
+                "end " +
+
+                "rule UpdateString " +
+                "agenda-group 'three' " +
+                "no-loop " +
+                "when " +
+                "   $s : String() " +
+                "then " +
+                "   update( $s );" +
+                "end " +
+                "";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession kieSession = helper.build().newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        kieSession.setGlobal( "list", list );
+
+        FactHandle iFH = kieSession.insert( 42 );
+        FactHandle sFH = kieSession.insert( "42" );
+
+        Agenda agenda = kieSession.getAgenda();
+        agenda.getAgendaGroup("three").setFocus();
+        agenda.getAgendaGroup("two").setFocus();
+        agenda.getAgendaGroup("one").setFocus();
+
+        kieSession.fireAllRules();
+        assertEquals( Arrays.asList( 42 ), list );
+
+        //kieSession.delete( iFH );
+        kieSession.delete( sFH );
+
+        kieSession.insert( 99 );
+        kieSession.insert( "99" );
+
+        agenda.getAgendaGroup("three").setFocus();
+        agenda.getAgendaGroup("two").setFocus();
+        agenda.getAgendaGroup("one").setFocus();
+
+        kieSession.fireAllRules();
+        assertEquals( Arrays.asList( 42, 99 ), list );
     }
 }

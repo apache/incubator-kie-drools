@@ -30,7 +30,7 @@ public class RuleAgendaItem extends AgendaItemImpl implements LinkedListNode<Rul
                           final TerminalNode rtn,
                           boolean declarativeAgendaEnabled,
                           InternalAgendaGroup agendaGroup) {
-        super(activationNumber, tuple, salience, context, rtn, null, agendaGroup);
+        super(activationNumber, tuple, salience, context, rtn, agendaGroup);
         executor = new RuleExecutor(pmem, this, declarativeAgendaEnabled);
     }
 

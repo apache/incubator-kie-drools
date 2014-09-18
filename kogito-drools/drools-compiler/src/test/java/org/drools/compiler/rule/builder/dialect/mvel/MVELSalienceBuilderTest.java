@@ -1,41 +1,39 @@
 package org.drools.compiler.rule.builder.dialect.mvel;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.drools.compiler.Person;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.lang.descr.AttributeDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.rule.builder.SalienceBuilder;
 import org.drools.core.WorkingMemory;
-import org.drools.core.common.AgendaItemImpl;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.api.definition.rule.Rule;
-
-import static org.junit.Assert.*;
-
-import org.drools.compiler.Person;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.core.common.AgendaItem;
+import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Pattern;
-import org.drools.compiler.rule.builder.SalienceBuilder;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.Salience;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.api.definition.rule.Rule;
 import org.kie.internal.KnowledgeBaseFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 public class MVELSalienceBuilderTest {
     private InstrumentedBuildContent context;
@@ -100,7 +98,7 @@ public class MVELSalienceBuilderTest {
 
         RuleTerminalNode rtn = new RuleTerminalNode();
         rtn.setSalienceDeclarations( context.getDeclarationResolver().getDeclarations( context.getRule() ).values().toArray( new Declaration[1] ) );
-        AgendaItem item = new AgendaItemImpl(0, tuple, 0, null, rtn, null, null);
+        AgendaItem item = new AgendaItemImpl(0, tuple, 0, null, rtn, null);
 
 
         assertEquals( 25,
@@ -182,7 +180,7 @@ public class MVELSalienceBuilderTest {
             
             RuleTerminalNode rtn = new RuleTerminalNode();
             rtn.setSalienceDeclarations( context.getDeclarationResolver().getDeclarations( context.getRule() ).values().toArray( new Declaration[1] ) );
-            item = new AgendaItemImpl(0, tuple, 0, null, rtn, null, null);
+            item = new AgendaItemImpl(0, tuple, 0, null, rtn, null);
         }
 
         public void run() {
