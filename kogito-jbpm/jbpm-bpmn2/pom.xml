@@ -71,8 +71,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>javax.transaction</groupId>
-      <artifactId>jta</artifactId>
+      <groupId>org.jboss.spec.javax.transaction</groupId>
+      <artifactId>jboss-transaction-api_1.1_spec</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
