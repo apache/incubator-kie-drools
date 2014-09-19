@@ -55,6 +55,5 @@ public interface AuditLogService extends AuditService {
     public List<VariableInstanceLog> findVariableInstancesByName(String variableId, boolean onlyActiveProcesses);
     
     public List<VariableInstanceLog> findVariableInstancesByNameAndValue(String variableId, String value, boolean onlyActiveProcesses);
-
-
+    
 }

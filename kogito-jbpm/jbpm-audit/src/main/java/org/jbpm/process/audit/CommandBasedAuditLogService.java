@@ -10,8 +10,13 @@ import org.jbpm.process.audit.command.FindProcessInstancesCommand;
 import org.jbpm.process.audit.command.FindSubProcessInstancesCommand;
 import org.jbpm.process.audit.command.FindVariableInstancesByNameCommand;
 import org.jbpm.process.audit.command.FindVariableInstancesCommand;
+import org.jbpm.process.audit.query.NodeInstLogQueryBuilderImpl;
+import org.jbpm.process.audit.query.ProcInstLogQueryBuilderImpl;
+import org.jbpm.process.audit.query.VarInstLogQueryBuilderImpl;
 import org.kie.api.runtime.CommandExecutor;
-import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
+import org.kie.api.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
+import org.kie.api.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
 
 public class CommandBasedAuditLogService implements AuditLogService {
 
@@ -74,6 +79,21 @@ public class CommandBasedAuditLogService implements AuditLogService {
     @Override
     public List<VariableInstanceLog> findVariableInstancesByNameAndValue(String variableId, String value, boolean activeProcesses) {
         return executor.execute(new FindVariableInstancesByNameCommand(variableId, value, activeProcesses));
+    }
+
+    @Override
+    public NodeInstanceLogQueryBuilder nodeInstanceLogQuery() {
+        return new NodeInstLogQueryBuilderImpl(executor);
+    }
+
+    @Override
+    public VariableInstanceLogQueryBuilder variableInstanceLogQuery() {
+        return new VarInstLogQueryBuilderImpl(executor);
+    }
+
+    @Override
+    public ProcessInstanceLogQueryBuilder processInstanceLogQuery() {
+        return new ProcInstLogQueryBuilderImpl(executor);
     }
 
     @Override

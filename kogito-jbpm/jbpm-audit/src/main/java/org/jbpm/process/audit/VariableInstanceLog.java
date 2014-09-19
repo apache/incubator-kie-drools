@@ -42,12 +42,15 @@ public class VariableInstanceLog implements Serializable, AuditEvent, org.kie.ap
 	private static final long serialVersionUID = 510l;
 	@Transient
 	private final int VARIABLE_LOG_LENGTH = Integer.parseInt(System.getProperty("org.jbpm.var.log.length", "255"));
+
+	// entity fields
 	
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="variableInstanceLogIdSeq")
 	private long id;
     
     private long processInstanceId;
+    
     private String processId;
     
     @Temporal(TemporalType.TIMESTAMP)
@@ -55,11 +58,16 @@ public class VariableInstanceLog implements Serializable, AuditEvent, org.kie.ap
     private Date date;
     
     private String variableInstanceId;
+    
     private String variableId;
+    
     private String value;
+    
     private String oldValue;
     
     private String externalId;
+    
+	// constructors
     
     public VariableInstanceLog() {
     }
@@ -79,7 +87,7 @@ public class VariableInstanceLog implements Serializable, AuditEvent, org.kie.ap
     	return id;
     }
     
-    void setId(long id) {
+    public void setId(long id) {
 		this.id = id;
 	}
 
@@ -87,7 +95,7 @@ public class VariableInstanceLog implements Serializable, AuditEvent, org.kie.ap
         return processInstanceId;
     }
     
-	void setProcessInstanceId(long processInstanceId) {
+	public void setProcessInstanceId(long processInstanceId) {
 		this.processInstanceId = processInstanceId;
 	}
 
@@ -95,7 +103,7 @@ public class VariableInstanceLog implements Serializable, AuditEvent, org.kie.ap
         return processId;
     }
     
-	void setProcessId(String processId) {
+	public void setProcessId(String processId) {
 		this.processId = processId;
 	}
 
@@ -143,7 +151,7 @@ public class VariableInstanceLog implements Serializable, AuditEvent, org.kie.ap
         return date;
     }
     
-	void setDate(Date date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 	

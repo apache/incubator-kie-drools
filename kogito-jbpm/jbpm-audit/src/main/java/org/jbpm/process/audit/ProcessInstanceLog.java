@@ -41,25 +41,33 @@ public class ProcessInstanceLog implements Serializable, AuditEvent, org.kie.api
 	private long id;
 	
     private long processInstanceId;
+    
     private String processId;
     
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "start_date")
     private Date start;
+    
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "end_date")
     private Date end;
     
     @Column(nullable=true)
     private Integer status;
+    
     @Column(nullable=true)
     private Long parentProcessInstanceId;
+    
     @Column(nullable=true)
     private String outcome;    
+    
     private Long duration;
+    
     @Column(name="user_identity")
     private String identity;    
+    
     private String processVersion;
+    
     private String processName;
     
     private String externalId;
@@ -85,7 +93,7 @@ public class ProcessInstanceLog implements Serializable, AuditEvent, org.kie.api
         return processInstanceId;
     }
     
-    private void setProcessInstanceId(long processInstanceId) {
+    public void setProcessInstanceId(long processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
     

@@ -76,7 +76,7 @@ public class NodeInstanceLog implements Serializable, AuditEvent, org.kie.api.ru
 		return type;
 	}
 	
-	void setType(int type) {
+	public void setType(int type) {
 		this.type = type;
 	}
     
@@ -92,7 +92,7 @@ public class NodeInstanceLog implements Serializable, AuditEvent, org.kie.api.ru
         return processInstanceId;
     }
     
-	void setProcessInstanceId(long processInstanceId) {
+	public void setProcessInstanceId(long processInstanceId) {
 		this.processInstanceId = processInstanceId;
 	}
 
@@ -100,7 +100,7 @@ public class NodeInstanceLog implements Serializable, AuditEvent, org.kie.api.ru
         return processId;
     }
     
-	void setProcessId(String processId) {
+	public void setProcessId(String processId) {
 		this.processId = processId;
 	}
 
@@ -108,7 +108,7 @@ public class NodeInstanceLog implements Serializable, AuditEvent, org.kie.api.ru
 		return nodeInstanceId;
 	}
 
-	void setNodeInstanceId(String nodeInstanceId) {
+	public void setNodeInstanceId(String nodeInstanceId) {
 		this.nodeInstanceId = nodeInstanceId;
 	}
 
@@ -116,7 +116,7 @@ public class NodeInstanceLog implements Serializable, AuditEvent, org.kie.api.ru
 		return nodeId;
 	}
 
-	void setNodeId(String nodeId) {
+	public void setNodeId(String nodeId) {
 		this.nodeId = nodeId;
 	}
 	
@@ -124,7 +124,7 @@ public class NodeInstanceLog implements Serializable, AuditEvent, org.kie.api.ru
 		return nodeName;
 	}
 	
-	void setNodeName(String nodeName) {
+	public void setNodeName(String nodeName) {
 		this.nodeName = nodeName;
 	}
 
@@ -132,7 +132,7 @@ public class NodeInstanceLog implements Serializable, AuditEvent, org.kie.api.ru
         return date;
     }
     
-	void setDate(Date date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 
