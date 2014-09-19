@@ -18,6 +18,10 @@ package org.kie.api.runtime.manager.audit;
 
 import java.util.List;
 
+import org.kie.api.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
+import org.kie.api.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
+import org.kie.api.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
+
 /**
  * AuditService provides access to active and already completed process (and its components) data.
  * Delivers data about:
@@ -113,6 +117,27 @@ public interface AuditService {
      * @return all variable logs for given variable id and its value matches given value or empty list if none were found
      */
     public List<? extends VariableInstanceLog> findVariableInstancesByNameAndValue(String variableId, String value, boolean onlyActiveProcesses);
+  
+    /**
+     * Creates a "query builder" instance that allows the user to specify the 
+     * specific query criteria to retrieve {@link NodeInstanceLog} instances.
+     * @return a {@link NodeInstanceLogQueryBuilder} instance
+     */
+    public NodeInstanceLogQueryBuilder nodeInstanceLogQuery();
+    
+    /**
+     * Creates a "query builder" instance that allows the user to specify the 
+     * specific query criteria to retrieve {@link VariableInstanceLog} instances.
+     * @return a {@link VariableInstanceLogQueryBuilder} instance
+     */
+    public VariableInstanceLogQueryBuilder variableInstanceLogQuery();
+    
+    /**
+     * Creates a "query builder" instance that allows the user to specify the 
+     * specific query criteria to retrieve {@link ProcessInstanceLog} instances.
+     * @return a {@link ProcessInstanceLogQueryBuilder} instance
+     */
+    public ProcessInstanceLogQueryBuilder processInstanceLogQuery();
     
     /**
      * Removes all entries from audit data store
