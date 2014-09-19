@@ -36,10 +36,6 @@ import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.InternalAttachment;
 import org.kie.internal.task.api.model.InternalContent;
 
-/**
- *
- * @author salaboy
- */
 public abstract class TaskAttachmentBaseTest extends HumanTaskServicesBaseTest {
     
     @Test
@@ -85,13 +81,11 @@ public abstract class TaskAttachmentBaseTest extends HumanTaskServicesBaseTest {
         
         assertEquals(2, allAttachmentsByTaskId.size());
         
-        
         Attachment firstAttach = allAttachmentsByTaskId.get(0);
         long firstAttachContentId = firstAttach.getAttachmentContentId();
         Content firstAttachContent = taskService.getContentById(firstAttachContentId);
         String firstDocString = (String)ContentMarshallerHelper.unmarshall(firstAttachContent.getContent(), null);
         assertEquals("This is my first inline document", firstDocString);
-        
         
         Attachment secondAttach = allAttachmentsByTaskId.get(1);
         long secondAttachContentId = secondAttach.getAttachmentContentId();

@@ -55,7 +55,6 @@ public abstract class HumanTaskServicesBaseTest {
     
     protected InternalTaskService taskService;
 
-
     public void tearDown() {
         if( taskService != null ) { 
             int removeAllTasks = taskService.removeAllTasks();
@@ -80,40 +79,6 @@ public abstract class HumanTaskServicesBaseTest {
 
         return result;
     }
-
-
-//    protected static void testDeadlines(long now, MockEscalatedDeadlineHandler handler) throws Exception { 
-//        int sleep = 8000;
-//        handler.wait(3, sleep);
-//
-//        assertEquals(3, handler.getList().size());
-//
-//        boolean firstDeadlineMet = false;
-//        boolean secondDeadlineMet = false;
-//        boolean thirdDeadlineMet = false;
-//        for( Item item : handler.getList() ) { 
-//            long deadlineTime = item.getDeadline().getDate().getTime();
-//            if( deadlineTime == now + 2000 ) { 
-//                firstDeadlineMet = true;
-//            }
-//            else if( deadlineTime == now + 4000 ) { 
-//                secondDeadlineMet = true;
-//            }
-//            else if( deadlineTime == now + 6000 ) { 
-//                thirdDeadlineMet = true;
-//            }
-//            else { 
-//                fail( deadlineTime + " is not an expected deadline time. Now is [" + now + " (" + (deadlineTime-now) + ")]." );
-//            }
-//        }
-//        
-//        assertTrue( "First deadline was not met." , firstDeadlineMet );
-//        assertTrue( "Second deadline was not met." , secondDeadlineMet );
-//        assertTrue( "Third deadline was not met." , thirdDeadlineMet );   
-//        
-//        // Wait for deadlines to finish
-//        Thread.sleep(1000); 
-//    }
 
     protected final static String mySubject = "My Subject";
     protected final static String myBody = "My Body";

@@ -45,7 +45,6 @@ public class WorkingMemoryDbLoggerWithSeparateLoggingEmfTest extends AbstractWor
     
     @Before
     public void beforeThis() { 
-        System.out.println("child");
         emf = Persistence.createEntityManagerFactory("org.jbpm.logging.jta");
         logService = new JPAAuditLogService(emf);
     }

@@ -52,7 +52,6 @@ public class WorkingMemoryDbLoggerWithSeparateLoggingLocalEmfTest extends Abstra
     
     @Before
     public void beforeThis() { 
-        System.out.println("child");
         emf = Persistence.createEntityManagerFactory("org.jbpm.logging.local");
         logService = new JPAAuditLogService(emf, PersistenceStrategyType.STANDALONE_LOCAL);
     }
