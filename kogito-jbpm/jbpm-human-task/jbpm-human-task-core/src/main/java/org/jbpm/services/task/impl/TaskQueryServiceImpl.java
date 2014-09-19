@@ -36,6 +36,7 @@ import static org.kie.internal.query.QueryParameterIdentifiers.WORK_ITEM_ID_LIST
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -791,7 +792,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
      *   needed again in the second needed (if the first method does not succeed).</li>
      * </ol>
      */
-    private class GroupIdsCache implements Iterable<String> { 
+    private class GroupIdsCache { 
        
         private final String userId; 
         private boolean groupsRetrieved = false;
@@ -804,28 +805,24 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         /**
          * If not already done, retrieve the group information via the {@link UserGroupCallback} instance and store it.
          */
-        private void getGroupIds() { 
+        private List<String> getGroupIds() { 
             if( ! groupsRetrieved ) { 
                 this.groupsRetrieved = true;
                 this.groupIds = userGroupCallback.getGroupsForUser(userId, null, null);
             }
+            return groupIds;
         }
         
-        String [] toArray() { 
+        public String [] toArray() { 
             getGroupIds();
             return this.groupIds.toArray(new String[this.groupIds.size()]);
         }
         
-        int size() { 
+        public int size() { 
             getGroupIds();
             return this.groupIds.size();
         }
         
-        @Override
-        public Iterator<String> iterator() {
-            getGroupIds();
-            return this.groupIds.iterator();
-        }
     }
 
     /**
@@ -896,39 +893,31 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         return false;
     }
     
-    private void addPossibleUserRolesQueryClause(String userId, StringBuilder queryBuilder, GroupIdsCache groupIds, Map<String, Object> params, 
+    private void addPossibleUserRolesQueryClause(String userId, StringBuilder queryBuilder, GroupIdsCache groupIdsCache, Map<String, Object> params, 
             QueryAndParameterAppender queryAppender) { 
        
         // start phrase
         StringBuilder rolesQueryPhraseBuilder = new StringBuilder( "( " );
        
         // add criteria for catching tasks that refer to the user
-        String paramName = queryAppender.generateParamName();
-        params.put(paramName, userId);
+        String userIdParamName = queryAppender.generateParamName();
+        params.put(userIdParamName, userId);
+        String groupIdsParamName = queryAppender.generateParamName();
+        List<String> userAndGroupIds = new ArrayList<String>(1+groupIdsCache.size());
+        userAndGroupIds.add(userId);
+        userAndGroupIds.addAll(groupIdsCache.getGroupIds());
+        params.put(groupIdsParamName, userAndGroupIds);
+        
         rolesQueryPhraseBuilder.append("( ")
-            .append("t.taskData.createdBy.id = :").append(paramName).append("\n OR ")
-            .append("( stakeHolders.id = :").append(paramName).append(" and\n")
+            .append("t.taskData.createdBy.id = :").append(userIdParamName).append("\n OR ")
+            .append("( stakeHolders.id in :").append(groupIdsParamName).append(" and\n")
             .append("  stakeHolders in elements ( t.peopleAssignments.taskStakeholders ) )").append("\n OR " )
-            .append("( potentialOwners.id = :").append(paramName).append(" and\n")
+            .append("( potentialOwners.id in :").append(groupIdsParamName).append(" and\n")
             .append("  potentialOwners in elements ( t.peopleAssignments.potentialOwners ) )").append("\n OR " )
-            .append("t.taskData.actualOwner.id = :").append(paramName).append("\n OR ")
-            .append("( businessAdministrators.id = :").append(paramName).append(" and\n")
+            .append("t.taskData.actualOwner.id = :").append(userIdParamName).append("\n OR ")
+            .append("( businessAdministrators.id in :").append(groupIdsParamName).append(" and\n")
             .append("  businessAdministrators in elements ( t.peopleAssignments.businessAdministrators ) )")
             .append(" )\n");
-
-        // add criteria for catching tasks that refer to any of the users groups
-        for( String groupId : groupIds ) { 
-            paramName = queryAppender.generateParamName();
-            params.put(paramName, groupId);
-            rolesQueryPhraseBuilder.append("OR ( ")
-                .append("( stakeHolders.id = :").append(paramName).append(" and\n")
-                .append("  stakeHolders in elements ( t.peopleAssignments.taskStakeholders ) )").append("\n OR " )
-                .append("( potentialOwners.id = :").append(paramName).append(" and\n")
-                .append("  potentialOwners in elements ( t.peopleAssignments.potentialOwners ) )").append("\n OR " )
-                .append("( businessAdministrators.id = :").append(paramName).append(" and\n")
-                .append("  businessAdministrators in elements ( t.peopleAssignments.businessAdministrators ) )")
-                .append(" )\n");
-        }
         
         rolesQueryPhraseBuilder.append(") ");
             
