@@ -3411,7 +3411,7 @@ public class RuleModelDRLPersistenceImpl
             for ( FieldConstraint fieldConstraint : factPattern.getFieldConstraints() ) {
                 if ( fieldConstraint instanceof SingleFieldConstraint ) {
                     SingleFieldConstraint sfc = (SingleFieldConstraint) fieldConstraint;
-                    if ( sfc.getOperator().equals( "!= null" ) ) {
+                    if ( sfc.getOperator() != null && sfc.getOperator().equals( "!= null" ) ) {
                         int parentPos = fieldName.indexOf( sfc.getFieldName() + "." );
                         if ( parentPos >= 0 && !fieldName.substring( parentPos + sfc.getFieldName().length() + 1 ).contains( "." ) ) {
                             con.setParent( sfc );

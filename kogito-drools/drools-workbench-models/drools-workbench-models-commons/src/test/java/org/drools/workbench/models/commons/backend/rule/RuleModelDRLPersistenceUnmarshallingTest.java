@@ -286,6 +286,58 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
+    public void testSingleFieldConstraintWithTwoFieldsBinding() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "Applicant( $a : age, $n : name )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
+
+        assertNotNull( m );
+        assertEquals( "rule1",
+                      m.name );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals( "Applicant",
+                      fp.getFactType() );
+
+        assertEquals( 2,
+                      fp.getConstraintList().getConstraints().length );
+        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        SingleFieldConstraint sfp0 = (SingleFieldConstraint) fp.getConstraint( 0 );
+        assertEquals( "Applicant",
+                      sfp0.getFactType() );
+        assertEquals( "age",
+                      sfp0.getFieldName() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_UNDEFINED,
+                      sfp0.getConstraintValueType() );
+        assertEquals( "$a",
+                      sfp0.getFieldBinding() );
+
+        assertTrue( fp.getConstraint( 1 ) instanceof SingleFieldConstraint );
+
+        SingleFieldConstraint sfp1 = (SingleFieldConstraint) fp.getConstraint( 1 );
+        assertEquals( "Applicant",
+                      sfp1.getFactType() );
+        assertEquals( "name",
+                      sfp1.getFieldName() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_UNDEFINED,
+                      sfp1.getConstraintValueType() );
+        assertEquals( "$n",
+                      sfp1.getFieldBinding() );
+    }
+
+    @Test
     public void testCompositeFieldConstraint() {
         String drl = "rule \"rule1\"\n"
                 + "when\n"
