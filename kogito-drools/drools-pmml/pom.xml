@@ -41,10 +41,23 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-internal</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mvel</groupId>
+      <artifactId>mvel2</artifactId>
     </dependency>
 
     <dependency>

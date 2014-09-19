@@ -30,10 +30,48 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-internal</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+    </dependency>
+
     <!-- External dependencies -->
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model-builder</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-settings</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-settings-builder</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -42,6 +80,18 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-aether-provider</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-provider-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-classworlds</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
     </dependency>
     <dependency>
       <groupId>org.eclipse.aether</groupId>
@@ -61,6 +111,10 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.aether</groupId>
+      <artifactId>aether-spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.aether</groupId>
       <artifactId>aether-transport-wagon</artifactId>
     </dependency>
     <dependency>
@@ -70,6 +124,10 @@
     <dependency>
       <groupId>org.eclipse.aether</groupId>
       <artifactId>aether-transport-http</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.plexus</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.ant</groupId>
@@ -83,6 +141,16 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.sonatype.plexus</groupId>
+      <artifactId>plexus-cipher</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
     </dependency>
 
     <!-- test --> 

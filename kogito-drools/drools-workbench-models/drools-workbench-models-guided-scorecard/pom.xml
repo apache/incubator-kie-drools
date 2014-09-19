@@ -21,7 +21,18 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-workbench-models-commons</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-workbench-models-datamodel-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-pmml</artifactId>
+    </dependency>
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>

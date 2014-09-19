@@ -26,6 +26,18 @@
       <artifactId>drools-compiler</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-internal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mvel</groupId>
+      <artifactId>mvel2</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <scope>test</scope>
