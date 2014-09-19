@@ -30,6 +30,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
+import org.kie.api.task.query.TaskQueryBuilder;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.FaultData;
@@ -198,8 +199,6 @@ public interface InternalTaskService extends TaskService {
     
     List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds); 
     
-    
-    
     long addComment(long taskId, Comment comment);
 
     void deleteComment(long taskId, long commentId);
@@ -214,10 +213,21 @@ public interface InternalTaskService extends TaskService {
     
     ContentMarshallerContext getMarshallerContext(Task task);
     
-    List<TaskSummary> getTasksByVariousFields( List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds, 
+    /**
+     * This method will be deleted in jBPM 7.x
+     * @see {@link #taskQuery()}
+     */
+    @Deprecated
+    List<TaskSummary> getTasksByVariousFields( String userId, List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds, 
             List<String> busAdmins, List<String> potOwners, List<String> taskOwners, 
             List<Status> status,  boolean union);
+  
+    /**
+     * This method will be deleted in jBPM 7.x
+     * @see {@link #taskQuery()}
+     */
+    @Deprecated
+    List<TaskSummary> getTasksByVariousFields( String userId, Map <String, List<?>> parameters, boolean union);
     
-    List<TaskSummary> getTasksByVariousFields(Map <String, List<?>> parameters, boolean union);
-    
+    TaskQueryBuilder taskQuery(String userId);
 }

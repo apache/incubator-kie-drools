@@ -38,7 +38,8 @@ public interface UserGroupCallback extends org.kie.api.task.UserGroupCallback {
      * @param userId	the user id assigned to the task
      * @param groupIds  list of group ids assigned to the task
      * @param allExistingGroupIds	list of all currently known group ids
-     * @return List of group ids.
+     * @return A list of group ids: all implementations of this interface should always return
+     * a list here, regardless of whether groups are found or not. 
      */
     List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds);
 }
