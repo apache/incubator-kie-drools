@@ -26,7 +26,14 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-workbench-models-datamodel-api</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+    </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>

@@ -17,6 +17,14 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-ci</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+    </dependency>
   </dependencies>
 
 </project>

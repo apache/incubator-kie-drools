@@ -21,6 +21,10 @@
       <groupId>org.drools</groupId>
       <artifactId>named-kiesession</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+    </dependency>
   </dependencies>
 
 </project>
