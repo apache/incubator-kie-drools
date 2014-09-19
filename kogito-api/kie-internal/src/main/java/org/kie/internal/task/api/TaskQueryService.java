@@ -25,6 +25,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
+import org.kie.internal.query.data.QueryData;
 
 
 /**
@@ -101,21 +102,27 @@ public interface TaskQueryService {
     List<Long> getTasksByProcessInstanceId(long processInstanceId);
     
     Map<Long, List<OrganizationalEntity>> getPotentialOwnersForTaskIds(List<Long> taskIds);
-    
-    List<TaskSummary> getTasksByVariousFields( List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds, 
-            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, 
-            List<Status> status,  boolean union);
-    
-    List<TaskSummary> getTasksByVariousFields( Map<String, List<?>> parameters, boolean union);
-    
+  
     int getCompletedTaskByUserId(String userId);
     int getPendingTaskByUserId(String userId);
+
+    /**
+     * This method will no longer be available as of jBPM 7.x
+     * 
+     * @param parameters A map of parameters to add to the query
+     * @param union Whether the query should return a union or intersection of the criteria (parameters)
+     * 
+     * @see {@link #query(String, QueryData)}
+     * @return
+     */
+    @Deprecated
+    List<TaskSummary> getTasksByVariousFields( String userId, Map<String, List<?>> parameters, boolean union);
     
-    static String WORK_ITEM_ID_LIST = "Work item id list";
-    static String TASK_ID_LIST = "task id list";
-    static String PROCESS_INST_ID_LIST = "process instance id list";
-    static String BUSINESS_ADMIN_ID_LIST = "business admin id list";
-    static String POTENTIAL_OWNER_ID_LIST = "potential owner id list";
-    static String ACTUAL_OWNER_ID_LIST = "task owner id list";
-    static String STATUS_LIST = "status list";
+    
+    /**
+     * 
+     * @param queryData
+     * @return
+     */
+    List<TaskSummary> query( String userId, QueryData queryData );
 }

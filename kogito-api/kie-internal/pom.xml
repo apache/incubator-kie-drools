@@ -66,6 +66,7 @@
               org.kie.api.runtime.rule,
               org.kie.api.task,
               org.kie.api.task.model,
+              org.kie.api.task.query,
               org.mvel2,
               org.slf4j
             </Import-Package>

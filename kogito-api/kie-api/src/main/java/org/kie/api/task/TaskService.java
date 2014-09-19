@@ -25,6 +25,7 @@ import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.api.task.query.TaskQueryBuilder;
 
 /**
  * The Task Service Entry Point serves as 
@@ -88,4 +89,5 @@ public interface TaskService extends CommandExecutor {
     Attachment getAttachmentById(long attachId);
     
     Map<String, Object> getTaskContent(long taskId);
+
 }
