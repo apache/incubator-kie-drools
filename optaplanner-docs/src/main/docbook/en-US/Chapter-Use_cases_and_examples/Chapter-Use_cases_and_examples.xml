@@ -1452,14 +1452,21 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
         <title>Road distances instead of air distances</title>
 
         <para>In the real world, vehicles can't follow a straight line from location to location: they have to use roads
-        and highways. From a VRP optimization point of view, that doesn't matter much, as long as the distance between 2
-        points can be looked up (and are preferably precalculated). The road cost doesn't even need to be a distance, it
-        can also be travel time, fuel cost, or a weighted function of those.</para>
+        and highways. From an business point of view, this matters a lot:</para>
 
-        <para>There are several technologies available to precalculate road costs, such as <link
-        xlink:href="https://graphhopper.com/">GraphHopper</link> (embeddable, offline Java engine) and <link
-        xlink:href="http://open.mapquestapi.com/directions/#matrix">Open MapQuest</link> (webservice). There are also
-        several technologies to render it, such as <link xlink:href="http://leafletjs.com">Leaflet</link>.</para>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/vehicleRoutingDistanceType.png"/>
+          </imageobject>
+        </mediaobject>
+
+        <para>For the optimization algorithm, this doesn't matter much, as long as the distance between 2 points can be
+        looked up (and are preferably precalculated). The road cost doesn't even need to be a distance, it can also be
+        travel time, fuel cost, or a weighted function of those. There are several technologies available to
+        precalculate road costs, such as <link xlink:href="https://graphhopper.com/">GraphHopper</link> (embeddable,
+        offline Java engine) and <link xlink:href="http://open.mapquestapi.com/directions/#matrix">Open MapQuest</link>
+        (webservice). There are also several technologies to render it, such as <link
+        xlink:href="http://leafletjs.com">Leaflet</link>.</para>
       </section>
     </section>
 
