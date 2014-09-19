@@ -15,9 +15,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
-import org.jbpm.services.task.impl.model.xml.adapter.StringObjectMapXmlAdapter;
 import org.kie.api.task.model.Content;
+import org.kie.internal.jaxb.StringKeyObjectValueMapXmlAdapter;
 
 @XmlRootElement(name="content")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -31,7 +30,7 @@ public class JaxbContent implements Content {
     private byte[] serializedContent = null;
     
     @XmlElement(name="content-map")
-    @XmlJavaTypeAdapter(StringObjectMapXmlAdapter.class)
+    @XmlJavaTypeAdapter(StringKeyObjectValueMapXmlAdapter.class)
     private Map<String, Object> contentMap = null;
     
     public JaxbContent() { 
