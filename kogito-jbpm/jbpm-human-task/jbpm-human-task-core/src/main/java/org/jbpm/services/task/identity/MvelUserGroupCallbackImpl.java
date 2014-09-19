@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -99,6 +100,6 @@ public class MvelUserGroupCallbackImpl implements UserGroupCallback {
                 return groupList;
             }
         }
-        return null;
+        return new ArrayList<String>(0);
     }
 }

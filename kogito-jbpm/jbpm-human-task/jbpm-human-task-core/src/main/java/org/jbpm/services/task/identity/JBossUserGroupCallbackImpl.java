@@ -15,6 +15,7 @@
  */
 package org.jbpm.services.task.identity;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -91,6 +92,9 @@ public class JBossUserGroupCallbackImpl extends AbstractUserGroupInfo implements
 			List<String> allExistingGroupIds) {
 		
 		List<String> groups = groupStore.get(userId);
+		if( groups == null ) { 
+		    groups = new ArrayList<String>(0);
+		}
 		return groups;
 	}
 	

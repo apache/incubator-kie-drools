@@ -1,12 +1,12 @@
 package org.jbpm.services.task.commands;
 
-import static org.kie.internal.task.api.TaskQueryService.ACTUAL_OWNER_ID_LIST;
-import static org.kie.internal.task.api.TaskQueryService.BUSINESS_ADMIN_ID_LIST;
-import static org.kie.internal.task.api.TaskQueryService.POTENTIAL_OWNER_ID_LIST;
-import static org.kie.internal.task.api.TaskQueryService.PROCESS_INST_ID_LIST;
-import static org.kie.internal.task.api.TaskQueryService.STATUS_LIST;
-import static org.kie.internal.task.api.TaskQueryService.TASK_ID_LIST;
-import static org.kie.internal.task.api.TaskQueryService.WORK_ITEM_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.*;
+import static org.kie.internal.query.QueryParameterIdentifiers.BUSINESS_ADMIN_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.POTENTIAL_OWNER_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.STATUS_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.TASK_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.WORK_ITEM_ID_LIST;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,13 +22,18 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
+import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
-import org.kie.internal.query.QueryFilter;
 
+/**
+ * This command will be deleted as of jBPM 7.x.
+ * @see {@link TaskService#taskQuery()} 
+ */
 @XmlRootElement(name="get-tasks-by-various-fields-command")
 @XmlAccessorType(XmlAccessType.NONE)
+@Deprecated
 public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand<List<TaskSummary>> {
 
 	private static final long serialVersionUID = -4894264083829084547L;
@@ -66,8 +71,9 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
     
     
 	public GetTasksByVariousFieldsCommand() {
+	    // default for JAXB
 	}
-	
+
 	public GetTasksByVariousFieldsCommand(List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
 	        List<String> busAdmins, List<String> potOwners, List<String> taskOwners, List<Status> statuses, 
 	        boolean union) { 
@@ -98,7 +104,7 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
 	public GetTasksByVariousFieldsCommand(Map<String, List<?>> params, boolean union) { 
 	    this(params, union, null);
 	}
-
+    
 	@SuppressWarnings("unchecked")
 	public GetTasksByVariousFieldsCommand(Map<String, List<?>> params, boolean union, Integer maxResults) { 
 	    this.union = union;
@@ -109,7 +115,7 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
 	    } else { 
 	        this.workItemIds = (List<Long>) params.get(WORK_ITEM_ID_LIST);
 	        this.taskIds = (List<Long>) params.get(TASK_ID_LIST);
-	        this.processInstanceIds = (List<Long>) params.get(PROCESS_INST_ID_LIST);
+	        this.processInstanceIds = (List<Long>) params.get(PROCESS_INSTANCE_ID_LIST);
 	        this.businessAdmins = (List<String>) params.get(BUSINESS_ADMIN_ID_LIST);
 	        this.potentialOwners = (List<String>) params.get(POTENTIAL_OWNER_ID_LIST);
 	        this.taskOwners = (List<String>) params.get(ACTUAL_OWNER_ID_LIST);
@@ -117,26 +123,33 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
 	    }
 	}
 
+    
 	public List<TaskSummary> execute(Context cntxt) {
 	    TaskContext context = (TaskContext) cntxt;
         
         potentialOwners = populateOrganizationalEntityWithGroupInfo(potentialOwners, context);
     	businessAdmins = populateOrganizationalEntityWithGroupInfo(businessAdmins, context);
+    	List<String> stakeHolders = new ArrayList<String>();
+    	stakeHolders = populateOrganizationalEntityWithGroupInfo(stakeHolders, context);
     	
         Map<String, List<?>> params = new HashMap<String, List<?>>();
         params.put(WORK_ITEM_ID_LIST, workItemIds);
         params.put(TASK_ID_LIST, taskIds);
-        params.put(PROCESS_INST_ID_LIST, processInstanceIds);
+        params.put(PROCESS_INSTANCE_ID_LIST, processInstanceIds);
         params.put(BUSINESS_ADMIN_ID_LIST, businessAdmins);
         params.put(POTENTIAL_OWNER_ID_LIST, potentialOwners);
+        params.put(STAKEHOLDER_ID_LIST, stakeHolders);
         params.put(ACTUAL_OWNER_ID_LIST, taskOwners);
         params.put(STATUS_LIST, statuses);
         if( maxResults != null && maxResults.intValue() > 0 ) {
             Integer [] maxResultsArr = { maxResults };
-            params.put("maxResults", Arrays.asList(maxResultsArr));
+            params.put(MAX_RESULTS, Arrays.asList(maxResultsArr));
         }
-        
-        return context.getTaskQueryService().getTasksByVariousFields(params, union);
+       
+        if( userId == null || userId.isEmpty() ) { 
+           throw new IllegalStateException("A user id is required for this operation: " + GetTasksByVariousFieldsCommand.class.getSimpleName() );
+        }
+        return context.getTaskQueryService().getTasksByVariousFields(userId, params, union);
     }
 
     public List<Long> getWorkItemIds() {
@@ -210,7 +223,7 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
     public void setUnion(Boolean union) {
         this.union = union;
     }
-    
+
     public Integer getMaxResults() {
         return maxResults;
     }

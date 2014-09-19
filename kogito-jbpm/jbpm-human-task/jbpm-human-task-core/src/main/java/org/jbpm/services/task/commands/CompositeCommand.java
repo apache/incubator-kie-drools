@@ -100,7 +100,8 @@ public class CompositeCommand<T> extends TaskCommand<T> {
 	            @XmlElement(name="start-task", type=StartTaskCommand.class),
 	            @XmlElement(name="stop-task", type=StopTaskCommand.class),
 	            @XmlElement(name="suspend-task", type=SuspendTaskCommand.class),
-	            @XmlElement(name="undeploy-task-def", type=UndeployTaskDefCommand.class)
+	            @XmlElement(name="undeploy-task-def", type=UndeployTaskDefCommand.class),
+	            @XmlElement(name="task-query", type=TaskQueryDataCommand.class)
     } )
 	private TaskCommand<T> mainCommand;
 

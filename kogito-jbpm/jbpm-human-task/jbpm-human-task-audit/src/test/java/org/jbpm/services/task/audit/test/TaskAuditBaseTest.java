@@ -15,6 +15,9 @@
  */
 package org.jbpm.services.task.audit.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.List;
 

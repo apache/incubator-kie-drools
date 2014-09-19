@@ -1,8 +1,13 @@
 package org.jbpm.services.task.persistence;
 
+
+import static org.kie.internal.query.QueryParameterIdentifiers.*;
+import static org.jbpm.services.task.persistence.TaskQueryManager.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
@@ -26,6 +31,7 @@ import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.User;
+import org.kie.internal.query.QueryParameterIdentifiers;
 import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.model.Deadline;
 import org.slf4j.Logger;
@@ -33,15 +39,12 @@ import org.slf4j.LoggerFactory;
 
 public class JPATaskPersistenceContext implements TaskPersistenceContext {
 
-	private static Logger logger = LoggerFactory.getLogger(JPATaskPersistenceContext.class);
+    // logger set to public for test reasons, see the org.jbpm.services.task.TaskQueryBuilderLocalTest
+	public final static Logger logger = LoggerFactory.getLogger(JPATaskPersistenceContext.class);
 	
 	private static TaskQueryManager querymanager = TaskQueryManager.get();
 	
-	public final static String FIRST_RESULT = "firstResult";
-    public final static String MAX_RESULTS = "maxResults";
-    public final static String FLUSH_MODE = "flushMode";
-    
-    protected EntityManager em;
+	protected EntityManager em;
     protected final boolean isJTA;
     protected final boolean pessimisticLocking;
     
@@ -364,7 +367,6 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> T queryInTransaction(String queryName, Class<T> clazz) {
 		check();
 		Query query = this.em.createNamedQuery(queryName);
@@ -372,7 +374,6 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> T queryStringInTransaction(String queryString, Class<T> clazz) {
 		check();
 		Query query = this.em.createQuery(queryString);
@@ -383,12 +384,24 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public <T> T queryStringWithParametersInTransaction(String queryString,
 			Map<String, Object> params, Class<T> clazz) {
 		check();
+		String newQueryString = adaptQueryString(new StringBuilder(queryString), params);
+		if( newQueryString != null ) { 
+		    queryString = newQueryString;
+		}
+    logger.debug("QUERY:\n {}", queryString);
 		Query query = this.em.createQuery(queryString);
+		if( logger.isDebugEnabled() ) {
+		    StringBuilder paramsStr = new StringBuilder("PARAMS:");
+		    for( Entry<String, Object> entry : params.entrySet() ) { 
+		        paramsStr.append("\n " + entry.getKey() + " : '" + entry.getValue() + "'");
+		    }
+		    logger.debug(paramsStr.toString());
+		}
 				
 		return queryStringWithParameters(params, false, LockModeType.NONE, clazz, query);
 	}
-        
-        @Override
+	
+	@Override
 	public <T> T queryStringWithParametersInTransaction(String queryString, boolean singleResult,
 			Map<String, Object> params, Class<T> clazz) {
 		check();
@@ -465,7 +478,6 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		return this.em.merge(entity);
 	}
 
-	@SuppressWarnings("unchecked")
 	private <T> T queryStringWithParameters(Map<String, Object> params, boolean singleResult, LockModeType lockMode,
 			Class<T> clazz, Query query) {
 		;
@@ -473,23 +485,22 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 			query.setLockMode(lockMode);
 		}
 		if (params != null && !params.isEmpty()) {
-			for (String name : params.keySet()) {
+			for (Entry<String,Object> paramEntry : params.entrySet()) {
+			    String name = paramEntry.getKey();
 				if (FIRST_RESULT.equals(name)) {
-					query.setFirstResult((Integer) params.get(name));
+					query.setFirstResult((Integer) paramEntry.getValue());
 					continue;
-				}
-				if (MAX_RESULTS.equals(name)) {
-					query.setMaxResults((Integer) params.get(name));
+				} else if (MAX_RESULTS.equals(name)) {
+					query.setMaxResults((Integer) paramEntry.getValue());
 					continue;
-				}
-				if (FLUSH_MODE.equals(name)) {
-					query.setFlushMode(FlushModeType.valueOf((String) params.get(name)));
+				} else if (FLUSH_MODE.equals(name)) {
+					query.setFlushMode(FlushModeType.valueOf((String) paramEntry.getValue()));
 					continue;
-				}// skip control parameters
-				else if (TaskQueryManager.ASCENDING_KEY.equals(name) 
-						|| TaskQueryManager.DESCENDING_KEY.equals(name)
-						|| TaskQueryManager.ORDER_BY_KEY.equals(name)
-						|| TaskQueryManager.FILTER_KEY.equals(name)) {
+				} 
+				// skip control parameters
+				else if ( ORDER_TYPE.equals(name)
+				        || ORDER_BY.equals(name)
+						|| FILTER.equals(name)) {
 					continue;
 				}
 				query.setParameter(name, params.get(name));

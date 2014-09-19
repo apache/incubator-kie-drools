@@ -1,5 +1,6 @@
 package org.jbpm.services.task.impl.command;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -88,6 +89,7 @@ import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.commands.UndeployTaskDefCommand;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.impl.TaskContentRegistry;
+import org.jbpm.services.task.impl.TaskQueryBuilderImpl;
 import org.jbpm.services.task.rule.TaskRuleService;
 import org.kie.api.command.Command;
 import org.kie.api.task.TaskLifeCycleEventListener;
@@ -101,6 +103,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
+import org.kie.api.task.query.TaskQueryBuilder;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.EventService;
@@ -183,12 +186,12 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 		return getTasksAssignedAsPotentialOwner(userId, null, null, null);
 	}
         
-        @Override
-        public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds) {
-                return getTasksAssignedAsPotentialOwner(userId, groupIds, null, null);
-        }
+	@Override
+	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds) {
+	    return getTasksAssignedAsPotentialOwner(userId, groupIds, null, null);
+	}
         
-        public List<TaskSummary> getTasksAssignedAsPotentialOwner(
+	public List<TaskSummary> getTasksAssignedAsPotentialOwner(
 			String userId, List<String> groupIds, List<Status> status, QueryFilter filter) {
 		return executor.execute(new GetTaskAssignedAsPotentialOwnerCommand(userId, groupIds, status, filter));
 	}
@@ -253,20 +256,40 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	}
 	
     @Override
-    public List<TaskSummary> getTasksByVariousFields(List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
+    /**
+     *  This method should be deleted in jBPM 7.x
+     *  @see {@link CommandBasedTaskService#fluentTaskQuery}
+     */
+    @Deprecated
+    public List<TaskSummary> getTasksByVariousFields(String userId, List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
             List<String> busAdmins, List<String> potOwners, List<String> taskOwners, List<Status> statuses, 
             boolean union) {
-		return executor.execute(new GetTasksByVariousFieldsCommand(workItemIds, taskIds, procInstIds, 
+
+        GetTasksByVariousFieldsCommand cmd = new GetTasksByVariousFieldsCommand(workItemIds, taskIds, procInstIds, 
 		        busAdmins, potOwners, taskOwners, 
-		        statuses, union));
+		        statuses, union);
+        cmd.setUserId(userId);
+        
+		return executor.execute(cmd);
     }
 
+    /**
+     *  This method should be deleted in jBPM 7.x
+     *  @see {@link CommandBasedTaskService#fluentTaskQuery}
+     */
     @Override
-    public List<TaskSummary> getTasksByVariousFields(Map<String, List<?>> parameters, boolean union) {
-		return executor.execute(new GetTasksByVariousFieldsCommand(parameters, union));
+    public List<TaskSummary> getTasksByVariousFields(String userId, Map<String, List<?>> parameters, boolean union) {
+		GetTasksByVariousFieldsCommand cmd = new GetTasksByVariousFieldsCommand(parameters, union);
+		cmd.setUserId(userId);
+		return executor.execute(cmd);
     }
 
-	public long addTask(Task task, Map<String, Object> params) {
+	@Override
+    public TaskQueryBuilder taskQuery(String userId) {
+        return new TaskQueryBuilderImpl(userId, executor);
+    }
+
+    public long addTask(Task task, Map<String, Object> params) {
 		return executor.execute(new AddTaskCommand(task, params));
 	}
 
@@ -708,18 +731,16 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 		return TaskContentRegistry.get().getMarshallerContext(task);
 	}
 
-	
-
 	@Override
 	public void removeTaskEventsById(long taskId) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException(Thread.currentThread().getStackTrace()[1].getMethodName() + " is not supported on the " + 
+		        this.getClass().getSimpleName());
 	}	
 
 	@Override
 	public List<TaskEvent> getTaskEventsById(long taskId) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException(Thread.currentThread().getStackTrace()[1].getMethodName() + " is not supported on the " + 
+		        this.getClass().getSimpleName());
 	}
 
 	// notification service methods
@@ -731,7 +752,6 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 
 	@Override
 	public List<TaskLifeCycleEventListener> getTaskEventListeners() {
-
 		return taskEventSupport.getEventListeners();
 	}
 

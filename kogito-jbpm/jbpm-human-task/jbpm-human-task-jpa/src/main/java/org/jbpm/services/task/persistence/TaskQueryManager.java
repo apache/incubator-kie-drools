@@ -16,6 +16,7 @@
 
 package org.jbpm.services.task.persistence;
 
+import static org.kie.internal.query.QueryParameterIdentifiers.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,21 +30,13 @@ import org.slf4j.LoggerFactory;
 
 public class TaskQueryManager {
 	
-	public static final String FILTER_KEY = "filter";
-	public static final String ORDER_BY_KEY = "orderby";
-	public static final String ASCENDING_KEY = "asc";
-	public static final String DESCENDING_KEY = "desc";
 	private static final Logger logger = LoggerFactory.getLogger(TaskQueryManager.class);
 	
 	private Map<String, String> queries = new ConcurrentHashMap<String, String>();
 	
-	private static TaskQueryManager instance;
+	private static TaskQueryManager instance = new TaskQueryManager();
 	
 	public static TaskQueryManager get() {
-		if (instance == null) {
-			instance = new TaskQueryManager();
-		}
-		
 		return instance;
 	}
 	
@@ -65,27 +58,32 @@ public class TaskQueryManager {
 		if (!queries.containsKey(name)) {
 			return null;
 		}
-		StringBuffer buf = new StringBuffer(queries.get(name)); 
-		if (params != null && params.containsKey(FILTER_KEY)) {
-			buf.append(" and " + params.get(FILTER_KEY));
-		}
-		if (params != null && params.containsKey(ORDER_BY_KEY)) {
-			
-			buf.append(" \n ORDER BY " + adaptOrderBy((String) params.get(ORDER_BY_KEY)));
-			if (params.containsKey(ASCENDING_KEY)) {
-				buf.append(" ASC");
-			} else if (params.containsKey(DESCENDING_KEY)) {
-				buf.append(" DESC");
-			}
-			query = buf.toString();
-		}
+		StringBuilder buf = new StringBuilder(queries.get(name)); 
+		query = adaptQueryString(buf, params);
 		
 		return query;
+	}
+
+	public static String adaptQueryString(StringBuilder buf, Map<String, Object> params) { 
+	    StringBuilder query = null;
+        if (params != null && params.containsKey(FILTER)) {
+            buf.append(" and " + params.get(FILTER));
+            query = buf;
+        }
+        if (params != null && params.containsKey(ORDER_BY)) {
+            buf.append(" ORDER BY " + adaptOrderBy((String) params.get(ORDER_BY)));
+            Object orderTypeObj = params.get(ORDER_TYPE);
+            if (orderTypeObj != null ) { 
+                buf.append(" ").append(orderTypeObj);
+            }
+            query = buf;
+        }
+        return (query == null ? null : query.toString() );
 	}
 	
 	protected void parse(String ormFile) throws XMLStreamException {
 		String name = null;
-		StringBuffer tagContent = new StringBuffer();
+		StringBuilder tagContent = new StringBuilder();
 		XMLInputFactory factory = XMLInputFactory.newInstance();
 		XMLStreamReader reader = factory.createXMLStreamReader(
 				Thread.currentThread().getContextClassLoader().getResourceAsStream(ormFile));
@@ -118,14 +116,14 @@ public class TaskQueryManager {
 					}
 					queries.put(name, alteredQuery);
 					name = null;
-					tagContent = new StringBuffer();
+					tagContent = new StringBuilder();
 				}
 				break;
 			}
 		}
 	}
 	
-	private String adaptOrderBy(String orderBy) {
+	private static String adaptOrderBy(String orderBy) {
 		if (orderBy != null) {
 			if (orderBy.equals("Task")) {
 				return "t.name";
@@ -143,7 +141,9 @@ public class TaskQueryManager {
 				return "t.taskData.createdBy.id";
 			} else if (orderBy.equals("DueOn")) {
 				return "t.taskData.expirationTime";
-			}
+			} else if (orderBy.equals("ProcessInstanceId")) {
+				return "t.taskData.processInstanceId";
+			} 
 		}
 		return orderBy;
 	}

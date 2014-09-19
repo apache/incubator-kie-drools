@@ -81,7 +81,7 @@ public class TaskContext implements org.kie.internal.task.api.TaskContext {
     }
 
     public TaskQueryService getTaskQueryService() {
-        return new TaskQueryServiceImpl(persistenceContext);
+        return new TaskQueryServiceImpl(persistenceContext, getUserGroupCallback());
     }
 
     public TaskContentService getTaskContentService() {

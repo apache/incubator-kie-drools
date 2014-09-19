@@ -1,6 +1,7 @@
 package org.jbpm.services.task.commands;
 
 import java.io.InputStream;
+import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -465,7 +466,7 @@ public class UserGroupCallbackTaskCommand<T> extends TaskCommand<T> {
 
 	@Override
 	public T execute(Context context) {
-		return null;
+	    throw new UnsupportedOperationException("The " + this.getClass().getSimpleName() + " is not a standalone command that can be executed.");
 	}
 
 }
