@@ -98,7 +98,12 @@ public class BayesBeliefSet extends LinkedList implements BeliefSet {
 
     @Override
     public boolean isUndecided() {
-        return conflictCounter > 0 ;
+        return isConflicting();
+    }
+
+    @Override
+    public boolean isConflicting() {
+        return conflictCounter > 0;
     }
 
     @Override

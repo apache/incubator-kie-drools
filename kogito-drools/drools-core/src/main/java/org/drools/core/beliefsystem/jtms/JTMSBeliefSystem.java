@@ -147,7 +147,7 @@ public class JTMSBeliefSystem<T extends JTMSMode>
                        BeliefSet beliefSet,
                        PropagationContext context) {
         JTMSBeliefSet jtmsBeliefSet = (JTMSBeliefSet) beliefSet;
-        boolean wasConflicting = jtmsBeliefSet.isUndecided();
+        boolean wasUndecided = jtmsBeliefSet.isUndecided();
         boolean wasNegated = jtmsBeliefSet.isNegated();
 
         // If the prime object is removed, we need to update the FactHandle, and tell the callback to update
@@ -160,7 +160,7 @@ public class JTMSBeliefSystem<T extends JTMSMode>
 
         beliefSet.remove( (JTMSMode) node.getMode() );
         if ( beliefSet.isEmpty() ) {
-            if ( wasNegated ) {
+            if ( wasNegated && ! wasUndecided ) {
                 defEP.getObjectStore().addHandle( beliefSet.getFactHandle(), beliefSet.getFactHandle().getObject() ); // was negated, so add back in, so main retract works
                 InternalFactHandle fh = jtmsBeliefSet.getNegativeFactHandle();
                 ((NamedEntryPoint) fh.getEntryPoint()).delete( fh, context.getRuleOrigin(), node.getJustifier() );
@@ -172,14 +172,14 @@ public class JTMSBeliefSystem<T extends JTMSMode>
                 ((NamedEntryPoint) fh.getEntryPoint()).delete( fh, context.getRuleOrigin(), node.getJustifier() );
             }
 
-        } else if ( wasConflicting && !jtmsBeliefSet.isUndecided() ) {
+        } else if ( wasUndecided && !jtmsBeliefSet.isUndecided() ) {
             insertBelief( node,
                           defEP.getObjectTypeConfigurationRegistry().getObjectTypeConf( defEP.getEntryPoint(), node.getObject() ),
                           jtmsBeliefSet,
                           context,
                           false,
                           wasNegated,
-                          wasConflicting );
+                          wasUndecided );
         } else if ( primeChanged ) {
             // we know there must be at least one more of the same type, as they are still in conflict
 

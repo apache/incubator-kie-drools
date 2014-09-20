@@ -41,6 +41,8 @@ public interface BeliefSet {
 
     boolean isUndecided();
 
+    boolean isConflicting();
+
     boolean isPositive();
 
 }
