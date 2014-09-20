@@ -252,18 +252,17 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
 		return delegate.getTasksAssignedByGroups(groupIds);
 	}
 	@Override
-	public List<TaskSummary> getTasksByVariousFields(List<Long> workItemIds,
+	public List<TaskSummary> getTasksByVariousFields(String userId, List<Long> workItemIds,
 			List<Long> taskIds, List<Long> procInstIds, List<String> busAdmins,
 			List<String> potOwners, List<String> taskOwners,
 			List<Status> status, boolean union) {
-		return delegate.getTasksByVariousFields(workItemIds, taskIds, procInstIds, 
+		return delegate.getTasksByVariousFields(userId, workItemIds, taskIds, procInstIds, 
 				busAdmins, potOwners, taskOwners, status, union);
 	}
 
 	@Override
-	public List<TaskSummary> getTasksByVariousFields(
-			Map<String, List<?>> parameters, boolean union) {
-		return delegate.getTasksByVariousFields(parameters, union);
+	public List<TaskSummary> getTasksByVariousFields(String userId, Map<String, List<?>> parameters, boolean union) {
+		return delegate.getTasksByVariousFields(userId, parameters, union);
 	}
 
 	// unsupported method
@@ -668,7 +667,7 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
 	}
 
     @Override
-    public TaskQueryBuilder taskQuery() {
+    public TaskQueryBuilder taskQuery(String userId) {
         throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
     }
 
