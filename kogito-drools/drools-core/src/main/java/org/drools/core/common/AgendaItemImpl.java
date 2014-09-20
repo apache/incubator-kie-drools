@@ -408,11 +408,10 @@ public class AgendaItemImpl<T extends Mode>  implements  AgendaItem<T> {
     public List<Object> getObjects() {
         FactHandle[] factHandles = this.tuple.toFactHandles();
         List<Object> list = new ArrayList<Object>(factHandles.length);
+        int j = 0;
         for (FactHandle factHandle : factHandles) {
             Object o = ((InternalFactHandle) factHandle).getObject();
-            if (!(o instanceof QueryElementFactHandle)) {
-                list.add(o);
-            }
+            list.set( j++, o instanceof QueryElementFactHandle ? null : o );
         }
         return Collections.unmodifiableList(list);
     }
