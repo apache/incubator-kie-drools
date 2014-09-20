@@ -75,6 +75,11 @@ public class SimpleBeliefSet extends LinkedList implements BeliefSet {
     }
 
     @Override
+    public boolean isConflicting() {
+        return false;
+    }
+
+    @Override
     public boolean isPositive() {
         return ! isEmpty();
     }

@@ -90,6 +90,11 @@ public class JTMSBeliefSetImpl extends LinkedList implements JTMSBeliefSet {
 
     @Override
     public boolean isUndecided() {
+        return isConflicting();
+    }
+
+    @Override
+    public boolean isConflicting() {
         return posCounter > 0 && negCounter > 0;
     }
 
