@@ -732,7 +732,8 @@ public class DefeasibilityTest {
 
 
 
-    @Test
+    @Test( timeout = 10000)
+    @Ignore
     public void testSelfDefeatWithRebuttal() {
         String droolsSource =
                 "package org.drools.tms.test; " +

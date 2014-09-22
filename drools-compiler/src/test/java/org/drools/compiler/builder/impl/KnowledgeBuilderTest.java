@@ -49,6 +49,7 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DefaultKnowledgeHelper;
@@ -89,6 +90,7 @@ import org.junit.Test;
 import org.kie.api.definition.type.FactField;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.beliefs.Mode;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -1360,9 +1362,9 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                       fieldsBean2.get( 2 ).getType() );
     }
 
-    class MockActivation
+    class MockActivation<T extends Mode>
         implements
-        Activation {
+        Activation<T> {
         private RuleImpl               rule;
         private int                salience;
         private final GroupElement subrule;
@@ -1405,10 +1407,10 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         public void remove() {
         }
 
-        public void addLogicalDependency( final LogicalDependency node ) {
+        public void addLogicalDependency( final LogicalDependency<T> node ) {
         }
 
-        public LinkedList getLogicalDependencies() {
+        public LinkedList<LogicalDependency<T>> getLogicalDependencies() {
             return null;
         }
 
@@ -1444,10 +1446,6 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         public void setActivationNode( final ActivationNode ruleFlowGroupNode ) {
         }
-
-        public void setLogicalDependencies( LinkedList<LogicalDependency> justified ) {
-        }
-
         public List<FactHandle> getFactHandles() {
             return null;
         }
@@ -1479,10 +1477,6 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
             return null;
         }
 
-        public void setBlocked(LinkedList<LogicalDependency> justified) {
-
-        }
-
         public void addBlocked(LinkedListNode node) {
         }
 
@@ -1504,6 +1498,16 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         public boolean isRuleAgendaItem() {
             return false;
+        }
+
+        @Override
+        public void setBlocked(LinkedList<LogicalDependency<SimpleMode>> justified) {
+
+        }
+
+        @Override
+        public void setLogicalDependencies(LinkedList<LogicalDependency<T>> justified) {
+
         }
 
         @Override

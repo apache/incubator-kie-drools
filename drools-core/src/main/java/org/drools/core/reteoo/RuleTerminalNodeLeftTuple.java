@@ -16,6 +16,7 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
@@ -34,13 +35,14 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
+import org.kie.internal.runtime.beliefs.Mode;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
-                                                             AgendaItem {
+public class RuleTerminalNodeLeftTuple<T extends Mode> extends BaseLeftTuple implements
+                                                             AgendaItem<T> {
     private static final long serialVersionUID = 540l;
     /**
      * The salience
@@ -52,9 +54,9 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
     private           long                                           activationNumber;
     private volatile  int                                            queueIndex;
     private volatile  boolean                                        queued;
-    private           LinkedList<LogicalDependency>                  justified;
-    private           LinkedList<LogicalDependency>                  blocked;
-    private           LinkedList<LinkedListEntry<LogicalDependency>> blockers;
+    private           LinkedList<LogicalDependency<T>>               justified;
+    private           LinkedList<LogicalDependency<SimpleMode>>      blocked;
+    private           LinkedList<SimpleMode>                         blockers;
     private           InternalAgendaGroup                            agendaGroup;
     private           ActivationGroupNode                            activationGroupNode;
     private           ActivationNode                                 activationNode;
@@ -203,10 +205,10 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
         return this.activationNumber;
     }
 
-    public void addBlocked(final LogicalDependency dep) {
+    public void addBlocked(final LogicalDependency<SimpleMode> dep) {
         // Adds the blocked to the blockers list
         if (this.blocked == null) {
-            this.blocked = new LinkedList<LogicalDependency>();
+            this.blocked = new LinkedList<LogicalDependency<SimpleMode>>();
         }
 
         this.blocked.add(dep);
@@ -214,17 +216,17 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
         // now ad the blocker to the blocked's list - we need to check that references are null first
         RuleTerminalNodeLeftTuple blocked = (RuleTerminalNodeLeftTuple) dep.getJustified();
         if (blocked.blockers == null) {
-            blocked.blockers = new LinkedList<LinkedListEntry<LogicalDependency>>();
-            blocked.blockers.add(dep.getJustifierEntry());
-        } else if (dep.getJustifierEntry().getNext() == null && dep.getJustifierEntry().getPrevious() == null && blocked.getBlockers().getFirst() != dep.getJustifierEntry()) {
-            blocked.blockers.add(dep.getJustifierEntry());
+            blocked.blockers = new LinkedList<SimpleMode>();
+            blocked.blockers.add(dep.getMode());
+        } else if (dep.getMode().getNext() == null && dep.getMode().getPrevious() == null && blocked.getBlockers().getFirst() != dep.getMode()) {
+            blocked.blockers.add(dep.getMode());
         }
     }
 
     public void removeAllBlockersAndBlocked(InternalAgenda agenda) {
         if (this.blockers != null) {
             // Iterate and remove this node's logical dependency list from each of it's blockers
-            for (LinkedListEntry<LogicalDependency> node = blockers.getFirst(); node != null; node = node.getNext()) {
+            for (SimpleMode node = blockers.getFirst(); node != null; node = node.getNext()) {
                 LogicalDependency dep = node.getObject();
                 dep.getJustifier().getBlocked().remove(dep);
             }
@@ -233,8 +235,8 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
 
         if (this.blocked != null) {
             // Iterate and remove this node's logical dependency list from each of it's blocked
-            for (LogicalDependency dep = blocked.getFirst(); dep != null; ) {
-                LogicalDependency tmp = dep.getNext();
+            for (LogicalDependency<SimpleMode> dep = blocked.getFirst(); dep != null; ) {
+                LogicalDependency<SimpleMode> tmp = dep.getNext();
                 removeBlocked(dep);
                 RuleTerminalNodeLeftTuple justified = (RuleTerminalNodeLeftTuple) dep.getJustified();
                 if (justified.getBlockers().isEmpty() && justified.isActive()) {
@@ -247,38 +249,38 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
         this.blocked = null;
     }
 
-    public void removeBlocked(final LogicalDependency dep) {
+    public void removeBlocked(final LogicalDependency<SimpleMode> dep) {
         this.blocked.remove(dep);
 
         RuleTerminalNodeLeftTuple blocked = (RuleTerminalNodeLeftTuple) dep.getJustified();
-        blocked.blockers.remove(dep.getJustifierEntry());
+        blocked.blockers.remove(dep.getMode());
     }
 
-    public LinkedList<LogicalDependency> getBlocked() {
+    public LinkedList<LogicalDependency<SimpleMode>> getBlocked() {
         return this.blocked;
     }
 
-    public void setBlocked(LinkedList<LogicalDependency> justified) {
+    public void setBlocked(LinkedList<LogicalDependency<SimpleMode>> justified) {
         this.blocked = justified;
     }
 
-    public LinkedList<LinkedListEntry<LogicalDependency>> getBlockers() {
+    public LinkedList<SimpleMode> getBlockers() {
         return this.blockers;
     }
 
-    public void addLogicalDependency(final LogicalDependency node) {
+    public void addLogicalDependency(final LogicalDependency<T> node) {
         if (this.justified == null) {
-            this.justified = new LinkedList<LogicalDependency>();
+            this.justified = new LinkedList<LogicalDependency<T>>();
         }
 
         this.justified.add(node);
     }
 
-    public LinkedList<LogicalDependency> getLogicalDependencies() {
+    public LinkedList<LogicalDependency<T>> getLogicalDependencies() {
         return this.justified;
     }
 
-    public void setLogicalDependencies(LinkedList<LogicalDependency> justified) {
+    public void setLogicalDependencies(LinkedList<LogicalDependency<T>> justified) {
         this.justified = justified;
     }
 

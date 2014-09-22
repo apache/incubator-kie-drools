@@ -1,5 +1,6 @@
 package org.drools.compiler.testframework;
 
+import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
@@ -17,6 +18,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.junit.Test;
+import org.kie.internal.runtime.beliefs.Mode;
 
 import java.util.HashSet;
 import java.util.List;
@@ -72,16 +74,16 @@ public class RuleCoverageListenerTest {
 }
 
 @SuppressWarnings("serial")
-class MockActivation
+class MockActivation<T extends Mode>
     implements
-    Activation {
+    Activation<T> {
     private String ruleName;
 
     public MockActivation(String ruleName) {
         this.ruleName = ruleName;
     }
 
-    public void addLogicalDependency(LogicalDependency node) {
+    public void addLogicalDependency(LogicalDependency<T> node) {
     }
 
     public ActivationGroupNode getActivationGroupNode() {
@@ -100,7 +102,7 @@ class MockActivation
         return null;
     }
 
-    public LinkedList getLogicalDependencies() {
+    public LinkedList<LogicalDependency<T>> getLogicalDependencies() {
         return null;
     }
 
@@ -145,9 +147,6 @@ class MockActivation
     public void setActivationGroupNode(ActivationGroupNode activationGroupNode) {
     }
 
-    public void setLogicalDependencies(LinkedList<LogicalDependency> justified) {
-    }
-
     public void setActivationNode(ActivationNode ruleFlowGroupNode) {
     }
 
@@ -174,23 +173,6 @@ class MockActivation
     public boolean isAdded() {
         return false;
     }
-    
-    public void addBlocked(LogicalDependency node) {
-    }
-
-    public LinkedList getBlocked() {
-        return null;
-    }
-
-    public void setBlocked(LinkedList<LogicalDependency> justified) {
-    }
-
-    public void addBlocked(LinkedListNode node) {
-    }
-
-    public LinkedList getBlockers() {
-        return null;
-    }
 
     public boolean isMatched() {
         return false;
@@ -206,6 +188,31 @@ class MockActivation
 
     public boolean isRuleAgendaItem() {
         return false;
+    }
+
+    @Override
+    public void addBlocked(LogicalDependency<SimpleMode> node) {
+
+    }
+
+    @Override
+    public LinkedList<LogicalDependency<SimpleMode>> getBlocked() {
+        return null;
+    }
+
+    @Override
+    public void setBlocked(LinkedList<LogicalDependency<SimpleMode>> justified) {
+
+    }
+
+    @Override
+    public LinkedList<SimpleMode> getBlockers() {
+        return null;
+    }
+
+    @Override
+    public void setLogicalDependencies(LinkedList<LogicalDependency<T>> justified) {
+
     }
 
     @Override

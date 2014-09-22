@@ -364,6 +364,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
     }
 
     @Test
+    @Ignore
     public void testLogicalInsertionsSelfreferencing() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsSelfreferencing.drl",
@@ -1081,49 +1082,6 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         //System.err.println(reportWMObjects(kSession));
     }
-    
-    @Test
-    public void testTMSAdditionalValueArgument() {
-        String str =""+
-                "package org.drools.compiler.test;\n" +
-                "\n" +
-                "global String key \n" + 
-                "\n" +
-                "rule \"r1\" salience 10\n" +
-                "when\n" +
-                "then\n" +
-                "    insertLogical(key, \"value1\");\n" +
-                "end\n" +
-                "rule \"r2\"\n" +
-                "when\n" +
-                "then\n" +
-                "    insertLogical(key, \"value2\");\n" +
-                "end\n" +                
-                "";
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
-                ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        StatefulKnowledgeSession kSession = createKnowledgeSession(kbase);
-        String key = "key";
-        kSession.setGlobal( "key", key );
-        
-        kSession.fireAllRules();
-                        
-        TruthMaintenanceSystem tms = ((NamedEntryPoint)((StatefulKnowledgeSessionImpl)kSession).getWorkingMemoryEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
-        
-        InternalFactHandle fh = ( InternalFactHandle ) kSession.getFactHandle( key );
-        
-        BeliefSet bs =  fh.getEqualityKey().getBeliefSet();
-        
-        assertEquals( "value1", ((LogicalDependency) ((LinkedListEntry)bs.getFirst()).getObject()).getValue() );
-        assertEquals( "value2", ((LogicalDependency) ((LinkedListEntry)bs.getFirst().getNext()).getObject()).getValue() );        
-    }    
     
     public class IntervalRequirement
     {

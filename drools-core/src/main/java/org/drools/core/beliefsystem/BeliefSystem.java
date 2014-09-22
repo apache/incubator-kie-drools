@@ -6,8 +6,9 @@ import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
+import org.kie.internal.runtime.beliefs.Mode;
 
-public interface BeliefSystem {
+public interface BeliefSystem<T extends Mode> {
     
     /**
      * TypeConf is already available, so we pass it, to avoid additional lookups
@@ -16,7 +17,7 @@ public interface BeliefSystem {
      * @param context
      * @param typeConf
      */
-    public void insert(LogicalDependency node, 
+    public void insert(LogicalDependency<T> node,
                        BeliefSet beliefSet,
                        PropagationContext context,
                        ObjectTypeConf typeConf);
@@ -27,9 +28,9 @@ public interface BeliefSystem {
      * @param beliefSet
      * @param context
      */
-    public void delete(LogicalDependency node, 
-                       BeliefSet beliefSet,
-                       PropagationContext context);
+    public void delete(LogicalDependency<T> node,
+                           BeliefSet beliefSet,
+                           PropagationContext context);
     
     public BeliefSet newBeliefSet(InternalFactHandle fh);
     
@@ -38,7 +39,7 @@ public interface BeliefSystem {
                                                   final Object object, 
                                                   final Object value);
 
-    public void read(LogicalDependency node,
+    public void read(LogicalDependency<T> node,
                      BeliefSet beliefSet,
                      PropagationContext context,
                      ObjectTypeConf typeConf);

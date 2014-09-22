@@ -5,6 +5,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.util.LinkedList;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
+import org.kie.internal.runtime.beliefs.Mode;
 
 public class TruthMaintenanceSystemHelper {
 
@@ -26,12 +27,12 @@ public class TruthMaintenanceSystemHelper {
     public static void removeLogicalDependencies(final Activation activation,
                                                  final PropagationContext context,
                                                  final RuleImpl rule) {
-        final LinkedList<LogicalDependency> list = activation.getLogicalDependencies();
+        final LinkedList<LogicalDependency<Mode>> list = activation.getLogicalDependencies();
         if ( list == null || list.isEmpty() ) {
             return;
         }
 
-        for ( LogicalDependency node = list.getFirst(); node != null; node = node.getNext() ) {
+        for ( LogicalDependency<?> node = list.getFirst(); node != null; node = node.getNext() ) {
             removeLogicalDependency( node, context );
         }
         activation.setLogicalDependencies( null );

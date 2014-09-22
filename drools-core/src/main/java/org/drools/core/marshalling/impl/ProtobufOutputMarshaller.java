@@ -83,6 +83,7 @@ import org.drools.core.util.ObjectHashMap;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.internal.runtime.beliefs.Mode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -662,14 +663,14 @@ public class ProtobufOutputMarshaller {
                                                                                      belief.getObject() ) ) );
             }
 
-            if ( belief.getValue() != null ) {
-                ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategyObject( belief.getValue() );
+            if ( belief.getMode() != null ) {
+                ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategyObject( belief.getMode() );
 
                 Integer index = context.getStrategyIndex( strategy );
                 _logicalDependency.setValueStrategyIndex( index.intValue() );
                 _logicalDependency.setValue( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
                                                                                     context,
-                                                                                    belief.getValue() ) ) );
+                                                                                    belief.getMode() ) ) );
             }
             _beliefSet.addLogicalDependency( _logicalDependency.build() );
         }
@@ -830,9 +831,9 @@ public class ProtobufOutputMarshaller {
             _activation.setHandleId( agendaItem.getFactHandle().getId() );
         }
 
-        org.drools.core.util.LinkedList<LogicalDependency> list = agendaItem.getLogicalDependencies();
+        org.drools.core.util.LinkedList<LogicalDependency<Mode>> list = agendaItem.getLogicalDependencies();
         if ( list != null && !list.isEmpty() ) {
-            for ( LogicalDependency node = list.getFirst(); node != null; node = node.getNext() ) {
+            for ( LogicalDependency<?> node = list.getFirst(); node != null; node = node.getNext() ) {
                 _activation.addLogicalDependency( ((BeliefSet) node.getJustified()).getFactHandle().getId() );
             }
         }

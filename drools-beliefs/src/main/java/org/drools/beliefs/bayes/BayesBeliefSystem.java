@@ -13,9 +13,11 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedListEntry;
+import org.drools.core.util.LinkedListNode;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.runtime.beliefs.Mode;
 
-public class BayesBeliefSystem implements BeliefSystem {
+public class BayesBeliefSystem implements BeliefSystem<BayesHardEvidence> {
     private NamedEntryPoint        ep;
     private TruthMaintenanceSystem tms;
 
@@ -27,21 +29,15 @@ public class BayesBeliefSystem implements BeliefSystem {
     }
 
     @Override
-    public void insert(LogicalDependency node, BeliefSet beliefSet, PropagationContext context, ObjectTypeConf typeConf) {
+    public void insert(LogicalDependency<BayesHardEvidence> node, BeliefSet beliefSet, PropagationContext context, ObjectTypeConf typeConf) {
         boolean wasEmpty = beliefSet.isEmpty();
         boolean wasUndecided = beliefSet.isUndecided();
 
-        beliefSet.add(node.getJustifierEntry());
+        beliefSet.add( (LinkedListNode) node.getMode() );
 
-//        if ( !wasUndecided && !beliefSet.isUndecided() ) {
-//            // was decided before, still decided, so do nothing.
-//            return;
-//        }
+        BayesHardEvidence evidence = (BayesHardEvidence) beliefSet.getFirst();
 
-        node = (( LinkedListEntry<LogicalDependency>) beliefSet.getFirst()).getObject();
-
-        BayesHardEvidence evidence = ( BayesHardEvidence ) node.getValue();
-        PropertyReference propRef = (PropertyReference)node.getObject();
+        PropertyReference propRef = (PropertyReference) node.getObject();
 
         BayesFact bayesFact = (BayesFact) propRef.getInstance();
         BayesInstance bayesInstance = bayesFact.getBayesInstance();
@@ -61,10 +57,10 @@ public class BayesBeliefSystem implements BeliefSystem {
     }
 
     @Override
-    public void delete(LogicalDependency node, BeliefSet beliefSet, PropagationContext context) {
+    public void delete(LogicalDependency<BayesHardEvidence> node, BeliefSet beliefSet, PropagationContext context) {
         boolean wasUndecided = beliefSet.isUndecided();
 
-        beliefSet.remove( node.getJustifierEntry() );
+        beliefSet.remove( (LinkedListNode) node.getMode() );
 
 //        if ( !wasUndecided && !beliefSet.isUndecided() ) {
 //            // was decided before, still decided, so do nothing.
@@ -84,8 +80,7 @@ public class BayesBeliefSystem implements BeliefSystem {
             return;
         }
 
-        node = (( LinkedListEntry<LogicalDependency>) beliefSet.getFirst()).getObject();
-        BayesHardEvidence evidence = ( BayesHardEvidence ) node.getValue();
+        BayesHardEvidence evidence = (BayesHardEvidence) beliefSet.getFirst();
 
         if ( !wasUndecided && beliefSet.isUndecided() ) {
             // was decided, now undecided
@@ -105,7 +100,11 @@ public class BayesBeliefSystem implements BeliefSystem {
 
     @Override
     public LogicalDependency newLogicalDependency(Activation activation, BeliefSet beliefSet, Object object, Object value) {
-        return new BayesLogicalDependency(activation, beliefSet, object, value);
+        BayesHardEvidence mode = ( BayesHardEvidence ) value;
+        SimpleLogicalDependency dep = new SimpleLogicalDependency( activation, beliefSet, object, (Mode) value );
+        mode.setLogicalDependency( dep );
+
+        return dep;
     }
 
     @Override

@@ -21,8 +21,7 @@ package org.drools.core.util;
  *
  * @see LinkedList
  */
-public interface LinkedListNode<T extends LinkedListNode<T>>
-    extends Entry<T> {
+public interface LinkedListNode<T extends LinkedListNode & Entry> extends Entry<T> {
 
     /**
      * Returns the previous node

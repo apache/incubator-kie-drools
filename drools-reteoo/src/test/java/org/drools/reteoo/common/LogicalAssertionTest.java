@@ -68,6 +68,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.beliefs.Mode;
 
 import static org.junit.Assert.*;
 
@@ -122,10 +123,10 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                LinkedList<LogicalDependency> list = ((DefaultKnowledgeHelper) knowledgeHelper).getpreviousJustified();
+                LinkedList<LogicalDependency<Mode>> list = ((DefaultKnowledgeHelper) knowledgeHelper).getpreviousJustified();
                 if (list != null) {
                     for (SimpleLogicalDependency dep = (SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
-                        knowledgeHelper.insertLogical( dep.getObject(), dep.getValue() );
+                        knowledgeHelper.insertLogical( dep.getObject(), dep.getMode() );
                     }
                 }
             }
@@ -249,10 +250,10 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                LinkedList< LogicalDependency > list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                LinkedList< LogicalDependency<Mode>> list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
                 if ( list != null ) {
                     for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
-                        knowledgeHelper.insertLogical( dep.getObject(), dep.getValue() );
+                        knowledgeHelper.insertLogical( dep.getObject(), dep.getMode() );
                     }
                 }
             }
@@ -357,10 +358,10 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                LinkedList< LogicalDependency > list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                LinkedList< LogicalDependency<Mode>> list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
                 if ( list != null ) {
                     for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
-                        knowledgeHelper.insertLogical( dep.getObject(), dep.getValue() );
+                        knowledgeHelper.insertLogical( dep.getObject(), dep.getMode() );
                     }
                 }
             }
@@ -506,10 +507,10 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                LinkedList< LogicalDependency > list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                LinkedList< LogicalDependency<Mode>> list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
                 if ( list != null ) {
                     for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
-                        knowledgeHelper.insertLogical( dep.getObject(), dep.getValue() );
+                        knowledgeHelper.insertLogical( dep.getObject(), dep.getMode() );
                     }
                 }
             }
@@ -634,10 +635,10 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                LinkedList< LogicalDependency > list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                LinkedList< LogicalDependency<Mode>> list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
                 if ( list != null ) {
                     for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
-                        knowledgeHelper.insertLogical( dep.getObject(), dep.getValue() );
+                        knowledgeHelper.insertLogical( dep.getObject(), dep.getMode() );
                     }
                 }
             }
@@ -723,8 +724,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
                       getLogicalCount( tms ) );
         
         BeliefSet bs =  ( BeliefSet ) logicalHandle2.getEqualityKey().getBeliefSet();       
-        assertEquals( "value1", ((LogicalDependency) ((LinkedListEntry)bs.getFirst()).getObject()).getValue() );
-        assertEquals( "value2", ((LogicalDependency) ((LinkedListEntry)bs.getFirst().getNext()).getObject()).getValue() );
+        assertEquals( "value1", ((LogicalDependency) ((LinkedListEntry)bs.getFirst()).getObject()).getMode() );
+        assertEquals( "value2", ((LogicalDependency) ((LinkedListEntry)bs.getFirst().getNext()).getObject()).getMode() );
 
         // Now lets cancel the first activation
         node2.retractLeftTuple( tuple2,
@@ -794,10 +795,10 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                LinkedList< LogicalDependency > list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                LinkedList< LogicalDependency<Mode>> list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
                 if ( list != null ) {
                     for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
-                        knowledgeHelper.insertLogical( dep.getObject(), dep.getValue() );
+                        knowledgeHelper.insertLogical( dep.getObject(), dep.getMode() );
                     }
                 }
             }
@@ -914,10 +915,10 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                LinkedList< LogicalDependency > list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                LinkedList< LogicalDependency<Mode>> list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
                 if ( list != null ) {
                     for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
-                        knowledgeHelper.insertLogical( dep.getObject(), dep.getValue() );
+                        knowledgeHelper.insertLogical( dep.getObject(), dep.getMode()  );
                     }
                 }
             }

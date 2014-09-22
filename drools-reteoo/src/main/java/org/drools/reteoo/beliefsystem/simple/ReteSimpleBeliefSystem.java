@@ -5,6 +5,7 @@ import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.simple.BeliefSystemLogicalCallback;
 import org.drools.core.beliefsystem.simple.SimpleBeliefSet;
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
+import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
@@ -21,7 +22,7 @@ import org.drools.core.util.LinkedListEntry;
  */
 public class ReteSimpleBeliefSystem
         implements
-        BeliefSystem {
+        BeliefSystem<SimpleMode> {
     private NamedEntryPoint        ep;
     private TruthMaintenanceSystem tms;
 
@@ -36,13 +37,13 @@ public class ReteSimpleBeliefSystem
         return this.tms;
     }
 
-    public void insert(LogicalDependency node,
+    public void insert(LogicalDependency<SimpleMode> node,
                        BeliefSet beliefSet,
                        PropagationContext context,
                        ObjectTypeConf typeConf) {
         boolean empty = beliefSet.isEmpty();
 
-        beliefSet.add( node.getJustifierEntry() );
+        beliefSet.add( node.getMode() );
 
         if ( empty ) {
             InternalFactHandle handle = beliefSet.getFactHandle();
@@ -56,19 +57,19 @@ public class ReteSimpleBeliefSystem
         }
     }
 
-    public void read(LogicalDependency node,
+    public void read(LogicalDependency<SimpleMode> node,
                      BeliefSet beliefSet,
                      PropagationContext context,
                      ObjectTypeConf typeConf) {
         //insert(node, beliefSet, context, typeConf );
-        beliefSet.add( node.getJustifierEntry() );
+        beliefSet.add( node.getMode() );
     }
 
-    public void delete(LogicalDependency node,
+    public void delete(LogicalDependency<SimpleMode> node,
                        BeliefSet beliefSet,
                        PropagationContext context) {
         SimpleBeliefSet sBeliefSet = (SimpleBeliefSet) beliefSet;
-        beliefSet.remove( node.getJustifierEntry() );
+        beliefSet.remove( node.getMode() );
 
         InternalFactHandle bfh = beliefSet.getFactHandle();
         
@@ -95,7 +96,7 @@ public class ReteSimpleBeliefSystem
         } else if ( !beliefSet.isEmpty() && beliefSet.getFactHandle().getObject() == node.getObject() ) {
             // prime has changed, to update new object                      
            // Equality might have changed on the object, so remove (which uses the handle id) and add back in
-           ((NamedEntryPoint)bfh.getEntryPoint()).getObjectStore().updateHandle( bfh,  ((LinkedListEntry<LogicalDependency>) beliefSet.getFirst()).getObject().getObject() );
+           ((NamedEntryPoint)bfh.getEntryPoint()).getObjectStore().updateHandle( bfh,  ((SimpleMode) beliefSet.getFirst()).getObject().getObject() );
 
             if ( sBeliefSet.getWorkingMemoryAction() == null ) {
                 // Only schedule if we don't already have one scheduled
@@ -118,6 +119,6 @@ public class ReteSimpleBeliefSystem
                                                   BeliefSet beliefSet,
                                                   Object object,
                                                   Object value) {
-        return new SimpleLogicalDependency( activation, beliefSet, object, value );
+        return new SimpleLogicalDependency( activation, beliefSet, object, null );
     }
 }
