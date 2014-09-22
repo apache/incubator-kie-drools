@@ -31,7 +31,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.app.LoggingTest;
-import org.optaplanner.examples.common.business.ExtensionFileFilter;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
 
 @RunWith(Parameterized.class)

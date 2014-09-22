@@ -1,6 +1,5 @@
 package org.optaplanner.core.impl.domain.valuerange.buildin.composite;
 
-import java.util.Arrays;
 import java.util.Random;
 
 import org.junit.Test;

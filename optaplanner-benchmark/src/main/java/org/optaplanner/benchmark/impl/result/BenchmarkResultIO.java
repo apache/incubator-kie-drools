@@ -36,7 +36,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

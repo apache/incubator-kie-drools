@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.mappedby.TestdataMapped
 import org.optaplanner.core.impl.testdata.domain.chained.mappedby.TestdataMappedByChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.mappedby.TestdataMappedByChainedSolution;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class IncrementalScoreDirectorTest {

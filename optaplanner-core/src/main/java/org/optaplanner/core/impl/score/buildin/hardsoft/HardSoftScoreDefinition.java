@@ -18,9 +18,9 @@ package org.optaplanner.core.impl.score.buildin.hardsoft;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
+import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
-import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 
 public class HardSoftScoreDefinition extends AbstractFeasibilityScoreDefinition<HardSoftScore> {
 

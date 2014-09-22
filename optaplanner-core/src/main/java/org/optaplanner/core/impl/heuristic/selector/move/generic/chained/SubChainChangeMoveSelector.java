@@ -19,12 +19,12 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 import java.util.Iterator;
 
 import com.google.common.collect.Iterators;
+import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
-import org.optaplanner.core.impl.heuristic.move.Move;
 
 public class SubChainChangeMoveSelector extends GenericMoveSelector {
 

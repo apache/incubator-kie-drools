@@ -18,8 +18,8 @@ package org.optaplanner.examples.machinereassignment.persistence;
 
 import java.io.File;
 
-import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class MachineReassignmentFileIO implements SolutionFileIO {
 

@@ -28,8 +28,6 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 
-import static org.junit.Assert.assertNotNull;
-
 public abstract class ConstructionHeuristicTest extends PhaseTest {
 
     protected static Collection<Object[]> buildParameters(SolutionDao solutionDao, String... unsolvedFileNames) {

@@ -20,7 +20,6 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;

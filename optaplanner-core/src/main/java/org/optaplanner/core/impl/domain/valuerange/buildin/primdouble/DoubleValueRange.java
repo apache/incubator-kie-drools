@@ -3,7 +3,6 @@ package org.optaplanner.core.impl.domain.valuerange.buildin.primdouble;
 import java.util.Iterator;
 import java.util.Random;
 
-import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
 import org.optaplanner.core.impl.domain.valuerange.AbstractUncountableValueRange;
 import org.optaplanner.core.impl.domain.valuerange.util.ValueRangeIterator;
 

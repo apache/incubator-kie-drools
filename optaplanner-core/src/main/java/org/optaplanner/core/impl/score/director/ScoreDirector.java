@@ -18,10 +18,10 @@ package org.optaplanner.core.impl.score.director;
 
 import java.util.Collection;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 
 /**

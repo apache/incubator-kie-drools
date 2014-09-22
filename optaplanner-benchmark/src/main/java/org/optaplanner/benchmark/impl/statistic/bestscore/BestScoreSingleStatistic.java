@@ -16,18 +16,16 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestscore;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.api.domain.solution.Solution;
 
 public class BestScoreSingleStatistic extends ProblemBasedSingleStatistic<BestScoreStatisticPoint> {
 

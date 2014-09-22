@@ -24,8 +24,8 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.score.Score;
 
 /**
  * This {@link SolverRankingWeightFactory} orders a {@link SolverBenchmarkResult} by how how many time each of it's

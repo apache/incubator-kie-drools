@@ -49,7 +49,7 @@ import org.optaplanner.examples.examination.domain.Period;
 import org.optaplanner.examples.examination.domain.Room;
 
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
 
 public class ExaminationPanel extends SolutionPanel {
 

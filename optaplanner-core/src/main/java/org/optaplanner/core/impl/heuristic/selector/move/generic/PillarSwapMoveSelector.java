@@ -21,10 +21,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractOriginalSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
-import org.optaplanner.core.impl.heuristic.move.Move;
 
 public class PillarSwapMoveSelector extends GenericMoveSelector {
 

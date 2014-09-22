@@ -17,21 +17,17 @@
 package org.optaplanner.examples.common.persistence;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.app.LoggingTest;
-import org.optaplanner.examples.common.business.ExtensionFileFilter;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
 
 @RunWith(Parameterized.class)

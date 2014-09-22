@@ -18,7 +18,6 @@ package org.optaplanner.examples.nurserostering.domain.pattern;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.nurserostering.domain.DayOfWeek;
-import org.optaplanner.examples.nurserostering.domain.pattern.Pattern;
 
 @XStreamAlias("FreeBefore2DaysWithAWorkDayPattern")
 public class FreeBefore2DaysWithAWorkDayPattern extends Pattern {

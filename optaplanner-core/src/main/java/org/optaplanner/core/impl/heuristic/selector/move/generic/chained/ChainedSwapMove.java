@@ -20,8 +20,8 @@ import java.util.Collection;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class ChainedSwapMove extends SwapMove {

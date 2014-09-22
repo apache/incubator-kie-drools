@@ -16,11 +16,9 @@
 
 package org.optaplanner.examples.common.swingui;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.util.List;
 import java.util.Set;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -30,7 +28,6 @@ import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;

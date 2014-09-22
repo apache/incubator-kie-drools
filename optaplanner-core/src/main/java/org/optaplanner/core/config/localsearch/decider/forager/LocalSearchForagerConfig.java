@@ -21,8 +21,8 @@ import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.localsearch.decider.forager.AcceptedForager;
 import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
-import org.optaplanner.core.impl.localsearch.decider.forager.finalist.HighestScoreFinalistPodium;
 import org.optaplanner.core.impl.localsearch.decider.forager.finalist.FinalistPodium;
+import org.optaplanner.core.impl.localsearch.decider.forager.finalist.HighestScoreFinalistPodium;
 
 @XStreamAlias("localSearchForagerConfig")
 public class LocalSearchForagerConfig {

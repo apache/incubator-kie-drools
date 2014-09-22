@@ -24,11 +24,11 @@ import java.util.List;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueRange;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.common.DefaultReadMethodAccessor;
 import org.optaplanner.core.impl.domain.common.ReadMethodAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueRange;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 
 public abstract class AbstractFromPropertyValueRangeDescriptor extends AbstractValueRangeDescriptor {

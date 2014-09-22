@@ -19,8 +19,6 @@ package org.optaplanner.examples.common.business;
 import java.io.File;
 import java.io.FileFilter;
 
-import org.optaplanner.examples.common.persistence.SolutionDao;
-
 public class ExtensionFileFilter implements FileFilter {
 
     private final String extensionWithDot;

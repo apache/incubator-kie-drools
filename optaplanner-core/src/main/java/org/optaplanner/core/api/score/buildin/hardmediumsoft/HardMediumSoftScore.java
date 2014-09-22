@@ -16,10 +16,10 @@
 
 package org.optaplanner.core.api.score.buildin.hardmediumsoft;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.domain.solution.Solution;
 
 /**
  * This {@link Score} is based on 3 levels of int constraints: hard, medium and soft.

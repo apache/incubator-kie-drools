@@ -37,7 +37,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.TitledBorder;
 
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.cheaptime.app.CheapTimeApp;
 import org.optaplanner.examples.cloudbalancing.app.CloudBalancingApp;
 import org.optaplanner.examples.common.app.CommonApp;

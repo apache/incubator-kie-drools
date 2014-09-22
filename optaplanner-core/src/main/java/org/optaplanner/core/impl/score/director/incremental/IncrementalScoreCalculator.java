@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.impl.score.director.incremental;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
-import org.optaplanner.core.api.domain.solution.Solution;
 
 /**
  * Used for incremental java {@link Score} calculation.

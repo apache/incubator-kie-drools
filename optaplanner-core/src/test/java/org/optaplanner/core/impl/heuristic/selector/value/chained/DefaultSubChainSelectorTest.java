@@ -36,6 +36,8 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertNotNull;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertTrue;
 
 public class DefaultSubChainSelectorTest {
 

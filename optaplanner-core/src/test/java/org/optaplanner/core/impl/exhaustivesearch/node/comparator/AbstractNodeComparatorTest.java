@@ -21,7 +21,7 @@ import java.util.Comparator;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public abstract class AbstractNodeComparatorTest {

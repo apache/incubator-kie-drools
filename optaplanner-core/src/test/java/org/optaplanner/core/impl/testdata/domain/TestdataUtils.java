@@ -16,10 +16,10 @@
 
 package org.optaplanner.core.impl.testdata.domain;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.api.domain.solution.Solution;
 
 public class TestdataUtils {
 

@@ -21,14 +21,13 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import org.optaplanner.core.api.score.AbstractScore;
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.api.domain.solution.Solution;
 
 /**
  * A Move represents a change of 1 or more planning variables of 1 or more planning entities

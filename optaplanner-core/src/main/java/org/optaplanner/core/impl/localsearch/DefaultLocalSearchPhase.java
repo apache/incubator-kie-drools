@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.impl.localsearch;
 
+import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.localsearch.decider.LocalSearchDecider;
 import org.optaplanner.core.impl.localsearch.event.LocalSearchPhaseLifecycleListener;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 

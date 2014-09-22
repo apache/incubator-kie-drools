@@ -21,7 +21,6 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 import org.optaplanner.examples.common.app.PlannerBenchmarkConfigTest;
-import org.optaplanner.examples.machinereassignment.app.MachineReassignmentBenchmarkApp;
 
 public class ExaminationBenchmarkConfigTest extends PlannerBenchmarkConfigTest {
 

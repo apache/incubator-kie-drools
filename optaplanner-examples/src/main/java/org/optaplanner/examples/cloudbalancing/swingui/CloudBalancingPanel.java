@@ -36,8 +36,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;

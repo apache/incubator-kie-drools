@@ -18,10 +18,10 @@ package org.optaplanner.core.impl.localsearch.scope;
 
 import java.util.Random;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.api.domain.solution.Solution;
 
 public class LocalSearchMoveScope {
 

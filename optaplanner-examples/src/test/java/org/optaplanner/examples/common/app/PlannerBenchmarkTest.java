@@ -20,13 +20,13 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.config.util.ConfigUtils;
 
 /**
  * Runs an example solver.

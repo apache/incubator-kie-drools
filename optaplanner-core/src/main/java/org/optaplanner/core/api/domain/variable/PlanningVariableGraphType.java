@@ -16,12 +16,6 @@
 
 package org.optaplanner.core.api.domain.variable;
 
-import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig;
-import org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig;
-import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig;
-import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
-import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
-
 public enum PlanningVariableGraphType {
     /**
      * This is de default.

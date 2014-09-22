@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.domain.solution.cloner;
 
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 public class FieldAccessingSolutionClonerTest extends AbstractSolutionClonerTest {
 

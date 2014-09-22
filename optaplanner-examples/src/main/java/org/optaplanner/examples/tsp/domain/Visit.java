@@ -21,7 +21,6 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.tsp.domain.solver.DomicileDistanceVisitDifficultyWeightFactory;
 import org.optaplanner.examples.tsp.domain.solver.LatitudeVisitDifficultyComparator;
 
 @PlanningEntity(difficultyComparatorClass = LatitudeVisitDifficultyComparator.class)

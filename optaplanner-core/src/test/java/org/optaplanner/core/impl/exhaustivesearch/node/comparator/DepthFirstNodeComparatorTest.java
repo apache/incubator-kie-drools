@@ -16,15 +16,7 @@
 
 package org.optaplanner.core.impl.exhaustivesearch.node.comparator;
 
-import java.util.Comparator;
-
 import org.junit.Test;
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
-
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class DepthFirstNodeComparatorTest extends AbstractNodeComparatorTest {
 

@@ -31,7 +31,6 @@ import javax.swing.SpinnerNumberModel;
 
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
-import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.domain.InstitutionParametrization;
 import org.slf4j.Logger;

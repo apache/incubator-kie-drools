@@ -17,7 +17,6 @@
 package org.optaplanner.core.api.score.constraint.bigdecimal;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;

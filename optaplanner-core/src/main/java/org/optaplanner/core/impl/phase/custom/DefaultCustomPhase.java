@@ -19,12 +19,12 @@ package org.optaplanner.core.impl.phase.custom;
 import java.util.Iterator;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.phase.custom.scope.CustomPhaseScope;
 import org.optaplanner.core.impl.phase.custom.scope.CustomStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**

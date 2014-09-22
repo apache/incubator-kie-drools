@@ -18,15 +18,9 @@ package org.optaplanner.examples.vehiclerouting.app;
 
 import java.util.Collection;
 
-import org.junit.Test;
 import org.junit.runners.Parameterized;
-import org.optaplanner.benchmark.api.PlannerBenchmark;
-import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
-import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingDao;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 import org.optaplanner.examples.common.app.PlannerBenchmarkConfigTest;
-
-import static org.junit.Assert.*;
 
 public class VehicleRoutingBenchmarkConfigTest extends PlannerBenchmarkConfigTest {
 

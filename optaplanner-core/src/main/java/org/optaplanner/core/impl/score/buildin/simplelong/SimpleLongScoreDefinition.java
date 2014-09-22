@@ -18,9 +18,9 @@ package org.optaplanner.core.impl.score.buildin.simplelong;
 
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScoreHolder;
+import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
-import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 
 public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLongScore> {
 

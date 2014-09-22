@@ -16,14 +16,11 @@
 
 package org.optaplanner.examples.examination.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.examination.domain.solver.ExamDifficultyWeightFactory;
-import org.optaplanner.examples.examination.domain.solver.PeriodUpdatingVariableListener;
 
 @PlanningEntity
 @XStreamAlias("LeadingExam")

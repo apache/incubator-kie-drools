@@ -23,14 +23,14 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.core.impl.heuristic.move.CompositeMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
-import org.optaplanner.examples.nurserostering.solver.drools.EmployeeWorkSequence;
 import org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter;
+import org.optaplanner.examples.nurserostering.solver.drools.EmployeeWorkSequence;
 import org.optaplanner.examples.nurserostering.solver.move.EmployeeChangeMove;
 
 public class ShiftAssignmentSequenceSwitchLength2MoveFactory implements MoveListFactory<NurseRoster> {

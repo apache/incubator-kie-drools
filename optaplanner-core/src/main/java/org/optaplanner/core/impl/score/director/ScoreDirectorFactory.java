@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import org.optaplanner.core.api.score.constraint.ConstraintMatch;
-
 /**
  * Builds a {@link ScoreDirector}.
  */

@@ -18,12 +18,12 @@ package org.optaplanner.core.impl.heuristic.selector.value;
 
 import java.util.Iterator;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.api.domain.solution.Solution;
 
 /**
  * This is the common {@link ValueSelector} implementation.

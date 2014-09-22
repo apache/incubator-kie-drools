@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 
 public class TrailingEntityMapSupport {

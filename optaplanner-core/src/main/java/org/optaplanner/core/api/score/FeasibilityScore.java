@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.api.score;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.api.domain.solution.Solution;
 
 /**
  * A {@link Score} that supports {@link #isFeasible()}.

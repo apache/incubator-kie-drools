@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;

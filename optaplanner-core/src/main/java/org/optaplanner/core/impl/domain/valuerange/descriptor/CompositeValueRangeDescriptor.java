@@ -19,11 +19,11 @@ package org.optaplanner.core.impl.domain.valuerange.descriptor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.buildin.composite.CompositeCountableValueRange;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.api.domain.solution.Solution;
 
 public class CompositeValueRangeDescriptor extends AbstractValueRangeDescriptor
         implements EntityIndependentValueRangeDescriptor {

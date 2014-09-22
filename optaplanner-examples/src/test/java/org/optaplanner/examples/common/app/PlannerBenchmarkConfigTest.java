@@ -16,21 +16,15 @@
 
 package org.optaplanner.examples.common.app;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
-import org.optaplanner.examples.common.business.ProblemFileComparator;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingBenchmarkApp;
 
 import static org.junit.Assert.*;
 

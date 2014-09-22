@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.pas.domain;
 
-import javax.swing.JComponent;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 

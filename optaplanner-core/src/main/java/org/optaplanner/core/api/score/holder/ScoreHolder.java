@@ -19,12 +19,12 @@ package org.optaplanner.core.api.score.holder;
 import java.util.Collection;
 
 import org.kie.api.runtime.KieSession;
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
-import org.optaplanner.core.api.domain.solution.Solution;
 
 /**
  * This class is injected as a global by {@link DroolsScoreDirector} into the Drools DRL.

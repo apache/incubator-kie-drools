@@ -19,9 +19,9 @@ package org.optaplanner.core.impl.heuristic.selector.move.factory;
 import java.util.Iterator;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.api.domain.solution.Solution;
 
 /**
  * A simple interface to generate a {@link List} of custom {@link Move}s.

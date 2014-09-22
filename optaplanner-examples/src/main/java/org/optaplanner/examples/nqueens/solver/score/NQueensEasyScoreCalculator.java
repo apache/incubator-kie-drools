@@ -16,9 +16,7 @@
 
 package org.optaplanner.examples.nqueens.solver.score;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;

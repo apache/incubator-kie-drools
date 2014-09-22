@@ -21,7 +21,6 @@ import java.util.Arrays;
 import org.junit.Test;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 

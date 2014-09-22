@@ -19,13 +19,13 @@ package org.optaplanner.core.config.heuristic.selector.move;
 import org.junit.Test;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.AbstractSelectorConfigTest;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
-import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
+import org.optaplanner.core.impl.heuristic.move.DummyMove;
+import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.CachingMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.ShufflingMoveSelector;
-import org.optaplanner.core.impl.heuristic.move.DummyMove;
 
 import static org.junit.Assert.assertEquals;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;

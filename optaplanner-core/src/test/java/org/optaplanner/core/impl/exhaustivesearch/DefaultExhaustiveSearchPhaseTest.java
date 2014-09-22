@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.exhaustivesearch;
 
 import org.junit.Test;
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecider;
@@ -27,7 +28,6 @@ import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchStepScop
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.api.domain.solution.Solution;
 
 import static org.mockito.Mockito.*;
 

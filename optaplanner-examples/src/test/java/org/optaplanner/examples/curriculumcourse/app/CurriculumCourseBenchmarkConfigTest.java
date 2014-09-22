@@ -21,7 +21,6 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 import org.optaplanner.examples.common.app.PlannerBenchmarkConfigTest;
-import org.optaplanner.examples.examination.app.ExaminationBenchmarkApp;
 
 public class CurriculumCourseBenchmarkConfigTest extends PlannerBenchmarkConfigTest {
 

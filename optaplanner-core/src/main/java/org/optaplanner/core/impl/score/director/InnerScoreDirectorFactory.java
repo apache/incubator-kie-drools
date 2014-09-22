@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.impl.score.director;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
-import org.optaplanner.core.api.domain.solution.Solution;
 
 public interface InnerScoreDirectorFactory extends ScoreDirectorFactory {
 

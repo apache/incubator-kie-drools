@@ -21,11 +21,11 @@ import java.util.Iterator;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractOriginalSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedSwapMove;
-import org.optaplanner.core.impl.heuristic.move.Move;
 
 public class SwapMoveSelector extends GenericMoveSelector {
 

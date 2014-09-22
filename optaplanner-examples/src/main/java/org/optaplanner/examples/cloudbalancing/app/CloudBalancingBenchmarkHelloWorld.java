@@ -16,18 +16,8 @@
 
 package org.optaplanner.examples.cloudbalancing.app;
 
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
-
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
-import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
-import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
-import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
-import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerator;
 
 public class CloudBalancingBenchmarkHelloWorld {
 

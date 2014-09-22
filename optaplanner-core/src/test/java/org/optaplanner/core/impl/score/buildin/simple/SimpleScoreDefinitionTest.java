@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.score.buildin.simple;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class SimpleScoreDefinitionTest {
 

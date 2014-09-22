@@ -42,7 +42,7 @@ import org.optaplanner.examples.travelingtournament.domain.Team;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
 
 public class TravelingTournamentPanel extends SolutionPanel {
 

@@ -16,14 +16,10 @@
 
 package org.optaplanner.core.api.domain.valuerange;
 
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
-import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 /**
  * {@inheritDoc}

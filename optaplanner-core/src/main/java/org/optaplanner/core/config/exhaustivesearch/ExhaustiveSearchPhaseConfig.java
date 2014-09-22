@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
+import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
@@ -39,9 +40,8 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.exhaustivesearch.DefaultExhaustiveSearchPhase;
 import org.optaplanner.core.impl.exhaustivesearch.ExhaustiveSearchPhase;
 import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecider;
-import org.optaplanner.core.impl.exhaustivesearch.node.bounder.TrendBasedScoreBounder;
 import org.optaplanner.core.impl.exhaustivesearch.node.bounder.ScoreBounder;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.impl.exhaustivesearch.node.bounder.TrendBasedScoreBounder;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.ManualEntityMimicRecorder;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;

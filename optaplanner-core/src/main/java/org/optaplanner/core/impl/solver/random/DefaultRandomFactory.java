@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.solver.random;
 
 import java.util.Random;
 
-import org.apache.commons.math3.random.ISAACRandom;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomAdaptor;
 import org.apache.commons.math3.random.Well1024a;

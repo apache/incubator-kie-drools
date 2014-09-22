@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.common.iterator.SingletonIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
 public class ManualEntityMimicRecorder implements EntityMimicRecorder {

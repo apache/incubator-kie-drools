@@ -16,10 +16,10 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor;
 
+import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
 import org.optaplanner.core.impl.localsearch.event.LocalSearchPhaseLifecycleListener;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
-import org.optaplanner.core.impl.heuristic.move.Move;
 
 /**
  * An Acceptor accepts or rejects a selected {@link Move}.

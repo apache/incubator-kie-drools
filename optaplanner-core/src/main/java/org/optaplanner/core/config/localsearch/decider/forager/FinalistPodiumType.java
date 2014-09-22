@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.config.localsearch.decider.forager;
 
-import org.optaplanner.core.impl.localsearch.decider.forager.finalist.HighestScoreFinalistPodium;
 import org.optaplanner.core.impl.localsearch.decider.forager.finalist.FinalistPodium;
+import org.optaplanner.core.impl.localsearch.decider.forager.finalist.HighestScoreFinalistPodium;
 import org.optaplanner.core.impl.localsearch.decider.forager.finalist.StrategicOscillationByLevelFinalistPodium;
 
 public enum FinalistPodiumType {

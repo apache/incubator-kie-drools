@@ -20,7 +20,6 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.junit.Ignore;
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionImporterTest;

@@ -17,9 +17,9 @@
 package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.impl.heuristic.selector.Selector;
-import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.heuristic.selector.Selector;
 
 /**
  * Creates a weight to decide the order of a collections of selections

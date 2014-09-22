@@ -21,7 +21,6 @@ import java.lang.annotation.Target;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;

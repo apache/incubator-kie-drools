@@ -18,9 +18,9 @@ package org.optaplanner.core.api.solver.event;
 
 import java.util.EventObject;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
