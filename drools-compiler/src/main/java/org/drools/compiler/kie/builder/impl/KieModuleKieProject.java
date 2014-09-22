@@ -2,6 +2,8 @@ package org.drools.compiler.kie.builder.impl;
 
 import org.drools.core.common.ProjectClassLoader;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieSessionModel;
 import org.kie.internal.utils.ClassLoaderResolver;
 import org.kie.internal.utils.NoDepsClassLoaderResolver;
 import org.kie.internal.utils.ServiceRegistryImpl;
@@ -110,7 +112,6 @@ public class KieModuleKieProject extends AbstractKieProject {
     public void updateToModule(InternalKieModule updatedKieModule) {
         this.kieModules = null;
         this.kJarFromKBaseName.clear();
-        cleanIndex();
 
         ReleaseId currentReleaseId = this.kieModule.getReleaseId();
         ReleaseId updatingReleaseId = updatedKieModule.getReleaseId();
@@ -122,7 +123,34 @@ public class KieModuleKieProject extends AbstractKieProject {
             this.kieModule.addKieDependency(updatedKieModule);
         }
 
-        //this.cl.getStore().clear(); // can we do this in order to preserve the reference to the classloader?
-        this.init(); // this might override class definitions, not sure we can do it any other way though
+        synchronized (this) {
+            cleanIndex();
+            init(); // this might override class definitions, not sure we can do it any other way though
+        }
+    }
+
+    @Override
+    public synchronized KieBaseModel getDefaultKieBaseModel() {
+        return super.getDefaultKieBaseModel();
+    }
+
+    @Override
+    public synchronized KieSessionModel getDefaultKieSession() {
+        return super.getDefaultKieSession();
+    }
+
+    @Override
+    public synchronized KieSessionModel getDefaultStatelessKieSession() {
+        return super.getDefaultStatelessKieSession();
+    }
+
+    @Override
+    public synchronized KieBaseModel getKieBaseModel(String kBaseName) {
+        return super.getKieBaseModel(kBaseName);
+    }
+
+    @Override
+    public synchronized KieSessionModel getKieSessionModel(String kSessionName) {
+        return super.getKieSessionModel(kSessionName);
     }
 }
