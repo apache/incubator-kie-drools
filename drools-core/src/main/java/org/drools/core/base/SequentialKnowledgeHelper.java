@@ -176,12 +176,12 @@ public class SequentialKnowledgeHelper
     }
 
     @Override
-    public <T, K> T don( K core, Class<T> trait, Object mode ) {
+    public <T, K> T don( K core, Class<T> trait, Mode... modes ) {
         return null;
     }
 
     @Override
-    public <T, K> T don( Thing<K> core, Class<T> trait, Object mode ) {
+    public <T, K> T don( Thing<K> core, Class<T> trait, Mode... modes ) {
         return null;
     }
 
@@ -199,7 +199,7 @@ public class SequentialKnowledgeHelper
     }
 
     @Override
-    public <T, K> T don( K core, Collection<Class<? extends Thing>> trait, Object mode ) {
+    public <T, K> T don( K core, Collection<Class<? extends Thing>> trait, Mode... modes ) {
         return null;
     }
 

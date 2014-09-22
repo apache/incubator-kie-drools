@@ -71,7 +71,6 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.beliefs.Mode;
-import sun.java2d.pipe.SpanShapeRenderer.Simple;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -670,12 +669,12 @@ public class DefaultKnowledgeHelper<T extends Mode>
         return don( core, trait, logical, null );
     }
 
-    public <T, K> T don( Thing<K> core, Class<T> trait, Object mode ) {
-        return don( core, trait, true, mode );
+    public <T, K> T don( Thing<K> core, Class<T> trait, Mode... modes ) {
+        return don( core, trait, true, modes );
     }
 
-    public <T, K> T don( Thing<K> core, Class<T> trait, boolean logical, Object mode ) {
-        return don( core.getCore(), trait, logical, mode );
+    public <T, K> T don( Thing<K> core, Class<T> trait, boolean logical, Mode... modes ) {
+        return don( core.getCore(), trait, logical, modes );
     }
 
     public <T, K> T don( K core, Class<T> trait ) {
@@ -694,23 +693,23 @@ public class DefaultKnowledgeHelper<T extends Mode>
         return shed( (TraitableBean<K,? extends TraitableBean>) thing.getCore(), trait );
     }
 
-    public <T, K> T don( K core, Collection<Class<? extends Thing>> traits, Object mode ) {
-        return don( core, traits, true, mode );
+    public <T, K> T don( K core, Collection<Class<? extends Thing>> traits, Mode... modes ) {
+        return don( core, traits, true, modes );
     }
 
     public <T, K> T don( K core, Collection<Class<? extends Thing>> traits, boolean logical ) {
         return don( core, traits, logical, null );
     }
 
-    public <T, K> T don( K core, Collection<Class<? extends Thing>> traits, boolean logical, Object mode ) {
+    public <T, K> T don( K core, Collection<Class<? extends Thing>> traits, boolean logical, Mode... modes ) {
         if ( core instanceof Thing && ( (Thing) core ).getCore() != core ) {
-            return don( ((Thing) core).getCore(), traits, logical, mode );
+            return don( ((Thing) core).getCore(), traits, logical, modes );
         }
         if ( traits.isEmpty() ) {
             return (T) don( core, Thing.class, logical );
         }
         try {
-            T thing = applyManyTraits( core, traits, null, logical, mode );
+            T thing = applyManyTraits( core, traits, null, logical, modes );
             return thing;
         } catch ( LogicalTypeInconsistencyException ltie ) {
             ltie.printStackTrace();
@@ -722,16 +721,16 @@ public class DefaultKnowledgeHelper<T extends Mode>
         return don( core, trait, logical, null );
     }
 
-    public <T, K> T don( K core, Class<T> trait, Object mode ) {
-        return don( core, trait, true, mode );
+    public <T, K> T don( K core, Class<T> trait, Mode... modes ) {
+        return don( core, trait, true, modes );
     }
 
-    public <T, K> T don( K core, Class<T> trait, boolean logical, Object mode ) {
+    public <T, K> T don( K core, Class<T> trait, boolean logical, Mode... modes ) {
         if ( core instanceof Thing && ( (Thing) core ).getCore() != core ) {
-            return don( ((Thing) core).getCore(), trait, logical, mode );
+            return don( ((Thing) core).getCore(), trait, logical, modes );
         }
         try {
-            T thing = applyTrait( core, trait, null, logical, mode );
+            T thing = applyTrait( core, trait, null, logical, modes );
             return thing;
         } catch ( LogicalTypeInconsistencyException ltie ) {
             ltie.printStackTrace();
@@ -739,14 +738,14 @@ public class DefaultKnowledgeHelper<T extends Mode>
         }
     }
 
-    protected <T> T doInsertTrait( T thing, Object core, boolean logical, BitSet boundary, Object mode ) {
+    protected <T> T doInsertTrait( T thing, Object core, boolean logical, BitSet boundary, Mode... modes ) {
         if ( thing == core ) {
             return thing;
         }
 
         ((TraitProxy) thing).setTypeFilter( boundary );
         if ( logical ) {
-            insertLogical( thing, mode );
+            insertLogical( thing, modes );
         } else {
             insert( thing );
         }
@@ -765,7 +764,7 @@ public class DefaultKnowledgeHelper<T extends Mode>
         }
     }
 
-    protected <T, K> T applyManyTraits( K core, Collection<Class<? extends Thing>> traits, Object value, boolean logical, Object mode ) throws LogicalTypeInconsistencyException {
+    protected <T, K> T applyManyTraits( K core, Collection<Class<? extends Thing>> traits, Object value, boolean logical, Mode... modes ) throws LogicalTypeInconsistencyException {
         // Precondition : traits is not empty, checked by don
 
         TraitFactory builder = TraitFactory.getTraitBuilderForKnowledgeBase( this.getKnowledgeRuntime().getKieBase() );
@@ -801,7 +800,7 @@ public class DefaultKnowledgeHelper<T extends Mode>
         }
 
         for ( Thing t : things.keySet() ) {
-            doInsertTrait( t, core, logical, things.get( t ), mode );
+            doInsertTrait( t, core, logical, things.get( t ), modes );
         }
 
         if ( newTraitsAdded ) {
@@ -832,7 +831,7 @@ public class DefaultKnowledgeHelper<T extends Mode>
         }
     }
 
-    protected <T, K> T applyTrait( K core, Class<T> trait, Object value, boolean logical, Object mode ) throws LogicalTypeInconsistencyException {
+    protected <T, K> T applyTrait( K core, Class<T> trait, Object value, boolean logical, Mode... modes ) throws LogicalTypeInconsistencyException {
         if ( identityMap == null ) {
             // traits and proxies can benefit from a cached lookup
             identityMap = new IdentityHashMap<Object, FactHandle>(  );
@@ -855,7 +854,7 @@ public class DefaultKnowledgeHelper<T extends Mode>
 
         configureTrait( thing, value );
 
-        thing = doInsertTrait( thing, core, logical, boundary, mode );
+        thing = doInsertTrait( thing, core, logical, boundary, modes );
 
         refresh( thing, core, inner, trait, mostSpecificTraits, logical );
 
