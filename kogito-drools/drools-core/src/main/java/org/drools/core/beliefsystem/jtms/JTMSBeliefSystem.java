@@ -198,7 +198,7 @@ public class JTMSBeliefSystem<T extends JTMSMode>
                               context,
                               false,
                               wasNegated,
-                              wasConflicting );
+                              wasUndecided );
             } else {
                 String value;
                 Object object = null;

@@ -146,9 +146,9 @@ public interface KnowledgeHelper
 
     <T, K> T don( Thing<K> core, Class<T> trait, boolean logical );
 
-    <T, K> T don( K core, Class<T> trait, Object mode );
+    <T, K> T don( K core, Class<T> trait, Mode... modes );
 
-    <T, K> T don( Thing<K> core, Class<T> trait, Object mode );
+    <T, K> T don( Thing<K> core, Class<T> trait, Mode... modes );
 
     <T, K> T don( K core, Class<T> trait );
 
@@ -156,7 +156,7 @@ public interface KnowledgeHelper
 
     <T, K> T don( K core, Collection<Class<? extends Thing>> trait, boolean logical );
 
-    <T, K> T don( K core, Collection<Class<? extends Thing>> trait, Object mode );
+    <T, K> T don( K core, Collection<Class<? extends Thing>> trait, Mode... modes );
 
     <T, K> T don( K core, Collection<Class<? extends Thing>> trait );
 
