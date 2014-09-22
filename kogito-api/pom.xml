@@ -47,6 +47,7 @@
   <modules>
     <module>kie-api</module>
     <module>kie-internal</module>
+    <module>kie-archetypes</module>
   </modules>
 
   <profiles>
