@@ -2,6 +2,7 @@ package org.drools.core.beliefsystem.defeasible;
 
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
+import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSystem;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
@@ -14,12 +15,13 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.runtime.beliefs.Mode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class DefeasibleBeliefSystem extends JTMSBeliefSystem  {
+public class DefeasibleBeliefSystem extends JTMSBeliefSystem<DefeasibleMode>  {
 
     public DefeasibleBeliefSystem(NamedEntryPoint ep, TruthMaintenanceSystem tms) {
         super(ep, tms);
@@ -30,11 +32,27 @@ public class DefeasibleBeliefSystem extends JTMSBeliefSystem  {
     }
 
     public LogicalDependency newLogicalDependency(Activation activation, BeliefSet beliefSet, Object object, Object value) {
-        return new DefeasibleLogicalDependency(activation, beliefSet, object, value);
+        DefeasibleMode mode;
+        if ( value == null ) {
+            mode = new DefeasibleMode(MODE.POSITIVE.getId(), this);
+        } else if ( value instanceof String ) {
+            if ( MODE.POSITIVE.getId().equals( value ) ) {
+                mode = new DefeasibleMode(MODE.POSITIVE.getId(), this);
+            }   else {
+                mode = new DefeasibleMode(MODE.NEGATIVE.getId(), this);
+            }
+        } else {
+            mode = new DefeasibleMode(((MODE)value).getId(), this);
+        }
+
+        DefeasibleLogicalDependency dep = new DefeasibleLogicalDependency(activation, beliefSet, object, mode);
+        mode.setLogicalDependency( dep );
+        mode.initDefeats();
+        return dep;
     }
 
 
-    public void insert(LogicalDependency node,
+    public void insert(LogicalDependency<DefeasibleMode> node,
                        BeliefSet beliefSet,
                        PropagationContext context,
                        ObjectTypeConf typeConf) {
@@ -42,7 +60,9 @@ public class DefeasibleBeliefSystem extends JTMSBeliefSystem  {
         boolean wasNegated = beliefSet.isNegated();
         boolean wasUndecided = beliefSet.isUndecided();
 
-        super.insert( node, beliefSet, context, typeConf );
+        DefeasibleLogicalDependency dep = ( DefeasibleLogicalDependency ) node;
+
+        super.insert( dep, beliefSet, context, typeConf );
 
         if ( ! wasEmpty && ! wasUndecided
              && ! beliefSet.isUndecided() && ! beliefSet.isEmpty() ) {

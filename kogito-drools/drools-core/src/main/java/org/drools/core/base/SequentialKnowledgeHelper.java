@@ -38,6 +38,7 @@ import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.internal.runtime.beliefs.Mode;
 
 public class SequentialKnowledgeHelper
     implements
@@ -226,6 +227,16 @@ public class SequentialKnowledgeHelper
     public FactHandle insert(Object object,
                        boolean dynamic) {
         return null;
+    }
+
+    @Override
+    public void insertLogical(Object object, Mode belief) {
+
+    }
+
+    @Override
+    public void insertLogical(Object object, Mode... beliefs) {
+
     }
 
     public void insertLogical(Object object) {

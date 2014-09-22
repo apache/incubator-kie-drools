@@ -30,6 +30,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.internal.runtime.beliefs.Mode;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -150,7 +151,7 @@ public interface InternalAgenda
 
     void removeScheduleItem(final ScheduledAgendaItem item);
 
-    org.drools.core.util.LinkedList<ScheduledAgendaItem> getScheduledActivationsLinkedList();
+    <T extends Mode> org.drools.core.util.LinkedList<ScheduledAgendaItem<T>> getScheduledActivationsLinkedList();
 
     int fireNextItem(AgendaFilter filter, int fireCount, int fireLimit) throws ConsequenceException;
 

@@ -16,6 +16,7 @@
 
 package org.drools.core.base;
 
+import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.kie.api.runtime.rule.FactHandle;
@@ -69,6 +70,8 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.internal.runtime.beliefs.Mode;
+import sun.java2d.pipe.SpanShapeRenderer.Simple;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -84,22 +87,22 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class DefaultKnowledgeHelper
+public class DefaultKnowledgeHelper<T extends Mode>
     implements
     KnowledgeHelper,
     Externalizable {
 
-    private static final long                   serialVersionUID = 510l;
+    private static final long                         serialVersionUID = 510l;
 
-    private Activation                          activation;
-    private Tuple                               tuple;
-    private InternalWorkingMemoryActions        workingMemory;
+    private Activation                                activation;
+    private Tuple                                     tuple;
+    private InternalWorkingMemoryActions              workingMemory;
 
-    private IdentityHashMap<Object, FactHandle> identityMap;
+    private IdentityHashMap<Object, FactHandle>       identityMap;
 
-    private LinkedList<LogicalDependency>       previousJustified;
+    private LinkedList<LogicalDependency<T>>          previousJustified;
     
-    private LinkedList<LogicalDependency>       previousBlocked;
+    private LinkedList<LogicalDependency<SimpleMode>> previousBlocked;
 
     public DefaultKnowledgeHelper() {
 
@@ -153,25 +156,27 @@ public class DefaultKnowledgeHelper
         this.previousBlocked = null;
     }
       
-    public LinkedList<LogicalDependency> getpreviousJustified() {
+    public LinkedList<LogicalDependency<T>> getpreviousJustified() {
         return previousJustified;
     }
     
     public void blockMatch(Match act) {
         AgendaItem targetMatch = ( AgendaItem ) act;
         // iterate to find previous equal logical insertion
-        LogicalDependency dep = null;
-        if ( this.previousJustified != null ) {
-            for ( dep = this.previousJustified.getFirst(); dep != null; dep = dep.getNext() ) {
+        LogicalDependency<SimpleMode> dep = null;
+        if ( this.previousBlocked != null ) {
+            for ( dep = (LogicalDependency<SimpleMode> ) this.previousBlocked.getFirst(); dep != null; dep = dep.getNext() ) {
                 if ( targetMatch ==  dep.getJustified() ) {
-                    this.previousJustified.remove( dep );
+                    this.previousBlocked.remove( dep );
                     break;
                 }
             }
         }
         
         if ( dep == null ) {
-            dep = new SimpleLogicalDependency( activation, targetMatch );
+            SimpleMode mode = new SimpleMode();
+            dep = new SimpleLogicalDependency( activation, targetMatch, mode );
+            mode.setObject( dep );
         }
         this.activation.addBlocked(  dep );
 
@@ -233,6 +238,20 @@ public class DefaultKnowledgeHelper
         return handle;
     }
 
+    @Override
+    public void insertLogical(Object object, Mode belief) {
+        insertLogical( object,
+                       belief,
+                       false );
+    }
+
+    @Override
+    public void insertLogical(Object object, Mode... beliefs) {
+        insertLogical( object,
+                       beliefs,
+                       false );
+    }
+
     public void insertLogical(final Object object) {
         insertLogical( object,
                        false );
@@ -259,7 +278,7 @@ public class DefaultKnowledgeHelper
             return;
         }
         // iterate to find previous equal logical insertion
-        LogicalDependency dep = null;
+        LogicalDependency<T> dep = null;
         if ( this.previousJustified != null ) {
             for ( dep = this.previousJustified.getFirst(); dep != null; dep = dep.getNext() ) {                
                 if ( object.equals( ((BeliefSet)dep.getJustified()).getFactHandle().getObject() ) ) {
@@ -296,12 +315,12 @@ public class DefaultKnowledgeHelper
         }
         
         if ( this.previousBlocked != null ) {
-            for ( LogicalDependency dep = this.previousBlocked.getFirst(); dep != null; ) {
-                LogicalDependency tmp = dep.getNext();
+            for ( LogicalDependency<SimpleMode> dep = this.previousBlocked.getFirst(); dep != null; ) {
+                LogicalDependency<SimpleMode> tmp = dep.getNext();
                 this.previousBlocked.remove( dep );
 
                 AgendaItem justified = ( AgendaItem ) dep.getJustified();
-                justified.getBlockers().remove( dep.getJustifierEntry() );
+                justified.getBlockers().remove( (SimpleMode) dep.getMode());
                 if (justified.getBlockers().isEmpty() ) {
                     RuleAgendaItem ruleAgendaItem = justified.getRuleAgendaItem();
                     ((InternalAgenda) workingMemory.getAgenda()).stageLeftTuple(ruleAgendaItem, justified);

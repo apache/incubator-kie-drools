@@ -20,45 +20,48 @@ import org.drools.core.common.LogicalDependency;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.spi.Activation;
+import org.kie.internal.runtime.beliefs.Mode;
 
 /**
  * LogicalDependency is a special node for LinkedLists that maintains
  * references for the Activation justifier and the justified FactHandle.
  */
-public class SimpleLogicalDependency extends AbstractBaseLinkedListNode<LogicalDependency>
+public class SimpleLogicalDependency<T> extends AbstractBaseLinkedListNode<LogicalDependency<T>>
         implements
-        LogicalDependency {
-    private final Activation                         justifier;
-    private final Object                             justified;
-    private Object                                   object;
-    private Object                                   value;
+        LogicalDependency<T> {
+    private final Activation justifier;
+    private final Object     justified;
+    private       Object     object;
+    private       T       mode;
 
-    private final LinkedListEntry<LogicalDependency> justifierEntry = new LinkedListEntry<LogicalDependency>( this );
-    
     public SimpleLogicalDependency(final Activation justifier,
-                                   final Object justified) {
+                                   final Object justified,
+                                   final T mode) {
         super();
         this.justifier = justifier;
         this.justified = justified;
+        this.mode = mode;
     }
 
     public SimpleLogicalDependency(final Activation justifier,
                                    final Object justified,
                                    final Object object,
-                                   final Object value) {
+                                   final T mode) {
         super();
         this.justifier = justifier;
         this.justified = justified;
         this.object = object;
-        this.value = value;
+        this.mode = mode;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.common.LogicalDependency#getJustifierEntry()
-     */
-    public LinkedListEntry<LogicalDependency> getJustifierEntry() {
-        return this.justifierEntry;
+    public T getMode() {
+        return (T) mode;
     }
+
+    public void setMode(T mode) {
+        this.mode = mode;
+    }
+
 
     /* (non-Javadoc)
      * @see org.kie.common.LogicalDependency#getJustified()
@@ -81,17 +84,6 @@ public class SimpleLogicalDependency extends AbstractBaseLinkedListNode<LogicalD
         return this.object;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.common.LogicalDependency#getValue()
-     */
-    public Object getValue() {
-        return this.value;
-    }
-    
-    public void setValue(String value) {
-        this.value = value;
-    }
-
     public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
@@ -111,7 +103,7 @@ public class SimpleLogicalDependency extends AbstractBaseLinkedListNode<LogicalD
 
     @Override
     public String toString() {
-        return "SimpleLogicalDependency [justifier=" + justifier.getRule().getName() + ",\n justified=" + justified + ",\n object=" + object + ", value=" + value  + "]";
+        return "SimpleLogicalDependency [justifier=" + justifier.getRule().getName() + ",\n justified=" + justified + ",\n object=" + object + ", mode=" + mode  + "]";
     }
     
     

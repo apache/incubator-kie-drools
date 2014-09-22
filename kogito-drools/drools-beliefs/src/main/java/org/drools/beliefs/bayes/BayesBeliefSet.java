@@ -33,49 +33,45 @@ public class BayesBeliefSet extends LinkedList implements BeliefSet {
 
     @Override
     public InternalFactHandle getFactHandle() {
-        LinkedListNode node = getFirst();
-        SimpleLogicalDependency ld = (SimpleLogicalDependency) ((LinkedListEntry) node).getObject();
         return rootHandle;
     }
 
     @Override
-    public void add( LinkedListNode node ) {
-        SimpleLogicalDependency ld = (SimpleLogicalDependency) ((LinkedListEntry) node).getObject();
-        BayesHardEvidence evidence = (BayesHardEvidence) ld.getValue();
+    public void add( LinkedListNode mode ) {
+        BayesHardEvidence evidence = (BayesHardEvidence) mode;
         if ( !isEmpty() ) {
-            BayesHardEvidence firstEvidence = (BayesHardEvidence) ((SimpleLogicalDependency)((LinkedListEntry) getFirst() ).getObject()).getValue();
+            BayesHardEvidence firstEvidence = (BayesHardEvidence) getFirst();
             if ( !Arrays.equals( evidence.getDistribution(), firstEvidence.getDistribution()) ) {
                 conflictCounter++;
             }
         }
-        super.addLast( node );
+        super.addLast( mode );
     }
 
     @Override
-    public void remove( LinkedListNode node ) {
-        boolean wasFirst = getFirst() == node;
-        super.remove(node);
+    public void remove( LinkedListNode mode ) {
+        boolean wasFirst = getFirst() == mode;
+        super.remove(mode);
 
         if ( isEmpty() ) {
             conflictCounter = 0;
             return;
         }
 
-        LogicalDependency ld = (LogicalDependency) ((LinkedListEntry) node).getObject();
-        BayesHardEvidence evidence = (BayesHardEvidence) ld.getValue();
-        BayesHardEvidence firstEvidence = (BayesHardEvidence) ((SimpleLogicalDependency)((LinkedListEntry) getFirst() ).getObject()).getValue();
+        BayesHardEvidence firstEvidence = (BayesHardEvidence) getFirst();
+
+
 
         if ( wasFirst ) {
             // the first node was removed, reset the conflictCounter and recalculate the nodes in conflict
             conflictCounter = 0;
-            for ( Entry entry = node.getNext(); entry != null; entry = entry.getNext() ) {
-                LogicalDependency currentDep = (LogicalDependency) ((LinkedListEntry) entry).getObject();
-                BayesHardEvidence currentEvidence = (BayesHardEvidence) ((SimpleLogicalDependency)((LinkedListEntry) currentDep ).getObject()).getValue();
+            for ( BayesHardEvidence currentEvidence = (BayesHardEvidence) mode.getNext(); currentEvidence != null; currentEvidence = currentEvidence.getNext() ) {
                 if (  !Arrays.equals( firstEvidence.getDistribution(), currentEvidence.getDistribution() )  ) {
                     conflictCounter++;
                 }
             }
-        } else if ( !Arrays.equals( evidence.getDistribution(), firstEvidence.getDistribution() ) ) {
+        } else if ( !Arrays.equals( ((BayesHardEvidence) mode).getDistribution(), firstEvidence.getDistribution() ) ) {
+            // The removing Mode conflicted with first, so decrement the counter
             conflictCounter--;
         }
     }

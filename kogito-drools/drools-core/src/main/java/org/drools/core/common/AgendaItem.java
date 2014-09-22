@@ -1,5 +1,6 @@
 package org.drools.core.common;
 
+import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
@@ -12,6 +13,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
+import org.kie.internal.runtime.beliefs.Mode;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -19,7 +21,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
 
-public interface AgendaItem extends Activation {
+public interface AgendaItem<T extends Mode> extends Activation<T> {
     PropagationContext getPropagationContext();
 
     void setPropagationContext(PropagationContext context);
@@ -42,23 +44,23 @@ public interface AgendaItem extends Activation {
 
     long getActivationNumber();
 
-    void addBlocked(LogicalDependency dep);
+    void addBlocked(LogicalDependency<SimpleMode> dep);
 
     void removeAllBlockersAndBlocked(InternalAgenda agenda);
 
-    void removeBlocked(LogicalDependency dep);
+    void removeBlocked(LogicalDependency<SimpleMode> dep);
 
-    LinkedList<LogicalDependency> getBlocked();
+    LinkedList<LogicalDependency<SimpleMode>> getBlocked();
 
-    void setBlocked(LinkedList<LogicalDependency> justified);
+    void setBlocked(LinkedList<LogicalDependency<SimpleMode>> justified);
 
-    LinkedList<LinkedListEntry<LogicalDependency>> getBlockers();
+    LinkedList<SimpleMode> getBlockers();
 
-    void addLogicalDependency(LogicalDependency node);
+    void addLogicalDependency(LogicalDependency<T> node);
 
-    LinkedList<LogicalDependency> getLogicalDependencies();
+    LinkedList<LogicalDependency<T>> getLogicalDependencies();
 
-    void setLogicalDependencies(LinkedList<LogicalDependency> justified);
+    void setLogicalDependencies(LinkedList<LogicalDependency<T>> justified);
 
     boolean isQueued();
 

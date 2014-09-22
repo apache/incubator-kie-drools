@@ -18,6 +18,7 @@ package org.drools.core.spi;
 
 import java.io.Serializable;
 
+import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalAgendaGroup;
@@ -31,6 +32,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.GroupElement;
 import org.kie.api.runtime.rule.AgendaGroup;
 import org.kie.api.runtime.rule.Match;
+import org.kie.internal.runtime.beliefs.Mode;
 
 /**
  * When a <code>Tuple</code> fully matches a rule it is added to the <code>Agenda</code>
@@ -38,7 +40,7 @@ import org.kie.api.runtime.rule.Match;
  * number is determined by the <code>WorkingMemory</code> all <code>Activations</code> created 
  * from a single insert, update, retract are assgigned the same Activation number.
  */
-public interface Activation
+public interface Activation<T extends Mode>
     extends
     Serializable,
     Match {
@@ -90,19 +92,19 @@ public interface Activation
      */
     void remove();
     
-    public void addBlocked(final LogicalDependency node);
+    public void addBlocked(final LogicalDependency<SimpleMode> node);
     
-    public LinkedList<LogicalDependency> getBlocked();
+    public LinkedList<LogicalDependency<SimpleMode>> getBlocked();
 
-    public void setBlocked(LinkedList<LogicalDependency> justified);
+    public void setBlocked(LinkedList<LogicalDependency<SimpleMode>> justified);
     
-    public LinkedList<LinkedListEntry<LogicalDependency>> getBlockers();
+    public LinkedList<SimpleMode> getBlockers();
     
-    public void addLogicalDependency(LogicalDependency node);
+    public void addLogicalDependency(LogicalDependency<T> node);
 
-    public LinkedList<LogicalDependency> getLogicalDependencies();
-    
-    public void setLogicalDependencies(LinkedList<LogicalDependency> justified);
+    public LinkedList<LogicalDependency<T>> getLogicalDependencies();
+
+    public void setLogicalDependencies(LinkedList<LogicalDependency<T>> justified);
 
     public void setQueued(boolean activated);
     

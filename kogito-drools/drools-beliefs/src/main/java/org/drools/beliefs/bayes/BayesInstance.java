@@ -126,7 +126,6 @@ public class BayesInstance<T> {
                                 }
                                 varStates[var.getId()].setOutcomes( outcomes );
                                 targetParameterMap[j] = var.getId();
-                                System.out.println( paramTypes[j].getName() + " : " +  varName );
                             }
                         }
                         targetConstructor = con;
@@ -444,7 +443,6 @@ public class BayesInstance<T> {
             args[i] = varState.getOutcomes()[highestIndex];
         }
         try {
-            System.out.println( targetConstructor );
             return targetConstructor.newInstance( args );
         } catch (Exception e) {
            throw new RuntimeException( "Unable to instantiate " + targetClass.getSimpleName() + " " + Arrays.asList( args ), e );

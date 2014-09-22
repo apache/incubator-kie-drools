@@ -63,6 +63,7 @@ import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
+import org.kie.internal.runtime.beliefs.Mode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,7 +105,7 @@ public class ReteAgenda
     /** Working memory of this Agenda. */
     protected InternalWorkingMemory workingMemory;
 
-    private org.drools.core.util.LinkedList<ScheduledAgendaItem> scheduledActivations;
+    private org.drools.core.util.LinkedList<ScheduledAgendaItem<Mode>> scheduledActivations;
 
     /** Items time-delayed. */
 
@@ -178,7 +179,7 @@ public class ReteAgenda
         this.agendaGroups = new HashMap<String, InternalAgendaGroup>();
         this.activationGroups = new HashMap<String, InternalActivationGroup>();
         this.focusStack = new LinkedList<AgendaGroup>();
-        this.scheduledActivations = new org.drools.core.util.LinkedList<ScheduledAgendaItem>();
+        this.scheduledActivations = new org.drools.core.util.LinkedList<ScheduledAgendaItem<Mode>>();
         this.agendaGroupFactory = kBase.getConfiguration().getAgendaGroupFactory();
 
         if (initMain) {
@@ -215,7 +216,7 @@ public class ReteAgenda
         if (!StringUtils.isEmpty(ruleFlowGroupName)) {
             lazyAgendaItem = new RuleAgendaItem(activationCounter++, null, salience, null, rs, rtn, isDeclarativeAgenda(), (InternalAgendaGroup) getAgendaGroup(ruleFlowGroupName));
         } else {
-            lazyAgendaItem = new RuleAgendaItem(activationCounter++, null, salience, null, rs, rtn, isDeclarativeAgenda(), (InternalAgendaGroup) getRuleFlowGroup( agendaGroupName ));
+            lazyAgendaItem = new RuleAgendaItem(activationCounter++, null, salience, null, rs, rtn, isDeclarativeAgenda(), (InternalAgendaGroup) getRuleFlowGroup(agendaGroupName));
         }
 
         return lazyAgendaItem;
@@ -223,7 +224,7 @@ public class ReteAgenda
 
     @Override
     public long getNextActivationCounter() {
-        return  activationCounter++;
+        return activationCounter++;
     }
 
     public AgendaItem createAgendaItem(final LeftTuple tuple,
@@ -1031,7 +1032,7 @@ public class ReteAgenda
         return scheduledActivations;
     }
 
-    public org.drools.core.util.LinkedList<ScheduledAgendaItem> getScheduledActivationsLinkedList() {
+    public org.drools.core.util.LinkedList<ScheduledAgendaItem<Mode>> getScheduledActivationsLinkedList() {
         return this.scheduledActivations;
     }
 

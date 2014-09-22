@@ -18,7 +18,7 @@ import org.drools.core.spi.PropagationContext;
  */
 public class SimpleBeliefSystem
         implements
-        BeliefSystem {
+        BeliefSystem<SimpleMode> {
     private NamedEntryPoint        ep;
     private TruthMaintenanceSystem tms;
 
@@ -33,13 +33,13 @@ public class SimpleBeliefSystem
         return this.tms;
     }
 
-    public void insert(LogicalDependency node,
+    public void insert(LogicalDependency<SimpleMode> node,
                        BeliefSet beliefSet,
                        PropagationContext context,
                        ObjectTypeConf typeConf) {
         boolean empty = beliefSet.isEmpty();
 
-        beliefSet.add( node.getJustifierEntry() );
+        beliefSet.add( node.getMode() );
 
         if ( empty ) {
             InternalFactHandle handle = beliefSet.getFactHandle();
@@ -53,19 +53,19 @@ public class SimpleBeliefSystem
         }
     }
 
-    public void read(LogicalDependency node,
+    public void read(LogicalDependency<SimpleMode> node,
                      BeliefSet beliefSet,
                      PropagationContext context,
                      ObjectTypeConf typeConf) {
         //insert(node, beliefSet, context, typeConf );
-        beliefSet.add( node.getJustifierEntry() );
+        beliefSet.add( node.getMode() );
     }
 
-    public void delete(LogicalDependency node,
+    public void delete(LogicalDependency<SimpleMode> node,
                        BeliefSet beliefSet,
                        PropagationContext context) {
         SimpleBeliefSet sBeliefSet = (SimpleBeliefSet) beliefSet;
-        beliefSet.remove( node.getJustifierEntry() );
+        beliefSet.remove( node.getMode() );
 
         InternalFactHandle bfh = beliefSet.getFactHandle();
         
@@ -79,7 +79,7 @@ public class SimpleBeliefSystem
         } else if ( !beliefSet.isEmpty() && beliefSet.getFactHandle().getObject() == node.getObject() && node.getObject() != bfh.getObject() ) {
             // prime has changed, to update new object
             // Equality might have changed on the object, so remove (which uses the handle id) and add back in
-            ((NamedEntryPoint)bfh.getEntryPoint()).getObjectStore().updateHandle( bfh,  ((LinkedListEntry<LogicalDependency>) beliefSet.getFirst()).getObject().getObject() );
+            ((NamedEntryPoint)bfh.getEntryPoint()).getObjectStore().updateHandle(bfh, ((SimpleMode) beliefSet.getFirst()).getObject().getObject());
 
             ((NamedEntryPoint) bfh.getEntryPoint() ).update( bfh, true, bfh.getObject(), Long.MAX_VALUE, Object.class, null );
         }
@@ -93,7 +93,10 @@ public class SimpleBeliefSystem
                                                   BeliefSet beliefSet,
                                                   Object object,
                                                   Object value) {
-        return new SimpleLogicalDependency( activation, beliefSet, object, value );
+        SimpleMode mpde = new SimpleMode();
+        SimpleLogicalDependency dep =  new SimpleLogicalDependency( activation, beliefSet, object, mpde );
+        mpde.setObject( dep );
+        return dep;
     }
 
 }

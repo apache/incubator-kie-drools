@@ -30,6 +30,7 @@ import org.drools.core.rule.Declaration;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.rule.RuleContext;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.internal.runtime.beliefs.Mode;
 
 /**
  * KnowledgeHelper implementation types are injected into consequenses
@@ -75,6 +76,10 @@ public interface KnowledgeHelper
     
     public void insertLogical(Object object,
                               boolean dynamic) ;
+
+    public void insertLogical(Object object, Mode belief) ;
+
+    public void insertLogical(Object object, Mode... beliefs) ;
     
     public void cancelRemainingPreviousLogicalDependencies();
     

@@ -1,7 +1,6 @@
 package org.drools.core.rule;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.beliefsystem.abductive.AbductedStatus;
 import org.drools.core.spi.AcceptsClassObjectType;
 
 import java.io.Externalizable;
@@ -27,7 +26,6 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
 
     public AbductiveQuery( String name, Object value ) {
         super( name );
-        this.value = (value != null) ? value : AbductedStatus.ABDUCTED;
     }
 
     @Override

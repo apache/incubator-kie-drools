@@ -18,14 +18,14 @@ package org.drools.core.common;
 
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
+import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.ObjectHashMap;
-import org.kie.internal.runtime.beliefs.Belief;
-import org.kie.internal.runtime.beliefs.BeliefValue;
+import org.kie.internal.runtime.beliefs.Mode;
 
 /**
  * The Truth Maintenance System is responsible for tracking two things. Firstly
@@ -116,9 +116,9 @@ public class TruthMaintenanceSystem {
                                      final ObjectTypeConf typeConf,
                                      final boolean read) {
         BeliefSystem beliefSystem = defaultBeliefSystem;
-        if ( value != null && value instanceof Belief) {
-            Belief beliefValue = (Belief) value;
-            beliefSystem = (BeliefSystem) beliefValue.getBeliefSystem();
+        if ( value != null && value instanceof Mode & !( value instanceof SimpleMode ) ) {
+            Mode mode = (Mode) value;
+            beliefSystem = (BeliefSystem) mode.getBeliefSystem();
         }
 
         BeliefSet beliefSet = handle.getEqualityKey().getBeliefSet();
@@ -134,6 +134,7 @@ public class TruthMaintenanceSystem {
         activation.getRule().setHasLogicalDependency( true );
 
         activation.addLogicalDependency( node );
+
 
         if ( read ) {
             // used when deserialising

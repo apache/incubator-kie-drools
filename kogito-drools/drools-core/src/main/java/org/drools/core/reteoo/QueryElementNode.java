@@ -21,6 +21,7 @@ import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.InternalViewChangedEventListener;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.beliefsystem.BeliefSet;
+import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -364,7 +365,7 @@ public class QueryElementNode extends LeftTupleSource
                         abduced = handle.getObject();
                     } else {
                         handle = (InternalFactHandle) ((InternalWorkingMemoryActions) workingMemory).insert( abduced,
-                                                                                                             aq.getValue(),
+                                                                                                             MODE.POSITIVE.getId(),
                                                                                                              false,
                                                                                                              true,
                                                                                                              query,
