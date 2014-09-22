@@ -1,5 +1,5 @@
 package org.kie.internal.runtime.beliefs;
 
-public interface Belief {
+public interface Mode {
     public Object getBeliefSystem();
 }
