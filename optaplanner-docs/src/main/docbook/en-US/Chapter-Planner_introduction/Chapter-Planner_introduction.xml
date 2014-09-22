@@ -10,6 +10,12 @@
   <section xml:id="whatIsOptaPlanner">
     <title>What is OptaPlanner?</title>
 
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Planner_introduction/optaPlannerLogo.png" />
+      </imageobject>
+    </mediaobject>
+
     <para><emphasis role="bold"><link xlink:href="http://www.optaplanner.org">OptaPlanner</link> is a lightweight,
     embeddable planning engine that optimizes planning problems.</emphasis> It solves use cases, such as:</para>
 

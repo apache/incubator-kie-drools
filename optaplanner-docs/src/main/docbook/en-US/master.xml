@@ -23,15 +23,6 @@
     </cover>
   </info>
 
-  <!-- TODO remove preface after docbook upgrade when cover actually shows the logo before the TOC -->
-  <preface>
-    <mediaobject>
-      <imageobject>
-        <imagedata fileref="images/Chapter-Planner_introduction/optaPlannerLogo.png" />
-      </imageobject>
-    </mediaobject>
-  </preface>
-
   <xi:include href="Chapter-Planner_introduction/Chapter-Planner_introduction.xml" />
   <xi:include href="Chapter-Quick_start/Chapter-Quick_start.xml" />
   <xi:include href="Chapter-Use_cases_and_examples/Chapter-Use_cases_and_examples.xml" />
