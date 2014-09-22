@@ -19,7 +19,7 @@
   </description>
 
   <modules>
-      <module>kjar-basic-archetype</module>
+      <module>kie-drools-archetype</module>
   </modules>
 
 </project>
