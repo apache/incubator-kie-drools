@@ -361,9 +361,8 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
         <code>ExecutionResults</code>. The query command defaults to use the same identifier as the
       query name, but it can also be mapped to a different identifier.</para>
     <para>All commands support XML and jSON marshalling using XStream, as well as JAXB marshalling.
-      This is covered in section
-      XXX.<?oxy_comment_start author="mdproctor" timestamp="20131031T080228+0000" comment="need to refrence the section. Currently this is in the -integration docs. So it feels disjointed."?></para>
-    <?oxy_comment_end?>
+      This is covered in section <link endterm="CommandsAPISection" linkend="CommandsAPISection">Commands API</link>.
+    </para>
   </section>
 
   <section>
