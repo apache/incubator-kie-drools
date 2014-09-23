@@ -301,17 +301,17 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.3483333"
-     inkscape:cx="408.15822"
-     inkscape:cy="270.33375"
+     inkscape:cx="400.00001"
+     inkscape:cy="300.00001"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer2"
      showgrid="true"
      width="800px"
      borderlayer="true"
      gridtolerance="10"
      inkscape:window-width="1680"
      inkscape:window-height="991"
-     inkscape:window-x="0"
+     inkscape:window-x="1680"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
      inkscape:snap-grids="true"
@@ -341,7 +341,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -441,7 +441,8 @@
   <g
      inkscape:groupmode="layer"
      id="layer4"
-     inkscape:label="Air distance">
+     inkscape:label="Air distance"
+     style="display:inline">
     <image
        style="display:inline"
        width="391.04999"
@@ -494,33 +495,7 @@
          style="font-size:20px;text-align:end;text-anchor:end"
          id="flowPara5203">118 632 <flowSpan
    style="fill:#555753"
-   id="flowSpan5199">sec</flowSpan></flowPara></flowRoot>    <flowRoot
-       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"
-       id="flowRoot5205"
-       xml:space="preserve"
-       transform="translate(216.42383,190.63097)"><flowRegion
-         id="flowRegion5207"><rect
-           style="font-size:16px;text-align:center;text-anchor:middle;fill:#a40000;fill-opacity:1"
-           y="169.36903"
-           x="323.1543"
-           height="29.999996"
-           width="130"
-           id="rect5209" /></flowRegion><flowPara
-         id="flowPara5215"
-         style="font-size:16px;text-align:center;text-anchor:middle;fill:#a40000;fill-opacity:1">3.8% worse</flowPara></flowRoot>    <flowRoot
-       transform="translate(339.36328,190.63097)"
-       xml:space="preserve"
-       id="flowRoot5228"
-       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"><flowRegion
-         id="flowRegion5230"><rect
-           id="rect5232"
-           width="130"
-           height="29.999996"
-           x="323.1543"
-           y="169.36903"
-           style="font-size:16px;text-align:center;text-anchor:middle;fill:#a40000;fill-opacity:1" /></flowRegion><flowPara
-         style="font-size:16px;text-align:center;text-anchor:middle;fill:#a40000;fill-opacity:1"
-         id="flowPara5234">4.0% worse</flowPara></flowRoot>  </g>
+   id="flowSpan5199">sec</flowSpan></flowPara></flowRoot>  </g>
   <g
      inkscape:groupmode="layer"
      id="layer3"
@@ -593,18 +568,18 @@
          style="font-size:16px;text-align:center;text-anchor:middle;fill:#4e9a06;fill-opacity:1"
          id="flowPara5262">best</flowPara></flowRoot>    <flowRoot
        style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"
-       id="flowRoot5264"
+       id="flowRoot5205"
        xml:space="preserve"
-       transform="translate(339.36328,290.6309)"><flowRegion
-         id="flowRegion5266"><rect
+       transform="translate(216.42382,190.63097)"><flowRegion
+         id="flowRegion5207"><rect
            style="font-size:16px;text-align:center;text-anchor:middle;fill:#a40000;fill-opacity:1"
            y="169.36903"
            x="323.1543"
            height="29.999996"
            width="130"
-           id="rect5268" /></flowRegion><flowPara
-         id="flowPara5270"
-         style="font-size:16px;text-align:center;text-anchor:middle;fill:#a40000;fill-opacity:1">1.2% worse</flowPara></flowRoot>  </g>
+           id="rect5209" /></flowRegion><flowPara
+         id="flowPara5215"
+         style="font-size:16px;text-align:center;text-anchor:middle;fill:#a40000;fill-opacity:1">3.8% worse</flowPara></flowRoot>  </g>
   <g
      inkscape:groupmode="layer"
      id="layer2"
@@ -688,5 +663,31 @@
            y="169.36903"
            style="font-size:16px;text-align:center;text-anchor:middle;fill:#4e9a06;fill-opacity:1" /></flowRegion><flowPara
          style="font-size:16px;text-align:center;text-anchor:middle;fill:#4e9a06;fill-opacity:1"
-         id="flowPara5306">best</flowPara></flowRoot>  </g>
+         id="flowPara5306">best</flowPara></flowRoot>    <flowRoot
+       transform="translate(339.36329,190.63097)"
+       xml:space="preserve"
+       id="flowRoot5228"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"><flowRegion
+         id="flowRegion5230"><rect
+           id="rect5232"
+           width="130"
+           height="29.999996"
+           x="323.1543"
+           y="169.36903"
+           style="font-size:16px;text-align:center;text-anchor:middle;fill:#a40000;fill-opacity:1" /></flowRegion><flowPara
+         style="font-size:16px;text-align:center;text-anchor:middle;fill:#a40000;fill-opacity:1"
+         id="flowPara5234">4.0% worse</flowPara></flowRoot>    <flowRoot
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot5264"
+       xml:space="preserve"
+       transform="translate(339.36329,290.63091)"><flowRegion
+         id="flowRegion5266"><rect
+           style="font-size:16px;text-align:center;text-anchor:middle;fill:#a40000;fill-opacity:1"
+           y="169.36903"
+           x="323.1543"
+           height="29.999996"
+           width="130"
+           id="rect5268" /></flowRegion><flowPara
+         id="flowPara5270"
+         style="font-size:16px;text-align:center;text-anchor:middle;fill:#a40000;fill-opacity:1">1.2% worse</flowPara></flowRoot>  </g>
 </svg>
