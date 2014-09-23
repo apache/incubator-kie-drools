@@ -80,8 +80,8 @@ public class MannersBenchmark {
             }
     
             InputStream is = MannersBenchmark.class.getResourceAsStream( "data/" + filename );
-            List list = getInputObjects( is );
-            for ( Iterator it = list.iterator(); it.hasNext(); ) {
+            List<Object> list = getInputObjects( is );
+            for ( Iterator<Object> it = list.iterator(); it.hasNext(); ) {
                 Object object = it.next();
                 ksession.insert( object );
             }

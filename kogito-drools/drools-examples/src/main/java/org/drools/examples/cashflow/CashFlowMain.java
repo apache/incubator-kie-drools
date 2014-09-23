@@ -11,8 +11,6 @@ import java.util.Date;
 public class CashFlowMain {
 
     public static void main(String[] args) throws Exception {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
         KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
         KieSession ksession = kc.newKieSession( "CashFlowKS");
 

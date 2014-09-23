@@ -17,7 +17,6 @@
 package org.drools.examples.state;
 
 import org.kie.api.KieServices;
-import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
