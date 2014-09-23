@@ -17,30 +17,40 @@ package org.jbpm.persistence.util;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import static org.kie.api.runtime.EnvironmentName.*;
+import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.kie.api.runtime.EnvironmentName.GLOBALS;
+import static org.kie.api.runtime.EnvironmentName.TRANSACTION;
+import static org.kie.api.runtime.EnvironmentName.TRANSACTION_MANAGER;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.transaction.UserTransaction;
 
+import org.drools.core.SessionConfiguration;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.impl.EnvironmentFactory;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
+import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
+import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.junit.Assert;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,7 +132,7 @@ public class PersistenceUtil {
      *            {@link org.drools.persistence.util.PersistenceUtil setupWithPoolingDataSource(String)}
      * 
      */
-    public static void cleanUp(HashMap<String, Object> context) {
+    public static void cleanUp(Map<String, Object> context) {
         if (context != null) {
             
             BitronixTransactionManager txm = TransactionManagerServices.getTransactionManager();
@@ -358,7 +368,7 @@ public class PersistenceUtil {
         return fieldValue;
     }
 
-    public static Environment createEnvironment(HashMap<String, Object> context) {
+    public static Environment createEnvironment(Map<String, Object> context) {
         Environment env = EnvironmentFactory.newEnvironment();
         
         UserTransaction ut = (UserTransaction) context.get(TRANSACTION);
@@ -403,10 +413,16 @@ public class PersistenceUtil {
 
    }
 
-   public static StatefulKnowledgeSession createKnowledgeSessionFromKBase(KnowledgeBase kbase, HashMap<String, Object> context) {
-       KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-       StatefulKnowledgeSession knowledgeSession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, ksconf, createEnvironment(context));
-       return knowledgeSession;
+   public static KieSession createKieSessionFromKBase(KieBase kbase, Map<String, Object> context) {
+       Properties defaultProps = new Properties();
+       defaultProps.setProperty("drools.processSignalManagerFactory",
+               DefaultSignalManagerFactory.class.getName());
+       defaultProps.setProperty("drools.processInstanceManagerFactory",
+               DefaultProcessInstanceManagerFactory.class.getName());
+       KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(defaultProps);
+       ksconf.setOption(ForceEagerActivationOption.YES);
+               
+       return kbase.newKieSession(ksconf, createEnvironment(context));
    }
    
 }
