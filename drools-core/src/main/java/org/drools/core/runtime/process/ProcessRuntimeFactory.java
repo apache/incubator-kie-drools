@@ -6,10 +6,15 @@ import org.kie.internal.utils.ServiceRegistryImpl;
 
 public class ProcessRuntimeFactory {
 
+    private static boolean initialized;
     private static ProcessRuntimeFactoryService provider;
 
     public static InternalProcessRuntime newProcessRuntime(StatefulKnowledgeSessionImpl workingMemory) {
-        return getProcessRuntimeFactoryService().newProcessRuntime(workingMemory);
+        ProcessRuntimeFactoryService provider = getProcessRuntimeFactoryService();
+        if (provider == null) {
+            return null;
+        }
+        return provider.newProcessRuntime(workingMemory);
     }
 
     public static synchronized void setProcessRuntimeFactoryService(ProcessRuntimeFactoryService provider) {
@@ -17,8 +22,11 @@ public class ProcessRuntimeFactory {
     }
 
     public static synchronized ProcessRuntimeFactoryService getProcessRuntimeFactoryService() {
-        if (provider == null) {
-            loadProvider();
+        if (!initialized) {
+            initialized = true;
+            try {
+                loadProvider();
+            } catch (IllegalArgumentException e) { }
         }
         return provider;
     }
