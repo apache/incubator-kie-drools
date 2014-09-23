@@ -67,7 +67,7 @@ public class DefaultUserInfo extends AbstractUserGroupInfo implements UserInfo {
     public Iterator<OrganizationalEntity> getMembersForGroup(Group group) {
         Map<String, Object> entityInfo = registry.get(group.getId());
         
-        if (entityInfo != null) {
+        if (entityInfo != null && entityInfo.get("members") != null) {
             return  ((List<OrganizationalEntity>) entityInfo.get("members")).iterator();
         }
         return null;
