@@ -8,6 +8,7 @@ public class ProcessBuilderFactory {
 
     private static final String PROVIDER_CLASS = "org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl";
 
+    private static IllegalArgumentException initializationException;
     private static ProcessBuilderFactoryService provider;
 
     public static ProcessBuilder newProcessBuilder(KnowledgeBuilder kBuilder) {
@@ -19,8 +20,16 @@ public class ProcessBuilderFactory {
     }
 
     public static synchronized ProcessBuilderFactoryService getProcessBuilderFactoryService() {
-        if (provider == null) {
-            loadProvider();
+        if (provider == null && !initialized()) {
+            try {
+                loadProvider();
+            } catch (IllegalArgumentException e) {
+                initializationException = e;
+            }
+        }
+        if (initializationException != null) {
+            // KnowledgeBuilderImpl expects an exception to report the origin of the failure
+            throw initializationException;
         }
         return provider;
     }
@@ -37,5 +46,13 @@ public class ProcessBuilderFactory {
                 provider = (ProcessBuilderFactoryService)Class.forName(PROVIDER_CLASS, true, cl).newInstance();
             } catch (Exception e) { }
         }
+    }
+
+    private static boolean initialized() {
+        return initializationException != null;
+    }
+
+    public static synchronized void resetInitialization() {
+        initializationException = null;
     }
 }
