@@ -326,6 +326,8 @@ public class IoUtils {
         String ic = urlPath.substring( Math.max( 0, colonIndex - 2 ), colonIndex + 1 );
         if  ( ic.matches( "\\/[A-Z]:" ) ) {
             return urlPath.substring( colonIndex - 2 );
+        } else if  ( ic.matches( "[A-Z]:" ) ) {
+            return urlPath.substring( colonIndex - 1 );
         } else {
             return urlPath.substring( colonIndex + 1 );
         }

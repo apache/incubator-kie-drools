@@ -221,6 +221,7 @@ public class ClasspathKieProject extends AbstractKieProject {
         File actualZipFile = new File( rootPath );
         if ( !actualZipFile.exists() ) {
             log.error( "Unable to load pom.properties from" + rootPath + " as jarPath cannot be found\n" + rootPath );
+            return null;
         }
 
         ZipFile zipFile = null;
