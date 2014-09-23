@@ -16,16 +16,17 @@
 
 package org.jbpm.osgi.flow.core;
 
-import java.util.Hashtable;
-
-import org.kie.api.Service;
 import org.drools.core.marshalling.impl.ProcessMarshallerFactoryService;
+import org.drools.core.runtime.process.ProcessRuntimeFactory;
 import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
 import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
+import org.kie.api.Service;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+
+import java.util.Hashtable;
 
 public class Activator
     implements
@@ -41,6 +42,7 @@ public class Activator
         this.processRuntimeReg2 = bc.registerService( new String[]{ ProcessMarshallerFactoryService.class.getName(), Service.class.getName()},
                                                                    new ProcessMarshallerFactoryServiceImpl(),
                                                                    new Hashtable() );
+        ProcessRuntimeFactory.resetInitialization();
     }
 
     public void stop(BundleContext bc) throws Exception {
