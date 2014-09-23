@@ -18,6 +18,7 @@ package org.drools.core.common;
 
 import java.io.IOException;
 
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.PersisterEnums;
@@ -78,7 +79,7 @@ public final class Scheduler {
         ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().removeJob( item.getJobHandle() );
     }
     
-    public static class ActivationTimerJob implements Job {
+    public static class ActivationTimerJob<T extends ModedAssertion<T>> implements Job {
         public void execute(JobContext ctx) {
             InternalAgenda agenda = ( InternalAgenda ) ((ActivationTimerJobContext)ctx).getAgenda();
             ScheduledAgendaItem item  = ((ActivationTimerJobContext)ctx).getScheduledAgendaItem();
@@ -94,7 +95,8 @@ public final class Scheduler {
                 }
 
                 if ( item.isEnqueued() ) {
-                    agenda.getScheduledActivationsLinkedList().remove( item );
+                    org.drools.core.util.LinkedList<ScheduledAgendaItem<T>> schedules = agenda.getScheduledActivationsLinkedList();
+                    schedules.remove( item );
                     item.setEnqueued( false );
                 }
             } else {

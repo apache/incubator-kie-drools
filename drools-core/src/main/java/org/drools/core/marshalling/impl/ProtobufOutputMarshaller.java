@@ -813,7 +813,7 @@ public class ProtobufOutputMarshaller {
     }
 
     public static <M extends ModedAssertion<M>> ProtobufMessages.Activation writeActivation(MarshallerWriteContext context,
-                                                                                            AgendaItem agendaItem) {
+                                                                                            AgendaItem<M> agendaItem) {
         ProtobufMessages.Activation.Builder _activation = ProtobufMessages.Activation.newBuilder();
 
         RuleImpl rule = agendaItem.getRule();
