@@ -19,10 +19,14 @@ package org.jbpm.process.audit;
 import java.util.List;
 
 import org.kie.api.runtime.manager.audit.AuditService;
+import org.kie.api.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
+import org.kie.api.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
+import org.kie.api.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
+import org.kie.internal.query.data.QueryData;
 
 /**
- * This class is essentially a very simple implementation of a service
- * that deals with {@link ProcessInstanceLog}, {@link NodeInstanceLog} 
+ * Implementations of this class 
+ * deal with {@link ProcessInstanceLog}, {@link NodeInstanceLog} 
  * and {@link VariableInstanceLog} entities. 
  * </p>
  * Please see the public methods for the interface of this service. 
@@ -55,5 +59,11 @@ public interface AuditLogService extends AuditService {
     public List<VariableInstanceLog> findVariableInstancesByName(String variableId, boolean onlyActiveProcesses);
     
     public List<VariableInstanceLog> findVariableInstancesByNameAndValue(String variableId, String value, boolean onlyActiveProcesses);
+   
+    public List<org.kie.api.runtime.manager.audit.NodeInstanceLog> queryNodeInstanceLogs(QueryData queryData);
+
+    public List<org.kie.api.runtime.manager.audit.VariableInstanceLog> queryVariableInstanceLogs(QueryData queryData);
+    
+    public List<org.kie.api.runtime.manager.audit.ProcessInstanceLog> queryProcessInstanceLogs(QueryData queryData);
     
 }

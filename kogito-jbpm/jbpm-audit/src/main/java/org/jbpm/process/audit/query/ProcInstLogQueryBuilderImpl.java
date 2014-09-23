@@ -7,7 +7,7 @@ import static org.kie.internal.query.QueryParameterIdentifiers.OUTCOME_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_NAME_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_VERSION_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.START_DATE_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.STATUS_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_STATUS_LIST;
 
 import java.util.Date;
 import java.util.List;
@@ -28,11 +28,10 @@ public class ProcInstLogQueryBuilderImpl extends AbstractAuditQueryBuilderImpl<P
     public ProcInstLogQueryBuilderImpl(JPAAuditLogService jpaAuditService) { 
        super(jpaAuditService);
     }
-    
        
     @Override
     public ProcessInstanceLogQueryBuilder status( int... status ) {
-        addIntParameter(STATUS_LIST, "status", status);
+        addIntParameter(PROCESS_INSTANCE_STATUS_LIST, "status", status);
         return this;
     }
 
@@ -126,9 +125,7 @@ public class ProcInstLogQueryBuilderImpl extends AbstractAuditQueryBuilderImpl<P
             private QueryData queryData = new QueryData(getQueryData()); 
             @Override
             public List<ProcessInstanceLog> getResultList() {
-                List<org.jbpm.process.audit.ProcessInstanceLog> internalResult 
-                    = getJpaAuditLogService().queryProcessInstanceLogs(queryData);
-                return convertListToInterfaceList(internalResult, ProcessInstanceLog.class);
+                return getJpaAuditLogService().queryProcessInstanceLogs(queryData);
             }
         };
     }

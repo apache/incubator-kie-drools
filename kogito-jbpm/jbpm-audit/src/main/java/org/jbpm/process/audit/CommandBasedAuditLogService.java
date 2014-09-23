@@ -2,6 +2,9 @@ package org.jbpm.process.audit;
 
 import java.util.List;
 
+import org.jbpm.process.audit.command.AuditNodeInstanceLogQueryCommand;
+import org.jbpm.process.audit.command.AuditProcessInstanceLogQueryCommand;
+import org.jbpm.process.audit.command.AuditVariableInstanceLogQueryCommand;
 import org.jbpm.process.audit.command.ClearHistoryLogsCommand;
 import org.jbpm.process.audit.command.FindActiveProcessInstancesCommand;
 import org.jbpm.process.audit.command.FindNodeInstancesCommand;
@@ -17,6 +20,7 @@ import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
 import org.kie.api.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
 import org.kie.api.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
+import org.kie.internal.query.data.QueryData;
 
 public class CommandBasedAuditLogService implements AuditLogService {
 
@@ -94,6 +98,21 @@ public class CommandBasedAuditLogService implements AuditLogService {
     @Override
     public ProcessInstanceLogQueryBuilder processInstanceLogQuery() {
         return new ProcInstLogQueryBuilderImpl(executor);
+    }
+
+    @Override
+    public List<org.kie.api.runtime.manager.audit.NodeInstanceLog> queryNodeInstanceLogs( QueryData queryData ) {
+        return executor.execute(new AuditNodeInstanceLogQueryCommand(queryData));
+    }
+
+    @Override
+    public List<org.kie.api.runtime.manager.audit.VariableInstanceLog> queryVariableInstanceLogs( QueryData queryData ) {
+        return executor.execute(new AuditVariableInstanceLogQueryCommand(queryData));
+    }
+
+    @Override
+    public List<org.kie.api.runtime.manager.audit.ProcessInstanceLog> queryProcessInstanceLogs( QueryData queryData ) {
+        return executor.execute(new AuditProcessInstanceLogQueryCommand(queryData));
     }
 
     @Override

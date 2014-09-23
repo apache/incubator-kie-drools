@@ -4,7 +4,7 @@ import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NA
 import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
 import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.util.Calendar;
@@ -31,6 +31,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.api.query.ParametrizedQuery;
 import org.kie.api.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
 import org.kie.api.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
 import org.kie.api.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder.OrderBy;
@@ -77,7 +78,11 @@ public class AuditQueryTest extends JPAAuditLogService {
     private static Random random = new Random();
 
     private long randomLong() { 
-        return (long) Math.abs(random.nextInt());
+        long result = (long) Math.abs(random.nextInt());
+        while( result == 23l ) { 
+           result = (long) Math.abs(random.nextInt());
+        }
+        return result;
     }
 
     private String randomString() { 
@@ -671,4 +676,45 @@ public class AuditQueryTest extends JPAAuditLogService {
           assertTrue( "order desc by process id failed", pilA.getProcessId().compareTo(pilB.getProcessId()) <= 0 );
        }
     }
+   
+    @Test
+    public void lastVariableTest() throws Exception { 
+        StandaloneJtaStrategy jtaHelper = new StandaloneJtaStrategy(emf);
+        EntityManager em = jtaHelper.getEntityManager();
+
+        int numLogs = 10;
+        VariableInstanceLog [] testData = new VariableInstanceLog[numLogs];
+        Calendar cal = GregorianCalendar.getInstance(); 
+
+        for( int i = 0; i < 5; ++i ) {
+            cal.roll(Calendar.SECOND, 1);
+            testData[i] = new VariableInstanceLog(23l, "org.lots.of.vars", "inst", "first-var", "val-a", "oldVal-" + i);
+            testData[i+5] = new VariableInstanceLog(23l, "org.lots.of.vars", "inst", "second-var", "val-b", "oldVal-" + i);
+            testData[i].setDate(cal.getTime());
+            testData[i+5].setDate(cal.getTime());
+        }
+        
+        Object tx = jtaHelper.joinTransaction(em);
+        for( int i = 0; i < numLogs; ++i ) {
+            em.persist(testData[i]);
+        }
+        jtaHelper.leaveTransaction(em, tx);
+       
+        VariableInstanceLogQueryBuilder queryBuilder;
+        ParametrizedQuery<org.kie.api.runtime.manager.audit.VariableInstanceLog> query ;
+        List<org.kie.api.runtime.manager.audit.VariableInstanceLog> logs;
+       
+        queryBuilder = this.variableInstanceLogQuery();
+        query = queryBuilder.last().processInstanceId(23l).buildQuery();
+        logs = query.getResultList();
+        assertEquals("2 logs expected", 2, logs.size());
+        
+        queryBuilder = this.variableInstanceLogQuery();
+        query = queryBuilder.value("val-a").last().buildQuery();
+        logs = query.getResultList();
+        assertEquals("Only 1 log expected", 1, logs.size());
+        assertEquals("Incorrect variable val", "val-a", logs.get(0).getValue());
+        assertEquals("Incorrect variable old val", "oldVal-4", logs.get(0).getOldValue());
+    } 
+
 }

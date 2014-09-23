@@ -67,9 +67,7 @@ public class NodeInstLogQueryBuilderImpl extends AbstractAuditQueryBuilderImpl<N
             private QueryData queryData = new QueryData(getQueryData()); 
             @Override
             public List<NodeInstanceLog> getResultList() {
-                List<org.jbpm.process.audit.NodeInstanceLog> internalResult 
-                    = getJpaAuditLogService().queryNodeInstanceLogs(queryData);
-                return convertListToInterfaceList(internalResult, NodeInstanceLog.class);
+                return getJpaAuditLogService().queryNodeInstanceLogs(queryData);
             }
         };
     }

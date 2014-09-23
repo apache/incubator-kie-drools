@@ -21,10 +21,12 @@ import static org.kie.internal.query.QueryParameterIdentifiers.DATE_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.DESCENDING_VALUE;
 import static org.kie.internal.query.QueryParameterIdentifiers.DURATION_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.END_DATE_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.EXTERNAL_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.FILTER;
 import static org.kie.internal.query.QueryParameterIdentifiers.FIRST_RESULT;
 import static org.kie.internal.query.QueryParameterIdentifiers.FLUSH_MODE;
 import static org.kie.internal.query.QueryParameterIdentifiers.IDENTITY_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.LAST_VARIABLE_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.MAX_RESULTS;
 import static org.kie.internal.query.QueryParameterIdentifiers.NODE_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.NODE_INSTANCE_ID_LIST;
@@ -36,20 +38,24 @@ import static org.kie.internal.query.QueryParameterIdentifiers.ORDER_TYPE;
 import static org.kie.internal.query.QueryParameterIdentifiers.OUTCOME_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_STATUS_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_NAME_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_VERSION_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.START_DATE_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.STATUS_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.VALUE_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.VARIABLE_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.VARIABLE_INSTANCE_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.WORK_ITEM_ID_LIST;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.ServiceLoader;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -71,6 +77,7 @@ import org.kie.api.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
 import org.kie.api.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
 import org.kie.api.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
 import org.kie.internal.query.QueryAndParameterAppender;
+import org.kie.internal.query.QueryModificationService;
 import org.kie.internal.query.data.QueryData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -151,43 +158,34 @@ public class JPAAuditLogService implements AuditLogService {
      */
     
     @Override
-    @SuppressWarnings("unchecked")
     public List<ProcessInstanceLog> findProcessInstances() {
         EntityManager em = getEntityManager();
-        Object newTx = joinTransaction(em);
-        List<ProcessInstanceLog> result = em.createQuery("FROM ProcessInstanceLog").getResultList();
-        closeEntityManager(em, newTx);
-        return result;
+        Query query = em.createQuery("FROM ProcessInstanceLog");
+        return executeQuery(query, em, ProcessInstanceLog.class);
     }
 
     /* (non-Javadoc)
      * @see org.jbpm.process.audit.AuditLogService#findProcessInstances(java.lang.String)
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<ProcessInstanceLog> findProcessInstances(String processId) {
         EntityManager em = getEntityManager();
-        Object newTx = joinTransaction(em);
-        List<ProcessInstanceLog> result = em
-            .createQuery("FROM ProcessInstanceLog p WHERE p.processId = :processId")
-                .setParameter("processId", processId).getResultList();
-        closeEntityManager(em, newTx);
-        return result;
+            Query query = em
+                    .createQuery("FROM ProcessInstanceLog p WHERE p.processId = :processId")
+                    .setParameter("processId", processId);
+        return executeQuery(query, em, ProcessInstanceLog.class);
     }
 
     /* (non-Javadoc)
      * @see org.jbpm.process.audit.AuditLogService#findActiveProcessInstances(java.lang.String)
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<ProcessInstanceLog> findActiveProcessInstances(String processId) {
         EntityManager em = getEntityManager();
-        Object newTx = joinTransaction(em);
-        List<ProcessInstanceLog> result = em
-            .createQuery("FROM ProcessInstanceLog p WHERE p.processId = :processId AND p.end is null")
-                .setParameter("processId", processId).getResultList();
-        closeEntityManager(em, newTx);
-        return result;
+        Query query = em
+                .createQuery("FROM ProcessInstanceLog p WHERE p.processId = :processId AND p.end is null")
+                .setParameter("processId", processId);
+        return executeQuery(query, em, ProcessInstanceLog.class);
     }
 
     /* (non-Javadoc)
@@ -199,8 +197,8 @@ public class JPAAuditLogService implements AuditLogService {
         Object newTx = joinTransaction(em);
         try {
         	return (ProcessInstanceLog) em
-            .createQuery("FROM ProcessInstanceLog p WHERE p.processInstanceId = :processInstanceId")
-                .setParameter("processInstanceId", processInstanceId).getSingleResult();
+        	        .createQuery("FROM ProcessInstanceLog p WHERE p.processInstanceId = :processInstanceId")
+        	        .setParameter("processInstanceId", processInstanceId).getSingleResult();
         } catch (NoResultException e) {
         	return null;
         } finally {
@@ -212,85 +210,68 @@ public class JPAAuditLogService implements AuditLogService {
      * @see org.jbpm.process.audit.AuditLogService#findSubProcessInstances(long)
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<ProcessInstanceLog> findSubProcessInstances(long processInstanceId) {
         EntityManager em = getEntityManager();
-        Object newTx = joinTransaction(em);
-        List<ProcessInstanceLog> result = em
+        Query query = em
             .createQuery("FROM ProcessInstanceLog p WHERE p.parentProcessInstanceId = :processInstanceId")
-                .setParameter("processInstanceId", processInstanceId).getResultList();
-        closeEntityManager(em, newTx);
-        return result;
+                .setParameter("processInstanceId", processInstanceId);
+        return executeQuery(query, em, ProcessInstanceLog.class);
     }
     
     /* (non-Javadoc)
      * @see org.jbpm.process.audit.AuditLogService#findNodeInstances(long)
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<NodeInstanceLog> findNodeInstances(long processInstanceId) {
         EntityManager em = getEntityManager();
-        Object newTx = joinTransaction(em);
-        List<NodeInstanceLog> result = em
+        Query query = em
             .createQuery("FROM NodeInstanceLog n WHERE n.processInstanceId = :processInstanceId ORDER BY date,id")
-                .setParameter("processInstanceId", processInstanceId).getResultList();
-        closeEntityManager(em, newTx);
-        return result;
+                .setParameter("processInstanceId", processInstanceId);
+        return executeQuery(query, em, NodeInstanceLog.class);
     }
 
     /* (non-Javadoc)
      * @see org.jbpm.process.audit.AuditLogService#findNodeInstances(long, java.lang.String)
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<NodeInstanceLog> findNodeInstances(long processInstanceId, String nodeId) {
         EntityManager em = getEntityManager();
-        Object newTx = joinTransaction(em);
-        List<NodeInstanceLog> result = em
+        Query query = em
             .createQuery("FROM NodeInstanceLog n WHERE n.processInstanceId = :processInstanceId AND n.nodeId = :nodeId ORDER BY date,id")
                 .setParameter("processInstanceId", processInstanceId)
-                .setParameter("nodeId", nodeId).getResultList();
-        closeEntityManager(em, newTx);
-        return result;
+                .setParameter("nodeId", nodeId);
+        return executeQuery(query, em, NodeInstanceLog.class);
     }
 
     /* (non-Javadoc)
      * @see org.jbpm.process.audit.AuditLogService#findVariableInstances(long)
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<VariableInstanceLog> findVariableInstances(long processInstanceId) {
         EntityManager em = getEntityManager();
-        Object newTx = joinTransaction(em);
-        List<VariableInstanceLog> result = em
+        Query query = em
             .createQuery("FROM VariableInstanceLog v WHERE v.processInstanceId = :processInstanceId ORDER BY date")
-                .setParameter("processInstanceId", processInstanceId).getResultList();
-        closeEntityManager(em, newTx);
-        return result;
+                .setParameter("processInstanceId", processInstanceId);
+        return executeQuery(query, em, VariableInstanceLog.class);
     }
 
     /* (non-Javadoc)
      * @see org.jbpm.process.audit.AuditLogService#findVariableInstances(long, java.lang.String)
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<VariableInstanceLog> findVariableInstances(long processInstanceId, String variableId) {
         EntityManager em = getEntityManager();
-        Object newTx = joinTransaction(em);
-        List<VariableInstanceLog> result = em
+        Query query = em
             .createQuery("FROM VariableInstanceLog v WHERE v.processInstanceId = :processInstanceId AND v.variableId = :variableId ORDER BY date")
                 .setParameter("processInstanceId", processInstanceId)
-                .setParameter("variableId", variableId).getResultList();
-        closeEntityManager(em, newTx);
-        return result;
+                .setParameter("variableId", variableId);
+        return executeQuery(query, em, VariableInstanceLog.class);
     }
 
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<VariableInstanceLog> findVariableInstancesByName(String variableId, boolean onlyActiveProcesses) {
         EntityManager em = getEntityManager();
-        Object newTx = joinTransaction(em);
         Query query;
         if( ! onlyActiveProcesses ) { 
              query = em.createQuery("FROM VariableInstanceLog v WHERE v.variableId = :variableId ORDER BY date");
@@ -303,16 +284,13 @@ public class JPAAuditLogService implements AuditLogService {
                     + "AND p.end is null "
                     + "ORDER BY v.date");
         }
-        List<VariableInstanceLog> result = query.setParameter("variableId", variableId).getResultList();
-        closeEntityManager(em, newTx);
-        return result;
+        query.setParameter("variableId", variableId);
+        return executeQuery(query, em, VariableInstanceLog.class);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<VariableInstanceLog> findVariableInstancesByNameAndValue(String variableId, String value, boolean onlyActiveProcesses) {
         EntityManager em = getEntityManager();
-        Object newTx = joinTransaction(em);
         Query query;
         if( ! onlyActiveProcesses ) { 
              query = em.createQuery("FROM VariableInstanceLog v WHERE v.variableId = :variableId AND v.value = :value ORDER BY date");
@@ -326,19 +304,15 @@ public class JPAAuditLogService implements AuditLogService {
                     + "AND p.end is null "
                     + "ORDER BY v.date");
         }
-        List<VariableInstanceLog> result = query
-                .setParameter("variableId", variableId)
-                .setParameter("value", value)
-                .getResultList();
-        closeEntityManager(em, newTx);
-        return result;
+        query.setParameter("variableId", variableId).setParameter("value", value);
+        
+        return executeQuery(query, em, VariableInstanceLog.class);
     }
     
     /* (non-Javadoc)
      * @see org.jbpm.process.audit.AuditLogService#clear()
      */
     @Override
-    @SuppressWarnings("unchecked")
     public void clear() {
         EntityManager em = getEntityManager();
         Object newTx = joinTransaction(em);
@@ -378,6 +352,17 @@ public class JPAAuditLogService implements AuditLogService {
        persistenceStrategy.leaveTransaction(em, transaction);
     }
 
+    private <T> List<T> executeQuery(Query query, EntityManager em, Class<T> type) { 
+        Object newTx = joinTransaction(em);
+        List<T> result;
+        try { 
+            result = query.getResultList();
+        } finally { 
+            closeEntityManager(em, newTx);
+        }
+        return result;
+    }
+    
     // query methods
   
     @Override
@@ -397,32 +382,54 @@ public class JPAAuditLogService implements AuditLogService {
     
     // internal query methods/logic
    
-    public static enum QueryType { 
-        NODE, VARIABLE, PROCESS_INSTANCE;
+    @Override
+    public List<org.kie.api.runtime.manager.audit.NodeInstanceLog> queryNodeInstanceLogs(QueryData queryData) {
+        List<NodeInstanceLog> results = doQuery(queryData, NodeInstanceLog.class);
+        return convertListToInterfaceList(results, org.kie.api.runtime.manager.audit.NodeInstanceLog.class);
     }
-   
-    protected final static int PROCESS_INSTANCE_LOG_QUERY_TYPE = 0;
-    protected final static int VARIABLE_INSTANCE_LOG_QUERY_TYPE = 1;
-    protected final static int NODE_INSTANCE_LOG_QUERY_TYPE = 2;
-    
-    protected static String NODE_INSTANCE_LOG_QUERY = 
+
+    @Override
+    public List<org.kie.api.runtime.manager.audit.VariableInstanceLog> queryVariableInstanceLogs(QueryData queryData) { 
+        List<VariableInstanceLog> results =  doQuery(queryData, VariableInstanceLog.class);
+        return convertListToInterfaceList(results, org.kie.api.runtime.manager.audit.VariableInstanceLog.class);
+    }
+
+    @Override
+    public List<org.kie.api.runtime.manager.audit.ProcessInstanceLog> queryProcessInstanceLogs(QueryData queryData) {
+        List<ProcessInstanceLog> results = doQuery(queryData, ProcessInstanceLog.class);
+        return convertListToInterfaceList(results, org.kie.api.runtime.manager.audit.ProcessInstanceLog.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <C,I> List<I> convertListToInterfaceList( List<C>internalResult, Class<I> interfaceType ) {
+        List<I> result = new ArrayList<I>(internalResult.size());
+        for( C element : internalResult ) { 
+           result.add((I) element);
+        }
+        return result;
+    }
+
+    public static String NODE_INSTANCE_LOG_QUERY = 
                     "SELECT l "
-                    + "FROM NodeInstanceLog l";
+                    + "FROM NodeInstanceLog l\n";
     
-    protected static String VARIABLE_INSTANCE_LOG_QUERY = 
+    public static String VARIABLE_INSTANCE_LOG_QUERY = 
                     "SELECT l "
-                    + "FROM VariableInstanceLog l";
+                    + "FROM VariableInstanceLog l\n";
     
-    protected static String PROCESS_INSTANCE_LOG_QUERY = 
+    public static String PROCESS_INSTANCE_LOG_QUERY = 
                     "SELECT l "
-                    + "FROM ProcessInstanceLog l";
+                    + "FROM ProcessInstanceLog l\n";
  
    
-    private static Map<String, String> criteriaFields = new HashMap<String, String>();
-    private static Map<String, Class<?>> criteriaFieldClasses = new HashMap<String, Class<?>>();
+    public static Map<String, String> criteriaFields = new ConcurrentHashMap<String, String>();
+    public static Map<String, Class<?>> criteriaFieldClasses = new ConcurrentHashMap<String, Class<?>>();
+    
     static { 
         addCriteria(PROCESS_INSTANCE_ID_LIST, "l.processInstanceId", Long.class);
         addCriteria(PROCESS_ID_LIST, "l.processId", String.class);
+        addCriteria(WORK_ITEM_ID_LIST, "l.workItemId", Long.class);
+        addCriteria(EXTERNAL_ID_LIST, "l.externalId", String.class);
         
         // process instance log
         addCriteria(START_DATE_LIST, "l.start", Date.class);
@@ -431,8 +438,14 @@ public class JPAAuditLogService implements AuditLogService {
         addCriteria(IDENTITY_LIST, "l.identity", String.class);
         addCriteria(PROCESS_NAME_LIST, "l.processName", String.class);
         addCriteria(PROCESS_VERSION_LIST, "l.processVersion", String.class);
-        addCriteria(STATUS_LIST, "l.status", Integer.class);
+        addCriteria(PROCESS_INSTANCE_STATUS_LIST, "l.status", Integer.class);
         addCriteria(OUTCOME_LIST, "l.outcome", String.class);
+        
+        // node instance log
+        addCriteria(NODE_ID_LIST, "l.nodeId", String.class);
+        addCriteria(NODE_INSTANCE_ID_LIST, "l.nodeInstanceId", String.class);
+        addCriteria(NODE_NAME_LIST, "l.nodeName", String.class);
+        addCriteria(NODE_TYPE_LIST, "l.nodeType", String.class);
         
         // variable instance log
         addCriteria(DATE_LIST, "l.date", Date.class);
@@ -441,12 +454,6 @@ public class JPAAuditLogService implements AuditLogService {
         addCriteria(VARIABLE_ID_LIST, "l.variableId", String.class);
         addCriteria(VARIABLE_INSTANCE_ID_LIST, "l.variableInstanceId", String.class);
        
-        // node instance log
-        addCriteria(NODE_ID_LIST, "l.nodeId", String.class);
-        addCriteria(NODE_INSTANCE_ID_LIST, "l.nodeInstanceId", String.class);
-        addCriteria(NODE_NAME_LIST, "l.nodeName", String.class);
-        addCriteria(NODE_TYPE_LIST, "l.nodeType", String.class);
-        addCriteria(WORK_ITEM_ID_LIST, "l.workItemId", Long.class);
     }
    
     private static void addCriteria( String listId, String fieldName, Class type ) { 
@@ -454,86 +461,149 @@ public class JPAAuditLogService implements AuditLogService {
         criteriaFieldClasses.put(listId, type );
     }
     
-    public static String createQuery(QueryType queryType, QueryData queryData, Map<String, Object> queryParams) { 
-        // setup
+    public <T> List<T> doQuery(QueryData queryData, Class<T> resultType) { 
+        // create query
         String queryBase;
-        switch( queryType) { 
-        case PROCESS_INSTANCE:
+        if( ProcessInstanceLog.class.equals(resultType) ) { 
             queryBase = PROCESS_INSTANCE_LOG_QUERY;
-            break;
-        case VARIABLE:
+        } else if( VariableInstanceLog.class.equals(resultType) ) { 
             queryBase = VARIABLE_INSTANCE_LOG_QUERY;
-            break;
-        case NODE:
+        } else if( NodeInstanceLog.class.equals(resultType) ) { 
             queryBase = NODE_INSTANCE_LOG_QUERY;
-            break;
-        default: 
-            throw new IllegalStateException("Unknown query type: " + queryType );
+        } else { 
+            throw new IllegalStateException("Unsupported result type: " + resultType.getName() );
         }
+        Map<String, Object> queryParams = new HashMap<String, Object>();
+        String queryString = createQuery(queryBase, queryData, queryParams);
+        
+        // logging
+        logger.debug("QUERY:\n {}", queryString);
+        if( logger.isDebugEnabled() ) {
+            StringBuilder paramsStr = new StringBuilder("PARAMS:");
+            Map<String, Object> orderedParams = new TreeMap<String, Object>(queryParams);
+            for( Entry<String, Object> entry : orderedParams.entrySet() ) { 
+                paramsStr.append("\n " + entry.getKey() + " : '" + entry.getValue() + "'");
+            }
+            logger.debug(paramsStr.toString());
+        }
+        
+    
+        // execute query
+        EntityManager em = getEntityManager();
+        Object newTx = joinTransaction(em);
+        Query query = em.createQuery(queryString);
+    
+        List<T> result = queryWithParameters(queryParams, LockModeType.NONE, resultType, query);
+        
+        closeEntityManager(em, newTx);
+        
+        return result;
+    }
+
+    private static String createQuery(String queryBase, QueryData queryData, Map<String, Object> queryParams) { 
+        // setup
         StringBuilder queryBuilder = new StringBuilder(queryBase);
         QueryAndParameterAppender queryAppender = new QueryAndParameterAppender(queryBuilder, queryParams, true);
 
-        // apply normal query parameters
-        for( Entry<String, List<? extends Object>> paramsEntry : queryData.getUnionParameters().entrySet() ) { 
-            String listId = paramsEntry.getKey();
-            queryAppender.addQueryParameters(
-                    paramsEntry.getValue(),
-                    listId, criteriaFieldClasses.get(listId), criteriaFields.get(listId), 
-                    true);
+        // 1b. add other tables (used in kie-remote-services to cross-query on variables, etc.. )
+        ServiceLoader<QueryModificationService> queryModServiceLdr = ServiceLoader.load(QueryModificationService.class);
+        for( QueryModificationService queryModService : queryModServiceLdr ) { 
+           queryModService.addTablesToQuery(queryBuilder, queryData);
         }
-        for( Entry<String, List<? extends Object>> paramsEntry : queryData.getIntersectParameters().entrySet() ) { 
-            String listId = paramsEntry.getKey();
-            queryAppender.addQueryParameters(
-                    paramsEntry.getValue(),
-                    listId, criteriaFieldClasses.get(listId), criteriaFields.get(listId), 
-                    false);
+      
+        // 3a. add extended criteria 
+        for( QueryModificationService queryModService : queryModServiceLdr ) { 
+           queryModService.addCriteriaToQuery(queryBuilder, queryData, queryAppender);
+        }
+        
+        boolean addLastCriteria = false;
+        
+        // apply normal query parameters
+        if( ! queryData.unionParametersAreEmpty() ) { 
+            if( queryData.getUnionParameters().remove(LAST_VARIABLE_LIST) != null ) { 
+                addLastCriteria = true;
+            }
+            for( Entry<String, List<? extends Object>> paramsEntry : queryData.getUnionParameters().entrySet() ) { 
+                String listId = paramsEntry.getKey();
+                queryAppender.addQueryParameters(
+                        paramsEntry.getValue(),
+                        listId, criteriaFieldClasses.get(listId), criteriaFields.get(listId), 
+                        true);
+            }
+        }
+        if( ! queryData.intersectParametersAreEmpty() ) { 
+            if( queryData.getIntersectParameters().remove(LAST_VARIABLE_LIST) != null ) { 
+                addLastCriteria = true;
+            }
+            for( Entry<String, List<? extends Object>> paramsEntry : queryData.getIntersectParameters().entrySet() ) { 
+                String listId = paramsEntry.getKey();
+                queryAppender.addQueryParameters(
+                        paramsEntry.getValue(),
+                        listId, criteriaFieldClasses.get(listId), criteriaFields.get(listId), 
+                        false);
+            }
         }
         // apply range query parameters
-        for( Entry<String, List<? extends Object>> paramsEntry : queryData.getUnionRangeParameters().entrySet() ) { 
-            String listId = paramsEntry.getKey();
-            queryAppender.addRangeQueryParameters(
-                    paramsEntry.getValue(),
-                    listId, criteriaFieldClasses.get(listId), criteriaFields.get(listId), 
-                    true);
+        if( ! queryData.unionRangeParametersAreEmpty() ) { 
+            for( Entry<String, List<? extends Object>> paramsEntry : queryData.getUnionRangeParameters().entrySet() ) { 
+                String listId = paramsEntry.getKey();
+                queryAppender.addRangeQueryParameters(
+                        paramsEntry.getValue(),
+                        listId, criteriaFieldClasses.get(listId), criteriaFields.get(listId), 
+                        true);
+            }
         }
-        for( Entry<String, List<? extends Object>> paramsEntry : queryData.getIntersectRangeParameters().entrySet() ) { 
-            String listId = paramsEntry.getKey();
-            queryAppender.addRangeQueryParameters(
-                    paramsEntry.getValue(),
-                    listId, criteriaFieldClasses.get(listId), criteriaFields.get(listId), 
-                    false);
+        if( ! queryData.intersectRangeParametersAreEmpty() ) { 
+            for( Entry<String, List<? extends Object>> paramsEntry : queryData.getIntersectRangeParameters().entrySet() ) { 
+                String listId = paramsEntry.getKey();
+                queryAppender.addRangeQueryParameters(
+                        paramsEntry.getValue(),
+                        listId, criteriaFieldClasses.get(listId), criteriaFields.get(listId), 
+                        false);
+            }
         }
         // apply regex query parameters
-        for( Entry<String, List<String>> paramsEntry : queryData.getUnionRegexParameters().entrySet() ) { 
-            String listId = paramsEntry.getKey();
-            queryAppender.addRegexQueryParameters(
-                    paramsEntry.getValue(),
-                    listId, criteriaFields.get(listId), 
-                    true);
+        if( ! queryData.unionRegexParametersAreEmpty() ) { 
+            for( Entry<String, List<String>> paramsEntry : queryData.getUnionRegexParameters().entrySet() ) { 
+                String listId = paramsEntry.getKey();
+                queryAppender.addRegexQueryParameters(
+                        paramsEntry.getValue(),
+                        listId, criteriaFields.get(listId), 
+                        true);
+            }
         }
-        for( Entry<String, List<String>> paramsEntry : queryData.getIntersectRegexParameters().entrySet() ) { 
-            String listId = paramsEntry.getKey();
-            queryAppender.addRegexQueryParameters(
-                    paramsEntry.getValue(),
-                    listId, criteriaFields.get(listId), 
-                    false);
+        if( ! queryData.intersectRegexParametersAreEmpty() ) { 
+            for( Entry<String, List<String>> paramsEntry : queryData.getIntersectRegexParameters().entrySet() ) { 
+                String listId = paramsEntry.getKey();
+                queryAppender.addRegexQueryParameters(
+                        paramsEntry.getValue(),
+                        listId, criteriaFields.get(listId), 
+                        false);
+            }
         }
         
         if( ! queryAppender.getFirstUse() ) { 
             queryBuilder.append(")"); 
-         }
+        }
+        if( addLastCriteria ) { 
+            addLastInstanceCriteria(queryAppender.getFirstUse(), queryBuilder);
+        }
        
         // apply filter, ordering, etc.. 
         applyMetaCriteria(queryBuilder, queryData);
         return queryBuilder.toString();
     }
 
+    private static void addLastInstanceCriteria(boolean whereAnd, StringBuilder queryBuilder) { 
+       queryBuilder.append("\n").append( (whereAnd ? "WHERE" : "AND" ) )
+           .append(" (l.id IN (SELECT MAX(ll.id) FROM VariableInstanceLog ll ")
+           .append("GROUP BY ll.variableId, ll.processInstanceId))");
+    }
+    
     private static void applyMetaCriteria(StringBuilder queryBuilder, QueryData queryData) { 
         queryBuilder
             .append(" \n ORDER by ")
-            .append(
-                    adaptOrderBy(queryData.getQueryContext().getOrderBy())
-                    );
+            .append(adaptOrderBy(queryData.getQueryContext().getOrderBy()));
         Boolean ascending = queryData.getQueryContext().isAscending();
         if( ascending == null || ascending ) { 
             queryBuilder.append(" ").append(ASCENDING_VALUE);
@@ -541,7 +611,7 @@ public class JPAAuditLogService implements AuditLogService {
             queryBuilder.append(" ").append(DESCENDING_VALUE);
         } 
     }
-
+    
     private static String adaptOrderBy(String orderBy) {
         if("processInstanceId".equals(orderBy)) { 
             return "l.processInstanceId";
@@ -554,57 +624,7 @@ public class JPAAuditLogService implements AuditLogService {
         }
     }
 
-    public List<NodeInstanceLog> queryNodeInstanceLogs(QueryData queryData) {
-        return doQuery(queryData, NodeInstanceLog.class);
-    }
-
-    public List<VariableInstanceLog> queryVariableInstanceLogs(QueryData queryData) { 
-        return doQuery(queryData, VariableInstanceLog.class);
-    }
-    
-    public List<ProcessInstanceLog> queryProcessInstanceLogs(QueryData queryData) {
-        return doQuery(queryData, ProcessInstanceLog.class);
-    }
- 
-    private <T> List<T> doQuery(QueryData queryData, Class<T> resultType) { 
-        // create query
-        QueryType queryType;
-        if( ProcessInstanceLog.class.equals(resultType) ) { 
-            queryType = QueryType.PROCESS_INSTANCE;
-        } else if( VariableInstanceLog.class.equals(resultType) ) { 
-            queryType = QueryType.VARIABLE;
-        } else if( NodeInstanceLog.class.equals(resultType) ) { 
-            queryType = QueryType.NODE;
-        } else { 
-            throw new IllegalStateException("Unsupported result type: " + resultType.getName() );
-        }
-        Map<String, Object> queryParams = new HashMap<String, Object>();
-        String queryString = createQuery(queryType, queryData, queryParams);
-        
-        // logging
-        if( logger.isDebugEnabled() ) { 
-            logger.debug( "Query: \n'{}'", queryString);
-            StringBuilder queryParamInfo = new StringBuilder();
-            for( Entry<String, Object>  param : queryParams.entrySet() ) { 
-                queryParamInfo.append(param.getKey() + " = " + param.getValue() + " " );
-            }
-            logger.debug( "Params: \n'{}'", queryParamInfo.toString());
-        }
-       
-        // execute query
-        EntityManager em = getEntityManager();
-        Object newTx = joinTransaction(em);
-        Query query = em.createQuery(queryString);
-       
-        List<T> result = queryWithParameters(queryParams, LockModeType.NONE, resultType, query);
-        
-        closeEntityManager(em, newTx);
-        
-        return result;
-    }
-    
     private <T> List<T> queryWithParameters(Map<String, Object> params, LockModeType lockMode, Class<T> clazz, Query query) {
-        ;
         if (lockMode != null) {
             query.setLockMode(lockMode);
         }

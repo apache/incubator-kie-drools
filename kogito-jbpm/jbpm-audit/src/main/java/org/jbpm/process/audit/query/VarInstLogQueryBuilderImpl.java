@@ -1,11 +1,11 @@
 package org.jbpm.process.audit.query;
 
-import static org.kie.internal.query.QueryParameterIdentifiers.OLD_VALUE_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.VALUE_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.VARIABLE_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.VARIABLE_INSTANCE_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.kie.api.query.ParametrizedQuery;
@@ -49,6 +49,22 @@ public class VarInstLogQueryBuilderImpl extends AbstractAuditQueryBuilderImpl<Va
     }
 
     @Override
+    public VariableInstanceLogQueryBuilder externalId( String... externalId ) {
+        addObjectParameter(EXTERNAL_ID_LIST, "external id", externalId);
+        return this;
+    }
+
+    @Override
+    public VariableInstanceLogQueryBuilder last() {
+        List<? extends Object> params = queryData.getIntersectParameters().get(LAST_VARIABLE_LIST);
+        if( params == null ) { 
+           params = new ArrayList<Boolean>(Arrays.asList(Boolean.TRUE));
+           queryData.getIntersectParameters().put(LAST_VARIABLE_LIST, params);
+        }
+        return this;
+    }
+    
+    @Override
     public VariableInstanceLogQueryBuilder orderBy( OrderBy field ) {
         this.queryData.getQueryContext().setOrderBy(field.toString());
         return this;
@@ -60,9 +76,7 @@ public class VarInstLogQueryBuilderImpl extends AbstractAuditQueryBuilderImpl<Va
             private QueryData queryData = new QueryData(getQueryData()); 
             @Override
             public List<VariableInstanceLog> getResultList() {
-                List<org.jbpm.process.audit.VariableInstanceLog> internalResult 
-                    = getJpaAuditLogService().queryVariableInstanceLogs(queryData);
-                return convertListToInterfaceList(internalResult, VariableInstanceLog.class);
+                return getJpaAuditLogService().queryVariableInstanceLogs(queryData);
             }
         };
     }

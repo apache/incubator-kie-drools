@@ -16,7 +16,7 @@
   <logger name="org.hibernate.ejb.internal" level="error"/>
 
   <!-- set to debug to see queries --> 
-  <logger name="org.jbpm.process.audit" level="info"/>
+  <logger name="org.jbpm.process.audit" level="debug"/>
   
   <root level="warn">
     <appender-ref ref="consoleAppender" />

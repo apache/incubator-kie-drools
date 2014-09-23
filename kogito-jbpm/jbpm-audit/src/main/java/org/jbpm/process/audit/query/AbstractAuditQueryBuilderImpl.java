@@ -84,14 +84,5 @@ public class AbstractAuditQueryBuilderImpl<T> extends AbstractQueryBuilderImpl<T
     }
 
     // query builder result methods
-    
-    @SuppressWarnings("unchecked")
-    protected <C,I> List<I> convertListToInterfaceList( List<C>internalResult, Class<I> interfaceType ) {
-        List<I> result = new ArrayList<I>(internalResult.size());
-        for( C element : internalResult ) { 
-           result.add((I) element);
-        }
-        return result;
-    }
-
+  
 }

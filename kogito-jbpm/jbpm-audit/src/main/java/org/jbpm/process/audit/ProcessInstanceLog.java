@@ -29,6 +29,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.jbpm.process.audit.event.AuditEvent;
+import org.jbpm.process.audit.event.AuditEventBuilder;
+import org.kie.api.runtime.KieRuntime;
 
 @Entity
 @SequenceGenerator(name="processInstanceLogIdSeq", sequenceName="PROC_INST_LOG_ID_SEQ", allocationSize=1)
@@ -69,7 +71,14 @@ public class ProcessInstanceLog implements Serializable, AuditEvent, org.kie.api
     private String processVersion;
     
     private String processName;
-    
+   
+    /**
+     * Dependening on the {@link AuditEventBuilder} implementation, 
+     * this can be<ul>
+     * <li>The {@link KieRuntime} id</li>
+     * <li>The deployment unit Id</li>
+     * 
+     */
     private String externalId;
     
     public ProcessInstanceLog() {
