@@ -1007,6 +1007,20 @@ st70     has  70 cities with a search space of  10^126.
 pcb442   has 442 cities with a search space of 10^1166.
 lu980    has 980 cities with a search space of 10^2927.</programlisting>
       </section>
+
+      <section>
+        <title>Problem difficulty</title>
+
+        <para>Despite TSP's simple definition, the problem is surprisingly hard to solve. Because it's an NP-hard
+        problem (like most planning problems), the optimal solution for a specific problem dataset can change a lot when
+        that problem dataset is slightly altered:</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/tspOptimalSolutionVolatility.png"/>
+          </imageobject>
+        </mediaobject>
+      </section>
     </section>
 
     <section xml:id="dinnerParty">
