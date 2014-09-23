@@ -1,19 +1,10 @@
 package org.drools.games.wumpus;
 
 import org.drools.games.wumpus.view.GameUI;
-import org.drools.games.wumpus.view.GameView;
 import org.kie.api.KieServices;
+import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.api.runtime.Channel;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import static org.kie.internal.io.ResourceFactory.newClassPathResource;
-import static org.kie.api.io.ResourceType.DRL;
 
 public class WumpusWorldMain {
 

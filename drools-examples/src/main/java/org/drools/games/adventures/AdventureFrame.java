@@ -1,13 +1,25 @@
 package org.drools.games.adventures;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.KeyEventDispatcher;
-import java.awt.KeyboardFocusManager;
-import java.awt.LayoutManager;
+import net.miginfocom.layout.ConstraintParser;
+import net.miginfocom.swing.MigLayout;
+import org.drools.games.adventures.model.Character;
+import org.drools.games.adventures.model.DropCommand;
+import org.drools.games.adventures.model.GiveCommand;
+import org.drools.games.adventures.model.LookCommand;
+import org.drools.games.adventures.model.MoveCommand;
+import org.drools.games.adventures.model.PickupCommand;
+import org.drools.games.adventures.model.Room;
+import org.drools.games.adventures.model.Thing;
+import org.drools.games.adventures.model.UseCommand;
+import org.kie.api.runtime.Channel;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -23,54 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-import javax.swing.JViewport;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.Timer;
-import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-
-import net.miginfocom.layout.ConstraintParser;
-import net.miginfocom.swing.MigLayout;
-
-import org.drools.games.adventures.model.DropCommand;
-import org.drools.games.adventures.model.GiveCommand;
-import org.drools.games.adventures.model.LookCommand;
-import org.drools.games.adventures.model.MoveCommand;
-import org.drools.games.adventures.model.PickupCommand;
-import org.drools.games.adventures.model.Room;
-import org.drools.games.adventures.model.Thing;
-import org.drools.games.adventures.model.Character;
-import org.drools.games.adventures.model.UseCommand;
-import org.kie.api.runtime.Channel;
-
 public class AdventureFrame extends JFrame {
-    private final ToolTipListener    toolTipListener    = new ToolTipListener();
-    private final ConstraintListener constraintListener = new ConstraintListener();
     private static final Font        BUTT_FONT          = new Font( "monospaced",
                                                                     Font.PLAIN,
                                                                     12 );

@@ -4,8 +4,6 @@ import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import java.text.SimpleDateFormat;
-
 public class HouseOfDoomMain {
 
     public static void main(String[] args) throws Exception {
