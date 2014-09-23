@@ -8,7 +8,7 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.kie.internal.runtime.beliefs.Mode;
 
-public interface BeliefSystem<T extends Mode> {
+public interface BeliefSystem<M extends ModedAssertion<M>> {
     
     /**
      * TypeConf is already available, so we pass it, to avoid additional lookups
@@ -17,8 +17,8 @@ public interface BeliefSystem<T extends Mode> {
      * @param context
      * @param typeConf
      */
-    public void insert(LogicalDependency<T> node,
-                       BeliefSet beliefSet,
+    public void insert(LogicalDependency<M> node,
+                       BeliefSet<M> beliefSet,
                        PropagationContext context,
                        ObjectTypeConf typeConf);
     
@@ -28,19 +28,19 @@ public interface BeliefSystem<T extends Mode> {
      * @param beliefSet
      * @param context
      */
-    public void delete(LogicalDependency<T> node,
-                           BeliefSet beliefSet,
-                           PropagationContext context);
+    public void delete(LogicalDependency<M> node,
+                       BeliefSet<M> beliefSet,
+                       PropagationContext context);
     
     public BeliefSet newBeliefSet(InternalFactHandle fh);
     
-    public LogicalDependency newLogicalDependency(final Activation activation,
-                                                  final BeliefSet beliefSet,
+    public LogicalDependency newLogicalDependency(final Activation<M> activation,
+                                                  final BeliefSet<M> beliefSet,
                                                   final Object object, 
                                                   final Object value);
 
-    public void read(LogicalDependency<T> node,
-                     BeliefSet beliefSet,
+    public void read(LogicalDependency<M> node,
+                     BeliefSet<M> beliefSet,
                      PropagationContext context,
                      ObjectTypeConf typeConf);
     

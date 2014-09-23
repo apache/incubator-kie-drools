@@ -1,5 +1,6 @@
 package org.drools.core.common;
 
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -21,7 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
 
-public interface AgendaItem<T extends Mode> extends Activation<T> {
+public interface AgendaItem<T extends ModedAssertion<T>> extends Activation<T> {
     PropagationContext getPropagationContext();
 
     void setPropagationContext(PropagationContext context);

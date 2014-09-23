@@ -19,6 +19,7 @@ package org.drools.reteoo.common;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.DefaultKnowledgeHelper;
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.common.ActivationGroupImpl;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationsFilter;
@@ -93,7 +94,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Non-invalidated actions are left on the agenda, and are executed in turn.
  * </p>
  */
-public class ReteAgenda
+public class ReteAgenda<M extends ModedAssertion<M>>
         implements
         Externalizable,
         InternalAgenda {
@@ -105,7 +106,7 @@ public class ReteAgenda
     /** Working memory of this Agenda. */
     protected InternalWorkingMemory workingMemory;
 
-    private org.drools.core.util.LinkedList<ScheduledAgendaItem<Mode>> scheduledActivations;
+    private org.drools.core.util.LinkedList<ScheduledAgendaItem<M>> scheduledActivations;
 
     /** Items time-delayed. */
 
@@ -179,7 +180,7 @@ public class ReteAgenda
         this.agendaGroups = new HashMap<String, InternalAgendaGroup>();
         this.activationGroups = new HashMap<String, InternalActivationGroup>();
         this.focusStack = new LinkedList<AgendaGroup>();
-        this.scheduledActivations = new org.drools.core.util.LinkedList<ScheduledAgendaItem<Mode>>();
+        this.scheduledActivations = new org.drools.core.util.LinkedList<ScheduledAgendaItem<M>>();
         this.agendaGroupFactory = kBase.getConfiguration().getAgendaGroupFactory();
 
         if (initMain) {
@@ -1032,7 +1033,7 @@ public class ReteAgenda
         return scheduledActivations;
     }
 
-    public org.drools.core.util.LinkedList<ScheduledAgendaItem<Mode>> getScheduledActivationsLinkedList() {
+    public org.drools.core.util.LinkedList<ScheduledAgendaItem<M>> getScheduledActivationsLinkedList() {
         return this.scheduledActivations;
     }
 

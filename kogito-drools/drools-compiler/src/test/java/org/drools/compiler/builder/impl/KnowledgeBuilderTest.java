@@ -49,6 +49,7 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.base.ClassObjectType;
@@ -1362,7 +1363,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                       fieldsBean2.get( 2 ).getType() );
     }
 
-    class MockActivation<T extends Mode>
+    class MockActivation<T extends ModedAssertion<T>>
         implements
         Activation<T> {
         private RuleImpl               rule;

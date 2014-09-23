@@ -16,6 +16,7 @@
 
 package org.drools.core.base;
 
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.factmodel.traits.TraitTypeMap;
@@ -86,7 +87,7 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class DefaultKnowledgeHelper<T extends Mode>
+public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     implements
     KnowledgeHelper,
     Externalizable {

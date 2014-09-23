@@ -34,7 +34,7 @@ public class SimpleBeliefSystem
     }
 
     public void insert(LogicalDependency<SimpleMode> node,
-                       BeliefSet beliefSet,
+                       BeliefSet<SimpleMode> beliefSet,
                        PropagationContext context,
                        ObjectTypeConf typeConf) {
         boolean empty = beliefSet.isEmpty();
@@ -54,7 +54,7 @@ public class SimpleBeliefSystem
     }
 
     public void read(LogicalDependency<SimpleMode> node,
-                     BeliefSet beliefSet,
+                     BeliefSet<SimpleMode> beliefSet,
                      PropagationContext context,
                      ObjectTypeConf typeConf) {
         //insert(node, beliefSet, context, typeConf );
@@ -62,7 +62,7 @@ public class SimpleBeliefSystem
     }
 
     public void delete(LogicalDependency<SimpleMode> node,
-                       BeliefSet beliefSet,
+                       BeliefSet<SimpleMode> beliefSet,
                        PropagationContext context) {
         SimpleBeliefSet sBeliefSet = (SimpleBeliefSet) beliefSet;
         beliefSet.remove( node.getMode() );

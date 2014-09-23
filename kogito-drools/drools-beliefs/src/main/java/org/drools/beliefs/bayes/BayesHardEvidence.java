@@ -1,28 +1,29 @@
 package org.drools.beliefs.bayes;
 
 import org.drools.core.beliefsystem.BeliefSystem;
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.kie.internal.runtime.beliefs.Mode;
 
 import java.util.Arrays;
 
-public class BayesHardEvidence extends AbstractBaseLinkedListNode<BayesHardEvidence> implements Mode {
+public class BayesHardEvidence<M extends BayesHardEvidence<M>> extends AbstractBaseLinkedListNode<M> implements ModedAssertion<M> {
     private double[] distribution;
-    private BeliefSystem beliefSystem;
-    private LogicalDependency dep;
+    private BeliefSystem<M> beliefSystem;
+    private LogicalDependency<M> dep;
 
-    public BayesHardEvidence(BeliefSystem beliefSystem,
+    public BayesHardEvidence(BeliefSystem<M> beliefSystem,
                              double[] distribution) {
         this.beliefSystem = beliefSystem;
         this.distribution = distribution;
     }
 
-    public LogicalDependency getLogicalDependency() {
+    public LogicalDependency<M> getLogicalDependency() {
         return dep;
     }
 
-    public void setLogicalDependency(LogicalDependency dep) {
+    public void setLogicalDependency(LogicalDependency<M> dep) {
         this.dep = dep;
     }
 

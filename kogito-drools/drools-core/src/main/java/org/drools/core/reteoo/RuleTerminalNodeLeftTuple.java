@@ -16,6 +16,7 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.common.ActivationGroupNode;
@@ -41,8 +42,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class RuleTerminalNodeLeftTuple<T extends Mode> extends BaseLeftTuple implements
-                                                             AgendaItem<T> {
+public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends BaseLeftTuple implements
+                                                                    AgendaItem<T> {
     private static final long serialVersionUID = 540l;
     /**
      * The salience

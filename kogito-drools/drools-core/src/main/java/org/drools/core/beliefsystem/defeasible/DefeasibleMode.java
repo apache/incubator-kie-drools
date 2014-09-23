@@ -9,23 +9,23 @@ import org.kie.internal.runtime.beliefs.Mode;
 
 import java.util.Arrays;
 
-public class DefeasibleMode extends JTMSMode { //extends LinkedListEntry<Activation> implements Mode {
+public class DefeasibleMode<M extends DefeasibleMode<M>> extends JTMSMode<M> { //extends LinkedListEntry<Activation> implements Mode {
     private static final String[] EMPTY_DEFEATS = new String[0];
     public static final  String   DEFEATS       = Defeats.class.getSimpleName();
     public static final  String   DEFEATER      = Defeater.class.getSimpleName();
 
     private DefeasibilityStatus status;
     private String[]            defeats;
-    private DefeasibleMode      rootDefeated;
-    private DefeasibleMode      tailDefeated;
+    private M                   rootDefeated;
+    private M                   tailDefeated;
 
     //    private int                         attacks;
 
-    private DefeasibleMode defeatedBy;
+    private DefeasibleMode<M>   defeatedBy;
 
     private boolean isDefeater;
 
-    private BeliefSystem beliefSystem;
+    private BeliefSystem<M>     beliefSystem;
 
     @Override
     public Object getBeliefSystem() {
@@ -62,7 +62,7 @@ public class DefeasibleMode extends JTMSMode { //extends LinkedListEntry<Activat
         }
     }
 
-    public void addDefeated(DefeasibleMode defeated) {
+    public void addDefeated( M defeated ) {
         defeated.setDefeatedBy( this );
         if (rootDefeated == null) {
             rootDefeated = defeated;
@@ -73,30 +73,30 @@ public class DefeasibleMode extends JTMSMode { //extends LinkedListEntry<Activat
         tailDefeated = defeated;
     }
 
-    public void removeDefeated(DefeasibleMode defeated) {
+    public void removeDefeated( DefeasibleMode<M> defeated ) {
         defeated.setDefeatedBy( null );
         if (this.rootDefeated == defeated) {
             removeFirst();
         } else if (this.tailDefeated == defeated) {
             removeLast();
         } else {
-            DefeasibleMode entry = this.rootDefeated;
+            DefeasibleMode<M> entry = this.rootDefeated;
             while ( entry != defeated ) {
-                entry = ( DefeasibleMode) entry.getNext();
+                entry = entry.getNext();
             }
-            entry.getPrevious().setNext(entry.getNext());
-            (entry.getNext()).setPrevious(entry.getPrevious());
+            entry.getPrevious().setNext( entry.getNext() );
+            entry.getNext().setPrevious( entry.getPrevious() );
             entry.nullPrevNext();
 
         }
     }
 
-    public DefeasibleMode removeFirst() {
+    public DefeasibleMode<M> removeFirst() {
         if (this.rootDefeated == null) {
             return null;
         }
-        final DefeasibleMode node = this.rootDefeated;
-        this.rootDefeated = (DefeasibleMode) node.getNext();
+        final DefeasibleMode<M> node = this.rootDefeated;
+        this.rootDefeated = node.getNext();
         node.setNext(null);
         if (this.rootDefeated != null) {
             this.rootDefeated.setPrevious(null);
@@ -106,12 +106,12 @@ public class DefeasibleMode extends JTMSMode { //extends LinkedListEntry<Activat
         return node;
     }
 
-    public DefeasibleMode removeLast() {
+    public DefeasibleMode<M> removeLast() {
         if (this.tailDefeated == null) {
             return null;
         }
-        final DefeasibleMode node = this.tailDefeated;
-        this.tailDefeated = (DefeasibleMode) node.getPrevious();
+        final DefeasibleMode<M> node = this.tailDefeated;
+        this.tailDefeated = node.getPrevious();
         node.setPrevious(null);
         if (this.tailDefeated != null) {
             this.tailDefeated.setNext(null);
@@ -121,11 +121,11 @@ public class DefeasibleMode extends JTMSMode { //extends LinkedListEntry<Activat
         return node;
     }
 
-    public DefeasibleMode getRootDefeated() {
+    public M getRootDefeated() {
         return this.rootDefeated;
     }
 
-    public DefeasibleMode getTailDefeated() {
+    public M getTailDefeated() {
         return this.tailDefeated;
     }
 
@@ -133,11 +133,11 @@ public class DefeasibleMode extends JTMSMode { //extends LinkedListEntry<Activat
         return this.defeats;
     }
 
-    public DefeasibleMode getDefeatedBy() {
+    public DefeasibleMode<M> getDefeatedBy() {
         return defeatedBy;
     }
 
-    public void setDefeatedBy(DefeasibleMode defeatedBy) {
+    public void setDefeatedBy(DefeasibleMode<M> defeatedBy) {
         this.defeatedBy = defeatedBy;
     }
 
