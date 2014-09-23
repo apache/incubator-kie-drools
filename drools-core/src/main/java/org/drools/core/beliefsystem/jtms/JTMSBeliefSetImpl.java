@@ -6,14 +6,11 @@ import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
-import org.drools.core.util.LinkedListNode;
 import org.drools.core.spi.PropagationContext;
 
-public class JTMSBeliefSetImpl extends LinkedList implements JTMSBeliefSet {
-    private static final FastIterator iterator = new LinkedListFastIterator();
+public class JTMSBeliefSetImpl<M extends JTMSMode<M>> extends LinkedList<M> implements JTMSBeliefSet<M> {
 
-    private BeliefSystem beliefSystem;
+    private BeliefSystem<M> beliefSystem;
 
     private WorkingMemoryAction wmAction;
 
@@ -24,7 +21,7 @@ public class JTMSBeliefSetImpl extends LinkedList implements JTMSBeliefSet {
     private int posCounter = 0;
     private int negCounter = 0;
 
-    public JTMSBeliefSetImpl(BeliefSystem beliefSystem, InternalFactHandle rootHandle) {
+    public JTMSBeliefSetImpl(BeliefSystem<M> beliefSystem, InternalFactHandle rootHandle) {
         this.beliefSystem = beliefSystem;
         this.rootHandle = rootHandle;
     }
@@ -45,8 +42,8 @@ public class JTMSBeliefSetImpl extends LinkedList implements JTMSBeliefSet {
         this.negativeFactHandle = negativeFactHandle;
     }
 
-    public void add( LinkedListNode node ) {
-        JTMSMode mode = ( JTMSMode ) node;
+    public void add( M node ) {
+        JTMSMode mode = node;
         String value = mode.getValue();
         boolean neg = MODE.NEGATIVE.getId().equals( value );
         if ( neg ) {
@@ -59,12 +56,11 @@ public class JTMSBeliefSetImpl extends LinkedList implements JTMSBeliefSet {
         }
     }
     
-    public void remove( LinkedListNode node ) {
+    public void remove( M node ) {
         super.remove(node);
 
-        JTMSMode mode = ( JTMSMode ) node;
+        JTMSMode mode = node;
         String value = mode.getValue();
-
 
         boolean neg = MODE.NEGATIVE.getId().equals( value );
         if ( neg ) {
@@ -140,16 +136,16 @@ public class JTMSBeliefSetImpl extends LinkedList implements JTMSBeliefSet {
     public void cancel(PropagationContext context) {        
         // get all but last, as that we'll do via the BeliefSystem, for cleanup
         // note we don't update negative, conflict counters. It's needed for the last cleanup operation
-        for ( JTMSMode entry = (JTMSMode) getFirst(); entry != getLast();  ) {
-            JTMSMode temp = entry.getNext(); // get next, as we are about to remove it
-            final LogicalDependency node =  entry.getLogicalDependency();
+        for ( JTMSMode<M> entry = getFirst(); entry != getLast();  ) {
+            JTMSMode<M> temp = entry.getNext(); // get next, as we are about to remove it
+            final LogicalDependency<M> node =  entry.getLogicalDependency();
             node.getJustifier().getLogicalDependencies().remove( node );
-            remove( entry );
+            remove( (M) entry );
             entry = temp;
         }
 
-        JTMSMode last = (JTMSMode) getFirst();
-        final LogicalDependency node = (LogicalDependency) last.getLogicalDependency();
+        JTMSMode<M> last = getFirst();
+        final LogicalDependency node = last.getLogicalDependency();
         node.getJustifier().getLogicalDependencies().remove( node );
         beliefSystem.delete( node, this, context );
         positiveFactHandle = null;
@@ -158,11 +154,11 @@ public class JTMSBeliefSetImpl extends LinkedList implements JTMSBeliefSet {
     
     public void clear(PropagationContext context) { 
         // remove all, but don't allow the BeliefSystem to clean up, the FH is most likely going to be used else where
-        for ( JTMSMode entry = (JTMSMode) getFirst(); entry != null;  ) {
-            JTMSMode temp =  entry.getNext(); // get next, as we are about to remove it
-            final LogicalDependency node = entry.getLogicalDependency();
+        for ( JTMSMode<M> entry = getFirst(); entry != null;  ) {
+            JTMSMode<M> temp =  entry.getNext(); // get next, as we are about to remove it
+            final LogicalDependency<M> node = entry.getLogicalDependency();
             node.getJustifier().getLogicalDependencies().remove( node );
-            remove( entry );
+            remove( (M) entry );
             entry = temp;
         }
     }    

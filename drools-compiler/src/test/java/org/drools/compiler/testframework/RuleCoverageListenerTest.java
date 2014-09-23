@@ -1,5 +1,6 @@
 package org.drools.compiler.testframework;
 
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.common.ActivationGroupNode;
@@ -74,7 +75,7 @@ public class RuleCoverageListenerTest {
 }
 
 @SuppressWarnings("serial")
-class MockActivation<T extends Mode>
+class MockActivation<T extends ModedAssertion<T>>
     implements
     Activation<T> {
     private String ruleName;

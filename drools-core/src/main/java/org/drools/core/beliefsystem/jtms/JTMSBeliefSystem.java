@@ -20,9 +20,9 @@ import org.drools.core.util.LinkedListNode;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.runtime.beliefs.Mode;
 
-public class JTMSBeliefSystem<T extends JTMSMode>
+public class JTMSBeliefSystem<M extends JTMSMode<M>>
         implements
-        BeliefSystem<T> {
+        BeliefSystem<M> {
     public static boolean STRICT = false;
 
     private TruthMaintenanceSystem tms;
@@ -45,8 +45,8 @@ public class JTMSBeliefSystem<T extends JTMSMode>
         return this.tms;
     }
 
-    public void insert(LogicalDependency<T> node,
-                       BeliefSet beliefSet,
+    public void insert(LogicalDependency<M> node,
+                       BeliefSet<M> beliefSet,
                        PropagationContext context,
                        ObjectTypeConf typeConf) {
         JTMSBeliefSet jtmsBeliefSet = (JTMSBeliefSet) beliefSet;
@@ -55,7 +55,7 @@ public class JTMSBeliefSystem<T extends JTMSMode>
         boolean wasNegated = jtmsBeliefSet.isNegated();
         boolean wasUndecided = jtmsBeliefSet.isUndecided();
 
-        jtmsBeliefSet.add( (T) node.getMode() );
+        jtmsBeliefSet.add( node.getMode() );
 
         if ( wasEmpty ) {
             // Insert Belief
@@ -79,7 +79,7 @@ public class JTMSBeliefSystem<T extends JTMSMode>
         }
     }
 
-    private void deleteAfterChangedEntryPoint(LogicalDependency<T> node, PropagationContext context, ObjectTypeConf typeConf, JTMSBeliefSet jtmsBeliefSet, boolean wasNegated) {
+    private void deleteAfterChangedEntryPoint(LogicalDependency<M> node, PropagationContext context, ObjectTypeConf typeConf, JTMSBeliefSet<M> jtmsBeliefSet, boolean wasNegated) {
         InternalFactHandle fh;
         if ( wasNegated ) {
             fh = jtmsBeliefSet.getNegativeFactHandle();
@@ -95,9 +95,9 @@ public class JTMSBeliefSystem<T extends JTMSMode>
         }
     }
 
-    protected void insertBelief(LogicalDependency<T> node,
+    protected void insertBelief(LogicalDependency<M> node,
                               ObjectTypeConf typeConf,
-                              JTMSBeliefSet jtmsBeliefSet,
+                              JTMSBeliefSet<M> jtmsBeliefSet,
                               PropagationContext context,
                               boolean wasEmpty,
                               boolean wasNegated,
@@ -136,17 +136,17 @@ public class JTMSBeliefSystem<T extends JTMSMode>
     }
 
 
-    public void read(LogicalDependency<T> node,
-                     BeliefSet beliefSet,
+    public void read(LogicalDependency<M> node,
+                     BeliefSet<M> beliefSet,
                      PropagationContext context,
                      ObjectTypeConf typeConf) {
         throw new UnsupportedOperationException( "This is not serializable yet" );
     }
 
-    public void delete(LogicalDependency<T> node,
-                       BeliefSet beliefSet,
+    public void delete(LogicalDependency<M> node,
+                       BeliefSet<M> beliefSet,
                        PropagationContext context) {
-        JTMSBeliefSet jtmsBeliefSet = (JTMSBeliefSet) beliefSet;
+        JTMSBeliefSet<M> jtmsBeliefSet = (JTMSBeliefSet<M>) beliefSet;
         boolean wasUndecided = jtmsBeliefSet.isUndecided();
         boolean wasNegated = jtmsBeliefSet.isNegated();
 
@@ -158,7 +158,7 @@ public class JTMSBeliefSystem<T extends JTMSMode>
             primeChanged = true;
         }
 
-        beliefSet.remove( (JTMSMode) node.getMode() );
+        beliefSet.remove( node.getMode() );
         if ( beliefSet.isEmpty() ) {
             if ( wasNegated && ! wasUndecided ) {
                 defEP.getObjectStore().addHandle( beliefSet.getFactHandle(), beliefSet.getFactHandle().getObject() ); // was negated, so add back in, so main retract works
@@ -235,7 +235,7 @@ public class JTMSBeliefSystem<T extends JTMSMode>
         }
     }
 
-    private ObjectTypeConf getObjectTypeConf(JTMSBeliefSet jtmsBeliefSet, boolean neg) {
+    private ObjectTypeConf getObjectTypeConf(JTMSBeliefSet<M> jtmsBeliefSet, boolean neg) {
         InternalFactHandle fh;
         NamedEntryPoint nep;
         ObjectTypeConfigurationRegistry reg;
@@ -256,11 +256,11 @@ public class JTMSBeliefSystem<T extends JTMSMode>
         return new JTMSBeliefSetImpl( this, fh );
     }
 
-    public LogicalDependency newLogicalDependency(Activation activation,
-                                                  BeliefSet beliefSet,
+    public LogicalDependency newLogicalDependency(Activation<M> activation,
+                                                  BeliefSet<M> beliefSet,
                                                   Object object,
                                                   Object value) {
-        JTMSMode mode;
+        JTMSMode<M> mode;
         if ( value == null ) {
             mode = new JTMSMode(MODE.POSITIVE.getId(), this);
         } else if ( value instanceof String ) {

@@ -1,5 +1,6 @@
 package org.drools.core.util;
 
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalRuleFlowGroup;
@@ -232,7 +233,7 @@ public class BinaryHeapQueueTest {
         }
     }
 
-    public static class Item<T extends Mode>
+    public static class Item<T extends ModedAssertion<T>>
             implements
             Activation<T> {
 

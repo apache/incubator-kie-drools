@@ -1,5 +1,6 @@
 package org.drools.core.beliefsystem.simple;
 
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.LinkedListNode;
@@ -9,7 +10,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-public class SimpleMode extends LinkedListEntry<SimpleMode, LogicalDependency<SimpleMode>> implements Mode {
+public class SimpleMode extends LinkedListEntry<SimpleMode, LogicalDependency<SimpleMode>>
+       implements ModedAssertion<SimpleMode> {
 
     public SimpleMode() {
     }
