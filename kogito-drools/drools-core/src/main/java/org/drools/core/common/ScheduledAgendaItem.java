@@ -16,6 +16,7 @@
 
 package org.drools.core.common;
 
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -34,7 +35,7 @@ import org.kie.internal.runtime.beliefs.Mode;
 
 import java.util.List;
 
-public class ScheduledAgendaItem<T extends Mode>
+public class ScheduledAgendaItem<T extends ModedAssertion<T>>
             implements
             AgendaItem<T>,
             LinkedListNode<ScheduledAgendaItem<T>> {

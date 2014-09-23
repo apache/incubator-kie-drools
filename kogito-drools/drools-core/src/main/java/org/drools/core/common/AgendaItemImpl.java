@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -44,7 +45,7 @@ import java.util.List;
 /**
  * Item entry in the <code>Agenda</code>.
  */
-public class AgendaItemImpl<T extends Mode>  implements  AgendaItem<T> {
+public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem<T> {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -408,11 +409,10 @@ public class AgendaItemImpl<T extends Mode>  implements  AgendaItem<T> {
     public List<Object> getObjects() {
         FactHandle[] factHandles = this.tuple.toFactHandles();
         List<Object> list = new ArrayList<Object>(factHandles.length);
+        int j = 0;
         for (FactHandle factHandle : factHandles) {
             Object o = ((InternalFactHandle) factHandle).getObject();
-            if (!(o instanceof QueryElementFactHandle)) {
-                list.add(o);
-            }
+            list.set( j++, o instanceof QueryElementFactHandle ? null : o );
         }
         return Collections.unmodifiableList(list);
     }

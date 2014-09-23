@@ -175,6 +175,16 @@ public class SequentialKnowledgeHelper
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    @Override
+    public <T, K> T don( K core, Class<T> trait, Mode... modes ) {
+        return null;
+    }
+
+    @Override
+    public <T, K> T don( Thing<K> core, Class<T> trait, Mode... modes ) {
+        return null;
+    }
+
     public <T, K> T don( K core, Class<T> trait) {
         return don( core, trait, false );
     }
@@ -189,6 +199,11 @@ public class SequentialKnowledgeHelper
     }
 
     @Override
+    public <T, K> T don( K core, Collection<Class<? extends Thing>> trait, Mode... modes ) {
+        return null;
+    }
+
+    @Override
     public <T, K> T don( K core, Collection<Class<? extends Thing>> trait ) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -198,22 +213,6 @@ public class SequentialKnowledgeHelper
     }
 
     public <T, K, X extends TraitableBean> Thing<K> shed( TraitableBean<K,X> core, Class<T> trait) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public <T, K> Thing<K> ward(Thing<K> core, Class<T> trait) {
-        return null;
-    }
-
-    public <T, K> Thing<K> ward(K core, Class<T> trait) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public <T, K> Thing<K> grant(Thing<K> core, Class<T> trait) {
-        return null;
-    }
-
-    public <T, K> Thing<K> grant(K core, Class<T> trait) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

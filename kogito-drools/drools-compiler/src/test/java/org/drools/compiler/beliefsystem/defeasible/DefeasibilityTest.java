@@ -911,4 +911,31 @@ public class DefeasibilityTest {
 
     }
 
+
+    @Test
+    public void testRetractNegativeDefeaters() {
+
+        String drl = "declare Foo end " +
+
+                     "rule Def " +
+                     "  @Defeater " +
+                     "when " +
+                     "  String() " +
+                     "then " +
+                     "  insertLogical( new Foo(), 'neg' ); " +
+                     "end ";
+        StatefulKnowledgeSession session = getSessionFromString( drl );
+
+        FactHandle h = session.insert( "foo" );
+
+        session.fireAllRules();
+        assertEquals( 1, session.getObjects().size() );
+
+        session.delete( h );
+
+        session.fireAllRules();
+        assertEquals( 0, session.getObjects().size() );
+    }
+
+
 }

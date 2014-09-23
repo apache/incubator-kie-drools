@@ -18,6 +18,7 @@ package org.drools.core.spi;
 
 import java.io.Serializable;
 
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
@@ -40,7 +41,7 @@ import org.kie.internal.runtime.beliefs.Mode;
  * number is determined by the <code>WorkingMemory</code> all <code>Activations</code> created 
  * from a single insert, update, retract are assgigned the same Activation number.
  */
-public interface Activation<T extends Mode>
+public interface Activation<T extends ModedAssertion<T>>
     extends
     Serializable,
     Match {

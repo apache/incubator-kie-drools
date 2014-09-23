@@ -38,7 +38,7 @@ public class ReteSimpleBeliefSystem
     }
 
     public void insert(LogicalDependency<SimpleMode> node,
-                       BeliefSet beliefSet,
+                       BeliefSet<SimpleMode> beliefSet,
                        PropagationContext context,
                        ObjectTypeConf typeConf) {
         boolean empty = beliefSet.isEmpty();
@@ -58,7 +58,7 @@ public class ReteSimpleBeliefSystem
     }
 
     public void read(LogicalDependency<SimpleMode> node,
-                     BeliefSet beliefSet,
+                     BeliefSet<SimpleMode> beliefSet,
                      PropagationContext context,
                      ObjectTypeConf typeConf) {
         //insert(node, beliefSet, context, typeConf );
@@ -66,7 +66,7 @@ public class ReteSimpleBeliefSystem
     }
 
     public void delete(LogicalDependency<SimpleMode> node,
-                       BeliefSet beliefSet,
+                       BeliefSet<SimpleMode> beliefSet,
                        PropagationContext context) {
         SimpleBeliefSet sBeliefSet = (SimpleBeliefSet) beliefSet;
         beliefSet.remove( node.getMode() );
@@ -115,8 +115,8 @@ public class ReteSimpleBeliefSystem
         return new SimpleBeliefSet( this, fh );
     }
 
-    public LogicalDependency newLogicalDependency(Activation activation,
-                                                  BeliefSet beliefSet,
+    public LogicalDependency newLogicalDependency(Activation<SimpleMode> activation,
+                                                  BeliefSet<SimpleMode> beliefSet,
                                                   Object object,
                                                   Object value) {
         return new SimpleLogicalDependency( activation, beliefSet, object, null );

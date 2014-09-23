@@ -18,6 +18,7 @@ package org.drools.core.util;
 
 import java.util.List;
 
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.common.ActivationGroupNode;
@@ -35,7 +36,7 @@ import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
 import org.kie.internal.runtime.beliefs.Mode;
 
-public class BaseQueueable<T extends Mode>
+public class BaseQueueable<T extends ModedAssertion<T>>
         implements
         Activation<T> {
     private BinaryHeapQueue queue;
