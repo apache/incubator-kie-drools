@@ -18,7 +18,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import java.util.Arrays;
 import java.util.List;
 
-public class DefeasibleBeliefSet implements JTMSBeliefSet {
+public class DefeasibleBeliefSet<M extends DefeasibleMode<M>> implements JTMSBeliefSet<M> {
     private BeliefSystem beliefSystem;
 
     public static final String DEFEATS = Defeats.class.getSimpleName();
@@ -29,8 +29,8 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
     private InternalFactHandle positiveFactHandle;
     private InternalFactHandle negativeFactHandle;
 
-    private DefeasibleMode rootUndefeated;
-    private DefeasibleMode tailUndefeated;
+    private M                  rootUndefeated;
+    private M                  tailUndefeated;
 
     private int definitelyPosCount;
     private int definitelyNegCount;
@@ -56,7 +56,7 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
 
     private DefeasibilityStatus status;
 
-    public DefeasibleBeliefSet(BeliefSystem beliefSystem, InternalFactHandle rootHandle) {
+    public DefeasibleBeliefSet(BeliefSystem<M> beliefSystem, InternalFactHandle rootHandle) {
         this.beliefSystem = beliefSystem;
         this.rootHandle = rootHandle;
     }
@@ -65,7 +65,7 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         return getLogicalDependency();
     }
 
-    public BeliefSystem getBeliefSystem() {
+    public BeliefSystem<M> getBeliefSystem() {
         return beliefSystem;
     }
 
@@ -73,11 +73,11 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         return rootHandle;
     }
 
-    public DefeasibleMode getFirst() {
+    public M getFirst() {
         return rootUndefeated;
     }
 
-    public DefeasibleMode getLast() {
+    public DefeasibleMode<M> getLast() {
         return tailUndefeated;
     }
 
@@ -97,16 +97,16 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         this.negativeFactHandle = negativeFactHandle;
     }
 
-    public void add(LinkedListNode node) {
-        DefeasibleMode newDep = (DefeasibleMode) node;
-        newDep.setStatus(resolveStatus(newDep));
+    public void add( M node) {
+        M newDep = node;
+        newDep.setStatus( resolveStatus( newDep ) );
 
         RuleImpl rule = newDep.getLogicalDependency().getJustifier().getRule();
 
         // first iterate to see if this new dep is defeated. If it's defeated, it can no longer impacts any deps
         // if we checked what it defeats, and later this was defeated, we would have undo action. So we do the cheaper work first.
         boolean wasDefeated = false;
-        for (DefeasibleMode existingDep = rootUndefeated; existingDep != null; existingDep = (DefeasibleMode) existingDep.getNext()) {
+        for (DefeasibleMode<M> existingDep = rootUndefeated; existingDep != null; existingDep = existingDep.getNext()) {
             wasDefeated = checkIsDefeated( newDep, rule, existingDep );
             if (wasDefeated) {
                 existingDep.addDefeated( newDep );
@@ -115,14 +115,14 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         }
 
         if (!wasDefeated) {
-            DefeasibleMode stagedDeps = null;
-            for (DefeasibleMode existingDep = rootUndefeated; existingDep != null;) {
-                DefeasibleMode next = (DefeasibleMode) existingDep.getNext();
+            M stagedDeps = null;
+            for ( M existingDep = rootUndefeated; existingDep != null;) {
+                M next = existingDep.getNext();
 
                 if ( checkIsDefeated( existingDep, existingDep.getLogicalDependency().getJustifier().getRule(), newDep ) ) {
                     // fist remove it from the undefeated list
-                    removeUndefeated(existingDep);
-                    newDep.addDefeated(existingDep);
+                    removeUndefeated( existingDep );
+                    newDep.addDefeated( existingDep );
                     if (existingDep.getRootDefeated() != null) {
                         // build up the list of staged deps, that will need to be reprocessed
                         if (stagedDeps == null) {
@@ -143,27 +143,27 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         updateStatus();
     }
 
-    private void reprocessDefeated( DefeasibleMode deps) {
-        for ( DefeasibleMode dep = deps; dep != null; ) {
-            DefeasibleMode next = (DefeasibleMode) dep.getNext();
+    private void reprocessDefeated( M deps ) {
+        for ( M dep = deps; dep != null; ) {
+            M next = dep.getNext();
             dep.nullPrevNext(); // it needs to be removed, before it can be processed
             add( dep ); // adding back in, effectively reprocesses the dep
             dep = next;
         }
     }
 
-    public void remove(LinkedListNode node) {
-        DefeasibleMode dep = (DefeasibleMode) node;
+    public void remove( M node) {
+        DefeasibleMode<M> dep = node;
 
         if (dep.getDefeatedBy() != null) {
             // Defeated deps do not have defeated defeated lists of their own, so just remove.
-            DefeasibleMode defeater = dep.getDefeatedBy();
+            DefeasibleMode<M> defeater = dep.getDefeatedBy();
             defeater.removeDefeated(dep);
         } else {
             // ins undefeated, process it's defeated list if they exist
             removeUndefeated(dep);
             if (dep.getRootDefeated() != null) {
-                reprocessDefeated(dep.getRootDefeated());
+                reprocessDefeated( dep.getRootDefeated() );
             }
         }
         updateStatus();
@@ -186,7 +186,7 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         return false;
     }
 
-    public void addUndefeated(DefeasibleMode dep) {
+    public void addUndefeated( M dep ) {
         boolean pos = ! ( dep.getValue() != null && MODE.NEGATIVE.getId().equals( dep.getValue().toString() ) );
         switch( dep.getStatus() ) {
             case DEFINITELY:
@@ -295,12 +295,12 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         }
     }
 
-    public LinkedListNode removeFirst() {
+    public M removeFirst() {
         if (this.rootUndefeated == null) {
             return null;
         }
-        final DefeasibleMode dep = this.rootUndefeated;
-        this.rootUndefeated = (DefeasibleMode) dep.getNext();
+        final M dep = this.rootUndefeated;
+        this.rootUndefeated = dep.getNext();
         dep.setNext(null);
         if (this.rootUndefeated != null) {
             this.rootUndefeated.setPrevious(null);
@@ -310,12 +310,12 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         return dep;
     }
 
-    public LinkedListNode removeLast() {
+    public M removeLast() {
         if (this.tailUndefeated == null) {
             return null;
         }
-        final DefeasibleMode dep = this.tailUndefeated;
-        this.tailUndefeated = (DefeasibleMode) dep.getPrevious();
+        final M dep = this.tailUndefeated;
+        this.tailUndefeated = dep.getPrevious();
         dep.setPrevious(null);
         if (this.tailUndefeated != null) {
             this.tailUndefeated.setNext(null);
@@ -353,18 +353,18 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         // get all but last, as that we'll do via the BeliefSystem, for cleanup
         // note we don't update negative, conflict counters. It's needed for the last cleanup operation
         FastIterator it = iterator();
-        for ( DefeasibleMode node =  getFirst(); node != tailUndefeated;  ) {
-            DefeasibleMode temp = (DefeasibleMode) it.next(node); // get next, as we are about to remove it
+        for ( M node =  getFirst(); node != tailUndefeated;  ) {
+            M temp = (M) it.next(node); // get next, as we are about to remove it
 
-            LogicalDependency dep = node.getLogicalDependency();
+            LogicalDependency<M> dep = node.getLogicalDependency();
 
             dep.getJustifier().getLogicalDependencies().remove( dep );
             remove( node );
             node = temp;
         }
 
-        DefeasibleMode node = (DefeasibleMode) getFirst();
-        LogicalDependency dep = node.getLogicalDependency();
+        DefeasibleMode<M> node = getFirst();
+        LogicalDependency<M> dep = node.getLogicalDependency();
         dep.getJustifier().getLogicalDependencies().remove( dep );
         //beliefSystem.delete( node, this, context );
         positiveFactHandle = null;

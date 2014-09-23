@@ -5,19 +5,20 @@ import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedListNode;
 import org.drools.core.spi.PropagationContext;
+import org.kie.internal.runtime.beliefs.Mode;
 
-public interface BeliefSet {
+public interface BeliefSet<M extends ModedAssertion<M>> {
     public BeliefSystem getBeliefSystem();
     
     public InternalFactHandle getFactHandle();
     
-    public LinkedListNode getFirst();
+    public M getFirst();
 
     public FastIterator iterator();
 
     
-    public void add(LinkedListNode node);
-    public void remove(LinkedListNode node);
+    public void add(M node);
+    public void remove(M node);
     
     public boolean isEmpty();
     //public boolean isPropagated();
@@ -40,6 +41,8 @@ public interface BeliefSet {
     boolean isNegated();
 
     boolean isUndecided();
+
+    boolean isConflicting();
 
     boolean isPositive();
 

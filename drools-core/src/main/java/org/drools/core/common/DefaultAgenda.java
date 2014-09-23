@@ -18,6 +18,7 @@ package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -778,7 +779,7 @@ public class DefaultAgenda
         throw new UnsupportedOperationException("rete only");
     }
 
-    public org.drools.core.util.LinkedList<ScheduledAgendaItem<Mode>> getScheduledActivationsLinkedList() {
+    public <M extends ModedAssertion<M>> org.drools.core.util.LinkedList<ScheduledAgendaItem<M>> getScheduledActivationsLinkedList() {
         throw new UnsupportedOperationException("rete only");
     }
 

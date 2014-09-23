@@ -20,6 +20,7 @@ import com.google.protobuf.ByteString;
 import org.drools.core.InitialFact;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.beliefsystem.BeliefSet;
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.common.ActivationIterator;
 import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.AgendaItem;
@@ -811,8 +812,8 @@ public class ProtobufOutputMarshaller {
         }
     }
 
-    public static ProtobufMessages.Activation writeActivation(MarshallerWriteContext context,
-                                                              AgendaItem agendaItem) {
+    public static <M extends ModedAssertion<M>> ProtobufMessages.Activation writeActivation(MarshallerWriteContext context,
+                                                                                            AgendaItem agendaItem) {
         ProtobufMessages.Activation.Builder _activation = ProtobufMessages.Activation.newBuilder();
 
         RuleImpl rule = agendaItem.getRule();
@@ -831,7 +832,7 @@ public class ProtobufOutputMarshaller {
             _activation.setHandleId( agendaItem.getFactHandle().getId() );
         }
 
-        org.drools.core.util.LinkedList<LogicalDependency<Mode>> list = agendaItem.getLogicalDependencies();
+        org.drools.core.util.LinkedList<LogicalDependency<M>> list = agendaItem.getLogicalDependencies();
         if ( list != null && !list.isEmpty() ) {
             for ( LogicalDependency<?> node = list.getFirst(); node != null; node = node.getNext() ) {
                 _activation.addLogicalDependency( ((BeliefSet) node.getJustified()).getFactHandle().getId() );

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class DefeasibleBeliefSystem extends JTMSBeliefSystem<DefeasibleMode>  {
+public class DefeasibleBeliefSystem<M extends DefeasibleMode<M>> extends JTMSBeliefSystem<M>  {
 
     public DefeasibleBeliefSystem(NamedEntryPoint ep, TruthMaintenanceSystem tms) {
         super(ep, tms);
@@ -31,8 +31,8 @@ public class DefeasibleBeliefSystem extends JTMSBeliefSystem<DefeasibleMode>  {
         return new DefeasibleBeliefSet(this, fh);
     }
 
-    public LogicalDependency newLogicalDependency(Activation activation, BeliefSet beliefSet, Object object, Object value) {
-        DefeasibleMode mode;
+    public LogicalDependency<M> newLogicalDependency(Activation<M> activation, BeliefSet<M> beliefSet, Object object, Object value) {
+        DefeasibleMode<M> mode;
         if ( value == null ) {
             mode = new DefeasibleMode(MODE.POSITIVE.getId(), this);
         } else if ( value instanceof String ) {
@@ -45,15 +45,15 @@ public class DefeasibleBeliefSystem extends JTMSBeliefSystem<DefeasibleMode>  {
             mode = new DefeasibleMode(((MODE)value).getId(), this);
         }
 
-        DefeasibleLogicalDependency dep = new DefeasibleLogicalDependency(activation, beliefSet, object, mode);
+        DefeasibleLogicalDependency<M> dep = new DefeasibleLogicalDependency(activation, beliefSet, object, mode);
         mode.setLogicalDependency( dep );
         mode.initDefeats();
         return dep;
     }
 
 
-    public void insert(LogicalDependency<DefeasibleMode> node,
-                       BeliefSet beliefSet,
+    public void insert(LogicalDependency<M> node,
+                       BeliefSet<M> beliefSet,
                        PropagationContext context,
                        ObjectTypeConf typeConf) {
         boolean wasEmpty = beliefSet.isEmpty();
@@ -67,7 +67,7 @@ public class DefeasibleBeliefSystem extends JTMSBeliefSystem<DefeasibleMode>  {
         if ( ! wasEmpty && ! wasUndecided
              && ! beliefSet.isUndecided() && ! beliefSet.isEmpty() ) {
 
-            DefeasibleBeliefSet dbs = (DefeasibleBeliefSet) beliefSet;
+            DefeasibleBeliefSet<M> dbs = (DefeasibleBeliefSet<M>) beliefSet;
 
             if ( ! wasNegated && beliefSet.isNegated() ) {
                 InternalFactHandle fh = dbs.getPositiveFactHandle();

@@ -21,6 +21,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
@@ -94,7 +95,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
     @Test
     @Ignore
-    public void testSingleLogicalRelationship() throws Exception {
+    public <M extends ModedAssertion<M>> void testSingleLogicalRelationship() throws Exception {
         IdGenerator idGenerator = kBase.getReteooBuilder().getIdGenerator();
 
         final Rete rete = kBase.getRete();
@@ -123,7 +124,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                LinkedList<LogicalDependency<Mode>> list = ((DefaultKnowledgeHelper) knowledgeHelper).getpreviousJustified();
+                LinkedList<LogicalDependency<M>> list = ((DefaultKnowledgeHelper) knowledgeHelper).getpreviousJustified();
                 if (list != null) {
                     for (SimpleLogicalDependency dep = (SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
                         knowledgeHelper.insertLogical( dep.getObject(), dep.getMode() );
@@ -218,7 +219,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
     }
 
     @Test
-    public void testEqualsMap() throws Exception {
+    public <M extends ModedAssertion<M>> void testEqualsMap() throws Exception {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so w can detect assertions and retractions
         final RuleImpl rule1 = new RuleImpl( "test-rule1" );
@@ -250,7 +251,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                LinkedList< LogicalDependency<Mode>> list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                LinkedList< LogicalDependency<M>> list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
                 if ( list != null ) {
                     for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
                         knowledgeHelper.insertLogical( dep.getObject(), dep.getMode() );
@@ -328,7 +329,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
      * @throws Exception
      */
     @Test
-    public void testStatedOverride() throws Exception {
+    public <M extends ModedAssertion<M>> void testStatedOverride() throws Exception {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final RuleImpl rule1 = new RuleImpl( "test-rule1" );
@@ -358,7 +359,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                LinkedList< LogicalDependency<Mode>> list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                LinkedList< LogicalDependency<M>> list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
                 if ( list != null ) {
                     for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
                         knowledgeHelper.insertLogical( dep.getObject(), dep.getMode() );
@@ -479,7 +480,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
     }
 
     @Test
-    public void testRetract() throws Exception {
+    public <M extends ModedAssertion<M>> void testRetract() throws Exception {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final RuleImpl rule1 = new RuleImpl( "test-rule1" );
@@ -507,7 +508,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                LinkedList< LogicalDependency<Mode>> list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                LinkedList< LogicalDependency<M>> list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
                 if ( list != null ) {
                     for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
                         knowledgeHelper.insertLogical( dep.getObject(), dep.getMode() );
@@ -604,7 +605,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
     }
 
     @Test
-    public void testMultipleLogicalRelationships() {
+    public <M extends ModedAssertion<M>> void testMultipleLogicalRelationships() {
         final RuleImpl rule1 = new RuleImpl( "test-rule1" );
         IdGenerator idGenerator = kBase.getReteooBuilder().getIdGenerator();
 
@@ -635,7 +636,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                LinkedList< LogicalDependency<Mode>> list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                LinkedList< LogicalDependency<M>> list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
                 if ( list != null ) {
                     for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
                         knowledgeHelper.insertLogical( dep.getObject(), dep.getMode() );
@@ -765,7 +766,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
      * @throws Exception
      */
     @Test
-    public void testMultipleAssert() throws Exception {
+    public <M extends ModedAssertion<M>> void testMultipleAssert() throws Exception {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final RuleImpl rule1 = new RuleImpl( "test-rule1" );
@@ -795,7 +796,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                LinkedList< LogicalDependency<Mode>> list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                LinkedList< LogicalDependency<M>> list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
                 if ( list != null ) {
                     for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
                         knowledgeHelper.insertLogical( dep.getObject(), dep.getMode() );
@@ -886,7 +887,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
      * This test checks that truth maintenance is correctly maintained for modified objects
      */
     @Test
-    public void testMutableObject() {
+    public <M extends ModedAssertion<M>> void testMutableObject() {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final RuleImpl rule1 = new RuleImpl( "test-rule1" );
@@ -915,7 +916,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                LinkedList< LogicalDependency<Mode>> list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
+                LinkedList< LogicalDependency<M>> list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
                 if ( list != null ) {
                     for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
                         knowledgeHelper.insertLogical( dep.getObject(), dep.getMode()  );

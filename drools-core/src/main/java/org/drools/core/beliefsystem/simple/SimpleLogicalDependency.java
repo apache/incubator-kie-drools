@@ -16,6 +16,7 @@
 
 package org.drools.core.beliefsystem.simple;
 
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.LinkedListEntry;
@@ -26,15 +27,15 @@ import org.kie.internal.runtime.beliefs.Mode;
  * LogicalDependency is a special node for LinkedLists that maintains
  * references for the Activation justifier and the justified FactHandle.
  */
-public class SimpleLogicalDependency<T> extends AbstractBaseLinkedListNode<LogicalDependency<T>>
+public class SimpleLogicalDependency<T extends ModedAssertion<T>> extends AbstractBaseLinkedListNode<LogicalDependency<T>>
         implements
         LogicalDependency<T> {
-    private final Activation justifier;
-    private final Object     justified;
-    private       Object     object;
-    private       T       mode;
+    private final Activation<T>     justifier;
+    private final Object            justified;
+    private       Object            object;
+    private       T                 mode;
 
-    public SimpleLogicalDependency(final Activation justifier,
+    public SimpleLogicalDependency(final Activation<T> justifier,
                                    final Object justified,
                                    final T mode) {
         super();
@@ -43,7 +44,7 @@ public class SimpleLogicalDependency<T> extends AbstractBaseLinkedListNode<Logic
         this.mode = mode;
     }
 
-    public SimpleLogicalDependency(final Activation justifier,
+    public SimpleLogicalDependency(final Activation<T> justifier,
                                    final Object justified,
                                    final Object object,
                                    final T mode) {
@@ -73,7 +74,7 @@ public class SimpleLogicalDependency<T> extends AbstractBaseLinkedListNode<Logic
     /* (non-Javadoc)
      * @see org.kie.common.LogicalDependency#getJustifier()
      */
-    public Activation getJustifier() {
+    public Activation<T> getJustifier() {
         return this.justifier;
     }
 

@@ -1,6 +1,7 @@
 package org.drools.core.common;
 
 import org.drools.core.beliefsystem.BeliefSet;
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.util.LinkedList;
 import org.drools.core.spi.Activation;
@@ -24,23 +25,23 @@ public class TruthMaintenanceSystemHelper {
     }    
     
     
-    public static void removeLogicalDependencies(final Activation activation,
-                                                 final PropagationContext context,
-                                                 final RuleImpl rule) {
-        final LinkedList<LogicalDependency<Mode>> list = activation.getLogicalDependencies();
+    public static <M extends ModedAssertion<M>> void removeLogicalDependencies(final Activation<M> activation,
+                                                                               final PropagationContext context,
+                                                                               final RuleImpl rule) {
+        final LinkedList<LogicalDependency<M>> list = activation.getLogicalDependencies();
         if ( list == null || list.isEmpty() ) {
             return;
         }
 
-        for ( LogicalDependency<?> node = list.getFirst(); node != null; node = node.getNext() ) {
+        for ( LogicalDependency<M> node = list.getFirst(); node != null; node = node.getNext() ) {
             removeLogicalDependency( node, context );
         }
         activation.setLogicalDependencies( null );
     }
 
-    public static void removeLogicalDependency(final LogicalDependency node,
-                                               final PropagationContext context) {
-        final BeliefSet beliefSet = ( BeliefSet ) node.getJustified();
+    public static <M extends ModedAssertion<M>> void removeLogicalDependency(final LogicalDependency<M> node,
+                                                                             final PropagationContext context) {
+        final BeliefSet<M> beliefSet = ( BeliefSet ) node.getJustified();
         beliefSet.getBeliefSystem().delete( node, beliefSet, context );
     }
 }

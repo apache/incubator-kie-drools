@@ -43,7 +43,8 @@ end
 @foreach{attr : rule.attributes.values() }    @{attr.name} @{attr.valueString}@end{"\n"}@end{}@if{rule.isRule()}
 when@end{}@includeNamed{"ced"; base=rule.lhs; root=true}@if{rule.isRule()}
 then
-@{rule.consequence}@end{}@foreach{namedCons : rule.namedConsequences.keySet()}then[@{namedCons}]
+@{rule.consequence}@end{}
+@foreach{namedCons : rule.namedConsequences.keySet()}then[@{namedCons}]
 @{rule.namedConsequences[namedCons]}@end{}end
 @end{"\n"}@end{}
 

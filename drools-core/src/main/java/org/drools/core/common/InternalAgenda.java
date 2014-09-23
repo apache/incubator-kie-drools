@@ -17,6 +17,7 @@
 package org.drools.core.common;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
@@ -151,7 +152,7 @@ public interface InternalAgenda
 
     void removeScheduleItem(final ScheduledAgendaItem item);
 
-    <T extends Mode> org.drools.core.util.LinkedList<ScheduledAgendaItem<T>> getScheduledActivationsLinkedList();
+    <T extends ModedAssertion<T>> org.drools.core.util.LinkedList<ScheduledAgendaItem<T>> getScheduledActivationsLinkedList();
 
     int fireNextItem(AgendaFilter filter, int fireCount, int fireLimit) throws ConsequenceException;
 
