@@ -1,5 +1,5 @@
-NAME : Snowball
-COMMENT : Demonstrate the snowball effect in TSP
+NAME : Snowball 17
+COMMENT : Generated for OptaPlanner. Demonstrate the snowball effect on the optimal solution in TSP.
 TYPE : TSP
 DIMENSION : 17
 EDGE_WEIGHT_TYPE : EUC_2D
