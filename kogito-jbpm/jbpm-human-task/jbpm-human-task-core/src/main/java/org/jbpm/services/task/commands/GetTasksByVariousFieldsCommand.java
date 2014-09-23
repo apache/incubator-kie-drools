@@ -2,9 +2,11 @@ package org.jbpm.services.task.commands;
 
 import static org.kie.internal.query.QueryParameterIdentifiers.*;
 import static org.kie.internal.query.QueryParameterIdentifiers.BUSINESS_ADMIN_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.MAX_RESULTS;
 import static org.kie.internal.query.QueryParameterIdentifiers.POTENTIAL_OWNER_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.STATUS_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.STAKEHOLDER_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_STATUS_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.TASK_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.WORK_ITEM_ID_LIST;
 
@@ -119,7 +121,7 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
 	        this.businessAdmins = (List<String>) params.get(BUSINESS_ADMIN_ID_LIST);
 	        this.potentialOwners = (List<String>) params.get(POTENTIAL_OWNER_ID_LIST);
 	        this.taskOwners = (List<String>) params.get(ACTUAL_OWNER_ID_LIST);
-	        this.statuses = (List<Status>) params.get(STATUS_LIST);
+	        this.statuses = (List<Status>) params.get(TASK_STATUS_LIST);
 	    }
 	}
 
@@ -140,7 +142,7 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
         params.put(POTENTIAL_OWNER_ID_LIST, potentialOwners);
         params.put(STAKEHOLDER_ID_LIST, stakeHolders);
         params.put(ACTUAL_OWNER_ID_LIST, taskOwners);
-        params.put(STATUS_LIST, statuses);
+        params.put(TASK_STATUS_LIST, statuses);
         if( maxResults != null && maxResults.intValue() > 0 ) {
             Integer [] maxResultsArr = { maxResults };
             params.put(MAX_RESULTS, Arrays.asList(maxResultsArr));

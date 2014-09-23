@@ -2,11 +2,13 @@ package org.jbpm.services.task.impl;
 
 import static org.kie.internal.query.QueryParameterIdentifiers.*;
 import static org.kie.internal.query.QueryParameterIdentifiers.BUSINESS_ADMIN_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.CREATED_BY_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.DEPLOYMENT_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.LANGUAGE;
 import static org.kie.internal.query.QueryParameterIdentifiers.POTENTIAL_OWNER_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.STATUS_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.STAKEHOLDER_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_STATUS_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.TASK_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.WORK_ITEM_ID_LIST;
 
@@ -96,7 +98,7 @@ public class TaskQueryBuilderImpl extends AbstractQueryBuilderImpl<TaskQueryBuil
 
     @Override
     public TaskQueryBuilder status( Status... status ) {
-        addObjectParameter(STATUS_LIST, "status", status);
+        addObjectParameter(TASK_STATUS_LIST, "status", status);
         return this;
     }
 

@@ -10,11 +10,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
 import org.kie.internal.query.data.QueryData;
-import org.kie.internal.query.data.QueryDataCommand;
 
 @XmlRootElement(name="task-query-data-command")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TaskQueryDataCommand extends UserGroupCallbackTaskCommand<List<TaskSummary>> implements QueryDataCommand<List<TaskSummary>> {
+public class TaskQueryDataCommand extends UserGroupCallbackTaskCommand<List<TaskSummary>> {
 
     /** generated serial version UID */
     private static final long serialVersionUID = -6879337395030142688L;
@@ -30,12 +29,10 @@ public class TaskQueryDataCommand extends UserGroupCallbackTaskCommand<List<Task
         this.queryData = data;
     }
     
-    @Override
     public QueryData getQueryData() {
         return queryData;
     }
 
-    @Override
     public void setQueryData( QueryData queryData ) {
         this.queryData = queryData;
     }

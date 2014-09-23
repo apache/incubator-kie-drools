@@ -689,7 +689,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             }
         }
         assertNotNull( "Could not find query", query );
-        String whereClause = query.substring(query.indexOf("where")); 
+        String whereClause = query.substring(query.indexOf("WHERE")); 
         return whereClause;
     }
     

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
@@ -388,15 +389,19 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		if( newQueryString != null ) { 
 		    queryString = newQueryString;
 		}
-    logger.debug("QUERY:\n {}", queryString);
-		Query query = this.em.createQuery(queryString);
+		
+		// logging
+		logger.debug("QUERY:\n {}", queryString);
 		if( logger.isDebugEnabled() ) {
 		    StringBuilder paramsStr = new StringBuilder("PARAMS:");
-		    for( Entry<String, Object> entry : params.entrySet() ) { 
+		    Map<String, Object> orderedParams = new TreeMap<String, Object>(params);
+		    for( Entry<String, Object> entry : orderedParams.entrySet() ) { 
 		        paramsStr.append("\n " + entry.getKey() + " : '" + entry.getValue() + "'");
 		    }
 		    logger.debug(paramsStr.toString());
 		}
+		
+		Query query = this.em.createQuery(queryString);
 				
 		return queryStringWithParameters(params, false, LockModeType.NONE, clazz, query);
 	}
