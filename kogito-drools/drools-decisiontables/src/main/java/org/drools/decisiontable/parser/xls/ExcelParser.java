@@ -151,12 +151,10 @@ public class ExcelParser
                         case Cell.CELL_TYPE_FORMULA:
                             String cellValue = null;
                             try {
-                                CellValue cv = formulaEvaluator.evaluate( cell );
-                                cellValue = getCellValue( cv );
                                 newCell( listeners,
                                          i,
                                          cellNum,
-                                         cellValue,
+                                         formatter.formatCellValue( cell,  formulaEvaluator),
                                          DataListener.NON_MERGED );
                             } catch ( RuntimeException e ) {
                                 // This is thrown if an external link cannot be resolved, so try the cached value
