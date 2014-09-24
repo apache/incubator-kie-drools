@@ -243,7 +243,8 @@ public class PatternBuilder
 
         Pattern pattern;
 
-        boolean duplicateBindings = context.getDeclarationResolver().isDuplicated( context.getRule(),
+        boolean duplicateBindings = objectType instanceof ClassObjectType &&
+                                    context.getDeclarationResolver().isDuplicated( context.getRule(),
                                                                                    patternDescr.getIdentifier(),
                                                                                    ((ClassObjectType) objectType).getClassName() );
 
