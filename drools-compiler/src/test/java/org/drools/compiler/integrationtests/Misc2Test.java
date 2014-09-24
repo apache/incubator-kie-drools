@@ -22,6 +22,7 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.Person;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.PackageDescr;
@@ -38,7 +39,12 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.RightTupleSets;
 import org.drools.core.conflict.SalienceConflictResolver;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.facttemplates.FactTemplate;
+import org.drools.core.facttemplates.FactTemplateImpl;
+import org.drools.core.facttemplates.FieldTemplate;
+import org.drools.core.facttemplates.FieldTemplateImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.reteoo.AlphaNode;
@@ -110,6 +116,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -6782,5 +6789,30 @@ public class Misc2Test extends CommonTestMethodBase {
 
         kieSession.fireAllRules();
         assertEquals( Arrays.asList( 42, 99 ), list );
+    }
+
+    @Test
+    public void testFactTemplates() {
+        // DROOLS-600
+        String drl = "package com.testfacttemplate;" +
+                     " rule \"test rule\" " +
+                     " dialect \"mvel\" " +
+                     " when " +
+                     " $test : TestFactTemplate( status == 1 ) " +
+                     " then " +
+                     " System.out.println( \"Hello World\" ); " +
+                     " end ";
+
+        KnowledgePackageImpl kPackage = new KnowledgePackageImpl("com.testfacttemplate");
+        FieldTemplate fieldTemplate = new FieldTemplateImpl("status", 0, Integer.class);
+        FactTemplate factTemplate = new FactTemplateImpl(kPackage, "TestFactTemplate", new FieldTemplate[]{fieldTemplate});
+
+        KnowledgeBuilder kBuilder = new KnowledgeBuilderImpl(kPackage);
+        StringReader rule = new StringReader(drl);
+        try {
+            ((KnowledgeBuilderImpl) kBuilder).addPackageFromDrl(rule);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
