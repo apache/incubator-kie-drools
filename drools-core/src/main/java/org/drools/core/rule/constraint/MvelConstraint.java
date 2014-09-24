@@ -715,13 +715,10 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         public void updateFromTuple(InternalWorkingMemory workingMemory,
                                     LeftTuple tuple) {
             DroolsQuery query = ( DroolsQuery ) tuple.get( 0 ).getObject();
-            Variable v = query.getVariables()[ this.reader.getIndex() ];
-            if ( v == null ) {
+            this.variable = query.getVariables()[ this.reader.getIndex() ];
+            if ( this.variable == null ) {
                 // if there is no Variable, handle it as a normal constraint
-                this.variable = null;
                 this.contextEntry.updateFromTuple( workingMemory, tuple );
-            } else {
-                this.variable = v;
             }
         }
 

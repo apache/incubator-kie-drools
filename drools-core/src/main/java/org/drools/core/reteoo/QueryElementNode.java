@@ -63,11 +63,13 @@ public class QueryElementNode extends LeftTupleSource
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
 
-    protected QueryElement      queryElement;
+    protected QueryElement    queryElement;
 
     private boolean           tupleMemoryEnabled;
 
-    protected boolean           openQuery;
+    protected boolean         openQuery;
+
+    private Object[]          argsTemplate;
 
     public QueryElementNode() {
         // for serialization
@@ -87,6 +89,24 @@ public class QueryElementNode extends LeftTupleSource
         this.tupleMemoryEnabled = tupleMemoryEnabled;
         this.openQuery = openQuery;
         initMasks( context, tupleSource );
+        initArgsTemplate( context );
+    }
+
+    private void initArgsTemplate(BuildContext context) {
+        Object[] originalArgs = this.queryElement.getArgTemplate();
+        argsTemplate = new Object[originalArgs.length];
+        for (int i = 0; i < originalArgs.length; i++) {
+            if (originalArgs[i] instanceof Class) {
+                try {
+                    // Class literals have to be normalized to the classes loaded from the current kbase's ClassLoader
+                    argsTemplate[i] = context.getKnowledgeBase().getRootClassLoader().loadClass(((Class)originalArgs[i]).getName());
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                argsTemplate[i] = originalArgs[i];
+            }
+        }
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -95,6 +115,12 @@ public class QueryElementNode extends LeftTupleSource
         queryElement = (QueryElement) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
         openQuery = in.readBoolean();
+        this.argsTemplate = (Object[]) in.readObject();
+        for ( int i = 0; i < argsTemplate.length; i++ ) {
+            if ( argsTemplate[i] instanceof Variable ) {
+                argsTemplate[i] = Variable.v; // we need to reset this as we do == checks later in DroolsQuery
+            }
+        }
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -102,6 +128,7 @@ public class QueryElementNode extends LeftTupleSource
         out.writeObject( queryElement );
         out.writeBoolean( tupleMemoryEnabled );
         out.writeBoolean( openQuery );
+        out.writeObject( argsTemplate );
     }
 
     public void networkUpdated(UpdateContext updateContext) {
@@ -162,11 +189,10 @@ public class QueryElementNode extends LeftTupleSource
                                          LeftTupleSets trgLeftTuples,
                                          LeftTupleSink sink,
                                          InternalWorkingMemory workingMemory) {
-        Object[] argTemplate = this.queryElement.getArgTemplate(); // an array of declr, variable and literals
-        Object[] args = new Object[argTemplate.length]; // the actual args, to be created from the  template
+        Object[] args = new Object[argsTemplate.length]; // the actual args, to be created from the  template
 
         // first copy everything, so that we get the literals. We will rewrite the declarations and variables next
-        System.arraycopy( argTemplate,
+        System.arraycopy( argsTemplate,
                           0,
                           args,
                           0,
@@ -175,7 +201,7 @@ public class QueryElementNode extends LeftTupleSource
         int[] declIndexes = this.queryElement.getDeclIndexes();
 
         for ( int i = 0, length = declIndexes.length; i < length; i++ ) {
-            Declaration declr = (Declaration) argTemplate[declIndexes[i]];
+            Declaration declr = (Declaration) argsTemplate[declIndexes[i]];
 
             Object tupleObject = leftTuple.get( declr ).getObject();
 
@@ -199,10 +225,10 @@ public class QueryElementNode extends LeftTupleSource
         }
 
         int[] varIndexes = this.queryElement.getVariableIndexes();
-        for ( int i = 0, length = varIndexes.length; i < length; i++ ) {
-            if ( argTemplate[varIndexes[i]] == Variable.v ) {
+        for (int varIndex : varIndexes) {
+            if (argsTemplate[varIndex] == Variable.v) {
                 // Need to check against the arg template, as the varIndexes also includes re-declared declarations
-                args[varIndexes[i]] = Variable.v;
+                args[varIndex] = Variable.v;
             }
         }
 
@@ -211,7 +237,7 @@ public class QueryElementNode extends LeftTupleSource
         boolean executeAsOpenQuery = openQuery;
         if ( executeAsOpenQuery ) {
             // There is no point in doing an open query if the caller is a non-open query.
-            Object object = ((InternalFactHandle) leftTuple.get( 0 )).getObject();
+            Object object = leftTuple.get( 0 ).getObject();
             if ( object instanceof DroolsQuery && !((DroolsQuery) object).isOpen() ) {
                 executeAsOpenQuery = false;
             }          
@@ -335,10 +361,10 @@ public class QueryElementNode extends LeftTupleSource
             Object[] objects = new Object[ determineResultSize( query, dquery ) ];
 
             Declaration decl;
-            for ( int i = 0, length = this.variables.length; i < length; i++ ) {
-                decl = decls[this.variables[i]];
-                objects[this.variables[i]] = decl.getValue( workingMemory,
-                                                            resultLeftTuple.get( decl ).getObject() );
+            for (int variable : this.variables) {
+                decl = decls[variable];
+                objects[variable] = decl.getValue(workingMemory,
+                                                  resultLeftTuple.get(decl).getObject());
             }
 
             QueryElementFactHandle resultHandle = createQueryResultHandle(context,
@@ -359,7 +385,7 @@ public class QueryElementNode extends LeftTupleSource
                 Object abduced = aq.abduce( Arrays.copyOfRange( objects, 0, numArgs - 1 ) );
                 if ( abduced != null ) {
                     EqualityKey key = ( (NamedEntryPoint) workingMemory.getEntryPoint( workingMemory.getEntryPointId() ) ).getTruthMaintenanceSystem().get( abduced );
-                    InternalFactHandle handle = null;
+                    InternalFactHandle handle;
                     if ( key != null ) {
                         handle = key.getFactHandle();
                         abduced = handle.getObject();
@@ -424,7 +450,7 @@ public class QueryElementNode extends LeftTupleSource
         protected QueryElementFactHandle createQueryResultHandle(PropagationContext context,
                                                                InternalWorkingMemory workingMemory,
                                                                Object[] objects) {
-            QueryElementFactHandle handle = null;
+            QueryElementFactHandle handle;
             ProtobufMessages.FactHandle _handle = null;
             if( context.getReaderContext() != null ) {
                 Map<TupleKey, QueryElementContext> map = (Map<TupleKey, QueryElementContext>) context.getReaderContext().nodeMemories.get( node.getId() );
@@ -496,10 +522,10 @@ public class QueryElementNode extends LeftTupleSource
             Object[] objects = new Object[dquery.getElements().length];
 
             Declaration decl;
-            for ( int i = 0, length = this.variables.length; i < length; i++ ) {
-                decl = decls[this.variables[i]];
-                objects[this.variables[i]] = decl.getValue( workingMemory,
-                                                            resultLeftTuple.get( decl ).getObject() );
+            for (int variable : this.variables) {
+                decl = decls[variable];
+                objects[variable] = decl.getValue(workingMemory,
+                                                  resultLeftTuple.get(decl).getObject());
             }
 
             QueryElementFactHandle handle = (QueryElementFactHandle) rightTuple.getFactHandle();
@@ -526,7 +552,7 @@ public class QueryElementNode extends LeftTupleSource
             leftTuples.addUpdate( childLeftTuple  );
         }
 
-        public List< ? extends Object> getResults() {
+        public List<?> getResults() {
             throw new UnsupportedOperationException( getClass().getCanonicalName() + " does not support the getResults() method." );
         }
 
