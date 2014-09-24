@@ -6815,4 +6815,32 @@ public class Misc2Test extends CommonTestMethodBase {
             throw new RuntimeException(e);
         }
     }
+
+    @Test
+    public void testBitwiseOperator() {
+        // DROOLS-585
+        String drl =
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $i : Integer( (intValue() & 5) != 0 )\n" +
+                "then\n" +
+                "    list.add($i);\n" +
+                "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent(drl, ResourceType.DRL);
+        KieSession kieSession = helper.build().newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        kieSession.setGlobal( "list", list );
+
+        kieSession.insert(3);
+        kieSession.insert(2);
+        kieSession.insert(6);
+        kieSession.fireAllRules();
+
+        assertEquals(2, list.size());
+        assertTrue(list.containsAll(asList(3, 6)));
+    }
 }
