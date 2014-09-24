@@ -694,53 +694,9 @@ public class ASMConditionEvaluatorJitter {
 
         private void jitAritmeticOperation(Class<?> operationType, AritmeticOperator operator) {
             if (operationType == int.class) {
-                switch(operator) {
-                    case ADD:
-                        mv.visitInsn(IADD);
-                        break;
-                    case SUB:
-                        mv.visitInsn(ISUB);
-                        break;
-                    case MUL:
-                        mv.visitInsn(IMUL);
-                        break;
-                    case DIV:
-                        mv.visitInsn(IDIV);
-                        break;
-                    case BW_SHIFT_LEFT:
-                        mv.visitInsn(ISHL);
-                        break;
-                    case BW_SHIFT_RIGHT:
-                        mv.visitInsn(ISHR);
-                        break;
-                    case MOD:
-                        mv.visitInsn(IREM);
-                        break;
-                }
+                mv.visitInsn(operator.getIntOp());
             } else if (operationType == long.class) {
-                switch(operator) {
-                    case ADD:
-                        mv.visitInsn(LADD);
-                        break;
-                    case SUB:
-                        mv.visitInsn(LSUB);
-                        break;
-                    case MUL:
-                        mv.visitInsn(LMUL);
-                        break;
-                    case DIV:
-                        mv.visitInsn(LDIV);
-                        break;
-                    case BW_SHIFT_LEFT:
-                        mv.visitInsn(LSHL);
-                        break;
-                    case BW_SHIFT_RIGHT:
-                        mv.visitInsn(LSHR);
-                        break;
-                    case MOD:
-                        mv.visitInsn(LREM);
-                        break;
-                }
+                mv.visitInsn(operator.getLongOp());
             } else if (operationType == double.class) {
                 switch(operator) {
                     case ADD:
