@@ -16,9 +16,11 @@
 
 package org.optaplanner.examples.cloudbalancing.swingui;
 
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -49,6 +51,7 @@ public class CloudBalancingPanel extends SolutionPanel {
     public static final String LOGO_PATH = "/org/optaplanner/examples/cloudbalancing/swingui/cloudBalancingLogo.png";
 
     private final ImageIcon cloudComputerIcon;
+    private final ImageIcon addCloudComputerIcon;
     private final ImageIcon deleteCloudComputerIcon;
 
     private JPanel computersPanel;
@@ -62,6 +65,7 @@ public class CloudBalancingPanel extends SolutionPanel {
 
     public CloudBalancingPanel() {
         cloudComputerIcon = new ImageIcon(getClass().getResource("cloudComputer.png"));
+        addCloudComputerIcon = new ImageIcon(getClass().getResource("addCloudComputer.png"));
         deleteCloudComputerIcon = new ImageIcon(getClass().getResource("deleteCloudComputer.png"));
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
@@ -78,6 +82,10 @@ public class CloudBalancingPanel extends SolutionPanel {
 
     public ImageIcon getCloudComputerIcon() {
         return cloudComputerIcon;
+    }
+
+    public ImageIcon getAddCloudComputerIcon() {
+        return addCloudComputerIcon;
     }
 
     public ImageIcon getDeleteCloudComputerIcon() {
@@ -98,8 +106,21 @@ public class CloudBalancingPanel extends SolutionPanel {
 
     private JPanel createHeaderPanel() {
         JPanel headerPanel = new JPanel(new GridLayout(0, 5));
-        JLabel emptyLabel = new JLabel("");
-        headerPanel.add(emptyLabel);
+        JPanel addComputerPanel = new JPanel(new BorderLayout());
+        JButton addButton = new JButton(addCloudComputerIcon);
+        addButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                CloudComputer computer = new CloudComputer();
+                computer.setCpuPower(12);
+                computer.setMemory(32);
+                computer.setNetworkBandwidth(12);
+                computer.setCost(400 + 400 + 600);
+                addComputer(computer);
+            }
+        });
+        addButton.setMargin(new Insets(0, 0, 0, 0));
+        addComputerPanel.add(addButton, BorderLayout.EAST);
+        headerPanel.add(addComputerPanel);
         JLabel cpuPowerLabel = new JLabel("CPU power");
         headerPanel.add(cpuPowerLabel);
         JLabel memoryLabel = new JLabel("Memory");
@@ -187,6 +208,29 @@ public class CloudBalancingPanel extends SolutionPanel {
         computersPanel.validate();
     }
 
+    public void addComputer(final CloudComputer computer) {
+        logger.info("Scheduling addition of computer ({}).", computer);
+        solutionBusiness.doProblemFactChange(new ProblemFactChange() {
+            public void doChange(ScoreDirector scoreDirector) {
+                CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
+                // Set a unique id on the new computer
+                long nextComputerId = 0L;
+                for (CloudComputer computer : cloudBalance.getComputerList()) {
+                    if (nextComputerId <= computer.getId()) {
+                        nextComputerId = computer.getId() + 1L;
+                    }
+                }
+                computer.setId(nextComputerId);
+                // A SolutionCloner does not clone problem fact lists (such as computerList)
+                // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
+                cloudBalance.setComputerList(new ArrayList<CloudComputer>(cloudBalance.getComputerList()));
+                // Add the planning fact itself
+                cloudBalance.getComputerList().add(computer);
+            }
+        });
+        updatePanel(solutionBusiness.getSolution());
+    }
+
     public void deleteComputer(final CloudComputer computer) {
         logger.info("Scheduling delete of computer ({}).", computer);
         solutionBusiness.doProblemFactChange(new ProblemFactChange() {
@@ -206,7 +250,7 @@ public class CloudBalancingPanel extends SolutionPanel {
                 // A SolutionCloner does not clone problem fact lists (such as computerList)
                 // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
                 cloudBalance.setComputerList(new ArrayList<CloudComputer>(cloudBalance.getComputerList()));
-                // Next remove it the planning fact itself
+                // Remove the planning fact itself
                 for (Iterator<CloudComputer> it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
                     CloudComputer workingComputer = it.next();
                     if (ObjectUtils.equals(workingComputer, computer)) {
