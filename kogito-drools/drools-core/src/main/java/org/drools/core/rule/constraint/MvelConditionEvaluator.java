@@ -1,9 +1,5 @@
 package org.drools.core.rule.constraint;
 
-import static org.drools.core.rule.constraint.EvaluatorHelper.valuesAsMap;
-
-import java.util.Map;
-
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -28,6 +24,10 @@ import org.mvel2.compiler.ExecutableLiteral;
 import org.mvel2.compiler.ExecutableStatement;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.util.ASTLinkedList;
+
+import java.util.Map;
+
+import static org.drools.core.rule.constraint.EvaluatorHelper.valuesAsMap;
 
 public class MvelConditionEvaluator implements ConditionEvaluator, MapConditionEvaluator {
 
@@ -78,7 +78,9 @@ public class MvelConditionEvaluator implements ConditionEvaluator, MapConditionE
     }
 
     private boolean evaluate(ExecutableStatement statement, InternalFactHandle handle, Map<String, Object> vars) {
-        return vars == null ? (Boolean)MVELSafeHelper.getEvaluator().executeExpression(statement, handle.getObject()) : (Boolean)MVELSafeHelper.getEvaluator().executeExpression(statement, handle.getObject(), vars);
+        return vars == null ?
+               (Boolean)MVELSafeHelper.getEvaluator().executeExpression(statement, handle.getObject()) :
+               (Boolean)MVELSafeHelper.getEvaluator().executeExpression(statement, handle.getObject(), vars);
     }
 
     ConditionAnalyzer.Condition getAnalyzedCondition() {

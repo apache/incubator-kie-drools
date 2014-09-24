@@ -16,15 +16,12 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
-import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.util.Entry;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.core.util.ObjectHashSet;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.KieServices;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.definition.rule.Rule;
@@ -994,7 +991,6 @@ public class QueryTest extends CommonTestMethodBase {
 
 
     @Test
-    @Ignore
     public void testQueryWithClassArg() {
         //DROOLS-590
         String drl = "global java.util.List list; " +
@@ -1033,6 +1029,4 @@ public class QueryTest extends CommonTestMethodBase {
 
         assertEquals( Arrays.asList( "aa", "bb" ), list );
     }
-
-
 }
