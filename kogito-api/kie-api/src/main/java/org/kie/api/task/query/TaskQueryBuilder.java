@@ -98,20 +98,6 @@ public interface TaskQueryBuilder extends ParametrizedQueryBuilder<TaskQueryBuil
     public TaskQueryBuilder language(String language); 
     
     /**
-     * Limit the number of results returned by the query
-     * @param maxResults
-     * @return the current {@link TaskQueryBuilder} instance
-     */
-    public TaskQueryBuilder maxResults(int maxResults);
-    
-    /**
-     * Retrieves results starting at the offset specified
-     * @param offset
-     * @return the current {@link TaskQueryBuilder} instance
-     */
-    public TaskQueryBuilder offset(int offset);
-    
-    /**
      * Order the results retrieved by the given parameter
      * </p>
      * results are ordered by default by task id.
