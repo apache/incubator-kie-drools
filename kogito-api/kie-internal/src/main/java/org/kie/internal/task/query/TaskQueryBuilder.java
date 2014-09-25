@@ -1,12 +1,9 @@
-package org.kie.api.task.query;
+package org.kie.internal.task.query;
 
-import java.util.List;
-
-import org.kie.api.query.ParametrizedQuery;
-import org.kie.api.query.ParametrizedQueryBuilder;
-import org.kie.api.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.query.ParametrizedQuery;
+import org.kie.internal.query.ParametrizedQueryBuilder;
 
 /**
  * An instance of this class is used to dynamically

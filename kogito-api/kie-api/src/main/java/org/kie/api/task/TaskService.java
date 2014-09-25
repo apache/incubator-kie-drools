@@ -25,7 +25,6 @@ import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.api.task.query.TaskQueryBuilder;
 
 /**
  * The Task Service Entry Point serves as 

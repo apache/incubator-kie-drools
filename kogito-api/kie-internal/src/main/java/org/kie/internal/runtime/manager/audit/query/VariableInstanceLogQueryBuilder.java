@@ -1,9 +1,9 @@
-package org.kie.api.runtime.manager.audit.query;
+package org.kie.internal.runtime.manager.audit.query;
 
 import java.util.Date;
 
-import org.kie.api.query.ParametrizedQuery;
 import org.kie.api.runtime.manager.audit.VariableInstanceLog;
+import org.kie.internal.query.ParametrizedQuery;
 
 public interface VariableInstanceLogQueryBuilder extends AuditQueryBuilder<VariableInstanceLogQueryBuilder>{
 
