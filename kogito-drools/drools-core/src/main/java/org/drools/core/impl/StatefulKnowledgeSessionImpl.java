@@ -51,6 +51,7 @@ import org.drools.core.common.NodeMemories;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -397,6 +398,16 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
 
         initManagementBeans();
+    }
+
+    @Override
+    public TruthMaintenanceSystem getTruthMaintenanceSystem() {
+        return defaultEntryPoint.getTruthMaintenanceSystem();
+    }
+
+    @Override
+    public FactHandleFactory getHandleFactory() {
+        return handleFactory;
     }
 
     public <T> T getKieRuntime(Class<T> cls) {
@@ -1346,7 +1357,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public Object getObject(FactHandle handle) {
         // the handle might have been disconnected, so reconnect if it has
         if ( ((InternalFactHandle)handle).isDisconnected() ) {
-            handle = this.defaultEntryPoint.getObjectStore().reconnect( handle );
+            handle = this.defaultEntryPoint.getObjectStore().reconnect( (InternalFactHandle)handle );
         }
         return this.defaultEntryPoint.getObject( handle );
     }
@@ -1473,9 +1484,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                              final Activation activation) {
         checkAlive();
         return this.defaultEntryPoint.insert( object,
-                                              tmsValue,
                                               dynamic,
-                                              logical,
                                               rule,
                                               activation );
     }

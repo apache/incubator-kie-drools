@@ -12,11 +12,20 @@ public class BayesHardEvidence<M extends BayesHardEvidence<M>> extends AbstractB
     private double[] distribution;
     private BeliefSystem<M> beliefSystem;
     private LogicalDependency<M> dep;
+    private Mode nextMode;
 
     public BayesHardEvidence(BeliefSystem<M> beliefSystem,
                              double[] distribution) {
         this.beliefSystem = beliefSystem;
         this.distribution = distribution;
+    }
+
+    public BayesHardEvidence(BeliefSystem<M> beliefSystem,
+                             double[] distribution,
+                             Mode nextMode) {
+        this.beliefSystem = beliefSystem;
+        this.distribution = distribution;
+        this.nextMode = nextMode;
     }
 
     public LogicalDependency<M> getLogicalDependency() {
@@ -29,6 +38,11 @@ public class BayesHardEvidence<M extends BayesHardEvidence<M>> extends AbstractB
 
     public double[] getDistribution() {
         return distribution;
+    }
+
+    @Override
+    public Mode getNextMode() {
+        return nextMode;
     }
 
     @Override

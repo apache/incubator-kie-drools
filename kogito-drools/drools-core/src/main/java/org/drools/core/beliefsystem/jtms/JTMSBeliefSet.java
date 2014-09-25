@@ -11,13 +11,13 @@ import org.kie.internal.runtime.beliefs.Mode;
 
 public interface JTMSBeliefSet<M extends ModedAssertion<M>> extends BeliefSet<M> {
 
-    void setNegativeFactHandle(InternalFactHandle insert);
-
-    InternalFactHandle getNegativeFactHandle();
-
-    void setPositiveFactHandle(InternalFactHandle fh);
-
-    InternalFactHandle getPositiveFactHandle();
+//    void setNegativeFactHandle(InternalFactHandle insert);
+//
+//    InternalFactHandle getNegativeFactHandle();
+//
+//    void setPositiveFactHandle(InternalFactHandle fh);
+//
+//    InternalFactHandle getPositiveFactHandle();
 
     Object getLast();
 }

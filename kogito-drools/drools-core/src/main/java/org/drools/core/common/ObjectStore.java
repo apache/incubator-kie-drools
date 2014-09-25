@@ -18,6 +18,8 @@ package org.drools.core.common;
 
 import java.util.Iterator;
 
+import org.drools.core.util.HashTableIterator;
+import org.drools.core.util.JavaIteratorAdapter;
 import org.kie.api.runtime.rule.FactHandle;
 
 public interface ObjectStore {
@@ -30,7 +32,7 @@ public interface ObjectStore {
 
     Object getObjectForHandle(FactHandle handle);
     
-    InternalFactHandle reconnect(FactHandle factHandle);
+    InternalFactHandle reconnect(InternalFactHandle factHandle);
 
     InternalFactHandle getHandleForObject(Object object);
     
@@ -42,7 +44,7 @@ public interface ObjectStore {
     public abstract void addHandle(InternalFactHandle handle,
                                    Object object);
 
-    public abstract void removeHandle(final FactHandle handle);
+    public abstract void removeHandle(final InternalFactHandle handle);
 
     /**
      * This class is not thread safe, changes to the working memory during iteration may give unexpected results
@@ -63,5 +65,9 @@ public interface ObjectStore {
      * This class is not thread safe, changes to the working memory during iteration may give unexpected results
      */
     public abstract Iterator iterateFactHandles(org.kie.api.runtime.ObjectFilter filter);
+
+    public Iterator iterateNegObjects(org.kie.api.runtime.ObjectFilter filter);
+
+    public Iterator iterateNegFactHandles(org.kie.api.runtime.ObjectFilter filter);
 
 }

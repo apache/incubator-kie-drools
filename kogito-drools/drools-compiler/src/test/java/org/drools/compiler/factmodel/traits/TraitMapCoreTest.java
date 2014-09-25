@@ -15,7 +15,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
 
 
 
-    @Test
+    @Test(timeout=10000)
     public void testMapCoreManyTraits(  ) {
         String source = "package org.drools.test;\n" +
                         "\n" +
@@ -81,7 +81,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
 
 
 
-    @Test
+    @Test(timeout=10000)
     public void donMapTest() {
         String source = "package org.drools.traits.test; \n" +
                         "import java.util.*\n;" +
@@ -137,7 +137,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
 
 
 
-    @Test
+    @Test(timeout=10000)
     public void testMapCore2(  ) {
         String source = "package org.drools.core.factmodel.traits.test;\n" +
                         "\n" +
@@ -267,7 +267,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
 
 
 
-    @Test
+    @Test(timeout=10000)
     public void testMapCoreAliasing(  ) {
         String source = "package org.drools.core.factmodel.traits.test;\n" +
                         "\n" +
@@ -335,7 +335,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
 
 
 
-    @Test
+    @Test(timeout=10000)
     public void testMapCoreAliasingLogicalTrueWithTypeClash(  ) {
         String source = "package org.drools.core.factmodel.traits.test;\n" +
                         "\n" +
@@ -912,7 +912,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
     }
 
 
-    @Test
+    @Test(timeout=10000)
     public void testMapTraitMismatchTypes()
     {
         String drl = "" +

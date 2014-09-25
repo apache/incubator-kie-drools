@@ -52,6 +52,8 @@ public class DisconnectedFactHandle
     @XmlElement
     private TraitTypeEnum traitType;
 
+    private boolean                 negated;
+
     public DisconnectedFactHandle() {
     }
 
@@ -116,6 +118,16 @@ public class DisconnectedFactHandle
         this.recency = Long.parseLong( elements[4] );
         this.entryPointId = elements[5];
         this.traitType = TraitTypeEnum.valueOf( elements[6] );
+    }
+
+    @Override
+    public boolean isNegated() {
+        return negated;
+    }
+
+    @Override
+    public void setNegated(boolean negated) {
+        this.negated = negated;
     }
 
     public int getId() {

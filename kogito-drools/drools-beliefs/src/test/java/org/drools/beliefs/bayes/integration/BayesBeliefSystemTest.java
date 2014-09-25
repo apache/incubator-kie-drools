@@ -1,7 +1,7 @@
 package org.drools.beliefs.bayes.integration;
 
-import org.drools.beliefs.bayes.BayesBeliefFactory;
-import org.drools.beliefs.bayes.BayesBeliefFactoryImpl;
+import org.drools.beliefs.bayes.BayesModeFactory;
+import org.drools.beliefs.bayes.BayesModeFactoryImpl;
 import org.drools.beliefs.bayes.BayesBeliefSystem;
 import org.drools.beliefs.bayes.BayesInstance;
 import org.drools.beliefs.bayes.PropertyReference;
@@ -23,7 +23,6 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import static junit.framework.TestCase.assertFalse;
-import static org.drools.beliefs.bayes.JunctionTreeTest.assertArray;
 import static org.drools.beliefs.bayes.JunctionTreeTest.scaleDouble;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -37,7 +36,7 @@ public class BayesBeliefSystemTest {
         String drl = "package org.drools.defeasible; " +
                      "import " + Garden.class.getCanonicalName() + "; \n"  +
                      "import " + PropertyReference.class.getCanonicalName() + "; \n"  +
-                     "global " +  BayesBeliefFactory.class.getCanonicalName() + " bsFactory; \n" +
+                     "global " +  BayesModeFactory.class.getCanonicalName() + " bsFactory; \n" +
                      "dialect 'mvel'; \n" +
                      " " +
                      "rule rule1 when " +
@@ -80,9 +79,9 @@ public class BayesBeliefSystemTest {
 
         BayesBeliefSystem bayesBeliefSystem = new BayesBeliefSystem( ep, ep.getTruthMaintenanceSystem());
 
-        BayesBeliefFactoryImpl bayesBeliefValueFactory = new BayesBeliefFactoryImpl(bayesBeliefSystem);
+        BayesModeFactoryImpl bayesModeFactory = new BayesModeFactoryImpl(bayesBeliefSystem);
 
-        ksession.setGlobal( "bsFactory", bayesBeliefValueFactory);
+        ksession.setGlobal( "bsFactory", bayesModeFactory);
 
         BayesRuntime bayesRuntime = ksession.getKieRuntime(BayesRuntime.class);
         BayesInstance<Garden> instance = bayesRuntime.createInstance(Garden.class);

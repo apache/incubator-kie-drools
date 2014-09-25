@@ -13,10 +13,17 @@ public class JTMSMode<M extends JTMSMode<M>> extends AbstractBaseLinkedListNode<
     private BeliefSystem<M> bs;
     private String value;
     private LogicalDependency<M> dep;
+    private Mode nextMode;
 
     public JTMSMode(String value, BeliefSystem bs) {
         this.value = value;
         this.bs = bs;
+    }
+
+    public JTMSMode(String value, BeliefSystem bs,  Mode nextMode) {
+        this.value = value;
+        this.bs = bs;
+        this.nextMode = nextMode;
     }
 
     @Override
@@ -34,5 +41,10 @@ public class JTMSMode<M extends JTMSMode<M>> extends AbstractBaseLinkedListNode<
 
     public void setLogicalDependency(LogicalDependency<M> dep) {
         this.dep = dep;
+    }
+
+    @Override
+    public Mode getNextMode() {
+        return nextMode;
     }
 }

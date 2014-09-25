@@ -52,7 +52,7 @@ end
 rule "Neg"
 salience -1
 when
-    $x : X( $id : id ) from entry-point "neg"
+    $x : X( _.neg, $id : id )
 then
     System.out.println( "Negative X " + $x );
     list.add( "-" + $id );

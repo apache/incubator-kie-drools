@@ -2,6 +2,7 @@ package org.drools.beliefs.bayes;
 
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
@@ -15,19 +16,19 @@ import org.drools.core.util.LinkedListEntry;
 
 import java.util.Arrays;
 
-public class BayesBeliefSet<M extends BayesHardEvidence<M>> extends LinkedList<M> implements BeliefSet<M> {
-    private BayesBeliefSystem<M> beliefSystem;
+public class NonConflictingModeSet<M extends ModedAssertion<M>> extends LinkedList<M> implements BeliefSet<M> {
+    BayesBeliefSystem<? extends ModedAssertion> beliefSystem;
     private InternalFactHandle rootHandle;
 
     private int conflictCounter;
 
-    public BayesBeliefSet(InternalFactHandle rootHandle, BayesBeliefSystem<M> beliefSystem) {
-        this.beliefSystem = beliefSystem;
+    public NonConflictingModeSet(InternalFactHandle rootHandle, BayesBeliefSystem<? extends ModedAssertion> beliefSystem) {
         this.rootHandle = rootHandle;
+        this.beliefSystem = beliefSystem;
     }
 
     @Override
-    public BeliefSystem<M> getBeliefSystem() {
+    public BeliefSystem<? extends ModedAssertion> getBeliefSystem() {
         return beliefSystem;
     }
 
@@ -38,10 +39,9 @@ public class BayesBeliefSet<M extends BayesHardEvidence<M>> extends LinkedList<M
 
     @Override
     public void add( M mode ) {
-        BayesHardEvidence<M> evidence = mode;
         if ( !isEmpty() ) {
-            BayesHardEvidence firstEvidence = getFirst();
-            if ( !Arrays.equals( evidence.getDistribution(), firstEvidence.getDistribution()) ) {
+            M first = getFirst();
+            if ( !first.equals( mode )) {
                 conflictCounter++;
             }
         }
@@ -58,17 +58,17 @@ public class BayesBeliefSet<M extends BayesHardEvidence<M>> extends LinkedList<M
             return;
         }
 
-        BayesHardEvidence<M> firstEvidence = getFirst();
+        M first = getFirst();
 
         if ( wasFirst ) {
             // the first node was removed, reset the conflictCounter and recalculate the nodes in conflict
             conflictCounter = 0;
-            for ( BayesHardEvidence<M> currentEvidence = mode.getNext(); currentEvidence != null; currentEvidence = currentEvidence.getNext() ) {
-                if (  !Arrays.equals( firstEvidence.getDistribution(), currentEvidence.getDistribution() )  ) {
+            for ( M current = mode.getNext(); current != null; current = current.getNext() ) {
+                if ( !first.equals( current )) {
                     conflictCounter++;
                 }
             }
-        } else if ( !Arrays.equals( mode.getDistribution(), firstEvidence.getDistribution() ) ) {
+        } else if ( !first.equals( mode )) {
             // The removing Mode conflicted with first, so decrement the counter
             conflictCounter--;
         }
@@ -95,8 +95,8 @@ public class BayesBeliefSet<M extends BayesHardEvidence<M>> extends LinkedList<M
     }
 
     @Override
-    public boolean isUndecided() {
-        return isConflicting();
+    public boolean isDecided() {
+        return !isConflicting();
     }
 
     @Override

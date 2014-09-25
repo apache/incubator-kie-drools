@@ -1234,7 +1234,7 @@ public class LogicalTraitTest extends CommonTestMethodBase {
         assertTrue( list.size() == 1 && list.contains( null ) );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testTraitMismatchTypes3()
     {
         String drl = "" +
@@ -1285,7 +1285,9 @@ public class LogicalTraitTest extends CommonTestMethodBase {
         ksession.setGlobal("list",list);
         ksession.fireAllRules();
 
+        System.out.println( "list" + list );
+
         assertEquals( 1, list.size() );
-        assertEquals( "org.drools.core.factmodel.traits.test.Bar", list.get( 0 ).getClass().getName() );
+        assertEquals("org.drools.core.factmodel.traits.test.Bar", list.get(0).getClass().getName());
     }
 }

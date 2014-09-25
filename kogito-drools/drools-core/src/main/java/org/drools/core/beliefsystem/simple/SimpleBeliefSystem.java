@@ -6,7 +6,9 @@ import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
+import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.TruthMaintenanceSystem;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
@@ -69,21 +71,68 @@ public class SimpleBeliefSystem
         beliefSet.remove( node.getMode() );
 
         InternalFactHandle bfh = beliefSet.getFactHandle();
-        
-        if ( beliefSet.isEmpty() && bfh.getEqualityKey().getStatus() != EqualityKey.STATED &&
-             !((context.getType() == PropagationContext.DELETION || context.getType() == PropagationContext.MODIFICATION) // retract and modifies clean up themselves
-             &&
-             context.getFactHandle() == bfh) ) {
 
-            ((NamedEntryPoint) bfh.getEntryPoint()).delete( bfh, context.getRuleOrigin(), node.getJustifier());
+        if ( beliefSet.isEmpty() && bfh.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) { // &&
+//             !((context.getType() == PropagationContext.DELETION || context.getType() == PropagationContext.MODIFICATION) // retract and modifies clean up themselves
+//             &&
+//             context.getFactHandle() == bfh)
+//        ) {
 
-        } else if ( !beliefSet.isEmpty() && beliefSet.getFactHandle().getObject() == node.getObject() && node.getObject() != bfh.getObject() ) {
+            ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet), (RuleImpl) context.getRule(), (Activation) context.getLeftTupleOrigin() );
+
+            //((NamedEntryPoint) bfh.getEntryPoint()).delete( bfh, context.getRuleOrigin(), node.getJustifier());
+
+//            EqualityKey key = bfh.getEqualityKey();
+//            key.removeFactHandle( bfh );
+//            bfh.setEqualityKey( null );
+//
+//            // If the equality key is now empty, then remove it
+//            if ( key.isEmpty() ) {
+//                tms.remove( key );
+//            }
+
+        } else if ( !beliefSet.isEmpty() && bfh.getObject() == node.getObject() && node.getObject() != bfh.getObject() ) {
             // prime has changed, to update new object
             // Equality might have changed on the object, so remove (which uses the handle id) and add back in
             ((NamedEntryPoint)bfh.getEntryPoint()).getObjectStore().updateHandle(bfh, ((SimpleMode) beliefSet.getFirst()).getObject().getObject());
 
-            ((NamedEntryPoint) bfh.getEntryPoint() ).update( bfh, true, bfh.getObject(), allSetButTraitBitMask(), Object.class, null );
+            ((NamedEntryPoint) bfh.getEntryPoint() ).update( bfh, bfh.getObject(), allSetButTraitBitMask(), Object.class, null );
         }
+
+        if ( beliefSet.isEmpty() ) {
+            // if the beliefSet is empty, we must null the logical handle
+            EqualityKey key = bfh.getEqualityKey();
+            key.setLogicalFactHandle( null );
+
+            if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
+                // if it's stated, there will be other handles, so leave it in the TMS
+                tms.remove( key );
+            }
+        }
+    }
+
+    public void stage(PropagationContext context,
+                      BeliefSet<SimpleMode> beliefSet) {
+        InternalFactHandle bfh = beliefSet.getFactHandle();
+        // Remove the FH from the network
+        ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet),(RuleImpl) context.getRule(), null);
+    }
+
+    public void unstage(PropagationContext context,
+                        BeliefSet<SimpleMode> beliefSet) {
+        InternalFactHandle bfh = beliefSet.getFactHandle();
+
+        // Add the FH back into the network
+        ep.insert(bfh, bfh.getObject(), (RuleImpl) context.getRule(), null, getObjectTypeConf(beliefSet), null );
+    }
+
+    private ObjectTypeConf getObjectTypeConf(BeliefSet beliefSet) {
+        InternalFactHandle fh = beliefSet.getFactHandle();
+        ObjectTypeConfigurationRegistry reg;
+        ObjectTypeConf typeConf;
+        reg = ep.getObjectTypeConfigurationRegistry();
+        typeConf = reg.getObjectTypeConf( ep.getEntryPoint(), fh.getObject() );
+        return typeConf;
     }
 
     public BeliefSet newBeliefSet(InternalFactHandle fh) {

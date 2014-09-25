@@ -68,6 +68,8 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     private boolean                 valid = true;
 
+    private boolean                 negated;
+
     // ----------------------------------------------------------------------
     // Constructors
     // ----------------------------------------------------------------------
@@ -172,6 +174,14 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         this.disconnected = true;
     }
 
+    public boolean isNegated() {
+        return negated;
+    }
+
+    public void setNegated(boolean negated) {
+        this.negated = negated;
+    }
+
     public boolean isDisconnected() {
         return disconnected;
     }
@@ -212,6 +222,8 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
                getObjectHashCode() +
                ":" +
                getRecency() +
+               ":" +
+               ( isNegated() ? "neg" : "pos" ) +
                ":" +
                ( ( this.entryPoint != null ) ? this.entryPoint.getEntryPointId() : "null" ) +
                ":" +
@@ -549,6 +561,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         clone.identityHashCode = this.identityHashCode;
         clone.disconnected = this.disconnected;
         clone.traitType = this.traitType;
+        clone.negated = this.negated;
         return clone;
     }
 
@@ -561,6 +574,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         clone.identityHashCode = this.identityHashCode;
         clone.traitType = this.traitType;
         clone.disconnected = this.disconnected;
+        clone.negated = this.negated;
     }
     
     public DefaultFactHandle clone() {
@@ -576,6 +590,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         clone.identityHashCode = System.identityHashCode( clone.object );
         clone.disconnected = this.disconnected;
 		clone.traitType = this.traitType;
+        clone.negated = this.negated;
         return clone;
     }
 
@@ -605,7 +620,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     private void createFromExternalFormat( String externalFormat ) {
         String[] elements = externalFormat.split( ":" );
-        if (elements.length < 6) {
+        if (elements.length < 7) {
             throw new IllegalArgumentException( "externalFormat did not have enough elements ["+externalFormat+"]" );
         }
 
@@ -613,11 +628,12 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         this.identityHashCode = Integer.parseInt( elements[2] );
         this.objectHashCode = Integer.parseInt( elements[3] );
         this.recency = Long.parseLong( elements[4] );
-        this.entryPoint = ( StringUtils.isEmpty( elements[5] ) || "null".equals( elements[5].trim() ) ) ? null
+        this.negated =  "pos".equals( elements[5] ) ? false :  true;
+        this.entryPoint = ( StringUtils.isEmpty( elements[6] ) || "null".equals( elements[6].trim() ) ) ? null
                                                                                                        : new DisconnectedWorkingMemoryEntryPoint(
-                                                                                                                                                  elements[5].trim() );
+                elements[6].trim() );
         this.disconnected = true;
-        this.traitType = elements.length > 6 ? TraitTypeEnum.valueOf( elements[6] ) : TraitTypeEnum.NON_TRAIT;
+        this.traitType = elements.length > 7 ? TraitTypeEnum.valueOf( elements[7] ) : TraitTypeEnum.NON_TRAIT;
     }
 
 

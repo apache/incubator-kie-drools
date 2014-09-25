@@ -47,55 +47,56 @@ public class Pattern
     RuleConditionElement,
     AcceptsClassObjectType,
     Externalizable {
-    private static final long        serialVersionUID = 510l;
-    private ObjectType               objectType;
-    private List<Constraint>         constraints      = Collections.EMPTY_LIST;
+    private static final long serialVersionUID = 510l;
+    private ObjectType objectType;
+    private List<Constraint> constraints = Collections.EMPTY_LIST;
     private Declaration              declaration;
     private Map<String, Declaration> declarations;
     private int                      index;
     private PatternSource            source;
     private List<Behavior>           behaviors;
     private List<String>             listenedProperties;
-    
+    private boolean                  hasNegativeConstraint;
+
     private Map<String, AnnotationDefinition> annotations;
 
     // this is the offset of the related fact inside a tuple. i.e:
     // the position of the related fact inside the tuple;
-    private int               offset;
+    private int offset;
 
     private boolean           passive;
 
     public Pattern() {
-        this( 0,
-              null );
+        this(0,
+             null);
     }
 
     public Pattern(final int index,
                    final ObjectType objectType) {
-        this( index,
-              index,
-              objectType,
-              null );
+        this(index,
+             index,
+             objectType,
+             null);
     }
 
     public Pattern(final int index,
                    final ObjectType objectType,
                    final String identifier) {
-        this( index,
-              index,
-              objectType,
-              identifier );
+        this(index,
+             index,
+             objectType,
+             identifier);
     }
 
     public Pattern(final int index,
                    final int offset,
                    final ObjectType objectType,
                    final String identifier) {
-        this( index,
-              offset,
-              objectType,
-              identifier,
-              false );
+        this(index,
+             offset,
+             objectType,
+             identifier,
+             false);
     }
 
     public Pattern(final int index,
@@ -106,17 +107,25 @@ public class Pattern
         this.index = index;
         this.offset = offset;
         this.objectType = objectType;
-        if ( identifier != null && (!identifier.equals( "" )) ) {
-            this.declaration = new Declaration( identifier,
-                                                getReadAcessor( objectType ),
-                                                this,
-                                                isInternalFact );
-            this.declarations = new HashMap<String, Declaration>( 2 ); // default to avoid immediate resize
-            this.declarations.put( this.declaration.getIdentifier(),
-                                   this.declaration );
+        if (identifier != null && (!identifier.equals(""))) {
+            this.declaration = new Declaration(identifier,
+                                               getReadAcessor(objectType),
+                                               this,
+                                               isInternalFact);
+            this.declarations = new HashMap<String, Declaration>(2); // default to avoid immediate resize
+            this.declarations.put(this.declaration.getIdentifier(),
+                                  this.declaration );
         } else {
             this.declaration = null;
         }        
+    }
+
+    public boolean hasNegativeConstraint() {
+        return hasNegativeConstraint;
+    }
+
+    public void setHasNegativeConstraint(boolean negative) {
+        this.hasNegativeConstraint = negative;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -135,6 +144,7 @@ public class Pattern
         }
         annotations = (Map<String,AnnotationDefinition>) in.readObject();
         passive = in.readBoolean();
+        hasNegativeConstraint = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -149,6 +159,7 @@ public class Pattern
         out.writeObject(getListenedProperties());
         out.writeObject( annotations );
         out.writeBoolean( passive );
+        out.writeBoolean(hasNegativeConstraint);
     }
     
     public static InternalReadAccessor getReadAcessor(ObjectType objectType) {
@@ -261,6 +272,16 @@ public class Pattern
 
     public List<Constraint> getConstraints() {
         return Collections.unmodifiableList( this.constraints );
+    }
+
+    public void addConstraint(int index, Constraint constraint) {
+        if ( this.constraints == Collections.EMPTY_LIST ) {
+            this.constraints = new ArrayList<Constraint>( 1 );
+        }
+        if ( constraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
+            this.setConstraintType( (MutableTypeConstraint) constraint );
+        }
+        this.constraints.add(index, constraint);
     }
 
     public void addConstraint(Constraint constraint) {

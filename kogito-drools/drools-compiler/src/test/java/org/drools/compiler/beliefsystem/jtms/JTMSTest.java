@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.drools.core.BeliefSystemType;
@@ -14,10 +15,12 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSystem;
 import org.drools.core.common.EqualityKey;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EqualityBehaviorOption;
@@ -35,11 +38,17 @@ public class JTMSTest {
 
     protected StatefulKnowledgeSession getSessionFromString( String drlString) {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kBuilder.add( ResourceFactory.newByteArrayResource(drlString.getBytes()),
-                      ResourceType.DRL );
-        if ( kBuilder.hasErrors() ) {
-            System.err.println( kBuilder.getErrors() );
-            fail();
+
+        try {
+            System.setProperty("drools.negatable", "on");
+            kBuilder.add(ResourceFactory.newByteArrayResource(drlString.getBytes()),
+                         ResourceType.DRL);
+            if (kBuilder.hasErrors()) {
+                System.err.println(kBuilder.getErrors());
+                fail();
+            }
+        } finally {
+            System.setProperty("drools.negatable", "off");
         }
 
         KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase( );
@@ -71,7 +80,7 @@ public class JTMSTest {
         return kSession;
     }    
     
-    @Test
+    @Test(timeout = 10000 )
     public void testPosNegNonConflictingInsertions() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
         		"\n" + 
@@ -112,7 +121,7 @@ public class JTMSTest {
                 "end\n" +
                 "rule \"Negative\"\n" +
                 "when\n" +
-                "    $n : String(  this != 'go1' || == 'go2' ) from entry-point 'neg' \n" +
+                "    $n : String(   _.neg, this != 'go1' || == 'go2' ) \n" +
                 "then\n" +
                 "    final String s = '-' + $n; \n" +
                 "    final List l = list; \n" +
@@ -136,7 +145,7 @@ public class JTMSTest {
         assertTrue( list.contains( "-neg" ) );
         
         assertEquals( 1, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() ); //just go1
-        assertEquals( 1, kSession.getEntryPoint( "neg" ).getObjects().size() ); // neg
+        assertEquals( 1, getNegativeObjects(kSession).size() );
         
         FactHandle fhGo2 = kSession.insert( "go2" );
         kSession.fireAllRules();
@@ -144,24 +153,24 @@ public class JTMSTest {
         assertTrue( list.contains( "+pos" ) );
         
         assertEquals( 3, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() ); //go1, go2, pos
-        assertEquals( 1, kSession.getEntryPoint( "neg" ).getObjects().size() ); // neg        
+        assertEquals( 1, getNegativeObjects(kSession).size() );
         
         kSession.retract( fhGo1 );
         kSession.fireAllRules();
         assertFalse( list.contains( "-neg" ) );
         assertTrue( list.contains( "+pos" ) ); 
         assertEquals( 2, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() ); //go2, pos
-        assertEquals( 0, kSession.getEntryPoint( "neg" ).getObjects().size() );         
+        assertEquals( 0, getNegativeObjects(kSession).size() );
 
         kSession.retract( fhGo2 );
         kSession.fireAllRules();
         assertFalse( list.contains( "-neg" ) );
         assertFalse( list.contains( "+pos" ) ); 
         assertEquals( 0, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() );
-        assertEquals( 0, kSession.getEntryPoint( "neg" ).getObjects().size() ); 
+        assertEquals( 0, getNegativeObjects(kSession).size() );
     }
 
-    @Test
+    @Test(timeout = 10000 )
     public void testConflictToggleWithoutGoingEmpty() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                    "\n" +
@@ -217,7 +226,7 @@ public class JTMSTest {
                    "end\n" +
                    "rule \"Negative\"\n" +
                    "when\n" +
-                   "    $n : String(  this == 'xxx' ) from entry-point 'neg' \n" +
+                   "    $n : String( _.neg, this == 'xxx' )\n" +
                    "then\n" +
                    "    final String s = '-' + $n; \n" +
                    "    final List l = list; \n" +
@@ -242,7 +251,8 @@ public class JTMSTest {
         FactHandle fhGo3 = kSession.insert( "go3" );
 
         kSession.fireAllRules();
-        assertTrue( list.contains( "+xxx" ) );
+        System.out.println( list );
+        assertTrue(list.contains("+xxx"));
 
         FactHandle fhGo4 = kSession.insert( "go4" );
         kSession.fireAllRules();
@@ -253,7 +263,7 @@ public class JTMSTest {
         assertTrue( list.contains( "+xxx" ) );
     }
     
-    @Test
+    @Test(timeout = 10000 )
     public void testChangeInPositivePrime() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
@@ -347,7 +357,7 @@ public class JTMSTest {
         assertEquals( new Integer(2), ((Person)key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject() );
     }    
     
-    @Test
+    @Test(timeout = 10000 )
     public void testChangeInNegativePrime() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
@@ -399,12 +409,10 @@ public class JTMSTest {
         
         NamedEntryPoint ep = ( NamedEntryPoint ) ((StatefulKnowledgeSessionImpl)kSession).getEntryPoint( "DEFAULT" );
         assertEquals( 3, ep.getObjects().size() ); //just go1, go2, go3
-
-        NamedEntryPoint negEp = ( NamedEntryPoint ) ((StatefulKnowledgeSessionImpl)kSession).getEntryPoint( "neg" );
-        assertEquals( 1, negEp.getObjects().size() ); //just Person(darth)        
+        assertEquals( 1, getNegativeObjects(kSession).size() );  // Person(darth)
         
         int count = 0;
-        for ( Object object : negEp.getObjects() ) {
+        for ( Object object : getNegativeObjects(kSession) ) {
             if ( object instanceof Person ) {
                 assertEquals( new Integer(1), ((Person)object).getNotInEqualTestObject() );
                 count++;
@@ -421,7 +429,7 @@ public class JTMSTest {
         }
               
         assertEquals( 3, key.getBeliefSet().size() );        
-        assertEquals( new Integer(1), ((Person)((JTMSBeliefSetImpl)key.getBeliefSet()).getNegativeFactHandle().getObject()).getNotInEqualTestObject() );
+        assertEquals( new Integer(1), ((Person)((JTMSBeliefSetImpl)key.getBeliefSet()).getFactHandle().getObject()).getNotInEqualTestObject() );
         
         kSession.retract( fhGo1 );
         kSession.fireAllRules();
@@ -432,7 +440,7 @@ public class JTMSTest {
         }
 
         assertEquals( 2, key.getBeliefSet().size() );        
-        assertEquals( new Integer(3), ((Person)((JTMSBeliefSetImpl)key.getBeliefSet()).getNegativeFactHandle().getObject()).getNotInEqualTestObject() );
+        assertEquals( new Integer(3), ((Person)((JTMSBeliefSetImpl)key.getBeliefSet()).getFactHandle().getObject()).getNotInEqualTestObject() );
 
         kSession.retract( fhGo3 );
         kSession.fireAllRules();
@@ -443,10 +451,10 @@ public class JTMSTest {
         }
 
         assertEquals( 1, key.getBeliefSet().size() );        
-        assertEquals( new Integer(2), ((Person)((JTMSBeliefSetImpl)key.getBeliefSet()).getNegativeFactHandle().getObject()).getNotInEqualTestObject() );
+        assertEquals( new Integer(2), ((Person)((JTMSBeliefSetImpl)key.getBeliefSet()).getFactHandle().getObject()).getNotInEqualTestObject() );
     }
     
-    @Test
+    @Test(timeout = 10000 )
     public void testRetractHandleWhenOnlyNeg() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
@@ -476,7 +484,7 @@ public class JTMSTest {
                 "\n" +            
                 "rule \"Negative\"\n" + 
                 "when\n" + 
-                "    $n : String(  this != 'go1' || == 'go2' ) from entry-point 'neg' \n" + 
+                "    $n : String(  _.neg, this != 'go1' || == 'go2' ) \n" +
                 "then\n" +  
                 "    final String s = '-' + $n; \n" +
                 "    final List l = list; \n" +
@@ -500,7 +508,7 @@ public class JTMSTest {
         assertTrue( list.contains( "-neg" ) );        
         
         assertEquals( 1, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() ); //just go1
-        assertEquals( 1, kSession.getEntryPoint( "neg" ).getObjects().size() ); // neg
+        assertEquals( 1, getNegativeObjects(kSession).size() );
         
         NamedEntryPoint ep = ( NamedEntryPoint ) ((StatefulKnowledgeSessionImpl)kSession).getEntryPoint( "DEFAULT" );
         ObjectHashMap equalityMap =  ep.getTruthMaintenanceSystem().getEqualityKeyMap();
@@ -511,17 +519,19 @@ public class JTMSTest {
             key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         }
         
-        assertEquals( 3, key.getBeliefSet().size() );        
-        kSession.retract( key.getBeliefSet().getFactHandle() );  
+        assertEquals( 3, key.getBeliefSet().size() );
+
+        ep.getTruthMaintenanceSystem().delete( key.getLogicalFactHandle() );
+
         assertEquals( 0, key.getBeliefSet().size() );     
 
         assertEquals( 1, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() ); //just go1
-        assertEquals( 0, kSession.getEntryPoint( "neg" ).getObjects().size() ); // neg
+        assertEquals( 0, getNegativeObjects(kSession).size() );
         assertEquals( 0, key.getBeliefSet().size() );
         assertEquals( 1, ep.getTruthMaintenanceSystem().getEqualityKeyMap().size() );
     }  
     
-    @Test
+    @Test(timeout = 10000 )
     public void testConflictStrict() {
         StatefulKnowledgeSession kSession = getSessionFromFile( "posNegConflict.drl" );
 
@@ -535,14 +545,14 @@ public class JTMSTest {
 
         try {
             kSession.fireAllRules();
-            fail( "A fact and its negation should have been asserted, but no exception was thorwn in strict mode" );
+            fail( "A fact and its negation should have been asserted, but no exception was trhown in strict mode" );
         } catch ( Exception e ) {
         } finally {
             bs.STRICT = false;
         }
     }   
 
-    @Test    
+    @Test(timeout = 10000 )
     public void testConflictTMS() {
         StatefulKnowledgeSession kSession = getSessionFromFile( "posNegTms.drl" );
 
@@ -558,56 +568,54 @@ public class JTMSTest {
             kSession.fireAllRules();
 
             assertEquals( 4, kSession.getFactCount() );
-            assertEquals( 0, kSession.getEntryPoint( "neg" ).getFactCount() );
             assertEquals( 0, list.size() );
 
             kSession.retract( a );
             kSession.fireAllRules();
 
             assertEquals( 3, kSession.getFactCount() );
-            assertEquals( 0, kSession.getEntryPoint( "neg" ).getFactCount() );
             assertEquals( 0, list.size() );
 
             kSession.retract( b );
             kSession.fireAllRules();
 
             assertEquals( 2, kSession.getFactCount() );
-            assertEquals( 1, kSession.getEntryPoint( "neg" ).getFactCount() );
+            assertEquals(1, getNegativeObjects(kSession).size());
             assertEquals( 1, list.size() );
 
             a = kSession.insert( "a" );
             kSession.fireAllRules();
 
             assertEquals( 3, kSession.getFactCount());
-            assertEquals( 0, kSession.getEntryPoint( "neg" ).getFactCount() );
+            assertEquals( 0, getNegativeObjects(kSession).size() );
             assertEquals( 1, list.size() );
 
             kSession.retract( c );
             kSession.fireAllRules();
 
             assertEquals( 2, kSession.getFactCount() );
-            assertEquals( 0, kSession.getEntryPoint( "neg" ).getFactCount() );
+            assertEquals( 0, getNegativeObjects(kSession).size() );
             assertEquals( 1, list.size() );
 
             kSession.retract( d );
             kSession.fireAllRules();
 
             assertEquals( 2, kSession.getFactCount() );
-            assertEquals( 0, kSession.getEntryPoint( "neg" ).getFactCount() );
+            assertEquals( 0, getNegativeObjects(kSession).size() );
             assertEquals( 2, list.size() );
 
             kSession.retract( a );
             kSession.fireAllRules();
 
             assertEquals( 0, kSession.getFactCount() );
-            assertEquals( 0, kSession.getEntryPoint( "neg" ).getFactCount() );
+            assertEquals( 0, getNegativeObjects(kSession).size() );
             assertEquals( 2, list.size() );
 
             c = kSession.insert( "c" );
             kSession.fireAllRules();
 
             assertEquals( 1, kSession.getFactCount() );
-            assertEquals( 1, kSession.getEntryPoint( "neg" ).getFactCount() );
+            assertEquals( 1, getNegativeObjects(kSession).size() );
             assertEquals( 3, list.size() );
 
 
@@ -615,6 +623,15 @@ public class JTMSTest {
             e.printStackTrace();
             fail( "No exception should have been thrown" );
         }
+    }
+
+    public List getNegativeObjects(StatefulKnowledgeSession kSession) {
+        List list = new ArrayList();
+        Iterator it = ((StatefulKnowledgeSessionImpl) kSession).getObjectStore().iterateNegObjects(null);
+        while ( it.hasNext() ) {
+            list.add(  it.next() );
+        }
+        return list;
     }
 
     @Test
@@ -646,8 +663,6 @@ public class JTMSTest {
                 "then \n" +
                 " System.out.println( $b );  \n" +
                 "end \n" ;
-
-        /////////////////////////////////////
 
         StatefulKnowledgeSession session = getSessionFromString( droolsSource );
 

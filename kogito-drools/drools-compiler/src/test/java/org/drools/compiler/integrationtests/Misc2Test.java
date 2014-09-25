@@ -4288,7 +4288,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( "Three", m2.getMessage3() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testWumpus1() {
         String drl = "import org.drools.compiler.integrationtests.Misc2Test.Hero;\n" +
                      "import org.drools.compiler.integrationtests.Misc2Test.StepForwardCommand;\n" +
@@ -4326,7 +4326,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(2, hero.getPos());
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testWumpus2() {
         String drl = "import org.drools.compiler.integrationtests.Misc2Test.Hero;\n" +
                      "import org.drools.compiler.integrationtests.Misc2Test.StepForwardCommand;\n" +
@@ -4365,7 +4365,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(2, hero.getPos());
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testWumpus3() {
         String drl = "import org.drools.compiler.integrationtests.Misc2Test.Hero;\n" +
                      "import org.drools.compiler.integrationtests.Misc2Test.StepForwardCommand;\n" +
@@ -4421,7 +4421,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(1, hero.getPos());
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testWumpus4() {
         String drl = "import org.drools.compiler.integrationtests.Misc2Test.Hero;\n" +
                      "import org.drools.compiler.integrationtests.Misc2Test.StepForwardCommand;\n" +

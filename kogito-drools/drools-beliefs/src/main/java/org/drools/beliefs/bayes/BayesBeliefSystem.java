@@ -2,9 +2,7 @@ package org.drools.beliefs.bayes;
 
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
-import org.drools.core.beliefsystem.simple.SimpleBeliefSet;
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
-import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
@@ -12,10 +10,7 @@ import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.LinkedListEntry;
-import org.drools.core.util.LinkedListNode;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.runtime.beliefs.Mode;
 
 public class BayesBeliefSystem<M extends BayesHardEvidence<M>> implements BeliefSystem<M> {
     private NamedEntryPoint        ep;
@@ -31,7 +26,7 @@ public class BayesBeliefSystem<M extends BayesHardEvidence<M>> implements Belief
     @Override
     public void insert(LogicalDependency<M> node, BeliefSet<M> beliefSet, PropagationContext context, ObjectTypeConf typeConf) {
         boolean wasEmpty = beliefSet.isEmpty();
-        boolean wasUndecided = beliefSet.isUndecided();
+        boolean wasDecided = beliefSet.isDecided();
 
         beliefSet.add( node.getMode() );
 
@@ -45,7 +40,7 @@ public class BayesBeliefSystem<M extends BayesHardEvidence<M>> implements Belief
         FactHandle fh = beliefSet.getFactHandle();
 
         BayesVariable var = ( BayesVariable ) bayesInstance.getFieldNames().get( propRef.getName() );
-        if ( !wasUndecided && beliefSet.isUndecided() ) {
+        if ( wasDecided && !beliefSet.isDecided() ) {
             // was decided, not undecided
             bayesInstance.setDecided(var, false);
             bayesInstance.setLikelyhood( var,null );
@@ -58,11 +53,11 @@ public class BayesBeliefSystem<M extends BayesHardEvidence<M>> implements Belief
 
     @Override
     public void delete(LogicalDependency<M> node, BeliefSet<M> beliefSet, PropagationContext context) {
-        boolean wasUndecided = beliefSet.isUndecided();
+        boolean wasDecided = beliefSet.isDecided();
 
         beliefSet.remove( node.getMode() );
 
-//        if ( !wasUndecided && !beliefSet.isUndecided() ) {
+//        if ( !wasUndecided && !beliefSet.isDecided() ) {
 //            // was decided before, still decided, so do nothing.
 //            return;
 //        }
@@ -82,11 +77,11 @@ public class BayesBeliefSystem<M extends BayesHardEvidence<M>> implements Belief
 
         BayesHardEvidence<M> evidence = beliefSet.getFirst();
 
-        if ( !wasUndecided && beliefSet.isUndecided() ) {
+        if ( wasDecided && !beliefSet.isDecided() ) {
             // was decided, now undecided
             bayesInstance.setDecided(var, false);
             bayesInstance.unsetLikelyhood( var );
-        } else if ( wasUndecided && !beliefSet.isUndecided() ) {
+        } else if ( !wasDecided && beliefSet.isDecided() ) {
             // was undecided, now decided
             bayesInstance.setDecided(var, true);
             bayesInstance.setLikelyhood( var, evidence.getDistribution() );
@@ -94,8 +89,18 @@ public class BayesBeliefSystem<M extends BayesHardEvidence<M>> implements Belief
     }
 
     @Override
+    public void stage(PropagationContext context, BeliefSet<M> beliefSet) {
+
+    }
+
+    @Override
+    public void unstage(PropagationContext context, BeliefSet<M> beliefSet) {
+
+    }
+
+    @Override
     public BeliefSet newBeliefSet(InternalFactHandle fh) {
-        return new BayesBeliefSet(fh, this);
+        return new NonConflictingModeSet(fh, this);
     }
 
     @Override

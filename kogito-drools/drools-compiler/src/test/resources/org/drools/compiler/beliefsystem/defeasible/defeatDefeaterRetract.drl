@@ -65,7 +65,7 @@ then
 end
 
 
-rule "Never Ever 2"
+rule "Fires after go is inserted"
 salience -100
 when
     X( -1; )
