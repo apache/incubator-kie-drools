@@ -27,7 +27,9 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
- * Returns no values if the variable is already initialized.
+ * Prevents reassigning of already initialized variables during Construction Heuristics and Exhaustive Search.
+ * <p/>
+ * Returns no values for an entity's variable if the variable is already initialized.
  */
 public class ReinitializeVariableValueSelector extends AbstractValueSelector {
 

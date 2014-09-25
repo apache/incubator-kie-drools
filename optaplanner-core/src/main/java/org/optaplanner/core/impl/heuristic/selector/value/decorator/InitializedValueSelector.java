@@ -24,10 +24,12 @@ import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 /**
+ * Prevents creating chains without an anchor.
+ * <p/>
  * Filters out every value that is a planning entity for which the planning variable
  * (on which this {@link ValueSelector} applies to) is uninitialized.
  * <p/>
- * Mainly used for chained planning variables.
+ * Mainly used for chained planning variables, but supports other planning variables too.
  */
 public class InitializedValueSelector extends AbstractValueSelector {
 
