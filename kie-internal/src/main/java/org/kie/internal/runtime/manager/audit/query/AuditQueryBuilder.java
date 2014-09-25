@@ -1,6 +1,6 @@
-package org.kie.api.runtime.manager.audit.query;
+package org.kie.internal.runtime.manager.audit.query;
 
-import org.kie.api.query.ParametrizedQueryBuilder;
+import org.kie.internal.query.ParametrizedQueryBuilder;
 
 
 

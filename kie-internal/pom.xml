@@ -62,11 +62,11 @@
               org.kie.api.runtime,
               org.kie.api.runtime.conf,
               org.kie.api.runtime.manager,
+              org.kie.api.runtime.manager.audit,
               org.kie.api.runtime.process,
               org.kie.api.runtime.rule,
               org.kie.api.task,
               org.kie.api.task.model,
-              org.kie.api.task.query,
               org.mvel2,
               org.slf4j
             </Import-Package>

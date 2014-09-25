@@ -1,4 +1,4 @@
-package org.kie.api.query;
+package org.kie.internal.query;
 
 
 /**
