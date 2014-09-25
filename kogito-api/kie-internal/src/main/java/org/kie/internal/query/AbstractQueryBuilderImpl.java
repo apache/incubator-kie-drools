@@ -1,13 +1,12 @@
 package org.kie.internal.query;
 
-import org.kie.api.task.query.TaskQueryBuilder;
 import org.kie.internal.query.data.QueryData;
 
 public abstract class AbstractQueryBuilderImpl<T> {
 
     protected QueryData queryData = new QueryData();
    
-    protected QueryData getQueryData() { 
+    public QueryData getQueryData() { 
         return queryData;
     }
     
@@ -47,6 +46,11 @@ public abstract class AbstractQueryBuilderImpl<T> {
     protected <P> void addObjectParameter(String listId, String name, P... parameter) { 
         if( parameter == null ) { 
             throw new IllegalArgumentException("A null " + name + " criteria is invalid." );
+        }
+        for( int i = 0; i < parameter.length; ++i ) { 
+           if( parameter[i] == null ) { 
+               throw new IllegalArgumentException("A null " + name + " criteria (argument " + i + ") is invalid." );
+           }
         }
         addParameter(listId, parameter);
     }

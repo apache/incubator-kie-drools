@@ -200,6 +200,10 @@ public class QueryParameters {
     public void setToUnion() {
         this.union = true;
     }
+    
+    public boolean isUnion() { 
+       return this.union;
+    }
 
     public void setToIntersection() {
         this.union = false;
