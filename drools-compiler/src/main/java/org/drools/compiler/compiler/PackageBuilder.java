@@ -16,37 +16,6 @@
 
 package org.drools.compiler.compiler;
 
-import static org.drools.core.util.BitMaskUtil.isSet;
-import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
-
-import java.beans.IntrospectionException;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.Stack;
-
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.compiler.PackageBuilder.AssetFilter.Action;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
@@ -153,6 +122,37 @@ import org.kie.internal.builder.ScoreCardConfiguration;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.xml.sax.SAXException;
+
+import java.beans.IntrospectionException;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.Stack;
+
+import static org.drools.core.util.BitMaskUtil.isSet;
+import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 
 /**
  * This is the main compiler class for parsing and compiling rules and
@@ -697,8 +697,20 @@ public class PackageBuilder
         this.resource = resource;
 
         try {
-            this.results.addAll(processBuilder.addProcessFromXml(resource));
-            processBuilder.getErrors().clear();
+            List<Process> processes = processBuilder.addProcessFromXml(resource);
+            List<BaseKnowledgeBuilderResultImpl> errors = processBuilder.getErrors();
+            if ( errors.isEmpty() ) {
+                if ( this.ruleBase != null && processes != null ) {
+                    for (Process process : processes) {
+                        if ( filterAccepts( process.getNamespace(), process.getId() ) ) {
+                            this.ruleBase.addProcess(process);
+                        }
+                    }
+                }
+            } else {
+                this.results.addAll(errors);
+                errors.clear();
+            }
         } catch (Exception e) {
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
@@ -4168,7 +4180,7 @@ public class PackageBuilder
         }
 
         if (ruleBase != null) {
-            ruleBase.removeObjectsGeneratedFromResource(resource);
+            modified = ruleBase.removeObjectsGeneratedFromResource(resource) || modified;
         }
 
         return modified;

@@ -16,6 +16,21 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.base.TypeResolver;
+import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.DroolsObjectOutputStream;
+import org.drools.core.common.ProjectClassLoader;
+import org.drools.core.factmodel.traits.TraitRegistry;
+import org.drools.core.facttemplates.FactTemplate;
+import org.drools.core.util.ClassUtils;
+import org.kie.api.definition.process.Process;
+import org.kie.api.definition.type.FactType;
+import org.kie.api.definition.type.Role;
+import org.kie.api.io.Resource;
+import org.kie.api.runtime.rule.AccumulateFunction;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
@@ -31,21 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.core.base.TypeResolver;
-import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.common.DroolsObjectOutputStream;
-import org.drools.core.common.ProjectClassLoader;
-import org.drools.core.factmodel.traits.TraitRegistry;
-import org.drools.core.facttemplates.FactTemplate;
-import org.drools.core.util.ClassUtils;
-import org.kie.api.definition.process.Process;
-import org.kie.api.definition.type.FactType;
-import org.kie.api.definition.type.Role;
-import org.kie.api.io.Resource;
-import org.kie.api.runtime.rule.AccumulateFunction;
 
 /**
  * Collection of related <code>Rule</code>s.
@@ -698,6 +698,28 @@ public class Package
             }
         }
         return functionsToBeRemoved;
+    }
+
+    public List<Process> removeProcessesGeneratedFromResource(Resource resource) {
+        List<Process> processesToBeRemoved = getProcessesGeneratedFromResource(resource);
+        for (Process process : processesToBeRemoved) {
+            removeProcess(process);
+        }
+        return processesToBeRemoved;
+    }
+
+    private void removeProcess(Process process) {
+        ruleFlows.remove(process.getId());
+    }
+
+    public List<Process> getProcessesGeneratedFromResource(Resource resource) {
+        List<Process> processesFromResource = new ArrayList<Process>();
+        for (Process process : ruleFlows.values()) {
+            if (resource.equals(process.getResource())) {
+                processesFromResource.add(process);
+            }
+        }
+        return processesFromResource;
     }
 
     public boolean needsStreamMode() {

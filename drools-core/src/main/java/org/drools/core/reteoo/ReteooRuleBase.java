@@ -16,29 +16,17 @@
 
 package org.drools.core.reteoo;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.drools.core.FactException;
 import org.drools.core.FactHandle;
+import org.drools.core.PackageIntegrationException;
+import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.StatefulSession;
 import org.drools.core.StatelessSession;
+import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.AbstractWorkingMemory;
-import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DroolsObjectInput;
 import org.drools.core.common.DroolsObjectInputStream;
@@ -51,55 +39,62 @@ import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpgradableReentrantReadWriteLock;
 import org.drools.core.common.WorkingMemoryFactory;
 import org.drools.core.event.RuleBaseEventListener;
+import org.drools.core.event.RuleBaseEventSupport;
+import org.drools.core.factmodel.ClassDefinition;
+import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.management.DroolsManagementAgent;
+import org.drools.core.reteoo.SegmentMemory.Prototype;
+import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.EntryPointId;
+import org.drools.core.rule.Function;
+import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.InvalidPatternException;
+import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.Package;
 import org.drools.core.rule.Rule;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.ObjectHashSet;
+import org.drools.core.util.TripleStore;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.definition.process.Process;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.marshalling.Marshaller;
-import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.locks.ReentrantLock;
-
-import org.drools.core.RuleBase;
-import org.drools.core.RuntimeDroolsException;
-
-import org.drools.core.PackageIntegrationException;
-import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.reteoo.SegmentMemory.Prototype;
-import org.drools.core.util.ObjectHashSet;
-import org.drools.core.util.TripleStore;
-import org.drools.core.event.RuleBaseEventSupport;
-import org.drools.core.factmodel.traits.TraitRegistry;
-import org.drools.core.rule.DialectRuntimeRegistry;
-import org.drools.core.rule.Function;
-import org.drools.core.rule.ImportDeclaration;
-import org.drools.core.rule.JavaDialectRuntimeData;
-import org.kie.api.definition.process.Process;
-import org.kie.api.definition.type.FactType;
+import org.kie.internal.marshalling.MarshallerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
 import static org.drools.core.util.BitMaskUtil.isSet;
@@ -1658,7 +1653,8 @@ public class ReteooRuleBase
     }
 
 
-    public void removeObjectsGeneratedFromResource(Resource resource) {
+    public boolean removeObjectsGeneratedFromResource(Resource resource) {
+        boolean modified = false;
         for (Package pkg : pkgs.values()) {
             List<Rule> rulesToBeRemoved = pkg.removeRulesGeneratedFromResource(resource);
             for (Rule rule : rulesToBeRemoved) {
@@ -1668,6 +1664,16 @@ public class ReteooRuleBase
             for (Function function : functionsToBeRemoved) {
                 removeFunction(function.getName());
             }
+            List<Process> processesToBeRemoved = pkg.removeProcessesGeneratedFromResource(resource);
+            for (Process process : processesToBeRemoved) {
+                removeProcess(process);
+            }
+            modified |= !rulesToBeRemoved.isEmpty() || !functionsToBeRemoved.isEmpty() || !processesToBeRemoved.isEmpty();
         }
+        return modified;
+    }
+
+    private void removeProcess(Process process) {
+        processes.remove(process.getId());
     }
 }
