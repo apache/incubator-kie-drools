@@ -29,24 +29,32 @@ public interface QueryParameterIdentifiers {
     public static final String DEPLOYMENT_ID_LIST = String.valueOf(idGen.getAndIncrement());
     
     // audit identifiers
-    
-    public static final String DATE_LIST = String.valueOf(idGen.getAndIncrement());
-    public static final String DURATION_LIST = String.valueOf(idGen.getAndIncrement());
-    public static final String VARIABLE_INSTANCE_ID_LIST = String.valueOf(idGen.getAndIncrement());
-    public static final String NODE_ID_LIST = String.valueOf(idGen.getAndIncrement());
-    public static final String PROCESS_NAME_LIST = String.valueOf(idGen.getAndIncrement());
-    public static final String NODE_TYPE_LIST = String.valueOf(idGen.getAndIncrement());
-    public static final String OLD_VALUE_LIST = String.valueOf(idGen.getAndIncrement());
+
+    // - (process instance log) 
     public static final String START_DATE_LIST = String.valueOf(idGen.getAndIncrement());
-    public static final String IDENTITY_LIST = String.valueOf(idGen.getAndIncrement());
-    public static final String PROCESS_VERSION_LIST = String.valueOf(idGen.getAndIncrement());
+    public static final String DURATION_LIST = String.valueOf(idGen.getAndIncrement());
     public static final String END_DATE_LIST = String.valueOf(idGen.getAndIncrement());
+    public static final String IDENTITY_LIST = String.valueOf(idGen.getAndIncrement());
+    public static final String PROCESS_NAME_LIST = String.valueOf(idGen.getAndIncrement());
+    public static final String PROCESS_VERSION_LIST = String.valueOf(idGen.getAndIncrement());
+    public static final String PROCESS_INSTANCE_STATUS_LIST = String.valueOf(idGen.getAndIncrement());
     public static final String OUTCOME_LIST = String.valueOf(idGen.getAndIncrement());
     
-    public static final String VALUE_LIST = String.valueOf(idGen.getAndIncrement());
+    // - (node instance log) 
+    public static final String NODE_ID_LIST = String.valueOf(idGen.getAndIncrement());
     public static final String NODE_INSTANCE_ID_LIST = String.valueOf(idGen.getAndIncrement());
-    public static final String VARIABLE_ID_LIST = String.valueOf(idGen.getAndIncrement());
     public static final String NODE_NAME_LIST = String.valueOf(idGen.getAndIncrement());
+    public static final String NODE_TYPE_LIST = String.valueOf(idGen.getAndIncrement());
+    
+    // - (variable instance log) 
+    public static final String VARIABLE_ID_LIST = String.valueOf(idGen.getAndIncrement());
+    public static final String VARIABLE_INSTANCE_ID_LIST = String.valueOf(idGen.getAndIncrement());
+    public static final String DATE_LIST = String.valueOf(idGen.getAndIncrement());
+    public static final String VAR_VALUE_LIST = String.valueOf(idGen.getAndIncrement());
+    public static final String VALUE_LIST = String.valueOf(idGen.getAndIncrement());
+    public static final String OLD_VALUE_LIST = String.valueOf(idGen.getAndIncrement());
+    public static final String EXTERNAL_ID_LIST = String.valueOf(idGen.getAndIncrement());
+    public static final String LAST_VARIABLE_LIST = String.valueOf(idGen.getAndIncrement());
     
     // task identifiers
     
@@ -56,7 +64,7 @@ public interface QueryParameterIdentifiers {
     public static final String STAKEHOLDER_ID_LIST = String.valueOf(idGen.getAndIncrement());
     public static final String ACTUAL_OWNER_ID_LIST = String.valueOf(idGen.getAndIncrement());
     public static final String CREATED_BY_LIST = String.valueOf(idGen.getAndIncrement());
-    public static final String STATUS_LIST = String.valueOf(idGen.getAndIncrement());
+    public static final String TASK_STATUS_LIST = String.valueOf(idGen.getAndIncrement());
     public static final String LANGUAGE = String.valueOf(idGen.getAndIncrement());
     
 }

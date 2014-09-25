@@ -48,9 +48,9 @@ public class QueryAndParameterAppender {
             return;
         }
         String paramName = generateParamName();
-        StringBuilder queryClause = new StringBuilder("( " + fieldName + " in (:" + paramName + ") ");
+        StringBuilder queryClause = new StringBuilder("( " + fieldName + " IN (:" + paramName + ")");
         if( joinClause != null ) {
-            queryClause.append("and " + joinClause);
+            queryClause.append(" AND " + joinClause);
         }
         queryClause.append(" )");
         addToQueryBuilder(queryClause.toString(), union, listIdParams, paramName);
@@ -183,14 +183,14 @@ public class QueryAndParameterAppender {
         }
         for( int i = 0; i < regexList.size(); ++i ) {
             String paramName = generateParamName();
-            queryClause.append("(" + fieldName + " like :" + paramName + " ) ");
+            queryClause.append(fieldName + " LIKE :" + paramName + " " );
             paramNameRegexMap.put(paramName, regexList.get(i));
             if( i + 1 < regexList.size() ) {
-                queryClause.append(union ? "or" : "and").append(" ");
+                queryClause.append(union ? "OR" : "AND").append(" ");
             }
         }
         if( joinClause != null ) {
-            queryClause.append(") and " + joinClause.trim() + " ");
+            queryClause.append(") AND " + joinClause.trim() + " ");
         }
         queryClause.append(")");
 
@@ -238,11 +238,13 @@ public class QueryAndParameterAppender {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> List<T> checkAndConvertListToType( List<?> inputList, Object inputObject, String field, Class<T> type ) {
+    private <T> List<T> checkAndConvertListToType( List<?> inputList, Object inputObject, String listId, Class<T> type ) {
+        assert type != null : listId + ": type is null!";
+        assert inputObject != null : listId + ": input object is null!";
         if( type.equals(inputObject.getClass()) ) {
             return (List<T>) inputList;
         } else {
-            throw new IllegalArgumentException(field + " parameter is an instance of " + "List<"
+            throw new IllegalArgumentException(listId + " parameter is an instance of " + "List<"
                     + inputObject.getClass().getSimpleName() + "> instead of " + "List<" + type.getSimpleName() + ">");
         }
     }
