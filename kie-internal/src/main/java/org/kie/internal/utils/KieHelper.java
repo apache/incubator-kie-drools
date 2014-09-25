@@ -40,13 +40,13 @@ public class KieHelper {
 
     private int counter = 0;
 
+    public KieBase build( KieBaseConfiguration kieBaseConf ) {
+        KieContainer kieContainer = getKieContainer();
+        return kieContainer.newKieBase( kieBaseConf );
+    }
+
     public KieBase build(KieBaseOption... options) {
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        Results results = kieBuilder.getResults();
-        if (results.hasMessages(Message.Level.ERROR)) {
-            throw new RuntimeException(results.getMessages().toString());
-        }
-        KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
+        KieContainer kieContainer = getKieContainer();
         if (options == null || options.length == 0) {
             return kieContainer.getKieBase();
         }
@@ -54,7 +54,18 @@ public class KieHelper {
         for (KieBaseOption option : options) {
             kieBaseConf.setOption(option);
         }
+
         return kieContainer.newKieBase(kieBaseConf);
+    }
+
+    protected KieContainer getKieContainer() {
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        Results results = kieBuilder.getResults();
+        if (results.hasMessages(Message.Level.ERROR)) {
+            throw new RuntimeException(results.getMessages().toString());
+        }
+        KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
+        return kieContainer;
     }
 
     public Results verify() {
