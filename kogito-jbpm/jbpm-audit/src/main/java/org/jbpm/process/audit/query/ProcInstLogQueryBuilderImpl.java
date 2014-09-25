@@ -13,11 +13,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.jbpm.process.audit.JPAAuditLogService;
-import org.kie.api.query.ParametrizedQuery;
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
-import org.kie.api.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
+import org.kie.internal.query.ParametrizedQuery;
 import org.kie.internal.query.data.QueryData;
+import org.kie.internal.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
 
 public class ProcInstLogQueryBuilderImpl extends AbstractAuditQueryBuilderImpl<ProcessInstanceLogQueryBuilder> implements ProcessInstanceLogQueryBuilder {
 

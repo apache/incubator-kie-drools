@@ -17,10 +17,10 @@ import org.jbpm.process.audit.query.NodeInstLogQueryBuilderImpl;
 import org.jbpm.process.audit.query.ProcInstLogQueryBuilderImpl;
 import org.jbpm.process.audit.query.VarInstLogQueryBuilderImpl;
 import org.kie.api.runtime.CommandExecutor;
-import org.kie.api.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
-import org.kie.api.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
-import org.kie.api.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
 import org.kie.internal.query.data.QueryData;
+import org.kie.internal.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
+import org.kie.internal.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
+import org.kie.internal.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
 
 public class CommandBasedAuditLogService implements AuditLogService {
 

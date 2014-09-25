@@ -103,7 +103,6 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
-import org.kie.api.task.query.TaskQueryBuilder;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.EventService;
@@ -114,6 +113,7 @@ import org.kie.internal.task.api.model.FaultData;
 import org.kie.internal.task.api.model.SubTasksStrategy;
 import org.kie.internal.task.api.model.TaskDef;
 import org.kie.internal.task.api.model.TaskEvent;
+import org.kie.internal.task.query.TaskQueryBuilder;
 
 public class CommandBasedTaskService implements InternalTaskService, EventService<TaskLifeCycleEventListener> {
 

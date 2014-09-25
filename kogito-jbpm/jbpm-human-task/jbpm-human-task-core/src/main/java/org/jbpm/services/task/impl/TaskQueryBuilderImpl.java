@@ -1,28 +1,18 @@
 package org.jbpm.services.task.impl;
 
 import static org.kie.internal.query.QueryParameterIdentifiers.*;
-import static org.kie.internal.query.QueryParameterIdentifiers.BUSINESS_ADMIN_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.CREATED_BY_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.DEPLOYMENT_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.LANGUAGE;
-import static org.kie.internal.query.QueryParameterIdentifiers.POTENTIAL_OWNER_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.STAKEHOLDER_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_STATUS_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.TASK_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.WORK_ITEM_ID_LIST;
 
 import java.util.List;
 
 import org.drools.core.command.CommandService;
 import org.jbpm.services.task.commands.TaskQueryDataCommand;
-import org.kie.api.query.ParametrizedQuery;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.api.task.query.TaskQueryBuilder;
 import org.kie.internal.query.AbstractQueryBuilderImpl;
+import org.kie.internal.query.ParametrizedQuery;
 import org.kie.internal.query.QueryContext;
 import org.kie.internal.query.data.QueryData;
+import org.kie.internal.task.query.TaskQueryBuilder;
 
 /**
  * Main Implementation of the {@link TaskQueryBuilder}. See the {@link TaskQueryBuilder} interface 

@@ -3,7 +3,6 @@ package org.jbpm.process.audit.query;
 import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
 import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
 import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.*;
 import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
@@ -31,11 +30,11 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.api.query.ParametrizedQuery;
-import org.kie.api.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
-import org.kie.api.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
-import org.kie.api.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder.OrderBy;
-import org.kie.api.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
+import org.kie.internal.query.ParametrizedQuery;
+import org.kie.internal.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
+import org.kie.internal.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
+import org.kie.internal.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
+import org.kie.internal.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder.OrderBy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

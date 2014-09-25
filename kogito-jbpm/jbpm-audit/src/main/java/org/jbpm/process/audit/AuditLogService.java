@@ -19,10 +19,10 @@ package org.jbpm.process.audit;
 import java.util.List;
 
 import org.kie.api.runtime.manager.audit.AuditService;
-import org.kie.api.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
-import org.kie.api.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
-import org.kie.api.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
 import org.kie.internal.query.data.QueryData;
+import org.kie.internal.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
+import org.kie.internal.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
+import org.kie.internal.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
 
 /**
  * Implementations of this class 
@@ -59,11 +59,31 @@ public interface AuditLogService extends AuditService {
     public List<VariableInstanceLog> findVariableInstancesByName(String variableId, boolean onlyActiveProcesses);
     
     public List<VariableInstanceLog> findVariableInstancesByNameAndValue(String variableId, String value, boolean onlyActiveProcesses);
+    
+    /**
+     * Creates a "query builder" instance that allows the user to specify the 
+     * specific query criteria to retrieve {@link NodeInstanceLog} instances.
+     * @return a {@link NodeInstanceLogQueryBuilder} instance
+     */
+    public NodeInstanceLogQueryBuilder nodeInstanceLogQuery();
+    
+    /**
+     * Creates a "query builder" instance that allows the user to specify the 
+     * specific query criteria to retrieve {@link VariableInstanceLog} instances.
+     * @return a {@link VariableInstanceLogQueryBuilder} instance
+     */
+    public VariableInstanceLogQueryBuilder variableInstanceLogQuery();
+    
+    /**
+     * Creates a "query builder" instance that allows the user to specify the 
+     * specific query criteria to retrieve {@link ProcessInstanceLog} instances.
+     * @return a {@link ProcessInstanceLogQueryBuilder} instance
+     */
+    public ProcessInstanceLogQueryBuilder processInstanceLogQuery();
    
     public List<org.kie.api.runtime.manager.audit.NodeInstanceLog> queryNodeInstanceLogs(QueryData queryData);
 
     public List<org.kie.api.runtime.manager.audit.VariableInstanceLog> queryVariableInstanceLogs(QueryData queryData);
     
     public List<org.kie.api.runtime.manager.audit.ProcessInstanceLog> queryProcessInstanceLogs(QueryData queryData);
-    
 }

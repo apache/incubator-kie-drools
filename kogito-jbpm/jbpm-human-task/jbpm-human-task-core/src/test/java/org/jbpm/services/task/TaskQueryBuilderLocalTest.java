@@ -46,11 +46,11 @@ import org.junit.Test;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.api.task.query.TaskQueryBuilder;
-import org.kie.api.task.query.TaskQueryBuilder.OrderBy;
 import org.kie.internal.query.QueryParameterIdentifiers;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.model.InternalTaskData;
+import org.kie.internal.task.query.TaskQueryBuilder;
+import org.kie.internal.task.query.TaskQueryBuilder.OrderBy;
 import org.mockito.ArgumentCaptor;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;

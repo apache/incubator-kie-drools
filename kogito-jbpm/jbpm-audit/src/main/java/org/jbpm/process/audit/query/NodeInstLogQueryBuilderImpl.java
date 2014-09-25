@@ -9,11 +9,11 @@ import static org.kie.internal.query.QueryParameterIdentifiers.WORK_ITEM_ID_LIST
 import java.util.List;
 
 import org.jbpm.process.audit.JPAAuditLogService;
-import org.kie.api.query.ParametrizedQuery;
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.manager.audit.NodeInstanceLog;
-import org.kie.api.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
+import org.kie.internal.query.ParametrizedQuery;
 import org.kie.internal.query.data.QueryData;
+import org.kie.internal.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
 
 public class NodeInstLogQueryBuilderImpl extends AbstractAuditQueryBuilderImpl<NodeInstanceLogQueryBuilder> implements NodeInstanceLogQueryBuilder {
 

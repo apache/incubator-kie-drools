@@ -73,12 +73,12 @@ import org.jbpm.process.audit.strategy.PersistenceStrategyType;
 import org.jbpm.process.audit.strategy.StandaloneJtaStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
-import org.kie.api.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
-import org.kie.api.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
-import org.kie.api.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
 import org.kie.internal.query.QueryAndParameterAppender;
 import org.kie.internal.query.QueryModificationService;
 import org.kie.internal.query.data.QueryData;
+import org.kie.internal.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
+import org.kie.internal.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
+import org.kie.internal.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

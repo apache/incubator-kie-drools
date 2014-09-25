@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.process.audit.JPAAuditLogService;
-import org.kie.api.query.ParametrizedQuery;
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.manager.audit.VariableInstanceLog;
-import org.kie.api.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
+import org.kie.internal.query.ParametrizedQuery;
 import org.kie.internal.query.data.QueryData;
+import org.kie.internal.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
 
 public class VarInstLogQueryBuilderImpl extends AbstractAuditQueryBuilderImpl<VariableInstanceLogQueryBuilder> implements VariableInstanceLogQueryBuilder {
 
