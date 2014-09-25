@@ -33,6 +33,7 @@ import org.kie.api.runtime.rule.FactHandle;
 public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     /** Object-to-handle mapping. */
     private ObjectHashMap                          assertMap;
+    private ObjectHashMap                          negAssertMap;
     private ObjectHashMap                          identityMap;
     private AssertBehaviour                        behaviour;
     private Lock                                   lock;
@@ -46,6 +47,7 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
         this.lock = lock;
 
         this.assertMap = new ObjectHashMap();
+        this.negAssertMap = new ObjectHashMap();
 
         if ( AssertBehaviour.IDENTITY.equals(this.behaviour) ) {
             this.assertMap.setComparator( new IdentityAssertMapComparator() );
@@ -122,8 +124,13 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
         }
     }
     
-    public InternalFactHandle reconnect(FactHandle factHandle) {
-        return (InternalFactHandle) this.assertMap.get( factHandle );
+    public InternalFactHandle reconnect(InternalFactHandle handle) {
+        if ( handle.isNegated() ) {
+            return (InternalFactHandle) this.negAssertMap.get( handle );
+        }   else {
+            return (InternalFactHandle) this.assertMap.get( handle );
+        }
+
     }
 
     /* (non-Javadoc)
@@ -137,28 +144,27 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
      * @see org.kie.common.ObjectStore#updateHandle(org.kie.common.InternalFactHandle, java.lang.Object)
      */
     public void updateHandle(InternalFactHandle handle, Object object){
-        this.assertMap.remove( handle );
-        if ( AssertBehaviour.EQUALITY.equals(this.behaviour) ) {
-            this.identityMap.remove( handle );    
-        }
+        removeHandle( handle );
+
         handle.setObject( object );
-        this.assertMap.put( handle,
-                            handle,
-                            false );
-        if ( AssertBehaviour.EQUALITY.equals(this.behaviour) ) {
-            this.identityMap.put( handle,
-                                  handle,
-                                  false );    
-        }        
+
+        addHandle( handle, object );
     }
 
     /* (non-Javadoc)
      * @see org.kie.common.ObjectStore#addHandle(org.kie.common.InternalFactHandle, java.lang.Object)
      */
     public void addHandle(InternalFactHandle handle, Object object) {
-        this.assertMap.put( handle,
-                            handle,
-                            false );
+        if ( handle.isNegated() ) {
+            negAssertMap.put(handle,
+                             handle,
+                             false);
+        } else {
+            this.assertMap.put(handle,
+                               handle,
+                               false);
+        }
+
         if ( AssertBehaviour.EQUALITY.equals(this.behaviour) ) {
             this.identityMap.put( handle,
                                   handle,
@@ -169,8 +175,13 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     /* (non-Javadoc)
      * @see org.kie.common.ObjectStore#removeHandle(org.kie.common.InternalFactHandle)
      */
-    public void removeHandle(final FactHandle handle) {
-        this.assertMap.remove( handle );
+    public void removeHandle(final InternalFactHandle handle) {
+        if ( handle.isNegated() ) {
+            negAssertMap.remove(handle);
+        } else {
+            this.assertMap.remove(handle);
+        }
+
         if ( AssertBehaviour.EQUALITY.equals(this.behaviour) ) {
             this.identityMap.remove( handle );
         }
@@ -212,6 +223,23 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
      */
     public Iterator iterateFactHandles(org.kie.api.runtime.ObjectFilter filter) {
         HashTableIterator iterator = new HashTableIterator( this.assertMap );
+        iterator.reset();
+        return new JavaIteratorAdapter( iterator,
+                                        JavaIteratorAdapter.FACT_HANDLE,
+                                        filter );
+    }
+
+
+    public Iterator iterateNegObjects(org.kie.api.runtime.ObjectFilter filter) {
+        HashTableIterator iterator = new HashTableIterator( this.negAssertMap );
+        iterator.reset();
+        return new JavaIteratorAdapter( iterator,
+                                        JavaIteratorAdapter.OBJECT,
+                                        filter );
+    }
+
+    public Iterator iterateNegFactHandles(org.kie.api.runtime.ObjectFilter filter) {
+        HashTableIterator iterator = new HashTableIterator( this.negAssertMap );
         iterator.reset();
         return new JavaIteratorAdapter( iterator,
                                         JavaIteratorAdapter.FACT_HANDLE,

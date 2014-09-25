@@ -80,6 +80,7 @@ import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.constraint.EvaluatorConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
+import org.drools.core.rule.constraint.NegConstraint;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.Constraint;
@@ -338,6 +339,11 @@ public class PatternBuilder
                         "A Sliding Window can only be assigned to types declared with @role( event ). The type '" + pattern.getObjectType() + "' in '" + context.getRule().getName()
                                 + "' is not declared as an Event."));
             }
+        }
+
+        if ( !pattern.hasNegativeConstraint() && "on".equals( System.getProperty("drools.negatable") ) ) {
+            // this is a non-negative pattern, so we must inject the constraint
+            pattern.addConstraint( new NegConstraint(false) );
         }
 
         // poping the pattern
@@ -749,6 +755,13 @@ public class PatternBuilder
                                   final BaseDescr d,
                                   final String expr,
                                   final Map<String, OperatorDescr> aliases ) {
+        if ( "_.neg".equals ( expr) ) {
+            pattern.addConstraint( new NegConstraint() );
+            pattern.setHasNegativeConstraint( true );
+            return;
+        } else if ( "!_.neg".equals ( expr) ) {
+            // do nothing, this will be injected at the end if the pattern is still not negative
+        }
 
         RelationalExprDescr relDescr = d instanceof RelationalExprDescr ? (RelationalExprDescr) d : null;
         boolean simple = isSimpleExpr( relDescr );

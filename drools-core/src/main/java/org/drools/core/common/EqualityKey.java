@@ -46,9 +46,9 @@ public class EqualityKey extends LinkedList<DefaultFactHandle>
     private int          hashCode;
 
     /** Tracks whether this Fact is Stated or Justified */
-    private int                status;
+    private int          status;
     
-    private  BeliefSet beliefSet;
+    private  BeliefSet   beliefSet;
 
     public EqualityKey() {
 
@@ -76,6 +76,22 @@ public class EqualityKey extends LinkedList<DefaultFactHandle>
         super.writeExternal(out);
         out.writeInt(hashCode);
         out.writeInt(status);
+    }
+
+    public InternalFactHandle getLogicalFactHandle() {
+        if ( beliefSet == null ) {
+            return null;
+        }
+
+        return getFirst();
+    }
+
+    public void setLogicalFactHandle(InternalFactHandle logicalFactHandle) {
+        if ( logicalFactHandle == null ) {
+            removeFirst();
+        } else {
+            addFirst((DefaultFactHandle) logicalFactHandle);
+        }
     }
 
     public InternalFactHandle getFactHandle() {
@@ -148,7 +164,7 @@ public class EqualityKey extends LinkedList<DefaultFactHandle>
             return this == object;
         }
 
-        return (this.getFirst().getObject().equals( object ));
+        return this.getFirst().getObject().equals( object );
     }
 
 }

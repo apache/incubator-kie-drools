@@ -133,7 +133,7 @@ public class BeliefSystemLogicalCallback
         if ( update ) {
             if ( !bs.isEmpty() ) {
                 // We need the isEmpty check, in case the BeliefSet was made empty (due to retract) after this was scheduled
-                ((NamedEntryPoint) handle.getEntryPoint() ).update( handle, true, handle.getObject(), allSetButTraitBitMask(), Object.class, null );
+                ((NamedEntryPoint) handle.getEntryPoint() ).update( handle, handle.getObject(), allSetButTraitBitMask(), Object.class, null );
             }
         } else  {
             if ( fullyRetract ) {

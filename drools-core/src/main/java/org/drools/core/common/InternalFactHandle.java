@@ -111,4 +111,8 @@ public interface InternalFactHandle
     void removeRightTuple( RightTuple rightTuple );
     
     InternalFactHandle quickClone();
+
+    public boolean isNegated();
+
+    public void setNegated(boolean negated);
 }

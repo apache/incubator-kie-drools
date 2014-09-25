@@ -70,8 +70,8 @@ public class SimpleBeliefSet extends LinkedList<SimpleMode> implements BeliefSet
     }
 
     @Override
-    public boolean isUndecided() {
-        return false;
+    public boolean isDecided() {
+        return true;
     }
 
     @Override

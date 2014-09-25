@@ -24,13 +24,11 @@ declare Y
     id  : int   @key
 end
 
-declare entry-point "neg" end
-
 rule "Init"
 when
 then
     insert( new A( 1 ) );   // A(1) is a Fact
-    insert( new A( 3 ) );   // A(1) is a Fact
+    insert( new A( 3 ) );   // A(3) is a Fact
     insert( new B( 2 ) );   // same for B(2)
 end
 

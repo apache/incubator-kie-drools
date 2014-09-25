@@ -27,6 +27,8 @@ public class DefeasibleMode<M extends DefeasibleMode<M>> extends JTMSMode<M> { /
 
     private BeliefSystem<M>     beliefSystem;
 
+    private Mode nextMode;
+
     @Override
     public Object getBeliefSystem() {
         return beliefSystem;
@@ -35,6 +37,12 @@ public class DefeasibleMode<M extends DefeasibleMode<M>> extends JTMSMode<M> { /
     public DefeasibleMode(String value, BeliefSystem beliefSystem) {
         super(value, beliefSystem);
         this.beliefSystem = beliefSystem;
+    }
+
+    public DefeasibleMode(String value, BeliefSystem beliefSystem, Mode nextMode) {
+        super(value, beliefSystem);
+        this.beliefSystem = beliefSystem;
+        this.nextMode = nextMode;
     }
 
     public void initDefeats() {
@@ -68,7 +76,7 @@ public class DefeasibleMode<M extends DefeasibleMode<M>> extends JTMSMode<M> { /
             rootDefeated = defeated;
         } else {
             tailDefeated.setNext( defeated );
-            defeated.setPrevious( rootDefeated );
+            defeated.setPrevious( tailDefeated );
         }
         tailDefeated = defeated;
     }
@@ -172,5 +180,18 @@ public class DefeasibleMode<M extends DefeasibleMode<M>> extends JTMSMode<M> { /
     public void clearDefeated() {
         this.rootDefeated = null;
         this.tailDefeated = null;
+    }
+
+    @Override
+    public Mode getNextMode() {
+        return nextMode;
+    }
+
+    @Override
+    public String toString() {
+        return "DefeasibleMode{" +
+               "status=" + status +
+               " Object=" + getLogicalDependency().getObject() +
+               "} ";
     }
 }

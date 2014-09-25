@@ -40,7 +40,7 @@ public interface BeliefSet<M extends ModedAssertion<M>> {
 
     boolean isNegated();
 
-    boolean isUndecided();
+    boolean isDecided();
 
     boolean isConflicting();
 

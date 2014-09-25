@@ -1,8 +1,10 @@
 package org.drools.core.beliefsystem;
 
+import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.TruthMaintenanceSystem;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
@@ -43,6 +45,12 @@ public interface BeliefSystem<M extends ModedAssertion<M>> {
                      BeliefSet<M> beliefSet,
                      PropagationContext context,
                      ObjectTypeConf typeConf);
+
+    public void stage(PropagationContext context,
+                      BeliefSet<M> beliefSet);
+
+    public void unstage(PropagationContext context,
+                        BeliefSet<M> beliefSet);
     
     public TruthMaintenanceSystem getTruthMaintenanceSystem();
 }

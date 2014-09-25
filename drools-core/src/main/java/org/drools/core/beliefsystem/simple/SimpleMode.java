@@ -34,4 +34,9 @@ public class SimpleMode extends LinkedListEntry<SimpleMode, LogicalDependency<Si
     public void writeExternal(ObjectOutput out) throws IOException {
 
     }
+
+    @Override
+    public Mode getNextMode() {
+        return null;
+    }
 }

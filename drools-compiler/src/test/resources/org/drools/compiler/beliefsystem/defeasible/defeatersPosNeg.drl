@@ -90,7 +90,7 @@ end
 rule "React 2"
 salience -10
 when
-    $x : X( $id : id ) from entry-point "neg"
+    $x : X( _.neg, $id : id )
 then
     System.out.println( " >>>>>>>>>  NEG " + $x );
     list.add( -1 * $id );

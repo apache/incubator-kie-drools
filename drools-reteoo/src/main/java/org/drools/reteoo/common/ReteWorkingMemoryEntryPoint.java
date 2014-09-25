@@ -1,6 +1,8 @@
 package org.drools.reteoo.common;
 
 import org.drools.core.util.bitmask.BitMask;
+import org.drools.core.common.TruthMaintenanceSystem;
+import org.drools.core.spi.FactHandleFactory;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalWorkingMemory;
@@ -41,6 +43,16 @@ public class ReteWorkingMemoryEntryPoint implements WorkingMemoryEntryPoint, Int
     public FactHandle insert(Object object, boolean dynamic) {
         reteWm.initInitialFact();
         return delegate.insert(object, dynamic);
+    }
+
+    @Override
+    public TruthMaintenanceSystem getTruthMaintenanceSystem() {
+        return ((InternalWorkingMemoryEntryPoint)delegate).getTruthMaintenanceSystem();
+    }
+
+    @Override
+    public FactHandleFactory getHandleFactory() {
+        return ((InternalWorkingMemoryEntryPoint)delegate).getHandleFactory();
     }
 
     @Override

@@ -26,8 +26,6 @@ public class DefeasibleBeliefSet<M extends DefeasibleMode<M>> implements JTMSBel
     private static final FastIterator iterator = new IteratorImpl();
 
     private InternalFactHandle rootHandle;
-    private InternalFactHandle positiveFactHandle;
-    private InternalFactHandle negativeFactHandle;
 
     private M                  rootUndefeated;
     private M                  tailUndefeated;
@@ -79,22 +77,6 @@ public class DefeasibleBeliefSet<M extends DefeasibleMode<M>> implements JTMSBel
 
     public DefeasibleMode<M> getLast() {
         return tailUndefeated;
-    }
-
-    public InternalFactHandle getPositiveFactHandle() {
-        return positiveFactHandle;
-    }
-
-    public void setPositiveFactHandle(InternalFactHandle positiveFactHandle) {
-        this.positiveFactHandle = positiveFactHandle;
-    }
-
-    public InternalFactHandle getNegativeFactHandle() {
-        return negativeFactHandle;
-    }
-
-    public void setNegativeFactHandle(InternalFactHandle negativeFactHandle) {
-        this.negativeFactHandle = negativeFactHandle;
     }
 
     public void add( M node) {
@@ -366,9 +348,6 @@ public class DefeasibleBeliefSet<M extends DefeasibleMode<M>> implements JTMSBel
         DefeasibleMode<M> node = getFirst();
         LogicalDependency<M> dep = node.getLogicalDependency();
         dep.getJustifier().getLogicalDependencies().remove( dep );
-        //beliefSystem.delete( node, this, context );
-        positiveFactHandle = null;
-        negativeFactHandle = null;
     }
 
     public void clear(PropagationContext propagationContext) {
@@ -428,10 +407,6 @@ public class DefeasibleBeliefSet<M extends DefeasibleMode<M>> implements JTMSBel
         status = DefeasibilityStatus.UNDECIDABLY;
     }
 
-//    public boolean isHeld() {
-//        //isUndecided() ||  isDefinitelyPosProveable() ||isDefinitelyNegProveable()
-//    }
-
     public boolean isNegated() {
         return ((statusMask & POS_MASK ) == 0 ) &&  ((statusMask & NEG_MASK ) != 0 );
     }
@@ -444,8 +419,8 @@ public class DefeasibleBeliefSet<M extends DefeasibleMode<M>> implements JTMSBel
         return ((statusMask & POS_MASK ) != 0 ) &&  ((statusMask & NEG_MASK ) != 0 );
     }
 
-    public boolean isUndecided() {
-        return getStatus() == DefeasibilityStatus.UNDECIDABLY || getStatus() == DefeasibilityStatus.DEFEATEDLY;
+    public boolean isDecided() {
+        return getStatus() != DefeasibilityStatus.UNDECIDABLY && getStatus() != DefeasibilityStatus.DEFEATEDLY;
     }
 
     public FastIterator iterator() {

@@ -4,45 +4,42 @@ import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.util.FastIterator;
-import org.drools.core.util.LinkedList;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.LinkedList;
 
-import java.util.List;
-
-public class JTMSBeliefSetImpl<M extends JTMSMode<M>> extends LinkedList<M> implements JTMSBeliefSet<M> {
+public class JTMSBeliefSetImpl2<M extends JTMSMode<M>> extends LinkedList<M> implements JTMSBeliefSet<M> {
 
     private BeliefSystem<M> beliefSystem;
 
     private WorkingMemoryAction wmAction;
 
     private InternalFactHandle rootHandle;
-//    private InternalFactHandle positiveFactHandle;
-//    private InternalFactHandle negativeFactHandle;
+    private InternalFactHandle positiveFactHandle;
+    private InternalFactHandle negativeFactHandle;
 
     private int posCounter = 0;
     private int negCounter = 0;
 
-    public JTMSBeliefSetImpl(BeliefSystem<M> beliefSystem, InternalFactHandle rootHandle) {
+    public JTMSBeliefSetImpl2(BeliefSystem<M> beliefSystem, InternalFactHandle rootHandle) {
         this.beliefSystem = beliefSystem;
         this.rootHandle = rootHandle;
     }
 
-//    public InternalFactHandle getPositiveFactHandle() {
-//        return positiveFactHandle;
-//    }
-//
-//    public void setPositiveFactHandle(InternalFactHandle positiveFactHandle) {
-//        this.positiveFactHandle = positiveFactHandle;
-//    }
-//
-//    public InternalFactHandle getNegativeFactHandle() {
-//        return negativeFactHandle;
-//    }
-//
-//    public void setNegativeFactHandle(InternalFactHandle negativeFactHandle) {
-//        this.negativeFactHandle = negativeFactHandle;
-//    }
+    public InternalFactHandle getPositiveFactHandle() {
+        return positiveFactHandle;
+    }
+
+    public void setPositiveFactHandle(InternalFactHandle positiveFactHandle) {
+        this.positiveFactHandle = positiveFactHandle;
+    }
+
+    public InternalFactHandle getNegativeFactHandle() {
+        return negativeFactHandle;
+    }
+
+    public void setNegativeFactHandle(InternalFactHandle negativeFactHandle) {
+        this.negativeFactHandle = negativeFactHandle;
+    }
 
     public void add( M node ) {
         JTMSMode mode = node;
@@ -150,12 +147,8 @@ public class JTMSBeliefSetImpl<M extends JTMSMode<M>> extends LinkedList<M> impl
         final LogicalDependency node = last.getLogicalDependency();
         node.getJustifier().getLogicalDependencies().remove( node );
         beliefSystem.delete( node, this, context );
-
-//        if ( context.getType() != org.kie.api.runtime.rule.PropagationContext.DELETION && context.getFactHandle() != getFactHandle() ) {
-//            // don't delete something that is already being deleted from the network, otherwise we have recursion.
-//            // This happens in tests where people manually delete FH's for a logical insertion.
-//            beliefSystem.delete( node, this, context );
-//        }
+        positiveFactHandle = null;
+        negativeFactHandle = null;
     }
     
     public void clear(PropagationContext context) { 

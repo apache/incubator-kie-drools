@@ -34,6 +34,7 @@ public class QueryElementFactHandle
     private int id;
     private int identityHashCode;
     private long recency;
+    private boolean                 negated;
 
     protected QueryElementFactHandle() {}
 
@@ -46,8 +47,18 @@ public class QueryElementFactHandle
         this.id = id;
         this.recency = recency;
         this.identityHashCode = identityHashCode;
-    }    
-    
+    }
+
+    @Override
+    public boolean isNegated() {
+        return negated;
+    }
+
+    @Override
+    public void setNegated(boolean negated) {
+        this.negated = negated;
+    }
+
     public int getId() {
         return this.id;
     }
