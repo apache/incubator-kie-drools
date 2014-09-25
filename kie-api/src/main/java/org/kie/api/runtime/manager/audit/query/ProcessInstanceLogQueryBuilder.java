@@ -1,7 +1,6 @@
 package org.kie.api.runtime.manager.audit.query;
 
 import java.util.Date;
-import java.util.List;
 
 import org.kie.api.query.ParametrizedQuery;
 import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
@@ -56,21 +55,21 @@ public interface ProcessInstanceLogQueryBuilder extends AuditQueryBuilder<Proces
     
     /**
      * Specify one or more process versions as a criteria
-     * @param outcome one or more string process versions
+     * @param version one or more string process versions
      * @return The current instance of this query builder
      */
     public ProcessInstanceLogQueryBuilder processVersion(String... version);
-    
+   
     /**
      * Specify one or more process names as a criteria
-     * @param outcome one or more string process names
+     * @param processName one or more string process names
      * @return The current instance of this query builder
      */
     public ProcessInstanceLogQueryBuilder processName(String... processName);
     
     /**
      * Specify one or more (process instance) start dates as a criteria
-     * @param outcome one or more {@link Date} start dates
+     * @param date one or more {@link Date} start dates
      * @return The current instance of this query builder
      */
     public ProcessInstanceLogQueryBuilder startDate(Date... date);
@@ -93,7 +92,7 @@ public interface ProcessInstanceLogQueryBuilder extends AuditQueryBuilder<Proces
     
     /**
      * Specify one or more (process instance) end dates as a criteria
-     * @param outcome one or more {@link Date} end dates
+     * @param date one or more {@link Date} end dates
      * @return The current instance of this query builder
      */
     public ProcessInstanceLogQueryBuilder endDate(Date... date);

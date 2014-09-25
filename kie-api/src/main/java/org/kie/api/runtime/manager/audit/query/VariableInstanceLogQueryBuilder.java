@@ -1,13 +1,9 @@
 package org.kie.api.runtime.manager.audit.query;
 
 import java.util.Date;
-import java.util.List;
 
 import org.kie.api.query.ParametrizedQuery;
-import org.kie.api.runtime.manager.audit.NodeInstanceLog;
-import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
 import org.kie.api.runtime.manager.audit.VariableInstanceLog;
-import org.kie.api.runtime.manager.audit.query.NodeInstanceLogQueryBuilder.OrderBy;
 
 public interface VariableInstanceLogQueryBuilder extends AuditQueryBuilder<VariableInstanceLogQueryBuilder>{
 
@@ -47,7 +43,7 @@ public interface VariableInstanceLogQueryBuilder extends AuditQueryBuilder<Varia
      * @return The current query builder instance
      */
     public VariableInstanceLogQueryBuilder variableId(String... variableId);
-   
+  
     /**
      * Specify one or more variable values to use as a criteria.
      * @param value one or more string values
@@ -62,6 +58,20 @@ public interface VariableInstanceLogQueryBuilder extends AuditQueryBuilder<Varia
      */
     public VariableInstanceLogQueryBuilder oldValue(String... oldVvalue);
 
+    /**
+     * Specify one or more external ids to use as a criteria. In some cases,
+     * the external id is the deployment unit id or runtime manager id.
+     * @param externalId one or more string external ids
+     * @return The current query builder instance
+     */
+    public VariableInstanceLogQueryBuilder externalId(String... externalId);
+    
+    /**
+     * Only retrieve the most recent ("last") variable instance logs per variable
+     * @return The current query builder instance
+     */
+    public VariableInstanceLogQueryBuilder last();
+    
     /**
      * Specify how the results of the query should be ordered. 
      * </p>
