@@ -31,6 +31,7 @@ import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
+import org.jbpm.bpmn2.objects.HelloService;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.bpmn2.test.RequirePersistence;
@@ -1091,7 +1092,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 			}
 			
 			@Override
-			public Object compile(String expression) {
+			public Object compile(String expression, Map<String, Object> parameters) {
 				// compilation not supported
 				return expression;
 			}
@@ -1444,5 +1445,99 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("EAID_DP000000_23D3_4e7e_80FE_6D8C0AF83CAA", params);
         assertProcessInstanceFinished(processInstance, ksession);
 
+    }
+    
+    @SuppressWarnings("unchecked")
+	@Test
+    public void testBusinessRuleTaskWithTransformation() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTaskWithTransformation.bpmn2",
+                "BPMN2-RuleTaskWithTransformation.drl");
+        ksession = createKnowledgeSession(kbase);
+        List<String> data = new ArrayList<String>();
+        
+        ksession.setGlobal("data", data);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("name", "JoHn");
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-RuleTaskWithTransformation", params);
+
+        int fired = ksession.fireAllRules();
+        assertEquals(1, fired);
+        assertProcessInstanceFinished(processInstance, ksession);
+        
+        data = (List<String>) ksession.getGlobal("data");
+        assertNotNull(data);
+        assertEquals(1, data.size());
+        assertEquals("JOHN", data.get(0));
+        
+        String nameVar = getProcessVarValue(processInstance, "name");
+        assertNotNull(nameVar);
+        assertEquals("john", nameVar);
+        
+    }
+    
+    @Test
+    public void testCallActivityWithTransformation() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-CallActivityWithTransformation.bpmn2", "BPMN2-CallActivitySubProcess.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        final List<ProcessInstance> instances = new ArrayList<ProcessInstance>();
+        ksession.addEventListener(new DefaultProcessEventListener(){
+
+			@Override
+			public void beforeProcessStarted(ProcessStartedEvent event) {
+				instances.add(event.getProcessInstance());
+			}
+        	
+        });
+        
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "oldValue");
+        ProcessInstance processInstance = ksession.startProcess("ParentProcess", params);
+        assertProcessInstanceCompleted(processInstance);
+
+        assertEquals(2, instances.size());
+        // assert variables of parent process, first in start (input transformation, then on end output transformation)
+        assertEquals("oldValue",((WorkflowProcessInstance) instances.get(0)).getVariable("x"));
+        assertEquals("NEW VALUE",((WorkflowProcessInstance) instances.get(0)).getVariable("y"));
+        // assert variables of subprocess, first in start (input transformation, then on end output transformation)
+        assertEquals("OLDVALUE",((WorkflowProcessInstance) instances.get(1)).getVariable("subX"));
+        assertEquals("new value",((WorkflowProcessInstance) instances.get(1)).getVariable("subY"));
+    }
+    
+    @Test
+    public void testServiceTaskWithMvelCollectionTransformation() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ServiceProcessWithMvelCollectionTransformation.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task",
+                new ServiceTaskHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("s", "john,poul,mary");
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession
+                .startProcess("ServiceProcess", params);
+        assertProcessInstanceFinished(processInstance, ksession);
+        @SuppressWarnings("unchecked")
+		List<String> result = (List<String>)processInstance.getVariable("list");
+        assertEquals(3, result.size());
+    }
+    
+    @Test
+    public void testServiceTaskWithMvelJaxbTransformation() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ServiceProcessWithMvelJaxbTransformation.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task",
+                new ServiceTaskHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        Person person = new Person();
+        person.setId(123);
+        person.setName("john");
+        params.put("s", person);
+        
+        HelloService.VALIDATE_STRING = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><person><id>123</id><name>john</name></person>";
+        
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession
+                .startProcess("ServiceProcess", params);
+        assertProcessInstanceFinished(processInstance, ksession);
+        
     }
 }

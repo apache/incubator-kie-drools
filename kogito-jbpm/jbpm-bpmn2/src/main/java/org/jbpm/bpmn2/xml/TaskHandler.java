@@ -107,7 +107,7 @@ public class TaskHandler extends AbstractNodeHandler {
     				throw new IllegalArgumentException("No transformer registered for language " + lang);
     			}    			
     			transformation = new Transformation(lang, expression);
-    			transformation.setCompiledExpression(transformer.compile(expression));
+//    			transformation.setCompiledExpression(transformer.compile(expression));
     			
     			subNode = subNode.getNextSibling();
     		}
@@ -174,7 +174,7 @@ public class TaskHandler extends AbstractNodeHandler {
 				throw new IllegalArgumentException("No transformer registered for language " + lang);
 			}    			
 			transformation = new Transformation(lang, expression, source);
-			transformation.setCompiledExpression(transformer.compile(expression));
+//			transformation.setCompiledExpression(transformer.compile(expression));
 			subNode = subNode.getNextSibling();
 		}
 		// assignments  

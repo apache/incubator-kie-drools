@@ -27,13 +27,17 @@ import org.jbpm.bpmn2.core.Escalation;
 import org.jbpm.bpmn2.core.Message;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.event.EventFilter;
+import org.jbpm.process.core.event.EventTransformerImpl;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.event.NonAcceptingEventTypeFilter;
+import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
 import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.Transformation;
+import org.kie.api.runtime.process.DataTransformer;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -41,6 +45,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class BoundaryEventHandler extends AbstractNodeHandler {
+	
+	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
     
     protected Node createNode(Attributes attrs) {
         return new BoundaryEventNode();
@@ -295,7 +301,11 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("dataOutputAssociation".equals(nodeName)) {
+            if ("dataOutput".equals(nodeName)) {
+                String id = ((Element) xmlNode).getAttribute("id");
+                String outputName = ((Element) xmlNode).getAttribute("name");
+                dataOutputs.put(id, outputName);
+            } if ("dataOutputAssociation".equals(nodeName)) {
                 readDataOutputAssociation(xmlNode, eventNode);
             } else if ("signalEventDefinition".equals(nodeName)) {
                 String type = ((Element) xmlNode).getAttribute("signalRef");
@@ -360,7 +370,11 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("dataOutputAssociation".equals(nodeName)) {
+            if ("dataOutput".equals(nodeName)) {
+                String id = ((Element) xmlNode).getAttribute("id");
+                String outputName = ((Element) xmlNode).getAttribute("name");
+                dataOutputs.put(id, outputName);
+            }  else if ("dataOutputAssociation".equals(nodeName)) {
                 readDataOutputAssociation(xmlNode, eventNode);
             } else if ("messageEventDefinition".equals(nodeName)) {
                 String messageRef = ((Element) xmlNode).getAttribute("messageRef");
@@ -388,10 +402,28 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
     protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode,  EventNode eventNode) {
         // sourceRef
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+        String from = subNode.getTextContent();
         // targetRef
         subNode = subNode.getNextSibling();
         String to = subNode.getTextContent();
+        // transformation
+ 		Transformation transformation = null;
+ 		subNode = subNode.getNextSibling();
+ 		if (subNode != null && "transformation".equals(subNode.getNodeName())) {
+ 			String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
+ 			String expression = subNode.getTextContent();
+ 			DataTransformer transformer = transformerRegistry.find(lang);
+ 			if (transformer == null) {
+ 				throw new IllegalArgumentException("No transformer registered for language " + lang);
+ 			}    			
+ 			transformation = new Transformation(lang, expression, dataOutputs.get(from));
+ 			eventNode.setMetaData("Transformation", transformation);
+ 			
+ 			eventNode.setEventTransformer(new EventTransformerImpl(transformation));
+ 		}
+        
         eventNode.setVariableName(to);
+        
     }
 
     public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {

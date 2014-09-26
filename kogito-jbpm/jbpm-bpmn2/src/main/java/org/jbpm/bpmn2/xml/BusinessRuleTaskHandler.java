@@ -22,10 +22,13 @@ import java.util.Map;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.core.xml.ExtensibleXmlParser;
+import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.RuleSetNode;
+import org.jbpm.workflow.core.node.Transformation;
+import org.kie.api.runtime.process.DataTransformer;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
@@ -33,6 +36,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class BusinessRuleTaskHandler extends AbstractNodeHandler {
+	
+	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
     
     protected Node createNode(Attributes attrs) {
         return new RuleSetNode();
@@ -87,7 +92,22 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
             // targetRef
             subNode = subNode.getNextSibling();
             String target = subNode.getTextContent();
-            subNode = subNode.getNextSibling();
+            // transformation
+    		Transformation transformation = null;
+    		subNode = subNode.getNextSibling();
+    		if (subNode != null && "transformation".equals(subNode.getNodeName())) {
+    			String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
+    			String expression = subNode.getTextContent();
+    			
+    			DataTransformer transformer = transformerRegistry.find(lang);
+    			if (transformer == null) {
+    				throw new IllegalArgumentException("No transformer registered for language " + lang);
+    			}    			
+    			transformation = new Transformation(lang, expression);    			
+    			
+    			subNode = subNode.getNextSibling();
+    		}
+    		// assignments  
             List<Assignment> assignments = new LinkedList<Assignment>();
             while(subNode != null){
                 org.w3c.dom.Node ssubNode = subNode.getFirstChild();
@@ -98,7 +118,7 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
             }
             ruleSetNode.addInAssociation(new DataAssociation(
                     source,
-                    dataInputs.get(target), assignments, null));
+                    dataInputs.get(target), assignments, transformation));
         } else {
             // targetRef
             String to = subNode.getTextContent();
@@ -138,7 +158,20 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
         // targetRef
         subNode = subNode.getNextSibling();
         String target = subNode.getTextContent();
-        subNode = subNode.getNextSibling();
+        // transformation
+ 		Transformation transformation = null;
+ 		subNode = subNode.getNextSibling();
+ 		if (subNode != null && "transformation".equals(subNode.getNodeName())) {
+ 			String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
+ 			String expression = subNode.getTextContent();
+ 			DataTransformer transformer = transformerRegistry.find(lang);
+ 			if (transformer == null) {
+ 				throw new IllegalArgumentException("No transformer registered for language " + lang);
+ 			}    			
+ 			transformation = new Transformation(lang, expression, source); 		
+ 			subNode = subNode.getNextSibling();
+ 		}
+ 		// assignments 
         List<Assignment> assignments = new LinkedList<Assignment>();
         while(subNode != null){
             org.w3c.dom.Node ssubNode = subNode.getFirstChild();
@@ -147,7 +180,7 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
             assignments.add(new Assignment("XPath", from, to));
             subNode = subNode.getNextSibling();
         }
-        ruleSetNode.addOutAssociation(new DataAssociation(dataOutputs.get(source), target, assignments, null));
+        ruleSetNode.addOutAssociation(new DataAssociation(dataOutputs.get(source), target, assignments, transformation));
     }
     
     protected void writeIO(RuleSetNode ruleSetNode, StringBuilder xmlDump) {

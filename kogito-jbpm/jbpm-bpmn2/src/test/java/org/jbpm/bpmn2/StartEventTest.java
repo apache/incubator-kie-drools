@@ -513,6 +513,26 @@ public class StartEventTest extends JbpmBpmn2TestCase {
             assertEquals(i, listener.getCount("start.cycle"));
         }
     }
+    
+    
+    @Test
+    public void testSignalStartWithTransformation() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-SignalStartWithTransformation.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        final List<ProcessInstance> list = new ArrayList<ProcessInstance>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance());
+            }
+        });
+        ksession.signalEvent("MySignal", "NewValue");
+        Thread.sleep(500);
+        assertEquals(1, getNumberOfProcessInstances("Minimal"));
+        assertNotNull(list);
+        assertEquals(1, list.size());
+        String var = getProcessVarValue(list.get(0), "x");
+        assertEquals("NEWVALUE", var);
+    }
 
     /**
      * This is how I would expect the start event to work (same as the recurring event)

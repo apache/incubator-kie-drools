@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.process.core.context.variable.Mappable;
+import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.kie.api.definition.process.Connection;
@@ -47,6 +48,8 @@ public class StartNode extends ExtendedNodeImpl implements Mappable {
     private List<DataAssociation> outMapping = new LinkedList<DataAssociation>();
 
     private Timer timer;
+    
+    private EventTransformer transformer;
 
 
 	public void addTrigger(Trigger trigger) {
@@ -176,5 +179,13 @@ public class StartNode extends ExtendedNodeImpl implements Mappable {
     public void setTimer(Timer timer) {
         this.timer = timer;
     }
+    
+    public void setEventTransformer(EventTransformer transformer) {
+		this.transformer = transformer;
+	}
+	
+	public EventTransformer getEventTransformer() {
+		return transformer;
+	}
     
 }

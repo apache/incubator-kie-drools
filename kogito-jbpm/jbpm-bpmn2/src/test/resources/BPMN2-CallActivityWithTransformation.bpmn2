@@ -11,28 +11,36 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_xItem" structureRef="String" />
-
-  <process processType="Private" isExecutable="true" id="Minimal" name="Minimal Process" tns:packageName="com.sample" >
+  <process processType="Private" isExecutable="true" id="ParentProcess" name="Parent Process" >
 
     <!-- process variables -->
     <property id="x" itemSubjectRef="_xItem"/>
+    <property id="y" itemSubjectRef="_yItem"/>
 
     <!-- nodes -->
-    <startEvent id="_1" name="StartProcess" >
-      <dataOutput id="_1_Output" name="event" />
+    <startEvent id="_1" name="StartProcess" />
+    <callActivity id="_2" name="CallActivity" calledElement="SubProcess" >
+      <ioSpecification>
+        <dataInput id="_2_subXInput" name="subX" />
+        <dataOutput id="_2_subYOutput" name="subY" />
+        <inputSet>
+          <dataInputRefs>_2_subXInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_2_subYOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>x</sourceRef>
+        <targetRef>_2_subXInput</targetRef>
+        <transformation language="http://www.java.com/javascript">subX.toUpperCase()</transformation>
+      </dataInputAssociation>
       <dataOutputAssociation>
-        <sourceRef>_1_Output</sourceRef>
-        <targetRef>x</targetRef>
+        <sourceRef>_2_subYOutput</sourceRef>
+        <targetRef>y</targetRef>
+        <transformation language="http://www.java.com/javascript">subY.toUpperCase()</transformation>
       </dataOutputAssociation>
-      <outputSet>
-        <dataOutputRefs>_1_Output</dataOutputRefs>
-      </outputSet>
-      <signalEventDefinition signalRef="MySignal" />
-    </startEvent>
-    <scriptTask id="_2" name="Hello" >
-      <script>System.out.println("x = " + x);</script>
-    </scriptTask>
+    </callActivity>
     <endEvent id="_3" name="EndProcess" >
         <terminateEventDefinition/>
     </endEvent>
@@ -43,24 +51,27 @@
 
   </process>
 
+  <itemDefinition id="_xItem" structureRef="String" />
+  <itemDefinition id="_yItem" structureRef="String" />
+
   <bpmndi:BPMNDiagram>
-    <bpmndi:BPMNPlane bpmnElement="Minimal" >
+    <bpmndi:BPMNPlane bpmnElement="ParentProcess" >
       <bpmndi:BPMNShape bpmnElement="_1" >
         <dc:Bounds x="16" y="16" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_2" >
-        <dc:Bounds x="96" y="16" width="80" height="48" />
+        <dc:Bounds x="96" y="16" width="110" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_3" >
-        <dc:Bounds x="208" y="16" width="48" height="48" />
+        <dc:Bounds x="238" y="16" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="_1-_2" >
         <di:waypoint x="40" y="40" />
-        <di:waypoint x="136" y="40" />
+        <di:waypoint x="151" y="40" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_2-_3" >
-        <di:waypoint x="136" y="40" />
-        <di:waypoint x="232" y="40" />
+        <di:waypoint x="151" y="40" />
+        <di:waypoint x="262" y="40" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

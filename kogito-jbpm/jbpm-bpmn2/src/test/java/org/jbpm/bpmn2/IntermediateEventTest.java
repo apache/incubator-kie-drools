@@ -67,6 +67,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.Context;
@@ -1824,6 +1825,138 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ksession.signalEvent("moveon", "", processInstance.getId());
         
         assertProcessInstanceFinished(processInstance, ksession);        
+    }
+    
+    @Test
+    public void testSignalIntermediateThrowEventWithTransformation() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper(
+                "BPMN2-BoundarySignalEventOnTaskbpmn2.bpmn",
+                "BPMN2-IntermediateThrowEventSignalWithTransformation.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                handler);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "john");
+        ProcessInstance processInstance = ksession.startProcess("BoundarySignalOnTask");
+
+        ProcessInstance processInstance2 = ksession.startProcess("SignalIntermediateEvent", params);
+        assertProcessInstanceFinished(processInstance2, ksession);
+
+        assertProcessInstanceFinished(processInstance, ksession);
+        
+        String var = getProcessVarValue(processInstance, "x");
+        assertEquals("JOHN", var);
+    }
+    
+    @Test
+    public void testSignalBoundaryEventWithTransformation() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper(
+                "BPMN2-BoundarySignalEventOnTaskWithTransformation.bpmn",
+                "BPMN2-IntermediateThrowEventSignal.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                handler);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "john");
+        ProcessInstance processInstance = ksession.startProcess("BoundarySignalOnTask");
+
+        ProcessInstance processInstance2 = ksession.startProcess("SignalIntermediateEvent", params);
+        assertProcessInstanceFinished(processInstance2, ksession);
+
+        assertProcessInstanceFinished(processInstance, ksession);
+        
+        String var = getProcessVarValue(processInstance, "x");
+        assertEquals("JOHN", var);
+    }
+    
+    @Test
+    public void testMessageIntermediateThrowWithTransformation() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-IntermediateThrowEventMessageWithTransformation.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        final StringBuffer messageContent = new StringBuffer();
+        ksession.getWorkItemManager().registerWorkItemHandler("Send Task",
+                new SendTaskHandler(){
+
+					@Override
+					public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+						// collect message content for verification
+						messageContent.append(workItem.getParameter("Message"));
+						super.executeWorkItem(workItem, manager);
+					}
+        	
+        });
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "MyValue");
+        ProcessInstance processInstance = ksession.startProcess(
+                "MessageIntermediateEvent", params);
+        assertProcessInstanceCompleted(processInstance);
+
+        assertEquals("MYVALUE", messageContent.toString());
+
+    }
+    
+    @Test
+    public void testIntermediateCatchEventSignalWithTransformation() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-IntermediateCatchEventSignalWithTransformation.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new SystemOutWorkItemHandler());
+        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
+        assertProcessInstanceActive(processInstance);
+        ksession = restoreSession(ksession, true);
+        // now signal process instance
+        ksession.signalEvent("MyMessage", "SomeValue", processInstance.getId());
+        assertProcessInstanceFinished(processInstance, ksession);
+        assertNodeTriggered(processInstance.getId(), "StartProcess", "UserTask", "EndProcess", "event");
+        String var = getProcessVarValue(processInstance, "x");
+        assertNotNull(var);
+        assertEquals("SOMEVALUE", var);
+    }
+
+    @Test
+    public void testIntermediateCatchEventMessageWithTransformation() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-IntermediateCatchEventMessageWithTransformation.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new SystemOutWorkItemHandler());
+        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
+        assertProcessInstanceActive(processInstance);
+        ksession = restoreSession(ksession, true);
+        // now signal process instance
+        ksession.signalEvent("Message-HelloMessage", "SomeValue", processInstance.getId());
+        assertProcessInstanceFinished(processInstance, ksession);
+        String var = getProcessVarValue(processInstance, "x");
+        assertNotNull(var);
+        assertEquals("SOMEVALUE", var);
+    }
+    
+    @Test
+    public void testEventSubprocessSignalWithTransformation() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-EventSubprocessSignalWithTransformation.bpmn2");    
+        ksession = createKnowledgeSession(kbase);
+
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        ProcessInstance processInstance = ksession
+                .startProcess("BPMN2-EventSubprocessSignal");
+        assertProcessInstanceActive(processInstance);
+        ksession = restoreSession(ksession, true);
+
+        ksession.signalEvent("MySignal", "john", processInstance.getId());
+
+        assertProcessInstanceFinished(processInstance, ksession);
+        assertNodeTriggered(processInstance.getId(), "start", "User Task 1",
+                "Sub Process 1", "start-sub", "end-sub");
+
+        String var = getProcessVarValue(processInstance, "x");
+        assertNotNull(var);
+        assertEquals("JOHN", var);
+
     }
 
     /*

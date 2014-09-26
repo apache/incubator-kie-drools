@@ -1,0 +1,11 @@
+package defaultPackge
+
+global java.util.List data;
+
+rule "Your First Rule" ruleflow-group "MyRuleFlow"
+    when
+        $s: String()
+    then
+        System.out.println("Hello " + $s);
+		data.add($s);
+end

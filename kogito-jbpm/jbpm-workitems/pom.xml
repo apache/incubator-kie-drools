@@ -140,6 +140,11 @@
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- Camel -->
     <dependency>
       <groupId>org.apache.camel</groupId>

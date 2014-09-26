@@ -24,11 +24,13 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.process.instance.WorkItem;
 import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.ContextInstanceContainer;
 import org.jbpm.process.instance.ProcessInstance;
@@ -40,6 +42,7 @@ import org.jbpm.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.SubProcessNode;
+import org.jbpm.workflow.core.node.Transformation;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.VariableScopeResolverFactory;
 import org.kie.api.KieBase;
@@ -47,6 +50,7 @@ import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.internal.runtime.KnowledgeRuntime;
@@ -88,18 +92,28 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         for (Iterator<DataAssociation> iterator =  getSubProcessNode().getInAssociations().iterator(); iterator.hasNext(); ) {
         	DataAssociation mapping = iterator.next();
         	Object parameterValue = null;
-            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getSources().get(0));
-            if (variableScopeInstance != null) {
-                parameterValue = variableScopeInstance.getVariable(mapping.getSources().get(0));
-            } else {
-            	try {
-            		parameterValue = MVELSafeHelper.getEvaluator().eval(mapping.getSources().get(0), new NodeInstanceResolverFactory(this));
-            	} catch (Throwable t) {
-            	    logger.error("Could not find variable scope for variable {}", mapping.getSources().get(0));
-            	    logger.error("when trying to execute SubProcess node {}", getSubProcessNode().getName());
-            	    logger.error("Continuing without setting parameter.");
+        	if (mapping.getTransformation() != null) {
+            	Transformation transformation = mapping.getTransformation();
+            	DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
+            	if (transformer != null) {
+            		parameterValue = transformer.transform(transformation.getCompiledExpression(), getSourceParameters(mapping));
+            		
             	}
+            } else {
+        	
+	            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+	                resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getSources().get(0));
+	            if (variableScopeInstance != null) {
+	                parameterValue = variableScopeInstance.getVariable(mapping.getSources().get(0));
+	            } else {
+	            	try {
+	            		parameterValue = MVELSafeHelper.getEvaluator().eval(mapping.getSources().get(0), new NodeInstanceResolverFactory(this));
+	            	} catch (Throwable t) {
+	            	    logger.error("Could not find variable scope for variable {}", mapping.getSources().get(0));
+	            	    logger.error("when trying to execute SubProcess node {}", getSubProcessNode().getName());
+	            	    logger.error("Continuing without setting parameter.");
+	            	}
+	            }
             }
             if (parameterValue != null) {
             	parameters.put(mapping.getTarget(),parameterValue); 
@@ -267,23 +281,40 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         if (subProcessNode != null) {
 		    for (Iterator<org.jbpm.workflow.core.node.DataAssociation> iterator= subProcessNode.getOutAssociations().iterator(); iterator.hasNext(); ) {
 		    	org.jbpm.workflow.core.node.DataAssociation mapping = iterator.next();
-		        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-		            resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getTarget());
-		        if (variableScopeInstance != null) {
-		        	Object value = subProcessVariableScopeInstance.getVariable(mapping.getSources().get(0));
-		        	if (value == null) {
-		        		try {
-		            		value = MVELSafeHelper.getEvaluator().eval(mapping.getSources().get(0), new VariableScopeResolverFactory(subProcessVariableScopeInstance));
-		            	} catch (Throwable t) {
-		            		// do nothing
-		            	}
-		        	}
-		            variableScopeInstance.setVariable(mapping.getTarget(), value);
-		        } else {
-		            logger.error("Could not find variable scope for variable {}", mapping.getTarget());
-		            logger.error("when trying to complete SubProcess node {}", getSubProcessNode().getName());
-		            logger.error("Continuing without setting variable.");
-		        }
+		    	if (mapping.getTransformation() != null) {
+                	Transformation transformation = mapping.getTransformation();
+                	DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
+                	if (transformer != null) {
+                		Object parameterValue = transformer.transform(transformation.getCompiledExpression(), subProcessVariableScopeInstance.getVariables());
+                		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                        resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getTarget());
+                        if (variableScopeInstance != null && parameterValue != null) {
+                              
+                            variableScopeInstance.setVariable(mapping.getTarget(), parameterValue);
+                        } else {
+                            logger.warn("Could not find variable scope for variable {}", mapping.getTarget());
+                            logger.warn("Continuing without setting variable.");
+                        }                		
+                	}
+                } else {
+			        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+			            resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getTarget());
+			        if (variableScopeInstance != null) {
+			        	Object value = subProcessVariableScopeInstance.getVariable(mapping.getSources().get(0));
+			        	if (value == null) {
+			        		try {
+			            		value = MVELSafeHelper.getEvaluator().eval(mapping.getSources().get(0), new VariableScopeResolverFactory(subProcessVariableScopeInstance));
+			            	} catch (Throwable t) {
+			            		// do nothing
+			            	}
+			        	}
+			            variableScopeInstance.setVariable(mapping.getTarget(), value);
+			        } else {
+			            logger.error("Could not find variable scope for variable {}", mapping.getTarget());
+			            logger.error("when trying to complete SubProcess node {}", getSubProcessNode().getName());
+			            logger.error("Continuing without setting variable.");
+			        }
+                }
 		    }
         }
     }
@@ -349,6 +380,29 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
     @Override
     public ContextContainer getContextContainer() {
         return getSubProcessNode();
+    }
+    
+    protected Map<String, Object> getSourceParameters(DataAssociation association) {
+    	Map<String, Object> parameters = new HashMap<String, Object>();
+    	for (String sourceParam : association.getSources()) {
+	    	Object parameterValue = null;
+	        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+	        resolveContextInstance(VariableScope.VARIABLE_SCOPE, sourceParam);
+	        if (variableScopeInstance != null) {
+	            parameterValue = variableScopeInstance.getVariable(sourceParam);
+	        } else {
+	            try {
+	                parameterValue = MVELSafeHelper.getEvaluator().eval(sourceParam, new NodeInstanceResolverFactory(this));
+	            } catch (Throwable t) {
+	                logger.warn("Could not find variable scope for variable {}", sourceParam);
+	            }
+	        }
+	        if (parameterValue != null) {
+	        	parameters.put(association.getTarget(), parameterValue);
+	        }
+    	}
+    	
+    	return parameters;
     }
 
 }

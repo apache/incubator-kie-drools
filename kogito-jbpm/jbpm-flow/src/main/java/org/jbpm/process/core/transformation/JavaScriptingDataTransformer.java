@@ -79,7 +79,7 @@ public class JavaScriptingDataTransformer implements DataTransformer {
 	}
 
 	@Override
-	public Object compile(String expression) {
+	public Object compile(String expression, Map<String, Object> parameters) {
 		if (scriptEngine instanceof Compilable) {
 			logger.debug("Compiling expression {} with engine {}", expression, scriptEngine);
 			try {

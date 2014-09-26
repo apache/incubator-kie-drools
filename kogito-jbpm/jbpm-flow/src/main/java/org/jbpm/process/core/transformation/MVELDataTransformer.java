@@ -16,11 +16,14 @@
 
 package org.jbpm.process.core.transformation;
 
+import java.util.List;
 import java.util.Map;
 
 import org.drools.core.util.MVELSafeHelper;
 import org.kie.api.runtime.process.DataTransformer;
 import org.mvel2.MVEL;
+import org.mvel2.ParserConfiguration;
+import org.mvel2.ParserContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,9 +36,30 @@ public class MVELDataTransformer implements DataTransformer {
 	private static final Logger logger = LoggerFactory.getLogger(MVELDataTransformer.class);
 
 	@Override
-	public Object compile(String expression) {
+	public Object compile(String expression, Map<String, Object> parameters) {
 		logger.debug("About to compile mvel expression {}", expression);
-		return MVEL.compileExpression(expression);
+		ClassLoader classLoader = (ClassLoader) parameters.get("classloader");
+		if (classLoader == null) {
+			classLoader = this.getClass().getClassLoader();
+		}
+		ParserConfiguration config = new ParserConfiguration();
+        config.setClassLoader(classLoader);
+		ParserContext context = new ParserContext(config);
+		if (parameters != null) {
+			@SuppressWarnings("unchecked")
+			List<String> imports = (List<String>)parameters.get("imports");
+			if (imports != null) {
+				for(String clazz : imports) {
+					try {
+						Class<?> cl = Class.forName(clazz, true, classLoader);
+						context.addImport(cl.getSimpleName(), cl);
+					} catch (ClassNotFoundException e) {
+						logger.warn("Unable to load class {} due to {}", clazz, e.getException());
+					};
+				}
+			}
+		}
+		return MVEL.compileExpression(expression, context);
 	}
 
 	@Override

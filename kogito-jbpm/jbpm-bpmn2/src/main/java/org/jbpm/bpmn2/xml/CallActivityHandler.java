@@ -23,10 +23,13 @@ import java.util.Map;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.core.xml.ExtensibleXmlParser;
+import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.SubProcessNode;
+import org.jbpm.workflow.core.node.Transformation;
+import org.kie.api.runtime.process.DataTransformer;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
@@ -34,6 +37,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class CallActivityHandler extends AbstractNodeHandler {
+	
+	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
     
     protected Node createNode(Attributes attrs) {
         return new SubProcessNode();
@@ -103,15 +108,30 @@ public class CallActivityHandler extends AbstractNodeHandler {
 		// sourceRef
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
         if ("sourceRef".equals(subNode.getNodeName())) {
-          
-          String from = subNode.getTextContent();
-          // targetRef
-          subNode = subNode.getNextSibling();
-          String to = subNode.getTextContent();
-          subProcessNode.addInMapping(dataInputs.get(to), from);
+
+			String from = subNode.getTextContent();
+			// targetRef
+			subNode = subNode.getNextSibling();
+			String to = subNode.getTextContent();
+			// transformation
+			Transformation transformation = null;
+			subNode = subNode.getNextSibling();
+			if (subNode != null && "transformation".equals(subNode.getNodeName())) {
+				String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
+				String expression = subNode.getTextContent();
+
+				DataTransformer transformer = transformerRegistry.find(lang);
+				if (transformer == null) {
+					throw new IllegalArgumentException("No transformer registered for language " + lang);
+				}
+				transformation = new Transformation(lang, expression);
+
+				subNode = subNode.getNextSibling();
+			}
+			subProcessNode.addInMapping(dataInputs.get(to), from, transformation);
         } else {
             // targetRef
-            String to = subNode.getTextContent();
+            String to = subNode.getTextContent();            
             // assignment
             subNode = subNode.getNextSibling();
             if (subNode != null) {
@@ -144,7 +164,20 @@ public class CallActivityHandler extends AbstractNodeHandler {
 		// targetRef
 		subNode = subNode.getNextSibling();
 		String to = subNode.getTextContent();
-		subProcessNode.addOutMapping(dataOutputs.get(from), to);
+		// transformation
+		Transformation transformation = null;
+		subNode = subNode.getNextSibling();
+		if (subNode != null && "transformation".equals(subNode.getNodeName())) {
+			String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
+			String expression = subNode.getTextContent();
+			DataTransformer transformer = transformerRegistry.find(lang);
+			if (transformer == null) {
+				throw new IllegalArgumentException("No transformer registered for language " + lang);
+			}    			
+			transformation = new Transformation(lang, expression, from);
+			subNode = subNode.getNextSibling();
+		}
+		subProcessNode.addOutMapping(dataOutputs.get(from), to, transformation);
     }
 
 	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {

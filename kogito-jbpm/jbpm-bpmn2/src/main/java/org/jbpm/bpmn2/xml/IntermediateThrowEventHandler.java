@@ -17,6 +17,7 @@
 package org.jbpm.bpmn2.xml;
 
 import static org.jbpm.bpmn2.xml.ProcessHandler.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import org.jbpm.bpmn2.core.Escalation;
 import org.jbpm.bpmn2.core.IntermediateLink;
 import org.jbpm.bpmn2.core.Message;
 import org.jbpm.compiler.xml.ProcessBuildData;
+import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
@@ -34,12 +36,16 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.ThrowLinkNode;
+import org.jbpm.workflow.core.node.Transformation;
+import org.kie.api.runtime.process.DataTransformer;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class IntermediateThrowEventHandler extends AbstractNodeHandler {
+	
+	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
 
 	public static final String LINK_NAME = "linkName";
 	public static final String LINK_SOURCE = "source";
@@ -179,7 +185,11 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 		org.w3c.dom.Node xmlNode = element.getFirstChild();
 		while (xmlNode != null) {
 			String nodeName = xmlNode.getNodeName();
-			if ("dataInputAssociation".equals(nodeName)) {
+			if ("dataInput".equals(nodeName)) {
+                String id = ((Element) xmlNode).getAttribute("id");
+                String inputName = ((Element) xmlNode).getAttribute("name");
+                dataInputs.put(id, inputName);
+            } else if ("dataInputAssociation".equals(nodeName)) {
 				readDataInputAssociation(xmlNode, actionNode);
 			} else if ("signalEventDefinition".equals(nodeName)) {
 				String signalName = ((Element) xmlNode)
@@ -188,12 +198,18 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 						.getMetaData("MappingVariable");
 				actionNode
 						.setAction(new DroolsConsequenceAction(
-								"mvel",
+								"java",
+								" Object tVariable = "+ (variable == null ? "null" : variable)+";"
+								+ "org.jbpm.workflow.core.node.Transformation transformation = (org.jbpm.workflow.core.node.Transformation)kcontext.getNodeInstance().getNode().getMetaData().get(\"Transformation\");"
+								+ "if (transformation != null) {"
+								+ "  tVariable = new org.jbpm.process.core.event.EventTransformerImpl(transformation)"
+								+ "  .transformEvent("+(variable == null ? "null" : variable)+");"
+								+ "}"+
 								RUNTIME_SIGNAL_EVENT 
 										+ signalName
 										+ "\", "
-										+ (variable == null ? "null" : variable)
-										+ ")"));
+										+ "tVariable"
+										+ ");"));
 			}
 			xmlNode = xmlNode.getNextSibling();
 		}
@@ -207,7 +223,11 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 		org.w3c.dom.Node xmlNode = element.getFirstChild();
 		while (xmlNode != null) {
 			String nodeName = xmlNode.getNodeName();
-			if ("dataInputAssociation".equals(nodeName)) {
+			if ("dataInput".equals(nodeName)) {
+                String id = ((Element) xmlNode).getAttribute("id");
+                String inputName = ((Element) xmlNode).getAttribute("name");
+                dataInputs.put(id, inputName);
+            } else if ("dataInputAssociation".equals(nodeName)) {
 				readDataInputAssociation(xmlNode, actionNode);
 			} else if ("messageEventDefinition".equals(nodeName)) {
 				String messageRef = ((Element) xmlNode)
@@ -228,7 +248,13 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 				actionNode
 						.setAction(new DroolsConsequenceAction(
 								"java",
-								"org.drools.core.process.instance.impl.WorkItemImpl workItem = new org.drools.core.process.instance.impl.WorkItemImpl();"
+								" Object tVariable = "+ (variable == null ? "null" : variable)+";"
+								+ "org.jbpm.workflow.core.node.Transformation transformation = (org.jbpm.workflow.core.node.Transformation)kcontext.getNodeInstance().getNode().getMetaData().get(\"Transformation\");"
+								+ "if (transformation != null) {"
+								+ "  tVariable = new org.jbpm.process.core.event.EventTransformerImpl(transformation)"
+								+ "  .transformEvent("+(variable == null ? "null" : variable)+");"
+								+ "}"
+								+ "org.drools.core.process.instance.impl.WorkItemImpl workItem = new org.drools.core.process.instance.impl.WorkItemImpl();"
 										+ EOL
 										+ "workItem.setName(\"Send Task\");"
 										+ EOL
@@ -243,8 +269,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 										+ "workItem.setNodeId(kcontext.getNodeInstance().getNodeId());"
 										+ EOL
 										+ (variable == null ? ""
-												: "workItem.setParameter(\"Message\", "
-														+ variable + ");" + EOL)
+												: "workItem.setParameter(\"Message\", tVariable);" + EOL)
 										+ "((org.drools.core.process.instance.WorkItemManager) kcontext.getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);"));
 			}
 			xmlNode = xmlNode.getNextSibling();
@@ -307,6 +332,24 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 		// sourceRef
 		org.w3c.dom.Node subNode = xmlNode.getFirstChild();
 		String eventVariable = subNode.getTextContent();
+		// targetRef
+		subNode = subNode.getNextSibling();
+		String target = subNode.getTextContent();
+		// transformation
+		Transformation transformation = null;
+		subNode = subNode.getNextSibling();
+		if (subNode != null && "transformation".equals(subNode.getNodeName())) {
+			String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
+			String expression = subNode.getTextContent();
+			
+			DataTransformer transformer = transformerRegistry.find(lang);
+			if (transformer == null) {
+				throw new IllegalArgumentException("No transformer registered for language " + lang);
+			}    			
+			transformation = new Transformation(lang, expression, dataInputs.get(target));
+			actionNode.setMetaData("Transformation", transformation);		
+		}
+		
 		if (eventVariable != null && eventVariable.trim().length() > 0) {
 			actionNode.setMetaData("MappingVariable", eventVariable);
 		}

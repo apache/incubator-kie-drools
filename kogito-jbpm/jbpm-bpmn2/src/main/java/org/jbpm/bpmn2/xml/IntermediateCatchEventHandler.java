@@ -25,7 +25,9 @@ import org.jbpm.bpmn2.core.IntermediateLink;
 import org.jbpm.bpmn2.core.Message;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.event.EventFilter;
+import org.jbpm.process.core.event.EventTransformerImpl;
 import org.jbpm.process.core.event.EventTypeFilter;
+import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
@@ -35,12 +37,16 @@ import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.core.node.TimerNode;
+import org.jbpm.workflow.core.node.Transformation;
+import org.kie.api.runtime.process.DataTransformer;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class IntermediateCatchEventHandler extends AbstractNodeHandler {
+	
+	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
 
     public static final String LINK_NAME = "LinkName";
 
@@ -167,7 +173,11 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("dataOutputAssociation".equals(nodeName)) {
+            if ("dataOutput".equals(nodeName)) {
+                String id = ((Element) xmlNode).getAttribute("id");
+                String outputName = ((Element) xmlNode).getAttribute("name");
+                dataOutputs.put(id, outputName);
+            }  else if ("dataOutputAssociation".equals(nodeName)) {
                 readDataOutputAssociation(xmlNode, eventNode);
             } else if ("signalEventDefinition".equals(nodeName)) {
                 String type = ((Element) xmlNode).getAttribute("signalRef");
@@ -192,7 +202,11 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("dataOutputAssociation".equals(nodeName)) {
+            if ("dataOutput".equals(nodeName)) {
+                String id = ((Element) xmlNode).getAttribute("id");
+                String outputName = ((Element) xmlNode).getAttribute("name");
+                dataOutputs.put(id, outputName);
+            } else if ("dataOutputAssociation".equals(nodeName)) {
                 readDataOutputAssociation(xmlNode, eventNode);
             } else if ("messageEventDefinition".equals(nodeName)) {
                 String messageRef = ((Element) xmlNode)
@@ -289,10 +303,26 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
             EventNode eventNode) {
         // sourceRef
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+        String from = subNode.getTextContent();
         // targetRef
         subNode = subNode.getNextSibling();
         String to = subNode.getTextContent();
         eventNode.setVariableName(to);
+        // transformation
+  		Transformation transformation = null;
+  		subNode = subNode.getNextSibling();
+  		if (subNode != null && "transformation".equals(subNode.getNodeName())) {
+  			String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
+  			String expression = subNode.getTextContent();
+  			DataTransformer transformer = transformerRegistry.find(lang);
+  			if (transformer == null) {
+  				throw new IllegalArgumentException("No transformer registered for language " + lang);
+  			}    			
+  			transformation = new Transformation(lang, expression, dataOutputs.get(from));
+  			eventNode.setMetaData("Transformation", transformation);
+  			
+  			eventNode.setEventTransformer(new EventTransformerImpl(transformation));
+  		}
     }
 
     public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {

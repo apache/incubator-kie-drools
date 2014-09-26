@@ -26,6 +26,7 @@ import org.drools.core.time.impl.CronExpression;
 import org.drools.core.time.impl.DefaultTimerJobFactoryManager;
 import org.drools.core.time.impl.TrackableTimeJobFactoryManager;
 import org.jbpm.process.core.event.EventFilter;
+import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.DateTimeUtils;
@@ -321,7 +322,8 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
                                     }
                                     StartProcessEventListener listener = new StartProcessEventListener( process.getId(),
                                                                                                         filters,
-                                                                                                        trigger.getInMappings() );
+                                                                                                        trigger.getInMappings(),
+                                                                                                        startNode.getEventTransformer());
                                     signalManager.addEventListener( type,
                                                                     listener );
                                     ((RuleFlowProcess) process).getRuntimeMetaData().put("StartProcessEventType", type);
@@ -356,13 +358,16 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	    private String              processId;
 	    private List<EventFilter>   eventFilters;
 	    private Map<String, String> inMappings;
+	    private EventTransformer eventTransformer;
 	
 	    public StartProcessEventListener(String processId,
 	                                     List<EventFilter> eventFilters,
-	                                     Map<String, String> inMappings) {
+	                                     Map<String, String> inMappings,
+	                                     EventTransformer eventTransformer) {
 	        this.processId = processId;
 	        this.eventFilters = eventFilters;
 	        this.inMappings = inMappings;
+	        this.eventTransformer = eventTransformer;
 	    }
 	
 	    public String[] getEventTypes() {
@@ -377,6 +382,9 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	                return;
 	            }
 	        }
+	        if (eventTransformer != null) {
+    			event = eventTransformer.transformEvent(event);
+    		}
 	        Map<String, Object> params = null;
 	        if ( inMappings != null && !inMappings.isEmpty() ) {
 	        	params = new HashMap<String, Object>();

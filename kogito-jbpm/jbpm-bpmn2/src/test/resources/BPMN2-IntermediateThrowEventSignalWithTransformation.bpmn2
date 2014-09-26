@@ -13,29 +13,26 @@
 
   <itemDefinition id="_xItem" structureRef="String" />
 
-  <process processType="Private" isExecutable="true" id="Minimal" name="Minimal Process" tns:packageName="com.sample" >
+  <process processType="Private" isExecutable="true" id="SignalIntermediateEvent" name="Signal Intermediate Throw Event Process" >
 
     <!-- process variables -->
     <property id="x" itemSubjectRef="_xItem"/>
 
     <!-- nodes -->
-    <startEvent id="_1" name="StartProcess" >
-      <dataOutput id="_1_Output" name="event" />
-      <dataOutputAssociation>
-        <sourceRef>_1_Output</sourceRef>
-        <targetRef>x</targetRef>
-      </dataOutputAssociation>
-      <outputSet>
-        <dataOutputRefs>_1_Output</dataOutputRefs>
-      </outputSet>
-      <signalEventDefinition signalRef="MySignal" />
-    </startEvent>
-    <scriptTask id="_2" name="Hello" >
-      <script>System.out.println("x = " + x);</script>
-    </scriptTask>
-    <endEvent id="_3" name="EndProcess" >
-        <terminateEventDefinition/>
-    </endEvent>
+    <startEvent id="_1" name="StartProcess" />
+    <intermediateThrowEvent id="_2" name="SignalEvent" >
+      <dataInput id="_2_Input" name="param"/>
+      <dataInputAssociation>
+        <sourceRef>x</sourceRef>
+        <targetRef>_2_Input</targetRef>
+        <transformation language="http://www.java.com/javascript">param.toUpperCase()</transformation>
+      </dataInputAssociation>
+      <inputSet>
+        <dataInputRefs>_2_Input</dataInputRefs>
+      </inputSet>
+      <signalEventDefinition signalRef="MySignal"/>
+    </intermediateThrowEvent>
+    <endEvent id="_3" name="EndEvent" />
 
     <!-- connections -->
     <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
@@ -44,23 +41,23 @@
   </process>
 
   <bpmndi:BPMNDiagram>
-    <bpmndi:BPMNPlane bpmnElement="Minimal" >
+    <bpmndi:BPMNPlane bpmnElement="SignalIntermediateEvent" >
       <bpmndi:BPMNShape bpmnElement="_1" >
         <dc:Bounds x="16" y="16" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_2" >
-        <dc:Bounds x="96" y="16" width="80" height="48" />
+        <dc:Bounds x="96" y="16" width="124" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_3" >
-        <dc:Bounds x="208" y="16" width="48" height="48" />
+        <dc:Bounds x="266" y="16" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="_1-_2" >
         <di:waypoint x="40" y="40" />
-        <di:waypoint x="136" y="40" />
+        <di:waypoint x="158" y="40" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_2-_3" >
-        <di:waypoint x="136" y="40" />
-        <di:waypoint x="232" y="40" />
+        <di:waypoint x="158" y="40" />
+        <di:waypoint x="290" y="40" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

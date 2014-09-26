@@ -27,8 +27,10 @@ import org.jbpm.bpmn2.core.Escalation;
 import org.jbpm.bpmn2.core.Message;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.event.EventFilter;
+import org.jbpm.process.core.event.EventTransformerImpl;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.event.NonAcceptingEventTypeFilter;
+import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
@@ -36,13 +38,17 @@ import org.jbpm.workflow.core.node.ConstraintTrigger;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.Transformation;
 import org.jbpm.workflow.core.node.Trigger;
+import org.kie.api.runtime.process.DataTransformer;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 public class StartEventHandler extends AbstractNodeHandler {
+	
+	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
 
     protected Node createNode(Attributes attrs) {
         return new StartNode();
@@ -204,10 +210,25 @@ public class StartEventHandler extends AbstractNodeHandler {
         }
         String target = subNode.getTextContent();
         startNode.setMetaData("TriggerMapping", target);
-        
-        subNode = subNode.getNextSibling();
+        // transformation
+  		Transformation transformation = null;
+  		subNode = subNode.getNextSibling();
+  		if (subNode != null && "transformation".equals(subNode.getNodeName())) {
+  			String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
+  			String expression = subNode.getTextContent();
+  			DataTransformer transformer = transformerRegistry.find(lang);
+  			if (transformer == null) {
+  				throw new IllegalArgumentException("No transformer registered for language " + lang);
+  			}    			
+  			transformation = new Transformation(lang, expression, dataOutputs.get(source));
+  			startNode.setMetaData("Transformation", transformation);
+  			
+  			startNode.setEventTransformer(new EventTransformerImpl(transformation));
+  	        subNode = subNode.getNextSibling();
+  		}
+
         if( subNode != null ) { 
-            // no support for assignments or transformations
+            // no support for assignments
             throw new UnsupportedOperationException(subNode.getNodeName() + " elements in dataOutputAssociations are not yet supported.");
         }
         startNode.addOutMapping(target, dataOutputs.get(source));
@@ -249,8 +270,10 @@ public class StartEventHandler extends AbstractNodeHandler {
 		    } else if (trigger instanceof EventTrigger) {
 		        EventTrigger eventTrigger = (EventTrigger) trigger;
 		        String mapping = null;
+		        String nameMapping = "event";
 		        if (!trigger.getInMappings().isEmpty()) {
 		            mapping = eventTrigger.getInMappings().keySet().iterator().next();
+		            nameMapping = eventTrigger.getInMappings().values().iterator().next();
 		        }
 		        else { 
 		            mapping = (String) startNode.getMetaData("TriggerMapping");
@@ -258,7 +281,7 @@ public class StartEventHandler extends AbstractNodeHandler {
 		        
 		        if( mapping != null ) { 
 		            xmlDump.append(
-	                    "      <dataOutput id=\"_" + startNode.getId() + "_Output\" />" + EOL +
+	                    "      <dataOutput id=\"_" + startNode.getId() + "_Output\" name=\""+ nameMapping +"\" />" + EOL +
                         "      <dataOutputAssociation>" + EOL +
                         "        <sourceRef>_" + startNode.getId() + "_Output</sourceRef>" + EOL +
                         "        <targetRef>" + mapping + "</targetRef>" + EOL +

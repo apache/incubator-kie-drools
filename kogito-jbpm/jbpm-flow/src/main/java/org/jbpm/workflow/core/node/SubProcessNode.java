@@ -70,6 +70,10 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
     public void addInMapping(String parameterName, String variableName) {
     	inMapping.add(new DataAssociation(variableName, parameterName, null, null));
     }
+    
+    public void addInMapping(String parameterName, String variableName, Transformation transformation) {
+    	inMapping.add(new DataAssociation(variableName, parameterName, null, transformation));
+    }
 
     public void setInMappings(Map<String, String> inMapping) {
     	this.inMapping = new LinkedList<DataAssociation>();
@@ -102,6 +106,10 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
     
     public void addOutMapping(String parameterName, String variableName) {
     	outMapping.add(new DataAssociation(parameterName, variableName, null, null));
+    }
+    
+    public void addOutMapping(String parameterName, String variableName, Transformation transformation) {
+    	outMapping.add(new DataAssociation(parameterName, variableName, null, transformation));
     }
 
     public void setOutMappings(Map<String, String> outMapping) {
