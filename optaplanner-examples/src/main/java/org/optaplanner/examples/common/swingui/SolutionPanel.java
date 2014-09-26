@@ -23,6 +23,7 @@ import javax.swing.JViewport;
 import javax.swing.Scrollable;
 
 import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,6 +101,22 @@ public abstract class SolutionPanel extends JPanel implements Scrollable {
             return (((JViewport) getParent()).getHeight() > getPreferredSize().height);
         }
         return false;
+    }
+
+    public void doProblemFactChange(ProblemFactChange problemFactChange) {
+        doProblemFactChange(problemFactChange, false);
+    }
+
+    public void doProblemFactChange(ProblemFactChange problemFactChange, boolean reset) {
+        solutionBusiness.doProblemFactChange(problemFactChange);
+        Solution solution = solutionBusiness.getSolution();
+        if (reset) {
+            resetPanel(solution);
+        } else {
+            updatePanel(solution);
+        }
+        validate();
+        solverAndPersistenceFrame.refreshScoreField(solution);
     }
 
 }

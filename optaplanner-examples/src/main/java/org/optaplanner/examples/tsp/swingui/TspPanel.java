@@ -105,7 +105,7 @@ public class TspPanel extends SolutionPanel {
         newCity.setLongitude(longitude);
         newCity.setLatitude(latitude);
         logger.info("Scheduling insertion of newCity ({}).", newCity);
-        solutionBusiness.doProblemFactChange(new ProblemFactChange() {
+        doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
                 TravelingSalesmanTour solution = (TravelingSalesmanTour) scoreDirector.getWorkingSolution();
                 scoreDirector.beforeProblemFactAdded(newCity);
@@ -119,7 +119,6 @@ public class TspPanel extends SolutionPanel {
                 scoreDirector.afterEntityAdded(newVisit);
             }
         });
-        updatePanel(solutionBusiness.getSolution());
     }
 
     public void doMove(Visit visit, Standstill toStandstill) {

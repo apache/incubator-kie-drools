@@ -263,6 +263,7 @@ public class SolutionBusiness {
             solver.addProblemFactChange(problemFactChange);
         } else {
             problemFactChange.doChange(guiScoreDirector);
+            guiScoreDirector.calculateScore();
         }
     }
 

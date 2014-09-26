@@ -119,8 +119,7 @@ public class SolverAndPersistenceFrame extends JFrame {
             solutionPanel.updatePanel(solution);
             validate(); // TODO remove me?
         }
-        scoreField.setForeground(determineScoreFieldForeground(solutionBusiness.getScore()));
-        scoreField.setText("Latest best score: " + solution.getScore());
+        refreshScoreField(solution);
     }
 
     public void init(Component centerForComponent) {
@@ -573,10 +572,15 @@ public class SolverAndPersistenceFrame extends JFrame {
     }
 
     public void resetScreen() {
-        solutionPanel.resetPanel(solutionBusiness.getSolution());
+        Solution solution = solutionBusiness.getSolution();
+        solutionPanel.resetPanel(solution);
         validate();
-        scoreField.setForeground(determineScoreFieldForeground(solutionBusiness.getScore()));
-        scoreField.setText("Score: " + solutionBusiness.getScore());
+        refreshScoreField(solution);
+    }
+
+    public void refreshScoreField(Solution solution) {
+        scoreField.setForeground(determineScoreFieldForeground(solution.getScore()));
+        scoreField.setText("Latest best score: " + solution.getScore());
     }
 
     private Color determineScoreFieldForeground(Score<?> score) {

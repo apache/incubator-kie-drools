@@ -137,7 +137,7 @@ public class MachineReassignmentPanel extends SolutionPanel {
 
     public void deleteMachine(final MrMachine machine) {
         logger.info("Scheduling delete of machine ({}).", machine);
-        solutionBusiness.doProblemFactChange(new ProblemFactChange() {
+        doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
                 MachineReassignment machineReassignment = (MachineReassignment) scoreDirector.getWorkingSolution();
                 // First remove the planning fact from all planning entities that use it
@@ -166,7 +166,6 @@ public class MachineReassignmentPanel extends SolutionPanel {
                 }
             }
         });
-        updatePanel(solutionBusiness.getSolution());
     }
 
     private class MrProcessAssignmentAction extends AbstractAction {

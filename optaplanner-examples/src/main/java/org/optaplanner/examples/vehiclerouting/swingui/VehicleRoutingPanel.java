@@ -117,7 +117,7 @@ public class VehicleRoutingPanel extends SolutionPanel {
         newLocation.setLongitude(longitude);
         newLocation.setLatitude(latitude);
         logger.info("Scheduling insertion of newLocation ({}).", newLocation);
-        solutionBusiness.doProblemFactChange(new ProblemFactChange() {
+        doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
                 VehicleRoutingSolution solution = (VehicleRoutingSolution) scoreDirector.getWorkingSolution();
                 scoreDirector.beforeProblemFactAdded(newLocation);
@@ -129,7 +129,6 @@ public class VehicleRoutingPanel extends SolutionPanel {
                 scoreDirector.afterEntityAdded(newCustomer);
             }
         });
-        updatePanel(solutionBusiness.getSolution());
     }
 
     protected Customer createCustomer(VehicleRoutingSolution solution, Location newLocation) {

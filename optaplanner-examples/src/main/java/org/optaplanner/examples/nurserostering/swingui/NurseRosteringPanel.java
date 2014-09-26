@@ -186,7 +186,7 @@ public class NurseRosteringPanel extends SolutionPanel {
                     "Unsupported in GUI", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        solutionBusiness.doProblemFactChange(new ProblemFactChange() {
+        doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
                 NurseRoster nurseRoster = (NurseRoster) scoreDirector.getWorkingSolution();
                 NurseRosterParametrization nurseRosterParametrization = nurseRoster.getNurseRosterParametrization();
@@ -242,9 +242,7 @@ public class NurseRosteringPanel extends SolutionPanel {
                 nurseRosterParametrization.setLastShiftDate(newShiftDate);
                 scoreDirector.afterProblemFactChanged(nurseRosterParametrization);
             }
-        });
-        resetPanel(solutionBusiness.getSolution());
-        validate();
+        }, true);
     }
 
     public void deleteEmployee(final Employee employee) {

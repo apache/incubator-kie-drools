@@ -228,7 +228,7 @@ public class CloudBalancingPanel extends SolutionPanel {
 
     public void addComputer(final CloudComputer computer) {
         logger.info("Scheduling addition of computer ({}).", computer);
-        solutionBusiness.doProblemFactChange(new ProblemFactChange() {
+        doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
                 CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
                 // Set a unique id on the new computer
@@ -248,12 +248,11 @@ public class CloudBalancingPanel extends SolutionPanel {
                 scoreDirector.afterProblemFactAdded(computer);
             }
         });
-        updatePanel(solutionBusiness.getSolution());
     }
 
     public void deleteComputer(final CloudComputer computer) {
         logger.info("Scheduling delete of computer ({}).", computer);
-        solutionBusiness.doProblemFactChange(new ProblemFactChange() {
+        doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
                 CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
                 // First remove the planning fact from all planning entities that use it
@@ -282,12 +281,11 @@ public class CloudBalancingPanel extends SolutionPanel {
                 }
             }
         });
-        updatePanel(solutionBusiness.getSolution());
     }
 
     public void addProcess(final CloudProcess process) {
         logger.info("Scheduling addition of process ({}).", process);
-        solutionBusiness.doProblemFactChange(new ProblemFactChange() {
+        doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
                 CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
                 // Set a unique id on the new process
@@ -304,12 +302,11 @@ public class CloudBalancingPanel extends SolutionPanel {
                 scoreDirector.afterEntityAdded(process);
             }
         });
-        updatePanel(solutionBusiness.getSolution());
     }
 
     public void deleteProcess(final CloudProcess process) {
         logger.info("Scheduling delete of process ({}).", process);
-        solutionBusiness.doProblemFactChange(new ProblemFactChange() {
+        doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
                 CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
                 // Remove the planning entity itself
@@ -324,7 +321,6 @@ public class CloudBalancingPanel extends SolutionPanel {
                 }
             }
         });
-        updatePanel(solutionBusiness.getSolution());
     }
 
     public JButton createButton(CloudProcess process) {
