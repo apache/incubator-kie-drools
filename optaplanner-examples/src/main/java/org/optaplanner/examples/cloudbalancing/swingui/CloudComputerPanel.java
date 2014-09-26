@@ -302,21 +302,7 @@ public class CloudComputerPanel extends JPanel {
 
         private JPanel createHeaderPanel() {
             JPanel headerPanel = new JPanel(new GridLayout(0, 5));
-            JPanel addProcessPanel = new JPanel(new BorderLayout());
-            JButton addButton = new JButton(cloudBalancingPanel.getAddCloudProcessIcon());
-            addButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    CloudProcess process = new CloudProcess();
-                    process.setRequiredCpuPower(3);
-                    process.setRequiredMemory(8);
-                    process.setRequiredNetworkBandwidth(3);
-                    cloudBalancingPanel.addProcess(process);
-                    CloudProcessListDialog.this.dispose();
-                }
-            });
-            addButton.setMargin(new Insets(0, 0, 0, 0));
-            addProcessPanel.add(addButton, BorderLayout.EAST);
-            headerPanel.add(addProcessPanel);
+            headerPanel.add(new JLabel(""));
             JLabel cpuPowerLabel = new JLabel("CPU power");
             headerPanel.add(cpuPowerLabel);
             JLabel memoryLabel = new JLabel("Memory");
@@ -331,7 +317,6 @@ public class CloudComputerPanel extends JPanel {
             JPanel assignmentsPanel = new JPanel(new GridLayout(0, 5));
             int colorIndex = 0;
             for (final CloudProcess process : processList) {
-
                 JPanel labelAndDeletePanel = new JPanel(new BorderLayout(5, 0));
                 labelAndDeletePanel.add(new JLabel(cloudBalancingPanel.getCloudProcessIcon()), BorderLayout.WEST);
                 JLabel processLabel = new JLabel(process.getLabel());

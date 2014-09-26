@@ -124,9 +124,9 @@ public class CloudBalancingPanel extends SolutionPanel {
 
     private JPanel createHeaderPanel() {
         JPanel headerPanel = new JPanel(new GridLayout(0, 5));
-        JPanel addComputerPanel = new JPanel(new BorderLayout());
-        JButton addButton = new JButton(addCloudComputerIcon);
-        addButton.addActionListener(new ActionListener() {
+        JPanel addPanel = new JPanel(new GridLayout());
+        JButton addComputerButton = new JButton(addCloudComputerIcon);
+        addComputerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 CloudComputer computer = new CloudComputer();
                 computer.setCpuPower(12);
@@ -136,9 +136,23 @@ public class CloudBalancingPanel extends SolutionPanel {
                 addComputer(computer);
             }
         });
-        addButton.setMargin(new Insets(0, 0, 0, 0));
-        addComputerPanel.add(addButton, BorderLayout.EAST);
-        headerPanel.add(addComputerPanel);
+        addComputerButton.setMargin(new Insets(0, 0, 0, 0));
+        addPanel.add(addComputerButton);
+        JButton addProcessButton = new JButton(addCloudProcessIcon);
+        addProcessButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                CloudProcess process = new CloudProcess();
+                process.setRequiredCpuPower(3);
+                process.setRequiredMemory(8);
+                process.setRequiredNetworkBandwidth(3);
+                addProcess(process);
+            }
+        });
+        addProcessButton.setMargin(new Insets(0, 0, 0, 0));
+        addPanel.add(addProcessButton);
+        JPanel cornerPanel = new JPanel(new BorderLayout());
+        cornerPanel.add(addPanel, BorderLayout.EAST);
+        headerPanel.add(cornerPanel);
         JLabel cpuPowerLabel = new JLabel("CPU power");
         headerPanel.add(cpuPowerLabel);
         JLabel memoryLabel = new JLabel("Memory");
