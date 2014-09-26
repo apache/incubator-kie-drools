@@ -13,16 +13,20 @@ public class MBeanUtils {
 
     public static final String   MBEANS_PROPERTY = "kie.scanner.mbeans";
     private static final Logger  logger          = LoggerFactory.getLogger(MBeanUtils.class);
-    private static final boolean IS_MBEAN_ENABLED;
+    private static boolean       mbeanEnabled;
     private static MBeanServer   mbeanServer;
 
     static {
         String prop = System.getProperty(MBEANS_PROPERTY);
-        IS_MBEAN_ENABLED = prop != null && (prop.equalsIgnoreCase("enabled") || prop.equalsIgnoreCase("true"));
+        mbeanEnabled = prop != null && (prop.equalsIgnoreCase("enabled") || prop.equalsIgnoreCase("true"));
     }
 
     public static boolean isMBeanEnabled() {
-        return IS_MBEAN_ENABLED;
+        return mbeanEnabled;
+    }
+
+    public static void setMBeanEnabled(boolean mbeanEnabled) {
+        MBeanUtils.mbeanEnabled = mbeanEnabled;
     }
 
     public static synchronized <T> void registerMBean(T mbean,
