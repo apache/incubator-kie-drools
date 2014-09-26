@@ -26,7 +26,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
-@Ignore
 public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
     private FileManager fileManager;
