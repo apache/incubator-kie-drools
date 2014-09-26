@@ -5971,9 +5971,11 @@ public class Misc2Test extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieSession ksession = helper.build().newKieSession();
 
-        ksession.insert(new Host());
-        ksession.insert("host");
-        ksession.fireAllRules();
+        for (int counter = 0; counter < 10000; counter++) {
+            ksession.insert(new Host());
+            ksession.insert("host");
+            ksession.fireAllRules();
+        }
     }
 
     public static class TypeA {
