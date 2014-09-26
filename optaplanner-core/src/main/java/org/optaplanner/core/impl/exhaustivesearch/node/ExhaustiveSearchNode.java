@@ -36,6 +36,7 @@ public class ExhaustiveSearchNode {
      * @see ScoreBounder#calculateOptimisticBound(ScoreDirector, Score)
      */
     private Score optimisticBound;
+    private boolean expandable = false;
 
     public ExhaustiveSearchNode(ExhaustiveSearchLayer layer, ExhaustiveSearchNode parent) {
         this.layer = layer;
@@ -87,12 +88,24 @@ public class ExhaustiveSearchNode {
         this.optimisticBound = optimisticBound;
     }
 
+    public boolean isExpandable() {
+        return expandable;
+    }
+
+    public void setExpandable(boolean expandable) {
+        this.expandable = expandable;
+    }
+
     // ************************************************************************
     // Calculated methods
     // ************************************************************************
 
     public int getDepth() {
         return layer.getDepth();
+    }
+
+    public String getTreeId() {
+        return getDepth() + "-" + breadth;
     }
 
     public int getUninitializedVariableCount() {

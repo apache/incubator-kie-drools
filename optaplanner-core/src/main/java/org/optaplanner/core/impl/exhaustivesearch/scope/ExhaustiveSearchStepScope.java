@@ -61,12 +61,15 @@ public class ExhaustiveSearchStepScope extends AbstractStepScope {
     // Calculated methods
     // ************************************************************************
 
-    public Object getDepth() {
+    public int getDepth() {
         return expandingNode.getDepth();
     }
 
     public long getBreadth() {
         return expandingNode.getBreadth();
+    }
+    public String getTreeId() {
+        return expandingNode.getTreeId();
     }
 
     @Override

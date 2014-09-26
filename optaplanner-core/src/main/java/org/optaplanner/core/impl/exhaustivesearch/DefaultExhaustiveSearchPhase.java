@@ -169,7 +169,7 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
                     : scoreBounder.calculateOptimisticBound(scoreDirector, score));
         }
 
-        phaseScope.getExpandableNodeQueue().add(startNode);
+        phaseScope.addExpandableNode(startNode);
         phaseScope.getLastCompletedStepScope().setExpandingNode(startNode);
     }
 
@@ -221,10 +221,9 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
         if (logger.isDebugEnabled()) {
             ExhaustiveSearchPhaseScope phaseScope = stepScope.getPhaseScope();
             long timeMillisSpent = phaseScope.calculateSolverTimeMillisSpent();
-            logger.debug("    ES step ({}), time spent ({}), depth ({}), breadth ({}), {} best score ({}), selected move count ({}).",
+            logger.debug("    ES step ({}), time spent ({}), treeId ({}), {} best score ({}), selected move count ({}).",
                     stepScope.getStepIndex(), timeMillisSpent,
-                    stepScope.getDepth(),
-                    stepScope.getBreadth(),
+                    stepScope.getTreeId(),
                     (stepScope.getBestScoreImproved() ? "new" : "   "),
                     phaseScope.getBestScoreWithUninitializedPrefix(),
                     stepScope.getSelectedMoveCount());

@@ -144,8 +144,8 @@ public class ExhaustiveSearchDecider implements ExhaustiveSearchPhaseLifecycleLi
             ExhaustiveSearchPhaseScope phaseScope = stepScope.getPhaseScope();
             phaseScope.assertExpectedUndoMoveScore(move, undoMove);
         }
-        logger.trace("        Move breadth ({}), score ({}), move ({}).",
-                moveNode.getBreadth(), moveNode.getScore(), moveNode.getMove());
+        logger.trace("        Move treeId ({}), score ({}), expandable ({}), move ({}).",
+                moveNode.getTreeId(), moveNode.getScore(), moveNode.isExpandable(), moveNode.getMove());
     }
 
     private void processMove(ExhaustiveSearchStepScope stepScope, ExhaustiveSearchNode moveNode) {
@@ -161,7 +161,7 @@ public class ExhaustiveSearchDecider implements ExhaustiveSearchPhaseLifecycleLi
                 }
                 bestSolutionRecaller.processWorkingSolutionDuringMove(uninitializedVariableCount, score, stepScope);
             } else {
-                phaseScope.getExpandableNodeQueue().add(moveNode);
+                phaseScope.addExpandableNode(moveNode);
             }
         } else {
             Score score = phaseScope.calculateScore();
@@ -179,7 +179,7 @@ public class ExhaustiveSearchDecider implements ExhaustiveSearchPhaseLifecycleLi
                 moveNode.setOptimisticBound(optimisticBound);
                 if (optimisticBound.compareTo(phaseScope.getBestPessimisticBound()) > 0) {
                     // It's still worth investigating this node further (no need to prune it)
-                    phaseScope.getExpandableNodeQueue().add(moveNode);
+                    phaseScope.addExpandableNode(moveNode);
                     Score pessimisticBound = scoreBounder.calculatePessimisticBound(scoreDirector, score);
                     phaseScope.registerPessimisticBound(pessimisticBound);
                 }

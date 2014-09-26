@@ -119,6 +119,7 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
     public ExhaustiveSearchPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
+        // Do not setReinitializeVariableFilterEnabled(true) to restart from scratch with initialized solution as lower bound?
         phaseConfigPolicy.setInitializedChainedValueFilterEnabled(true);
         ExhaustiveSearchType exhaustiveSearchType_ = exhaustiveSearchType == null
                 ? ExhaustiveSearchType.BRANCH_AND_BOUND : exhaustiveSearchType;

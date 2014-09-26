@@ -94,4 +94,9 @@ public class ExhaustiveSearchPhaseScope extends AbstractPhaseScope {
         }
     }
 
+    public void addExpandableNode(ExhaustiveSearchNode moveNode) {
+        expandableNodeQueue.add(moveNode);
+        moveNode.setExpandable(true);
+    }
+
 }
