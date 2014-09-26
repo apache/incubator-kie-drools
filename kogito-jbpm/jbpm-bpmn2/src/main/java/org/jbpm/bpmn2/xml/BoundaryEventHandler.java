@@ -161,7 +161,11 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("dataOutputAssociation".equals(nodeName)) {
+            if ("dataOutput".equals(nodeName)) {
+                String id = ((Element) xmlNode).getAttribute("id");
+                String outputName = ((Element) xmlNode).getAttribute("name");
+                dataOutputs.put(id, outputName);
+            } else if ("dataOutputAssociation".equals(nodeName)) {
                 readDataOutputAssociation(xmlNode, eventNode);
             } else if ("errorEventDefinition".equals(nodeName)) {
                 String errorRef = ((Element) xmlNode).getAttribute("errorRef");
@@ -335,7 +339,11 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("dataOutputAssociation".equals(nodeName)) {
+            if ("dataOutput".equals(nodeName)) {
+                String id = ((Element) xmlNode).getAttribute("id");
+                String outputName = ((Element) xmlNode).getAttribute("name");
+                dataOutputs.put(id, outputName);
+            } else if ("dataOutputAssociation".equals(nodeName)) {
                 readDataOutputAssociation(xmlNode, eventNode);
             } else if ("conditionalEventDefinition".equals(nodeName)) {
                 org.w3c.dom.Node subNode = xmlNode.getFirstChild();
@@ -374,7 +382,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 String id = ((Element) xmlNode).getAttribute("id");
                 String outputName = ((Element) xmlNode).getAttribute("name");
                 dataOutputs.put(id, outputName);
-            }  else if ("dataOutputAssociation".equals(nodeName)) {
+            } else if ("dataOutputAssociation".equals(nodeName)) {
                 readDataOutputAssociation(xmlNode, eventNode);
             } else if ("messageEventDefinition".equals(nodeName)) {
                 String messageRef = ((Element) xmlNode).getAttribute("messageRef");
