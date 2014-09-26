@@ -31,10 +31,11 @@ public interface DataTransformer {
 	 * given in the input. If compilation is supported a compiled instance of the expression
 	 * should be returned.
 	 * @param expression language specific expression
+	 * @param parameters parameters e.g. imports defined in the process
 	 * @return compiled expression instance or same as given as argument expression
 	 * @throws RuntimeException in case of unexpected errors during compilation
 	 */
-	public Object compile(String expression);
+	public Object compile(String expression, Map<String, Object> parameters);
 
 	/**
 	 * Transforms the given expression object (might be compiled expression) using 
