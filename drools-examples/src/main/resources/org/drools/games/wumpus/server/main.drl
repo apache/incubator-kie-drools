@@ -1,6 +1,7 @@
 package org.drools.games.wumpus;
 
 import org.drools.games.Run;
+import org.drools.games.wumpus.view.GameUI;
 
 dialect  "mvel"
 
