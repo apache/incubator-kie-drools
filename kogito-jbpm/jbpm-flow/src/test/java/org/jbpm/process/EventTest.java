@@ -64,6 +64,7 @@ public class EventTest extends AbstractBaseTest  {
             "bnt-4", "bnl-4",
             "bnt-5", "bnl-5",
             "bpc",
+            "anl-1",
             "apc",
             "anl-5", "ant-5",
             "anl-4", "ant-4",
@@ -444,6 +445,7 @@ public class EventTest extends AbstractBaseTest  {
             "bnt-1", "bnl-1",
             "bnt-8", "bnl-8",
             "bpc",
+            "anl-1",
             "apc",
             "anl-8", "ant-8",
             "anl-1", "ant-1",
@@ -722,6 +724,7 @@ public class EventTest extends AbstractBaseTest  {
             "apc",
             "anl-2", "ant-2",
             "anl-1",
+            "anl-1:1",
             "anl-1:4", "ant-1:4",
             "anl-1:3", "ant-1:3",
             "anl-1:2"
