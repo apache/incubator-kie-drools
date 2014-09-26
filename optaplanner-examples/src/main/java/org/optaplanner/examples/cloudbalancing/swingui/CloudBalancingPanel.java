@@ -53,6 +53,9 @@ public class CloudBalancingPanel extends SolutionPanel {
     private final ImageIcon cloudComputerIcon;
     private final ImageIcon addCloudComputerIcon;
     private final ImageIcon deleteCloudComputerIcon;
+    private final ImageIcon cloudProcessIcon;
+    private final ImageIcon addCloudProcessIcon;
+    private final ImageIcon deleteCloudProcessIcon;
 
     private JPanel computersPanel;
 
@@ -67,6 +70,9 @@ public class CloudBalancingPanel extends SolutionPanel {
         cloudComputerIcon = new ImageIcon(getClass().getResource("cloudComputer.png"));
         addCloudComputerIcon = new ImageIcon(getClass().getResource("addCloudComputer.png"));
         deleteCloudComputerIcon = new ImageIcon(getClass().getResource("deleteCloudComputer.png"));
+        cloudProcessIcon = new ImageIcon(getClass().getResource("cloudProcess.png"));
+        addCloudProcessIcon = new ImageIcon(getClass().getResource("addCloudProcess.png"));
+        deleteCloudProcessIcon = new ImageIcon(getClass().getResource("deleteCloudProcess.png"));
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
         JPanel headerPanel = createHeaderPanel();
@@ -90,6 +96,18 @@ public class CloudBalancingPanel extends SolutionPanel {
 
     public ImageIcon getDeleteCloudComputerIcon() {
         return deleteCloudComputerIcon;
+    }
+
+    public ImageIcon getCloudProcessIcon() {
+        return cloudProcessIcon;
+    }
+
+    public ImageIcon getAddCloudProcessIcon() {
+        return addCloudProcessIcon;
+    }
+
+    public ImageIcon getDeleteCloudProcessIcon() {
+        return deleteCloudProcessIcon;
     }
 
     public int getMaximumComputerCpuPower() {
@@ -215,9 +233,9 @@ public class CloudBalancingPanel extends SolutionPanel {
                 CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
                 // Set a unique id on the new computer
                 long nextComputerId = 0L;
-                for (CloudComputer computer : cloudBalance.getComputerList()) {
-                    if (nextComputerId <= computer.getId()) {
-                        nextComputerId = computer.getId() + 1L;
+                for (CloudComputer otherComputer : cloudBalance.getComputerList()) {
+                    if (nextComputerId <= otherComputer.getId()) {
+                        nextComputerId = otherComputer.getId() + 1L;
                     }
                 }
                 computer.setId(nextComputerId);
@@ -225,7 +243,9 @@ public class CloudBalancingPanel extends SolutionPanel {
                 // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
                 cloudBalance.setComputerList(new ArrayList<CloudComputer>(cloudBalance.getComputerList()));
                 // Add the planning fact itself
+                scoreDirector.beforeProblemFactAdded(computer);
                 cloudBalance.getComputerList().add(computer);
+                scoreDirector.afterProblemFactAdded(computer);
             }
         });
         updatePanel(solutionBusiness.getSolution());
@@ -257,6 +277,48 @@ public class CloudBalancingPanel extends SolutionPanel {
                         scoreDirector.beforeProblemFactRemoved(workingComputer);
                         it.remove(); // remove from list
                         scoreDirector.beforeProblemFactRemoved(workingComputer);
+                        break;
+                    }
+                }
+            }
+        });
+        updatePanel(solutionBusiness.getSolution());
+    }
+
+    public void addProcess(final CloudProcess process) {
+        logger.info("Scheduling addition of process ({}).", process);
+        solutionBusiness.doProblemFactChange(new ProblemFactChange() {
+            public void doChange(ScoreDirector scoreDirector) {
+                CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
+                // Set a unique id on the new process
+                long nextProcessId = 0L;
+                for (CloudProcess otherProcess : cloudBalance.getProcessList()) {
+                    if (nextProcessId <= otherProcess.getId()) {
+                        nextProcessId = otherProcess.getId() + 1L;
+                    }
+                }
+                process.setId(nextProcessId);
+                // Add the planning entity itself
+                scoreDirector.beforeEntityAdded(process);
+                cloudBalance.getProcessList().add(process);
+                scoreDirector.afterEntityAdded(process);
+            }
+        });
+        updatePanel(solutionBusiness.getSolution());
+    }
+
+    public void deleteProcess(final CloudProcess process) {
+        logger.info("Scheduling delete of process ({}).", process);
+        solutionBusiness.doProblemFactChange(new ProblemFactChange() {
+            public void doChange(ScoreDirector scoreDirector) {
+                CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
+                // Remove the planning entity itself
+                for (Iterator<CloudProcess> it = cloudBalance.getProcessList().iterator(); it.hasNext(); ) {
+                    CloudProcess workingProcess = it.next();
+                    if (ObjectUtils.equals(workingProcess, process)) {
+                        scoreDirector.beforeEntityRemoved(workingProcess);
+                        it.remove(); // remove from list
+                        scoreDirector.afterEntityRemoved(workingProcess);
                         break;
                     }
                 }

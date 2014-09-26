@@ -47,7 +47,6 @@ public class CloudComputerPanel extends JPanel {
     private List<CloudProcess> processList = new ArrayList<CloudProcess>();
 
     private JLabel computerLabel;
-    private JButton deleteButton;
     private JTextField cpuPowerField;
     private JTextField memoryField;
     private JTextField networkBandwidthField;
@@ -106,7 +105,7 @@ public class CloudComputerPanel extends JPanel {
         labelAndDeletePanel.add(computerLabel, BorderLayout.CENTER);
         if (computer != null) {
             JPanel deletePanel = new JPanel(new BorderLayout());
-            deleteButton = new JButton(cloudBalancingPanel.getDeleteCloudComputerIcon());
+            JButton deleteButton = new JButton(cloudBalancingPanel.getDeleteCloudComputerIcon());
             deleteButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     cloudBalancingPanel.deleteComputer(computer);
@@ -295,7 +294,7 @@ public class CloudComputerPanel extends JPanel {
                     .addComponent(assignmentsPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
                             GroupLayout.PREFERRED_SIZE));
             JScrollPane contentScrollPane = new JScrollPane(contentPanel);
-            contentScrollPane.setPreferredSize(new Dimension(800, 200));
+            contentScrollPane.setPreferredSize(new Dimension(800, 400));
             contentScrollPane.getVerticalScrollBar().setUnitIncrement(20);
             setContentPane(contentScrollPane);
             pack();
@@ -303,7 +302,21 @@ public class CloudComputerPanel extends JPanel {
 
         private JPanel createHeaderPanel() {
             JPanel headerPanel = new JPanel(new GridLayout(0, 5));
-            headerPanel.add(new JLabel(""));
+            JPanel addProcessPanel = new JPanel(new BorderLayout());
+            JButton addButton = new JButton(cloudBalancingPanel.getAddCloudProcessIcon());
+            addButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    CloudProcess process = new CloudProcess();
+                    process.setRequiredCpuPower(3);
+                    process.setRequiredMemory(8);
+                    process.setRequiredNetworkBandwidth(3);
+                    cloudBalancingPanel.addProcess(process);
+                    CloudProcessListDialog.this.dispose();
+                }
+            });
+            addButton.setMargin(new Insets(0, 0, 0, 0));
+            addProcessPanel.add(addButton, BorderLayout.EAST);
+            headerPanel.add(addProcessPanel);
             JLabel cpuPowerLabel = new JLabel("CPU power");
             headerPanel.add(cpuPowerLabel);
             JLabel memoryLabel = new JLabel("Memory");
@@ -317,10 +330,25 @@ public class CloudComputerPanel extends JPanel {
         private JPanel createAssignmentsPanel() {
             JPanel assignmentsPanel = new JPanel(new GridLayout(0, 5));
             int colorIndex = 0;
-            for (CloudProcess process : processList) {
+            for (final CloudProcess process : processList) {
+
+                JPanel labelAndDeletePanel = new JPanel(new BorderLayout(5, 0));
+                labelAndDeletePanel.add(new JLabel(cloudBalancingPanel.getCloudProcessIcon()), BorderLayout.WEST);
                 JLabel processLabel = new JLabel(process.getLabel());
                 processLabel.setForeground(TangoColorFactory.SEQUENCE_1[colorIndex]);
-                assignmentsPanel.add(processLabel);
+                labelAndDeletePanel.add(processLabel, BorderLayout.CENTER);
+                JPanel deletePanel = new JPanel(new BorderLayout());
+                JButton deleteButton = new JButton(cloudBalancingPanel.getDeleteCloudProcessIcon());
+                deleteButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        cloudBalancingPanel.deleteProcess(process);
+                        CloudProcessListDialog.this.dispose();
+                    }
+                });
+                deleteButton.setMargin(new Insets(0, 0, 0, 0));
+                deletePanel.add(deleteButton, BorderLayout.NORTH);
+                labelAndDeletePanel.add(deletePanel, BorderLayout.EAST);
+                assignmentsPanel.add(labelAndDeletePanel);
 
                 JTextField cpuPowerField = new JTextField(process.getRequiredCpuPower() + " GHz");
                 cpuPowerField.setEditable(false);
