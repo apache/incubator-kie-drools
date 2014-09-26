@@ -59,7 +59,11 @@ public class TaskCommentServiceImpl implements TaskCommentService {
 
     public List<Comment> getAllCommentsByTaskId(long taskId) {
         Task task = persistenceContext.findTask(taskId);
-        return new ArrayList<Comment>(task.getTaskData().getComments());
+        if (task != null) {
+        	return new ArrayList<Comment>(task.getTaskData().getComments());
+        }
+        
+        return new ArrayList<Comment>();
     }
 
     public Comment getCommentById(long commentId) {
