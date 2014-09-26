@@ -436,7 +436,7 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
 
 	@Override
 	public boolean isValid(GlobalJobHandle jobHandle) {
-		if (scheduler == null) {
+		if (scheduler == null && !isTransactional()) {
 			return true;
 		}
 		JobDetail jobDetail = null;

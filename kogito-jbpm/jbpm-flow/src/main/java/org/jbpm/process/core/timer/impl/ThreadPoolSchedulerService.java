@@ -219,6 +219,6 @@ public class ThreadPoolSchedulerService implements GlobalSchedulerService {
 	@Override
 	public boolean isValid(GlobalJobHandle jobHandle) {
 		
-		return activeTimer.containsValue(jobHandle);
+		return true;
 	}
 }

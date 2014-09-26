@@ -121,7 +121,7 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
         
         assertEquals(0, timerExporations.size());
        
-        Thread.sleep(3500);
+        Thread.sleep(3600);
         manager.disposeRuntimeEngine(runtime);
         ((AbstractRuntimeManager)manager).close(true);
         Thread.sleep(3000);
