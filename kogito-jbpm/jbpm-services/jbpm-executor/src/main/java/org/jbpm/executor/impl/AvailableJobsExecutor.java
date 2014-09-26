@@ -90,10 +90,11 @@ public class AvailableJobsExecutor {
             if (request != null) {
                 CommandContext ctx = null;
                 List<CommandCallback> callbacks = null;
+                ClassLoader cl = getClassLoader(request.getDeploymentId());
                 try {
     
                     logger.debug("Processing Request Id: {}, status {} command {}", request.getId(), request.getStatus(), request.getCommandName());
-                    ClassLoader cl = getClassLoader(request.getDeploymentId());
+                    
                     
                     byte[] reqData = request.getRequestData();
                     if (reqData != null) {
@@ -146,6 +147,7 @@ public class AvailableJobsExecutor {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 } catch (Throwable e) {
+                	callbacks = classCacheManager.buildCommandCallback(ctx, cl);  
                     logger.warn("Error during command {} execution {}", request.getCommandName(), e.getMessage());
     
                     ErrorInfo errorInfo = new ErrorInfo(e.getMessage(), ExceptionUtils.getFullStackTrace(e.fillInStackTrace()));
