@@ -1,5 +1,7 @@
 package org.drools.core.meta;
 
+import org.drools.core.common.ProjectClassLoader;
+import org.drools.core.factmodel.traits.Entity;
 import org.drools.core.meta.org.test.AnotherKlass;
 import org.drools.core.meta.org.test.AnotherKlassImpl;
 import org.drools.core.meta.org.test.AnotherKlass_;
@@ -9,8 +11,10 @@ import org.drools.core.meta.org.test.Klass_;
 import org.drools.core.meta.org.test.SubKlass;
 import org.drools.core.meta.org.test.SubKlassImpl;
 import org.drools.core.meta.org.test.SubKlass_;
+import org.drools.core.metadata.Identifiable;
 import org.drools.core.metadata.MetadataContainer;
 import org.drools.core.test.model.Person;
+import org.drools.core.util.StandaloneTraitFactory;
 import org.junit.Test;
 
 import java.net.URI;
@@ -18,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class MetadataTest {
@@ -159,6 +164,24 @@ public class MetadataTest {
 
         assertTrue( uri.toString().startsWith( aki.get_().getMetaClassInfo().getUri().toString() ) );
 
+        assertEquals( URI.create( "http://www.test.org#SubKlass/123?create" ),
+                      SubKlass_.newSubKlass( URI.create( "http://www.test.org#SubKlass/123" ) ).getUri() );
+
+        assertEquals( URI.create( "123?don=org.drools.core.meta.org.test.AnotherKlass" ),
+                      aki.get_().donAnotherKlass( new Foo() ).getUri() );
+
+    }
+
+    @Test
+    public void testNewInstance() {
+        Klass klass = Klass_.newKlass( URI.create( "test" ) ).call();
+        assertNotNull( klass );
+        assertTrue( klass instanceof KlassImpl );
+
+        SubKlass klass2 = SubKlass_.newSubKlass( URI.create( "test2" ) ).subProp( 42 ).prop( "hello" ).call();
+
+        assertEquals( "hello", klass2.getProp() );
+        assertEquals( 42, (int) klass2.getSubProp() );
     }
 
     @Test
@@ -169,8 +192,33 @@ public class MetadataTest {
         assertEquals( URI.create( "urn:" + p.getClass().getPackage().getName() +  "/" + p.getClass().getSimpleName() + "/" + System.identityHashCode( p ) ), uri );
     }
 
+    @Test
+    public void testDon() {
+        Entity entity = new Entity( "123" );
+        entity._setDynamicProperties( new HashMap(  ) );
+        entity._getDynamicProperties().put( "prop", "hello" );
 
-    public static class Foo implements SubKlass {
+        Klass klass = Klass_.donKlass( entity )
+                .setTraitFactory( new StandaloneTraitFactory( ProjectClassLoader.createProjectClassLoader() ) )
+                .call();
+
+        assertEquals( "hello", klass.getProp() );
+    }
+
+
+
+
+    public static class Foo implements SubKlass, Identifiable {
+
+        private URI uri;
+
+        public Foo() {
+            this( "123" );
+        }
+
+        public Foo( String uri ) {
+            this.uri = URI.create( uri );
+        }
 
         public Map<String,Object> map = new HashMap<String,Object>();
 
@@ -192,6 +240,16 @@ public class MetadataTest {
         @Override
         public void setSubProp( Integer value ) {
             map.put( "subProp", value );
+        }
+
+        @Override
+        public URI getUri() {
+            return uri;
+        }
+
+        @Override
+        public Object getId() {
+            return uri;
         }
     }
 

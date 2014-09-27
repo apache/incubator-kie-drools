@@ -33,7 +33,7 @@ import java.io.Externalizable;
 public class TraitFactory<T extends Thing<K>, K extends TraitableBean> extends AbstractTraitFactory<T,K> implements Opcodes, Externalizable {
 
     private transient InternalKnowledgeBase kBase;
-        
+
     public static void setMode( VirtualPropertyMode newMode, KieBase kBase ) {
         KieComponentFactory rcf = ((InternalKnowledgeBase) kBase).getConfiguration().getComponentFactory();
         setMode( newMode, rcf );
@@ -46,7 +46,6 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> extends A
     public TraitFactory() {
 
     }
-
 
     protected Class<?> registerAndLoadTypeDefinition( String proxyName, byte[] proxy ) throws ClassNotFoundException {
         return kBase.registerAndLoadTypeDefinition( proxyName, proxy );

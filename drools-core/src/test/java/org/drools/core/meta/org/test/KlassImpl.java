@@ -16,7 +16,7 @@ public class KlassImpl implements Klass, MetadataHolder {
         super();
     }
 
-    public KlassImpl(final String prop) {
+    public KlassImpl( final String prop ) {
         this.prop = prop;
     }
 

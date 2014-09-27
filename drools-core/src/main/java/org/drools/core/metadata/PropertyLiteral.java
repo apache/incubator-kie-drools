@@ -72,4 +72,9 @@ public abstract class PropertyLiteral<T, R> implements MetaProperty<T,R>, Serial
     public URI getUri() {
         return key;
     }
+
+    @Override
+    public Object getId() {
+        return key;
+    }
 }
