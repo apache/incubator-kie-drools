@@ -93,7 +93,7 @@ public class ClassBuilderFactory implements Serializable {
     // Trait property wrappers
 
 
-    private ClassBuilder propertyWrapperBuilder = new TraitTriplePropertyWrapperClassBuilderImpl();
+    private ClassBuilder propertyWrapperBuilder = new TraitMapPropertyWrapperClassBuilderImpl();
 
     public ClassBuilder getPropertyWrapperBuilder() {
         return propertyWrapperBuilder;
@@ -116,7 +116,7 @@ public class ClassBuilderFactory implements Serializable {
 
     // Trait proxy wrappers
 
-    private  TraitProxyClassBuilder traitProxyBuilder = new TraitTripleProxyClassBuilderImpl();
+    private  TraitProxyClassBuilder traitProxyBuilder = new TraitMapProxyClassBuilderImpl();
 
     public ClassBuilder getTraitProxyBuilder() {
         return traitProxyBuilder;

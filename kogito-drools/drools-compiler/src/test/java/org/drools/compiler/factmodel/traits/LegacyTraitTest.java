@@ -2,10 +2,13 @@
 
 package org.drools.compiler.factmodel.traits;
 
+import org.drools.core.common.ProjectClassLoader;
+import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
+import org.drools.core.util.StandaloneTraitFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -23,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class LegacyTraitTest {
@@ -278,5 +282,20 @@ public class LegacyTraitTest {
         assertEquals( 3, n );
     }
 
-}
 
+
+    @Test
+    public void testTraitWithNonAccessorMethodShadowing() {
+        StandaloneTraitFactory factory = new StandaloneTraitFactory( ProjectClassLoader.createProjectClassLoader() );
+        try {
+            SomeInterface r = (SomeInterface) factory.don( new SomeClass(), SomeInterface.class );
+            r.prepare();
+            assertEquals( 42, r.getFoo() );
+            assertEquals( "I did that", r.doThis( "that" ) );
+        } catch ( LogicalTypeInconsistencyException e ) {
+            e.printStackTrace();
+            fail( e.getMessage() );
+        }
+    }
+
+}
