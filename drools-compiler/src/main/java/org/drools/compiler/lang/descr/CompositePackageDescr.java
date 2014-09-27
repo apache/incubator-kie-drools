@@ -88,6 +88,15 @@ public class CompositePackageDescr extends PackageDescr {
                 addTypeDeclaration(descr);
                 descr.setResource(resource);
             }
+
+        }
+
+        List<EnumDeclarationDescr> enumDeclarationDescrs = getEnumDeclarations();
+        for (EnumDeclarationDescr enumDescr : packageDescr.getEnumDeclarations()) {
+            if (!enumDeclarationDescrs.contains(enumDescr)) {
+                addEnumDeclaration(enumDescr);
+                enumDescr.setResource(resource);
+            }
         }
 
         Set<EntryPointDeclarationDescr> entryPointDeclarationDescrs = getEntryPointDeclarations();
