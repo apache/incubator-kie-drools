@@ -393,15 +393,55 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
         buildCommonMethods( cw, masterName );
 
-
         buildExtendedMethods( cw, getTrait(), core, mask );
 
+        buildShadowMethods( cw, trait, core, mask );
 
         cw.visitEnd();
 
         return cw.toByteArray();
 
     }
+
+    protected void buildShadowMethods( ClassWriter cw, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
+        for ( Method m : trait.getDefinedClass().getMethods() ) {
+            if ( ! TraitFactory.excludeFromShadowing( m, trait ) ) {
+                for ( Method q : core.getDefinedClass().getMethods() ) {
+                    if ( TraitFactory.isCompatible( m, q ) ) {
+                        buildShadowMethod( cw, trait, core, m, q );
+                    }
+                }
+            }
+        }
+    }
+
+    private void buildShadowMethod( ClassWriter cw, ClassDefinition trait, ClassDefinition core, Method m, Method q ) {
+        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC,
+                                           m.getName(),
+                                           Type.getMethodDescriptor( m ),
+                                           null,
+                                           null );
+
+        mv.visitCode();
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitMethodInsn( INVOKEVIRTUAL,
+                            BuildUtils.getInternalType( TraitFactory.getProxyName( trait, core ) ),
+                            "getCore",
+                            Type.getMethodDescriptor( Type.getType( core.getDefinedClass() ), new Type[] {} ),
+                            false );
+
+        for ( int j = 0; j < m.getParameterTypes().length; j++ ) {
+            mv.visitVarInsn( BuildUtils.varType( m.getParameterTypes()[ j ].getName() ), j + 1 );
+        }
+        mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( core.getDefinedClass() ), m.getName(), Type.getMethodDescriptor( m ), core.getDefinedClass().isInterface() );
+
+        mv.visitInsn( BuildUtils.returnType( m.getReturnType().getName() ) );
+
+        mv.visitMaxs( 0, 0 );
+        mv.visitEnd();
+
+    }
+
 
     private boolean hasImpl( Trait annTrait ) {
         return annTrait != null && ! annTrait.impl().equals( Trait.NullMixin.class );

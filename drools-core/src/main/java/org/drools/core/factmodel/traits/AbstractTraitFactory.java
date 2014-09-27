@@ -47,7 +47,7 @@ import java.util.Map;
 
 public abstract class AbstractTraitFactory<T extends Thing<K>, K extends TraitableBean> implements Opcodes, Externalizable {
 
-    protected VirtualPropertyMode mode = VirtualPropertyMode.TRIPLES;
+    protected VirtualPropertyMode mode = VirtualPropertyMode.MAP;
 
     public final static String SUFFIX = "_Trait__Extension";
 
@@ -361,8 +361,9 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             def.setDefinedClass( klazz );
 
             Map<String, Method> properties = inspector.getGetterMethods();
-            for ( Method m : properties.values() ) {
-                if ( m != null && m.getDeclaringClass() != TraitType.class && m.getDeclaringClass() != Thing.class ) {
+            for ( String key : properties.keySet() ) {
+                Method m = properties.get( key );
+                if ( m != null && m.getDeclaringClass() != TraitType.class && m.getDeclaringClass() != Thing.class && inspector.getSetterMethods().containsKey( key ) ) {
                     FieldDefinition fld = new FieldDefinition();
                     fld.setName( getterToFieldName( m.getName() ) );
                     fld.setTypeName( m.getReturnType().getName() );
@@ -504,6 +505,56 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
         return stack;
     }
 
+
+    public static boolean isCompatible( Method m, Method q ) {
+        if ( ! m.getName().equals( q.getName() ) ) {
+            return false;
+        }
+        if ( ! m.getReturnType().isAssignableFrom( q.getReturnType() ) ) {
+            return false;
+        }
+        if ( m.getParameterTypes().length != q.getParameterTypes().length ) {
+            return false;
+        }
+        for ( int j = 0; j < q.getParameterTypes().length; j++ ) {
+            if ( ! q.getParameterTypes()[ j ].isAssignableFrom( m.getParameterTypes()[ j ] ) ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    protected static boolean excludeFromShadowing( Method m, ClassDefinition cdef ) {
+        return Object.class.equals( m.getDeclaringClass() ) ||
+               "getFields".equals( m.getName() ) || "getCore".equals( m.getName() ) || "isTop".equals( m.getName() ) ||
+               isGetter( m, cdef ) ||
+               isSetter( m, cdef );
+    }
+
+    protected static boolean isGetter( Method m, ClassDefinition cdef ) {
+        return ( m.getParameterTypes().length == 0 ) &&
+               ( ! void.class.equals( m.getReturnType() ) ) &&
+               ( m.getName().startsWith( "get" ) || m.getName().startsWith( "is" ) ) &&
+               ( cdef.getField( toFieldName( m.getName() ) ) != null );
+    }
+
+    private static String toFieldName( String name ) {
+        String fname = name;
+        if ( ( fname.startsWith( "get" ) || fname.startsWith( "set" ) ) && fname.length() > 3 ) {
+            return name.substring( 3, 4 ).toLowerCase() + name.substring( 4 );
+        }
+        if ( fname.startsWith( "is" ) && fname.length() > 2 ) {
+            return name.substring( 2, 3 ).toLowerCase() + name.substring( 3 );
+        }
+        return name;
+    }
+
+    protected static boolean isSetter( Method m, ClassDefinition cdef ) {
+        return ( m.getParameterTypes().length == 1 ) &&
+               ( void.class.equals( m.getReturnType() ) ) &&
+               ( m.getName().startsWith( "set" ) ) &&
+               ( cdef.getField( toFieldName( m.getName() ) ) != null );
+    }
 
 
     protected abstract Class<?> registerAndLoadTypeDefinition( String proxyName, byte[] proxy ) throws ClassNotFoundException;
