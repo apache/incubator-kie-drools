@@ -40,7 +40,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,10 +56,15 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
 
     protected Map<Class, Class<? extends CoreWrapper<?>>> wrapperCache = new HashMap<Class, Class<? extends CoreWrapper<?>>>();
 
+    private InstantiatorFactory instantiatorFactory = new InstantiatorFactory() {
+        @Override
+        public TraitableBean instantiate( Class<? extends Thing> trait, Object id ) {
+            return new Entity( id.toString() );
+        }
+    };
 
     public AbstractTraitFactory() {
     }
-
 
     protected static void setMode( VirtualPropertyMode newMode, KieComponentFactory rcf ) {
         ClassBuilderFactory cbf = rcf.getClassBuilderFactory();
@@ -89,8 +93,15 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
         factoryCache = (Map<String, Constructor>) in.readObject();
         wrapperCache = (Map<Class, Class<? extends CoreWrapper<?>>>) in.readObject();
     }
-    
 
+
+    public InstantiatorFactory getInstantiatorFactory() {
+        return instantiatorFactory;
+    }
+
+    public void setInstantiatorFactory( InstantiatorFactory instantiatorFactory ) {
+        this.instantiatorFactory = instantiatorFactory;
+    }
 
     @Deprecated()
     /**

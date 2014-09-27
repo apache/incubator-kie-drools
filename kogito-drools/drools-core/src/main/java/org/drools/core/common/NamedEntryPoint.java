@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.core.beliefsystem.BeliefSet;
+import org.drools.core.base.TraitHelper;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -89,6 +90,8 @@ public class NamedEntryPoint
 
     protected Set<InternalFactHandle> dynamicFacts = null;
 
+    protected TraitHelper traitHelper;
+
     public NamedEntryPoint(EntryPointId entryPoint,
                            EntryPointNode entryPointNode,
                            StatefulKnowledgeSessionImpl wm) {
@@ -112,6 +115,7 @@ public class NamedEntryPoint
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         this.objectStore = new SingleThreadedObjectStore(this.kBase.getConfiguration(),
                                                          this.lock);
+        this.traitHelper = new TraitHelper( wm, this );
     }
 
     public void lock() {
@@ -798,5 +802,9 @@ public class NamedEntryPoint
 
     public PropagationContextFactory getPctxFactory() {
         return pctxFactory;
+    }
+
+    public TraitHelper getTraitHelper() {
+        return traitHelper;
     }
 }

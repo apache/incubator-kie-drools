@@ -6,4 +6,6 @@ public interface Identifiable {
 
     public URI getUri();
 
+    public Object getId();
+
 }
