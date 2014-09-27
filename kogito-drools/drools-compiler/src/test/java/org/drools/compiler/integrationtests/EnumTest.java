@@ -18,6 +18,8 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
+import org.kie.api.builder.Results;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -27,6 +29,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
+import org.kie.internal.utils.KieHelper;
 
 
 /**
@@ -69,7 +72,7 @@ public class EnumTest extends CommonTestMethodBase {
     @Test
     public void testEnums() throws Exception {
 
-        StatefulKnowledgeSession ksession = genSession("test_Enums.drl");
+        StatefulKnowledgeSession ksession = genSession( "test_Enums.drl" );
         java.util.List list = new java.util.ArrayList();
         ksession.setGlobal( "list", list );
 
@@ -82,6 +85,24 @@ public class EnumTest extends CommonTestMethodBase {
         ksession.dispose();
 
 
+    }
+
+    @Test
+    public void testEnumsWithCompositeBuildingProcess() throws Exception {
+        String drl = "package org.test; " +
+                     "" +
+                     "declare enum DaysOfWeek " +
+                     "    SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY;\n" +
+                     "end\n" +
+
+                     "declare Test " +
+                     "  field: DaysOfWeek " +
+                     "end";
+
+        KieHelper kieHelper = new KieHelper();
+        kieHelper.addContent( drl, ResourceType.DRL );
+        Results res = kieHelper.verify();
+        assertEquals( 0, res.getMessages().size() );
     }
 
 
