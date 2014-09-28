@@ -1,7 +1,6 @@
 package org.jbpm.services.task.commands;
 
 import java.io.InputStream;
-import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,6 +25,7 @@ import org.kie.api.task.model.User;
 import org.kie.internal.command.Context;
 import org.kie.internal.task.api.TaskContext;
 import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.model.Deadline;
 import org.kie.internal.task.api.model.Deadlines;
 import org.kie.internal.task.api.model.Escalation;
@@ -108,7 +108,13 @@ public class UserGroupCallbackTaskCommand<T> extends TaskCommand<T> {
     }
     
     protected void persistIfNotExists(final OrganizationalEntity entity, TaskContext context) {
-    	context.getPersistenceContext().persistOrgEntity(entity);
+    	TaskPersistenceContext tpc = context.getPersistenceContext();
+    	OrganizationalEntity orgEntity = tpc.findOrgEntity(entity.getId());
+    	if( orgEntity == null
+    	    || (orgEntity instanceof Group && entity instanceof User)  
+    	    || (orgEntity instanceof User && entity instanceof Group) ) { 
+    	    tpc.persistOrgEntity(entity);
+    	}
     }
 
     protected void doCallbackGroupsOperation(String userId, List<String> groupIds, TaskContext context) {
