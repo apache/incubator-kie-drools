@@ -19,6 +19,10 @@ import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
 
 public interface ConstraintNode extends Node {
 
+    String getClassName();
+
+    void setClassName( final String className );
+
     String getFieldName();
 
     void setFieldName( final String fieldName );

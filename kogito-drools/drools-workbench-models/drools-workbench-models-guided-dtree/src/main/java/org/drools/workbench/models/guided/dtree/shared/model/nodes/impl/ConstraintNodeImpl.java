@@ -25,6 +25,7 @@ import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
 
 public class ConstraintNodeImpl implements ConstraintNode {
 
+    private String className;
     private String fieldName;
     private String operator;
     private Value value;
@@ -34,12 +35,25 @@ public class ConstraintNodeImpl implements ConstraintNode {
         //Errai marshalling
     }
 
-    public ConstraintNodeImpl( final String fieldName,
+    public ConstraintNodeImpl( final String className,
+                               final String fieldName,
                                final String operator,
                                final Value value ) {
+        setClassName( className );
         setFieldName( fieldName );
         setOperator( operator );
         setValue( value );
+    }
+
+    @Override
+    public String getClassName() {
+        return this.className;
+    }
+
+    @Override
+    public void setClassName( final String className ) {
+        this.className = PortablePreconditions.checkNotNull( "className",
+                                                             className );
     }
 
     @Override
