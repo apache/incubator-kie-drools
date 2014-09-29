@@ -73,7 +73,8 @@ public class GuidedDecisionTreeDRLPersistenceTest {
         model.setTreeName( "test" );
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        final ConstraintNode c1 = new ConstraintNodeImpl( "name",
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "name",
                                                           "==",
                                                           new StringValue( "Michael" ) );
         model.setRoot( type );
@@ -96,10 +97,12 @@ public class GuidedDecisionTreeDRLPersistenceTest {
         model.setTreeName( "test" );
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        final ConstraintNode c1 = new ConstraintNodeImpl( "name",
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "name",
                                                           "==",
                                                           new StringValue( "Michael" ) );
-        final ConstraintNode c2 = new ConstraintNodeImpl( "age",
+        final ConstraintNode c2 = new ConstraintNodeImpl( "Person",
+                                                          "age",
                                                           "==",
                                                           new IntegerValue( 41 ) );
         model.setRoot( type );
@@ -128,10 +131,12 @@ public class GuidedDecisionTreeDRLPersistenceTest {
         model.setTreeName( "test" );
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        final ConstraintNode c1 = new ConstraintNodeImpl( "name",
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "name",
                                                           "==",
                                                           new StringValue( "Michael" ) );
-        final ConstraintNode c2 = new ConstraintNodeImpl( "age",
+        final ConstraintNode c2 = new ConstraintNodeImpl( "Person",
+                                                          "age",
                                                           "==",
                                                           new IntegerValue( 41 ) );
         model.setRoot( type );
@@ -165,13 +170,16 @@ public class GuidedDecisionTreeDRLPersistenceTest {
         model.setTreeName( "test" );
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        final ConstraintNode c1 = new ConstraintNodeImpl( "name",
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "name",
                                                           "==",
                                                           new StringValue( "Michael" ) );
-        final ConstraintNode c2 = new ConstraintNodeImpl( "age",
+        final ConstraintNode c2 = new ConstraintNodeImpl( "Person",
+                                                          "age",
                                                           "==",
                                                           new IntegerValue( 41 ) );
-        final ConstraintNode c3 = new ConstraintNodeImpl( "gender",
+        final ConstraintNode c3 = new ConstraintNodeImpl( "Person",
+                                                          "gender",
                                                           "==",
                                                           new StringValue( "Male" ) );
         model.setRoot( type );
@@ -201,13 +209,16 @@ public class GuidedDecisionTreeDRLPersistenceTest {
         model.setTreeName( "test" );
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        final ConstraintNode c1 = new ConstraintNodeImpl( "name",
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "name",
                                                           "==",
                                                           new StringValue( "Michael" ) );
-        final ConstraintNode c2 = new ConstraintNodeImpl( "name",
+        final ConstraintNode c2 = new ConstraintNodeImpl( "Person",
+                                                          "name",
                                                           "==",
                                                           new StringValue( "Fred" ) );
-        final ConstraintNode c3 = new ConstraintNodeImpl( "age",
+        final ConstraintNode c3 = new ConstraintNodeImpl( "Person",
+                                                          "age",
                                                           "==",
                                                           new IntegerValue( 41 ) );
         model.setRoot( type );
@@ -233,11 +244,13 @@ public class GuidedDecisionTreeDRLPersistenceTest {
         model.setTreeName( "test" );
 
         final TypeNode type1 = new TypeNodeImpl( "Person" );
-        final ConstraintNode c1 = new ConstraintNodeImpl( "name",
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "name",
                                                           "==",
                                                           new StringValue( "Michael" ) );
         final TypeNode type2 = new TypeNodeImpl( "Address" );
-        final ConstraintNode c2 = new ConstraintNodeImpl( "country",
+        final ConstraintNode c2 = new ConstraintNodeImpl( "Address",
+                                                          "country",
                                                           "==",
                                                           new StringValue( "England" ) );
         model.setRoot( type1 );
@@ -274,19 +287,23 @@ public class GuidedDecisionTreeDRLPersistenceTest {
         model.setTreeName( "test" );
 
         final TypeNode type1 = new TypeNodeImpl( "Person" );
-        final ConstraintNode c1a = new ConstraintNodeImpl( "name",
-                                                          "==",
-                                                          new StringValue( "Michael" ) );
-        final ConstraintNode c1b = new ConstraintNodeImpl( "name",
+        final ConstraintNode c1a = new ConstraintNodeImpl( "Person",
+                                                           "name",
+                                                           "==",
+                                                           new StringValue( "Michael" ) );
+        final ConstraintNode c1b = new ConstraintNodeImpl( "Person",
+                                                           "name",
                                                            "==",
                                                            new StringValue( "Fred" ) );
         final TypeNode type2 = new TypeNodeImpl( "Address" );
-        final ConstraintNode c2a = new ConstraintNodeImpl( "country",
-                                                          "==",
-                                                          new StringValue( "England" ) );
-        final ConstraintNode c2b = new ConstraintNodeImpl( "country",
-                                                          "==",
-                                                          new StringValue( "Norway" ) );
+        final ConstraintNode c2a = new ConstraintNodeImpl( "Address",
+                                                           "country",
+                                                           "==",
+                                                           new StringValue( "England" ) );
+        final ConstraintNode c2b = new ConstraintNodeImpl( "Address",
+                                                           "country",
+                                                           "==",
+                                                           new StringValue( "Norway" ) );
         model.setRoot( type1 );
         type1.getChildren().add( c1a );
         type1.getChildren().add( c1b );
@@ -311,7 +328,8 @@ public class GuidedDecisionTreeDRLPersistenceTest {
         model.setTreeName( "test" );
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        final ConstraintNode c1 = new ConstraintNodeImpl( "bigDecimalField",
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "bigDecimalField",
                                                           "==",
                                                           new BigDecimalValue( new BigDecimal( 1000000 ) ) );
         model.setRoot( type );
@@ -334,7 +352,8 @@ public class GuidedDecisionTreeDRLPersistenceTest {
         model.setTreeName( "test" );
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        final ConstraintNode c1 = new ConstraintNodeImpl( "bigIntegerField",
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "bigIntegerField",
                                                           "==",
                                                           new BigIntegerValue( new BigInteger( "1000000" ) ) );
         model.setRoot( type );
@@ -357,7 +376,8 @@ public class GuidedDecisionTreeDRLPersistenceTest {
         model.setTreeName( "test" );
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        final ConstraintNode c1 = new ConstraintNodeImpl( "booleanField",
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "booleanField",
                                                           "==",
                                                           new BooleanValue( true ) );
         model.setRoot( type );
@@ -380,7 +400,8 @@ public class GuidedDecisionTreeDRLPersistenceTest {
         model.setTreeName( "test" );
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        final ConstraintNode c1 = new ConstraintNodeImpl( "byteField",
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "byteField",
                                                           "==",
                                                           new ByteValue( new Byte( "100" ) ) );
         model.setRoot( type );
@@ -403,7 +424,8 @@ public class GuidedDecisionTreeDRLPersistenceTest {
         model.setTreeName( "test" );
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        final ConstraintNode c1 = new ConstraintNodeImpl( "dateField",
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "dateField",
                                                           "==",
                                                           new DateValue( new Date( 84, 6, 15 ) ) );
         model.setRoot( type );
@@ -426,7 +448,8 @@ public class GuidedDecisionTreeDRLPersistenceTest {
         model.setTreeName( "test" );
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        final ConstraintNode c1 = new ConstraintNodeImpl( "doubleField",
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "doubleField",
                                                           "==",
                                                           new DoubleValue( 1000.56 ) );
         model.setRoot( type );
@@ -449,7 +472,8 @@ public class GuidedDecisionTreeDRLPersistenceTest {
         model.setTreeName( "test" );
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        final ConstraintNode c1 = new ConstraintNodeImpl( "floatField",
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "floatField",
                                                           "==",
                                                           new FloatValue( 1000.56f ) );
         model.setRoot( type );
@@ -472,7 +496,8 @@ public class GuidedDecisionTreeDRLPersistenceTest {
         model.setTreeName( "test" );
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        final ConstraintNode c1 = new ConstraintNodeImpl( "integerField",
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "integerField",
                                                           "==",
                                                           new IntegerValue( 1000000 ) );
         model.setRoot( type );
@@ -495,7 +520,8 @@ public class GuidedDecisionTreeDRLPersistenceTest {
         model.setTreeName( "test" );
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        final ConstraintNode c1 = new ConstraintNodeImpl( "longField",
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "longField",
                                                           "==",
                                                           new LongValue( 1000000L ) );
         model.setRoot( type );
@@ -518,7 +544,8 @@ public class GuidedDecisionTreeDRLPersistenceTest {
         model.setTreeName( "test" );
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        final ConstraintNode c1 = new ConstraintNodeImpl( "shortField",
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "shortField",
                                                           "==",
                                                           new ShortValue( new Short( "1000" ) ) );
         model.setRoot( type );
@@ -541,7 +568,8 @@ public class GuidedDecisionTreeDRLPersistenceTest {
         model.setTreeName( "test" );
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        final ConstraintNode c1 = new ConstraintNodeImpl( "stringField",
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "stringField",
                                                           "==",
                                                           new StringValue( "Michael" ) );
         model.setRoot( type );
