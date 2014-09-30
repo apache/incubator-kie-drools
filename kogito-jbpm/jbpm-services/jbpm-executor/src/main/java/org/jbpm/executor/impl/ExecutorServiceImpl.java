@@ -171,6 +171,14 @@ public class ExecutorServiceImpl implements ExecutorService, RequeueAware {
     public void setThreadPoolSize(int nroOfThreads) {
         executor.setThreadPoolSize(nroOfThreads);
     }
+    
+	public TimeUnit getTimeunit() {
+		return executor.getTimeunit();
+	}
+
+	public void setTimeunit(TimeUnit timeunit) {
+		executor.setTimeunit(timeunit);
+	}
 
     public List<RequestInfo> getPendingRequests() {
         return queryService.getPendingRequests();

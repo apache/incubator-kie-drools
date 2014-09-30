@@ -59,7 +59,8 @@ public class ExecutorImpl implements Executor {
     private int retries = Integer.parseInt(System.getProperty("org.kie.executor.retry.count", "3"));
     private int interval = Integer.parseInt(System.getProperty("org.kie.executor.interval", "3"));
     private TimeUnit timeunit = TimeUnit.valueOf(System.getProperty("org.kie.executor.timeunit", "SECONDS"));
-    private ScheduledExecutorService scheduler;
+
+	private ScheduledExecutorService scheduler;
 
     public ExecutorImpl() {
     }
@@ -109,6 +110,20 @@ public class ExecutorImpl implements Executor {
     public void setThreadPoolSize(int threadPoolSize) {
         this.threadPoolSize = threadPoolSize;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public TimeUnit getTimeunit() {
+		return timeunit;
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+	public void setTimeunit(TimeUnit timeunit) {
+		this.timeunit = timeunit;
+	}
 
     /**
      * {@inheritDoc}
@@ -116,8 +131,8 @@ public class ExecutorImpl implements Executor {
     public void init() {
         if (!"true".equalsIgnoreCase(System.getProperty("org.kie.executor.disabled"))) {
             logger.info("Starting Executor Component ...\n" + " \t - Thread Pool Size: {}" + "\n"
-                    + " \t - Interval: {}" + " Seconds\n" + " \t - Retries per Request: {}\n",
-                    threadPoolSize, interval, retries);
+                    + " \t - Interval: {} {} \n" + " \t - Retries per Request: {}\n",
+                    threadPoolSize, interval, timeunit.toString(), retries);
             
             scheduler = Executors.newScheduledThreadPool(threadPoolSize);
             for (int i = 0; i < threadPoolSize; i++) {
