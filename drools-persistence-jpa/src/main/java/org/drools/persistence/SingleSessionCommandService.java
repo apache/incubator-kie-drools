@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.util.Date;
+import javax.persistence.EntityManager;
 
 public class SingleSessionCommandService
     implements
@@ -132,8 +133,8 @@ public class SingleSessionCommandService
         config.setMarshallWorkItems( false );
 
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
-        
-        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
+
+        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl(this.txm, this.sessionInfo ) );
         
         this.kContext = new FixedKnowledgeCommandContext( new ContextImpl( "ksession", null),
                                                           null,
@@ -199,6 +200,7 @@ public class SingleSessionCommandService
                                 KieBase kbase,
                                 KieSessionConfiguration conf,
                                 PersistenceContext persistenceContext) {
+
         if ( !doRollback && this.ksession != null ) {
             return;
             // nothing to initialise
@@ -212,7 +214,6 @@ public class SingleSessionCommandService
             throw new SessionNotFoundException( "Could not find session data for id " + sessionId,
                                         e );
         }
-
         if ( sessionInfo == null ) {
             throw new SessionNotFoundException( "Could not find session data for id " + sessionId );
         }
@@ -243,7 +244,7 @@ public class SingleSessionCommandService
         // update the session id to be the same as the session info id
         ((InternalKnowledgeRuntime) ksession).setId( this.sessionInfo.getId() );
 
-        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
+        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.txm, this.sessionInfo ) );
 
         if ( this.kContext == null ) {
             // this should only happen when this class is first constructed
@@ -334,14 +335,17 @@ public class SingleSessionCommandService
     public static class EndOperationListenerImpl
         implements
         EndOperationListener {
+        private TransactionManager txm;
         private SessionInfo info;
 
-        public EndOperationListenerImpl(SessionInfo info) {
+        public EndOperationListenerImpl(TransactionManager txm, SessionInfo info) {
             this.info = info;
+            this.txm = txm;
         }
 
         public void endOperation(InternalKnowledgeRuntime kruntime) {
             this.info.setLastModificationDate( new Date( kruntime.getLastIdleTimestamp() ) );
+            TransactionManagerHelper.addToUpdatableSet(txm, info);
         }
     }
 
@@ -406,6 +410,7 @@ public class SingleSessionCommandService
     }
 
     private void registerRollbackSync() {
+        this.txm.registerTransactionSynchronization(new TriggerUpdateTransactionSynchronization(txm, env));
         TransactionManagerHelper.registerTransactionSyncInContainer(this.txm, new SynchronizationImpl( this ));
     }
 

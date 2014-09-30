@@ -63,12 +63,12 @@ public class ManualTransactionManager
         //  because there's no need to "wait" for a commit
         try{
             for(SessionInfo sessionInfo : session.getStoredKnowledgeSessions()){
-                sessionInfo.update();
+                sessionInfo.transform();
                 storage.saveOrUpdate(sessionInfo);
             }
             
             for(WorkItemInfo workItemInfo : session.getStoredWorkItems()){
-                workItemInfo.update();
+                workItemInfo.transform();
                 storage.saveOrUpdate( workItemInfo );
             }
             try{

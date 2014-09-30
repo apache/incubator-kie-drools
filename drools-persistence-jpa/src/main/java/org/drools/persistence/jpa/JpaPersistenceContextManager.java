@@ -16,17 +16,11 @@
  package org.drools.persistence.jpa;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.FlushModeType;
 
 import org.drools.persistence.PersistenceContext;
 import org.drools.persistence.PersistenceContextManager;
-import org.drools.persistence.SingleSessionCommandService;
 import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class manages {@link JpaPersistenceContext} objects, and the underlying persistence context ({@link EntityManager}) 
@@ -58,11 +52,11 @@ public class JpaPersistenceContextManager extends AbstractPersistenceContextMana
     
     public PersistenceContext getApplicationScopedPersistenceContext() {
 
-        return new JpaPersistenceContext( getApplicationScopedEntityManager() );
+        return new JpaPersistenceContext( getApplicationScopedEntityManager(), txm );
     }
 
     public PersistenceContext getCommandScopedPersistenceContext() {
-        return new JpaPersistenceContext( getCommandScopedEntityManager() );
+        return new JpaPersistenceContext( getCommandScopedEntityManager(), txm );
     }
 
     public void beginCommandScopedEntityManager() {

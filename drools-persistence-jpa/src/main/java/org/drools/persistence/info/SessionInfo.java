@@ -1,24 +1,22 @@
 package org.drools.persistence.info;
 
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import org.drools.persistence.SessionMarshallingHelper;
+import org.drools.persistence.Transformable;
 
 @Entity
 @SequenceGenerator(name="sessionInfoIdSeq", sequenceName="SESSIONINFO_ID_SEQ")
-public class SessionInfo {
+public class SessionInfo implements Transformable {
     
     private @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="sessionInfoIdSeq")
@@ -77,11 +75,9 @@ public class SessionInfo {
     public void setLastModificationDate(Date date) {
         this.lastModificationDate = date;
     }
-    
 
-    @PrePersist 
-    @PreUpdate 
-    public void update() {
+    @Override
+    public void transform() {
         this.rulesByteArray  = this.helper.getSnapshot();
     }
 

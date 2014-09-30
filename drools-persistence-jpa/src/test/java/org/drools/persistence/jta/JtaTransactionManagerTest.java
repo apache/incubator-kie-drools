@@ -15,23 +15,15 @@
  */
 package org.drools.persistence.jta;
 
-import static org.junit.Assert.assertTrue;
-import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
-
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.HashMap;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.FlushModeType;
 import javax.transaction.UserTransaction;
 
+import bitronix.tm.internal.BitronixRollbackException;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.TransactionManager;
@@ -54,7 +46,9 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import bitronix.tm.internal.BitronixRollbackException;
+import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.junit.Assert.*;
+import static org.kie.api.runtime.EnvironmentName.*;
 
 public class JtaTransactionManagerTest {
 
@@ -137,7 +131,6 @@ public class JtaTransactionManagerTest {
        
         // Initialized persistence/tx's and persist to db
         EntityManager em = emf.createEntityManager();
-        em.setFlushMode(FlushModeType.COMMIT);
         UserTransaction tx = findUserTransaction();
         tx.begin();
         em.joinTransaction();
