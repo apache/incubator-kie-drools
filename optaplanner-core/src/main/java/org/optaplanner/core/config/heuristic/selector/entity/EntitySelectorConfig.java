@@ -28,6 +28,7 @@ import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
@@ -47,6 +48,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.decorator.SortingEnti
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.EntityMimicRecorder;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.ReinitializeVariableValueSelector;
 
 @XStreamAlias("entitySelector")
 public class EntitySelectorConfig extends SelectorConfig {
@@ -298,9 +300,12 @@ public class EntitySelectorConfig extends SelectorConfig {
                     filterList.add(ConfigUtils.newInstance(this, "filterClass", filterClass));
                 }
             }
+            // Filter out immovable entities
             if (entityDescriptor.hasMovableEntitySelectionFilter()) {
                 filterList.add(entityDescriptor.getMovableEntitySelectionFilter());
             }
+            // Do not filter out initialized entities here for CH and ES, because they can be partially initialized
+            // Instead, ValueSelectorConfig.applyReinitializeVariableFiltering() does that.
             entitySelector = new FilteringEntitySelector(entitySelector, filterList);
         }
         return entitySelector;
