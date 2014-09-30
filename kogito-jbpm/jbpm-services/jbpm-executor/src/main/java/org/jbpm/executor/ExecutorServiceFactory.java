@@ -163,7 +163,7 @@ public class ExecutorServiceFactory {
 				Object beanManager = InitialContext.doLookup("java:comp/BeanManager");
 				jobExecutor.addContextData("BeanManager", beanManager);
 			} catch (NamingException ex) {
-				logger.warn("No CDI BeanManager found in JNDI");
+				logger.warn("CDI beans cannot be used in executor commands, because no CDI manager has been found in JNDI.");
 			}
     	}
 
@@ -193,7 +193,7 @@ public class ExecutorServiceFactory {
 				Object beanManager = InitialContext.doLookup("java:comp/BeanManager");
 				jobExecutor.addContextData("BeanManager", beanManager);
 			} catch (NamingException ex) {
-				logger.warn("No CDI BeanManager found in JNDI");
+				logger.warn("CDI beans cannot be used in executor commands, because no CDI manager has been found in JNDI.");
 			}
     	}
 
