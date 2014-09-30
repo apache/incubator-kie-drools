@@ -75,7 +75,7 @@ public class MapBasedPersistenceTest extends MapPersistenceTest {
         private Map<Long, WorkItemInfo>        workItems = new HashMap<Long, WorkItemInfo>();
 
         public void saveOrUpdate(SessionInfo ksessionInfo) {
-            ksessionInfo.update();
+            ksessionInfo.transform();
             ksessions.put( ksessionInfo.getId(),
                            ksessionInfo );
         }
@@ -94,7 +94,7 @@ public class MapBasedPersistenceTest extends MapPersistenceTest {
         }
 
         public void saveOrUpdate(ProcessInstanceInfo processInstanceInfo) {
-            processInstanceInfo.update();
+            processInstanceInfo.transform();
             processes.put( processInstanceInfo.getId(),
                            processInstanceInfo );
         }

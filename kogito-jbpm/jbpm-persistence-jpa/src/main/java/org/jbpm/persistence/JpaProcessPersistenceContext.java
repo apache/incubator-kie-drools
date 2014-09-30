@@ -11,6 +11,8 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 
 import org.drools.persistence.SingleSessionCommandService;
+import org.drools.persistence.TransactionManager;
+import org.drools.persistence.TransactionManagerHelper;
 import org.drools.persistence.jpa.JpaPersistenceContext;
 import org.jbpm.persistence.correlation.CorrelationKeyInfo;
 import org.jbpm.persistence.processinstance.JPASignalManager;
@@ -24,17 +26,18 @@ public class JpaProcessPersistenceContext extends JpaPersistenceContext
     implements
     ProcessPersistenceContext {
     
-    public JpaProcessPersistenceContext(EntityManager em) {
-        super( em );
+    public JpaProcessPersistenceContext(EntityManager em, TransactionManager txm) {
+        super( em, txm );
     }
 
-    public JpaProcessPersistenceContext(EntityManager em, boolean useJTA, boolean locking) {
-        super( em, useJTA, locking);
+    public JpaProcessPersistenceContext(EntityManager em, boolean useJTA, boolean locking, TransactionManager txm) {
+        super( em, useJTA, locking, txm);
     }
 
     public ProcessInstanceInfo persist(ProcessInstanceInfo processInstanceInfo) {
         EntityManager em = getEntityManager();
         em.persist(processInstanceInfo);
+        TransactionManagerHelper.addToUpdatableSet(txm, processInstanceInfo);
         if( this.pessimisticLocking ) { 
             return em.find(ProcessInstanceInfo.class, processInstanceInfo.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
         }
@@ -50,6 +53,7 @@ public class JpaProcessPersistenceContext extends JpaPersistenceContext
 
     public void remove(ProcessInstanceInfo processInstanceInfo) {
         getEntityManager().remove( processInstanceInfo );
+        TransactionManagerHelper.removeFromUpdatableSet(txm, processInstanceInfo);
         List<CorrelationKeyInfo> correlations = getEntityManager().createNamedQuery("GetCorrelationKeysByProcessInstanceId")
         .setParameter("pId", processInstanceInfo.getId()).getResultList();
         if (correlations != null) {
@@ -81,7 +85,6 @@ public class JpaProcessPersistenceContext extends JpaPersistenceContext
     	EntityManager entityManager = getEntityManager();
     	if (entityManager != null) {
 	        Query processInstancesForEvent = getEntityManager().createNamedQuery( "ProcessInstancesWaitingForEvent" );
-	        processInstancesForEvent.setFlushMode(FlushModeType.COMMIT);
 	        processInstancesForEvent.setParameter( "type",
 	                                               type );
 	        return (List<Long>) processInstancesForEvent.getResultList();
@@ -116,7 +119,6 @@ public class JpaProcessPersistenceContext extends JpaPersistenceContext
      */
     public Long getProcessInstanceByCorrelationKey(CorrelationKey correlationKey) {
         Query processInstancesForEvent = getEntityManager().createNamedQuery( "GetProcessInstanceIdByCorrelation" );
-        processInstancesForEvent.setFlushMode(FlushModeType.COMMIT);
         processInstancesForEvent.setParameter( "elem_count", correlationKey.getProperties().size() );
         List<Object> properties = new ArrayList<Object>();
         for (CorrelationProperty<?> property : correlationKey.getProperties()) {

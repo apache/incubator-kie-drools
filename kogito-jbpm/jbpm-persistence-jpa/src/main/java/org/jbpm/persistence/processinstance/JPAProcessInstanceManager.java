@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.persistence.TransactionManager;
+import org.drools.persistence.TransactionManagerHelper;
 import org.jbpm.persistence.ProcessPersistenceContext;
 import org.jbpm.persistence.ProcessPersistenceContextManager;
 import org.jbpm.persistence.correlation.CorrelationKeyInfo;
@@ -89,6 +91,7 @@ public class JPAProcessInstanceManager
         if (manager != null) {
             manager.validate((KieSession) kruntime, ProcessInstanceIdContext.get(id));
         }
+        TransactionManager txm = (TransactionManager) this.kruntime.getEnvironment().get( EnvironmentName.TRANSACTION_MANAGER );
         org.jbpm.process.instance.ProcessInstance processInstance = null;
         processInstance = (org.jbpm.process.instance.ProcessInstance) this.processInstances.get(id);
         if (processInstance != null) {
@@ -100,8 +103,8 @@ public class JPAProcessInstanceManager
                 ProcessInstanceInfo processInstanceInfo = context.findProcessInstanceInfo( id );
                 if ( processInstanceInfo == null ) {
                     return null;
-                }
-  
+                }                
+                TransactionManagerHelper.addToUpdatableSet(txm, processInstanceInfo);
                 processInstanceInfo.updateLastReadDate();
   
             }
@@ -119,9 +122,10 @@ public class JPAProcessInstanceManager
             return null;
         }
         processInstance = (org.jbpm.process.instance.ProcessInstance)
-        	processInstanceInfo.getProcessInstance(kruntime, this.kruntime.getEnvironment(), readOnly);
+        	processInstanceInfo.getProcessInstance(kruntime, this.kruntime.getEnvironment());
         if (!readOnly) {
             processInstanceInfo.updateLastReadDate();
+            TransactionManagerHelper.addToUpdatableSet(txm, processInstanceInfo);
         }
         if (((ProcessInstanceImpl) processInstance).getProcessXml() == null) {
 	        Process process = kruntime.getKieBase().getProcess( processInstance.getProcessId() );

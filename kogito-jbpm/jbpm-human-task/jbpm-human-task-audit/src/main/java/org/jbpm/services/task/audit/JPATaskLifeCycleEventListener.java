@@ -215,7 +215,6 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
                                                                                 ti.getTaskData().getDeploymentId(),
                                                                                 ti.getTaskData().getParentId());
         persistenceContext.persist(auditTaskImpl);
-        store(event, auditTaskImpl);
         //@TODO: Create User or Group Task for Lucene
         persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.ADDED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
     }
@@ -389,40 +388,10 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
     	AuditTaskImpl auditTaskImpl = persistenceContext.queryWithParametersInTransaction("getAuditTaskById", true, 
 				persistenceContext.addParametersToMap("taskId", ti.getId()),
 				ClassUtil.<AuditTaskImpl>castClass(AuditTaskImpl.class));
-        if (auditTaskImpl == null) {
-        	// in case there was nothing returned by the query check current transaction items - due to COMMIT flush mode 
-        	auditTaskImpl = getCurrentTxAuditTasks(event);
-        }
         
         return auditTaskImpl;
     }
-    
-	@SuppressWarnings("unchecked")
-	private void store(TaskEvent event, AuditTaskImpl auditTask) {
-		TaskContext context = (TaskContext) event.getTaskContext();
-		Set<AuditTaskImpl> auditTasks = (Set<AuditTaskImpl>) context.get("local:current-audit-tasks");
-		if (auditTasks == null) {
-			auditTasks = new HashSet<AuditTaskImpl>();
-			context.set("local:current-audit-tasks", auditTasks);
-		}
-		auditTasks.add(auditTask);
-	}
-	
-	@SuppressWarnings("unchecked")
-	private AuditTaskImpl getCurrentTxAuditTasks(TaskEvent event) {
-		TaskContext context = (TaskContext) event.getTaskContext();
-		Set<AuditTaskImpl> currentTxAuditTasks = (Set<AuditTaskImpl>) context.get("local:current-audit-tasks");
-		if (currentTxAuditTasks != null) {
-			for (AuditTaskImpl auditTask : currentTxAuditTasks) {
-				if (auditTask.getTaskId() == event.getTask().getId()) {
-					return auditTask;
-				}
-			}
-			
-		}
-		
-		return null;
-	}
+
 	/*
      * helper methods - end
      */

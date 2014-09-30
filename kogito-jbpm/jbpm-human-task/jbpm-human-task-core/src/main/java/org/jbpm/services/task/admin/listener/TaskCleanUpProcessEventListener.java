@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.event.DefaultProcessEventListener;
-import org.jbpm.services.task.admin.listener.internal.GetCurrentTxTasksCommand;
 import org.jbpm.services.task.commands.GetTasksForProcessCommand;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.task.TaskService;
@@ -46,9 +45,6 @@ public class TaskCleanUpProcessEventListener extends DefaultProcessEventListener
         statuses.add(Status.Completed);
         statuses.add(Status.Exited);
         List<TaskSummary> completedTasksByProcessId = ((InternalTaskService)taskService).execute(new GetTasksForProcessCommand(event.getProcessInstance().getId(), statuses, "en-UK"));
-        // include tasks from current transaction
-        List<TaskSummary> currentTxTasks = taskService.execute(new GetCurrentTxTasksCommand(event.getProcessInstance().getId()));
-        completedTasksByProcessId.addAll(currentTxTasks);
         // archive and remove
         taskService.archiveTasks(completedTasksByProcessId);
         taskService.removeTasks(completedTasksByProcessId);

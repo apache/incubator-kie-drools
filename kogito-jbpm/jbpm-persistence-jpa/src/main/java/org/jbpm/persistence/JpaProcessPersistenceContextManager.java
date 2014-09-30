@@ -20,7 +20,7 @@ public class JpaProcessPersistenceContextManager extends JpaPersistenceContextMa
         }
         
         boolean useJTA = true; 
-        return new JpaProcessPersistenceContext( getCommandScopedEntityManager(), useJTA, locking );
+        return new JpaProcessPersistenceContext( getCommandScopedEntityManager(), useJTA, locking, txm );
     }
 
 }

@@ -228,14 +228,14 @@ public class SingleRuntimeManagerWithListenersTest extends AbstractBaseTest {
         
         List<?> listeners = ((EventService<?>) taskService).getTaskEventListeners();
         assertNotNull(listeners);
-        assertEquals(3, listeners.size());
+        assertEquals(2, listeners.size());
         // prepare listeners class names for assertion
         listenerCLassNames = new ArrayList<String>();
         for (Object o : listeners) {
         	System.out.println("###### " + o.getClass().getName());
         	listenerCLassNames.add(o.getClass().getName());
         }
-        assertEquals(3, listenerCLassNames.size());
+        assertEquals(2, listenerCLassNames.size());
         // JPATaskLifeCycleEventListener was added by custom producer
         assertTrue(listenerCLassNames.contains(JPATaskLifeCycleEventListener.class.getName()));
         // external one is always added to deal with user tasks

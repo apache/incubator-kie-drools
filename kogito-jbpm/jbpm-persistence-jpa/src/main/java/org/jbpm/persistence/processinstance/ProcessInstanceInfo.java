@@ -20,6 +20,7 @@ import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufMarshaller;
+import org.drools.persistence.Transformable;
 import org.jbpm.marshalling.impl.JBPMMessages;
 import org.jbpm.marshalling.impl.ProcessInstanceMarshaller;
 import org.jbpm.marshalling.impl.ProcessMarshallerRegistry;
@@ -32,7 +33,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 
 @Entity
 @SequenceGenerator(name="processInstanceInfoIdSeq", sequenceName="PROCESS_INSTANCE_INFO_ID_SEQ")
-public class ProcessInstanceInfo{
+public class ProcessInstanceInfo implements Transformable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="processInstanceInfoIdSeq")
@@ -185,22 +186,10 @@ public class ProcessInstanceInfo{
         stream.writeUTF( processInstanceType );
     }
 
-    /**
-     * Adding @PrePersist breaks things, because: <ul>
-     * <li>We retrieve/generate the marshaller (see below).</li> 
-     * <li>..and the marshaller retrieves the context instance</li>
-     * <li>..which actually (re)sets all variables in {@link VariableScopeInstance}.setContextInstanceContainer(...)</li>
-     * <li>This of course causes {@link ProcessEventSupport}.fireBeforeVariableChanged(...) to fire.</li>
-     * <li>Then the {@link org.jbpm.process.audit.JPAWorkingMemoryDbLogger} ends up logging a variable change 
-	 * -- but the associated process instance hasn't been persisted yet.</li> 
-     * <li>So the variable instance change is associated with process instance "0"</li>
-     * <li>...and can never be retrieved, because "0" is not a valid id.</li>
-     * </ul>
-     * </p>
-     * Normally, the variable change is logged after the following method has completed. 
-     */
-    @PreUpdate
-    public void update() {
+    public void transform() {
+//    	if (processInstance == null) {
+//    		return;
+//    	}
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         boolean variablesChanged = false;
         try {

@@ -17,8 +17,6 @@ package org.jbpm.services.task.lifecycle.listeners;
 
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.jbpm.services.task.audit.impl.model.BAMTaskSummaryImpl;
 import org.kie.api.task.TaskEvent;
@@ -241,7 +239,6 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
 
         result = new BAMTaskSummaryImpl(ti.getId(), ti.getName(), status.toString(), new Date(), actualOwner, ti.getTaskData().getProcessInstanceId());
         if (worker != null) worker.createTask(result, ti);
-        store(event, result);
         persistenceContext.persist(result);
     
 
@@ -265,11 +262,6 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
         												BAMTaskSummaryImpl.class);
         
         if (result == null) {
-        	// in case there was nothing returned by the query check current transaction items - due to COMMIT flush mode 
-            result = getCurrentTxBAMTasks(event);
-        } 
-        
-        if (result == null) {
         	logger.warn("Unable find bam task entry for task id {} '{}', skipping bam task update", ti.getId(), ti.getName());
         	return null;
         }
@@ -284,36 +276,6 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
       
         return result;
     }
-    
-	@SuppressWarnings("unchecked")
-	private void store(TaskEvent event, BAMTaskSummaryImpl bamTask) {
-		TaskContext context = (TaskContext) event.getTaskContext();
-		Set<BAMTaskSummaryImpl> bamTasks = (Set<BAMTaskSummaryImpl>) context.get("local:current-bam-tasks");
-		if (bamTasks == null) {
-			bamTasks = new HashSet<BAMTaskSummaryImpl>();
-			context.set("local:current-bam-tasks", bamTasks);
-		}
-		bamTasks.add(bamTask);
-	}
-	
-	@SuppressWarnings("unchecked")
-	private BAMTaskSummaryImpl getCurrentTxBAMTasks(TaskEvent event) {
-		TaskContext context = (TaskContext) event.getTaskContext();
-		Set<BAMTaskSummaryImpl> currentTxBAMTasks = (Set<BAMTaskSummaryImpl>) context.get("local:current-bam-tasks");
-		if (currentTxBAMTasks != null) {
-			
-			if (currentTxBAMTasks != null) {
-				for (BAMTaskSummaryImpl bamTask : currentTxBAMTasks) {
-					if (bamTask.getTaskId() == event.getTask().getId()) {
-						return bamTask;
-					}
-				}
-				
-			}
-		}
-		
-		return null;
-	}
 
     /**
      * Interface for performing additional operations to a <code>org.jbpm.services.task.impl.model.BAMTaskSummaryImpl</code> instance.

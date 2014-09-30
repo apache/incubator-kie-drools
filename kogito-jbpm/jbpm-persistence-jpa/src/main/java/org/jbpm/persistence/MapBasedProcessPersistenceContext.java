@@ -11,8 +11,6 @@ import org.jbpm.persistence.correlation.CorrelationKeyInfo;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
 import org.kie.internal.process.CorrelationKey;
 
-import com.sun.xml.bind.v2.runtime.Coordinator;
-
 public class MapBasedProcessPersistenceContext extends MapBasedPersistenceContext
     implements
     ProcessPersistenceContext,

@@ -25,7 +25,6 @@ import javax.persistence.EntityManagerFactory;
 
 import org.drools.core.command.Interceptor;
 import org.drools.core.impl.EnvironmentFactory;
-import org.jbpm.services.task.admin.listener.ContextStorageTaskEventListener;
 import org.jbpm.services.task.commands.TaskCommandExecutorImpl;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.identity.DefaultUserInfo;
@@ -130,7 +129,6 @@ public class HumanTaskConfigurator {
 	public TaskService getTaskService() {
         if (service == null) {
         	TaskEventSupport taskEventSupport = new TaskEventSupport();
-        	taskEventSupport.addEventListener(new ContextStorageTaskEventListener());
         	this.commandExecutor = new TaskCommandExecutorImpl(this.environment, taskEventSupport);
         	if (userGroupCallback == null) {
         		userGroupCallback = new MvelUserGroupCallbackImpl(true);

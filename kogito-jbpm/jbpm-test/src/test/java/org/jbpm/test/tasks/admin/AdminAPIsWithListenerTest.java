@@ -9,7 +9,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.jbpm.services.task.admin.listener.ContextStorageTaskEventListener;
 import org.jbpm.services.task.admin.listener.TaskCleanUpProcessEventListener;
 import org.jbpm.services.task.identity.DefaultUserInfo;
 import org.jbpm.test.JbpmJUnitBaseTestCase;
@@ -80,10 +79,8 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitBaseTestCase {
         ksession.addEventListener(new TaskCleanUpProcessEventListener(taskService));
         
         // let check how many listeners we have
-        assertEquals(3, ((EventService<TaskLifeCycleEventListener>)taskService).getTaskEventListeners().size());
-        // add the ContextStorageTaskEventListener listener - it should already be there so let's make sure it won't get duplicated
-        ((EventService<TaskLifeCycleEventListener>)taskService).registerTaskEventListener(new ContextStorageTaskEventListener());
-        assertEquals(3, ((EventService<TaskLifeCycleEventListener>)taskService).getTaskEventListeners().size());
+        assertEquals(2, ((EventService<TaskLifeCycleEventListener>)taskService).getTaskEventListeners().size());
+        assertEquals(2, ((EventService<TaskLifeCycleEventListener>)taskService).getTaskEventListeners().size());
 
         logger.info("### Starting process ###");
         Map<String, Object> parameters = new HashMap<String, Object>();
