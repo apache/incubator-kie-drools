@@ -114,6 +114,14 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
             return recording;
         }
 
+        @Override
+        public String toString() {
+            if (hasRecordingCreated && !hasRecording) {
+                return "No next replay";
+            }
+            return "Next replay (" + (recordingCreated ? recording : "?") + ")";
+        }
+
     }
 
     public Iterator<Object> endingIterator() {

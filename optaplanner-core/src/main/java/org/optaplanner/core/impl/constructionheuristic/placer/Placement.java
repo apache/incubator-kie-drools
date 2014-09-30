@@ -19,7 +19,7 @@ public class Placement implements Iterable<Move>, Serializable {
 
     @Override
     public String toString() {
-        return moveIterator.toString();
+        return "Placement (" + moveIterator + ")";
     }
 
 }

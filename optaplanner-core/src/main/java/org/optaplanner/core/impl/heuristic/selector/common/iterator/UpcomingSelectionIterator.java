@@ -61,4 +61,15 @@ public abstract class UpcomingSelectionIterator<S> extends SelectionIterator<S> 
         return null;
     }
 
+    @Override
+    public String toString() {
+        if (!upcomingCreated) {
+            return "Next upcoming (?)";
+        } else if (!hasUpcomingSelection) {
+            return "No next upcoming";
+        } else {
+            return "Next upcoming (" + upcomingSelection + ")";
+        }
+    }
+
 }
