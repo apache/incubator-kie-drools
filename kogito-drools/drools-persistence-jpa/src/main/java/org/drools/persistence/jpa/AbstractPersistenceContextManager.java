@@ -17,10 +17,7 @@
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.FlushModeType;
 
-import org.drools.persistence.PersistenceContext;
-import org.drools.persistence.PersistenceContextManager;
 import org.drools.persistence.TransactionManager;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
@@ -99,7 +96,6 @@ public abstract class AbstractPersistenceContextManager {
             if ( cmdScopedEntityManager == null) {
                 internalCmdScopedEntityManagerFlag = true;
                 cmdScopedEntityManager = this.emf.createEntityManager(); // no need to call joinTransaction as it will do so if one already exists
-                cmdScopedEntityManager.setFlushMode(FlushModeType.COMMIT);
                 this.env.set( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, cmdScopedEntityManager );
                 this.txm.putResource(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, cmdScopedEntityManager );
 
