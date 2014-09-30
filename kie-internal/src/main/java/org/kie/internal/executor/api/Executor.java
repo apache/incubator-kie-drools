@@ -17,6 +17,7 @@
 package org.kie.internal.executor.api;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Core logic of executor is encapsulated by this interface. 
@@ -85,6 +86,18 @@ public interface Executor {
      * @param nroOfThreads
      */
     public void setThreadPoolSize(int nroOfThreads);
+    
+    /**
+     * Returns time unit configured for executor intervals
+     * @return
+     */
+    public TimeUnit getTimeunit();
+    
+    /**
+     * Sets time unit for executor intervals
+     * @param timeunit
+     */
+    public void setTimeunit(TimeUnit timeunit);
     
     /**
      * Initialized executor
