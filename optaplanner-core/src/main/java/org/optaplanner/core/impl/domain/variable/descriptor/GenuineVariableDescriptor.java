@@ -44,6 +44,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.NullValueReinitializeVariableEntityFilter;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class GenuineVariableDescriptor extends VariableDescriptor {
 
@@ -228,6 +229,10 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
         }
         Object variable = getValue(entity);
         return variable != null;
+    }
+
+    public boolean isReinitializable(ScoreDirector scoreDirector, Object entity) {
+        return reinitializeVariableEntityFilter.accept(scoreDirector, entity);
     }
 
     public SelectionSorter getIncreasingStrengthSorter() {

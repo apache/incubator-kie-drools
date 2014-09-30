@@ -51,6 +51,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFi
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class EntityDescriptor {
 
@@ -398,13 +399,13 @@ public class EntityDescriptor {
     }
 
     public int countUninitializedVariables(Object entity) {
-        int uninitializedVariableCount = 0;
+        int count = 0;
         for (GenuineVariableDescriptor variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
             if (!variableDescriptor.isInitialized(entity)) {
-                uninitializedVariableCount++;
+                count++;
             }
         }
-        return uninitializedVariableCount;
+        return count;
     }
 
     public boolean isInitialized(Object entity) {
@@ -414,6 +415,16 @@ public class EntityDescriptor {
             }
         }
         return true;
+    }
+
+    public int countReinitializableVariables(ScoreDirector scoreDirector, Object entity) {
+        int count = 0;
+        for (GenuineVariableDescriptor variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
+            if (variableDescriptor.isReinitializable(scoreDirector, entity)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override

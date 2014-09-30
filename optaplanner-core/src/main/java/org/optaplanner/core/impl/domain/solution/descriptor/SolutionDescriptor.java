@@ -471,12 +471,12 @@ public class SolutionDescriptor {
     }
 
     public int countUninitializedVariables(Solution solution) {
-        int uninitializedVariableCount = 0;
+        int count = 0;
         for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
             Object entity = extractEntity(entityPropertyAccessor, solution);
             if (entity != null) {
                 EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-                uninitializedVariableCount += entityDescriptor.countUninitializedVariables(entity);
+                count += entityDescriptor.countUninitializedVariables(entity);
             }
         }
         for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
@@ -484,10 +484,10 @@ public class SolutionDescriptor {
                     entityCollectionPropertyAccessor, solution);
             for (Object entity : entityCollection) {
                 EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-                uninitializedVariableCount += entityDescriptor.countUninitializedVariables(entity);
+                count += entityDescriptor.countUninitializedVariables(entity);
             }
         }
-        return uninitializedVariableCount;
+        return count;
     }
 
     /**
@@ -522,6 +522,26 @@ public class SolutionDescriptor {
             }
         }
         return true;
+    }
+
+    public int countReinitializableVariables(ScoreDirector scoreDirector, Solution solution) {
+        int count = 0;
+        for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
+            Object entity = extractEntity(entityPropertyAccessor, solution);
+            if (entity != null) {
+                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+                count += entityDescriptor.countReinitializableVariables(scoreDirector, entity);
+            }
+        }
+        for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
+            Collection<?> entityCollection = extractEntityCollection(
+                    entityCollectionPropertyAccessor, solution);
+            for (Object entity : entityCollection) {
+                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+                count += entityDescriptor.countReinitializableVariables(scoreDirector, entity);
+            }
+        }
+        return count;
     }
 
     private Object extractEntity(PropertyAccessor entityPropertyAccessor, Solution solution) {

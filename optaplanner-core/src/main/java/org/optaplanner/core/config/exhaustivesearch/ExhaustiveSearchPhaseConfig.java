@@ -119,7 +119,7 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
     public ExhaustiveSearchPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
-        // Do not setReinitializeVariableFilterEnabled(true) to restart from scratch with initialized solution as lower bound?
+        phaseConfigPolicy.setReinitializeVariableFilterEnabled(true);
         phaseConfigPolicy.setInitializedChainedValueFilterEnabled(true);
         ExhaustiveSearchType exhaustiveSearchType_ = exhaustiveSearchType == null
                 ? ExhaustiveSearchType.BRANCH_AND_BOUND : exhaustiveSearchType;
@@ -224,7 +224,8 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
         MoveSelectorConfig moveSelectorConfig_;
         if (moveSelectorConfig == null) {
             EntityDescriptor entityDescriptor = entitySelector.getEntityDescriptor();
-            // Keep in sync with org.optaplanner.core.impl.exhaustivesearch.DefaultExhaustiveSearchPhase.fillLayerList()
+            // Keep in sync with DefaultExhaustiveSearchPhase.fillLayerList()
+            // which includes all genuineVariableDescriptors
             Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
             List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<MoveSelectorConfig>(
                     variableDescriptors.size());
@@ -254,6 +255,7 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
             }
         } else {
             moveSelectorConfig_ = moveSelectorConfig;
+            // TODO Fail fast if it does not include all genuineVariableDescriptors as expected by DefaultExhaustiveSearchPhase.fillLayerList()
         }
         return moveSelectorConfig_;
     }

@@ -449,9 +449,9 @@ public class Queen {
 
         <para><link linkend="repeatedPlanning">Repeated planning</link> (especially <link
         linkend="realTimePlanning">real-time planning</link>) does not mix well with a nullable planning variable: every
-        time the Solver starts or a problem fact change is made, the construction heuristics will try to initialize all
-        the <literal>null</literal> variables again, which can be a huge waste of time. One way to deal with this, is to
-        change when a planning entity should be reinitialized with an
+        time the Solver starts or a problem fact change is made, the <link linkend="constructionHeuristics">Construction
+        Heuristics</link> will try to initialize all the <literal>null</literal> variables again, which can be a huge
+        waste of time. One way to deal with this, is to change when a planning entity should be reinitialized with an
         <literal>reinitializeVariableEntityFilter</literal>:</para>
 
         <programlisting language="java">    @PlanningVariable(..., nullable = true, reinitializeVariableEntityFilter = ReinitializeTaskFilter.class)
