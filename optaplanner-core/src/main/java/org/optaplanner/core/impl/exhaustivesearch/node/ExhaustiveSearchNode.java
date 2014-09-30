@@ -105,7 +105,7 @@ public class ExhaustiveSearchNode {
     }
 
     public String getTreeId() {
-        return getDepth() + "-" + breadth;
+        return layer.getDepth() + "-" + breadth;
     }
 
     public int getUninitializedVariableCount() {
@@ -126,7 +126,7 @@ public class ExhaustiveSearchNode {
 
     @Override
     public String toString() {
-        return layer.getDepth() + "-" + breadth;
+        return getTreeId() + " (" + layer.getEntity() + ")";
     }
 
 

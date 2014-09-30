@@ -39,7 +39,7 @@ public class QueuedEntityPlacer extends AbstractEntityPlacer implements EntityPl
 
         protected Placement createUpcomingSelection() {
             Iterator<Move> moveIterator = null;
-            // Do not return empty placements to avoid no-operation steps
+            // Skip empty placements to avoid no-operation steps
             while (moveIterator == null || !moveIterator.hasNext()) {
                 // If a moveSelector's iterator is empty, it might not be empty the next time
                 // (because the entity changes)
