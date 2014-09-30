@@ -18,7 +18,7 @@ public class NullValueReinitializeVariableEntityFilter implements SelectionFilte
     }
 
     public boolean accept(ScoreDirector scoreDirector, Object selection) {
-        // This does not use variableDescriptor.isInitialized() because if nullable it must also return false
+        // Do not use variableDescriptor.isInitialized() because if nullable it must also accept it
         Object value = variableDescriptor.getValue(selection);
         return value == null;
     }
