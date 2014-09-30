@@ -17,4 +17,9 @@ public class Placement implements Iterable<Move>, Serializable {
         return moveIterator;
     }
 
+    @Override
+    public String toString() {
+        return moveIterator.toString();
+    }
+
 }
