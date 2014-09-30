@@ -18,6 +18,7 @@ package org.kie.internal.executor.api;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -74,6 +75,10 @@ public interface ExecutorService {
     public int getThreadPoolSize();
 
     public void setThreadPoolSize(int nroOfThreads);
+    
+    public TimeUnit getTimeunit();
+   
+    public void setTimeunit(TimeUnit timeunit);
     
     public List<RequestInfo> getPendingRequests();
 
