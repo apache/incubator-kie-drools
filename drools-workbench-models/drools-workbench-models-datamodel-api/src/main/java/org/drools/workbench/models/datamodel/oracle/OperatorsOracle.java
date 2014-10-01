@@ -108,4 +108,16 @@ public class OperatorsOracle {
         return false;
     }
 
+    /**
+     * Operator "== null" and "!= null" do not need a Value. This method wraps the logic into a single method.
+     * @param operator The operator to check
+     * @return true is a Value is required
+     */
+    public static boolean isValueRequired( final String operator ) {
+        if ( operator == null || operator.equals( "" ) ) {
+            return false;
+        }
+        return !( operator.equals( "== null" ) || operator.equals( "!= null" ) );
+    }
+
 }

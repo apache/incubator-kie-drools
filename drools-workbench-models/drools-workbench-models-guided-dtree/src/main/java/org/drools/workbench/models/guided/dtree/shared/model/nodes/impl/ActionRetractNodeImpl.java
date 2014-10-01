@@ -16,29 +16,30 @@
 package org.drools.workbench.models.guided.dtree.shared.model.nodes.impl;
 
 import org.drools.workbench.models.datamodel.util.PortablePreconditions;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionRetractNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 
-public class TypeNodeImpl extends BaseBoundNodeImpl implements TypeNode {
+public class ActionRetractNodeImpl extends BaseNodeImpl implements ActionRetractNode {
 
-    private String className;
+    private TypeNode boundNode;
 
-    public TypeNodeImpl() {
+    public ActionRetractNodeImpl() {
         //Errai marshalling
     }
 
-    public TypeNodeImpl( final String className ) {
-        setClassName( className );
+    public ActionRetractNodeImpl( final TypeNode boundNode ) {
+        setBoundNode( boundNode );
     }
 
     @Override
-    public String getClassName() {
-        return this.className;
+    public TypeNode getBoundNode() {
+        return boundNode;
     }
 
     @Override
-    public void setClassName( final String className ) {
-        this.className = PortablePreconditions.checkNotNull( "className",
-                                                             className );
+    public void setBoundNode( final TypeNode boundNode ) {
+        this.boundNode = PortablePreconditions.checkNotNull( "boundNode",
+                                                             boundNode );
     }
 
     @Override
@@ -46,16 +47,13 @@ public class TypeNodeImpl extends BaseBoundNodeImpl implements TypeNode {
         if ( this == o ) {
             return true;
         }
-        if ( !( o instanceof TypeNodeImpl ) ) {
-            return false;
-        }
-        if ( !super.equals( o ) ) {
+        if ( !( o instanceof ActionRetractNodeImpl ) ) {
             return false;
         }
 
-        TypeNodeImpl nodes = (TypeNodeImpl) o;
+        ActionRetractNodeImpl nodes = (ActionRetractNodeImpl) o;
 
-        if ( !className.equals( nodes.className ) ) {
+        if ( boundNode != null ? !boundNode.equals( nodes.boundNode ) : nodes.boundNode != null ) {
             return false;
         }
 
@@ -64,6 +62,6 @@ public class TypeNodeImpl extends BaseBoundNodeImpl implements TypeNode {
 
     @Override
     public int hashCode() {
-        return className.hashCode();
+        return boundNode != null ? boundNode.hashCode() : 0;
     }
 }

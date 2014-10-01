@@ -13,36 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.models.guided.dtree.shared.model.values.impl;
+package org.drools.workbench.models.guided.dtree.shared.model.nodes.impl;
 
 import org.drools.workbench.models.datamodel.util.PortablePreconditions;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionFieldValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
 
-public class StringValue implements Value<String> {
+public class ActionFieldValueImpl implements ActionFieldValue {
 
-    private String value;
+    private String fieldName;
+    private Value value;
 
-    public StringValue() {
+    public ActionFieldValueImpl() {
         //Errai marshalling
     }
 
-    public StringValue( final String value ) {
+    public ActionFieldValueImpl( final String fieldName,
+                                 final Value value ) {
+        setFieldName( fieldName );
         setValue( value );
     }
 
-    public StringValue( final StringValue value ) {
-        setValue( value.getValue() );
+    @Override
+    public String getFieldName() {
+        return this.fieldName;
     }
 
     @Override
-    public void setValue( final String value ) {
-        this.value = PortablePreconditions.checkNotNull( "value",
-                                                         value );
+    public void setFieldName( final String fieldName ) {
+        this.fieldName = PortablePreconditions.checkNotNull( "fieldName",
+                                                             fieldName );
     }
 
     @Override
-    public String getValue() {
+    public Value getValue() {
         return this.value;
+    }
+
+    @Override
+    public void setValue( final Value value ) {
+        this.value = value;
     }
 
     @Override
@@ -50,12 +60,15 @@ public class StringValue implements Value<String> {
         if ( this == o ) {
             return true;
         }
-        if ( !( o instanceof StringValue ) ) {
+        if ( !( o instanceof ActionFieldValueImpl ) ) {
             return false;
         }
 
-        StringValue that = (StringValue) o;
+        ActionFieldValueImpl that = (ActionFieldValueImpl) o;
 
+        if ( !fieldName.equals( that.fieldName ) ) {
+            return false;
+        }
         if ( !value.equals( that.value ) ) {
             return false;
         }
@@ -65,6 +78,8 @@ public class StringValue implements Value<String> {
 
     @Override
     public int hashCode() {
-        return value.hashCode();
+        int result = fieldName.hashCode();
+        result = 31 * result + value.hashCode();
+        return result;
     }
 }

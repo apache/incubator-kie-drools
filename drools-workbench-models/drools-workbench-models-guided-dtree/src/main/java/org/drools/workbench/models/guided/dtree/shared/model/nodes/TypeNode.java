@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.nodes;
 
-public interface TypeNode extends Node {
+public interface TypeNode extends BoundNode {
 
     String getClassName();
 

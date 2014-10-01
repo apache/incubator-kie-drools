@@ -30,6 +30,19 @@ public class LongValue implements Value<Long> {
         setValue( value );
     }
 
+    public LongValue( final LongValue value ) {
+        setValue( value.getValue() );
+    }
+
+    @Override
+    public void setValue( final String value ) {
+        try {
+            setValue( new Long( value ) );
+        } catch ( NumberFormatException nfe ) {
+            setValue( new Long( 0 ) );
+        }
+    }
+
     @Override
     public void setValue( final Long value ) {
         this.value = PortablePreconditions.checkNotNull( "value",
@@ -41,4 +54,26 @@ public class LongValue implements Value<Long> {
         return this.value;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof LongValue ) ) {
+            return false;
+        }
+
+        LongValue longValue = (LongValue) o;
+
+        if ( !value.equals( longValue.value ) ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
 }

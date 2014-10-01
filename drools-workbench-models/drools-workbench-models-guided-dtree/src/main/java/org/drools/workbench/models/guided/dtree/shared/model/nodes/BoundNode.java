@@ -15,19 +15,12 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.nodes;
 
-public interface ConstraintNode extends BoundNode,
-                                        HasValue {
+public interface BoundNode extends Node {
 
-    String getClassName();
+    String getBinding();
 
-    void setClassName( final String className );
+    void setBinding( final String binding );
 
-    String getFieldName();
-
-    void setFieldName( final String fieldName );
-
-    String getOperator();
-
-    void setOperator( final String operator );
+    boolean isBound();
 
 }

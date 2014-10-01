@@ -83,7 +83,7 @@ public class ChangeSetBuilder {
                                           byte[] cb) {
         ResourceChangeSet pkgcs = new ResourceChangeSet( file, ChangeType.UPDATED );
         ResourceType type = ResourceType.determineResourceType( file );
-        if( ResourceType.DRL.equals( type ) || ResourceType.GDRL.equals( type ) || ResourceType.RDRL.equals( type )) {
+        if( ResourceType.DRL.equals( type ) || ResourceType.GDRL.equals( type ) || ResourceType.RDRL.equals( type ) || ResourceType.TDRL.equals( type )) {
             try {
                 PackageDescr opkg = new DrlParser().parse( new ByteArrayResource( ob ) );
                 PackageDescr cpkg = new DrlParser().parse( new ByteArrayResource( cb ) );

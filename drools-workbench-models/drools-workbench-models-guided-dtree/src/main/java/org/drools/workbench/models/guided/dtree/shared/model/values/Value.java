@@ -19,6 +19,8 @@ import java.io.Serializable;
 
 public interface Value<T extends Serializable> {
 
+    void setValue( final String value );
+
     void setValue( final T value );
 
     T getValue();

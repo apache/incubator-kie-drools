@@ -65,8 +65,7 @@ public class GuidedDecisionTree implements HasImports,
     }
 
     public void setRoot( final TypeNode root ) {
-        this.root = PortablePreconditions.checkNotNull( "root",
-                                                        root );
+        this.root = root;
     }
 
 }

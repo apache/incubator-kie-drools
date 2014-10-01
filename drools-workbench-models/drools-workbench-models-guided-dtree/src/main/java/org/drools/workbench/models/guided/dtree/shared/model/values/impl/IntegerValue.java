@@ -30,6 +30,19 @@ public class IntegerValue implements Value<Integer> {
         setValue( value );
     }
 
+    public IntegerValue( final IntegerValue value ) {
+        setValue( value.getValue() );
+    }
+
+    @Override
+    public void setValue( final String value ) {
+        try {
+            setValue( new Integer( value ) );
+        } catch ( NumberFormatException nfe ) {
+            setValue( new Integer( 0 ) );
+        }
+    }
+
     @Override
     public void setValue( final Integer value ) {
         this.value = PortablePreconditions.checkNotNull( "value",
@@ -41,4 +54,26 @@ public class IntegerValue implements Value<Integer> {
         return this.value;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof IntegerValue ) ) {
+            return false;
+        }
+
+        IntegerValue that = (IntegerValue) o;
+
+        if ( !value.equals( that.value ) ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
 }

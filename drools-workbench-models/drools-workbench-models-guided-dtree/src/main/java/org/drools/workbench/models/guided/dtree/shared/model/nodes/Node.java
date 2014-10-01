@@ -17,7 +17,15 @@ package org.drools.workbench.models.guided.dtree.shared.model.nodes;
 
 import java.util.List;
 
-public interface Node {
+public interface Node extends Iterable<Node> {
+
+    Node getParent();
+
+    void setParent( final Node node );
+
+    void addChild( final Node node );
+
+    void removeChild( final Node node );
 
     List<Node> getChildren();
 

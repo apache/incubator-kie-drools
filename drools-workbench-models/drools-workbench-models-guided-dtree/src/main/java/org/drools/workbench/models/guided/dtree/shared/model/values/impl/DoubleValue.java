@@ -30,6 +30,19 @@ public class DoubleValue implements Value<Double> {
         setValue( value );
     }
 
+    public DoubleValue( final DoubleValue value ) {
+        setValue( value.getValue() );
+    }
+
+    @Override
+    public void setValue( final String value ) {
+        try {
+            setValue( new Double( value ) );
+        } catch ( NumberFormatException nfe ) {
+            setValue( new Double( 0 ) );
+        }
+    }
+
     @Override
     public void setValue( final Double value ) {
         this.value = PortablePreconditions.checkNotNull( "value",
@@ -41,4 +54,26 @@ public class DoubleValue implements Value<Double> {
         return this.value;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof DoubleValue ) ) {
+            return false;
+        }
+
+        DoubleValue that = (DoubleValue) o;
+
+        if ( !value.equals( that.value ) ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
 }
