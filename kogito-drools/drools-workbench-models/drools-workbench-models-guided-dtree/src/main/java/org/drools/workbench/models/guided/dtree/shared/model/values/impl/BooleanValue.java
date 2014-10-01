@@ -30,6 +30,15 @@ public class BooleanValue implements Value<Boolean> {
         setValue( value );
     }
 
+    public BooleanValue( final BooleanValue value ) {
+        setValue( value.getValue() );
+    }
+
+    @Override
+    public void setValue( final String value ) {
+        setValue( new Boolean( value ) );
+    }
+
     @Override
     public void setValue( final Boolean value ) {
         this.value = PortablePreconditions.checkNotNull( "value",
@@ -41,4 +50,26 @@ public class BooleanValue implements Value<Boolean> {
         return this.value;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof BooleanValue ) ) {
+            return false;
+        }
+
+        BooleanValue that = (BooleanValue) o;
+
+        if ( !value.equals( that.value ) ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
 }

@@ -15,24 +15,30 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.nodes.impl;
 
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
-import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
+import java.util.ArrayList;
+import java.util.List;
 
-public class TypeNodeImpl extends BaseBoundNodeImpl implements TypeNode {
+import org.drools.workbench.models.datamodel.util.PortablePreconditions;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionFieldValue;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionInsertNode;
+
+public class ActionInsertNodeImpl extends BaseNodeImpl implements ActionInsertNode {
 
     private String className;
+    private boolean isLogicalInsertion = false;
+    private List<ActionFieldValue> fieldValues = new ArrayList<ActionFieldValue>();
 
-    public TypeNodeImpl() {
+    public ActionInsertNodeImpl() {
         //Errai marshalling
     }
 
-    public TypeNodeImpl( final String className ) {
+    public ActionInsertNodeImpl( final String className ) {
         setClassName( className );
     }
 
     @Override
     public String getClassName() {
-        return this.className;
+        return className;
     }
 
     @Override
@@ -42,20 +48,38 @@ public class TypeNodeImpl extends BaseBoundNodeImpl implements TypeNode {
     }
 
     @Override
+    public boolean isLogicalInsertion() {
+        return isLogicalInsertion;
+    }
+
+    @Override
+    public void setLogicalInsertion( final boolean isLogicalInsertion ) {
+        this.isLogicalInsertion = isLogicalInsertion;
+    }
+
+    @Override
+    public List<ActionFieldValue> getFieldValues() {
+        return fieldValues;
+    }
+
+    @Override
     public boolean equals( Object o ) {
         if ( this == o ) {
             return true;
         }
-        if ( !( o instanceof TypeNodeImpl ) ) {
-            return false;
-        }
-        if ( !super.equals( o ) ) {
+        if ( !( o instanceof ActionInsertNodeImpl ) ) {
             return false;
         }
 
-        TypeNodeImpl nodes = (TypeNodeImpl) o;
+        ActionInsertNodeImpl nodes = (ActionInsertNodeImpl) o;
 
+        if ( isLogicalInsertion != nodes.isLogicalInsertion ) {
+            return false;
+        }
         if ( !className.equals( nodes.className ) ) {
+            return false;
+        }
+        if ( !fieldValues.equals( nodes.fieldValues ) ) {
             return false;
         }
 
@@ -64,6 +88,9 @@ public class TypeNodeImpl extends BaseBoundNodeImpl implements TypeNode {
 
     @Override
     public int hashCode() {
-        return className.hashCode();
+        int result = className.hashCode();
+        result = 31 * result + ( isLogicalInsertion ? 1 : 0 );
+        result = 31 * result + fieldValues.hashCode();
+        return result;
     }
 }

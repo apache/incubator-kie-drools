@@ -30,6 +30,19 @@ public class ShortValue implements Value<Short> {
         setValue( value );
     }
 
+    public ShortValue( final ShortValue value ) {
+        setValue( value.getValue() );
+    }
+
+    @Override
+    public void setValue( final String value ) {
+        try {
+            setValue( new Short( value ) );
+        } catch ( NumberFormatException nfe ) {
+            setValue( new Short( "0" ) );
+        }
+    }
+
     @Override
     public void setValue( final Short value ) {
         this.value = PortablePreconditions.checkNotNull( "value",
@@ -41,4 +54,26 @@ public class ShortValue implements Value<Short> {
         return this.value;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof ShortValue ) ) {
+            return false;
+        }
+
+        ShortValue that = (ShortValue) o;
+
+        if ( !value.equals( that.value ) ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
 }

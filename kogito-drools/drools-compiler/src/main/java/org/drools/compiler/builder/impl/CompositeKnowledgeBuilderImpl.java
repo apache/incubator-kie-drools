@@ -340,6 +340,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildResource(packages, ResourceType.XDRL, XML_TO_PKG_DESCR);
         buildResource(packages, ResourceType.DTABLE, DTABLE_TO_PKG_DESCR);
         buildResource(packages, ResourceType.SCARD, SCARD_TO_PKG_DESCR);
+        buildResource(packages, ResourceType.TDRL, DRL_TO_PKG_DESCR);
         return packages.values();
     }
 

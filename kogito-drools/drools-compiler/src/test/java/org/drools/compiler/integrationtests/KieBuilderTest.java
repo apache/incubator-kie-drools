@@ -42,6 +42,12 @@ public class KieBuilderTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
+        String drl4 = "package org.drools.compiler\n" +
+                "rule R4 when\n" +
+                "   $m : Message( message == \"Hello Earth\" )\n" +
+                "then\n" +
+                "end\n";
+
         String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
                 "         xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">\n" +
                 "  <kbase name=\"kbase1\" default=\"true\" eventProcessingMode=\"stream\" equalsBehavior=\"identity\" scope=\"javax.enterprise.context.ApplicationScoped\">\n" +
@@ -56,17 +62,20 @@ public class KieBuilderTest extends CommonTestMethodBase {
         Resource r1 = ResourceFactory.newByteArrayResource( drl1.getBytes() ).setResourceType( ResourceType.DRL ).setSourcePath( "kbase1/drl1.drl" );
         Resource r2 = ResourceFactory.newByteArrayResource( drl2.getBytes() ).setResourceType( ResourceType.GDRL ).setSourcePath( "kbase1/drl2.gdrl" );
         Resource r3 = ResourceFactory.newByteArrayResource( drl3.getBytes() ).setResourceType( ResourceType.RDRL ).setSourcePath( "kbase1/drl3.rdrl" );
+        Resource r4 = ResourceFactory.newByteArrayResource( drl4.getBytes() ).setResourceType( ResourceType.TDRL ).setSourcePath( "kbase1/drl4.tdrl" );
         KieModule km = createAndDeployJar( ks,
                                            kmodule,
                                            releaseId1,
                                            r1,
                                            r2,
-                                           r3 );
+                                           r3,
+                                           r4 );
 
         InternalKieModule ikm = (InternalKieModule) km;
         assertNotNull( ikm.getResource( r1.getSourcePath() ) );
         assertNotNull( ikm.getResource( r2.getSourcePath() ) );
         assertNotNull( ikm.getResource( r3.getSourcePath() ) );
+        assertNotNull( ikm.getResource( r4.getSourcePath() ) );
 
         // Create a session and fire rules
         KieContainer kc = ks.newKieContainer( km.getReleaseId() );

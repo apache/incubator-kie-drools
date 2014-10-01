@@ -15,30 +15,29 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.nodes.impl;
 
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
-import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.BoundNode;
 
-public class TypeNodeImpl extends BaseBoundNodeImpl implements TypeNode {
+public abstract class BaseBoundNodeImpl extends BaseNodeImpl implements BoundNode {
 
-    private String className;
+    private String binding;
 
-    public TypeNodeImpl() {
+    public BaseBoundNodeImpl() {
         //Errai marshalling
     }
 
-    public TypeNodeImpl( final String className ) {
-        setClassName( className );
+    @Override
+    public String getBinding() {
+        return binding;
     }
 
     @Override
-    public String getClassName() {
-        return this.className;
+    public void setBinding( final String binding ) {
+        this.binding = binding;
     }
 
     @Override
-    public void setClassName( final String className ) {
-        this.className = PortablePreconditions.checkNotNull( "className",
-                                                             className );
+    public boolean isBound() {
+        return !( binding == null || binding.isEmpty() );
     }
 
     @Override
@@ -46,16 +45,13 @@ public class TypeNodeImpl extends BaseBoundNodeImpl implements TypeNode {
         if ( this == o ) {
             return true;
         }
-        if ( !( o instanceof TypeNodeImpl ) ) {
-            return false;
-        }
-        if ( !super.equals( o ) ) {
+        if ( !( o instanceof BaseBoundNodeImpl ) ) {
             return false;
         }
 
-        TypeNodeImpl nodes = (TypeNodeImpl) o;
+        BaseBoundNodeImpl nodes = (BaseBoundNodeImpl) o;
 
-        if ( !className.equals( nodes.className ) ) {
+        if ( binding != null ? !binding.equals( nodes.binding ) : nodes.binding != null ) {
             return false;
         }
 
@@ -64,6 +60,6 @@ public class TypeNodeImpl extends BaseBoundNodeImpl implements TypeNode {
 
     @Override
     public int hashCode() {
-        return className.hashCode();
+        return binding != null ? binding.hashCode() : 0;
     }
 }

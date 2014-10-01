@@ -32,6 +32,19 @@ public class BigDecimalValue implements Value<BigDecimal> {
         setValue( value );
     }
 
+    public BigDecimalValue( final BigDecimalValue value ) {
+        setValue( value.getValue() );
+    }
+
+    @Override
+    public void setValue( final String value ) {
+        try {
+            setValue( new BigDecimal( value ) );
+        } catch ( NumberFormatException nfe ) {
+            setValue( new BigDecimal( 0 ) );
+        }
+    }
+
     @Override
     public void setValue( final BigDecimal value ) {
         this.value = PortablePreconditions.checkNotNull( "value",
@@ -43,4 +56,26 @@ public class BigDecimalValue implements Value<BigDecimal> {
         return this.value;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof BigDecimalValue ) ) {
+            return false;
+        }
+
+        BigDecimalValue that = (BigDecimalValue) o;
+
+        if ( !value.equals( that.value ) ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
 }

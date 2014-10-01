@@ -680,6 +680,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 addPackageFromPMML(resource, type, configuration);
             } else if (ResourceType.SCARD.equals(type)) {
                 addPackageFromScoreCard(resource, configuration);
+            } else if (ResourceType.TDRL.equals(type)) {
+                addPackageFromDrl(resource);
             } else {
                 addPackageForExternalType(resource, type, configuration);
             }

@@ -30,6 +30,19 @@ public class ByteValue implements Value<Byte> {
         setValue( value );
     }
 
+    public ByteValue( final ByteValue value ) {
+        setValue( value.getValue() );
+    }
+
+    @Override
+    public void setValue( final String value ) {
+        try {
+            setValue( new Byte( value ) );
+        } catch ( NumberFormatException nfe ) {
+            setValue( new Byte( "0" ) );
+        }
+    }
+
     @Override
     public void setValue( final Byte value ) {
         this.value = PortablePreconditions.checkNotNull( "value",
@@ -41,4 +54,26 @@ public class ByteValue implements Value<Byte> {
         return this.value;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof ByteValue ) ) {
+            return false;
+        }
+
+        ByteValue byteValue = (ByteValue) o;
+
+        if ( !value.equals( byteValue.value ) ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
 }

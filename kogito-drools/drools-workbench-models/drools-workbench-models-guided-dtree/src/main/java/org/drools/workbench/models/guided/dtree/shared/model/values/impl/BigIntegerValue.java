@@ -32,6 +32,19 @@ public class BigIntegerValue implements Value<BigInteger> {
         setValue( value );
     }
 
+    public BigIntegerValue( final BigIntegerValue value ) {
+        setValue( value.getValue() );
+    }
+
+    @Override
+    public void setValue( final String value ) {
+        try {
+            setValue( new BigInteger( value ) );
+        } catch ( NumberFormatException nfe ) {
+            setValue( new BigInteger( "0" ) );
+        }
+    }
+
     @Override
     public void setValue( final BigInteger value ) {
         this.value = PortablePreconditions.checkNotNull( "value",
@@ -43,4 +56,26 @@ public class BigIntegerValue implements Value<BigInteger> {
         return this.value;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof BigIntegerValue ) ) {
+            return false;
+        }
+
+        BigIntegerValue that = (BigIntegerValue) o;
+
+        if ( !value.equals( that.value ) ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
 }

@@ -32,6 +32,16 @@ public class DateValue implements Value<Date> {
         setValue( value );
     }
 
+    public DateValue( final DateValue value ) {
+        setValue( value.getValue() );
+    }
+
+    @Override
+    public void setValue( final String value ) {
+        //This class can be used server or client side where we have to use different String->Date conversion classes
+        throw new UnsupportedOperationException( "Please use DateValue.setValue(Date)" );
+    }
+
     @Override
     public void setValue( final Date value ) {
         this.value = PortablePreconditions.checkNotNull( "value",
@@ -43,4 +53,26 @@ public class DateValue implements Value<Date> {
         return this.value;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof DateValue ) ) {
+            return false;
+        }
+
+        DateValue dateValue = (DateValue) o;
+
+        if ( !value.equals( dateValue.value ) ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
 }

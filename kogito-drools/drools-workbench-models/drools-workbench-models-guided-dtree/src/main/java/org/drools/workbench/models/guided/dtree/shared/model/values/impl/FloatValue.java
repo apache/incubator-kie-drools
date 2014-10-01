@@ -30,6 +30,19 @@ public class FloatValue implements Value<Float> {
         setValue( value );
     }
 
+    public FloatValue( final FloatValue value ) {
+        setValue( value.getValue() );
+    }
+
+    @Override
+    public void setValue( final String value ) {
+        try {
+            setValue( new Float( value ) );
+        } catch ( NumberFormatException nfe ) {
+            setValue( new Float( 0 ) );
+        }
+    }
+
     @Override
     public void setValue( final Float value ) {
         this.value = PortablePreconditions.checkNotNull( "value",
@@ -41,4 +54,26 @@ public class FloatValue implements Value<Float> {
         return this.value;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof FloatValue ) ) {
+            return false;
+        }
+
+        FloatValue that = (FloatValue) o;
+
+        if ( !value.equals( that.value ) ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
 }
