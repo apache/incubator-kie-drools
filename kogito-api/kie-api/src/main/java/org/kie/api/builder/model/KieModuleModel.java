@@ -25,6 +25,26 @@ import java.util.Map;
 public interface KieModuleModel {
 
     /**
+     * Set a configuration property for this KieModuleModel
+     * @param key The property key
+     * @param value The property value
+     * @return this
+     */
+    KieModuleModel setConfigurationProperty(String key, String value);
+
+    /**
+     * Set a configuration property for this KieModuleModel
+     * @param key The property key
+     * @return The property value or null if such a property hasn't been set
+     */
+    String getConfigurationProperty(String key);
+
+    /**
+     * Returns all the configuration properties set on this KieModuleModel
+     */
+    Map<String, String> getConfigurationProperties();
+
+    /**
      * Creates a new KieBaseModel with the given name and adds it to this KieModuleModel
      * @param name The name of the new KieBaseModel to be created
      * @return The new KieBaseModel

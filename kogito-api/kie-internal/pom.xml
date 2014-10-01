@@ -47,6 +47,7 @@
               org.jbpm.services.task.persistence;resolution:=optional,
               org.kie.api,
               org.kie.api.builder,
+              org.kie.api.builder.model,
               org.kie.api.command,
               org.kie.api.concurrent,
               org.kie.api.conf,

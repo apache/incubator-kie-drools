@@ -23,6 +23,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
+import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.KieBaseOption;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
@@ -71,6 +72,11 @@ public class KieHelper {
     public Results verify() {
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
         return kieBuilder.getResults();
+    }
+
+    public KieHelper setKieModuleModel(KieModuleModel kieModel) {
+        kfs.writeKModuleXML(kieModel.toXML());
+        return this;
     }
 
     public KieHelper addContent(String content, ResourceType type) {
