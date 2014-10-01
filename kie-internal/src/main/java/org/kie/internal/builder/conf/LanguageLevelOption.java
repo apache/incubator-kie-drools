@@ -21,12 +21,22 @@ package org.kie.internal.builder.conf;
  */
 public enum LanguageLevelOption implements SingleValueKnowledgeBuilderOption {
 
-    DRL5, DRL6;
+    DRL5(false), DRL6(false), DRL6_STRICT(true);
+
+    private final boolean useJavaAnnotations;
 
     /**
      * The property name for the language level
      */
     public static final String PROPERTY_NAME = "drools.lang.level";
+
+    LanguageLevelOption(boolean useJavaAnnotations) {
+        this.useJavaAnnotations = useJavaAnnotations;
+    }
+
+    public boolean useJavaAnnotations() {
+        return useJavaAnnotations;
+    }
 
     /**
      * {@inheritDoc}
@@ -34,4 +44,5 @@ public enum LanguageLevelOption implements SingleValueKnowledgeBuilderOption {
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
+
 }
