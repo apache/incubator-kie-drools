@@ -16,20 +16,9 @@
 
 package org.drools.compiler.lang;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
 import junit.framework.TestCase;
-
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
-import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
@@ -61,11 +50,20 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.compiler.lang.descr.WindowDeclarationDescr;
+import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import static org.drools.compiler.compiler.DRLFactory.buildParser;
 
@@ -3471,53 +3469,6 @@ public class RuleParserTest extends TestCase {
         ExprConstraintDescr fcdE = (ExprConstraintDescr) eventE.getConstraint().getDescrs().get( 0 );
         assertEquals( "this not before[1, 10] $b || after[1, 10] $c && this after[1, 5] $d",
                       fcdE.getExpression() );
-    }
-
-    @Ignore("problem during phreak work")
-    public void FIXMEtestTypeDeclaration() throws Exception {
-        final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
-                                                               "declare_type.drl" );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
-
-        final List<TypeDeclarationDescr> declarations = pkg.getTypeDeclarations();
-
-        assertEquals( 2,
-                      declarations.size() );
-
-        TypeDeclarationDescr descr = declarations.get( 0 );
-        assertEquals( "CallEvent",
-                      descr.getTypeName() );
-        assertEquals( 4,
-                      descr.getAnnotationNames().size() );
-        assertEquals( "event",
-                          descr.getAnnotation( "role" ).getValue() );
-        assertEquals( "org.drools.events.Call",
-                          descr.getAnnotation( "class" ).getValue() );
-        assertEquals( "duration",
-                          descr.getAnnotation( "duration" ).getValue() );
-        assertEquals( "timestamp",
-                          descr.getAnnotation( "timestamp" ).getValue() );
-        assertNull( descr.getAnnotation( "FOO" ) );
-
-        descr = declarations.get( 1 );
-        assertEquals( "some.pkg.Type",
-                      descr.getTypeName() );
-        assertEquals( 5,
-                      descr.getAnnotationNames().size() );
-        assertNotNull( descr.getAnnotation( "name1" ) );
-        assertEquals( "\"value\"",
-                          descr.getAnnotation( "name2" ).getValue() );
-        assertEquals( "10",
-                          descr.getAnnotation( "name3" ).getValue( "k1" ) );
-        assertEquals( "\"a\"",
-                      descr.getAnnotation( "name4" ).getValue( "k1" ) );
-        assertEquals( "Math.max( 10 + 25, 22 ) % 2 + someVariable",
-                      descr.getAnnotation( "name4" ).getValue( "formula" ) );
-        assertEquals( "{ a, b, c }",
-                      descr.getAnnotation( "name4" ).getValue( "array" ) );
-        assertEquals( "backward compatible value",
-                      descr.getAnnotation( "name5" ).getValue() );
     }
 
     @Test

@@ -1,8 +1,5 @@
 package org.drools.compiler.compiler;
 
-import java.io.InputStream;
-import java.io.Reader;
-
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.ANTLRStringStream;
@@ -16,11 +13,15 @@ import org.drools.compiler.lang.DRL5Parser;
 import org.drools.compiler.lang.DRL6Expressions;
 import org.drools.compiler.lang.DRL6Lexer;
 import org.drools.compiler.lang.DRL6Parser;
+import org.drools.compiler.lang.DRL6StrictParser;
 import org.drools.compiler.lang.DRLExpressions;
 import org.drools.compiler.lang.DRLLexer;
 import org.drools.compiler.lang.DRLParser;
 import org.drools.compiler.lang.ParserHelper;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+
+import java.io.InputStream;
+import java.io.Reader;
 
 public class DRLFactory {
 
@@ -81,6 +82,8 @@ public class DRLFactory {
                 return new DRL5Parser(stream);
             case DRL6:
                 return new DRL6Parser(stream);
+            case DRL6_STRICT:
+                return new DRL6StrictParser(stream);
         }
         throw new RuntimeException("Unknown language level");
     }
@@ -90,6 +93,7 @@ public class DRLFactory {
             case DRL5:
                 return new DRL5Lexer(input);
             case DRL6:
+            case DRL6_STRICT:
                 return new DRL6Lexer(input);
         }
         throw new RuntimeException("Unknown language level");
@@ -100,6 +104,7 @@ public class DRLFactory {
             case DRL5:
                 return new DRL5Expressions(input, state, helper);
             case DRL6:
+            case DRL6_STRICT:
                 return new DRL6Expressions(input, state, helper);
         }
         throw new RuntimeException("Unknown language level");
@@ -110,6 +115,7 @@ public class DRLFactory {
             case DRL5:
                 return DRL5Lexer.ID;
             case DRL6:
+            case DRL6_STRICT:
                 return DRL6Lexer.ID;
         }
         throw new RuntimeException("Unknown language level");
@@ -129,6 +135,7 @@ public class DRLFactory {
             case DRL5:
                 return getBetterTokenForDRL5(tokenType, defaultValue);
             case DRL6:
+            case DRL6_STRICT:
                 return getBetterTokenForDRL6(tokenType, defaultValue);
         }
         throw new RuntimeException("Unknown language level");

@@ -3,21 +3,22 @@ package org.drools.compiler.builder.impl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
-import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
+import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.GeneratedFact;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.kie.api.definition.type.FactField;
+import org.kie.api.definition.type.PropertyChangeSupport;
+import org.kie.api.definition.type.Role;
+import org.kie.api.definition.type.TypeSafe;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.drools.core.util.StringUtils.isEmpty;
 
 public class TypeDeclarationFactory {
 
@@ -35,7 +36,7 @@ public class TypeDeclarationFactory {
         TypeDeclaration type = createTypeDeclaration( typeDescr, unresolvedTypes );
         TypeDeclaration parent = getParentDeclaration( typeDescr, unresolvedTypes );
 
-        processTypeAnnotations( typeDescr, type, parent );
+        processTypeAnnotations(typeDescr, type, parent);
 
         //if is not new, search the already existing declaration and
         //compare them o see if they are at least compatibles
@@ -83,70 +84,29 @@ public class TypeDeclarationFactory {
     }
 
 
-    protected void processTypeAnnotations( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, TypeDeclaration parent ) {
-        // is it a regular fact or an event?
-        AnnotationDescr annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.Role.ID);
-        String role = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
-        if (role != null) {
-            type.setRole(TypeDeclaration.Role.parseRole(role));
-        }
-        /*
-        else if (parent != null) {
-            // FIXME : Should this be here, since Drools 6 does not namely support annotation inheritance?
-            type.setRole(parent.getRole());
-        }
-        */
+    private void processTypeAnnotations( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, TypeDeclaration parent ) {
+        try {
+            Role role = typeDescr.getTypedAnnotation(Role.class);
+            if (role != null) {
+                type.setRole(role.value());
+            }
 
-        annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.ATTR_TYPESAFE);
-        String typesafe = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
-        if (typesafe != null) {
-            type.setTypesafe(Boolean.parseBoolean(typesafe));
-        }
-        /*
-        else if (parent != null && isSet(parent.getSetMask(), TypeDeclaration.TYPESAFE_BIT)) {
-            // FIXME : Should this be here, since Drools 6 does not namely support annotation inheritance?
-            type.setTypesafe(parent.isTypesafe());
-        }
-        */
+            TypeSafe typeSafe = typeDescr.getTypedAnnotation(TypeSafe.class);
+            if (typeSafe != null) {
+                type.setTypesafe(typeSafe.value());
+            }
 
-        // is it a pojo or a template?
-        annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.Format.ID);
-        String format = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
-        if (format != null) {
-            type.setFormat(TypeDeclaration.Format.parseFormat(format));
+            if (typeDescr instanceof EnumDeclarationDescr ) {
+                type.setKind(TypeDeclaration.Kind.ENUM);
+            } else if (typeDescr instanceof TypeDeclarationDescr && ((TypeDeclarationDescr)typeDescr).isTrait()) {
+                type.setKind(TypeDeclaration.Kind.TRAIT);
+            }
+
+            type.setDynamic( typeDescr.hasAnnotation(PropertyChangeSupport.class) );
+        } catch (Exception e) {
+            kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, e.getMessage() ) );
         }
 
-        // is it a class, a trait or an enum?
-        annotationDescr = getSingleAnnotation(typeDescr, TypeDeclaration.Kind.ID);
-        String kind = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
-        if (kind != null) {
-            type.setKind(TypeDeclaration.Kind.parseKind(kind));
-        }
-        if (typeDescr instanceof EnumDeclarationDescr ) {
-            type.setKind(TypeDeclaration.Kind.ENUM);
-        }
-
-        annotationDescr = getSingleAnnotation( typeDescr, TypeDeclaration.ATTR_CLASS );
-        String className = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
-        if (isEmpty(className)) {
-            className = type.getTypeName();
-        }
-
-
-        annotationDescr = getSingleAnnotation( typeDescr, TypeDeclaration.ATTR_PROP_CHANGE_SUPPORT );
-        type.setDynamic( annotationDescr != null );
-    }
-
-    protected AnnotationDescr getSingleAnnotation( AbstractClassTypeDeclarationDescr typeDescr, String name ) {
-        AnnotationDescr annotationDescr = typeDescr.getAnnotation(name);
-        if (annotationDescr != null && annotationDescr.isDuplicated()) {
-            kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
-                                                               "Duplicated annotation '" + name +
-                                                               "' for type declaration of '" +
-                                                               typeDescr.getTypeName() + "'"));
-            return null;
-        }
-        return annotationDescr;
     }
 
     protected void checkRedeclaration( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, PackageRegistry pkgRegistry ) {

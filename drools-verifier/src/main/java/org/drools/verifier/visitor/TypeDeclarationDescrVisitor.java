@@ -16,14 +16,15 @@
 
 package org.drools.verifier.visitor;
 
-import java.util.List;
-import java.util.Map;
-
+import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.Import;
 import org.drools.verifier.components.ObjectType;
 import org.drools.verifier.data.VerifierData;
+
+import java.util.List;
+import java.util.Map;
 
 public class TypeDeclarationDescrVisitor {
 
@@ -64,11 +65,10 @@ public class TypeDeclarationDescrVisitor {
                 }
             }
 
-            for (String metadata : typeDeclaration.getAnnotations().keySet()) {
-                Map<String, String> values = typeDeclaration.getAnnotation(metadata).getValueMap();
+            for (AnnotationDescr annDescr : typeDeclaration.getAnnotations()) {
+                Map<String, String> values = typeDeclaration.getAnnotation(annDescr.getName()).getValueMap();
                 for (String value : values.keySet()) {
-                    objectType.getMetadata().put(metadata,
-                            value);
+                    objectType.getMetadata().put(annDescr.getName(), value);
                 }
             }
         }

@@ -59,8 +59,6 @@ public class Pattern
     
     private Map<String, AnnotationDefinition> annotations;
 
-    public static final String ATTR_LISTENED_PROPS = "watch";
-
     // this is the offset of the related fact inside a tuple. i.e:
     // the position of the related fact inside the tuple;
     private int               offset;
@@ -468,9 +466,5 @@ public class Pattern
             annotations = new HashMap<String, AnnotationDefinition>();
         }
         return annotations;
-    }
-
-    public void setAnnotations( Map<String, AnnotationDefinition> annotations ) {
-        this.annotations = annotations;
     }
 }

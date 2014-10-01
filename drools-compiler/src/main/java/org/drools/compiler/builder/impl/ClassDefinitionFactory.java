@@ -10,6 +10,7 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.QualifiedName;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
+import org.drools.compiler.rule.builder.util.AnnotationFactory;
 import org.drools.core.base.TypeResolver;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.factmodel.ClassDefinition;
@@ -24,11 +25,11 @@ import org.drools.core.util.ClassUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
-import org.kie.api.definition.type.Role;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -38,7 +39,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Set;
 
 public class ClassDefinitionFactory {
@@ -91,7 +91,7 @@ public class ClassDefinitionFactory {
             }
         }
 
-        AnnotationDescr traitableAnn = typeDescr.getAnnotation(Traitable.class.getSimpleName());
+        Traitable traitableAnn = typeDescr.getTypedAnnotation(Traitable.class);
         boolean traitable = traitableAnn != null;
 
         String[] fullSuperTypes = new String[typeDescr.getSuperTypes().size() + 1];
@@ -126,34 +126,37 @@ public class ClassDefinitionFactory {
                 def = new ClassDefinition( fullName,
                                            fullSuperTypes[0],
                                            interfaces );
-                def.setTraitable( traitable, traitableAnn != null &&
-                                             traitableAnn.getValue( "logical" ) != null &&
-                                             Boolean.valueOf( traitableAnn.getValue( "logical" ) ) );
+                def.setTraitable( traitable, traitableAnn != null && traitableAnn.logical() );
         }
 
         return def;
     }
 
     protected boolean wireAnnotationDefs( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, ClassDefinition def, TypeResolver resolver ) {
-        for ( String annotationName : typeDescr.getAnnotationNames() ) {
-            Class annotation = TypeDeclarationUtils.resolveAnnotation( annotationName,
-                                                                       resolver );
+        for ( AnnotationDescr annotationDescr : typeDescr.getAnnotations() ) {
+            Class annotation = null;
+            try {
+                annotation = annotationDescr.getFullyQualifiedName() != null ? resolver.resolveType(annotationDescr.getFullyQualifiedName()) : null;
+            } catch (ClassNotFoundException e) {
+                continue;
+            }
+
             if ( annotation != null && annotation.isAnnotation() ) {
                 try {
                     AnnotationDefinition annotationDefinition = AnnotationDefinition.build( annotation,
-                                                                                            typeDescr.getAnnotations().get(annotationName).getValueMap(),
+                                                                                            annotationDescr.getValueMap(),
                                                                                             resolver );
                     def.addAnnotation(annotationDefinition);
                 } catch (NoSuchMethodException nsme) {
                     kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                        "Annotated type " + typeDescr.getType().getFullName() +
                                                                        "  - undefined property in @annotation " +
-                                                                       annotationName + ": " +
+                                                                       annotationDescr.getName() + ": " +
                                                                        nsme.getMessage() + ";"));
                 }
             }
-            if (annotation == null || annotation == Role.class) {
-                def.addMetaData(annotationName, typeDescr.getAnnotation(annotationName).getSingleValue());
+            if (annotation == null || annotation.getCanonicalName().startsWith("org.kie.api.definition.type")) {
+                def.addMetaData(annotationDescr.getName(), annotationDescr.getSingleValue());
             }
         }
         return true;
@@ -190,59 +193,97 @@ public class ClassDefinitionFactory {
                     }
                 }
             }
-            PriorityQueue<FieldDefinition> fieldDefs = sortFields( typeDescr.getFields(),
-                                                                   pkgRegistry.getTypeResolver(),
-                                                                   kbuilder );
-            int n = fieldDefs.size();
-            for (int k = 0; k < n; k++) {
-                FieldDefinition fld = fieldDefs.poll();
-                fld.setIndex( k );
-                def.addField( fld );
+
+            List<FieldDefinition> fieldDefs = sortFields( typeDescr.getFields(), pkgRegistry.getTypeResolver(), kbuilder );
+            int i = 0;
+            for (FieldDefinition fieldDef : fieldDefs) {
+                fieldDef.setIndex( i++ );
+                def.addField( fieldDef );
             }
         }
         return true;
     }
 
-
-    /**
-     * Sorts a bean's fields according to the positional index metadata. The
-     * order is as follows (i) as defined using the @position metadata (ii) as
-     * resulting from the inspection of an external java superclass, if
-     * applicable (iii) in declaration order, superclasses first
-     */
-    protected static PriorityQueue<FieldDefinition> sortFields( Map<String, TypeFieldDescr> flds,
-                                                                TypeResolver typeResolver,
-                                                                KnowledgeBuilderImpl kbuilder ) {
-        PriorityQueue<FieldDefinition> queue = new PriorityQueue<FieldDefinition>(flds.size());
+    private static List<FieldDefinition> sortFields( Map<String, TypeFieldDescr> fields,
+                                                     TypeResolver typeResolver,
+                                                     KnowledgeBuilderImpl kbuilder ) {
+        List<FieldDefinition> fieldDefs = new ArrayList<FieldDefinition>(fields.size());
         int maxDeclaredPos = 0;
-        int curr = 0;
+        BitSet occupiedPositions = new BitSet(fields.size());
 
-        BitSet occupiedPositions = new BitSet(flds.size());
-        for (TypeFieldDescr field : flds.values()) {
-            int pos = field.getIndex();
-            if (pos >= 0) {
-                occupiedPositions.set(pos);
-            }
-            maxDeclaredPos = Math.max(maxDeclaredPos, pos);
-        }
-
-        for ( TypeFieldDescr field : flds.values() ) {
-
+        for (TypeFieldDescr field : fields.values()) {
             String typeName = field.getPattern().getObjectType();
             String typeNameKey = typeName;
-
             String fullFieldType = kbuilder != null ?
                                    TypeDeclarationUtils.toBuildableType( typeNameKey, kbuilder.getRootClassLoader() ) :
                                    typeNameKey;
 
-            FieldDefinition fieldDef = new FieldDefinition( field.getFieldName(),
-                                                            fullFieldType );
-            // field is marked as PK
-            boolean isKey = field.getAnnotation(TypeDeclaration.ATTR_KEY) != null;
-            fieldDef.setKey( isKey );
+            FieldDefinition fieldDef = new FieldDefinition( field.getFieldName(), fullFieldType );
+            fieldDefs.add(fieldDef);
 
-            fieldDef.setDeclIndex( field.getIndex() );
-            if (field.getIndex() < 0) {
+            fieldDef.setInherited( field.isInherited() );
+            fieldDef.setRecursive(  field.isRecursive() );
+            fieldDef.setInitExpr( TypeDeclarationUtils.rewriteInitExprWithImports( field.getInitExpr(), typeResolver ) );
+
+            if (field.getIndex() >= 0) {
+                int pos = field.getIndex();
+                occupiedPositions.set(pos);
+                maxDeclaredPos = Math.max(maxDeclaredPos, pos);
+                fieldDef.addMetaData("position", pos);
+            } else {
+                Position position = field.getTypedAnnotation(Position.class);
+                if (position != null) {
+                    int pos = position.value();
+                    field.setIndex(pos);
+                    occupiedPositions.set(pos);
+                    maxDeclaredPos = Math.max(maxDeclaredPos, pos);
+                    fieldDef.addMetaData("position", pos);
+                }
+            }
+
+            if (field.hasAnnotation(Key.class)) {
+                fieldDef.setKey( true );
+                fieldDef.addMetaData("key", null);
+            }
+
+            if (typeResolver != null) {
+                for (AnnotationDescr annotationDescr : field.getAnnotations()) {
+                    if (annotationDescr.getFullyQualifiedName() == null) {
+                        if (annotationDescr.isStrict()) {
+                            kbuilder.addBuilderResult( new TypeDeclarationError( field,
+                                                                                 "Unknown annotation @" + annotationDescr.getName() + " on field " + field.getFieldName() ) );
+                        } else {
+                            continue;
+                        }
+                    }
+                    Annotation annotation = AnnotationFactory.buildAnnotation(typeResolver, annotationDescr);
+                    if (annotation != null) {
+                        try {
+                            AnnotationDefinition annotationDefinition = AnnotationDefinition.build( annotation.annotationType(),
+                                                                                                    field.getAnnotation(annotationDescr.getFullyQualifiedName()).getValueMap(),
+                                                                                                    typeResolver );
+                            fieldDef.addAnnotation( annotationDefinition );
+                        } catch ( Exception e ) {
+                            kbuilder.addBuilderResult( new TypeDeclarationError( field,
+                                                                                 "Annotated field " + field.getFieldName() +
+                                                                                 "  - undefined property in @annotation " +
+                                                                                 annotationDescr.getName() + ": " + e.getMessage() + ";" ) );
+                        }
+                    } else {
+                        if (annotationDescr.isStrict()) {
+                            kbuilder.addBuilderResult(new TypeDeclarationError(field,
+                                                                               "Unknown annotation @" + annotationDescr.getName() + " on field " + field.getFieldName()));
+                        }
+                    }
+                }
+            }
+
+            fieldDef.setDeclIndex(field.getIndex());
+        }
+
+        int curr = 0;
+        for (FieldDefinition fieldDef : fieldDefs) {
+            if (fieldDef.getDeclIndex() < 0) {
                 int freePos = occupiedPositions.nextClearBit(0);
                 if (freePos < maxDeclaredPos) {
                     occupiedPositions.set(freePos);
@@ -251,41 +292,13 @@ public class ClassDefinitionFactory {
                 }
                 fieldDef.setPriority(freePos * 256 + curr++);
             } else {
-                fieldDef.setPriority(field.getIndex() * 256 + curr++);
+                fieldDef.setPriority(fieldDef.getDeclIndex() * 256 + curr++);
             }
-            fieldDef.setInherited( field.isInherited() );
-            fieldDef.setRecursive(  field.isRecursive() );
-            fieldDef.setInitExpr( TypeDeclarationUtils.rewriteInitExprWithImports( field.getInitExpr(), typeResolver ) );
-
-            for (String annotationName : field.getAnnotationNames()) {
-                Class annotation = TypeDeclarationUtils.resolveAnnotation( annotationName,
-                                                                           typeResolver );
-                if (annotation != null && annotation.isAnnotation()) {
-                    try {
-                        AnnotationDefinition annotationDefinition = AnnotationDefinition.build( annotation,
-                                                                                                field.getAnnotations().get( annotationName ).getValueMap(),
-                                                                                                typeResolver );
-                        fieldDef.addAnnotation( annotationDefinition );
-                    } catch ( NoSuchMethodException nsme ) {
-
-                        kbuilder.addBuilderResult( new TypeDeclarationError( field,
-                                                                             "Annotated field " + field.getFieldName() +
-                                                                             "  - undefined property in @annotation " +
-                                                                             annotationName + ": " + nsme.getMessage() + ";" ) );
-                    }
-                }
-                if (annotation == null || annotation == Key.class || annotation == Position.class) {
-                    fieldDef.addMetaData(annotationName, field.getAnnotation(annotationName).getSingleValue());
-                }
-            }
-
-            queue.add(fieldDef);
-
         }
 
-        return queue;
+        Collections.sort(fieldDefs);
+        return fieldDefs;
     }
-
 
     public static void populateDefinitionFromClass( ClassDefinition def, Class<?> concrete, boolean asTrait ) {
         try {
@@ -324,14 +337,11 @@ public class ClassDefinitionFactory {
                 }
             }
             if ( ! fields.isEmpty() ) {
-                PriorityQueue<FieldDefinition> fieldDefs = sortFields( fields,
-                                                                       null,
-                                                                       null );
-                int n = fieldDefs.size();
-                for (int k = 0; k < n; k++) {
-                    FieldDefinition fld = fieldDefs.poll();
-                    fld.setIndex( k );
-                    def.addField( fld );
+                List<FieldDefinition> fieldDefs = sortFields( fields, null, null );
+                int i = 0;
+                for (FieldDefinition fieldDef : fieldDefs) {
+                    fieldDef.setIndex( i++ );
+                    def.addField( fieldDef );
                 }
             }
 

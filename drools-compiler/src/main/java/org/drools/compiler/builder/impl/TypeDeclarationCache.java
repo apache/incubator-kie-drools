@@ -268,8 +268,8 @@ public class TypeDeclarationCache {
         kbuilder.setPropertyReactive( null, typeDeclaration, propertyReactive );
 
         Role role = cls.getAnnotation(Role.class);
-        if (role != null && role.value() == Role.Type.EVENT) {
-            typeDeclaration.setRole(TypeDeclaration.Role.EVENT);
+        if (role != null) {
+            typeDeclaration.setRole(role.value());
         }
 
         return typeDeclaration;

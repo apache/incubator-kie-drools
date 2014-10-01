@@ -3,9 +3,7 @@ package org.drools.compiler.builder.impl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
-import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
-import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.QualifiedName;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
@@ -76,8 +74,7 @@ public class TypeDeclarationNameResolver {
         PackageRegistry pkReg = kbuilder.getPackageRegistry( packageDescr.getName() );
         if ( ! TypeDeclarationUtils.isNovelClass( typeDescr, pkReg ) ) {
             Class typeClass = TypeDeclarationUtils.getExistingDeclarationClass( typeDescr, pkReg );
-            AnnotationDescr kind = typeDescr.getAnnotation( TypeDeclaration.Kind.ID );
-            if ( typeClass != null && kind != null && kind.hasValue() && TypeDeclaration.Kind.TRAIT == TypeDeclaration.Kind.parseKind( kind.getSingleValue() ) ) {
+            if ( typeClass != null && typeDescr.isTrait() ) {
                 fillStaticInterfaces( typeDescr, typeClass );
             } else {
                 typeDescr.getSuperTypes().clear();
@@ -185,7 +182,7 @@ public class TypeDeclarationNameResolver {
 
         if ( ! TypeDeclarationUtils.isQualified( type ) ) {
             try {
-                Class klass = typeResolver.resolveType( type );
+                Class klass = typeResolver.resolveType( type, TypeResolver.EXCLUDE_ANNOTATION_CLASS_FILTER );
                 type = klass.getCanonicalName();
                 return type;
             } catch ( ClassNotFoundException e ) {

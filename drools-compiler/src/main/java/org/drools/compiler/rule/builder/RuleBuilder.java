@@ -43,6 +43,9 @@ import org.drools.core.time.impl.Timer;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
+import org.kie.api.definition.rule.ActivationListener;
+import org.kie.api.definition.rule.Direct;
+import org.kie.api.definition.rule.Eager;
 
 import java.text.ParseException;
 import java.util.Calendar;
@@ -227,23 +230,35 @@ public class RuleBuilder {
         buildSalience( context );
 
         buildEnabled( context );
-        
-        AnnotationDescr ann = ruleDescr.getAnnotation( "activationListener" );
-        if ( ann != null && !StringUtils.isEmpty( ann.getSingleValue() ) ) {
-            rule.setActivationListener( MVELSafeHelper.getEvaluator().evalToString( ann.getSingleValue() ) );
-        }
 
-        ann = ruleDescr.getAnnotation( "Eager" );
-        if ( enforceEager || ( ann != null && trueOrDefault( ann.getSingleValue() ) ) ) {
-            rule.setEager( true );
-        }
+        parseAnnotation(context, rule, ruleDescr, enforceEager);
+    }
 
-        ann = ruleDescr.getAnnotation( "Direct" );
-        if ( ann != null && trueOrDefault( ann.getSingleValue() ) ) {
-            rule.setActivationListener( "direct" );
-        }
+    private void parseAnnotation(RuleBuildContext context, RuleImpl rule, RuleDescr ruleDescr, boolean enforceEager) {
+        try {
+            ActivationListener activationListener = ruleDescr.getTypedAnnotation(ActivationListener.class);
+            if (activationListener != null) {
+                rule.setActivationListener(MVELSafeHelper.getEvaluator().evalToString(activationListener.value()));
+            }
 
-        //        buildDuration( context );
+            if (enforceEager) {
+                rule.setEager(true);
+            } else {
+                Eager eager = ruleDescr.getTypedAnnotation(Eager.class);
+                if (eager != null) {
+                    rule.setEager(eager.value());
+                }
+            }
+
+            Direct direct = ruleDescr.getTypedAnnotation(Direct.class);
+            if (direct != null && direct.value()) {
+                rule.setActivationListener("direct");
+            }
+        } catch (Exception e) {
+            DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
+                                                  e.getMessage() );
+            context.addError( err  );
+        }
     }
 
     private boolean trueOrDefault( String singleValue ) {

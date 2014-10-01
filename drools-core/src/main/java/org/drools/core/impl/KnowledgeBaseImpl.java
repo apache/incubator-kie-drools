@@ -16,10 +16,6 @@
 
 package org.drools.core.impl;
 
-import org.kie.internal.io.ResourceTypePackage;
-import org.drools.core.event.KieBaseEventSupport;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
@@ -36,6 +32,7 @@ import org.drools.core.common.WorkingMemoryFactory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.event.KieBaseEventSupport;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.management.DroolsManagementAgent;
@@ -61,23 +58,27 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.TripleStore;
 import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.io.Resource;
-import org.kie.api.marshalling.Marshaller;
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.definition.KiePackage;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.definition.type.Role;
 import org.kie.api.event.kiebase.KieBaseEventListener;
-import org.kie.internal.marshalling.MarshallerFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.runtime.StatelessKnowledgeSession;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
+import org.kie.api.marshalling.Marshaller;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.definition.KnowledgePackage;
+import org.kie.internal.io.ResourceTypePackage;
+import org.kie.internal.marshalling.MarshallerFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.internal.weaver.KieWeaverService;
 import org.kie.internal.weaver.KieWeavers;
@@ -998,7 +999,7 @@ public class KnowledgeBaseImpl
         existingDecl.setRole( mergeLeft( existingDecl.getTypeName(),
                                          "Unable to merge @role attribute for type declaration of class:",
                                          isSet(existingDecl.getSetMask(), TypeDeclaration.ROLE_BIT)
-                                         && newDecl.getRole() != TypeDeclaration.Role.FACT
+                                         && newDecl.getRole() != Role.Type.FACT
                                          ? existingDecl.getRole() : null,
                                          newDecl.getRole(),
                                          true,

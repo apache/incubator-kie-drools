@@ -17,7 +17,17 @@ import java.util.HashSet;
 import java.util.Map;
 
 public class PackageRegistry {
-    private final InternalKnowledgePackage pkg;
+
+    private static final String[] implicitImports = new String[] {
+            "org.kie.api.definition.rule.*",
+            "org.kie.api.definition.type.*",
+            "org.drools.core.factmodel.traits.Alias",
+            "org.drools.core.factmodel.traits.Trait",
+            "org.drools.core.factmodel.traits.Traitable",
+            "org.drools.core.beliefsystem.abductive.Abductive",
+            "org.drools.core.beliefsystem.abductive.Abducible" };
+
+    private final InternalKnowledgePackage   pkg;
     private String                           dialect;
 
     private final DialectRuntimeRegistry     dialectRuntimeRegistry;
@@ -35,6 +45,10 @@ public class PackageRegistry {
                                                    this.pkg.getName() );
 
         this.typeResolver.addImport( pkg.getName() + ".*" );
+        for (String implicitImport : implicitImports) {
+            this.typeResolver.addImport( implicitImport );
+        }
+
         pkg.setTypeResolver(typeResolver);
     }
 

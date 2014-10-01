@@ -16,13 +16,9 @@
 
 package org.drools.compiler.factmodel.traits;
 
-import org.drools.compiler.Option;
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.SessionConfiguration;
-import org.drools.core.factmodel.traits.VirtualPropertyMode;
-import org.junit.Assert;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
@@ -39,12 +35,14 @@ import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.factmodel.traits.TripleBasedBean;
 import org.drools.core.factmodel.traits.TripleBasedStruct;
+import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.util.CodedHierarchyImpl;
 import org.drools.core.util.HierarchyEncoder;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,21 +53,16 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.DebugAgendaEventListener;
-import org.kie.api.event.rule.ObjectDeletedEvent;
-import org.kie.api.event.rule.ObjectInsertedEvent;
-import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ClassObjectFilter;
-import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -94,9 +87,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(Parameterized.class)
 public class TraitTest extends CommonTestMethodBase {
@@ -1691,8 +1682,7 @@ public class TraitTest extends CommonTestMethodBase {
                      "  serviceYrs: int \n" +
                      "end \n" +
                      "" +
-                     "declare Student\n" +
-                     "  @kind(trait)" +
+                     "declare trait Student\n" +
                      // this alias maps to the hard field
                      "  name      : String @Alias(\"fld1\") \n" +
                      // this alias works, binding school to workPlace
@@ -2813,15 +2803,13 @@ public class TraitTest extends CommonTestMethodBase {
                         "import org.drools.core.factmodel.traits.Thing\n" +
                         "import org.drools.core.factmodel.traits.Entity\n" +
                         "\n" +
-                        "declare t.x.D\n" +
+                        "declare trait t.x.D\n" +
                         "    @propertyReactive\n" +
-                        "    @kind( TRAIT )\n" +
                         "\n" +
                         "end\n" +
                         "" +
-                        "declare t.x.E\n" +
+                        "declare trait t.x.E\n" +
                         "    @propertyReactive\n" +
-                        "    @kind( TRAIT )\n" +
                         "\n" +
                         "end\n" +
                         "" +
@@ -2874,15 +2862,13 @@ public class TraitTest extends CommonTestMethodBase {
                         "import org.drools.core.factmodel.traits.Thing\n" +
                         "import org.drools.core.factmodel.traits.Entity\n" +
                         "\n" +
-                        "declare t.x.D\n" +
+                        "declare trait t.x.D\n" +
                         "    @propertyReactive\n" +
-                        "    @kind( TRAIT )\n" +
                         "\n" +
                         "end\n" +
                         "" +
-                        "declare t.x.E\n" +
+                        "declare trait t.x.E\n" +
                         "    @propertyReactive\n" +
-                        "    @kind( TRAIT )\n" +
                         "\n" +
                         "end\n" +
                         "" +

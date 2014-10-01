@@ -107,6 +107,10 @@ public class ClassTypeResolver
         return this.cachedImports.get( className );
     }
 
+    public Class<?> resolveType(String className) throws ClassNotFoundException {
+        return resolveType(className, ACCEPT_ALL_CLASS_FILTER);
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -116,13 +120,17 @@ public class ClassTypeResolver
     /* (non-Javadoc)
      * @see org.kie.semantics.java.TypeResolver#resolveType(java.lang.String)
      */
-    public Class< ? > resolveType( String className ) throws ClassNotFoundException {
+    public Class< ? > resolveType( String className, ClassFilter classFilter ) throws ClassNotFoundException {
         Class< ? > clazz = null;
         boolean isArray = false;
         boolean isPrimitive = false;
         final StringBuilder arrayClassName = new StringBuilder();
 
         clazz = lookupFromCache( className );
+
+        if (clazz != null && !classFilter.accept(clazz)) {
+            clazz = null;
+        }
 
         if ( clazz == null && className.indexOf( '[' ) > 0 ) {
             // is an array?
@@ -150,15 +158,22 @@ public class ClassTypeResolver
         if ( clazz == null ) {
             try {
                 clazz = this.classLoader.loadClass( className );
+                if (!classFilter.accept(clazz)) {
+                    clazz = null;
+                }
             } catch ( final ClassNotFoundException e ) {
                 clazz = null;
             }
         }
 
+
         // try as a nested class
         if ( clazz == null ) {
             clazz = importClass( className,
                                  className );
+            if (clazz != null && !classFilter.accept(clazz)) {
+                clazz = null;
+            }
         }
 
         // Now try the className with each of the given imports
@@ -167,7 +182,7 @@ public class ClassTypeResolver
 
             for (String i : imports) {
                 clazz = importClass( i, className );
-                if ( clazz != null ) {
+                if ( clazz != null && classFilter.accept(clazz) ) {
                     validClazzCandidates.add( clazz );
                 }
             }
@@ -204,6 +219,9 @@ public class ClassTypeResolver
         // Now try the java.lang package
         if ( clazz == null ) {
             clazz = defaultClass( className );
+            if (clazz != null && !classFilter.accept(clazz)) {
+                clazz = null;
+            }
         }
 
         // If array component class was found, try to resolve the array class of it
@@ -327,5 +345,10 @@ public class ClassTypeResolver
             this.imports.clear();
             this.cachedImports.clear();
         }
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 }

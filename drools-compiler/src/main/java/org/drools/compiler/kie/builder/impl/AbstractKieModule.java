@@ -177,11 +177,7 @@ public abstract class AbstractKieModule
                                                     KieProject kieProject,
                                                     ResultsImpl messages ) {
         AbstractKieModule kModule = (AbstractKieModule) kieProject.getKieModuleForKBase(kBaseModel.getName());
-
-        KnowledgeBuilderConfigurationImpl pconf = new KnowledgeBuilderConfigurationImpl(kieProject.getClonedClassLoader());
-        pconf.setCompilationCache(kModule.getCompilationCache(kBaseModel.getName()));
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(pconf);
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(getBuilderConfiguration(kBaseModel, kieProject, kModule));
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
         Map<String, InternalKieModule> assets = new HashMap<String, InternalKieModule>();
@@ -240,6 +236,18 @@ public abstract class AbstractKieModule
         kModule.cacheResultsForKieBase(kBaseModel.getName(), messages);
 
         return kbuilder;
+    }
+
+    private static KnowledgeBuilderConfigurationImpl getBuilderConfiguration(KieBaseModelImpl kBaseModel, KieProject kieProject, AbstractKieModule kModule) {
+        KnowledgeBuilderConfigurationImpl pconf = new KnowledgeBuilderConfigurationImpl(kieProject.getClonedClassLoader());
+        pconf.setCompilationCache(kModule.getCompilationCache(kBaseModel.getName()));
+
+        KieModuleModel kModuleModel = kBaseModel.getKModule();
+        for (Map.Entry<String, String> entry : kModuleModel.getConfigurationProperties().entrySet()) {
+            pconf.setProperty(entry.getKey(), entry.getValue());
+        }
+
+        return pconf;
     }
 
     private static void addFiles(Map<String, InternalKieModule> assets,

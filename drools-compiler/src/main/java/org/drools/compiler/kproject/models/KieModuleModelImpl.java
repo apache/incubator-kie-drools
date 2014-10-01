@@ -35,9 +35,23 @@ public class KieModuleModelImpl implements KieModuleModel {
     public static final String KMODULE_SRC_PATH = "src/main/resources/" + KMODULE_JAR_PATH;
     public static final String KMODULE_SPRING_JAR_PATH = "META-INF/kmodule-spring.xml";
 
-    private Map<String, KieBaseModel>  kBases  = new HashMap<String, KieBaseModel>();
-    
+    private Map<String, String> confProps = new HashMap<String, String>();
+    private Map<String, KieBaseModel> kBases = new HashMap<String, KieBaseModel>();
+
     public KieModuleModelImpl() { }
+
+    public KieModuleModel setConfigurationProperty(String key, String value) {
+        confProps.put(key, value);
+        return this;
+    }
+
+    public String getConfigurationProperty(String key) {
+        return confProps.get(key);
+    }
+
+    public Map<String, String> getConfigurationProperties() {
+        return confProps;
+    }
 
     /* (non-Javadoc)
      * @see org.kie.kModule.KieProject#addKBase(org.kie.kModule.KieBaseModelImpl)
@@ -190,6 +204,7 @@ public class KieModuleModelImpl implements KieModuleModel {
 
         public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
             KieModuleModelImpl kModule = (KieModuleModelImpl) value;
+            writePropertyMap(writer, context, "configuration", kModule.confProps);
             for ( KieBaseModel kBaseModule : kModule.getKieBaseModels().values() ) {
                 writeObject( writer, context, "kbase", kBaseModule);
             }
@@ -204,6 +219,8 @@ public class KieModuleModelImpl implements KieModuleModel {
                         KieBaseModelImpl kBaseModule = readObject( reader, context, KieBaseModelImpl.class );
                         kModule.getRawKieBaseModels().put( kBaseModule.getName(), kBaseModule );
                         kBaseModule.setKModule(kModule);
+                    } else if ("configuration".equals(name)) {
+                        kModule.confProps = readPropertyMap(reader, context);
                     }
                 }
             });

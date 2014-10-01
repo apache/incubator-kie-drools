@@ -1,11 +1,10 @@
 package org.drools.compiler.lang.api.impl;
 
+import org.drools.compiler.lang.api.AnnotationDescrBuilder;
 import org.drools.compiler.lang.api.DescrBuilder;
 import org.drools.compiler.lang.api.FieldDescrBuilder;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
-import org.drools.compiler.lang.api.AnnotationDescrBuilder;
-import org.drools.core.rule.TypeDeclaration;
 
 public class FieldDescrBuilderImpl<T extends DescrBuilder<?,?>> extends BaseDescrBuilderImpl<T, TypeFieldDescr>
     implements
@@ -40,15 +39,4 @@ public class FieldDescrBuilderImpl<T extends DescrBuilder<?,?>> extends BaseDesc
         descr.setInitExpr( value );
         return this;
     }
-
-
-    public FieldDescrBuilder processAnnotations() {
-        if ( descr.getAnnotations().containsKey( TypeDeclaration.ATTR_FIELD_POSITION ) ) {
-             int pos = Integer.valueOf(descr.getAnnotation( TypeDeclaration.ATTR_FIELD_POSITION ).getSingleValue());
-             descr.setIndex(pos);
-        }
-        return this;
-    }
-
-
 }

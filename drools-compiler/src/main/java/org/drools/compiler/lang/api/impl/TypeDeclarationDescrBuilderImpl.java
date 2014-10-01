@@ -42,6 +42,11 @@ public class TypeDeclarationDescrBuilderImpl extends BaseDescrBuilderImpl<Packag
         return this;
     }
 
+    public TypeDeclarationDescrBuilder setTrait( boolean trait ) {
+        descr.setTrait( trait );
+        return this;
+    }
+
     public AnnotationDescrBuilder<TypeDeclarationDescrBuilder> newAnnotation( String name ) {
         AnnotationDescrBuilder<TypeDeclarationDescrBuilder> annotation = new AnnotationDescrBuilderImpl<TypeDeclarationDescrBuilder>( this, name );
         descr.addAnnotation( annotation.getDescr() );

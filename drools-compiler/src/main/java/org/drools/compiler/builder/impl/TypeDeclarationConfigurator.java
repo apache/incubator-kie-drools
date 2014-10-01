@@ -4,7 +4,6 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
-import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
@@ -19,6 +18,12 @@ import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.ClassUtils;
+import org.kie.api.definition.type.ClassReactive;
+import org.kie.api.definition.type.Duration;
+import org.kie.api.definition.type.Expires;
+import org.kie.api.definition.type.PropertyReactive;
+import org.kie.api.definition.type.Role;
+import org.kie.api.definition.type.Timestamp;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 
 import java.beans.IntrospectionException;
@@ -47,8 +52,8 @@ public class TypeDeclarationConfigurator {
             if ( oldType == null ) {
                 pkgRegistry.getPackage().addTypeDeclaration( type );
             } else {
-                if (type.getRole() == TypeDeclaration.Role.EVENT) {
-                    oldType.setRole(TypeDeclaration.Role.EVENT);
+                if (type.getRole() == Role.Type.EVENT) {
+                    oldType.setRole(Role.Type.EVENT);
                     if ( type.getDurationAttribute() != null ) {
                         oldType.setDurationAttribute( type.getDurationAttribute() );
                         oldType.setDurationExtractor( type.getDurationExtractor() );
@@ -117,10 +122,16 @@ public class TypeDeclarationConfigurator {
     }
 
     protected void wireTimestampAccessor( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, PackageRegistry pkgRegistry ) {
-        AnnotationDescr annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TIMESTAMP );
-        String timestamp = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
+        Timestamp timestamp = typeDescr.getTypedAnnotation(Timestamp.class);
         if ( timestamp != null ) {
-            type.setTimestampAttribute( timestamp );
+            String timestampField = null;
+            try {
+                timestampField = timestamp.value();
+            } catch (Exception e) {
+                kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, e.getMessage()));
+                return;
+            }
+            type.setTimestampAttribute( timestampField );
             InternalKnowledgePackage pkg = pkgRegistry.getPackage();
 
             MVELDialect dialect = (MVELDialect) pkgRegistry.getDialectCompiletimeRegistry().getDialect( "mvel" );
@@ -133,7 +144,7 @@ public class TypeDeclarationConfigurator {
             MVELAnalysisResult results = (MVELAnalysisResult)
                     context.getDialect().analyzeExpression(context,
                                                            typeDescr,
-                                                           timestamp,
+                                                           timestampField,
                                                            new BoundIdentifiers( Collections.EMPTY_MAP,
                                                                                  Collections.EMPTY_MAP,
                                                                                  Collections.EMPTY_MAP,
@@ -142,7 +153,7 @@ public class TypeDeclarationConfigurator {
             if (results != null) {
                 InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
                                                                                               type.getTypeClass().getName(),
-                                                                                              timestamp,
+                                                                                              timestampField,
                                                                                               type.isTypesafe(),
                                                                                               results.getReturnType());
 
@@ -162,10 +173,16 @@ public class TypeDeclarationConfigurator {
     }
 
     protected void wireDurationAccessor( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, PackageRegistry pkgRegistry ) {
-        AnnotationDescr annotationDescr = typeDescr.getAnnotation(TypeDeclaration.ATTR_DURATION);
-        String duration = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
+        Duration duration = typeDescr.getTypedAnnotation(Duration.class);
         if (duration != null) {
-            type.setDurationAttribute(duration);
+            String durationField = null;
+            try {
+                durationField = duration.value();
+            } catch (Exception e) {
+                kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, e.getMessage()));
+                return;
+            }
+            type.setDurationAttribute(durationField);
             InternalKnowledgePackage pkg = pkgRegistry.getPackage();
 
             MVELDialect dialect = (MVELDialect) pkgRegistry.getDialectCompiletimeRegistry().getDialect("mvel");
@@ -178,7 +195,7 @@ public class TypeDeclarationConfigurator {
             MVELAnalysisResult results = (MVELAnalysisResult)
                     context.getDialect().analyzeExpression(context,
                                                            typeDescr,
-                                                           duration,
+                                                           durationField,
                                                            new BoundIdentifiers(Collections.EMPTY_MAP,
                                                                                 Collections.EMPTY_MAP,
                                                                                 Collections.EMPTY_MAP,
@@ -187,7 +204,7 @@ public class TypeDeclarationConfigurator {
             if (results != null) {
                 InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader(ClassUtils.getPackage(type.getTypeClass()),
                                                                                              type.getTypeClass().getName(),
-                                                                                             duration,
+                                                                                             durationField,
                                                                                              type.isTypesafe(),
                                                                                              results.getReturnType());
 
@@ -198,28 +215,32 @@ public class TypeDeclarationConfigurator {
             } else {
                 kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                    "Error processing @duration for TypeDeclaration '" + type.getFullName() +
-                                                                   "': cannot access the field '" + duration + "'"));
+                                                                   "': cannot access the field '" + durationField + "'"));
             }
         }
-
     }
 
     protected void configureExpirationOffset( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type ) {
-        AnnotationDescr annotationDescr = typeDescr.getAnnotation(TypeDeclaration.ATTR_EXPIRE);
-        String expiration = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
-        if (expiration != null) {
+        Expires expires = typeDescr.getTypedAnnotation(Expires.class);
+        if (expires != null) {
+            String expiration = null;
+            try {
+                expiration = expires.value();
+            } catch (Exception e) {
+                kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, e.getMessage()));
+                return;
+            }
             if (timeParser == null) {
                 timeParser = new TimeIntervalParser();
             }
             type.setExpirationOffset(timeParser.parse(expiration)[0]);
         }
-
     }
 
     protected void configurePropertyReactivity( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type ) {
         PropertySpecificOption propertySpecificOption = kbuilder.getBuilderConfiguration().getOption( PropertySpecificOption.class );
-        boolean propertyReactive = propertySpecificOption.isPropSpecific( typeDescr.getAnnotationNames().contains( TypeDeclaration.ATTR_PROP_SPECIFIC ),
-                                                                          typeDescr.getAnnotationNames().contains( TypeDeclaration.ATTR_NOT_PROP_SPECIFIC ) );
+        boolean propertyReactive = propertySpecificOption.isPropSpecific( typeDescr.hasAnnotation(PropertyReactive.class),
+                                                                          typeDescr.hasAnnotation(ClassReactive.class) );
         kbuilder.setPropertyReactive( typeDescr.getResource(), type, propertyReactive );
 
     }

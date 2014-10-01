@@ -16,17 +16,6 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.AccumulateDescr;
@@ -121,7 +110,18 @@ import org.drools.workbench.models.datamodel.workitems.PortableParameterDefiniti
 import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 
-import static org.drools.core.util.StringUtils.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.drools.core.util.StringUtils.splitArgumentsList;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.*;
 
 /**
@@ -1888,12 +1888,9 @@ public class RuleModelDRLPersistenceImpl
         model.name = ruleDescr.getName();
         model.parentName = ruleDescr.getParentName();
 
-        Map<String, AnnotationDescr> annotations = ruleDescr.getAnnotations();
-        if ( annotations != null ) {
-            for ( AnnotationDescr annotation : annotations.values() ) {
-                model.addMetadata( new RuleMetadata( annotation.getName(),
-                                                     annotation.getValuesAsString() ) );
-            }
+        for ( AnnotationDescr annotation : ruleDescr.getAnnotations() ) {
+            model.addMetadata( new RuleMetadata( annotation.getName(),
+                                                 annotation.getValuesAsString() ) );
         }
 
         //De-serialize Package name
