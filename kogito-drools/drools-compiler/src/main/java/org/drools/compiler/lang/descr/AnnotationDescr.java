@@ -22,27 +22,30 @@ import java.util.Map;
  * limitations under the License.
  */
 public class AnnotationDescr extends BaseDescr {
-    
-    private static final String VALUE            = "value";
-    private static final long   serialVersionUID = 520l;
 
-    private String        name;
+    private static final String VALUE = "value";
+    private static final long serialVersionUID = 520l;
+
+    private String name;
+    private String fullyQualifiedName;
     private Map<String, String> values;
 
     private boolean duplicated = false;
+    private boolean strict = false;
 
     // '' and 'a' are passed through as 
-    public static String unquote( String s ){
-        if( s.startsWith( "\"" ) && s.endsWith( "\"" ) ||
-            s.startsWith( "'" ) && s.endsWith( "'" ) ) {
-            return s.substring( 1, s.length() - 1 );
+    public static String unquote(String s) {
+        if (s.startsWith("\"") && s.endsWith("\"") ||
+            s.startsWith("'") && s.endsWith("'")) {
+            return s.substring(1, s.length() - 1);
         } else {
             return s;
         }
     }
 
-    public AnnotationDescr() { }
-    
+    public AnnotationDescr() {
+    }
+
     public AnnotationDescr(final String name) {
         this.name = name;
         this.values = new HashMap<String, String>();
@@ -50,53 +53,67 @@ public class AnnotationDescr extends BaseDescr {
 
     public AnnotationDescr(final String name,
                            final String value) {
-        this.name = name;
-        this.values = new HashMap<String, String>();
-        this.values.put( VALUE, value );
+        this(name);
+        this.values.put(VALUE, value);
     }
 
     @Override
-    public void readExternal( ObjectInput in ) throws IOException,
-                                                      ClassNotFoundException {
-        super.readExternal( in );
+    public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
+        super.readExternal(in);
         this.name = (String) in.readObject();
         this.values = (Map<String, String>) in.readObject();
+        this.fullyQualifiedName = (String) in.readObject();
+        this.duplicated = in.readBoolean();
+        this.strict = in.readBoolean();
     }
 
     @Override
-    public void writeExternal( ObjectOutput out ) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( name );
-        out.writeObject( values );
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(name);
+        out.writeObject(values);
+        out.writeObject(fullyQualifiedName);
+        out.writeBoolean(duplicated);
+        out.writeBoolean(strict);
     }
 
     public String getName() {
         return this.name;
     }
-    
+
+    public String getFullyQualifiedName() {
+        return fullyQualifiedName;
+    }
+
+    public void setFullyQualifiedName(String fullyQualifiedName) {
+        this.fullyQualifiedName = fullyQualifiedName;
+    }
+
     public boolean hasValue() {
         return !this.values.isEmpty();
     }
 
-    public void setValue( final String value ) {
-        this.values.put( VALUE, value );
+    public void setValue(final String value) {
+        this.values.put(VALUE, value);
     }
 
-    public void setKeyValue( final String key,
-                             final String value ) {
-        this.values.put( key, value );
+    public void setKeyValue(final String key,
+                            final String value) {
+        this.values.put(key, value);
     }
 
-    public String getValue( final String key ) {
-        return this.values.get( key );
+    public String getValue(final String key) {
+        return this.values.get(key);
     }
-    
-    public Map<String,String> getValues(){
+
+    public Map<String, String> getValues() {
         return this.values;
     }
-    
+
     /**
      * Returns the metadata value as a single object or a Map
+     *
      * @return
      */
     public Object getValue() {
@@ -106,34 +123,34 @@ public class AnnotationDescr extends BaseDescr {
 
     public Object getValueStripped() {
         Object single = getSingleValueStripped();
-        if( single != null ) return single;
-        Map<String,String> sMap = new HashMap<String,String>();
-        for( Map.Entry<String,String> entry: this.values.entrySet() ){
-            sMap.put( entry.getKey(), unquote( entry.getValue() ) );
-        }        
+        if (single != null) return single;
+        Map<String, String> sMap = new HashMap<String, String>();
+        for (Map.Entry<String, String> entry : this.values.entrySet()) {
+            sMap.put(entry.getKey(), unquote(entry.getValue()));
+        }
         return sMap;
     }
 
-    public Map<String,String> getValueMap() {
+    public Map<String, String> getValueMap() {
         return this.values;
     }
 
-    public String getSingleValue(){
-        if( values.size() == 1 && values.containsKey( "value" ) ){
-            return this.values.get( "value" );
+    public String getSingleValue() {
+        if (values.size() == 1 && values.containsKey("value")) {
+            return this.values.get("value");
         } else {
             return null;
         }
     }
-    
-    public String getSingleValueStripped(){
-        if( values.size() == 1 && values.containsKey( "value" ) ){
-            return unquote( this.values.get( "value" ) );
+
+    public String getSingleValueStripped() {
+        if (values.size() == 1 && values.containsKey("value")) {
+            return unquote(this.values.get("value"));
         } else {
             return null;
         }
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -143,31 +160,33 @@ public class AnnotationDescr extends BaseDescr {
     }
 
     @Override
-    public boolean equals( Object obj ) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         AnnotationDescr other = (AnnotationDescr) obj;
-        if ( name == null ) {
-            if ( other.name != null ) return false;
-        } else if ( !name.equals( other.name ) ) return false;
+        if (name == null) {
+            if (other.name != null) return false;
+        } else if (!name.equals(other.name)) return false;
         return true;
     }
 
     public String getValuesAsString() {
-        switch ( values.size() )  {
-            case 0 : return "";
-            case 1 : return getSingleValue();
+        switch (values.size()) {
+            case 0:
+                return "";
+            case 1:
+                return getSingleValue();
             default:
                 StringBuilder sb = new StringBuilder();
 
                 boolean first = true;
-                for ( String key : values.keySet() ) {
-                    if ( ! first ) {
-                        sb.append( "," );
+                for (String key : values.keySet()) {
+                    if (!first) {
+                        sb.append(",");
                     }
-                    sb.append( key ).append( "=" ).append( values.get( key ) );
-                    if ( first ) {
+                    sb.append(key).append("=").append(values.get(key));
+                    if (first) {
                         first = false;
                     }
                 }
@@ -182,5 +201,13 @@ public class AnnotationDescr extends BaseDescr {
 
     public void setDuplicated() {
         this.duplicated = true;
+    }
+
+    public boolean isStrict() {
+        return strict;
+    }
+
+    public void setStrict(boolean strict) {
+        this.strict = strict;
     }
 }

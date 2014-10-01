@@ -14,14 +14,9 @@ import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.util.asm.ClassFieldInspector;
 import org.kie.api.io.Resource;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -246,7 +241,7 @@ public class TypeDeclarationBuilder {
 
 
     protected void updateTraitInformation( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, ClassDefinition def, PackageRegistry pkgRegistry ) {
-        if ( typeDescr.getAnnotation( Traitable.class.getSimpleName() ) != null
+        if ( typeDescr.hasAnnotation( Traitable.class )
              || ( ! type.getKind().equals( TypeDeclaration.Kind.TRAIT ) &&
                   kbuilder.getPackageRegistry().containsKey( def.getSuperClass() ) &&
                   kbuilder.getPackageRegistry( def.getSuperClass() ).getTraitRegistry().getTraitables().containsKey( def.getSuperClass() )
@@ -266,7 +261,7 @@ public class TypeDeclarationBuilder {
             }
             pkgRegistry.getTraitRegistry().addTraitable( def );
         } else if (type.getKind().equals(TypeDeclaration.Kind.TRAIT)
-                   || typeDescr.getAnnotation(Trait.class.getSimpleName()) != null) {
+                   || typeDescr.hasAnnotation(Trait.class) ) {
             // trait
             if ( ! type.isNovel() ) {
                 try {

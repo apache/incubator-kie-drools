@@ -4,7 +4,7 @@ import org.kie.api.definition.type.Role;
 
 public class TypeMetaInfo {
     private TypeDeclaration.Kind kind;
-    private TypeDeclaration.Role role;
+    private Role.Type role;
     private boolean isDeclaredType;
 
     public TypeMetaInfo() { }
@@ -18,12 +18,12 @@ public class TypeMetaInfo {
     public TypeMetaInfo(Class<?> clazz) {
         this.kind = TypeDeclaration.Kind.CLASS;
         Role role = clazz.getAnnotation(Role.class);
-        this.role = role == null || role.value() == Role.Type.FACT ? TypeDeclaration.Role.FACT : TypeDeclaration.Role.EVENT;
+        this.role = role == null ? Role.Type.FACT : role.value();
         this.isDeclaredType = false;
     }
 
     public boolean isEvent() {
-        return role == TypeDeclaration.Role.EVENT;
+        return role == Role.Type.EVENT;
     }
 
     public boolean isDeclaredType() {

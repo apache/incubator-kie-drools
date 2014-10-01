@@ -1,21 +1,12 @@
 package org.kie.scanner.management;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.management.ObjectName;
-
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieScanner;
 import org.drools.core.util.FileManager;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -24,6 +15,15 @@ import org.kie.api.runtime.KieSession;
 import org.kie.scanner.AbstractKieCiTest;
 import org.kie.scanner.KieRepositoryScannerImpl;
 import org.kie.scanner.MavenRepository;
+
+import javax.management.ObjectName;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 
 public class KieScannerMBeanTest extends AbstractKieCiTest {
@@ -46,7 +46,7 @@ public class KieScannerMBeanTest extends AbstractKieCiTest {
         System.setProperty(MBeanUtils.MBEANS_PROPERTY, "");
     }
     
-    @Test
+    @Test @Ignore
     public void testKScannerMBean() throws Exception {
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");

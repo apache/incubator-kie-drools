@@ -12,9 +12,11 @@ import org.drools.core.base.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
+import org.drools.core.factmodel.traits.Alias;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.HierarchySorter;
 import org.drools.core.util.asm.ClassFieldInspector;
+import org.kie.api.definition.type.Key;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -397,8 +399,9 @@ public class ClassHierarchyManager {
         fldType.setObjectType( ( (FieldDefinition) fld ).getTypeName() );
         inheritedFldDescr.setPattern(fldType);
         if (fld.isKey()) {
-            inheritedFldDescr.getAnnotations().put(TypeDeclaration.ATTR_KEY,
-                                                   new AnnotationDescr(TypeDeclaration.ATTR_KEY));
+            AnnotationDescr keyAnnotation = new AnnotationDescr(Key.class.getCanonicalName());
+            keyAnnotation.setFullyQualifiedName(Key.class.getCanonicalName());
+            inheritedFldDescr.addAnnotation(keyAnnotation);
         }
         inheritedFldDescr.setIndex(((FieldDefinition) fld).getDeclIndex());
         inheritedFldDescr.setInherited(true);
@@ -407,8 +410,8 @@ public class ClassHierarchyManager {
         int overrideCount = 0;
         // only @aliasing local fields may override defaults.
         for (TypeFieldDescr localField : typeDescr.getFields().values()) {
-            AnnotationDescr ann = localField.getAnnotation("Alias");
-            if (ann != null && fld.getName().equals(ann.getSingleValue().replaceAll("\"", "")) && localField.getInitExpr() != null) {
+            Alias alias = localField.getTypedAnnotation(Alias.class);
+            if (alias != null && fld.getName().equals(alias.value().replaceAll("\"", "")) && localField.getInitExpr() != null) {
                 overrideCount++;
                 initExprOverride = localField.getInitExpr();
             }

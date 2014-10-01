@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.drools.core.util.StringUtils.isEmpty;
-
 public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder {
 
     private final KnowledgeBuilderImpl kBuilder;
@@ -100,10 +98,18 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
 
     private void buildPackages() {
         Collection<CompositePackageDescr> packages = buildPackageDescr();
+        initPackageRegistries(packages);
+        normalizeAnnotation( packages );
         buildTypeDeclarations(packages);
         buildEntryPoints( packages );
         buildOtherDeclarations(packages);
         buildRules(packages);
+    }
+
+    private void normalizeAnnotation( Collection<CompositePackageDescr> packages ) {
+        for (CompositePackageDescr packageDescr : packages) {
+            kBuilder.normalizeAnnotations(packageDescr);
+        }
     }
 
     private void buildEntryPoints( Collection<CompositePackageDescr> packages ) {
@@ -291,15 +297,6 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     }
 
     private void buildTypeDeclarations( Collection<CompositePackageDescr> packages ) {
-        for ( CompositePackageDescr packageDescr : packages ) {
-            if ( kBuilder.getPackageRegistry( packageDescr.getName() ) == null ) {
-                if ( StringUtils.isEmpty( packageDescr.getName() ) ) {
-                    packageDescr.setName( kBuilder.getBuilderConfiguration().getDefaultPackageName() );
-                }
-                kBuilder.createPackageRegistry( packageDescr );
-            }
-        }
-
         Map<String,AbstractClassTypeDeclarationDescr> unprocesseableDescrs = new HashMap<String,AbstractClassTypeDeclarationDescr>();
         List<TypeDefinition> unresolvedTypes = new ArrayList<TypeDefinition>();
         List<AbstractClassTypeDeclarationDescr> unsortedDescrs = new ArrayList<AbstractClassTypeDeclarationDescr>();
@@ -317,6 +314,17 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         for ( CompositePackageDescr packageDescr : packages ) {
             for ( ImportDescr importDescr : packageDescr.getImports() ) {
                 kBuilder.getPackageRegistry( packageDescr.getNamespace() ).addImport( importDescr );
+            }
+        }
+    }
+
+    private void initPackageRegistries(Collection<CompositePackageDescr> packages) {
+        for ( CompositePackageDescr packageDescr : packages ) {
+            if ( kBuilder.getPackageRegistry( packageDescr.getName() ) == null ) {
+                if ( StringUtils.isEmpty(packageDescr.getName()) ) {
+                    packageDescr.setName( kBuilder.getBuilderConfiguration().getDefaultPackageName() );
+                }
+                kBuilder.createPackageRegistry( packageDescr );
             }
         }
     }

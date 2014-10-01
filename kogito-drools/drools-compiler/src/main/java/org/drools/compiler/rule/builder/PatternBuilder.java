@@ -91,6 +91,7 @@ import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.IndexUtil;
+import org.kie.api.definition.rule.Watch;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.mvel2.MVEL;
@@ -378,74 +379,81 @@ public class PatternBuilder
     protected void processAnnotations( final RuleBuildContext context,
                                        final PatternDescr patternDescr,
                                        final Pattern pattern ) {
-        Map<String, AnnotationDescr> annotationMap = patternDescr.getAnnotations();
-        if (annotationMap == null) return;
-        processListenedPropertiesAnnotation(context, patternDescr, pattern, annotationMap);
-        processMetadataAnnotations( pattern, annotationMap );
+        processListenedPropertiesAnnotation( context, patternDescr, pattern );
+        processMetadataAnnotations( patternDescr, pattern );
     }
 
-    protected void processMetadataAnnotations(Pattern pattern, Map<String, AnnotationDescr> annotationMap) {
-        for ( String key : annotationMap.keySet() ) {
-            if ( ! Pattern.ATTR_LISTENED_PROPS.equals( key ) ) {
-                AnnotationDescr ann = annotationMap.get( key );
-                AnnotationDefinition def = new AnnotationDefinition( key );
+    protected void processMetadataAnnotations(PatternDescr patternDescr, Pattern pattern) {
+        for ( AnnotationDescr ann : patternDescr.getAnnotations() ) {
+            String annFQN = ann.getFullyQualifiedName();
+            if ( !Watch.class.getCanonicalName().equals(annFQN) ) {
+                AnnotationDefinition def = new AnnotationDefinition( annFQN );
                 for ( String propKey : ann.getValues().keySet() ) {
                     def.getValues().put( propKey, new AnnotationDefinition.AnnotationPropertyVal( propKey, null, ann.getValue( propKey ), null ) );
                 }
-                pattern.getAnnotations().put( key, def );
+                pattern.getAnnotations().put( annFQN, def );
             }
         }        
     }
 
-    protected void processListenedPropertiesAnnotation(RuleBuildContext context,
-                                                     PatternDescr patternDescr,
-                                                     Pattern pattern,
-                                                     Map<String, AnnotationDescr> annotationMap) {
-        AnnotationDescr listenedProps = annotationMap.get(Pattern.ATTR_LISTENED_PROPS);
-        if (listenedProps != null) {
-            List<String> settableProperties = getSettableProperties(context, patternDescr, pattern);
-
-            List<String> listenedProperties = new ArrayList<String>();
-            for (String propertyName : listenedProps.getValue().toString().split(",")) {
-                propertyName = propertyName.trim();
-                if (propertyName.equals("*") || propertyName.equals("!*")) {
-                    if (listenedProperties.contains("*") || listenedProperties.contains("!*")) {
-                        context.addError( new DescrBuildError( context.getParentDescr(),
-                                patternDescr,
-                                null,
-                                "Duplicate usage of wildcard * in @" + Pattern.ATTR_LISTENED_PROPS + " annotation" ) );
-                    } else {
-                        listenedProperties.add(propertyName);
-                    }
-                    continue;
-                }
-                boolean isNegative = propertyName.startsWith("!");
-                propertyName = isNegative ? propertyName.substring(1).trim() : propertyName;
-                if (settableProperties != null && !settableProperties.contains(propertyName)) {
-                    context.addError( new DescrBuildError( context.getParentDescr(),
-                                                           patternDescr,
-                                                           null,
-                                                           "Unknown property " + propertyName + " in @" + Pattern.ATTR_LISTENED_PROPS + " annotation" ) );
-                } else if (listenedProperties.contains(propertyName) || listenedProperties.contains("!" + propertyName)) {
-                    context.addError( new DescrBuildError( context.getParentDescr(),
-                                                           patternDescr,
-                                                           null,
-                                                           "Duplicate property " + propertyName + " in @" + Pattern.ATTR_LISTENED_PROPS + " annotation" ) );
-                } else {
-                    listenedProperties.add(isNegative ? "!" + propertyName : propertyName);
-                }
-            }
-
-            for ( Constraint constr : pattern.getConstraints() ) {
-                if ( constr instanceof EvaluatorConstraint && ((EvaluatorConstraint) constr).isSelf() ) {
-                    EvaluatorConstraint ec = ((EvaluatorConstraint) constr );
-                    if ( ec.getEvaluator().getOperator() == IsAEvaluatorDefinition.ISA || ec.getEvaluator().getOperator() == IsAEvaluatorDefinition.NOT_ISA ) {
-                        listenedProperties.add( TraitableBean.TRAITSET_FIELD_NAME );
-                    }
-                }
-            }
-            pattern.setListenedProperties(listenedProperties);
+    protected void processListenedPropertiesAnnotation(RuleBuildContext context, PatternDescr patternDescr, Pattern pattern) {
+        String watchedValues = null;
+        try {
+            Watch watch = patternDescr.getTypedAnnotation(Watch.class);
+            watchedValues = watch == null ? null : watch.value();
+        } catch (Exception e) {
+            context.addError( new DescrBuildError( context.getParentDescr(),
+                                                   patternDescr,
+                                                   null,
+                                                   e.getMessage() ) );
         }
+
+        if (watchedValues == null) {
+            return;
+        }
+
+        List<String> settableProperties = getSettableProperties(context, patternDescr, pattern);
+
+        List<String> listenedProperties = new ArrayList<String>();
+        for (String propertyName : watchedValues.split(",")) {
+            propertyName = propertyName.trim();
+            if (propertyName.equals("*") || propertyName.equals("!*")) {
+                if (listenedProperties.contains("*") || listenedProperties.contains("!*")) {
+                    context.addError( new DescrBuildError( context.getParentDescr(),
+                            patternDescr,
+                            null,
+                            "Duplicate usage of wildcard * in @" + Watch.class.getSimpleName() + " annotation" ) );
+                } else {
+                    listenedProperties.add(propertyName);
+                }
+                continue;
+            }
+            boolean isNegative = propertyName.startsWith("!");
+            propertyName = isNegative ? propertyName.substring(1).trim() : propertyName;
+            if (settableProperties != null && !settableProperties.contains(propertyName)) {
+                context.addError( new DescrBuildError( context.getParentDescr(),
+                                                       patternDescr,
+                                                       null,
+                                                       "Unknown property " + propertyName + " in @" + Watch.class.getSimpleName() + " annotation" ) );
+            } else if (listenedProperties.contains(propertyName) || listenedProperties.contains("!" + propertyName)) {
+                context.addError( new DescrBuildError( context.getParentDescr(),
+                                                       patternDescr,
+                                                       null,
+                                                       "Duplicate property " + propertyName + " in @" + Watch.class.getSimpleName() + " annotation" ) );
+            } else {
+                listenedProperties.add(isNegative ? "!" + propertyName : propertyName);
+            }
+        }
+
+        for ( Constraint constr : pattern.getConstraints() ) {
+            if ( constr instanceof EvaluatorConstraint && ((EvaluatorConstraint) constr).isSelf() ) {
+                EvaluatorConstraint ec = ((EvaluatorConstraint) constr );
+                if ( ec.getEvaluator().getOperator() == IsAEvaluatorDefinition.ISA || ec.getEvaluator().getOperator() == IsAEvaluatorDefinition.NOT_ISA ) {
+                    listenedProperties.add( TraitableBean.TRAITSET_FIELD_NAME );
+                }
+            }
+        }
+        pattern.setListenedProperties(listenedProperties);
     }
 
     protected List<String> getSettableProperties(RuleBuildContext context, PatternDescr patternDescr, Pattern pattern) {
@@ -459,7 +467,7 @@ public class PatternBuilder
             context.addError( new DescrBuildError( context.getParentDescr(),
                     patternDescr,
                     null,
-                    "Wrong usage of @" + Pattern.ATTR_LISTENED_PROPS + " annotation on class " + patternClass.getName() + " that is not annotated as @PropertyReactive" ) );
+                    "Wrong usage of @" + Watch.class.getSimpleName() + " annotation on class " + patternClass.getName() + " that is not annotated as @PropertyReactive" ) );
         }
         typeDeclaration.setTypeClass(patternClass);
         return typeDeclaration.getSettableProperties();

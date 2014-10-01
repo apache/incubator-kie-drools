@@ -16,6 +16,7 @@ import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import java.util.List;
 
@@ -31,7 +32,8 @@ public class KieModuleModelTest {
     public void testMarshallingUnmarshalling() {
         KieServices ks = KieServices.Factory.get();
 
-        KieModuleModel kproj = ks.newKieModuleModel();
+        KieModuleModel kproj = ks.newKieModuleModel()
+                                 .setConfigurationProperty(LanguageLevelOption.PROPERTY_NAME, LanguageLevelOption.DRL6_STRICT.toString());
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
@@ -76,6 +78,8 @@ public class KieModuleModelTest {
         // System.out.println( xml );
 
         KieModuleModel kprojXml = fromXML(xml);
+
+        assertEquals(LanguageLevelOption.DRL6_STRICT.toString(), kprojXml.getConfigurationProperty(LanguageLevelOption.PROPERTY_NAME));
 
         KieBaseModel kieBaseModelXML = kprojXml.getKieBaseModels().get("KBase1");
         assertSame(kprojXml, ((KieBaseModelImpl)kieBaseModelXML).getKModule());

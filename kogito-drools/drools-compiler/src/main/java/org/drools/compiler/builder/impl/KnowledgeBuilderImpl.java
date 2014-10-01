@@ -1,5 +1,6 @@
 package org.drools.compiler.builder.impl;
 
+import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.compiler.ConfigurableSeverityResult;
@@ -34,7 +35,10 @@ import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.lang.ExpanderException;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.AccumulateImportDescr;
+import org.drools.compiler.lang.descr.AnnotatedBaseDescr;
+import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
 import org.drools.compiler.lang.descr.FunctionDescr;
@@ -44,6 +48,7 @@ import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
+import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.compiler.lang.descr.WindowDeclarationDescr;
 import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
@@ -54,6 +59,7 @@ import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.dialect.DialectError;
 import org.drools.compiler.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl;
 import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.TypeResolver;
 import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -124,6 +130,7 @@ import java.util.UUID;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 import static org.drools.core.util.StringUtils.isEmpty;
+import static org.drools.core.util.StringUtils.ucFirst;
 
 public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
@@ -1477,10 +1484,9 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             pkgRegistry.addImport(importDescr);
         }
 
+        normalizeAnnotations(packageDescr);
         processAccumulateFunctions(pkgRegistry, packageDescr);
-
         processEntryPointDeclarations(pkgRegistry, packageDescr);
-
 
         Map<String,AbstractClassTypeDeclarationDescr> unprocesseableDescrs = new HashMap<String,AbstractClassTypeDeclarationDescr>();
         List<TypeDefinition> unresolvedTypes = new ArrayList<TypeDefinition>();
@@ -2196,6 +2202,76 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             type.setPropertyReactive(false);
         } else {
             type.setPropertyReactive(propertyReactive);
+        }
+    }
+
+    public void normalizeAnnotations(PackageDescr packageDescr) {
+        TypeResolver typeResolver = pkgRegistryMap.get(packageDescr.getName()).getTypeResolver();
+        boolean isStrict = configuration.getLanguageLevel().useJavaAnnotations();
+        for (RuleDescr ruleDescr : packageDescr.getRules()) {
+            normalizeAnnotations(ruleDescr, typeResolver, isStrict);
+            for (BaseDescr baseDescr : ruleDescr.getLhs().getDescrs()) {
+                if (baseDescr instanceof AnnotatedBaseDescr) {
+                    normalizeAnnotations((AnnotatedBaseDescr)baseDescr, typeResolver, isStrict);
+                }
+            }
+        }
+        for (TypeDeclarationDescr typeDeclarationDescr : packageDescr.getTypeDeclarations()) {
+            normalizeAnnotations(typeDeclarationDescr, typeResolver, isStrict);
+            for (TypeFieldDescr typeFieldDescr : typeDeclarationDescr.getFields().values()) {
+                normalizeAnnotations(typeFieldDescr, typeResolver, isStrict);
+            }
+        }
+    }
+
+    private void normalizeAnnotations(AnnotatedBaseDescr annotationsContainer, TypeResolver typeResolver, boolean isStrict) {
+        for (AnnotationDescr annotationDescr : annotationsContainer.getAnnotations()) {
+            annotationDescr.setResource(annotationsContainer.getResource());
+            annotationDescr.setStrict(isStrict);
+            if (annotationDescr.isDuplicated()) {
+                addBuilderResult(new AnnotationDeclarationError(annotationDescr,
+                                                                "Duplicated annotation: " + annotationDescr.getName()));
+            }
+            if (isStrict) {
+                normalizeStrictAnnotation(typeResolver, annotationDescr);
+            } else {
+                normalizeAnnotation(typeResolver, annotationDescr);
+            }
+        }
+        annotationsContainer.indexByFQN(isStrict);
+    }
+
+    private void normalizeAnnotation(TypeResolver typeResolver, AnnotationDescr annotationDescr) {
+        Class<?> annotationClass = null;
+        try {
+            annotationClass = typeResolver.resolveType(annotationDescr.getName(), TypeResolver.ONLY_ANNOTATION_CLASS_FILTER);
+        } catch (ClassNotFoundException e) {
+            String className = normalizeAnnotationNonStrictName(annotationDescr.getName());
+            try {
+                annotationClass = typeResolver.resolveType(className, TypeResolver.ONLY_ANNOTATION_CLASS_FILTER);
+            } catch (ClassNotFoundException e1) {
+                // non-strict annotation, ignore error
+            }
+        }
+        if (annotationClass != null) {
+            annotationDescr.setFullyQualifiedName(annotationClass.getCanonicalName());
+        }
+    }
+
+    private String normalizeAnnotationNonStrictName(String name) {
+        if ("typesafe".equalsIgnoreCase(name)) {
+            return "TypeSafe";
+        }
+        return ucFirst(name);
+    }
+
+    private void normalizeStrictAnnotation(TypeResolver typeResolver, AnnotationDescr annotationDescr) {
+        try {
+            Class<?> annotationClass = typeResolver.resolveType(annotationDescr.getName(), TypeResolver.ONLY_ANNOTATION_CLASS_FILTER);
+            annotationDescr.setFullyQualifiedName(annotationClass.getCanonicalName());
+        } catch (ClassNotFoundException e) {
+            addBuilderResult(new AnnotationDeclarationError(annotationDescr,
+                                                            "Unknown annotation: " + annotationDescr.getName()));
         }
     }
 }

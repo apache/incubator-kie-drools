@@ -57,7 +57,7 @@ public abstract class AbstractXStreamConverter implements Converter {
         }
     }
 
-    protected void writeObjectList(HierarchicalStreamWriter writer, MarshallingContext context, String listName, String itemName, Iterable<? extends Object> list) {
+    protected void writeObjectList(HierarchicalStreamWriter writer, MarshallingContext context, String listName, String itemName, Iterable<?> list) {
         if (list != null) {
             java.util.Iterator<? extends Object> i = list.iterator();
             if (i.hasNext()) {
@@ -68,6 +68,19 @@ public abstract class AbstractXStreamConverter implements Converter {
                 writer.endNode();
             }
 
+        }
+    }
+
+    protected void writePropertyMap(HierarchicalStreamWriter writer, MarshallingContext context, String mapName, Map<String, String> map) {
+        if (map != null && !map.isEmpty()) {
+            writer.startNode(mapName);
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                writer.startNode("property");
+                writer.addAttribute("key", entry.getKey());
+                writer.setValue(entry.getValue());
+                writer.endNode();
+            }
+            writer.endNode();
         }
     }
 
@@ -101,6 +114,16 @@ public abstract class AbstractXStreamConverter implements Converter {
             reader.moveUp();
         }
         return list;
+    }
+
+    protected Map<String, String> readPropertyMap(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        Map<String, String> map = new HashMap<String, String>();
+        while (reader.hasMoreChildren()) {
+            reader.moveDown();
+            map.put(reader.getAttribute("key"), reader.getValue());
+            reader.moveUp();
+        }
+        return map;
     }
 
     public interface NodeReader {

@@ -28,8 +28,8 @@ import org.drools.compiler.lang.descr.NamedConsequenceDescr;
 @foreach{ attr : pkg.attributes }@{attr.name} @{attr.valueString}@end{"\n"}@end{}@if{!pkg.typeDeclarations.isEmpty()}
 
 @foreach{ decl : pkg.typeDeclarations }declare @{decl.typeName} @if{ decl.superTypes.size() > 0 } extends @foreach{ sup : decl.superTypes } @{sup} @end{','} @end{}
-@foreach{ ann : decl.annotations.values() }    @includeNamed{"annotation"; ann=ann}@end{"\n"}
-@foreach{ fld : decl.fields.values() }    @{fld.fieldName} : @{fld.pattern.objectType} @if{fld.initExpr != null}= @{fld.initExpr}@end{} @foreach{ann:fld.annotations.values()}@includeNamed{"annotation"; ann=ann}@end{}@end{"\n"}
+@foreach{ ann : decl.annotations }    @includeNamed{"annotation"; ann=ann}@end{"\n"}
+@foreach{ fld : decl.fields.values() }    @{fld.fieldName} : @{fld.pattern.objectType} @if{fld.initExpr != null}= @{fld.initExpr}@end{} @foreach{ann:fld.annotations}@includeNamed{"annotation"; ann=ann}@end{}@end{"\n"}
 end
 @end{"\n"}@end{}@if{!pkg.functions.isEmpty()}
 
@@ -39,7 +39,7 @@ end
 @end{"\n"}@end{}@if{!pkg.rules.isEmpty()}
 
 @foreach{rule : pkg.rules}@{rule.isRule()?"rule":"query"} "@{rule.name}"@if{rule.parentName!=null} extends "@{rule.parentName}"@end{}@if{!rule.annotations.isEmpty()}
-@foreach{ ann : rule.annotations.values() }    @includeNamed{"annotation"; ann=ann}@end{"\n"}@end{}@if{!rule.attributes.isEmpty()}
+@foreach{ ann : rule.annotations }    @includeNamed{"annotation"; ann=ann}@end{"\n"}@end{}@if{!rule.attributes.isEmpty()}
 @foreach{attr : rule.attributes.values() }    @{attr.name} @{attr.valueString}@end{"\n"}@end{}@if{rule.isRule()}
 when@end{}@includeNamed{"ced"; base=rule.lhs; root=true}@if{rule.isRule()}
 then

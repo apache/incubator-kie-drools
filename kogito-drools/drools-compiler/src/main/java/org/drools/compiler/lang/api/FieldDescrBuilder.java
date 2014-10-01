@@ -33,7 +33,4 @@ public interface FieldDescrBuilder<T extends DescrBuilder<?,?>>
     public FieldDescrBuilder<T> type( String type );
 
     public FieldDescrBuilder<T> initialValue( String value );
-
-    public FieldDescrBuilder<T> processAnnotations();
-    
 }

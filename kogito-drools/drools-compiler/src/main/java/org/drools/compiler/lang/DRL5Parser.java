@@ -20,32 +20,29 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.UnwantedTokenException;
-import org.drools.compiler.lang.api.AccumulateDescrBuilder;
-import org.drools.compiler.lang.api.AttributeSupportBuilder;
-import org.drools.compiler.lang.api.CEDescrBuilder;
-import org.drools.compiler.lang.api.DescrBuilder;
-import org.drools.compiler.lang.api.EnumDeclarationDescrBuilder;
-import org.drools.compiler.lang.api.FieldDescrBuilder;
-import org.drools.compiler.lang.api.GlobalDescrBuilder;
-import org.drools.compiler.lang.api.PackageDescrBuilder;
-import org.drools.compiler.lang.descr.EnumDeclarationDescr;
-import org.drools.compiler.lang.descr.NotDescr;
-import org.drools.core.util.StringUtils;
 import org.drools.compiler.lang.api.AbstractClassTypeDeclarationBuilder;
+import org.drools.compiler.lang.api.AccumulateDescrBuilder;
 import org.drools.compiler.lang.api.AnnotatedDescrBuilder;
 import org.drools.compiler.lang.api.AnnotationDescrBuilder;
 import org.drools.compiler.lang.api.AttributeDescrBuilder;
+import org.drools.compiler.lang.api.AttributeSupportBuilder;
 import org.drools.compiler.lang.api.BehaviorDescrBuilder;
+import org.drools.compiler.lang.api.CEDescrBuilder;
 import org.drools.compiler.lang.api.CollectDescrBuilder;
 import org.drools.compiler.lang.api.ConditionalBranchDescrBuilder;
 import org.drools.compiler.lang.api.DeclareDescrBuilder;
+import org.drools.compiler.lang.api.DescrBuilder;
 import org.drools.compiler.lang.api.EntryPointDeclarationDescrBuilder;
+import org.drools.compiler.lang.api.EnumDeclarationDescrBuilder;
 import org.drools.compiler.lang.api.EnumLiteralDescrBuilder;
 import org.drools.compiler.lang.api.EvalDescrBuilder;
+import org.drools.compiler.lang.api.FieldDescrBuilder;
 import org.drools.compiler.lang.api.ForallDescrBuilder;
 import org.drools.compiler.lang.api.FunctionDescrBuilder;
+import org.drools.compiler.lang.api.GlobalDescrBuilder;
 import org.drools.compiler.lang.api.ImportDescrBuilder;
 import org.drools.compiler.lang.api.NamedConsequenceDescrBuilder;
+import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.api.ParameterSupportBuilder;
 import org.drools.compiler.lang.api.PatternContainerDescrBuilder;
 import org.drools.compiler.lang.api.PatternDescrBuilder;
@@ -58,16 +55,18 @@ import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
+import org.drools.compiler.lang.descr.EnumDeclarationDescr;
 import org.drools.compiler.lang.descr.ExistsDescr;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.GlobalDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
+import org.drools.compiler.lang.descr.NotDescr;
 import org.drools.compiler.lang.descr.OrDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.WindowDeclarationDescr;
-import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.util.StringUtils;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import java.util.ArrayList;
@@ -647,9 +646,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                                     TypeDeclarationDescrBuilder.class,
                                     null );
 
-            if ( isTrait ) {
-                declare.newAnnotation( TypeDeclaration.Kind.ID ).value( TypeDeclaration.Kind.TRAIT.name() );
-            }
+            declare.setTrait(isTrait);
             
             if( helper.validateIdentifierKey( DroolsSoftKeywords.TYPE ) ) {
                 // 'type'
@@ -845,7 +842,6 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                 annotation( field );
                 if ( state.failed ) return;
             }
-            field.processAnnotations();
 
             if ( input.LA( 1 ) == DRL5Lexer.SEMICOLON ) {
                 match( input,

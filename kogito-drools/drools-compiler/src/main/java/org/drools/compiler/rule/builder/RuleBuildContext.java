@@ -19,7 +19,6 @@ package org.drools.compiler.rule.builder;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.beliefsystem.abductive.Abductive;
@@ -76,11 +75,11 @@ public class RuleBuildContext extends PackageBuildContext {
         this.ruleDescr = ruleDescr;
 
         if ( ruleDescr instanceof QueryDescr ) {
-            AnnotationDescr abductive = ruleDescr.getAnnotation( Abductive.class.getSimpleName() );
+            Abductive abductive = ruleDescr.getTypedAnnotation( Abductive.class );
             if ( abductive == null ) {
                 this.rule = new QueryImpl( ruleDescr.getName() );
             } else {
-                this.rule = new AbductiveQuery( ruleDescr.getName(), abductive.getValue( "mode" ) );
+                this.rule = new AbductiveQuery( ruleDescr.getName(), abductive.mode() );
             }
         } else {
             this.rule = new RuleImpl(ruleDescr.getName());

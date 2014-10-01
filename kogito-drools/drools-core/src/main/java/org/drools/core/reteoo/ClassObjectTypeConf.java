@@ -28,6 +28,7 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ObjectType;
+import org.kie.api.definition.type.Role;
 
 import java.beans.PropertyChangeListener;
 import java.io.Externalizable;
@@ -79,11 +80,10 @@ public class ClassObjectTypeConf
         this.kBase = kBase;
         this.entryPoint = entryPoint;
         this.typeDecl = kBase.getTypeDeclaration( clazz );
-        isEvent = typeDecl != null && typeDecl.getRole() == TypeDeclaration.Role.EVENT;
+        isEvent = typeDecl != null && typeDecl.getRole() == Role.Type.EVENT;
         isTrait = determineTraitStatus();
 
-        ObjectType objectType = kBase.getClassFieldAccessorCache().getClassObjectType( new ClassObjectType( clazz,
-                                                                                                                                    isEvent ) );
+        ObjectType objectType = kBase.getClassFieldAccessorCache().getClassObjectType( new ClassObjectType( clazz, isEvent ) );
 
         this.concreteObjectTypeNode = kBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
         if ( this.concreteObjectTypeNode == null ) {
@@ -138,7 +138,7 @@ public class ClassObjectTypeConf
         stream.writeBoolean( traitTmsEnabled );
         stream.writeBoolean( supportsPropertyListeners );
         stream.writeBoolean( isEvent );
-        stream.writeBoolean( isTrait );
+        stream.writeBoolean(isTrait);
     }
 
     public boolean isAssignableFrom(Object object) {

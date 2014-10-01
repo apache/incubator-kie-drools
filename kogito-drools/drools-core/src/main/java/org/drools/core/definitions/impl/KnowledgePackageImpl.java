@@ -595,7 +595,7 @@ public class KnowledgePackageImpl
     public boolean isEvent( Class clazz ) {
         TypeDeclaration typeDeclaration = getTypeDeclaration(clazz);
         if (typeDeclaration != null) {
-            return typeDeclaration.getRole() == TypeDeclaration.Role.EVENT;
+            return typeDeclaration.getRole() == Role.Type.EVENT;
         }
         Role role = (Role) clazz.getAnnotation( Role.class );
         return role != null && role.value() == Role.Type.EVENT;

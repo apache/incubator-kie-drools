@@ -51,7 +51,10 @@ import org.drools.compiler.lang.api.QueryDescrBuilder;
 import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.drools.compiler.lang.api.TypeDeclarationDescrBuilder;
 import org.drools.compiler.lang.api.WindowDeclarationDescrBuilder;
+import org.drools.compiler.lang.api.impl.AnnotationDescrBuilderImpl;
 import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.AnnotatedBaseDescr;
+import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;
@@ -74,18 +77,19 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
-public class DRL6Parser extends AbstractDRLParser implements DRLParser {
+public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
 
     private final DRL6Expressions exprParser;
 
-    public DRL6Parser(TokenStream input) {
+    public DRL6StrictParser(TokenStream input) {
         super(input);
         this.exprParser = new DRL6Expressions(input, state, helper);
     }
 
     protected LanguageLevelOption getLanguageLevel() {
-        return LanguageLevelOption.DRL6;
+        return LanguageLevelOption.DRL6_STRICT;
     }
 
     /* ------------------------------------------------------------------------------------------------
@@ -104,6 +108,11 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
 
             // statements
             while (input.LA(1) != DRL6Lexer.EOF) {
+                annotations();
+                if (state.failed) {
+                    return pkg.getDescr();
+                }
+
                 int next = input.index();
                 if (helper.validateStatement(1)) {
                     statement(pkg);
@@ -127,6 +136,8 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                     if (state.failed)
                         return pkg.getDescr();
                 }
+
+                annotationsCollector.clear();
             }
         } catch (RecognitionException e) {
             helper.reportError(e);
@@ -136,6 +147,72 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
             helper.setEnd(pkg);
         }
         return pkg.getDescr();
+    }
+
+    private void annotations() {
+        while (input.LA(1) == DRL6Lexer.AT && !state.failed) {
+            annotation(annotationsCollector);
+        }
+    }
+
+    private void setAnnotationsOn(AnnotatedDescrBuilder builder) {
+        annotationsCollector.setAnnotationsOn(builder);
+    }
+
+    private void setAnnotationsOn(BaseDescr annotationsContainer) throws DroolsUnexpectedAnnotationException {
+        annotationsCollector.setAnnotationsOn(annotationsContainer);
+    }
+
+    private final AnnotationsCollector annotationsCollector = new AnnotationsCollector();
+
+    private class AnnotationsCollector implements AnnotatedDescrBuilder {
+
+        private AnnotatedBaseDescr descr = new AnnotatedBaseDescr();
+
+        @Override
+        public AnnotationDescrBuilder newAnnotation(String name) {
+            AnnotationDescrBuilder annotation = new AnnotationDescrCreator( name );
+            descr.addAnnotation((AnnotationDescr) annotation.getDescr());
+            return annotation;
+        }
+
+        private class AnnotationDescrCreator extends AnnotationDescrBuilderImpl {
+            public AnnotationDescrCreator(String name) {
+                super( null, name );
+            }
+        }
+
+        public void clear() {
+            if (!descr.getAnnotations().isEmpty()) {
+                descr = new AnnotatedBaseDescr();
+            }
+        }
+
+        public void setAnnotationsOn(AnnotatedDescrBuilder builder) {
+            if (!descr.getAnnotations().isEmpty()) {
+                for (AnnotationDescr annDescr : descr.getAnnotations()) {
+                    AnnotationDescrBuilder annotation = builder.newAnnotation(annDescr.getName());
+                    for (Map.Entry<String, String> valueEntry : annDescr.getValueMap().entrySet()) {
+                        annotation.keyValue(valueEntry.getKey(), valueEntry.getValue());
+                    }
+                }
+                clear();
+            }
+        }
+
+        public void setAnnotationsOn(BaseDescr annotationsContainer) throws DroolsUnexpectedAnnotationException {
+            if (!descr.getAnnotations().isEmpty()) {
+                if (annotationsContainer instanceof AnnotatedBaseDescr) {
+                    for (AnnotationDescr annotationDescr : descr.getAnnotations()) {
+                        ((AnnotatedBaseDescr) annotationsContainer).addAnnotation(annotationDescr);
+                    }
+                } else {
+                    AnnotationDescr annotationDescr = descr.getAnnotations().iterator().next();
+                    failUnexpectedAnnotationException(annotationDescr.getName());
+                }
+                clear();
+            }
+        }
     }
 
     private void resyncToNextStatement() {
@@ -500,11 +577,12 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         } catch (RecognitionException re) {
             reportError(re);
         }
+
         return declaration;
     }
 
     /**
-     * entryPointDeclaration := ENTRY-POINT stringId annotation* END
+     * entryPointDeclaration := annotation* ENTRY-POINT stringId END
      *
      * @return
      * @throws org.antlr.runtime.RecognitionException
@@ -515,6 +593,8 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
             declare = helper.start(ddb,
                     EntryPointDeclarationDescrBuilder.class,
                     null);
+
+            setAnnotationsOn(declare);
 
             match(input,
                     DRL6Lexer.ID,
@@ -547,13 +627,6 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                 declare.entryPointId(ep);
             }
 
-            while (input.LA(1) == DRL6Lexer.AT) {
-                // annotation*
-                annotation(declare);
-                if (state.failed)
-                    return null;
-            }
-
             match(input,
                     DRL6Lexer.ID,
                     DroolsSoftKeywords.END,
@@ -572,7 +645,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
     }
 
     /**
-     * windowDeclaration := WINDOW ID annotation* lhsPatternBind END
+     * windowDeclaration := annotation* WINDOW ID lhsPatternBind END
      *
      * @return
      * @throws org.antlr.runtime.RecognitionException
@@ -583,6 +656,8 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
             declare = helper.start(ddb,
                     WindowDeclarationDescrBuilder.class,
                     null);
+
+            setAnnotationsOn(declare);
 
             String window = "";
 
@@ -607,13 +682,6 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                 declare.name(window);
             }
 
-            while (input.LA(1) == DRL6Lexer.AT) {
-                // annotation*
-                annotation(declare);
-                if (state.failed)
-                    return null;
-            }
-
             lhsPatternBind(declare, false);
 
             match(input,
@@ -635,8 +703,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
     }
 
     /*
-     * typeDeclaration := [ENUM] qualifiedIdentifier
-     *                         annotation*
+     * typeDeclaration := annotation* [ENUM] qualifiedIdentifier
      *                         enumerative+
      *                         field*
      *                     END
@@ -651,19 +718,14 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                     EnumDeclarationDescrBuilder.class,
                     null);
 
+            setAnnotationsOn(declare);
+
             // type may be qualified when adding metadata
             String type = qualifiedIdentifier();
             if (state.failed)
                 return null;
             if (state.backtracking == 0)
                 declare.name(type);
-
-            while (input.LA(1) == DRL6Lexer.AT) {
-                // annotation*
-                annotation(declare);
-                if (state.failed)
-                    return null;
-            }
 
             while (input.LA(1) == DRL6Lexer.ID) {
                 int next = input.LA(2);
@@ -717,8 +779,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
     }
 
     /**
-     * typeDeclaration := [TYPE] qualifiedIdentifier (EXTENDS qualifiedIdentifier)?
-     *                         annotation*
+     * typeDeclaration := annotation* [TYPE] qualifiedIdentifier (EXTENDS qualifiedIdentifier)?
      *                         field*
      *                     END
      *
@@ -732,6 +793,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                     TypeDeclarationDescrBuilder.class,
                     null);
 
+            setAnnotationsOn(declare);
             declare.setTrait(isTrait);
 
             if (helper.validateIdentifierKey(DroolsSoftKeywords.TYPE)) {
@@ -777,16 +839,9 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                 }
             }
 
-            while (input.LA(1) == DRL6Lexer.AT) {
-                // annotation*
-                annotation(declare);
-                if (state.failed)
-                    return null;
-            }
-
             //boolean qualified = type.indexOf( '.' ) >= 0;
-            while ( //! qualified &&
-            input.LA(1) == DRL6Lexer.ID && !helper.validateIdentifierKey(DroolsSoftKeywords.END)) {
+            while ( (input.LA(1) == DRL6Lexer.ID || input.LA(1) == DRL6Lexer.AT) &&
+                    !helper.validateIdentifierKey(DroolsSoftKeywords.END)) {
                 // field*
                 field(declare);
                 if (state.failed)
@@ -888,9 +943,11 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
     }
 
     /**
-     * field := label fieldType (EQUALS_ASSIGN conditionalExpression)? annotation* SEMICOLON?
+     * field := annotation* label fieldType (EQUALS_ASSIGN conditionalExpression)? SEMICOLON?
      */
     private void field(AbstractClassTypeDeclarationBuilder declare) {
+        annotations();
+
         FieldDescrBuilder field = null;
         String fname = null;
         try {
@@ -905,6 +962,8 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
             field = helper.start(declare,
                     FieldDescrBuilder.class,
                     fname);
+
+            setAnnotationsOn(field);
 
             // type
             String type = type();
@@ -933,13 +992,6 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                             input.LT(-1).getTokenIndex());
                     field.initialValue(value);
                 }
-            }
-
-            while (input.LA(1) == DRL6Lexer.AT) {
-                // annotation*
-                annotation(field);
-                if (state.failed)
-                    return;
             }
 
             if (input.LA(1) == DRL6Lexer.SEMICOLON) {
@@ -1134,7 +1186,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      * ------------------------------------------------------------------------------------------------ */
 
     /**
-     * query := QUERY stringId parameters? annotation* lhsExpression END
+     * query := annotation* QUERY stringId parameters? lhsExpression END
      *
      * @return
      * @throws org.antlr.runtime.RecognitionException
@@ -1145,6 +1197,8 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
             query = helper.start(pkg,
                     QueryDescrBuilder.class,
                     null);
+
+            setAnnotationsOn(query);
 
             // 'query'
             match(input,
@@ -1190,13 +1244,6 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                 if (state.backtracking == 0) {
                     helper.emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
                 }
-            }
-
-            while (input.LA(1) == DRL6Lexer.AT) {
-                // annotation*
-                annotation(query);
-                if (state.failed)
-                    return null;
             }
 
             if (state.backtracking == 0 && input.LA(1) != DRL6Lexer.EOF) {
@@ -1247,7 +1294,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      * ------------------------------------------------------------------------------------------------ */
 
     /**
-     * rule := RULE stringId (EXTENDS stringId)? annotation* attributes? lhs? rhs END
+     * rule := annotation* RULE stringId (EXTENDS stringId)? attributes? lhs? rhs END
      *
      * @return
      * @throws org.antlr.runtime.RecognitionException
@@ -1259,12 +1306,14 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                     RuleDescrBuilder.class,
                     null);
 
+            setAnnotationsOn(rule);
+
             // 'rule'
             match(input,
-                    DRL6Lexer.ID,
-                    DroolsSoftKeywords.RULE,
-                    null,
-                    DroolsEditorType.KEYWORD);
+                  DRL6Lexer.ID,
+                  DroolsSoftKeywords.RULE,
+                  null,
+                  DroolsEditorType.KEYWORD);
             if (state.failed)
                 return null;
 
@@ -1304,13 +1353,6 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
 
             if (state.backtracking == 0 && input.LA(1) != DRL6Lexer.EOF) {
                 helper.emit(Location.LOCATION_RULE_HEADER);
-            }
-
-            while (input.LA(1) == DRL6Lexer.AT) {
-                // annotation*
-                annotation(rule);
-                if (state.failed)
-                    return null;
             }
 
             attributes(rule);
@@ -2067,13 +2109,6 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                 if (state.failed)
                     return null;
 
-                while (input.LA(1) == DRL6Lexer.AT) {
-                    // annotation*
-                    annotation(or);
-                    if (state.failed)
-                        return null;
-                }
-
                 if (state.backtracking == 0) {
                     helper.emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
                 }
@@ -2136,13 +2171,6 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                         }
                         if (state.failed)
                             return null;
-
-                        while (input.LA(1) == DRL6Lexer.AT) {
-                            // annotation*
-                            annotation(or);
-                            if (state.failed)
-                                return null;
-                        }
 
                         if (state.backtracking == 0) {
                             helper.emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
@@ -2211,13 +2239,6 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                 if (state.failed)
                     return null;
 
-                while (input.LA(1) == DRL6Lexer.AT) {
-                    // annotation*
-                    annotation(and);
-                    if (state.failed)
-                        return null;
-                }
-
                 if (state.backtracking == 0) {
                     helper.emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
                 }
@@ -2279,13 +2300,6 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                         if (state.failed)
                             return null;
 
-                        while (input.LA(1) == DRL6Lexer.AT) {
-                            // annotation*
-                            annotation(and);
-                            if (state.failed)
-                                return null;
-                        }
-
                         if (state.backtracking == 0) {
                             helper.emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR);
                         }
@@ -2316,6 +2330,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
 
     /**
      * lhsUnary :=
+     *           annotation*
      *           ( lhsExists namedConsequence?
      *           | lhsNot namedConsequence?
      *           | lhsEval consequenceInvocation*
@@ -2331,6 +2346,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      */
     private BaseDescr lhsUnary(final CEDescrBuilder<?, ?> ce,
             boolean allowOr) throws RecognitionException {
+        annotations();
         BaseDescr result = null;
         if (helper.validateIdentifierKey(DroolsSoftKeywords.EXISTS)) {
             result = lhsExists(ce,
@@ -2377,6 +2393,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                 return null;
         }
 
+        setAnnotationsOn(result);
         return result;
     }
 
@@ -3235,6 +3252,14 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
+    void failUnexpectedAnnotationException(String annotationName) throws DroolsUnexpectedAnnotationException {
+        if (state.backtracking > 0) {
+            state.failed = true;
+        } else {
+            throw new DroolsUnexpectedAnnotationException(input, annotationName);
+        }
+    }
+
     /**
      * lhsPattern := QUESTION? qualifiedIdentifier
      * LEFT_PAREN positionalConstraints? constraints? RIGHT_PAREN
@@ -3296,13 +3321,6 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                 DroolsEditorType.SYMBOL);
         if (state.failed)
             return;
-
-        while (input.LA(1) == DRL6Lexer.AT) {
-            // annotation*
-            annotation(pattern);
-            if (state.failed)
-                return;
-        }
 
         if (helper.validateIdentifierKey(DroolsSoftKeywords.OVER)) {
             //           || input.LA( 1 ) == DRL6Lexer.PIPE ) {

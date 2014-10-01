@@ -143,7 +143,7 @@ public class TypeFieldDescr extends AnnotatedBaseDescr
         clone.initExpr = this.initExpr;
         clone.inherited = true;
         clone.recursive = this.recursive;
-        for ( AnnotationDescr ad : this.getAnnotations().values() ) {
+        for ( AnnotationDescr ad : this.getAnnotations() ) {
             clone.addAnnotation( ad );
         }
         return clone;

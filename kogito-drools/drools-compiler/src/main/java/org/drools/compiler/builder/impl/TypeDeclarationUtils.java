@@ -9,13 +9,8 @@ import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
-import org.kie.api.definition.type.Key;
-import org.kie.api.definition.type.Position;
-import org.kie.api.definition.type.Role;
 
 import java.io.IOException;
-
-import static org.drools.core.util.StringUtils.isEmpty;
 
 public class TypeDeclarationUtils {
 
@@ -190,47 +185,6 @@ public class TypeDeclarationUtils {
         }
         return true;
     }
-
-
-    /**
-     * Tries to determine whether a given annotation is properly defined using a
-     * java.lang.Annotation and can be resolved
-     *
-     * Proper annotations will be wired to dynamically generated beans
-     */
-    public static Class resolveAnnotation( String annotation,
-                                           TypeResolver resolver ) {
-
-        // do not waste time with @format
-        if ( TypeDeclaration.Format.ID.equals(annotation)) {
-            return null;
-        }
-        // known conflicting annotation
-        if (TypeDeclaration.ATTR_CLASS.equals(annotation)) {
-            return null;
-        }
-
-        try {
-            return resolver.resolveType(annotation.indexOf('.') < 0 ?
-                                        annotation.substring(0, 1).toUpperCase() + annotation.substring(1) :
-                                        annotation);
-        } catch (ClassNotFoundException e) {
-            // internal annotation, or annotation which can't be resolved.
-            if (TypeDeclaration.Role.ID.equals(annotation)) {
-                return Role.class;
-            }
-            if ("key".equals(annotation)) {
-                return Key.class;
-            }
-            if ("position".equals(annotation)) {
-                return Position.class;
-            }
-            return null;
-        }
-    }
-
-
-
 
     public static boolean isQualified( String name ) {
         return !StringUtils.isEmpty( name ) && name.indexOf( '.' ) >= 0;

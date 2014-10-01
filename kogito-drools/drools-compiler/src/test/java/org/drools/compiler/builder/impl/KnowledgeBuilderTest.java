@@ -49,11 +49,10 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.beliefsystem.simple.SimpleMode;
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DefaultKnowledgeHelper;
+import org.drools.core.beliefsystem.ModedAssertion;
+import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalAgendaGroup;
@@ -89,9 +88,11 @@ import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.type.FactField;
+import org.kie.api.definition.type.Role;
+import org.kie.api.definition.type.TypeSafe;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.runtime.beliefs.Mode;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -1029,10 +1030,8 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
     public void testTypeDeclaration() throws Exception {
         PackageDescr pkgDescr = new PackageDescr( "org.drools.compiler" );
         TypeDeclarationDescr typeDescr = new TypeDeclarationDescr( "StockTick" );
-        typeDescr.addAnnotation( TypeDeclaration.Role.ID,
-                                    "event" );
-        typeDescr.addAnnotation( TypeDeclaration.ATTR_CLASS,
-                                    "org.drools.compiler.StockTick" );
+        typeDescr.addAnnotation( Role.class.getCanonicalName(), "Event" );
+        typeDescr.addAnnotation( TypeSafe.class.getCanonicalName(), "true" );
         pkgDescr.addTypeDeclaration( typeDescr );
 
         KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
@@ -1045,9 +1044,8 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                       pkg.getTypeDeclarations().size() );
 
         TypeDeclaration type = pkg.getTypeDeclaration( "StockTick" );
-        assertEquals( "StockTick",
-                      type.getTypeName() );
-        assertEquals( TypeDeclaration.Role.EVENT,
+        assertTrue( type.isTypesafe() );
+        assertEquals( Role.Type.EVENT,
                       type.getRole() );
         assertEquals( StockTick.class,
                       type.getTypeClass() );
@@ -1078,7 +1076,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         TypeDeclaration type = pkg.getTypeDeclaration( "NewBean" );
         assertEquals( "NewBean",
                       type.getTypeName() );
-        assertEquals( TypeDeclaration.Role.FACT,
+        assertEquals( Role.Type.FACT,
                       type.getRole() );
         assertEquals( "org.drools.compiler.test.NewBean",
                       type.getTypeClass().getName() );

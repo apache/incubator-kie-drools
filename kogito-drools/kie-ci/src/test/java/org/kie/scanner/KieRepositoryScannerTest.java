@@ -459,7 +459,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         ks.getRepository().removeKieModule(includedReleaseId);
     }
 
-    @Test
+    @Test @Ignore
     public void testScanIncludedAndIncludingDependency() throws Exception {
         MavenRepository repository = getMavenRepository();
         KieServices ks = KieServices.Factory.get();

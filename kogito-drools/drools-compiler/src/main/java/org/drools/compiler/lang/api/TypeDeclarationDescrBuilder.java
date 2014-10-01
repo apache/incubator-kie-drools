@@ -45,7 +45,6 @@ public interface TypeDeclarationDescrBuilder
      * @return itself
      */
     public TypeDeclarationDescrBuilder superType( String type );
-    
 
-
+    public TypeDeclarationDescrBuilder setTrait( boolean trait );
 }
