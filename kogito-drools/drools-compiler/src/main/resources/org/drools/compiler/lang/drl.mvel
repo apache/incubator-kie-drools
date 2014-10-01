@@ -31,6 +31,14 @@ import org.drools.compiler.lang.descr.NamedConsequenceDescr;
 @foreach{ ann : decl.annotations }    @includeNamed{"annotation"; ann=ann}@end{"\n"}
 @foreach{ fld : decl.fields.values() }    @{fld.fieldName} : @{fld.pattern.objectType} @if{fld.initExpr != null}= @{fld.initExpr}@end{} @foreach{ann:fld.annotations}@includeNamed{"annotation"; ann=ann}@end{}@end{"\n"}
 end
+@end{"\n"}@end{}@if{!pkg.enumDeclarations.isEmpty()}
+
+@foreach{ decl : pkg.enumDeclarations }declare enum @{ decl.typeName }
+@foreach{ ann : decl.annotations }    @includeNamed{"annotation"; ann=ann}@end{"\n"}
+@foreach{ lit : decl.literals }@{lit.name}@if{ ! lit.constructorArgs.isEmpty()}( @foreach{ arg : lit.constructorArgs } @{arg}@end{","} )
+@end{}@end{","};
+@foreach{ fld : decl.fields.values() }    @{fld.fieldName} : @{fld.pattern.objectType} @if{fld.initExpr != null}= @{fld.initExpr}@end{} @foreach{ann:fld.annotations}@includeNamed{"annotation"; ann=ann}@end{}@end{"\n"}
+end
 @end{"\n"}@end{}@if{!pkg.functions.isEmpty()}
 
 @foreach{func : pkg.functions}function @{func.returnType!=null?func.returnType:""} @{func.name}( @foreach{n:func.parameterNames,t:func.parameterTypes}@{t} @{n}@end{", "} ) {

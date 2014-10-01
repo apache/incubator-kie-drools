@@ -108,4 +108,13 @@ public class DumperTest {
         assertTrue( out.contains( "declare trait Foo" ) );
     }
 
+    @Test
+    public void testRoundTripEnumDeclarations() throws Exception {
+        DumperTestHelper.DrlFile( "test_EnumDeclaration.drl" );
+
+        String out = DumperTestHelper.dump( "test_EnumDeclaration.drl" );
+        assertTrue( out.contains( "declare enum Planets" ) );
+        assertTrue( out.contains( "MERCURY" ) );
+        assertTrue( out.contains( "7.1492e7" ) );
+    }
 }

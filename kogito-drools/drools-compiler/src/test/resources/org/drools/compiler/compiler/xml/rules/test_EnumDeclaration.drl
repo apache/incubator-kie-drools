@@ -1,0 +1,17 @@
+package org.test;
+
+declare enum Planets
+    MERCURY ( 3.303e+23, 2.4397e6, new String("Mer") + new String("cury").substring(0) ),
+    VENUS   ( 4.869e+24, 6.0518e6, "Venus" ),
+    EARTH   ( 5.976e+24, 6.37814e6, "Earth" ),
+    MARS    ( 6.421e+23, 3.3972e6, "Mars" ),
+    JUPITER ( 1.9e+27,   7.1492e7, "Jupiter" ),
+    SATURN  ( 5.688e+26, 6.0268e7, "Saturn" ),
+    URANUS  ( 8.686e+25, 2.5559e7, "Uranus" ),
+    NEPTUNE ( 1.024e+26, 2.4746e7, "Neptune" );
+
+    mass    : double
+    radius  : double
+    name    : String
+
+end
