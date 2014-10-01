@@ -75,8 +75,10 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
     }
     
     public List<Node> getStartNodes() {
-        Node[] nodes = getNodes();
-        
+    	return getStartNodes(this.getNodes());
+    }
+    
+    public static List<Node> getStartNodes(Node[] nodes) {
         List<Node> startNodes = new ArrayList<Node>();
         for (int i = 0; i < nodes.length; i++) {
             if (nodes[i] instanceof StartNode) {

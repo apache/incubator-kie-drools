@@ -272,7 +272,7 @@ public class RestWorkItemHandlerTest {
         } catch (WorkItemHandlerRuntimeException ex) {
         	
         	RESTServiceException e = (RESTServiceException) ex.getCause().getCause();
-        	assertEquals(500, e.getStatus());
+        	assertEquals(405, e.getStatus());
         	assertEquals(serverURL+"/notexisting", e.getEndoint());
         	assertEquals("", e.getResponse());
         }

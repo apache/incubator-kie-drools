@@ -759,6 +759,17 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    public void testInvalidSubProcess() throws Exception {
+    	try {
+    		KieBase kbase = createKnowledgeBase("BPMN2-SubProcessInvalid.bpmn2");
+    		ksession = createKnowledgeSession(kbase);
+    		fail("Process should be invalid, there should be build errors");
+    	} catch (RuntimeException e) {
+    		// there should be build errors
+    	}
+    }
+
+    @Test
     public void testSubProcessWithTerminateEndEvent() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-SubProcessWithTerminateEndEvent.bpmn2");
         ksession = createKnowledgeSession(kbase);
