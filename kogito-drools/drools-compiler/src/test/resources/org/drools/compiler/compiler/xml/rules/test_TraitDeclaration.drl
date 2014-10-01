@@ -1,0 +1,6 @@
+package org.test;
+
+declare trait Foo
+@propertyReactive
+    a : int
+end
