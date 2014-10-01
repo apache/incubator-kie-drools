@@ -27,7 +27,7 @@ import org.drools.compiler.lang.descr.NamedConsequenceDescr;
 
 @foreach{ attr : pkg.attributes }@{attr.name} @{attr.valueString}@end{"\n"}@end{}@if{!pkg.typeDeclarations.isEmpty()}
 
-@foreach{ decl : pkg.typeDeclarations }declare @{decl.typeName} @if{ decl.superTypes.size() > 0 } extends @foreach{ sup : decl.superTypes } @{sup} @end{','} @end{}
+@foreach{ decl : pkg.typeDeclarations }declare @if{ decl.trait }trait@end{} @{decl.typeName} @if{ decl.superTypes.size() > 0 } extends @foreach{ sup : decl.superTypes } @{sup} @end{','} @end{}
 @foreach{ ann : decl.annotations }    @includeNamed{"annotation"; ann=ann}@end{"\n"}
 @foreach{ fld : decl.fields.values() }    @{fld.fieldName} : @{fld.pattern.objectType} @if{fld.initExpr != null}= @{fld.initExpr}@end{} @foreach{ann:fld.annotations}@includeNamed{"annotation"; ann=ann}@end{}@end{"\n"}
 end

@@ -54,6 +54,13 @@ public class DumperTestHelper {
                                       result2 );
     }
 
+    public static String dump(String filename) throws Exception {
+        DrlParser parser = new DrlParser(LanguageLevelOption.DRL6);
+        final PackageDescr pkgOriginal = parser.parse( new InputStreamReader( DumperTestHelper.class.getResourceAsStream( filename ) ) );
+        final DrlDumper dumper = new DrlDumper();
+        return dumper.dump( pkgOriginal );
+    }
+
     public static void assertEqualsIgnoreWhitespace(final String expected,
                                                     final String actual) {
         final String cleanExpected = expected.replaceAll( "\\s+",
