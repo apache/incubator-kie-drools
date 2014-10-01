@@ -272,12 +272,9 @@ public class CloudBalancingPanel extends SolutionPanel {
                 // First remove the planning fact from all planning entities that use it
                 for (CloudProcess process : cloudBalance.getProcessList()) {
                     if (ObjectUtils.equals(process.getComputer(), computer)) {
-                        // TODO HACK we are removing it because it becomes uninitialized,
-                        // which means it has to be retracted
-                        // This is nonsense from a ProblemFactChange point of view, FIXME!
-                        scoreDirector.beforeEntityRemoved(process);
+                        scoreDirector.beforeVariableChanged(process, "computer");
                         process.setComputer(null);
-                        scoreDirector.afterEntityRemoved(process);
+                        scoreDirector.afterVariableChanged(process, "computer");
                     }
                 }
                 // A SolutionCloner does not clone problem fact lists (such as computerList)
