@@ -21,6 +21,8 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 
+import java.util.Collection;
+
 /**
  * A container for all the KieBases of a given KieModule
  */
@@ -47,6 +49,16 @@ public interface KieContainer {
      * Updates this KieContainer to a KieModule with the given ReleaseId
      */
     Results updateToVersion(ReleaseId version);
+
+    /**
+     * Returns the names of all the KieBases available in this KieContainer
+     */
+    Collection<String> getKieBaseNames();
+
+    /**
+     * Returns the names of all the KieSessions defined in this KieContainer for the given KieBase
+     */
+    Collection<String> getKieSessionNamesInKieBase(String kBaseName);
 
     /**
      * Returns the default KieBase in this KieContainer.
