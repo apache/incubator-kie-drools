@@ -46,6 +46,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -330,7 +331,15 @@ public class KieContainerImpl
         return modifiedClasses;
     }
 
-    
+    public Collection<String> getKieBaseNames() {
+        return kProject.getKieBaseNames();
+    }
+
+    public Collection<String> getKieSessionNamesInKieBase(String kBaseName) {
+        KieBaseModel kieBaseModel = kProject.getKieBaseModel(kBaseName);
+        return kieBaseModel != null ? kieBaseModel.getKieSessionModels().keySet() : Collections.<String>emptySet();
+    }
+
     public KieBase getKieBase() {
         KieBaseModel defaultKieBaseModel = kProject.getDefaultKieBaseModel();
         if (defaultKieBaseModel == null) {
