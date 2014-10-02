@@ -4,6 +4,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
 
+import java.util.Collection;
 import java.util.Set;
 
 public interface KieProject {
@@ -11,6 +12,8 @@ public interface KieProject {
     ReleaseId getGAV();
     
     InternalKieModule getKieModuleForKBase(String kBaseName);
+
+    Collection<String> getKieBaseNames();
 
     KieBaseModel getKieBaseModel(String kBaseName);
 

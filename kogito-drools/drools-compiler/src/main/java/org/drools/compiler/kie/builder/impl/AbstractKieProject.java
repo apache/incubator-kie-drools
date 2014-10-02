@@ -72,6 +72,10 @@ public abstract class AbstractKieProject implements KieProject {
         return kBaseModels.get( kBaseName );
     }
 
+    public Collection<String> getKieBaseNames() {
+        return kBaseModels.keySet();
+    }
+
     public KieSessionModel getKieSessionModel(String kSessionName) {
         return kSessionModels.get( kSessionName );
     }
