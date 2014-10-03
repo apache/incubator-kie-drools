@@ -63,6 +63,8 @@ public class Pattern
     // the position of the related fact inside the tuple;
     private int               offset;
 
+    private boolean           passive;
+
     public Pattern() {
         this( 0,
               null );
@@ -132,6 +134,7 @@ public class Pattern
             ((From)source).setResultPattern( this );
         }
         annotations = (Map<String,AnnotationDefinition>) in.readObject();
+        passive = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -145,6 +148,7 @@ public class Pattern
         out.writeInt( offset );
         out.writeObject(getListenedProperties());
         out.writeObject( annotations );
+        out.writeBoolean( passive );
     }
     
     public static InternalReadAccessor getReadAcessor(ObjectType objectType) {
@@ -245,6 +249,14 @@ public class Pattern
 
     public void setSource(PatternSource source) {
         this.source = source;
+    }
+
+    public boolean isPassive() {
+        return passive;
+    }
+
+    public void setPassive(boolean passive) {
+        this.passive = passive;
     }
 
     public List<Constraint> getConstraints() {
