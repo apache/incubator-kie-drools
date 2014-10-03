@@ -31,7 +31,7 @@ public class JaxbI18NText implements I18NText {
  
     @XmlElement
     @XmlSchemaType(name="string")
-    private String lang;
+    private String language;
  
     public JaxbI18NText() { 
        // JAXB Default 
@@ -39,7 +39,7 @@ public class JaxbI18NText implements I18NText {
     
     public JaxbI18NText(I18NText text) { 
        this.id = text.getId();
-       this.lang = text.getLanguage();
+       this.language = text.getLanguage();
        this.text = text.getText();
     }
     
@@ -60,11 +60,11 @@ public class JaxbI18NText implements I18NText {
     }
 
     public String getLanguage() {
-        return lang;
+        return language;
     }
 
     public void setLanguage(String lang) {
-        this.lang = lang;
+        this.language = lang;
     }
 
     public static List<JaxbI18NText> convertListFromInterfaceToJaxbImpl(List<I18NText> textList) { 
@@ -92,7 +92,7 @@ public class JaxbI18NText implements I18NText {
     }
     
     private I18NText createImplInstance() { 
-       return new GetterI18NText(this.id, this.lang, this.text);
+       return new GetterI18NText(this.id, this.language, this.text);
     }
 
     @Override

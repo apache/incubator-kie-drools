@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.Status;
@@ -22,6 +22,7 @@ import org.kie.api.task.model.User;
 @XmlRootElement(name = "task-data")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({ JaxbComment.class, JaxbAttachment.class })
+@JsonAutoDetect(getterVisibility=JsonAutoDetect.Visibility.NONE, setterVisibility=JsonAutoDetect.Visibility.NONE, fieldVisibility=JsonAutoDetect.Visibility.ANY)
 public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements TaskData {
 
     @XmlElement
@@ -31,10 +32,10 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     private Status previousStatus;
 
     @XmlElement(name = "actual-owner")
-    private String actualOwnerId;
+    private String actualOwner;
 
     @XmlElement(name = "created-by")
-    private String createdById;
+    private String createdBy;
 
     @XmlElement(name = "created-on")
     @XmlSchemaType(name = "dateTime")
@@ -100,10 +101,10 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     @XmlSchemaType(name = "int")
     private Integer processSessionId;
 
-    @XmlElement(name = "comments")
+    @XmlElement
     private List<JaxbComment> comments;
 
-    @XmlElement(name = "attachments")
+    @XmlElement
     private List<JaxbAttachment> attachments;
     
     @XmlElement(name = "deployment-id")
@@ -120,7 +121,7 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
         this.activationTime = taskData.getActivationTime();
         User actualOwnerUser = taskData.getActualOwner();
         if( actualOwnerUser != null ) { 
-            this.actualOwnerId = actualOwnerUser.getId();
+            this.actualOwner = actualOwnerUser.getId();
         }
         if( taskData.getComments() != null ) { 
             List<JaxbComment> commentList = new ArrayList<JaxbComment>();
@@ -131,7 +132,7 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
         }
         User createdByUser = taskData.getCreatedBy();
         if( createdByUser != null ) { 
-            this.createdById = createdByUser.getId();
+            this.createdBy = createdByUser.getId();
         }
         this.createdOn = taskData.getCreatedOn();
         this.deploymentId = taskData.getDeploymentId();
@@ -170,31 +171,29 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     }
 
     @Override
-    @JsonIgnore
     public User getActualOwner() {
-        return new GetterUser(actualOwnerId);
+        return new GetterUser(actualOwner);
     }
 
     public String getActualOwnerId() {
-        return actualOwnerId;
+        return actualOwner;
     }
 
     public void setActualOwnerId(String actualOwnerId) {
-        this.actualOwnerId = actualOwnerId;
+        this.actualOwner = actualOwnerId;
     }
 
     @Override
-    @JsonIgnore
     public User getCreatedBy() {
-        return new GetterUser(createdById);
+        return new GetterUser(createdBy);
     }
 
     public String getCreatedById() {
-        return createdById;
+        return createdBy;
     }
 
     public void setCreatedById(String createdById) {
-        this.createdById = createdById;
+        this.createdBy = createdById;
     }
 
     @Override
@@ -273,7 +272,6 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     }
 
     @Override
-    @JsonIgnore
     public List<Comment> getComments() {
         List<Comment> commentList = new ArrayList<Comment>();
         if (comments != null) {
@@ -293,7 +291,6 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     }
 
     @Override
-    @JsonIgnore
     public List<Attachment> getAttachments() {
         List<Attachment> attachmentList = new ArrayList<Attachment>();
         if (attachments != null) {

@@ -14,12 +14,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.kie.api.task.model.Content;
 import org.kie.internal.jaxb.StringKeyObjectValueMapXmlAdapter;
 
 @XmlRootElement(name="content")
 @XmlAccessorType(XmlAccessType.FIELD)
+@JsonAutoDetect(getterVisibility=JsonAutoDetect.Visibility.NONE, fieldVisibility=JsonAutoDetect.Visibility.ANY)
 public class JaxbContent implements Content {
 
     @XmlElement
@@ -27,7 +29,7 @@ public class JaxbContent implements Content {
 
     @XmlElement
     @XmlSchemaType(name="base64Binary")
-    private byte[] serializedContent = null;
+    private byte[] content = null;
     
     @XmlElement(name="content-map")
     @XmlJavaTypeAdapter(StringKeyObjectValueMapXmlAdapter.class)
@@ -46,21 +48,20 @@ public class JaxbContent implements Content {
             return; 
         }
         this.id = content.getId();
-        this.serializedContent = content.getContent();
+        this.content = content.getContent();
     }
     
     @Override
-    @JsonIgnore
     public byte[] getContent() {
-        return serializedContent;
+        return content;
     }
    
     public byte[] getSerializedContent() { 
-        return this.serializedContent;
+        return this.content;
     }
 
     public void setSerializedContent(byte [] content) { 
-        this.serializedContent = content;
+        this.content = content;
     }
 
     public Map<String, Object> getContentMap() { 

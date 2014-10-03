@@ -1,6 +1,6 @@
 package org.jbpm.services.task.impl.model.xml;
 
-import static org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.*;
+import static org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.unsupported;
 import static org.jbpm.services.task.impl.model.xml.JaxbOrganizationalEntity.convertListFromInterfaceToJaxbImpl;
 import static org.jbpm.services.task.impl.model.xml.JaxbOrganizationalEntity.convertListFromJaxbImplToInterface;
 
@@ -16,7 +16,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.GetterUser;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.User;
@@ -25,6 +26,7 @@ import org.kie.internal.task.api.model.InternalPeopleAssignments;
 
 @XmlRootElement(name="people-assignments")
 @XmlAccessorType(XmlAccessType.FIELD)
+@JsonAutoDetect(getterVisibility=JsonAutoDetect.Visibility.NONE, setterVisibility=JsonAutoDetect.Visibility.NONE, fieldVisibility=JsonAutoDetect.Visibility.ANY)
 public class JaxbPeopleAssignments implements InternalPeopleAssignments {
 
     @XmlElement(name="task-initiator-id")
@@ -38,7 +40,7 @@ public class JaxbPeopleAssignments implements InternalPeopleAssignments {
     private List<JaxbOrganizationalEntity> businessAdministrators;
 
     @XmlElement(name="excluded-owners")
-    private List<JaxbOrganizationalEntity> excludedOwner;
+    private List<JaxbOrganizationalEntity> excludedOwners;
 
     @XmlElement(name="task-stakeholders")
     private List<JaxbOrganizationalEntity> taskStakeholders;
@@ -56,14 +58,13 @@ public class JaxbPeopleAssignments implements InternalPeopleAssignments {
             this.taskInitiatorId = taskInitiatorUser.getId();
         }
         this.businessAdministrators = convertListFromInterfaceToJaxbImpl(((InternalPeopleAssignments) peopleAssignments).getBusinessAdministrators());
-        this.excludedOwner = convertListFromInterfaceToJaxbImpl(((InternalPeopleAssignments) peopleAssignments).getExcludedOwners());
+        this.excludedOwners = convertListFromInterfaceToJaxbImpl(((InternalPeopleAssignments) peopleAssignments).getExcludedOwners());
         this.potentialOwners = convertListFromInterfaceToJaxbImpl(((InternalPeopleAssignments) peopleAssignments).getPotentialOwners());
         this.recipients = convertListFromInterfaceToJaxbImpl(((InternalPeopleAssignments) peopleAssignments).getRecipients());
         this.taskStakeholders = convertListFromInterfaceToJaxbImpl(((InternalPeopleAssignments) peopleAssignments).getTaskStakeholders());
     }
     
     @Override
-    @JsonIgnore
     public User getTaskInitiator() {
         if( this.taskInitiatorId != null ) { 
             return new GetterUser(this.taskInitiatorId);
@@ -86,7 +87,6 @@ public class JaxbPeopleAssignments implements InternalPeopleAssignments {
     }
 
     @Override
-    @JsonIgnore
     public List<OrganizationalEntity> getPotentialOwners() {
         if( potentialOwners == null ) { 
             return Collections.emptyList();
@@ -107,7 +107,6 @@ public class JaxbPeopleAssignments implements InternalPeopleAssignments {
     }
 
     @Override
-    @JsonIgnore
     public List<OrganizationalEntity> getBusinessAdministrators() {
         if( businessAdministrators == null ) { 
             return Collections.emptyList();
@@ -128,29 +127,27 @@ public class JaxbPeopleAssignments implements InternalPeopleAssignments {
     }
 
     @Override
-    @JsonIgnore
     public List<OrganizationalEntity> getExcludedOwners() {
-        if( excludedOwner == null ) { 
+        if( excludedOwners == null ) { 
             return Collections.emptyList();
         }
-        return Collections.unmodifiableList(convertListFromJaxbImplToInterface(excludedOwner)); 
+        return Collections.unmodifiableList(convertListFromJaxbImplToInterface(excludedOwners)); 
     }
 
     @Override
     public void setExcludedOwners(List<OrganizationalEntity> excludedOwners) {
-        this.excludedOwner = convertListFromInterfaceToJaxbImpl(excludedOwners);
+        this.excludedOwners = convertListFromInterfaceToJaxbImpl(excludedOwners);
     }
 
     public List<JaxbOrganizationalEntity> getJaxbExcludedOwners() {
-        return excludedOwner;
+        return excludedOwners;
     }
 
     public void setJaxbExcludedOwners(List<JaxbOrganizationalEntity> jaxbExcludedOwners) {
-        this.excludedOwner = jaxbExcludedOwners;
+        this.excludedOwners = jaxbExcludedOwners;
     }
 
     @Override
-    @JsonIgnore
     public List<OrganizationalEntity> getTaskStakeholders() {
         if( taskStakeholders == null ) { 
             return Collections.emptyList();
@@ -172,7 +169,6 @@ public class JaxbPeopleAssignments implements InternalPeopleAssignments {
     }
 
     @Override
-    @JsonIgnore
     public List<OrganizationalEntity> getRecipients() {
         if( recipients == null ) { 
             return Collections.emptyList();

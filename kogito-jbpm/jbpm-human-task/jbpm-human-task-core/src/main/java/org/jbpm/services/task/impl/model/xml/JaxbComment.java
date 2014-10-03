@@ -8,11 +8,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.User;
 
 @XmlRootElement(name="comment")
 @XmlAccessorType(XmlAccessType.FIELD)
+@JsonAutoDetect(getterVisibility=JsonAutoDetect.Visibility.NONE, setterVisibility=JsonAutoDetect.Visibility.NONE, fieldVisibility=JsonAutoDetect.Visibility.ANY)
 public class JaxbComment extends AbstractJaxbTaskObject<Comment> implements Comment {
 
     @XmlElement

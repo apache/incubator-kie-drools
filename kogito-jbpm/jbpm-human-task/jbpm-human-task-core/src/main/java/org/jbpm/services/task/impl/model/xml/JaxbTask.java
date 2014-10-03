@@ -15,9 +15,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
@@ -37,7 +36,8 @@ import org.kie.internal.task.api.model.SubTasksStrategy;
 
 @XmlRootElement(name="task")
 @XmlAccessorType(XmlAccessType.FIELD)
-@JsonIgnoreProperties({"archived", "descriptions","names","subjects", "peopleAssignments"})
+@JsonIgnoreProperties({"archived","deadlines"})
+@JsonAutoDetect(getterVisibility=JsonAutoDetect.Visibility.NONE, setterVisibility=JsonAutoDetect.Visibility.NONE, fieldVisibility=JsonAutoDetect.Visibility.ANY)
 public class JaxbTask implements InternalTask {
 
     @XmlElement
@@ -67,6 +67,7 @@ public class JaxbTask implements InternalTask {
     @XmlElement
     private List<JaxbI18NText> names;
     
+    @XmlElement
     private List<JaxbI18NText> subjects;
     
     @XmlElement
@@ -79,7 +80,6 @@ public class JaxbTask implements InternalTask {
     private JaxbTaskData taskData;
     
     @XmlElement
-    @JsonIgnore
     private JaxbDeadlines deadlines = new JaxbDeadlines();
     
     @XmlElement(name="form-name")
@@ -119,35 +119,21 @@ public class JaxbTask implements InternalTask {
     }
     
     @Override
-    @JsonProperty
     public Long getId() {
         return id;
     }
 
-    @JsonProperty
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     @Override
-    @JsonIgnore
     public void setId(long id) {
         this.id = id;
     }
 
     @Override
-    @JsonProperty
     public int getPriority() {
         return priority;
     }
 
-    @JsonProperty
-    public void setPriority(Integer priority) {
-        this.priority = priority;
-    }
-
     @Override
-    @JsonIgnore
     public void setPriority(int priority) {
         this.priority = priority;
     }
@@ -161,7 +147,6 @@ public class JaxbTask implements InternalTask {
     }
 
     @Override
-    @JsonIgnore
     public List<I18NText> getNames() {
         if( names == null ) { 
             names = Collections.emptyList();
@@ -221,7 +206,6 @@ public class JaxbTask implements InternalTask {
     }
 
     @Override
-    @JsonIgnore
     public PeopleAssignments getPeopleAssignments() {
         return peopleAssignments;
     }
@@ -235,7 +219,6 @@ public class JaxbTask implements InternalTask {
     }
 
     @Override
-    @JsonIgnore
     public TaskData getTaskData() {
         return taskData;
     }
@@ -266,7 +249,6 @@ public class JaxbTask implements InternalTask {
     }
 
     @Override
-    @JsonIgnore
     public Deadlines getDeadlines() {
         return this.deadlines;
     }
@@ -276,7 +258,6 @@ public class JaxbTask implements InternalTask {
         // no-op
     }
 
-    @JsonIgnore
     public Task getTask() { 
         Task taskImpl = TaskModelProvider.getFactory().newTask();
         List<I18NText> names = new ArrayList<I18NText>();
@@ -357,7 +338,6 @@ public class JaxbTask implements InternalTask {
     }
 
     @Override
-    @JsonIgnore
     public String getFormName() {
         return this.formName;
     }
@@ -373,13 +353,11 @@ public class JaxbTask implements InternalTask {
     }
 
     @Override
-    @JsonIgnore
     public Boolean isArchived() {
         return (Boolean) unsupported(Task.class);
     }
 
     @Override
-    @JsonIgnore
     public void setArchived(Boolean archived) {
         unsupported(Task.class);
     }
@@ -389,13 +367,11 @@ public class JaxbTask implements InternalTask {
     }
 
     @Override
-    @JsonIgnore
     public int getVersion() {
         return (Integer) unsupported(Task.class);
     }
 
     @Override
-    @JsonIgnore
     public Delegation getDelegation() {
         return (Delegation) unsupported(Task.class);
     }
@@ -406,7 +382,6 @@ public class JaxbTask implements InternalTask {
     }
 
     @Override
-    @JsonIgnore
     public SubTasksStrategy getSubTaskStrategy() {
         return (SubTasksStrategy) unsupported(Task.class);
     }

@@ -111,6 +111,7 @@ public abstract class AbstractTaskSerializationTest {
 
     @Test
     public void taskCompositeCommandCanBeSerialized() throws Exception {
+        Assume.assumeTrue(TestType.JAXB.equals(getType())); 
         addClassesToSerializationContext(CompositeCommand.class);
         addClassesToSerializationContext(StartTaskCommand.class);
         addClassesToSerializationContext(CancelDeadlineCommand.class);
@@ -129,6 +130,7 @@ public abstract class AbstractTaskSerializationTest {
 
     @Test
     public void taskCompositeCommandMultipleCanBeSerialized() throws Exception {
+        Assume.assumeTrue(TestType.JAXB.equals(getType()));
         addClassesToSerializationContext(CompositeCommand.class);
         addClassesToSerializationContext(SkipTaskCommand.class);
         addClassesToSerializationContext(ProcessSubTaskCommand.class);

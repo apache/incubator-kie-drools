@@ -6,11 +6,16 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.User;
 
+@JsonIgnoreProperties({"realClass"})
 public class AbstractJaxbTaskObject<T> {
 
+    @XmlTransient
     protected Class<?> realClass;
    
     public AbstractJaxbTaskObject() {
