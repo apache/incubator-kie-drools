@@ -100,6 +100,8 @@ public abstract class BetaNode extends LeftTupleSource
 
     private transient ObjectTypeNode objectTypeNode;
 
+    private boolean rightInputIsPassive;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -159,6 +161,7 @@ public abstract class BetaNode extends LeftTupleSource
 
         if (!isRightInputIsRiaNode()) {
             Pattern pattern = context.getLastBuiltPatterns()[0]; // right input pattern
+            rightInputIsPassive = pattern.isPassive();
             ObjectType objectType = pattern.getObjectType();
 
             if (objectType instanceof ClassObjectType) {
@@ -225,6 +228,7 @@ public abstract class BetaNode extends LeftTupleSource
         rightNegativeMask = in.readLong();
         leftListenedProperties = (List) in.readObject();
         rightListenedProperties = (List) in.readObject();
+        rightInputIsPassive = in.readBoolean();
         setUnificationJoin();
         super.readExternal( in );
         rightInputIsRiaNode = NodeTypeEnums.RightInputAdaterNode == rightInput.getType();
@@ -249,6 +253,7 @@ public abstract class BetaNode extends LeftTupleSource
         out.writeLong( rightNegativeMask );
         out.writeObject(leftListenedProperties);
         out.writeObject(rightListenedProperties);
+        out.writeBoolean(rightInputIsPassive);
         super.writeExternal( out );
     }
 
@@ -295,7 +300,7 @@ public abstract class BetaNode extends LeftTupleSource
             log.trace("BetaNode insert={} stagedInsertWasEmpty={}",  memory.getStagedRightTuples().insertSize(), stagedInsertWasEmpty );
         }
         if ( memory.getAndIncCounter() == 0 ) {
-            memory.linkNode(wm);
+            memory.linkNode(wm, !rightInputIsPassive);
         } else if ( stagedInsertWasEmpty ) {
             memory.setNodeDirty( wm );
         }
@@ -597,7 +602,7 @@ public abstract class BetaNode extends LeftTupleSource
         if (rightListenedProperties != null) {
             hash += 41 * rightListenedProperties.hashCode();
         }
-        return hash;
+        return hash + (rightInputIsPassive ? 43 : 0);
     }
 
     /* (non-Javadoc)
@@ -618,6 +623,7 @@ public abstract class BetaNode extends LeftTupleSource
                 this.leftInput.equals( other.leftInput ) &&
                 this.rightInput.equals( other.rightInput ) &&
                 this.constraints.equals( other.constraints ) &&
+                this.rightInputIsPassive == other.rightInputIsPassive &&
                 areNullSafeEquals(this.leftListenedProperties, other.leftListenedProperties) &&
                 areNullSafeEquals(this.rightListenedProperties, other.rightListenedProperties);
     }

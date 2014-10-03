@@ -85,7 +85,15 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public void linkNode(InternalWorkingMemory wm) {
-        segmentMemory.linkNode(nodePosMaskBit, wm);
+        linkNode(wm, true);
+    }
+
+    public void linkNode(InternalWorkingMemory wm, boolean notify) {
+        if (notify) {
+            segmentMemory.linkNode(nodePosMaskBit, wm);
+        } else {
+            segmentMemory.linkNodeWithoutRuleNotify(nodePosMaskBit);
+        }
     }
 
     public void unlinkNode(InternalWorkingMemory wm) {
