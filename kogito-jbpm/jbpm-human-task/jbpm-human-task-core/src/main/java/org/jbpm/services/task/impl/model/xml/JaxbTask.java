@@ -52,29 +52,28 @@ public class JaxbTask implements InternalTask {
     @XmlSchemaType(name="string")
     private String taskType; 
     
-    @XmlElement(name="name")
+    @XmlElement
     @XmlSchemaType(name="string")
     private String name;
     
-    @XmlElement(name="subject")
+    @XmlElement
     @XmlSchemaType(name="string")
     private String subject;
     
-    @XmlElement(name="description")
+    @XmlElement
     @XmlSchemaType(name="string")
     private String description;
     
-    @XmlElement(name="names")
-    private List<JaxbI18NText> jaxbNames;
+    @XmlElement
+    private List<JaxbI18NText> names;
     
-    @XmlElement(name="subjects")
-    private List<JaxbI18NText> jaxbSubjects;
+    private List<JaxbI18NText> subjects;
     
-    @XmlElement(name="descriptions")
-    private List<JaxbI18NText> jaxbDescriptions;
+    @XmlElement
+    private List<JaxbI18NText> descriptions;
     
     @XmlElement(name="people-assignments")
-    private JaxbPeopleAssignments jaxbPeopleAssignments;
+    private JaxbPeopleAssignments peopleAssignments;
     
     @XmlElement
     private JaxbTaskData taskData;
@@ -101,15 +100,15 @@ public class JaxbTask implements InternalTask {
         }
         this.id = task.getId();
         this.priority = task.getPriority();
-        this.jaxbPeopleAssignments = new JaxbPeopleAssignments(task.getPeopleAssignments());
+        this.peopleAssignments = new JaxbPeopleAssignments(task.getPeopleAssignments());
 
         // Done because we get a (lazy-initialized) entity back from the task service, which causes problems outside a tx
         // .. so we "eager-initialize" all values here to avoid problems later. (Also in JaxbPeopleAssignments)
         // Collection.toArray() == PersistenceBag.toArray(), which calls PersistenceBag.read(), initializing collection
         // See org.hibernate.collection.internal.PersistenceBag
-        this.jaxbNames = JaxbI18NText.convertListFromInterfaceToJaxbImpl(task.getNames());
-        this.jaxbSubjects = JaxbI18NText.convertListFromInterfaceToJaxbImpl(task.getSubjects());
-        this.jaxbDescriptions = JaxbI18NText.convertListFromInterfaceToJaxbImpl(task.getDescriptions());
+        this.names = JaxbI18NText.convertListFromInterfaceToJaxbImpl(task.getNames());
+        this.subjects = JaxbI18NText.convertListFromInterfaceToJaxbImpl(task.getSubjects());
+        this.descriptions = JaxbI18NText.convertListFromInterfaceToJaxbImpl(task.getDescriptions());
         
         this.taskData = new JaxbTaskData(task.getTaskData());
         this.taskType = task.getTaskType();
@@ -154,84 +153,84 @@ public class JaxbTask implements InternalTask {
     }
 
     public List<JaxbI18NText> getJaxbNames() {
-        return this.jaxbNames;
+        return this.names;
     }
 
     public void setJaxbNames(List<JaxbI18NText> names) {
-        this.jaxbNames = names;
+        this.names = names;
     }
 
     @Override
     @JsonIgnore
     public List<I18NText> getNames() {
-        if( jaxbNames == null ) { 
-            jaxbNames = Collections.emptyList();
+        if( names == null ) { 
+            names = Collections.emptyList();
         }
-        return Collections.unmodifiableList(JaxbI18NText.convertListFromJaxbImplToInterface(jaxbNames));
+        return Collections.unmodifiableList(JaxbI18NText.convertListFromJaxbImplToInterface(names));
     }
 
     public void setNames(List<I18NText> names) {
-        this.jaxbNames = JaxbI18NText.convertListFromInterfaceToJaxbImpl(names);
+        this.names = JaxbI18NText.convertListFromInterfaceToJaxbImpl(names);
     }
 
     public List<JaxbI18NText> getJaxbSubjects() {
-        return this.jaxbSubjects;
+        return this.subjects;
     }
 
     public void setJaxbSubjects(List<JaxbI18NText> subjects) {
-        this.jaxbSubjects = subjects;
+        this.subjects = subjects;
     }
 
     public List<I18NText> getSubjects() {
-        if( jaxbSubjects == null ) { 
-            jaxbSubjects = Collections.emptyList();
+        if( subjects == null ) { 
+            subjects = Collections.emptyList();
         }
-        return Collections.unmodifiableList(JaxbI18NText.convertListFromJaxbImplToInterface(jaxbSubjects));
+        return Collections.unmodifiableList(JaxbI18NText.convertListFromJaxbImplToInterface(subjects));
     }
 
     public void setSubjects(List<I18NText> subjects) {
-        this.jaxbSubjects = JaxbI18NText.convertListFromInterfaceToJaxbImpl(subjects);
+        this.subjects = JaxbI18NText.convertListFromInterfaceToJaxbImpl(subjects);
     }
 
     public List<JaxbI18NText> getJaxbDescriptions() {
-        return this.jaxbDescriptions;
+        return this.descriptions;
     }
 
     public void setJaxbDescriptions(List<JaxbI18NText> descriptions) {
-        this.jaxbDescriptions = descriptions;
+        this.descriptions = descriptions;
     }
 
     @Override
     public List<I18NText> getDescriptions() {
-        if( jaxbDescriptions == null ) { 
-            jaxbDescriptions = Collections.emptyList();
+        if( descriptions == null ) { 
+            descriptions = Collections.emptyList();
         }
-        return Collections.unmodifiableList(JaxbI18NText.convertListFromJaxbImplToInterface(jaxbDescriptions));
+        return Collections.unmodifiableList(JaxbI18NText.convertListFromJaxbImplToInterface(descriptions));
     }
 
     public void setDescriptions(List<I18NText> descriptions) {
-        this.jaxbDescriptions = JaxbI18NText.convertListFromInterfaceToJaxbImpl(descriptions);
+        this.descriptions = JaxbI18NText.convertListFromInterfaceToJaxbImpl(descriptions);
     }
 
     public JaxbPeopleAssignments getJaxbPeopleAssignments() {
-        return jaxbPeopleAssignments;
+        return peopleAssignments;
     }
 
     public void setJaxbPeopleAssignments(JaxbPeopleAssignments jaxbPeopleAssignments) {
-        this.jaxbPeopleAssignments = jaxbPeopleAssignments;
+        this.peopleAssignments = jaxbPeopleAssignments;
     }
 
     @Override
     @JsonIgnore
     public PeopleAssignments getPeopleAssignments() {
-        return jaxbPeopleAssignments;
+        return peopleAssignments;
     }
 
     public void setPeopleAssignments(PeopleAssignments peopleAssignments) {
         if( peopleAssignments instanceof JaxbPeopleAssignments ) { 
-        this.jaxbPeopleAssignments = (JaxbPeopleAssignments) peopleAssignments;
+        this.peopleAssignments = (JaxbPeopleAssignments) peopleAssignments;
         } else { 
-            this.jaxbPeopleAssignments = new JaxbPeopleAssignments(peopleAssignments);
+            this.peopleAssignments = new JaxbPeopleAssignments(peopleAssignments);
         }
     }
 

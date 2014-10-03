@@ -100,11 +100,11 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     @XmlSchemaType(name = "int")
     private Integer processSessionId;
 
-    @XmlElement(name = "comment")
-    private List<JaxbComment> jaxbComments;
+    @XmlElement(name = "comments")
+    private List<JaxbComment> comments;
 
-    @XmlElement(name = "attachment")
-    private List<JaxbAttachment> jaxbAttachments;
+    @XmlElement(name = "attachments")
+    private List<JaxbAttachment> attachments;
     
     @XmlElement(name = "deployment-id")
     @XmlSchemaType(name = "string")
@@ -127,7 +127,7 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
             for (Object comment : taskData.getComments() ) {
                 commentList.add(new JaxbComment((Comment) comment));
             }
-            this.jaxbComments = commentList;
+            this.comments = commentList;
         }
         User createdByUser = taskData.getCreatedBy();
         if( createdByUser != null ) { 
@@ -156,7 +156,7 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
         for (Object attach : taskData.getAttachments() ) { 
             attachList.add(new JaxbAttachment((Attachment) attach));
         }
-        this.jaxbAttachments = attachList;
+        this.attachments = attachList;
     }
 
     @Override
@@ -276,8 +276,8 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     @JsonIgnore
     public List<Comment> getComments() {
         List<Comment> commentList = new ArrayList<Comment>();
-        if (jaxbComments != null) {
-            for (JaxbComment jaxbComment : jaxbComments) {
+        if (comments != null) {
+            for (JaxbComment jaxbComment : comments) {
                 commentList.add(jaxbComment);
             }
         }
@@ -285,19 +285,19 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     }
 
     public List<JaxbComment> getJaxbComments() {
-        return jaxbComments;
+        return comments;
     }
 
     public void setJaxbComments(List<JaxbComment> jaxbComments) {
-        this.jaxbComments = jaxbComments;
+        this.comments = jaxbComments;
     }
 
     @Override
     @JsonIgnore
     public List<Attachment> getAttachments() {
         List<Attachment> attachmentList = new ArrayList<Attachment>();
-        if (jaxbAttachments != null) {
-            for (JaxbAttachment jaxbAttachment : jaxbAttachments) {
+        if (attachments != null) {
+            for (JaxbAttachment jaxbAttachment : attachments) {
                 attachmentList.add(jaxbAttachment);
             }
         }
@@ -305,11 +305,11 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     }
 
     public List<JaxbAttachment> getJaxbAttachments() {
-        return jaxbAttachments;
+        return attachments;
     }
 
     public void setJaxbAttachments(List<JaxbAttachment> jaxbAttachments) {
-        this.jaxbAttachments = jaxbAttachments;
+        this.attachments = jaxbAttachments;
     }
 
     @Override
@@ -395,7 +395,7 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     }
 
     public void setComments(List<JaxbComment> comments) {
-        this.jaxbComments = comments;
+        this.comments = comments;
     }
 
     public void setDeploymentId(String deploymentId) {
