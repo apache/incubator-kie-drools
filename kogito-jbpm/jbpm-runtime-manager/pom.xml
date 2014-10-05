@@ -137,13 +137,28 @@
     </dependency>
   </dependencies>
   <build>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>false</filtering>
+      </testResource>
+      <testResource>
+        <directory>src/test/filtered-resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
     <plugins>
       <plugin>
         <!-- we need to fork always as we have mixture of both arquillian tests and regular
-      and to avoid clashing between them as both need to setup data source and bound it to JNDI -->
+             and to avoid clashing between them as both need to setup data source and bound it to JNDI -->
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <forkMode>always</forkMode>
+          <systemProperties>
+            <kie.maven.settings.custom>
+              ${project.build.testOutputDirectory}/jbpm-runtime-manager-tests-custom-settings.xml
+            </kie.maven.settings.custom>
+          </systemProperties>
         </configuration>
       </plugin>
 
