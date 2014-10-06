@@ -33,22 +33,25 @@ public class ClassFieldImpl implements FieldValue, Externalizable {
 
     public ClassFieldImpl( Class value ) {
         className = value.getName();
-        type = null;
+        type = value;
     }
 
     public ClassFieldImpl(String value) {
         className = value;
+        try {
+            type = Class.forName(className);
+        } catch (ClassNotFoundException e) { }
     }
 
-
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( type );
-        out.writeObject( className );
+        out.writeUTF( className );
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        type = (Class) in.readObject();
-        className = (String) in.readObject();
+        className = in.readUTF();
+        try {
+            type = Class.forName(className);
+        } catch (ClassNotFoundException e) { }
     }
 
     public Object getValue() {
