@@ -6897,4 +6897,40 @@ public class Misc2Test extends CommonTestMethodBase {
 
     public static class TypeCC extends ValueContainer { }
     public static class TypeDD extends ValueContainer { }
+
+    @Test
+    public void testClassAccumulator() {
+        // DROOLS-626
+        String drl =
+                "global java.util.List list\n" +
+                "declare InitClass\n" +
+                "  clazz: Class\n" +
+                "end\n" +
+                "\n" +
+                "rule \"init\" when\n" +
+                "then\n" +
+                "  insert( new InitClass( String.class ) );\n" +
+                "  insert( new InitClass( Integer.class ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"make init classes\"\n" +
+                "when\n" +
+                "  accumulate( InitClass( $clazz; ), $classes: collectList( $clazz ) )\n" +
+                "then\n" +
+                "  list.addAll($classes);\n" +
+                "end ";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        List<Class> list = new ArrayList<Class>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+
+        assertEquals(2, list.size());
+        System.out.println(list);
+        assertTrue(list.containsAll(asList(String.class, Integer.class)));
+    }
 }
