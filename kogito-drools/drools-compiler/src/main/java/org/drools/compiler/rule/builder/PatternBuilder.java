@@ -47,6 +47,7 @@ import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.EvaluatorWrapper;
+import org.drools.core.base.TypeResolver;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition.Target;
 import org.drools.core.base.evaluators.IsAEvaluatorDefinition;
@@ -381,20 +382,38 @@ public class PatternBuilder
                                        final PatternDescr patternDescr,
                                        final Pattern pattern ) {
         processListenedPropertiesAnnotation( context, patternDescr, pattern );
-        processMetadataAnnotations( patternDescr, pattern );
+        processMetadataAnnotations( patternDescr, pattern, context.getDialect().getTypeResolver() );
     }
 
-    protected void processMetadataAnnotations(PatternDescr patternDescr, Pattern pattern) {
+    protected void processMetadataAnnotations( PatternDescr patternDescr, Pattern pattern, TypeResolver typeResolver ) {
         for ( AnnotationDescr ann : patternDescr.getAnnotations() ) {
             String annFQN = ann.getFullyQualifiedName();
             if ( !Watch.class.getCanonicalName().equals(annFQN) ) {
-                AnnotationDefinition def = new AnnotationDefinition( annFQN );
-                for ( String propKey : ann.getValues().keySet() ) {
-                    def.getValues().put( propKey, new AnnotationDefinition.AnnotationPropertyVal( propKey, null, ann.getValue( propKey ), null ) );
-                }
+                AnnotationDefinition def = buildAnnotationDef( ann, typeResolver );
                 pattern.getAnnotations().put( annFQN, def );
             }
         }        
+    }
+
+    private AnnotationDefinition buildAnnotationDef( AnnotationDescr annotationDescr, TypeResolver resolver ) {
+        AnnotationDefinition annotationDefinition = null;
+        try {
+            annotationDefinition = AnnotationDefinition.build( resolver.resolveType( annotationDescr.getFullyQualifiedName() ),
+                                                               annotationDescr.getValueMap(),
+                                                               resolver );
+            return annotationDefinition;
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            annotationDefinition = new AnnotationDefinition( annotationDescr.getFullyQualifiedName() );
+            for ( String propKey : annotationDescr.getValues().keySet() ) {
+                Object value = annotationDescr.getValue( propKey );
+                if ( value instanceof AnnotationDescr ) {
+                    value = buildAnnotationDef( (AnnotationDescr) value, resolver );
+                }
+                annotationDefinition.getValues().put( propKey, new AnnotationDefinition.AnnotationPropertyVal( propKey, null, value, null ) );
+            }
+            return annotationDefinition;
+        }
     }
 
     protected void processListenedPropertiesAnnotation(RuleBuildContext context, PatternDescr patternDescr, Pattern pattern) {

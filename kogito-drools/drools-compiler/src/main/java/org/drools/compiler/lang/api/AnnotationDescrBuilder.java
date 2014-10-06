@@ -23,10 +23,12 @@ import org.drools.compiler.lang.descr.AnnotationDescr;
  */
 public interface AnnotationDescrBuilder<P extends DescrBuilder< ? , ? >>
     extends
-    DescrBuilder<P, AnnotationDescr> {
+    DescrBuilder<P, AnnotationDescr>,
+    AnnotatedDescrBuilder<AnnotationDescrBuilder<P>> {
 
-    public AnnotationDescrBuilder<P> value( String value );
+    public AnnotationDescrBuilder<P> value( Object value );
 
     public AnnotationDescrBuilder<P> keyValue( String key,
-                                               String value );
+                                               Object value );
+
 }

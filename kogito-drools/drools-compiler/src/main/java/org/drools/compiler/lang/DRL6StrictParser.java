@@ -192,7 +192,7 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
             if (!descr.getAnnotations().isEmpty()) {
                 for (AnnotationDescr annDescr : descr.getAnnotations()) {
                     AnnotationDescrBuilder annotation = builder.newAnnotation(annDescr.getName());
-                    for (Map.Entry<String, String> valueEntry : annDescr.getValueMap().entrySet()) {
+                    for (Map.Entry<String, Object> valueEntry : annDescr.getValueMap().entrySet()) {
                         annotation.keyValue(valueEntry.getKey(), valueEntry.getValue());
                     }
                 }

@@ -28,16 +28,29 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
+import org.drools.compiler.lang.api.impl.AnnotationDescrBuilderImpl;
+import org.drools.compiler.lang.descr.AnnotationDescr;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.core.rule.Pattern;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.theories.suppliers.TestedOn;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Results;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Role;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -49,6 +62,7 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.Position;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
+import org.kie.internal.utils.KieHelper;
 
 public class AnnotationsTest  extends CommonTestMethodBase {
 
@@ -237,7 +251,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
         KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder2.add( new ByteArrayResource( drl2.getBytes() ),
                        ResourceType.DRL );
-        assertEquals( 3,
+        assertEquals( 4,
                       kbuilder2.getErrors().size() );
 
     }
@@ -375,5 +389,188 @@ public class AnnotationsTest  extends CommonTestMethodBase {
         FactType ft = kbase.getFactType( "org.drools.test", "Annot" );
         assertNotNull( ft );
     }
+
+    public static @interface Inner {
+        String text() default "hello";
+        String test() default "world";
+    }
+
+    public static @interface Outer {
+        Inner value();
+        Inner[] values() default {};
+        Class klass() default Object.class;
+        Class[] klasses() default {};
+        int test();
+    }
+
+    public static @interface Simple {
+        int[] numbers();
+    }
+
+    @Test
+    public void testAnnotationWithUnknownProperty() {
+        String drl = "package org.drools.test; " +
+                     "import " + Outer.class.getName().replace( "$", "." ) + "; " +
+                     "import " + Inner.class.getName().replace( "$", "." ) + "; " +
+
+                     "rule Foo " +
+                     "when " +
+                     "  String() @Outer( missing = 3 ) " +
+                     "then " +
+                     "end ";
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+
+        assertEquals( 1, helper.verify().getMessages( Message.Level.ERROR ).size() );
+    }
+
+    @Test
+    public void testAnnotationWithUnknownClass() {
+        String drl = "package org.drools.test; " +
+                     "import " + Outer.class.getName().replace( "$", "." ) + "; " +
+
+                     "rule Foo " +
+                     "when " +
+                     "  String() @Outer( klass = Foo.class ) " +
+                     "then " +
+                     "end ";
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+
+        assertEquals( 1, helper.verify().getMessages( Message.Level.ERROR ).size() );
+    }
+
+    @Test
+    public void testAnnotationWithQualifiandClass() {
+        String drl = "package org.drools.test; " +
+                     "import " + Outer.class.getName().replace( "$", "." ) + "; " +
+
+                     "rule Foo " +
+                     "when " +
+                     "  String() @Outer( klass = String.class, klasses = { String.class, Integer.class } ) " +
+                     "then " +
+                     "end ";
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+
+        Pattern p = ((Pattern) (( RuleImpl ) helper.build().getRule( "org.drools.test", "Foo" )).getLhs().getChildren().get( 0 ));
+        AnnotationDefinition adef = p.getAnnotations().get( Outer.class.getName().replace( "$", "." ) );
+
+        assertEquals( String.class, adef.getPropertyValue( "klass" ) );
+        assertEquals( Arrays.asList( new Class[] { String.class, Integer.class } ),
+                      Arrays.asList( (Class[]) adef.getPropertyValue( "klasses" ) ) );
+
+        assertNotNull( adef );
+
+    }
+
+    @Test
+    public void testNestedAnnotations() {
+        String drl = "package org.drools.test; " +
+                     "import " + Outer.class.getName().replace( "$", "." ) + "; " +
+                     "import " + Inner.class.getName().replace( "$", "." ) + "; " +
+
+                     "rule Foo " +
+                     "when " +
+                     "  String() @Outer( value = @Inner( text = \"world\" ) ) " +
+                     "then " +
+                     "end ";
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+
+        Pattern p = ((Pattern) (( RuleImpl ) helper.build().getRule( "org.drools.test", "Foo" )).getLhs().getChildren().get( 0 ));
+        Map<String,AnnotationDefinition> defs = p.getAnnotations();
+        assertEquals( 1, defs.size() );
+
+        AnnotationDefinition outer = defs.get( Outer.class.getName().replace( "$", "." ) );
+        assertNotNull( outer );
+
+        Object val = outer.getPropertyValue( "value" );
+        assertNotNull( val );
+        assertTrue( val instanceof AnnotationDefinition );
+
+        AnnotationDefinition inner = (AnnotationDefinition) val;
+        assertEquals( "world", inner.getPropertyValue( "text" ) );
+    }
+
+    @Test
+    public void testNestedAnnotationsWithMultiplicity() {
+        String drl = "package org.drools.test; " +
+                     "import " + Outer.class.getName().replace( "$", "." ) + "; " +
+                     "import " + Inner.class.getName().replace( "$", "." ) + "; " +
+
+                     "rule Foo " +
+                     "when " +
+                     "  String() @Outer( values = { @Inner( text = \"hello\" ), @Inner( text = \"world\" ) } ) " +
+                     "then " +
+                     "end ";
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        assertEquals( 0, helper.verify().getMessages().size() );
+
+        Pattern p = ((Pattern) (( RuleImpl ) helper.build().getRule( "org.drools.test", "Foo" )).getLhs().getChildren().get( 0 ));
+        Map<String,AnnotationDefinition> defs = p.getAnnotations();
+        assertEquals( 1, defs.size() );
+
+        AnnotationDefinition outer = defs.get( Outer.class.getName().replace( "$", "." ) );
+        assertNotNull( outer );
+
+        Object val = outer.getPropertyValue( "values" );
+        assertNotNull( val );
+        assertTrue( val instanceof AnnotationDefinition[] );
+
+
+    }
+
+    @Test
+    public void testTypedSimpleArrays() {
+        String drl = "package org.drools.test; " +
+                     "import " + Simple.class.getName().replace( "$", "." ) + "; " +
+
+                     "rule Foo " +
+                     "when " +
+                     "  String() @Simple( numbers = { 1, 2, 3 } ) " +
+                     "then " +
+                     "end ";
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+
+        Pattern p = ((Pattern) (( RuleImpl ) helper.build().getRule( "org.drools.test", "Foo" )).getLhs().getChildren().get( 0 ));
+        Map<String,AnnotationDefinition> defs = p.getAnnotations();
+        assertEquals( 1, defs.size() );
+
+        AnnotationDefinition simple = defs.get( Simple.class.getName().replace( "$", "." ) );
+        assertNotNull( simple );
+
+        Object val = simple.getPropertyValue( "numbers" );
+        assertTrue( val instanceof int[] );
+
+    }
+
+
+    @Test
+    public void testRuleAnnotations() {
+        String drl = "package org.drools.test; " +
+                     "import " + Inner.class.getName().replace( "$", "." ) + "; " +
+
+                     "rule Foo " +
+                     "@Inner( text=\"a\", test=\"b\" ) " +
+                     "when " +
+                     "then " +
+                     "end ";
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+
+        Rule rule = helper.build().getRule( "org.drools.test", "Foo" );
+        assertTrue( rule.getMetaData().containsKey( Inner.class.getName().replace( "$", "." ) ) );
+
+        Object obj = rule.getMetaData().get( Inner.class.getName().replace( "$", "." ) );
+        assertNotNull( obj );
+        assertTrue( obj instanceof Map );
+        assertEquals( "b", ((Map) obj).get( "test" ) );
+        assertEquals( "a", ((Map) obj).get( "text" ) );
+
+    }
+
 
 }

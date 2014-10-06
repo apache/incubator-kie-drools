@@ -1,8 +1,11 @@
 package org.drools.compiler.lang.descr;
 
+import org.drools.core.factmodel.PropertyMap;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,14 +24,14 @@ import java.util.Map;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class AnnotationDescr extends BaseDescr {
+public class AnnotationDescr extends AnnotatedBaseDescr implements PropertyMap {
 
-    private static final String VALUE = "value";
+    public static final String VALUE = "value";
     private static final long serialVersionUID = 520l;
 
     private String name;
     private String fullyQualifiedName;
-    private Map<String, String> values;
+    private Map<String, Object> values;
 
     private boolean duplicated = false;
     private boolean strict = false;
@@ -48,7 +51,7 @@ public class AnnotationDescr extends BaseDescr {
 
     public AnnotationDescr(final String name) {
         this.name = name;
-        this.values = new HashMap<String, String>();
+        this.values = new HashMap<String, Object>();
     }
 
     public AnnotationDescr(final String name,
@@ -62,7 +65,7 @@ public class AnnotationDescr extends BaseDescr {
                                                     ClassNotFoundException {
         super.readExternal(in);
         this.name = (String) in.readObject();
-        this.values = (Map<String, String>) in.readObject();
+        this.values = (Map<String, Object>) in.readObject();
         this.fullyQualifiedName = (String) in.readObject();
         this.duplicated = in.readBoolean();
         this.strict = in.readBoolean();
@@ -70,7 +73,7 @@ public class AnnotationDescr extends BaseDescr {
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
+        super.writeExternal( out );
         out.writeObject(name);
         out.writeObject(values);
         out.writeObject(fullyQualifiedName);
@@ -94,20 +97,20 @@ public class AnnotationDescr extends BaseDescr {
         return !this.values.isEmpty();
     }
 
-    public void setValue(final String value) {
+    public void setValue(final Object value) {
         this.values.put(VALUE, value);
     }
 
     public void setKeyValue(final String key,
-                            final String value) {
+                            final Object value) {
         this.values.put(key, value);
     }
 
-    public String getValue(final String key) {
+    public Object getValue(final String key) {
         return this.values.get(key);
     }
 
-    public Map<String, String> getValues() {
+    public Map<String, Object> getValues() {
         return this.values;
     }
 
@@ -125,27 +128,27 @@ public class AnnotationDescr extends BaseDescr {
         Object single = getSingleValueStripped();
         if (single != null) return single;
         Map<String, String> sMap = new HashMap<String, String>();
-        for (Map.Entry<String, String> entry : this.values.entrySet()) {
-            sMap.put(entry.getKey(), unquote(entry.getValue()));
+        for (Map.Entry<String, Object> entry : this.values.entrySet()) {
+            sMap.put(entry.getKey(), unquote(entry.getValue().toString()));
         }
         return sMap;
     }
 
-    public Map<String, String> getValueMap() {
+    public Map<String, Object> getValueMap() {
         return this.values;
     }
 
-    public String getSingleValue() {
-        if (values.size() == 1 && values.containsKey("value")) {
-            return this.values.get("value");
+    public Object getSingleValue() {
+        if (values.size() == 1 && values.containsKey(VALUE)) {
+            return this.values.get(VALUE);
         } else {
             return null;
         }
     }
 
-    public String getSingleValueStripped() {
-        if (values.size() == 1 && values.containsKey("value")) {
-            return unquote(this.values.get("value"));
+    public Object getSingleValueStripped() {
+        if (values.size() == 1 && values.containsKey(VALUE)) {
+            return unquote( this.values.get( VALUE ).toString() );
         } else {
             return null;
         }
@@ -171,12 +174,27 @@ public class AnnotationDescr extends BaseDescr {
         return true;
     }
 
+    public String getSingleValueAsString() {
+        return getValueAsString( VALUE );
+    }
+
+    public String getValueAsString( String key ) {
+        Object x = getValue( key );
+        if ( x == null ) {
+            return null;
+        } else if ( x.getClass().isArray() ) {
+            return Arrays.toString( (Object[]) x );
+        } else {
+            return x.toString();
+        }
+    }
+
     public String getValuesAsString() {
         switch (values.size()) {
             case 0:
                 return "";
             case 1:
-                return getSingleValue();
+                return getSingleValue().toString();
             default:
                 StringBuilder sb = new StringBuilder();
 

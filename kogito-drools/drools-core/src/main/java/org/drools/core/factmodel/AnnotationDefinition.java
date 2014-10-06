@@ -25,8 +25,10 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -102,7 +104,7 @@ public class AnnotationDefinition implements Externalizable, Annotation {
         }
     }
 
-    public static AnnotationDefinition build(Class annotationClass, Map<String, String> valueMap, TypeResolver resolver) throws NoSuchMethodException {
+    public static AnnotationDefinition build(Class annotationClass, Map<String, Object> valueMap, TypeResolver resolver) throws NoSuchMethodException {
         AnnotationDefinition annotationDefinition = new AnnotationDefinition(annotationClass.getName());
         HashMap<String,AnnotationPropertyVal> values = new HashMap<String,AnnotationPropertyVal>();
         for (String key : valueMap.keySet()) {
@@ -115,17 +117,17 @@ public class AnnotationDefinition implements Externalizable, Annotation {
         return annotationDefinition;
     }
 
-    private static AnnotationPropertyVal rebuild(String key, Class annotationClass, String valueStr, TypeResolver resolver) throws NoSuchMethodException {
+    private static AnnotationPropertyVal rebuild(String key, Class annotationClass, Object value, TypeResolver resolver) throws NoSuchMethodException {
         if (annotationClass == Role.class) {
             return new AnnotationPropertyVal(key,
                                              Role.Type.class,
-                                             valueStr.equalsIgnoreCase("event") ? Role.Type.EVENT : Role.Type.FACT,
+                                             value != null && value.toString().equalsIgnoreCase("event") ? Role.Type.EVENT : Role.Type.FACT,
                                              AnnotationPropertyVal.ValType.ENUMERATION);
         }
 
         Method prop = annotationClass.getMethod(key);
         Class returnType = prop.getReturnType();
-        Object val = decode(returnType, valueStr, resolver);
+        Object val = decode(returnType, value, resolver);
         AnnotationPropertyVal.ValType valType;
 
         if (returnType.isPrimitive()) {
@@ -153,23 +155,20 @@ public class AnnotationDefinition implements Externalizable, Annotation {
         return new AnnotationPropertyVal(key, returnType, val, valType);
     }
 
-    private static Object decode(Class returnType, String valueStr, TypeResolver resolver) {
-        if (returnType.isArray()) {
-            int sIndex = valueStr.indexOf("{");
-            int eIndex = valueStr.lastIndexOf("}");
-            String content = valueStr.substring(sIndex+1,eIndex).trim();
-            StringTokenizer tok = new StringTokenizer(content,",");
-            Object ar = java.lang.reflect.Array.newInstance(returnType.getComponentType(),tok.countTokens());
-            int j = 0;
-            while (tok.hasMoreElements()) {
-                java.lang.reflect.Array.set(ar, j++, decode(returnType.getComponentType(), tok.nextToken(), resolver));
+    private static Object decode( Class returnType, Object value, TypeResolver resolver ) {
+        if ( returnType.isArray() ) {
+            int n = Array.getLength( value );
+            Class targetType = returnType.getComponentType().isAnnotation() ? AnnotationDefinition.class : returnType.getComponentType();
+            Object ar = java.lang.reflect.Array.newInstance( targetType, n );
+            for ( int j = 0; j < n; j++ ) {
+                java.lang.reflect.Array.set(ar, j, decode( returnType.getComponentType(), Array.get( value, j ), resolver) );
             }
             return ar;
         } else if (returnType.isEnum()) {
             try {
-                String value = valueStr.trim();
-                if (value.indexOf('.') > 0) {
-                    value = valueStr.substring(valueStr.lastIndexOf(".")+1);
+                String valueStr = value.toString().trim();
+                if (valueStr.indexOf('.') > 0) {
+                    value = valueStr.substring( valueStr.lastIndexOf(".")+1);
                 }
                 return returnType.getMethod("valueOf",String.class).invoke(null,value);
             } catch (IllegalAccessException e) {
@@ -180,28 +179,35 @@ public class AnnotationDefinition implements Externalizable, Annotation {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         } else if (String.class.equals(returnType)) {
-            return unquote(valueStr);
+            return unquote( value.toString().trim() );
         } else if (boolean.class.equals(returnType)) {
-            return Boolean.valueOf(valueStr);
+            return Boolean.valueOf( value.toString() );
         } else if (int.class.equals(returnType)) {
-            return Integer.valueOf(valueStr);
+            return Integer.valueOf( value.toString() );
         } else if (double.class.equals(returnType)) {
-            return Double.valueOf(valueStr);
+            return Double.valueOf( value.toString() );
         } else if (long.class.equals(returnType)) {
-            return Long.valueOf(valueStr);
+            return Long.valueOf( value.toString() );
         } else if (float.class.equals(returnType)) {
-            return Float.valueOf(valueStr);
+            return Float.valueOf( value.toString() );
         } else if (short.class.equals(returnType)) {
-            return Short.valueOf(valueStr);
+            return Short.valueOf( value.toString() );
         } else if (char.class.equals(returnType)) {
-            return unquote(valueStr).charAt(0);
+            return unquote( value.toString() ).charAt(0);
         } else if (Class.class.equals(returnType)) {
             try {
-                String cName = valueStr.trim().replace(".class","");
+                String cName = value.toString().trim().replace(".class","");
                 return resolver.resolveType(cName);
             } catch (ClassNotFoundException cnfe) {
                 cnfe.printStackTrace();
                 return Object.class;
+            }
+        } else if (returnType.isAnnotation()) {
+            try {
+                return build( returnType, ((PropertyMap) value).getValues(), resolver );
+            } catch ( NoSuchMethodException e ) {
+                e.printStackTrace();
+                return null;
             }
         }
         return null;
@@ -233,7 +239,7 @@ public class AnnotationDefinition implements Externalizable, Annotation {
         private ValType valType;
 
         public static enum ValType {
-            PRIMITIVE, KLASS, STRING, ENUMERATION, STRINGARRAY, ENUMARRAY, PRIMARRAY, CLASSARRAY;
+            PRIMITIVE, KLASS, STRING, ENUMERATION, STRINGARRAY, ENUMARRAY, PRIMARRAY, CLASSARRAY, ANNOTATION;
         }
 
         public AnnotationPropertyVal() { }
