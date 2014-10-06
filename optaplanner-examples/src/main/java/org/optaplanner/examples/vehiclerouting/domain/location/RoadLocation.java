@@ -48,6 +48,9 @@ public class RoadLocation extends Location {
 
     @Override
     public int getDistance(Location location) {
+        if (this == location) {
+            return 0;
+        }
         double distance = travelDistanceMap.get((RoadLocation) location);
         // Multiplied by 1000 to avoid floating point arithmetic rounding errors
         return (int) (distance * 1000.0 + 0.5);
