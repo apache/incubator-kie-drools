@@ -113,6 +113,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1486,7 +1488,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             pkgRegistry.addImport(importDescr);
         }
 
-        normalizeAnnotations(packageDescr);
+        normalizeTypeDeclarationAnnotations( packageDescr );
         processAccumulateFunctions(pkgRegistry, packageDescr);
         processEntryPointDeclarations(pkgRegistry, packageDescr);
 
@@ -1506,6 +1508,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
 
         processOtherDeclarations( pkgRegistry, packageDescr );
+        normalizeRuleAnnotations( packageDescr );
     }
 
     void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
@@ -2207,7 +2210,18 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
-    public void normalizeAnnotations(PackageDescr packageDescr) {
+    public void normalizeTypeDeclarationAnnotations(PackageDescr packageDescr) {
+        TypeResolver typeResolver = pkgRegistryMap.get(packageDescr.getName()).getTypeResolver();
+        boolean isStrict = configuration.getLanguageLevel().useJavaAnnotations();
+        for (TypeDeclarationDescr typeDeclarationDescr : packageDescr.getTypeDeclarations()) {
+            normalizeAnnotations(typeDeclarationDescr, typeResolver, isStrict);
+            for (TypeFieldDescr typeFieldDescr : typeDeclarationDescr.getFields().values()) {
+                normalizeAnnotations(typeFieldDescr, typeResolver, isStrict);
+            }
+        }
+    }
+
+    public void normalizeRuleAnnotations(PackageDescr packageDescr) {
         TypeResolver typeResolver = pkgRegistryMap.get(packageDescr.getName()).getTypeResolver();
         boolean isStrict = configuration.getLanguageLevel().useJavaAnnotations();
         for (RuleDescr ruleDescr : packageDescr.getRules()) {
@@ -2216,12 +2230,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 if (baseDescr instanceof AnnotatedBaseDescr) {
                     normalizeAnnotations((AnnotatedBaseDescr)baseDescr, typeResolver, isStrict);
                 }
-            }
-        }
-        for (TypeDeclarationDescr typeDeclarationDescr : packageDescr.getTypeDeclarations()) {
-            normalizeAnnotations(typeDeclarationDescr, typeResolver, isStrict);
-            for (TypeFieldDescr typeFieldDescr : typeDeclarationDescr.getFields().values()) {
-                normalizeAnnotations(typeFieldDescr, typeResolver, isStrict);
             }
         }
     }
@@ -2243,7 +2251,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         annotationsContainer.indexByFQN(isStrict);
     }
 
-    private void normalizeAnnotation(TypeResolver typeResolver, AnnotationDescr annotationDescr) {
+    private AnnotationDescr normalizeAnnotation(TypeResolver typeResolver, AnnotationDescr annotationDescr) {
         Class<?> annotationClass = null;
         try {
             annotationClass = typeResolver.resolveType(annotationDescr.getName(), TypeResolver.ONLY_ANNOTATION_CLASS_FILTER);
@@ -2257,8 +2265,58 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
         if (annotationClass != null) {
             annotationDescr.setFullyQualifiedName(annotationClass.getCanonicalName());
+
+            for ( String key : annotationDescr.getValueMap().keySet() ) {
+                try {
+                    Method m = annotationClass.getMethod( key );
+                    Object val = annotationDescr.getValue( key );
+                    if ( val instanceof Object[] && ! m.getReturnType().isArray() ) {
+                        addBuilderResult( new AnnotationDeclarationError( annotationDescr,
+                                                                          "Wrong cardinality on property " + key ) );
+                        return annotationDescr;
+                    }
+                    if ( m.getReturnType().isArray() && ! (val instanceof Object[]) ) {
+                        val = new Object[] { val };
+                        annotationDescr.setKeyValue( key, val );
+                    }
+
+                    if ( m.getReturnType().isArray() ) {
+                        int n = Array.getLength( val );
+                        Object ar = java.lang.reflect.Array.newInstance( m.getReturnType().getComponentType(), n );
+                        for ( int j = 0; j < n; j++ ) {
+                            if ( Class.class.equals( m.getReturnType().getComponentType() ) ) {
+                                String className = Array.get( val, j ).toString().replace( ".class", "" );
+                                Array.set( val, j, typeResolver.resolveType( className ).getName() + ".class" );
+                            } else if ( m.getReturnType().getComponentType().isAnnotation() ) {
+                                Array.set( val, j, normalizeAnnotation( typeResolver,
+                                                                        (AnnotationDescr) Array.get( val, j ) ) );
+                            }
+                        }
+                    } else {
+                        if ( Class.class.equals( m.getReturnType() ) ) {
+                            String className = annotationDescr.getValueAsString( key ).toString().replace( ".class", "" );
+                            annotationDescr.setKeyValue( key, typeResolver.resolveType( className ).getName() + ".class" );
+                        } else if ( m.getReturnType().isAnnotation() ) {
+                            annotationDescr.setKeyValue( key,
+                                                         normalizeAnnotation( typeResolver,
+                                                                              (AnnotationDescr) annotationDescr.getValue( key ) ) );
+                        }
+                    }
+                } catch ( NoSuchMethodException e ) {
+                    addBuilderResult( new AnnotationDeclarationError( annotationDescr,
+                                                                      "Unknown annotation property " + key ) );
+                } catch ( ClassNotFoundException e ) {
+                    addBuilderResult( new AnnotationDeclarationError( annotationDescr,
+                                                                      "Unknown class " + annotationDescr.getValue( key ) +                                                                      " used in property " + key +
+                                                                      " of annotation " + annotationDescr.getName() ) );
+                }
+
+            }
         }
+        return annotationDescr;
     }
+
+
 
     private String normalizeAnnotationNonStrictName(String name) {
         if ("typesafe".equalsIgnoreCase(name)) {

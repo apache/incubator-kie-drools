@@ -66,7 +66,7 @@ public class TypeDeclarationDescrVisitor {
             }
 
             for (AnnotationDescr annDescr : typeDeclaration.getAnnotations()) {
-                Map<String, String> values = typeDeclaration.getAnnotation(annDescr.getName()).getValueMap();
+                Map<String, Object> values = typeDeclaration.getAnnotation(annDescr.getName()).getValueMap();
                 for (String value : values.keySet()) {
                     objectType.getMetadata().put(annDescr.getName(), value);
                 }

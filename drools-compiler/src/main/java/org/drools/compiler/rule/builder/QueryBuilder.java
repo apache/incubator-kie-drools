@@ -55,7 +55,7 @@ public class QueryBuilder implements EngineElementBuilder {
 
         if ( query.isAbductive() ) {
             AnnotationDescr ann = queryDescr.getAnnotation( Abductive.class );
-            String returnName = ann.getValue( "target" );
+            String returnName = ann.getValueAsString( "target" );
             try {
                 Class<?> returnKlass = context.getPkg().getTypeResolver().resolveType( returnName.replace( ".class", "" ) );
                 ClassObjectType objectType = new ClassObjectType( returnKlass, false );

@@ -56,7 +56,7 @@ public class AnnotationFactory {
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException("Invoked not existing method " + method.getName() + " on annotation " + annotationClass.getName());
             }
-            String value = annotationDescr.getValue(method.getName());
+            Object value = annotationDescr.getValue(method.getName());
             return value == null ? method.getDefaultValue() : normalizeResult(method.getReturnType(), value);
         }
 
@@ -76,7 +76,8 @@ public class AnnotationFactory {
             return annotationDescr.toString();
         }
 
-        private Object normalizeResult(Class<?> resultClass, String value) {
+        private Object normalizeResult(Class<?> resultClass, Object val) {
+            String value = val.toString();
             if ( resultClass == String.class ) {
                 if ( annotationDescr.isStrict() ) {
                     // quotes on a String value of a strict annotation are required

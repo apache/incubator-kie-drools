@@ -30,6 +30,7 @@ import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.AgendaGroup;
@@ -51,7 +52,9 @@ import org.kie.api.definition.rule.Eager;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
@@ -124,18 +127,34 @@ public class RuleBuilder {
         RuleImpl rule = context.getRule();
         for ( String metaAttr : context.getRuleDescr().getAnnotationNames() ) {
             AnnotationDescr ad = context.getRuleDescr().getAnnotation( metaAttr );
-            if ( ad.hasValue() ) {
-                if ( ad.getValues().size() == 1 ) {
-                    rule.addMetaAttribute( metaAttr,
-                                           resolveValue( ad.getSingleValue() ) );
+            try {
+                AnnotationDefinition annotationDefinition = AnnotationDefinition.build( context.getDialect().getTypeResolver().resolveType( ad.getFullyQualifiedName() ),
+                                                                                        ad.getValueMap(),
+                                                                                        context.getDialect().getTypeResolver() );
+                if ( annotationDefinition.getValues().size() == 1 && annotationDefinition.getValues().containsKey( AnnotationDescr.VALUE ) ) {
+                    rule.addMetaAttribute( metaAttr, annotationDefinition.getPropertyValue( AnnotationDescr.VALUE ) );
+                } else {
+                    Map<String,Object> map = new HashMap<String,Object>( annotationDefinition.getValues().size() );
+                    for ( String key : annotationDefinition.getValues().keySet() ) {
+                        map.put( key, annotationDefinition.getPropertyValue( key ) );
+                    }
+                    rule.addMetaAttribute( metaAttr, map );
+                }
+            } catch ( Exception e ) {
+                if ( ad.hasValue() ) {
+                    if ( ad.getValues().size() == 1 ) {
+                        rule.addMetaAttribute( metaAttr,
+                                               resolveValue( ad.getSingleValueAsString() ) );
+                    } else {
+                        rule.addMetaAttribute( metaAttr,
+                                               ad.getValueMap() );
+                    }
                 } else {
                     rule.addMetaAttribute( metaAttr,
-                                           ad.getValueMap() );
+                                           null );
                 }
-            } else {
-                rule.addMetaAttribute( metaAttr,
-                                       null );
             }
+
         }
     }
 
