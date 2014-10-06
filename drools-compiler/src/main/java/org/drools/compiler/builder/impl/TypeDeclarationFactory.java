@@ -153,7 +153,7 @@ public class TypeDeclarationFactory {
 
                         if ( fieldCount != typeDescr.getFields().size() ) {
                             kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, "New declaration of "+typeDescr.getType().getFullName()
-                                                                                          +" can't declaredeclares a different set of fields \n" +
+                                                                                          +" can't declare a different set of fields \n" +
                                                                                           "existing : " + cfi.getFieldTypesField() + "\n" +
                                                                                           "declared : " + typeDescr.getFields() ));
 
