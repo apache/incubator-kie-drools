@@ -6843,4 +6843,58 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(2, list.size());
         assertTrue(list.containsAll(asList(3, 6)));
     }
+
+    @Test
+    public void testNotSubnetwork() {
+        // DROOLS-623
+        String drl =
+                "import " + TypeCC.class.getCanonicalName() + ";\n" +
+                "import " + TypeDD.class.getCanonicalName() + ";\n" +
+                "  \n" +
+                "rule R1 \n" +
+                "when  \n" +
+                "   $dd : TypeDD( value < 1 )\n" +
+                "then  \n" +
+                "	System.out.println(\"Rule R1 Fired\");\n" +
+                "	modify($dd) { setValue(1); }\n" +
+                "end  \n" +
+                "  \n" +
+                "rule R2 when  \n" +
+                "   String( )  \n" +
+                "   $cc : TypeCC( value < 1 )\n" +
+                "   not(  \n" +
+                "	   $cc_not : TypeCC( )  \n" +
+                "	   and  \n" +
+                "	   $dd_not : TypeDD( value==0 )  \n" +
+                "   )  \n" +
+                "then  \n" +
+                "   System.out.println(\"Rule R2 Fired\");\n" +
+                "   modify($cc) { setValue($cc.getValue()+1); }\n" +
+                "end; ";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+        ksession.insert("1");
+        ksession.insert("2");
+
+        TypeCC cc = new TypeCC();
+        ksession.insert(cc);
+        ksession.insert(new TypeDD());
+
+        ksession.fireAllRules();
+
+        System.out.println("Rule R2 is fired count - " +cc.getValue());
+
+        assertEquals("Rule 2 should be fired once as we have firing rule as one of criteria checking rule only fire once",1,cc.getValue());
+    }
+
+    public static class ValueContainer {
+        private int value;
+        public int getValue() { return value; }
+        public void setValue(int value) { this.value = value; }
+    }
+
+    public static class TypeCC extends ValueContainer { }
+    public static class TypeDD extends ValueContainer { }
 }

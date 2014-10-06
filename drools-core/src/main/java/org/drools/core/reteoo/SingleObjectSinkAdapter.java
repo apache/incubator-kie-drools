@@ -16,16 +16,16 @@
 
 package org.drools.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.spi.PropagationContext;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
@@ -96,12 +96,13 @@ public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
             throw new RuntimeException( "Should not be possible to have link into a node of type" + sink);
         }
 
-        if ( bm.getRightTupleMemory().size() == 0 && bm.getStagedRightTuples().isEmpty() ) {
-            bm.linkNode( wm );
-        } else if (  bm.getStagedRightTuples().isEmpty() ) {
-            bm.setNodeDirty(wm);
+        if ( bm.getStagedRightTuples().isEmpty() ) {
+            if ( bm.getRightTupleMemory().size() == 0 ) {
+                bm.linkNode(wm);
+            } else {
+                bm.setNodeDirty(wm);
+            }
         }
-
     }
     
     public void  doUnlinkRiaNode( InternalWorkingMemory wm) {
@@ -119,8 +120,13 @@ public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
             bm = (BetaMemory) BetaNode.getBetaMemoryFromRightInput(betaNode, wm);                       
         } else {
             throw new RuntimeException( "Should not be possible to have link into a node of type" + sink);
-        }        
-        bm.unlinkNode( wm );
+        }
+
+        if (sink.getType() == NodeTypeEnums.NotNode) {
+            bm.linkNode(wm);
+        } else {
+            bm.unlinkNode(wm);
+        }
     }
 
     public BaseNode getMatchingNode(BaseNode candidate) {
