@@ -231,7 +231,7 @@ public class AnnotationsTest extends CommonTestMethodBase {
         KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder2.add( new ByteArrayResource( drl2.getBytes() ),
                        ResourceType.DRL );
-        assertEquals( 3,
+        assertEquals( 4,
                       kbuilder2.getErrors().size() );
 
     }

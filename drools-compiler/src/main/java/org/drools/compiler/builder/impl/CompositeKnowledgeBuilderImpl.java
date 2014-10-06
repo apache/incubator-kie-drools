@@ -99,16 +99,23 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     private void buildPackages() {
         Collection<CompositePackageDescr> packages = buildPackageDescr();
         initPackageRegistries(packages);
-        normalizeAnnotation( packages );
+        normalizeTypeAnnotations( packages );
         buildTypeDeclarations(packages);
         buildEntryPoints( packages );
         buildOtherDeclarations(packages);
+        normalizeRuleAnnotations( packages );
         buildRules(packages);
     }
 
-    private void normalizeAnnotation( Collection<CompositePackageDescr> packages ) {
+    private void normalizeTypeAnnotations( Collection<CompositePackageDescr> packages ) {
         for (CompositePackageDescr packageDescr : packages) {
-            kBuilder.normalizeAnnotations(packageDescr);
+            kBuilder.normalizeTypeDeclarationAnnotations( packageDescr );
+        }
+    }
+      
+    private void normalizeRuleAnnotations( Collection<CompositePackageDescr> packages ) {
+        for (CompositePackageDescr packageDescr : packages) {
+            kBuilder.normalizeRuleAnnotations( packageDescr );
         }
     }
 
