@@ -1,5 +1,8 @@
 package org.drools.decisiontable.parser;
 
+import org.drools.template.model.SnippetBuilder;
+import org.drools.template.parser.DecisionTableParseException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,9 +11,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.drools.template.model.SnippetBuilder;
-import org.drools.template.parser.DecisionTableParseException;
 
 /**
  * This utility will build up a list of constraints for a column.
@@ -55,7 +55,7 @@ public class LhsBuilder implements SourceBuilder {
 
     private static final Pattern patParFrm = Pattern.compile( "\\(\\s*\\)\\s*from\\b" );
     private static final Pattern patFrm = Pattern.compile( "\\s+from\\s+" );
-    private static final Pattern patPar = Pattern.compile( "\\(\\s*\\)" );
+    private static final Pattern patPar    = Pattern.compile ("\\(\\s*\\)\\s*\\Z");
     private static final Pattern patEval = Pattern.compile( "\\beval\\s*(?:\\(\\s*\\)\\s*)?$" );
 
     /**
