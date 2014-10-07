@@ -25,6 +25,7 @@ import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
+import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -36,6 +37,9 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionPr
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.BetaDistributionNearbyRandom;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearEntityNearbyMethod;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.FromEntityPropertyValueSelector;
@@ -50,12 +54,16 @@ import org.optaplanner.core.impl.heuristic.selector.value.decorator.Reinitialize
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.SelectedCountLimitValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ShufflingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.SortingValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.nearby.NearEntityNearbyValueSelector;
 
 @XStreamAlias("valueSelector")
 public class ValueSelectorConfig extends SelectorConfig {
 
     protected Class<?> downcastEntityClass = null;
     protected String variableName = null;
+    @XStreamAlias("nearbyOriginEntitySelector")
+    protected EntitySelectorConfig nearbyOriginEntitySelectorConfig = null;
+    protected Class<? extends NearEntityNearbyMethod> nearEntityNearbyMethodClass = null;
 
     protected SelectionCacheType cacheType = null;
     protected SelectionOrder selectionOrder = null;
@@ -86,6 +94,22 @@ public class ValueSelectorConfig extends SelectorConfig {
 
     public void setVariableName(String variableName) {
         this.variableName = variableName;
+    }
+
+    public EntitySelectorConfig getNearbyOriginEntitySelectorConfig() {
+        return nearbyOriginEntitySelectorConfig;
+    }
+
+    public void setNearbyOriginEntitySelectorConfig(EntitySelectorConfig nearbyOriginEntitySelectorConfig) {
+        this.nearbyOriginEntitySelectorConfig = nearbyOriginEntitySelectorConfig;
+    }
+
+    public Class<? extends NearEntityNearbyMethod> getNearEntityNearbyMethodClass() {
+        return nearEntityNearbyMethodClass;
+    }
+
+    public void setNearEntityNearbyMethodClass(Class<? extends NearEntityNearbyMethod> nearEntityNearbyMethodClass) {
+        this.nearEntityNearbyMethodClass = nearEntityNearbyMethodClass;
     }
 
     public SelectionCacheType getCacheType() {
@@ -177,6 +201,38 @@ public class ValueSelectorConfig extends SelectorConfig {
     public ValueSelector buildValueSelector(HeuristicConfigPolicy configPolicy,
             EntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
+        entityDescriptor = downcastEntityDescriptor(configPolicy, entityDescriptor);
+        GenuineVariableDescriptor variableDescriptor = deduceVariableDescriptor(entityDescriptor, variableName);
+        SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
+        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
+                inheritedSelectionOrder);
+
+        validateNearby(resolvedCacheType, resolvedSelectionOrder);
+        validateCacheTypeVersusSelectionOrder(resolvedCacheType, resolvedSelectionOrder);
+        validateSorting(resolvedSelectionOrder);
+        validateProbability(resolvedSelectionOrder);
+        validateSelectedLimit(minimumCacheType);
+
+        // baseValueSelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
+        ValueSelector valueSelector = buildBaseValueSelector(configPolicy, variableDescriptor,
+                SelectionCacheType.max(minimumCacheType, resolvedCacheType),
+                determineBaseRandomSelection(variableDescriptor, resolvedCacheType, resolvedSelectionOrder));
+
+        valueSelector = applyNearby(configPolicy, minimumCacheType, resolvedCacheType, resolvedSelectionOrder, valueSelector);
+//        valueSelector = applyFiltering(variableDescriptor, resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applyInitializedChainedValueFilter(configPolicy, variableDescriptor,
+                resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applySelectedLimit(resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applyReinitializeVariableFiltering(configPolicy, valueSelector);
+        valueSelector = applyDowncasting(configPolicy, valueSelector);
+        return valueSelector;
+    }
+
+    protected EntityDescriptor downcastEntityDescriptor(HeuristicConfigPolicy configPolicy, EntityDescriptor entityDescriptor) {
         if (downcastEntityClass != null) {
             Class<?> parentEntityClass = entityDescriptor.getEntityClass();
             if (!parentEntityClass.isAssignableFrom(downcastEntityClass)) {
@@ -195,32 +251,7 @@ public class ValueSelectorConfig extends SelectorConfig {
                         + "), check your Solution implementation's annotated methods too.");
             }
         }
-        GenuineVariableDescriptor variableDescriptor = deduceVariableDescriptor(entityDescriptor, variableName);
-        SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
-        SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder,
-                inheritedSelectionOrder);
-
-        validateCacheTypeVersusSelectionOrder(resolvedCacheType, resolvedSelectionOrder);
-        validateSorting(resolvedSelectionOrder);
-        validateProbability(resolvedSelectionOrder);
-        validateSelectedLimit(minimumCacheType);
-
-        // baseValueSelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
-        ValueSelector valueSelector = buildBaseValueSelector(configPolicy, variableDescriptor,
-                SelectionCacheType.max(minimumCacheType, resolvedCacheType),
-                determineBaseRandomSelection(variableDescriptor, resolvedCacheType, resolvedSelectionOrder));
-
-//        valueSelector = applyFiltering(variableDescriptor, resolvedCacheType, resolvedSelectionOrder, valueSelector);
-        valueSelector = applyInitializedChainedValueFilter(configPolicy, variableDescriptor,
-                resolvedCacheType, resolvedSelectionOrder, valueSelector);
-        valueSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, valueSelector);
-        valueSelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, valueSelector);
-        valueSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, valueSelector);
-        valueSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, valueSelector);
-        valueSelector = applySelectedLimit(resolvedCacheType, resolvedSelectionOrder, valueSelector);
-        valueSelector = applyReinitializeVariableFiltering(configPolicy, valueSelector);
-        valueSelector = applyDowncasting(configPolicy, valueSelector);
-        return valueSelector;
+        return entityDescriptor;
     }
 
     protected boolean determineBaseRandomSelection(GenuineVariableDescriptor variableDescriptor,
@@ -265,6 +296,52 @@ public class ValueSelectorConfig extends SelectorConfig {
             // TODO Do not allow PHASE cache on FromEntityPropertyValueSelector, except if the moveSelector is PHASE cached too.
             return new FromEntityPropertyValueSelector(valueRangeDescriptor, randomSelection);
         }
+    }
+
+    private void validateNearby(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder) {
+        if (nearbyOriginEntitySelectorConfig != null || nearEntityNearbyMethodClass != null) {
+            if (nearbyOriginEntitySelectorConfig == null) {
+                throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                        + ") is nearby selection"
+                        + " but lacks a nearbyOriginEntitySelector (" + nearbyOriginEntitySelectorConfig + ").");
+            }
+            if (nearEntityNearbyMethodClass == null) {
+                throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                        + ") is nearby selection"
+                        + " but lacks a nearEntityNearbyMethodClass (" + nearEntityNearbyMethodClass + ").");
+            }
+            if (resolvedSelectionOrder != SelectionOrder.ORIGINAL && resolvedSelectionOrder != SelectionOrder.RANDOM) {
+                throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                        + ") with nearbyOriginEntitySelector ("  + nearbyOriginEntitySelectorConfig
+                        + ") and nearEntityNearbyMethodClass ("  + nearEntityNearbyMethodClass
+                        + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
+                        + ") that is not " + SelectionOrder.ORIGINAL + " or " + SelectionOrder.RANDOM + ".");
+            }
+            if (resolvedCacheType.isCached()) {
+                throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                        + ") with nearbyOriginEntitySelector ("  + nearbyOriginEntitySelectorConfig
+                        + ") and nearEntityNearbyMethodClass ("  + nearEntityNearbyMethodClass
+                        + ") has a resolvedCacheType (" + resolvedCacheType
+                        + ") that is cached.");
+            }
+        }
+    }
+
+    private ValueSelector applyNearby(HeuristicConfigPolicy configPolicy,
+            SelectionCacheType minimumCacheType, SelectionCacheType resolvedCacheType,
+            SelectionOrder resolvedSelectionOrder, ValueSelector valueSelector) {
+        if (nearbyOriginEntitySelectorConfig != null) {
+            boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
+            EntitySelector originEntitySelector = nearbyOriginEntitySelectorConfig.buildEntitySelector(
+                    configPolicy, minimumCacheType, resolvedSelectionOrder);
+            NearEntityNearbyMethod nearEntityNearbyMethod = ConfigUtils.newInstance(this,
+                    "nearEntityNearbyMethodClass", nearEntityNearbyMethodClass);
+            // TODO Check nearEntityNearbyMethodClass.getGenericInterfaces() to confirm generic type S is an entityClass
+            NearbyRandom nearbyRandom = new BetaDistributionNearbyRandom(1.0, 5.0);
+            valueSelector = new NearEntityNearbyValueSelector(valueSelector, originEntitySelector,
+                    nearEntityNearbyMethod, nearbyRandom, randomSelection);
+        }
+        return valueSelector;
     }
 
     private boolean hasFiltering() {
@@ -491,6 +568,13 @@ public class ValueSelectorConfig extends SelectorConfig {
         downcastEntityClass = ConfigUtils.inheritOverwritableProperty(downcastEntityClass,
                 inheritedConfig.getDowncastEntityClass());
         variableName = ConfigUtils.inheritOverwritableProperty(variableName, inheritedConfig.getVariableName());
+        if (nearbyOriginEntitySelectorConfig == null) {
+            nearbyOriginEntitySelectorConfig = inheritedConfig.getNearbyOriginEntitySelectorConfig();
+        } else if (inheritedConfig.getNearbyOriginEntitySelectorConfig() != null) {
+            nearbyOriginEntitySelectorConfig.inherit(inheritedConfig.getNearbyOriginEntitySelectorConfig());
+        }
+        nearEntityNearbyMethodClass = ConfigUtils.inheritOverwritableProperty(nearEntityNearbyMethodClass,
+                inheritedConfig.getNearEntityNearbyMethodClass());
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         sorterManner = ConfigUtils.inheritOverwritableProperty(
