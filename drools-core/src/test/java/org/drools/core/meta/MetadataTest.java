@@ -12,17 +12,26 @@ import org.drools.core.meta.org.test.SubKlass;
 import org.drools.core.meta.org.test.SubKlassImpl;
 import org.drools.core.meta.org.test.SubKlass_;
 import org.drools.core.metadata.Identifiable;
+import org.drools.core.metadata.Lit;
 import org.drools.core.metadata.MetadataContainer;
+import org.drools.core.metadata.With;
 import org.drools.core.test.model.Person;
 import org.drools.core.util.StandaloneTraitFactory;
 import org.junit.Test;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 public class MetadataTest {
@@ -113,11 +122,11 @@ public class MetadataTest {
         Klass_<Klass> k = new Klass_( new KlassImpl() );
         AnotherKlass_<AnotherKlass> ak = new AnotherKlass_( new AnotherKlassImpl() );
 
-        assertEquals( 1, ak.getMetaClassInfo() .getProperties().length );
-        assertEquals( 2, sk.getMetaClassInfo() .getProperties().length );
-        assertEquals( 1, k.getMetaClassInfo().getProperties().length );
+        assertEquals( 4, ak.getMetaClassInfo() .getProperties().length );
+        assertEquals( 4, sk.getMetaClassInfo() .getProperties().length );
+        assertEquals( 4, k.getMetaClassInfo().getProperties().length );
 
-        assertEquals( "subProp", sk.getMetaClassInfo().getProperties()[1].getName() );
+        assertEquals( "subProp", sk.getMetaClassInfo().getProperties()[2].getName() );
     }
 
     @Test
@@ -135,15 +144,15 @@ public class MetadataTest {
         SubKlassImpl ski = new SubKlassImpl();
         SubKlass_.SubKlass_Modify task = SubKlass_.modify( ski ).prop( "hello" ).subProp( 42 );
         task.call();
-        assertEquals( 3, task.getModificationMask() );
+        assertEquals( 40, task.getModificationMask() );
 
         SubKlass_.SubKlass_Modify task2 = SubKlass_.modify( ski ).prop( "hello" );
         task2.call();
-        assertEquals( 1, task2.getModificationMask() );
+        assertEquals( 8, task2.getModificationMask() );
 
         SubKlass_.SubKlass_Modify task3 = SubKlass_.modify( ski ).subProp( 42 );
         task3.call();
-        assertEquals( 2, task3.getModificationMask() );
+        assertEquals( 32, task3.getModificationMask() );
     }
 
 
@@ -206,6 +215,190 @@ public class MetadataTest {
     }
 
 
+    @Test
+    public void testDonWithAttributes() {
+        Entity entity = new Entity( "123" );
+        entity._setDynamicProperties( new HashMap() );
+
+        SubKlass klass = SubKlass_.donSubKlass( entity )
+                .setTraitFactory( new StandaloneTraitFactory( ProjectClassLoader.createProjectClassLoader() ) )
+                .prop( "hello" ).subProp( 32 )
+                .call();
+
+        assertEquals( "hello", klass.getProp() );
+        assertEquals( 32, (int) klass.getSubProp() );
+    }
+
+    @Test
+    public void testInitWithModifyArgs() {
+        AnotherKlass aki = AnotherKlass_.newAnotherKlass( "000" ).call();
+        SubKlass ski = SubKlass_.newSubKlass( URI.create( "123" ), With.updates( aki ) ).prop( "hello" ).subProp( 42 ).another( aki ).call();
+        Klass ki = Klass_.newKlass( "1421" ).call();
+
+        assertEquals( "hello", ski.getProp() );
+        assertEquals( 42, (int) ski.getSubProp() );
+        assertEquals( aki, ski.getAnother() );
+    }
+
+    @Test
+    public void testCollectionOrientedProperties() {
+        AnotherKlass aki0 = AnotherKlass_.newAnotherKlass( "000" ).call();
+        AnotherKlass aki1 = AnotherKlass_.newAnotherKlass( "001" ).call();
+        AnotherKlass aki2 = AnotherKlass_.newAnotherKlass( "002" ).call();
+        AnotherKlass aki3 = AnotherKlass_.newAnotherKlass( "003" ).call();
+        AnotherKlass aki4 = AnotherKlass_.newAnotherKlass( "004" ).call();
+
+        SubKlass ski = SubKlass_.newSubKlass( URI.create( "123" ) )
+                .links( new ArrayList( Arrays.asList( aki0, aki1 ) ), Lit.SET )
+                .links( aki1, Lit.REMOVE )
+                .links( aki2, Lit.ADD )
+                .links( Arrays.asList( aki3, aki4 ), Lit.REMOVE )
+                .call();
+
+        assertEquals( Arrays.asList( aki0, aki2 ), ski.getLinks() );
+    }
+
+    @Test
+    public void testOneToOneProperty() {
+        AnotherKlass aki0 = AnotherKlass_.newAnotherKlass( "000" ).call();
+        Klass klass = Klass_.newKlass( "001" ).call();
+
+        Klass_.modify( klass, With.updates( aki0 ) ).another( aki0 ).call();
+
+        assertSame( klass.getAnother(), aki0 );
+        assertSame( klass, aki0.getTheKlass() );
+
+        Klass klass1 = Klass_.newKlass( "002" ).call();
+        AnotherKlass_.modify( aki0 ).theKlass( klass1 ).call();
+
+        assertSame( aki0, klass1.getAnother() );
+        assertSame( klass1, aki0.getTheKlass() );
+
+        Klass_.modify( klass ).another( null ).call();
+        assertNull( klass.getAnother() );
+        assertNull( aki0.getTheKlass() );
+
+    }
+
+
+    @Test
+    public void testOneToManyProperty() {
+
+        AnotherKlass aki = AnotherKlass_.newAnotherKlass( "000" ).call();
+        AnotherKlass aki2 = AnotherKlass_.newAnotherKlass( "999" ).call();
+        Klass klass1 = Klass_.newKlass( "001" ).call();
+        Klass klass2 = Klass_.newKlass( "002" ).call();
+
+        AnotherKlass_.modify( aki, With.updates( klass1, klass2 ) ).manyKlasses( new ArrayList( Arrays.asList( klass1, klass2 ) ), Lit.SET ).call();
+
+        assertSame( aki, klass1.getOneAnother() );
+        assertSame( aki, klass2.getOneAnother() );
+
+        AnotherKlass_.modify( aki2 ).manyKlasses( klass1, Lit.ADD ).call();
+
+        assertSame( aki2, klass1.getOneAnother() );
+        assertSame( aki, klass2.getOneAnother() );
+
+        assertFalse( aki.getManyKlasses().contains( klass1 ) );
+        assertTrue( aki2.getManyKlasses().contains( klass1 ) );
+        assertTrue( aki.getManyKlasses().contains( klass2 ) );
+
+        AnotherKlass_.modify( aki2 ).manyKlasses( klass1, Lit.REMOVE ).call();
+
+        assertNull( klass1.getOneAnother() );
+        assertFalse( aki2.getManyKlasses().contains( klass1 ) );
+
+    }
+
+
+    @Test
+    public void testManyToOneProperty() {
+
+        AnotherKlass aki = AnotherKlass_.newAnotherKlass( "000" ).call();
+        AnotherKlass aki2 = AnotherKlass_.newAnotherKlass( "999" ).call();
+        Klass klass1 = Klass_.newKlass( "001" ).call();
+        Klass klass2 = Klass_.newKlass( "002" ).call();
+
+        Klass_.modify( klass1 ).oneAnother( aki ).call();
+        Klass_.modify( klass2 ).oneAnother( aki ).call();
+
+        assertSame( aki, klass1.getOneAnother() );
+        assertSame( aki, klass2.getOneAnother() );
+
+        assertEquals( Arrays.asList( klass1, klass2 ), aki.getManyKlasses() );
+
+        Klass_.modify( klass1 ).oneAnother( aki2 ).call();
+
+        assertSame( aki2, klass1.getOneAnother() );
+        assertEquals( Arrays.asList( klass1 ), aki2.getManyKlasses() );
+        assertEquals( Arrays.asList( klass2 ), aki.getManyKlasses() );
+
+    }
+
+    @Test
+    public void testManyToManyProperty() {
+
+        AnotherKlass aki1 = AnotherKlass_.newAnotherKlass( "000" ).call();
+        AnotherKlass aki2 = AnotherKlass_.newAnotherKlass( "999" ).call();
+        Klass klass1 = Klass_.newKlass( "001" ).call();
+        Klass klass2 = Klass_.newKlass( "002" ).call();
+
+
+        Klass_.modify( klass1 ).manyOthers( aki1, Lit.ADD ).call();
+        Klass_.modify( klass1 ).manyOthers( aki2, Lit.ADD ).call();
+
+        AnotherKlass_.modify( aki2 ).manyMoreKlasses( klass2, Lit.ADD ).call();
+        AnotherKlass_.modify( aki1 ).manyMoreKlasses( klass2, Lit.ADD ).call();
+
+        assertTrue( klass1.getManyAnothers().contains( aki1 ) );
+        assertTrue( klass1.getManyAnothers().contains( aki2 ) );
+        assertTrue( klass2.getManyAnothers().contains( aki1 ) );
+        assertTrue( klass2.getManyAnothers().contains( aki2 ) );
+
+        assertTrue( aki1.getManyMoreKlasses().contains( klass1 ) );
+        assertTrue( aki1.getManyMoreKlasses().contains( klass2 ) );
+        assertTrue( aki2.getManyMoreKlasses().contains( klass1 ) );
+        assertTrue( aki2.getManyMoreKlasses().contains( klass2 ) );
+
+        AnotherKlass_.modify( aki2 ).manyMoreKlasses( klass2, Lit.REMOVE ).call();
+
+        assertTrue( klass1.getManyAnothers().contains( aki1 ) );
+        assertTrue( klass1.getManyAnothers().contains( aki2 ) );
+        assertTrue( klass2.getManyAnothers().contains( aki1 ) );
+        assertFalse( klass2.getManyAnothers().contains( aki2 ) );
+
+        assertTrue( aki1.getManyMoreKlasses().contains( klass1 ) );
+        assertTrue( aki1.getManyMoreKlasses().contains( klass2 ) );
+        assertTrue( aki2.getManyMoreKlasses().contains( klass1 ) );
+        assertFalse( aki2.getManyMoreKlasses().contains( klass2 ) );
+
+        AnotherKlass_.modify( aki2 ).manyMoreKlasses( klass2, Lit.ADD ).call();
+
+        assertTrue( klass1.getManyAnothers().contains( aki1 ) );
+        assertTrue( klass1.getManyAnothers().contains( aki2 ) );
+        assertTrue( klass2.getManyAnothers().contains( aki1 ) );
+        assertTrue( klass2.getManyAnothers().contains( aki2 ) );
+
+        assertTrue( aki1.getManyMoreKlasses().contains( klass1 ) );
+        assertTrue( aki1.getManyMoreKlasses().contains( klass2 ) );
+        assertTrue( aki2.getManyMoreKlasses().contains( klass1 ) );
+        assertTrue( aki2.getManyMoreKlasses().contains( klass2 ) );
+
+        AnotherKlass_.modify( aki2 ).manyMoreKlasses( klass2, Lit.SET ).call();
+
+        assertTrue( klass1.getManyAnothers().contains( aki1 ) );
+        assertFalse( klass1.getManyAnothers().contains( aki2 ) );
+        assertTrue( klass2.getManyAnothers().contains( aki1 ) );
+        assertTrue( klass2.getManyAnothers().contains( aki2 ) );
+
+        assertTrue( aki1.getManyMoreKlasses().contains( klass1 ) );
+        assertTrue( aki1.getManyMoreKlasses().contains( klass2 ) );
+        assertFalse( aki2.getManyMoreKlasses().contains( klass1 ) );
+        assertTrue( aki2.getManyMoreKlasses().contains( klass2 ) );
+
+    }
+
+
 
 
     public static class Foo implements SubKlass, Identifiable {
@@ -233,6 +426,36 @@ public class MetadataTest {
         }
 
         @Override
+        public AnotherKlass getAnother() {
+            return (AnotherKlass) map.get( "another" );
+        }
+
+        @Override
+        public void setAnother( AnotherKlass another ) {
+            map.put( "another", another );
+        }
+
+        @Override
+        public AnotherKlass getOneAnother() {
+            return null;
+        }
+
+        @Override
+        public void setOneAnother( AnotherKlass another ) {
+
+        }
+
+        @Override
+        public List<AnotherKlass> getManyAnothers() {
+            return null;
+        }
+
+        @Override
+        public void setManyAnothers( List<AnotherKlass> anothers ) {
+
+        }
+
+        @Override
         public Integer getSubProp() {
             return (Integer) map.get( "subProp" );
         }
@@ -240,6 +463,16 @@ public class MetadataTest {
         @Override
         public void setSubProp( Integer value ) {
             map.put( "subProp", value );
+        }
+
+        @Override
+        public List<AnotherKlass> getLinks() {
+            return null;
+        }
+
+        @Override
+        public void setLinks( List<AnotherKlass> links ) {
+
         }
 
         @Override

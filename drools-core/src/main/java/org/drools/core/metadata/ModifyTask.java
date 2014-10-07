@@ -2,7 +2,7 @@ package org.drools.core.metadata;
 
 public interface ModifyTask<T> {
 
-    public MetaProperty<T,?> getProperty();
+    public MetaProperty<T,?,?> getProperty();
 
     public Object getValue();
 

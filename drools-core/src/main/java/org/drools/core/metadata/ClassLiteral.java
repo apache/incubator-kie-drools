@@ -6,11 +6,11 @@ import java.util.List;
 
 public abstract class ClassLiteral<T> implements MetaClass<T> {
 
-    protected MetaProperty<T,?>[] properties;
+    protected MetaProperty<T,?,?>[] properties;
     protected List<String> propertyNames;
     protected URI key;
 
-    public ClassLiteral( MetaProperty<T,?>[] propertyLiterals ) {
+    public ClassLiteral( MetaProperty<T,?,?>[] propertyLiterals ) {
         this.properties = propertyLiterals;
         cachePropertyNames();
     }
@@ -18,7 +18,7 @@ public abstract class ClassLiteral<T> implements MetaClass<T> {
     protected abstract void cachePropertyNames();
 
     @Override
-    public MetaProperty<T, ?>[] getProperties() {
+    public MetaProperty<T,?,?>[] getProperties() {
         return properties;
     }
 

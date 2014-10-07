@@ -16,6 +16,8 @@ import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
+import org.drools.core.metadata.Metadatable;
+import org.drools.core.metadata.Modify;
 import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.rule.TypeDeclaration;
 

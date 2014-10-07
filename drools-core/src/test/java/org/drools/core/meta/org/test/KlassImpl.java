@@ -8,9 +8,16 @@ package org.drools.core.meta.org.test;
 
 import org.drools.core.metadata.MetadataHolder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class KlassImpl implements Klass, MetadataHolder {
 
     protected String prop;
+    protected AnotherKlass another;
+    protected AnotherKlass oneAnother;
+    protected List<AnotherKlass> manyAnothers = new ArrayList<AnotherKlass>();
+
 
     public KlassImpl() {
         super();
@@ -33,5 +40,28 @@ public class KlassImpl implements Klass, MetadataHolder {
         return _;
     }
 
+    public AnotherKlass getAnother() {
+        return another;
+    }
+
+    public void setAnother( AnotherKlass another ) {
+        this.another = another;
+    }
+
+    public AnotherKlass getOneAnother() {
+        return oneAnother;
+    }
+
+    public void setOneAnother( AnotherKlass oneAnother ) {
+        this.oneAnother = oneAnother;
+    }
+
+    public List<AnotherKlass> getManyAnothers() {
+        return manyAnothers;
+    }
+
+    public void setManyAnothers( List<AnotherKlass> manyAnothers ) {
+        this.manyAnothers = manyAnothers;
+    }
 }
 

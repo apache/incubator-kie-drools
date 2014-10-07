@@ -14,4 +14,6 @@ public interface Modify<T extends Metadatable> extends WorkingMemoryTask<T> {
 
     public ModifyTask getSetterChain();
 
+    public Object[] getAdditionalUpdates();
+
 }

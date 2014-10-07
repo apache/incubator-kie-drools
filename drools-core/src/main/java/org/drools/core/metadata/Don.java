@@ -10,4 +10,6 @@ public interface Don<K,T> extends WorkingMemoryTask<T> {
 
     public Don<K,T> setTraitFactory( AbstractTraitFactory factory );
 
+    public Modify getInitArgs();
+
 }
