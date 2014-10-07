@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public abstract class PropertyLiteral<T, R> implements MetaProperty<T,R>, Serializable {
+public abstract class PropertyLiteral<T,R,C> implements MetaProperty<T,R,C>, Serializable {
 
     private final int index;
     private final String name;
@@ -30,10 +30,6 @@ public abstract class PropertyLiteral<T, R> implements MetaProperty<T,R>, Serial
         this.key = key;
     }
 
-    public abstract R get( T o );
-
-    public abstract void set( T o, R value );
-
     @Override
     public boolean equals( Object o ) {
         if ( this == o ) return true;
@@ -47,7 +43,7 @@ public abstract class PropertyLiteral<T, R> implements MetaProperty<T,R>, Serial
     }
 
     @Override
-    public int compareTo( MetaProperty<T, R> o ) {
+    public int compareTo( MetaProperty<T,R,C> o ) {
         return this.getName().compareTo( o.getName() );
     }
 

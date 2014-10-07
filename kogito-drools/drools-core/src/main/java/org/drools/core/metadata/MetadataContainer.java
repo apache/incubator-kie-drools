@@ -31,7 +31,7 @@ public abstract class MetadataContainer<T extends Metadatable> implements Serial
         this.target = target;
     }
 
-    public List<MetaProperty<T,?>> properties() {
+    public List<MetaProperty<T,?,?>> properties() {
         return Collections.unmodifiableList( Arrays.asList( getMetaClassInfo().getProperties() ) );
     }
 
@@ -43,7 +43,7 @@ public abstract class MetadataContainer<T extends Metadatable> implements Serial
         return names;
     }
 
-    protected <T,R> MetaProperty<T,R> getProperty( String name ) {
+    protected <T,R> MetaProperty<T,R,?> getProperty( String name ) {
         for ( MetaProperty p : metaClassInfo.getProperties() ) {
             if ( p.getName().equals( name ) ) {
                 return p;

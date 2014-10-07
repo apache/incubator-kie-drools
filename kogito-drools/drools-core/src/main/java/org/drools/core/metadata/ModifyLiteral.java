@@ -3,18 +3,43 @@ package org.drools.core.metadata;
 import org.drools.core.util.BitMaskUtil;
 
 import java.net.URI;
+import java.util.Collection;
+import java.util.List;
 
-public abstract class ModifyLiteral<T extends Metadatable> implements Modify<T> {
+public abstract class ModifyLiteral<T extends Metadatable> extends AbstractWMTask<T> implements Modify<T> {
     private T target;
-    private ModifyTaskLiteral<T,?> task;
+    private ModifyTaskLiteral<T,?,?> task;
     private long modificationMask;
     private URI key;
+    private Object[] with;
 
     protected abstract MetaClass<T> getMetaClassInfo();
 
-    public ModifyLiteral( T target ) {
+    public ModifyLiteral( T target, With[] with ) {
         this.target = target;
+        switch ( with.length ) {
+            case 0 : this.with = null;
+                break;
+            case 1 : this.with = with[ 0 ].getArgs();
+                break;
+            default :
+                mergeWiths( with );
+        }
     }
+
+    protected void mergeWiths( With[] with ) {
+        int n = 0;
+        for ( int j = 0; j < with.length; j++ ) {
+            n += with[ j ].getArgs().length;
+        }
+        this.with = new Object[ n ];
+        n = 0;
+        for ( int j = 0; j < with.length; j++ ) {
+            System.arraycopy( with[ j ].getArgs(), 0, this.with, n, with[ j ].getArgs().length );
+            n += with[ j ].getArgs().length;
+        }
+    }
+
 
     public T getTarget() {
         return target;
@@ -31,6 +56,11 @@ public abstract class ModifyLiteral<T extends Metadatable> implements Modify<T> 
     @Override
     public Object getTargetId() {
         return MetadataContainer.getIdentifier( target );
+    }
+
+    @Override
+    public Object[] getAdditionalUpdates() {
+        return with;
     }
 
     @Override
@@ -55,14 +85,17 @@ public abstract class ModifyLiteral<T extends Metadatable> implements Modify<T> 
 
     public abstract Class getModificationClass();
 
-    protected <R> void addTask( MetaProperty<? extends Metadatable,R> p, R val ) {
-        ModifyTaskLiteral<T,R> newTask = new ModifyTaskLiteral<T, R>( p, val );
+    protected <R,C> void addTask( MetaProperty<? extends Metadatable,R,C> p, C val ) {
+        addTask( p, val, Lit.SET );
+    }
+    protected <R,C> void addTask( MetaProperty<? extends Metadatable,R,C> p, C val, Lit mode ) {
+        ModifyTaskLiteral<T,R,C> newTask = new ModifyTaskLiteral<T,R,C>( p, val, mode );
         if ( task == null ) {
             task = newTask;
         } else {
-            ModifyTaskLiteral<T,?> lastTask = task;
-            while ( task.nextTask != null ) {
-                lastTask = task.nextTask;
+            ModifyTaskLiteral<T,?,?> lastTask = task;
+            while ( lastTask.nextTask != null ) {
+                lastTask = lastTask.nextTask;
             }
             lastTask.nextTask = newTask;
         }
@@ -87,7 +120,7 @@ public abstract class ModifyLiteral<T extends Metadatable> implements Modify<T> 
         sb.append( MetadataContainer.getIdentifier( target ) );
 
         sb.append( "/modify" );
-        ModifyTaskLiteral<T,?> t = task;
+        ModifyTaskLiteral<T,?,?> t = task;
         while ( t != null ) {
             sb.append( "?" ).append( t.propertyLiteral.getName() );
             t = t.nextTask;
@@ -96,39 +129,27 @@ public abstract class ModifyLiteral<T extends Metadatable> implements Modify<T> 
         return URI.create( sb.toString() );
     }
 
-    @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) return true;
-        if ( o == null || getClass() != o.getClass() ) return false;
 
-        ModifyLiteral that = (ModifyLiteral) o;
 
-        if ( !target.equals( that.target ) ) {
-            return false;
-        }
-        if ( !task.equals( that.task ) ) {
-            return false;
-        }
-        return true;
-    }
 
-    @Override
-    public int hashCode() {
-        return target.hashCode() ^ task.hashCode();
-    }
+    public class ModifyTaskLiteral<T extends Metadatable,R,C> implements ModifyTask {
+        protected MetaProperty<T,R,C> propertyLiteral;
+        protected C value;
+        protected Lit mode;
+        protected ModifyTaskLiteral<T,?,?> nextTask;
 
-    public class ModifyTaskLiteral<T extends Metadatable,R> implements ModifyTask {
-        protected MetaProperty<T,R> propertyLiteral;
-        protected R value;
-        protected ModifyTaskLiteral<T,?> nextTask;
-
-        protected ModifyTaskLiteral( MetaProperty<? extends Metadatable,R> p, R val ) {
-            propertyLiteral = (MetaProperty<T, R>) p;
-            value = val;
+        protected ModifyTaskLiteral( MetaProperty<? extends Metadatable,R,C> p, C val, Lit mode ) {
+            this.propertyLiteral = (MetaProperty<T,R,C>) p;
+            this.mode = mode;
+            this.value = val;
         }
 
         public void call( T target ) {
-            propertyLiteral.set( target, value );
+            if ( propertyLiteral.isManyValued() ) {
+                propertyLiteral.asManyValuedProperty().set( target, (List<R>) value, mode );
+            } else {
+                propertyLiteral.asFunctionalProperty().set( target, value, Lit.SET );
+            }
             if ( nextTask != null ) {
                 nextTask.call( target );
             }

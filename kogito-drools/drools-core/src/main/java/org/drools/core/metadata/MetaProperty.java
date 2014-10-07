@@ -1,8 +1,9 @@
 package org.drools.core.metadata;
 
 import java.net.URI;
+import java.util.Collection;
 
-public interface MetaProperty<T,R> extends Comparable<MetaProperty<T,R>>, Identifiable {
+public interface MetaProperty<T,R,C> extends Comparable<MetaProperty<T,R,C>>, Identifiable {
 
     public int getIndex();
 
@@ -10,7 +11,12 @@ public interface MetaProperty<T,R> extends Comparable<MetaProperty<T,R>>, Identi
 
     public URI getKey();
 
-    public R get( T object );
+    public boolean isManyValued();
 
-    public void set( T o, R value );
+    public OneValuedMetaProperty<T,C> asFunctionalProperty();
+
+    public <X extends Collection<R>> ManyValuedMetaProperty<T,R,X> asManyValuedProperty();
+
+    public C get( T o );
+
 }

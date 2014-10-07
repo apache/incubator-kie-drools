@@ -4,14 +4,17 @@ import org.drools.core.factmodel.traits.InstantiatorFactory;
 
 import java.net.URI;
 
-public abstract class NewInstanceLiteral<T extends Metadatable> implements NewInstance<T> {
+public abstract class NewInstanceLiteral<T extends Metadatable> extends AbstractWMTask<T> implements NewInstance<T> {
     protected URI uri;
 
     protected ModifyLiteral setter;
     protected InstantiatorFactory instantiatorFactory;
 
-    public NewInstanceLiteral( Object identifier ) {
+    protected With[] with;
+
+    public NewInstanceLiteral( Object identifier, With... args ) {
         this.uri = URI.create( identifier.toString() );
+        this.with = args;
     }
 
     public boolean isInterface() {
@@ -68,5 +71,6 @@ public abstract class NewInstanceLiteral<T extends Metadatable> implements NewIn
     public Object getId() {
         return uri;
     }
+
 }
 
