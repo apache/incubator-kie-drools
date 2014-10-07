@@ -16,15 +16,6 @@
  */
 package org.drools.compiler.commons.jci.compilers;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
-
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
@@ -44,6 +35,15 @@ import org.eclipse.jdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.jdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 /**
  * Eclipse compiler implementation
@@ -66,7 +66,11 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         defaultSettings = pSettings;
         this.prefix = prefix;
     }
-    
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
     public String getPathName(String fullPath) {
         if ( prefix.length() == 0 ) {
             return fullPath;
