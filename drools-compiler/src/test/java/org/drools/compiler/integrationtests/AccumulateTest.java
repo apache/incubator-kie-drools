@@ -2685,6 +2685,37 @@ public class AccumulateTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testEmptyAccumulateInSubnetworkFollwedByPattern() {
+        // DROOLS-627
+        String drl =
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "    $count : Number( ) from accumulate (\n" +
+                "        Integer() and\n" +
+                "        $s: String();\n" +
+                "        count($s)\n" +
+                "    )\n" +
+                "    Long()\n" +
+                "then\n" +
+                "    list.add($count);\n" +
+                "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent(drl, ResourceType.DRL);
+        KieSession ksession = helper.build().newKieSession();
+
+        List<Long> list = new ArrayList<Long>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(1);
+        ksession.insert(1L);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals(0, (long)list.get(0));
+    }
+
+    @Test
     public void testAccumulateWithoutSeparator() throws Exception {
         // DROOLS-602
         String str = "package org.drools.compiler\n" +
