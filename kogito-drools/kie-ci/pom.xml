@@ -169,4 +169,52 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>false</filtering>
+      </testResource>
+      <testResource>
+        <directory>src/test/filtered-resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <systemProperties>
+              <kie.maven.settings.custom>${project.build.testOutputDirectory}/kie-ci-tests-custom-settings.xml</kie.maven.settings.custom>
+            </systemProperties>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <!-- The custom maven repo dir needs to exist before the test execution -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>create-custom-maven-repo-dir</id>
+            <phase>generate-test-resources</phase>
+            <configuration>
+              <tasks>
+                <mkdir dir="${project.build.directory}/testing-maven-repo"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

@@ -21,7 +21,6 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-@Ignore
 public class KieScannerIncrementalCompilationTest extends AbstractKieCiTest {
 
     private final int FIRST_VALUE = 5;
