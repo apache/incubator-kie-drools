@@ -1,8 +1,10 @@
 package org.drools.compiler.kie.builder.impl;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
-import org.drools.compiler.commons.jci.compilers.EclipseJavaCompilerSettings;
+import org.drools.compiler.commons.jci.compilers.JavaCompiler;
+import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.commons.jci.readers.DiskResourceReader;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
@@ -10,6 +12,7 @@ import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.compiler.kproject.xml.PomModel;
+import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
@@ -521,19 +524,23 @@ public class KieBuilderImpl
             }
         }
 
-        compileJavaClasses(classLoader, javaFiles, JAVA_ROOT);
-        compileJavaClasses(classLoader, javaTestFiles, JAVA_TEST_ROOT);
+        if ( !javaFiles.isEmpty() || !javaTestFiles.isEmpty() ) {
+            KnowledgeBuilderConfigurationImpl kconf = new KnowledgeBuilderConfigurationImpl(classLoader);
+            JavaDialectConfiguration javaConf = (JavaDialectConfiguration)kconf.getDialectConfiguration("java");
+            compileJavaClasses(javaConf, classLoader, javaFiles, JAVA_ROOT);
+            compileJavaClasses(javaConf, classLoader, javaTestFiles, JAVA_TEST_ROOT);
+        }
     }
 
-    private void compileJavaClasses(ClassLoader classLoader, List<String> javaFiles, String rootFolder) {
+    private void compileJavaClasses(JavaDialectConfiguration javaConf, ClassLoader classLoader, List<String> javaFiles, String rootFolder) {
         if ( !javaFiles.isEmpty() ) {
             String[] sourceFiles = javaFiles.toArray( new String[javaFiles.size()] );
 
-            EclipseJavaCompiler compiler = createCompiler( rootFolder );
-            CompilationResult res = compiler.compile( sourceFiles,
-                                                      srcMfs,
-                                                      trgMfs,
-                                                      classLoader );
+            JavaCompiler javaCompiler = createCompiler( javaConf, rootFolder );
+            CompilationResult res = javaCompiler.compile( sourceFiles,
+                                                          srcMfs,
+                                                          trgMfs,
+                                                          classLoader );
 
             for ( CompilationProblem problem : res.getErrors() ) {
                 results.addMessage( problem );
@@ -542,6 +549,14 @@ public class KieBuilderImpl
                 results.addMessage( problem );
             }
         }
+    }
+
+    private JavaCompiler createCompiler(JavaDialectConfiguration javaConf, String prefix) {
+        JavaCompiler javaCompiler = JavaCompilerFactory.getInstance().loadCompiler( javaConf );
+        if (javaCompiler instanceof EclipseJavaCompiler) {
+            ((EclipseJavaCompiler)javaCompiler).setPrefix(prefix);
+        }
+        return javaCompiler;
     }
 
     public static String findPomProperties(ZipFile zipFile) {
@@ -576,14 +591,6 @@ public class KieBuilderImpl
             }
         }
         return null;
-    }
-
-    private EclipseJavaCompiler createCompiler(String prefix) {
-        EclipseJavaCompilerSettings settings = new EclipseJavaCompilerSettings();
-        settings.setSourceVersion( "1.5" );
-        settings.setTargetVersion( "1.5" );
-        return new EclipseJavaCompiler( settings,
-                                        prefix );
     }
 
     @Override
