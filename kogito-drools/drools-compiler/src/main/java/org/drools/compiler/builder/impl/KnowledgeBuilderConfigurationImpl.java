@@ -16,14 +16,6 @@
 
 package org.drools.compiler.builder.impl;
 
-import java.io.File;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
-
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DialectConfiguration;
@@ -63,6 +55,16 @@ import org.kie.internal.builder.conf.ProcessStringEscapesOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.builder.conf.SingleValueKnowledgeBuilderOption;
 import org.kie.internal.utils.ChainedProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * This class configures the package compiler.
@@ -119,7 +121,8 @@ public class KnowledgeBuilderConfigurationImpl
 
     private boolean                           classLoaderCache        = true;
 
-    private PropertySpecificOption            propertySpecificOption  = PropertySpecificOption.ALLOWED;
+    private static final PropertySpecificOption DEFAULT_PROP_SPEC_OPT = PropertySpecificOption.ALLOWED;
+    private PropertySpecificOption            propertySpecificOption  = DEFAULT_PROP_SPEC_OPT;
 
     private String                            defaultPackageName;
 
@@ -132,6 +135,8 @@ public class KnowledgeBuilderConfigurationImpl
     private LanguageLevelOption               languageLevel           = DrlParser.DEFAULT_LANGUAGE_LEVEL;
 
     private CompilationCache                  compilationCache        = null;
+
+    private static final Logger log = LoggerFactory.getLogger(KnowledgeBuilderConfigurationImpl.class);
 
     public boolean isAllowMultipleNamespaces() {
         return allowMultipleNamespaces;
@@ -212,8 +217,16 @@ public class KnowledgeBuilderConfigurationImpl
         }
 
         setProperty(ClassLoaderCacheOption.PROPERTY_NAME,
-                this.chainedProperties.getProperty(ClassLoaderCacheOption.PROPERTY_NAME,
-                        "true"));
+                    this.chainedProperties.getProperty(ClassLoaderCacheOption.PROPERTY_NAME,
+                                                       "true"));
+
+        setProperty(PropertySpecificOption.PROPERTY_NAME,
+                    this.chainedProperties.getProperty(PropertySpecificOption.PROPERTY_NAME,
+                                                       DEFAULT_PROP_SPEC_OPT.toString()));
+
+        setProperty(LanguageLevelOption.PROPERTY_NAME,
+                    this.chainedProperties.getProperty(LanguageLevelOption.PROPERTY_NAME,
+                                                       DrlParser.DEFAULT_LANGUAGE_LEVEL.toString()));
 
         this.dialectConfigurations = new HashMap<String, DialectConfiguration>();
 
@@ -228,12 +241,12 @@ public class KnowledgeBuilderConfigurationImpl
         buildSeverityMap();
 
         setProperty(ProcessStringEscapesOption.PROPERTY_NAME,
-                this.chainedProperties.getProperty(ProcessStringEscapesOption.PROPERTY_NAME,
-                        "true"));
+                    this.chainedProperties.getProperty(ProcessStringEscapesOption.PROPERTY_NAME,
+                                                       "true"));
 
         setProperty(DefaultPackageNameOption.PROPERTY_NAME,
-                this.chainedProperties.getProperty(DefaultPackageNameOption.PROPERTY_NAME,
-                        "defaultpkg"));
+                    this.chainedProperties.getProperty(DefaultPackageNameOption.PROPERTY_NAME,
+                                                       "defaultpkg"));
 
         this.componentFactory = new DroolsCompilerComponentFactory();
 
@@ -280,8 +293,18 @@ public class KnowledgeBuilderConfigurationImpl
         } else if (name.startsWith(KBuilderSeverityOption.PROPERTY_NAME)) {
             String key = name.substring(name.lastIndexOf('.') + 1);
             this.severityMap.put(key, KBuilderSeverityOption.get(key, value).getSeverity());
+        } else if (name.equals(PropertySpecificOption.PROPERTY_NAME)) {
+            try {
+                setPropertySpecificOption(PropertySpecificOption.valueOf(value.toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                log.warn("Invalid value " + value + " for option " + PropertySpecificOption.PROPERTY_NAME);
+            }
         } else if (name.equals(LanguageLevelOption.PROPERTY_NAME)) {
-            setLanguageLevel(LanguageLevelOption.valueOf(value));
+            try {
+                setLanguageLevel(LanguageLevelOption.valueOf(value.toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                log.warn("Invalid value " + value + " for option " + LanguageLevelOption.PROPERTY_NAME);
+            }
         }
     }
 
@@ -695,6 +718,14 @@ public class KnowledgeBuilderConfigurationImpl
 
     public void setLanguageLevel(LanguageLevelOption languageLevel) {
         this.languageLevel = languageLevel;
+    }
+
+    public PropertySpecificOption getPropertySpecificOption() {
+        return propertySpecificOption;
+    }
+
+    public void setPropertySpecificOption(PropertySpecificOption propertySpecificOption) {
+        this.propertySpecificOption = propertySpecificOption;
     }
 
     @SuppressWarnings("unchecked")

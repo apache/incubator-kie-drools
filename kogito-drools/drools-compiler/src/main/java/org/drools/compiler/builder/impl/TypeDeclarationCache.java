@@ -261,7 +261,7 @@ public class TypeDeclarationCache {
     private TypeDeclaration createTypeDeclarationForBean(Class<?> cls) {
         TypeDeclaration typeDeclaration = new TypeDeclaration(cls);
 
-        PropertySpecificOption propertySpecificOption = kbuilder.getBuilderConfiguration().getOption(PropertySpecificOption.class);
+        PropertySpecificOption propertySpecificOption = kbuilder.getBuilderConfiguration().getPropertySpecificOption();
         boolean propertyReactive = propertySpecificOption.isPropSpecific(cls.isAnnotationPresent(PropertyReactive.class),
                                                                          cls.isAnnotationPresent(ClassReactive.class));
 

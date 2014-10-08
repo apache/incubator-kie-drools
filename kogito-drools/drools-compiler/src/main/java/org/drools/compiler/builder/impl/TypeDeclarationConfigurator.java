@@ -238,7 +238,7 @@ public class TypeDeclarationConfigurator {
     }
 
     protected void configurePropertyReactivity( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type ) {
-        PropertySpecificOption propertySpecificOption = kbuilder.getBuilderConfiguration().getOption( PropertySpecificOption.class );
+        PropertySpecificOption propertySpecificOption = kbuilder.getBuilderConfiguration().getPropertySpecificOption();
         boolean propertyReactive = propertySpecificOption.isPropSpecific( typeDescr.hasAnnotation(PropertyReactive.class),
                                                                           typeDescr.hasAnnotation(ClassReactive.class) );
         kbuilder.setPropertyReactive( typeDescr.getResource(), type, propertyReactive );
