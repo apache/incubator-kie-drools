@@ -49,6 +49,22 @@ public class VarInstLogQueryBuilderImpl extends AbstractAuditQueryBuilderImpl<Va
     }
 
     @Override
+    public VariableInstanceLogQueryBuilder variableValue( String variableId, String value ) {
+        if( queryData.isRange() ) { 
+            throw new IllegalArgumentException("Range values are not supported for the .variableValue(..) method");
+        }
+        if( variableId == null ) { 
+            throw new IllegalArgumentException("A null variable Id criteria is invalid." );
+        }
+        if( value == null ) { 
+            throw new IllegalArgumentException("A null variable value criteria is invalid." );
+        }
+        String varValStr = variableId.length() + VAR_VAL_SEPARATOR + variableId + VAR_VAL_SEPARATOR + value;
+        addObjectParameter(VAR_VALUE_ID_LIST, "value for variable", varValStr);
+        return this;
+    }
+    
+    @Override
     public VariableInstanceLogQueryBuilder externalId( String... externalId ) {
         addObjectParameter(EXTERNAL_ID_LIST, "external id", externalId);
         return this;

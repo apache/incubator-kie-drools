@@ -16,36 +16,7 @@
 
 package org.jbpm.process.audit;
 
-import static org.kie.internal.query.QueryParameterIdentifiers.ASCENDING_VALUE;
-import static org.kie.internal.query.QueryParameterIdentifiers.DATE_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.DESCENDING_VALUE;
-import static org.kie.internal.query.QueryParameterIdentifiers.DURATION_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.END_DATE_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.EXTERNAL_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.FILTER;
-import static org.kie.internal.query.QueryParameterIdentifiers.FIRST_RESULT;
-import static org.kie.internal.query.QueryParameterIdentifiers.FLUSH_MODE;
-import static org.kie.internal.query.QueryParameterIdentifiers.IDENTITY_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.LAST_VARIABLE_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.MAX_RESULTS;
-import static org.kie.internal.query.QueryParameterIdentifiers.NODE_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.NODE_INSTANCE_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.NODE_NAME_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.NODE_TYPE_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.OLD_VALUE_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.ORDER_BY;
-import static org.kie.internal.query.QueryParameterIdentifiers.ORDER_TYPE;
-import static org.kie.internal.query.QueryParameterIdentifiers.OUTCOME_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_STATUS_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_NAME_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_VERSION_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.START_DATE_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.VALUE_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.VARIABLE_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.VARIABLE_INSTANCE_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.WORK_ITEM_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -517,9 +488,11 @@ public class JPAAuditLogService implements AuditLogService {
         }
         
         boolean addLastCriteria = false;
+        List<Object[]> varValCriteriaList = new ArrayList<Object[]>();
         
         // apply normal query parameters
         if( ! queryData.unionParametersAreEmpty() ) { 
+            checkVarValCriteria((List<String>) queryData.getUnionParameters().remove(VAR_VALUE_ID_LIST), true, false, varValCriteriaList);
             if( queryData.getUnionParameters().remove(LAST_VARIABLE_LIST) != null ) { 
                 addLastCriteria = true;
             }
@@ -532,6 +505,7 @@ public class JPAAuditLogService implements AuditLogService {
             }
         }
         if( ! queryData.intersectParametersAreEmpty() ) { 
+            checkVarValCriteria((List<String>) queryData.getIntersectParameters().remove(VAR_VALUE_ID_LIST), false, false, varValCriteriaList);
             if( queryData.getIntersectParameters().remove(LAST_VARIABLE_LIST) != null ) { 
                 addLastCriteria = true;
             }
@@ -564,6 +538,7 @@ public class JPAAuditLogService implements AuditLogService {
         }
         // apply regex query parameters
         if( ! queryData.unionRegexParametersAreEmpty() ) { 
+            checkVarValCriteria(queryData.getUnionRegexParameters().remove(VAR_VALUE_ID_LIST), true, true, varValCriteriaList);
             for( Entry<String, List<String>> paramsEntry : queryData.getUnionRegexParameters().entrySet() ) { 
                 String listId = paramsEntry.getKey();
                 queryAppender.addRegexQueryParameters(
@@ -573,6 +548,7 @@ public class JPAAuditLogService implements AuditLogService {
             }
         }
         if( ! queryData.intersectRegexParametersAreEmpty() ) { 
+            checkVarValCriteria((List<String>) queryData.getIntersectRegexParameters().remove(VAR_VALUE_ID_LIST), false, true, varValCriteriaList);
             for( Entry<String, List<String>> paramsEntry : queryData.getIntersectRegexParameters().entrySet() ) { 
                 String listId = paramsEntry.getKey();
                 queryAppender.addRegexQueryParameters(
@@ -585,8 +561,13 @@ public class JPAAuditLogService implements AuditLogService {
         if( ! queryAppender.getFirstUse() ) { 
             queryBuilder.append(")"); 
         }
+        boolean firstUse = queryAppender.getFirstUse();
+        if( ! varValCriteriaList.isEmpty() ) { 
+            addVarValCriteria(firstUse, queryBuilder, queryAppender, queryParams, varValCriteriaList);
+            firstUse = true;
+        }
         if( addLastCriteria ) { 
-            addLastInstanceCriteria(queryAppender.getFirstUse(), queryBuilder);
+            addLastInstanceCriteria(firstUse, queryBuilder);
         }
        
         // apply filter, ordering, etc.. 
@@ -594,6 +575,67 @@ public class JPAAuditLogService implements AuditLogService {
         return queryBuilder.toString();
     }
 
+    private static void checkVarValCriteria(List<String> varValList, boolean union, boolean regex, List<Object[]> varValCriteriaList) { 
+        if( varValList == null || varValList.isEmpty() ) { 
+            return;
+        }
+        for( Object varVal : varValList ) { 
+            String [] parts = ((String) varVal).split(VAR_VAL_SEPARATOR, 2);
+            String varId = parts[1].substring(0,Integer.parseInt(parts[0]));
+            String val = parts[1].substring(Integer.parseInt(parts[0])+1);
+            int type = ( union ? 0 : 1 ) + ( regex ? 2 : 0);
+            Object [] varValCrit = { type, varId, val };
+            varValCriteriaList.add(varValCrit);
+        }
+    }
+    
+    private static void addVarValCriteria(boolean whereAnd, StringBuilder queryBuilder, 
+            QueryAndParameterAppender queryAppender, Map<String, Object> queryParams, 
+            List<Object []> varValCriteriaList) { 
+        if( ! whereAnd ) { 
+            queryBuilder.append("\n");
+        }
+      
+       // for each var/val criteria
+       for( Object [] varValCriteria : varValCriteriaList ) { 
+
+           // Start with WHERE, OR, or AND?
+           String andOr = null;
+           if( ! whereAnd ) { 
+               if( ((Integer) varValCriteria[0]) % 2 == 1 ) { 
+                   andOr = "AND"; 
+               } else { 
+                   andOr = "OR";
+               }
+               queryBuilder.append( andOr );
+           } else { 
+               queryBuilder.append( "WHERE" );
+               whereAnd = false;
+           }
+          
+           // var id: add query parameter
+           String varIdQueryParamName = queryAppender.generateParamName();
+           queryParams.put(varIdQueryParamName, varValCriteria[1]);
+           // var id: append to the query
+           queryBuilder.append(" (l.variableId = :").append(varIdQueryParamName).append(" ");
+           
+           // val: append to the query
+           queryBuilder.append("AND l.value ");
+           String valQueryParamName = queryAppender.generateParamName();
+           String val;
+           if( ((Integer) varValCriteria[0]) >= 2 ) { 
+               val = ((String) varValCriteria[2]).replace('*', '%').replace('.', '_');
+               queryBuilder.append("like :").append(valQueryParamName);
+           } else { 
+               val = (String) varValCriteria[2];
+              queryBuilder.append("= :").append(valQueryParamName);
+           }
+           queryBuilder.append(") ");
+           // val: add query parameter
+           queryParams.put(valQueryParamName, val);
+       }
+    }
+    
     private static void addLastInstanceCriteria(boolean whereAnd, StringBuilder queryBuilder) { 
        queryBuilder.append("\n").append( (whereAnd ? "WHERE" : "AND" ) )
            .append(" (l.id IN (SELECT MAX(ll.id) FROM VariableInstanceLog ll ")

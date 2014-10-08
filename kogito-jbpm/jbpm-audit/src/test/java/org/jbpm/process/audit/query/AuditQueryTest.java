@@ -716,4 +716,106 @@ public class AuditQueryTest extends JPAAuditLogService {
         assertEquals("Incorrect variable old val", "oldVal-4", logs.get(0).getOldValue());
     } 
 
+    @Test
+    public void variableValueTest() throws Exception { 
+        StandaloneJtaStrategy jtaHelper = new StandaloneJtaStrategy(emf);
+        EntityManager em = jtaHelper.getEntityManager();
+
+        int numLogs = 9;
+        VariableInstanceLog [] testData = new VariableInstanceLog[numLogs];
+        Calendar cal = GregorianCalendar.getInstance(); 
+
+        String processId =  "org.variable.value";
+        for( int i = 0; i < testData.length; ++i ) {
+            cal.roll(Calendar.SECOND, 1);
+            testData[i] = new VariableInstanceLog(randomLong(), processId, "varInstId", "var-" +i, "val-"+i, "oldVal-" + i);
+        }
+        
+        Object tx = jtaHelper.joinTransaction(em);
+        for( int i = 0; i < numLogs; ++i ) {
+            em.persist(testData[i]);
+        }
+        jtaHelper.leaveTransaction(em, tx);
+       
+        VariableInstanceLogQueryBuilder queryBuilder;
+        ParametrizedQuery<org.kie.api.runtime.manager.audit.VariableInstanceLog> query ;
+        List<org.kie.api.runtime.manager.audit.VariableInstanceLog> logs;
+      
+        // check
+        queryBuilder = this.variableInstanceLogQuery();
+        query = queryBuilder.processId(processId).buildQuery();
+        logs = query.getResultList();
+        assertEquals(numLogs + " logs expected", numLogs, logs.size());
+        
+        // control: don't find any
+        queryBuilder = this.variableInstanceLogQuery()
+                .intersect()
+                .processId(processId);
+        query = queryBuilder
+                .variableValue("var-1", "val-2")
+                .buildQuery();
+        logs = query.getResultList();
+        assertEquals("No logs expected", 0, logs.size());
+        
+        // control: don't find any
+        queryBuilder = this.variableInstanceLogQuery()
+                .intersect()
+                .processId(processId);
+        query = queryBuilder
+                .variableValue("var-1", "val-1")
+                .variableValue("var-2", "val-2")
+                .buildQuery();
+        logs = query.getResultList();
+        assertEquals("No logs expected", 0, logs.size());
+        
+        // find 1
+        queryBuilder = this.variableInstanceLogQuery();
+        query = queryBuilder
+                .union()
+                .variableValue("var-1", "val-1")
+                .buildQuery();
+        logs = query.getResultList();
+        assertEquals("1 log expected", 1, logs.size());
+        assertEquals("Incorrect variable val", "val-1", logs.get(0).getValue());
+        assertEquals("Incorrect variable id", "var-1", logs.get(0).getVariableId());
+        
+        // find 2
+        queryBuilder = this.variableInstanceLogQuery();
+        query = queryBuilder
+                .union()
+                .variableValue("var-2", "val-2")
+                .variableValue("var-4", "val-4")
+                .buildQuery();
+        logs = query.getResultList();
+        assertEquals("2 log expected", 2, logs.size());
+        for( org.kie.api.runtime.manager.audit.VariableInstanceLog varLog : logs ) { 
+           String id = varLog.getVariableId().substring("var-".length());
+           assertEquals( "variable value", "val-" + id, varLog.getValue());
+        }
+        
+        // regex: find 1
+        queryBuilder = this.variableInstanceLogQuery();
+        query = queryBuilder
+                .like()
+                .variableValue("var-2", "val-*")
+                .buildQuery();
+        logs = query.getResultList();
+        assertEquals("1 log expected", 1, logs.size());
+        assertEquals("Incorrect variable val", "val-2", logs.get(0).getValue());
+        assertEquals("Incorrect variable id", "var-2", logs.get(0).getVariableId());
+        
+        // regex: find 2
+        queryBuilder = this.variableInstanceLogQuery();
+        query = queryBuilder
+                .like().union()
+                .variableValue("var-2", "val-*")
+                .variableValue("var-3", "val-*")
+                .buildQuery();
+        logs = query.getResultList();
+        assertEquals("2 log expected", 2, logs.size());
+        for( org.kie.api.runtime.manager.audit.VariableInstanceLog varLog : logs ) { 
+           String id = varLog.getVariableId().substring("var-".length());
+           assertEquals( "variable value", "val-" + id, varLog.getValue());
+        }
+    } 
 }
