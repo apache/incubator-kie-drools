@@ -59,6 +59,14 @@ public interface VariableInstanceLogQueryBuilder extends AuditQueryBuilder<Varia
     public VariableInstanceLogQueryBuilder oldValue(String... oldVvalue);
 
     /**
+     * Specify the value that variable instance logs should have
+     * @param variableId the String variable id
+     * @param value the String value of the variable
+     * @return The current query builder instance
+     */
+    public VariableInstanceLogQueryBuilder variableValue(String variableId, String value);
+
+    /**
      * Specify one or more external ids to use as a criteria. In some cases,
      * the external id is the deployment unit id or runtime manager id.
      * @param externalId one or more string external ids

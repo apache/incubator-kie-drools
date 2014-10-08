@@ -164,7 +164,11 @@ public class QueryParameters {
                     getIntersectRegexParameters().put(listId, stringListParams);
                 }
             } 
-            listParams = (List<T>) stringListParams;
+            if( listParams == null ) { 
+               return (List<T>) stringListParams; 
+            } else { 
+                return listParams;
+            }
         } else if( range ) { 
             if( union ) {
                 listParams = (List<T>) getUnionRangeParameters().get(listId);
@@ -201,16 +205,20 @@ public class QueryParameters {
         this.union = true;
     }
     
-    public boolean isUnion() { 
-       return this.union;
-    }
-
     public void setToIntersection() {
         this.union = false;
     }
 
+    public boolean isUnion() { 
+       return this.union;
+    }
+
     public void setToLike() {
         this.like = true;
+    }
+
+    public boolean isLike() {
+        return this.like;
     }
 
     public void setToEquals() {
@@ -221,10 +229,14 @@ public class QueryParameters {
         this.range = true;
     }
 
-    public void setToSet() {
+    public void setToPrecise() {
         this.range = false;
     }
     
+    public boolean isRange() {
+        return this.range;
+    }
+
     public void clear() { 
         union = true;
         like = false;
