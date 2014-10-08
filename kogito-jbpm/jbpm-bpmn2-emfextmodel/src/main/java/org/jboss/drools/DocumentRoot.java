@@ -23,8 +23,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  *   <li>{@link org.jboss.drools.DocumentRoot#getXSISchemaLocation <em>XSI Schema Location</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getGlobal <em>Global</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getImport <em>Import</em>}</li>
- *   <li>{@link org.jboss.drools.DocumentRoot#getMetadata <em>Metadata</em>}</li>
- *   <li>{@link org.jboss.drools.DocumentRoot#getMetaentry <em>Metaentry</em>}</li>
+ *   <li>{@link org.jboss.drools.DocumentRoot#getMetaData <em>Meta Data</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getOnEntryScript <em>On Entry Script</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getOnExitScript <em>On Exit Script</em>}</li>
  *   <li>{@link org.jboss.drools.DocumentRoot#getPackageName <em>Package Name</em>}</li>
@@ -148,58 +147,31 @@ public interface DocumentRoot extends EObject {
 	void setImport(ImportType value);
 
 	/**
-	 * Returns the value of the '<em><b>Metadata</b></em>' containment reference.
+	 * Returns the value of the '<em><b>Meta Data</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Metadata</em>' containment reference isn't clear,
+	 * If the meaning of the '<em>Meta Data</em>' containment reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Metadata</em>' containment reference.
-	 * @see #setMetadata(MetadataType)
-	 * @see org.jboss.drools.DroolsPackage#getDocumentRoot_Metadata()
+	 * @return the value of the '<em>Meta Data</em>' containment reference.
+	 * @see #setMetaData(MetaDataType)
+	 * @see org.jboss.drools.DroolsPackage#getDocumentRoot_MetaData()
 	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='metadata' namespace='##targetNamespace'"
+	 *        extendedMetaData="kind='element' name='metaData' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	MetadataType getMetadata();
+	MetaDataType getMetaData();
 
 	/**
-	 * Sets the value of the '{@link org.jboss.drools.DocumentRoot#getMetadata <em>Metadata</em>}' containment reference.
+	 * Sets the value of the '{@link org.jboss.drools.DocumentRoot#getMetaData <em>Meta Data</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Metadata</em>' containment reference.
-	 * @see #getMetadata()
+	 * @param value the new value of the '<em>Meta Data</em>' containment reference.
+	 * @see #getMetaData()
 	 * @generated
 	 */
-	void setMetadata(MetadataType value);
-
-	/**
-	 * Returns the value of the '<em><b>Metaentry</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Metaentry</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Metaentry</em>' containment reference.
-	 * @see #setMetaentry(MetaentryType)
-	 * @see org.jboss.drools.DroolsPackage#getDocumentRoot_Metaentry()
-	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='metaentry' namespace='##targetNamespace'"
-	 * @generated
-	 */
-	MetaentryType getMetaentry();
-
-	/**
-	 * Sets the value of the '{@link org.jboss.drools.DocumentRoot#getMetaentry <em>Metaentry</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Metaentry</em>' containment reference.
-	 * @see #getMetaentry()
-	 * @generated
-	 */
-	void setMetaentry(MetaentryType value);
+	void setMetaData(MetaDataType value);
 
 	/**
 	 * Returns the value of the '<em><b>On Entry Script</b></em>' containment reference.

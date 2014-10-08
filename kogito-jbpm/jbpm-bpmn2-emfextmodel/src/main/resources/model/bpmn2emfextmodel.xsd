@@ -47,6 +47,10 @@
 		<attribute name="identifier" type="string" use="required" />
 		<attribute name="type" type="string" use="required" />
 	</attributeGroup>
+	
+	<attributeGroup name="metavalueattributes">
+		<attribute name="name" type="string" use="required" />
+	</attributeGroup>
 
 	<element name="onEntry-script">
 		<complexType>
@@ -78,20 +82,12 @@
 		</complexType>
 	</element>
 
-	<element name="metadata">
+	<element name="metaData">
 		<complexType>
 			<sequence>
-				<element maxOccurs="unbounded" ref="drools:metaentry" />
+				<element name="metaValue" minOccurs="1" maxOccurs="1" type="string" />
 			</sequence>
-		</complexType>
-	</element>
-
-	<element name="metaentry">
-		<complexType>
-			<sequence>
-				<element name="name" type="string" minOccurs="1" maxOccurs="1" />
-				<element name="value" type="string" minOccurs="1" maxOccurs="1" />
-			</sequence>
+			<attributeGroup ref="drools:metavalueattributes" />
 		</complexType>
 	</element>
 	

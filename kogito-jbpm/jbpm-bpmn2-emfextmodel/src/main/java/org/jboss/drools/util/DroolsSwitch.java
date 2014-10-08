@@ -101,15 +101,9 @@ public class DroolsSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case DroolsPackage.METADATA_TYPE: {
-				MetadataType metadataType = (MetadataType)theEObject;
-				T result = caseMetadataType(metadataType);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case DroolsPackage.METAENTRY_TYPE: {
-				MetaentryType metaentryType = (MetaentryType)theEObject;
-				T result = caseMetaentryType(metaentryType);
+			case DroolsPackage.META_DATA_TYPE: {
+				MetaDataType metaDataType = (MetaDataType)theEObject;
+				T result = caseMetaDataType(metaDataType);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -175,32 +169,17 @@ public class DroolsSwitch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Metadata Type</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Meta Data Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Metadata Type</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Meta Data Type</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseMetadataType(MetadataType object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Metaentry Type</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Metaentry Type</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseMetaentryType(MetaentryType object) {
+	public T caseMetaDataType(MetaDataType object) {
 		return null;
 	}
 

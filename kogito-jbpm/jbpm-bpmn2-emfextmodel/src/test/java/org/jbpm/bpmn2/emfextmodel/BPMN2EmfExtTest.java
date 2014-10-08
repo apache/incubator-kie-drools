@@ -32,8 +32,7 @@ import org.jboss.drools.DroolsFactory;
 import org.jboss.drools.DroolsPackage;
 import org.jboss.drools.GlobalType;
 import org.jboss.drools.ImportType;
-import org.jboss.drools.MetadataType;
-import org.jboss.drools.MetaentryType;
+import org.jboss.drools.MetaDataType;
 import org.jboss.drools.OnEntryScriptType;
 import org.jboss.drools.OnExitScriptType;
 import org.jboss.drools.util.DroolsResourceFactoryImpl;
@@ -67,20 +66,11 @@ public class BPMN2EmfExtTest extends TestCase {
         inResource.setEncoding("UTF-8");
         DocumentRoot documentRoot = DroolsFactory.eINSTANCE.createDocumentRoot();
         
-        MetadataType metadataType =  DroolsFactory.eINSTANCE.createMetadataType();
+        MetaDataType metadataType =  DroolsFactory.eINSTANCE.createMetaDataType();
+        metadataType.setName("testvalue");
+        metadataType.setMetaValue("testentry"); 
         
-        MetaentryType typeOne =  DroolsFactory.eINSTANCE.createMetaentryType();
-        typeOne.setName("entry1");
-        typeOne.setValue("value1");
-        
-        MetaentryType typeTwo =  DroolsFactory.eINSTANCE.createMetaentryType();
-        typeTwo.setName("entry2");
-        typeTwo.setValue("value2");
-        
-        metadataType.getMetaentry().add(typeOne);
-        metadataType.getMetaentry().add(typeTwo);
-        
-        documentRoot.setMetadata(metadataType);
+        documentRoot.setMetaData(metadataType);
         inResource.getContents().add(documentRoot);
         
         StringWriter stringWriter = new StringWriter();
@@ -100,17 +90,10 @@ public class BPMN2EmfExtTest extends TestCase {
         outResource.load(is, options);
         
         DocumentRoot outRoot = (DocumentRoot) outResource.getContents().get(0);
-        assertNotNull(outRoot.getMetadata());
-        MetadataType outMetadataType =  outRoot.getMetadata();
-        assertTrue(outMetadataType.getMetaentry().size() == 2);
-        MetaentryType outOne = (MetaentryType) outMetadataType.getMetaentry().get(0);
-        MetaentryType outTwo = (MetaentryType) outMetadataType.getMetaentry().get(1);
-        
-        assertTrue(outOne.getName().equals("entry1"));
-        assertTrue(outOne.getValue().equals("value1"));
-        
-        assertTrue(outTwo.getName().equals("entry2"));
-        assertTrue(outTwo.getValue().equals("value2"));
+        assertNotNull(outRoot.getMetaData());
+        MetaDataType outMetadataType =  outRoot.getMetaData();
+        assertEquals(outMetadataType.getName(), "testvalue");
+        assertEquals(outMetadataType.getMetaValue(), "testentry");
         
     }
     

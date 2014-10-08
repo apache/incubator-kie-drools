@@ -80,12 +80,8 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 				return createImportTypeAdapter();
 			}
 			@Override
-			public Adapter caseMetadataType(MetadataType object) {
-				return createMetadataTypeAdapter();
-			}
-			@Override
-			public Adapter caseMetaentryType(MetaentryType object) {
-				return createMetaentryTypeAdapter();
+			public Adapter caseMetaDataType(MetaDataType object) {
+				return createMetaDataTypeAdapter();
 			}
 			@Override
 			public Adapter caseOnEntryScriptType(OnEntryScriptType object) {
@@ -158,30 +154,16 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.jboss.drools.MetadataType <em>Metadata Type</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.jboss.drools.MetaDataType <em>Meta Data Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.jboss.drools.MetadataType
+	 * @see org.jboss.drools.MetaDataType
 	 * @generated
 	 */
-	public Adapter createMetadataTypeAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link org.jboss.drools.MetaentryType <em>Metaentry Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.jboss.drools.MetaentryType
-	 * @generated
-	 */
-	public Adapter createMetaentryTypeAdapter() {
+	public Adapter createMetaDataTypeAdapter() {
 		return null;
 	}
 

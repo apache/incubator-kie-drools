@@ -103,10 +103,8 @@ public class DroolsValidator extends EObjectValidator {
 				return validateGlobalType((GlobalType)value, diagnostics, context);
 			case DroolsPackage.IMPORT_TYPE:
 				return validateImportType((ImportType)value, diagnostics, context);
-			case DroolsPackage.METADATA_TYPE:
-				return validateMetadataType((MetadataType)value, diagnostics, context);
-			case DroolsPackage.METAENTRY_TYPE:
-				return validateMetaentryType((MetaentryType)value, diagnostics, context);
+			case DroolsPackage.META_DATA_TYPE:
+				return validateMetaDataType((MetaDataType)value, diagnostics, context);
 			case DroolsPackage.ON_ENTRY_SCRIPT_TYPE:
 				return validateOnEntryScriptType((OnEntryScriptType)value, diagnostics, context);
 			case DroolsPackage.ON_EXIT_SCRIPT_TYPE:
@@ -158,17 +156,8 @@ public class DroolsValidator extends EObjectValidator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean validateMetadataType(MetadataType metadataType, DiagnosticChain diagnostics, Map<Object, Object> context) {
-		return validate_EveryDefaultConstraint(metadataType, diagnostics, context);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public boolean validateMetaentryType(MetaentryType metaentryType, DiagnosticChain diagnostics, Map<Object, Object> context) {
-		return validate_EveryDefaultConstraint(metaentryType, diagnostics, context);
+	public boolean validateMetaDataType(MetaDataType metaDataType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(metaDataType, diagnostics, context);
 	}
 
 	/**

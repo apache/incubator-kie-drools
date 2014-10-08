@@ -49,22 +49,13 @@ public interface DroolsFactory extends EFactory {
 	ImportType createImportType();
 
 	/**
-	 * Returns a new object of class '<em>Metadata Type</em>'.
+	 * Returns a new object of class '<em>Meta Data Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Metadata Type</em>'.
+	 * @return a new object of class '<em>Meta Data Type</em>'.
 	 * @generated
 	 */
-	MetadataType createMetadataType();
-
-	/**
-	 * Returns a new object of class '<em>Metaentry Type</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Metaentry Type</em>'.
-	 * @generated
-	 */
-	MetaentryType createMetaentryType();
+	MetaDataType createMetaDataType();
 
 	/**
 	 * Returns a new object of class '<em>On Entry Script Type</em>'.

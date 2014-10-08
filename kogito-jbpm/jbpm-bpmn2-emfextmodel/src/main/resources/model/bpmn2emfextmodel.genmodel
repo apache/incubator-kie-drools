@@ -19,8 +19,7 @@
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/xSISchemaLocation"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/global"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/import"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/metadata"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/metaentry"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/metaData"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/onEntryScript"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/onExitScript"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DocumentRoot/packageName"/>
@@ -36,12 +35,9 @@
     <genClasses ecoreClass="drools.ecore#//ImportType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ImportType/name"/>
     </genClasses>
-    <genClasses ecoreClass="drools.ecore#//MetadataType">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//MetadataType/metaentry"/>
-    </genClasses>
-    <genClasses ecoreClass="drools.ecore#//MetaentryType">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//MetaentryType/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//MetaentryType/value"/>
+    <genClasses ecoreClass="drools.ecore#//MetaDataType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//MetaDataType/metaValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//MetaDataType/name"/>
     </genClasses>
     <genClasses ecoreClass="drools.ecore#//OnEntryScriptType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//OnEntryScriptType/script"/>

@@ -65,8 +65,7 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 			case DroolsPackage.DOCUMENT_ROOT: return createDocumentRoot();
 			case DroolsPackage.GLOBAL_TYPE: return createGlobalType();
 			case DroolsPackage.IMPORT_TYPE: return createImportType();
-			case DroolsPackage.METADATA_TYPE: return createMetadataType();
-			case DroolsPackage.METAENTRY_TYPE: return createMetaentryType();
+			case DroolsPackage.META_DATA_TYPE: return createMetaDataType();
 			case DroolsPackage.ON_ENTRY_SCRIPT_TYPE: return createOnEntryScriptType();
 			case DroolsPackage.ON_EXIT_SCRIPT_TYPE: return createOnExitScriptType();
 			default:
@@ -155,19 +154,9 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public MetadataType createMetadataType() {
-		MetadataTypeImpl metadataType = new MetadataTypeImpl();
-		return metadataType;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public MetaentryType createMetaentryType() {
-		MetaentryTypeImpl metaentryType = new MetaentryTypeImpl();
-		return metaentryType;
+	public MetaDataType createMetaDataType() {
+		MetaDataTypeImpl metaDataType = new MetaDataTypeImpl();
+		return metaDataType;
 	}
 
 	/**
