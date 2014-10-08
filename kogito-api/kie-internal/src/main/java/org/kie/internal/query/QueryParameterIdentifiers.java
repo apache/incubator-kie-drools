@@ -50,11 +50,13 @@ public interface QueryParameterIdentifiers {
     public static final String VARIABLE_ID_LIST = String.valueOf(idGen.getAndIncrement());
     public static final String VARIABLE_INSTANCE_ID_LIST = String.valueOf(idGen.getAndIncrement());
     public static final String DATE_LIST = String.valueOf(idGen.getAndIncrement());
-    public static final String VAR_VALUE_LIST = String.valueOf(idGen.getAndIncrement());
+    public static final String VAR_VALUE_ID_LIST = String.valueOf(idGen.getAndIncrement());
     public static final String VALUE_LIST = String.valueOf(idGen.getAndIncrement());
     public static final String OLD_VALUE_LIST = String.valueOf(idGen.getAndIncrement());
     public static final String EXTERNAL_ID_LIST = String.valueOf(idGen.getAndIncrement());
     public static final String LAST_VARIABLE_LIST = String.valueOf(idGen.getAndIncrement());
+   
+    public static final String VAR_VAL_SEPARATOR = ":";
     
     // task identifiers
     
