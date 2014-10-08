@@ -28,6 +28,7 @@ import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
+import org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
@@ -47,11 +48,6 @@ import org.optaplanner.core.impl.heuristic.selector.entity.decorator.SortingEnti
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.EntityMimicRecorder;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.BetaDistributionNearbyRandom;
-import org.optaplanner.core.impl.heuristic.selector.entity.nearby.NearEntityNearbyEntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearEntityNearbyMethod;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
-import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 @XStreamAlias("entitySelector")
 public class EntitySelectorConfig extends SelectorConfig {
@@ -62,12 +58,12 @@ public class EntitySelectorConfig extends SelectorConfig {
     protected String mimicSelectorRef = null;
 
     protected Class<?> entityClass = null;
-    @XStreamAlias("nearbyOriginEntitySelector")
-    protected EntitySelectorConfig nearbyOriginEntitySelectorConfig = null;
-    protected Class<? extends NearEntityNearbyMethod> nearEntityNearbyMethodClass = null;
 
     protected SelectionCacheType cacheType = null;
     protected SelectionOrder selectionOrder = null;
+
+    @XStreamAlias("nearbySelection")
+    protected NearbySelectionConfig nearbySelectionConfig = null;
 
     @XStreamImplicit(itemFieldName = "filterClass")
     protected List<Class<? extends SelectionFilter>> filterClassList = null;
@@ -106,22 +102,6 @@ public class EntitySelectorConfig extends SelectorConfig {
         this.entityClass = entityClass;
     }
 
-    public EntitySelectorConfig getNearbyOriginEntitySelectorConfig() {
-        return nearbyOriginEntitySelectorConfig;
-    }
-
-    public void setNearbyOriginEntitySelectorConfig(EntitySelectorConfig nearbyOriginEntitySelectorConfig) {
-        this.nearbyOriginEntitySelectorConfig = nearbyOriginEntitySelectorConfig;
-    }
-
-    public Class<? extends NearEntityNearbyMethod> getNearEntityNearbyMethodClass() {
-        return nearEntityNearbyMethodClass;
-    }
-
-    public void setNearEntityNearbyMethodClass(Class<? extends NearEntityNearbyMethod> nearEntityNearbyMethodClass) {
-        this.nearEntityNearbyMethodClass = nearEntityNearbyMethodClass;
-    }
-
     public SelectionCacheType getCacheType() {
         return cacheType;
     }
@@ -136,6 +116,14 @@ public class EntitySelectorConfig extends SelectorConfig {
 
     public void setSelectionOrder(SelectionOrder selectionOrder) {
         this.selectionOrder = selectionOrder;
+    }
+
+    public NearbySelectionConfig getNearbySelectionConfig() {
+        return nearbySelectionConfig;
+    }
+
+    public void setNearbySelectionConfig(NearbySelectionConfig nearbySelectionConfig) {
+        this.nearbySelectionConfig = nearbySelectionConfig;
     }
 
     public List<Class<? extends SelectionFilter>> getFilterClassList() {
@@ -224,7 +212,9 @@ public class EntitySelectorConfig extends SelectorConfig {
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
 
-        validateNearby(resolvedCacheType, resolvedSelectionOrder);
+        if (nearbySelectionConfig != null) {
+            nearbySelectionConfig.validateNearby(resolvedCacheType, resolvedSelectionOrder);
+        }
         validateCacheTypeVersusSelectionOrder(resolvedCacheType, resolvedSelectionOrder);
         validateSorting(resolvedSelectionOrder);
         validateProbability(resolvedSelectionOrder);
@@ -234,7 +224,10 @@ public class EntitySelectorConfig extends SelectorConfig {
         EntitySelector entitySelector = buildBaseEntitySelector(configPolicy, entityDescriptor,
                 SelectionCacheType.max(minimumCacheType, resolvedCacheType),
                 determineBaseRandomSelection(entityDescriptor, resolvedCacheType, resolvedSelectionOrder));
-        entitySelector = applyNearby(configPolicy, minimumCacheType, resolvedCacheType, resolvedSelectionOrder, entitySelector);
+        if (nearbySelectionConfig != null) {
+            entitySelector = nearbySelectionConfig.applyNearbyEntitySelector(configPolicy,
+                    minimumCacheType, resolvedCacheType, resolvedSelectionOrder, entitySelector);
+        }
 
         entitySelector = applyFiltering(resolvedCacheType, resolvedSelectionOrder, entitySelector);
         entitySelector = applySorting(resolvedCacheType, resolvedSelectionOrder, entitySelector);
@@ -306,53 +299,6 @@ public class EntitySelectorConfig extends SelectorConfig {
         }
         // FromSolutionEntitySelector has an intrinsicCacheType STEP
         return new FromSolutionEntitySelector(entityDescriptor, minimumCacheType, randomSelection);
-    }
-
-    private void validateNearby(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder) {
-        if (nearbyOriginEntitySelectorConfig != null || nearEntityNearbyMethodClass != null) {
-            if (nearbyOriginEntitySelectorConfig == null) {
-                throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                        + ") is nearby selection"
-                        + " but lacks a nearbyOriginEntitySelector (" + nearbyOriginEntitySelectorConfig + ").");
-            }
-            if (nearEntityNearbyMethodClass == null) {
-                throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                        + ") is nearby selection"
-                        + " but lacks a nearEntityNearbyMethodClass (" + nearEntityNearbyMethodClass + ").");
-            }
-            if (resolvedSelectionOrder != SelectionOrder.ORIGINAL && resolvedSelectionOrder != SelectionOrder.RANDOM) {
-                throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                        + ") with nearbyOriginEntitySelector ("  + nearbyOriginEntitySelectorConfig
-                        + ") and nearEntityNearbyMethodClass ("  + nearEntityNearbyMethodClass
-                        + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
-                        + ") that is not " + SelectionOrder.ORIGINAL + " or " + SelectionOrder.RANDOM + ".");
-            }
-            if (resolvedCacheType.isCached()) {
-                throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                        + ") with nearbyOriginEntitySelector ("  + nearbyOriginEntitySelectorConfig
-                        + ") and nearEntityNearbyMethodClass ("  + nearEntityNearbyMethodClass
-                        + ") has a resolvedCacheType (" + resolvedCacheType
-                        + ") that is cached.");
-            }
-        }
-    }
-
-    private EntitySelector applyNearby(HeuristicConfigPolicy configPolicy,
-            SelectionCacheType minimumCacheType, SelectionCacheType resolvedCacheType,
-            SelectionOrder resolvedSelectionOrder, EntitySelector entitySelector) {
-        if (nearbyOriginEntitySelectorConfig != null) {
-            boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
-            EntitySelector originEntitySelector = nearbyOriginEntitySelectorConfig.buildEntitySelector(
-                    configPolicy,
-                    minimumCacheType, resolvedSelectionOrder);
-            NearEntityNearbyMethod nearEntityNearbyMethod = ConfigUtils.newInstance(this,
-                    "nearEntityNearbyMethodClass", nearEntityNearbyMethodClass);
-            // TODO Check nearEntityNearbyMethodClass.getGenericInterfaces() to confirm generic type S is an entityClass
-            NearbyRandom nearbyRandom = new BetaDistributionNearbyRandom(1.0, 5.0);
-            entitySelector = new NearEntityNearbyEntitySelector(entitySelector, originEntitySelector,
-                    nearEntityNearbyMethod, nearbyRandom, randomSelection);
-        }
-        return entitySelector;
     }
 
     private boolean hasFiltering(EntityDescriptor entityDescriptor) {
@@ -557,13 +503,11 @@ public class EntitySelectorConfig extends SelectorConfig {
                 inheritedConfig.getMimicSelectorRef());
         entityClass = ConfigUtils.inheritOverwritableProperty(entityClass,
                 inheritedConfig.getEntityClass());
-        if (nearbyOriginEntitySelectorConfig == null) {
-            nearbyOriginEntitySelectorConfig = inheritedConfig.getNearbyOriginEntitySelectorConfig();
-        } else if (inheritedConfig.getNearbyOriginEntitySelectorConfig() != null) {
-            nearbyOriginEntitySelectorConfig.inherit(inheritedConfig.getNearbyOriginEntitySelectorConfig());
+        if (nearbySelectionConfig == null) {
+            nearbySelectionConfig = inheritedConfig.getNearbySelectionConfig();
+        } else if (inheritedConfig.getNearbySelectionConfig() != null) {
+            nearbySelectionConfig.inherit(inheritedConfig.getNearbySelectionConfig());
         }
-        nearEntityNearbyMethodClass = ConfigUtils.inheritOverwritableProperty(nearEntityNearbyMethodClass,
-                inheritedConfig.getNearEntityNearbyMethodClass());
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         filterClassList = ConfigUtils.inheritOverwritableProperty
