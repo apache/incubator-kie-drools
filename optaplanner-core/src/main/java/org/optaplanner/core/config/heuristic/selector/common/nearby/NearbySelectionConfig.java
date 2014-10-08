@@ -38,6 +38,9 @@ public class NearbySelectionConfig extends SelectorConfig {
     protected EntitySelectorConfig originEntitySelectorConfig = null;
     protected Class<? extends NearEntityNearbyMethod> nearEntityNearbyMethodClass = null;
 
+    protected Double betaDistributionAlpha = null;
+    protected Double betaDistributionBeta = null;
+
     public EntitySelectorConfig getOriginEntitySelectorConfig() {
         return originEntitySelectorConfig;
     }
@@ -52,6 +55,22 @@ public class NearbySelectionConfig extends SelectorConfig {
 
     public void setNearEntityNearbyMethodClass(Class<? extends NearEntityNearbyMethod> nearEntityNearbyMethodClass) {
         this.nearEntityNearbyMethodClass = nearEntityNearbyMethodClass;
+    }
+
+    public Double getBetaDistributionAlpha() {
+        return betaDistributionAlpha;
+    }
+
+    public void setBetaDistributionAlpha(Double betaDistributionAlpha) {
+        this.betaDistributionAlpha = betaDistributionAlpha;
+    }
+
+    public Double getBetaDistributionBeta() {
+        return betaDistributionBeta;
+    }
+
+    public void setBetaDistributionBeta(Double betaDistributionBeta) {
+        this.betaDistributionBeta = betaDistributionBeta;
     }
 
     public void validateNearby(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder) {
@@ -79,6 +98,16 @@ public class NearbySelectionConfig extends SelectorConfig {
                     + ") has a resolvedCacheType (" + resolvedCacheType
                     + ") that is cached.");
         }
+        if (betaDistributionAlpha != null && betaDistributionAlpha < 0.0) {
+            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
+                    + ")'s betaDistributionAlpha ("  + betaDistributionAlpha
+                    + ") must be positive.");
+        }
+        if (betaDistributionBeta != null && betaDistributionBeta < 0.0) {
+            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
+                    + ")'s betaDistributionBeta ("  + betaDistributionBeta
+                    + ") must be positive.");
+        }
     }
 
     public EntitySelector applyNearbyEntitySelector(HeuristicConfigPolicy configPolicy,
@@ -105,9 +134,15 @@ public class NearbySelectionConfig extends SelectorConfig {
         NearEntityNearbyMethod nearEntityNearbyMethod = ConfigUtils.newInstance(this,
                 "nearEntityNearbyMethodClass", nearEntityNearbyMethodClass);
         // TODO Check nearEntityNearbyMethodClass.getGenericInterfaces() to confirm generic type S is an entityClass
-        NearbyRandom nearbyRandom = new BetaDistributionNearbyRandom(1.0, 5.0);
+        NearbyRandom nearbyRandom = buildNearbyRandom();
         return new NearEntityNearbyValueSelector(valueSelector, originEntitySelector,
                 nearEntityNearbyMethod, nearbyRandom, randomSelection);
+    }
+
+    protected NearbyRandom buildNearbyRandom() {
+        double betaDistributionAlpha_ = betaDistributionAlpha == null ? 1.0 : betaDistributionAlpha;
+        double betaDistributionBeta_ = betaDistributionBeta == null ? 5.0 : betaDistributionBeta;
+        return new BetaDistributionNearbyRandom(betaDistributionAlpha_, betaDistributionBeta_);
     }
 
     public void inherit(NearbySelectionConfig inheritedConfig) {
@@ -119,6 +154,10 @@ public class NearbySelectionConfig extends SelectorConfig {
         }
         nearEntityNearbyMethodClass = ConfigUtils.inheritOverwritableProperty(nearEntityNearbyMethodClass,
                 inheritedConfig.getNearEntityNearbyMethodClass());
+        betaDistributionAlpha = ConfigUtils.inheritOverwritableProperty(betaDistributionAlpha,
+                inheritedConfig.getBetaDistributionAlpha());
+        betaDistributionBeta = ConfigUtils.inheritOverwritableProperty(betaDistributionBeta,
+                inheritedConfig.getBetaDistributionBeta());
     }
 
 }
