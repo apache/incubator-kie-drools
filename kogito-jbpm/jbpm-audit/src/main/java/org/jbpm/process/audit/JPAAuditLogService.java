@@ -561,13 +561,13 @@ public class JPAAuditLogService implements AuditLogService {
         if( ! queryAppender.getFirstUse() ) { 
             queryBuilder.append(")"); 
         }
-        boolean firstUse = queryAppender.getFirstUse();
+        boolean whereClauseAdded = queryAppender.getFirstUse();
         if( ! varValCriteriaList.isEmpty() ) { 
-            addVarValCriteria(firstUse, queryBuilder, queryAppender, queryParams, varValCriteriaList);
-            firstUse = true;
+            addVarValCriteria(whereClauseAdded, queryBuilder, queryAppender, queryParams, varValCriteriaList);
+            whereClauseAdded = false;
         }
         if( addLastCriteria ) { 
-            addLastInstanceCriteria(firstUse, queryBuilder);
+            addLastInstanceCriteria(whereClauseAdded, queryBuilder);
         }
        
         // apply filter, ordering, etc.. 

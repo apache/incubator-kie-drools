@@ -817,5 +817,21 @@ public class AuditQueryTest extends JPAAuditLogService {
            String id = varLog.getVariableId().substring("var-".length());
            assertEquals( "variable value", "val-" + id, varLog.getValue());
         }
+        
+        // regex: find 2 with last
+        queryBuilder = this.variableInstanceLogQuery();
+        query = queryBuilder
+                .like().union()
+                .variableValue("var-2", "val-*")
+                .variableValue("var-3", "val-*")
+                .equals()
+                .last()
+                .buildQuery();
+        logs = query.getResultList();
+        assertEquals("2 log expected", 2, logs.size());
+        for( org.kie.api.runtime.manager.audit.VariableInstanceLog varLog : logs ) { 
+           String id = varLog.getVariableId().substring("var-".length());
+           assertEquals( "variable value", "val-" + id, varLog.getValue());
+        }
     } 
 }
