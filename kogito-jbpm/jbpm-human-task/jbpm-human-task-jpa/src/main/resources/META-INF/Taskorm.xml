@@ -89,6 +89,7 @@
             where
             t.archived = 0 and
             potentialOwners.id = :userId and
+            (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
             t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
             order by t.id DESC            
@@ -119,6 +120,7 @@
             where
             t.archived = 0 and
             potentialOwners.id = :userId and
+            (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
 
     
@@ -151,6 +153,7 @@
             where
             t.archived = 0 and
             ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
 
             t.taskData.status in (:status) 
@@ -182,6 +185,7 @@
             where
             t.archived = 0 and
             ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             potentialOwners in elements ( t.peopleAssignments.potentialOwners )  and
 
             t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
@@ -213,6 +217,7 @@
             where
             t.archived = 0 and
             ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             potentialOwners in elements ( t.peopleAssignments.potentialOwners )  and
 
             t.taskData.status in (:status) 
@@ -308,6 +313,7 @@
             where
             t.archived = 0 and
             ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
 
             t.taskData.expirationTime = :expirationDate and
@@ -341,6 +347,7 @@
             where
             t.archived = 0 and
             ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
 
             (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
@@ -450,6 +457,7 @@
             t.archived = 0 and
             t.taskData.parentId = :parentId and
             (potentialOwners.id = :userId or potentialOwners.id in (:groupIds)) and
+            (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
             t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
             order by t.id DESC
@@ -1096,6 +1104,7 @@
             where
             t.archived = 0 and
             ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             potentialOwners in elements ( t.peopleAssignments.potentialOwners )  and
             t.taskData.status in (:status) 
             order by t.id DESC          
@@ -1131,6 +1140,7 @@
             where
             t.archived = 0 and
             ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
             (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
             t.taskData.status in (:status) 
@@ -1163,6 +1173,7 @@
             where
             t.archived = 0 and
             ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
     
             t.taskData.expirationTime = :expirationDate and
@@ -1196,6 +1207,7 @@
             where
                 t.archived = 0 and
                 ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+                (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
                 potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
                 t.taskData.status in (:status) 
             order by t.id DESC    
@@ -1227,6 +1239,7 @@
             where
             t.archived = 0 and
             ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
             (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
             t.taskData.status in (:status) 
@@ -1258,6 +1271,7 @@
             where
                 t.archived = 0 and
                 ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+                (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
                 potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
                 t.taskData.expirationTime = :expirationDate and
                 t.taskData.status in (:status) 

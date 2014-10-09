@@ -69,8 +69,10 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         
         allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
         
-        assertEquals(1, allGroupAuditTasks.size());
+        assertEquals(0, allGroupAuditTasks.size());
         
+        allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("Darth Vader", null, null, null);
+        assertEquals(1, allGroupAuditTasks.size());
         assertTrue(allGroupAuditTasks.get(0).getStatusId().equals("Reserved"));
         
         taskService.release(taskId, "Darth Vader");
@@ -84,7 +86,9 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         taskService.claim(taskId, "Darth Vader");    
         
         allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
+        assertEquals(0, allGroupAuditTasks.size());
         
+        allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("Darth Vader", null, null, null);
         assertEquals(1, allGroupAuditTasks.size());
         
         assertTrue(allGroupAuditTasks.get(0).getStatusId().equals("Reserved"));
@@ -174,6 +178,9 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         taskService.claim(taskId, "Darth Vader"); 
         
         allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
+        assertEquals(0, allGroupAuditTasks.size());
+        
+        allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("Darth Vader", null, null, null);
         assertEquals(1, allGroupAuditTasks.size());
         assertTrue(allGroupAuditTasks.get(0).getStatusId().equals("Reserved"));
         

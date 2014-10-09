@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Group;
@@ -23,6 +24,7 @@ import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
 import org.kie.internal.event.KnowledgeRuntimeEventManager;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
+import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,5 +98,37 @@ public class LocalTasksServiceTest extends JbpmJUnitBaseTestCase {
 
     }
 
+    
+    @Test
+    public void testMultipleActorsClaimedQuery() {
+        RuntimeManager manager = createRuntimeManager("BPMN2-HumanTaskMultipleActors.bpmn2");        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+
+        // start a new process instance
+        Map<String, Object> params = new HashMap<String, Object>();
+        ProcessInstance pi = ksession.startProcess("com.sample.humantask.multipleactors", params);
+
+        // krisv claim task
+        TaskService taskService = runtime.getTaskService();
+		List<TaskSummary> task1 = taskService.getTasksAssignedAsPotentialOwner("krisv", "en-UK");
+		assertNotNull(task1);
+		assertEquals(1, task1.size());
+		
+        System.out.println("krisv's task:" + task1.get(0).getName());
+        taskService.claim(task1.get(0).getId(), "krisv");
+        
+        // john can get task which krisv has already claimed
+        List<TaskSummary> task2 = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
+        assertNotNull(task2);
+		assertEquals(0, task2.size());
+		
+		taskService.start(task1.get(0).getId(), "krisv");
+		taskService.complete(task1.get(0).getId(), "krisv", null);
+		
+		assertProcessInstanceCompleted(pi.getId(), ksession);
+		
+		manager.disposeRuntimeEngine(runtime);
+    }
    
 }
