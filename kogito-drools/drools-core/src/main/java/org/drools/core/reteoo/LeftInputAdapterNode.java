@@ -47,9 +47,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Deque;
 import java.util.Map;
 
+import static org.drools.core.phreak.AddRemoveRule.forceFlushLeftTuple;
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
 import static org.drools.core.util.BitMaskUtil.intersect;
 
@@ -96,9 +96,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
     public LeftInputAdapterNode(final int id,
                                 final ObjectSource source,
                                 final BuildContext context) {
-        super(id,
-              context.getPartitionId(),
-              context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation());
+        super(id, context);
         this.objectSource = source;
         this.leftTupleMemoryEnabled = context.isTupleMemoryEnabled();
         ObjectSource current = source;
@@ -259,6 +257,12 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     private static void doInsertSegmentMemory(PropagationContext pctx, InternalWorkingMemory wm, boolean linkOrNotify, final LiaNodeMemory lm,
                                               SegmentMemory sm, LeftTuple leftTuple, LeftInputAdapterNode liaNode) {
+        PathMemory pmem = sm.getFirstDataDrivenPathMemory();
+        if (pmem != null) {
+            forceFlushLeftTuple(pmem, sm, wm, leftTuple);
+            return;
+        }
+
         boolean stagedInsertWasEmpty = false;
 
         // mask check is necessary if insert is a result of a modify
@@ -546,7 +550,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
     }
 
     public int hashCode() {
-        return this.objectSource.hashCode();
+        return 31 * this.objectSource.hashCode() + 37 * (int)this.sinkMask;
     }
 
     public boolean equals(final Object object) {
@@ -560,7 +564,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         final LeftInputAdapterNode other = (LeftInputAdapterNode) object;
 
-        return this.sinkMask == other.sinkMask && this.objectSource.equals(other.objectSource);
+        return this.sinkMask == other.sinkMask &&
+               this.objectSource.equals(other.objectSource);
     }
 
     protected ObjectTypeNode getObjectTypeNode() {

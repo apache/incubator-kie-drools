@@ -29,7 +29,6 @@ import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.common.QuadroupleBetaConstraints;
 import org.drools.core.common.QuadroupleNonIndexSkipBetaConstraints;
 import org.drools.core.common.RightTupleSets;
-import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.common.SingleNonIndexSkipBetaConstraints;
 import org.drools.core.common.TripleBetaConstraints;
@@ -56,6 +55,7 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.drools.core.phreak.AddRemoveRule.forceFlushLeftTuple;
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
 import static org.drools.core.util.BitMaskUtil.intersect;
 import static org.drools.core.util.ClassUtils.areNullSafeEquals;
@@ -82,8 +82,6 @@ public abstract class BetaNode extends LeftTupleSource
 
     protected boolean objectMemory = true; // hard coded to true
     protected boolean tupleMemoryEnabled;
-    protected boolean concurrentRightTupleMemory = false;
-
 
     protected boolean indexedUnificationJoin;
 
@@ -118,15 +116,11 @@ public abstract class BetaNode extends LeftTupleSource
      *            The right input <code>ObjectSource</code>.
      */
     BetaNode(final int id,
-             final RuleBasePartitionId partitionId,
-             final boolean partitionsEnabled,
              final LeftTupleSource leftInput,
              final ObjectSource rightInput,
              final BetaConstraints constraints,
              final BuildContext context) {
-        super(id,
-              partitionId,
-              partitionsEnabled);
+        super(id, context);
         setLeftTupleSource(leftInput);
         this.rightInput = rightInput;
 
@@ -222,7 +216,6 @@ public abstract class BetaNode extends LeftTupleSource
         rightInput = (ObjectSource) in.readObject();
         objectMemory = in.readBoolean();
         tupleMemoryEnabled = in.readBoolean();
-        concurrentRightTupleMemory = in.readBoolean();
         rightDeclaredMask = in.readLong();
         rightInferredMask = in.readLong();
         rightNegativeMask = in.readLong();
@@ -247,7 +240,6 @@ public abstract class BetaNode extends LeftTupleSource
         out.writeObject(rightInput);
         out.writeBoolean( objectMemory );
         out.writeBoolean( tupleMemoryEnabled );
-        out.writeBoolean( concurrentRightTupleMemory );
         out.writeLong( rightDeclaredMask );
         out.writeLong( rightInferredMask );
         out.writeLong( rightNegativeMask );
@@ -305,10 +297,16 @@ public abstract class BetaNode extends LeftTupleSource
             memory.setNodeDirty( wm );
         }
 
+        PathMemory pmem = memory.getSegmentMemory().getFirstDataDrivenPathMemory();
+        if (pmem != null) {
+            forceFlushLeftTuple(pmem, memory.getSegmentMemory(), wm, null);
+            return;
+        }
+
         if( pctx.getReaderContext() != null ) {
             // we are deserializing a session, so we might need to evaluate
             // rule activations immediately
-            MarshallerReaderContext mrc = (MarshallerReaderContext) pctx.getReaderContext();
+            MarshallerReaderContext mrc = pctx.getReaderContext();
             mrc.filter.fireRNEAs( wm );
         }
     }
@@ -375,7 +373,7 @@ public abstract class BetaNode extends LeftTupleSource
         } else if ( stagedDeleteWasEmpty ) {
             // nothing staged before, notify rule, so it can evaluate network
             memory.setNodeDirty( wm );
-        };
+        }
     }
 
     public void doUpdateRightTuple(final RightTuple rightTuple,
@@ -499,11 +497,11 @@ public abstract class BetaNode extends LeftTupleSource
         final List<String> list = new ArrayList<String>();
 
         final LeftTupleSink[] sinks = this.sink.getSinks();
-        for ( int i = 0, length = sinks.length; i < length; i++ ) {
-            if ( sinks[i].getType() ==  NodeTypeEnums.RuleTerminalNode ) {
-                list.add( ((RuleTerminalNode) sinks[i]).getRule().getName() );
-            } else if ( NodeTypeEnums.isBetaNode( sinks[i] ) ) {
-                list.addAll( ((BetaNode) sinks[i]).getRules() );
+        for (LeftTupleSink sink1 : sinks) {
+            if (sink1.getType() == NodeTypeEnums.RuleTerminalNode) {
+                list.add(((RuleTerminalNode) sink1).getRule().getName());
+            } else if (NodeTypeEnums.isBetaNode(sink1)) {
+                list.addAll(((BetaNode) sink1).getRules());
             }
         }
         return list;
@@ -554,10 +552,6 @@ public abstract class BetaNode extends LeftTupleSource
         return objectMemory;
     }
 
-    public void setObjectMemoryEnabled(boolean objectMemory) {
-        this.objectMemory = objectMemory;
-    }
-
     public boolean isLeftTupleMemoryEnabled() {
         return tupleMemoryEnabled;
     }
@@ -566,14 +560,6 @@ public abstract class BetaNode extends LeftTupleSource
         this.tupleMemoryEnabled = tupleMemoryEnabled;
     }
 
-    public boolean isConcurrentRightTupleMemory() {
-        return concurrentRightTupleMemory;
-    }
-
-    public void setConcurrentRightTupleMemory(boolean concurrentRightTupleMemory) {
-        this.concurrentRightTupleMemory = concurrentRightTupleMemory;
-    }
-    
     public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
         return constraints.createBetaMemory(config, getType());
     }

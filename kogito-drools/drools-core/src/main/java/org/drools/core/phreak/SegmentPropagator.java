@@ -10,6 +10,10 @@ import org.drools.core.reteoo.SegmentMemory;
 public class SegmentPropagator {
 
     public static void propagate(SegmentMemory sourceSegment, LeftTupleSets stagedLeftTuples, InternalWorkingMemory wm) {
+        if (stagedLeftTuples.isEmpty()) {
+            return;
+        }
+
         LeftTupleSource source = ( LeftTupleSource )  sourceSegment.getTipNode();
         
         if ( sourceSegment.isEmpty() ) {
@@ -19,7 +23,7 @@ public class SegmentPropagator {
         processPeers(sourceSegment, stagedLeftTuples);
     }    
     
-    public static void processPeers(SegmentMemory sourceSegment, LeftTupleSets leftTuples) {
+    private static void processPeers(SegmentMemory sourceSegment, LeftTupleSets leftTuples) {
         
         // Process Deletes
         SegmentMemory firstSmem = sourceSegment.getFirst();
@@ -84,22 +88,4 @@ public class SegmentPropagator {
             firstSmem.getStagedLeftTuples().addAllInserts( leftTuples );
         }
     }
-    
-    public static void processPeers(LeftTupleSets leftTuples, LeftTupleSets peerLeftTuples, LeftTupleSink sink) {    
-        
-        // Process Deletes
-        for ( LeftTuple leftTuple = leftTuples.getDeleteFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
-            peerLeftTuples.addDelete( leftTuple.getPeer() );
-        }
-        
-        // Process Updates        
-        for ( LeftTuple leftTuple = leftTuples.getUpdateFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {                        
-            peerLeftTuples.addUpdate( leftTuple.getPeer() );
-        }
-        
-        // Process Inserts        
-        for ( LeftTuple leftTuple = leftTuples.getInsertFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {                        
-            peerLeftTuples.addInsert( sink.createPeer( leftTuple ) );
-        }                     
-    }    
 }

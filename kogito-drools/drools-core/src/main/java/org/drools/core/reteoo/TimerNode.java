@@ -60,9 +60,7 @@ public class TimerNode extends LeftTupleSource
                      final String[] calendarNames,
                      final Declaration[][]   declarations,
                      final BuildContext context) {
-        super(id,
-              context.getPartitionId(),
-              context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation());
+        super(id, context);
         setLeftTupleSource(tupleSource);
         this.timer = timer;
         this.calendarNames = calendarNames;

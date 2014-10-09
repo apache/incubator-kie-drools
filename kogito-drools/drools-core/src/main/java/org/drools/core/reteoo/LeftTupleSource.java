@@ -18,7 +18,6 @@ package org.drools.core.reteoo;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -33,10 +32,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
-import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
+import static org.drools.core.reteoo.PropertySpecificUtil.*;
 
 /**
  * A source of <code>ReteTuple</code> s for a <code>TupleSink</code>.
@@ -68,7 +64,6 @@ public abstract class LeftTupleSource extends BaseNode
     /** The destination for <code>Tuples</code>. */
     protected LeftTupleSinkPropagator sink;
 
-    
     private transient ObjectTypeNode.Id leftInputOtnId;
 
     // ------------------------------------------------------------
@@ -83,10 +78,10 @@ public abstract class LeftTupleSource extends BaseNode
      *
      * @param id
      */
-    protected LeftTupleSource(final int id,
-                              final RuleBasePartitionId partitionId,
-                              final boolean partitionsEnabled) {
-        super( id, partitionId, partitionsEnabled );
+    protected LeftTupleSource(int id, BuildContext context) {
+        super(id,
+              context != null ? context.getPartitionId() : RuleBasePartitionId.MAIN_PARTITION,
+              context != null && context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation());
         this.sink = EmptyLeftTupleSinkAdapter.getInstance();
     }
 

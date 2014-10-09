@@ -49,8 +49,6 @@ public class NotNode extends BetaNode {
                    final BetaConstraints joinNodeBinder,
                    final BuildContext context) {
         super( id,
-               context.getPartitionId(),
-               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
                leftInput,
                rightInput,
                joinNodeBinder,

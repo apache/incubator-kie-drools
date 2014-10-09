@@ -27,15 +27,14 @@ import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
-import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.test.model.Cheese;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.MvelConstraintTestUtil;
 import org.drools.core.rule.PredicateConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.test.model.Cheese;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -47,11 +46,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class CompositeObjectSinkAdapterTest {
     private InternalKnowledgeBase        kBase;
@@ -681,8 +676,6 @@ public class CompositeObjectSinkAdapterTest {
                      final ObjectSource rightInput,
                      BuildContext buildContext) {
             super( id,
-                   RuleBasePartitionId.MAIN_PARTITION,
-                   false,
                    leftInput,
                    rightInput,
                    EmptyBetaConstraints.getInstance(),
@@ -693,8 +686,6 @@ public class CompositeObjectSinkAdapterTest {
                      final LeftTupleSource leftInput,
                      final ObjectSource rightInput) {
             super( id,
-                   RuleBasePartitionId.MAIN_PARTITION,
-                   false,
                    leftInput,
                    rightInput,
                    EmptyBetaConstraints.getInstance(),

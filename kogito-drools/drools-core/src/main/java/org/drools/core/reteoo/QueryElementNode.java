@@ -69,6 +69,8 @@ public class QueryElementNode extends LeftTupleSource
 
     protected boolean         openQuery;
 
+    private   boolean         dataDriven;
+
     private Object[]          argsTemplate;
 
     public QueryElementNode() {
@@ -81,13 +83,12 @@ public class QueryElementNode extends LeftTupleSource
                             final boolean tupleMemoryEnabled,
                             final boolean openQuery,
                             final BuildContext context) {
-        super( id,
-               context.getPartitionId(),
-               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation() );
+        super(id, context);
         setLeftTupleSource(tupleSource);
         this.queryElement = queryElement;
         this.tupleMemoryEnabled = tupleMemoryEnabled;
         this.openQuery = openQuery;
+        this.dataDriven = context != null && context.getRule().isDataDriven();
         initMasks( context, tupleSource );
         initArgsTemplate( context );
     }
@@ -115,6 +116,7 @@ public class QueryElementNode extends LeftTupleSource
         queryElement = (QueryElement) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
         openQuery = in.readBoolean();
+        dataDriven = in.readBoolean();
         this.argsTemplate = (Object[]) in.readObject();
         for ( int i = 0; i < argsTemplate.length; i++ ) {
             if ( argsTemplate[i] instanceof Variable ) {
@@ -128,6 +130,7 @@ public class QueryElementNode extends LeftTupleSource
         out.writeObject( queryElement );
         out.writeBoolean( tupleMemoryEnabled );
         out.writeBoolean( openQuery );
+        out.writeBoolean( dataDriven );
         out.writeObject( argsTemplate );
     }
 
@@ -624,6 +627,7 @@ public class QueryElementNode extends LeftTupleSource
         if ( getClass() != obj.getClass() ) return false;
         QueryElementNode other = (QueryElementNode) obj;
         if ( openQuery != other.openQuery ) return false;
+        if ( !openQuery && dataDriven != other.dataDriven ) return false;
         if ( queryElement == null ) {
             if ( other.queryElement != null ) return false;
         } else if ( !queryElement.equals( other.queryElement ) ) return false;

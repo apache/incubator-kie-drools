@@ -21,7 +21,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleImpl;
@@ -29,7 +28,6 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ModifyPreviousTuples;
-import org.drools.core.reteoo.NodeSet;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RightTuple;
@@ -38,7 +36,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class MockLeftTupleSink extends LeftTupleSource
@@ -53,11 +50,11 @@ public class MockLeftTupleSink extends LeftTupleSource
     private LeftTupleSinkNode     nextTupleSinkNode;
 
     public MockLeftTupleSink() {
-        super( 0, RuleBasePartitionId.MAIN_PARTITION, false );
+        super( 0, null );
     }
 
     public MockLeftTupleSink(final int id) {
-        super(id, RuleBasePartitionId.MAIN_PARTITION, false);
+        super(id, null);
     }
 
     public void assertLeftTuple(final LeftTuple tuple,

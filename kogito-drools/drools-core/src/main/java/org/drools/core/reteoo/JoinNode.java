@@ -16,18 +16,11 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.Memory;
-import org.drools.core.util.FastIterator;
-import org.drools.core.util.Iterator;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
-
-import static org.drools.core.util.BitMaskUtil.intersect;
 
 public class JoinNode extends BetaNode {
 
@@ -43,8 +36,6 @@ public class JoinNode extends BetaNode {
                     final BetaConstraints binder,
                     final BuildContext context) {
         super( id,
-               context.getPartitionId(),
-               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
                leftInput,
                rightInput,
                binder,
