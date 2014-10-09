@@ -29,7 +29,9 @@ import org.kie.internal.jaxb.StringKeyObjectValueMapXmlAdapter;
 
 public class QueryFilter extends QueryContext {
 
-    @XmlElement 
+	private static final long serialVersionUID = 4492868179938949915L;
+
+	@XmlElement 
     @XmlSchemaType(name="boolean")
     private Boolean singleResult = false;
     

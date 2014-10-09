@@ -16,18 +16,21 @@
 
 package org.kie.internal.query;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
-public class QueryContext {
+public class QueryContext implements Serializable {
 
-    @XmlElement
+	private static final long serialVersionUID = -3174717972613778773L;
+
+	@XmlElement
     @XmlSchemaType(name="int")
     protected Integer offset = 0;
     
