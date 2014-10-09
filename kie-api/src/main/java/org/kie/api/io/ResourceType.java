@@ -72,13 +72,13 @@ public class ResourceType
                                                                      "src/main/resources",
                                                                      "drl");
 
-    /** Drools Rule Language - Workaround for double-dot file extensions for 6.0 */
+    /** Drools Rule Language - Guided Globals definitions - Workaround for double-dot file extensions for 6.0 */
     public static final ResourceType GDRL = addResourceTypeToRegistry("GDRL",
                                                                       "Drools Rule Language",
                                                                       "src/main/resources",
                                                                       "gdrl");
 
-    /** Drools Rule Language - Workaround for double-dot file extensions for 6.0 */
+    /** Drools Rule Language - Guided Rules (without DSL) - Workaround for double-dot file extensions for 6.0 */
     public static final ResourceType RDRL = addResourceTypeToRegistry("RDRL",
                                                                       "Drools Rule Language",
                                                                       "src/main/resources",
@@ -102,7 +102,7 @@ public class ResourceType
                                                                       "src/main/resources",
                                                                       "dslr");
 
-    /** Drools DSL Rule - Workaround for double-dot file extensions for 6.0 */
+    /** Drools Rule Language - Guided Rules (with DSL) - Workaround for double-dot file extensions for 6.0 */
     public static final ResourceType RDSLR = addResourceTypeToRegistry("RDSLR",
                                                                        "Drools DSL Rule",
                                                                        "src/main/resources",
@@ -186,6 +186,12 @@ public class ResourceType
                                                                        "Bayesian Belief Network",
                                                                        "src/main/resources",
                                                                        "xmlbif", "bif");
+
+    /** Drools Rule Language - Guided Decision Trees - Workaround for double-dot file extensions for 6.0 */
+    public static final ResourceType TDRL = addResourceTypeToRegistry("TDRL",
+                                                                      "Drools Rule Language",
+                                                                      "src/main/resources",
+                                                                      "tdrl");
 
     public static ResourceType getResourceType(final String resourceType) {
         ResourceType resource = CACHE.get(resourceType);
