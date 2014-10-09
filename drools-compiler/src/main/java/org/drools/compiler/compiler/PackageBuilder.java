@@ -1820,7 +1820,7 @@ public class PackageBuilder
     private TypeDeclaration createTypeDeclarationForBean(Class<?> cls) {
         TypeDeclaration typeDeclaration = new TypeDeclaration(cls);
 
-        PropertySpecificOption propertySpecificOption = configuration.getOption(PropertySpecificOption.class);
+        PropertySpecificOption propertySpecificOption = configuration.getPropertySpecificOption();
         boolean propertyReactive = propertySpecificOption.isPropSpecific(cls.isAnnotationPresent(PropertyReactive.class),
                 cls.isAnnotationPresent(ClassReactive.class));
 
@@ -2684,7 +2684,7 @@ public class PackageBuilder
         boolean dynamic = typeDescr.getAnnotationNames().contains(TypeDeclaration.ATTR_PROP_CHANGE_SUPPORT);
         type.setDynamic(dynamic);
 
-        PropertySpecificOption propertySpecificOption = configuration.getOption(PropertySpecificOption.class);
+        PropertySpecificOption propertySpecificOption = configuration.getPropertySpecificOption();
         boolean propertyReactive = propertySpecificOption.isPropSpecific(typeDescr.getAnnotationNames().contains(TypeDeclaration.ATTR_PROP_SPECIFIC),
                 typeDescr.getAnnotationNames().contains(TypeDeclaration.ATTR_NOT_PROP_SPECIFIC));
 
