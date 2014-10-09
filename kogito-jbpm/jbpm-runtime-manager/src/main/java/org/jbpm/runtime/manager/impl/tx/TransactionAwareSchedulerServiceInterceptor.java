@@ -91,7 +91,7 @@ public class TransactionAwareSchedulerServiceInterceptor extends DelegateSchedul
         
         @Override
         public void afterCompletion(int status) {
-            if ( status == TransactionManager.STATUS_COMMITTED ) {
+            if ( status == TransactionManager.STATUS_COMMITTED && !timerJobInstance.getJobHandle().isCancel()) {
                 this.schedulerService.internalSchedule(timerJobInstance);
             }
             
