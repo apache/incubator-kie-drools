@@ -44,6 +44,7 @@ import org.drools.core.util.DateUtils;
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
 import org.kie.api.definition.rule.ActivationListener;
+import org.kie.api.definition.rule.DataDriven;
 import org.kie.api.definition.rule.Direct;
 import org.kie.api.definition.rule.Eager;
 
@@ -254,6 +255,8 @@ public class RuleBuilder {
             if (direct != null && direct.value()) {
                 rule.setActivationListener("direct");
             }
+
+            rule.setDataDriven(ruleDescr.hasAnnotation(DataDriven.class));
         } catch (Exception e) {
             DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                   e.getMessage() );

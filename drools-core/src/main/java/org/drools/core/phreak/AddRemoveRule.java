@@ -3,6 +3,8 @@ package org.drools.core.phreak;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContextFactory;
@@ -46,7 +48,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class AddRemoveRule {
 
@@ -260,20 +261,44 @@ public class AddRemoveRule {
             processLeftTuples(splitStartNode, sink, sm, wm, false);
          }
 
-         RuleNetworkEvaluator rne = new RuleNetworkEvaluator();
-         LeftInputAdapterNode lian = ( LeftInputAdapterNode ) smems[0].getRootNode();
-         LinkedList<StackEntry> stack = new LinkedList<StackEntry>();
-         LinkedList<StackEntry> outerStack = new LinkedList<StackEntry>();
-         Set<String> visitedRules = new HashSet<String>();
-
-
          // The graph must be fully updated before SegmentMemory and PathMemories are mutated
          if ( !sm.getStagedLeftTuples().isEmpty() && pmem.isRuleLinked() ) {
-             rne.outerEval( lian, pmem, sink, bit, mem,
-                            smems, smemIndex, sm.getStagedLeftTuples().takeAll(),
-                            wm, stack, outerStack, visitedRules, true,
-                            pmem.getRuleAgendaItem().getRuleExecutor() );
+             new RuleNetworkEvaluator().outerEval( ( LeftInputAdapterNode ) smems[0].getRootNode(),
+                                                   pmem, sink, bit, mem, smems, smemIndex,
+                                                   sm.getStagedLeftTuples().takeAll(), wm,
+                                                   new LinkedList<StackEntry>(), new LinkedList<StackEntry>(), new HashSet<String>(),
+                                                   true, pmem.getRuleAgendaItem().getRuleExecutor() );
          }
+     }
+
+    public static void forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, InternalWorkingMemory wm, LeftTuple leftTuple) {
+        SegmentMemory[] smems = pmem.getSegmentMemories();
+        if (smems[0] == null) {
+            return; // segment has not yet been initialized
+        }
+        int smemIndex = sm.getPos();
+
+        LeftTupleSink sink;
+        Memory mem;
+        long bit = 1;
+        if ( smems.length == 1 ) {
+            sink = ((LeftInputAdapterNode)sm.getRootNode()).getSinkPropagator().getFirstLeftTupleSink();
+            mem = sm.getNodeMemories().get(1);
+            bit = 2; // adjust bit to point to next node
+        } else {
+            sink = (LeftTupleSink) sm.getRootNode();
+            mem = sm.getNodeMemories().get(0);
+        }
+
+        LeftTupleSets leftTupleSets = new LeftTupleSetsImpl();
+        if (leftTuple != null) {
+            leftTupleSets.addInsert(leftTuple);
+        }
+
+        new RuleNetworkEvaluator().outerEval( ( LeftInputAdapterNode ) smems[0].getRootNode(),
+                                              pmem, sink, bit, mem, smems, smemIndex, leftTupleSets, wm,
+                                              new LinkedList<StackEntry>(), new LinkedList<StackEntry>(), new HashSet<String>(),
+                                              true, pmem.getOrCreateRuleAgendaItem(wm).getRuleExecutor() );
      }
 
 

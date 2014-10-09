@@ -8,6 +8,7 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.StreamTupleEntryQueue;
 import org.drools.core.common.SynchronizedLeftTupleSets;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
@@ -43,6 +44,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     private          SegmentMemory      previous;
     private          SegmentMemory      next;
     private StreamTupleEntryQueue queue;
+
+    private transient List<PathMemory>  dataDrivenPMems;
 
     public SegmentMemory(NetworkNode rootNode) {
         this(rootNode, null);
@@ -233,6 +236,26 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     public List<PathMemory> getPathMemories() {
         return pathMemories;
+    }
+
+    public PathMemory getFirstDataDrivenPathMemory() {
+        return getDataDrivenPathMemories().get(0);
+    }
+
+    private List<PathMemory> getDataDrivenPathMemories() {
+        if (dataDrivenPMems == null) {
+            dataDrivenPMems = new ArrayList<PathMemory>();
+            for (PathMemory pmem : pathMemories) {
+                RuleImpl rule = pmem.getRule();
+                if (rule != null && rule.isDataDriven()) {
+                    dataDrivenPMems.add(pmem);
+                }
+            }
+            if (dataDrivenPMems.isEmpty()) {
+                dataDrivenPMems.add(null);
+            }
+        }
+        return dataDrivenPMems;
     }
 
     public void setPathMemories(List<PathMemory> ruleSegments) {

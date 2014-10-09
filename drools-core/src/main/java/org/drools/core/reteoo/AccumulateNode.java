@@ -72,8 +72,6 @@ public class AccumulateNode extends BetaNode {
                           final boolean unwrapRightObject,
                           final BuildContext context) {
         super( id,
-               context.getPartitionId(),
-               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
                leftInput,
                rightInput,
                sourceBinder,

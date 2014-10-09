@@ -49,6 +49,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
         this.kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         this.buildContext = new BuildContext( kBase,
                                               kBase.getReteooBuilder().getIdGenerator() );
+        this.buildContext.setRule(new RuleImpl());
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         this.context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
 

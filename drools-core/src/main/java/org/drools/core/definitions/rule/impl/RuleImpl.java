@@ -69,6 +69,14 @@ public class RuleImpl implements Externalizable,
                                  Rule,
                                  Query {
 
+    private static final int NO_LOOP_BIT =              1 << 0;
+    private static final int AUTO_FOCUS_BIT =           1 << 1;
+    private static final int LOCK_ON_ACTIVE_BIT =       1 << 2;
+    private static final int LOGICAL_DEPENDENCY_BIT =   1 << 3;
+    private static final int SEMANTICALLY_VALID_BIT =   1 << 4;
+    private static final int EAGER_BIT =                1 << 5;
+    private static final int DATA_DRIVEN_BIT =          1 << 6;
+
     public static final String DEFAULT_CONSEQUENCE_NAME = "default";
 
     /** The parent pkg */
@@ -107,22 +115,9 @@ public class RuleImpl implements Externalizable,
     /** Load order in Package */
     private int                     loadOrder;
 
-    /** Is recursion of this rule allowed */
-    private boolean                  noLoop;
-
-    /** makes the rule's much the current focus */
-    private boolean                  autoFocus;
-
     private String                   activationGroup;
 
     private String                   ruleFlowGroup;
-
-    private boolean                  lockOnActive;
-
-    private boolean                  hasLogicalDependency;
-
-    /** indicates that the rule is semantically correct. */
-    private boolean                  semanticallyValid;
 
     private String[]                 calendars;
 
@@ -134,8 +129,6 @@ public class RuleImpl implements Externalizable,
 
     private Resource resource;
 
-    private boolean                  eager;
-
     protected String                 activationListener;
 
     private ConsequenceMetaData consequenceMetaData = new ConsequenceMetaData();
@@ -143,6 +136,8 @@ public class RuleImpl implements Externalizable,
     private List<QueryImpl> usedQueries;
 
     private List<QueryImpl> dependingQueries;
+
+    private int ruleFlags;
 
     public RuleImpl() {
 
@@ -162,7 +157,7 @@ public class RuleImpl implements Externalizable,
         this.pkg = pkg;
         this.agendaGroup = agendaGroup == null ? AgendaGroup.MAIN : agendaGroup;
         this.lhsRoot = GroupElementFactory.newAndInstance();
-        this.semanticallyValid = true;
+        setSemanticallyValid(true);
         this.enabled = EnabledBoolean.ENABLED_TRUE;
         this.salience = SalienceInteger.DEFAULT_SALIENCE;
         this.metaAttributes = new HashMap<String, Object>();
@@ -209,24 +204,19 @@ public class RuleImpl implements Externalizable,
             out.writeObject( this.consequence );
             out.writeObject( this.namedConsequences);
         }
-        out.writeObject( timer );
+        out.writeObject(timer);
         out.writeInt(loadOrder);
-        out.writeBoolean( noLoop );
-        out.writeBoolean( autoFocus );
-        out.writeObject( activationGroup );
+        out.writeObject(activationGroup);
         out.writeObject( ruleFlowGroup );
-        out.writeBoolean( lockOnActive );
-        out.writeBoolean( hasLogicalDependency );
-        out.writeBoolean( semanticallyValid );
         out.writeObject( calendars );
         out.writeObject( dateEffective );
         out.writeObject( dateExpires );
         out.writeObject( enabled );
         out.writeObject( resource );
         out.writeObject( activationListener );
-        out.writeObject( consequenceMetaData );
-        out.writeBoolean( eager );
+        out.writeObject(consequenceMetaData);
         out.writeObject( usedQueries );
+        out.writeInt(ruleFlags);
     }
 
     @SuppressWarnings("unchecked")
@@ -249,13 +239,8 @@ public class RuleImpl implements Externalizable,
         namedConsequences = (Map<String, Consequence>) in.readObject();
         timer = (Timer) in.readObject();
         loadOrder = in.readInt();
-        noLoop = in.readBoolean();
-        autoFocus = in.readBoolean();
         activationGroup = (String) in.readObject();
         ruleFlowGroup = (String) in.readObject();
-        lockOnActive = in.readBoolean();
-        hasLogicalDependency = in.readBoolean();
-        semanticallyValid = in.readBoolean();
         calendars =(String[]) in.readObject();
         dateEffective = (Calendar) in.readObject();
         dateExpires = (Calendar) in.readObject();
@@ -263,8 +248,8 @@ public class RuleImpl implements Externalizable,
         resource = (Resource) in.readObject();
         activationListener = ( String ) in.readObject();
         consequenceMetaData = ( ConsequenceMetaData ) in.readObject();
-        eager = in.readBoolean();
         usedQueries = (List<QueryImpl>) in.readObject();
+        ruleFlags = in.readInt();
     }
 
     public void addUsedQuery(QueryImpl query) {
@@ -393,7 +378,7 @@ public class RuleImpl implements Externalizable,
     public void setSalience(final Salience salience) {
         this.salience = salience;
         if ( salience.isDynamic() ) {
-            this.eager = true;
+            setEager(true);
         }
     }
 
@@ -408,8 +393,20 @@ public class RuleImpl implements Externalizable,
         this.agendaGroup = agendaGroup;
     }
 
+    private void set(int flag, boolean b) {
+        if (b) {
+            ruleFlags |= flag;
+        } else {
+            ruleFlags &= (0xffffffff - flag);
+        }
+    }
+
+    private boolean isSet(int flag) {
+        return (ruleFlags & flag) == flag;
+    }
+
     public boolean isNoLoop() {
-        return this.noLoop;
+        return isSet(NO_LOOP_BIT);
     }
 
     /**
@@ -444,16 +441,16 @@ public class RuleImpl implements Externalizable,
     }
 
     public void setNoLoop(final boolean noLoop) {
-        this.noLoop = noLoop;
+        set(NO_LOOP_BIT, noLoop);
     }
 
     public boolean getAutoFocus() {
-        return this.autoFocus;
+        return isSet(AUTO_FOCUS_BIT);
     }
 
     public void setAutoFocus(final boolean autoFocus) {
-        this.autoFocus = autoFocus;
-        this.eager = autoFocus;
+        set(AUTO_FOCUS_BIT, autoFocus);
+        setEager(autoFocus);
     }
 
     public String getActivationGroup() {
@@ -462,7 +459,7 @@ public class RuleImpl implements Externalizable,
 
     public void setActivationGroup(final String activationGroup) {
         this.activationGroup = activationGroup;
-        this.eager = StringUtils.isEmpty(activationGroup) ? false : true;
+        setEager(!StringUtils.isEmpty(activationGroup));
     }
 
     public String getRuleFlowGroup() {
@@ -506,19 +503,19 @@ public class RuleImpl implements Externalizable,
      * @return
      */
     public boolean hasLogicalDependency() {
-        return this.hasLogicalDependency;
+        return isSet(LOGICAL_DEPENDENCY_BIT);
     }
 
     public void setHasLogicalDependency(boolean hasLogicalDependency) {
-        this.hasLogicalDependency = hasLogicalDependency;
+        set(LOGICAL_DEPENDENCY_BIT, hasLogicalDependency);
     }
 
     public boolean isLockOnActive() {
-        return this.lockOnActive;
+        return isSet(LOCK_ON_ACTIVE_BIT);
     }
 
     public void setLockOnActive(final boolean lockOnActive) {
-        this.lockOnActive = lockOnActive;
+        set(LOCK_ON_ACTIVE_BIT, lockOnActive);
     }
 
     /**
@@ -695,15 +692,23 @@ public class RuleImpl implements Externalizable,
     }
 
     public boolean isEager() {
-        return eager;
+        return isSet(EAGER_BIT);
     }
 
     public void setEager(boolean eager) {
-        this.eager = eager;
+        set(EAGER_BIT, eager);
+    }
+
+    public boolean isDataDriven() {
+        return isSet(DATA_DRIVEN_BIT);
+    }
+
+    public void setDataDriven(boolean dataDriven) {
+        set(DATA_DRIVEN_BIT, dataDriven);
     }
 
     public String toString() {
-        return "[Rule name=" + this.name + ", agendaGroup=" + this.agendaGroup + ", salience=" + this.salience + ", no-loop=" + this.noLoop + "]";
+        return "[Rule name=" + this.name + ", agendaGroup=" + this.agendaGroup + ", salience=" + this.salience + ", no-loop=" + isNoLoop() + "]";
     }
 
     public int hashCode() {
@@ -728,7 +733,7 @@ public class RuleImpl implements Externalizable,
     }
 
     public void setSemanticallyValid(final boolean valid) {
-        this.semanticallyValid = valid;
+        set(SEMANTICALLY_VALID_BIT, valid);
     }
 
     /**
@@ -738,7 +743,7 @@ public class RuleImpl implements Externalizable,
      * do not "compile" etc.
      */
     public boolean isSemanticallyValid() {
-        return this.semanticallyValid;
+        return isSet(SEMANTICALLY_VALID_BIT);
     }
 
     public String[] getCalendars() {

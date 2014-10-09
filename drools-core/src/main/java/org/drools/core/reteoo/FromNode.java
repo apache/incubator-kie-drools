@@ -77,9 +77,7 @@ public class FromNode extends LeftTupleSource
                     final boolean tupleMemoryEnabled,
                     final BuildContext context,
                     final From from) {
-        super( id,
-               context.getPartitionId(),
-               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation() );
+        super(id, context);
         this.dataProvider = dataProvider;
         setLeftTupleSource(tupleSource);
         this.alphaConstraints = constraints;

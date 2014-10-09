@@ -36,9 +36,7 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
                                   LeftTupleSource tupleSource,
                                   ConditionalBranchEvaluator branchEvaluator,
                                   BuildContext context ) {
-        super( id,
-               context.getPartitionId(),
-               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation());
+        super(id, context);
         this.tupleSource = tupleSource;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         this.branchEvaluator = branchEvaluator;
