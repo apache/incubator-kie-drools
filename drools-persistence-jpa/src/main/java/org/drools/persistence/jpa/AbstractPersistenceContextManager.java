@@ -75,8 +75,9 @@ public abstract class AbstractPersistenceContextManager {
                 this.appScopedEntityManager = this.emf.createEntityManager();
 
                 this.env.set( EnvironmentName.APP_SCOPED_ENTITY_MANAGER, this.appScopedEntityManager );
-                // TODO since app scoped persistence context is taken before tx is started it cannot be put as a resource
-                //this.txm.putResource(EnvironmentName.APP_SCOPED_ENTITY_MANAGER, this.appScopedEntityManager );
+                if (txm.getStatus() == TransactionManager.STATUS_ACTIVE) {
+                    this.txm.putResource(EnvironmentName.APP_SCOPED_ENTITY_MANAGER, this.appScopedEntityManager );
+                }
             } else {
                 internalAppScopedEntityManagerFlag = false;
             }

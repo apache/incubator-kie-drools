@@ -102,7 +102,7 @@ public class SingleSessionCommandService
 
             persistenceContext.joinTransaction();
             this.sessionInfo = persistenceContext.persist( this.sessionInfo );
-
+            registerUpdateSync();
             txm.commit( transactionOwner );
         } catch ( RuntimeException re ) {
             rollbackTransaction( re,
@@ -174,7 +174,7 @@ public class SingleSessionCommandService
                           kbase,
                           conf,
                           persistenceContext );
-
+            registerUpdateSync();
             txm.commit( transactionOwner );
         } catch (SessionNotFoundException e){
             // do not rollback transaction otherwise it will mark it as aborted
@@ -410,7 +410,6 @@ public class SingleSessionCommandService
     }
 
     private void registerRollbackSync() {
-        this.txm.registerTransactionSynchronization(new TriggerUpdateTransactionSynchronization(txm, env));
         TransactionManagerHelper.registerTransactionSyncInContainer(this.txm, new SynchronizationImpl( this ));
     }
 
@@ -467,6 +466,13 @@ public class SingleSessionCommandService
         this.doRollback = true;
     }
 
+    private void registerUpdateSync() {
+        if (this.txm.getResource("TriggerUpdateTransactionSynchronization-"+this.toString()) == null) {
+            this.txm.registerTransactionSynchronization(new TriggerUpdateTransactionSynchronization(txm, env));
+            this.txm.putResource("TriggerUpdateTransactionSynchronization-"+this.toString(), true);
+        }
+    }
+
     private class TransactionInterceptor extends AbstractInterceptor {
 
         public TransactionInterceptor(Context context) {
@@ -513,7 +519,7 @@ public class SingleSessionCommandService
                     logger.trace("Executing " + command.getClass().getSimpleName());
                     result = executeNext((GenericCommand<T>) command);
                 }
-
+                registerUpdateSync();
                 txm.commit( transactionOwner );
 
                 return result;

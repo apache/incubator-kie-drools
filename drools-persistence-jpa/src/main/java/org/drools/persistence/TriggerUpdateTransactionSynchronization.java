@@ -18,14 +18,21 @@ public class TriggerUpdateTransactionSynchronization implements TransactionSynch
 
     @Override
     public void beforeCompletion() {
+        Set<Transformable> toBeUpdated = TransactionManagerHelper.getUpdateableSet(txm);
         // does the work only if it's valid for jpa persistence
-        if ( !isValid() ) {
+        if ( !isValid() || toBeUpdated == null || toBeUpdated.isEmpty()) {
             return;
         }
 
-        Set<Transformable> toBeUpdated = TransactionManagerHelper.getUpdateableSet(txm);
+
         EntityManager appScopedEM = ((EntityManager)environment.get(EnvironmentName.APP_SCOPED_ENTITY_MANAGER));
+        if (appScopedEM == null) {
+            appScopedEM = (EntityManager) txm.getResource(EnvironmentName.APP_SCOPED_ENTITY_MANAGER);
+        }
         EntityManager cmdScopedEM = (EntityManager) txm.getResource(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+        if (cmdScopedEM == null) {
+            cmdScopedEM = ((EntityManager)environment.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER));
+        }
 
         boolean flushApp = false;
         boolean flushCmd = false;
@@ -34,10 +41,14 @@ public class TriggerUpdateTransactionSynchronization implements TransactionSynch
             if (transformable != null) {
                 transformable.transform();
                 if (appScopedEM != null && appScopedEM.contains(transformable)) {
+
                     appScopedEM.merge(transformable);
+                    TransactionManagerHelper.removeFromUpdatableSet(txm, transformable);
                     flushApp = true;
                 } else if (cmdScopedEM != null &&cmdScopedEM.contains(transformable)) {
+
                     cmdScopedEM.merge(transformable);
+                    TransactionManagerHelper.removeFromUpdatableSet(txm, transformable);
                     flushCmd = true;
                 }
             }
@@ -49,7 +60,6 @@ public class TriggerUpdateTransactionSynchronization implements TransactionSynch
         if (flushCmd) {
             cmdScopedEM.flush();
         }
-
     }
 
     @Override
@@ -60,7 +70,7 @@ public class TriggerUpdateTransactionSynchronization implements TransactionSynch
     private boolean isValid() {
         Object appScopedEM = environment.get(EnvironmentName.APP_SCOPED_ENTITY_MANAGER);
 
-        if (appScopedEM != null && appScopedEM instanceof EntityManager) {
+        if (appScopedEM == null || appScopedEM instanceof EntityManager) {
             return true;
         }
 
