@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_rp_yQE-FEeSp15AULbv5Ww" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_QueryItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="_DataSourceItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="_QueryResultItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="__DBD08647-AD9C-461E-975A-ADF91F3F003C_dataSourceInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__DBD08647-AD9C-461E-975A-ADF91F3F003C_queryInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__DBD08647-AD9C-461E-975A-ADF91F3F003C_queryResultOutputXItem" structureRef="java.lang.Object"/>
+  <bpmn2:process id="camelSqlProcess" drools:packageName="org.jbpm" drools:version="1.0" name="CamelSqlProcess" isExecutable="true">
+    <bpmn2:property id="Query" itemSubjectRef="_QueryItem"/>
+    <bpmn2:property id="DataSource" itemSubjectRef="_DataSourceItem"/>
+    <bpmn2:property id="QueryResult" itemSubjectRef="_QueryResultItem"/>
+    <bpmn2:startEvent id="processStartEvent" drools:bgcolor="#9acd32" drools:selectable="true" name="">
+      <bpmn2:outgoing>_A9E679D4-A244-41DA-A3DC-9EF7ABAF4A6A</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:endEvent id="_BC2A16A3-8B16-4333-9F7B-71F5FE683A18" drools:bgcolor="#ff6347" drools:selectable="true" name="">
+      <bpmn2:incoming>_73780C72-80E2-4AB5-B79F-1620A06B8350</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:task id="_DBD08647-AD9C-461E-975A-ADF91F3F003C" drools:selectable="true" drools:taskName="CamelSql" name="CamelSql">
+      <bpmn2:incoming>_A9E679D4-A244-41DA-A3DC-9EF7ABAF4A6A</bpmn2:incoming>
+      <bpmn2:outgoing>_73780C72-80E2-4AB5-B79F-1620A06B8350</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="_rp_yQU-FEeSp15AULbv5Ww">
+        <bpmn2:dataInput id="_DBD08647-AD9C-461E-975A-ADF91F3F003C_TaskNameInputX" name="TaskName"/>
+        <bpmn2:dataInput id="_DBD08647-AD9C-461E-975A-ADF91F3F003C_dataSourceInputX" drools:dtype="String" itemSubjectRef="__DBD08647-AD9C-461E-975A-ADF91F3F003C_dataSourceInputXItem" name="dataSource"/>
+        <bpmn2:dataInput id="_DBD08647-AD9C-461E-975A-ADF91F3F003C_queryInputX" drools:dtype="String" itemSubjectRef="__DBD08647-AD9C-461E-975A-ADF91F3F003C_queryInputXItem" name="query"/>
+        <bpmn2:dataOutput id="_DBD08647-AD9C-461E-975A-ADF91F3F003C_queryResultOutputX" drools:dtype="java.lang.Object" itemSubjectRef="__DBD08647-AD9C-461E-975A-ADF91F3F003C_queryResultOutputXItem" name="queryResult"/>
+        <bpmn2:inputSet id="_rp_yQk-FEeSp15AULbv5Ww">
+          <bpmn2:dataInputRefs>_DBD08647-AD9C-461E-975A-ADF91F3F003C_dataSourceInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_DBD08647-AD9C-461E-975A-ADF91F3F003C_queryInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_DBD08647-AD9C-461E-975A-ADF91F3F003C_TaskNameInputX</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="_rp_yQ0-FEeSp15AULbv5Ww">
+          <bpmn2:dataOutputRefs>_DBD08647-AD9C-461E-975A-ADF91F3F003C_queryResultOutputX</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="_rp_yRE-FEeSp15AULbv5Ww">
+        <bpmn2:targetRef>_DBD08647-AD9C-461E-975A-ADF91F3F003C_TaskNameInputX</bpmn2:targetRef>
+        <bpmn2:assignment id="_rp_yRU-FEeSp15AULbv5Ww">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_rp_yRk-FEeSp15AULbv5Ww">CamelSql</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_rp_yR0-FEeSp15AULbv5Ww">_DBD08647-AD9C-461E-975A-ADF91F3F003C_TaskNameInputX</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_rp_ySE-FEeSp15AULbv5Ww">
+        <bpmn2:sourceRef>Query</bpmn2:sourceRef>
+        <bpmn2:targetRef>_DBD08647-AD9C-461E-975A-ADF91F3F003C_queryInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_rp_ySU-FEeSp15AULbv5Ww">
+        <bpmn2:sourceRef>DataSource</bpmn2:sourceRef>
+        <bpmn2:targetRef>_DBD08647-AD9C-461E-975A-ADF91F3F003C_dataSourceInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="_rp_ySk-FEeSp15AULbv5Ww">
+        <bpmn2:sourceRef>_DBD08647-AD9C-461E-975A-ADF91F3F003C_queryResultOutputX</bpmn2:sourceRef>
+        <bpmn2:targetRef>QueryResult</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+    </bpmn2:task>
+    <bpmn2:sequenceFlow id="_A9E679D4-A244-41DA-A3DC-9EF7ABAF4A6A" drools:bgcolor="#000000" drools:selectable="true" sourceRef="processStartEvent" targetRef="_DBD08647-AD9C-461E-975A-ADF91F3F003C"/>
+    <bpmn2:sequenceFlow id="_73780C72-80E2-4AB5-B79F-1620A06B8350" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_DBD08647-AD9C-461E-975A-ADF91F3F003C" targetRef="_BC2A16A3-8B16-4333-9F7B-71F5FE683A18"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_rp_yS0-FEeSp15AULbv5Ww">
+    <bpmndi:BPMNPlane id="_rp_yTE-FEeSp15AULbv5Ww" bpmnElement="camelSqlProcess">
+      <bpmndi:BPMNShape id="_rp_yTU-FEeSp15AULbv5Ww" bpmnElement="processStartEvent">
+        <dc:Bounds height="30.0" width="30.0" x="120.0" y="165.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_rp_yTk-FEeSp15AULbv5Ww" bpmnElement="_BC2A16A3-8B16-4333-9F7B-71F5FE683A18">
+        <dc:Bounds height="28.0" width="28.0" x="360.0" y="166.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_rp_yT0-FEeSp15AULbv5Ww" bpmnElement="_DBD08647-AD9C-461E-975A-ADF91F3F003C">
+        <dc:Bounds height="80.0" width="100.0" x="210.0" y="140.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_rp_yUE-FEeSp15AULbv5Ww" bpmnElement="_A9E679D4-A244-41DA-A3DC-9EF7ABAF4A6A">
+        <di:waypoint xsi:type="dc:Point" x="135.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="260.0" y="180.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_rp_yUU-FEeSp15AULbv5Ww" bpmnElement="_73780C72-80E2-4AB5-B79F-1620A06B8350">
+        <di:waypoint xsi:type="dc:Point" x="260.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="374.0" y="180.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmn2:relationship id="_rp_yUk-FEeSp15AULbv5Ww" type="BPSimData">
+    <bpmn2:extensionElements>
+      <bpsim:BPSimData>
+        <bpsim:Scenario xsi:type="bpsim:Scenario" id="default" name="Simulationscenario">
+          <bpsim:ScenarioParameters xsi:type="bpsim:ScenarioParameters" baseTimeUnit="min"/>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_A9E679D4-A244-41DA-A3DC-9EF7ABAF4A6A" id="_rp_yU0-FEeSp15AULbv5Ww">
+            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
+              <bpsim:Probability xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="100.0"/>
+              </bpsim:Probability>
+            </bpsim:ControlParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="processStartEvent" id="_rp_yVE-FEeSp15AULbv5Ww">
+            <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
+              <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
+                <bpsim:UniformDistribution max="10.0" min="5.0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
+              <bpsim:Probability xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="100.0"/>
+              </bpsim:Probability>
+            </bpsim:ControlParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_73780C72-80E2-4AB5-B79F-1620A06B8350" id="_rp_yVU-FEeSp15AULbv5Ww">
+            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
+              <bpsim:Probability xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="100.0"/>
+              </bpsim:Probability>
+            </bpsim:ControlParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_BC2A16A3-8B16-4333-9F7B-71F5FE683A18" id="_rp_yVk-FEeSp15AULbv5Ww">
+            <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
+              <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
+                <bpsim:UniformDistribution max="10.0" min="5.0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_DBD08647-AD9C-461E-975A-ADF91F3F003C" id="_rp_yV0-FEeSp15AULbv5Ww">
+            <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
+              <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
+                <bpsim:UniformDistribution max="10.0" min="5.0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+            <bpsim:CostParameters xsi:type="bpsim:CostParameters">
+              <bpsim:UnitCost xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="0.0"/>
+              </bpsim:UnitCost>
+            </bpsim:CostParameters>
+          </bpsim:ElementParameters>
+        </bpsim:Scenario>
+      </bpsim:BPSimData>
+    </bpmn2:extensionElements>
+    <bpmn2:source>_rp_yQE-FEeSp15AULbv5Ww</bpmn2:source>
+    <bpmn2:target>_rp_yQE-FEeSp15AULbv5Ww</bpmn2:target>
+  </bpmn2:relationship>
+</bpmn2:definitions>
