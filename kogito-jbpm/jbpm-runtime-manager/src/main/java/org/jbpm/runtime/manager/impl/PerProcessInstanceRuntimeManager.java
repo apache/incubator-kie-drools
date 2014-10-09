@@ -338,12 +338,17 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         
         @Override
         public Void execute(org.kie.internal.command.Context context) {
-        	
+        	TransactionManager tm = (TransactionManager) initialKsession.getEnvironment().get(EnvironmentName.TRANSACTION_MANAGER);
             if (manager.hasEnvironmentEntry("IS_JTA_TRANSACTION", false)) {
-            	((KnowledgeCommandContext) context).getKieSession().destroy();
+            	if (initialKsession instanceof CommandBasedStatefulKnowledgeSession) {
+                    CommandService commandService = ((CommandBasedStatefulKnowledgeSession) initialKsession).getCommandService();
+                    ((SingleSessionCommandService) commandService).destroy();
+                 } else {
+            		((KnowledgeCommandContext) context).getKieSession().destroy();
+            	}
             	return null;
         	}
-            TransactionManager tm = (TransactionManager) initialKsession.getEnvironment().get(EnvironmentName.TRANSACTION_MANAGER);
+            
             if (tm != null && tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
                     && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
                     && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
