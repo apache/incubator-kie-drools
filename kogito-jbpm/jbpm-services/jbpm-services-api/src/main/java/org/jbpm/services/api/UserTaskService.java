@@ -322,6 +322,14 @@ public interface UserTaskService {
 	Attachment getAttachmentById(Long taskId, Long attachmentId);
 	
 	/**
+	 * Get attachment's content by identifier
+	 * @param attachmentId
+	 * @return
+	 * @throws TaskNotFoundException in case task with given id was not found
+	 */
+	Object getAttachmentContentById(Long taskId, Long attachmentId);
+	
+	/**
 	 * Get attachments for a task
 	 * @param taskId
 	 * @return

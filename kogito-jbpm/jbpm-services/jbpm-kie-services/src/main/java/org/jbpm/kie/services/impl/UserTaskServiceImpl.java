@@ -840,6 +840,43 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			disposeRuntimeEngine(manager, engine);
 		}
 	}
+	
+
+	@Override
+	public Object getAttachmentContentById(Long taskId, Long attachmentId) {
+		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
+		}
+
+		RuntimeManager manager = getRuntimeManager(task);
+		if (manager == null) {
+			logger.warn("Cannot find runtime manager for task {}", taskId);
+			return null;
+		}
+		RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(task.getProcessInstanceId()));
+		try {
+			// perform actual operation			
+			TaskService taskService = engine.getTaskService();
+			Attachment attachment = ((InternalTaskService)taskService).getAttachmentById(attachmentId);
+			
+	        long documentContentId = attachment.getAttachmentContentId();
+	        if (documentContentId > 0) {
+	            Content contentById = taskService.getContentById(documentContentId);
+	            if (contentById == null) {
+	                return null;
+	            }
+	            
+	            ContentMarshallerContext ctx = TaskContentRegistry.get().getMarshallerContext(task.getDeploymentId());
+	            Object unmarshall = ContentMarshallerHelper.unmarshall(contentById.getContent(), ctx.getEnvironment(), ctx.getClassloader());
+	            return unmarshall;
+	        }
+	        return null;
+		} finally {
+			disposeRuntimeEngine(manager, engine);
+		}
+	}
+
 
 	@Override
 	public List<Attachment> getAttachmentsByTaskId(Long taskId) {
