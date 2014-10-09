@@ -31,11 +31,11 @@ import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
 
 /**
- * Main entry point class for RuntimeManager module responsible for delivering <code>RuntimeManager</code>
+ * This is the main entry point class for the RuntimeManager module responsible for delivering <code>RuntimeManager</code>
  * instances based on given <code>RuntimeEnvironment</code>.
  * <br/>
  * It can be used in both CDI and non CDI environments although it does not produce RuntimeManager instance for CDI 
- * automatically but would be more used as injection to other beans that might be interested in creating 
+ * automatically but would be more used as an injected bean for other beans that might be interested in creating 
  * <code>RuntimeManager</code> instances on demand.
  * <br/>
  * This factory will try to discover several services before building RuntimeManager:

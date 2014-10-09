@@ -35,8 +35,8 @@ import org.kie.internal.runtime.manager.context.CorrelationKeyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 /**
- * Data base based mapper implementation backed by JPA to store
- * context to <code>KieSession</code> id mapping. It used <code>ContextMappingInfo</code>
+ * Database based mapper implementation backed by JPA to store
+ * the context to <code>KieSession</code> id mapping. It uses the <code>ContextMappingInfo</code>
  * entity for persistence.
  * 
  * @see ContextMappingInfo

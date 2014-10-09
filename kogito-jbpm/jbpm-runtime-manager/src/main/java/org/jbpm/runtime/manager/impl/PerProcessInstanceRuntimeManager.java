@@ -54,16 +54,16 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.InternalTaskService;
 
 /**
- * RuntimeManager that is backed by "Per Process Instance" strategy - that means that every process instance will
- * be bound to a ksession for it's entire life time - once started whenever other operations will be invoked 
- * this manager will ensure that correct ksession will be provided.
+ * A RuntimeManager implementation that is backed by the "Per Process Instance" strategy. This means that every 
+ * process instance will be bound to a ksession for it's entire life time.  Once started, whenever other operations are invoked,
+ * this manager will ensure that the correct ksession will be provided.
  * <br/>
- * That applies to sub processes (reusable sub processes) that creates new process instance - sub process instance
+ * This also applies to sub processes (reusable sub processes) that create new process instances: the sub process instance
  * will have its own ksession independent of the parent one.
  * <br/>
- * This manager will ensure that as soon as process instance completes the ksession will be disposed and destroyed.
+ * This manager will ensure that as soon as the process instance completes, the ksession will be disposed of and destroyed.
  * <br/>
- * This implementation supports following <code>Context</code> implementations:
+ * This implementation supports the following <code>Context</code> implementations:
  * <ul>
  *  <li>ProcessInstanceIdContext</li>
  *  <li>CorrelationKeyContext</li>

@@ -25,7 +25,7 @@ import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.manager.SessionFactory;
 
 /**
- * SessionFactory implementation that is backed by data base for storing <code>KieSession</code> data.
+ * SessionFactory implementation that is backed by a database for storing <code>KieSession</code> data.
  *
  */
 public class JPASessionFactory implements SessionFactory {

@@ -45,7 +45,7 @@ import org.kie.internal.runtime.manager.Mapper;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 
 /**
- * The most basic implementation of <code>RuntimeEnvironment</code> that at the same time serves as base 
+ * The most basic implementation of the <code>RuntimeEnvironment</code> that, at the same time, serves as base 
  * implementation for all extensions. Encapsulates all important configuration that <code>RuntimeManager</code>
  * requires for execution.
  * <ul>

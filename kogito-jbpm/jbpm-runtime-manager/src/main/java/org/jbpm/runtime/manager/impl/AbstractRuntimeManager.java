@@ -53,17 +53,17 @@ import org.kie.internal.task.api.EventService;
 import org.kie.internal.task.api.InternalTaskService;
 
 /**
- * Common implementation that all <code>RuntimeManager</code> implementation should inherit from.
- * Provides following capabilities:
+ * Common implementation that all <code>RuntimeManager</code> implementations should inherit from.
+ * Provides the following capabilities:
  * <ul>
- *  <li>keeps track of all active managers by its identifier and prevents of having multiple managers with same id</li>
- *  <li>provides common close operation</li>
- *  <li>injects RuntimeManager into ksession's environment for further reference</li>
+ *  <li>keeps track of all active managers by their identifier and prevents multiple managers from having the same id</li>
+ *  <li>provides a common close operation</li>
+ *  <li>injects the RuntimeManager into the ksession's environment for further reference</li>
  *  <li>registers dispose callbacks (via transaction synchronization) 
- *  to dispose runtime engine automatically on transaction completion</li>
+ *  to dispose of the runtime engine automatically on transaction completion</li>
  *  <li>registers all defined items (work item handlers, event listeners)</li>
  * </ul>
- * Additionally, provides abstract <code>init</code> method that will be called on RuntimeManager instantiation. 
+ * Additionally, this provides a abstract <code>init</code> method that will be called on RuntimeManager instantiation. 
  */
 public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
 

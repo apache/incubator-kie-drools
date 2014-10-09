@@ -34,18 +34,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * RuntimeManager that is backed by "Singleton" strategy meaning only one <code>RuntimeEngine</code> instance will
- * exist for for given RuntimeManager instance. The RuntimeEngine will be synchronized to make sure it will work 
- * properly in multi-thread environments but might cause some performance issues due to sequential execution.
+ * This RuntimeManager is backed by a "Singleton" strategy, meaning that only one <code>RuntimeEngine</code> instance will
+ * exist for for the given RuntimeManager instance. The RuntimeEngine will be synchronized to make sure it will work 
+ * properly in multi-threaded environments. However, this might cause some performance issues due to sequential execution.
  * <br/>
- * Important aspect of this manager is that it will persists it's identifier as temporary file to keep track of the 
- * <code>KieSession</code> it was using to maintain its state - for example session state such as facts, etc.
- * the mentioned file is named as follows:<br>
+ * An important aspect of this manager is that it will persists it's identifier as a temporary file to keep track of the 
+ * <code>KieSession</code> it was using to maintain its state: for example, the session state including (drools) facts, etc.
+ * The mentioned file is named as follows:<br>
  * <code>manager.getIdentifier()-jbpmSessionId.ser</code>
- * for example for default named manager it will be:<br/>
+ * For example, for default named manager it will be:<br/>
  * default-singleton-jbpmSessionId.ser
  * <br/>
- * The location of the file can be one of the following, it is resolved in below order:
+ * The location of the file will be one of the following, it is resolved in below order:
  * <ul>
  *  <li>system property named: jbpm.data.dir</li>
  *  <li>system property named: jboss.server.data.dir - shall be used by default on JBoss AS</li>

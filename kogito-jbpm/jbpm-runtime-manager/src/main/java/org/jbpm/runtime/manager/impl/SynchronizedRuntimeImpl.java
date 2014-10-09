@@ -21,9 +21,9 @@ import org.kie.api.task.TaskService;
 import org.kie.internal.task.api.InternalTaskService;
 
 /**
- * Extension of the regular <code>RuntimeEngine</code> implementation strictly dedicated to
+ * This is an extension of the regular <code>RuntimeEngine</code> implementation strictly dedicated to
  * <code>SingletonRuntimeManager</code> to ensure that access to <code>RuntimeEngine</code>
- * resources, such as <code>KieSession</code> and <code>TaskService</code> is synchronized.
+ * resources, such as <code>KieSession</code> and <code>TaskService</code>, remains synchronized.
  *
  */
 public class SynchronizedRuntimeImpl extends RuntimeEngineImpl {

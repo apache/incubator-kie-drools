@@ -46,7 +46,7 @@ import org.kie.internal.task.api.model.TaskDef;
 import org.kie.internal.task.api.model.TaskEvent;
 import org.kie.internal.task.query.TaskQueryBuilder;
 /**
- * Fully synchronized <code>TaskService</code> implementation used by <code>SingletonRuntimeManager</code>.
+ * Fully synchronized <code>TaskService</code> implementation used by the <code>SingletonRuntimeManager</code>.
  * Synchronization is done on <code>CommandService</code> of the <code>KieSession</code> to ensure correctness 
  * until transaction completion.
  *

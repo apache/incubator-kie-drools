@@ -32,11 +32,11 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.WorkItemHandler;
 
 /**
- * This implementation extends DefaultRegisterableItemsFactory
+ * This implementation extends the DefaultRegisterableItemsFactory
  * and relies on definitions of work item handlers and
  * listeners that come from kmodule.xml from kjar. 
- * It will directly register all listeners and work item handlers on ksession
- * and will return listeners and handlers provided by default implementation.
+ * It will directly register all listeners and work item handlers on the ksession
+ * and will also return listeners and handlers provided by the default implementation.
  *
  */
 public class KModuleRegisterableItemsFactory extends DefaultRegisterableItemsFactory {

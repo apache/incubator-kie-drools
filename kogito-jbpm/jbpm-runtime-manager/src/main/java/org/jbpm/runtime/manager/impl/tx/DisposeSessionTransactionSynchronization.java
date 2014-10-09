@@ -21,8 +21,8 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 
 /**
- * Transaction synchronization that disposed <code>KieSession</code> instance on transaction completion during
- * afterCompletion phase.
+ * Transaction synchronization that disposes of the <code>KieSession</code> instance on transaction completion during
+ * the <code>afterCompletion</code> phase.
  *
  */
 public class DisposeSessionTransactionSynchronization extends OrderedTransactionSynchronization {

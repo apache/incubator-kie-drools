@@ -30,12 +30,12 @@ import org.kie.internal.runtime.manager.TaskServiceFactory;
 import org.kie.internal.task.api.InternalTaskService;
 
 /**
- * RuntimeManager implementation that is backed by "Per Request" strategy - meaning that for every call to 
- * <code>getRuntimeEngine</code> new instance will be delivered with brand new KieSession and TaskService.
- * The only exception to this is when invoking within same transaction from different places - as then manager
- *  caches currently active instance in ThreadLocal to avoid concurrent modifications - or "lost" of data.
- * On dispose of runtime engine manager will ensure that it is destroyed as well so it will get removed from 
- * data base to avoid out dated data.  
+ * A RuntimeManager implementation that is backed by the "Per Request" strategy. This means that for every call to 
+ * <code>getRuntimeEngine</code>, a new instance will be delivered with brand new KieSession and TaskService.
+ * The only exception to this is when this is invoked within the same transaction from different places. In that case, 
+ * the manager caches the currently active instance in a ThreadLocal instane to avoid concurrent modifications or "loss" of data.
+ * Disposing of the runtime engine manager will ensure that it is destroyed as well, so that it will get removed from 
+ * the database to avoid outdated data.  
  * <br/>
  * This implementation does not require any special <code>Context</code> to proceed.
  *

@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 /**
- * Defines that a annotated element is of type WorkingMemeory, used with 
+ * Defines a annotated element that is of type WorkingMemeory and is used with 
  * <code>EventListenerProducer</code>
  */
 @Qualifier

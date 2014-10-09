@@ -56,7 +56,7 @@ import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.scanner.MavenRepository;
 
 /**
- * Builder implementation that follows fluent approach to build <code>RuntimeEnvironments</code>.
+ * A builder implementation that follows the fluent approach to build <code>RuntimeEnvironments</code>.
  * Comes with short cut methods to get predefined configurations of the <code>RuntimeEnvironment</code>:
  * <ul>
  *  <li>getDefault() - returns preconfigured environment with enabled persistence</li>

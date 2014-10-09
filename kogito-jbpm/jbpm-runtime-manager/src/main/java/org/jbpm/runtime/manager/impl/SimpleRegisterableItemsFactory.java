@@ -37,15 +37,15 @@ import org.kie.internal.runtime.manager.InternalRuntimeManager;
 
 
 /**
- * The most basic <code>RegisterableItemsFactory</code> implementation that allows to define listeners and work
- * item handlers by their class and whenever they will be required new instance will be created out of the given
+ * The most basic <code>RegisterableItemsFactory</code> implementation that allows us to define listeners and work
+ * item handlers by their class.  Whenever they are required, new instance will be created based on the given
  * <code>Class</code> instance.
- * It's construction is limited to only two options:
+ * It's construction is limited by two (and only two) options:
  * <ul>
  *  <li>default - no argument constructor</li>
  *  <li>single argument constructor of type <code>KieSession</code></li>
  * </ul> 
- * to populate this factory with class definitions use halper methods:
+ * To populate this factory with class definitions, use helper methods:
  * <ul>
  *  <li>addWorkItemHandler</li>
  *  <li>addProcessListener</li>

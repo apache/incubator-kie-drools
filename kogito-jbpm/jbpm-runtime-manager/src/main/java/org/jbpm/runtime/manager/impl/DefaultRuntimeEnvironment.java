@@ -27,10 +27,10 @@ import org.jbpm.runtime.manager.impl.mapper.JPAMapper;
 import org.kie.api.runtime.EnvironmentName;
 
 /**
- * Default implementation of RuntimeEnvironment that aims at providing all 
- * common settings with minimum need for configuration.
+ * Default implementation of the RuntimeEnvironment that aims at providing all 
+ * common settings with a minimum need for configuration.
  * 
- * It configures automatically following components:
+ * It automatically configures the following components:
  * <ul>
  *  <li>uses <code>DefaultRegisterableItemsFactory</code> to provide work item handlers and event listeners instances</li>
  *  <li>EntityManagerFactory - if non given uses persistence unit with "org.jbpm.persistence.jpa" name</li>

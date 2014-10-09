@@ -22,8 +22,8 @@ import org.kie.api.runtime.manager.Context;
 import org.kie.internal.runtime.manager.Mapper;
 
 /**
- * In memory implementation of context to <code>KieSession</code> identifier mapping.
- * Used only when <code>RuntimeManager</code> is used without persistence. 
+ * An in-memory implementation of the context to <code>KieSession</code> identifier mapping.
+ * Used only when the <code>RuntimeManager</code> is used without persistence. 
  *
  */
 public class InMemoryMapper implements Mapper {

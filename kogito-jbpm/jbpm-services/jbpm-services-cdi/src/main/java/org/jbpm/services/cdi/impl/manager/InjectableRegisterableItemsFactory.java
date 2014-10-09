@@ -65,7 +65,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of <code>RegisterableItemsFactory</code> dedicated to CDI environments that allows to get 
+ * Implementation of <code>RegisterableItemsFactory</code> dedicated to CDI environments that allows us to get 
  * injections of following components:
  * <ul>
  *  <li><code>ExternalTaskEventListener</code> - required bean</li>
@@ -76,12 +76,12 @@ import org.slf4j.LoggerFactory;
  *  <li><code>RuntimeFinder</code> - optional required only when single CDI bean is going to manage many 
  *  <code>RuntimeManager</code> instances</li>
  * </ul>
- * In addition to that, <code>AbstractAuditLogger</code> can be set after bean has been injected if the default 
- * is not sufficient. Although this factory extends <code>DefaultRegisterableItemsFactory</code> it will not
- * use any of the listeners and handlers that comes from the super class. It mainly relies on CDI injections
+ * In addition to that, <code>AbstractAuditLogger</code> can be set after the bean has been injected if the default 
+ * is not sufficient. Although this factory extends <code>DefaultRegisterableItemsFactory</code>, it will not
+ * use any of the listeners and handlers that come from the super class. It relies mainly on CDI injections
  * where the only exception from this rule is <code>AbstractAuditLogger</code>
  * <br/>
- * Even though this is fully qualified bean for injection it provides helper methods to build its instances
+ * Even though this is a fully qualified bean for injection, it provides helper methods to build its instances
  * using <code>BeanManager</code> in case more independent instances are required.
  * <ul>
  *  <li>getFactory(BeanManager, AbstractAuditLogger)</li>
@@ -279,7 +279,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
 
 
 	/**
-     * Allows to create instance of this class dynamically via <code>BeanManager</code>. This is useful in case multiple 
+     * Allows us to create an instance of this class dynamically via <code>BeanManager</code>. This is useful in case multiple 
      * independent instances are required on runtime and that need cannot be satisfied with regular CDI practices.
      * @param beanManager - bean manager instance of the container
      * @param auditlogger - <code>AbstractAuditLogger</code> logger instance to be used, might be null
@@ -292,7 +292,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     }
     
     /**
-     * Allows to create instance of this class dynamically via <code>BeanManager</code>. This is useful in case multiple 
+     * Allows us to create instance of this class dynamically via <code>BeanManager</code>. This is useful in case multiple 
      * independent instances are required on runtime and that need cannot be satisfied with regular CDI practices.
      * @param beanManager - bean manager instance of the container
      * @param auditlogger - <code>AbstractAuditLogger</code> logger instance to be used, might be null

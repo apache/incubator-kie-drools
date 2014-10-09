@@ -30,12 +30,10 @@ import org.kie.internal.runtime.manager.DisposeListener;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 
 /**
- * Implementation of the <code>RuntimeEngine</code> that additionally implement <code>Disposable</code>
- * interface to allow other components to register listeners on it. Usual case is that listeners
- * and work item handlers might be interested in receiving notification when runtime engine is disposed
- * to deactivate itself too and not receive other events.
- * 
- *
+ * An implementation of the <code>RuntimeEngine</code> that additionally implements the <code>Disposable</code>
+ * interface to allow other components to register listeners on it. The usual case for this is that listeners
+ * and work item handlers might be interested in receiving notification when the runtime engine is disposed of,
+ * in order deactivate themselves too and not receive any other events.
  */
 public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
 

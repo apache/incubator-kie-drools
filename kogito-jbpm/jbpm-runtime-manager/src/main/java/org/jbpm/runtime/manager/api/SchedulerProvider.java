@@ -18,8 +18,8 @@ package org.jbpm.runtime.manager.api;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 
 /**
- * Marker interface to indicate that a given component provides <code>SchedulerService</code>
- * especially important for RuntimeEnvironment implementations that not all must provide such capabilities.
+ * Marker interface to indicate that a given component provides a <code>SchedulerService</code>
+ * This is especially important for RuntimeEnvironment implementations that might not provide such capabilities.
  */
 public interface SchedulerProvider {
 

@@ -23,8 +23,8 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 /**
- * Defines that a annotated element is of type Agenda, used with 
- * <code>EventListenerProducer</code>
+ * Defines a annotated element that is of type Agenda 
+ * and that's used with <code>EventListenerProducer</code>
  */
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)

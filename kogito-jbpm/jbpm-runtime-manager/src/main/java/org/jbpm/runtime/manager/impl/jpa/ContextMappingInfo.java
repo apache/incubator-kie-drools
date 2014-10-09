@@ -28,13 +28,13 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Version;
 
 /**
- * Main entity for runtime manager to keep track of what context is bound to what <code>KieSession</code>
- * it provides as well two queries to fetch required information.
+ * The main entity that helps the runtime manager keep track of which context is bound to which <code>KieSession</code>.
+ * It also provides the following two queries to fetch required information:
  * <ul>
  *  <li>FindContextMapingByContextId</li>
  *  <li>FindContextMapingByKSessionId</li>
  * </ul>
- * This entity must be included in persistence.xml when "Per Process Instance" strategy is used.
+ * This entity must be included in the persistence.xml when the "Per Process Instance" strategy is used.
  */
 @Entity
 @SequenceGenerator(name="contextMappingInfoIdSeq", sequenceName="CONTEXT_MAPPING_INFO_ID_SEQ")

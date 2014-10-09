@@ -23,7 +23,7 @@ import org.kie.api.task.TaskService;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
 
 /**
- * CDI based task service factory that will always deliver same instance of the 
+ * CDI based task service factory that will always deliver the same instance of the 
  * <code>TaskService</code> that was injected into it.
  *
  */
