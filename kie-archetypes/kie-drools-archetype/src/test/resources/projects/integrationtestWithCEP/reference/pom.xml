@@ -12,7 +12,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  	<drools-version>6.1.0.CR2</drools-version>
+  	<drools-version>9.9.9-DUMMY</drools-version>
   </properties>
 
 	<dependencyManagement>
