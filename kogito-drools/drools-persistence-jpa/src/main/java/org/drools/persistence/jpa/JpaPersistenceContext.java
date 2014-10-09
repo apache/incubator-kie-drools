@@ -63,7 +63,12 @@ public class JpaPersistenceContext implements PersistenceContext {
     }
 
     public void remove(SessionInfo sessionInfo) {
-        em.remove( sessionInfo );
+        if (!em.contains(sessionInfo)) {
+            SessionInfo s = em.getReference(SessionInfo.class, sessionInfo.getId());
+            em.remove( s );
+        } else {
+            em.remove(sessionInfo);
+        }
         TransactionManagerHelper.removeFromUpdatableSet(txm, sessionInfo);
         em.flush();
     }

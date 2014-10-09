@@ -45,6 +45,6 @@ public class TransactionManagerHelper {
             return Collections.emptySet();
         }
 
-        return toBeUpdated;
+        return new LinkedHashSet<Transformable>(toBeUpdated);
     }
 }
