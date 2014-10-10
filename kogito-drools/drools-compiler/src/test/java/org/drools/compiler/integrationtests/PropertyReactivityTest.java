@@ -1,6 +1,8 @@
 package org.drools.compiler.integrationtests;
 
+import org.drools.compiler.Address;
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Person;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Test;
@@ -1202,4 +1204,32 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         assertEquals(1, list.size());
         assertEquals("3", list.get(0));
     }
+
+    @Test
+    public void testModifyWithGetter() {
+        String rule1 =
+                "package foo.bar\n" +
+                "import " + Person.class.getName() + "\n" +
+                "declare Person @propertyReactive end\n" +
+                "rule x\n" +
+                "    when\n" +
+                "       $p : Person( address != null ) @watch(!address) \n" +
+                "    then\n" +
+                "       modify($p){getAddress().setStreet(\"foo\");}\n" +
+                "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent(rule1, ResourceType.DRL);
+        KieSession ksession = helper.build().newKieSession();
+
+        Person p = new Person();
+        p.setAddress(new Address());
+        ksession.insert(p);
+
+        int fired = ksession.fireAllRules(10);
+
+        assertEquals(1, fired);
+        assertEquals("foo", p.getAddress().getStreet());
+    }
+
 }
