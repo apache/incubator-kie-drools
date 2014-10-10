@@ -24,6 +24,7 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.BetaDistributionNearbyRandom;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.BlockDistributionNearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearEntityNearbyMethod;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -37,6 +38,11 @@ public class NearbySelectionConfig extends SelectorConfig {
     @XStreamAlias("originEntitySelector")
     protected EntitySelectorConfig originEntitySelectorConfig = null;
     protected Class<? extends NearEntityNearbyMethod> nearEntityNearbyMethodClass = null;
+
+    protected Integer blockDistributionBlockSizeMinimum = null;
+    protected Integer blockDistributionBlockSizeMaximum = null;
+    protected Double blockDistributionBlockRatio = null;
+    protected Double blockDistributionUniformDistributionProbability = null;
 
     protected Double betaDistributionAlpha = null;
     protected Double betaDistributionBeta = null;
@@ -55,6 +61,38 @@ public class NearbySelectionConfig extends SelectorConfig {
 
     public void setNearEntityNearbyMethodClass(Class<? extends NearEntityNearbyMethod> nearEntityNearbyMethodClass) {
         this.nearEntityNearbyMethodClass = nearEntityNearbyMethodClass;
+    }
+
+    public Integer getBlockDistributionBlockSizeMinimum() {
+        return blockDistributionBlockSizeMinimum;
+    }
+
+    public void setBlockDistributionBlockSizeMinimum(Integer blockDistributionBlockSizeMinimum) {
+        this.blockDistributionBlockSizeMinimum = blockDistributionBlockSizeMinimum;
+    }
+
+    public Integer getBlockDistributionBlockSizeMaximum() {
+        return blockDistributionBlockSizeMaximum;
+    }
+
+    public void setBlockDistributionBlockSizeMaximum(Integer blockDistributionBlockSizeMaximum) {
+        this.blockDistributionBlockSizeMaximum = blockDistributionBlockSizeMaximum;
+    }
+
+    public Double getBlockDistributionBlockRatio() {
+        return blockDistributionBlockRatio;
+    }
+
+    public void setBlockDistributionBlockRatio(Double blockDistributionBlockRatio) {
+        this.blockDistributionBlockRatio = blockDistributionBlockRatio;
+    }
+
+    public Double getBlockDistributionUniformDistributionProbability() {
+        return blockDistributionUniformDistributionProbability;
+    }
+
+    public void setBlockDistributionUniformDistributionProbability(Double blockDistributionUniformDistributionProbability) {
+        this.blockDistributionUniformDistributionProbability = blockDistributionUniformDistributionProbability;
     }
 
     public Double getBetaDistributionAlpha() {
@@ -98,16 +136,6 @@ public class NearbySelectionConfig extends SelectorConfig {
                     + ") has a resolvedCacheType (" + resolvedCacheType
                     + ") that is cached.");
         }
-        if (betaDistributionAlpha != null && betaDistributionAlpha < 0.0) {
-            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
-                    + ")'s betaDistributionAlpha ("  + betaDistributionAlpha
-                    + ") must be positive.");
-        }
-        if (betaDistributionBeta != null && betaDistributionBeta < 0.0) {
-            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
-                    + ")'s betaDistributionBeta ("  + betaDistributionBeta
-                    + ") must be positive.");
-        }
     }
 
     public EntitySelector applyNearbyEntitySelector(HeuristicConfigPolicy configPolicy,
@@ -140,9 +168,29 @@ public class NearbySelectionConfig extends SelectorConfig {
     }
 
     protected NearbyRandom buildNearbyRandom() {
-        double betaDistributionAlpha_ = betaDistributionAlpha == null ? 1.0 : betaDistributionAlpha;
-        double betaDistributionBeta_ = betaDistributionBeta == null ? 5.0 : betaDistributionBeta;
-        return new BetaDistributionNearbyRandom(betaDistributionAlpha_, betaDistributionBeta_);
+        boolean blockDistributionEnabled = blockDistributionBlockSizeMinimum != null
+                || blockDistributionBlockSizeMaximum != null
+                || blockDistributionBlockRatio != null
+                || blockDistributionUniformDistributionProbability != null;
+        boolean betaDistributionEnabled = betaDistributionAlpha != null
+                || betaDistributionBeta != null;
+        if (blockDistributionEnabled && betaDistributionEnabled) {
+            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
+                    + ") has both blockDistribution and betaDistribution parameters.");
+        }
+        if (blockDistributionEnabled) {
+            int blockSizeMinimum = blockDistributionBlockSizeMinimum == null ? 0 : blockDistributionBlockSizeMinimum;
+            int blockSizeMaximum = blockDistributionBlockSizeMaximum == null ? Integer.MAX_VALUE : blockDistributionBlockSizeMaximum;
+            double blockRatio = blockDistributionBlockRatio == null ? 1.0 : blockDistributionBlockRatio;
+            double uniformDistributionProbability = blockDistributionUniformDistributionProbability == null ? 0.0 : blockDistributionUniformDistributionProbability;
+            return new BlockDistributionNearbyRandom(blockSizeMinimum, blockSizeMaximum, blockRatio, uniformDistributionProbability);
+        } else if (betaDistributionEnabled) {
+            double alpha = betaDistributionAlpha == null ? 1.0 : betaDistributionAlpha;
+            double beta = betaDistributionBeta == null ? 5.0 : betaDistributionBeta;
+            return new BetaDistributionNearbyRandom(alpha, beta);
+        } else {
+            return new BetaDistributionNearbyRandom(1.0, 5.0);
+        }
     }
 
     public void inherit(NearbySelectionConfig inheritedConfig) {
@@ -154,6 +202,14 @@ public class NearbySelectionConfig extends SelectorConfig {
         }
         nearEntityNearbyMethodClass = ConfigUtils.inheritOverwritableProperty(nearEntityNearbyMethodClass,
                 inheritedConfig.getNearEntityNearbyMethodClass());
+        blockDistributionBlockSizeMinimum = ConfigUtils.inheritOverwritableProperty(blockDistributionBlockSizeMinimum,
+                inheritedConfig.getBlockDistributionBlockSizeMinimum());
+        blockDistributionBlockSizeMaximum = ConfigUtils.inheritOverwritableProperty(blockDistributionBlockSizeMaximum,
+                inheritedConfig.getBlockDistributionBlockSizeMaximum());
+        blockDistributionBlockRatio = ConfigUtils.inheritOverwritableProperty(blockDistributionBlockRatio,
+                inheritedConfig.getBlockDistributionBlockRatio());
+        blockDistributionUniformDistributionProbability = ConfigUtils.inheritOverwritableProperty(blockDistributionUniformDistributionProbability,
+                inheritedConfig.getBlockDistributionUniformDistributionProbability());
         betaDistributionAlpha = ConfigUtils.inheritOverwritableProperty(betaDistributionAlpha,
                 inheritedConfig.getBetaDistributionAlpha());
         betaDistributionBeta = ConfigUtils.inheritOverwritableProperty(betaDistributionBeta,
