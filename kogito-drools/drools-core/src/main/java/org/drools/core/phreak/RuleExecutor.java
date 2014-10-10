@@ -6,6 +6,7 @@ import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.Memory;
 import org.drools.core.common.StreamTupleEntryQueue;
 import org.drools.core.common.TupleEntryQueue;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -61,23 +62,27 @@ public class RuleExecutor {
             if (tupleEntry.getLeftTuple() != null) {
                 LeftTuple leftTuple = tupleEntry.getLeftTuple();
                 if (leftTuple.getMemory() != null) {
-                    if (tupleEntry.getNodeMemory() instanceof BetaMemory) {
-                        ((BetaMemory)tupleEntry.getNodeMemory()).getLeftTupleMemory().remove(leftTuple);
-                    } else {
-                        leftTuple.getMemory().remove(leftTuple);
+                    BetaMemory betaMemory = getBetaMemory(tupleEntry.getNodeMemory());
+                    if (betaMemory != null) {
+                        betaMemory.getLeftTupleMemory().remove(leftTuple);
                     }
                 }
             } else {
                 RightTuple rightTuple = tupleEntry.getRightTuple();
                 if (rightTuple.getMemory() != null) {
-                    if (tupleEntry.getNodeMemory() instanceof BetaMemory) {
-                        ((BetaMemory) tupleEntry.getNodeMemory()).getRightTupleMemory().remove(rightTuple);
-                    } else {
-                        rightTuple.getMemory().remove(rightTuple);
+                    BetaMemory betaMemory = getBetaMemory(tupleEntry.getNodeMemory());
+                    if (betaMemory != null) {
+                        betaMemory.getRightTupleMemory().remove(rightTuple);
                     }
                 }
             }
         }
+    }
+
+    private BetaMemory getBetaMemory(Memory memory) {
+        return memory == null ? null :
+               memory instanceof BetaMemory ? (BetaMemory)memory :
+               getBetaMemory(memory.getNext());
     }
 
     public synchronized void evaluateNetwork(InternalWorkingMemory wm) {
