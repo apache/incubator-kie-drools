@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearEntityNearbyMethod;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -35,7 +35,7 @@ public class NearEntityNearbyEntitySelector extends AbstractEntitySelector {
 
     protected final EntitySelector childEntitySelector;
     protected final EntitySelector originEntitySelector;
-    protected final NearEntityNearbyMethod nearEntityNearbyMethod;
+    protected final NearbyDistanceMeter nearbyDistanceMeter;
     protected final NearbyRandom nearbyRandom;
     protected final boolean randomSelection;
     protected final boolean discardNearbyIndexZero = true;// TODO deactivate me when appropriate
@@ -43,10 +43,10 @@ public class NearEntityNearbyEntitySelector extends AbstractEntitySelector {
     protected Map<Object, Object[]> originToDestinationsMap = null;
 
     public NearEntityNearbyEntitySelector(EntitySelector childEntitySelector, EntitySelector originEntitySelector,
-            NearEntityNearbyMethod nearEntityNearbyMethod, NearbyRandom nearbyRandom, boolean randomSelection) {
+            NearbyDistanceMeter nearbyDistanceMeter, NearbyRandom nearbyRandom, boolean randomSelection) {
         this.childEntitySelector = childEntitySelector;
         this.originEntitySelector = originEntitySelector;
-        this.nearEntityNearbyMethod = nearEntityNearbyMethod;
+        this.nearbyDistanceMeter = nearbyDistanceMeter;
         this.nearbyRandom = nearbyRandom;
         this.randomSelection = randomSelection;
         // TODO Remove this limitation
@@ -89,8 +89,8 @@ public class NearEntityNearbyEntitySelector extends AbstractEntitySelector {
             Arrays.sort(destinations, new Comparator<Object>() {
                 @Override
                 public int compare(Object a, Object b) {
-                    double aDistance = nearEntityNearbyMethod.getNearbyDistance(origin, a);
-                    double bDistance = nearEntityNearbyMethod.getNearbyDistance(origin, b);
+                    double aDistance = nearbyDistanceMeter.getNearbyDistance(origin, a);
+                    double bDistance = nearbyDistanceMeter.getNearbyDistance(origin, b);
                     if (aDistance < bDistance) {
                         return -1;
                     } else if (aDistance > bDistance) {

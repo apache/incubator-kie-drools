@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
-public interface NearEntityNearbyMethod<O, D> {
+public interface NearbyDistanceMeter<O, D> {
 
     /**
      * @param origin never null

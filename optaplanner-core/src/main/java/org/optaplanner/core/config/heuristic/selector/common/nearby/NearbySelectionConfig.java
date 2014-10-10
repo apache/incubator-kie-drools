@@ -25,7 +25,7 @@ import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfi
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.BetaDistributionNearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.BlockDistributionNearbyRandom;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearEntityNearbyMethod;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.nearby.NearEntityNearbyEntitySelector;
@@ -37,7 +37,7 @@ public class NearbySelectionConfig extends SelectorConfig {
 
     @XStreamAlias("originEntitySelector")
     protected EntitySelectorConfig originEntitySelectorConfig = null;
-    protected Class<? extends NearEntityNearbyMethod> nearEntityNearbyMethodClass = null;
+    protected Class<? extends NearbyDistanceMeter> nearbyDistanceMeterClass = null;
 
     protected Integer blockDistributionBlockSizeMinimum = null;
     protected Integer blockDistributionBlockSizeMaximum = null;
@@ -55,12 +55,12 @@ public class NearbySelectionConfig extends SelectorConfig {
         this.originEntitySelectorConfig = originEntitySelectorConfig;
     }
 
-    public Class<? extends NearEntityNearbyMethod> getNearEntityNearbyMethodClass() {
-        return nearEntityNearbyMethodClass;
+    public Class<? extends NearbyDistanceMeter> getNearbyDistanceMeterClass() {
+        return nearbyDistanceMeterClass;
     }
 
-    public void setNearEntityNearbyMethodClass(Class<? extends NearEntityNearbyMethod> nearEntityNearbyMethodClass) {
-        this.nearEntityNearbyMethodClass = nearEntityNearbyMethodClass;
+    public void setNearbyDistanceMeterClass(Class<? extends NearbyDistanceMeter> nearbyDistanceMeterClass) {
+        this.nearbyDistanceMeterClass = nearbyDistanceMeterClass;
     }
 
     public Integer getBlockDistributionBlockSizeMinimum() {
@@ -117,22 +117,22 @@ public class NearbySelectionConfig extends SelectorConfig {
                     + ") is nearby selection"
                     + " but lacks a nearbyOriginEntitySelector (" + originEntitySelectorConfig + ").");
         }
-        if (nearEntityNearbyMethodClass == null) {
+        if (nearbyDistanceMeterClass == null) {
             throw new IllegalArgumentException("The nearbySelectorConfig (" + this
                     + ") is nearby selection"
-                    + " but lacks a nearEntityNearbyMethodClass (" + nearEntityNearbyMethodClass + ").");
+                    + " but lacks a nearbyDistanceMeterClass (" + nearbyDistanceMeterClass + ").");
         }
         if (resolvedSelectionOrder != SelectionOrder.ORIGINAL && resolvedSelectionOrder != SelectionOrder.RANDOM) {
             throw new IllegalArgumentException("The nearbySelectorConfig (" + this
                     + ") with nearbyOriginEntitySelector ("  + originEntitySelectorConfig
-                    + ") and nearEntityNearbyMethodClass ("  + nearEntityNearbyMethodClass
+                    + ") and nearbyDistanceMeterClass ("  + nearbyDistanceMeterClass
                     + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
                     + ") that is not " + SelectionOrder.ORIGINAL + " or " + SelectionOrder.RANDOM + ".");
         }
         if (resolvedCacheType.isCached()) {
             throw new IllegalArgumentException("The nearbySelectorConfig (" + this
                     + ") with nearbyOriginEntitySelector ("  + originEntitySelectorConfig
-                    + ") and nearEntityNearbyMethodClass ("  + nearEntityNearbyMethodClass
+                    + ") and nearbyDistanceMeterClass ("  + nearbyDistanceMeterClass
                     + ") has a resolvedCacheType (" + resolvedCacheType
                     + ") that is cached.");
         }
@@ -145,12 +145,12 @@ public class NearbySelectionConfig extends SelectorConfig {
         EntitySelector originEntitySelector = originEntitySelectorConfig.buildEntitySelector(
                 configPolicy,
                 minimumCacheType, resolvedSelectionOrder);
-        NearEntityNearbyMethod nearEntityNearbyMethod = ConfigUtils.newInstance(this,
-                "nearEntityNearbyMethodClass", nearEntityNearbyMethodClass);
-        // TODO Check nearEntityNearbyMethodClass.getGenericInterfaces() to confirm generic type S is an entityClass
+        NearbyDistanceMeter nearbyDistanceMeter = ConfigUtils.newInstance(this,
+                "nearbyDistanceMeterClass", nearbyDistanceMeterClass);
+        // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
         NearbyRandom nearbyRandom = buildNearbyRandom();
         return new NearEntityNearbyEntitySelector(entitySelector, originEntitySelector,
-                nearEntityNearbyMethod, nearbyRandom, randomSelection);
+                nearbyDistanceMeter, nearbyRandom, randomSelection);
     }
 
     public ValueSelector applyNearbyValueSelector(HeuristicConfigPolicy configPolicy,
@@ -159,12 +159,12 @@ public class NearbySelectionConfig extends SelectorConfig {
         boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
         EntitySelector originEntitySelector = originEntitySelectorConfig.buildEntitySelector(
                 configPolicy, minimumCacheType, resolvedSelectionOrder);
-        NearEntityNearbyMethod nearEntityNearbyMethod = ConfigUtils.newInstance(this,
-                "nearEntityNearbyMethodClass", nearEntityNearbyMethodClass);
-        // TODO Check nearEntityNearbyMethodClass.getGenericInterfaces() to confirm generic type S is an entityClass
+        NearbyDistanceMeter nearbyDistanceMeter = ConfigUtils.newInstance(this,
+                "nearbyDistanceMeterClass", nearbyDistanceMeterClass);
+        // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
         NearbyRandom nearbyRandom = buildNearbyRandom();
         return new NearEntityNearbyValueSelector(valueSelector, originEntitySelector,
-                nearEntityNearbyMethod, nearbyRandom, randomSelection);
+                nearbyDistanceMeter, nearbyRandom, randomSelection);
     }
 
     protected NearbyRandom buildNearbyRandom() {
@@ -200,8 +200,8 @@ public class NearbySelectionConfig extends SelectorConfig {
         } else if (inheritedConfig.getOriginEntitySelectorConfig() != null) {
             originEntitySelectorConfig.inherit(inheritedConfig.getOriginEntitySelectorConfig());
         }
-        nearEntityNearbyMethodClass = ConfigUtils.inheritOverwritableProperty(nearEntityNearbyMethodClass,
-                inheritedConfig.getNearEntityNearbyMethodClass());
+        nearbyDistanceMeterClass = ConfigUtils.inheritOverwritableProperty(nearbyDistanceMeterClass,
+                inheritedConfig.getNearbyDistanceMeterClass());
         blockDistributionBlockSizeMinimum = ConfigUtils.inheritOverwritableProperty(blockDistributionBlockSizeMinimum,
                 inheritedConfig.getBlockDistributionBlockSizeMinimum());
         blockDistributionBlockSizeMaximum = ConfigUtils.inheritOverwritableProperty(blockDistributionBlockSizeMaximum,

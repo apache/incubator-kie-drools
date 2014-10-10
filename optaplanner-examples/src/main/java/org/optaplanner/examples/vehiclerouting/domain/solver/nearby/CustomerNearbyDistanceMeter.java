@@ -16,22 +16,13 @@
 
 package org.optaplanner.examples.vehiclerouting.domain.solver.nearby;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearEntityNearbyMethod;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
-import org.optaplanner.examples.vehiclerouting.domain.Standstill;
-import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
-import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
-public class StandstillNearbyMethod implements NearEntityNearbyMethod<Customer, Standstill> {
+public class CustomerNearbyDistanceMeter implements NearbyDistanceMeter<Customer, Customer> {
 
     @Override
-    public double getNearbyDistance(Customer origin, Standstill destination) {
+    public double getNearbyDistance(Customer origin, Customer destination) {
         return origin.getDistanceTo(destination);
     }
 

@@ -24,19 +24,18 @@ import java.util.Map;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearEntityNearbyMethod;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-import org.optaplanner.core.impl.heuristic.solution.WorkingSolutionAware;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
 public class NearEntityNearbyValueSelector extends AbstractValueSelector {
 
     protected final ValueSelector childValueSelector;
     protected final EntitySelector originEntitySelector;
-    protected final NearEntityNearbyMethod nearEntityNearbyMethod;
+    protected final NearbyDistanceMeter nearbyDistanceMeter;
     protected final NearbyRandom nearbyRandom;
     protected final boolean randomSelection;
     protected final boolean discardNearbyIndexZero = true;// TODO deactivate me when appropriate
@@ -44,10 +43,10 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
     protected Map<Object, Object[]> originToDestinationsMap = null;
 
     public NearEntityNearbyValueSelector(ValueSelector childValueSelector, EntitySelector originEntitySelector,
-            NearEntityNearbyMethod nearEntityNearbyMethod, NearbyRandom nearbyRandom, boolean randomSelection) {
+            NearbyDistanceMeter nearbyDistanceMeter, NearbyRandom nearbyRandom, boolean randomSelection) {
         this.childValueSelector = childValueSelector;
         this.originEntitySelector = originEntitySelector;
-        this.nearEntityNearbyMethod = nearEntityNearbyMethod;
+        this.nearbyDistanceMeter = nearbyDistanceMeter;
         this.nearbyRandom = nearbyRandom;
         this.randomSelection = randomSelection;
         // TODO Remove this limitation
@@ -95,8 +94,8 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
             Arrays.sort(destinations, new Comparator<Object>() {
                 @Override
                 public int compare(Object a, Object b) {
-                    double aDistance = nearEntityNearbyMethod.getNearbyDistance(origin, a);
-                    double bDistance = nearEntityNearbyMethod.getNearbyDistance(origin, b);
+                    double aDistance = nearbyDistanceMeter.getNearbyDistance(origin, a);
+                    double bDistance = nearbyDistanceMeter.getNearbyDistance(origin, b);
                     if (aDistance < bDistance) {
                         return -1;
                     } else if (aDistance > bDistance) {
