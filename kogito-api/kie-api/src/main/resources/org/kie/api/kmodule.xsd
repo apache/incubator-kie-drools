@@ -27,6 +27,7 @@
       <xsd:simpleContent>
         <xsd:extension base="xsd:string">
           <xsd:attribute name="key" use="required" type="xsd:string"/>
+          <xsd:attribute name="value" use="required" type="xsd:string"/>
         </xsd:extension>
       </xsd:simpleContent>
     </xsd:complexType>
