@@ -87,6 +87,10 @@ public class SelectedCountLimitValueSelector extends AbstractValueSelector imple
         return new SelectedCountLimitValueIterator(((EntityIndependentValueSelector) childValueSelector).iterator());
     }
 
+    public Iterator<Object> endingIterator(Object entity) {
+        return new SelectedCountLimitValueIterator(childValueSelector.endingIterator(entity));
+    }
+
     private class SelectedCountLimitValueIterator extends SelectionIterator<Object> {
 
         private final Iterator<Object> childValueIterator;

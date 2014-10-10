@@ -68,6 +68,13 @@ public class DowncastingValueSelector extends AbstractValueSelector {
         return childValueSelector.iterator(entity);
     }
 
+    public Iterator<Object> endingIterator(Object entity) {
+        if (!downcastEntityClass.isInstance(entity)) {
+            return Iterators.emptyIterator();
+        }
+        return childValueSelector.endingIterator(entity);
+    }
+
     @Override
     public String toString() {
         return "Downcasting(" + childValueSelector + ")";

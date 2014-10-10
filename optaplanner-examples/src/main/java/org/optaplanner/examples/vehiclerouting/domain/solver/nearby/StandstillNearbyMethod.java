@@ -23,55 +23,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearEntityNearbyMethod;
-import org.optaplanner.core.impl.heuristic.solution.WorkingSolutionAware;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Standstill;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
-public class StandstillNearbyMethod implements NearEntityNearbyMethod<Customer, Standstill>, WorkingSolutionAware<VehicleRoutingSolution> {
-
-    private Map<Customer, Standstill[]> nearbyStandstillListMap = null;
+public class StandstillNearbyMethod implements NearEntityNearbyMethod<Customer, Standstill> {
 
     @Override
-    public void setWorkingSolution(VehicleRoutingSolution workingSolution) {
-        List<Vehicle> vehicleList = workingSolution.getVehicleList();
-        int vehicleListSize = vehicleList.size();
-        List<Customer> customerList = workingSolution.getCustomerList();
-        nearbyStandstillListMap = new HashMap<Customer, Standstill[]>(customerList.size());
-        for (final Customer origin : customerList) {
-            Standstill[] nearbyStandstillList = new Standstill[vehicleListSize + customerList.size()];
-            for (int i = 0; i < nearbyStandstillList.length; i++) {
-                nearbyStandstillList[i] = (i < vehicleListSize) ? vehicleList.get(i)
-                        : customerList.get(i - vehicleListSize);
-            }
-            Arrays.sort(nearbyStandstillList, new Comparator<Standstill>() {
-                @Override
-                public int compare(Standstill a, Standstill b) {
-                    int aDistance = origin.getDistanceTo(a);
-                    int bDistance = origin.getDistanceTo(b);
-                    if (aDistance < bDistance) {
-                        return -1;
-                    } else if (aDistance > bDistance) {
-                        return 1;
-                    } else {
-                        return a.getLocation().getId().compareTo(b.getLocation().getId());
-                    }
-                }
-            });
-            nearbyStandstillListMap.put(origin, nearbyStandstillList);
-        }
-    }
-
-    @Override
-    public void unsetWorkingSolution() {
-        nearbyStandstillListMap = null;
-    }
-
-    @Override
-    public Standstill getByNearbyIndex(Customer origin, int nearbyIndex) {
-        Standstill[] nearbyStandstillList = nearbyStandstillListMap.get(origin);
-        return nearbyStandstillList[nearbyIndex];
+    public double getNearbyDistance(Customer origin, Standstill destination) {
+        return origin.getDistanceTo(destination);
     }
 
 }

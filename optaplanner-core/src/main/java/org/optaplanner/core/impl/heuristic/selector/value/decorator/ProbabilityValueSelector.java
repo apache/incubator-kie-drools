@@ -130,6 +130,10 @@ public class ProbabilityValueSelector extends AbstractValueSelector
         };
     }
 
+    public Iterator<Object> endingIterator(Object entity) {
+        return childValueSelector.endingIterator(entity);
+    }
+
     @Override
     public String toString() {
         return "Probability(" + childValueSelector + ")";

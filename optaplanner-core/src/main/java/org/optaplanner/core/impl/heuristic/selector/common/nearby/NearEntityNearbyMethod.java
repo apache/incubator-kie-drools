@@ -16,18 +16,13 @@
 
 package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
-import org.optaplanner.core.impl.heuristic.selector.Selector;
-
-public interface NearEntityNearbyMethod<O, S> {
+public interface NearEntityNearbyMethod<O, D> {
 
     /**
-     *
-     * @param origin the entity it should be nearby to
-     * @param nearbyIndex >= 0, 0 should return the origin (presuming {@link O} is an instanceof {@link S})
-     * @return a selection that is compatible with the {@link Selector} that uses this.
+     * @param origin never null
+     * @param destination never null
+     * @return Preferably always >= 0.0. If origin == destination, it usually returns 0.0.
      */
-    S getByNearbyIndex(O origin, int nearbyIndex);
+    double getNearbyDistance(O origin, D destination);
 
-
-    // double getNearbyDistance(Entity from, Entity to)
 }

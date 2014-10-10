@@ -23,50 +23,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearEntityNearbyMethod;
-import org.optaplanner.core.impl.heuristic.solution.WorkingSolutionAware;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
-public class CustomerNearbyMethod implements NearEntityNearbyMethod<Customer, Customer>, WorkingSolutionAware<VehicleRoutingSolution> {
-
-    private Map<Customer, Customer[]> nearbyCustomerListMap = null;
+public class CustomerNearbyMethod implements NearEntityNearbyMethod<Customer, Customer> {
 
     @Override
-    public void setWorkingSolution(VehicleRoutingSolution workingSolution) {
-        List<Customer> customerList = workingSolution.getCustomerList();
-        nearbyCustomerListMap = new HashMap<Customer, Customer[]>(customerList.size());
-        for (final Customer origin : customerList) {
-            Customer[] nearbyStandstillList = new Customer[customerList.size()];
-            for (int i = 0; i < nearbyStandstillList.length; i++) {
-                nearbyStandstillList[i] = customerList.get(i);
-            }
-            Arrays.sort(nearbyStandstillList, new Comparator<Customer>() {
-                @Override
-                public int compare(Customer a, Customer b) {
-                    int aDistance = origin.getDistanceTo(a);
-                    int bDistance = origin.getDistanceTo(b);
-                    if (aDistance < bDistance) {
-                        return -1;
-                    } else if (aDistance > bDistance) {
-                        return 1;
-                    } else {
-                        return a.getLocation().getId().compareTo(b.getLocation().getId());
-                    }
-                }
-            });
-            nearbyCustomerListMap.put(origin, nearbyStandstillList);
-        }
-    }
-
-    @Override
-    public void unsetWorkingSolution() {
-        nearbyCustomerListMap = null;
-    }
-
-    @Override
-    public Customer getByNearbyIndex(Customer origin, int nearbyIndex) {
-        Customer[] nearbyStandstillList = nearbyCustomerListMap.get(origin);
-        return nearbyStandstillList[nearbyIndex];
+    public double getNearbyDistance(Customer origin, Customer destination) {
+        return origin.getDistanceTo(destination);
     }
 
 }

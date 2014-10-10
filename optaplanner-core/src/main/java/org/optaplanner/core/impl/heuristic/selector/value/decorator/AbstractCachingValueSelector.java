@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.common.collect.Iterators;
@@ -83,6 +84,14 @@ public abstract class AbstractCachingValueSelector extends AbstractValueSelector
 
     public long getSize() {
         return cachedValueList.size();
+    }
+
+    public Iterator<Object> endingIterator(Object entity) {
+        return endingIterator();
+    }
+
+    public Iterator<Object> endingIterator() {
+        return cachedValueList.iterator();
     }
 
 }

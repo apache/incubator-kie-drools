@@ -113,6 +113,10 @@ public class EntityDependentSortingValueSelector extends AbstractValueSelector {
         return cachedValueList.iterator();
     }
 
+    public Iterator<Object> endingIterator(Object entity) {
+        return iterator(entity);
+    }
+
     @Override
     public String toString() {
         return "Sorting(" + childValueSelector + ")";

@@ -16,7 +16,11 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.nearby;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
@@ -36,6 +40,8 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
     protected final NearbyRandom nearbyRandom;
     protected final boolean randomSelection;
     protected final boolean discardNearbyIndexZero = true;// TODO deactivate me when appropriate
+
+    protected Map<Object, Object[]> originToDestinationsMap = null;
 
     public NearEntityNearbyValueSelector(ValueSelector childValueSelector, EntitySelector originEntitySelector,
             NearEntityNearbyMethod nearEntityNearbyMethod, NearbyRandom nearbyRandom, boolean randomSelection) {
@@ -64,18 +70,50 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
 
     @Override
     public void phaseStarted(AbstractPhaseScope phaseScope) {
+        // Cannot be done during solverStarted because
         super.phaseStarted(phaseScope);
-        if (nearEntityNearbyMethod instanceof WorkingSolutionAware) {
-            ((WorkingSolutionAware) nearEntityNearbyMethod).setWorkingSolution(phaseScope.getWorkingSolution());
+        long originSize = originEntitySelector.getSize();
+        if (originSize > (long) Integer.MAX_VALUE) {
+            throw new IllegalStateException("The originEntitySelector (" + originEntitySelector
+                    + ") has an entitySize (" + originSize
+                    + ") which is higher than Integer.MAX_VALUE.");
+        }
+        originToDestinationsMap = new HashMap<Object, Object[]>((int) originSize);
+        for (Iterator originIt = originEntitySelector.endingIterator(); originIt.hasNext(); ) {
+            final Object origin =  originIt.next();
+            long childSize = childValueSelector.getSize(origin);
+            if (childSize > (long) Integer.MAX_VALUE) {
+                throw new IllegalStateException("The childEntitySelector (" + childValueSelector
+                        + ") has an entitySize (" + childSize
+                        + ") which is higher than Integer.MAX_VALUE.");
+            }
+            Object[] destinations = new Object[(int) childSize];
+            int i = 0;
+            for (Iterator childIt = childValueSelector.endingIterator(origin); childIt.hasNext(); i++) {
+                destinations[i] = childIt.next();
+            }
+            Arrays.sort(destinations, new Comparator<Object>() {
+                @Override
+                public int compare(Object a, Object b) {
+                    double aDistance = nearEntityNearbyMethod.getNearbyDistance(origin, a);
+                    double bDistance = nearEntityNearbyMethod.getNearbyDistance(origin, b);
+                    if (aDistance < bDistance) {
+                        return -1;
+                    } else if (aDistance > bDistance) {
+                        return 1;
+                    } else {
+                        return 0; // Keep endingIterator order
+                    }
+                }
+            });
+            originToDestinationsMap.put(origin, destinations);
         }
     }
 
     @Override
     public void phaseEnded(AbstractPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
-        if (nearEntityNearbyMethod instanceof WorkingSolutionAware) {
-            ((WorkingSolutionAware) nearEntityNearbyMethod).unsetWorkingSolution();
-        }
+        originToDestinationsMap = null;
     }
 
     // ************************************************************************
@@ -104,6 +142,12 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
         }
     }
 
+    public Iterator<Object> endingIterator(Object entity) {
+        // TODO It should probably use nearby order
+        // It must include the origin entity too
+        return childValueSelector.endingIterator(entity);
+    }
+
     private class OriginalEntityNearbyValueIterator extends SelectionIterator<Object> {
 
         private final Iterator<Object> originEntityIterator;
@@ -124,8 +168,8 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
         @Override
         public Object next() {
             Object origin = originEntityIterator.next();
-            // TODO if origin != entity, it doesn't know from which entity value range it can pick
-            Object next = nearEntityNearbyMethod.getByNearbyIndex(origin, nextNearbyIndex);
+            Object[] destinations = originToDestinationsMap.get(origin);
+            Object next = destinations[nextNearbyIndex];
             nextNearbyIndex++;
             return next;
         }
@@ -159,7 +203,8 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
             if (discardNearbyIndexZero) {
                 nearbyIndex++;
             }
-            return nearEntityNearbyMethod.getByNearbyIndex(origin, nearbyIndex);
+            Object[] destinations = originToDestinationsMap.get(origin);
+            return destinations[nearbyIndex];
         }
 
     }

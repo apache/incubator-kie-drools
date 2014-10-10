@@ -38,9 +38,6 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionPr
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.BetaDistributionNearbyRandom;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearEntityNearbyMethod;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.FromEntityPropertyValueSelector;
@@ -55,7 +52,6 @@ import org.optaplanner.core.impl.heuristic.selector.value.decorator.Reinitialize
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.SelectedCountLimitValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ShufflingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.SortingValueSelector;
-import org.optaplanner.core.impl.heuristic.selector.value.nearby.NearEntityNearbyValueSelector;
 
 @XStreamAlias("valueSelector")
 public class ValueSelectorConfig extends SelectorConfig {

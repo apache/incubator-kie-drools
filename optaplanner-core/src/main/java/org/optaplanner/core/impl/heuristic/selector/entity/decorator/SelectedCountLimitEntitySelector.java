@@ -65,6 +65,20 @@ public class SelectedCountLimitEntitySelector extends AbstractEntitySelector {
         return new SelectedCountLimitEntityIterator(childEntitySelector.iterator());
     }
 
+    public ListIterator<Object> listIterator() {
+        // TODO Not yet implemented
+        throw new UnsupportedOperationException();
+    }
+
+    public ListIterator<Object> listIterator(int index) {
+        // TODO Not yet implemented
+        throw new UnsupportedOperationException();
+    }
+
+    public Iterator<Object> endingIterator() {
+        return new SelectedCountLimitEntityIterator(childEntitySelector.endingIterator());
+    }
+
     private class SelectedCountLimitEntityIterator extends SelectionIterator<Object> {
 
         private final Iterator<Object> childEntityIterator;
@@ -89,20 +103,6 @@ public class SelectedCountLimitEntitySelector extends AbstractEntitySelector {
             return childEntityIterator.next();
         }
 
-    }
-
-    public ListIterator<Object> listIterator() {
-        // TODO Not yet implemented
-        throw new UnsupportedOperationException();
-    }
-
-    public ListIterator<Object> listIterator(int index) {
-        // TODO Not yet implemented
-        throw new UnsupportedOperationException();
-    }
-
-    public Iterator<Object> endingIterator() {
-        return new SelectedCountLimitEntityIterator(childEntitySelector.endingIterator());
     }
 
     @Override

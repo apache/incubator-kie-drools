@@ -138,6 +138,14 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
         }
     }
 
+    public Iterator<Object> endingIterator(Object entity) {
+       return endingIterator();
+    }
+
+    public Iterator<Object> endingIterator() {
+        return ((CountableValueRange<Object>) cachedValueRange).createOriginalIterator();
+    }
+
     private void checkCachedEntityListIsDirty() {
         if (cachedEntityListIsDirty) {
             throw new IllegalStateException("The selector (" + this + ") with minimumCacheType (" + minimumCacheType

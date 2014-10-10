@@ -83,6 +83,12 @@ public class FromEntityPropertyValueSelector extends AbstractValueSelector {
         }
     }
 
+    public Iterator<Object> endingIterator(Object entity) {
+        ValueRange<Object> valueRange = (ValueRange<Object>)
+                valueRangeDescriptor.extractValueRange(workingSolution, entity);
+        return ((CountableValueRange<Object>) valueRange).createOriginalIterator();
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + getVariableDescriptor().getVariableName() + ")";

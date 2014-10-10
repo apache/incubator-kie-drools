@@ -69,6 +69,10 @@ public class InitializedValueSelector extends AbstractValueSelector {
         return new JustInTimeInitializedValueIterator(entity, childValueSelector.iterator(entity));
     }
 
+    public Iterator<Object> endingIterator(Object entity) {
+        return new JustInTimeInitializedValueIterator(entity, childValueSelector.endingIterator(entity));
+    }
+
     private class JustInTimeInitializedValueIterator extends UpcomingSelectionIterator<Object> {
 
         private final Object entity;

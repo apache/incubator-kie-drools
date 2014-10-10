@@ -87,6 +87,13 @@ public class ReinitializeVariableValueSelector extends AbstractValueSelector {
         return childValueSelector.iterator(entity);
     }
 
+    public Iterator<Object> endingIterator(Object entity) {
+        if (!reinitializeVariableEntityFilter.accept(scoreDirector, entity)) {
+            return Iterators.emptyIterator();
+        }
+        return childValueSelector.endingIterator(entity);
+    }
+
     @Override
     public String toString() {
         return "Reinitialize(" + childValueSelector + ")";
