@@ -120,7 +120,7 @@ public class NearbySelectionConfig extends SelectorConfig {
         NearEntityNearbyMethod nearEntityNearbyMethod = ConfigUtils.newInstance(this,
                 "nearEntityNearbyMethodClass", nearEntityNearbyMethodClass);
         // TODO Check nearEntityNearbyMethodClass.getGenericInterfaces() to confirm generic type S is an entityClass
-        NearbyRandom nearbyRandom = new BetaDistributionNearbyRandom(1.0, 5.0);
+        NearbyRandom nearbyRandom = buildNearbyRandom();
         return new NearEntityNearbyEntitySelector(entitySelector, originEntitySelector,
                 nearEntityNearbyMethod, nearbyRandom, randomSelection);
     }
