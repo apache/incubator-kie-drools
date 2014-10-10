@@ -44,7 +44,7 @@ public class Aether {
     private RemoteRepository localRepository;
 
     private Aether(String localRepoDir, boolean offline) {
-        this(loadMavenProject(), localRepoDir, offline);
+        this(loadMavenProject(offline), localRepoDir, offline);
     }
 
     Aether(MavenProject mavenProject) {
@@ -98,6 +98,7 @@ public class Aether {
         LocalRepository localRepo = new LocalRepository( localRepoDir );
         DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
         session.setLocalRepositoryManager( system.newLocalRepositoryManager( session, localRepo ) );
+        session.setOffline(offline);
         return session;
     }
 
