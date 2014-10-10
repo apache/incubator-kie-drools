@@ -77,7 +77,7 @@ public abstract class AbstractXStreamConverter implements Converter {
             for (Map.Entry<String, String> entry : map.entrySet()) {
                 writer.startNode("property");
                 writer.addAttribute("key", entry.getKey());
-                writer.setValue(entry.getValue());
+                writer.addAttribute("value", entry.getValue());
                 writer.endNode();
             }
             writer.endNode();
@@ -120,7 +120,7 @@ public abstract class AbstractXStreamConverter implements Converter {
         Map<String, String> map = new HashMap<String, String>();
         while (reader.hasMoreChildren()) {
             reader.moveDown();
-            map.put(reader.getAttribute("key"), reader.getValue());
+            map.put(reader.getAttribute("key"), reader.getAttribute("value"));
             reader.moveUp();
         }
         return map;
