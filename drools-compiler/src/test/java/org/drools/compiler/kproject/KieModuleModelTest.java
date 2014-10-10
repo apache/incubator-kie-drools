@@ -17,14 +17,12 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.drools.compiler.kproject.models.KieModuleModelImpl.fromXML;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class KieModuleModelTest {
 
@@ -33,7 +31,8 @@ public class KieModuleModelTest {
         KieServices ks = KieServices.Factory.get();
 
         KieModuleModel kproj = ks.newKieModuleModel()
-                                 .setConfigurationProperty(LanguageLevelOption.PROPERTY_NAME, LanguageLevelOption.DRL6_STRICT.toString());
+                                 .setConfigurationProperty(LanguageLevelOption.PROPERTY_NAME, LanguageLevelOption.DRL6_STRICT.toString())
+                                 .setConfigurationProperty(PropertySpecificOption.PROPERTY_NAME, PropertySpecificOption.ALWAYS.toString());
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
                 .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
@@ -80,6 +79,7 @@ public class KieModuleModelTest {
         KieModuleModel kprojXml = fromXML(xml);
 
         assertEquals(LanguageLevelOption.DRL6_STRICT.toString(), kprojXml.getConfigurationProperty(LanguageLevelOption.PROPERTY_NAME));
+        assertEquals(PropertySpecificOption.ALWAYS.toString(), kprojXml.getConfigurationProperty(PropertySpecificOption.PROPERTY_NAME));
 
         KieBaseModel kieBaseModelXML = kprojXml.getKieBaseModels().get("KBase1");
         assertSame(kprojXml, ((KieBaseModelImpl)kieBaseModelXML).getKModule());
