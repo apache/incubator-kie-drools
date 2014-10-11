@@ -47,9 +47,6 @@ public interface InternalWorkingMemoryActions
                                  RuleImpl rule,
                                  Activation activation);
 
-    public FactHandle insertLogical(Object object,
-                                               boolean dynamic);
-
     void updateTraits( InternalFactHandle h, BitMask mask, Class<?> modifiedClass, Activation activation );
 
     <T, K, X extends TraitableBean> Thing<K> shed( Activation activation, TraitableBean<K,X> core, Class<T> trait );

@@ -58,6 +58,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.logger.KnowledgeRuntimeLogger;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 
 public class TruthMaintenanceTest extends CommonTestMethodBase {
@@ -1472,6 +1473,54 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             assertEquals( EqualityKey.JUSTIFIED, ifh.getEqualityKey().getStatus() );
         }
 
+    }
+
+    @Test
+    public void testLogicalAndStatedWithModifyAndDelete() {
+        String drl = "package org.drools.test; " +
+
+                     " declare Feat1 " +
+                     "   context : String @key " +
+                     "   value : double @key " +
+                     "   missing : boolean  = false " +
+                     " end " +
+
+                     "rule R1 " +
+                     "when " +
+                     "    not Feat1( context == null ) " +
+                     "then " +
+                     "    insertLogical( new Feat1( \"Test\", 0.0, true ) ); " +
+                     "end " +
+
+                     "rule R2 " +
+                     "when " +
+                     "     $x : Feat1( $m : missing == true, context == \"Test\" ) " +
+                     "then " +
+                     "    modify ( $x ) { " +
+                     "        setValue( 3.95 ), " +
+                     "        setMissing( false ); " +
+                     "    } " +
+                     "end " +
+
+                     "rule R3 " +
+                     "when " +
+                     "    $old: Feat1( value != 4.33 ) " +
+                     "then " +
+                     "    retract( $old ); " +
+                     "end " +
+
+                     "rule R4 " +
+                     "when " +
+                     "    not Feat1(  context == null ) " +
+                     "then " +
+                     "    insert( new Feat1( null, 4.33 ) ); " +
+                     "end ";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession kieSession = helper.build(  ).newKieSession();
+
+        kieSession.fireAllRules();
     }
 }
 

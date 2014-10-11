@@ -65,6 +65,16 @@ public class ReteSimpleBeliefSystem
         beliefSet.add( node.getMode() );
     }
 
+    @Override
+    public void stage( PropagationContext context, BeliefSet<SimpleMode> beliefSet ) {
+        
+    }
+
+    @Override
+    public void unstage( PropagationContext context, BeliefSet<SimpleMode> beliefSet ) {
+
+    }
+
     public void delete(LogicalDependency<SimpleMode> node,
                        BeliefSet<SimpleMode> beliefSet,
                        PropagationContext context) {

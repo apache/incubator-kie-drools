@@ -438,6 +438,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
                                                                                                      this.activation.getRule(),
                                                                                                      this.activation);
         }
+
         // after removing the stated, it could still be justified
         if ( key != null && key.getStatus() == EqualityKey.JUSTIFIED ) {
             InternalFactHandle ifh = key.getLogicalFactHandle();

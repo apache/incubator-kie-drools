@@ -23,7 +23,9 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
+import org.drools.core.test.model.MockActivation;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
 
@@ -66,7 +68,7 @@ public class LazyTMSEnablingTest {
 
         final String fact2 = "logical";
 
-        ksession.insertLogical(fact2);
+        ksession.getTruthMaintenanceSystem().insert( fact2, null, null, new MockActivation() );
 
         assertEquals(
                 "Now that a logical insert was done, it should have an element.",
@@ -112,7 +114,7 @@ public class LazyTMSEnablingTest {
 
         }
 
-        ksession.insertLogical(stringFact2);
+        ksession.getTruthMaintenanceSystem().insert( stringFact2, null, null, new MockActivation() );
 
         assertTrue("Should have enabled TMS for Strings.", stringTypeConf
                 .isTMSEnabled());
@@ -120,7 +122,7 @@ public class LazyTMSEnablingTest {
         assertFalse("Shouldn't have enabled TMS for Integers.", intTypeConf
                 .isTMSEnabled());
 
-        ksession.insertLogical(intFact2);
+        ksession.getTruthMaintenanceSystem().insert( intFact2, null, null, new MockActivation() );
 
         assertTrue("Now it should have enabled TMS for Integers!.", intTypeConf
                 .isTMSEnabled());
