@@ -43,7 +43,6 @@ public class JTMSMode<M extends JTMSMode<M>> extends AbstractBaseLinkedListNode<
         this.dep = dep;
     }
 
-    @Override
     public Mode getNextMode() {
         return nextMode;
     }

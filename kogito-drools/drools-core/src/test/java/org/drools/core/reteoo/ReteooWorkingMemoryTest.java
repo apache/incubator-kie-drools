@@ -16,6 +16,8 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.test.model.MockActivation;
+import org.junit.Ignore;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.common.EqualityKey;
@@ -61,33 +63,32 @@ public class ReteooWorkingMemoryTest {
         final TruthMaintenanceSystem tms = ((NamedEntryPoint)ksession.getWorkingMemoryEntryPoint(EntryPointId.DEFAULT.getEntryPointId()) ).getTruthMaintenanceSystem();
         final String string = "test";
 
-        ksession.insert( string );
+        FactHandle fd = ksession.insert( string );
 
-        FactHandle fd = ksession.insertLogical(string);
+        FactHandle fz = ksession.getTruthMaintenanceSystem().insert( string, null, null, new MockActivation() );
 
         assertEquals( 1,
                       tms.getEqualityKeyMap().size() );
 
         EqualityKey key = tms.get( string );
-        assertSame( fd,
+        assertSame( fz,
                     key.getFactHandle() );
-        assertEquals( 1, key.size() );
+        assertEquals( 2, key.size() );
 
         ksession.update( fd, string );
 
         assertEquals( 1,
                       tms.getEqualityKeyMap().size() );
         key = tms.get( string );
-        assertSame( fd,
+        assertSame( fz,
                     key.getFactHandle() );
-        assertEquals( 1, key.size() );
+        assertEquals( 2, key.size() );
 
         ksession.retract( fd );
 
-        assertEquals( 0,
+        assertEquals( 1,
                       tms.getEqualityKeyMap().size() );
         key = tms.get( string );
-        assertNull( key );
 
         fd = ksession.insert( string );
 

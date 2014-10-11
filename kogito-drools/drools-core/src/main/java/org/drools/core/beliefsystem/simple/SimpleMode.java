@@ -35,7 +35,6 @@ public class SimpleMode extends LinkedListEntry<SimpleMode, LogicalDependency<Si
 
     }
 
-    @Override
     public Mode getNextMode() {
         return null;
     }

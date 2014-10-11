@@ -22,8 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -32,10 +30,8 @@ import org.drools.core.base.TraitHelper;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.TraitProxy;
-import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
@@ -508,21 +504,7 @@ public class NamedEntryPoint
 
 
             if ( handle.isTraitable() ) {
-                TraitableBean traitableBean = (TraitableBean) handle.getObject();
-                if( traitableBean.hasTraits() ){
-                    PriorityQueue<TraitProxy> removedTypes =
-                            new PriorityQueue<TraitProxy>( traitableBean._getTraitMap().values().size() );
-                    removedTypes.addAll( traitableBean._getTraitMap().values() );
-
-                    while ( ! removedTypes.isEmpty() ) {
-                        TraitProxy proxy = removedTypes.poll();
-                        if ( ! proxy.isVirtual() ) {
-                            delete( getFactHandle( proxy ),
-                                    rule,
-                                    activation );
-                        }
-                    }
-                }
+                traitHelper.deleteWMAssertedTraitProxies( handle, rule, activation );
             }
 
             if ( handle.getEntryPoint() != this ) {
@@ -576,9 +558,9 @@ public class NamedEntryPoint
     }
 
     public PropagationContext delete(InternalFactHandle handle, Object object, ObjectTypeConf typeConf, RuleImpl rule, Activation activation) {
-        final PropagationContext propagationContext = pctxFactory.createPropagationContext(this.wm.getNextPropagationIdCounter(), PropagationContext.DELETION,
-                                                                                           rule, (activation == null) ? null : activation.getTuple(),
-                                                                                           handle, this.entryPoint);
+        final PropagationContext propagationContext = pctxFactory.createPropagationContext( this.wm.getNextPropagationIdCounter(), PropagationContext.DELETION,
+                                                                                            rule, ( activation == null ) ? null : activation.getTuple(),
+                                                                                            handle, this.entryPoint );
 
         this.entryPointNode.retractObject( handle,
                                            propagationContext,
@@ -587,6 +569,8 @@ public class NamedEntryPoint
 
         if ( handle.isTraiting() && handle.getObject() instanceof TraitProxy ) {
             (( (TraitProxy) handle.getObject() ).getObject()).removeTrait( ( (TraitProxy) handle.getObject() ).getTypeCode() );
+        } else if ( handle.isTraitable() ) {
+            traitHelper.deleteWMAssertedTraitProxies( handle, rule, activation );
         }
 
         this.objectStore.removeHandle( handle );

@@ -40,7 +40,6 @@ public class BayesHardEvidence<M extends BayesHardEvidence<M>> extends AbstractB
         return distribution;
     }
 
-    @Override
     public Mode getNextMode() {
         return nextMode;
     }

@@ -1,17 +1,13 @@
 package org.drools.core.base;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
@@ -27,7 +23,6 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.metadata.Metadatable;
 import org.drools.core.metadata.Modify;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.util.HierarchyEncoder;
@@ -48,6 +43,7 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
 
@@ -614,12 +610,10 @@ public class TraitHelper implements Externalizable {
             return;
         }
         // iterate to find previous equal logical insertion
-        FactHandle handle = this.workingMemory.insert( object,
-                                                       modes,
-                                                       false,
-                                                       true,
-                                                       activation.getRule(),
-                                                       activation );
+        FactHandle handle = workingMemory.getTruthMaintenanceSystem().insert( object,
+                                                                              modes,
+                                                                              activation.getRule(),
+                                                                              activation );
 
         if ( this.identityMap != null ) {
             this.identityMap.put( object,
@@ -628,4 +622,24 @@ public class TraitHelper implements Externalizable {
 
     }
 
+    public void deleteWMAssertedTraitProxies( InternalFactHandle handle, RuleImpl rule, Activation activation ) {
+        TraitableBean traitableBean = (TraitableBean) handle.getObject();
+        if( traitableBean.hasTraits() ){
+            PriorityQueue<TraitProxy> removedTypes =
+                    new PriorityQueue<TraitProxy>( traitableBean._getTraitMap().values().size() );
+            removedTypes.addAll( traitableBean._getTraitMap().values() );
+
+            while ( ! removedTypes.isEmpty() ) {
+                TraitProxy proxy = removedTypes.poll();
+                if ( ! proxy.isVirtual() ) {
+                    InternalFactHandle proxyHandle = (InternalFactHandle) getFactHandle( proxy );
+                    if ( proxyHandle.getEqualityKey() == null || proxyHandle.getEqualityKey().getLogicalFactHandle() != proxyHandle ) {
+                        entryPoint.delete( proxyHandle,
+                                           rule,
+                                           activation );
+                    }
+                }
+            }
+        }
+    }
 }

@@ -1436,35 +1436,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                        null );
     }
 
-    /**
-     * @see org.drools.core.WorkingMemory
-     */
-    public FactHandle insertLogical(final Object object) {
-        return insert( object, // Not-Dynamic
-                       null,
-                       false,
-                       true,
-                       null,
-                       null );
-    }
-
     public FactHandle insert(final Object object,
                                              final boolean dynamic) {
         return insert( object,
                        null,
                        dynamic,
                        false,
-                       null,
-                       null );
-    }
-
-    public FactHandle insertLogical(final Object object,
-                                                    final boolean dynamic) {
-        checkAlive();
-        return insert( object,
-                       null,
-                       dynamic,
-                       true,
                        null,
                        null );
     }
@@ -1487,16 +1464,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     @Override
     public <T, K> T don( Activation activation, K core, Class<T> trait, boolean b, Mode[] modes ) {
         return this.defaultEntryPoint.getTraitHelper().don( activation, core, trait, b, modes );
-    }
-
-    public FactHandle insertLogical(final Object object,
-                                                    final Object value) {
-        return insert( object,
-                       value,
-                       false,
-                       true,
-                       null,
-                       null );
     }
 
     public FactHandle insert(final Object object,
