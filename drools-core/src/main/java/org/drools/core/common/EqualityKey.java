@@ -87,7 +87,8 @@ public class EqualityKey extends LinkedList<DefaultFactHandle>
     }
 
     public void setLogicalFactHandle(InternalFactHandle logicalFactHandle) {
-        if ( logicalFactHandle == null ) {
+        if ( logicalFactHandle == null && beliefSet != null ) {
+            // beliefSet needs to not be null, otherwise someone else has already set the LFH to null
             removeFirst();
         } else {
             addFirst((DefaultFactHandle) logicalFactHandle);

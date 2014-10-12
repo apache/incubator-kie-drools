@@ -133,7 +133,7 @@ public class TruthMaintenanceSystem {
         }
         InternalFactHandle ifh = (InternalFactHandle) fh;
         // This will clear out the logical entries for the FH. However the FH and EqualityKey remain, if it's stated
-        Object object = ifh.getObject();
+
         // Update the equality key, which maintains a list of stated FactHandles
         final EqualityKey key = ifh.getEqualityKey();
 
@@ -147,15 +147,6 @@ public class TruthMaintenanceSystem {
                                                                                                     null, null, ifh,  ep.entryPoint);
 
         TruthMaintenanceSystemHelper.removeLogicalDependencies( ifh, propagationContext );
-
-
-            key.setLogicalFactHandle( null );
-            ifh.setEqualityKey(null);
-
-        if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-            // the key is justified, therefor there are no stated and we know the key is empty and can be removed
-            remove(key);
-        }
     }
 
     public EqualityKey get(final EqualityKey key) {

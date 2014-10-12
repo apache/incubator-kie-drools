@@ -17,8 +17,6 @@ public class JTMSBeliefSetImpl<M extends JTMSMode<M>> extends LinkedList<M> impl
     private WorkingMemoryAction wmAction;
 
     private InternalFactHandle rootHandle;
-//    private InternalFactHandle positiveFactHandle;
-//    private InternalFactHandle negativeFactHandle;
 
     private int posCounter = 0;
     private int negCounter = 0;
@@ -27,22 +25,6 @@ public class JTMSBeliefSetImpl<M extends JTMSMode<M>> extends LinkedList<M> impl
         this.beliefSystem = beliefSystem;
         this.rootHandle = rootHandle;
     }
-
-//    public InternalFactHandle getPositiveFactHandle() {
-//        return positiveFactHandle;
-//    }
-//
-//    public void setPositiveFactHandle(InternalFactHandle positiveFactHandle) {
-//        this.positiveFactHandle = positiveFactHandle;
-//    }
-//
-//    public InternalFactHandle getNegativeFactHandle() {
-//        return negativeFactHandle;
-//    }
-//
-//    public void setNegativeFactHandle(InternalFactHandle negativeFactHandle) {
-//        this.negativeFactHandle = negativeFactHandle;
-//    }
 
     public void add( M node ) {
         JTMSMode mode = node;
@@ -53,7 +35,6 @@ public class JTMSBeliefSetImpl<M extends JTMSMode<M>> extends LinkedList<M> impl
             negCounter++;
         } else {
             super.addFirst( node ); // we add positied to start
-            //ld.setValue( MODE.POSITIVE.getId() ); // user may not have explicitely set MODE, so implicitely it's positive
             posCounter++;
         }
     }
@@ -150,12 +131,6 @@ public class JTMSBeliefSetImpl<M extends JTMSMode<M>> extends LinkedList<M> impl
         final LogicalDependency node = last.getLogicalDependency();
         node.getJustifier().getLogicalDependencies().remove( node );
         beliefSystem.delete( node, this, context );
-
-//        if ( context.getType() != org.kie.api.runtime.rule.PropagationContext.DELETION && context.getFactHandle() != getFactHandle() ) {
-//            // don't delete something that is already being deleted from the network, otherwise we have recursion.
-//            // This happens in tests where people manually delete FH's for a logical insertion.
-//            beliefSystem.delete( node, this, context );
-//        }
     }
     
     public void clear(PropagationContext context) { 

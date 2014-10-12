@@ -32,20 +32,11 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
     private   TruthMaintenanceSystem tms;
     protected NamedEntryPoint        ep;
 
-
-    //    protected NamedEntryPoint defEP;
-    //    protected NamedEntryPoint negEP;
-
     public JTMSBeliefSystem(NamedEntryPoint ep,
                             TruthMaintenanceSystem tms) {
         this.ep = ep;
         this.tms = tms;
-        //        initMainEntryPoints();
     }
-
-    //    private void initMainEntryPoints() {
-    //        negEP = (NamedEntryPoint) defEP.getWorkingMemoryEntryPoint(MODE.NEGATIVE.getId());
-    //    }
 
     public TruthMaintenanceSystem getTruthMaintenanceSystem() {
         return this.tms;
@@ -85,27 +76,6 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
         } else {
             processBeliefSet(node, context, jtmsBeliefSet, wasDecided,wasNegated, fh);
         }
-
-//        else if ( !wasDecided && jtmsBeliefSet.isDecided() ) {
-//            // this use case only happens for Defeasible, but cleaner to add it here
-//            ep.getObjectStore().addHandle( fh, fh.getObject() );
-//            ep.insert(jtmsBeliefSet.getFactHandle(),
-//                      node.getObject(),
-//                      node.getJustifier().getRule(),
-//                      node.getJustifier(),
-//                      typeConf,
-//                      null);
-//        } if ( wasDecided && !jtmsBeliefSet.isDecided() ) {
-//            // Handle Conflict
-//            if ( STRICT ) {
-//                throw new IllegalStateException( "FATAL : A fact and its negation have been asserted " + jtmsBeliefSet.getFactHandle().getObject() );
-//            }
-//
-//            // was decided, now is not, so must be removed from the network. Leave in EP though, we only delete from that when the set is empty
-//            ep.getEntryPointNode().retractObject( fh, context, typeConf, ep.getInternalWorkingMemory() );
-//            ep.getObjectStore().removeHandle( fh );
-//        } // else was decided and is still decided
-
     }
 
     public void read(LogicalDependency<M> node,
@@ -180,6 +150,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
             // if the beliefSet is empty, we must null the logical handle
             EqualityKey key = fh.getEqualityKey();
             key.setLogicalFactHandle( null );
+            key.setBeliefSet(null);
 
             if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
                 // if it's stated, there will be other handles, so leave it in the TMS
