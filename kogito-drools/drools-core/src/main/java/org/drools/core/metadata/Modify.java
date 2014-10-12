@@ -1,6 +1,7 @@
 package org.drools.core.metadata;
 
 import org.drools.core.metadata.Metadatable;
+import org.drools.core.util.bitmask.BitMask;
 
 public interface Modify<T extends Metadatable> extends WorkingMemoryTask<T> {
 
@@ -8,7 +9,7 @@ public interface Modify<T extends Metadatable> extends WorkingMemoryTask<T> {
 
     public T call( T o );
 
-    public long getModificationMask();
+    public BitMask getModificationMask();
 
     public Class getModificationClass();
 

@@ -129,9 +129,9 @@ public class SimpleBeliefSystem
                                                   BeliefSet beliefSet,
                                                   Object object,
                                                   Object value) {
-        SimpleMode mpde = new SimpleMode();
-        SimpleLogicalDependency dep =  new SimpleLogicalDependency( activation, beliefSet, object, mpde );
-        mpde.setObject( dep );
+        SimpleMode mode = new SimpleMode();
+        SimpleLogicalDependency dep =  new SimpleLogicalDependency( activation, beliefSet, object, mode );
+        mode.setObject( dep );
         return dep;
     }
 

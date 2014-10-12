@@ -1,15 +1,19 @@
 package org.drools.core.metadata;
 
 import org.drools.core.util.BitMaskUtil;
+import org.drools.core.util.bitmask.BitMask;
 
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
+
 public abstract class ModifyLiteral<T extends Metadatable> extends AbstractWMTask<T> implements Modify<T> {
     private T target;
     private ModifyTaskLiteral<T,?,?> task;
-    private long modificationMask;
+    private BitMask modificationMask;
     private URI key;
     private Object[] with;
 
@@ -79,7 +83,7 @@ public abstract class ModifyLiteral<T extends Metadatable> extends AbstractWMTas
         return target;
     }
 
-    public long getModificationMask() {
+    public BitMask getModificationMask() {
         return modificationMask;
     }
 
@@ -155,9 +159,9 @@ public abstract class ModifyLiteral<T extends Metadatable> extends AbstractWMTas
             }
         }
 
-        public long getModificationMask() {
-            long downstreamMask = nextTask != null ? nextTask.getModificationMask() : 0;
-            return BitMaskUtil.set( downstreamMask, getMetaClassInfo().getPropertyIndex( propertyLiteral ) );
+        public BitMask getModificationMask() {
+            BitMask downstreamMask = nextTask != null ? nextTask.getModificationMask() : getEmptyPropertyReactiveMask( getMetaClassInfo().getProperties().length );
+            return setPropertyOnMask( downstreamMask, getMetaClassInfo().getPropertyIndex( propertyLiteral ) );
         }
 
         @Override

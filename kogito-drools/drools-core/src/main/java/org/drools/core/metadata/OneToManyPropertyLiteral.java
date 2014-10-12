@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 public abstract class OneToManyPropertyLiteral<T,R>
-        extends ToManyPropertyLiteral<T,R,List<R>>
+        extends ToManyPropertyLiteral<T,R>
         implements OneToManyValuedMetaProperty<T,R,List<R>> {
 
     public OneToManyPropertyLiteral( int index, Class<T> klass, String name ) {

@@ -164,7 +164,7 @@ public class Klass_<T extends Klass> extends MetadataContainer<T> {
                     public void set( Klass o, String value ) { o.setProp( value ); }
                 };
 
-        public static final OneToOneValuedMetaProperty<Klass,AnotherKlass> another =
+        public static final OneValuedMetaProperty<Klass,AnotherKlass> another =
                 new OneToOnePropertyLiteral<Klass, AnotherKlass>( 1, "another", URI.create( "http://www.test.org#Klass?another" ) ) {
                     public AnotherKlass get( Klass o ) { return o.getAnother(); }
                     public void set( Klass o, AnotherKlass value ) { o.setAnother( value ); }
@@ -175,7 +175,7 @@ public class Klass_<T extends Klass> extends MetadataContainer<T> {
                     }
                 };
 
-        public static final ManyToOneValuedMetaProperty<Klass,AnotherKlass,List<Klass>> oneAnother =
+        public static final OneValuedMetaProperty<Klass,AnotherKlass> oneAnother =
                 new ManyToOnePropertyLiteral<Klass,AnotherKlass>( 2, "oneAnother", URI.create( "http://www.test.org#Klass?oneAnother" ) ) {
                     public AnotherKlass get( Klass o ) { return o.getOneAnother(); }
                     public void set( Klass o, AnotherKlass value ) { o.setOneAnother( value ); }

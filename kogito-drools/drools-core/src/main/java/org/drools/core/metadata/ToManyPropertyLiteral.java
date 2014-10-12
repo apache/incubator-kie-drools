@@ -4,9 +4,9 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class ToManyPropertyLiteral<T,R,C extends List<R>>
-        extends PropertyLiteral<T,R,C>
-        implements ManyValuedMetaProperty<T,R,C> {
+public abstract class ToManyPropertyLiteral<T,R>
+        extends PropertyLiteral<T,R,List<R>>
+        implements ManyValuedMetaProperty<T,R,List<R>> {
 
     public ToManyPropertyLiteral( int index, Class<T> klass, String name ) {
         super( index, klass, name );
@@ -19,7 +19,7 @@ public abstract class ToManyPropertyLiteral<T,R,C extends List<R>>
     public abstract void set( T o, List<R> values );
 
     @Override
-    public void set( T o, C values, Lit mode ) {
+    public void set( T o, List<R> values, Lit mode ) {
         switch ( mode ) {
             case SET:
                 set( o, values );
@@ -54,12 +54,12 @@ public abstract class ToManyPropertyLiteral<T,R,C extends List<R>>
     }
 
     @Override
-    public OneValuedMetaProperty<T,C> asFunctionalProperty() {
-        return (OneValuedMetaProperty<T,C>) this;
+    public OneValuedMetaProperty<T,List<R>> asFunctionalProperty() {
+        return (OneValuedMetaProperty<T,List<R>>) this;
     }
 
     @Override
-    public ManyValuedMetaProperty<T,R,C> asManyValuedProperty() {
+    public ManyValuedMetaProperty<T,R,List<R>> asManyValuedProperty() {
         return this;
     }
 }

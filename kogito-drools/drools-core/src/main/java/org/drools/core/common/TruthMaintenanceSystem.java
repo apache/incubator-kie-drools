@@ -147,6 +147,7 @@ public class TruthMaintenanceSystem {
                                                                                                     null, null, ifh,  ep.entryPoint);
 
         TruthMaintenanceSystemHelper.removeLogicalDependencies( ifh, propagationContext );
+
     }
 
     public EqualityKey get(final EqualityKey key) {

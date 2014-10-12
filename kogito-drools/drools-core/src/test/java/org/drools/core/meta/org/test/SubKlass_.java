@@ -152,7 +152,7 @@ public class SubKlass_<T extends SubKlass> extends Klass_<T>  {
                 };
 
         public static final ManyValuedMetaProperty<SubKlass,AnotherKlass,List<AnotherKlass>> links =
-                new ToManyPropertyLiteral<SubKlass,AnotherKlass,List<AnotherKlass>>( 3, "links", URI.create( "http://www.test.org#SubKlass?links" ) ) {
+                new ToManyPropertyLiteral<SubKlass,AnotherKlass>( 3, "links", URI.create( "http://www.test.org#SubKlass?links" ) ) {
                     public List<AnotherKlass> get( SubKlass o ) { return o.getLinks(); }
                     public void set( SubKlass o, List<AnotherKlass> value ) { o.setLinks( value ); }
                 };
