@@ -377,49 +377,54 @@ public class NamedEntryPoint
             if ( typeConf.isTMSEnabled() ) {
                 EqualityKey newKey = tms.get( object );
                 EqualityKey oldKey = handle.getEqualityKey();
+
+                if ( oldKey.getStatus() == EqualityKey.JUSTIFIED || oldKey.getBeliefSet() != null ) {
+                    // Mixed stated and justified, we cannot have updates untill we figure out how to use this.
+                    throw new IllegalStateException("Currently we cannot modify something that has mixed stated and justified equal objects" );
+                }
+
                 if ( newKey == null ) {
                     oldKey.removeFactHandle( handle );
-                    // If the equality key is now empty, and no justified entries, so remove it
-                    if ( oldKey.isEmpty() && oldKey.getLogicalFactHandle() == null  ) {
-                        getTruthMaintenanceSystem().remove( oldKey );
-                    }                    
-                    
                     newKey = new EqualityKey( handle,
                                               EqualityKey.STATED ); // updates are always stated
                     handle.setEqualityKey( newKey );
                     getTruthMaintenanceSystem().put( newKey );
+
+
                 } else if ( newKey != oldKey ) {
                     oldKey.removeFactHandle( handle );
-                    // If the equality key is now empty, then remove it
-                    if ( oldKey.isEmpty() && oldKey.getLogicalFactHandle() == null ) {
-                        getTruthMaintenanceSystem().remove( oldKey );
-                    }  
-                    
-                    if ( newKey.getStatus() == EqualityKey.JUSTIFIED ) {
-                        final InternalFactHandle justifiedHandle = newKey.getFactHandle();
+                    handle.setEqualityKey( newKey );
+                    newKey.addFactHandle( handle );
 
-                        // The justified set needs to be staged, before we can continue with the stated as an insert
-                        // it's an insert, instead of an update, as we had to unstage the logical
-                        BeliefSet bs = justifiedHandle.getEqualityKey().getBeliefSet();
-                        bs.getBeliefSystem().stage( propagationContext, bs );
+//
+//                    if ( newKey.getStatus() == EqualityKey.JUSTIFIED ) {
+//                        final InternalFactHandle justifiedHandle = newKey.getFactHandle();
+//
+//                        // The justified set needs to be staged, before we can continue with the stated as an insert
+//                        // it's an insert, instead of an update, as we had to unstage the logical
+//                        BeliefSet bs = justifiedHandle.getEqualityKey().getBeliefSet();
+//                        bs.getBeliefSystem().stage( propagationContext, bs );
+//
+//                        // new target key is JUSTIFIED, updates are always STATED
+//                        newKey.setStatus( EqualityKey.STATED );
+//                        newKey.addFactHandle( handle );
+//
+//                        propagationContext.setFactHandle(handle);
+//
+//                        insert( handle,
+//                                object,
+//                                rule,
+//                                activation,
+//                                typeConf,
+//                                propagationContext );
+//
+//                        return handle;
+//                    }
+                }
 
-                        // new target key is JUSTIFIED, updates are always STATED
-                        newKey.setStatus( EqualityKey.STATED );
-                        newKey.addFactHandle( handle );
-
-                        propagationContext.setFactHandle(handle);
-
-                        insert( handle,
-                                object,
-                                rule,
-                                activation,
-                                typeConf,
-                                propagationContext );
-
-                        return handle;
-                    }
-                    // the caller needs the new handle
-                    handle = newKey.getFactHandle();
+                // If the old equality key is now empty, and no justified entries, remove it
+                if ( oldKey.isEmpty() && oldKey.getLogicalFactHandle() == null  ) {
+                    getTruthMaintenanceSystem().remove( oldKey );
                 }
             }
 

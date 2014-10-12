@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 public abstract class ManyToManyPropertyLiteral<T,R>
-        extends ToManyPropertyLiteral<T,R,List<R>>
+        extends ToManyPropertyLiteral<T,R>
         implements ManyToManyValuedMetaProperty<T,R,List<R>,List<T>> {
 
     public ManyToManyPropertyLiteral( int index, Class<T> klass, String name ) {
