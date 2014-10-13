@@ -33,10 +33,18 @@ when
     $flag : Boolean() from entry-point "enable_@{name}"
     $mark : ModelMarker( modelName == "@{name}", enabled != $flag )
 then
-    retract( $flag );
+    delete( $flag );
     modify ( $mark ) {
         setEnabled( $flag );
     }
+end
+
+rule "Cleanup data_@{name}"
+when
+    $mark : ModelMarker( modelName == "@{name}", enabled == false )
+    $data : DataField( context == "@{name}" )
+then
+    delete( $data );
 end
 
 @end{}

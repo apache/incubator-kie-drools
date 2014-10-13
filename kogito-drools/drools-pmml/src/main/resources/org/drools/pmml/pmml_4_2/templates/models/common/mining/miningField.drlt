@@ -57,6 +57,16 @@ then
     insertLogical( input );
 end
 
+rule "RemoveMissing_@{model}_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience 1000
+when
+    $val : @{name}( context == "@{model}", missing == false )
+    $mis : @{name}( context == "@{model}", missing == true )
+then
+    delete( $mis );
+end
+
 @end{}
 
 

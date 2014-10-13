@@ -70,7 +70,7 @@ then
     @code{ String pn; }
     @foreach{ param : params }
         @code{ pn = compactUpperCase( name ) + "_" + compactUpperCase( param.name ); }
-        @{ pn } _@{pn} = new @{pn}( @{ param.name }, $ctx, 1.0 );
+        @{ pn } _@{pn} = new @{pn}( @{ param.name }, $ctx, false, 1.0 );
         _@{pn}.setValid( true );
         insert( _@{pn} );
     @end{}

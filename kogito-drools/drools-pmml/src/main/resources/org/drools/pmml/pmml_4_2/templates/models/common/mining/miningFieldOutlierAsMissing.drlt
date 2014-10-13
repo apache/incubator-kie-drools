@@ -39,11 +39,11 @@ when
                @if{ upp != null } value > @{upp} @end{}
                 )
 then
-    modify ( $x ) {
-        setValue( null ),
-        setMissing( true ),
-        setValid( false );
-    }
+    delete( $x );
+        $x.setValue( null );
+        $x.setMissing( true );
+        $x.setValid( false );
+    insert( $x );
 end
 @end{}
 
