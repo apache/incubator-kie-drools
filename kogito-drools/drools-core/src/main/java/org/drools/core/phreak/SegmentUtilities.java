@@ -292,11 +292,11 @@ public class SegmentUtilities {
 
             RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemory(riaNode);
             bm.setRiaRuleMemory(riaMem.getRiaPathMemory());
-            if (updateNodeBit && canBeDisabled(tupleSource) && riaMem.getRiaPathMemory().getAllLinkedMaskTest() > 0) {
+            if (updateNodeBit && canBeDisabled(betaNode) && riaMem.getRiaPathMemory().getAllLinkedMaskTest() > 0) {
                 // only ria's with reactive subnetworks can be disabled and thus need checking
                 allLinkedTestMask = allLinkedTestMask | nodePosMask;
             }
-        } else if (updateNodeBit && canBeDisabled(tupleSource)) {
+        } else if (updateNodeBit && canBeDisabled(betaNode)) {
             allLinkedTestMask = allLinkedTestMask | nodePosMask;
 
         }
@@ -308,10 +308,10 @@ public class SegmentUtilities {
         return allLinkedTestMask;
     }
 
-    private static boolean canBeDisabled(LeftTupleSource tupleSource) {
+    private static boolean canBeDisabled(BetaNode betaNode) {
         // non empty not nodes and accumulates can never be disabled and thus don't need checking
-        return (!(NodeTypeEnums.NotNode == tupleSource.getType() && !((NotNode) tupleSource).isEmptyBetaConstraints()) &&
-                NodeTypeEnums.AccumulateNode != tupleSource.getType());
+        return (!(NodeTypeEnums.NotNode == betaNode.getType() && !((NotNode) betaNode).isEmptyBetaConstraints()) &&
+                NodeTypeEnums.AccumulateNode != betaNode.getType() && !betaNode.isRightInputPassive());
     }
 
     public static void createChildSegments(final InternalWorkingMemory wm,

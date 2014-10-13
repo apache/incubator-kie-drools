@@ -1,6 +1,5 @@
 package org.drools.compiler.integrationtests;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -9,9 +8,10 @@ import org.kie.internal.utils.KieHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-@Ignore
 public class PassivePatternTest {
 
     @Test
@@ -44,7 +44,8 @@ public class PassivePatternTest {
 
         ksession.insert(2);
         ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals(2, (int)list.get(0));
+        assertEquals(2, list.size());
+        assertTrue(list.containsAll(asList(1, 2)));
     }
+
 }
