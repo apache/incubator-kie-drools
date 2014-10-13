@@ -16,11 +16,7 @@
 
 package org.drools.core.factmodel.traits;
 
-import org.drools.core.metadata.Identifiable;
-import org.drools.core.metadata.MetadataContainer;
-
 import java.io.Serializable;
-import java.net.URI;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
