@@ -1,3 +1,10 @@
+dn: dc=jbpm,dc=org
+objectclass: top
+objectclass: dcObject
+objectclass: organization
+dc: jbpm
+o: jBPM
+
 dn: ou=People,dc=jbpm,dc=org
 objectclass: top
 objectclass: organizationalUnit
