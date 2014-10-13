@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.jbpm</groupId>
     <artifactId>jbpm-services-ejb</artifactId>
-    <version>6.2.0-SNAPSHOT</version>
+    <version>6.3.0-SNAPSHOT</version>
   </parent>
   <artifactId>jbpm-services-ejb-impl</artifactId>
   <name>jBPM :: EJB Services Implementation</name>
