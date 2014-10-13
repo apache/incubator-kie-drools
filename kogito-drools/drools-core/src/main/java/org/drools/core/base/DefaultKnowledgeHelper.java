@@ -280,7 +280,12 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     public void insertLogical(final Object object,
                               final Object value,
                               final boolean dynamic) {
-        
+
+        if ( object == null ) {
+            // prevent nulls from being inserted logically
+            return;
+        }
+
         if ( !activation.isMatched() ) {
             // Activation is already unmatched, can't do logical insertions against it
             return;

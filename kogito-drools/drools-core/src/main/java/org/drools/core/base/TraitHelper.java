@@ -25,6 +25,7 @@ import org.drools.core.metadata.Modify;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Activation;
+import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -122,11 +123,22 @@ public class TraitHelper implements Externalizable {
                 proxy.setTypeFilter( veto );
                 InternalFactHandle h = (InternalFactHandle) lookupFactHandle( t );
                 if ( h != null ) {
-                    ((NamedEntryPoint) h.getEntryPoint()).update( h,
-                                                                  t,
-                                                                  mask,
-                                                                  modifiedClass,
-                                                                  activation );
+                    NamedEntryPoint nep = (NamedEntryPoint) h.getEntryPoint();
+                    PropagationContext propagationContext = nep.getPctxFactory().createPropagationContext( nep.getInternalWorkingMemory().getNextPropagationIdCounter(),
+                                                                                                           PropagationContext.MODIFICATION,
+                                                                                                           activation.getRule(),
+                                                                                                           activation.getTuple(),
+                                                                                                           h,
+                                                                                                           nep.getEntryPoint(),
+                                                                                                           mask,
+                                                                                                           modifiedClass,
+                                                                                                           null );
+                    nep.update( h,
+                                t,
+                                t,
+                                nep.getObjectTypeConfigurationRegistry().getObjectTypeConf( nep.getEntryPoint(), t ),
+                                activation.getRule(),
+                                propagationContext );
                 }
                 proxy.setTypeFilter( null );
 
@@ -283,11 +295,24 @@ public class TraitHelper implements Externalizable {
         if ( handle != null ) {
             TraitFieldTMS fieldTMS = inner._getFieldTMS();
             BitMask mask = fieldTMS == null ? onlyTraitBitSetMask() : fieldTMS.getModificationMask();
-            ((NamedEntryPoint) h.getEntryPoint()).update( h,
-                                                          ((InternalFactHandle)handle).getObject(),
-                                                          mask,
-                                                          core.getClass(),
-                                                          activation );
+
+            Object o = h.getObject();
+            NamedEntryPoint nep = (NamedEntryPoint) h.getEntryPoint();
+            PropagationContext propagationContext = nep.getPctxFactory().createPropagationContext( nep.getInternalWorkingMemory().getNextPropagationIdCounter(),
+                                                                                                   PropagationContext.MODIFICATION,
+                                                                                                   activation.getRule(),
+                                                                                                   activation.getTuple(),
+                                                                                                   h,
+                                                                                                   nep.getEntryPoint(),
+                                                                                                   mask,
+                                                                                                   core.getClass(),
+                                                                                                   null );
+            nep.update( h,
+                        o,
+                        o,
+                        nep.getObjectTypeConfigurationRegistry().getObjectTypeConf( nep.getEntryPoint(), o ),
+                        activation.getRule(),
+                        propagationContext );
         } else {
             handle = this.workingMemory.insert( inner,
                                                 null,
@@ -341,7 +366,12 @@ public class TraitHelper implements Externalizable {
             removedTypes = new ArrayList<Thing<K>>( removedTypes );
             for ( Thing t : removedTypes ) {
                 if ( ! ((TraitType) t).isVirtual() ) {
-                    delete( getFactHandle( t ), activation );
+                    InternalFactHandle handle = (InternalFactHandle) getFactHandle( t );
+                    if ( handle.getEqualityKey() != null && handle.getEqualityKey().getLogicalFactHandle() == handle ) {
+                        entryPoint.getTruthMaintenanceSystem().delete( handle );
+                    } else {
+                        delete( getFactHandle( t ), activation );
+                    }
                 }
             }
 

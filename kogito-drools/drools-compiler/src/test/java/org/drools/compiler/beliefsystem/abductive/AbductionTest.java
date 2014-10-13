@@ -2,6 +2,20 @@ package org.drools.compiler.beliefsystem.abductive;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.BeliefSystemType;
+import org.drools.core.beliefsystem.defeasible.Defeasible;
+import org.junit.After;
+import org.junit.Before;
+import org.kie.api.KieBase;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.AgendaGroupPoppedEvent;
+import org.kie.api.event.rule.AgendaGroupPushedEvent;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.beliefsystem.BeliefSet;
@@ -30,6 +44,7 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.utils.KieHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +52,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Ignore
+
 public class AbductionTest extends CommonTestMethodBase {
 
     protected KieSession getSessionFromString( String drlString ) {
@@ -45,25 +60,24 @@ public class AbductionTest extends CommonTestMethodBase {
     }
 
     protected KieSession getSessionFromString( String drlString, KieBaseConfiguration kbConf ) {
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write( ks.getResources()
-                           .newByteArrayResource( drlString.getBytes() )
-                           .setSourcePath( "drl1.drl" )
-                           .setResourceType( ResourceType.DRL ) );
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
-        kieBuilder.buildAll();
+        KieHelper kieHelper = new KieHelper();
+        kieHelper.addContent( drlString, ResourceType.DRL );
 
-        Results res = kieBuilder.getResults();
+        Results res = kieHelper.verify();
         if ( res.hasMessages( Message.Level.ERROR ) ) {
             fail( res.getMessages( Message.Level.ERROR ).toString() );
         }
 
+        if ( kbConf == null ) {
+            kbConf = KieServices.Factory.get().newKieBaseConfiguration();
+        }
+        kbConf.setOption( EqualityBehaviorOption.EQUALITY );
+        KieBase kieBase = kieHelper.build( kbConf );
+
+
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.DEFEASIBLE );
-
-        KieContainer kc = ks.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
-        return kbConf != null ? kc.newKieBase( kbConf ).newKieSession( ksConf, null ) : kc.newKieSession( ksConf);
+        return kieBase.newKieSession( ksConf, null );
     }
 
 
@@ -513,12 +527,14 @@ public class AbductionTest extends CommonTestMethodBase {
 
 
     @Test
+    @Ignore
     public void testAbductiveLogicSprinklerAndRainExample() {
         // Sprinkler & Rain, abductive version
         String droolsSource =
                 "package org.drools.tms.test; \n" +
                 "" +
                 "import " + Abducible.class.getName() + "; \n" +
+                "import " + Defeasible.class.getName() + "; \n" +
                 "global java.util.List list; \n" +
                 "" +
                 "declare Sunny id : int @key end \n" +
@@ -555,6 +571,13 @@ public class AbductionTest extends CommonTestMethodBase {
                 " insert( new Sunny( 0 ) ); \n" +
                 "end \n" +
 
+                "rule Raaain \n" +
+                "when " +
+                "   $r : Rain( _.neg ) " +
+                "then \n" +
+                "   list.add( 'no_rain_check' ); \n" +
+                "end \n" +
+
                 "rule Main_1\n" +
                 "when \n" +
                 "   wetGrass() \n" +
@@ -563,7 +586,7 @@ public class AbductionTest extends CommonTestMethodBase {
                 "     or \n" +
                 "     Rain() do[rain] \n" +
                 "     or \n" +
-                "     Rain() from entry-point 'neg' do[norn] \n" +
+                "     Rain( _.neg ) do[norn] \n" +
                 "   ) \n" +
                 "then \n" +
                 "then[sprk] \n" +
@@ -580,15 +603,24 @@ public class AbductionTest extends CommonTestMethodBase {
                 "";
         /////////////////////////////////////
 
-        KieSession session = getSessionFromString( droolsSource );
+        KieSession session;
+        try {
+            System.setProperty("drools.negatable", "on");
+            session = getSessionFromString( droolsSource );
+        } finally {
+            System.setProperty("drools.negatable", "off");
+        }
+
         List list = new ArrayList();
         session.setGlobal( "list", list );
 
         session.fireAllRules();
+        System.out.println( list );
 
-        assertEquals( 2, list.size() );
+        assertEquals( 3, list.size() );
         assertTrue( list.contains( "sprinkler" ) );
         assertTrue( list.contains( "not rain" ) );
+        assertTrue( list.contains( "no_rain_check" ) );
 
         assertEquals( 3, session.getObjects().size() );
     }
