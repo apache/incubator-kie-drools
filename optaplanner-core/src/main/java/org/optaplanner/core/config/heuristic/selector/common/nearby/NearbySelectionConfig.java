@@ -25,6 +25,7 @@ import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfi
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.BetaDistributionNearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.BlockDistributionNearbyRandom;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.LinearDistributionNearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -39,10 +40,12 @@ public class NearbySelectionConfig extends SelectorConfig {
     protected EntitySelectorConfig originEntitySelectorConfig = null;
     protected Class<? extends NearbyDistanceMeter> nearbyDistanceMeterClass = null;
 
-    protected Integer blockDistributionBlockSizeMinimum = null;
-    protected Integer blockDistributionBlockSizeMaximum = null;
-    protected Double blockDistributionBlockRatio = null;
+    protected Integer blockDistributionSizeMinimum = null;
+    protected Integer blockDistributionSizeMaximum = null;
+    protected Double blockDistributionSizeRatio = null;
     protected Double blockDistributionUniformDistributionProbability = null;
+
+    protected Integer linearDistributionSizeMaximum = null;
 
     protected Double betaDistributionAlpha = null;
     protected Double betaDistributionBeta = null;
@@ -63,28 +66,28 @@ public class NearbySelectionConfig extends SelectorConfig {
         this.nearbyDistanceMeterClass = nearbyDistanceMeterClass;
     }
 
-    public Integer getBlockDistributionBlockSizeMinimum() {
-        return blockDistributionBlockSizeMinimum;
+    public Integer getBlockDistributionSizeMinimum() {
+        return blockDistributionSizeMinimum;
     }
 
-    public void setBlockDistributionBlockSizeMinimum(Integer blockDistributionBlockSizeMinimum) {
-        this.blockDistributionBlockSizeMinimum = blockDistributionBlockSizeMinimum;
+    public void setBlockDistributionSizeMinimum(Integer blockDistributionSizeMinimum) {
+        this.blockDistributionSizeMinimum = blockDistributionSizeMinimum;
     }
 
-    public Integer getBlockDistributionBlockSizeMaximum() {
-        return blockDistributionBlockSizeMaximum;
+    public Integer getBlockDistributionSizeMaximum() {
+        return blockDistributionSizeMaximum;
     }
 
-    public void setBlockDistributionBlockSizeMaximum(Integer blockDistributionBlockSizeMaximum) {
-        this.blockDistributionBlockSizeMaximum = blockDistributionBlockSizeMaximum;
+    public void setBlockDistributionSizeMaximum(Integer blockDistributionSizeMaximum) {
+        this.blockDistributionSizeMaximum = blockDistributionSizeMaximum;
     }
 
-    public Double getBlockDistributionBlockRatio() {
-        return blockDistributionBlockRatio;
+    public Double getBlockDistributionSizeRatio() {
+        return blockDistributionSizeRatio;
     }
 
-    public void setBlockDistributionBlockRatio(Double blockDistributionBlockRatio) {
-        this.blockDistributionBlockRatio = blockDistributionBlockRatio;
+    public void setBlockDistributionSizeRatio(Double blockDistributionSizeRatio) {
+        this.blockDistributionSizeRatio = blockDistributionSizeRatio;
     }
 
     public Double getBlockDistributionUniformDistributionProbability() {
@@ -93,6 +96,14 @@ public class NearbySelectionConfig extends SelectorConfig {
 
     public void setBlockDistributionUniformDistributionProbability(Double blockDistributionUniformDistributionProbability) {
         this.blockDistributionUniformDistributionProbability = blockDistributionUniformDistributionProbability;
+    }
+
+    public Integer getLinearDistributionSizeMaximum() {
+        return linearDistributionSizeMaximum;
+    }
+
+    public void setLinearDistributionSizeMaximum(Integer linearDistributionSizeMaximum) {
+        this.linearDistributionSizeMaximum = linearDistributionSizeMaximum;
     }
 
     public Double getBetaDistributionAlpha() {
@@ -168,22 +179,34 @@ public class NearbySelectionConfig extends SelectorConfig {
     }
 
     protected NearbyRandom buildNearbyRandom() {
-        boolean blockDistributionEnabled = blockDistributionBlockSizeMinimum != null
-                || blockDistributionBlockSizeMaximum != null
-                || blockDistributionBlockRatio != null
+        boolean blockDistributionEnabled = blockDistributionSizeMinimum != null
+                || blockDistributionSizeMaximum != null
+                || blockDistributionSizeRatio != null
                 || blockDistributionUniformDistributionProbability != null;
+        boolean linearDistributionEnabled = linearDistributionSizeMaximum != null;
         boolean betaDistributionEnabled = betaDistributionAlpha != null
                 || betaDistributionBeta != null;
+        if (blockDistributionEnabled && linearDistributionEnabled) {
+            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
+                    + ") has both blockDistribution and linearDistribution parameters.");
+        }
         if (blockDistributionEnabled && betaDistributionEnabled) {
             throw new IllegalArgumentException("The nearbySelectorConfig (" + this
                     + ") has both blockDistribution and betaDistribution parameters.");
         }
+        if (linearDistributionEnabled && betaDistributionEnabled) {
+            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
+                    + ") has both linearDistribution and betaDistribution parameters.");
+        }
         if (blockDistributionEnabled) {
-            int blockSizeMinimum = blockDistributionBlockSizeMinimum == null ? 0 : blockDistributionBlockSizeMinimum;
-            int blockSizeMaximum = blockDistributionBlockSizeMaximum == null ? Integer.MAX_VALUE : blockDistributionBlockSizeMaximum;
-            double blockRatio = blockDistributionBlockRatio == null ? 1.0 : blockDistributionBlockRatio;
+            int sizeMinimum = blockDistributionSizeMinimum == null ? 0 : blockDistributionSizeMinimum;
+            int sizeMaximum = blockDistributionSizeMaximum == null ? Integer.MAX_VALUE : blockDistributionSizeMaximum;
+            double sizeRatio = blockDistributionSizeRatio == null ? 1.0 : blockDistributionSizeRatio;
             double uniformDistributionProbability = blockDistributionUniformDistributionProbability == null ? 0.0 : blockDistributionUniformDistributionProbability;
-            return new BlockDistributionNearbyRandom(blockSizeMinimum, blockSizeMaximum, blockRatio, uniformDistributionProbability);
+            return new BlockDistributionNearbyRandom(sizeMinimum, sizeMaximum, sizeRatio, uniformDistributionProbability);
+        } else if (linearDistributionEnabled) {
+            int sizeMaximum = linearDistributionSizeMaximum == null ? Integer.MAX_VALUE : linearDistributionSizeMaximum;
+            return new LinearDistributionNearbyRandom(sizeMaximum);
         } else if (betaDistributionEnabled) {
             double alpha = betaDistributionAlpha == null ? 1.0 : betaDistributionAlpha;
             double beta = betaDistributionBeta == null ? 5.0 : betaDistributionBeta;
@@ -202,14 +225,16 @@ public class NearbySelectionConfig extends SelectorConfig {
         }
         nearbyDistanceMeterClass = ConfigUtils.inheritOverwritableProperty(nearbyDistanceMeterClass,
                 inheritedConfig.getNearbyDistanceMeterClass());
-        blockDistributionBlockSizeMinimum = ConfigUtils.inheritOverwritableProperty(blockDistributionBlockSizeMinimum,
-                inheritedConfig.getBlockDistributionBlockSizeMinimum());
-        blockDistributionBlockSizeMaximum = ConfigUtils.inheritOverwritableProperty(blockDistributionBlockSizeMaximum,
-                inheritedConfig.getBlockDistributionBlockSizeMaximum());
-        blockDistributionBlockRatio = ConfigUtils.inheritOverwritableProperty(blockDistributionBlockRatio,
-                inheritedConfig.getBlockDistributionBlockRatio());
+        blockDistributionSizeMinimum = ConfigUtils.inheritOverwritableProperty(blockDistributionSizeMinimum,
+                inheritedConfig.getBlockDistributionSizeMinimum());
+        blockDistributionSizeMaximum = ConfigUtils.inheritOverwritableProperty(blockDistributionSizeMaximum,
+                inheritedConfig.getBlockDistributionSizeMaximum());
+        blockDistributionSizeRatio = ConfigUtils.inheritOverwritableProperty(blockDistributionSizeRatio,
+                inheritedConfig.getBlockDistributionSizeRatio());
         blockDistributionUniformDistributionProbability = ConfigUtils.inheritOverwritableProperty(blockDistributionUniformDistributionProbability,
                 inheritedConfig.getBlockDistributionUniformDistributionProbability());
+        linearDistributionSizeMaximum = ConfigUtils.inheritOverwritableProperty(linearDistributionSizeMaximum,
+                inheritedConfig.getLinearDistributionSizeMaximum());
         betaDistributionAlpha = ConfigUtils.inheritOverwritableProperty(betaDistributionAlpha,
                 inheritedConfig.getBetaDistributionAlpha());
         betaDistributionBeta = ConfigUtils.inheritOverwritableProperty(betaDistributionBeta,

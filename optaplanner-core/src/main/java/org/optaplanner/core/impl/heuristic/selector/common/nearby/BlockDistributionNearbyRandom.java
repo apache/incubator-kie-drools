@@ -20,29 +20,29 @@ import java.util.Random;
 
 public class BlockDistributionNearbyRandom implements NearbyRandom {
 
-    protected final int blockSizeMinimum;
-    protected final int blockSizeMaximum;
-    protected final double blockRatio;
+    protected final int sizeMinimum;
+    protected final int sizeMaximum;
+    protected final double sizeRatio;
 
     protected final double uniformDistributionProbability;
 
-    public BlockDistributionNearbyRandom(int blockSizeMinimum, int blockSizeMaximum, double blockRatio,
+    public BlockDistributionNearbyRandom(int sizeMinimum, int sizeMaximum, double sizeRatio,
             double uniformDistributionProbability) {
-        this.blockSizeMinimum = blockSizeMinimum;
-        this.blockSizeMaximum = blockSizeMaximum;
-        this.blockRatio = blockRatio;
+        this.sizeMinimum = sizeMinimum;
+        this.sizeMaximum = sizeMaximum;
+        this.sizeRatio = sizeRatio;
         this.uniformDistributionProbability = uniformDistributionProbability;
-        if (blockSizeMinimum < 0) {
-            throw new IllegalArgumentException("The blockSizeMinimum (" + blockSizeMinimum
+        if (sizeMinimum < 0) {
+            throw new IllegalArgumentException("The sizeMinimum (" + sizeMinimum
                     + ") must be at least 0.");
         }
-        if (blockSizeMaximum < blockSizeMinimum) {
-            throw new IllegalArgumentException("The blockSizeMaximum (" + blockSizeMaximum
-                    + ") must be at least the blockSizeMinimum (" + blockSizeMinimum + ").");
+        if (sizeMaximum < sizeMinimum) {
+            throw new IllegalArgumentException("The sizeMaximum (" + sizeMaximum
+                    + ") must be at least the sizeMinimum (" + sizeMinimum + ").");
 
         }
-        if (blockRatio < 0.0 || blockRatio > 1.0) {
-            throw new IllegalArgumentException("The blockRatio (" + blockRatio
+        if (sizeRatio < 0.0 || sizeRatio > 1.0) {
+            throw new IllegalArgumentException("The sizeRatio (" + sizeRatio
                     + ") must be between 0.0 and 1.0.");
         }
         if (uniformDistributionProbability < 0.0 || uniformDistributionProbability > 1.0) {
@@ -59,10 +59,10 @@ public class BlockDistributionNearbyRandom implements NearbyRandom {
             }
         }
         int size;
-        if (blockRatio < 1.0) {
-            size = (int) (n * blockRatio);
-            if (size < blockSizeMinimum) {
-                size = blockSizeMinimum;
+        if (sizeRatio < 1.0) {
+            size = (int) (n * sizeRatio);
+            if (size < sizeMinimum) {
+                size = sizeMinimum;
                 if (size > n) {
                     size = n;
                 }
@@ -70,8 +70,8 @@ public class BlockDistributionNearbyRandom implements NearbyRandom {
         } else {
             size = n;
         }
-        if (size > blockSizeMaximum) {
-            size = blockSizeMaximum;
+        if (size > sizeMaximum) {
+            size = sizeMaximum;
         }
         return random.nextInt(size);
     }
