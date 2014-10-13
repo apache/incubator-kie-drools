@@ -251,48 +251,48 @@ public class Person
     public boolean equals(Object obj) {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( ! ( obj instanceof Person ) ) return false;
         Person other = (Person) obj;
         if ( address == null ) {
-            if ( other.address != null ) return false;
-        } else if ( !address.equals( other.address ) ) return false;
+            if ( other.getAddress() != null ) return false;
+        } else if ( !address.equals( other.getAddress() ) ) return false;
         if ( addresses == null ) {
-            if ( other.addresses != null ) return false;
-        } else if ( !addresses.equals( other.addresses ) ) return false;
-        if ( age != other.age ) return false;
-        if ( alive != other.alive ) return false;
+            if ( other.getAddresses() != null ) return false;
+        } else if ( !addresses.equals( other.getAddresses() ) ) return false;
+        if ( age != other.getAge() ) return false;
+        if ( alive != other.isAlive() ) return false;
         if ( bigDecimal == null ) {
-            if ( other.bigDecimal != null ) return false;
-        } else if ( !bigDecimal.equals( other.bigDecimal ) ) return false;
+            if ( other.getBigDecimal() != null ) return false;
+        } else if ( !bigDecimal.equals( other.getBigDecimal() ) ) return false;
         if ( bigInteger == null ) {
-            if ( other.bigInteger != null ) return false;
-        } else if ( !bigInteger.equals( other.bigInteger ) ) return false;
+            if ( other.getBigInteger() != null ) return false;
+        } else if ( !bigInteger.equals( other.getBigInteger() ) ) return false;
         if ( cheese == null ) {
-            if ( other.cheese != null ) return false;
-        } else if ( !cheese.equals( other.cheese ) ) return false;
+            if ( other.getCheese() != null ) return false;
+        } else if ( !cheese.equals( other.getCheese() ) ) return false;
         if ( hair == null ) {
-            if ( other.hair != null ) return false;
-        } else if ( !hair.equals( other.hair ) ) return false;
-        if ( happy != other.happy ) return false;
+            if ( other.getHair() != null ) return false;
+        } else if ( !hair.equals( other.getHair() ) ) return false;
+        if ( happy != other.isHappy() ) return false;
         if ( likes == null ) {
-            if ( other.likes != null ) return false;
-        } else if ( !likes.equals( other.likes ) ) return false;
+            if ( other.getLikes() != null ) return false;
+        } else if ( !likes.equals( other.getLikes() ) ) return false;
         if ( name == null ) {
-            if ( other.name != null ) return false;
-        } else if ( !name.equals( other.name ) ) return false;
+            if ( other.getName() != null ) return false;
+        } else if ( !name.equals( other.getName() ) ) return false;
         if ( object == null ) {
-            if ( other.object != null ) return false;
-        } else if ( !object.equals( other.object ) ) return false;
+            if ( other.getObject() != null ) return false;
+        } else if ( !object.equals( other.getObject() ) ) return false;
         if ( pet == null ) {
-            if ( other.pet != null ) return false;
-        } else if ( !pet.equals( other.pet ) ) return false;
-        if ( sex != other.sex ) return false;
+            if ( other.getPet() != null ) return false;
+        } else if ( !pet.equals( other.getPet() ) ) return false;
+        if ( sex != other.getSex() ) return false;
         return true;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.compiler.PersonInterface#getBigDecimal()
-     */
+         * @see org.drools.compiler.PersonInterface#getBigDecimal()
+         */
     public BigDecimal getBigDecimal() {
         return this.bigDecimal;
     }

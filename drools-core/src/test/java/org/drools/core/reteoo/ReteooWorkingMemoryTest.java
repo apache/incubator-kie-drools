@@ -56,6 +56,7 @@ public class ReteooWorkingMemoryTest {
      * @see JBRULES-356
      */
     @Test
+    @Ignore
     public void testBasicWorkingMemoryActions() {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();

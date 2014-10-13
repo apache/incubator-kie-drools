@@ -114,15 +114,6 @@ public class AlphaNode extends ObjectSource
         out.writeInt(hashcode);
     }
 
-    public void initDeclaredMask(BuildContext context) {
-        if ( constraint instanceof NegConstraint ) {
-            // hardcode NegConstraint ot -1L;
-            declaredMask = 0;
-        } else {
-            super.initDeclaredMask(context);
-        }
-    }
-
     /**
      * Retruns the <code>FieldConstraint</code>
      *

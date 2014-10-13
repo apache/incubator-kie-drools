@@ -31,6 +31,7 @@ import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NamedEntryPoint;
+import org.drools.core.common.ObjectStore;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -387,20 +388,17 @@ public class QueryElementNode extends LeftTupleSource
                 }
                 Object abduced = aq.abduce( Arrays.copyOfRange( objects, 0, numArgs - 1 ) );
                 if ( abduced != null ) {
-                    EqualityKey key = ( (NamedEntryPoint) workingMemory.getEntryPoint( workingMemory.getEntryPointId() ) ).getTruthMaintenanceSystem().get( abduced );
-                    InternalFactHandle handle;
-                    if ( key != null ) {
-                        handle = key.getFactHandle();
+                    ObjectStore store = workingMemory.getObjectStore();
+                    InternalFactHandle handle = store.getHandleForObject( abduced );
+                    if ( handle != null ) {
                         abduced = handle.getObject();
                     } else {
-                        handle = (InternalFactHandle) ((InternalWorkingMemoryActions) workingMemory).insert( abduced,
-                                                                                                             MODE.POSITIVE.getId(),
-                                                                                                             false,
-                                                                                                             true,
-                                                                                                             query,
-                                                                                                             (RuleTerminalNodeLeftTuple) resultLeftTuple );
+                        handle = ((InternalWorkingMemoryActions) workingMemory).getTruthMaintenanceSystem().insert( abduced,
+                                                                                                                    MODE.POSITIVE.getId(),
+                                                                                                                    query,
+                                                                                                                    (RuleTerminalNodeLeftTuple) resultLeftTuple );
                     }
-                    BeliefSet bs = handle.getEqualityKey().getBeliefSet();
+                    BeliefSet bs = handle.getEqualityKey() != null ? handle.getEqualityKey().getBeliefSet() : null;
                     if ( bs == null ) {
                         abduced = handle.getObject();
                     } else {
