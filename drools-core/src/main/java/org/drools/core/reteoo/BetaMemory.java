@@ -137,7 +137,15 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public void setNodeDirty(InternalWorkingMemory wm) {
-        segmentMemory.notifyRuleLinkSegment(wm, nodePosMaskBit);
+        setNodeDirty(wm, true);
+    }
+
+    public void setNodeDirty(InternalWorkingMemory wm, boolean notify) {
+        if (notify) {
+            segmentMemory.notifyRuleLinkSegment(wm, nodePosMaskBit);
+        } else {
+            segmentMemory.linkSegmentWithoutRuleNotify(wm, nodePosMaskBit);
+        }
     }
 
     public void setNodeDirtyWithoutNotify() {

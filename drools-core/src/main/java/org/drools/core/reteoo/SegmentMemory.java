@@ -156,6 +156,16 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
             log.trace("LinkNode notify=false nmask={} smask={} spos={} rules={}", mask, linkedNodeMask, pos, getRuleNames());
         }
 
+        linkSegmentWithoutRuleNotify();
+    }
+
+    public void linkSegmentWithoutRuleNotify(InternalWorkingMemory wm, long mask) {
+        //dirtyNodeMask = dirtyNodeMask | mask;
+        dirtyNodeMask.getAndBitwiseOr( mask );
+        linkSegmentWithoutRuleNotify();
+    }
+
+    private void linkSegmentWithoutRuleNotify() {
         if (isSegmentLinked()) {
             for (int i = 0, length = pathMemories.size(); i < length; i++) {
                 // do not use foreach, don't want Iterator object creation
@@ -165,14 +175,9 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     }
 
     public void notifyRuleLinkSegment(InternalWorkingMemory wm, long mask) {
-        dirtyNodeMask.getAndBitwiseOr( mask );
         //dirtyNodeMask = dirtyNodeMask | mask;
-        if (isSegmentLinked()) {
-            for (int i = 0, length = pathMemories.size(); i < length; i++) {
-                // do not use foreach, don't want Iterator object creation
-                pathMemories.get(i).linkSegment(segmentPosMaskBit, wm);
-            }
-        }
+        dirtyNodeMask.getAndBitwiseOr( mask );
+        notifyRuleLinkSegment(wm);
     }
 
     public void notifyRuleLinkSegment(InternalWorkingMemory wm) {

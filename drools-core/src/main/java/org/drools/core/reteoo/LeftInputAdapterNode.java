@@ -215,11 +215,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
             sm = sm.getFirst(); // repoint to the child sm
         }
 
-        boolean notifySegment = linkOrNotify;
-        int counter =  lm.getAndIncreaseCounter();
-        if ( counter == 0) {
-            notifySegment = false; // node is not linked, so notify will happen when we link the node
-        }
+        int counter = lm.getAndIncreaseCounter();
+        // node is not linked, so notify will happen when we link the node
+        boolean notifySegment = linkOrNotify && counter != 0;
 
         LeftTupleSink sink = liaNode.getSinkPropagator().getFirstLeftTupleSink();
         LeftTuple leftTuple = sink.createLeftTuple( factHandle, sink, useLeftMemory );

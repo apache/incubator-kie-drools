@@ -294,7 +294,7 @@ public abstract class BetaNode extends LeftTupleSource
         if ( memory.getAndIncCounter() == 0 ) {
             memory.linkNode(wm, !rightInputIsPassive);
         } else if ( stagedInsertWasEmpty ) {
-            memory.setNodeDirty( wm );
+            memory.setNodeDirty( wm, !rightInputIsPassive );
         }
 
         PathMemory pmem = memory.getSegmentMemory().getFirstDataDrivenPathMemory();
@@ -397,6 +397,10 @@ public abstract class BetaNode extends LeftTupleSource
 
     public boolean isRightInputIsRiaNode() {
         return rightInputIsRiaNode;
+    }
+
+    public boolean isRightInputPassive() {
+        return rightInputIsPassive;
     }
 
     public ObjectSource getRightInput() {
