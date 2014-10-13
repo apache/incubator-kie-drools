@@ -36,7 +36,7 @@ public class GuidedScoreCardDRLPersistenceTest {
         assertNotNull( drl );
 
         assertFalse( drl.contains( "package" ) );
-        assertEquals( 11,
+        assertEquals( 12,
                       StringUtil.countMatches( drl,
                                                "rule \"" ) );
 
@@ -55,7 +55,7 @@ public class GuidedScoreCardDRLPersistenceTest {
         assertNotNull( drl );
 
         assertFalse( drl.contains( "package" ) );
-        assertEquals( 11,
+        assertEquals( 12,
                       StringUtil.countMatches( drl,
                                                "rule \"" ) );
 
@@ -74,7 +74,7 @@ public class GuidedScoreCardDRLPersistenceTest {
         assertNotNull( drl );
 
         assertTrue( drl.contains( "package org.drools.workbench.models.guided.scorecard.backend" ) );
-        assertEquals( 11,
+        assertEquals( 12,
                       StringUtil.countMatches( drl,
                                                "rule \"" ) );
 
@@ -94,7 +94,7 @@ public class GuidedScoreCardDRLPersistenceTest {
         assertNotNull( drl );
 
         assertTrue( drl.contains( "package org.drools.workbench.models.guided.scorecard.backend" ) );
-        assertEquals( 11,
+        assertEquals( 12,
                       StringUtil.countMatches( drl,
                                                "rule \"" ) );
 
@@ -115,7 +115,7 @@ public class GuidedScoreCardDRLPersistenceTest {
         assertNotNull( drl );
 
         assertTrue( drl.contains( "package org.drools.workbench.models.guided.scorecard.backend" ) );
-        assertEquals( 11,
+        assertEquals( 12,
                       StringUtil.countMatches( drl,
                                                "rule \"" ) );
 
@@ -136,7 +136,7 @@ public class GuidedScoreCardDRLPersistenceTest {
         assertNotNull( drl );
 
         assertTrue( drl.contains( "package org.drools.workbench.models.guided.scorecard.backend" ) );
-        assertEquals( 11,
+        assertEquals( 12,
                       StringUtil.countMatches( drl,
                                                "rule \"" ) );
 

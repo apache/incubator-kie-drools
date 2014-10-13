@@ -29,15 +29,15 @@ dialect "mvel"
 no-loop
 salience 99
 when
-    $in : @{name}( $val : value,
+    $in : @{name}( $val : value, missing == false,
           @if{ context != null } context == @{format("string",context)}, @end{}
           @foreach{ v : vals } value == @{v} @end{' || '}
           )
 then
 //    System.out.println("--- Invalid -> missing");
-    modify ( $in ) {
-        setMissing( true );
-    }
+    delete( $in );
+    $in.setMissing( true );
+    insert( $in );
 end
 @end{}
 

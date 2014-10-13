@@ -33,12 +33,12 @@ when
  $x : @{name}( $m : missing, $v : valid == false,
                context == @{format("string",model)} )
 then
-    modify ( $x ) {
+    delete( $x );
         //@{replacement}
-        setValue( @{ replacement != null ? format( mapDatatype( type ), replacement ) : zeroForDatatype( type ) } ),
-        setMissing( @{replacement == null} ),
-        setValid( true );
-    }
+        $x.setValue( @{ replacement != null ? format( mapDatatype( type ), replacement ) : zeroForDatatype( type ) } );
+        $x.setMissing( @{replacement == null} );
+        $x.setValid( true );
+    insert( $x );
 end
 @end{}
 

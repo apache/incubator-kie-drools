@@ -84,12 +84,12 @@ then
     @end{}
 
     @if{ affected }
-    modify ( $src ) {
+        delete( $src );
         @if{ tgt != null && tgt.displayValue != null }
-            setDisplayValue( "@{tgt.displayValue}" ),
+            $src.setDisplayValue( "@{tgt.displayValue}" );
         @end{}
-            setValue( x );
-    }
+            $src.setValue( x );
+        insert( $src );
     @end{}
 
 end

@@ -38,7 +38,7 @@
   @@role(event)
   @Traitable
 
-    value : @{type} @@key @position(1) @comment{
+    value : @{type} @@key @position(0) @comment{
                                         //@if{continuous} @@comparable @elseif{cyclic} @@comparable(cyclic) @elseif{ordinal} @@comparable(ordinal) @end{}
                                        }
     displayValue : String = @if{ fullName != null } @{format("string",fullName)} @else{} @{format("string",name)} @end{}
