@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.tutorials.banking;
+package org.drools.examples.banking;
 
 public class Account {
     private long   accountNo;

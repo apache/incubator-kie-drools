@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-package org.drools.tutorials.banking;
+package org.drools.examples.banking;
 
-public class BankingExample1 {
+public class BankingExample3 {
     public static void main(String[] args) {
-        new RuleRunner().runRules( new String[] { "Example1.drl" },
-                                   new Object[0] );
+        Number[] numbers = new Number[] {wrap(3), wrap(1), wrap(4), wrap(1), wrap(5)};
+        new RuleRunner().runRules( new String[] { "Example3.drl" },
+                                   numbers );
+    }
+    
+    private static Integer wrap(int i) {
+        return new Integer(i);
     }
 }
