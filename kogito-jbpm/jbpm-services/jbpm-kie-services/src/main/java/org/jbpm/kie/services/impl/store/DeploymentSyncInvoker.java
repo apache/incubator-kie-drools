@@ -59,7 +59,7 @@ public class DeploymentSyncInvoker {
 		logger.info("Shutting down deployment synchronization");
 		if (this.executor != null) {
 			if (future != null) {
-				this.future.cancel(true);
+				this.future.cancel(false);
 			}
 			this.executor.shutdown();
 			try {

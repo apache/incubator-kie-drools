@@ -1,12 +1,15 @@
 package org.jbpm.process.core.event;
 
+import java.io.Serializable;
 import java.util.Collections;
 
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.workflow.core.node.Transformation;
 import org.kie.api.runtime.process.DataTransformer;
 
-public class EventTransformerImpl implements EventTransformer {
+public class EventTransformerImpl implements EventTransformer, Serializable {
+	
+	private static final long serialVersionUID = 5861307291725051774L;
 	
 	private Transformation transformation;
 	private String name;
