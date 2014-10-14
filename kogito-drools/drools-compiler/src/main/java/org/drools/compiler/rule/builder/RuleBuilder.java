@@ -45,6 +45,7 @@ import org.drools.core.util.DateUtils;
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
 import org.kie.api.definition.rule.ActivationListener;
+import org.kie.api.definition.rule.All;
 import org.kie.api.definition.rule.DataDriven;
 import org.kie.api.definition.rule.Direct;
 import org.kie.api.definition.rule.Eager;
@@ -163,8 +164,7 @@ public class RuleBuilder {
         Object result = value;
         // try to resolve as an expression:
         try {
-            Object resolvedValue = MVELSafeHelper.getEvaluator().eval( value );
-            result = resolvedValue;
+            result = MVELSafeHelper.getEvaluator().eval( value );
         } catch ( Exception e ) {
             // do nothing
         }
@@ -276,6 +276,7 @@ public class RuleBuilder {
             }
 
             rule.setDataDriven(ruleDescr.hasAnnotation(DataDriven.class));
+            rule.setAllMatches(ruleDescr.hasAnnotation(All.class));
         } catch (Exception e) {
             DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                   e.getMessage() );
@@ -283,13 +284,9 @@ public class RuleBuilder {
         }
     }
 
-    private boolean trueOrDefault( String singleValue ) {
-        return StringUtils.isEmpty( singleValue ) || "true".equals( singleValue );
-    }
-
     private boolean getBooleanValue(final AttributeDescr attributeDescr,
                                     final boolean defaultValue) {
-        return (attributeDescr.getValue() == null || "".equals( attributeDescr.getValue().trim() )) ? defaultValue : Boolean.valueOf( attributeDescr.getValue() ).booleanValue();
+        return (attributeDescr.getValue() == null || "".equals( attributeDescr.getValue().trim() )) ? defaultValue : Boolean.valueOf(attributeDescr.getValue());
     }
 
     //    private void buildDuration(final RuleBuildContext context) {
@@ -385,7 +382,7 @@ public class RuleBuilder {
         
         String body = timerString.substring( colonPos + 1, semicolonPos > 0 ? semicolonPos : timerString.length() ).trim();
         
-        Timer timer = null;
+        Timer timer;
         if ( "cron".equals( protocol ) ) {
             try {
                 timer = new CronTimer( createMVELExpr(startDate, context), createMVELExpr(endDate, context), repeatLimit, new CronExpression( body ) );
@@ -436,12 +433,9 @@ public class RuleBuilder {
             }
 
             MVELObjectExpression times = MVELObjectExpressionBuilder.build( tok.nextToken().trim(), context );
-            MVELObjectExpression period = null;
-            if ( tok.hasMoreTokens() ) {
-                period = MVELObjectExpressionBuilder.build( tok.nextToken().trim(), context );
-            } else {
-                period = MVELObjectExpressionBuilder.build( "0", context );
-            }
+            MVELObjectExpression period = tok.hasMoreTokens() ?
+                                          MVELObjectExpressionBuilder.build( tok.nextToken().trim(), context ) :
+                                          MVELObjectExpressionBuilder.build( "0", context );
 
             timer = new ExpressionIntervalTimer( createMVELExpr(startDate, context), createMVELExpr(endDate, context), repeatLimit, times, period );
         } else {

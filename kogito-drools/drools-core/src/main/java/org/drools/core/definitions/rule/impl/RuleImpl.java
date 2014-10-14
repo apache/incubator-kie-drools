@@ -76,6 +76,7 @@ public class RuleImpl implements Externalizable,
     private static final int SEMANTICALLY_VALID_BIT =   1 << 4;
     private static final int EAGER_BIT =                1 << 5;
     private static final int DATA_DRIVEN_BIT =          1 << 6;
+    private static final int ALL_MATCHES_BIT =          1 << 7;
 
     public static final String DEFAULT_CONSEQUENCE_NAME = "default";
 
@@ -705,6 +706,14 @@ public class RuleImpl implements Externalizable,
 
     public void setDataDriven(boolean dataDriven) {
         set(DATA_DRIVEN_BIT, dataDriven);
+    }
+
+    public boolean isAllMatches() {
+        return isSet(ALL_MATCHES_BIT);
+    }
+
+    public void setAllMatches(boolean allMatches) {
+        set(ALL_MATCHES_BIT, allMatches);
     }
 
     public String toString() {
