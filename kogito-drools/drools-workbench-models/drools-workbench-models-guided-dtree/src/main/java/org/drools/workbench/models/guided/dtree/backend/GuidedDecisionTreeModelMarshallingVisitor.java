@@ -36,6 +36,7 @@ import org.drools.workbench.models.guided.dtree.shared.model.nodes.ConstraintNod
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.HasFieldValues;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
+import org.drools.workbench.models.guided.dtree.shared.model.parser.GuidedDecisionTreeParserError;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.BigDecimalValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.BigIntegerValue;
@@ -51,7 +52,7 @@ import org.drools.workbench.models.guided.dtree.shared.model.values.impl.ShortVa
 /**
  * Visitor that converts the GuidedDecisionTree into DRL
  */
-public class GuidedDecisionTreeModelDRLVisitor {
+public class GuidedDecisionTreeModelMarshallingVisitor {
 
     private static final String INDENTATION = "\t";
 
@@ -68,15 +69,20 @@ public class GuidedDecisionTreeModelDRLVisitor {
         if ( model == null ) {
             return "";
         }
-        if ( model.getRoot() == null ) {
-            return "";
+
+        //Append the DRL generated from the model
+        if ( model.getRoot() != null ) {
+            baseRuleName = model.getTreeName();
+            final List<Node> path = new ArrayList<Node>();
+
+            visit( path,
+                   model.getRoot() );
         }
 
-        baseRuleName = model.getTreeName();
-        final List<Node> path = new ArrayList<Node>();
-
-        visit( path,
-               model.getRoot() );
+        //Append the DRL stored as a result of parsing errors
+        for ( GuidedDecisionTreeParserError error : model.getParserErrors() ) {
+            rules.append( error.getOriginalDrl() ).append( "\n" );
+        }
 
         return rules.toString();
     }
