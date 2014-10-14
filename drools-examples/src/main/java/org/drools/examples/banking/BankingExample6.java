@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.tutorials.banking;
+package org.drools.examples.banking;
 
 public class BankingExample6 {
     public static void main(String[] args) {
