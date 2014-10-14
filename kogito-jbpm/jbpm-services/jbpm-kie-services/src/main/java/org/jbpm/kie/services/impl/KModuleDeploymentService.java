@@ -238,10 +238,11 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 		builder.addEnvironmentEntry("KieDeploymentDescriptor", descriptor);
 		
 		// populate all assets with roles for this deployment unit
-		if (descriptor.getRequiredRoles() != null && !descriptor.getRequiredRoles().isEmpty()) {
+		List<String> requiredRoles = descriptor.getRequiredRoles(DeploymentDescriptor.TYPE_VIEW);
+		if (requiredRoles != null && !requiredRoles.isEmpty()) {
 			for (DeployedAsset desc : deployedUnit.getDeployedAssets()) {
 				if (desc instanceof ProcessAssetDesc) {
-					((ProcessAssetDesc) desc).setRoles(descriptor.getRequiredRoles());
+					((ProcessAssetDesc) desc).setRoles(requiredRoles);
 				}
 			}
 		}

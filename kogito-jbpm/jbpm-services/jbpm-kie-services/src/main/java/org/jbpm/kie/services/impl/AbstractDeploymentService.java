@@ -125,8 +125,9 @@ public abstract class AbstractDeploymentService implements DeploymentService, Li
                 }            
                 deployedUnit.setRuntimeManager(manager);
                 DeploymentDescriptor descriptor = ((InternalRuntimeManager)manager).getDeploymentDescriptor();
-                if (descriptor.getRequiredRoles() != null && !descriptor.getRequiredRoles().isEmpty()) {
-                	((InternalRuntimeManager)manager).setSecurityManager(new IdentityRolesSecurityManager(identityProvider, descriptor.getRequiredRoles()));
+                List<String> requiredRoles = descriptor.getRequiredRoles(DeploymentDescriptor.TYPE_EXECUTE);
+                if (requiredRoles != null && !requiredRoles.isEmpty()) {
+                	((InternalRuntimeManager)manager).setSecurityManager(new IdentityRolesSecurityManager(identityProvider, requiredRoles));
                 }
                 notifyOnDeploy(unit, deployedUnit);
                 

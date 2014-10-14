@@ -2,6 +2,7 @@ package org.jbpm.runtime.manager.impl.deploy;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -197,5 +198,67 @@ public class DeploymentDescriptorTest {
 		assertEquals(0, fromXml.getTaskEventListeners().size());
 		assertEquals(1, fromXml.getWorkItemHandlers().size());
 		assertEquals(1, fromXml.getRequiredRoles().size());
+	}
+	
+	@Test
+	public void testCreateDeploymentDescriptorWithPrefixedRoles() {
+		DeploymentDescriptorImpl descriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
+		
+		descriptor.setAuditMode(AuditMode.JMS);
+		descriptor.setEnvironmentEntries(null);
+		
+		List<ObjectModel> marshallingStrategies = new ArrayList<ObjectModel>();
+		marshallingStrategies.add(new ObjectModel("org.jbpm.testCustomStrategy", 
+				new Object[]{
+				new ObjectModel("java.lang.String", new Object[]{"param1"}),
+				"param2"}));
+		descriptor.setMarshallingStrategies(marshallingStrategies);
+		
+		List<String> roles = new ArrayList<String>();
+		roles.add("view:managers");
+		roles.add("execute:experts");
+		roles.add("all:everyone");
+		roles.add("employees");
+		
+		descriptor.setRequiredRoles(roles);
+		
+		assertNotNull(descriptor);
+		assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
+		assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
+		assertEquals(AuditMode.JMS, descriptor.getAuditMode());
+		assertEquals(PersistenceMode.JPA, descriptor.getPersistenceMode());
+		assertEquals(RuntimeStrategy.SINGLETON, descriptor.getRuntimeStrategy());
+		assertEquals(1, descriptor.getMarshallingStrategies().size());
+		assertEquals(0, descriptor.getConfiguration().size());
+		assertEquals(0, descriptor.getEnvironmentEntries().size());
+		assertEquals(0, descriptor.getEventListeners().size());
+		assertEquals(0, descriptor.getGlobals().size());		
+		assertEquals(0, descriptor.getTaskEventListeners().size());
+		assertEquals(0, descriptor.getWorkItemHandlers().size());
+		assertEquals(4, descriptor.getRequiredRoles().size());
+		
+		List<String> toVerify = descriptor.getRequiredRoles();
+		assertEquals(4, toVerify.size());
+		assertTrue(toVerify.contains("view:managers"));
+		assertTrue(toVerify.contains("execute:experts"));
+		assertTrue(toVerify.contains("all:everyone"));
+		assertTrue(toVerify.contains("employees"));
+		
+		toVerify = descriptor.getRequiredRoles(DeploymentDescriptor.TYPE_ALL);
+		assertEquals(4, toVerify.size());
+		assertTrue(toVerify.contains("managers"));
+		assertTrue(toVerify.contains("experts"));
+		assertTrue(toVerify.contains("everyone"));
+		assertTrue(toVerify.contains("employees"));
+		
+		toVerify = descriptor.getRequiredRoles(DeploymentDescriptor.TYPE_EXECUTE);
+		assertEquals(2, toVerify.size());
+		assertTrue(toVerify.contains("experts"));
+		assertTrue(toVerify.contains("employees"));
+		
+		toVerify = descriptor.getRequiredRoles(DeploymentDescriptor.TYPE_VIEW);
+		assertEquals(2, toVerify.size());
+		assertTrue(toVerify.contains("managers"));
+		assertTrue(toVerify.contains("employees"));
 	}
 }
