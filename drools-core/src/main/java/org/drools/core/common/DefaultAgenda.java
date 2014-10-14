@@ -35,6 +35,7 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
+import org.drools.core.spi.Consequence;
 import org.drools.core.spi.ConsequenceException;
 import org.drools.core.spi.ConsequenceExceptionHandler;
 import org.drools.core.spi.InternalActivationGroup;
@@ -49,7 +50,6 @@ import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.runtime.beliefs.Mode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,7 +119,7 @@ public class DefaultAgenda
 
     private org.kie.api.runtime.rule.ConsequenceExceptionHandler consequenceExceptionHandler;
 
-    protected AtomicBoolean                                      halt               = new AtomicBoolean( true );
+    protected final AtomicBoolean                                halt               = new AtomicBoolean( true );
     protected volatile boolean                                   fireUntilHalt      = false;
 
     protected int                                                activationCounter;
@@ -315,7 +315,7 @@ public class DefaultAgenda
 
     @Override
     public void removeQueryAgendaItem(RuleAgendaItem item) {
-        queries.remove( (QueryImpl) item.getRule() );
+        queries.remove( item.getRule() );
         if ( log.isTraceEnabled() ) {
             log.trace("Removed {} from query evaluation list.", item.getRule().getName() );
         }
@@ -725,7 +725,7 @@ public class DefaultAgenda
     private void innerDeactiveRuleFlowGroup(InternalRuleFlowGroup group) {
         group.hasRuleFlowListener(false);
         group.getNodeInstances().clear();
-        ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupDeactivated( group, this.workingMemory );
+        ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupDeactivated(group, this.workingMemory);
     }
 
     /*
@@ -761,10 +761,9 @@ public class DefaultAgenda
      */
     public Activation[] getActivations() {
         final List<Activation> list = new ArrayList<Activation>();
-        for ( final java.util.Iterator<InternalAgendaGroup> it = this.agendaGroups.values().iterator(); it.hasNext(); ) {
-            final AgendaGroup group = it.next();
-            for ( Match activation : group.getActivations() ) {
-                list.add( (Activation) activation );
+        for (InternalAgendaGroup group : this.agendaGroups.values()) {
+            for (Match activation : group.getActivations()) {
+                list.add((Activation) activation);
             }
         }
         return list.toArray( new Activation[list.size()] );
@@ -941,7 +940,7 @@ public class DefaultAgenda
     }
 
     public void clearAndCancelRuleFlowGroup(final String name) {
-        clearAndCancelAgendaGroup( agendaGroups.get(name) );
+        clearAndCancelAgendaGroup(agendaGroups.get(name));
     }
 
     public void clearAndCancelAndCancel(final RuleFlowGroup ruleFlowGroup) {
@@ -1118,7 +1117,7 @@ public class DefaultAgenda
                         if ( handle.isExpired() ) {
                             if ( handle.getActivationsCount() <= 0 ) {
                                 // and if no more activations, retract the handle
-                                handle.getEntryPoint().retract( handle );
+                                handle.getEntryPoint().delete( handle );
                             }
                         }
                     }
@@ -1129,6 +1128,43 @@ public class DefaultAgenda
                                                                            this.workingMemory );
 
             unstageActivations();
+        } finally {
+            this.workingMemory.endOperation();
+        }
+    }
+
+    public synchronized void fireActivationEvent(Activation activation, Consequence event) throws ConsequenceException {
+        this.workingMemory.startOperation();
+        try {
+            try {
+
+                this.knowledgeHelper.setActivation( activation );
+                if ( log.isTraceEnabled() ) {
+                    log.trace( "Fire event {} for rule \"{}\" \n{}", event.getName(), activation.getRule().getName(), activation.getTuple() );
+                }
+                event.evaluate(this.knowledgeHelper,
+                               this.workingMemory);
+                this.knowledgeHelper.cancelRemainingPreviousLogicalDependencies();
+                this.knowledgeHelper.reset();
+            } catch ( final Exception e ) {
+                if ( this.legacyConsequenceExceptionHandler != null ) {
+                    this.legacyConsequenceExceptionHandler.handleException( activation,
+                                                                            this.workingMemory,
+                                                                            e );
+                } else if ( this.consequenceExceptionHandler != null ) {
+                    this.consequenceExceptionHandler.handleException( activation, this.workingMemory.getKnowledgeRuntime(),
+                                                                      e );
+                } else {
+                    throw new RuntimeException( e );
+                }
+            } finally {
+                if ( activation.getFactHandle() != null ) {
+                    // update the Activation in the WM
+                    InternalFactHandle factHandle = activation.getFactHandle();
+                    workingMemory.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), workingMemory );
+                    activation.getPropagationContext().evaluateActionQueue( workingMemory );
+                }
+            }
         } finally {
             this.workingMemory.endOperation();
         }

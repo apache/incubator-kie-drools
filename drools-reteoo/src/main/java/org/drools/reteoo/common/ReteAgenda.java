@@ -49,10 +49,11 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.spi.AgendaGroup;
+import org.drools.core.spi.Consequence;
 import org.drools.core.spi.ConsequenceException;
 import org.drools.core.spi.ConsequenceExceptionHandler;
+import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
@@ -64,7 +65,6 @@ import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.runtime.beliefs.Mode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1355,6 +1355,10 @@ public class ReteAgenda<M extends ModedAssertion<M>>
             }
             this.workingMemory.endOperation();
         }
+    }
+
+    public synchronized void fireActivationEvent(Activation activation, Consequence event) throws ConsequenceException {
+        throw new UnsupportedOperationException("Cannot invoke fireActivationEvent on ReteAgenda");
     }
 
     public synchronized boolean fireTimedActivation(final Activation activation,

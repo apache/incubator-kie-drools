@@ -18,6 +18,7 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.spi.Activation;
+import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.LinkedList;
@@ -37,11 +38,11 @@ public class RuleExecutor {
     protected static final transient Logger   log               = LoggerFactory.getLogger(RuleExecutor.class);
     private static final RuleNetworkEvaluator NETWORK_EVALUATOR = new RuleNetworkEvaluator();
     private final PathMemory                  pmem;
-    private RuleAgendaItem                    ruleAgendaItem;
-    private LeftTupleList                     tupleList;
+    private final RuleAgendaItem              ruleAgendaItem;
+    private final LeftTupleList               tupleList;
     private BinaryHeapQueue                   queue;
     private volatile boolean                  dirty;
-    private boolean                           declarativeAgendaEnabled;
+    private final boolean                     declarativeAgendaEnabled;
     private boolean                           fireExitedEarly;
 
     public RuleExecutor(final PathMemory pmem,
@@ -112,42 +113,43 @@ public class RuleExecutor {
         fire(wm, null, 0, Integer.MAX_VALUE, outerStack, agenda, fireUntilHalt);
     }
 
-    private int fire(InternalWorkingMemory wm,
-            AgendaFilter filter,
-            int fireCount,
-            int fireLimit,
-            LinkedList<StackEntry> outerStack,
-            InternalAgenda agenda,
-            boolean fireUntilHalt) {
+    private static final String ON_BEFORE_ALL_FIRES = "$onBeforeAllFire$";
+    private static final String ON_AFTER_ALL_FIRES = "$onAfterAllFire$";
+
+    private int fire( InternalWorkingMemory wm,
+                      AgendaFilter filter,
+                      int fireCount,
+                      int fireLimit,
+                      LinkedList<StackEntry> outerStack,
+                      InternalAgenda agenda,
+                      boolean fireUntilHalt) {
         int localFireCount = 0;
         if (!tupleList.isEmpty()) {
-            RuleTerminalNode rtn = (RuleTerminalNode) pmem.getNetworkNode();
-
             if (!fireExitedEarly && isDeclarativeAgendaEnabled()) {
                 // Network Evaluation can notify meta rules, which should be given a chance to fire first
                 RuleAgendaItem nextRule = agenda.peekNextRule();
-                if (!isHighestSalience(nextRule, ruleAgendaItem.getSalience())) {
+                if (isLowerSalience(nextRule, ruleAgendaItem.getSalience())) {
                     fireExitedEarly = true;
                     return localFireCount;
                 }
             }
 
-            while (!tupleList.isEmpty()) {
-                LeftTuple leftTuple;
-                if (queue != null) {
-                    leftTuple = (LeftTuple) queue.dequeue();
-                    tupleList.remove(leftTuple);
-                } else {
-                    leftTuple = tupleList.removeFirst();
-                    ((Activation) leftTuple).setQueued(false);
+            RuleTerminalNode rtn = (RuleTerminalNode) pmem.getNetworkNode();
+            RuleImpl rule = rtn.getRule();
+            LeftTuple leftTuple = getNextLeftTuple();
+            
+            if (rule.isAllMatches()) {
+                Consequence beforeAllFires = rule.getNamedConsequence(ON_BEFORE_ALL_FIRES);
+                if (beforeAllFires != null) {
+                    agenda.fireActivationEvent((AgendaItem) leftTuple, beforeAllFires);
                 }
+            }
 
-                rtn = (RuleTerminalNode) leftTuple.getSink(); // branches result in multiple RTN's for a given rule, so unwrap per LeftTuple
-                RuleImpl rule = rtn.getRule();
+            LeftTuple lastLeftTuple = null;
+            for (; leftTuple != null; lastLeftTuple = leftTuple, leftTuple = getNextLeftTuple()) {
 
                 PropagationContext pctx = leftTuple.getPropagationContext();
-                pctx = RuleTerminalNode.findMostRecentPropagationContext(leftTuple,
-                        pctx);
+                pctx = RuleTerminalNode.findMostRecentPropagationContext(leftTuple, pctx);
 
                 //check if the rule is not effective or
                 // if the current Rule is no-loop and the origin rule is the same then return
@@ -176,12 +178,14 @@ public class RuleExecutor {
                     salience = ruleAgendaItem.getSalience();
                 }
 
-                RuleAgendaItem nextRule = agenda.peekNextRule();
-                if (haltRuleFiring(nextRule, fireCount, fireLimit, localFireCount, agenda, salience)) {
-                    break; // another rule has high priority and is on the agenda, so evaluate it first
+                if (!rule.isAllMatches()) { // if firing rule is @All don't give way to other rules
+                    RuleAgendaItem nextRule = agenda.peekNextRule();
+                    if (haltRuleFiring(nextRule, fireCount, fireLimit, localFireCount, agenda, salience)) {
+                        break; // another rule has high priority and is on the agenda, so evaluate it first
+                    }
+                    reEvaluateNetwork(wm, outerStack, fireUntilHalt);
+                    wm.executeQueuedActions();
                 }
-                reEvaluateNetwork(wm, outerStack, fireUntilHalt);
-                wm.executeQueuedActions();
 
                 if (tupleList.isEmpty() && !outerStack.isEmpty()) {
                     // the outer stack is nodes needing evaluation, once all rule firing is done
@@ -190,12 +194,34 @@ public class RuleExecutor {
                     NETWORK_EVALUATOR.evalStackEntry(entry, outerStack, outerStack, this, wm);
                 }
             }
+
+            if (rule.isAllMatches()) {
+                Consequence afterAllFires = rule.getNamedConsequence(ON_AFTER_ALL_FIRES);
+                if (afterAllFires != null) {
+                    agenda.fireActivationEvent((AgendaItem) lastLeftTuple, afterAllFires);
+                }
+            }
         }
 
         removeRuleAgendaItemWhenEmpty(wm);
 
         fireExitedEarly = false;
         return localFireCount;
+    }
+
+    private LeftTuple getNextLeftTuple() {
+        if (tupleList.isEmpty()) {
+            return null;
+        }
+        LeftTuple leftTuple;
+        if (queue != null) {
+            leftTuple = (LeftTuple) queue.dequeue();
+            tupleList.remove(leftTuple);
+        } else {
+            leftTuple = tupleList.removeFirst();
+            ((Activation) leftTuple).setQueued(false);
+        }
+        return leftTuple;
     }
 
     public PathMemory getPathMemory() {
@@ -362,13 +388,12 @@ public class RuleExecutor {
 
 
         return !agenda.continueFiring(0) ||
-               ( (nextRule != null) && (!ruleAgendaItem.getRule().getAgendaGroup().equals( nextRule.getAgendaGroup() ) || !isHighestSalience(nextRule, salience)) )
+               ( nextRule != null && (!ruleAgendaItem.getRule().getAgendaGroup().equals( nextRule.getRule().getAgendaGroup() ) || isLowerSalience(nextRule, salience)) )
                || (fireLimit >= 0 && (localFireCount + fireCount >= fireLimit));
     }
 
-    public boolean isHighestSalience(RuleAgendaItem nextRule,
-                                     int currentSalience) {
-        return nextRule.getSalience() <= currentSalience;
+    private boolean isLowerSalience(RuleAgendaItem nextRule, int currentSalience) {
+        return nextRule.getSalience() >= currentSalience;
     }
 
     public LeftTupleList getLeftTupleList() {
