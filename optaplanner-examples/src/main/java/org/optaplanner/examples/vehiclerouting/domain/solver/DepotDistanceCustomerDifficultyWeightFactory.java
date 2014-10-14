@@ -31,24 +31,25 @@ public class DepotDistanceCustomerDifficultyWeightFactory
     public Comparable createSorterWeight(VehicleRoutingSolution vehicleRoutingSolution, Customer customer) {
         Depot depot = vehicleRoutingSolution.getDepotList().get(0);
         return new DepotDistanceCustomerDifficultyWeight(customer,
-                customer.getLocation().getDistance(depot.getLocation()));
+                customer.getLocation().getDistance(depot.getLocation())
+                        + depot.getLocation().getDistance(customer.getLocation()));
     }
 
     public static class DepotDistanceCustomerDifficultyWeight
             implements Comparable<DepotDistanceCustomerDifficultyWeight> {
 
         private final Customer customer;
-        private final int depotDistance;
+        private final int depotRoundTripDistance;
 
         public DepotDistanceCustomerDifficultyWeight(Customer customer,
-                int depotDistance) {
+                int depotRoundTripDistance) {
             this.customer = customer;
-            this.depotDistance = depotDistance;
+            this.depotRoundTripDistance = depotRoundTripDistance;
         }
 
         public int compareTo(DepotDistanceCustomerDifficultyWeight other) {
             return new CompareToBuilder()
-                    .append(depotDistance, other.depotDistance) // Ascending (further from the depot are more difficult)
+                    .append(depotRoundTripDistance, other.depotRoundTripDistance) // Ascending (further from the depot are more difficult)
                     .append(customer.getDemand(), other.customer.getDemand())
                     .append(customer.getLocation().getLatitude(), other.customer.getLocation().getLatitude())
                     .append(customer.getLocation().getLongitude(), other.customer.getLocation().getLongitude())

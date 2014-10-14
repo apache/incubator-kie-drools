@@ -32,9 +32,9 @@ global SimpleLongScoreHolder scoreHolder;
 
 rule "distanceToPreviousStandstill"
     when
-        $visit : Visit(previousStandstill != null, $distanceToPreviousStandstill : distanceToPreviousStandstill)
+        $visit : Visit(previousStandstill != null, $distanceFromPreviousStandstill : distanceFromPreviousStandstill)
     then
-        scoreHolder.addConstraintMatch(kcontext, - $distanceToPreviousStandstill);
+        scoreHolder.addConstraintMatch(kcontext, - $distanceFromPreviousStandstill);
 end
 
 rule "distanceFromLastVisitToDomicile"

@@ -26,23 +26,23 @@ public class DomicileDistanceVisitDifficultyWeightFactory implements SelectionSo
 
     public Comparable createSorterWeight(TravelingSalesmanTour tour, Visit visit) {
         Domicile domicile = tour.getDomicile();
-        long domicileDistance = visit.getDistanceTo(domicile);
-        return new DomicileDistanceVisitDifficultyWeight(visit, domicileDistance);
+        long domicileRoundTripDistance = domicile.getDistanceTo(visit) + visit.getDistanceTo(domicile);
+        return new DomicileDistanceVisitDifficultyWeight(visit, domicileRoundTripDistance);
     }
 
     public static class DomicileDistanceVisitDifficultyWeight implements Comparable<DomicileDistanceVisitDifficultyWeight> {
 
         private final Visit visit;
-        private final long domicileDistance;
+        private final long domicileRoundTripDistance;
 
-        public DomicileDistanceVisitDifficultyWeight(Visit visit, long domicileDistance) {
+        public DomicileDistanceVisitDifficultyWeight(Visit visit, long domicileRoundTripDistance) {
             this.visit = visit;
-            this.domicileDistance = domicileDistance;
+            this.domicileRoundTripDistance = domicileRoundTripDistance;
         }
 
         public int compareTo(DomicileDistanceVisitDifficultyWeight other) {
             return new CompareToBuilder()
-                    .append(domicileDistance, other.domicileDistance)
+                    .append(domicileRoundTripDistance, other.domicileRoundTripDistance)
                     .append(visit.getCity().getLatitude(), other.visit.getCity().getLatitude())
                     .append(visit.getId(), other.visit.getId())
                     .toComparison();

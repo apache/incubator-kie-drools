@@ -75,7 +75,7 @@ public class TspListPanel extends JPanel implements Scrollable {
                 distanceLabelString = "Unassigned";
             } else {
                 distanceLabelString = "After " + visit.getPreviousStandstill().getCity().getSafeName()
-                        + " with distance " + visit.getDistanceToPreviousStandstill();
+                        + " with distance " + visit.getDistanceFromPreviousStandstill();
             }
             visitPanel.add(new JLabel(distanceLabelString));
             add(visitPanel);

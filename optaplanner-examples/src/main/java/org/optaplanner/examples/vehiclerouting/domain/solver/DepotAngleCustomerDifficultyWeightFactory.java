@@ -32,7 +32,8 @@ public class DepotAngleCustomerDifficultyWeightFactory
         Depot depot = vehicleRoutingSolution.getDepotList().get(0);
         return new DepotAngleCustomerDifficultyWeight(customer,
                 customer.getLocation().getAngle(depot.getLocation()),
-                customer.getLocation().getDistance(depot.getLocation()));
+                customer.getLocation().getDistance(depot.getLocation())
+                        + depot.getLocation().getDistance(customer.getLocation()));
     }
 
     public static class DepotAngleCustomerDifficultyWeight
@@ -40,19 +41,19 @@ public class DepotAngleCustomerDifficultyWeightFactory
 
         private final Customer customer;
         private final double depotAngle;
-        private final int depotDistance;
+        private final int depotRoundTripDistance;
 
         public DepotAngleCustomerDifficultyWeight(Customer customer,
-                double depotAngle, int depotDistance) {
+                double depotAngle, int depotRoundTripDistance) {
             this.customer = customer;
             this.depotAngle = depotAngle;
-            this.depotDistance = depotDistance;
+            this.depotRoundTripDistance = depotRoundTripDistance;
         }
 
         public int compareTo(DepotAngleCustomerDifficultyWeight other) {
             return new CompareToBuilder()
                     .append(depotAngle, other.depotAngle)
-                    .append(depotDistance, other.depotDistance) // Ascending (further from the depot are more difficult)
+                    .append(depotRoundTripDistance, other.depotRoundTripDistance) // Ascending (further from the depot are more difficult)
                     .append(customer.getId(), other.customer.getId())
                     .toComparison();
         }

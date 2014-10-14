@@ -57,7 +57,7 @@ public class Visit extends AbstractPersistable implements Standstill {
     /**
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public long getDistanceToPreviousStandstill() {
+    public long getDistanceFromPreviousStandstill() {
         if (previousStandstill == null) {
             return 0L;
         }

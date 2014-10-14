@@ -23,4 +23,10 @@ public interface Standstill {
      */
     City getCity();
 
+    /**
+     * @param standstill never null
+     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
+     */
+    long getDistanceTo(Standstill standstill);
+
 }

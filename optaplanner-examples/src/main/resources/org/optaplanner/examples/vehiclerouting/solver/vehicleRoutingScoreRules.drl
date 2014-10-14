@@ -54,9 +54,9 @@ end
 
 rule "distanceToPreviousStandstill"
     when
-        $customer : Customer(previousStandstill != null, $distanceToPreviousStandstill : distanceToPreviousStandstill)
+        $customer : Customer(previousStandstill != null, $distanceFromPreviousStandstill : distanceFromPreviousStandstill)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $distanceToPreviousStandstill);
+        scoreHolder.addSoftConstraintMatch(kcontext, - $distanceFromPreviousStandstill);
 end
 
 rule "distanceFromLastCustomerToDepot"

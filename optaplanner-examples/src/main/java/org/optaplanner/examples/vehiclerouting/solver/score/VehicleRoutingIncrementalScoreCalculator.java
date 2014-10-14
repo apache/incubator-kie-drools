@@ -126,7 +126,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         Standstill previousStandstill = customer.getPreviousStandstill();
         if (previousStandstill != null) {
             // Score constraint distanceToPreviousStandstill
-            softScore -= customer.getDistanceToPreviousStandstill();
+            softScore -= customer.getDistanceFromPreviousStandstill();
         }
     }
 
@@ -134,7 +134,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         Standstill previousStandstill = customer.getPreviousStandstill();
         if (previousStandstill != null) {
             // Score constraint distanceToPreviousStandstill
-            softScore += customer.getDistanceToPreviousStandstill();
+            softScore += customer.getDistanceFromPreviousStandstill();
         }
     }
 

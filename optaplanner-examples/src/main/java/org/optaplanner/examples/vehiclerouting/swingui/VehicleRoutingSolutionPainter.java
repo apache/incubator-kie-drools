@@ -156,7 +156,7 @@ public class VehicleRoutingSolutionPainter {
                     int y = translator.translateLatitudeToY(location.getLatitude());
                     drawRoute(g, previousX, previousY, x, y, location instanceof AirLocation);
                     // Determine where to draw the vehicle info
-                    int distance = customer.getDistanceToPreviousStandstill();
+                    int distance = customer.getDistanceFromPreviousStandstill();
                     if (customer.getPreviousStandstill() instanceof Customer) {
                         if (longestNonDepotDistance < distance) {
                             longestNonDepotDistance = distance;

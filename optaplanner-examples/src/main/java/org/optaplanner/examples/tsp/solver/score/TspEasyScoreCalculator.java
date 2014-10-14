@@ -36,7 +36,7 @@ public class TspEasyScoreCalculator implements EasyScoreCalculator<TravelingSale
         for (Visit visit : visitList) {
             Standstill previousStandstill = visit.getPreviousStandstill();
             if (previousStandstill != null) {
-                score -= visit.getDistanceToPreviousStandstill();
+                score -= visit.getDistanceFromPreviousStandstill();
                 if (previousStandstill instanceof Visit) {
                     tailVisitSet.remove(previousStandstill);
                 }
@@ -45,7 +45,7 @@ public class TspEasyScoreCalculator implements EasyScoreCalculator<TravelingSale
         Domicile domicile = tour.getDomicile();
         for (Visit tailVisit : tailVisitSet) {
             if (tailVisit.getPreviousStandstill() != null) {
-                score -= domicile.getCity().getDistance(tailVisit.getCity());
+                score -= tailVisit.getDistanceTo(domicile);
             }
         }
         return SimpleLongScore.valueOf(score);

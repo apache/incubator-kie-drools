@@ -64,20 +64,20 @@ public class TspIncrementalScoreCalculator extends AbstractIncrementalScoreCalcu
     private void insert(Visit visit) {
         Standstill previousStandstill = visit.getPreviousStandstill();
         if (previousStandstill != null) {
-            score -= visit.getDistanceToPreviousStandstill();
+            score -= visit.getDistanceFromPreviousStandstill();
             // HACK: This counts too much, but the insert/retracts balance each other out
-            score += domicile.getCity().getDistance(previousStandstill.getCity());
-            score -= domicile.getCity().getDistance(visit.getCity());
+            score += previousStandstill.getDistanceTo(domicile);
+            score -= visit.getDistanceTo(domicile);
         }
     }
 
     private void retract(Visit visit) {
         Standstill previousStandstill = visit.getPreviousStandstill();
         if (previousStandstill != null) {
-            score += visit.getDistanceToPreviousStandstill();
+            score += visit.getDistanceFromPreviousStandstill();
             // HACK: This counts too much, but the insert/retracts balance each other out
-            score -= domicile.getCity().getDistance(previousStandstill.getCity());
-            score += domicile.getCity().getDistance(visit.getCity());
+            score -= previousStandstill.getDistanceTo(domicile);
+            score += visit.getDistanceTo(domicile);
         }
     }
 

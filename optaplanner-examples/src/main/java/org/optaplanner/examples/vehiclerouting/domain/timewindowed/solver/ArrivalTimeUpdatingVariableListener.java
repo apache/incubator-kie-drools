@@ -60,9 +60,9 @@ public class ArrivalTimeUpdatingVariableListener implements VariableListener<Cus
         }
         if (previousDepartureTime == null) {
             // PreviousStandstill is the Vehicle, so we leave from the Depot at the best suitable time
-            return Math.max(customer.getReadyTime(), customer.getDistanceToPreviousStandstill());
+            return Math.max(customer.getReadyTime(), customer.getDistanceFromPreviousStandstill());
         }
-        return previousDepartureTime + customer.getDistanceToPreviousStandstill();
+        return previousDepartureTime + customer.getDistanceFromPreviousStandstill();
     }
 
 }
