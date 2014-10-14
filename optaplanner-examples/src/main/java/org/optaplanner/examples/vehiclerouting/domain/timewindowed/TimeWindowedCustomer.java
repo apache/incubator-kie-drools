@@ -20,6 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
+import org.optaplanner.examples.vehiclerouting.domain.Standstill;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.solver.ArrivalTimeUpdatingVariableListener;
 
 @PlanningEntity
@@ -107,6 +108,22 @@ public class TimeWindowedCustomer extends Customer {
     @Override
     public TimeWindowedCustomer getNextCustomer() {
         return (TimeWindowedCustomer) super.getNextCustomer();
+    }
+
+    /**
+     * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
+     */
+    public int getTimeWindowGapTo(TimeWindowedCustomer other) {
+        // dueTime doesn't account for serviceDuration
+        int latestDepartureTime = dueTime + serviceDuration;
+        int otherLatestDepartureTime = other.getDueTime() + other.getServiceDuration();
+        if (latestDepartureTime < other.getReadyTime()) {
+            return other.getReadyTime() - latestDepartureTime;
+        }
+        if (otherLatestDepartureTime < readyTime) {
+            return readyTime - otherLatestDepartureTime;
+        }
+        return 0;
     }
 
 }
