@@ -7,7 +7,7 @@
     <title>Banking Tutorial</title>
 
     <screen><emphasis role="bold">Name:</emphasis> BankingTutorial
-<emphasis role="bold">Main class:</emphasis> org.drools.tutorials.banking.BankingExamplesApp.java
+<emphasis role="bold">Main class:</emphasis> org.drools.examples.banking.BankingExamplesApp.java
 <emphasis role="bold">Module:</emphasis> drools-examples
 <emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> org.drools.tutorials.banking.*.drl

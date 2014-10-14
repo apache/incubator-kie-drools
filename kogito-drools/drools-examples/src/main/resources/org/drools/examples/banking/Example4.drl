@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.tutorials.banking
-   
+package org.drools.examples.banking
+
+
 rule "Rule 01"   
     when
-        Number( $intValue : intValue )
+        $cashflow : Cashflow( $date : date, $amount : amount )
+        not Cashflow( date < $date)
     then
-        System.out.println("Number found with value: " + $intValue); 
+        System.out.println("Cashflow: "+$date+" :: "+$amount);  
+        retract($cashflow);
 end

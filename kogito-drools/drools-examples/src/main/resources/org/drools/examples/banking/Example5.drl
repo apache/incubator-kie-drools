@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package org.drools.tutorials.banking
+package org.drools.examples.banking
 
-
-rule "Rule 01"   
+rule "Rule 01"  
     when
-        $cashflow : Cashflow( $date : date, $amount : amount )
-        not Cashflow( date < $date)
+        $cashflow : TypedCashflow( $date : date,
+                                   $amount : amount,
+                                   type == TypedCashflow.CREDIT )
+        not TypedCashflow( date < $date,
+                           type == TypedCashflow.CREDIT )
     then
-        System.out.println("Cashflow: "+$date+" :: "+$amount);  
+        System.out.println("Credit: "+$date+" :: "+$amount);   
         retract($cashflow);
 end

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.tutorials.banking;
+package org.drools.examples.banking;
 
 import java.util.Date;
 

@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.tutorials.banking
+package org.drools.examples.banking
 
-
+ 
 rule "Rule 01"   
     when
-        eval (1==1)
+        $number : Number( )
+        not Number( intValue < $number.intValue )
     then
-        System.out.println("Rule 01 Works");
-end
+        System.out.println("Number found with value: " + $number.intValue() ); 
+        retract( $number );
+end 

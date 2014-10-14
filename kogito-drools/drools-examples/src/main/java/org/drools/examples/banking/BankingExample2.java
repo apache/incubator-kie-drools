@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package org.drools.tutorials.banking;
+package org.drools.examples.banking;
 
-public class BankingExample4 {
+public class BankingExample2 {
     public static void main(String[] args) {
-        Object[] cashflows = {
-            new Cashflow(new SimpleDate("01/01/2007"), 300.00),
-            new Cashflow(new SimpleDate("05/01/2007"), 100.00),
-            new Cashflow(new SimpleDate("11/01/2007"), 500.00),
-            new Cashflow(new SimpleDate("07/01/2007"), 800.00),
-            new Cashflow(new SimpleDate("02/01/2007"), 400.00),
-        };
-        
-        new RuleRunner().runRules( new String[] { "Example4.drl" },
-                                   cashflows );
+        Number[] numbers = new Number[] {wrap(3), wrap(1), wrap(4), wrap(1), wrap(5)};
+        new RuleRunner().runRules( new String[] { "Example2.drl" },
+                                   numbers );
+    }
+    
+    private static Integer wrap(int i) {
+        return new Integer(i);
     }
 }
