@@ -93,6 +93,12 @@
           e.g.: 1d2h, means one day and two hours.
           (See Drools Fusion for more information on this matter).
         </para>
+      </listitem>
+
+      <listitem>
+        <para>Remotable: If checked this property makes the Entity available to be used with jBPM remote services as
+          REST, JMS and WS. (See jBPM for more information on this matter).
+        </para>
         <para/>
       </listitem>
 

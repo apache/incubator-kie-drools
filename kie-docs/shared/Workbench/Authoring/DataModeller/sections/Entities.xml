@@ -19,32 +19,17 @@
     represents.
   </para>
 
-  <para>Creating a data entity can be achieved either by clicking the "Create"
-    button in the model browser section (see fig. "The data model browser"
-    above), or by clicking the one in the top data modeller menu:
+  <para>Creating a data entity can be achieved using the workbench "New Item - Java File" menu option.
+
   </para>
 
   <figure>
-    <title>Starting creation of an entity from the top menu</title>
+    <title>New Java File menu option</title>
 
     <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Workbench/Authoring/DataModeller/create_top.jpg"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
-  </figure>
-
-  <para>This will pop up the new object screen:</para>
-
-  <figure>
-    <title>The new entity pop up screen</title>
-
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Workbench/Authoring/DataModeller/new_object.jpg"/>
+          <imagedata fileref="images/Workbench/Authoring/DataModeller/new_java_file.jpg"/>
         </imageobject>
       </mediaobject>
     </screenshot>
@@ -52,87 +37,8 @@
 
   <para/>
 
-  <para>Some initial information needs to be provided before creating the new
-    object:
-  </para>
-
-  <itemizedlist>
-    <listitem>
-      <para>The object's internal identifier (mandatory). The value of this
-        field must be unique per package, i.e. if the object's proposed
-        identifier already exists in the selected package, an error message will
-        be displayed.
-      </para>
-    </listitem>
-
-    <listitem>
-      <para>A label (optional): this field allows the user to define a
-        user-friendly label for the data entity about to be created. This is
-        purely conceptual info that has no further influence on how objects of
-        this entity will be treated. If a label is defined, then this is how the
-        entity will be displayed throughout the data modeller tool.
-      </para>
-    </listitem>
-
-    <listitem>
-      <para>A package (mandatory): a data entity must always be created within
-        a package (or name space, in which this entity will be unique at a
-        platform level). By default, the option for selecting an already
-        existing package will be activated, in which case the corresponding
-        drop-down shows all the packages that are currently defined. If a new
-        package needs to be defined for this entity, then the "New package"
-        option should be selected. In this case the new to be created package
-        should be input into the corresponding text-field. The format for
-        defining new packages is the same as the one for standard Java
-        packages.
-      </para>
-    </listitem>
-
-    <listitem>
-      <para>A superclass (optional): this will indicate that this entity
-        extends from another already existing one. Since the data modeller
-        entities are translated into standard Java classes, indicating a
-        superclass implies normal Java object extension at the generated-code
-        level.
-      </para>
-    </listitem>
-  </itemizedlist>
-
-  <para>Once the user has provided at least the mandatory information, by
-    pushing the "Ok" button at the bottom of the screen the new data entity will
-    be created. It will be added to the model browser's entity listing.
-  </para>
-
-  <para>It will also appear automatically selected, to make it easy for the
-    user to complete the definition of the newly created entity, by completing
-    the entity's properties in the Data Object Properties browser, or by adding
-    new fields.
-  </para>
-
-  <figure>
-    <title>New entity has been created</title>
-
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Workbench/Authoring/DataModeller/new_created.jpg"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
-  </figure>
-
-  <note>
-    <para>As can be seen in the above figure, after performing changes to the
-      data model, the model name will appear with an '*' to alert the user of
-      the existence of un-persisted changes to the model.
-    </para>
-  </note>
-
-  <para>In the Data Modeller's object browsing section, an entity can be
-    deleted by clicking upon the 'x' icon to the right of each entity. If an
-    entity is being referenced from within another entity (as a field
-    type), then the modeller tool will not allow it to be deleted, and an error
-    message will appear on the screen.
+  <para>Both resource name and location are mandatory parameters. When the "Ok" button is pressed a new Java file will
+    be created and a new editor instance will be opened for the file edition.
   </para>
 
   <para/>

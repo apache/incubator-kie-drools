@@ -10,17 +10,17 @@
   <title>Roundtrip and concurrency</title>
 
   <para>
-  Current version implements roundtrip and code preservation between Data modeler and Java source code.
-  No matter where the Java code was generated (e.g. Eclipse, Data modeller), the data modeler will only
+  Current version implements roundtrip and code preservation between Data modeller and Java source code.
+  No matter where the Java code was generated (e.g. Eclipse, Data modeller), the data modeller will only
   create/delete/update the necessary code elements to maintain the model updated, i.e, fields, getter/setters,
   constructors, equals method and hashCode method. Also whatever Type or Field annotation not managed by the
-  Data Modeler will be preserved when the Java sources are updated by the Data modeler.
+  Data Modeler will be preserved when the Java sources are updated by the Data modeller.
   </para>
 
   <para>
   Aside from code preservation, like in the other workbench editors, concurrent modification scenarios are still
   possible. Common scenarios are when two different users are updating the model for the same project, e.g. using the
-  data modeler or executing a 'git push command' that modifies project sources.
+  data modeller or executing a 'git push command' that modifies project sources.
   </para>
 
   <para>From an application context's perspective, we can basically identify
@@ -98,7 +98,7 @@
     application context.</para>
 
     <para>In this alternative scenario, immediately after the external user
-    commits his changes to the asset repository (or e.g. saves the model with the data modeler in a different session),
+    commits his changes to the asset repository (or e.g. saves the model with the data modeller in a different session),
     a warning is issued to the application user:</para>
 
     <figure>
@@ -152,45 +152,6 @@
             and reload the model.</para>
           </listitem>
 
-          <listitem>
-            <para>The user switches to another project. In this case he will
-            be warned of the existence of non-persisted local changes through
-            the following warning message:</para>
-
-            <figure>
-              <title>Project switch warning</title>
-
-              <screenshot>
-                <mediaobject>
-                  <imageobject>
-                    <imagedata fileref="images/Workbench/Authoring/DataModeller/project-switch_save.jpg"/>
-                  </imageobject>
-                </mediaobject>
-              </screenshot>
-            </figure>
-
-			<para/>
-
-            <para>If the user chooses to persist the local changes, then
-            another pop-up message will point out the existence of the changes
-            that were made externally:</para>
-
-            <figure>
-              <title>Project switch external changes warning</title>
-
-              <screenshot>
-                <mediaobject>
-                  <imageobject>
-                    <imagedata fileref="images/Workbench/Authoring/DataModeller/extchanges_projswitch_forcesave_discard.jpg"/>
-                  </imageobject>
-                </mediaobject>
-              </screenshot>
-            </figure>
-
-            <para>The "Yes, Force Save" option will effectively overwrite any
-            external changes, while "No, Discard my Changes" will switch to
-            the other project, discarding any local changes.</para>
-          </listitem>
         </itemizedlist>
       </listitem>
     </itemizedlist>
