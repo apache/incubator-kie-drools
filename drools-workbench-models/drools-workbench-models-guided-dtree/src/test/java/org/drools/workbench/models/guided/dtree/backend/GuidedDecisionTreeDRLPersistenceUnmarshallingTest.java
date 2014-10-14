@@ -127,6 +127,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -173,6 +175,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -233,6 +237,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -291,6 +297,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -347,6 +355,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -412,6 +422,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -505,6 +517,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -612,6 +626,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -726,6 +742,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -838,6 +856,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -965,6 +985,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1085,6 +1107,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1143,6 +1167,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1201,6 +1227,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1259,6 +1287,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1317,6 +1347,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1375,6 +1407,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1433,6 +1467,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1491,6 +1527,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1549,6 +1587,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1607,6 +1647,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1665,6 +1707,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1715,6 +1759,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1761,6 +1807,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1820,6 +1868,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1878,6 +1928,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1952,6 +2004,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2032,6 +2086,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2125,6 +2181,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2211,6 +2269,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2278,6 +2338,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2344,6 +2406,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2414,6 +2478,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2492,6 +2558,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2583,6 +2651,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2667,6 +2737,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2734,6 +2806,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2799,6 +2873,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2870,6 +2946,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2941,6 +3019,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -3026,6 +3106,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -3109,6 +3191,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                                                                                    dmo );
 
         assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
