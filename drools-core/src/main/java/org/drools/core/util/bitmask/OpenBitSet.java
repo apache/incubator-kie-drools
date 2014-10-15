@@ -1,4 +1,4 @@
-package org.drools.beliefs.bayes;
+package org.drools.core.util.bitmask;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -73,7 +73,7 @@ import java.util.Collections;
  </table>
  */
 
-public class OpenBitSet implements Cloneable {
+public class OpenBitSet implements BitMask {
     protected long[] bits;
     protected int wlen;   // number of words (elements) used in the array
 
@@ -788,7 +788,7 @@ public class OpenBitSet implements Cloneable {
 
     // some BitSet compatability methods
 
-    //** see {@link intersect} */
+    //** see {@link intersects} */
     public void and(OpenBitSet other) {
         intersect(other);
     }
@@ -905,7 +905,7 @@ public class OpenBitSet implements Cloneable {
      *
      * @param minTargetSize Minimum required value to be returned.
      * @param bytesPerElement Bytes used by each element of
-     * the array.  See constants in {@link RamUsageEstimator}.
+     * the array.
      *
      * @lucene.internal
      */
@@ -1232,6 +1232,104 @@ public class OpenBitSet implements Cloneable {
 
         return s.toString();
     }
-}
 
+    // ////////////////////////////////////////////////////////////////////////
+    // // BitMask
+    // ////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public BitMask set(int index) {
+        fastSet(index);
+        return this;
+    }
+
+    @Override
+    public BitMask setAll(BitMask mask) {
+        if (mask instanceof OpenBitSet) {
+            union((OpenBitSet)mask);
+        } else if (mask instanceof AllSetBitMask) {
+            return AllSetBitMask.get();
+        } else if (mask instanceof AllSetButLastBitMask) {
+            return isSet(0) ? AllSetBitMask.get() : AllSetButLastBitMask.get();
+        } else if (mask instanceof EmptyButLastBitMask) {
+            return set(0);
+        } else if (mask instanceof LongBitMask) {
+            this.bits[0] |= ((LongBitMask) mask).asLong();
+        }
+        return this;
+    }
+
+    @Override
+    public BitMask reset(int index) {
+        fastClear(index);
+        return this;
+    }
+
+    @Override
+    public BitMask resetAll(BitMask mask) {
+        if (mask instanceof OpenBitSet) {
+            remove((OpenBitSet)mask);
+        } else if (mask instanceof AllSetBitMask) {
+            for (int i = 0; i < this.bits.length; i++) {
+                this.bits[i] = 0L;
+            }
+        } else if (mask instanceof AllSetButLastBitMask) {
+            this.bits[0] = isSet(0) ? 1L : 0L;
+            for (int i = 1; i < this.bits.length; i++) {
+                this.bits[i] = 0L;
+            }
+        } else if (mask instanceof EmptyButLastBitMask) {
+            return reset(0);
+        } else if (mask instanceof LongBitMask) {
+            this.bits[0] &= (-1L - ((LongBitMask) mask).asLong());
+        }
+        return this;
+    }
+
+    @Override
+    public boolean isSet(int index) {
+        return getBit(index) == 1;
+    }
+
+    @Override
+    public boolean isAllSet() {
+        for (int i = 0; i < this.bits.length; i++) {
+            if (this.bits[i] != -1L) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean intersects(BitMask mask) {
+        if (mask.isAllSet()) {
+            return !isEmpty();
+        }
+        if (mask instanceof AllSetButLastBitMask) {
+            return nextSetBit(1) != -1;
+        }
+        if (mask instanceof EmptyBitMask) {
+            return false;
+        }
+        if (mask instanceof EmptyButLastBitMask) {
+            return isSet(0);
+        }
+        return mask instanceof OpenBitSet ?
+               intersects((OpenBitSet)mask) :
+               (this.bits[0] & ((LongBitMask)mask).asLong()) != 0;
+    }
+
+    @Override
+    public String getInstancingStatement() {
+        StringBuilder sb = new StringBuilder("new " + OpenBitSet.class.getCanonicalName() + "(new long[] { ");
+        sb.append(bits[0]).append("L");
+        for (int i = 1; i < bits.length; i++) {
+            sb.append(", ");
+            sb.append(bits[i]).append("L");
+        }
+        sb.append(" }, ").append(wlen).append(")");
+        return sb.toString();
+    }
+}
 

@@ -1,5 +1,10 @@
 package org.drools.core.factmodel.traits;
 
+import org.drools.core.WorkingMemory;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.MVELSafeHelper;
+import org.drools.core.util.bitmask.BitMask;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -11,9 +16,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.util.MVELSafeHelper;
+import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
 
 public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
 
@@ -22,7 +26,7 @@ public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
 
     private TypeCache typeCache = new TypeCache();
 
-    private long modificationMask = Long.MIN_VALUE;
+    private BitMask modificationMask = onlyTraitBitSetMask();
 
     public void init( WorkingMemory wm ) {
         this.workingMemory = wm;
@@ -58,13 +62,13 @@ public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
 
     public Object donField( String name, TraitType trait, String defaultValue, Class klass, boolean logical ) {
         TraitField fld = fieldTMS.get( name );
-        modificationMask |= 1 << fld.getPosition();
+        modificationMask = setPropertyOnMask(modificationMask, fld.getPosition());
         return fld.don( trait, defaultValue != null ? MVELSafeHelper.getEvaluator().eval( defaultValue, klass ) : null, getKlass( klass ), logical, workingMemory );
     }
 
     public Object shedField( String name, TraitType trait, Class rangeKlass, Class asKlass ) {
         TraitField fld = fieldTMS.get( name );
-        modificationMask |= 1 << fld.getPosition();
+        modificationMask = setPropertyOnMask(modificationMask, fld.getPosition());
         return fld.shed( trait, getKlass( rangeKlass ), getKlass( asKlass ), workingMemory );
     }
 
@@ -81,12 +85,12 @@ public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
         return workingMemory == null;
     }
 
-    public long getModificationMask() {
+    public BitMask getModificationMask() {
         return modificationMask;
     }
 
     public void resetModificationMask() {
-        modificationMask = Long.MIN_VALUE;
+        modificationMask = onlyTraitBitSetMask();
     }
 
     public TraitField getRegisteredTraitField( String name ) {
@@ -104,7 +108,7 @@ public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
 
         out.writeObject( typeCache );
 
-        out.writeLong( modificationMask );
+        out.writeObject(modificationMask);
     }
 
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
@@ -117,7 +121,7 @@ public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
         }
 
         typeCache = (TypeCache) in.readObject();
-        modificationMask = in.readLong();
+        modificationMask = (BitMask) in.readObject();
     }
 
     public TypeCache getTypeCache() {

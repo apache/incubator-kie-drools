@@ -1232,4 +1232,105 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         assertEquals("foo", p.getAddress().getStreet());
     }
 
+    @Test(timeout = 10000L)
+    public void testMoreThan64Fields() {
+        StringBuilder fields = new StringBuilder();
+        for (int i = 10; i < 100; i++) {
+            fields.append("  a").append(i).append(" : int\n");
+        }
+        String str =
+                "package org.drools.test\n" +
+                "global java.util.List list;\n" +
+                "declare BigType @propertyReactive\n" +
+                fields +
+                "end\n" +
+                "rule Init when\n" +
+                "then\n" +
+                "  insert( new BigType() );" +
+                "end\n" +
+                "rule R when\n" +
+                "  $b : BigType( a11 == 0, a98 == 0 )" +
+                "then\n" +
+                "  modify($b) { setA12(1), setA99(1) };\n" +
+                "  list.add(1);\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+    }
+
+    @Test(timeout = 10000L)
+    public void testMoreThan64FieldsMultipleFirings() {
+        StringBuilder fields = new StringBuilder();
+        for (int i = 10; i < 100; i++) {
+            fields.append("  a").append(i).append(" : int\n");
+        }
+        String str =
+                "package org.drools.test\n" +
+                "global java.util.List list;\n" +
+                "declare BigType @propertyReactive\n" +
+                fields +
+                "end\n" +
+                "rule Init when\n" +
+                "then\n" +
+                "  insert( new BigType() );" +
+                "end\n" +
+                "rule R when\n" +
+                "  $b : BigType( a11 == 0, a12 < 10, a98 == 0 )" +
+                "then\n" +
+                "  modify($b) { setA12($b.getA12()+1), setA99(1) };\n" +
+                "  list.add(1);\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+        assertEquals(10, list.size());
+    }
+
+    @Test(timeout = 10000L)
+    public void testMoreThan64FieldsWithWatch() {
+        StringBuilder fields = new StringBuilder();
+        for (int i = 10; i < 100; i++) {
+            fields.append("  a").append(i).append(" : int\n");
+        }
+        String str =
+                "package org.drools.test\n" +
+                "global java.util.List list;\n" +
+                "declare BigType @propertyReactive\n" +
+                fields +
+                "end\n" +
+                "rule Init when\n" +
+                "then\n" +
+                "  insert( new BigType() );" +
+                "end\n" +
+                "rule R when\n" +
+                "  $b : BigType( a11 == 0, a99 < 10 ) @watch(!a99)" +
+                "then\n" +
+                "  modify($b) { setA12(1), setA99(1) };\n" +
+                "  list.add(1);\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+    }
 }

@@ -1,12 +1,29 @@
 package org.drools.compiler.rule.builder.dialect.java;
 
-import static org.drools.compiler.rule.builder.dialect.DialectUtil.fixBlockDescr;
-import static org.drools.compiler.rule.builder.dialect.DialectUtil.setContainerBlockInputs;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import org.antlr.runtime.RecognitionException;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Person;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.compiler.lang.descr.BindingDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.rule.builder.PatternBuilder;
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.compiler.rule.builder.dialect.java.parser.JavaBlockDescr;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.ImportDeclaration;
+import org.drools.core.rule.Pattern;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.Consequence;
+import org.drools.core.spi.InternalReadAccessor;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,30 +31,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.antlr.runtime.RecognitionException;
-import org.drools.compiler.Cheese;
-import org.drools.compiler.Person;
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.core.base.ClassObjectType;
-import org.drools.compiler.compiler.BoundIdentifiers;
-import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.lang.descr.BindingDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.ImportDeclaration;
-import org.drools.core.rule.Pattern;
-import org.drools.compiler.rule.builder.PatternBuilder;
-import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.compiler.rule.builder.dialect.java.parser.JavaBlockDescr;
-import org.drools.core.spi.CompiledInvoker;
-import org.drools.core.spi.Consequence;
-import org.drools.core.spi.InternalReadAccessor;
-import org.junit.Test;
+import static org.drools.compiler.rule.builder.dialect.DialectUtil.fixBlockDescr;
+import static org.drools.compiler.rule.builder.dialect.DialectUtil.setContainerBlockInputs;
+import static org.junit.Assert.*;
 
 public class JavaConsequenceBuilderTest {
 
@@ -170,10 +166,10 @@ public class JavaConsequenceBuilderTest {
             String fixed = fixBlockDescr(context, analysis, context.getDeclarationResolver().getDeclarations( context.getRule() ) );
 
             String expected = 
-                    " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 6L, org.drools.compiler.Cheese.class ); }\r\n" +
+                    " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, new org.drools.core.util.bitmask.LongBitMask(12L), org.drools.compiler.Cheese.class ); }\r\n" +
             		"  throw new java.lang.RuntimeException(\"xxx\");\r\n" + 
             		"  Cheese c1 = $cheese;\r\n" + 
-            		" { org.drools.compiler.Cheese __obj__ = ( c1 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 6L, org.drools.compiler.Cheese.class ); }\r\n" +
+            		" { org.drools.compiler.Cheese __obj__ = ( c1 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, new org.drools.core.util.bitmask.LongBitMask(12L), org.drools.compiler.Cheese.class ); }\r\n" +
             		" \r\n" + 
             		"";
 
@@ -281,24 +277,24 @@ public class JavaConsequenceBuilderTest {
                 "  Cheese c1 = $cheese;\r\n" + 
                 " try { \r\n" + 
                 "     { org.drools.compiler.Cheese __obj__ = ( c1 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); \r\n" +
-                "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 6L, org.drools.compiler.Cheese.class ); }\r\n" +
+                "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__, new org.drools.core.util.bitmask.LongBitMask(12L), org.drools.compiler.Cheese.class ); }\r\n" +
                 "      Cheese c4 = $cheese;\r\n" + 
                 "     try { \r\n" + 
-                "         { org.drools.compiler.Cheese __obj__ = ( c4 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 6L, org.drools.compiler.Cheese.class ); }\r\n" +
+                "         { org.drools.compiler.Cheese __obj__ = ( c4 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, new org.drools.core.util.bitmask.LongBitMask(12L), org.drools.compiler.Cheese.class ); }\r\n" +
                 "      } catch (java.lang.Exception e) {\r\n" + 
-                "         { org.drools.compiler.Cheese __obj__ = ( c1 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 6L, org.drools.compiler.Cheese.class ); }\r\n" +
+                "         { org.drools.compiler.Cheese __obj__ = ( c1 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, new org.drools.core.util.bitmask.LongBitMask(12L), org.drools.compiler.Cheese.class ); }\r\n" +
                 "      } finally {\r\n" + 
                 "          Cheese c3 = $cheese;\r\n" + 
-                "         { org.drools.compiler.Cheese __obj__ = ( c3 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 6L, org.drools.compiler.Cheese.class ); }\r\n" +
+                "         { org.drools.compiler.Cheese __obj__ = ( c3 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, new org.drools.core.util.bitmask.LongBitMask(12L), org.drools.compiler.Cheese.class ); }\r\n" +
                 "     }\r\n" + 
                 " } catch (java.lang.Exception e) {\r\n" + 
                 "     Cheese c2 = $cheese;\r\n" + 
-                "     { org.drools.compiler.Cheese __obj__ = ( c2 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 6L, org.drools.compiler.Cheese.class ); }\r\n" +
+                "     { org.drools.compiler.Cheese __obj__ = ( c2 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, new org.drools.core.util.bitmask.LongBitMask(12L), org.drools.compiler.Cheese.class ); }\r\n" +
                 "  } finally {\r\n" + 
                 "      Cheese c3 = $cheese;\r\n" + 
-                "     { org.drools.compiler.Cheese __obj__ = ( c3 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 6L, org.drools.compiler.Cheese.class ); }\r\n" +
+                "     { org.drools.compiler.Cheese __obj__ = ( c3 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, new org.drools.core.util.bitmask.LongBitMask(12L), org.drools.compiler.Cheese.class ); }\r\n" +
                 " }\r\n" + 
-                " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 6L, org.drools.compiler.Cheese.class ); }\r\n" +
+                " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, new org.drools.core.util.bitmask.LongBitMask(12L), org.drools.compiler.Cheese.class ); }\r\n" +
                 "  System.out.println(\"we are done\");\r\n" + 
                 " \r\n" + 
                 "";
@@ -370,23 +366,23 @@ public class JavaConsequenceBuilderTest {
                 "  Cheese c1 = $cheese;\r\n" + 
                 " if( c1 == $cheese )     { \r\n" + 
                 "     { org.drools.compiler.Cheese __obj__ = ( c1 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); \r\n" +
-                "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L, org.drools.compiler.Cheese.class ); }\r\n" +
+                "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
                 "      Cheese c4 = $cheese;\r\n" + 
                 "     if ( true )     { \r\n" + 
-                "         { org.drools.compiler.Cheese __obj__ = ( c4 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L, org.drools.compiler.Cheese.class ); }\r\n" +
+                "         { org.drools.compiler.Cheese __obj__ = ( c4 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
                 "      } else if (1==2) {\r\n" + 
-                "         { org.drools.compiler.Cheese __obj__ = ( c1 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L, org.drools.compiler.Cheese.class ); }\r\n" +
+                "         { org.drools.compiler.Cheese __obj__ = ( c1 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
                 "      } else {\r\n" + 
                 "          Cheese c3 = $cheese;\r\n" + 
-                "         { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 9223372036854775807L, org.drools.compiler.Cheese.class ); }\r\n" +
+                "         { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
                 "     }\r\n" + 
                 " } else {\r\n" + 
                 "      Cheese c3 = $cheese;\r\n" + 
-                "     { org.drools.compiler.Cheese __obj__ = ( c3 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L, org.drools.compiler.Cheese.class ); }\r\n" +
-                "      if ( c4 ==  $cheese ) { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 9223372036854775807L, org.drools.compiler.Cheese.class ); }\r\n" +
-                "      else { $cheese.setPrice( 12 ); drools.update( $cheese__Handle__, 9223372036854775807L, org.drools.compiler.Cheese.class ); }\r\n" +
+                "     { org.drools.compiler.Cheese __obj__ = ( c3 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
+                "      if ( c4 ==  $cheese ) { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
+                "      else { $cheese.setPrice( 12 ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
                 " }\r\n" + 
-                " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 9223372036854775807L, org.drools.compiler.Cheese.class ); }\r\n" +
+                " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
                 "  System.out.println(\"we are done\");\r\n" + 
                 " \r\n";
 
@@ -453,17 +449,17 @@ public class JavaConsequenceBuilderTest {
                 "  Cheese c1 = $cheese;\r\n" + 
                 " while ( c1 == $cheese )     { \r\n" + 
                 "     { org.drools.compiler.Cheese __obj__ = ( c1 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); \r\n" +
-                "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L, org.drools.compiler.Cheese.class ); }\r\n" +
+                "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
                 "      Cheese c4 = $cheese;\r\n" + 
                 "     while ( true )     { \r\n" + 
-                "         { org.drools.compiler.Cheese __obj__ = ( c4 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L, org.drools.compiler.Cheese.class ); }\r\n" +
+                "         { org.drools.compiler.Cheese __obj__ = ( c4 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
                 "      } } \r\n" + 
                 "  Cheese c3 = $cheese;\r\n" + 
-                " while ( c4 ==  $cheese ) { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 9223372036854775807L, org.drools.compiler.Cheese.class ); }\r\n" +
-                "  { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 9223372036854775807L, org.drools.compiler.Cheese.class ); }\r\n" +
+                " while ( c4 ==  $cheese ) { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
+                "  { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
                 "  System.out.println(\"we are done\");\r\n" + 
                 "  while (true) { System.out.println(1);}\r\n" + 
-                " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 9223372036854775807L, org.drools.compiler.Cheese.class ); }\r\n" +
+                " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
                 "  System.out.println(\"we are done\");\r\n" + 
                 " \r\n" + 
                 "";
@@ -522,14 +518,14 @@ public class JavaConsequenceBuilderTest {
                 " int i = 0;\r\n" + 
                 " for ( Cheese c1 = $cheese; i < 10;i++ )     { \r\n" + 
                 "     { org.drools.compiler.Cheese __obj__ = ( c1 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); \r\n" +
-                "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L, org.drools.compiler.Cheese.class ); }\r\n" +
+                "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
                 "      Cheese c4 = $cheese;\r\n" + 
-                "     for ( Cheese item : new ArrayList<Cheese>() ) {         { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 9223372036854775807L, org.drools.compiler.Cheese.class ); }\r\n" +
+                "     for ( Cheese item : new ArrayList<Cheese>() ) {         { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
                 "       }\r\n" + 
                 " } \r\n" + 
-                "  for ( ; ; ) { org.drools.compiler.Cheese __obj__ = ( (Cheese) $cheese ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L, java.lang.Object.class ); }\r\n" +
-                "  for ( Cheese item : new ArrayList<Cheese>() ) { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 9223372036854775807L, org.drools.compiler.Cheese.class ); }\r\n" +
-                "  { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 9223372036854775807L, org.drools.compiler.Cheese.class ); }\r\n" +
+                "  for ( ; ; ) { org.drools.compiler.Cheese __obj__ = ( (Cheese) $cheese ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), java.lang.Object.class ); }\r\n" +
+                "  for ( Cheese item : new ArrayList<Cheese>() ) { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
+                "  { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
                 "  System.out.println(\"we are done\");\r\n" + 
                 " \r\n" + 
                 "";

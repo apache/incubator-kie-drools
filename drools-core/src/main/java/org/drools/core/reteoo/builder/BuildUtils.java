@@ -313,7 +313,7 @@ public class BuildUtils {
                     Map<Declaration, Interval> temporal = new HashMap<Declaration, Interval>();
                     gatherTemporalRelationships( event.getConstraints(),
                                                  temporal );
-                    // intersect default values with the actual constrained intervals
+                    // intersects default values with the actual constrained intervals
                     for ( Map.Entry<Declaration, Interval> entry : temporal.entrySet() ) {
                         int targetIndex = declarations.indexOf( entry.getKey() );
                         Interval interval = entry.getValue();

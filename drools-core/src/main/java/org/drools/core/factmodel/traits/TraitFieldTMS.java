@@ -1,6 +1,7 @@
 package org.drools.core.factmodel.traits;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.util.bitmask.BitMask;
 
 import java.io.Externalizable;
 
@@ -32,7 +33,7 @@ public interface TraitFieldTMS extends Externalizable {
     public Object shedField( String name, TraitType trait, Class rangeKlass, Class asKlass );
 
 
-    public long getModificationMask();
+    public BitMask getModificationMask();
 
     public void resetModificationMask();
 

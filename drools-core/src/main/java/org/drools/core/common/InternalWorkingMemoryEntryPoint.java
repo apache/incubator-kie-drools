@@ -16,15 +16,14 @@
 
 package org.drools.core.common;
 
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.rule.EntryPointId;
-
-
 import org.drools.core.spi.Activation;
+import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
 
 public interface InternalWorkingMemoryEntryPoint extends EntryPoint {
     ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
@@ -34,7 +33,7 @@ public interface InternalWorkingMemoryEntryPoint extends EntryPoint {
                         final Activation activation);
     public void update(FactHandle handle,
                        Object object,
-                       long mask,
+                       BitMask mask,
                        Class<?> modifiedClass,
                        Activation activation);
 

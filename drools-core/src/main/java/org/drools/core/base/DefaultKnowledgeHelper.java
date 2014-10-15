@@ -16,14 +16,11 @@
 
 package org.drools.core.base;
 
-import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.beliefsystem.simple.SimpleMode;
-import org.drools.core.factmodel.traits.TraitRegistry;
-import org.drools.core.factmodel.traits.TraitTypeMap;
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.BeliefSet;
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
+import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalAgenda;
@@ -39,15 +36,15 @@ import org.drools.core.common.TruthMaintenanceSystemHelper;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.MapCore;
 import org.drools.core.factmodel.traits.CoreWrapper;
-import org.drools.core.factmodel.traits.LogicalMapCore;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.factmodel.traits.TraitType;
+import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
@@ -61,6 +58,7 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
+import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
@@ -69,6 +67,7 @@ import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.beliefs.Mode;
@@ -86,6 +85,9 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
 
 public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     implements
@@ -386,7 +388,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         InternalFactHandle h = (InternalFactHandle) handle;
         ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
                                                                       newObject,
-                                                                      Long.MIN_VALUE,
+                                                                      onlyTraitBitSetMask(),
                                                                       newObject.getClass(),
                                                                       this.activation );
         if ( getIdentityMap() != null ) {
@@ -399,7 +401,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         update( handle, Long.MAX_VALUE );
     }
 
-    public void update( final FactHandle handle, long mask, Class<?> modifiedClass ) {
+    public void update( final FactHandle handle, BitMask mask, Class<?> modifiedClass ) {
         InternalFactHandle h = (InternalFactHandle) handle;
         ((NamedEntryPoint) h.getEntryPoint()).update( h,
                                                       h.getEqualityKey() != null && h.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED,
@@ -434,11 +436,11 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
 
 
-    private void updateTraits( Object object, long mask, Thing originator, Class<?> modifiedClass, BitSet veto, Collection<Thing> mostSpecificTraits ) {
+    private void updateTraits( Object object, BitMask mask, Thing originator, Class<?> modifiedClass, BitSet veto, Collection<Thing> mostSpecificTraits ) {
         updateManyTraits( object, mask, Arrays.asList( originator ), modifiedClass, veto, mostSpecificTraits );
     }
 
-    private void updateManyTraits( Object object, long mask, Collection<Thing> originators, Class<?> modifiedClass, BitSet veto, Collection<Thing> mostSpecificTraits ) {
+    private void updateManyTraits( Object object, BitMask mask, Collection<Thing> originators, Class<?> modifiedClass, BitSet veto, Collection<Thing> mostSpecificTraits ) {
         veto = veto != null ? (BitSet) veto.clone() : null;
 
         for ( Thing t : mostSpecificTraits ) {
@@ -469,10 +471,10 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
 
     public void update( Object object ) {
-        update(object, Long.MAX_VALUE, Object.class);
+        update(object, allSetButTraitBitMask(), Object.class);
     }
 
-    public void update(Object object, long mask, Class<?> modifiedClass) {
+    public void update(Object object, BitMask mask, Class<?> modifiedClass) {
         update(getFactHandle(object), mask, modifiedClass);
     }
 
@@ -758,7 +760,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         if ( mostSpecificTraits != null ) {
             updateCore( inner, core, trait, logical );
             if ( ! mostSpecificTraits.isEmpty() ) {
-                updateTraits( inner, Long.MIN_VALUE, (Thing) thing, trait, null, mostSpecificTraits );
+                updateTraits( inner, onlyTraitBitSetMask(), (Thing) thing, trait, null, mostSpecificTraits );
             }
         } else if ( Thing.class == trait ) {
             updateCore( inner, core, trait, logical );
@@ -808,7 +810,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
             if ( mostSpecificTraits != null ) {
                 updateCore( inner, core, null, logical );
                 if ( ! mostSpecificTraits.isEmpty() ) {
-                    updateManyTraits( inner, Long.MIN_VALUE, things.keySet(), core.getClass(), null, mostSpecificTraits );
+                    updateManyTraits( inner, onlyTraitBitSetMask(), things.keySet(), core.getClass(), null, mostSpecificTraits );
                 }
             }
         }
@@ -870,7 +872,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         InternalFactHandle h = (InternalFactHandle) handle;
         if ( handle != null ) {
             TraitFieldTMS fieldTMS = inner._getFieldTMS();
-            long mask = fieldTMS == null ? Long.MIN_VALUE : fieldTMS.getModificationMask();
+            BitMask mask = fieldTMS == null ? onlyTraitBitSetMask() : fieldTMS.getModificationMask();
             ((NamedEntryPoint) h.getEntryPoint()).update( h,
                                                           h.getEqualityKey() != null && h.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED,
                                                           ((InternalFactHandle)handle).getObject(),
@@ -896,7 +898,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         if ( trait.isAssignableFrom( core.getClass() ) ) {
             Collection removedTraits = core.removeTrait( trait.getName() );
             if ( ! removedTraits.isEmpty() ) {
-                update( core, Long.MIN_VALUE, core.getClass() );
+                update( core, onlyTraitBitSetMask(), core.getClass() );
                 //updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null, ((TraitableBean) core).getMostSpecificTraits()  );
             }
             if ( core instanceof Thing ) {
@@ -937,7 +939,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
             if ( ! core.hasTraits() ) {
                 don( core, Thing.class );
             } else if ( ! removedTypes.isEmpty() ) {
-                update( core, Long.MIN_VALUE, core.getClass() );
+                update( core, onlyTraitBitSetMask(), core.getClass() );
                 //updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null, ((TraitableBean) core).getMostSpecificTraits()  );
             }
             return thing;

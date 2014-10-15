@@ -25,6 +25,9 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.bitmask.AllSetBitMask;
+import org.drools.core.util.bitmask.BitMask;
+import org.drools.core.util.bitmask.EmptyBitMask;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -48,15 +51,15 @@ public abstract class LeftTupleSource extends BaseNode
         implements
         Externalizable {
 
-    private long                      leftDeclaredMask;
-    private long                      leftInferredMask;
-    private long                      leftNegativeMask;
+    private BitMask                   leftDeclaredMask = EmptyBitMask.get();
+    private BitMask                   leftInferredMask = EmptyBitMask.get();
+    private BitMask                   leftNegativeMask = EmptyBitMask.get();
 
 
     /** The left input <code>TupleSource</code>. */
     protected LeftTupleSource         leftInput;
 
-    
+
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -92,29 +95,29 @@ public abstract class LeftTupleSource extends BaseNode
                                             ClassNotFoundException {
         super.readExternal( in );
         sink = (LeftTupleSinkPropagator) in.readObject();
-        leftInput = (LeftTupleSource) in.readObject();        
-        leftDeclaredMask = in.readLong();
-        leftInferredMask = in.readLong();
-        leftNegativeMask = in.readLong();
+        leftInput = (LeftTupleSource) in.readObject();
+        leftDeclaredMask = (BitMask) in.readObject();
+        leftInferredMask = (BitMask) in.readObject();
+        leftNegativeMask = (BitMask) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( sink );
-        out.writeObject( leftInput );        
-        out.writeLong( leftDeclaredMask );
-        out.writeLong( leftInferredMask );
-        out.writeLong( leftNegativeMask );
+        out.writeObject( leftInput );
+        out.writeObject(leftDeclaredMask);
+        out.writeObject(leftInferredMask);
+        out.writeObject(leftNegativeMask);
     }
 
     public abstract short getType();
-    
+
     public abstract LeftTuple createPeer(LeftTuple original);
-    
+
     public void addTupleSink(final LeftTupleSink tupleSink) {
         addTupleSink(tupleSink, null);
     }
-    
+
     public LeftTupleSource getLeftTupleSource() {
         return leftInput;
     }
@@ -197,13 +200,13 @@ public abstract class LeftTupleSource extends BaseNode
                                     LeftTupleSource leftInput) {
         if ( context == null || context.getLastBuiltPatterns() == null ) {
             // only happens during unit tests
-            leftDeclaredMask = -1L;
+            leftDeclaredMask = AllSetBitMask.get();
             return;
         }
 
         if ( leftInput.getType() != NodeTypeEnums.LeftInputAdapterNode) {
             // BetaNode's not after LIANode are not relevant for left mask property specific, so don't block anything.
-            leftDeclaredMask = -1L;
+            leftDeclaredMask = AllSetBitMask.get();
             return;
         }
 
@@ -215,7 +218,7 @@ public abstract class LeftTupleSource extends BaseNode
 
         if ( !(objectType instanceof ClassObjectType) ) {
             // Only ClassObjectType can use property specific
-            leftDeclaredMask = -1L;
+            leftDeclaredMask = AllSetBitMask.get();
             return;
         }
 
@@ -231,7 +234,7 @@ public abstract class LeftTupleSource extends BaseNode
             }
         } else {
             // if property specific is not on, then accept all modification propagations
-            leftDeclaredMask = -1L;
+            leftDeclaredMask = AllSetBitMask.get();
         }
     }
 
@@ -245,7 +248,7 @@ public abstract class LeftTupleSource extends BaseNode
         } else {
             leftInferredMask = leftDeclaredMask;
         }
-        leftInferredMask &= (-1L - leftNegativeMask);
+        leftInferredMask = leftInferredMask.resetAll(leftNegativeMask);
     }
 
     private LeftTupleSource unwrapLeftInput(LeftTupleSource leftInput) {
@@ -255,19 +258,19 @@ public abstract class LeftTupleSource extends BaseNode
         return leftInput;
     }
 
-    public long getLeftDeclaredMask() {
+    public BitMask getLeftDeclaredMask() {
         return leftDeclaredMask;
     }
 
-    public long getLeftInferredMask() {
+    public BitMask getLeftInferredMask() {
         return leftInferredMask;
     }
 
-    protected void setLeftInferredMask(long leftInferredMask) {
+    protected void setLeftInferredMask(BitMask leftInferredMask) {
         this.leftInferredMask = leftInferredMask;
     }
 
-    public long getLeftNegativeMask() {
+    public BitMask getLeftNegativeMask() {
         return leftNegativeMask;
     }
 

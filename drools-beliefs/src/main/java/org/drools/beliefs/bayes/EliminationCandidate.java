@@ -2,6 +2,7 @@ package org.drools.beliefs.bayes;
 
 import org.drools.beliefs.graph.Graph;
 import org.drools.beliefs.graph.GraphNode;
+import org.drools.core.util.bitmask.OpenBitSet;
 
 public class EliminationCandidate implements Comparable<EliminationCandidate> {
     private Graph<BayesVariable>     g;
@@ -9,7 +10,7 @@ public class EliminationCandidate implements Comparable<EliminationCandidate> {
     private GraphNode<BayesVariable> v;
     private int                      newEdgesRequired;
     private int                      weightRequired;
-    private OpenBitSet               cliqueBitSet;
+    private OpenBitSet cliqueBitSet;
 
 
     public EliminationCandidate(Graph g, boolean[][] adjMatrix, GraphNode v) {

@@ -16,9 +16,10 @@
 
 package org.drools.core.common;
 
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.spi.Activation;
+import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.runtime.rule.FactHandle;
 
 public interface InternalWorkingMemoryActions
         extends
@@ -26,7 +27,7 @@ public interface InternalWorkingMemoryActions
         InternalWorkingMemoryEntryPoint {
     public void update(FactHandle handle,
                        Object object,
-                       long mask,
+                       BitMask mask,
                        Class<?> modifiedClass,
                        Activation activation);
 

@@ -16,19 +16,22 @@
 
 package org.drools.core.common;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
-
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.util.index.LeftTupleList;
-import org.drools.core.util.index.RightTupleList;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.util.bitmask.BitMask;
+import org.drools.core.util.index.LeftTupleList;
+import org.drools.core.util.index.RightTupleList;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
+
+import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 
 public class EmptyBetaConstraints
     implements
@@ -151,8 +154,8 @@ public class EmptyBetaConstraints
         throw new UnsupportedOperationException();
     }
 
-    public long getListenedPropertyMask(List<String> settableProperties) {
-        return 0L;
+    public BitMask getListenedPropertyMask(List<String> settableProperties) {
+        return getEmptyPropertyReactiveMask(settableProperties.size());
     }
 
     public void init(BuildContext context, short betaNodeType) { }

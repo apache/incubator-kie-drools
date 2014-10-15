@@ -2,23 +2,18 @@ package org.drools.core.beliefsystem.jtms;
 
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
-import org.drools.core.beliefsystem.defeasible.DefeasibleLogicalDependency;
-import org.drools.core.beliefsystem.defeasible.DefeasibleMode;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
+import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
-import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.core.marshalling.impl.ProtobufMessages.ObjectTypeConfiguration;
-import org.drools.core.util.LinkedListEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.LinkedListNode;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.runtime.beliefs.Mode;
+
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 public class JTMSBeliefSystem<M extends JTMSMode<M>>
         implements
@@ -229,7 +224,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
                 // Equality might have changed on the object, so remove (which uses the handle id) and add back in
                 if ( fh.getObject() != object ) {
                     ((NamedEntryPoint) fh.getEntryPoint()).getObjectStore().updateHandle( fh, object );
-                    ((NamedEntryPoint) fh.getEntryPoint() ).update( fh, true, fh.getObject(), Long.MAX_VALUE, object.getClass(), null );
+                    ((NamedEntryPoint) fh.getEntryPoint() ).update( fh, true, fh.getObject(), allSetButTraitBitMask(), object.getClass(), null );
                 }
             }
         }

@@ -8,7 +8,6 @@ import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.compiler.compiler.DeprecatedResourceTypeWarning;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.compiler.DisabledPropertyReactiveWarning;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.DroolsErrorWrapper;
@@ -2197,17 +2196,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     public TypeDeclaration getTypeDeclaration(Class<?> cls) {
         return typeBuilder.getTypeDeclaration(cls);
-    }
-
-    void setPropertyReactive(Resource resource,
-                                     TypeDeclaration type,
-                                     boolean propertyReactive) {
-        if (propertyReactive && type.getSettableProperties().size() >= 64) {
-            addBuilderResult(new DisabledPropertyReactiveWarning(resource, type.getTypeName()));
-            type.setPropertyReactive(false);
-        } else {
-            type.setPropertyReactive(propertyReactive);
-        }
     }
 
     public void normalizeTypeDeclarationAnnotations(PackageDescr packageDescr) {

@@ -97,6 +97,7 @@ import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.type.DateFormats;
 import org.drools.core.type.DateFormatsImpl;
+import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.LeftTupleList;
 import org.kie.api.command.Command;
 import org.kie.api.event.KieRuntimeEventManager;
@@ -157,6 +158,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         implements
@@ -1519,7 +1522,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                        final Object object) {
         update( handle,
                 object,
-                Long.MAX_VALUE,
+                allSetButTraitBitMask(),
                 Object.class,
                 null );
     }
@@ -1532,7 +1535,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      */
     public void update(FactHandle factHandle,
                        final Object object,
-                       final long mask,
+                       final BitMask mask,
                        Class<?> modifiedClass,
                        final Activation activation) {
         checkAlive();
