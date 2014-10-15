@@ -1,4 +1,4 @@
-package org.drools.compiler;
+package org.drools.compiler.metatest;
 
 global java.util.List results;
 
