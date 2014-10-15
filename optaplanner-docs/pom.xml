@@ -22,4 +22,31 @@
     This module builds the documentation.
   </description>
 
+
+  <profiles>
+    <profile>
+      <id>productizationDocsProfile</id>
+      <activation>
+        <property>
+          <name>productizationDocs</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.jboss.maven.plugins</groupId>
+              <artifactId>maven-jdocbook-plugin</artifactId>
+
+              <configuration>
+                <!-- This file does not exist in the community repository, but it does exist in the product-docs repo -->
+                <sourceDocumentName>productMaster.xml</sourceDocumentName>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
+
 </project>
