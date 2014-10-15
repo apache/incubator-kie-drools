@@ -27,6 +27,9 @@ import java.util.List;
 public interface DeploymentDescriptor {
 	
 	public static final String META_INF_LOCATION = "META-INF/kie-deployment-descriptor.xml";
+	public static final String TYPE_ALL = "all";
+	public static final String TYPE_VIEW = "view";
+	public static final String TYPE_EXECUTE = "execute";
 	
 	/**
 	 * Returns name of the JPA persistence unit to be used for runtime engine
@@ -122,6 +125,18 @@ public interface DeploymentDescriptor {
 	 * @return
 	 */
 	List<String> getRequiredRoles();
+	
+	/**
+	 * Returns required for given type of applicability. Supported types are:
+	 * <ul>
+	 * <li>all</li>
+	 * <li>view</li>
+	 * <li>execute</li>
+	 * </ul>
+	 * @param type indicates the type which required roles shoud apply
+	 * @return
+	 */
+	List<String> getRequiredRoles(String type);
 	
 	/**
 	 * Returns additional classes that shall be added to remote services context.
