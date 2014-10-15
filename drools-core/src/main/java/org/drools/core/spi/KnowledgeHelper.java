@@ -16,21 +16,22 @@
 
 package org.drools.core.spi;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.IdentityHashMap;
-import java.util.Map;
-
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.rule.Declaration;
+import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.Channel;
-import org.kie.api.runtime.rule.RuleContext;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.RuleContext;
 import org.kie.internal.runtime.beliefs.Mode;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 /**
  * KnowledgeHelper implementation types are injected into consequenses
@@ -90,10 +91,10 @@ public interface KnowledgeHelper
     void update(FactHandle handle, Object newObject);
 
     void update(FactHandle newObject);
-    void update(FactHandle newObject, long mask, Class<?> modifiedClass);
+    void update(FactHandle newObject, BitMask mask, Class<?> modifiedClass);
     
     void update(Object newObject);
-    void update(Object newObject, long mask, Class<?> modifiedClass);
+    void update(Object newObject, BitMask mask, Class<?> modifiedClass);
 
     void modify( Object newObject ) ;
 

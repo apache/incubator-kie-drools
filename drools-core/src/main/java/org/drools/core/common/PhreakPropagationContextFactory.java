@@ -5,6 +5,7 @@ import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.bitmask.BitMask;
 
 import java.io.Serializable;
 
@@ -15,7 +16,7 @@ public class PhreakPropagationContextFactory implements PropagationContextFactor
                                                        final LeftTuple leftTuple,
                                                        final InternalFactHandle factHandle,
                                                        final EntryPointId entryPoint,
-                                                       final long modificationMask,
+                                                       final BitMask modificationMask,
                                                        final Class<?> modifiedClass,
                                                        final MarshallerReaderContext readerContext) {
         return new PhreakPropagationContext(number, type, rule, leftTuple, factHandle, entryPoint, modificationMask, modifiedClass, readerContext);
@@ -39,7 +40,7 @@ public class PhreakPropagationContextFactory implements PropagationContextFactor
                                                        final int activeActivations,
                                                        final int dormantActivations,
                                                        final EntryPointId entryPoint,
-                                                       final long modificationMask) {
+                                                       final BitMask modificationMask) {
         return new PhreakPropagationContext(number, type, rule, leftTuple, factHandle, activeActivations, dormantActivations, entryPoint, modificationMask);
     }
 

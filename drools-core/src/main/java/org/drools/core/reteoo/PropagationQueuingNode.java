@@ -29,6 +29,8 @@ import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.bitmask.BitMask;
+import org.drools.core.util.bitmask.EmptyBitMask;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -37,8 +39,6 @@ import java.io.ObjectOutput;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static org.drools.core.util.BitMaskUtil.intersect;
 
 /**
  * A node that will add the propagation to the working memory actions queue,
@@ -84,8 +84,8 @@ public class PropagationQueuingNode extends ObjectSource
     }
     
     @Override
-    public long calculateDeclaredMask(List<String> settableProperties) {
-        return 0;
+    public BitMask calculateDeclaredMask(List<String> settableProperties) {
+        return EmptyBitMask.get();
     }      
 
     public void readExternal( ObjectInput in ) throws IOException,
@@ -211,14 +211,14 @@ public class PropagationQueuingNode extends ObjectSource
             if ( rightTuple != null && rightTuple.getRightTupleSink().getRightInputOtnId().equals( betaNode.getRightInputOtnId() ) ) {
                 modifyPreviousTuples.removeRightTuple();
                 rightTuple.reAdd();
-                if ( intersect( context.getModificationMask(), betaNode.getRightInferredMask() ) ) {
+                if ( context.getModificationMask().intersects( betaNode.getRightInferredMask() ) ) {
                     // RightTuple previously existed, so continue as modify
                     memory.addAction( new ModifyToSinkAction( rightTuple,
                                                               context,
                                                               betaNode ) );
                 }
             } else {
-                if ( intersect( context.getModificationMask(), betaNode.getRightInferredMask() ) ) {
+                if ( context.getModificationMask().intersects( betaNode.getRightInferredMask() ) ) {
                     // RightTuple does not exist for this node, so create and continue as assert
                     memory.addAction( new AssertToSinkAction( factHandle,
                                                               context,

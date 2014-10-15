@@ -16,8 +16,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
 
-import static org.drools.core.util.BitMaskUtil.intersect;
-
 public class ReteBetaNodeUtils {
 
 //    public static Object getBetaMemoryFromRightInput( final BetaNode betaNode, final InternalWorkingMemory workingMemory ) {
@@ -185,14 +183,14 @@ public class ReteBetaNodeUtils {
                 // things staged as inserts, are left as inserts and use the pctx associated from the time of insertion
                 rightTuple.setPropagationContext(context);
             }
-            if (intersect(context.getModificationMask(), betaNode.getRightInferredMask())) {
+            if (context.getModificationMask().intersects( betaNode.getRightInferredMask())) {
                 // RightTuple previously existed, so continue as modify
                 betaNode.modifyRightTuple(rightTuple,
                                           context,
                                           wm);
             }
         } else {
-            if (intersect(context.getModificationMask(), betaNode.getRightInferredMask())) {
+            if (context.getModificationMask().intersects( betaNode.getRightInferredMask())) {
                 // RightTuple does not exist for this node, so create and continue as assert
                 betaNode.assertObject(factHandle,
                                       context,
