@@ -40,6 +40,8 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
 import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.bitmask.AllSetBitMask;
+import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +53,6 @@ import java.util.Map;
 
 import static org.drools.core.phreak.AddRemoveRule.forceFlushLeftTuple;
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
-import static org.drools.core.util.BitMaskUtil.intersect;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
@@ -78,7 +79,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     private   int     segmentMemoryIndex;
 
-    private long sinkMask;
+    private BitMask sinkMask;
 
     public LeftInputAdapterNode() {
 
@@ -110,22 +111,22 @@ public class LeftInputAdapterNode extends LeftTupleSource
         sinkMask = calculateSinkMask(context);
     }
 
-    private long calculateSinkMask(BuildContext context) {
+    private BitMask calculateSinkMask(BuildContext context) {
         Pattern pattern = context.getLastBuiltPatterns() != null ? context.getLastBuiltPatterns()[0] : null;
         if (pattern == null) {
-            return -1L;
+            return AllSetBitMask.get();
         }
         ObjectType objectType = pattern.getObjectType();
         if ( !(objectType instanceof ClassObjectType) ) {
             // Only ClassObjectType can use property specific
-            return -1L;
+            return AllSetBitMask.get();
         }
 
         Class objectClass = ((ClassWireable) objectType).getClassType();
         return isPropertyReactive( context, objectClass ) ?
                calculatePositiveMask( pattern.getListenedProperties(),
                                       getSettableProperties( context.getKnowledgeBase(), objectClass ) ) :
-               -1L;
+               AllSetBitMask.get();
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -134,7 +135,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         objectSource = (ObjectSource) in.readObject();
         leftTupleMemoryEnabled = in.readBoolean();
         rootQueryNode = in.readBoolean();
-        sinkMask = in.readLong();
+        sinkMask = (BitMask) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -142,7 +143,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         out.writeObject(objectSource);
         out.writeBoolean(leftTupleMemoryEnabled);
         out.writeBoolean(rootQueryNode);
-        out.writeLong(sinkMask);
+        out.writeObject(sinkMask);
     }
 
     public ObjectSource getObjectSource() {
@@ -433,8 +434,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
             modifyPreviousTuples.removeLeftTuple();
             leftTuple.reAdd();
             LeftTupleSink sink = getSinkPropagator().getFirstLeftTupleSink();
-            long mask = sink.getLeftInferredMask();
-            if ( intersect( context.getModificationMask(),  mask) ) {
+            BitMask mask = sink.getLeftInferredMask();
+            if ( context.getModificationMask().intersects( mask) ) {
                 doUpdateObject( leftTuple, context, workingMemory, (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource(), true, lm, lm.getSegmentMemory() );
                 if (leftTuple instanceof Activation) {
                     ((Activation)leftTuple).setActive(true);
@@ -442,8 +443,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
             }
         } else {
             LeftTupleSink sink = getSinkPropagator().getFirstLeftTupleSink();
-            long mask = sink.getLeftInferredMask();
-            if ( intersect( context.getModificationMask(),  mask) ) {
+            BitMask mask = sink.getLeftInferredMask();
+            if ( context.getModificationMask().intersects( mask) ) {
                 doInsertObject(factHandle, context, this,
                                workingMemory,
                                lm, true, true);
@@ -548,7 +549,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
     }
 
     public int hashCode() {
-        return 31 * this.objectSource.hashCode() + 37 * (int)this.sinkMask;
+        return 31 * this.objectSource.hashCode() + 37 * sinkMask.hashCode();
     }
 
     public boolean equals(final Object object) {

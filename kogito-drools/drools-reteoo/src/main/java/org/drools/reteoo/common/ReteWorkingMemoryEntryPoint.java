@@ -1,5 +1,6 @@
 package org.drools.reteoo.common;
 
+import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalWorkingMemory;
@@ -119,7 +120,7 @@ public class ReteWorkingMemoryEntryPoint implements WorkingMemoryEntryPoint, Int
     }
 
     @Override
-    public void update(FactHandle handle, Object object, long mask, Class<?> modifiedClass, Activation activation) {
+    public void update(FactHandle handle, Object object, BitMask mask, Class<?> modifiedClass, Activation activation) {
         ((InternalWorkingMemoryEntryPoint)delegate).update(handle, object, mask, modifiedClass, activation);
     }
 

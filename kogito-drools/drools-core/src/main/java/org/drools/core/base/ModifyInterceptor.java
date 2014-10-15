@@ -16,15 +16,12 @@
 
 package org.drools.core.base;
 
-import java.io.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.List;
-
 import org.drools.core.base.mvel.MVELCompilationUnit.DroolsVarFactory;
-import org.drools.core.util.BitMaskUtil;
+import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.util.bitmask.AllSetBitMask;
+import org.drools.core.util.bitmask.BitMask;
 import org.mvel2.ast.ASTNode;
 import org.mvel2.ast.WithNode;
 import org.mvel2.compiler.AccessorNode;
@@ -35,7 +32,19 @@ import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.optimizers.impl.refl.nodes.MethodAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.SetterAccessor;
 
-import static org.drools.core.util.ClassUtils.*;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.List;
+
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
+import static org.drools.core.util.ClassUtils.setter2property;
 
 public class ModifyInterceptor
     implements
@@ -43,14 +52,14 @@ public class ModifyInterceptor
     Externalizable {
     private static final long serialVersionUID = 510l;
 
-    private long modificationMask = -1L;
+    private BitMask modificationMask = AllSetBitMask.get();
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        modificationMask = in.readLong();
+        modificationMask = (BitMask) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeLong(modificationMask);
+        out.writeObject(modificationMask);
     }
 
     public int doBefore(ASTNode node,
@@ -71,7 +80,7 @@ public class ModifyInterceptor
 
         KnowledgeHelper knowledgeHelper = ((DroolsVarFactory)factory).getKnowledgeHelper();
 
-        if (modificationMask < 0) {
+        if (modificationMask.isSet(PropertySpecificUtil.TRAITABLE_BIT)) {
             calculateModificationMask(knowledgeHelper, (WithNode)node);
         }
 
@@ -83,33 +92,37 @@ public class ModifyInterceptor
         Class<?> nodeClass = node.getEgressType();
         TypeDeclaration typeDeclaration = knowledgeHelper.getWorkingMemory().getKnowledgeBase().getTypeDeclaration(nodeClass);
         if (typeDeclaration == null || !typeDeclaration.isPropertyReactive()) {
-            modificationMask = Long.MAX_VALUE;
+            modificationMask = allSetButTraitBitMask();
             return;
         }
 
         List<String> settableProperties = typeDeclaration.getSettableProperties();
-        modificationMask = 0L;
+        modificationMask = getEmptyPropertyReactiveMask(settableProperties.size());
 
         // TODO: access parmValuePairs without reflection
         WithNode.ParmValuePair[] parmValuePairs = getFieldValue(WithNode.class, "withExpressions", node);
         for (WithNode.ParmValuePair parmValuePair : parmValuePairs) {
             Method method = extractMethod(parmValuePair);
             if (method == null) {
-                modificationMask = Long.MAX_VALUE;
+                modificationMask = allSetButTraitBitMask();
                 return;
             }
 
             String propertyName = setter2property(method.getName());
             if (propertyName != null) {
-                int pos = settableProperties.indexOf(propertyName);
-                if (pos >= 0) modificationMask = BitMaskUtil.set(modificationMask, pos);
+                int index = settableProperties.indexOf(propertyName);
+                if (index >= 0) {
+                    modificationMask = setPropertyOnMask(modificationMask, index);
+                }
             }
 
             List<String> modifiedProps = typeDeclaration.getTypeClassDef().getModifiedPropsByMethod(method);
             if (modifiedProps != null) {
                 for (String modifiedProp : modifiedProps) {
-                    int pos = settableProperties.indexOf(modifiedProp);
-                    if (pos >= 0) modificationMask = BitMaskUtil.set(modificationMask, pos);
+                    int index = settableProperties.indexOf(modifiedProp);
+                    if (index >= 0) {
+                        modificationMask = setPropertyOnMask(modificationMask, index);
+                    }
                 }
             }
         }

@@ -2,6 +2,7 @@ package org.drools.beliefs.bayes;
 
 import org.drools.beliefs.graph.Graph;
 import org.drools.beliefs.graph.GraphNode;
+import org.drools.core.util.bitmask.OpenBitSet;
 
 public class SeparatorSet implements Comparable<SeparatorSet> {
     private int        id1;
@@ -11,8 +12,8 @@ public class SeparatorSet implements Comparable<SeparatorSet> {
     private OpenBitSet clique2;
 
     private OpenBitSet intersection;
-    private int        mass; // number of vertices that are in the intersect of clique1 and clique2
-    private int        cost; // product of the weight of the vertices that are in the intersect of clique1 and clique2
+    private int        mass; // number of vertices that are in the intersects of clique1 and clique2
+    private int        cost; // product of the weight of the vertices that are in the intersects of clique1 and clique2
 
     public SeparatorSet(OpenBitSet clique1, int id1, OpenBitSet clique2, int id2, Graph<BayesVariable> graph) {
         this.id1 = id1;

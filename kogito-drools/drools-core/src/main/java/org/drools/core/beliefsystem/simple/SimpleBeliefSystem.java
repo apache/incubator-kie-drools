@@ -7,10 +7,11 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.core.util.LinkedListEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
+
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 /**
  * Default implementation emulates classical Drools TMS behaviour.
@@ -81,7 +82,7 @@ public class SimpleBeliefSystem
             // Equality might have changed on the object, so remove (which uses the handle id) and add back in
             ((NamedEntryPoint)bfh.getEntryPoint()).getObjectStore().updateHandle(bfh, ((SimpleMode) beliefSet.getFirst()).getObject().getObject());
 
-            ((NamedEntryPoint) bfh.getEntryPoint() ).update( bfh, true, bfh.getObject(), Long.MAX_VALUE, Object.class, null );
+            ((NamedEntryPoint) bfh.getEntryPoint() ).update( bfh, true, bfh.getObject(), allSetButTraitBitMask(), Object.class, null );
         }
     }
 

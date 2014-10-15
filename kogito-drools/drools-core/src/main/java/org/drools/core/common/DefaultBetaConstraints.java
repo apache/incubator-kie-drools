@@ -17,15 +17,16 @@
 package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.rule.IndexableConstraint;
-import org.drools.core.rule.MutableTypeConstraint;
-import org.drools.core.util.index.IndexUtil;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.IndexableConstraint;
+import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.util.bitmask.BitMask;
+import org.drools.core.util.index.IndexUtil;
 import org.kie.internal.conf.IndexPrecedenceOption;
 
 import java.io.IOException;
@@ -34,6 +35,8 @@ import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.core.util.index.IndexUtil.compositeAllowed;
 import static org.drools.core.util.index.IndexUtil.isIndexableForNode;
 
@@ -259,13 +262,13 @@ public class DefaultBetaConstraints
         throw new UnsupportedOperationException();
     }
 
-    public long getListenedPropertyMask(List<String> settableProperties) {
-        long mask = 0L;
+    public BitMask getListenedPropertyMask(List<String> settableProperties) {
+        BitMask mask = getEmptyPropertyReactiveMask(settableProperties.size());
         for (BetaNodeFieldConstraint constraint : constraints) {
             if (constraint instanceof MvelConstraint) {
-                mask |= ((MvelConstraint)constraint).getListenedPropertyMask(settableProperties);
+                mask = mask.setAll(((MvelConstraint)constraint).getListenedPropertyMask(settableProperties));
             } else {
-                return Long.MAX_VALUE;
+                return allSetButTraitBitMask();
             }
         }
         return mask;

@@ -15,6 +15,7 @@
  */
 
 package org.drools.core.reteoo;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.evaluators.IsAEvaluatorDefinition;
 import org.drools.core.common.InternalFactHandle;
@@ -29,6 +30,8 @@ import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
+import org.drools.core.util.bitmask.AllSetBitMask;
+import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.Operator;
 
@@ -38,7 +41,7 @@ import java.io.ObjectOutput;
 import java.util.List;
 import java.util.Map;
 
-import static org.drools.core.util.BitMaskUtil.intersect;
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 /**
  * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used
@@ -97,16 +100,16 @@ public class AlphaNode extends ObjectSource
                                             ClassNotFoundException {
         super.readExternal( in );
         constraint = (AlphaNodeFieldConstraint) in.readObject();
-        declaredMask = in.readLong();
-        inferredMask = in.readLong();
+        declaredMask = (BitMask) in.readObject();
+        inferredMask = (BitMask) in.readObject();
         hashcode = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
         out.writeObject(constraint);
-        out.writeLong(declaredMask);
-        out.writeLong(inferredMask);
+        out.writeObject(declaredMask);
+        out.writeObject(inferredMask);
         out.writeInt(hashcode);
     }
 
@@ -145,7 +148,7 @@ public class AlphaNode extends ObjectSource
                              final ModifyPreviousTuples modifyPreviousTuples,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        if ( intersect(context.getModificationMask(), inferredMask ) ) {
+        if ( context.getModificationMask().intersects( inferredMask ) ) {
 
             final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
             if ( this.constraint.isAllowed( factHandle,
@@ -373,26 +376,27 @@ public class AlphaNode extends ObjectSource
 
     }
 
-    public long calculateDeclaredMask(List<String> settableProperties) {
-        Long typeBit = 0L;
+    public BitMask calculateDeclaredMask(List<String> settableProperties) {
+        boolean typeBit = false;
         if ( constraint instanceof EvaluatorConstraint && ( (EvaluatorConstraint) constraint ).isSelf() ) {
             Operator op = ((EvaluatorConstraint) constraint).getEvaluator().getOperator();
             if ( op == IsAEvaluatorDefinition.ISA || op == IsAEvaluatorDefinition.NOT_ISA ) {
-                typeBit = Long.MIN_VALUE;
+                typeBit = true;
             }
         }
         if (settableProperties == null || !(constraint instanceof MvelConstraint)) {
-            return typeBit | Long.MAX_VALUE;
+            return typeBit ? AllSetBitMask.get() : allSetButTraitBitMask();
         }
-        return typeBit | ((MvelConstraint)constraint).getListenedPropertyMask(settableProperties);
+        BitMask mask = ((MvelConstraint)constraint).getListenedPropertyMask(settableProperties);
+        return typeBit ? mask.set(PropertySpecificUtil.TRAITABLE_BIT) : mask;
     }
 
     @Override
-    public long getDeclaredMask() {
+    public BitMask getDeclaredMask() {
         return declaredMask;
     }  
 
-    public long getInferredMask() {
+    public BitMask getInferredMask() {
         return inferredMask;
     }
 

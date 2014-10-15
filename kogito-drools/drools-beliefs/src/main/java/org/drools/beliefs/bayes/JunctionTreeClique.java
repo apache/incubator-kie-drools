@@ -1,6 +1,7 @@
 package org.drools.beliefs.bayes;
 
 import org.drools.beliefs.graph.Graph;
+import org.drools.core.util.bitmask.OpenBitSet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +9,7 @@ import java.util.List;
 
 public class JunctionTreeClique {
     private int                         id;
-    private OpenBitSet                  bitSet;
+    private OpenBitSet bitSet;
     private List<BayesVariable>         values;
     private JunctionTreeSeparator       parentSeparator;
     private List<JunctionTreeSeparator> children;

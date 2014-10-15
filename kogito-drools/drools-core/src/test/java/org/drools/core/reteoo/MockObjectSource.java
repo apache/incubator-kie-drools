@@ -16,18 +16,19 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.bitmask.BitMask;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.spi.PropagationContext;
 
 public class MockObjectSource extends ObjectSource {
     private static final long serialVersionUID = 510l;
@@ -102,7 +103,7 @@ public class MockObjectSource extends ObjectSource {
     }
     
     @Override
-    public long calculateDeclaredMask(List<String> settableProperties) {
+    public BitMask calculateDeclaredMask(List<String> settableProperties) {
         throw new UnsupportedOperationException();
     }    
 

@@ -34,6 +34,7 @@ import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
+import org.drools.core.util.bitmask.BitMask;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -403,7 +404,7 @@ public class WindowNode extends ObjectSource
     }
 
     @Override
-    public long calculateDeclaredMask(List<String> settableProperties) {
+    public BitMask calculateDeclaredMask(List<String> settableProperties) {
         throw new UnsupportedOperationException();
     }
 

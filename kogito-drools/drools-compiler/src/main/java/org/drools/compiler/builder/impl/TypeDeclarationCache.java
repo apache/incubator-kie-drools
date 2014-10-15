@@ -264,8 +264,7 @@ public class TypeDeclarationCache {
         PropertySpecificOption propertySpecificOption = kbuilder.getBuilderConfiguration().getPropertySpecificOption();
         boolean propertyReactive = propertySpecificOption.isPropSpecific(cls.isAnnotationPresent(PropertyReactive.class),
                                                                          cls.isAnnotationPresent(ClassReactive.class));
-
-        kbuilder.setPropertyReactive( null, typeDeclaration, propertyReactive );
+        typeDeclaration.setPropertyReactive(propertyReactive);
 
         Role role = cls.getAnnotation(Role.class);
         if (role != null) {

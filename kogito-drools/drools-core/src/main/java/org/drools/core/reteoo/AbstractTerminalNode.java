@@ -16,6 +16,9 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.bitmask.AllSetBitMask;
+import org.drools.core.util.bitmask.BitMask;
+import org.drools.core.util.bitmask.EmptyBitMask;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -29,9 +32,9 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
 
     private LeftTupleSource tupleSource;
 
-    private long declaredMask;
-    private long inferredMask;
-    private long negativeMask;
+    private BitMask declaredMask = EmptyBitMask.get();
+    private BitMask inferredMask = EmptyBitMask.get();
+    private BitMask negativeMask = EmptyBitMask.get();
 
     public AbstractTerminalNode() { }
 
@@ -43,23 +46,23 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal( in );
         tupleSource = (LeftTupleSource) in.readObject();
-        declaredMask = in.readLong();
-        inferredMask = in.readLong();
-        negativeMask = in.readLong();
+        declaredMask = (BitMask) in.readObject();
+        inferredMask = (BitMask) in.readObject();
+        negativeMask = (BitMask) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( tupleSource );
-        out.writeLong(declaredMask);
-        out.writeLong(inferredMask);
-        out.writeLong(negativeMask);
+        out.writeObject(declaredMask);
+        out.writeObject(inferredMask);
+        out.writeObject(negativeMask);
     }
 
     public void initDeclaredMask(BuildContext context) {
         if ( !(unwrapTupleSource() instanceof LeftInputAdapterNode)) {
             // RTN's not after LIANode are not relevant for property specific, so don't block anything.
-            setDeclaredMask( -1L );
+            setDeclaredMask( AllSetBitMask.get() );
             return;
         }
 
@@ -69,7 +72,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         if ( !(objectType instanceof ClassObjectType) ) {
             // InitialFact has no type declaration and cannot be property specific
             // Only ClassObjectType can use property specific
-            setDeclaredMask( -1L );
+            setDeclaredMask( AllSetBitMask.get() );
             return;
         }
 
@@ -77,7 +80,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         TypeDeclaration typeDeclaration = context.getKnowledgeBase().getTypeDeclaration(objectClass);
         if (  typeDeclaration == null || !typeDeclaration.isPropertyReactive() ) {
             // if property specific is not on, then accept all modification propagations
-            setDeclaredMask( -1L );
+            setDeclaredMask( AllSetBitMask.get() );
         } else  {
             List<String> settableProperties = getSettableProperties(context.getKnowledgeBase(), objectClass);
             setDeclaredMask( calculatePositiveMask(pattern.getListenedProperties(), settableProperties) );
@@ -94,7 +97,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
             setInferredMask(  getDeclaredMask() );
         }
 
-        setInferredMask( getInferredMask() & ( -1L - getNegativeMask() ) );
+        setInferredMask( getInferredMask().resetAll( getNegativeMask() ) );
     }
 
     public LeftTupleSource unwrapTupleSource() {
@@ -218,31 +221,31 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         return this.tupleSource;
     }
 
-    public long getDeclaredMask() {
+    public BitMask getDeclaredMask() {
         return declaredMask;
     }
 
-    public long getInferredMask() {
+    public BitMask getInferredMask() {
         return inferredMask;
     }
     
-    public long getLeftInferredMask() {
+    public BitMask getLeftInferredMask() {
         return inferredMask;
     }
 
-    public void setDeclaredMask(long mask) {
+    public void setDeclaredMask(BitMask mask) {
         declaredMask = mask;
     }
 
-    public void setInferredMask(long mask) {
+    public void setInferredMask(BitMask mask) {
         inferredMask = mask;
     }
 
-    public long getNegativeMask() {
+    public BitMask getNegativeMask() {
         return negativeMask;
     }
 
-    public void setNegativeMask(long mask) {
+    public void setNegativeMask(BitMask mask) {
         negativeMask = mask;
     }
 }

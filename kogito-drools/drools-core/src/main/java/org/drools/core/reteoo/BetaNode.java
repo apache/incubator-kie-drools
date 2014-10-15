@@ -44,7 +44,10 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.bitmask.AllSetBitMask;
+import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.FastIterator;
+import org.drools.core.util.bitmask.EmptyBitMask;
 import org.drools.core.util.index.IndexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +60,6 @@ import java.util.List;
 
 import static org.drools.core.phreak.AddRemoveRule.forceFlushLeftTuple;
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
-import static org.drools.core.util.BitMaskUtil.intersect;
 import static org.drools.core.util.ClassUtils.areNullSafeEquals;
 
 public abstract class BetaNode extends LeftTupleSource
@@ -85,9 +87,9 @@ public abstract class BetaNode extends LeftTupleSource
 
     protected boolean indexedUnificationJoin;
 
-    private long rightDeclaredMask;
-    private long rightInferredMask;
-    private long rightNegativeMask;
+    private BitMask rightDeclaredMask = EmptyBitMask.get();
+    private BitMask rightInferredMask = EmptyBitMask.get();
+    private BitMask rightNegativeMask = EmptyBitMask.get();
 
     private List<String> leftListenedProperties;
     private List<String> rightListenedProperties;
@@ -148,7 +150,7 @@ public abstract class BetaNode extends LeftTupleSource
                                     LeftTupleSource leftInput) {
         if (context == null || context.getLastBuiltPatterns() == null) {
             // only happens during unit tests
-            rightDeclaredMask = -1L;
+            rightDeclaredMask = AllSetBitMask.get();
             super.initDeclaredMask(context, leftInput);
             return;
         }
@@ -164,19 +166,19 @@ public abstract class BetaNode extends LeftTupleSource
                     rightListenedProperties = pattern.getListenedProperties();
                     List<String> settableProperties = getSettableProperties(context.getKnowledgeBase(), objectClass);
                     rightDeclaredMask = calculatePositiveMask(rightListenedProperties, settableProperties);
-                    rightDeclaredMask |= constraints.getListenedPropertyMask(settableProperties);
+                    rightDeclaredMask = rightDeclaredMask.setAll(constraints.getListenedPropertyMask(settableProperties));
                     rightNegativeMask = calculateNegativeMask(rightListenedProperties, settableProperties);
                 } else {
                     // if property reactive is not on, then accept all modification propagations
-                    rightDeclaredMask = -1L;
+                    rightDeclaredMask = AllSetBitMask.get();
                 }
             } else {
                 // InitialFact has no type declaration and cannot be property specific
                 // Only ClassObjectType can use property specific
-                rightDeclaredMask = -1L;
+                rightDeclaredMask = AllSetBitMask.get();
             }
         } else {
-            rightDeclaredMask = -1L;
+            rightDeclaredMask = AllSetBitMask.get();
             // There would have been no right input pattern, so swap current to first, so leftInput can still work
             context.setLastBuiltPattern( context.getLastBuiltPatterns()[0] );
         }
@@ -203,7 +205,7 @@ public abstract class BetaNode extends LeftTupleSource
         } else {
             rightInferredMask = rightDeclaredMask;
         }
-        rightInferredMask &= (-1L - rightNegativeMask);
+        rightInferredMask = rightInferredMask.resetAll(rightNegativeMask);
     }
 
     public ObjectSource unwrapRightInput() {
@@ -216,9 +218,9 @@ public abstract class BetaNode extends LeftTupleSource
         rightInput = (ObjectSource) in.readObject();
         objectMemory = in.readBoolean();
         tupleMemoryEnabled = in.readBoolean();
-        rightDeclaredMask = in.readLong();
-        rightInferredMask = in.readLong();
-        rightNegativeMask = in.readLong();
+        rightDeclaredMask = (BitMask) in.readObject();
+        rightInferredMask = (BitMask) in.readObject();
+        rightNegativeMask = (BitMask) in.readObject();
         leftListenedProperties = (List) in.readObject();
         rightListenedProperties = (List) in.readObject();
         rightInputIsPassive = in.readBoolean();
@@ -240,9 +242,9 @@ public abstract class BetaNode extends LeftTupleSource
         out.writeObject(rightInput);
         out.writeBoolean( objectMemory );
         out.writeBoolean( tupleMemoryEnabled );
-        out.writeLong( rightDeclaredMask );
-        out.writeLong( rightInferredMask );
-        out.writeLong( rightNegativeMask );
+        out.writeObject(rightDeclaredMask);
+        out.writeObject(rightInferredMask);
+        out.writeObject(rightNegativeMask);
         out.writeObject(leftListenedProperties);
         out.writeObject(rightListenedProperties);
         out.writeBoolean(rightInputIsPassive);
@@ -329,7 +331,7 @@ public abstract class BetaNode extends LeftTupleSource
         if ( rightTuple != null && rightTuple.getRightTupleSink().getRightInputOtnId().equals(getRightInputOtnId()) ) {
             modifyPreviousTuples.removeRightTuple();
             rightTuple.reAdd();
-            if ( intersect( context.getModificationMask(), getRightInferredMask() ) ) {
+            if ( context.getModificationMask().intersects(getRightInferredMask()) ) {
                 // RightTuple previously existed, so continue as modify
                 rightTuple.setPropagationContext( context );  // only update, if the mask intersects
 
@@ -340,7 +342,7 @@ public abstract class BetaNode extends LeftTupleSource
                 getBetaMemory( this, wm ).getRightTupleMemory().removeAdd(rightTuple);
             }
         } else {
-            if ( intersect( context.getModificationMask(), getRightInferredMask() ) ) {
+            if ( context.getModificationMask().intersects(getRightInferredMask()) ) {
                 // RightTuple does not exist for this node, so create and continue as assert
                 assertObject( factHandle,
                               context,
@@ -713,19 +715,19 @@ public abstract class BetaNode extends LeftTupleSource
         return memory;
     }
     
-    public long getRightDeclaredMask() {
+    public BitMask getRightDeclaredMask() {
         return rightDeclaredMask;
     }
 
-    public void setRightDeclaredMask(long rightDeclaredMask) {
+    public void setRightDeclaredMask(BitMask rightDeclaredMask) {
         this.rightDeclaredMask = rightDeclaredMask;
     }
 
-    public long getRightInferredMask() {
+    public BitMask getRightInferredMask() {
         return rightInferredMask;
     }
 
-    public long getRightNegativeMask() {
+    public BitMask getRightNegativeMask() {
         return rightNegativeMask;
     }
 

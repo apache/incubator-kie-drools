@@ -16,18 +16,19 @@
 
 package org.drools.core.base;
 
+import org.drools.core.InitialFact;
+import org.drools.core.reteoo.InitialFactImpl;
+import org.drools.core.spi.ClassWireable;
+import org.drools.core.spi.ObjectType;
+import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.runtime.rule.Match;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.drools.core.InitialFact;
-import org.drools.core.reteoo.InitialFactImpl;
-import org.drools.core.spi.ClassWireable;
-import org.drools.core.spi.ObjectType;
-import org.kie.api.runtime.rule.Match;
 
 /**
  * Java class semantics <code>ObjectType</code>.
@@ -63,7 +64,7 @@ public class ClassObjectType
 
     private boolean           isEvent;
 
-    private transient Map<String, Long> transformedMasks;
+    private transient Map<String, BitMask> transformedMasks;
 
     // ------------------------------------------------------------
     // Constructors
@@ -231,7 +232,7 @@ public class ClassObjectType
         this.cls = klass;
     }
 
-    public Long getTransformedMask(Class<?> modifiedClass, long modificationMask) {
+    public BitMask getTransformedMask(Class<?> modifiedClass, BitMask modificationMask) {
         if (transformedMasks == null) {
             return null;
         }
@@ -239,9 +240,9 @@ public class ClassObjectType
         return transformedMasks.get(key);
     }
 
-    public void storeTransformedMask(Class<?> modifiedClass, long modificationMask, long transforedMask) {
+    public void storeTransformedMask(Class<?> modifiedClass, BitMask modificationMask, BitMask transforedMask) {
         if (transformedMasks == null) {
-            transformedMasks = new ConcurrentHashMap<String, Long>();
+            transformedMasks = new ConcurrentHashMap<String, BitMask>();
         }
         String key = modifiedClass.getName() + ":" + modificationMask;
         transformedMasks.put(key, transforedMask);

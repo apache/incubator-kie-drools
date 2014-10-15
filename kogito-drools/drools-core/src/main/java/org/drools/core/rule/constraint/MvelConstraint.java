@@ -10,6 +10,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexEvaluator;
@@ -28,7 +29,7 @@ import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
-import org.drools.core.util.BitMaskUtil;
+import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.MemoryUtil;
 import org.drools.core.util.index.IndexUtil;
 import org.kie.api.runtime.rule.Variable;
@@ -50,6 +51,7 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.*;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.StringUtils.extractFirstIdentifier;
 import static org.drools.core.util.StringUtils.skipBlanks;
@@ -354,14 +356,14 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     // Slot specific
 
-    public long getListenedPropertyMask(List<String> settableProperties) {
+    public BitMask getListenedPropertyMask(List<String> settableProperties) {
         return analyzedCondition != null ?
                 calculateMask(analyzedCondition, settableProperties) :
                 calculateMaskFromExpression(settableProperties);
     }
 
-    private long calculateMaskFromExpression(List<String> settableProperties) {
-        long mask = 0;
+    private BitMask calculateMaskFromExpression(List<String> settableProperties) {
+        BitMask mask = getEmptyPropertyReactiveMask(settableProperties.size());
         String[] simpleExpressions = expression.split("\\Q&&\\E|\\Q||\\E");
 
         for (String simpleExpression : simpleExpressions) {
@@ -370,7 +372,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                 continue;
             }
             if (propertyName.equals("this")) {
-                return Long.MAX_VALUE;
+                return allSetButTraitBitMask();
             }
             int pos = settableProperties.indexOf(propertyName);
             if (pos < 0 && Character.isUpperCase(propertyName.charAt(0))) {
@@ -378,7 +380,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                 pos = settableProperties.indexOf(propertyName);
             }
             if (pos >= 0) { // Ignore not settable properties
-                mask = BitMaskUtil.set(mask, pos);
+                mask = mask.set(pos + PropertySpecificUtil.CUSTOM_BITS_OFFSET);
             }
         }
 
@@ -411,28 +413,18 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return propertyName;
     }
 
-    private long calculateMask(Condition condition, List<String> settableProperties) {
+    private BitMask calculateMask(Condition condition, List<String> settableProperties) {
         if (condition instanceof SingleCondition) {
             return calculateMask((SingleCondition) condition, settableProperties);
         }
-        long mask = 0L;
+        BitMask mask = getEmptyPropertyReactiveMask(settableProperties.size());;
         for (Condition c : ((CombinedCondition)condition).getConditions()) {
-            mask |= calculateMask(c, settableProperties);
+            String propertyName = getFirstInvokedPropertyName(((SingleCondition) c).getLeft());
+            if (propertyName != null) {
+                mask = setPropertyOnMask(mask, settableProperties, propertyName);
+            }
         }
         return mask;
-    }
-
-    private long calculateMask(SingleCondition condition, List<String> settableProperties) {
-        String propertyName = getFirstInvokedPropertyName(condition.getLeft());
-        if (propertyName == null) {
-            return Long.MAX_VALUE;
-        }
-
-        int pos = settableProperties.indexOf(propertyName);
-        if (pos < 0) {
-            throw new RuntimeException("Unknown property: " + propertyName);
-        }
-        return 1L << pos;
     }
 
     private String getFirstInvokedPropertyName(Expression expression) {

@@ -16,20 +16,6 @@
 
 package org.drools.reteoo.nodes;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultBetaConstraints;
 import org.drools.core.common.DefaultFactHandle;
@@ -54,17 +40,29 @@ import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.test.model.DroolsTestCase;
-import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.test.model.DroolsTestCase;
+import org.drools.core.util.bitmask.EmptyBitMask;
+import org.drools.core.util.bitmask.LongBitMask;
+import org.drools.core.util.index.LeftTupleList;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @Ignore
 public class JoinNodeTest extends DroolsTestCase {
@@ -566,9 +564,9 @@ public class JoinNodeTest extends DroolsTestCase {
 
     @Test
     public void testSlotSpecific() {
-        PropagationContext contextPassAll = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPointId.DEFAULT, Long.MAX_VALUE);
-        PropagationContext contextPassNothing = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPointId.DEFAULT, 0);
-        PropagationContext contextPass2And3 = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPointId.DEFAULT, 6);
+        PropagationContext contextPassAll = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPointId.DEFAULT, allSetButTraitBitMask());
+        PropagationContext contextPassNothing = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPointId.DEFAULT, EmptyBitMask.get());
+        PropagationContext contextPass2And3 = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPointId.DEFAULT, new LongBitMask(6));
 
         when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
         when( constraint.isAllowedCachedRight(any(LeftTupleImpl.class), any(ContextEntry.class))).thenReturn(true);
@@ -602,17 +600,17 @@ public class JoinNodeTest extends DroolsTestCase {
         joinNode.modifyObject(string1Handle, modifyPreviousTuples, contextPassNothing, workingMemory);
         assertLength(0, sink1.getAsserted());
 
-        joinNode.setRightDeclaredMask(0);
+        joinNode.setRightDeclaredMask(EmptyBitMask.get());
         joinNode.initInferredMask();
         joinNode.modifyObject(string1Handle, modifyPreviousTuples, contextPass2And3, workingMemory);
         assertLength(0, sink1.getAsserted());
 
-        joinNode.setRightDeclaredMask(9);
+        joinNode.setRightDeclaredMask(new LongBitMask(9));
         joinNode.initInferredMask();
         joinNode.modifyObject(string1Handle, modifyPreviousTuples, contextPass2And3, workingMemory);
         assertLength(0, sink1.getAsserted());
 
-        joinNode.setRightDeclaredMask(3);
+        joinNode.setRightDeclaredMask(new LongBitMask(3));
         joinNode.initInferredMask();
         joinNode.modifyObject(string1Handle, modifyPreviousTuples, contextPass2And3, workingMemory);
         assertLength(1, sink1.getAsserted());

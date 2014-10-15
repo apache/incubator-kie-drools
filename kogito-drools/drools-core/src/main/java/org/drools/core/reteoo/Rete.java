@@ -27,6 +27,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.bitmask.BitMask;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -256,7 +257,7 @@ public class Rete extends ObjectSource
     }   
     
     @Override
-    public long calculateDeclaredMask(List<String> settableProperties) {
+    public BitMask calculateDeclaredMask(List<String> settableProperties) {
         throw new UnsupportedOperationException();
     }    
 }

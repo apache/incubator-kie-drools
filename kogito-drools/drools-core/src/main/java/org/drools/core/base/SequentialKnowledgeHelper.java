@@ -16,12 +16,6 @@
 
 package org.drools.core.base;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Map;
-
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -33,12 +27,19 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
-import org.kie.internal.runtime.KnowledgeRuntime;
+import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieRuntime;
-import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Match;
+import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.beliefs.Mode;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 public class SequentialKnowledgeHelper
     implements
@@ -273,7 +274,7 @@ public class SequentialKnowledgeHelper
         // TODO Auto-generated method stub
     }
 
-    public void update(FactHandle newObject, long mask, Class<?> typeClass) {
+    public void update(FactHandle newObject, BitMask mask, Class<?> typeClass) {
         // TODO Auto-generated method stub
     }
 
@@ -289,7 +290,7 @@ public class SequentialKnowledgeHelper
         // TODO Auto-generated method stub
     }
 
-    public void update(Object newObject, long mask, Class<?> typeClass) {
+    public void update(Object newObject, BitMask mask, Class<?> typeClass) {
         // TODO Auto-generated method stub
     }
 

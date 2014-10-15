@@ -27,6 +27,8 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.HierarchyEncoderImpl;
+import org.drools.core.util.bitmask.AllSetBitMask;
+import org.drools.core.util.bitmask.BitMask;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -119,7 +121,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                      || ! HierarchyEncoderImpl.supersetOrEqualset( vetoMask, this.typeMask ) ) {    // this node is not vetoed
 
                     // "don" update :
-                    if ( context.getModificationMask() == Long.MIN_VALUE ) {
+                    if ( context.getModificationMask().isSet(PropertySpecificUtil.TRAITABLE_BIT) ) {
                         // property reactivity may block trait proxies which have been asserted and then immediately updated because of another "don"
                         // however, PR must be disabled only once for each OTN: that is, a proxy will not pass an OTN if one of its ancestors can also pass it
 
@@ -130,9 +132,9 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                         Collection<Thing> x = tMap.immediateParents( this.typeMask );
                         Thing k = x.iterator().next();
 
-                        long originalMask = context.getModificationMask();
+                        BitMask originalMask = context.getModificationMask();
                         if ( ! k.isTop() ) {
-                            context.setModificationMask( -1L );
+                            context.setModificationMask( AllSetBitMask.get() );
                         }
                         //System.out.println(" MODIFY PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
                         this.sink.propagateModifyObject( factHandle,
@@ -154,12 +156,12 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                 }
             } else {
                 this.sink.propagateModifyObject( factHandle,
-                        modifyPreviousTuples,
-                        context.getModificationMask() > 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
-                        workingMemory );
+                                                 modifyPreviousTuples,
+                                                 !context.getModificationMask().isSet(PropertySpecificUtil.TRAITABLE_BIT) ?
+                                                        context.adaptModificationMaskForObjectType( objectType, workingMemory ) :
+                                                        context,
+                                                 workingMemory );
             }
-
-
         }
     }
 
@@ -167,10 +169,11 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
         return true;
     }
 
-    public long updateMask(long mask) {
-        long returnMask;
-        returnMask = declaredMask | mask;
-        inferredMask = inferredMask | returnMask;
+    @Override
+    public BitMask updateMask(BitMask mask) {
+        BitMask returnMask;
+        returnMask = declaredMask.clone().setAll( mask );
+        inferredMask = inferredMask.setAll( returnMask );
         return returnMask;
     }
 

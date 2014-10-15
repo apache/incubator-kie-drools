@@ -22,9 +22,12 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.util.bitmask.BitMask;
 import org.kie.internal.conf.IndexPrecedenceOption;
 
 import java.util.List;
+
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 public class QuadroupleBetaConstraints extends MultipleBetaConstraint {
 
@@ -179,13 +182,13 @@ public class QuadroupleBetaConstraints extends MultipleBetaConstraint {
         throw new UnsupportedOperationException();
     }
 
-    public long getListenedPropertyMask(List<String> settableProperties) {
+    public BitMask getListenedPropertyMask(List<String> settableProperties) {
         if (constraints[0] instanceof MvelConstraint && constraints[1] instanceof MvelConstraint && constraints[2] instanceof MvelConstraint && constraints[3] instanceof MvelConstraint) {
-            return ((MvelConstraint)constraints[0]).getListenedPropertyMask(settableProperties) |
-                    ((MvelConstraint)constraints[1]).getListenedPropertyMask(settableProperties) |
-                    ((MvelConstraint)constraints[2]).getListenedPropertyMask(settableProperties) |
-                    ((MvelConstraint)constraints[3]).getListenedPropertyMask(settableProperties);
+            return ((MvelConstraint)constraints[0]).getListenedPropertyMask(settableProperties)
+                                                   .setAll(((MvelConstraint) constraints[1]).getListenedPropertyMask(settableProperties))
+                                                   .setAll(((MvelConstraint) constraints[2]).getListenedPropertyMask(settableProperties))
+                                                   .setAll(((MvelConstraint) constraints[3]).getListenedPropertyMask(settableProperties));
         }
-        return Long.MAX_VALUE;
+        return allSetButTraitBitMask();
     }
 }
