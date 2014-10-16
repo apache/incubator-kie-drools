@@ -27,6 +27,7 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
         log.setProcessName(pi.getProcess().getName());
         log.setProcessVersion(pi.getProcess().getVersion());
         log.setStatus(ProcessInstance.STATE_ACTIVE);
+        log.setProcessInstanceDescription( pi.getDescription() );
         try {
             long parentProcessInstanceId = (Long) pi.getMetaData().get("ParentProcessInstanceId");
             log.setParentProcessInstanceId(parentProcessInstanceId);
@@ -50,7 +51,7 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
         logEvent.setStatus(pi.getState());
         logEvent.setEnd(new Date());
         logEvent.setDuration(logEvent.getEnd().getTime() - logEvent.getStart().getTime());
-        
+        logEvent.setProcessInstanceDescription( pi.getDescription() );
         return logEvent;
     }
 

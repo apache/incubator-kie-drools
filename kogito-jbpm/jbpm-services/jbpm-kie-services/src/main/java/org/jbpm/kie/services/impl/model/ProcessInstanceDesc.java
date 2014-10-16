@@ -33,12 +33,14 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
     
     private Date dataTimeStamp;
 
-    public ProcessInstanceDesc() {
-    
-    }
+    private String processInstanceDescription;
 
+    public ProcessInstanceDesc() {
+        
+    }
+    
     public ProcessInstanceDesc(long id, String processId, String processName, String processVersion, 
-                                int state, String deploymentId, Date dataTimeStamp, String initiator) {
+                                int state, String deploymentId, Date dataTimeStamp, String initiator,String processInstanceDescription) {
         this.id = id;
         this.processId = processId;
         this.processName = processName;
@@ -47,7 +49,20 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
         this.deploymentId = deploymentId;
         this.dataTimeStamp = dataTimeStamp;
         this.initiator = initiator;
+        this.processInstanceDescription = processInstanceDescription;
     }
+    
+    public ProcessInstanceDesc(long id, String processId, String processName, String processVersion, 
+                               int state, String deploymentId, Date dataTimeStamp, String initiator) {
+       this.id = id;
+       this.processId = processId;
+       this.processName = processName;
+       this.processVersion = processVersion==null?"":processVersion;
+       this.state = state;
+       this.deploymentId = deploymentId;
+       this.dataTimeStamp = dataTimeStamp;
+       this.initiator = initiator;
+   }
     
     public String getProcessId() {
         return processId;
@@ -96,6 +111,14 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
 
     public void setDeploymentId(String deploymentId) {
         this.deploymentId = deploymentId;
+    }
+
+    public String getProcessInstanceDescription() {
+        return processInstanceDescription;
+    }
+    
+    public void setProcessInstanceDescription(String processInstanceDescription) {
+        this.processInstanceDescription = processInstanceDescription;
     }
 
 }

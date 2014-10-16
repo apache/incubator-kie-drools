@@ -35,4 +35,6 @@ public interface ProcessInstanceDesc {
     String getProcessVersion();
 
     String getInitiator();
+    
+    String getProcessInstanceDescription();
 }
