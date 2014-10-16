@@ -2,6 +2,8 @@ package org.drools.compiler.metatest;
 
 global java.util.List results;
 
+import org.drools.compiler.Person
+
 rule "Test Consequence"
     @foo(bar)
     @foo2(bar2)
