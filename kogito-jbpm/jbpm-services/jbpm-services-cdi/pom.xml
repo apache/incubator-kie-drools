@@ -53,10 +53,6 @@
       <artifactId>jbpm-kie-services</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.jboss.solder</groupId>
-      <artifactId>solder-api</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>javax.enterprise</groupId>
@@ -149,11 +145,6 @@
     <dependency>
       <groupId>org.codehaus.btm</groupId>
       <artifactId>btm</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.solder</groupId>
-      <artifactId>solder-impl</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- test: arquillian -->
