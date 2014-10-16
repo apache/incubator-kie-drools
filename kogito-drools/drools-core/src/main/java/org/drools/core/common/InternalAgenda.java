@@ -25,7 +25,6 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
-import org.drools.core.spi.Consequence;
 import org.drools.core.spi.ConsequenceException;
 import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.spi.PropagationContext;
@@ -148,7 +147,7 @@ public interface InternalAgenda
 
     void fireActivation(final Activation activation) throws ConsequenceException;
 
-    void fireActivationEvent(Activation activation, Consequence event) throws ConsequenceException;
+    void fireConsequenceEvent(Activation activation, String consequenceName) throws ConsequenceException;
 
     boolean fireTimedActivation(final Activation activation, boolean saveForLater ) throws ConsequenceException;
 

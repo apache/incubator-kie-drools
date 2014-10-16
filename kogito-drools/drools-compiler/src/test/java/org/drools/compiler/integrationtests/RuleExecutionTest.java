@@ -1,8 +1,10 @@
 package org.drools.compiler.integrationtests;
 
+import org.drools.compiler.Person;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
 
 import java.util.ArrayList;
@@ -135,7 +137,32 @@ public class RuleExecutionTest {
                            ), list);
     }
 
-    public static void print(String s) {
-        System.out.println(s);
+    @Test
+    public void testOnDeleteMatchConsequence() throws Exception {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "    $p : Person( age > 30 )\n" +
+                "then\n" +
+                "    $p.setStatus(\"in\");\n" +
+                "then[$onDeleteMatch$]\n" +
+                "    $p.setStatus(\"out\");\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper()
+                .addContent(str, ResourceType.DRL)
+                .build()
+                .newKieSession();
+
+        Person mario = new Person("Mario", 40);
+        FactHandle fact = ksession.insert(mario);
+        ksession.fireAllRules();
+
+        assertEquals("in", mario.getStatus());
+
+        ksession.delete(fact);
+        ksession.fireAllRules();
+
+        assertEquals("out", mario.getStatus());
     }
 }
