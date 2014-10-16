@@ -57,12 +57,15 @@ public abstract class PlannerBenchmarkTest extends LoggingTest {
         String benchmarkConfigResource = createBenchmarkConfigResource();
         PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(benchmarkConfigResource);
         PlannerBenchmarkConfig plannerBenchmarkConfig = benchmarkFactory.getPlannerBenchmarkConfig();
-        String path = plannerBenchmarkConfig.getBenchmarkDirectory().getPath();
-        String prefix = "local/data/";
-        if (!path.startsWith(prefix)) {
-            throw new IllegalStateException("The path (" + path + ") should start with prefix (" + prefix + ")");
+        String benchmarkDirectoryPath = plannerBenchmarkConfig.getBenchmarkDirectory().getPath();
+        // On Windows, getPath() contains backslashes instead of normal slashes
+        String prefix = "local" + File.separator + "data" + File.separator;
+        if (!benchmarkDirectoryPath.startsWith(prefix)) {
+            throw new IllegalStateException("The benchmarkDirectoryPath (" + benchmarkDirectoryPath
+                    + ") should start with prefix (" + prefix + ")");
         }
-        plannerBenchmarkConfig.setBenchmarkDirectory(new File(path.replace(prefix, "target/test/data/")));
+        plannerBenchmarkConfig.setBenchmarkDirectory(new File(benchmarkDirectoryPath.replace(prefix,
+                "target" + File.separator + "test" + File.separator + "data" + File.separator)));
         plannerBenchmarkConfig.setWarmUpHoursSpentLimit(0L);
         plannerBenchmarkConfig.setWarmUpMinutesSpentLimit(0L);
         plannerBenchmarkConfig.setWarmUpSecondsSpentLimit(WARM_UP_SECONDS_SPENT);
