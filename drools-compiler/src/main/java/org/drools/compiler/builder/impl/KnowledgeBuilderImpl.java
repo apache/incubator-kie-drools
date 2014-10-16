@@ -1987,8 +1987,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
         try {
             resourceReader = resource.getReader();
-            ChangeSet changeSet = reader.read(resourceReader);
-            return changeSet;
+            return reader.read(resourceReader);
         } finally {
             if (resourceReader != null) {
                 resourceReader.close();
@@ -2136,7 +2135,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     public static interface AssetFilter {
         public static enum Action {
-            DO_NOTHING, ADD, REMOVE, UPDATE;
+            DO_NOTHING, ADD, REMOVE, UPDATE
         }
 
         public Action accept(String pkgName, String assetName);
@@ -2151,7 +2150,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     public void add(Resource resource, ResourceType type) {
-        ResourceConfiguration resourceConfiguration = resource instanceof BaseResource ? ((BaseResource) resource).getConfiguration() : null;
+        ResourceConfiguration resourceConfiguration = resource instanceof BaseResource ? resource.getConfiguration() : null;
         add(resource, type, resourceConfiguration)  ;
     }
 
@@ -2174,9 +2173,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         InternalKnowledgePackage[] pkgs = getPackages();
         List<KnowledgePackage> list = new ArrayList<KnowledgePackage>( pkgs.length );
 
-        for ( InternalKnowledgePackage pkg : pkgs ) {
-            list.add( pkg );
-        }
+        Collections.addAll(list, pkgs);
 
         return list;
     }
@@ -2249,6 +2246,17 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 annotationClass = typeResolver.resolveType(className, TypeResolver.ONLY_ANNOTATION_CLASS_FILTER);
             } catch (ClassNotFoundException e1) {
                 // non-strict annotation, ignore error
+            } catch (NoClassDefFoundError e1) {
+                // non-strict annotation, ignore error
+            }
+        } catch (NoClassDefFoundError e) {
+            String className = normalizeAnnotationNonStrictName(annotationDescr.getName());
+            try {
+                annotationClass = typeResolver.resolveType(className, TypeResolver.ONLY_ANNOTATION_CLASS_FILTER);
+            } catch (ClassNotFoundException e1) {
+                // non-strict annotation, ignore error
+            } catch (NoClassDefFoundError e1) {
+                // non-strict annotation, ignore error
             }
         }
         if (annotationClass != null) {
@@ -2269,8 +2277,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                     }
 
                     if ( m.getReturnType().isArray() ) {
-                        int n = Array.getLength( val );
-                        Object ar = java.lang.reflect.Array.newInstance( m.getReturnType().getComponentType(), n );
+                        int n = Array.getLength(val);
                         for ( int j = 0; j < n; j++ ) {
                             if ( Class.class.equals( m.getReturnType().getComponentType() ) ) {
                                 String className = Array.get( val, j ).toString().replace( ".class", "" );
@@ -2282,7 +2289,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                         }
                     } else {
                         if ( Class.class.equals( m.getReturnType() ) ) {
-                            String className = annotationDescr.getValueAsString( key ).toString().replace( ".class", "" );
+                            String className = annotationDescr.getValueAsString(key).replace( ".class", "" );
                             annotationDescr.setKeyValue( key, typeResolver.resolveType( className ).getName() + ".class" );
                         } else if ( m.getReturnType().isAnnotation() ) {
                             annotationDescr.setKeyValue( key,
@@ -2294,6 +2301,10 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                     addBuilderResult( new AnnotationDeclarationError( annotationDescr,
                                                                       "Unknown annotation property " + key ) );
                 } catch ( ClassNotFoundException e ) {
+                    addBuilderResult( new AnnotationDeclarationError( annotationDescr,
+                                                                      "Unknown class " + annotationDescr.getValue( key ) +                                                                      " used in property " + key +
+                                                                      " of annotation " + annotationDescr.getName() ) );
+                } catch ( NoClassDefFoundError e ) {
                     addBuilderResult( new AnnotationDeclarationError( annotationDescr,
                                                                       "Unknown class " + annotationDescr.getValue( key ) +                                                                      " used in property " + key +
                                                                       " of annotation " + annotationDescr.getName() ) );
@@ -2318,6 +2329,9 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             Class<?> annotationClass = typeResolver.resolveType(annotationDescr.getName(), TypeResolver.ONLY_ANNOTATION_CLASS_FILTER);
             annotationDescr.setFullyQualifiedName(annotationClass.getCanonicalName());
         } catch (ClassNotFoundException e) {
+            addBuilderResult(new AnnotationDeclarationError(annotationDescr,
+                                                            "Unknown annotation: " + annotationDescr.getName()));
+        } catch (NoClassDefFoundError e) {
             addBuilderResult(new AnnotationDeclarationError(annotationDescr,
                                                             "Unknown annotation: " + annotationDescr.getName()));
         }
