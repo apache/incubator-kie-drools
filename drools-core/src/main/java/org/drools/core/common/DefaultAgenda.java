@@ -88,6 +88,10 @@ public class DefaultAgenda
         Externalizable,
         InternalAgenda {
 
+    public static final String ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME = "$onBeforeAllFire$";
+    public static final String ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME = "$onAfterAllFire$";
+    public static final String ON_DELETE_MATCH_CONSEQUENCE_NAME = "$onDeleteMatch$";
+
     protected static final transient Logger                      log                = LoggerFactory.getLogger( DefaultAgenda.class );
 
     private static final long                                    serialVersionUID   = 510l;
@@ -468,6 +472,8 @@ public class DefaultAgenda
                                                                                                 MatchCancelledCause.WME_MODIFY );
             }
         }
+
+        fireConsequenceEvent(item, ON_DELETE_MATCH_CONSEQUENCE_NAME);
 
         if ( item.getActivationUnMatchListener() != null ) {
             item.getActivationUnMatchListener().unMatch( workingMemory.getKnowledgeRuntime(), item );
@@ -1133,7 +1139,14 @@ public class DefaultAgenda
         }
     }
 
-    public synchronized void fireActivationEvent(Activation activation, Consequence event) throws ConsequenceException {
+    public void fireConsequenceEvent(Activation activation, String consequenceName) {
+        Consequence consequence = activation.getRule().getNamedConsequence(consequenceName);
+        if (consequence != null) {
+            fireActivationEvent(activation, consequence);
+        }
+    }
+
+    private synchronized void fireActivationEvent(Activation activation, Consequence event) throws ConsequenceException {
         this.workingMemory.startOperation();
         try {
             try {

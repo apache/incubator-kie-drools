@@ -2,6 +2,7 @@ package org.drools.core.phreak;
 
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.common.AgendaItem;
+import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
@@ -18,7 +19,6 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.LinkedList;
@@ -113,9 +113,6 @@ public class RuleExecutor {
         fire(wm, null, 0, Integer.MAX_VALUE, outerStack, agenda, fireUntilHalt);
     }
 
-    private static final String ON_BEFORE_ALL_FIRES = "$onBeforeAllFire$";
-    private static final String ON_AFTER_ALL_FIRES = "$onAfterAllFire$";
-
     private int fire( InternalWorkingMemory wm,
                       AgendaFilter filter,
                       int fireCount,
@@ -139,10 +136,7 @@ public class RuleExecutor {
             LeftTuple leftTuple = getNextLeftTuple();
             
             if (rule.isAllMatches()) {
-                Consequence beforeAllFires = rule.getNamedConsequence(ON_BEFORE_ALL_FIRES);
-                if (beforeAllFires != null) {
-                    agenda.fireActivationEvent((AgendaItem) leftTuple, beforeAllFires);
-                }
+                agenda.fireConsequenceEvent((AgendaItem) leftTuple, DefaultAgenda.ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME);
             }
 
             LeftTuple lastLeftTuple = null;
@@ -196,10 +190,7 @@ public class RuleExecutor {
             }
 
             if (rule.isAllMatches()) {
-                Consequence afterAllFires = rule.getNamedConsequence(ON_AFTER_ALL_FIRES);
-                if (afterAllFires != null) {
-                    agenda.fireActivationEvent((AgendaItem) lastLeftTuple, afterAllFires);
-                }
+                agenda.fireConsequenceEvent((AgendaItem) lastLeftTuple, DefaultAgenda.ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME);
             }
         }
 

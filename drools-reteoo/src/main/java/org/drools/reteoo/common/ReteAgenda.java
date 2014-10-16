@@ -50,7 +50,6 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
-import org.drools.core.spi.Consequence;
 import org.drools.core.spi.ConsequenceException;
 import org.drools.core.spi.ConsequenceExceptionHandler;
 import org.drools.core.spi.InternalActivationGroup;
@@ -1357,7 +1356,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         }
     }
 
-    public synchronized void fireActivationEvent(Activation activation, Consequence event) throws ConsequenceException {
+    public synchronized void fireConsequenceEvent(Activation activation, String consequenceName) throws ConsequenceException {
         throw new UnsupportedOperationException("Cannot invoke fireActivationEvent on ReteAgenda");
     }
 
