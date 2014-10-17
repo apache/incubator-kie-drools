@@ -961,17 +961,15 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         if (!functions.isEmpty()) {
 
             for (FunctionDescr functionDescr : functions) {
-                if (filterAccepts(functionDescr.getNamespace(), functionDescr.getName()) ) {
-                    if (isEmpty(functionDescr.getNamespace())) {
-                        // make sure namespace is set on components
-                        functionDescr.setNamespace(packageDescr.getNamespace());
-                    }
-
-                    // make sure functions are compiled using java dialect
-                    functionDescr.setDialect("java");
-
-                    preCompileAddFunction(functionDescr);
+                if (isEmpty(functionDescr.getNamespace())) {
+                    // make sure namespace is set on components
+                    functionDescr.setNamespace(packageDescr.getNamespace());
                 }
+
+                // make sure functions are compiled using java dialect
+                functionDescr.setDialect("java");
+
+                preCompileAddFunction(functionDescr);
             }
 
             // iterate and compile
