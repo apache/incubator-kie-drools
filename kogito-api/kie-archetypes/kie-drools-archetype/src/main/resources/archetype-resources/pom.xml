@@ -16,6 +16,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   	<drools-version>${droolsVersion}</drools-version>
+  	<slf4j-version>${slf4jVersion}</slf4j-version>
+  	<junit-version>${junitVersion}</junit-version>
   </properties>
 
 	<dependencyManagement>
@@ -41,13 +43,13 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${version.junit}</version>
+			<version>${junit-version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>${version.org.slf4j}</version>
+			<version>${slf4j-version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
