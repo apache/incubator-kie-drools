@@ -195,9 +195,26 @@ public class JtaTransactionManager
                 this.ut.begin();
                 return true;
             } catch ( Exception e ) {
-                logger.warn( "Unable to begin transaction", e);
-                throw new RuntimeException( "Unable to begin transaction",
-                                            e );
+                // special WAS handling for cached UserTrnsactions
+                if (e.getClass().getName().equals("javax.ejb.EJBException")) {
+                    // reinitialize all fields
+                    this.ut = findUserTransaction();
+                    this.tm = findTransactionManager(this.ut);
+                    this.tsr = findTransactionSynchronizationRegistry(this.ut, this.tm);
+
+
+                    try {
+                        this.ut.begin();
+                        return true;
+                    } catch (Exception ex) {
+                        logger.warn( "Unable to begin transaction", e);
+                        throw new RuntimeException( "Unable to begin transaction",  e );
+                    }
+                } else {
+
+                    logger.warn( "Unable to begin transaction", e);
+                    throw new RuntimeException( "Unable to begin transaction", e );
+                }
             }
         } 
         return false;
