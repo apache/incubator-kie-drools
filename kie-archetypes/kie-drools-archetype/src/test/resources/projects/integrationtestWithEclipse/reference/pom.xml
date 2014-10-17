@@ -13,6 +13,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   	<drools-version>9.9.9-DUMMY</drools-version>
+  	<slf4j-version>1.7.2</slf4j-version>
+  	<junit-version>4.11</junit-version>
   </properties>
 
 	<dependencyManagement>
@@ -38,13 +40,13 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<version>${junit-version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.2</version>
+			<version>${slf4j-version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

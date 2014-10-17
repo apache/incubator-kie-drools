@@ -6,6 +6,12 @@
         <requiredProperty key="droolsVersion">
             <defaultValue>${project.version}</defaultValue>
         </requiredProperty>
+        <requiredProperty key="slf4jVersion">
+            <defaultValue>${version.org.slf4j}</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="junitVersion">
+            <defaultValue>${version.junit}</defaultValue>
+        </requiredProperty>
         <requiredProperty key="pomEclipseCompatible">
             <defaultValue>false</defaultValue>
         </requiredProperty>
