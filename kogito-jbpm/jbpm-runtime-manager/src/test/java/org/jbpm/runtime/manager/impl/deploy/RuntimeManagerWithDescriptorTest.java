@@ -1,6 +1,7 @@
 package org.jbpm.runtime.manager.impl.deploy;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
+
 import org.apache.commons.io.IOUtils;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.SessionConfiguration;
@@ -10,6 +11,7 @@ import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.events.DefaultTaskEventListener;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,7 +70,6 @@ public class RuntimeManagerWithDescriptorTest extends AbstractDeploymentDescript
     private RuntimeManager manager;
     private static List<String> taskEvents;
     private static List<String> processEvents;
-    private static String marshalledString;
 
     @Before
     public void setup() {
@@ -80,7 +81,6 @@ public class RuntimeManagerWithDescriptorTest extends AbstractDeploymentDescript
         userGroupCallback = new JBossUserGroupCallbackImpl(properties);
         taskEvents = new ArrayList<String>();
         processEvents = new ArrayList<String>();
-        marshalledString = "";
     }
 
     @After
@@ -92,7 +92,6 @@ public class RuntimeManagerWithDescriptorTest extends AbstractDeploymentDescript
         pds.close();
         taskEvents = null;
         processEvents = null;
-        marshalledString = null;
     }
 
     @Test
@@ -226,9 +225,8 @@ public class RuntimeManagerWithDescriptorTest extends AbstractDeploymentDescript
                 .runtimeStrategy(RuntimeStrategy.PER_PROCESS_INSTANCE)
                 .addMarshalingStrategy(new ObjectModel("org.jbpm.runtime.manager.impl.deploy" +
                         ".RuntimeManagerWithDescriptorTest$TestMarshallingStrategy"))
-                //@TODO investigate ClassCastException at RuntimeEnvironmentBuilder.java:242
-                //.addConfiguration(new NamedObjectModel("drools.processSignalManagerFactory",
-                //DefaultSignalManagerFactory.class.getName()))
+                .addConfiguration(new NamedObjectModel("drools.processSignalManagerFactory", "java.lang.String",
+                new Object[]{DefaultSignalManagerFactory.class.getName()}))
                 .addEnvironmentEntry(new NamedObjectModel("jbpm.business.calendar",
                         "org.jbpm.runtime.manager.impl.deploy.RuntimeManagerWithDescriptorTest$TestBusinessCalendar"))
                 .addEventListener(new ObjectModel("org.jbpm.runtime.manager.impl.deploy" +
@@ -287,9 +285,12 @@ public class RuntimeManagerWithDescriptorTest extends AbstractDeploymentDescript
         KieSession kieSession = engine.getKieSession();
 
         // configuration
-        //@TODO investigate ClassCastException at RuntimeEnvironmentBuilder.java:242
-        System.out.println(((SessionConfiguration) kieSession.getSessionConfiguration()).getSignalManagerFactory());
-        System.out.println(DefaultSignalManagerFactory.class.getName());
+        assertEquals(((SessionConfiguration) kieSession.getSessionConfiguration()).getSignalManagerFactory(),
+        		DefaultSignalManagerFactory.class.getName());
+        
+        BusinessCalendar bc = (BusinessCalendar) kieSession.getEnvironment().get("jbpm.business.calendar");
+        assertNotNull(bc);
+        assertTrue(bc instanceof TestBusinessCalendar);
 
         // globals
         Object service = kieSession.getGlobal("service");
@@ -327,9 +328,12 @@ public class RuntimeManagerWithDescriptorTest extends AbstractDeploymentDescript
         params.put("x", "marshal");
         processInstance = kieSession.startProcess("ParentProcess", params);
         processInstanceId = processInstance.getId();
-        assertNotNull(kieSession.getProcessInstance(processInstanceId));
-        //@TODO investigate - I put there "marshal" and got "Hello", which is the name of user task in subprocess
-        assertEquals("Hello", marshalledString);
+        
+        ProcessInstance pi = kieSession.getProcessInstance(processInstanceId);
+        assertNotNull(pi);
+        
+        String varX = (String) ((WorkflowProcessInstance)pi).getVariable("x");
+        assertEquals(TestMarshallingStrategy.ALWAYS_RESPOND_WITH, varX);
     }
 
 
@@ -440,6 +444,8 @@ public class RuntimeManagerWithDescriptorTest extends AbstractDeploymentDescript
 
     public static class TestMarshallingStrategy implements ObjectMarshallingStrategy {
 
+    	private static final String ALWAYS_RESPOND_WITH = "custom marshaller invoked";
+    	
         @Override
         public boolean accept(Object o) {
             return (o instanceof String);
@@ -447,23 +453,22 @@ public class RuntimeManagerWithDescriptorTest extends AbstractDeploymentDescript
 
         @Override
         public void write(ObjectOutputStream objectOutputStream, Object o) throws IOException {
-            marshalledString = "write";
+            
         }
 
         @Override
         public Object read(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
-            return "read";
+            return ALWAYS_RESPOND_WITH;
         }
 
         @Override
         public byte[] marshal(Context context, ObjectOutputStream objectOutputStream, Object o) throws IOException {
-            marshalledString = (String) o;
-            return new byte[0];
+            return ((String) o).getBytes();
         }
 
         @Override
         public Object unmarshal(Context context, ObjectInputStream objectInputStream, byte[] bytes, ClassLoader classLoader) throws IOException, ClassNotFoundException {
-            return "unmarshall";
+            return ALWAYS_RESPOND_WITH;
         }
 
         @Override
@@ -472,7 +477,6 @@ public class RuntimeManagerWithDescriptorTest extends AbstractDeploymentDescript
         }
     }
 
-    //@TODO how to verify invocation of business calendar set as an environment entry?
     public static class TestBusinessCalendar implements BusinessCalendar {
 
         @Override
