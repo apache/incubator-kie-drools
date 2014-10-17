@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
@@ -157,6 +158,82 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         ks.getRepository().removeKieModule(releaseId);
     }
+
+    @Test
+    public void testKScannerWithFunction() throws Exception {
+        String drl1 =
+                "global java.util.List list;\n" +
+                "\n" +
+                "function boolean doSomething(String name) {\n" +
+                "    return true ;\n" +
+                "}\n" +
+                " \n" +
+                "rule R1 when\n" +
+                "    $s : String( )\n" +
+                "    eval(doSomething($s))\n" +
+                "then\n" +
+                "    list.add(\"XXX:\" + $s);\n" +
+                "end";
+
+        String drl2 =
+                "global java.util.List list;\n" +
+                "\n" +
+                "function boolean doSomething(String name) {\n" +
+                "    return true ;\n" +
+                "}\n" +
+                " \n" +
+                "rule R1 when\n" +
+                "    $s : String( )\n" +
+                "    eval(doSomething($s))\n" +
+                "then\n" +
+                "    list.add(\"YYY:\" + $s);\n" +
+                "end";
+
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
+
+        InternalKieModule kJar1 = createKieJarFromDrl(ks, releaseId, drl1);
+
+        MavenRepository repository = getMavenRepository();
+        repository.deployArtifact(releaseId, kJar1, kPom);
+
+        KieContainer kieContainer = ks.newKieContainer(releaseId);
+        KieScanner scanner = ks.newKieScanner(kieContainer);
+
+        KieSession ksession = kieContainer.newKieSession("KSession1");
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+        ksession.insert("111");
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals("XXX:111", list.get(0));
+        list.clear();
+
+        InternalKieModule kJar2 = createKieJarFromDrl(ks, releaseId, drl2);
+        repository.deployArtifact(releaseId, kJar2, kPom);
+
+        scanner.scanNow();
+
+        ksession.insert("222");
+        ksession.fireAllRules();
+        assertEquals(2, list.size());
+        assertTrue(list.containsAll(asList("YYY:111", "YYY:222")));
+
+        ks.getRepository().removeKieModule(releaseId);
+    }
+
+    private InternalKieModule createKieJarFromDrl(KieServices ks, ReleaseId releaseId, String drl) throws IOException {
+        KieFileSystem kfs = createKieFileSystemWithKProject(ks, false);
+        kfs.writePomXML(getPom(releaseId));
+
+        kfs.write("src/main/resources/KBase1/rule1.drl", drl);
+
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        return (InternalKieModule) kieBuilder.getKieModule();
+    }
+
 
     @Test
     public void testLoadKieJarFromMavenRepo() throws Exception {
