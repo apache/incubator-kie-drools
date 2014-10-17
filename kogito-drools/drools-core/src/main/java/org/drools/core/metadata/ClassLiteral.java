@@ -1,10 +1,11 @@
 package org.drools.core.metadata;
 
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.List;
 
-public abstract class ClassLiteral<T> implements MetaClass<T> {
+public abstract class ClassLiteral<T> implements MetaClass<T>, Serializable {
 
     protected MetaProperty<T,?,?>[] properties;
     protected List<String> propertyNames;

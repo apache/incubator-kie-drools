@@ -1,21 +1,23 @@
 package org.drools.core.metadata;
 
-import org.drools.core.util.BitMaskUtil;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.reteoo.PropertySpecificUtil;
+import org.drools.core.util.ClassUtils;
 import org.drools.core.util.bitmask.BitMask;
 
+import java.io.Serializable;
 import java.net.URI;
-import java.util.Collection;
 import java.util.List;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
 
-public abstract class ModifyLiteral<T extends Metadatable> extends AbstractWMTask<T> implements Modify<T> {
+public abstract class ModifyLiteral<T extends Metadatable> extends AbstractWMTask<T> implements Modify<T>, Serializable {
     private T target;
     private ModifyTaskLiteral<T,?,?> task;
     private BitMask modificationMask;
     private URI key;
     private Object[] with;
+    private BitMask[] extraMasks;
 
     protected abstract MetaClass<T> getMetaClassInfo();
 
@@ -23,12 +25,14 @@ public abstract class ModifyLiteral<T extends Metadatable> extends AbstractWMTas
         this.target = target;
         switch ( with.length ) {
             case 0 : this.with = null;
-                break;
+                this.extraMasks = null;
+                return;
             case 1 : this.with = with[ 0 ].getArgs();
                 break;
             default :
                 mergeWiths( with );
         }
+        this.extraMasks = new BitMask[ this.with.length ];
     }
 
     protected void mergeWiths( With[] with ) {
@@ -68,6 +72,11 @@ public abstract class ModifyLiteral<T extends Metadatable> extends AbstractWMTas
     }
 
     @Override
+    public BitMask getAdditionalUpdatesModificationMask( int j ) {
+        return extraMasks[ j ];
+    }
+
+    @Override
     public KIND kind() {
         return KIND.MODIFY;
     }
@@ -78,10 +87,41 @@ public abstract class ModifyLiteral<T extends Metadatable> extends AbstractWMTas
     }
 
     public T call() {
-        modificationMask = task.getModificationMask();
+        computeModificationMasks( null );
         task.call( target );
         return target;
     }
+
+    public T call( InternalKnowledgeBase knowledgeBase ) {
+        computeModificationMasks( knowledgeBase );
+        task.call( target );
+        return target;
+    }
+
+    protected void computeModificationMasks( InternalKnowledgeBase knowledgeBase ) {
+        List<String> settableProperties = getSettableProperties( target, knowledgeBase );
+        modificationMask = PropertySpecificUtil.getEmptyPropertyReactiveMask( settableProperties.size() );
+
+        if ( with != null ) {
+            List<String>[] inverseSettableProperties = new List[ with.length ];
+            for ( int j = 0; j < with.length; j++ ) {
+                inverseSettableProperties[ j ] = getSettableProperties( with[ j ], knowledgeBase );
+                extraMasks[ j ] = PropertySpecificUtil.getEmptyPropertyReactiveMask( inverseSettableProperties[ j ].size() );
+                task.computeModificationMasks( modificationMask, settableProperties, with, extraMasks, inverseSettableProperties );
+            }
+        } else {
+            task.computeModificationMasks( modificationMask, settableProperties, null, null, null );
+        }
+    }
+
+    protected List<String> getSettableProperties( Object o, InternalKnowledgeBase knowledgeBase ) {
+        if ( knowledgeBase != null ) {
+            return PropertySpecificUtil.getSettableProperties( knowledgeBase, o.getClass() );
+        } else {
+            return ClassUtils.getSettableProperties( o.getClass() );
+        }
+    }
+
 
     public BitMask getModificationMask() {
         return modificationMask;
@@ -136,7 +176,7 @@ public abstract class ModifyLiteral<T extends Metadatable> extends AbstractWMTas
 
 
 
-    public class ModifyTaskLiteral<T extends Metadatable,R,C> implements ModifyTask {
+    public class ModifyTaskLiteral<T extends Metadatable,R,C> implements ModifyTask, Serializable {
         protected MetaProperty<T,R,C> propertyLiteral;
         protected C value;
         protected Lit mode;
@@ -159,9 +199,20 @@ public abstract class ModifyLiteral<T extends Metadatable> extends AbstractWMTas
             }
         }
 
-        public BitMask getModificationMask() {
-            BitMask downstreamMask = nextTask != null ? nextTask.getModificationMask() : getEmptyPropertyReactiveMask( getMetaClassInfo().getProperties().length );
-            return setPropertyOnMask( downstreamMask, getMetaClassInfo().getPropertyIndex( propertyLiteral ) );
+        public void computeModificationMasks( BitMask mask, List<String> settableProperties, Object[] with, BitMask[] extraMasks, List<String>[] inverseSettableProperties ) {
+            if ( nextTask != null ) {
+                nextTask.computeModificationMasks( mask, settableProperties, with, extraMasks, inverseSettableProperties );
+            }
+
+            setPropertyOnMask( mask, settableProperties, propertyLiteral.getName() );
+
+            if ( with != null ) {
+                for ( int j = 0; j < with.length; j++ ) {
+                    if ( value == with[ j ] && propertyLiteral instanceof InvertibleMetaProperty ) {
+                        setPropertyOnMask( extraMasks[ j ], inverseSettableProperties[ j ], ( (InvertibleMetaProperty) propertyLiteral ).getInverse().getName() );
+                    }
+                }
+            }
         }
 
         @Override

@@ -1,7 +1,5 @@
 package org.drools.core.metadata;
 
-import org.kie.api.definition.type.Position;
-
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
