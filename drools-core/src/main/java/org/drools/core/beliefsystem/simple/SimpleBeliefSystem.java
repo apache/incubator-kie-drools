@@ -135,4 +135,19 @@ public class SimpleBeliefSystem
         return dep;
     }
 
+    public NamedEntryPoint getEp() {
+        return ep;
+    }
+
+    public void setEp( NamedEntryPoint ep ) {
+        this.ep = ep;
+    }
+
+    public TruthMaintenanceSystem getTms() {
+        return tms;
+    }
+
+    public void setTms( TruthMaintenanceSystem tms ) {
+        this.tms = tms;
+    }
 }

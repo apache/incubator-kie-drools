@@ -144,15 +144,15 @@ public class MetadataTest {
         SubKlassImpl ski = new SubKlassImpl();
         SubKlass_.SubKlass_Modify task = SubKlass_.modify( ski ).prop( "hello" ).subProp( 42 );
         task.call();
-        assertEquals( 40, task.getModificationMask() );
+        assertEquals( "80", task.getModificationMask().toString() );
 
         SubKlass_.SubKlass_Modify task2 = SubKlass_.modify( ski ).prop( "hello" );
         task2.call();
-        assertEquals( 8, task2.getModificationMask() );
+        assertEquals( "16", task2.getModificationMask().toString() );
 
         SubKlass_.SubKlass_Modify task3 = SubKlass_.modify( ski ).subProp( 42 );
         task3.call();
-        assertEquals( 32, task3.getModificationMask() );
+        assertEquals( "64", task3.getModificationMask().toString() );
     }
 
 
@@ -248,8 +248,9 @@ public class MetadataTest {
         AnotherKlass aki3 = AnotherKlass_.newAnotherKlass( "003" ).call();
         AnotherKlass aki4 = AnotherKlass_.newAnotherKlass( "004" ).call();
 
+        ArrayList<AnotherKlass> initial = new ArrayList( Arrays.asList( aki0, aki1 ) );
         SubKlass ski = SubKlass_.newSubKlass( URI.create( "123" ) )
-                .links( new ArrayList( Arrays.asList( aki0, aki1 ) ), Lit.SET )
+                .links( initial, Lit.SET )
                 .links( aki1, Lit.REMOVE )
                 .links( aki2, Lit.ADD )
                 .links( Arrays.asList( aki3, aki4 ), Lit.REMOVE )

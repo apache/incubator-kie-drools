@@ -11,11 +11,12 @@ import org.drools.core.metadata.ToOnePropertyLiteral;
 import org.drools.core.metadata.With;
 import org.drools.core.util.ClassUtils;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
-public class SubKlass_<T extends SubKlass> extends Klass_<T>  {
+public class SubKlass_<T extends SubKlass> extends Klass_<T> implements Serializable {
 
     public SubKlass_( T x ) {
         super( x );
@@ -92,7 +93,7 @@ public class SubKlass_<T extends SubKlass> extends Klass_<T>  {
         }
     }
 
-    public static class SubKlass_Modify<T extends SubKlass> extends  Klass_.Klass_Modify<T>  {
+    public static class SubKlass_Modify<T extends SubKlass> extends  Klass_.Klass_Modify<T> implements Serializable {
         public SubKlass_Modify( T x, With... args ) {
             super( x, args );
         }
@@ -134,7 +135,7 @@ public class SubKlass_<T extends SubKlass> extends Klass_<T>  {
     }
 
 
-    public static class SubKlass_Meta<T extends SubKlass> extends Klass_Meta<T> {
+    public static class SubKlass_Meta<T extends SubKlass> extends Klass_Meta<T> implements Serializable {
 
         private static SubKlass_Meta instance;
 
@@ -190,7 +191,7 @@ public class SubKlass_<T extends SubKlass> extends Klass_<T>  {
         }
     }
 
-    public static class SubKlass_Don<K, T extends SubKlass> extends Klass_Don<K,T> {
+    public static class SubKlass_Don<K, T extends SubKlass> extends Klass_Don<K,T> implements Serializable {
         public SubKlass_Don( K target, With... args ) {
             super( target, args );
         }

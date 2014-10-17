@@ -19,11 +19,12 @@ import org.drools.core.metadata.ToOnePropertyLiteral;
 import org.drools.core.metadata.With;
 import org.drools.core.util.ClassUtils;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
-public class AnotherKlass_<T extends AnotherKlass> extends MetadataContainer<T> {
+public class AnotherKlass_<T extends AnotherKlass> extends MetadataContainer<T> implements Serializable {
 
     public AnotherKlass_( T x ) {
         super( x );
@@ -57,7 +58,7 @@ public class AnotherKlass_<T extends AnotherKlass> extends MetadataContainer<T> 
     }
 
 
-    public static class AnotherKlass_NewInstance<T extends AnotherKlass> extends NewInstanceLiteral<T> {
+    public static class AnotherKlass_NewInstance<T extends AnotherKlass> extends NewInstanceLiteral<T> implements Serializable {
 
         public AnotherKlass_NewInstance( Object id, With... args ) {
             super( id, args );
@@ -110,7 +111,7 @@ public class AnotherKlass_<T extends AnotherKlass> extends MetadataContainer<T> 
         }
     }
 
-    public static class AnotherKlass_Modify<T extends AnotherKlass> extends ModifyLiteral<T> {
+    public static class AnotherKlass_Modify<T extends AnotherKlass> extends ModifyLiteral<T> implements Serializable {
         public AnotherKlass_Modify( T x, With... args ) {
             super( x, args );
         }
@@ -159,7 +160,7 @@ public class AnotherKlass_<T extends AnotherKlass> extends MetadataContainer<T> 
 
     }
 
-    protected static class AnotherKlass_Meta<T extends AnotherKlass> extends ClassLiteral<T> {
+    protected static class AnotherKlass_Meta<T extends AnotherKlass> extends ClassLiteral<T> implements Serializable {
 
         private static AnotherKlass_Meta instance;
 
@@ -242,7 +243,7 @@ public class AnotherKlass_<T extends AnotherKlass> extends MetadataContainer<T> 
         }
     }
 
-    public static class AnotherKlass_Don<K, T extends AnotherKlass> extends DonLiteral<K,T> {
+    public static class AnotherKlass_Don<K, T extends AnotherKlass> extends DonLiteral<K,T> implements Serializable {
         public AnotherKlass_Don( K target, With... args ) {
             super( target, args );
         }

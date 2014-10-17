@@ -21,12 +21,13 @@ import org.drools.core.metadata.ToOnePropertyLiteral;
 import org.drools.core.metadata.With;
 import org.drools.core.util.ClassUtils;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
 
-public class Klass_<T extends Klass> extends MetadataContainer<T> {
+public class Klass_<T extends Klass> extends MetadataContainer<T> implements Serializable {
 
     public Klass_( T x ) {
         super( x );
@@ -104,7 +105,7 @@ public class Klass_<T extends Klass> extends MetadataContainer<T> {
         }
     }
 
-    public static class Klass_Modify<T extends Klass> extends ModifyLiteral<T> {
+    public static class Klass_Modify<T extends Klass> extends ModifyLiteral<T> implements Serializable {
 
         @Override
         protected MetaClass<T> getMetaClassInfo() {
@@ -147,7 +148,7 @@ public class Klass_<T extends Klass> extends MetadataContainer<T> {
 
     }
 
-    public static class Klass_Meta<T extends Klass> extends ClassLiteral<T> {
+    public static class Klass_Meta<T extends Klass> extends ClassLiteral<T> implements Serializable {
 
         private static Klass_Meta instance;
 
@@ -232,7 +233,7 @@ public class Klass_<T extends Klass> extends MetadataContainer<T> {
 
     }
 
-    public static class Klass_Don<K, T extends Klass> extends DonLiteral<K,T> {
+    public static class Klass_Don<K, T extends Klass> extends DonLiteral<K,T> implements Serializable {
         public Klass_Don( K target, With... args ) {
             super( target, args );
         }
