@@ -232,7 +232,7 @@ public class MetadataTest {
     @Test
     public void testInitWithModifyArgs() {
         AnotherKlass aki = AnotherKlass_.newAnotherKlass( "000" ).call();
-        SubKlass ski = SubKlass_.newSubKlass( URI.create( "123" ), With.updates( aki ) ).prop( "hello" ).subProp( 42 ).another( aki ).call();
+        SubKlass ski = SubKlass_.newSubKlass( URI.create( "123" ), With.with( aki ) ).prop( "hello" ).subProp( 42 ).another( aki ).call();
         Klass ki = Klass_.newKlass( "1421" ).call();
 
         assertEquals( "hello", ski.getProp() );
@@ -264,7 +264,7 @@ public class MetadataTest {
         AnotherKlass aki0 = AnotherKlass_.newAnotherKlass( "000" ).call();
         Klass klass = Klass_.newKlass( "001" ).call();
 
-        Klass_.modify( klass, With.updates( aki0 ) ).another( aki0 ).call();
+        Klass_.modify( klass, With.with( aki0 ) ).another( aki0 ).call();
 
         assertSame( klass.getAnother(), aki0 );
         assertSame( klass, aki0.getTheKlass() );
@@ -290,7 +290,7 @@ public class MetadataTest {
         Klass klass1 = Klass_.newKlass( "001" ).call();
         Klass klass2 = Klass_.newKlass( "002" ).call();
 
-        AnotherKlass_.modify( aki, With.updates( klass1, klass2 ) ).manyKlasses( new ArrayList( Arrays.asList( klass1, klass2 ) ), Lit.SET ).call();
+        AnotherKlass_.modify( aki, With.with( klass1, klass2 ) ).manyKlasses( new ArrayList( Arrays.asList( klass1, klass2 ) ), Lit.SET ).call();
 
         assertSame( aki, klass1.getOneAnother() );
         assertSame( aki, klass2.getOneAnother() );

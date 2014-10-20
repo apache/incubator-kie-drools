@@ -8,4 +8,6 @@ public interface ModifyTask<T> {
 
     public ModifyTask<T> getNext();
 
+    public Lit getMode();
+
 }

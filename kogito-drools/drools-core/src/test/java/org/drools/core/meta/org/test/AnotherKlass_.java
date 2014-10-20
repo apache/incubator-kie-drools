@@ -44,6 +44,9 @@ public class AnotherKlass_<T extends AnotherKlass> extends MetadataContainer<T> 
     public static <T extends AnotherKlass> AnotherKlass_NewInstance<T> newAnotherKlass( Object id, With... args ) {
         return AnotherKlass_Meta.getInstance().newInstance( id, args );
     }
+    public static <T extends AnotherKlass> AnotherKlass_NewInstance<T> newAnotherKlass( With... args ) {
+        return AnotherKlass_Meta.getInstance().newInstance( args );
+    }
 
     public static AnotherKlass_Modify<? extends AnotherKlass> modify( AnotherKlass x, With... args ) {
         return new AnotherKlass_Modify<AnotherKlass>( x, args );
@@ -62,6 +65,9 @@ public class AnotherKlass_<T extends AnotherKlass> extends MetadataContainer<T> 
 
         public AnotherKlass_NewInstance( Object id, With... args ) {
             super( id, args );
+        }
+        public AnotherKlass_NewInstance(  With... args ) {
+            super( args );
         }
 
         protected T construct() {
@@ -175,6 +181,7 @@ public class AnotherKlass_<T extends AnotherKlass> extends MetadataContainer<T> 
                 new ToOnePropertyLiteral<AnotherKlass,Integer>( 0, "num", URI.create( "http://www.test.org#AnotherKlass?num" ) ) {
                     public Integer get( AnotherKlass o ) { return o.getNum(); }
                     public void set( AnotherKlass o, Integer value ) { o.setNum( value ); }
+                    public boolean isDatatype() { return true; }
                 };
 
         public static final OneValuedMetaProperty<AnotherKlass,Klass> theKlass =
@@ -186,6 +193,7 @@ public class AnotherKlass_<T extends AnotherKlass> extends MetadataContainer<T> 
                     public OneValuedMetaProperty<Klass, AnotherKlass> getInverse() {
                         return Klass_.another;
                     }
+                    public boolean isDatatype() { return false; }
                 };
 
         public static final ManyValuedMetaProperty<AnotherKlass,Klass,List<Klass>> manyKlasses =
@@ -197,6 +205,7 @@ public class AnotherKlass_<T extends AnotherKlass> extends MetadataContainer<T> 
                     public OneValuedMetaProperty<Klass, AnotherKlass> getInverse() {
                         return Klass_.oneAnother;
                     }
+                    public boolean isDatatype() { return false; }
                 };
 
         public static final ManyValuedMetaProperty<AnotherKlass,Klass,List<Klass>> manyMoreKlasses =
@@ -208,6 +217,7 @@ public class AnotherKlass_<T extends AnotherKlass> extends MetadataContainer<T> 
                     public ManyValuedMetaProperty<Klass,AnotherKlass,List<AnotherKlass>> getInverse() {
                         return Klass_.manyOthers;
                     }
+                    public boolean isDatatype() { return false; }
                 };
 
 
@@ -222,6 +232,9 @@ public class AnotherKlass_<T extends AnotherKlass> extends MetadataContainer<T> 
 
         public AnotherKlass_NewInstance<T> newInstance( Object id, With... args ) {
             return new AnotherKlass_NewInstance<T>( id, args );
+        }
+        public AnotherKlass_NewInstance<T> newInstance( With... args ) {
+            return new AnotherKlass_NewInstance<T>( args );
         }
 
         @Override

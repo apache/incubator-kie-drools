@@ -1,6 +1,7 @@
 package org.drools.core.metadata;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,13 +23,21 @@ public abstract class ToManyPropertyLiteral<T,R>
     public void set( T o, List<R> values, Lit mode ) {
         switch ( mode ) {
             case SET:
-                set( o, values );
+                set( o, new ArrayList( values ) );
                 break;
             case ADD:
-                get( o ).addAll( values );
+                List<R> list = get( o );
+                if ( list == null ) {
+                    list = new ArrayList();
+                    set( o, list );
+                }
+                list.addAll( values );
                 break;
             case REMOVE:
-                get( o ).removeAll( values );
+                List<R> curr = get( o );
+                if ( curr != null ) {
+                    curr.removeAll( values );
+                }
                 break;
         }
     }
@@ -40,10 +49,18 @@ public abstract class ToManyPropertyLiteral<T,R>
                 set( o, Collections.singletonList( value ) );
                 break;
             case ADD:
-                get( o ).add( value );
+                List<R> list = get( o );
+                if ( list == null ) {
+                    list = new ArrayList();
+                    set( o, list );
+                }
+                list.add( value );
                 break;
             case REMOVE:
-                get( o ).remove( value );
+                List<R> curr = get( o );
+                if ( curr != null ) {
+                    curr.remove( value );
+                }
                 break;
         }
     }

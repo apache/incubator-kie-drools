@@ -15,6 +15,8 @@ public abstract class PropertyLiteral<T,R,C> implements MetaProperty<T,R,C>, Ser
         this( index, name, asURI( name, klass ) );
     }
 
+    public abstract boolean isDatatype();
+
     private static <T> URI asURI( String name, Class klass ) {
         if ( klass == null ) {
             klass = PropertyLiteral.class;

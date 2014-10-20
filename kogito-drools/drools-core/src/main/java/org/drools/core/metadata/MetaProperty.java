@@ -19,4 +19,6 @@ public interface MetaProperty<T,R,C> extends Comparable<MetaProperty<T,R,C>>, Id
 
     public C get( T o );
 
+    public boolean isDatatype();
+
 }

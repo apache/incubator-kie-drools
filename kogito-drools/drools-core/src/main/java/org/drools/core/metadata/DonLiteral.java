@@ -90,10 +90,28 @@ public abstract class DonLiteral<K, T extends Metadatable> extends AbstractWMTas
         return URI.create( sb.toString() );
     }
 
+    public static URI createURI( String coreId, Class type ) {
+        StringBuilder sb = new StringBuilder();
+        sb.append( coreId );
+
+        sb.append( "?don=" ).append( type.getName() );
+
+        return URI.create( sb.toString() );
+    }
+
     @Override
     public Don<K,T> setTraitFactory( AbstractTraitFactory factory ) {
         this.factory = factory;
         return this;
     }
 
+    @Override
+    public ModifyLiteral<T> getSetters() {
+        return setter;
+    }
+
+    @Override
+    public Object getTarget() {
+        return core;
+    }
 }

@@ -43,6 +43,7 @@ import java.lang.reflect.Method;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public abstract class AbstractTraitFactory<T extends Thing<K>, K extends TraitableBean> implements Opcodes, Externalizable {
 
@@ -60,6 +61,11 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
         @Override
         public TraitableBean instantiate( Class<? extends Thing> trait, Object id ) {
             return new Entity( id.toString() );
+        }
+
+        @Override
+        public Object createId( Class<?> klass ) {
+            return UUID.randomUUID().toString();
         }
     };
 

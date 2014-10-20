@@ -45,6 +45,9 @@ public class Klass_<T extends Klass> extends MetadataContainer<T> implements Ser
     public static <X extends Klass> Klass_NewInstance<X> newKlass( Object id, With... args ) {
         return Klass_Meta.getInstance().newInstance( id, args );
     }
+    public static <X extends Klass> Klass_NewInstance<X> newKlass( With... args ) {
+        return Klass_Meta.getInstance().newInstance( args );
+    }
 
     public static <X, K extends Klass> Klass_Don<X,K> donKlass( X core, With... args ) {
         return new Klass_Don<X,K>( core, args );
@@ -163,6 +166,7 @@ public class Klass_<T extends Klass> extends MetadataContainer<T> implements Ser
                 new ToOnePropertyLiteral<Klass,String>( 0, "prop", URI.create( "http://www.test.org#Klass?prop" ) ) {
                     public String get( Klass o ) { return o.getProp(); }
                     public void set( Klass o, String value ) { o.setProp( value ); }
+                    public boolean isDatatype() { return true; }
                 };
 
         public static final OneValuedMetaProperty<Klass,AnotherKlass> another =
@@ -174,6 +178,7 @@ public class Klass_<T extends Klass> extends MetadataContainer<T> implements Ser
                     public OneValuedMetaProperty<AnotherKlass, Klass> getInverse() {
                         return AnotherKlass_.theKlass;
                     }
+                    public boolean isDatatype() { return false; }
                 };
 
         public static final OneValuedMetaProperty<Klass,AnotherKlass> oneAnother =
@@ -185,6 +190,7 @@ public class Klass_<T extends Klass> extends MetadataContainer<T> implements Ser
                     public ManyValuedMetaProperty<AnotherKlass, Klass, List<Klass>> getInverse() {
                         return AnotherKlass_.manyKlasses;
                     }
+                    public boolean isDatatype() { return false; }
                 };
 
         public static final ManyValuedMetaProperty<Klass,AnotherKlass,List<AnotherKlass>> manyAnothers =
@@ -196,6 +202,7 @@ public class Klass_<T extends Klass> extends MetadataContainer<T> implements Ser
                     public ManyValuedMetaProperty<AnotherKlass,Klass,List<Klass>> getInverse() {
                         return AnotherKlass_.AnotherKlass_Meta.manyMoreKlasses;
                     }
+                    public boolean isDatatype() { return false; }
                 };
 
 

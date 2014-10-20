@@ -4,7 +4,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.metadata.Metadatable;
 import org.drools.core.util.bitmask.BitMask;
 
-public interface Modify<T extends Metadatable> extends WorkingMemoryTask<T> {
+public interface Modify<T> extends WorkingMemoryTask<T> {
 
     public T getTarget();
 

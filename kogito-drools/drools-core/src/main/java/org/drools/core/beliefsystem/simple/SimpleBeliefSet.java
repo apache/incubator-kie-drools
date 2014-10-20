@@ -10,11 +10,11 @@ import org.drools.core.util.LinkedListEntry;
 import org.drools.core.spi.PropagationContext;
 
 public class SimpleBeliefSet extends LinkedList<SimpleMode> implements BeliefSet<SimpleMode> {
-    private BeliefSystem beliefSystem;
+    protected BeliefSystem beliefSystem;
     
-    private InternalFactHandle fh;
+    protected InternalFactHandle fh;
     
-    private WorkingMemoryAction wmAction;
+    protected WorkingMemoryAction wmAction;
     
     public SimpleBeliefSet(BeliefSystem beliefSystem, InternalFactHandle fh) {
         this.beliefSystem = beliefSystem;
