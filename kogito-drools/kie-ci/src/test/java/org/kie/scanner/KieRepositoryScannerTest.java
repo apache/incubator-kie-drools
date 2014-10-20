@@ -189,6 +189,39 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
                 "    list.add(\"YYY:\" + $s);\n" +
                 "end";
 
+        checkUpdateDRLInSameSession(drl1, drl2);
+    }
+
+    @Test
+    public void testKScannerWithNewFunction() throws Exception {
+        String drl1 =
+                "global java.util.List list;\n" +
+                "\n" +
+                " \n" +
+                "rule R1 when\n" +
+                "    $s : String( )\n" +
+                "then\n" +
+                "    list.add(\"XXX:\" + $s);\n" +
+                "end";
+
+        String drl2 =
+                "global java.util.List list;\n" +
+                "\n" +
+                "function boolean doSomething(String name) {\n" +
+                "    return true ;\n" +
+                "}\n" +
+                " \n" +
+                "rule R1 when\n" +
+                "    $s : String( )\n" +
+                "    eval(doSomething($s))\n" +
+                "then\n" +
+                "    list.add(\"YYY:\" + $s);\n" +
+                "end";
+
+        checkUpdateDRLInSameSession(drl1, drl2);
+    }
+
+    private void checkUpdateDRLInSameSession(String drl1, String drl2) throws IOException {
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
 
