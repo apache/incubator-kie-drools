@@ -844,13 +844,16 @@ public class BPMN2JUnitTests extends TestCase {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-SignalStart.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		final List<Long> list = new ArrayList<Long>();
+		final List<String> variableList = new ArrayList<String>();
 		ksession.addEventListener(new DefaultProcessEventListener() {
 			public void afterProcessStarted(ProcessStartedEvent event) {
 				list.add(event.getProcessInstance().getId());
+				variableList.add((String)((WorkflowProcessInstance)event.getProcessInstance()).getVariable("x"));
 			}
 		});
         ksession.signalEvent("MyStartSignal", "NewValue");
 		assertEquals(1, list.size());
+		assertEquals("NewValue", variableList.get(0));
     }
     
     public void testSignalStartDynamic() throws Exception {
