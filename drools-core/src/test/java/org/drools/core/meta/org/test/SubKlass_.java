@@ -31,6 +31,9 @@ public class SubKlass_<T extends SubKlass> extends Klass_<T> implements Serializ
     public static <X extends SubKlass> SubKlass_NewInstance<X> newSubKlass( URI id, With... args ) {
         return SubKlass_Meta.getInstance().newInstance( id, args );
     }
+    public static <X extends SubKlass> SubKlass_NewInstance<X> newSubKlass( With... args ) {
+        return SubKlass_Meta.getInstance().newInstance( args );
+    }
 
     public static <X, K extends SubKlass> SubKlass_Don<X,K> donSubKlass( X core, With... args ) {
         return new SubKlass_Don<X,K>( core, args );
@@ -49,6 +52,9 @@ public class SubKlass_<T extends SubKlass> extends Klass_<T> implements Serializ
 
         public SubKlass_NewInstance( URI id, With... args ) {
             super( id, args );
+        }
+        public SubKlass_NewInstance( With... args ) {
+            super( args );
         }
 
         protected T construct() {
@@ -150,12 +156,14 @@ public class SubKlass_<T extends SubKlass> extends Klass_<T> implements Serializ
                 new ToOnePropertyLiteral<SubKlass,Integer>( 2, "subProp", URI.create( "http://www.test.org#SubKlass?subProp" ) ) {
                     public Integer get( SubKlass o ) { return o.getSubProp(); }
                     public void set( SubKlass o, Integer value ) { o.setSubProp( value ); }
+                    public boolean isDatatype() { return true; }
                 };
 
         public static final ManyValuedMetaProperty<SubKlass,AnotherKlass,List<AnotherKlass>> links =
                 new ToManyPropertyLiteral<SubKlass,AnotherKlass>( 3, "links", URI.create( "http://www.test.org#SubKlass?links" ) ) {
                     public List<AnotherKlass> get( SubKlass o ) { return o.getLinks(); }
                     public void set( SubKlass o, List<AnotherKlass> value ) { o.setLinks( value ); }
+                    public boolean isDatatype() { return false; }
                 };
 
 
@@ -183,6 +191,9 @@ public class SubKlass_<T extends SubKlass> extends Klass_<T> implements Serializ
 
         public SubKlass_NewInstance<T> newInstance( URI id, With... args ) {
             return new SubKlass_NewInstance<T>( id, args );
+        }
+        public SubKlass_NewInstance<T> newInstance( With... args ) {
+            return new SubKlass_NewInstance<T>( args );
         }
 
         @Override

@@ -5,4 +5,5 @@ public interface InstantiatorFactory {
 
     public TraitableBean instantiate( Class<? extends Thing> trait, Object id );
 
+    public Object createId( Class<?> klass );
 }

@@ -1,5 +1,6 @@
 package org.drools.core.metadata;
 
+import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.util.ClassUtils;
@@ -7,17 +8,19 @@ import org.drools.core.util.bitmask.BitMask;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
 
-public abstract class ModifyLiteral<T extends Metadatable> extends AbstractWMTask<T> implements Modify<T>, Serializable {
+public abstract class ModifyLiteral<T> extends AbstractWMTask<T> implements Modify<T>, Serializable {
     private T target;
-    private ModifyTaskLiteral<T,?,?> task;
-    private BitMask modificationMask;
-    private URI key;
-    private Object[] with;
-    private BitMask[] extraMasks;
+    protected ModifyTaskLiteral<T,?,?> task;
+    protected BitMask modificationMask;
+    protected URI key;
+    protected Object[] with;
+    protected BitMask[] extraMasks;
 
     protected abstract MetaClass<T> getMetaClassInfo();
 
@@ -48,6 +51,10 @@ public abstract class ModifyLiteral<T extends Metadatable> extends AbstractWMTas
         }
     }
 
+    @Override
+    public ModifyLiteral<T> getSetters() {
+        return this;
+    }
 
     public T getTarget() {
         return target;
@@ -129,10 +136,10 @@ public abstract class ModifyLiteral<T extends Metadatable> extends AbstractWMTas
 
     public abstract Class getModificationClass();
 
-    protected <R,C> void addTask( MetaProperty<? extends Metadatable,R,C> p, C val ) {
+    protected <R,C> void addTask( MetaProperty<?,R,C> p, C val ) {
         addTask( p, val, Lit.SET );
     }
-    protected <R,C> void addTask( MetaProperty<? extends Metadatable,R,C> p, C val, Lit mode ) {
+    protected <R,C> void addTask( MetaProperty<?,R,C> p, C val, Lit mode ) {
         ModifyTaskLiteral<T,R,C> newTask = new ModifyTaskLiteral<T,R,C>( p, val, mode );
         if ( task == null ) {
             task = newTask;
@@ -174,15 +181,49 @@ public abstract class ModifyLiteral<T extends Metadatable> extends AbstractWMTas
     }
 
 
+    // not used for execution but for provenance logging only
+    public <S,T> Modify<S> getInverse( T value ) {
+        ModifyLiteral inverse = new InverseModifyLiteral( value );
+        ModifyTaskLiteral task = this.task;
+        do {
+            if ( isAffected( value, task.value ) ) {
+                MetaProperty inv = ( (InvertibleMetaProperty) task.getProperty() ).getInverse();
+                inverse.addTask( inv,
+                                 inv.isManyValued() ? Collections.singleton( getTarget() ) : getTarget(),
+                                 task.mode == Lit.REMOVE ? Lit.REMOVE : Lit.ADD ) ;
 
+            }
+            task = task.nextTask;
+        } while ( task != null );
+        return inverse;
+    }
 
-    public class ModifyTaskLiteral<T extends Metadatable,R,C> implements ModifyTask, Serializable {
+    protected boolean isAffected( Object value, Object taskValue ) {
+        if ( value == taskValue ) {
+            return true;
+        }
+        if ( taskValue instanceof Collection ) {
+            Collection coll = (Collection) taskValue;
+            for ( Object o : coll ) {
+                if ( o == value ) {
+                    return true;
+                } else if ( o instanceof TraitProxy ) {
+                    if ( value == ((TraitProxy) o).getObject() ) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static class ModifyTaskLiteral<T,R,C> implements ModifyTask, Serializable {
         protected MetaProperty<T,R,C> propertyLiteral;
         protected C value;
         protected Lit mode;
         protected ModifyTaskLiteral<T,?,?> nextTask;
 
-        protected ModifyTaskLiteral( MetaProperty<? extends Metadatable,R,C> p, C val, Lit mode ) {
+        protected ModifyTaskLiteral( MetaProperty<?,R,C> p, C val, Lit mode ) {
             this.propertyLiteral = (MetaProperty<T,R,C>) p;
             this.mode = mode;
             this.value = val;
@@ -245,8 +286,37 @@ public abstract class ModifyLiteral<T extends Metadatable> extends AbstractWMTas
             return value;
         }
 
+        @Override
+        public Lit getMode() {
+            return mode;
+        }
+
         public ModifyTask getNext() {
             return nextTask;
         }
     }
+
+
+    public static class InverseModifyLiteral extends ModifyLiteral {
+        private static With[] nargs = new With[0];
+        public <X> InverseModifyLiteral( X range ) {
+            super( range, nargs );
+        }
+
+        @Override
+        protected MetaClass getMetaClassInfo() {
+            return null;
+        }
+
+        @Override
+        public Class getModificationClass() {
+            return getTarget().getClass();
+        }
+
+        @Override
+        public Object call() {
+            throw new UnsupportedOperationException(  );
+        }
+    }
+
 }

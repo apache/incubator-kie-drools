@@ -1,6 +1,7 @@
 package org.drools.core.metadata;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ManyToManyPropertyLiteral<T,R>
@@ -27,8 +28,12 @@ public abstract class ManyToManyPropertyLiteral<T,R>
                 break;
             case SET:
                 List<R> current = get( o );
-                for ( R cur : current ) {
-                    inverse.set( cur, o, Lit.REMOVE );
+                if ( current != null ) {
+                    if ( ! current.isEmpty() ) {
+                        for ( R cur : current ) {
+                            inverse.set( cur, o, Lit.REMOVE );
+                        }
+                    }
                 }
                 for ( R value : values ) {
                     inverse.set( value, o, Lit.ADD );
