@@ -881,8 +881,17 @@ public class BPMN2JUnitTests extends TestCase {
     
     public void testMessageStart() throws Exception {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-MessageStart.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final List<Long> list = new ArrayList<Long>();
+        final List<String> variableList = new ArrayList<String>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance().getId());
+                variableList.add((String) ((WorkflowProcessInstance) event.getProcessInstance()).getVariable("x"));
+            }
+        });
         ksession.signalEvent("Message-HelloMessage", "NewValue");
+        assertEquals("NewValue", variableList.get(0));
     }
     
     public void testMessageEnd() throws Exception {

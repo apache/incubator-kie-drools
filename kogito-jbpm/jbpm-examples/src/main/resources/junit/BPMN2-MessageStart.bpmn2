@@ -23,7 +23,7 @@
 
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" >
-      <dataOutput id="_1_Output" />
+      <dataOutput id="_1_Output" name="event"/>
       <dataOutputAssociation>
         <sourceRef>_1_Output</sourceRef>
         <targetRef>x</targetRef>
