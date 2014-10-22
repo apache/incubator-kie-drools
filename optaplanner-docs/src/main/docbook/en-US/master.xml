@@ -39,5 +39,6 @@
   <xi:include href="Chapter-Benchmarking_and_tweaking/Chapter-Benchmarking_and_tweaking.xml" />
   <xi:include href="Chapter-Repeated_planning/Chapter-Repeated_planning.xml" />
   <xi:include href="Chapter-Integration/Chapter-Integration.xml" />
+  <xi:include href="Chapter-Development/Chapter-Development.xml" />
 
 </book>
