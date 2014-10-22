@@ -10,7 +10,7 @@
   <section xml:id="methodologyOverview">
     <title>Methodology overview</title>
 
-    <para>OptaPlanner has a development philosophy:</para>
+    <para>The diagram below explains the overall structure of the OptaPlanner source code:</para>
 
     <mediaobject>
       <imageobject>
@@ -38,13 +38,13 @@
       </listitem>
 
       <listitem>
-        <para><emphasis role="bold">Real world usefullness</emphasis>: Every feature is used in an example. Most
+        <para><emphasis role="bold">Real world usefulness</emphasis>: Every feature is used in an example. Most
         examples are real world use cases with real world constraints, often with real world data.</para>
       </listitem>
 
       <listitem>
         <para><emphasis role="bold">Automated testing</emphasis>: There are unit tests, integration tests and stress
-        stess. The test coverage is high.</para>
+        tests. The test coverage is high.</para>
       </listitem>
 
       <listitem>
