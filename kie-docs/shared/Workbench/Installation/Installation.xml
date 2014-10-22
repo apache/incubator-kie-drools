@@ -141,6 +141,11 @@
       </listitem>
 
       <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.domain</literal></emphasis>: security-domain name used by
+        uberfire. Default: <literal>ApplicationRealm</literal></para>
+      </listitem>
+
+      <listitem>
         <para><emphasis role="bold"><literal>org.guvnor.m2repo.dir</literal></emphasis>: Place where Maven repository
           folder will be stored. Default: working-directory/repositories/kie</para>
       </listitem>
