@@ -89,20 +89,6 @@ public class MVELConsequenceBuilder
                             return "drools.shed";
                         }
                     } );
-
-        macros.put( "ward",
-                    new Macro() {
-                        public String doMacro() {
-                            return "drools.ward";
-                        }
-                    } );
-
-        macros.put( "grant",
-                    new Macro() {
-                        public String doMacro() {
-                            return "drools.grant";
-                        }
-                    } );
     }
 
     public MVELConsequenceBuilder() {
