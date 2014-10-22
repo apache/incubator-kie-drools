@@ -44,7 +44,7 @@ public class BendableBigDecimalScoreDefinitionTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void createScoreFail() {
+    public void createScoreWithIllegalArgument() {
         BendableBigDecimalScoreDefinition bendableScoreDefinition = new BendableBigDecimalScoreDefinition(2, 3);
         bendableScoreDefinition.createScore(new BigDecimal(1), new BigDecimal(2), new BigDecimal(3));
     }

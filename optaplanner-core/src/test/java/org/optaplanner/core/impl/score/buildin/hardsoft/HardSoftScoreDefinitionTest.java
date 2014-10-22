@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.buildin.hardsoft;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
+import org.optaplanner.core.impl.score.buildin.InitializingScoreTrendLevelFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 import static org.junit.Assert.assertEquals;
@@ -36,48 +37,49 @@ public class HardSoftScoreDefinitionTest {
     }
 
     @Test
-    public void buildOptimisticBound() {
+    public void buildOptimisticBoundUp() {
         int scoreSize = new HardSoftScoreDefinition().getLevelsSize();
-        InitializingScoreTrendLevel[] levels = new InitializingScoreTrendLevel[scoreSize];
-        for (int i = 0; i < scoreSize; i++) {
-            levels[i] = InitializingScoreTrendLevel.ONLY_UP;
-        }
-        HardSoftScore score = HardSoftScore.parseScore("-999hard/-999soft");
-        InitializingScoreTrend scoreTrend = new InitializingScoreTrend(levels);
+        HardSoftScore score = HardSoftScore.parseScore("-1hard/-2soft");
+        InitializingScoreTrend scoreTrend = InitializingScoreTrendLevelFactory
+                .createInitializingScoreTrendLevelArray(scoreSize, InitializingScoreTrendLevel.ONLY_UP);
         HardSoftScoreDefinition hardSoftScoreDefinition = new HardSoftScoreDefinition();
         HardSoftScore score2 = hardSoftScoreDefinition.buildOptimisticBound(scoreTrend, score);
-
         assertEquals(Integer.MAX_VALUE, score2.getHardScore());
         assertEquals(Integer.MAX_VALUE, score2.getSoftScore());
-
-        for (int i = 0; i < scoreSize; i++) {
-            levels[i] = InitializingScoreTrendLevel.ONLY_DOWN;
-        }
-        score2 = hardSoftScoreDefinition.buildOptimisticBound(scoreTrend, score);
-        assertEquals(-999, score2.getHardScore());
-        assertEquals(-999, score2.getSoftScore());
     }
 
     @Test
-    public void buildPessimisticBound() {
+    public void buildOptimisticBoundDown() {
         int scoreSize = new HardSoftScoreDefinition().getLevelsSize();
-        InitializingScoreTrendLevel[] levels = new InitializingScoreTrendLevel[scoreSize];
-        for (int i = 0; i < scoreSize; i++) {
-            levels[i] = InitializingScoreTrendLevel.ONLY_UP;
-        }
-        HardSoftScore score = HardSoftScore.parseScore("-999hard/-999soft");
-        InitializingScoreTrend scoreTrend = new InitializingScoreTrend(levels);
+        HardSoftScore score = HardSoftScore.parseScore("-1hard/-2soft");
+        InitializingScoreTrend scoreTrend = InitializingScoreTrendLevelFactory
+                .createInitializingScoreTrendLevelArray(scoreSize, InitializingScoreTrendLevel.ONLY_DOWN);
+        HardSoftScoreDefinition hardSoftScoreDefinition = new HardSoftScoreDefinition();
+        HardSoftScore score2 = hardSoftScoreDefinition.buildOptimisticBound(scoreTrend, score);
+        assertEquals(-1, score2.getHardScore());
+        assertEquals(-2, score2.getSoftScore());
+    }
+
+    @Test
+    public void buildPessimisticBoundUp() {
+        int scoreSize = new HardSoftScoreDefinition().getLevelsSize();
+        HardSoftScore score = HardSoftScore.parseScore("-1hard/-2soft");
+        InitializingScoreTrend scoreTrend = InitializingScoreTrendLevelFactory
+                .createInitializingScoreTrendLevelArray(scoreSize, InitializingScoreTrendLevel.ONLY_UP);
         HardSoftScoreDefinition hardSoftScoreDefinition = new HardSoftScoreDefinition();
         HardSoftScore score2 = hardSoftScoreDefinition.buildPessimisticBound(scoreTrend, score);
+        assertEquals(-1, score2.getHardScore());
+        assertEquals(-2, score2.getSoftScore());
+    }
 
-        assertEquals(-999, score2.getHardScore());
-        assertEquals(-999, score2.getSoftScore());
-
-        for (int i = 0; i < scoreSize; i++) {
-            levels[i] = InitializingScoreTrendLevel.ONLY_DOWN;
-        }
-        score2 = hardSoftScoreDefinition.buildPessimisticBound(scoreTrend, score);
-
+    @Test
+    public void buildPessimisticBoundDown() {
+        int scoreSize = new HardSoftScoreDefinition().getLevelsSize();
+        HardSoftScore score = HardSoftScore.parseScore("-1hard/-2soft");
+        InitializingScoreTrend scoreTrend = InitializingScoreTrendLevelFactory
+                .createInitializingScoreTrendLevelArray(scoreSize, InitializingScoreTrendLevel.ONLY_DOWN);
+        HardSoftScoreDefinition hardSoftScoreDefinition = new HardSoftScoreDefinition();
+        HardSoftScore score2 = hardSoftScoreDefinition.buildPessimisticBound(scoreTrend, score);
         assertEquals(Integer.MIN_VALUE, score2.getHardScore());
         assertEquals(Integer.MIN_VALUE, score2.getSoftScore());
     }
