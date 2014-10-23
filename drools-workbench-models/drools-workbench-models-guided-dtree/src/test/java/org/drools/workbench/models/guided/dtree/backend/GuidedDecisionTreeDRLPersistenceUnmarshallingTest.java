@@ -49,6 +49,7 @@ import org.drools.workbench.models.guided.dtree.shared.model.values.impl.Boolean
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.ByteValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.DateValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.DoubleValue;
+import org.drools.workbench.models.guided.dtree.shared.model.values.impl.EnumValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.FloatValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.IntegerValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.LongValue;
@@ -101,6 +102,14 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
         }
         packageModelFields.put( factName,
                                 modelFields );
+    }
+
+    private void addJavaEnumDefinition( final String factName,
+                                        final String fieldName,
+                                        final String[] values ) {
+        final String key = factName + "#" + fieldName;
+        projectJavaEnumDefinitions.put( key,
+                                        values );
     }
 
     @Test
@@ -1833,6 +1842,190 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
         assertTrue( _c1.isBound() );
         assertEquals( c1.getBinding(),
                       _c1.getBinding() );
+    }
+
+    @Test
+    public void testSingleRule_SingleConstraintJavaEnum() throws Exception {
+        final String drl = "rule \"test_0\"" +
+                "when \n" +
+                "  Person( name == Names.FRED )\n" +
+                "then \n" +
+                "end";
+
+        final GuidedDecisionTree expected = new GuidedDecisionTree();
+        expected.setTreeName( "test" );
+
+        final TypeNode type = new TypeNodeImpl( "Person" );
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "name",
+                                                          "==",
+                                                          new EnumValue( "Names.FRED" ) );
+        expected.setRoot( type );
+        type.addChild( c1 );
+
+        addModelField( "Person",
+                       "this",
+                       "Person",
+                       DataType.TYPE_THIS );
+        addModelField( "Person",
+                       "name",
+                       String.class.getName(),
+                       DataType.TYPE_COMPARABLE );
+
+        addJavaEnumDefinition( "Person",
+                               "name",
+                               new String[]{ "Names.FRED=Names.FRED" } );
+
+        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
+                                                                                                   "test",
+                                                                                                   dmo );
+
+        assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
+        assertEquals( expected.getTreeName(),
+                      model.getTreeName() );
+
+        assertNotNull( model.getRoot() );
+        assertEquals( type.getClassName(),
+                      model.getRoot().getClassName() );
+        assertFalse( model.getRoot().isBound() );
+
+        assertEquals( 1,
+                      model.getRoot().getChildren().size() );
+        assertNotNull( model.getRoot().getChildren().get( 0 ) );
+        assertTrue( model.getRoot().getChildren().get( 0 ) instanceof ConstraintNode );
+
+        final ConstraintNode _c1 = (ConstraintNode) model.getRoot().getChildren().get( 0 );
+
+        assertEquals( c1.getClassName(),
+                      _c1.getClassName() );
+        assertEquals( c1.getFieldName(),
+                      _c1.getFieldName() );
+        assertEquals( c1.getOperator(),
+                      _c1.getOperator() );
+        assertNotNull( _c1.getValue() );
+        assertTrue( _c1.getValue() instanceof EnumValue );
+        assertEquals( c1.getValue().getValue().toString(),
+                      _c1.getValue().getValue().toString() );
+    }
+
+    @Test
+    public void testSingleRule_SingleConstraintNotNullOperator() throws Exception {
+        final String drl = "rule \"test_0\"" +
+                "when \n" +
+                "  Person( name != null )\n" +
+                "then \n" +
+                "end";
+
+        final GuidedDecisionTree expected = new GuidedDecisionTree();
+        expected.setTreeName( "test" );
+
+        final TypeNode type = new TypeNodeImpl( "Person" );
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "name",
+                                                          "!= null",
+                                                          null );
+        expected.setRoot( type );
+        type.addChild( c1 );
+
+        addModelField( "Person",
+                       "this",
+                       "Person",
+                       DataType.TYPE_THIS );
+        addModelField( "Person",
+                       "name",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
+                                                                                                   "test",
+                                                                                                   dmo );
+
+        assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
+        assertEquals( expected.getTreeName(),
+                      model.getTreeName() );
+
+        assertNotNull( model.getRoot() );
+        assertEquals( type.getClassName(),
+                      model.getRoot().getClassName() );
+        assertFalse( model.getRoot().isBound() );
+
+        assertEquals( 1,
+                      model.getRoot().getChildren().size() );
+        assertNotNull( model.getRoot().getChildren().get( 0 ) );
+        assertTrue( model.getRoot().getChildren().get( 0 ) instanceof ConstraintNode );
+
+        final ConstraintNode _c1 = (ConstraintNode) model.getRoot().getChildren().get( 0 );
+
+        assertEquals( c1.getClassName(),
+                      _c1.getClassName() );
+        assertEquals( c1.getFieldName(),
+                      _c1.getFieldName() );
+        assertEquals( c1.getOperator(),
+                      _c1.getOperator() );
+        assertNull( _c1.getValue() );
+    }
+
+    @Test
+    public void testSingleRule_SingleConstraintNullOperator() throws Exception {
+        final String drl = "rule \"test_0\"" +
+                "when \n" +
+                "  Person( name == null )\n" +
+                "then \n" +
+                "end";
+
+        final GuidedDecisionTree expected = new GuidedDecisionTree();
+        expected.setTreeName( "test" );
+
+        final TypeNode type = new TypeNodeImpl( "Person" );
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "name",
+                                                          "== null",
+                                                          null );
+        expected.setRoot( type );
+        type.addChild( c1 );
+
+        addModelField( "Person",
+                       "this",
+                       "Person",
+                       DataType.TYPE_THIS );
+        addModelField( "Person",
+                       "name",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
+                                                                                                   "test",
+                                                                                                   dmo );
+
+        assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
+        assertEquals( expected.getTreeName(),
+                      model.getTreeName() );
+
+        assertNotNull( model.getRoot() );
+        assertEquals( type.getClassName(),
+                      model.getRoot().getClassName() );
+        assertFalse( model.getRoot().isBound() );
+
+        assertEquals( 1,
+                      model.getRoot().getChildren().size() );
+        assertNotNull( model.getRoot().getChildren().get( 0 ) );
+        assertTrue( model.getRoot().getChildren().get( 0 ) instanceof ConstraintNode );
+
+        final ConstraintNode _c1 = (ConstraintNode) model.getRoot().getChildren().get( 0 );
+
+        assertEquals( c1.getClassName(),
+                      _c1.getClassName() );
+        assertEquals( c1.getFieldName(),
+                      _c1.getFieldName() );
+        assertEquals( c1.getOperator(),
+                      _c1.getOperator() );
+        assertNull( _c1.getValue() );
     }
 
     @Test

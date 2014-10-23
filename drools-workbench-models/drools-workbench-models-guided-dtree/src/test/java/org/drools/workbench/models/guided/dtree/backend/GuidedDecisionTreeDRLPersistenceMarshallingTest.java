@@ -39,6 +39,7 @@ import org.drools.workbench.models.guided.dtree.shared.model.values.impl.Boolean
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.ByteValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.DateValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.DoubleValue;
+import org.drools.workbench.models.guided.dtree.shared.model.values.impl.EnumValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.FloatValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.IntegerValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.LongValue;
@@ -645,6 +646,30 @@ public class GuidedDecisionTreeDRLPersistenceMarshallingTest {
         final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
                                                           "name" );
         c1.setBinding( "$n" );
+        model.setRoot( type );
+        type.addChild( c1 );
+
+        final String drl = GuidedDecisionTreeDRLPersistence.getInstance().marshal( model );
+        assertEqualsIgnoreWhitespace( expected,
+                                      drl );
+    }
+
+    @Test
+    public void testSingleRule_SingleConstraintJavaEnum() throws Exception {
+        final String expected = "rule \"test_0\"" +
+                "when \n" +
+                "  Person( name == Names.FRED )\n" +
+                "then \n" +
+                "end";
+
+        final GuidedDecisionTree model = new GuidedDecisionTree();
+        model.setTreeName( "test" );
+
+        final TypeNode type = new TypeNodeImpl( "Person" );
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "name",
+                                                          "==",
+                                                          new EnumValue( "Names.FRED" ) );
         model.setRoot( type );
         type.addChild( c1 );
 
