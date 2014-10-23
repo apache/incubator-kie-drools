@@ -16,6 +16,7 @@
 
 package org.drools.core.base;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,7 +28,10 @@ public class ClassTypeResolver
     implements
     TypeResolver {
     private String                           defaultPackagName;
+
     private Set<String>                      imports          = Collections.emptySet();
+
+    private Set<String>                      implicitImports  = Collections.emptySet();
 
     private ClassLoader                      classLoader;
 
@@ -103,6 +107,13 @@ public class ClassTypeResolver
         this.imports.add( importEntry );
     }
 
+    public void addImplicitImport( final String importEntry ) {
+        if ( this.implicitImports == Collections.EMPTY_SET ) {
+            this.implicitImports = new HashSet<String>();
+        }
+        this.implicitImports.add(importEntry);
+    }
+
     public Class<?> lookupFromCache( final String className ) {
         return this.cachedImports.get( className );
     }
@@ -176,44 +187,14 @@ public class ClassTypeResolver
             }
         }
 
-        // Now try the className with each of the given imports
+        // Now try the className with each of the given explicit imports
         if ( clazz == null ) {
-            final Set<Class<?>> validClazzCandidates = new HashSet<Class<?>>();
+            clazz = getClassFromImports(className, classFilter, imports);
+        }
 
-            for (String i : imports) {
-                clazz = importClass( i, className );
-                if ( clazz != null && classFilter.accept(clazz) ) {
-                    validClazzCandidates.add( clazz );
-                }
-            }
-
-            if ( validClazzCandidates.size() > 1 ) {
-                for ( Iterator<Class<?>> validIt = validClazzCandidates.iterator(); validIt.hasNext(); ) {
-                    Class<?> cls = validIt.next();
-                    if ( this.defaultPackagName.equals( cls.getPackage().getName() ) ) {
-                        validIt.remove();
-                    }
-                }
-            }
-
-            // If there are more than one possible resolutions, complain about
-            // the ambiguity
-            if ( validClazzCandidates.size() > 1 ) {
-                final StringBuilder sb = new StringBuilder();
-                final Iterator<Class<?>> clazzCandIter = validClazzCandidates.iterator();
-                while ( clazzCandIter.hasNext() ) {
-                    if ( 0 != sb.length() ) {
-                        sb.append( ", " );
-                    }
-                    sb.append( clazzCandIter.next().getName() );
-                }
-                throw new Error( "Unable to find ambiguously defined class '" + className + "', candidates are: [" + sb.toString() + "]" );
-            } else if ( validClazzCandidates.size() == 1 ) {
-                clazz = (Class<?>) validClazzCandidates.toArray()[0];
-            } else {
-                clazz = null;
-            }
-
+        // Now try the className with each of the given implicit imports
+        if ( clazz == null ) {
+            clazz = getClassFromImports(className, classFilter, implicitImports);
         }
 
         // Now try the java.lang package
@@ -256,8 +237,43 @@ public class ClassTypeResolver
         return clazz;
     }
 
-    private Class<?> importClass( final String importText,
-                               final String className ) {
+    private Class<?> getClassFromImports(String className, ClassFilter classFilter, Collection<String> usedImports) {
+        final Set<Class<?>> validClazzCandidates = new HashSet<Class<?>>();
+
+        for (String i : usedImports) {
+            Class<?> clazz = importClass( i, className );
+            if ( clazz != null && classFilter.accept(clazz) ) {
+                validClazzCandidates.add( clazz );
+            }
+        }
+
+        if ( validClazzCandidates.size() > 1 ) {
+            for ( Iterator<Class<?>> validIt = validClazzCandidates.iterator(); validIt.hasNext(); ) {
+                Class<?> cls = validIt.next();
+                if ( this.defaultPackagName.equals( cls.getPackage().getName() ) ) {
+                    validIt.remove();
+                }
+            }
+        }
+
+        // If there are more than one possible resolutions, complain about
+        // the ambiguity
+        if ( validClazzCandidates.size() > 1 ) {
+            final StringBuilder sb = new StringBuilder();
+            final Iterator<Class<?>> clazzCandIter = validClazzCandidates.iterator();
+            while ( clazzCandIter.hasNext() ) {
+                if ( 0 != sb.length() ) {
+                    sb.append( ", " );
+                }
+                sb.append( clazzCandIter.next().getName() );
+            }
+            throw new Error( "Unable to find ambiguously defined class '" + className + "', candidates are: [" + sb.toString() + "]" );
+        }
+
+        return validClazzCandidates.size() == 1 ? validClazzCandidates.iterator().next() : null;
+    }
+
+    private Class<?> importClass( String importText, String className ) {
         String qualifiedClass = null;
         Class<?> clazz = null;
 

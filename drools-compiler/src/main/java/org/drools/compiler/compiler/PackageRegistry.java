@@ -46,7 +46,7 @@ public class PackageRegistry {
 
         this.typeResolver.addImport( pkg.getName() + ".*" );
         for (String implicitImport : implicitImports) {
-            this.typeResolver.addImport( implicitImport );
+            this.typeResolver.addImplicitImport( implicitImport );
         }
 
         pkg.setTypeResolver(typeResolver);
