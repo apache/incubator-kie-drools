@@ -13,6 +13,33 @@
   <title>New and Noteworthy in KIE Workbench 6.2.0</title>
 
   <section>
+    <title>Download Repository or Part of the Repository as a ZIP</title>
+    <para>This feature makes it possible to download a repository or a folder from the repository as a ZIP file.</para>
+     <figure>
+      <title>Download current repository or project</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Workbench/ReleaseNotes/zip_repo.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+    <figure>
+      <title>Download a folder</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Workbench/ReleaseNotes/zip_folder.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+ 
+  </section>
+
+
+  <section>
     <title>Project Editor permissions</title>
     <para>The ability to configure role-based permissions for the Project Editor have been added.</para>
     <para>Permissions can be configured using the <code>WEB-INF/classes/workbench-policy.properties</code> file.</para>
