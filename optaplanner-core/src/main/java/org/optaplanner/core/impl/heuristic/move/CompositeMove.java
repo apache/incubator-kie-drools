@@ -16,14 +16,13 @@
 
 package org.optaplanner.core.impl.heuristic.move;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.google.common.collect.Lists;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
@@ -35,10 +34,27 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  */
 public class CompositeMove extends AbstractMove {
 
+    /**
+     * @param moves never null, sometimes empty. Do not modify this argument afterwards or the CompositeMove corrupts.
+     */
+    public static Move buildMove(Move... moves) {
+        int size = moves.length;
+        if (size > 1) {
+            return new CompositeMove(moves);
+        } else if (size == 1) {
+            return moves[0];
+        } else {
+            return new NoChangeMove();
+        }
+    }
+
+    /**
+     * @param moveList never null, sometimes empty
+     */
     public static Move buildMove(List<Move> moveList) {
         int size = moveList.size();
         if (size > 1) {
-            return new CompositeMove(moveList);
+            return new CompositeMove(moveList.toArray(new Move[moveList.size()]));
         } else if (size == 1) {
             return moveList.get(0);
         } else {
@@ -46,24 +62,21 @@ public class CompositeMove extends AbstractMove {
         }
     }
 
-    protected final List<Move> moveList;
+    protected final Move[] moves;
 
     /**
-     * @param moveList never null
+     * @param moves never null, never empty. Do not modify this argument afterwards or this CompositeMove corrupts.
      */
-    public CompositeMove(List<Move> moveList) {
-        this.moveList = moveList;
+    public CompositeMove(Move... moves) {
+        this.moves = moves;
     }
 
-    /**
-     * @return never null
-     */
-    public List<Move> getMoveList() {
-        return moveList;
+    public Move[] getMoves() {
+        return moves;
     }
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
-        for (Move move : moveList) {
+        for (Move move : moves) {
             if (!move.isMoveDoable(scoreDirector)) {
                 return false;
             }
@@ -72,17 +85,17 @@ public class CompositeMove extends AbstractMove {
     }
 
     public CompositeMove createUndoMove(ScoreDirector scoreDirector) {
-        List<Move> undoMoveList = new ArrayList<Move>(moveList.size());
-        for (Move move : moveList) {
+        Move[] undoMoves = new Move[moves.length];
+        for (int i = 0; i < moves.length; i++) {
             // Note: this undoMove creation doesn't have the effect yet of a previous move in the moveList
-            Move undoMove = move.createUndoMove(scoreDirector);
-            undoMoveList.add(undoMove);
+            Move undoMove = moves[i].createUndoMove(scoreDirector);
+            undoMoves[moves.length - 1 - i] = undoMove;
         }
-        return new CompositeMove(Lists.reverse(undoMoveList));
+        return new CompositeMove(undoMoves);
     }
 
     public void doMove(ScoreDirector scoreDirector) {
-        for (Move move : moveList) {
+        for (Move move : moves) {
             move.doMove(scoreDirector);
         }
     }
@@ -93,10 +106,10 @@ public class CompositeMove extends AbstractMove {
 
     public String getSimpleMoveTypeDescription() {
         Set<String> childMoveTypeDescriptionSet = new TreeSet<String>();
-        for (Move move : moveList) {
+        for (Move move : moves) {
             childMoveTypeDescriptionSet.add(move.getSimpleMoveTypeDescription());
         }
-        StringBuilder moveTypeDescription = new StringBuilder(20 * (moveList.size() + 1));
+        StringBuilder moveTypeDescription = new StringBuilder(20 * (moves.length + 1));
         moveTypeDescription.append(getClass().getSimpleName()).append("(");
         String delimiter = "";
         for (String childMoveTypeDescription : childMoveTypeDescriptionSet) {
@@ -108,16 +121,16 @@ public class CompositeMove extends AbstractMove {
     }
 
     public Collection<? extends Object> getPlanningEntities() {
-        Set<Object> entities = new LinkedHashSet<Object>(moveList.size() * 2);
-        for (Move move : moveList) {
+        Set<Object> entities = new LinkedHashSet<Object>(moves.length * 2);
+        for (Move move : moves) {
             entities.addAll(move.getPlanningEntities());
         }
         return entities;
     }
 
     public Collection<? extends Object> getPlanningValues() {
-        Set<Object> values = new LinkedHashSet<Object>(moveList.size() * 2);
-        for (Move move : moveList) {
+        Set<Object> values = new LinkedHashSet<Object>(moves.length * 2);
+        for (Move move : moves) {
             values.addAll(move.getPlanningValues());
         }
         return values;
@@ -128,18 +141,18 @@ public class CompositeMove extends AbstractMove {
             return true;
         } else if (o instanceof CompositeMove) {
             CompositeMove other = (CompositeMove) o;
-            return moveList.equals(other.moveList);
+            return Arrays.equals(moves, other.moves);
         } else {
             return false;
         }
     }
 
     public int hashCode() {
-        return moveList.hashCode();
+        return Arrays.hashCode(moves);
     }
 
     public String toString() {
-        return moveList.toString();
+        return Arrays.toString(moves);
     }
 
 }

@@ -4580,3 +4580,18 @@ those methods are no called to determine the bounds (because the bound is the wo
 If the uninitializedVariableCount is still needed for some reason, use the ScoreDirector to calculate it accurately.
 
 [MINOR] Before calling ScoreDirector.getConstraintMatchTotals(), it's no longer expected to call ScoreDirector.calculateScore() first.
+
+
+From 6.2.0.CR1 to 6.2.0.CR2
+---------------------------
+
+[MINOR] CompositeMove now uses a Move array instead of a List<Move> for performance reasons.
+Before in *.java:
+    ... = CompositeMove.buildMove(Arrays.asList(moveA, moveB, ...));
+After in *.java:
+    ... = CompositeMove.buildMove(moveA, moveB, ...);
+Before in *.java:
+    ... = new CompositeMove(moveList); // Not recommended
+After in *.java:
+    ... = new CompositeMove(moves); // Not recommended
+

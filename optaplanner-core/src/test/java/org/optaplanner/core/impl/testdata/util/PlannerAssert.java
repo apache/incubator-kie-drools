@@ -123,8 +123,8 @@ public class PlannerAssert extends Assert {
             };
         } else if (o instanceof CompositeMove) {
             CompositeMove compositeMove = (CompositeMove) o;
-            StringBuilder codeBuilder = new StringBuilder(compositeMove.getMoveList().size() * 80);
-            for (Move move : compositeMove.getMoveList()) {
+            StringBuilder codeBuilder = new StringBuilder(compositeMove.getMoves().length * 80);
+            for (Move move : compositeMove.getMoves()) {
                 codeBuilder.append("+").append(convertToCodeAssertable(move).getCode());
             }
             final String code = codeBuilder.substring(1);
@@ -184,6 +184,14 @@ public class PlannerAssert extends Assert {
 
     public static void assertCode(String message, String expectedCode, CodeAssertable codeAssertable) {
         assertEquals(message, expectedCode, codeAssertable.getCode());
+    }
+
+    public static <O> void assertAllCodesOfArray(O[] array, String... codes) {
+        assertNotNull(array);
+        assertEquals(codes.length, array.length);
+        for (int i = 0; i < array.length; i++) {
+            assertCode(codes[i], array[i]);
+        }
     }
 
     public static <O> void assertCodesOfIterator(Iterator<O> iterator, String... codes) {

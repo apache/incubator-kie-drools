@@ -32,10 +32,10 @@ public class CompositeMoveTest {
         Move a = new DummyMove("a");
         Move b = new DummyMove("b");
         Move c = new DummyMove("c");
-        CompositeMove move = new CompositeMove(Arrays.asList(a, b, c));
+        CompositeMove move = new CompositeMove(a, b, c);
         CompositeMove undoMove = move.createUndoMove(scoreDirector);
-        assertAllCodesOfIterator(move.getMoveList().iterator(), "a", "b", "c");
-        assertAllCodesOfIterator(undoMove.getMoveList().iterator(), "undo c", "undo b", "undo a");
+        assertAllCodesOfArray(move.getMoves(), "a", "b", "c");
+        assertAllCodesOfArray(undoMove.getMoves(), "undo c", "undo b", "undo a");
     }
 
     @Test
@@ -44,7 +44,7 @@ public class CompositeMoveTest {
         Move a = mock(Move.class);
         Move b = mock(Move.class);
         Move c = mock(Move.class);
-        CompositeMove move = new CompositeMove(Arrays.asList(a, b, c));
+        CompositeMove move = new CompositeMove(a, b, c);
         move.doMove(scoreDirector);
         verify(a, times(1)).doMove(scoreDirector);
         verify(b, times(1)).doMove(scoreDirector);
