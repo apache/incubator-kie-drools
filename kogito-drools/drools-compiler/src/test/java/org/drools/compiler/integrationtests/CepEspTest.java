@@ -5410,4 +5410,33 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals("code2", event.getCode());
     }
+
+    @Test
+    public void testRetractFromWindow() throws Exception {
+        // DROOLS-636
+        String drl =
+                "import org.drools.compiler.StockTick;\n " +
+                "declare StockTick\n" +
+                " @role( event )\n" +
+                "end\n" +
+                "rule R1 when\n" +
+                "    $i: Integer()\n" +
+                "    $s: StockTick( price > 10 )\n" +
+                "then\n" +
+                "    modify($s) { setPrice(8) };\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "    $s: StockTick( price > 15 ) over window:length(1)\n" +
+                "then\n" +
+                "end";
+
+
+        KieHelper helper = new KieHelper();
+        helper.addContent(drl, ResourceType.DRL);
+        KieSession ksession = helper.build(EventProcessingOption.STREAM).newKieSession();
+
+        ksession.insert(42);
+        ksession.insert(new StockTick(1L, "DROOLS", 20));
+        ksession.fireAllRules();
+    }
 }

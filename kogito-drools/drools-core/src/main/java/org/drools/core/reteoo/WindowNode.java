@@ -265,9 +265,7 @@ public class WindowNode extends ObjectSource
 
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.setPropagationContext( context );
-            retractRightTuple( rightTuple,
-                               context,
-                               wm );
+            rightTuple.getRightTupleSink().retractRightTuple( rightTuple, context, wm );
             rightTuple = modifyPreviousTuples.peekRightTuple();
         }
 
