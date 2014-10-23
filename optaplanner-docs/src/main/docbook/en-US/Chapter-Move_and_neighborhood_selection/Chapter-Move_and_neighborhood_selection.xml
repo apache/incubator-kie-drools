@@ -1144,6 +1144,19 @@
 
       <para>Mimic selection is usefull to create a composite move from 2 moves that affect the same entity.</para>
     </section>
+
+    <section xml:id="nearbySelection">
+      <title>Nearby selection</title>
+
+      <para>With nearby selection, it is possible to increase the probability of selecting an entity or value which is
+      nearby to the first entity being moved in that move.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/nearbySelectionRandomDistribution.png"/>
+        </imageobject>
+      </mediaobject>
+    </section>
   </section>
 
   <section xml:id="customMoves">
