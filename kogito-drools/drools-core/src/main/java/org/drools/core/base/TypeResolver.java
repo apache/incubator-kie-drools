@@ -24,6 +24,8 @@ public interface TypeResolver {
 
     void addImport(String importEntry);
 
+    void addImplicitImport(String importEntry);
+
     Class<?> resolveType(String className) throws ClassNotFoundException;
 
     Class<?> resolveType(String className, ClassFilter classFilter) throws ClassNotFoundException;
