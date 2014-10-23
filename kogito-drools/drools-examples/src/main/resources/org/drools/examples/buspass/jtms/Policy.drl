@@ -1,0 +1,18 @@
+package org.drools.examples.buspass.jtms;
+
+import org.drools.examples.buspass.Person;
+import org.drools.examples.buspass.IsChild;
+import org.drools.examples.buspass.IsAdult;
+
+rule IsChildPolicy when
+    p : Person( age < 16 )
+then
+    insertLogical( new IsChild( p ) );
+end
+
+rule IsAdultPolicy when
+    p : Person( age >= 16 )
+then
+    insertLogical( new IsAdult( p ) );
+end
+

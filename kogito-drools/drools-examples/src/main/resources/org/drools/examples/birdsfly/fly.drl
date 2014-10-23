@@ -1,0 +1,47 @@
+package org.drools.examples.birdsfly;
+
+import org.drools.examples.birdsfly.Bird
+import org.drools.examples.birdsfly.Broken
+import org.drools.examples.birdsfly.Fly
+
+
+
+rule AllBirdsFly @Defeasible when
+    b : Bird()
+then
+    insertLogical( new Fly( b ) );
+end
+
+rule PenguinsDontFly @Defeasible @Defeats( "AllBirdsFly" ) when
+    b : Bird( species == "Penguin" )
+then
+    insertLogical( new Fly( b ), "neg" );
+end
+
+rule PenguinsWithRocketsFly @Defeasible @Defeats( "PenguinsDontFly" ) when
+    b : Bird( species == "Penguin" )
+    Rocket( bird == b )
+then
+    insertLogical( new Fly( b ) );
+end
+
+rule BrokenWing @Defeasible @Defeats( "AllBirdsFly" ) when
+    b : Bird(  )
+    Broken( part == "wing", bird == b )
+then
+    insertLogical( new Fly( b ), "neg" );
+end
+
+rule Flies when
+    b : Bird()
+    Fly( bird == b )
+then
+    System.out.println( b + " Flies" );
+end
+
+rule DoesNotFly when
+    b : Bird()
+    not Fly( bird == b )
+then
+    System.out.println( b + " Does not fly" );
+end

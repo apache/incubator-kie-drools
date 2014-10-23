@@ -1,0 +1,59 @@
+package org.drools.examples.circularTms;
+dialect  "mvel"
+
+rule A when
+    String( this == "A" )
+then
+   insertLogical( "B" );
+end
+
+rule D when
+    String( this == "A" )
+then
+   insertLogical( "D" );
+end
+
+rule B when
+    String( this == "B" )
+then
+   insertLogical( "C" );
+end
+
+
+rule C when
+    String( this == "C" )
+then
+   insertLogical( "B" );
+end
+
+rule PrintString when
+    s : String( )
+then
+   System.out.println( s );
+end
+
+rule NotA when
+    not String( this == "A" )
+then
+   System.out.println( "Not A" );
+end
+
+rule NotB when
+    not String( this == "B" )
+then
+   System.out.println( "Not B" );
+end
+
+rule NotC when
+    not String( this == "C" )
+then
+   System.out.println( "Not C" );
+end
+
+rule NotD when
+    not String( this == "D" )
+then
+   System.out.println( "Not D" );
+end
+
+
