@@ -6,6 +6,10 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+
+/**
+ * From http://www.ifitjams.com/start.gif
+ */
 public class DiagnosticsExample {
     public static void main(final String[] args) {
         KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
