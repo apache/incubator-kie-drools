@@ -44,6 +44,7 @@ import org.drools.workbench.models.guided.dtree.shared.model.values.impl.Boolean
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.ByteValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.DateValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.DoubleValue;
+import org.drools.workbench.models.guided.dtree.shared.model.values.impl.EnumValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.FloatValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.IntegerValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.LongValue;
@@ -373,7 +374,7 @@ public class GuidedDecisionTreeModelMarshallingVisitor {
     protected StringBuilder generateLHSValueDRL( final Value value,
                                                  final boolean isMultiValue ) {
         final StringBuilder sb = new StringBuilder();
-        final int constraintType = BaseSingleFieldConstraint.TYPE_LITERAL;
+        final int constraintType = getConstraintType( value );
         final String dataType = getDataType( value );
         final String strValue = getStringValue( value );
 
@@ -389,6 +390,13 @@ public class GuidedDecisionTreeModelMarshallingVisitor {
                                                        strValue );
         }
         return sb;
+    }
+
+    private int getConstraintType( final Value value ) {
+        if ( value instanceof EnumValue ) {
+            return BaseSingleFieldConstraint.TYPE_ENUM;
+        }
+        return BaseSingleFieldConstraint.TYPE_LITERAL;
     }
 
     //Convert a typed Value into legacy DataType
@@ -422,6 +430,9 @@ public class GuidedDecisionTreeModelMarshallingVisitor {
 
         } else if ( value instanceof ShortValue ) {
             return DataType.TYPE_NUMERIC_SHORT;
+
+        } else if ( value instanceof EnumValue ) {
+            return DataType.TYPE_COMPARABLE;
         }
 
         return DataType.TYPE_STRING;

@@ -83,6 +83,7 @@ import org.drools.workbench.models.guided.dtree.shared.model.values.impl.Boolean
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.ByteValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.DateValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.DoubleValue;
+import org.drools.workbench.models.guided.dtree.shared.model.values.impl.EnumValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.FloatValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.IntegerValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.LongValue;
@@ -328,8 +329,17 @@ public class GuidedDecisionTreeModelUnmarshallingVisitor {
             }
 
         } else if ( sfc.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_UNDEFINED ) {
-            node = new ConstraintNodeImpl( className,
-                                           fieldName );
+            final String operator = sfc.getOperator();
+            final boolean isValueRequired = OperatorsOracle.isValueRequired( operator );
+            if ( isValueRequired ) {
+                node = new ConstraintNodeImpl( className,
+                                               fieldName );
+            } else {
+                node = new ConstraintNodeImpl( className,
+                                               fieldName,
+                                               operator,
+                                               null );
+            }
 
         } else {
             messages.add( new UnsupportedFieldConstraintTypeParserMessage() );
@@ -499,7 +509,15 @@ public class GuidedDecisionTreeModelUnmarshallingVisitor {
                 return null;
             }
 
+        } else if ( DataType.TYPE_COMPARABLE.equals( dataType ) ) {
+            String _value = value;
+            if ( _value.startsWith( "\"" ) && _value.endsWith( "\"" ) ) {
+                _value = value.substring( 1,
+                                          _value.length() - 1 );
+            }
+            return new EnumValue( new String( _value ) );
         }
+
         return null;
     }
 
