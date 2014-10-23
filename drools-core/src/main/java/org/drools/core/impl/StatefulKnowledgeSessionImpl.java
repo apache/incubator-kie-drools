@@ -397,6 +397,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
 
         //runtimeServices = new HashMap<ResourceType, KieRuntimeManager>();
+		
+        setKnowledgeRuntime(this);
     }
 
     public <T> T getKieRuntime(Class<T> cls) {
