@@ -6,6 +6,37 @@
         <ksession name="HelloWorldKS"/>
     </kbase>
 
+    <kbase name="FireKB" packages="org.drools.examples.fire.simple">
+        <ksession name="FireKS"/>
+    </kbase>
+
+    <kbase name="FireLogicalKB" packages="org.drools.examples.fire.logical">
+        <ksession name="FireLogicalKS"/>
+    </kbase>
+
+    <kbase name="BussPassGoodKB" packages="org.drools.examples.buspass.good">
+        <ksession name="BussPassGoodKS"/>
+    </kbase>
+
+    <kbase name="BussPassBadKB" packages="org.drools.examples.buspass.bad">
+        <ksession name="BussPassBadKS"/>
+    </kbase>
+
+    <kbase name="BussPassJTMSKB" packages="org.drools.examples.buspass.jtms">
+        <ksession name="BussPassJTMSKS" beliefSystem="jtms"/>
+    </kbase>
+
+    <kbase name="DiagnosticsKB" packages="org.drools.examples.diagnostics">
+        <ksession name="DiagnosticsKS"/>
+    </kbase>
+
+    <kbase name="CircularTmsKB" packages="org.drools.examples.circularTms">
+        <ksession name="CircularTmsKS"/>
+    </kbase>
+    <kbase name="BirdsFlyKB" packages="org.drools.examples.birdsfly">
+        <ksession name="BirdsFlyKS" beliefSystem="defeasible"/>
+    </kbase>
+
     <kbase name="StateSalienceKB" packages="org.drools.examples.state.salience">
         <ksession name="StateSalienceKS"/>
     </kbase>

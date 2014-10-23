@@ -1,0 +1,135 @@
+package org.drools.examples.diagnostics;
+
+import org.drools.examples.diagnostics.Question
+import org.drools.examples.diagnostics.Answer
+import org.drools.examples.diagnostics.WontStart
+
+import java.util.Scanner;
+
+
+rule Init when
+then
+    System.out.println("Input y, n or id to change previous answer." );
+    insert( new Question( "1", "Starter cranks?" ) );
+end
+
+rule End when
+    s : Solution()
+    q : Question( id == "1" )
+then
+    System.out.println("Solution Found:\n" + s.getText() );
+    delete( q );
+end
+
+rule CleanUpAnswer when
+    a : Answer()
+    not Question( this == a.question )
+then
+    System.out.println( "Removing Answer :  " + a );
+    delete( a );
+end
+
+
+rule StarterCranksYes when
+    q : Question( id == "1" )
+    Answer( question == q, answer == "y" )
+then
+    System.out.println("TODO");
+    kcontext.getKieRuntime().halt();
+end
+
+rule StarterCrankNo when
+    q : Question( id == "1" )
+    Answer( question == q, answer == "n" )
+then
+    insertLogical( WontStart.newQ2( ) );
+end
+
+
+rule StarterSpinsYes when
+    q : Question( id == "2" )
+    Answer( question == q, answer == "y" )
+then
+    insert( new Solution( "Solenoid stuck, not powered. Missing teeth on flywheel." ) );
+end
+
+rule StarterSpinsNo when
+    q : Question( id == "2" )
+    Answer( question == q, answer == "n" )
+then
+    insertLogical( WontStart.newQ3( ) );
+end
+
+rule BatteryOver12VYes when
+    q : Question( id == "3" )
+    Answer( question == q, answer == "y" )
+then
+    insertLogical( WontStart.newQ4( ) );
+end
+
+rule BatteryOver12VNo when
+    q : Question( id == "3" )
+    Answer( question == q, answer == "n" )
+then
+    insert( new Solution( "Jump start or pop start car and check if battery is charging." ) );
+end
+
+rule CleanedTerminalsYes when
+    q : Question( id == "4" )
+    Answer( question == q, answer == "y" )
+then
+    insert( new Solution( "With car in park or neutral, use heavy jumper or screwdriver to bypass starter relay solenoid. Test starter." ) );
+end
+
+rule CleanedTerminalsNo when
+    q : Question( id == "4" )
+    Answer( question == q, answer == "n" )
+then
+    insert( new Solution( "Clean battery terminals and connectors, engine ground." ) );
+end
+
+
+rule AskQuestion when
+    q : Question( )
+    not Answer( question == q )
+then
+    System.out.println( q.getId() + " : " + q.getText() );
+    System.out.print("> ");
+    Scanner keyboard = new Scanner(System.in);
+    insert( keyboard.nextLine() );
+end
+
+rule ResetAnswer when
+    s : String( this matches "\\d+" )
+    q : Question( id == s )
+    a : Answer( question == q)
+then
+    System.out.println( "Removing Answer :  " + a );
+    delete( a );
+    delete( s );
+end
+
+
+rule QuestionDoesNotExist when
+    s : String( this matches "\\d+" )
+    not Question( id == s )
+then
+    System.out.println( "Question does not exist, id " + s );
+end
+
+rule ProcessAnswer when
+    s : String( this matches "[yn]" )
+    q : Question()
+    not Answer( question == q )
+then
+    insert( new Answer( q, s ) );
+    delete( s );
+end
+
+rule InvalidInput when
+    s : String( )
+then
+    System.out.println( "Invalid input : " + s );
+    delete( s );
+end
+

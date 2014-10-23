@@ -1,0 +1,39 @@
+package org.drools.examples.buspass.bad;
+
+import org.drools.examples.buspass.Person;
+import org.drools.examples.buspass.ChildBusPass;
+import org.drools.examples.buspass.AdultBusPass;
+
+
+rule IssueChildBusPass when
+    p : Person( age < 16 )
+then
+    insert( new ChildBusPass( p ) );
+end
+
+rule IssueAdultBusPass when
+    p : Person( age >= 16 )
+then
+    insert( new AdultBusPass( p ) );
+end
+
+rule PrintChildBusPass when
+    ChildBusPass()
+then
+    System.out.println( "Child Bus Pass" );
+end
+
+rule PrintNoChildBusPass when
+    ChildBusPass()
+then
+    System.out.println( "No Child Bus Pass" );
+end
+
+rule PrintAdultBussPass when
+    AdultBusPass()
+then
+    System.out.println( "Adult Bus Pass" );
+end
+
+
+
