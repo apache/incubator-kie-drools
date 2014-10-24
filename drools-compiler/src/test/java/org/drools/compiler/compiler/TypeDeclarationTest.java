@@ -1,5 +1,6 @@
 package org.drools.compiler.compiler;
 
+import org.drools.compiler.integrationtests.KieHelloWorldTest;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.rule.TypeDeclaration;
@@ -30,6 +31,7 @@ import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -866,7 +868,7 @@ public class TypeDeclarationTest {
         assertFalse(kieBuilder.getResults().hasMessages(Message.Level.ERROR));
         KieBase kieBase = KieServices.Factory.get().newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
 
-        FactType factType = kieBase.getFactType("org.test", "Person");
+        FactType factType = kieBase.getFactType( "org.test", "Person" );
         Object instance = factType.newInstance();
         factType.set(instance, "name", "Mark");
         factType.set(instance, "age", 37);
@@ -878,8 +880,8 @@ public class TypeDeclarationTest {
         ksession.insert(instance);
         ksession.fireAllRules();
 
-        assertEquals(1, names.size());
-        assertEquals("Mark", names.get(0));
+        assertEquals( 1, names.size() );
+        assertEquals( "Mark", names.get( 0 ) );
     }
 
     @Test
@@ -987,4 +989,75 @@ public class TypeDeclarationTest {
         kieBuilder.buildAll();
         return kieBuilder;
     }
+
+    @Test
+    public void testMultipleAnnotationDeclarations() {
+        String str1 = "";
+        str1 += "package org.kie1 " +
+                "" +
+               "declare Foo \n" +
+               "    name : String " +
+               "    age : int " +
+               "end ";
+
+        String str2 = "";
+        str2 += "package org.kie2 " +
+               "" +
+               "declare org.kie1.Foo " +
+               "    @role(event) " +
+               "end ";
+
+        String str3 = "";
+        str3 += "package org.kie3 " +
+               "" +
+               "declare org.kie1.Foo " +
+               "    @propertyReactive " +
+               "end ";
+
+        String str4 = "" +
+                      "package org.kie4; " +
+                      "import org.kie1.Foo; " +
+                      "" +
+                      "rule Check " +
+                      "when " +
+                      " $f : Foo( name == 'bar' ) " +
+                      "then " +
+                      " modify( $f ) { setAge( 99 ); } " +
+                      "end ";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( str1, ResourceType.DRL );
+        helper.addContent( str2, ResourceType.DRL );
+        helper.addContent( str3, ResourceType.DRL );
+        helper.addContent( str4, ResourceType.DRL );
+
+        List<Message> msg = helper.verify().getMessages( Message.Level.ERROR );
+        System.out.println( msg );
+        assertEquals( 0, msg.size() );
+
+        KieBase kieBase = helper.build();
+        FactType type = kieBase.getFactType( "org.kie1", "Foo" );
+        assertEquals( 2, type.getFields().size() );
+
+        Object foo = null;
+        try {
+            foo = type.newInstance();
+            type.set( foo, "name", "bar" );
+            assertEquals( "bar", type.get( foo, "name" ) );
+        } catch ( InstantiationException e ) {
+            fail( e.getMessage() );
+        } catch ( IllegalAccessException e ) {
+            fail( e.getMessage() );
+        }
+
+        KieSession session = kieBase.newKieSession();
+        FactHandle handle = session.insert( foo );
+        int n = session.fireAllRules( 5 );
+
+        assertTrue( handle instanceof EventFactHandle );
+        assertEquals( 1, n );
+        assertEquals( 99, type.get( foo, "age" ) );
+    }
+
+
 }

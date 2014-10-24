@@ -3,9 +3,11 @@ package org.drools.compiler.builder.impl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
+import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.QualifiedName;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
@@ -16,6 +18,7 @@ import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.rule.TypeDeclaration;
 import org.kie.api.io.Resource;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -95,6 +98,9 @@ public class TypeDeclarationBuilder {
             normalizeForeignPackages( packageDescr );
         }
 
+        // merge "duplicate" definitions and declarations
+        unsortedDescrs = compactDefinitionsAndDeclarations( unsortedDescrs, unprocesseableDescrs );
+
         // now sort declarations by mutual dependencies
         ClassHierarchyManager classHierarchyManager = new ClassHierarchyManager( unsortedDescrs, kbuilder );
 
@@ -111,6 +117,61 @@ public class TypeDeclarationBuilder {
                                                                 pkgRegistry.getPackage().getTypeDeclaration( typeDescr.getType().getName() ) );
             }
         }
+    }
+
+    private Collection<AbstractClassTypeDeclarationDescr> compactDefinitionsAndDeclarations( Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs, Map<String, AbstractClassTypeDeclarationDescr> unprocesseableDescrs ) {
+        Map<String,AbstractClassTypeDeclarationDescr> compactedUnsorted = new HashMap<String,AbstractClassTypeDeclarationDescr>( unsortedDescrs.size() );
+        for ( AbstractClassTypeDeclarationDescr descr : unsortedDescrs ) {
+            if ( compactedUnsorted.containsKey( descr.getType().getFullName() ) ) {
+                AbstractClassTypeDeclarationDescr prev = compactedUnsorted.get( descr.getType().getFullName() );
+                boolean res = mergeTypeDescriptors( prev, descr );
+                if ( ! res ) {
+                    unprocesseableDescrs.put( prev.getType().getFullName(), prev );
+                    kbuilder.addBuilderResult( new TypeDeclarationError( prev,
+                                                                         "Found duplicate declaration for type " + prev.getType().getFullName() + ", unable to reconcile " ) );
+                }
+            } else {
+                compactedUnsorted.put( descr.getType().getFullName(), descr );
+            }
+        }
+        return compactedUnsorted.values();
+    }
+
+    private boolean mergeTypeDescriptors( AbstractClassTypeDeclarationDescr prev, AbstractClassTypeDeclarationDescr descr ) {
+        boolean isDef1 = isDefinition( prev );
+        boolean isDef2 = isDefinition( descr );
+
+        if ( isDef1 && isDef2 ) {
+            return false;
+        }
+        if ( ! prev.getSuperTypes().isEmpty() && ! descr.getSuperTypes().isEmpty()
+             && prev.getSuperTypes().size() != descr.getSuperTypes().size() ) {
+            return false;
+        }
+
+        if ( prev.getSuperTypes().isEmpty() ) {
+            for ( QualifiedName qn : descr.getSuperTypes() ) {
+                ((TypeDeclarationDescr) prev).addSuperType( qn );
+            }
+        }
+        if ( prev.getFields().isEmpty() ) {
+            for ( String fieldName : descr.getFields().keySet() ) {
+                prev.addField( descr.getFields().get( fieldName ) );
+            }
+        }
+        for ( AnnotationDescr ad : descr.getAnnotations() ) {
+            prev.addQualifiedAnnotation( ad );
+        }
+        for ( AnnotationDescr ad : prev.getAnnotations() ) {
+            if ( ! descr.getAnnotations().contains( ad ) ) {
+                descr.addQualifiedAnnotation( ad );
+            }
+        }
+        return true;
+    }
+
+    private boolean isDefinition( AbstractClassTypeDeclarationDescr prev ) {
+        return ! prev.getFields().isEmpty();
     }
 
     protected void setResourcesInDescriptors( Collection<? extends PackageDescr> packageDescrs ) {
