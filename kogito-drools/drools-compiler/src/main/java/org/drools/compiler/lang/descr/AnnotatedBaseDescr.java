@@ -61,16 +61,24 @@ public class AnnotatedBaseDescr extends BaseDescr
      * @return returns the previous value of this annotation
      */
     public AnnotationDescr addAnnotation( AnnotationDescr annotation ) {
+        return addAnnotation( annotation.getName(), annotation );
+    }
+
+    public AnnotationDescr addQualifiedAnnotation( AnnotationDescr annotation ) {
+        return addAnnotation( annotation.getFullyQualifiedName(), annotation );
+    }
+
+    protected AnnotationDescr addAnnotation( String name, AnnotationDescr annotation ) {
         if ( this.annotations == null ) {
             this.annotations = new HashMap<String, AnnotationDescr>();
         } else {
-            AnnotationDescr existingAnnotation = annotations.get( annotation.getName() );
+            AnnotationDescr existingAnnotation = annotations.get( name );
             if (existingAnnotation != null) {
                 existingAnnotation.setDuplicated();
                 return existingAnnotation;
             }
         }
-        return this.annotations.put( annotation.getName(),
+        return this.annotations.put( name,
                                      annotation );
     }
 
