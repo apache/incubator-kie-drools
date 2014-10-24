@@ -396,7 +396,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             initInitialFact(kBase, null);
         }
 
-        //runtimeServices = new HashMap<ResourceType, KieRuntimeManager>();
+        initManagementBeans();
     }
 
     public <T> T getKieRuntime(Class<T> cls) {
@@ -2072,11 +2072,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.batchExecutionResult = null;
         this.lock.unlock();
         this.kBase.readUnlock();
-    }
-
-    public void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime) {
-        this.processRuntime = createProcessRuntime();
-        initManagementBeans();
     }
 
     public InternalKnowledgeRuntime getKnowledgeRuntime() {

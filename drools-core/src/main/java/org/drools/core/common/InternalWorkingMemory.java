@@ -16,11 +16,6 @@
 
 package org.drools.core.common;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -38,6 +33,11 @@ import org.drools.core.type.DateFormats;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
 
 public interface InternalWorkingMemory
     extends
@@ -114,8 +114,6 @@ public interface InternalWorkingMemory
      */
     public TimerService getTimerService();
 
-    public void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime);
-    
     public InternalKnowledgeRuntime getKnowledgeRuntime();
     
     /**

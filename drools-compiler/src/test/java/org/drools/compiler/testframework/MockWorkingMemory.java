@@ -445,11 +445,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime) {
-        // TODO Auto-generated method stub
-        
-    }
-
     public Environment getEnvironment() {
         // TODO Auto-generated method stub
         return null;
