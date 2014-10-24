@@ -202,15 +202,13 @@ public abstract class BaseNode
     }
 
     protected static void registerUnlinkedPaths(InternalWorkingMemory wm, SegmentMemory smem, boolean stagedDeleteWasEmpty) {
-        if (!smem.isSegmentLinked()) {
-            GarbageCollector garbageCollector = ((InternalAgenda)wm.getAgenda()).getGarbageCollector();
-            garbageCollector.increaseDeleteCounter();
-            if (stagedDeleteWasEmpty) {
-                synchronized (garbageCollector) {
-                    for (PathMemory pmem : smem.getPathMemories()) {
-                        if (pmem.getNodeType() == NodeTypeEnums.RuleTerminalNode) {
-                            garbageCollector.add(pmem.getOrCreateRuleAgendaItem(wm));
-                        }
+        GarbageCollector garbageCollector = ((InternalAgenda)wm.getAgenda()).getGarbageCollector();
+        garbageCollector.increaseDeleteCounter();
+        if (stagedDeleteWasEmpty) {
+            synchronized (garbageCollector) {
+                for (PathMemory pmem : smem.getPathMemories()) {
+                    if (pmem.getNodeType() == NodeTypeEnums.RuleTerminalNode && !pmem.isRuleLinked()) {
+                        garbageCollector.add(pmem.getOrCreateRuleAgendaItem(wm));
                     }
                 }
             }
