@@ -83,7 +83,9 @@ public class TypeDeclarationDescr
         if ( superTypes == null ) {
             superTypes = new ArrayList<QualifiedName>();
         }
-        this.superTypes.add( type );
+        if ( ! this.superTypes.contains( type ) ) {
+            this.superTypes.add( type );
+        }
     }
 
     public int compareTo(TypeDeclarationDescr descr) {
