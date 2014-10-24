@@ -5134,7 +5134,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         // force gc
         GarbageCollector gc = ((InternalAgenda) ksession.getAgenda()).getGarbageCollector();
-        assertEquals(10, gc.getDeleteCounter());
+        assertEquals(20, gc.getDeleteCounter()); // 10 LT for R2 + 10 RT for R1
         gc.forceGcUnlinkedRules();
 
         Rete rete = ((KnowledgeBaseImpl)kbase).getRete();
