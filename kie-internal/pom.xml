@@ -14,8 +14,18 @@
 
   <name>KIE Internal</name>
   <description>The Drools and jBPM internal API which is NOT backwards compatible between releases.</description>
-  
+
   <build>
+    <resources>
+      <resource>
+        <filtering>false</filtering>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/main/filtered-resources</directory>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
