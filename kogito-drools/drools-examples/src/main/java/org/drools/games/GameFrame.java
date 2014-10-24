@@ -18,22 +18,9 @@ public class GameFrame extends JFrame {
         // this will iterate the children, calling paintComponent
         super.paint(g);
         Toolkit.getDefaultToolkit().sync();
-        resume(); // all the children are redrawn, so resume
     }
 
     public void waitForPaint() {
-        try {
-            synchronized (redrawLock) {
-                repaint();
-                redrawLock.wait();
-            }
-        } catch (InterruptedException e) {
-        }
-    }
-
-    private void resume() {
-        synchronized (redrawLock) {
-            redrawLock.notify();
-        }
+        repaint();
     }
 }
