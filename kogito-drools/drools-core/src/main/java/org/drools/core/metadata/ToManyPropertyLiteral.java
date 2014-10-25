@@ -52,15 +52,16 @@ public abstract class ToManyPropertyLiteral<T,R>
                 List<R> list = get( o );
                 if ( list == null ) {
                     list = new ArrayList();
-                    set( o, list );
                 }
                 list.add( value );
+                set( o, list );
                 break;
             case REMOVE:
                 List<R> curr = get( o );
                 if ( curr != null ) {
                     curr.remove( value );
                 }
+                set( o, curr );
                 break;
         }
     }
