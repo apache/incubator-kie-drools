@@ -58,7 +58,8 @@ public abstract class MetadataContainer<T extends Metadatable> implements Serial
 
     public static URI getIdentifier( Object object ) {
         if ( object instanceof Identifiable ) {
-            return ( (Identifiable) object ).getUri();
+            URI uri = ( (Identifiable) object ).getUri();
+            return uri != null ? uri : URI.create( createObjectIdentifier( object ) );
         } else if ( object instanceof MetadataHolder ) {
             return URI.create( createObjectIdentifier( ( (MetadataHolder) object ).get_().getMetaClassInfo().getUri().toString(), object ) );
         } else {

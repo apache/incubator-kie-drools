@@ -97,5 +97,11 @@ public abstract class NewInstanceLiteral<T extends Metadatable> extends Abstract
     public T getTarget() {
         return result;
     }
+
+
+    @Override
+    public int hashCode() {
+        return System.identityHashCode( this );
+    }
 }
 
