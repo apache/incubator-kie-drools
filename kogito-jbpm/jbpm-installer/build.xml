@@ -252,7 +252,7 @@
     <condition property="jBPM.console.not.available">
       <and>
     	<not>
-          <available file="${install.home}/lib/jbpm-console-${jBPM.version}.war" />
+          <available file="${install.home}/lib/jbpm-console-${jBPM.version}-${jboss.war.type}.war" />
         </not>
       </and>
     </condition>
@@ -260,7 +260,7 @@
   <target name="download.jBPM.console" depends="download.jBPM.console.check" if="jBPM.console.not.available">
     <echo message="Getting jBPM console ..." />
     <mkdir dir="${install.home}/lib"/>
-  	<get src="${jBPM.console.url}" dest="${install.home}/lib/jbpm-console-${jBPM.version}.war"  />
+  	<get src="${jBPM.console.url}" dest="${install.home}/lib/jbpm-console-${jBPM.version}-${jboss.war.type}.war"  />
   </target>
   <target name="check.jbpm.console.modules">
     <condition property="jbpm.console.modules">
@@ -304,7 +304,7 @@
   <target name="install.jBPM-console.into.jboss" depends="download.db.driver,download.jBPM.console">
     <mkdir dir="${install.home}/target"/>
     <mkdir dir="${install.home}/target/jbpm-console-war"/>
-    <unzip src="${install.home}/lib/jbpm-console-${jBPM.version}.war"
+    <unzip src="${install.home}/lib/jbpm-console-${jBPM.version}-${jboss.war.type}.war"
            dest="${install.home}/target/jbpm-console-war"/>
     <copy todir="${install.home}/target/jbpm-console-war/WEB-INF/lib" overwrite="true">
       <fileset dir="${install.home}/db/driver"/>
@@ -320,8 +320,8 @@
   	<!-- install dependencies -->
   	<antcall target="install.dependencies" />
     <zip basedir="${install.home}/target/jbpm-console-war"
-         destfile="${install.home}/target/jbpm-console-${jBPM.version}.war"/>
-    <copy file="${install.home}/target/jbpm-console-${jBPM.version}.war"
+         destfile="${install.home}/target/jbpm-console-${jBPM.version}-${jboss.war.type}.war"/>
+    <copy file="${install.home}/target/jbpm-console-${jBPM.version}-${jboss.war.type}.war"
           tofile="${jboss.server.deploy.dir}/jbpm-console.war"
           overwrite="true" />
     <delete dir="${install.home}/target"/>
@@ -491,6 +491,11 @@
       <arg value="--server-config=standalone-full.xml" />
       <arg value="-Dorg.kie.demo=true" />
       <arg value="-Dorg.kie.example=false" />
+      <!--arg value="-Dorg.uberfire.nio.git.daemon.port=${org.uberfire.nio.git.daemon.port}" />
+      <arg value="-Dorg.uberfire.nio.git.ssh.port=${org.uberfire.nio.git.ssh.port}" />
+      <arg value="-Djboss.socket.binding.port-offset=${jboss.port.offset}" />
+      <arg value="-Dorg.uberfire.nio.git.dir=${jboss.home}" />
+      <arg value="-Dorg.uberfire.metadata.index.dir=${jboss.home}" /-->
     </exec>
     <property name="jboss.full.path.linux" location="${jboss.home}/bin/standalone.sh" />
     <exec executable="${jboss.full.path.linux}" spawn="yes" osfamily="unix">
@@ -500,6 +505,11 @@
       <arg value="--server-config=standalone-full.xml" />
       <arg value="-Dorg.kie.demo=true" />
       <arg value="-Dorg.kie.example=false" />
+      <!--arg value="-Dorg.uberfire.nio.git.daemon.port=${org.uberfire.nio.git.daemon.port}" />
+      <arg value="-Dorg.uberfire.nio.git.ssh.port=${org.uberfire.nio.git.ssh.port}" />
+      <arg value="-Djboss.socket.binding.port-offset=${jboss.port.offset}" />
+      <arg value="-Dorg.uberfire.nio.git.dir=${jboss.home}" />
+      <arg value="-Dorg.uberfire.metadata.index.dir=${jboss.home}" /-->
     </exec>
     <waitfor maxwait="5" maxwaitunit="minute" checkevery="10"
              checkeveryunit="second" timeoutproperty="jboss.timeout">
@@ -577,8 +587,8 @@
   </target>
 	
   <target name="clean.db" >
-    <delete file="${user.home}/jbpm.h2.db" failonerror="false"/>
-  	<delete file="${user.home}/jbpm.trace.db" failonerror="false"/>
+    <delete file="${user.home}/jbpm-db.h2.db" failonerror="false"/>
+  	<delete file="${user.home}/jbpm-db.trace.db" failonerror="false"/>
   </target>
 
   <target name="check.clean.repository">
