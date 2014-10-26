@@ -19,6 +19,7 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
+import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.common.RightTupleSets;
 import org.drools.core.common.StreamTupleEntryQueue;
@@ -99,7 +100,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-public class CepEspTest extends CommonTestMethodBase {
+public class
+        CepEspTest extends CommonTestMethodBase {
     
     @Test(timeout=10000)
     public void testComplexTimestamp() {
@@ -5085,14 +5087,14 @@ public class CepEspTest extends CommonTestMethodBase {
         List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal("list", list);
         ksession.setGlobal("salience1", new AtomicInteger(9));
-        ksession.setGlobal("salience2", new AtomicInteger(10));
+        ksession.setGlobal( "salience2", new AtomicInteger( 10 ) );
 
         for (int i = 0; i < 10; i++) {
             ksession.insert(i);
             ksession.fireAllRules();
         }
 
-        assertEquals(list, Arrays.asList(2, 1, 2, 1, 2, 1, 2, 1, 2, 1));
+        assertEquals(list, Arrays.asList( 2, 1, 2, 1, 2, 1, 2, 1, 2, 1 ));
     }
 
     @Test
@@ -5134,7 +5136,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         // force gc
         GarbageCollector gc = ((InternalAgenda) ksession.getAgenda()).getGarbageCollector();
-        assertEquals(20, gc.getDeleteCounter()); // 10 LT for R2 + 10 RT for R1
+        assertEquals( 20, gc.getDeleteCounter() ); // 10 LT for R2 + 10 RT for R1
         gc.forceGcUnlinkedRules();
 
         Rete rete = ((KnowledgeBaseImpl)kbase).getRete();
@@ -5223,7 +5225,7 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals(3, list.size());
-        assertTrue(list.containsAll(Arrays.asList(1, 2, 3)));
+        assertTrue( list.containsAll( Arrays.asList( 1, 2, 3 ) ) );
     }
 
     @Test
@@ -5292,7 +5294,7 @@ public class CepEspTest extends CommonTestMethodBase {
         assertNotNull(joinNode);
         InternalWorkingMemory wm = (InternalWorkingMemory)ksession;
         BetaMemory memory = (BetaMemory)wm.getNodeMemory(joinNode);
-        assertEquals(0, memory.getSegmentMemory().getStreamQueue().size());
+        assertEquals( 0, memory.getSegmentMemory().getStreamQueue().size() );
 
         RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
         assertEquals(4, stagedRightTuples.deleteSize());
@@ -5304,7 +5306,7 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals(0, stagedRightTuples.deleteSize());
         assertEquals(0, stagedRightTuples.insertSize());
 
-        System.out.println(list);
+        System.out.println( list );
 
         assertEquals(5, list.size());
         assertTrue(list.containsAll(Arrays.asList(1, 3, 5, 7, 9)));
@@ -5492,7 +5494,6 @@ public class CepEspTest extends CommonTestMethodBase {
                      "";
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
 
         KieHelper helper = new KieHelper();
         helper.addContent(drl, ResourceType.DRL);
@@ -5684,4 +5685,36 @@ public class CepEspTest extends CommonTestMethodBase {
         assertTrue(list.contains(1));
         assertTrue(list.contains(2));
     }
+
+    @Test
+    public void testExpireLogicalEvent() {
+        String drl = "package org.drools; " +
+                     "declare Foo " +
+                     "  @role(event) " +
+                     "  @expires(10ms) " +
+                     "end " +
+
+                     "rule In " +
+                     "when " +
+                     "then " +
+                     "  insertLogical( new Foo() ); " +
+                     "end ";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent(drl, ResourceType.DRL);
+        KieSession ksession = helper.build(
+                EventProcessingOption.STREAM
+        ).newKieSession( sessionConfig, null );
+
+        ksession.fireAllRules();
+        ((PseudoClockScheduler)ksession.getSessionClock()).advanceTime( 1, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+
+        assertEquals( 0, ksession.getObjects().size() );
+        assertEquals( 0, ( (NamedEntryPoint) ksession.getEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem().getEqualityKeyMap().size() );
+    }
+
 }

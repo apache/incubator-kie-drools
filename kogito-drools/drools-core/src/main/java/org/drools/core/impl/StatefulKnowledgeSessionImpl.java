@@ -1846,18 +1846,22 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 // if the fact is still in the working memory (since it may have been previously retracted already
                 final PropagationContext context = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.EXPIRATION,
                                                                                         null, null, this.factHandle);
-                EventFactHandle eventFactHandle = (EventFactHandle) factHandle;
-                eventFactHandle.setExpired(true);
-                this.node.retractObject(factHandle,
-                                        context,
-                                        workingMemory);
+                ((EventFactHandle) factHandle).setExpired(true);
+                if ( factHandle.getEqualityKey() == null || factHandle.getEqualityKey().getLogicalFactHandle() != factHandle ) {
+                    this.node.retractObject(factHandle,
+                                            context,
+                                            workingMemory);
 
-                context.evaluateActionQueue(workingMemory);
-                // if no activations for this expired event
-                if (eventFactHandle.getActivationsCount() == 0) {
-                    // remove it from the object store and clean up resources
-                    eventFactHandle.getEntryPoint().delete(factHandle);
+                    context.evaluateActionQueue(workingMemory);
+                    // if no activations for this expired event
+                    if (((EventFactHandle) factHandle).getActivationsCount() == 0) {
+                        // remove it from the object store and clean up resources
+                        ((EventFactHandle) factHandle).getEntryPoint().retract(factHandle);
+                    }
+                } else {
+                    ((NamedEntryPoint) factHandle.getEntryPoint()).getTruthMaintenanceSystem().delete( factHandle );
                 }
+
                 context.evaluateActionQueue(workingMemory);
             }
 
