@@ -760,7 +760,9 @@ public class PatternBuilder
             pattern.setHasNegativeConstraint( true );
             return;
         } else if ( "!_.neg".equals ( expr) ) {
-            // do nothing, this will be injected at the end if the pattern is still not negative
+            pattern.addConstraint( new NegConstraint(false) );
+            pattern.setHasNegativeConstraint( true );
+            return;
         }
 
         RelationalExprDescr relDescr = d instanceof RelationalExprDescr ? (RelationalExprDescr) d : null;
