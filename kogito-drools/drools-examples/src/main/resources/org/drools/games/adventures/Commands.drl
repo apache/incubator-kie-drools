@@ -2,7 +2,6 @@ package org.drools.games.adventures
 
 
 import org.drools.games.adventures.model.*;
-import org.drools.games.adventures.model.Key;
 import java.util.List;
 
 global org.drools.games.adventures.Counter counter
