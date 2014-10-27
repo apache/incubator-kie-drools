@@ -8150,68 +8150,6 @@ import static org.mockito.Mockito.*;
      }
 
      @Test
-     public void testRecursiveDeclaration() throws Exception {
-         String rule = "package org.drools.compiler\n" +
-                       "declare Node\n" +
-                       "    value: String\n" +
-                       "    parent: Node\n" +
-                       "end\n" +
-                       "rule R1 when\n" +
-                       "   $parent: Node( value == \"parent\" )\n" +
-                       "   $child: Node( $value : value, parent == $parent )\n" +
-                       "then\n" +
-                       "   System.out.println( $value );\n" +
-                       "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         FactType nodeType = kbase.getFactType( "org.drools.compiler", "Node" );
-         Object parent = nodeType.newInstance();
-         nodeType.set( parent, "value", "parent" );
-         ksession.insert( parent );
-
-         Object child = nodeType.newInstance();
-         nodeType.set( child, "value", "child" );
-         nodeType.set( child, "parent", parent );
-         ksession.insert( child );
-
-         int rules = ksession.fireAllRules();
-         assertEquals( 1, rules );
-     }
-
-     @Test
-     public void testCircularDeclaration() throws Exception {
-         String rule = "package org.drools.compiler.test\n" +
-                       "declare FactA\n" +
-                       "    fieldB: FactB\n" +
-                       "end\n" +
-                       "declare FactB\n" +
-                       "    fieldA: FactA\n" +
-                       "end\n" +
-                       "rule R1 when\n" +
-                       "   $fieldA : FactA( $fieldB : fieldB )\n" +
-                       "   FactB( this == $fieldB, fieldA == $fieldA )\n" +
-                       "then\n" +
-                       "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         FactType aType = kbase.getFactType( "org.drools.compiler.test", "FactA" );
-         Object a = aType.newInstance();
-         FactType bType = kbase.getFactType( "org.drools.compiler.test", "FactB" );
-         Object b = bType.newInstance();
-         aType.set( a, "fieldB", b );
-         bType.set( b, "fieldA", a );
-         ksession.insert( a );
-         ksession.insert( b );
-
-         int rules = ksession.fireAllRules();
-         assertEquals( 1, rules );
-     }
-
-     @Test
      public void testPatternMatchingOnThis() throws Exception {
          String rule = "package org.drools.compiler\n" +
                        "rule R1 when\n" +

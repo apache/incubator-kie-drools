@@ -57,17 +57,16 @@ public class ClassHierarchyManager {
 
         for (AbstractClassTypeDeclarationDescr tdescr : unsortedDescrs) {
             QualifiedName name = tdescr.getType();
-
             cache.put(name, tdescr);
 
-            if (taxonomy.get(name) == null) {
-                taxonomy.put(name, new ArrayList<QualifiedName>());
+            Collection<QualifiedName> supers = taxonomy.get(name);
+            if (supers == null) {
+                supers = new ArrayList<QualifiedName>();
+                taxonomy.put(name, supers);
             } else {
                 kbuilder.addBuilderResult(new TypeDeclarationError(tdescr,
                                                                    "Found duplicate declaration for type " + tdescr.getType()));
             }
-
-            Collection<QualifiedName> supers = taxonomy.get(name);
 
             boolean circular = false;
             for (QualifiedName sup : tdescr.getSuperTypes()) {
@@ -85,18 +84,20 @@ public class ClassHierarchyManager {
             if (circular) {
                 tdescr.getSuperTypes().clear();
             }
+        }
 
+        for (AbstractClassTypeDeclarationDescr tdescr : unsortedDescrs) {
             for (TypeFieldDescr field : tdescr.getFields().values()) {
+                QualifiedName name = tdescr.getType();
                 QualifiedName typeName = new QualifiedName(field.getPattern().getObjectType());
                 if (!hasCircularDependency(name, typeName, taxonomy)) {
-                    supers.add(typeName);
+                    taxonomy.get(name).add(typeName);
                 } else {
                     field.setRecursive( true );
                 }
-
             }
-
         }
+
         List<QualifiedName> sorted = new HierarchySorter<QualifiedName>().sort(taxonomy);
         ArrayList list = new ArrayList( sorted.size() );
         for ( QualifiedName name : sorted ) {
@@ -112,8 +113,8 @@ public class ClassHierarchyManager {
         if (name.equals( typeName )) {
             return true;
         }
-        if (taxonomy.containsKey(typeName)) {
-            Collection<QualifiedName> parents = taxonomy.get(typeName);
+        Collection<QualifiedName> parents = taxonomy.get(typeName);
+        if (parents != null) {
             if (parents.contains(name)) {
                 return true;
             } else {
