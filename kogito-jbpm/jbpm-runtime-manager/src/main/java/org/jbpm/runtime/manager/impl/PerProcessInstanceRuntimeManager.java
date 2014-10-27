@@ -52,6 +52,8 @@ import org.kie.internal.runtime.manager.TaskServiceFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.InternalTaskService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A RuntimeManager implementation that is backed by the "Per Process Instance" strategy. This means that every 
@@ -71,6 +73,8 @@ import org.kie.internal.task.api.InternalTaskService;
  * </ul>
  */
 public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
+	
+	private static final Logger logger = LoggerFactory.getLogger(PerProcessInstanceRuntimeManager.class);
     
     private SessionFactory factory;
     private TaskServiceFactory taskServiceFactory;
@@ -95,6 +99,11 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     	checkPermission();
     	RuntimeEngine runtime = null;
     	Object contextId = context.getContextId();
+    	
+    	if (!(context instanceof ProcessInstanceIdContext)) {
+    		logger.warn("ProcessInstanceIdContext shall be used when interacting with PerProcessInstance runtime manager");
+    	}
+    	
     	if (engineInitEager) {
 			KieSession ksession = null;
 			Integer ksessionId = null;
