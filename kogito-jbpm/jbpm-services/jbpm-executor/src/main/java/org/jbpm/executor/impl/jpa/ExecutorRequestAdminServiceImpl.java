@@ -137,24 +137,23 @@ public class ExecutorRequestAdminServiceImpl implements ExecutorAdminService, Re
 			this.requestId = id;
 		}
 		
-		@SuppressWarnings("unchecked")
 		@Override
 		public Void execute(Context context) {
-			
-	    	List<RequestInfo> requests = null;
+				    	
 	    	try {
 	    		org.jbpm.shared.services.impl.JpaPersistenceContext ctx = (org.jbpm.shared.services.impl.JpaPersistenceContext) context;
-				requests = ctx.queryInTransaction("RunningRequests", List.class);
 				
-				for (RequestInfo request : requests) {
-					if (request != null && request.getId() == requestId) {
-						logger.info("Requeing request with id : {}, key : {}, start time : {}",
-								request.getId(), request.getKey(), request.getTime());
-		                request.setStatus(STATUS.QUEUED);
-		                ctx.merge(request);
-		                break;
-		            }
-				}
+	    		RequestInfo request = ctx.find(RequestInfo.class, requestId);
+								
+				if (request != null && request.getStatus() != STATUS.CANCELLED
+						&& request.getStatus() != STATUS.DONE) {
+					logger.info("Requeing request with id : {}, key : {}, start time : {}", request.getId(), request.getKey(), request.getTime());
+	                request.setStatus(STATUS.QUEUED);
+	                ctx.merge(request);
+	            } else {
+	            	throw new IllegalArgumentException("Retrying completed or cancelled job is not allowed (job id " + requestId +")");
+	            }
+				
 	    	} catch (Exception e) {
 	    		logger.warn("Error while trying to requeue jobs that runs for too long {}", e.getMessage());
 	    	}
