@@ -43,6 +43,7 @@ import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.Transformation;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.VariableScopeResolverFactory;
 import org.kie.api.KieBase;
@@ -260,7 +261,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
                     resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, faultName);
             if (exceptionScopeInstance != null) {
                 
-                exceptionScopeInstance.handleException(faultName, null);
+                exceptionScopeInstance.handleException(faultName, processInstance.getFaultData());
                 cancel();
                 return;
             } else if (!getSubProcessNode().isIndependent()){

@@ -77,7 +77,7 @@ public class FaultNodeInstance extends NodeInstanceImpl {
             }
         } else {
 
-        	((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED, faultName);
+        	((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED, faultName, getFaultData());
 
         }
     }

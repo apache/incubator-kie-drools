@@ -1551,4 +1551,25 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, ksession);
         
     }
+    
+    @Test
+    public void testErrorBetweenProcessesProcess() throws Exception {
+        
+        KieBase kbase = createKnowledgeBaseWithoutDumper("subprocess/ErrorsBetweenProcess-Process.bpmn2",
+        		"subprocess/ErrorsBetweenProcess-SubProcess.bpmn2");
+        ksession = createKnowledgeSession(kbase);       
+        
+        Map<String, Object> variables = new HashMap<String, Object>();
+        
+        variables.put("tipoEvento", "error");
+        variables.put("pasoVariable", 3);
+        ProcessInstance processInstance = ksession.startProcess("Principal", variables);
+        
+        Thread.sleep(1000l);                
+        
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);       
+        assertProcessInstanceAborted(processInstance.getId()+1, ksession);
+
+        assertProcessVarValue(processInstance, "event", "error desde Subproceso");
+    }
 }

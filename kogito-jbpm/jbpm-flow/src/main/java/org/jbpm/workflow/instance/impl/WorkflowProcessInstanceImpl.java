@@ -77,6 +77,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	private Map<String, Integer> iterationLevels = new HashMap<String, Integer>();
 	private int currentLevel;
 	private boolean persisted = false;
+	private Object faultData;
 
 	public NodeContainer getNodeContainer() {
 		return getWorkflowProcess();
@@ -273,6 +274,11 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 			throw new IllegalArgumentException("No variable scope found.");
 		}
 		variableScopeInstance.setVariable(name, value);
+	}
+	
+	public void setState(final int state, String outcome, Object faultData) {
+		this.faultData = faultData;
+		setState(state, outcome);
 	}
 	
 	public void setState(final int state, String outcome) {
@@ -590,6 +596,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 			return Collections.emptyList();
 		}
 	    return new ArrayList<String>(this.activatingNodeIds);
+	}
+	
+	public Object getFaultData() {
+		return faultData;
 	}
     
 }
