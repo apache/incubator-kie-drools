@@ -2,18 +2,22 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.StockTick;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 public class NamedConsequencesTest extends CommonTestMethodBase {
 
@@ -711,7 +715,7 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
         }
 
         ksession.fireAllRules();
-        assertEquals(Arrays.asList("n1", "n2", "y3", "n4", "n5", "y6"), results);
+        assertEquals(asList("n1", "n2", "y3", "n4", "n5", "y6"), results);
     }
 
     public static class Fact {
@@ -734,5 +738,42 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
         public void setStatus(Status status) {
             this.status = status;
         }
+    }
+
+    @Test
+    public void testNamedConsequenceOnEvents() {
+        // DROOLS-641
+        String drl =
+                "import " + StockTick.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "declare StockTick \n" +
+                "    @role( event )" +
+                "    @timestamp( time )\n" +
+                "end\n" +
+                "rule R when\n" +
+                "    $s1 : StockTick( company == \"XXX\" )\n" +
+                "    $s2 : StockTick( price > $s1.price ) do[t1]\n" +
+                "    $s3 : StockTick( price < $s1.price )\n" +
+                "then\n" +
+                "    list.add( \"t0:\" + $s3.getCompany() );\n" +
+                "then[t1]\n" +
+                "    list.add( \"t1:\" + $s2.getCompany() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                //.build(EventProcessingOption.STREAM)
+                .build()
+                .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(new StockTick(1L, "XXX", 10, 0L));
+        ksession.insert(new StockTick(2L, "YYY", 15, 1L));
+        ksession.insert(new StockTick(3L, "ZZZ", 5, 2L));
+        ksession.fireAllRules();
+
+        assertEquals(2, list.size());
+        assertTrue(list.containsAll(asList("t1:YYY", "t0:ZZZ")));
     }
 }
