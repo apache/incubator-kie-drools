@@ -8,11 +8,19 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.NamedConsequence;
 import org.drools.core.rule.RuleConditionElement;
+import org.drools.core.time.impl.Timer;
 
 public class NamedConsequenceBuilder implements ReteooComponentBuilder {
 
     public void build(BuildContext context, BuildUtils utils, RuleConditionElement rce) {
         NamedConsequence namedConsequence = (NamedConsequence) rce;
+
+        Timer timer = context.getRule().getTimer();
+        if  ( context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && timer != null ) {
+            ReteooComponentBuilder builder = utils.getBuilderFor( Timer.class );
+            builder.build( context, utils, context.getRule().getTimer() );
+        }
+
         RuleTerminalNode terminalNode = buildTerminalNodeForNamedConsequence(context, namedConsequence);
 
         terminalNode.attach(context);
@@ -21,6 +29,10 @@ public class NamedConsequenceBuilder implements ReteooComponentBuilder {
 
         // adds the terminal node to the list of nodes created/added by this sub-rule
         context.getNodes().add( terminalNode );
+
+        if  ( context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && timer != null ) {
+            context.setTupleSource( context.getTupleSource().getLeftTupleSource() );
+        }
     }
 
     public boolean requiresLeftActivation(BuildUtils utils, RuleConditionElement rce) {
