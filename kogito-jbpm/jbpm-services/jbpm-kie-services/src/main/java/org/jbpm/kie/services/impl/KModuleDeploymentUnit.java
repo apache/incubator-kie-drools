@@ -85,6 +85,7 @@ public class KModuleDeploymentUnit implements DeploymentUnit, Serializable {
     public void setStrategy(RuntimeStrategy strategy) {
     	if (strategyUnset) {
     		this.strategy = strategy;
+    		this.strategyUnset = false;
     	}
     }
 
@@ -155,6 +156,10 @@ public class KModuleDeploymentUnit implements DeploymentUnit, Serializable {
 
 	public void setDeployed(boolean deployed) {
 		this.deployed = deployed;
+	}
+	
+	public void resetStrategy() {
+		this.strategyUnset = true;
 	}
 
 }
