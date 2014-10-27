@@ -33,7 +33,7 @@
 
         <thead>
           <row>
-            <entry>SpeExample</entry>
+            <entry>Example</entry>
 
             <entry>Domain</entry>
 
@@ -1109,6 +1109,16 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
         <title>Problem size</title>
 
         <programlisting>munich-7teams has 7 teams, 18 days, 12 unavailabilityPenalties and 72 teamAssignments with a search space of 10^60.</programlisting>
+      </section>
+
+      <section xml:id="tennisDomainModel">
+        <title>Domain model</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/tennisClassDiagram.png"/>
+          </imageobject>
+        </mediaobject>
       </section>
     </section>
   </section>
