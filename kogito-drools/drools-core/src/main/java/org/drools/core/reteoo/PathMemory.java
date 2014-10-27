@@ -43,6 +43,10 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         return queue;
     }
 
+    public void setStreamQueue(StreamTupleEntryQueue queue) {
+        this.queue = queue;
+    }
+
     public NetworkNode getNetworkNode() {
         return networkNode;
     }

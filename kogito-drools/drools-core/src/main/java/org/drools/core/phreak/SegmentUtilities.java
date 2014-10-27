@@ -39,6 +39,7 @@ import org.drools.core.reteoo.RiaPathMemory;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.rule.constraint.QueryNameConstraint;
@@ -500,6 +501,11 @@ public class SegmentUtilities {
             if ( queue == null ) {
                 pmem.initQueue();
                 queue = pmem.getStreamQueue();
+            }
+            for ( TerminalNode rtn = (TerminalNode) ( (TerminalNode) sink ).getPreviousLeftTupleSinkNode();
+                  rtn != null;
+                  rtn = (TerminalNode) rtn.getPreviousLeftTupleSinkNode() ) {
+                ((PathMemory) wm.getNodeMemory( (MemoryFactory) rtn )).setStreamQueue( queue );
             }
         }
         return queue;
