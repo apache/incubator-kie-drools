@@ -5439,4 +5439,143 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.insert(new StockTick(1L, "DROOLS", 20));
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testCEPNamedCons() throws InterruptedException {
+
+        String drl = "package org.drools " +
+
+                     "global java.util.List list; " +
+
+                     "declare  Msg " +
+                     "    @role( event )" +
+                     "    sender : String  @key " +
+                     "end " +
+
+                     "rule Init " +
+                     "when " +
+                     "  $s : String() " +
+                     "then " +
+                     "  System.out.println( 'Msg ' + $s ); " +
+                     "  insert( new Msg( $s ) ); " +
+                     "end " +
+
+                     "rule 'Expect_Test_Rule Fulfill' " +
+                     "when " +
+                     "    $trigger : Msg( 'John' ; ) " +
+                     "    Msg( 'Peter' ; this after[0,100000ms] $trigger ) " +
+                     "    do[fulfill] " +
+                     "then " +
+                     "  System.out.println( 'Expectation fulfilled' ); " +
+                     "  list.add( 1 ); " +
+                     "then[fulfill] " +
+                     "  System.out.println( 'insert fulf fact' ); " +
+                     "  list.add( 2 ); " +
+                     "end " +
+
+                     "rule 'Expect_Test_Rule Violation' " +
+                     "when " +
+                     "    $trigger : Msg( 'John' ; ) do[asap]" +
+                     "    not Msg( 'Peter' ; this after[0,100000ms] $trigger ) " +
+                     "    do[viol]  \n" +
+                     "then " +
+                     "  System.out.println( 'Expectation violated' ); " +
+                     "  list.add( -1 ); " +
+                     "then[viol] " +
+                     "  System.out.println( 'insert viol fact' ); " +
+                     "  list.add( -2 ); " +
+                     "then[asap] " +
+                     "  System.out.println( 'Did it anyway' ); " +
+                     "  list.add( 0 ); " +
+                     "end " +
+
+                     "";
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+
+        KieHelper helper = new KieHelper();
+        helper.addContent(drl, ResourceType.DRL);
+        KieSession ksession = helper.build(
+                EventProcessingOption.STREAM
+        ).newKieSession( sessionConfig, null );
+
+
+        List list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( "John" );
+        ksession.fireAllRules();
+
+        System.out.println("--------------------");
+        (( PseudoClockScheduler )ksession.getSessionClock()).advanceTime( 10, TimeUnit.MILLISECONDS );
+        ksession.insert( "Peter" );
+        ksession.fireAllRules();
+
+        System.out.println( list );
+        assertTrue( list.contains( 0 ) );
+        assertTrue( list.contains( 1 ) );
+        assertTrue( list.contains( 2 ) );
+        assertFalse( list.contains( -1 ) );
+        assertFalse( list.contains( -2 ) );
+
+    }
+
+    @Test
+    public void testCEPNamedConsTimers() throws InterruptedException {
+
+        String drl = "package org.drools " +
+
+                     "global java.util.List list; " +
+
+                     "declare  Msg " +
+                     "    @role( event ) " +
+                     "    sender : String  @key " +
+                     "end " +
+
+                     "rule Init " +
+                     "when " +
+                     "  $s : String() " +
+                     "then " +
+                     "  System.out.println( 'Msg ' + $s ); " +
+                     "  insert( new Msg( $s ) ); " +
+                     "end " +
+
+                     "rule 'Viol' " +
+                     "when " +
+                     "    $trigger : Msg( 'John' ; ) " +
+                     "    not Msg( 'Peter' ; this after[0, 100ms] $trigger ) do[viol]" +
+                     "then " +
+                     "  list.add( 0 ); " +
+                     "then[viol] " +
+                     "  list.add( -2 ); " +
+                     "end " +
+
+                     "";
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+
+        KieHelper helper = new KieHelper();
+        helper.addContent(drl, ResourceType.DRL);
+        KieSession ksession = helper.build(
+                EventProcessingOption.STREAM
+        ).newKieSession( sessionConfig, null );
+
+        List list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( "John" );
+        ksession.fireAllRules();
+        assertTrue( list.isEmpty() );
+        System.out.println( list );
+
+        (( PseudoClockScheduler )ksession.getSessionClock()).advanceTime( 1000, TimeUnit.MILLISECONDS );
+
+        ksession.fireAllRules();
+        System.out.println( list );
+        assertTrue( list.contains( -2 ) );
+        assertTrue( list.contains( 0 ) );
+
+    }
 }
