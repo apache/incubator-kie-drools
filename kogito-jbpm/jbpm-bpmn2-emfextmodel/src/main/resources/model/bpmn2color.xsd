@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color" 
+	targetNamespace="http://www.omg.org/spec/BPMN/non-normative/color" 
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+	
+	<simpleType name="HexColor">
+		<restriction base="string">
+			<pattern value="#[0-9a-fA-F]{6}"/>
+		</restriction>
+	</simpleType>
+	
+	<attribute name="background-color" type="color:HexColor"/>
+	
+	<attribute name="border-color" type="color:HexColor"/>
+	
+	<attribute name="color" type="color:HexColor"/>
+	
+</schema>
