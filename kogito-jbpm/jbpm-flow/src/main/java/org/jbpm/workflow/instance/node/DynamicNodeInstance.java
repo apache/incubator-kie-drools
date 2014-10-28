@@ -17,9 +17,12 @@
 package org.jbpm.workflow.instance.node;
 
 import org.drools.core.common.InternalAgenda;
+import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.DynamicNode;
+import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
+import org.jbpm.workflow.instance.impl.WorkItemResolverFactory;
 import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.process.NodeInstance;
 
@@ -59,10 +62,20 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
 	            return;
 	        }
 	    }
+	    String completionCondition = getDynamicNode().getCompletionExpression();
 		// TODO what if we reach the end of one branch but others might still need to be created ?
 		// TODO are we sure there will always be node instances left if we are not done yet?
 		if (getDynamicNode().isAutoComplete() && getNodeInstances(false).isEmpty()) {
     		triggerCompleted(NodeImpl.CONNECTION_DEFAULT_TYPE);
+    	} else if (completionCondition != null) {
+    		Object value = MVELSafeHelper.getEvaluator().eval(completionCondition, new NodeInstanceResolverFactory(this));
+    		if ( !(value instanceof Boolean) ) {
+                throw new RuntimeException( "Completion condition expression must return boolean values: " + value 
+                		+ " for expression " + completionCondition);
+            }
+            if (((Boolean) value).booleanValue()) {
+            	triggerCompleted(NodeImpl.CONNECTION_DEFAULT_TYPE);	
+            }
     	}
 	}
 	

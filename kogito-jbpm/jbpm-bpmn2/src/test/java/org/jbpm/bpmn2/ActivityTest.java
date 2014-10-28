@@ -857,6 +857,41 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
     }
+    
+    @Test
+    public void testAdHocSubProcessAutoCompleteExpression() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper(
+                "BPMN2-AdHocSubProcessAutoCompleteExpression.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("counter", new Integer(2));
+        ProcessInstance processInstance = ksession.startProcess("AdHocSubProcess", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNull(workItem);
+        ksession.signalEvent("Hello1", null, processInstance.getId());
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        
+        workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        Map<String, Object> results = new HashMap<String, Object>();
+        results.put("testHT", new Integer(1));
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), results);
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        
+        ksession.signalEvent("Hello1", null, processInstance.getId());
+        workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        results = new HashMap<String, Object>();
+        results.put("testHT", new Integer(0));
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), results);
+        
+        assertProcessInstanceFinished(processInstance, ksession);
+    }
 
     @Test
     public void testAdHocSubProcessAutoCompleteDynamicTask() throws Exception {

@@ -24,6 +24,7 @@ public class DynamicNode extends CompositeContextNode {
 	private static final long serialVersionUID = 510l;
 	
 	private boolean autoComplete = false;
+	private String completionExpression;
 		
 	public boolean isAutoComplete() {
 		return autoComplete;
@@ -49,4 +50,12 @@ public class DynamicNode extends CompositeContextNode {
     		return null;
     	}
     }
+
+	public String getCompletionExpression() {
+		return completionExpression;
+	}
+
+	public void setCompletionExpression(String expression) {
+		this.completionExpression = expression;
+	}
 }
