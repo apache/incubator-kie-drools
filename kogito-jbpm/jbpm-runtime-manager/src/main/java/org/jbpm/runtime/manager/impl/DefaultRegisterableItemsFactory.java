@@ -28,6 +28,7 @@ import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
+import org.jbpm.process.instance.impl.ProcessInstanceDescriptionListener;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
 import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
@@ -121,6 +122,7 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
                 logger.error("Unable to load jms audit properties from {}", "/jbpm.audit.jms.properties", e);
             }
         }
+        defaultListeners.add(new ProcessInstanceDescriptionListener());
         // add any custom listeners
         defaultListeners.addAll(super.getProcessEventListeners(runtime));
         // add listeners from descriptor
