@@ -12,7 +12,9 @@ import static org.junit.Assert.assertEquals;
 public class SimpleLongScoreDefinitionTest {
 
     @Test
-    public void getLevelSize() { assertEquals(1, new SimpleLongScoreDefinition().getLevelsSize()); }
+    public void getLevelSize() {
+        assertEquals(1, new SimpleLongScoreDefinition().getLevelsSize());
+    }
 
     @Test
     public void buildOptimisticBoundUp() {

@@ -11,10 +11,14 @@ import static org.junit.Assert.assertEquals;
 public class HardMediumSoftScoreDefinitionTest {
 
     @Test
-    public void getLevelsSize() { assertEquals(3, new HardMediumSoftScoreDefinition().getLevelsSize()); }
+    public void getLevelsSize() {
+        assertEquals(3, new HardMediumSoftScoreDefinition().getLevelsSize());
+    }
 
     @Test
-    public void getFeasibleLevelsSize() { assertEquals(1, new HardMediumSoftScoreDefinition().getFeasibleLevelsSize());}
+    public void getFeasibleLevelsSize() {
+        assertEquals(1, new HardMediumSoftScoreDefinition().getFeasibleLevelsSize());
+    }
 
     @Test
     public void buildOptimisticBoundUp() {

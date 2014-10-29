@@ -25,7 +25,7 @@ public class FlatteningHardSoftScoreComparatorTest {
         this.secondScore = secondScore;
     }
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection parameters() {
         String simpleScore = "10hard/123soft";
         String lowHardScore = "10hard/987654321soft";

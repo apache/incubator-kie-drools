@@ -11,10 +11,14 @@ import static org.junit.Assert.assertEquals;
 public class HardSoftLongScoreDefinitionTest {
 
     @Test
-    public void getLevelSize() { assertEquals(2, new HardSoftLongScoreDefinition().getLevelsSize()); }
+    public void getLevelSize() {
+        assertEquals(2, new HardSoftLongScoreDefinition().getLevelsSize());
+    }
 
     @Test
-    public void getFeasibleLevelsSize() { assertEquals(1, new HardSoftLongScoreDefinition().getFeasibleLevelsSize()); }
+    public void getFeasibleLevelsSize() {
+        assertEquals(1, new HardSoftLongScoreDefinition().getFeasibleLevelsSize());
+    }
 
     @Test
     public void buildOptimisticBoundUp() {

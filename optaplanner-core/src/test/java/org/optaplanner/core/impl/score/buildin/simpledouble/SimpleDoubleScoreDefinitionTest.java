@@ -13,7 +13,9 @@ public class SimpleDoubleScoreDefinitionTest {
     private static final double TOLERANCE = 0.00001;
 
     @Test
-    public void getLevelSize() { assertEquals(1, new SimpleDoubleScoreDefinition().getLevelsSize()); }
+    public void getLevelSize() {
+        assertEquals(1, new SimpleDoubleScoreDefinition().getLevelsSize());
+    }
 
     @Test
     public void buildOptimisticBoundUp() {

@@ -13,10 +13,14 @@ public class HardSoftDoubleScoreDefinitionTest {
     private static double TOLERANCE = 0.00001;
 
     @Test
-    public void getLevelSize() { assertEquals(2, new HardSoftDoubleScoreDefinition().getLevelsSize()); }
+    public void getLevelSize() {
+        assertEquals(2, new HardSoftDoubleScoreDefinition().getLevelsSize());
+    }
 
     @Test
-    public void getFeasibleLevelsSize() { assertEquals(1, new HardSoftDoubleScoreDefinition().getFeasibleLevelsSize()); }
+    public void getFeasibleLevelsSize() {
+        assertEquals(1, new HardSoftDoubleScoreDefinition().getFeasibleLevelsSize());
+    }
 
     @Test
     public void buildOptimisticBoundUp() {
