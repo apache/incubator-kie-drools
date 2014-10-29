@@ -218,9 +218,9 @@ public class SingleRuntimeManagerWithListenersTest extends AbstractBaseTest {
         // JPAWorkingMemoryDbLogger one is always added to deal with user tasks
         assertTrue(listenerCLassNames.contains(JPAWorkingMemoryDbLogger.class.getName()));
         if (((RuntimeEngineImpl)runtime).getManager() instanceof PerProcessInstanceRuntimeManager) {
-        	assertEquals(3, pListeners.size());	
+        	assertEquals(4, pListeners.size());	
         } else {
-        	assertEquals(2, pListeners.size());
+        	assertEquals(3, pListeners.size());
         }
         
         TaskService taskService = runtime.getTaskService();

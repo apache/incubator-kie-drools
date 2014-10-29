@@ -39,6 +39,7 @@ import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
+import org.jbpm.process.instance.impl.ProcessInstanceDescriptionListener;
 import org.jbpm.runtime.manager.api.qualifiers.Agenda;
 import org.jbpm.runtime.manager.api.qualifiers.Process;
 import org.jbpm.runtime.manager.api.qualifiers.Task;
@@ -180,6 +181,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
         
         List<ProcessEventListener> defaultListeners = new ArrayList<ProcessEventListener>();
+        defaultListeners.add(new ProcessInstanceDescriptionListener());
         if(auditlogger != null) {
             defaultListeners.add(auditlogger);
         } else if (getAuditBuilder() != null) {
@@ -195,6 +197,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         } catch (Exception e) {
             logger.warn("Exception while evaluating ProcessEventListener producers {}", e.getMessage());
         }
+        
         // add listeners from descriptor
         defaultListeners.addAll(getEventListenerFromDescriptor(runtime, ProcessEventListener.class)); 
         return defaultListeners;
