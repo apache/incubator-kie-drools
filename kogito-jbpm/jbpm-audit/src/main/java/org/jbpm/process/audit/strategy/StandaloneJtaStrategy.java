@@ -4,7 +4,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.TransactionRequiredException;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
@@ -26,6 +25,8 @@ public class StandaloneJtaStrategy implements PersistenceStrategy {
     private static final String[] KNOWN_UT_JNDI_KEYS = new String[] {"UserTransaction", "java:jboss/UserTransaction", System.getProperty("jbpm.ut.jndi.lookup")};
 
     protected EntityManagerFactory emf;
+   
+    private static final Object USER_MANAGED_TRANSACTION = new Object();
     
     public StandaloneJtaStrategy(EntityManagerFactory emf) { 
         this.emf = emf;
@@ -40,8 +41,11 @@ public class StandaloneJtaStrategy implements PersistenceStrategy {
     public Object joinTransaction(EntityManager em) {
         boolean newTx = false;
         UserTransaction ut = findUserTransaction();
+        if( ut == null ) { 
+            throw new IllegalStateException("Unable to find JTA transaction." );
+        }
         try {
-            if( ut != null && ut.getStatus() == Status.STATUS_NO_TRANSACTION ) { 
+            if( ut.getStatus() == Status.STATUS_NO_TRANSACTION ) { 
                 ut.begin();
                 newTx = true;
                 // since new transaction was started em must join it
@@ -59,13 +63,17 @@ public class StandaloneJtaStrategy implements PersistenceStrategy {
         if( newTx ) { 
             return ut;
         }
-        return null;
+        return USER_MANAGED_TRANSACTION;
     }
 
     protected static UserTransaction findUserTransaction() {
         InitialContext context = null;
-        try {
+        try { 
             context = new InitialContext();
+        } catch( Exception e ) { 
+           throw new IllegalStateException("Unable to initialized " + InitialContext.class.getName() + " instance.", e);
+        }
+        try {
             return (UserTransaction) context.lookup( "java:comp/UserTransaction" );
         } catch ( NamingException ex ) {
             for (String utLookup : KNOWN_UT_JNDI_KEYS) {
@@ -93,6 +101,9 @@ public class StandaloneJtaStrategy implements PersistenceStrategy {
     }
 
     protected void commitTransaction(Object transaction) {
+        if( transaction == USER_MANAGED_TRANSACTION ) { 
+            return;
+        }
         UserTransaction ut = null;
         if( ! (transaction instanceof UserTransaction) ) { 
            throw new IllegalStateException("This persistence strategy only deals with UserTransaction instances!" );
