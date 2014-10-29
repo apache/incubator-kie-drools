@@ -5558,9 +5558,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         KieHelper helper = new KieHelper();
         helper.addContent(drl, ResourceType.DRL);
-        KieSession ksession = helper.build(
-                EventProcessingOption.STREAM
-        ).newKieSession( sessionConfig, null );
+        KieSession ksession = helper.build(EventProcessingOption.STREAM).newKieSession( sessionConfig, null );
 
         List list = new ArrayList(  );
         ksession.setGlobal( "list", list );
@@ -5568,14 +5566,122 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.insert( "John" );
         ksession.fireAllRules();
         assertTrue( list.isEmpty() );
-        System.out.println( list );
 
         (( PseudoClockScheduler )ksession.getSessionClock()).advanceTime( 1000, TimeUnit.MILLISECONDS );
 
         ksession.fireAllRules();
-        System.out.println( list );
         assertTrue( list.contains( -2 ) );
         assertTrue( list.contains( 0 ) );
 
+    }
+
+    @Test
+    public void test2TimersWithNamedCons() throws InterruptedException {
+        String drl = "package org.drools " +
+
+                     "global java.util.List list; " +
+
+                     "declare  Msg " +
+                     "    @role( event ) " +
+                     "    sender : String  @key " +
+                     "end " +
+
+                     "rule Init " +
+                     "when " +
+                     "  $s : String() " +
+                     "then " +
+                     "  insert( new Msg( $s ) ); " +
+                     "end " +
+
+                     "rule 'Viol' when " +
+                     "    $trigger : Msg( 'Alice' ; )\n" +
+                     "    not Msg( 'Bob' ; this after[0, 100ms] $trigger ) do[t1]\n" +
+                     "    not Msg( 'Charles' ; this after[0, 200ms] $trigger )\n" +
+                     "then\n" +
+                     "  list.add( 0 );\n" +
+                     "then[t1]\n" +
+                     "  list.add( 1 );\n" +
+                     "end\n";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
+
+        KieHelper helper = new KieHelper();
+        helper.addContent(drl, ResourceType.DRL);
+        KieSession ksession = helper.build(EventProcessingOption.STREAM).newKieSession(sessionConfig, null);
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert("Alice");
+        ksession.fireAllRules();
+        assertTrue(list.isEmpty());
+
+        ((PseudoClockScheduler) ksession.getSessionClock()).advanceTime(150, TimeUnit.MILLISECONDS);
+
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals(1, (int) list.get(0));
+    }
+
+    @Test
+    public void testCEPWith2NamedConsAndEagerRule() throws InterruptedException {
+        String drl = "package org.drools " +
+
+                     "global java.util.List list; " +
+
+                     "declare  Msg " +
+                     "    @role( event ) " +
+                     "    sender : String  @key " +
+                     "end " +
+
+                     "rule Init1 " +
+                     "when " +
+                     "  $s : String() " +
+                     "then " +
+                     "  insert( new Msg( $s ) ); " +
+                     "end " +
+
+                     "rule Init2 " +
+                     "when " +
+                     "  Msg( 'Alice' ; )\n" +
+                     "then " +
+                     "  insert( 42 ); " +
+                     "end " +
+
+                     "rule 'Viol' @Eager(true) when " +
+                     "    $trigger : Msg( 'Alice' ; )\n" +
+                     "    not Msg( 'Bob' ; this after[0, 100ms] $trigger ) do[t1]" +
+                     "    Integer( ) do[t2]\n" +
+                     "then\n" +
+                     "  list.add( 0 );\n" +
+                     "then[t1]\n" +
+                     "  list.add( 1 );\n" +
+                     "then[t2]\n" +
+                     "  list.add( 2 );\n" +
+                     "end\n";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
+
+        KieHelper helper = new KieHelper();
+        helper.addContent(drl, ResourceType.DRL);
+        KieSession ksession = helper.build(EventProcessingOption.STREAM).newKieSession(sessionConfig, null);
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert("Alice");
+        ksession.fireAllRules();
+        assertTrue(list.isEmpty());
+
+        ((PseudoClockScheduler) ksession.getSessionClock()).advanceTime(150, TimeUnit.MILLISECONDS);
+
+        ksession.fireAllRules();
+        System.out.println(list);
+        assertEquals(3, list.size());
+        assertTrue(list.contains(0));
+        assertTrue(list.contains(1));
+        assertTrue(list.contains(2));
     }
 }
