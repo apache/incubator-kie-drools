@@ -29,7 +29,6 @@ import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
@@ -395,7 +394,8 @@ public class BuildContext {
     }
 
     public boolean isStreamMode() {
-        return this.temporal != null;
+        // eager rules don't need to use the event queue
+        return this.temporal != null && !rule.isEager();
     }
 
     public TemporalDependencyMatrix getTemporalDistance() {

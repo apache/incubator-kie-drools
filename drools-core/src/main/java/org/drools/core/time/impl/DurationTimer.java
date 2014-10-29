@@ -136,6 +136,11 @@ public class DurationTimer extends BaseTimer
         return new DurationTimer( duration );
     }
 
+    @Override
+    public String toString() {
+        return "DurationTimer: " + duration + "ms";
+    }
+
     public void setEventFactHandle(Declaration eventFactHandle) {
         this.eventFactHandle = eventFactHandle;
     }
