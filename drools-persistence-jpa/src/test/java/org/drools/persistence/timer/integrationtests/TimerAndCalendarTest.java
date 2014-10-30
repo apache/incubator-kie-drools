@@ -1,17 +1,5 @@
 package org.drools.persistence.timer.integrationtests;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import javax.persistence.EntityManagerFactory;
-
 import org.drools.core.ClockType;
 import org.drools.core.time.SessionPseudoClock;
 import org.junit.After;
@@ -44,7 +32,15 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static org.drools.persistence.util.PersistenceUtil.*;
 
 @RunWith(Parameterized.class)
 public class TimerAndCalendarTest {
