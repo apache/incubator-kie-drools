@@ -16,12 +16,9 @@
 
 package org.drools.core.common;
 
-import java.io.IOException;
-
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.PersisterEnums;
 import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
 import org.drools.core.marshalling.impl.ProtobufMessages;
@@ -30,12 +27,7 @@ import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.core.marshalling.impl.ProtobufOutputMarshaller;
 import org.drools.core.marshalling.impl.TimersInputMarshaller;
 import org.drools.core.marshalling.impl.TimersOutputMarshaller;
-import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleSink;
-import org.drools.core.reteoo.PathMemory;
-import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
@@ -215,6 +207,11 @@ public final class Scheduler {
             LeftTuple leftTuple = inCtx.filter.getTuplesCache().get( PersisterHelper.createActivationKey( _activation.getActivation().getPackageName(), 
                                                                                                           _activation.getActivation().getRuleName(), 
                                                                                                           _activation.getActivation().getTuple() ) );
+            if (leftTuple == null) {
+                // if there's no leftTuple the session is being unmarshalled in a new kbase without the timer's activated rule
+                return;
+            }
+
             ScheduledAgendaItem item = (ScheduledAgendaItem) leftTuple.getObject();
             
             Trigger trigger = ProtobufInputMarshaller.readTrigger( inCtx,
