@@ -45,6 +45,14 @@ public class InitializingScoreTrend implements Serializable {
         return new InitializingScoreTrend(trendLevels);
     }
 
+    public static InitializingScoreTrend buildUniformTrend(InitializingScoreTrendLevel trendLevel, int levelsSize) {
+        InitializingScoreTrendLevel[] trendLevels = new InitializingScoreTrendLevel[levelsSize];
+        for (int i = 0; i < levelsSize; i++) {
+            trendLevels[i] = trendLevel;
+        }
+        return new InitializingScoreTrend(trendLevels);
+    }
+
     protected static String buildTrendPattern(int levelsSize) {
         StringBuilder trendPattern = new StringBuilder(levelsSize * 4);
         boolean first = true;

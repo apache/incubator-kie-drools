@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.buildin.simple;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
-import org.optaplanner.core.impl.score.buildin.InitializingScoreTrendLevelFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 import static org.junit.Assert.*;
@@ -35,8 +34,8 @@ public class SimpleScoreDefinitionTest {
     public void buildOptimisticBoundUp() {
         int scoreSize = new SimpleScoreDefinition().getLevelsSize();
         SimpleScore score = SimpleScore.parseScore("-1");
-        InitializingScoreTrend scoreTrend = InitializingScoreTrendLevelFactory
-                .createInitializingScoreTrendLevelArray(scoreSize, InitializingScoreTrendLevel.ONLY_UP);
+        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
+                InitializingScoreTrendLevel.ONLY_UP, scoreSize);
         SimpleScoreDefinition hardSoftScoreDefinition = new SimpleScoreDefinition();
         SimpleScore score2 = hardSoftScoreDefinition.buildOptimisticBound(scoreTrend, score);
         assertEquals(Integer.MAX_VALUE, score2.getScore());
@@ -46,8 +45,8 @@ public class SimpleScoreDefinitionTest {
     public void buildOptimisticBoundDown() {
         int scoreSize = new SimpleScoreDefinition().getLevelsSize();
         SimpleScore score = SimpleScore.parseScore("-1");
-        InitializingScoreTrend scoreTrend = InitializingScoreTrendLevelFactory
-                .createInitializingScoreTrendLevelArray(scoreSize, InitializingScoreTrendLevel.ONLY_DOWN);
+        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
+                InitializingScoreTrendLevel.ONLY_DOWN, scoreSize);
         SimpleScoreDefinition hardSoftScoreDefinition = new SimpleScoreDefinition();
         SimpleScore score2 = hardSoftScoreDefinition.buildOptimisticBound(scoreTrend, score);
         assertEquals(-1, score2.getScore());
@@ -57,8 +56,8 @@ public class SimpleScoreDefinitionTest {
     public void buildPessimisticBoundUp() {
         int scoreSize = new SimpleScoreDefinition().getLevelsSize();
         SimpleScore score = SimpleScore.parseScore("-1");
-        InitializingScoreTrend scoreTrend = InitializingScoreTrendLevelFactory
-                .createInitializingScoreTrendLevelArray(scoreSize, InitializingScoreTrendLevel.ONLY_UP);
+        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
+                InitializingScoreTrendLevel.ONLY_UP, scoreSize);
         SimpleScoreDefinition hardSoftScoreDefinition = new SimpleScoreDefinition();
         SimpleScore score2 = hardSoftScoreDefinition.buildPessimisticBound(scoreTrend, score);
         assertEquals(-1, score2.getScore());
@@ -68,8 +67,8 @@ public class SimpleScoreDefinitionTest {
     public void buildPessimisticBoundDown() {
         int scoreSize = new SimpleScoreDefinition().getLevelsSize();
         SimpleScore score = SimpleScore.parseScore("-1");
-        InitializingScoreTrend scoreTrend = InitializingScoreTrendLevelFactory
-                .createInitializingScoreTrendLevelArray(scoreSize, InitializingScoreTrendLevel.ONLY_DOWN);
+        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
+                InitializingScoreTrendLevel.ONLY_DOWN, scoreSize);
         SimpleScoreDefinition hardSoftScoreDefinition = new SimpleScoreDefinition();
         SimpleScore score2 = hardSoftScoreDefinition.buildPessimisticBound(scoreTrend, score);
         assertEquals(Integer.MIN_VALUE, score2.getScore());

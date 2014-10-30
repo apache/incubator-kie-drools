@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.buildin.bendable;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
-import org.optaplanner.core.impl.score.buildin.InitializingScoreTrendLevelFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 import static org.junit.Assert.assertEquals;
@@ -88,8 +87,8 @@ public class BendableScoreDefinitionTest {
         int scoreSize = softScoreSize + hardScoreSize;
         int startingScore = -1;
         BendableScore score = BendableScore.parseScore(hardScoreSize, softScoreSize, createStringScore(scoreSize, startingScore));
-        InitializingScoreTrend scoreTrend = InitializingScoreTrendLevelFactory
-                .createInitializingScoreTrendLevelArray(scoreSize, InitializingScoreTrendLevel.ONLY_UP);
+        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
+                InitializingScoreTrendLevel.ONLY_UP, scoreSize);
         BendableScoreDefinition bendableScoreDefinition = new BendableScoreDefinition(hardScoreSize, softScoreSize);
         BendableScore score2 = bendableScoreDefinition.buildOptimisticBound(scoreTrend, score);
         for (int i = 0; i < score2.getHardLevelsSize() + score2.getSoftLevelsSize(); i++) {
@@ -108,8 +107,8 @@ public class BendableScoreDefinitionTest {
         int scoreSize = softScoreSize + hardScoreSize;
         int startingScore = -1;
         BendableScore score = BendableScore.parseScore(hardScoreSize, softScoreSize, createStringScore(scoreSize, startingScore));
-        InitializingScoreTrend scoreTrend = InitializingScoreTrendLevelFactory
-                .createInitializingScoreTrendLevelArray(scoreSize, InitializingScoreTrendLevel.ONLY_DOWN);
+        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
+                InitializingScoreTrendLevel.ONLY_DOWN, scoreSize);
         BendableScoreDefinition bendableScoreDefinition = new BendableScoreDefinition(hardScoreSize, softScoreSize);
         BendableScore score2 = bendableScoreDefinition.buildOptimisticBound(scoreTrend, score);
         for (int i = 0; i < score2.getHardLevelsSize() + score2.getSoftLevelsSize(); i++, startingScore -= 1) {
@@ -128,8 +127,8 @@ public class BendableScoreDefinitionTest {
         int scoreSize = softScoreSize + hardScoreSize;
         int startingScore = -1;
         BendableScore score = BendableScore.parseScore(hardScoreSize, softScoreSize, createStringScore(scoreSize, startingScore));
-        InitializingScoreTrend scoreTrend = InitializingScoreTrendLevelFactory
-                .createInitializingScoreTrendLevelArray(scoreSize, InitializingScoreTrendLevel.ONLY_UP);
+        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
+                InitializingScoreTrendLevel.ONLY_UP, scoreSize);
         BendableScoreDefinition bendableScoreDefinition = new BendableScoreDefinition(hardScoreSize, softScoreSize);
         BendableScore score2 = bendableScoreDefinition.buildPessimisticBound(scoreTrend, score);
         for (int i = 0; i < score2.getHardLevelsSize() + score2.getSoftLevelsSize(); i++, startingScore -= 1) {
@@ -148,8 +147,8 @@ public class BendableScoreDefinitionTest {
         int scoreSize = softScoreSize + hardScoreSize;
         int startingScore = -1;
         BendableScore score = BendableScore.parseScore(hardScoreSize, softScoreSize, createStringScore(scoreSize, startingScore));
-        InitializingScoreTrend scoreTrend = InitializingScoreTrendLevelFactory
-                .createInitializingScoreTrendLevelArray(scoreSize, InitializingScoreTrendLevel.ONLY_DOWN);
+        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
+                InitializingScoreTrendLevel.ONLY_DOWN, scoreSize);
         BendableScoreDefinition bendableScoreDefinition = new BendableScoreDefinition(hardScoreSize, softScoreSize);
         BendableScore score2 = bendableScoreDefinition.buildPessimisticBound(scoreTrend, score);
         for (int i = 0; i < score2.getHardLevelsSize() + score2.getSoftLevelsSize(); i++) {
