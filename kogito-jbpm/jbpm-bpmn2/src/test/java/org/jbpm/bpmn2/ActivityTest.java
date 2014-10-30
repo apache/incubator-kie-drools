@@ -1607,4 +1607,34 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
         assertProcessVarValue(processInstance, "event", "error desde Subproceso");
     }
+    
+    @Test
+    public void testProcessCustomDescriptionMetaData() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ProcessCustomDescriptionMetaData.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        
+        ProcessInstance processInstance = ksession.startProcess("Minimal", params);
+        assertProcessInstanceCompleted(processInstance);
+        
+        String description = ((org.jbpm.process.instance.impl.ProcessInstanceImpl)processInstance).getDescription();
+        assertNotNull(description);
+        assertEquals("my process with description", description);
+    }
+    
+    @Test
+    public void testProcessVariableCustomDescriptionMetaData() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ProcessVariableCustomDescriptionMetaData.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "variable name for process");
+        ProcessInstance processInstance = ksession.startProcess("Minimal", params);
+        assertProcessInstanceCompleted(processInstance);
+        
+        String description = ((org.jbpm.process.instance.impl.ProcessInstanceImpl)processInstance).getDescription();
+        assertNotNull(description);
+        assertEquals("variable name for process", description);
+    }
 }

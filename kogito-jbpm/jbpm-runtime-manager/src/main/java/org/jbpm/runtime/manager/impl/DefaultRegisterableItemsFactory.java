@@ -28,7 +28,6 @@ import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
-import org.jbpm.process.instance.impl.ProcessInstanceDescriptionListener;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
 import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
@@ -90,7 +89,6 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
     public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {    	
         List<ProcessEventListener> defaultListeners = new ArrayList<ProcessEventListener>();
         DeploymentDescriptor descriptor = getRuntimeManager().getDeploymentDescriptor();
-        defaultListeners.add(new ProcessInstanceDescriptionListener());
         if (descriptor == null) {
         	// register JPAWorkingMemoryDBLogger
 	        AbstractAuditLogger logger = AuditLoggerFactory.newJPAInstance(runtime.getKieSession().getEnvironment());
@@ -122,7 +120,7 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
             } catch (IOException e) {
                 logger.error("Unable to load jms audit properties from {}", "/jbpm.audit.jms.properties", e);
             }
-        }   
+        }
         // add any custom listeners
         defaultListeners.addAll(super.getProcessEventListeners(runtime));
         // add listeners from descriptor

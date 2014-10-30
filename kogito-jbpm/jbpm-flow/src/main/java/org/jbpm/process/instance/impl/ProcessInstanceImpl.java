@@ -21,8 +21,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.impl.XmlProcessDumper;
@@ -30,8 +33,12 @@ import org.jbpm.process.core.impl.XmlProcessDumperFactory;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
+import org.jbpm.workflow.instance.impl.ProcessInstanceResolverFactory;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.rule.Agenda;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of a process instance.
@@ -39,7 +46,9 @@ import org.kie.api.runtime.rule.Agenda;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public abstract class ProcessInstanceImpl implements ProcessInstance, Serializable {
-
+	
+	protected static final Pattern PARAMETER_MATCHER = Pattern.compile("#\\{([\\S&&[^\\}]]+)\\}", Pattern.DOTALL);
+	private static final Logger logger = LoggerFactory.getLogger(ProcessInstanceImpl.class);
 	private static final long serialVersionUID = 510l;
 	
 	private long id;
@@ -280,6 +289,36 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     }
     
     public String getDescription() {
+		if (description == null) {
+			description = process.getName();			
+			if (process != null) {
+				Object metaData = process.getMetaData().get("customDescription");
+				if (metaData instanceof String) {
+					String customDescription = (String) metaData;
+					Map<String, String> replacements = new HashMap<String, String>();
+					Matcher matcher = PARAMETER_MATCHER.matcher(customDescription);
+					while (matcher.find()) {
+						String paramName = matcher.group(1);
+						if (replacements.get(paramName) == null) {
+							try {
+								String value = (String) MVELSafeHelper.getEvaluator()
+										.eval(paramName,new ProcessInstanceResolverFactory(((WorkflowProcessInstance) this)));
+								replacements.put(paramName, value);
+							} catch (Throwable t) {
+								logger.error("Could not resolve customDescription, parameter " + paramName, t);
+								logger.error("Continuing without setting description.");
+							}
+						}
+					}
+					for (Map.Entry<String, String> replacement : replacements.entrySet()) {
+						customDescription = customDescription.replace("#{" + replacement.getKey() + "}", replacement.getValue());
+					}
+					
+					description = customDescription;
+				}
+			}
+		}
+    	
     	return description;
     }
     
