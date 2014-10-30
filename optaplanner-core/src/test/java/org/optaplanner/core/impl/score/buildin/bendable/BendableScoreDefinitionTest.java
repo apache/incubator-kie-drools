@@ -53,17 +53,17 @@ public class BendableScoreDefinitionTest {
     public void createScore() {
         int hardLevelSize = 3;
         int softLevelSize = 2;
-        int sum = hardLevelSize + softLevelSize;
-        int[] scores = new int [sum];
-        for (int i = 0; i < sum; i++) {
+        int levelSize = hardLevelSize + softLevelSize;
+        int[] scores = new int [levelSize];
+        for (int i = 0; i < levelSize; i++) {
             scores[i] = i;
         }
         BendableScoreDefinition bendableScoreDefinition = new BendableScoreDefinition(hardLevelSize, softLevelSize);
         BendableScore bendableScore = bendableScoreDefinition.createScore(scores);
         assertEquals(hardLevelSize, bendableScore.getHardLevelsSize());
         assertEquals(softLevelSize, bendableScore.getSoftLevelsSize());
-        for (int i = 0; i < sum; i++) {
-            if(i < hardLevelSize) {
+        for (int i = 0; i < levelSize; i++) {
+            if (i < hardLevelSize) {
                 assertEquals(scores[i], bendableScore.getHardScore(i));
             } else {
                 assertEquals(scores[i], bendableScore.getSoftScore(i - hardLevelSize));
@@ -71,93 +71,56 @@ public class BendableScoreDefinitionTest {
         }
     }
 
-    private String createStringScore(int scoreSize, int startingScore) {
-        String stringScore = String.valueOf(startingScore);
-        startingScore -= 1;
-        for (int i = 0; i < scoreSize - 1; i++, startingScore -= 1) {
-            stringScore += "/" + String.valueOf(startingScore);
-        }
-        return stringScore;
+    @Test
+    public void buildOptimisticBoundOnlyUp() {
+        BendableScoreDefinition scoreDefinition = new BendableScoreDefinition(2, 3);
+        BendableScore optimisticBound = scoreDefinition.buildOptimisticBound(
+                InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 5),
+                scoreDefinition.createScore(-1, -2, -3, -4, -5));
+        assertEquals(Integer.MAX_VALUE, optimisticBound.getHardScore(0));
+        assertEquals(Integer.MAX_VALUE, optimisticBound.getHardScore(1));
+        assertEquals(Integer.MAX_VALUE, optimisticBound.getSoftScore(0));
+        assertEquals(Integer.MAX_VALUE, optimisticBound.getSoftScore(1));
+        assertEquals(Integer.MAX_VALUE, optimisticBound.getSoftScore(2));
     }
 
     @Test
-    public void buildOptimisticBoundUp() {
-        int softScoreSize = 3;
-        int hardScoreSize = 2;
-        int scoreSize = softScoreSize + hardScoreSize;
-        int startingScore = -1;
-        BendableScore score = BendableScore.parseScore(hardScoreSize, softScoreSize, createStringScore(scoreSize, startingScore));
-        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
-                InitializingScoreTrendLevel.ONLY_UP, scoreSize);
-        BendableScoreDefinition bendableScoreDefinition = new BendableScoreDefinition(hardScoreSize, softScoreSize);
-        BendableScore score2 = bendableScoreDefinition.buildOptimisticBound(scoreTrend, score);
-        for (int i = 0; i < score2.getHardLevelsSize() + score2.getSoftLevelsSize(); i++) {
-            if(i < score2.getHardLevelsSize()) {
-                assertEquals(Integer.MAX_VALUE, score2.getHardScore(i));
-            } else {
-                assertEquals(Integer.MAX_VALUE, score2.getSoftScore(i - score2.getHardLevelsSize()));
-            }
-        }
+    public void buildOptimisticBoundOnlyDown() {
+        BendableScoreDefinition scoreDefinition = new BendableScoreDefinition(2, 3);
+        BendableScore optimisticBound = scoreDefinition.buildOptimisticBound(
+                InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 5),
+                scoreDefinition.createScore(-1, -2, -3, -4, -5));
+        assertEquals(-1, optimisticBound.getHardScore(0));
+        assertEquals(-2, optimisticBound.getHardScore(1));
+        assertEquals(-3, optimisticBound.getSoftScore(0));
+        assertEquals(-4, optimisticBound.getSoftScore(1));
+        assertEquals(-5, optimisticBound.getSoftScore(2));
     }
 
     @Test
-    public void buildOptimisticBoundDown() {
-        int softScoreSize = 3;
-        int hardScoreSize = 2;
-        int scoreSize = softScoreSize + hardScoreSize;
-        int startingScore = -1;
-        BendableScore score = BendableScore.parseScore(hardScoreSize, softScoreSize, createStringScore(scoreSize, startingScore));
-        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
-                InitializingScoreTrendLevel.ONLY_DOWN, scoreSize);
-        BendableScoreDefinition bendableScoreDefinition = new BendableScoreDefinition(hardScoreSize, softScoreSize);
-        BendableScore score2 = bendableScoreDefinition.buildOptimisticBound(scoreTrend, score);
-        for (int i = 0; i < score2.getHardLevelsSize() + score2.getSoftLevelsSize(); i++, startingScore -= 1) {
-            if(i < score2.getHardLevelsSize()) {
-                assertEquals(startingScore, score2.getHardScore(i));
-            } else {
-                assertEquals(startingScore, score2.getSoftScore(i - score2.getHardLevelsSize()));
-            }
-        }
+    public void buildPessimisticBoundOnlyUp() {
+        BendableScoreDefinition scoreDefinition = new BendableScoreDefinition(2, 3);
+        BendableScore pessimisticBound = scoreDefinition.buildPessimisticBound(
+                InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 5),
+                scoreDefinition.createScore(-1, -2, -3, -4, -5));
+        assertEquals(-1, pessimisticBound.getHardScore(0));
+        assertEquals(-2, pessimisticBound.getHardScore(1));
+        assertEquals(-3, pessimisticBound.getSoftScore(0));
+        assertEquals(-4, pessimisticBound.getSoftScore(1));
+        assertEquals(-5, pessimisticBound.getSoftScore(2));
     }
 
     @Test
-    public void buildPessimisticBoundUp() {
-        int softScoreSize = 3;
-        int hardScoreSize = 2;
-        int scoreSize = softScoreSize + hardScoreSize;
-        int startingScore = -1;
-        BendableScore score = BendableScore.parseScore(hardScoreSize, softScoreSize, createStringScore(scoreSize, startingScore));
-        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
-                InitializingScoreTrendLevel.ONLY_UP, scoreSize);
-        BendableScoreDefinition bendableScoreDefinition = new BendableScoreDefinition(hardScoreSize, softScoreSize);
-        BendableScore score2 = bendableScoreDefinition.buildPessimisticBound(scoreTrend, score);
-        for (int i = 0; i < score2.getHardLevelsSize() + score2.getSoftLevelsSize(); i++, startingScore -= 1) {
-            if(i < score2.getHardLevelsSize()) {
-                assertEquals(startingScore, score2.getHardScore(i));
-            } else {
-                assertEquals(startingScore, score2.getSoftScore(i - score2.getHardLevelsSize()));
-            }
-        }
-    }
-
-    @Test
-    public void buildPessimisticBoundDown() {
-        int softScoreSize = 3;
-        int hardScoreSize = 2;
-        int scoreSize = softScoreSize + hardScoreSize;
-        int startingScore = -1;
-        BendableScore score = BendableScore.parseScore(hardScoreSize, softScoreSize, createStringScore(scoreSize, startingScore));
-        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
-                InitializingScoreTrendLevel.ONLY_DOWN, scoreSize);
-        BendableScoreDefinition bendableScoreDefinition = new BendableScoreDefinition(hardScoreSize, softScoreSize);
-        BendableScore score2 = bendableScoreDefinition.buildPessimisticBound(scoreTrend, score);
-        for (int i = 0; i < score2.getHardLevelsSize() + score2.getSoftLevelsSize(); i++) {
-            if(i < score2.getHardLevelsSize()) {
-                assertEquals(Integer.MIN_VALUE, score2.getHardScore(i));
-            } else {
-                assertEquals(Integer.MIN_VALUE, score2.getSoftScore(i - score2.getHardLevelsSize()));
-            }
-        }
+    public void buildPessimisticBoundOnlyDown() {
+        BendableScoreDefinition scoreDefinition = new BendableScoreDefinition(2, 3);
+        BendableScore pessimisticBound = scoreDefinition.buildPessimisticBound(
+                InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 5),
+                scoreDefinition.createScore(-1, -2, -3, -4, -5));
+        assertEquals(Integer.MIN_VALUE, pessimisticBound.getHardScore(0));
+        assertEquals(Integer.MIN_VALUE, pessimisticBound.getHardScore(1));
+        assertEquals(Integer.MIN_VALUE, pessimisticBound.getSoftScore(0));
+        assertEquals(Integer.MIN_VALUE, pessimisticBound.getSoftScore(1));
+        assertEquals(Integer.MIN_VALUE, pessimisticBound.getSoftScore(2));
     }
 
 }

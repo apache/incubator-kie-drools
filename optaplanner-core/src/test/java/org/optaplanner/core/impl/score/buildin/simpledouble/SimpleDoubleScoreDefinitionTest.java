@@ -9,54 +9,45 @@ import static org.junit.Assert.*;
 
 public class SimpleDoubleScoreDefinitionTest {
 
-    private static final double TOLERANCE = 0.00001;
-
     @Test
     public void getLevelSize() {
         assertEquals(1, new SimpleDoubleScoreDefinition().getLevelsSize());
     }
 
     @Test
-    public void buildOptimisticBoundUp() {
-        int scoreSize = new SimpleDoubleScoreDefinition().getLevelsSize();
-        SimpleDoubleScore score = SimpleDoubleScore.parseScore("-1");
-        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
-                InitializingScoreTrendLevel.ONLY_UP, scoreSize);
-        SimpleDoubleScoreDefinition hardSoftScoreDefinition = new SimpleDoubleScoreDefinition();
-        SimpleDoubleScore score2 = hardSoftScoreDefinition.buildOptimisticBound(scoreTrend, score);
-        assertEquals(Double.POSITIVE_INFINITY, score2.getScore(), TOLERANCE);
+    public void buildOptimisticBoundOnlyUp() {
+        SimpleDoubleScoreDefinition scoreDefinition = new SimpleDoubleScoreDefinition();
+        SimpleDoubleScore optimisticBound = scoreDefinition.buildOptimisticBound(
+                InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
+                SimpleDoubleScore.valueOf(-1.7));
+        assertEquals(Double.POSITIVE_INFINITY, optimisticBound.getScore(), 0.0);
     }
 
     @Test
-    public void buildOptimisticBoundDown() {
-        int scoreSize = new SimpleDoubleScoreDefinition().getLevelsSize();
-        SimpleDoubleScore score = SimpleDoubleScore.parseScore("-1");
-        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
-                InitializingScoreTrendLevel.ONLY_DOWN, scoreSize);
-        SimpleDoubleScoreDefinition hardSoftScoreDefinition = new SimpleDoubleScoreDefinition();
-        SimpleDoubleScore score2 = hardSoftScoreDefinition.buildOptimisticBound(scoreTrend, score);
-        assertEquals(-1, score2.getScore(), TOLERANCE);
+    public void buildOptimisticBoundOnlyDown() {
+        SimpleDoubleScoreDefinition scoreDefinition = new SimpleDoubleScoreDefinition();
+        SimpleDoubleScore optimisticBound = scoreDefinition.buildOptimisticBound(
+                InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
+                SimpleDoubleScore.valueOf(-1.7));
+        assertEquals(-1.7, optimisticBound.getScore(), 0.0);
     }
 
     @Test
-    public void buildPessimisticBoundUp() {
-        int scoreSize = new SimpleDoubleScoreDefinition().getLevelsSize();
-        SimpleDoubleScore score = SimpleDoubleScore.parseScore("-1");
-        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
-                InitializingScoreTrendLevel.ONLY_UP, scoreSize);
-        SimpleDoubleScoreDefinition hardSoftScoreDefinition = new SimpleDoubleScoreDefinition();
-        SimpleDoubleScore score2 = hardSoftScoreDefinition.buildPessimisticBound(scoreTrend, score);
-        assertEquals(-1, score2.getScore(), TOLERANCE);
+    public void buildPessimisticBoundOnlyUp() {
+        SimpleDoubleScoreDefinition scoreDefinition = new SimpleDoubleScoreDefinition();
+        SimpleDoubleScore pessimisticBound = scoreDefinition.buildPessimisticBound(
+                InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
+                SimpleDoubleScore.valueOf(-1.7));
+        assertEquals(-1.7, pessimisticBound.getScore(), 0.0);
     }
 
     @Test
-    public void buildPessimisticBoundDown() {
-        int scoreSize = new SimpleDoubleScoreDefinition().getLevelsSize();
-        SimpleDoubleScore score = SimpleDoubleScore.parseScore("-1");
-        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
-                InitializingScoreTrendLevel.ONLY_DOWN, scoreSize);
-        SimpleDoubleScoreDefinition hardSoftScoreDefinition = new SimpleDoubleScoreDefinition();
-        SimpleDoubleScore score2 = hardSoftScoreDefinition.buildPessimisticBound(scoreTrend, score);
-        assertEquals(Double.NEGATIVE_INFINITY, score2.getScore(), TOLERANCE);
+    public void buildPessimisticBoundOnlyDown() {
+        SimpleDoubleScoreDefinition scoreDefinition = new SimpleDoubleScoreDefinition();
+        SimpleDoubleScore pessimisticBound = scoreDefinition.buildPessimisticBound(
+                InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
+                SimpleDoubleScore.valueOf(-1.7));
+        assertEquals(Double.NEGATIVE_INFINITY, pessimisticBound.getScore(), 0.0);
     }
+
 }

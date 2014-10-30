@@ -27,4 +27,6 @@ public class SimpleBigDecimalScoreDefinitionTest {
         assertEquals(1, new SimpleBigDecimalScoreDefinition().getLevelsSize());
     }
 
+    // Optimistic and pessimistic bounds are currently not supported for this score definition
+
 }

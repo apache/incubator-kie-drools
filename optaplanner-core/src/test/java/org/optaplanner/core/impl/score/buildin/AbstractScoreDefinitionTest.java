@@ -14,24 +14,8 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal;
+package org.optaplanner.core.impl.score.buildin;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-
-public class HardSoftBigDecimalScoreDefinitionTest {
-
-    @Test
-    public void getLevelsSize() {
-        assertEquals(2, new HardSoftBigDecimalScoreDefinition().getLevelsSize());
-    }
-
-    @Test
-    public void getFeasibleLevelsSize() {
-        assertEquals(1, new HardSoftBigDecimalScoreDefinition().getFeasibleLevelsSize());
-    }
-
-    // Optimistic and pessimistic bounds are currently not supported for this score definition
+public abstract class AbstractScoreDefinitionTest {
 
 }

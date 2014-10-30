@@ -53,16 +53,16 @@ public class BendableBigDecimalScoreDefinitionTest {
     public void createScore() {
         for (int hardLevelSize = 1; hardLevelSize < 5; hardLevelSize++) {
             for (int softLevelSize = 1; softLevelSize < 5; softLevelSize++) {
-                int sum = hardLevelSize + softLevelSize;
-                BigDecimal[] scores = new BigDecimal[sum];
-                for (int i = 0; i < sum; i++) {
+                int levelSize = hardLevelSize + softLevelSize;
+                BigDecimal[] scores = new BigDecimal[levelSize];
+                for (int i = 0; i < levelSize; i++) {
                     scores[i] = new BigDecimal(i);
                 }
                 BendableBigDecimalScoreDefinition bendableScoreDefinition = new BendableBigDecimalScoreDefinition(hardLevelSize, softLevelSize);
                 BendableBigDecimalScore bendableScore = bendableScoreDefinition.createScore(scores);
                 assertEquals(hardLevelSize, bendableScore.getHardLevelsSize());
                 assertEquals(softLevelSize, bendableScore.getSoftLevelsSize());
-                for (int i = 0; i < sum; i++) {
+                for (int i = 0; i < levelSize; i++) {
                     if (i < hardLevelSize) {
                         assertEquals(scores[i], bendableScore.getHardScore(i));
                     } else {
@@ -72,5 +72,7 @@ public class BendableBigDecimalScoreDefinitionTest {
             }
         }
     }
+
+    // Optimistic and pessimistic bounds are currently not supported for this score definition
 
 }

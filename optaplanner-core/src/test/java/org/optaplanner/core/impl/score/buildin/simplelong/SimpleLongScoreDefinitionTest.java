@@ -15,47 +15,39 @@ public class SimpleLongScoreDefinitionTest {
     }
 
     @Test
-    public void buildOptimisticBoundUp() {
-        int scoreSize = new SimpleLongScoreDefinition().getLevelsSize();
-        SimpleLongScore score = SimpleLongScore.parseScore("-1");
-        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
-                InitializingScoreTrendLevel.ONLY_UP, scoreSize);
-        SimpleLongScoreDefinition hardSoftLongScoreDefinition = new SimpleLongScoreDefinition();
-        SimpleLongScore score2 = hardSoftLongScoreDefinition.buildOptimisticBound(scoreTrend, score);
-        assertEquals(Long.MAX_VALUE, score2.getScore());
+    public void buildOptimisticBoundOnlyUp() {
+        SimpleLongScoreDefinition scoreDefinition = new SimpleLongScoreDefinition();
+        SimpleLongScore optimisticBound = scoreDefinition.buildOptimisticBound(
+                InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
+                SimpleLongScore.valueOf(-1L));
+        assertEquals(Long.MAX_VALUE, optimisticBound.getScore());
     }
 
     @Test
-    public void buildOptimisticBoundDown() {
-        int scoreSize = new SimpleLongScoreDefinition().getLevelsSize();
-        SimpleLongScore score = SimpleLongScore.parseScore("-1");
-        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
-                InitializingScoreTrendLevel.ONLY_DOWN, scoreSize);
-        SimpleLongScoreDefinition hardSoftLongScoreDefinition = new SimpleLongScoreDefinition();
-        SimpleLongScore score2 = hardSoftLongScoreDefinition.buildOptimisticBound(scoreTrend, score);
-        assertEquals(-1, score2.getScore());
+    public void buildOptimisticBoundOnlyDown() {
+        SimpleLongScoreDefinition scoreDefinition = new SimpleLongScoreDefinition();
+        SimpleLongScore optimisticBound = scoreDefinition.buildOptimisticBound(
+                InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
+                SimpleLongScore.valueOf(-1L));
+        assertEquals(-1L, optimisticBound.getScore());
     }
 
     @Test
-    public void buildPessimisticBoundUp() {
-        int scoreSize = new SimpleLongScoreDefinition().getLevelsSize();
-        SimpleLongScore score = SimpleLongScore.parseScore("-1");
-        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
-                InitializingScoreTrendLevel.ONLY_UP, scoreSize);
-        SimpleLongScoreDefinition hardSoftScoreDefinition = new SimpleLongScoreDefinition();
-        SimpleLongScore score2 = hardSoftScoreDefinition.buildPessimisticBound(scoreTrend, score);
-        assertEquals(-1, score2.getScore());
+    public void buildPessimisticBoundOnlyUp() {
+        SimpleLongScoreDefinition scoreDefinition = new SimpleLongScoreDefinition();
+        SimpleLongScore pessimisticBound = scoreDefinition.buildPessimisticBound(
+                InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
+                SimpleLongScore.valueOf(-1L));
+        assertEquals(-1L, pessimisticBound.getScore());
     }
 
     @Test
-    public void buildPessimisticBoundDown() {
-        int scoreSize = new SimpleLongScoreDefinition().getLevelsSize();
-        SimpleLongScore score = SimpleLongScore.parseScore("-1");
-        InitializingScoreTrend scoreTrend = InitializingScoreTrend.buildUniformTrend(
-                InitializingScoreTrendLevel.ONLY_DOWN, scoreSize);
-        SimpleLongScoreDefinition hardSoftScoreDefinition = new SimpleLongScoreDefinition();
-        SimpleLongScore score2 = hardSoftScoreDefinition.buildPessimisticBound(scoreTrend, score);
-        assertEquals(Long.MIN_VALUE, score2.getScore());
+    public void buildPessimisticBoundOnlyDown() {
+        SimpleLongScoreDefinition scoreDefinition = new SimpleLongScoreDefinition();
+        SimpleLongScore pessimisticBound = scoreDefinition.buildPessimisticBound(
+                InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
+                SimpleLongScore.valueOf(-1L));
+        assertEquals(Long.MIN_VALUE, pessimisticBound.getScore());
     }
 
 }
