@@ -22,14 +22,11 @@
                 t.taskData.parentId,
                 t.taskData.deploymentId              )
             from
-            TaskImpl t,
-            OrganizationalEntityImpl businessAdministrator
+            TaskImpl t
+            join t.peopleAssignments.businessAdministrators businessAdministrators
             where
             t.archived = 0 and
-            businessAdministrator.id = :userId and
-            businessAdministrator in elements ( t.peopleAssignments.businessAdministrators  )  
-
-    
+            businessAdministrators.id = :userId
             order by t.id DESC
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -53,14 +50,11 @@
                 t.taskData.parentId,
                 t.taskData.deploymentId              )
             from
-            TaskImpl t,
-            OrganizationalEntityImpl excludedOwners
+            TaskImpl t
+            join t.peopleAssignments.excludedOwners excludedOwners
             where
             t.archived = 0 and
-            excludedOwners.id = :userId and
-            excludedOwners in elements ( t.peopleAssignments.excludedOwners  )  
-
-   
+            excludedOwners.id = :userId
             order by t.id DESC      
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -84,13 +78,12 @@
                 t.taskData.parentId,
                 t.taskData.deploymentId              )
             from
-            TaskImpl t,
-            OrganizationalEntityImpl potentialOwners
+            TaskImpl t
+            join t.peopleAssignments.potentialOwners potentialOwners
             where
             t.archived = 0 and
             potentialOwners.id = :userId and
-            (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
-            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
+            (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and             
             t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
             order by t.id DESC            
         </query>
@@ -115,15 +108,12 @@
                 t.taskData.parentId,
                 t.taskData.deploymentId              )
             from
-            TaskImpl t,
-            OrganizationalEntityImpl potentialOwners
+            TaskImpl t
+            join t.peopleAssignments.potentialOwners potentialOwners
             where
             t.archived = 0 and
             potentialOwners.id = :userId and
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
-            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
-
-    
             t.taskData.status in (:status) 
             order by t.id DESC    
         </query>
@@ -148,15 +138,13 @@
                 t.taskData.parentId,
                 t.taskData.deploymentId              )
             from
-            TaskImpl t, 
-            OrganizationalEntityImpl potentialOwners
+            TaskImpl t
+            join t.peopleAssignments.potentialOwners potentialOwners
             where
-            t.archived = 0 and
-            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            t.archived = 0 and            
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
-            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
-
-            t.taskData.status in (:status) 
+            t.taskData.status in (:status) and 
+            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) 
             order by t.id DESC
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -180,15 +168,13 @@
                 t.taskData.parentId,
                 t.taskData.deploymentId              )
             from
-            TaskImpl t ,
-            OrganizationalEntityImpl potentialOwners
+            TaskImpl t
+            join t.peopleAssignments.potentialOwners potentialOwners
             where
-            t.archived = 0 and
-            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            t.archived = 0 and            
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
-            potentialOwners in elements ( t.peopleAssignments.potentialOwners )  and
-
-            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
+            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') and 
+            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) 
             order by t.id DESC          
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -212,15 +198,13 @@
                 t.taskData.parentId,
                 t.taskData.deploymentId              )
             from
-            TaskImpl t ,
-            OrganizationalEntityImpl potentialOwners
+            TaskImpl t
+            join t.peopleAssignments.potentialOwners potentialOwners
             where
-            t.archived = 0 and
-            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            t.archived = 0 and            
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
-            potentialOwners in elements ( t.peopleAssignments.potentialOwners )  and
-
-            t.taskData.status in (:status) 
+            t.taskData.status in (:status) and 
+            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) 
             order by t.id DESC
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -244,16 +228,13 @@
                 t.taskData.parentId,
                 t.taskData.deploymentId              )
             from
-            TaskImpl t ,
-            OrganizationalEntityImpl potentialOwners
+            TaskImpl t
+            join t.peopleAssignments.potentialOwners potentialOwners 
             where
             t.archived = 0 and
-            t.taskData.actualOwner = null and
-            potentialOwners.id = :groupId and
-            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
-
-
-            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
+            t.taskData.actualOwner = null and            
+            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') and 
+            potentialOwners.id = :groupId  
             order by t.id DESC
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -267,24 +248,15 @@
             potentialOwners.id
 
             from
-            TaskImpl t, 
-    
-            OrganizationalEntityImpl potentialOwners        
+            TaskImpl t
+            join t.peopleAssignments.potentialOwners potentialOwners        
 
             where
-    
-            potentialOwners.id in (:groupIds) and
-            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and      
+                      
             t.archived = 0 and
             t.taskData.actualOwner = null and          
-    
-
-
-            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
-    
-    
-              
-    
+            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') and  
+            potentialOwners.id in (:groupIds)
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
@@ -308,16 +280,14 @@
                 t.taskData.parentId,
                 t.taskData.deploymentId              )
             from
-            TaskImpl t,
-            OrganizationalEntityImpl potentialOwners
+            TaskImpl t
+            join t.peopleAssignments.potentialOwners potentialOwners
             where
-            t.archived = 0 and
-            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
-            (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
-            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
-
+            t.archived = 0 and            
+            (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and             
             t.taskData.expirationTime = :expirationDate and
-            t.taskData.status in (:status) 
+            t.taskData.status in (:status) and 
+            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) 
             order by t.id DESC
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -342,16 +312,14 @@
                 t.taskData.parentId,
                 t.taskData.deploymentId              )
             from
-            TaskImpl t,
-            OrganizationalEntityImpl potentialOwners
+            TaskImpl t
+            join t.peopleAssignments.potentialOwners potentialOwners 
             where
-            t.archived = 0 and
-            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
-            (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
-            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
-
+            t.archived = 0 and            
+            (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and             
             (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
-            t.taskData.status in (:status) 
+            t.taskData.status in (:status) and 
+            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) 
             order by t.id DESC     
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -365,21 +333,16 @@
             potentialOwners.id
 
             from
-            TaskImpl t, 
-    
-            OrganizationalEntityImpl potentialOwners        
+            TaskImpl t
+            join t.peopleAssignments.potentialOwners potentialOwners        
 
             where
-    
-            potentialOwners.id in (:groupIds) and
-            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and      
+                     
             t.archived = 0 and
             t.taskData.actualOwner = null and          
             t.taskData.expirationTime = :expirationDate and
-            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
-    
-    
-              
+            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') and  
+            potentialOwners.id in (:groupIds) 
     
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -412,22 +375,18 @@
             potentialOwners.id
 
             from
-            TaskImpl t, 
-    
-            OrganizationalEntityImpl potentialOwners        
+            TaskImpl t
+            join t.peopleAssignments.potentialOwners potentialOwners        
 
             where
     
-            potentialOwners.id in (:groupIds) and
-            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and      
+                 
             t.archived = 0 and
             t.taskData.actualOwner = null and          
             (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
-            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
-    
-    
-              
-    
+            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') and  
+            potentialOwners.id in (:groupIds) 
+
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>      
@@ -451,15 +410,14 @@
                 t.taskData.parentId,
                 t.taskData.deploymentId              )
             from
-            TaskImpl t,
-            OrganizationalEntityImpl potentialOwners
+            TaskImpl t
+            join t.peopleAssignments.potentialOwners potentialOwners
             where
             t.archived = 0 and
-            t.taskData.parentId = :parentId and
-            (potentialOwners.id = :userId or potentialOwners.id in (:groupIds)) and
+            t.taskData.parentId = :parentId and            
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
-            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
-            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
+            t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') and 
+            (potentialOwners.id = :userId or potentialOwners.id in (:groupIds))  
             order by t.id DESC
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -515,13 +473,11 @@
                     t.taskData.parentId,
                     t.taskData.deploymentId              )
             from
-            TaskImpl t,
-            OrganizationalEntityImpl recipients
+            TaskImpl t
+            join t.peopleAssignments.recipients recipients
             where
             t.archived = 0 and
-            recipients.id = :userId and
-            recipients in elements ( t.peopleAssignments.recipients  )  
-
+            recipients.id = :userId
             order by t.id DESC
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -545,14 +501,11 @@
                 t.taskData.parentId,
                 t.taskData.deploymentId              )
             from
-            TaskImpl t,
-            OrganizationalEntityImpl taskInitiator
+            TaskImpl t
+            join t.peopleAssignments.taskInitiator taskInitiators
             where
             t.archived = 0 and
-            taskInitiator.id = :userId and
-            taskInitiator = t.peopleAssignments.taskInitiator 
-
-   
+            taskInitiators.id = :userId
             order by t.id DESC
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -576,13 +529,11 @@
                 t.taskData.parentId,
                 t.taskData.deploymentId              )
             from
-            TaskImpl t,
-            OrganizationalEntityImpl taskStakeholder
+            TaskImpl t
+            join t.peopleAssignments.taskStakeholders taskStakeholders
             where
             t.archived = 0 and
-            taskStakeholder.id = :userId and
-            taskStakeholder in elements ( t.peopleAssignments.taskStakeholders  )  
-
+            taskStakeholders.id = :userId
    
             order by t.id DESC
         </query>
@@ -890,10 +841,7 @@
             potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and      
             t.archived = 0 and
             t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
-    
-    
-              
-    
+   
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
@@ -1099,14 +1047,13 @@
             t.taskData.parentId,
             t.taskData.deploymentId              )
             from
-            TaskImpl t,
-            OrganizationalEntityImpl potentialOwners
+            TaskImpl t
+            join t.peopleAssignments.potentialOwners potentialOwners
             where
             t.archived = 0 and
-            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
-            potentialOwners in elements ( t.peopleAssignments.potentialOwners )  and
-            t.taskData.status in (:status) 
+            t.taskData.status in (:status) and 
+            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) )
             order by t.id DESC          
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -1135,15 +1082,14 @@
             t.taskData.parentId,
             t.taskData.deploymentId              )
             from
-            TaskImpl t ,
-            OrganizationalEntityImpl potentialOwners
+            TaskImpl t
+            join t.peopleAssignments.potentialOwners potentialOwners
             where
-            t.archived = 0 and
-            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            t.archived = 0 and            
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
-            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
             (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
-            t.taskData.status in (:status) 
+            t.taskData.status in (:status) and 
+            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) )
             order by t.id DESC     
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -1168,16 +1114,14 @@
             t.taskData.parentId,
             t.taskData.deploymentId              )
             from
-            TaskImpl t ,
-            OrganizationalEntityImpl potentialOwners
+            TaskImpl t
+            join t.peopleAssignments.potentialOwners potentialOwners
             where
-            t.archived = 0 and
-            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            t.archived = 0 and            
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
-            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
-    
             t.taskData.expirationTime = :expirationDate and
-            t.taskData.status in (:status) 
+            t.taskData.status in (:status) and 
+            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) 
             order by t.id DESC
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -1202,14 +1146,13 @@
                     t.taskData.parentId,
                     t.taskData.deploymentId              )
             from
-                TaskImpl t,
-                OrganizationalEntityImpl potentialOwners
+                TaskImpl t
+                join t.peopleAssignments.potentialOwners potentialOwners
             where
                 t.archived = 0 and
-                ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
-                (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
-                potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
-                t.taskData.status in (:status) 
+                (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and
+                t.taskData.status in (:status) and 
+                (potentialOwners.id  = :userId or potentialOwners.id in (:groupIds))             
             order by t.id DESC    
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -1234,15 +1177,14 @@
                     t.taskData.parentId,
                     t.taskData.deploymentId              )
             from
-                TaskImpl t,
-                OrganizationalEntityImpl potentialOwners
+                TaskImpl t
+                join t.peopleAssignments.potentialOwners potentialOwners
             where
-            t.archived = 0 and
-            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
+            t.archived = 0 and            
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
-            potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
             (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
-            t.taskData.status in (:status) 
+            t.taskData.status in (:status) and 
+            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) 
             order by t.id DESC     
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -1266,15 +1208,14 @@
                     t.taskData.parentId,
                     t.taskData.deploymentId              )
             from
-                TaskImpl t,
-                OrganizationalEntityImpl potentialOwners
+                TaskImpl t
+                join t.peopleAssignments.potentialOwners potentialOwners
             where
                 t.archived = 0 and
-                ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
                 (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
-                potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
                 t.taskData.expirationTime = :expirationDate and
-                t.taskData.status in (:status) 
+                t.taskData.status in (:status) and 
+	            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) 
                 order by t.id DESC
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->

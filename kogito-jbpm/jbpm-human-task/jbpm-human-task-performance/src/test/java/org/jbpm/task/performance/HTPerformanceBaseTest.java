@@ -15,22 +15,22 @@
  */
 package org.jbpm.task.performance;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import javax.naming.InitialContext;
+
 import javax.persistence.EntityManagerFactory;
-import javax.transaction.UserTransaction;
+
 import org.jbpm.services.task.HumanTaskServicesBaseTest;
-import org.jbpm.services.task.query.QueryFilterImpl;
 import org.jbpm.services.task.utils.TaskFluent;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.query.QueryFilter;
+
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 
 public abstract class HTPerformanceBaseTest extends HumanTaskServicesBaseTest {
@@ -76,7 +76,7 @@ public abstract class HTPerformanceBaseTest extends HumanTaskServicesBaseTest {
         for(int i = 0; i < times; i++){
             long beforeQueryTime = System.currentTimeMillis();
             System.out.println("Querying tasks....");
-            List<TaskSummary> tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("salaboy",null, null, new QueryFilterImpl(i * 1000,1000));
+            List<TaskSummary> tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("salaboy",null, null, new QueryFilter(i * 1000,1000));
             double thisRoundQuerying = ((double)(System.currentTimeMillis() - beforeQueryTime)/1000);
             totalQuerying += thisRoundQuerying;
             System.out.println("Finishing query tasks (Page "+i * 1000+")...." + thisRoundQuerying);
@@ -87,7 +87,7 @@ public abstract class HTPerformanceBaseTest extends HumanTaskServicesBaseTest {
        
         System.out.println("Finishing testBasicUserTaskAddingAndQuering ... "+((double)(System.currentTimeMillis()-beforeStartTime)/1000));
         System.out.println(" AVG Addition... "+ (totalAdding / times));
-        System.out.println(" AVG Querying... "+ (totalQuerying / 1000));
+        System.out.println(" AVG Querying... "+ (totalQuerying / times));
     }
     
     @Test
@@ -125,7 +125,7 @@ public abstract class HTPerformanceBaseTest extends HumanTaskServicesBaseTest {
             
             //Getting only the group tasks
             statuses.add(Status.Ready);
-            List<TaskSummary> tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("salaboy",null, statuses, new QueryFilterImpl(0,0));
+            List<TaskSummary> tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("salaboy",null, statuses, new QueryFilter(0,0));
             double thisRoundQuerying = ((double)(System.currentTimeMillis() - beforeQueryTime)/1000);
             totalQuerying += thisRoundQuerying;
             System.out.println("Finishing query tasks (Ready)...." + thisRoundQuerying);
@@ -150,7 +150,7 @@ public abstract class HTPerformanceBaseTest extends HumanTaskServicesBaseTest {
             statuses = new ArrayList<Status>();
             //Getting only my tasks
             statuses.add(Status.Reserved);
-            tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("salaboy",null, statuses, new QueryFilterImpl(0,0));
+            tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("salaboy",null, statuses, new QueryFilter(0,0));
             thisRoundQuerying = ((double)(System.currentTimeMillis() - beforeQueryTime)/1000);
             totalQuerying += thisRoundQuerying;
             System.out.println("Finishing query tasks (Reserved)...." + thisRoundQuerying);
@@ -170,7 +170,7 @@ public abstract class HTPerformanceBaseTest extends HumanTaskServicesBaseTest {
             statuses = new ArrayList<Status>();
             //Getting only my tasks in progress
             statuses.add(Status.InProgress);
-            tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("salaboy",null, statuses, new QueryFilterImpl(0,0));
+            tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("salaboy",null, statuses, new QueryFilter(0,0));
             thisRoundQuerying = ((double)(System.currentTimeMillis() - beforeQueryTime)/1000);
             totalQuerying += thisRoundQuerying;
             System.out.println("Finishing query tasks (InProgress)...." + thisRoundQuerying);
@@ -188,7 +188,7 @@ public abstract class HTPerformanceBaseTest extends HumanTaskServicesBaseTest {
             statuses = new ArrayList<Status>();
             //Getting only my tasks completed
             statuses.add(Status.Completed);
-            tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("salaboy",null, statuses, new QueryFilterImpl(0,0));
+            tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("salaboy",null, statuses, new QueryFilter(0,0));
             System.out.println("Finishing query potOwner (Completed )tasks...." + ((double)(System.currentTimeMillis() - beforeQueryTime)/1000));
             Assert.assertEquals(amount * j, tasksAssignedAsPotentialOwner.size());
         

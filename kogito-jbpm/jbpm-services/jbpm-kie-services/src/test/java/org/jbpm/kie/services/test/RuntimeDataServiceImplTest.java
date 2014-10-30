@@ -50,7 +50,9 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryContext;
+import org.kie.internal.query.QueryFilter;
 import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -317,6 +319,9 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	ProcessInstanceDesc instance = instances.iterator().next();
     	assertEquals(1, (int)instance.getState());
     	assertEquals("org.jbpm.writedocument", instance.getProcessId());
+    	List<TaskSummary> taskSummaries = runtimeDataService.getTasksAssignedAsPotentialOwner("salaboy", new QueryFilter(0, 10));
+    	assertNotNull(taskSummaries);
+        assertEquals(1, taskSummaries.size());
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;

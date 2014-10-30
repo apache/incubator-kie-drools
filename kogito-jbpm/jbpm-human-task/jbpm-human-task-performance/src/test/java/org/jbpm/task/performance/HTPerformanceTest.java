@@ -39,7 +39,7 @@ public class HTPerformanceTest extends HTPerformanceBaseTest {
                 
 		this.taskService = (InternalTaskService) HumanTaskServiceFactory.newTaskServiceConfigurator()
 												.entityManagerFactory(emf)
-												.listener(new JPATaskLifeCycleEventListener())
+												.listener(new JPATaskLifeCycleEventListener(true))
 												//.listener(new BAMTaskEventListener())
 												.getTaskService();
                 
