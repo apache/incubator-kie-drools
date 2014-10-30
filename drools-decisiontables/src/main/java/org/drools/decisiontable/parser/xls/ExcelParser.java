@@ -16,14 +16,6 @@
 
 package org.drools.decisiontable.parser.xls;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellValue;
@@ -39,6 +31,14 @@ import org.drools.template.parser.DataListener;
 import org.drools.template.parser.DecisionTableParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import static java.lang.String.format;
 
@@ -138,52 +138,48 @@ public class ExcelParser
                 CellRangeAddress merged = getRangeIfMerged( cell,
                                                             mergedRanges );
 
+                int mergedColStart = DataListener.NON_MERGED;
                 if ( merged != null ) {
-                    Cell topLeft = sheet.getRow( merged.getFirstRow() ).getCell( merged.getFirstColumn() );
-                    newCell( listeners,
-                             i,
-                             cellNum,
-                             formatter.formatCellValue( topLeft ),
-                             topLeft.getColumnIndex() );
+                    cell = sheet.getRow(merged.getFirstRow()).getCell(merged.getFirstColumn());
+                    mergedColStart = cell.getColumnIndex();
+                }
 
-                } else {
-                    switch ( cell.getCellType() ) {
-                        case Cell.CELL_TYPE_FORMULA:
-                            String cellValue = null;
-                            try {
-                                newCell( listeners,
-                                         i,
-                                         cellNum,
-                                         formatter.formatCellValue( cell,  formulaEvaluator),
-                                         DataListener.NON_MERGED );
-                            } catch ( RuntimeException e ) {
-                                // This is thrown if an external link cannot be resolved, so try the cached value
-                                log.warn( "Cannot resolve externally linked value: " + formatter.formatCellValue( cell ) );
-                                String cachedValue = tryToReadCachedValue( cell );
-                                newCell( listeners,
-                                         i,
-                                         cellNum,
-                                         cachedValue,
-                                         DataListener.NON_MERGED );
-                            }
-                            break;
-                        case Cell.CELL_TYPE_NUMERIC:
-                            num = cell.getNumericCellValue();
-                        default:
-                            if ( num - Math.round( num ) != 0 ) {
-                                newCell( listeners,
-                                         i,
-                                         cellNum,
-                                         String.valueOf( num ),
-                                         DataListener.NON_MERGED );
-                            } else {
-                                newCell( listeners,
-                                         i,
-                                         cellNum,
-                                         formatter.formatCellValue( cell ),
-                                         DataListener.NON_MERGED );
-                            }
-                    }
+                switch ( cell.getCellType() ) {
+                    case Cell.CELL_TYPE_FORMULA:
+                        String cellValue = null;
+                        try {
+                            newCell(listeners,
+                                    i,
+                                    cellNum,
+                                    formatter.formatCellValue(cell, formulaEvaluator),
+                                    mergedColStart);
+                        } catch (RuntimeException e) {
+                            // This is thrown if an external link cannot be resolved, so try the cached value
+                            log.warn("Cannot resolve externally linked value: " + formatter.formatCellValue(cell));
+                            String cachedValue = tryToReadCachedValue(cell);
+                            newCell(listeners,
+                                    i,
+                                    cellNum,
+                                    cachedValue,
+                                    mergedColStart);
+                        }
+                        break;
+                    case Cell.CELL_TYPE_NUMERIC:
+                        num = cell.getNumericCellValue();
+                    default:
+                        if (num - Math.round(num) != 0) {
+                            newCell(listeners,
+                                    i,
+                                    cellNum,
+                                    String.valueOf(num),
+                                    mergedColStart);
+                        } else {
+                            newCell(listeners,
+                                    i,
+                                    cellNum,
+                                    formatter.formatCellValue(cell),
+                                    mergedColStart);
+                        }
                 }
             }
         }
