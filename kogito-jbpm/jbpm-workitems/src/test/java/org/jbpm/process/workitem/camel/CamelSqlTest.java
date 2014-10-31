@@ -36,7 +36,7 @@ public class CamelSqlTest extends AbstractBaseTest {
 
     private static final String DB_USER = "sa";
     private static final String DB_PASSWD = "";
-    private static final String DB_URL = "jdbc:h2:tcp://localhost/~/jbpm-db;MVCC=TRUE";
+    private static final String DB_URL = "jdbc:h2:tcp://localhost/~/jbpm-db2;MVCC=TRUE";
     private static final String DB_DRIVER = "org.h2.Driver";
     private static final String PROCESS_DEFINITION = "/BPMN2-CamelSqlProcess.bpmn2";
 
@@ -48,6 +48,8 @@ public class CamelSqlTest extends AbstractBaseTest {
      * */
     @BeforeClass
     public static void setup() throws Exception {
+        DeleteDbFiles.execute("~", "jbpm-db-test", true);
+        
         h2Server = Server.createTcpServer(new String[0]);
         h2Server.start();
 
@@ -114,6 +116,6 @@ public class CamelSqlTest extends AbstractBaseTest {
         if (h2Server != null) {
             h2Server.stop();
         }
-        DeleteDbFiles.execute("~", "jbpm-db", true);
+        DeleteDbFiles.execute("~", "jbpm-db-test", true);
     }
 }
