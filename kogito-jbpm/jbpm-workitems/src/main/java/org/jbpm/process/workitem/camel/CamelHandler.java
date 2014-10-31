@@ -57,6 +57,8 @@ public class CamelHandler extends AbstractLogOrThrowWorkItemHandler {
 		ProducerTemplate template = context.createProducerTemplate();
 		
 		Map<String, Object> params = new HashMap<String, Object>(workItem.getParameters());
+		// filtering out TaskName
+		params.remove("TaskName");
 		Processor processor = requestMapper.mapToRequest(params);
 		URI uri = uriConverter.toURI(params);
 		Endpoint endpoint = context.getEndpoint(uri.toString());
