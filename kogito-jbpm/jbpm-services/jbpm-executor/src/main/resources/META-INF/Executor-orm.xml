@@ -77,7 +77,8 @@
     </named-query>
     <named-query name="PendingRequestsForProcessing"> 
         <query>
-            Select r from RequestInfo as r where (r.status ='QUEUED' or r.status = 'RETRYING') and r.time &lt; :now 
+            Select r from RequestInfo as r where (r.status ='QUEUED' or r.status = 'RETRYING') 
+            and r.time &lt; :now and (r.owner = :owner or r.owner is null)
         </query>
     </named-query>
     

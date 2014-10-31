@@ -28,6 +28,7 @@ import org.drools.core.command.impl.GenericCommand;
 import org.kie.internal.command.Context;
 import org.kie.internal.executor.api.ErrorInfo;
 import org.kie.internal.executor.api.ExecutorQueryService;
+import org.kie.internal.executor.api.ExecutorService;
 import org.kie.internal.executor.api.RequestInfo;
 import org.kie.internal.executor.api.STATUS;
 
@@ -38,6 +39,7 @@ import org.kie.internal.executor.api.STATUS;
  * inside method body to avoid exception logged by CDI when used with in memory mode
  */
 public class ExecutorQueryServiceImpl implements ExecutorQueryService {
+
 
     
     private CommandService commandService;
@@ -208,6 +210,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
 	    	params.put("now", new Date());
 	    	params.put("firstResult", 0);
 	    	params.put("maxResults", 1);
+	    	params.put("owner", ExecutorService.EXECUTOR_ID);
 	    	RequestInfo request = null;
 	    	try {
 	    		org.jbpm.shared.services.impl.JpaPersistenceContext ctx = (org.jbpm.shared.services.impl.JpaPersistenceContext) context;

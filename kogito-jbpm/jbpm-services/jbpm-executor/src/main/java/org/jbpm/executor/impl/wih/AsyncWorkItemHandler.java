@@ -83,6 +83,9 @@ public class AsyncWorkItemHandler implements WorkItemHandler {
         if (workItem.getParameter("Retries") != null) {
             ctxCMD.setData("retries", Integer.parseInt(workItem.getParameter("Retries").toString()));
         }
+        if (workItem.getParameter("Owner") != null) {
+            ctxCMD.setData("owner", workItem.getParameter("Owner"));
+        }
         
         logger.trace("Command context {}", ctxCMD);
         Long requestId = executorService.scheduleRequest(cmdClass, ctxCMD);

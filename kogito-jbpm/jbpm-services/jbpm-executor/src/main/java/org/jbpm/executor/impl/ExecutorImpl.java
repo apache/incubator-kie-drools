@@ -194,6 +194,7 @@ public class ExecutorImpl implements Executor {
         requestInfo.setTime(date);
         requestInfo.setMessage("Ready to execute");
         requestInfo.setDeploymentId((String)ctx.getData("deploymentId"));
+        requestInfo.setOwner((String)ctx.getData("owner"));
         if (ctx.getData("retries") != null) {
             requestInfo.setRetries(Integer.valueOf(String.valueOf(ctx.getData("retries"))));
         } else {
