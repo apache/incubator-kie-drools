@@ -2,6 +2,7 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Person;
 import org.drools.compiler.StockTick;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
@@ -775,5 +776,43 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
 
         assertEquals(2, list.size());
         assertTrue(list.containsAll(asList("t1:YYY", "t0:ZZZ")));
+    }
+
+    @Test(timeout = 10000L)
+    public void testNoLoop() {
+        // DROOLS-644
+        String drl =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R no-loop when\n" +
+                "    $p1 : Person( name == \"Mario\" ) do[t1]\n" +
+                "    $p2 : Person( age > $p1.age )\n" +
+                "then\n" +
+                "    list.add(\"t0\");\n" +
+                "    modify($p2) { setAge(30); }\n" +
+                "then[t1]\n" +
+                "    list.add(\"t1\");\n" +
+                "    modify($p1) { setAge(35); }\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                .build()
+                .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        Person mario = new Person("Mario", 40);
+        Person mark = new Person("Mark", 37);
+        ksession.insert(mario);
+        ksession.insert(mark);
+        ksession.fireAllRules();
+
+        assertEquals(35, mario.getAge());
+        assertEquals(30, mark.getAge());
+
+        assertEquals(2, list.size());
+        assertEquals("t1", list.get(0));
+        assertEquals("t0", list.get(1));
     }
 }
