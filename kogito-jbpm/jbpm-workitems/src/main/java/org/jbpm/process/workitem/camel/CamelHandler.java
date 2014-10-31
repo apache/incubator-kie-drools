@@ -1,7 +1,10 @@
 package org.jbpm.process.workitem.camel;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +13,7 @@ import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.ProducerTemplate;
+import org.apache.camel.util.URISupport;
 import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.jbpm.process.workitem.camel.request.RequestMapper;
 import org.jbpm.process.workitem.camel.request.RequestPayloadMapper;
@@ -61,7 +65,13 @@ public class CamelHandler extends AbstractLogOrThrowWorkItemHandler {
 		params.remove("TaskName");
 		Processor processor = requestMapper.mapToRequest(params);
 		URI uri = uriConverter.toURI(params);
-		Endpoint endpoint = context.getEndpoint(uri.toString());
+		String s;
+		try {
+			s = URLDecoder.decode(uri.toString(), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			s = uri.toString();
+		}
+		Endpoint endpoint = context.getEndpoint(s);
 		 
 		Exchange exchange = template.send(endpoint, processor);
 		return this.responseMapper.mapFromResponse(exchange);

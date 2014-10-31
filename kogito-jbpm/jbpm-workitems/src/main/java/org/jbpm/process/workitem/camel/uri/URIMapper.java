@@ -1,5 +1,6 @@
 package org.jbpm.process.workitem.camel.uri;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -27,7 +28,12 @@ public abstract class URIMapper {
 		} else {
 			url = schema + "://" + path;
 		}
-		URI camelUri = new URI(url);
+		URI camelUri;
+		try {
+			camelUri = new URI(URISupport.normalizeUri(url));
+		} catch (UnsupportedEncodingException e) {
+			camelUri = new URI(url);
+		}
 		if (params.isEmpty()) {
 			return camelUri;
 		} else {
