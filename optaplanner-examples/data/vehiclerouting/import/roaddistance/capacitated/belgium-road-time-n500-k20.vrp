@@ -1,5 +1,5 @@
 NAME: belgium-road-time-n500-k20
-COMMENT: Generated for OptaPlanner. Road distance calculated with GraphHopper.
+COMMENT: Generated for OptaPlanner Examples with GraphHopper by Geoffrey De Smet.
 TYPE: CVRP
 DIMENSION: 500
 EDGE_WEIGHT_TYPE: EXPLICIT
