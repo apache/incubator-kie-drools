@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.tsp.domain;
+package org.optaplanner.examples.tsp.domain.location;
 
-import org.optaplanner.examples.tsp.domain.location.Location;
 
-public interface Standstill {
-
+public enum DistanceType {
     /**
-     * @return never null
+     * Requires that all {@link Location} instances are of type {@link AirLocation}.
      */
-    Location getLocation();
-
+    AIR_DISTANCE,
     /**
-     * @param standstill never null
-     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
+     * Requires that all {@link Location} instances are of type {@link RoadLocation}.
      */
-    long getDistanceTo(Standstill standstill);
-
+    ROAD_DISTANCE;
 }

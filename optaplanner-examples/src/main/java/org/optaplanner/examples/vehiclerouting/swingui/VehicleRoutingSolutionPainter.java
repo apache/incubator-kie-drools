@@ -149,12 +149,10 @@ public class VehicleRoutingSolutionPainter {
                 if (customer.getPreviousStandstill() != null && customer.getVehicle() == vehicle) {
                     load += customer.getDemand();
                     Location previousLocation = customer.getPreviousStandstill().getLocation();
-                    int previousX = translator.translateLongitudeToX(previousLocation.getLongitude());
-                    int previousY = translator.translateLatitudeToY(previousLocation.getLatitude());
                     Location location = customer.getLocation();
-                    int x = translator.translateLongitudeToX(location.getLongitude());
-                    int y = translator.translateLatitudeToY(location.getLatitude());
-                    drawRoute(g, previousX, previousY, x, y, location instanceof AirLocation);
+                    translator.drawRoute(g, previousLocation.getLongitude(), previousLocation.getLatitude(),
+                            location.getLongitude(), location.getLatitude(),
+                            location instanceof AirLocation);
                     // Determine where to draw the vehicle info
                     int distance = customer.getDistanceFromPreviousStandstill();
                     if (customer.getPreviousStandstill() instanceof Customer) {
@@ -169,10 +167,10 @@ public class VehicleRoutingSolutionPainter {
                     // Line back to the vehicle depot
                     if (customer.getNextCustomer() == null) {
                         Location vehicleLocation = vehicle.getLocation();
-                        int vehicleX = translator.translateLongitudeToX(vehicleLocation.getLongitude());
-                        int vehicleY = translator.translateLatitudeToY(vehicleLocation.getLatitude());
                         g.setStroke(TangoColorFactory.FAT_DASHED_STROKE);
-                        drawRoute(g, x, y, vehicleX, vehicleY, location instanceof AirLocation);
+                        translator.drawRoute(g, location.getLongitude(), location.getLatitude(),
+                                vehicleLocation.getLongitude(), vehicleLocation.getLatitude(),
+                                location instanceof AirLocation);
                         g.setStroke(TangoColorFactory.NORMAL_STROKE);
                     }
                 }
@@ -233,20 +231,6 @@ public class VehicleRoutingSolutionPainter {
             g.setFont(g.getFont().deriveFont(Font.BOLD, (float) TEXT_SIZE * 2));
             g.drawString(distanceString,
                     (int) width - g.getFontMetrics().stringWidth(distanceString) - 10, (int) height - 10 - TEXT_SIZE);
-        }
-    }
-
-    protected void drawRoute(Graphics2D g, int x1, int y1, int x2, int y2, boolean straight) {
-        if (straight) {
-            g.drawLine(x1, y1, x2, y2);
-        } else {
-            double xDistPart = (x2 - x1) / 3.0;
-            double yDistPart = (y2 - y1) / 3.0;
-            double ctrlx1 = x1 + xDistPart + yDistPart;
-            double ctrly1 = y1 - xDistPart + yDistPart;
-            double ctrlx2 = x2 - xDistPart - yDistPart;
-            double ctrly2 = y2 + xDistPart - yDistPart;
-            g.draw(new CubicCurve2D.Double(x1, y1, ctrlx1, ctrly1, ctrlx2, ctrly2, x2, y2));
         }
     }
 

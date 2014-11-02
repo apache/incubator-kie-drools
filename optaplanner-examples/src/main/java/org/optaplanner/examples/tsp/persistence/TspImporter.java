@@ -21,15 +21,21 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.optaplanner.examples.tsp.domain.City;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
+import org.optaplanner.examples.tsp.domain.location.AirLocation;
+import org.optaplanner.examples.tsp.domain.location.Location;
+import org.optaplanner.examples.tsp.domain.location.DistanceType;
+import org.optaplanner.examples.tsp.domain.location.RoadLocation;
+import org.optaplanner.examples.vehiclerouting.domain.location.segmented.RoadSegmentLocation;
 
 public class TspImporter extends AbstractTxtSolutionImporter {
 
@@ -62,7 +68,7 @@ public class TspImporter extends AbstractTxtSolutionImporter {
 
         private TravelingSalesmanTour travelingSalesmanTour;
 
-        private int cityListSize;
+        private int locationListSize;
 
         public Solution readSolution() throws IOException {
             travelingSalesmanTour = new TravelingSalesmanTour();
@@ -73,13 +79,13 @@ public class TspImporter extends AbstractTxtSolutionImporter {
                 readTspLibFormat();
             } else {
                 travelingSalesmanTour.setName(FilenameUtils.getBaseName(inputFile.getName()));
-                cityListSize = Integer.parseInt(firstLine.trim());
+                locationListSize = Integer.parseInt(firstLine.trim());
                 readCourseraFormat();
             }
-            BigInteger possibleSolutionSize = factorial(travelingSalesmanTour.getCityList().size() - 1);
-            logger.info("TravelingSalesmanTour {} has {} cities with a search space of {}.",
+            BigInteger possibleSolutionSize = factorial(travelingSalesmanTour.getLocationList().size() - 1);
+            logger.info("TravelingSalesmanTour {} has {} locations with a search space of {}.",
                     getInputId(),
-                    travelingSalesmanTour.getCityList().size(),
+                    travelingSalesmanTour.getLocationList().size(),
                     getFlooredPossibleSolutionSize(possibleSolutionSize));
             return travelingSalesmanTour;
         }
@@ -97,46 +103,89 @@ public class TspImporter extends AbstractTxtSolutionImporter {
 
         private void readTspLibHeaders() throws IOException {
             readUntilConstantLine("TYPE *: +TSP");
-            cityListSize = readIntegerValue("DIMENSION *:");
+            locationListSize = readIntegerValue("DIMENSION *:");
             String edgeWeightType = readStringValue("EDGE_WEIGHT_TYPE *:");
-            if (!edgeWeightType.equalsIgnoreCase("EUC_2D")) {
-                // Only Euclidean distance is implemented in City.getDistance(City)
+            if (edgeWeightType.equalsIgnoreCase("EUC_2D")) {
+                travelingSalesmanTour.setDistanceType(DistanceType.AIR_DISTANCE);
+            } else if (edgeWeightType.equalsIgnoreCase("EXPLICIT")) {
+                travelingSalesmanTour.setDistanceType(DistanceType.ROAD_DISTANCE);
+                String edgeWeightFormat = readStringValue("EDGE_WEIGHT_FORMAT *:");
+                if (!edgeWeightFormat.equalsIgnoreCase("FULL_MATRIX")) {
+                    throw new IllegalArgumentException("The edgeWeightFormat (" + edgeWeightFormat + ") is not supported.");
+                }
+            } else {
                 throw new IllegalArgumentException("The edgeWeightType (" + edgeWeightType + ") is not supported.");
             }
+            travelingSalesmanTour.setDistanceUnitOfMeasurement(readOptionalStringValue("EDGE_WEIGHT_UNIT_OF_MEASUREMENT *:", "distance"));
         }
 
         private void readTspLibCityList() throws IOException {
             readConstantLine("NODE_COORD_SECTION");
-            List<City> cityList = new ArrayList<City>(cityListSize);
-            for (int i = 0; i < cityListSize; i++) {
+            DistanceType distanceType = travelingSalesmanTour.getDistanceType();
+            List<Location> locationList = new ArrayList<Location>(locationListSize);
+            for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpace(line, 3, 4);
-                City city = new City();
-                city.setId(Long.parseLong(lineTokens[0]));
-                city.setLatitude(Double.parseDouble(lineTokens[1]));
-                city.setLongitude(Double.parseDouble(lineTokens[2]));
-                if (lineTokens.length >= 4) {
-                    city.setName(lineTokens[3]);
+                Location location;
+                switch (distanceType) {
+                    case AIR_DISTANCE:
+                        location = new AirLocation();
+                        break;
+                    case ROAD_DISTANCE:
+                        location = new RoadLocation();
+                        break;
+                    default:
+                        throw new IllegalStateException("The distanceType (" + distanceType
+                                + ") is not implemented.");
+
                 }
-                cityList.add(city);
+                location.setId(Long.parseLong(lineTokens[0]));
+                location.setLatitude(Double.parseDouble(lineTokens[1]));
+                location.setLongitude(Double.parseDouble(lineTokens[2]));
+                if (lineTokens.length >= 4) {
+                    location.setName(lineTokens[3]);
+                }
+                locationList.add(location);
             }
-            travelingSalesmanTour.setCityList(cityList);
+            travelingSalesmanTour.setLocationList(locationList);
+            if (distanceType == DistanceType.ROAD_DISTANCE) {
+                readConstantLine("EDGE_WEIGHT_SECTION");
+                for (int i = 0; i < locationListSize; i++) {
+                    RoadLocation location = (RoadLocation) locationList.get(i);
+                    Map<RoadLocation, Double> travelDistanceMap = new LinkedHashMap<RoadLocation, Double>(locationListSize);
+                    String line = bufferedReader.readLine();
+                    String[] lineTokens = splitBySpacesOrTabs(line.trim(), locationListSize);
+                    for (int j = 0; j < locationListSize; j++) {
+                        double travelDistance = Double.parseDouble(lineTokens[j]);
+                        if (i == j) {
+                            if (travelDistance != 0.0) {
+                                throw new IllegalStateException("The travelDistance (" + travelDistance
+                                        + ") should be zero.");
+                            }
+                        } else {
+                            RoadLocation otherLocation = (RoadLocation) locationList.get(j);
+                            travelDistanceMap.put(otherLocation, travelDistance);
+                        }
+                    }
+                    location.setTravelDistanceMap(travelDistanceMap);
+                }
+            }
         }
 
         private void createVisitList() {
-            List<City> cityList = travelingSalesmanTour.getCityList();
-            List<Visit> visitList = new ArrayList<Visit>(cityList.size() - 1);
+            List<Location> locationList = travelingSalesmanTour.getLocationList();
+            List<Visit> visitList = new ArrayList<Visit>(locationList.size() - 1);
             int count = 0;
-            for (City city : cityList) {
+            for (Location location : locationList) {
                 if (count < 1) {
                     Domicile domicile = new Domicile();
-                    domicile.setId(city.getId());
-                    domicile.setCity(city);
+                    domicile.setId(location.getId());
+                    domicile.setLocation(location);
                     travelingSalesmanTour.setDomicile(domicile);
                 } else {
                     Visit visit = new Visit();
-                    visit.setId(city.getId());
-                    visit.setCity(city);
+                    visit.setId(location.getId());
+                    visit.setLocation(location);
                     // Notice that we leave the PlanningVariable properties on null
                     visitList.add(visit);
                 }
@@ -150,19 +199,19 @@ public class TspImporter extends AbstractTxtSolutionImporter {
         // ************************************************************************
 
         private void readCourseraFormat() throws IOException {
-            List<City> cityList = new ArrayList<City>(cityListSize);
+            List<Location> locationList = new ArrayList<Location>(locationListSize);
             long id = 0;
-            for (int i = 0; i < cityListSize; i++) {
+            for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpace(line, 2);
-                City city = new City();
-                city.setId(id);
+                Location location = new AirLocation();
+                location.setId(id);
                 id++;
-                city.setLatitude(Double.parseDouble(lineTokens[0]));
-                city.setLongitude(Double.parseDouble(lineTokens[1]));
-                cityList.add(city);
+                location.setLatitude(Double.parseDouble(lineTokens[0]));
+                location.setLongitude(Double.parseDouble(lineTokens[1]));
+                locationList.add(location);
             }
-            travelingSalesmanTour.setCityList(cityList);
+            travelingSalesmanTour.setLocationList(locationList);
             createVisitList();
         }
 

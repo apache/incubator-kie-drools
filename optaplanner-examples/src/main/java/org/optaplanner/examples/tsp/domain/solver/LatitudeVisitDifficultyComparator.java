@@ -27,8 +27,8 @@ public class LatitudeVisitDifficultyComparator implements Comparator<Visit>, Ser
     public int compare(Visit a, Visit b) {
         return new CompareToBuilder()
                 // TODO experiment with (aLatitude - bLatitude) % 10
-                .append(a.getCity().getLatitude(), b.getCity().getLatitude())
-                .append(a.getCity().getLongitude(), b.getCity().getLongitude())
+                .append(a.getLocation().getLatitude(), b.getLocation().getLatitude())
+                .append(a.getLocation().getLongitude(), b.getLocation().getLongitude())
                 .append(a.getId(), b.getId())
                 .toComparison();
     }

@@ -30,6 +30,8 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.score.buildin.simplelong.SimpleLongScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.tsp.domain.location.Location;
+import org.optaplanner.examples.tsp.domain.location.DistanceType;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution
@@ -37,7 +39,9 @@ import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 public class TravelingSalesmanTour extends AbstractPersistable implements Solution<SimpleLongScore> {
 
     private String name;
-    private List<City> cityList;
+    protected DistanceType distanceType;
+    protected String distanceUnitOfMeasurement;
+    private List<Location> locationList;
     private Domicile domicile;
 
     private List<Visit> visitList;
@@ -53,12 +57,28 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         this.name = name;
     }
 
-    public List<City> getCityList() {
-        return cityList;
+    public DistanceType getDistanceType() {
+        return distanceType;
     }
 
-    public void setCityList(List<City> cityList) {
-        this.cityList = cityList;
+    public void setDistanceType(DistanceType distanceType) {
+        this.distanceType = distanceType;
+    }
+
+    public String getDistanceUnitOfMeasurement() {
+        return distanceUnitOfMeasurement;
+    }
+
+    public void setDistanceUnitOfMeasurement(String distanceUnitOfMeasurement) {
+        this.distanceUnitOfMeasurement = distanceUnitOfMeasurement;
+    }
+
+    public List<Location> getLocationList() {
+        return locationList;
+    }
+
+    public void setLocationList(List<Location> locationList) {
+        this.locationList = locationList;
     }
 
     public Domicile getDomicile() {
@@ -98,7 +118,7 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
 
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
-        facts.addAll(cityList);
+        facts.addAll(locationList);
         facts.add(domicile);
         // Do not add the planning entity's (visitList) because that will be done automatically
         return facts;

@@ -21,23 +21,24 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.tsp.domain.location.Location;
 import org.optaplanner.examples.tsp.domain.solver.LatitudeVisitDifficultyComparator;
 
 @PlanningEntity(difficultyComparatorClass = LatitudeVisitDifficultyComparator.class)
 @XStreamAlias("Visit")
 public class Visit extends AbstractPersistable implements Standstill {
 
-    private City city; // the destinationCity
+    private Location location;
     
     // Planning variables: changes during planning, between score calculations.
     private Standstill previousStandstill;
 
-    public City getCity() {
-        return city;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setCity(City city) {
-        this.city = city;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     @PlanningVariable(valueRangeProviderRefs = {"domicileRange", "visitRange"},
@@ -69,12 +70,12 @@ public class Visit extends AbstractPersistable implements Standstill {
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
     public long getDistanceTo(Standstill standstill) {
-        return city.getDistance(standstill.getCity());
+        return location.getDistance(standstill.getLocation());
     }
 
     @Override
     public String toString() {
-        return city + "(after " + (previousStandstill == null ? "null" : previousStandstill.getCity()) + ")";
+        return location + "(after " + (previousStandstill == null ? "null" : previousStandstill.getLocation()) + ")";
     }
 
 }

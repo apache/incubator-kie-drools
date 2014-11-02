@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
@@ -28,6 +29,7 @@ import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -35,15 +37,17 @@ import javax.swing.JPanel;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
-import org.optaplanner.examples.tsp.domain.City;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
+import org.optaplanner.examples.tsp.domain.location.Location;
+import org.optaplanner.examples.tsp.domain.location.DistanceType;
+import org.optaplanner.examples.tsp.domain.location.AirLocation;
 
 public class TspWorldPanel extends JPanel {
 
     private static final int TEXT_SIZE = 12;
-    private static final int CITY_NAME_TEXT_SIZE = 8;
+    private static final int LOCATION_NAME_TEXT_SIZE = 8;
     private static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#,##0.00");
 
     private final TspPanel tspPanel;
@@ -71,7 +75,7 @@ public class TspWorldPanel extends JPanel {
                 if (translator != null) {
                     double longitude = translator.translateXToLongitude(e.getX());
                     double latitude = translator.translateYToLatitude(e.getY());
-                    TspWorldPanel.this.tspPanel.insertCityAndVisit(longitude, latitude);
+                    TspWorldPanel.this.tspPanel.insertLocationAndVisit(longitude, latitude);
                 }
             }
         });
@@ -80,8 +84,8 @@ public class TspWorldPanel extends JPanel {
 
     public void resetPanel(TravelingSalesmanTour travelingSalesmanTour) {
         translator = new LatitudeLongitudeTranslator();
-        for (City city : travelingSalesmanTour.getCityList()) {
-            translator.addCoordinates(city.getLatitude(), city.getLongitude());
+        for (Location location : travelingSalesmanTour.getLocationList()) {
+            translator.addCoordinates(location.getLatitude(), location.getLongitude());
         }
 
         Dimension size = getSize();
@@ -89,50 +93,51 @@ public class TspWorldPanel extends JPanel {
         double height = size.getHeight();
         translator.prepareFor(width, height);
 
-        Graphics g = createCanvas(width, height);
+        Graphics2D g = createCanvas(width, height);
         String tourName = travelingSalesmanTour.getName();
         if (tourName.startsWith("europe")) {
             g.drawImage(europaBackground.getImage(), 0, 0, translator.getImageWidth(), translator.getImageHeight(), this);
         }
-        g.setFont(g.getFont().deriveFont((float) CITY_NAME_TEXT_SIZE));
+        g.setFont(g.getFont().deriveFont((float) LOCATION_NAME_TEXT_SIZE));
         g.setColor(TangoColorFactory.PLUM_2);
-        for (Visit visit : travelingSalesmanTour.getVisitList()) {
-            City city = visit.getCity();
-            int x = translator.translateLongitudeToX(city.getLongitude());
-            int y = translator.translateLatitudeToY(city.getLatitude());
+        List<Visit> visitList = travelingSalesmanTour.getVisitList();
+        for (Visit visit : visitList) {
+            Location location = visit.getLocation();
+            int x = translator.translateLongitudeToX(location.getLongitude());
+            int y = translator.translateLatitudeToY(location.getLatitude());
             g.fillRect(x - 1, y - 1, 3, 3);
-            if (city.getName() != null) {
-                g.drawString(city.getName(), x + 3, y - 3);
+            if (location.getName() != null && visitList.size() <= 500) {
+                g.drawString(location.getName(), x + 3, y - 3);
             }
         }
         g.setColor(TangoColorFactory.ALUMINIUM_4);
         Domicile domicile = travelingSalesmanTour.getDomicile();
-        City domicileCity = domicile.getCity();
-        int domicileX = translator.translateLongitudeToX(domicileCity.getLongitude());
-        int domicileY = translator.translateLatitudeToY(domicileCity.getLatitude());
+        Location domicileLocation = domicile.getLocation();
+        int domicileX = translator.translateLongitudeToX(domicileLocation.getLongitude());
+        int domicileY = translator.translateLatitudeToY(domicileLocation.getLatitude());
         g.fillRect(domicileX - 2, domicileY - 2, 5, 5);
-        if (domicileCity.getName() != null) {
-            g.drawString(domicileCity.getName(), domicileX + 3, domicileY - 3);
+        if (domicileLocation.getName() != null && visitList.size() <= 500) {
+            g.drawString(domicileLocation.getName(), domicileX + 3, domicileY - 3);
         }
-        Set<Visit> needsBackToDomicileLineSet = new HashSet<Visit>(travelingSalesmanTour.getVisitList());
-        for (Visit trailingVisit : travelingSalesmanTour.getVisitList()) {
+        Set<Visit> needsBackToDomicileLineSet = new HashSet<Visit>(visitList);
+        for (Visit trailingVisit : visitList) {
             if (trailingVisit.getPreviousStandstill() instanceof Visit) {
                 needsBackToDomicileLineSet.remove(trailingVisit.getPreviousStandstill());
             }
         }
         g.setColor(TangoColorFactory.CHOCOLATE_1);
-        for (Visit visit : travelingSalesmanTour.getVisitList()) {
+        for (Visit visit : visitList) {
             if (visit.getPreviousStandstill() != null) {
-                City previousCity = visit.getPreviousStandstill().getCity();
-                int previousX = translator.translateLongitudeToX(previousCity.getLongitude());
-                int previousY = translator.translateLatitudeToY(previousCity.getLatitude());
-                City city = visit.getCity();
-                int x = translator.translateLongitudeToX(city.getLongitude());
-                int y = translator.translateLatitudeToY(city.getLatitude());
-                g.drawLine(previousX, previousY, x, y);
+                Location previousLocation = visit.getPreviousStandstill().getLocation();
+                Location location = visit.getLocation();
+                translator.drawRoute(g, previousLocation.getLongitude(), previousLocation.getLatitude(),
+                        location.getLongitude(), location.getLatitude(),
+                        location instanceof AirLocation);
                 // Back to domicile line
                 if (needsBackToDomicileLineSet.contains(visit)) {
-                    g.drawLine(x, y,domicileX, domicileY);
+                    translator.drawRoute(g, location.getLongitude(), location.getLatitude(),
+                            domicileLocation.getLongitude(), domicileLocation.getLatitude(),
+                            location instanceof AirLocation);
                 }
             }
         }
@@ -144,11 +149,13 @@ public class TspWorldPanel extends JPanel {
         g.fillRect(6, (int) height - 9, 3, 3);
         g.drawString("Visit", 15, (int) height - 5);
         g.setColor(TangoColorFactory.ALUMINIUM_5);
-        String citiesSizeString = travelingSalesmanTour.getCityList().size() + " cities";
-        g.drawString(citiesSizeString,
-                ((int) width - g.getFontMetrics().stringWidth(citiesSizeString)) / 2, (int) height - 5);
-        String clickString = "Click anywhere in the map to add a visit.";
-        g.drawString(clickString, (int) width - 5 - g.getFontMetrics().stringWidth(clickString), (int) height - 5);
+        String locationsSizeString = travelingSalesmanTour.getLocationList().size() + " locations";
+        g.drawString(locationsSizeString,
+                ((int) width - g.getFontMetrics().stringWidth(locationsSizeString)) / 2, (int) height - 5);
+        if (travelingSalesmanTour.getDistanceType() == DistanceType.AIR_DISTANCE) {
+            String clickString = "Click anywhere in the map to add a visit.";
+            g.drawString(clickString, (int) width - 5 - g.getFontMetrics().stringWidth(clickString), (int) height - 5);
+        }
         // Show soft score
         g.setColor(TangoColorFactory.ORANGE_3);
         SimpleLongScore score = travelingSalesmanTour.getScore();
@@ -166,11 +173,11 @@ public class TspWorldPanel extends JPanel {
         resetPanel(travelingSalesmanTour);
     }
 
-    private Graphics createCanvas(double width, double height) {
+    private Graphics2D createCanvas(double width, double height) {
         int canvasWidth = (int) Math.ceil(width) + 1;
         int canvasHeight = (int) Math.ceil(height) + 1;
         canvas = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_RGB);
-        Graphics g = canvas.getGraphics();
+        Graphics2D g = canvas.createGraphics();
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, canvasWidth, canvasHeight);
         return g;

@@ -26,10 +26,11 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
-import org.optaplanner.examples.tsp.domain.City;
 import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
+import org.optaplanner.examples.tsp.domain.location.Location;
+import org.optaplanner.examples.tsp.domain.location.AirLocation;
 
 public class TspPanel extends SolutionPanel {
 
@@ -38,7 +39,7 @@ public class TspPanel extends SolutionPanel {
     private TspWorldPanel tspWorldPanel;
     private TspListPanel tspListPanel;
 
-    private Long nextCityId = null;
+    private Long nextLocationId = null;
 
     public TspPanel() {
         setLayout(new BorderLayout());
@@ -70,17 +71,17 @@ public class TspPanel extends SolutionPanel {
         TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) solution;
         tspWorldPanel.resetPanel(travelingSalesmanTour);
         tspListPanel.resetPanel(travelingSalesmanTour);
-        resetNextCityId();
+        resetNextLocationId();
     }
 
-    private void resetNextCityId() {
-        long highestCityId = 0L;
-        for (City city : getTravelingSalesmanTour().getCityList()) {
-            if (highestCityId < city.getId().longValue()) {
-                highestCityId = city.getId();
+    private void resetNextLocationId() {
+        long highestLocationId = 0L;
+        for (Location location : getTravelingSalesmanTour().getLocationList()) {
+            if (highestLocationId < location.getId().longValue()) {
+                highestLocationId = location.getId();
             }
         }
-        nextCityId = highestCityId + 1L;
+        nextLocationId = highestLocationId + 1L;
     }
 
     @Override
@@ -98,22 +99,33 @@ public class TspPanel extends SolutionPanel {
         return solverAndPersistenceFrame;
     }
 
-    public void insertCityAndVisit(double longitude, double latitude) {
-        final City newCity = new City();
-        newCity.setId(nextCityId);
-        nextCityId++;
-        newCity.setLongitude(longitude);
-        newCity.setLatitude(latitude);
-        logger.info("Scheduling insertion of newCity ({}).", newCity);
+    public void insertLocationAndVisit(double longitude, double latitude) {
+        final Location newLocation;
+        switch (getTravelingSalesmanTour().getDistanceType()) {
+            case AIR_DISTANCE:
+                newLocation = new AirLocation();
+                break;
+            case ROAD_DISTANCE:
+                logger.warn("Adding locations for a road distance dataset is not supported.");
+                return;
+            default:
+                throw new IllegalStateException("The distanceType (" + getTravelingSalesmanTour().getDistanceType()
+                        + ") is not implemented.");
+        }
+        newLocation.setId(nextLocationId);
+        nextLocationId++;
+        newLocation.setLongitude(longitude);
+        newLocation.setLatitude(latitude);
+        logger.info("Scheduling insertion of newLocation ({}).", newLocation);
         doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
                 TravelingSalesmanTour solution = (TravelingSalesmanTour) scoreDirector.getWorkingSolution();
-                scoreDirector.beforeProblemFactAdded(newCity);
-                solution.getCityList().add(newCity);
-                scoreDirector.afterProblemFactAdded(newCity);
+                scoreDirector.beforeProblemFactAdded(newLocation);
+                solution.getLocationList().add(newLocation);
+                scoreDirector.afterProblemFactAdded(newLocation);
                 Visit newVisit = new Visit();
-                newVisit.setId(newCity.getId());
-                newVisit.setCity(newCity);
+                newVisit.setId(newLocation.getId());
+                newVisit.setLocation(newLocation);
                 scoreDirector.beforeEntityAdded(newVisit);
                 solution.getVisitList().add(newVisit);
                 scoreDirector.afterEntityAdded(newVisit);

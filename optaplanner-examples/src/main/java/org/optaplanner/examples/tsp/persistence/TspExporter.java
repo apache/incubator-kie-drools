@@ -56,11 +56,11 @@ public class TspExporter extends AbstractTxtSolutionExporter {
         public void writeSolution() throws IOException {
             bufferedWriter.write("NAME : " + tour.getName() + "\n");
             bufferedWriter.write("TYPE : TOUR\n");
-            bufferedWriter.write("DIMENSION : " + tour.getCityList().size() + "\n");
+            bufferedWriter.write("DIMENSION : " + tour.getLocationList().size() + "\n");
             bufferedWriter.write("TOUR_SECTION\n");
             Standstill standstill = tour.getDomicile();
             while (standstill != null) {
-                bufferedWriter.write(standstill.getCity().getId() + "\n");
+                bufferedWriter.write(standstill.getLocation().getId() + "\n");
                 standstill = findNextVisit(standstill);
             }
             bufferedWriter.write("EOF\n");

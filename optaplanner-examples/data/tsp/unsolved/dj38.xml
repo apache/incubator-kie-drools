@@ -1,350 +1,352 @@
 <TravelingSalesmanTour id="1">
   <id>0</id>
   <name>dj38</name>
-  <cityList id="2">
-    <City id="3">
+  <distanceType>AIR_DISTANCE</distanceType>
+  <distanceUnitOfMeasurement>distance</distanceUnitOfMeasurement>
+  <locationList id="2">
+    <TspAirLocation id="3">
       <id>1</id>
       <latitude>11003.6111</latitude>
       <longitude>42102.5</longitude>
-    </City>
-    <City id="4">
+    </TspAirLocation>
+    <TspAirLocation id="4">
       <id>2</id>
       <latitude>11108.6111</latitude>
       <longitude>42373.8889</longitude>
-    </City>
-    <City id="5">
+    </TspAirLocation>
+    <TspAirLocation id="5">
       <id>3</id>
       <latitude>11133.3333</latitude>
       <longitude>42885.8333</longitude>
-    </City>
-    <City id="6">
+    </TspAirLocation>
+    <TspAirLocation id="6">
       <id>4</id>
       <latitude>11155.8333</latitude>
       <longitude>42712.5</longitude>
-    </City>
-    <City id="7">
+    </TspAirLocation>
+    <TspAirLocation id="7">
       <id>5</id>
       <latitude>11183.3333</latitude>
       <longitude>42933.3333</longitude>
-    </City>
-    <City id="8">
+    </TspAirLocation>
+    <TspAirLocation id="8">
       <id>6</id>
       <latitude>11297.5</latitude>
       <longitude>42853.3333</longitude>
-    </City>
-    <City id="9">
+    </TspAirLocation>
+    <TspAirLocation id="9">
       <id>7</id>
       <latitude>11310.2778</latitude>
       <longitude>42929.4444</longitude>
-    </City>
-    <City id="10">
+    </TspAirLocation>
+    <TspAirLocation id="10">
       <id>8</id>
       <latitude>11416.6667</latitude>
       <longitude>42983.3333</longitude>
-    </City>
-    <City id="11">
+    </TspAirLocation>
+    <TspAirLocation id="11">
       <id>9</id>
       <latitude>11423.8889</latitude>
       <longitude>43000.2778</longitude>
-    </City>
-    <City id="12">
+    </TspAirLocation>
+    <TspAirLocation id="12">
       <id>10</id>
       <latitude>11438.3333</latitude>
       <longitude>42057.2222</longitude>
-    </City>
-    <City id="13">
+    </TspAirLocation>
+    <TspAirLocation id="13">
       <id>11</id>
       <latitude>11461.1111</latitude>
       <longitude>43252.7778</longitude>
-    </City>
-    <City id="14">
+    </TspAirLocation>
+    <TspAirLocation id="14">
       <id>12</id>
       <latitude>11485.5556</latitude>
       <longitude>43187.2222</longitude>
-    </City>
-    <City id="15">
+    </TspAirLocation>
+    <TspAirLocation id="15">
       <id>13</id>
       <latitude>11503.0556</latitude>
       <longitude>42855.2778</longitude>
-    </City>
-    <City id="16">
+    </TspAirLocation>
+    <TspAirLocation id="16">
       <id>14</id>
       <latitude>11511.3889</latitude>
       <longitude>42106.3889</longitude>
-    </City>
-    <City id="17">
+    </TspAirLocation>
+    <TspAirLocation id="17">
       <id>15</id>
       <latitude>11522.2222</latitude>
       <longitude>42841.9444</longitude>
-    </City>
-    <City id="18">
+    </TspAirLocation>
+    <TspAirLocation id="18">
       <id>16</id>
       <latitude>11569.4444</latitude>
       <longitude>43136.6667</longitude>
-    </City>
-    <City id="19">
+    </TspAirLocation>
+    <TspAirLocation id="19">
       <id>17</id>
       <latitude>11583.3333</latitude>
       <longitude>43150.0</longitude>
-    </City>
-    <City id="20">
+    </TspAirLocation>
+    <TspAirLocation id="20">
       <id>18</id>
       <latitude>11595.0</latitude>
       <longitude>43148.0556</longitude>
-    </City>
-    <City id="21">
+    </TspAirLocation>
+    <TspAirLocation id="21">
       <id>19</id>
       <latitude>11600.0</latitude>
       <longitude>43150.0</longitude>
-    </City>
-    <City id="22">
+    </TspAirLocation>
+    <TspAirLocation id="22">
       <id>20</id>
       <latitude>11690.5556</latitude>
       <longitude>42686.6667</longitude>
-    </City>
-    <City id="23">
+    </TspAirLocation>
+    <TspAirLocation id="23">
       <id>21</id>
       <latitude>11715.8333</latitude>
       <longitude>41836.1111</longitude>
-    </City>
-    <City id="24">
+    </TspAirLocation>
+    <TspAirLocation id="24">
       <id>22</id>
       <latitude>11751.1111</latitude>
       <longitude>42814.4444</longitude>
-    </City>
-    <City id="25">
+    </TspAirLocation>
+    <TspAirLocation id="25">
       <id>23</id>
       <latitude>11770.2778</latitude>
       <longitude>42651.9444</longitude>
-    </City>
-    <City id="26">
+    </TspAirLocation>
+    <TspAirLocation id="26">
       <id>24</id>
       <latitude>11785.2778</latitude>
       <longitude>42884.4444</longitude>
-    </City>
-    <City id="27">
+    </TspAirLocation>
+    <TspAirLocation id="27">
       <id>25</id>
       <latitude>11822.7778</latitude>
       <longitude>42673.6111</longitude>
-    </City>
-    <City id="28">
+    </TspAirLocation>
+    <TspAirLocation id="28">
       <id>26</id>
       <latitude>11846.9444</latitude>
       <longitude>42660.5556</longitude>
-    </City>
-    <City id="29">
+    </TspAirLocation>
+    <TspAirLocation id="29">
       <id>27</id>
       <latitude>11963.0556</latitude>
       <longitude>43290.5556</longitude>
-    </City>
-    <City id="30">
+    </TspAirLocation>
+    <TspAirLocation id="30">
       <id>28</id>
       <latitude>11973.0556</latitude>
       <longitude>43026.1111</longitude>
-    </City>
-    <City id="31">
+    </TspAirLocation>
+    <TspAirLocation id="31">
       <id>29</id>
       <latitude>12058.3333</latitude>
       <longitude>42195.5556</longitude>
-    </City>
-    <City id="32">
+    </TspAirLocation>
+    <TspAirLocation id="32">
       <id>30</id>
       <latitude>12149.4444</latitude>
       <longitude>42477.5</longitude>
-    </City>
-    <City id="33">
+    </TspAirLocation>
+    <TspAirLocation id="33">
       <id>31</id>
       <latitude>12286.9444</latitude>
       <longitude>43355.5556</longitude>
-    </City>
-    <City id="34">
+    </TspAirLocation>
+    <TspAirLocation id="34">
       <id>32</id>
       <latitude>12300.0</latitude>
       <longitude>42433.3333</longitude>
-    </City>
-    <City id="35">
+    </TspAirLocation>
+    <TspAirLocation id="35">
       <id>33</id>
       <latitude>12355.8333</latitude>
       <longitude>43156.3889</longitude>
-    </City>
-    <City id="36">
+    </TspAirLocation>
+    <TspAirLocation id="36">
       <id>34</id>
       <latitude>12363.3333</latitude>
       <longitude>43189.1667</longitude>
-    </City>
-    <City id="37">
+    </TspAirLocation>
+    <TspAirLocation id="37">
       <id>35</id>
       <latitude>12372.7778</latitude>
       <longitude>42711.3889</longitude>
-    </City>
-    <City id="38">
+    </TspAirLocation>
+    <TspAirLocation id="38">
       <id>36</id>
       <latitude>12386.6667</latitude>
       <longitude>43334.7222</longitude>
-    </City>
-    <City id="39">
+    </TspAirLocation>
+    <TspAirLocation id="39">
       <id>37</id>
       <latitude>12421.6667</latitude>
       <longitude>42895.5556</longitude>
-    </City>
-    <City id="40">
+    </TspAirLocation>
+    <TspAirLocation id="40">
       <id>38</id>
       <latitude>12645.0</latitude>
       <longitude>42973.3333</longitude>
-    </City>
-  </cityList>
+    </TspAirLocation>
+  </locationList>
   <domicile id="41">
     <id>1</id>
-    <city reference="3"/>
+    <location class="TspAirLocation" reference="3"/>
   </domicile>
   <visitList id="42">
     <Visit id="43">
       <id>2</id>
-      <city reference="4"/>
+      <location class="TspAirLocation" reference="4"/>
     </Visit>
     <Visit id="44">
       <id>3</id>
-      <city reference="5"/>
+      <location class="TspAirLocation" reference="5"/>
     </Visit>
     <Visit id="45">
       <id>4</id>
-      <city reference="6"/>
+      <location class="TspAirLocation" reference="6"/>
     </Visit>
     <Visit id="46">
       <id>5</id>
-      <city reference="7"/>
+      <location class="TspAirLocation" reference="7"/>
     </Visit>
     <Visit id="47">
       <id>6</id>
-      <city reference="8"/>
+      <location class="TspAirLocation" reference="8"/>
     </Visit>
     <Visit id="48">
       <id>7</id>
-      <city reference="9"/>
+      <location class="TspAirLocation" reference="9"/>
     </Visit>
     <Visit id="49">
       <id>8</id>
-      <city reference="10"/>
+      <location class="TspAirLocation" reference="10"/>
     </Visit>
     <Visit id="50">
       <id>9</id>
-      <city reference="11"/>
+      <location class="TspAirLocation" reference="11"/>
     </Visit>
     <Visit id="51">
       <id>10</id>
-      <city reference="12"/>
+      <location class="TspAirLocation" reference="12"/>
     </Visit>
     <Visit id="52">
       <id>11</id>
-      <city reference="13"/>
+      <location class="TspAirLocation" reference="13"/>
     </Visit>
     <Visit id="53">
       <id>12</id>
-      <city reference="14"/>
+      <location class="TspAirLocation" reference="14"/>
     </Visit>
     <Visit id="54">
       <id>13</id>
-      <city reference="15"/>
+      <location class="TspAirLocation" reference="15"/>
     </Visit>
     <Visit id="55">
       <id>14</id>
-      <city reference="16"/>
+      <location class="TspAirLocation" reference="16"/>
     </Visit>
     <Visit id="56">
       <id>15</id>
-      <city reference="17"/>
+      <location class="TspAirLocation" reference="17"/>
     </Visit>
     <Visit id="57">
       <id>16</id>
-      <city reference="18"/>
+      <location class="TspAirLocation" reference="18"/>
     </Visit>
     <Visit id="58">
       <id>17</id>
-      <city reference="19"/>
+      <location class="TspAirLocation" reference="19"/>
     </Visit>
     <Visit id="59">
       <id>18</id>
-      <city reference="20"/>
+      <location class="TspAirLocation" reference="20"/>
     </Visit>
     <Visit id="60">
       <id>19</id>
-      <city reference="21"/>
+      <location class="TspAirLocation" reference="21"/>
     </Visit>
     <Visit id="61">
       <id>20</id>
-      <city reference="22"/>
+      <location class="TspAirLocation" reference="22"/>
     </Visit>
     <Visit id="62">
       <id>21</id>
-      <city reference="23"/>
+      <location class="TspAirLocation" reference="23"/>
     </Visit>
     <Visit id="63">
       <id>22</id>
-      <city reference="24"/>
+      <location class="TspAirLocation" reference="24"/>
     </Visit>
     <Visit id="64">
       <id>23</id>
-      <city reference="25"/>
+      <location class="TspAirLocation" reference="25"/>
     </Visit>
     <Visit id="65">
       <id>24</id>
-      <city reference="26"/>
+      <location class="TspAirLocation" reference="26"/>
     </Visit>
     <Visit id="66">
       <id>25</id>
-      <city reference="27"/>
+      <location class="TspAirLocation" reference="27"/>
     </Visit>
     <Visit id="67">
       <id>26</id>
-      <city reference="28"/>
+      <location class="TspAirLocation" reference="28"/>
     </Visit>
     <Visit id="68">
       <id>27</id>
-      <city reference="29"/>
+      <location class="TspAirLocation" reference="29"/>
     </Visit>
     <Visit id="69">
       <id>28</id>
-      <city reference="30"/>
+      <location class="TspAirLocation" reference="30"/>
     </Visit>
     <Visit id="70">
       <id>29</id>
-      <city reference="31"/>
+      <location class="TspAirLocation" reference="31"/>
     </Visit>
     <Visit id="71">
       <id>30</id>
-      <city reference="32"/>
+      <location class="TspAirLocation" reference="32"/>
     </Visit>
     <Visit id="72">
       <id>31</id>
-      <city reference="33"/>
+      <location class="TspAirLocation" reference="33"/>
     </Visit>
     <Visit id="73">
       <id>32</id>
-      <city reference="34"/>
+      <location class="TspAirLocation" reference="34"/>
     </Visit>
     <Visit id="74">
       <id>33</id>
-      <city reference="35"/>
+      <location class="TspAirLocation" reference="35"/>
     </Visit>
     <Visit id="75">
       <id>34</id>
-      <city reference="36"/>
+      <location class="TspAirLocation" reference="36"/>
     </Visit>
     <Visit id="76">
       <id>35</id>
-      <city reference="37"/>
+      <location class="TspAirLocation" reference="37"/>
     </Visit>
     <Visit id="77">
       <id>36</id>
-      <city reference="38"/>
+      <location class="TspAirLocation" reference="38"/>
     </Visit>
     <Visit id="78">
       <id>37</id>
-      <city reference="39"/>
+      <location class="TspAirLocation" reference="39"/>
     </Visit>
     <Visit id="79">
       <id>38</id>
-      <city reference="40"/>
+      <location class="TspAirLocation" reference="40"/>
     </Visit>
   </visitList>
 </TravelingSalesmanTour>

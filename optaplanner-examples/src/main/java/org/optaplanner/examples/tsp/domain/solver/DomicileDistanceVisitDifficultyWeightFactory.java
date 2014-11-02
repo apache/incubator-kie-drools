@@ -43,7 +43,7 @@ public class DomicileDistanceVisitDifficultyWeightFactory implements SelectionSo
         public int compareTo(DomicileDistanceVisitDifficultyWeight other) {
             return new CompareToBuilder()
                     .append(domicileRoundTripDistance, other.domicileRoundTripDistance)
-                    .append(visit.getCity().getLatitude(), other.visit.getCity().getLatitude())
+                    .append(visit.getLocation().getLatitude(), other.visit.getLocation().getLatitude())
                     .append(visit.getId(), other.visit.getId())
                     .toComparison();
         }

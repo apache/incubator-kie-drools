@@ -60,7 +60,7 @@ public class TspListPanel extends JPanel implements Scrollable {
         headerLabel.setOpaque(true);
         add(headerLabel);
         Domicile domicile = travelingSalesmanTour.getDomicile();
-        add(new JLabel(domicile.getCity().getSafeName()));
+        add(new JLabel(domicile.getLocation().toString()));
         if (travelingSalesmanTour.getVisitList().size() > 1000) {
             JLabel tooBigLabel = new JLabel("The dataset is too big to show.");
             add(tooBigLabel);
@@ -74,7 +74,7 @@ public class TspListPanel extends JPanel implements Scrollable {
             if (visit.getPreviousStandstill() == null) {
                 distanceLabelString = "Unassigned";
             } else {
-                distanceLabelString = "After " + visit.getPreviousStandstill().getCity().getSafeName()
+                distanceLabelString = "After " + visit.getPreviousStandstill().getLocation()
                         + " with distance " + visit.getDistanceFromPreviousStandstill();
             }
             visitPanel.add(new JLabel(distanceLabelString));
@@ -91,7 +91,7 @@ public class TspListPanel extends JPanel implements Scrollable {
         private Visit visit;
 
         public VisitAction(Visit visit) {
-            super(visit.getCity().getSafeName());
+            super(visit.getLocation().toString());
             this.visit = visit;
         }
 
@@ -104,7 +104,7 @@ public class TspListPanel extends JPanel implements Scrollable {
             previousStandstillListField.addItem(travelingSalesmanTour.getDomicile());
             previousStandstillListField.setSelectedItem(visit.getPreviousStandstill());
             int result = JOptionPane.showConfirmDialog(TspListPanel.this.getRootPane(), previousStandstillListField,
-                    "Visit " + visit.getCity().getSafeName() + " after", JOptionPane.OK_CANCEL_OPTION);
+                    "Visit " + visit.getLocation() + " after", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Standstill toStandstill = (Standstill) previousStandstillListField.getSelectedItem();
                 tspPanel.doMove(visit, toStandstill);

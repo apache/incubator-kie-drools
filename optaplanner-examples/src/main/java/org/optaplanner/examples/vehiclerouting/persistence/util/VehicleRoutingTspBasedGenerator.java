@@ -26,8 +26,8 @@ import java.util.Random;
 
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.examples.common.app.LoggingMain;
-import org.optaplanner.examples.tsp.domain.City;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
+import org.optaplanner.examples.tsp.domain.location.Location;
 import org.optaplanner.examples.tsp.persistence.TspImporter;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingDao;
 
@@ -74,14 +74,14 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
             vrpWriter.write("EDGE_WEIGHT_TYPE: EUC_2D\n");
             vrpWriter.write("CAPACITY: " + capacity + "\n");
             vrpWriter.write("NODE_COORD_SECTION\n");
-            List<City> cityList = tour.getCityList();
-            double selectionDecrement = (double) locationListSize / (double) cityList.size();
+            List<Location> locationList = tour.getLocationList();
+            double selectionDecrement = (double) locationListSize / (double) locationList.size();
             double selection = (double) locationListSize;
             int index = 1;
-            for (City city : cityList) {
+            for (Location location : locationList) {
                 double newSelection = selection - selectionDecrement;
                 if ((int) newSelection < (int) selection) {
-                    vrpWriter.write(index + " " + city.getLatitude() + " " + city.getLongitude() + "\n");
+                    vrpWriter.write(index + " " + location.getLatitude() + " " + location.getLongitude() + "\n");
                     index++;
                 }
                 selection = newSelection;

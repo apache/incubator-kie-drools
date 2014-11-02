@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,32 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.tsp.domain;
+package org.optaplanner.examples.tsp.domain.location;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
-@XStreamAlias("City")
-public class City extends AbstractPersistable {
+@XStreamAlias("TspLocation")
+@XStreamInclude({
+        AirLocation.class,
+        RoadLocation.class
+})
+public abstract class Location extends AbstractPersistable {
 
-    private String name = null;
-    private double latitude;
-    private double longitude;
+    protected String name = null;
+    protected double latitude;
+    protected double longitude;
+
+    public Location() {
+    }
+
+    public Location(long id, double latitude, double longitude) {
+        super(id);
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 
     public String getName() {
         return name;
@@ -55,19 +70,34 @@ public class City extends AbstractPersistable {
     // ************************************************************************
 
     /**
-     * The distance is not in miles or km, but in the TSPLIB's unit of measurement.
-     * @param city never null
+     * The distance's unit of measurement depends on the {@link VehicleRoutingSolution}'s {@link DistanceType}.
+     * It can be in miles or km, but for most cases it's in the TSPLIB's unit of measurement.
+     * @param location never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public long getDistance(City city) {
+    public abstract int getDistance(Location location);
+
+    public double getAirDistanceDouble(Location location) {
         // Implementation specified by TSPLIB http://www2.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
         // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
-        double latitudeDifference = city.latitude - latitude;
-        double longitudeDifference = city.longitude - longitude;
-        double distance = Math.sqrt(
+        double latitudeDifference = location.latitude - latitude;
+        double longitudeDifference = location.longitude - longitude;
+        return Math.sqrt(
                 (latitudeDifference * latitudeDifference) + (longitudeDifference * longitudeDifference));
-        return (long) (distance * 1000.0 + 0.5);
     }
+
+    /**
+     * The angle relative to the direction EAST.
+     * @param location never null
+     * @return in Cartesian coordinates
+     */
+    public double getAngle(Location location) {
+        // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
+        double latitudeDifference = location.latitude - latitude;
+        double longitudeDifference = location.longitude - longitude;
+        return Math.atan2(latitudeDifference, longitudeDifference);
+    }
+
 
     @Override
     public String toString() {
@@ -75,13 +105,6 @@ public class City extends AbstractPersistable {
             return id.toString();
         }
         return id.toString() + "-" + name;
-    }
-
-    public String getSafeName() {
-        if (name == null) {
-            return id.toString();
-        }
-        return name;
     }
 
 }
