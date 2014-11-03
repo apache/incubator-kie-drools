@@ -29,7 +29,6 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
-import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.services.api.DeploymentEvent;
 import org.jbpm.services.api.DeploymentEventListener;
@@ -46,6 +45,7 @@ import org.jbpm.shared.services.impl.commands.QueryNameCommand;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.InternalTaskService;

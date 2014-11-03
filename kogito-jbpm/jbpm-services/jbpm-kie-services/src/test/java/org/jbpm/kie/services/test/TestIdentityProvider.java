@@ -19,7 +19,7 @@ package org.jbpm.kie.services.test;
 import java.util.Collections;
 import java.util.List;
 
-import org.jbpm.kie.services.api.IdentityProvider;
+import org.kie.internal.identity.IdentityProvider;
 
 public class TestIdentityProvider implements IdentityProvider {
 

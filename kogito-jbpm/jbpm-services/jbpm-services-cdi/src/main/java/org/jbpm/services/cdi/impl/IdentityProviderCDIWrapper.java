@@ -21,8 +21,8 @@ import java.util.List;
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.inject.Instance;
 
-import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.services.cdi.RequestScopedBackupIdentityProvider;
+import org.kie.internal.identity.IdentityProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

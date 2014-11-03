@@ -16,7 +16,6 @@
 
 package org.jbpm.kie.services.impl.audit;
 
-import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.VariableInstanceLog;
@@ -27,6 +26,7 @@ import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
+import org.kie.internal.identity.IdentityProvider;
 
 
 public class ServicesAwareAuditEventBuilder extends DefaultAuditEventBuilderImpl {

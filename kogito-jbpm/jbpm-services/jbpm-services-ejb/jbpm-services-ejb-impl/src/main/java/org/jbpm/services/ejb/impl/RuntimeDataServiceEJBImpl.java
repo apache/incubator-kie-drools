@@ -28,7 +28,6 @@ import javax.ejb.Singleton;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.kie.services.impl.RuntimeDataServiceImpl;
 import org.jbpm.services.api.DeploymentEvent;
 import org.jbpm.services.api.DeploymentEventListener;
@@ -40,6 +39,7 @@ import org.jbpm.services.ejb.impl.identity.EJBContextIdentityProvider;
 import org.jbpm.services.ejb.impl.tx.TransactionalCommandServiceEJBImpl;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.kie.api.task.TaskService;
+import org.kie.internal.identity.IdentityProvider;
 
 @Singleton
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)

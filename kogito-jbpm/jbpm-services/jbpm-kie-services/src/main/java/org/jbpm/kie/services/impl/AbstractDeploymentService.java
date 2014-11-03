@@ -27,7 +27,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
 import org.jbpm.kie.services.impl.security.IdentityRolesSecurityManager;
 import org.jbpm.process.audit.event.AuditEventBuilder;
@@ -45,6 +44,7 @@ import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.query.QueryContext;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;

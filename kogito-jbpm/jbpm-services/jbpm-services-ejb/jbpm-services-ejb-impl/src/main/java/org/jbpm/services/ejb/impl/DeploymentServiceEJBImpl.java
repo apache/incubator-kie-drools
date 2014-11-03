@@ -30,7 +30,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
-import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.kie.services.impl.KModuleDeploymentService;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl;
@@ -45,6 +44,7 @@ import org.jbpm.services.ejb.api.DeploymentServiceEJBLocal;
 import org.jbpm.services.ejb.api.DeploymentServiceEJBRemote;
 import org.jbpm.services.ejb.api.RuntimeDataServiceEJBLocal;
 import org.jbpm.services.ejb.impl.identity.EJBContextIdentityProvider;
+import org.kie.internal.identity.IdentityProvider;
 
 @Singleton
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)

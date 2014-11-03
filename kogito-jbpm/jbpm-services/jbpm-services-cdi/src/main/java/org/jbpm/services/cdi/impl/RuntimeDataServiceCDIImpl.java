@@ -21,7 +21,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.kie.services.impl.RuntimeDataServiceImpl;
 import org.jbpm.services.api.DeploymentEvent;
 import org.jbpm.services.cdi.Deploy;
@@ -29,6 +28,7 @@ import org.jbpm.services.cdi.RequestScopedBackupIdentityProvider;
 import org.jbpm.services.cdi.Undeploy;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.kie.api.task.TaskService;
+import org.kie.internal.identity.IdentityProvider;
 
 @ApplicationScoped
 public class RuntimeDataServiceCDIImpl extends RuntimeDataServiceImpl {

@@ -25,7 +25,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
-import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.kie.services.impl.KModuleDeploymentService;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.process.audit.event.AuditEventBuilder;
@@ -42,6 +41,7 @@ import org.jbpm.services.cdi.impl.manager.InjectableRegisterableItemsFactory;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
+import org.kie.internal.identity.IdentityProvider;
 
 @ApplicationScoped
 @Kjar

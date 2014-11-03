@@ -21,7 +21,8 @@ import java.util.List;
 
 import javax.ejb.EJBContext;
 
-import org.jbpm.kie.services.api.IdentityProvider;
+import org.kie.internal.identity.IdentityProvider;
+
 
 public class EJBContextIdentityProvider implements IdentityProvider {
 

@@ -18,7 +18,7 @@ package org.jbpm.kie.services.impl.security;
 
 import java.util.List;
 
-import org.jbpm.kie.services.api.IdentityProvider;
+import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.runtime.manager.SecurityManager;
 
 public class IdentityRolesSecurityManager implements SecurityManager {
