@@ -80,6 +80,10 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
     }
 
     public void executeWorkItem(WorkItem workItem, final WorkItemManager manager) {
+    	
+    	// since JaxWsDynamicClientFactory will change the TCCL we need to restore it after creating client
+        ClassLoader origClassloader = Thread.currentThread().getContextClassLoader();
+        
     	Object[] parameters = null;
         String interfaceRef = (String) workItem.getParameter("Interface");
         String operationRef = (String) workItem.getParameter("Operation");
@@ -181,7 +185,9 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
 
          } catch (Exception e) {
              handleException(e);
-         }
+         } finally {
+     		Thread.currentThread().setContextClassLoader(origClassloader);
+     	}
     }
     
     @SuppressWarnings("unchecked")

@@ -54,44 +54,50 @@ public class WebServiceCommand implements Command, Cacheable {
 
     @Override
     public ExecutionResults execute(CommandContext ctx) throws Exception {
-    	Object[] parameters = null;
-        WorkItem workItem = (WorkItem) ctx.getData("workItem");
-        
-        String interfaceRef = (String) workItem.getParameter("Interface");
-        String operationRef = (String) workItem.getParameter("Operation");
-        String endpointAddress = (String) workItem.getParameter("Endpoint");
-        if ( workItem.getParameter("Parameter") instanceof Object[]) {
-        	parameters =  (Object[]) workItem.getParameter("Parameter");
-        } else if (workItem.getParameter("Parameter") != null && workItem.getParameter("Parameter").getClass().isArray()) {
-        	int length = Array.getLength(workItem.getParameter("Parameter"));
-            parameters = new Object[length];
-            for(int i = 0; i < length; i++) {
-            	parameters[i] = Array.get(workItem.getParameter("Parameter"), i);
-            }            
-        } else {
-        	parameters = new Object[]{ workItem.getParameter("Parameter")};
-        }
-        
-        Client client = getWSClient(workItem, interfaceRef);
-        
-        //Override endpoint address if configured.
-        if (endpointAddress != null && !"".equals(endpointAddress)) {
-       	 client.getRequestContext().put(Message.ENDPOINT_ADDRESS, endpointAddress) ;
-        }
-        
-        Object[] result = client.invoke(operationRef, parameters);
-        
-        ExecutionResults results = new ExecutionResults();       
-
-        if (result == null || result.length == 0) {
-            results.setData("Result", null);
-        } else {
-            results.setData("Result", result[0]);
-        }
-        logger.debug("Received sync response {}", result);
-        
-        
-        return results;
+    	// since JaxWsDynamicClientFactory will change the TCCL we need to restore it after creating client
+        ClassLoader origClassloader = Thread.currentThread().getContextClassLoader();
+        try {
+	    	Object[] parameters = null;
+	        WorkItem workItem = (WorkItem) ctx.getData("workItem");
+	        
+	        String interfaceRef = (String) workItem.getParameter("Interface");
+	        String operationRef = (String) workItem.getParameter("Operation");
+	        String endpointAddress = (String) workItem.getParameter("Endpoint");
+	        if ( workItem.getParameter("Parameter") instanceof Object[]) {
+	        	parameters =  (Object[]) workItem.getParameter("Parameter");
+	        } else if (workItem.getParameter("Parameter") != null && workItem.getParameter("Parameter").getClass().isArray()) {
+	        	int length = Array.getLength(workItem.getParameter("Parameter"));
+	            parameters = new Object[length];
+	            for(int i = 0; i < length; i++) {
+	            	parameters[i] = Array.get(workItem.getParameter("Parameter"), i);
+	            }            
+	        } else {
+	        	parameters = new Object[]{ workItem.getParameter("Parameter")};
+	        }
+	        
+	        Client client = getWSClient(workItem, interfaceRef);
+	        
+	        //Override endpoint address if configured.
+	        if (endpointAddress != null && !"".equals(endpointAddress)) {
+	       	 client.getRequestContext().put(Message.ENDPOINT_ADDRESS, endpointAddress) ;
+	        }
+	        
+	        Object[] result = client.invoke(operationRef, parameters);
+	        
+	        ExecutionResults results = new ExecutionResults();       
+	
+	        if (result == null || result.length == 0) {
+	            results.setData("Result", null);
+	        } else {
+	            results.setData("Result", result[0]);
+	        }
+	        logger.debug("Received sync response {}", result);
+	        
+	        
+	        return results;
+        }finally {
+    		Thread.currentThread().setContextClassLoader(origClassloader);
+    	}
     }
     
     
@@ -104,9 +110,11 @@ public class WebServiceCommand implements Command, Cacheable {
         String importNamespace = (String) workItem.getParameter("Namespace");
         if (importLocation != null && importLocation.trim().length() > 0 
                 && importNamespace != null && importNamespace.trim().length() > 0) {
+        	
             Client client = dcf.createClient(importLocation, new QName(importNamespace, interfaceRef), Thread.currentThread().getContextClassLoader(), null);
             clients.put(interfaceRef, client);
             return client;
+        	
         }
 
         return null;

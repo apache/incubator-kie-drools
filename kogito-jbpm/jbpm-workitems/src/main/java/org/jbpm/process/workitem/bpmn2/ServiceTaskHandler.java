@@ -87,6 +87,9 @@ public class ServiceTaskHandler extends AbstractLogOrThrowWorkItemHandler implem
     public void executeWorkItem(WorkItem workItem, final WorkItemManager manager) {
         String implementation = (String) workItem.getParameter("implementation");
         if ("##WebService".equalsIgnoreCase(implementation)) {
+            // since JaxWsDynamicClientFactory will change the TCCL we need to restore it after creating client
+            ClassLoader origClassloader = Thread.currentThread().getContextClassLoader();
+            
             String interfaceRef = (String) workItem.getParameter("interfaceImplementationRef");
             String operationRef = (String) workItem.getParameter("operationImplementationRef");
             Object parameter = workItem.getParameter("Parameter");
@@ -165,7 +168,9 @@ public class ServiceTaskHandler extends AbstractLogOrThrowWorkItemHandler implem
 
              } catch (Exception e) {
                  handleException(e, interfaceRef, operationRef, parameter.getClass().getName(), parameter);
-             }
+             } finally {
+         		Thread.currentThread().setContextClassLoader(origClassloader);
+         	}
         } else {
             executeJavaWorkItem(workItem, manager);
         }
@@ -178,7 +183,7 @@ public class ServiceTaskHandler extends AbstractLogOrThrowWorkItemHandler implem
         if (clients.containsKey(interfaceRef)) {
             return clients.get(interfaceRef);
         }
-        
+
         long processInstanceId = ((WorkItemImpl) workItem).getProcessInstanceId();
         WorkflowProcessImpl process = ((WorkflowProcessImpl) ksession.getProcessInstance(processInstanceId).getProcess());
         List<Bpmn2Import> typedImports = (List<Bpmn2Import>)process.getMetaData("Bpmn2Imports");
