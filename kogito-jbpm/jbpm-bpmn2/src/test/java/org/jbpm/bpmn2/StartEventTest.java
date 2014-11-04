@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.drools.core.util.IoUtils;
+import org.jbpm.bpmn2.objects.NotAvailableGoodsReport;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.joda.time.DateTime;
@@ -548,6 +549,25 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         Thread.sleep(1100);
         
         assertEquals(1, listener.getCount("start.delaying"));
+    }
+    
+    @Test
+    public void testSignalStartWithCustomEvent() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-SingalStartWithCustomEvent.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        final List<ProcessInstance> list = new ArrayList<ProcessInstance>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance());
+            }
+        });
+        NotAvailableGoodsReport report = new NotAvailableGoodsReport("test");
+        ksession.signalEvent("SignalNotAvailableGoods", report);
+        Thread.sleep(500);
+        assertEquals(1, getNumberOfProcessInstances("org.jbpm.example.SignalObjectProcess"));
+        assertEquals(1, list.size());
+        assertProcessVarValue(list.get(0), "report", "NotAvailableGoodsReport{type:test}");
+
     }
 
     

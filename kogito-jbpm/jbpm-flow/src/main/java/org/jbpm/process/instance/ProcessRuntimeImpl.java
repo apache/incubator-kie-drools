@@ -388,15 +388,20 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	        Map<String, Object> params = null;
 	        if ( inMappings != null && !inMappings.isEmpty() ) {
 	        	params = new HashMap<String, Object>();
-	            for ( Map.Entry<String, String> entry : inMappings.entrySet() ) {
-	                if ( "event".equals( entry.getValue() ) ) {
-	                    params.put( entry.getKey(),
-	                                event );
-	                } else {
-	                    params.put( entry.getKey(),
-	                                entry.getValue() );
+	        	
+	        	if (inMappings.size() == 1) {
+	        		params.put( inMappings.keySet().iterator().next(), event );
+	        	} else {
+		            for ( Map.Entry<String, String> entry : inMappings.entrySet() ) {
+		                if ( "event".equals( entry.getValue() ) ) {
+		                    params.put( entry.getKey(),
+		                                event );
+		                } else {
+		                    params.put( entry.getKey(),
+		                                entry.getValue() );
 	                }
 	            }
+	        	}
 	        }
 	        RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get("RuntimeManager");
             if (manager != null) {
