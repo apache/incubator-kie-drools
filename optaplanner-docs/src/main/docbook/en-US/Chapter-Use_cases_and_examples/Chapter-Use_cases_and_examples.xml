@@ -1486,11 +1486,26 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
 
         <para>For the optimization algorithm, this doesn't matter much, as long as the distance between 2 points can be
         looked up (and are preferably precalculated). The road cost doesn't even need to be a distance, it can also be
-        travel time, fuel cost, or a weighted function of those. There are several technologies available to
-        precalculate road costs, such as <link xlink:href="https://graphhopper.com/">GraphHopper</link> (embeddable,
-        offline Java engine) and <link xlink:href="http://open.mapquestapi.com/directions/#matrix">Open MapQuest</link>
-        (webservice). There are also several technologies to render it, such as <link
+        travel time, fuel cost, or a weighted function of those. There are several Google Maps like technologies
+        available to precalculate road costs, such as <link xlink:href="https://graphhopper.com/">GraphHopper</link>
+        (embeddable, offline Java engine) and <link xlink:href="http://open.mapquestapi.com/directions/#matrix">Open
+        MapQuest</link> (web service). There are also several technologies to render it, such as <link
         xlink:href="http://leafletjs.com">Leaflet</link>.</para>
+
+        <para>Take special care that the road costs between 2 points use the same optimization criteria as the one used
+        in OptaPlanner. For example, GraphHopper etc will by default return the fastest route, not the shortest route.
+        Don't use the km (or miles) distances of the fastest GPS routes to optimize the shortest trip in OptaPlanner:
+        this leads to a suboptimal solution as shown below:</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/roadDistanceTriangleInequality.png"/>
+          </imageobject>
+        </mediaobject>
+
+        <para>Contrary to popular belief, most users don't want the shortest route: they want the fastest route instead.
+        They prefer highways over normal roads. They prefer normal roads over dirt roads. In the real world, the fastest
+        and shortest route are rarely the same.</para>
       </section>
     </section>
 
