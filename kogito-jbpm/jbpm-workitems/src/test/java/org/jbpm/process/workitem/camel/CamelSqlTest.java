@@ -36,7 +36,7 @@ public class CamelSqlTest extends AbstractBaseTest {
 
     private static final String DB_USER = "sa";
     private static final String DB_PASSWD = "";
-    private static final String DB_URL = "jdbc:h2:tcp://localhost/~/jbpm-db2;MVCC=TRUE";
+    private static final String DB_URL = "jdbc:h2:tcp://localhost/~/jbpm-db-test;MVCC=TRUE";
     private static final String DB_DRIVER = "org.h2.Driver";
     private static final String PROCESS_DEFINITION = "/BPMN2-CamelSqlProcess.bpmn2";
 
