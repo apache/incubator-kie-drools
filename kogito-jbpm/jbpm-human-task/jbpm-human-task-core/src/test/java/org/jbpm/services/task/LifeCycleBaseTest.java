@@ -45,6 +45,7 @@ import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.ContentData;
+import org.kie.internal.task.api.model.FaultData;
 import org.kie.internal.task.api.model.InternalComment;
 import org.kie.internal.task.api.model.InternalI18NText;
 import org.kie.internal.task.api.model.InternalOrganizationalEntity;
@@ -1455,6 +1456,13 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         params.put("content", "content");
         taskService.complete(taskId, "Darth Vader", params);
 
+        List<Content> allContent = taskService.getAllContentByTaskId(taskId);
+        assertNotNull(allContent);
+        assertEquals(3, allContent.size());
+        // only input(0) and output(1) is present
+        assertNotNull(allContent.get(0));
+        assertNotNull(allContent.get(1));
+        assertNull(allContent.get(2));
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(AccessType.Inline, ((InternalTaskData) task2.getTaskData()).getOutputAccessType());
@@ -1467,6 +1475,22 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         Content content = taskService.getContentById(contentId);
         Map<String, Object> unmarshalledObject = (Map<String, Object>) ContentMarshallerHelper.unmarshall(content.getContent(), null);
         assertEquals("content", unmarshalledObject.get("content"));
+        
+        // update content
+        params.put("content", "updated content");
+	    taskService.setOutput(taskId, "Darth Vader", params);
+	    
+	    task = taskService.getTaskById(taskId);
+	    contentId = task.getTaskData().getOutputContentId();
+	    
+	    content = taskService.getContentById(contentId);
+	    String updated = new String(content.getContent());
+	    unmarshalledObject = (Map<String, Object>) ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        assertEquals("updated content", unmarshalledObject.get("content"));
+        
+        taskService.deleteOutput(taskId, "Darth Vader");
+        content = taskService.getContentById(contentId);
+        assertNull(content);
     }
 
     @Test
@@ -1614,18 +1638,20 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         assertEquals(Status.InProgress, task1.getTaskData().getStatus());
         assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
 
-//        FaultData data = new FaultData();
-//        data.setAccessType(AccessType.Inline);
-//        data.setType("type");
-//        data.setFaultName("faultName");
-//        data.setContent("content".getBytes());
         Map<String, Object> faultData = new HashMap<String, Object>();
         faultData.put("faultType", "type");
         faultData.put("faultName", "faultName");
         faultData.put("content", "content");
 
         taskService.fail(taskId, "Darth Vader", faultData);
-
+        
+        List<Content> allContent = taskService.getAllContentByTaskId(taskId);
+        assertNotNull(allContent);
+        assertEquals(3, allContent.size());
+        // only input(0) and fault(2) is present
+        assertNotNull(allContent.get(0));
+        assertNull(allContent.get(1));
+        assertNotNull(allContent.get(2));
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.Failed, task2.getTaskData().getStatus());
@@ -1641,6 +1667,27 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         Map<String, Object> unmarshalledContent = (Map<String, Object>) ContentMarshallerHelper.unmarshall(content.getContent(), null);
         assertEquals("content", unmarshalledContent.get("content"));
         xmlRoundTripContent(content);
+        
+        // update fault
+	    FaultData data = TaskModelProvider.getFactory().newFaultData();
+	    data.setAccessType(AccessType.Inline);
+	    data.setType("type");
+	    data.setFaultName("faultName");
+	    data.setContent("updated content".getBytes());
+	    
+	    taskService.setFault(taskId, "Darth Vader", data);
+	    
+	    task = taskService.getTaskById(taskId);
+	    contentId = task.getTaskData().getFaultContentId();
+	    
+	    content = taskService.getContentById(contentId);
+	    String updated = new String(content.getContent());
+	    assertEquals("updated content", updated);
+        
+	    // delete fault
+        taskService.deleteFault(taskId, "Darth Vader");
+        content = taskService.getContentById(contentId);
+        assertNull(content);
     }
 //    
 //    /**
@@ -2195,6 +2242,31 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         // we don't need to query for our task to see what we will claim, just claim the next one available for us
 
         taskService.claimNextAvailable("Bobba Fet", "en-UK");
+
+
+        List<Status> status = new ArrayList<Status>();
+        status.add(Status.Ready);
+        List<TaskSummary> salaboyTasks = taskService.getTasksAssignedAsPotentialOwnerByStatus("salaboy", status, "en-UK");
+        assertEquals(0, salaboyTasks.size());
+
+    }
+    
+    @Test
+    public void testClaimNextAvailableWithGroups() {
+        
+        // Create a local instance of the TaskService
+
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('salaboy'), new User('Bobba Fet') ],businessAdministrators = [ new User('Administrator') ], }),";
+        str += "name =  'This is my task name' })";
+
+        // Deploy the Task Definition to the Task Component
+        taskService.addTask((Task) TaskFactory.evalTask(new StringReader(str)), new HashMap<String, Object>());
+
+        // we don't need to query for our task to see what we will claim, just claim the next one available for us
+        List<String> groups = new ArrayList<String>();
+        groups.add("HR");
+        taskService.claimNextAvailable("Bobba Fet", groups);
 
 
         List<Status> status = new ArrayList<Status>();

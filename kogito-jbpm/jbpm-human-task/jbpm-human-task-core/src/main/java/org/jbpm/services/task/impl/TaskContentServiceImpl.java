@@ -15,6 +15,7 @@
  */
 package org.jbpm.services.task.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -94,7 +95,19 @@ public class TaskContentServiceImpl implements TaskContentService {
     }
 
     public List<Content> getAllContentByTaskId(long taskId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    	Task task = persistenceContext.findTask(taskId);
+    	
+    	long inputContentId = task.getTaskData().getDocumentContentId();
+    	long outputContentId = task.getTaskData().getOutputContentId();
+    	long faultContentId = task.getTaskData().getFaultContentId();
+    	
+    	List<Content> allContent = new ArrayList<Content>();
+    	
+    	allContent.add(persistenceContext.findContent(inputContentId));
+    	allContent.add(persistenceContext.findContent(outputContentId));
+    	allContent.add(persistenceContext.findContent(faultContentId));
+    	
+        return allContent;
     }
 
     public Content getContentById(long contentId) {

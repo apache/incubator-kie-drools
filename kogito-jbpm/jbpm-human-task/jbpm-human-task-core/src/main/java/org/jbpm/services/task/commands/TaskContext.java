@@ -153,15 +153,15 @@ public class TaskContext implements org.kie.internal.task.api.TaskContext {
 	 */
 	
     public World getContextManager() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported for this type of context.");
     }
 
     public String getName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported for this type of context.");
     }
 
     public void remove(String string) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported for this type of context.");
     }    
 
 }

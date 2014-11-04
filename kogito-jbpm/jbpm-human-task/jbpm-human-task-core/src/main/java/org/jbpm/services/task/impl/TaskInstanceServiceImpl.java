@@ -23,12 +23,14 @@ import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskInstanceService;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.FaultData;
 import org.kie.internal.task.api.model.InternalContent;
+import org.kie.internal.task.api.model.InternalPeopleAssignments;
 import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
 import org.kie.internal.task.api.model.Operation;
@@ -118,7 +120,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     public void claim(long taskId, String userId, List<String> groupIds) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    	lifeCycleManager.taskOperation(Operation.Claim, taskId, userId, null, null, groupIds);
     }
 
     public void claimNextAvailable(String userId) {
@@ -130,12 +132,21 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         if (queryTasks.size() > 0) {
             lifeCycleManager.taskOperation(Operation.Claim, queryTasks.get(0).getId(), userId, null, null, null);
         } else {
-            //log.log(Level.SEVERE, " No Task Available to Assign");
+        	logger.info("No task available to assign for user {}", userId);
         }
     }
 
     public void claimNextAvailable(String userId, List<String> groupIds) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<Status> status = new ArrayList<Status>();
+        status.add(Status.Ready);
+        List<TaskSummary> queryTasks = persistenceContext.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByStatusByGroup", 
+                persistenceContext.addParametersToMap("userId", userId, "status", status, "groupIds", groupIds),
+                ClassUtil.<List<TaskSummary>>castClass(List.class));;
+        if (queryTasks.size() > 0) {
+            lifeCycleManager.taskOperation(Operation.Claim, queryTasks.get(0).getId(), userId, null, null, null);
+        } else {
+            logger.info("No task available to assign for user {} and groups {}", userId, groupIds);
+        }
     }
 
     public void complete(long taskId, String userId, Map<String, Object> data) {
@@ -147,11 +158,25 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     public void deleteFault(long taskId, String userId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    	Task task = persistenceContext.findTask(taskId);
+    	
+    	long contentId = task.getTaskData().getFaultContentId();
+        Content content = persistenceContext.findContent(contentId);
+        FaultData data = TaskModelProvider.getFactory().newFaultData();
+        persistenceContext.removeContent(content);
+        
+        ((InternalTaskData) task.getTaskData()).setFault(0, data);
     }
 
     public void deleteOutput(long taskId, String userId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    	Task task = persistenceContext.findTask(taskId);
+    	
+    	long contentId = task.getTaskData().getOutputContentId();
+        Content content = persistenceContext.findContent(contentId);
+        ContentData data = TaskModelProvider.getFactory().newContentData();
+        persistenceContext.removeContent(content);
+        
+        ((InternalTaskData) task.getTaskData()).setOutput(0, data);
     }
 
     public void exit(long taskId, String userId) {
@@ -171,7 +196,13 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     public void remove(long taskId, String userId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    	Task task = persistenceContext.findTask(taskId);
+    	User user = persistenceContext.findUser(userId);
+    	if (((InternalPeopleAssignments)task.getPeopleAssignments()).getRecipients().contains(user)) {
+    		((InternalPeopleAssignments)task.getPeopleAssignments()).getRecipients().remove(user);
+		} else {
+			throw new RuntimeException("Couldn't remove user " + userId + " since it isn't a notification recipient");
+		}
     }
 
     public void resume(long taskId, String userId) {
@@ -179,11 +210,23 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     public void setFault(long taskId, String userId, FaultData fault) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    	Task task = persistenceContext.findTask(taskId);
+    	
+    	Content content = TaskModelProvider.getFactory().newContent();
+		((InternalContent) content).setContent(fault.getContent());
+		persistenceContext.persistContent(content);
+		((InternalTaskData) task.getTaskData()).setFault(content.getId(), fault);
+		
     }
 
     public void setOutput(long taskId, String userId, Object outputContentData) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    	Task task = persistenceContext.findTask(taskId);
+    	
+    	ContentData contentData = ContentMarshallerHelper.marshal(outputContentData, environment);
+		Content content = TaskModelProvider.getFactory().newContent();
+		((InternalContent) content).setContent(contentData.getContent());
+		persistenceContext.persistContent(content);
+		((InternalTaskData) task.getTaskData()).setOutput(content.getId(), contentData);
     }
 
     public void setPriority(long taskId, int priority) {
@@ -264,7 +307,8 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         return ((InternalTask) task).getSubTaskStrategy();
     }
     
-    public <T> T execute(Command<T> command) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public <T> T execute(Command<T> command) {
         return (T) ((TaskCommand) command).execute( new TaskContext() );
     }
 
