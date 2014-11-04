@@ -1062,6 +1062,11 @@ public class KnowledgeBaseImpl
         // Merge imports
         final Map<String, ImportDeclaration> imports = pkg.getImports();
         imports.putAll(newPkg.getImports());
+        
+        // Merge static imports
+        for (String staticImport : newPkg.getStaticImports()) {
+            pkg.addStaticImport(staticImport);
+        }
 
         String lastIdent = null;
         String lastType = null;
