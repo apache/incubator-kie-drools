@@ -4,7 +4,11 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.lang.NumberUtils;
 import org.apache.commons.lang.StringUtils;
@@ -71,10 +75,10 @@ class RuleModelPersistenceHelper {
 
         } else if ( DataType.TYPE_DATE.equals( dataType ) ) {
             try {
-                new SimpleDateFormat( DateUtils.getDateFormatMask(), Locale.ENGLISH ).parse(adjustParam(dataType,
-                                                                                            value,
-                                                                                            Collections.EMPTY_MAP,
-                                                                                            isJavaDialect));
+                new SimpleDateFormat( DateUtils.getDateFormatMask(), Locale.ENGLISH ).parse( adjustParam( dataType,
+                                                                                                          value,
+                                                                                                          Collections.EMPTY_MAP,
+                                                                                                          isJavaDialect ) );
                 return FieldNatureType.TYPE_LITERAL;
             } catch ( ParseException e ) {
                 e.printStackTrace();
@@ -317,8 +321,12 @@ class RuleModelPersistenceHelper {
             return param.substring( "sdf.parse(\"".length(),
                                     param.length() - 2 );
         } else if ( DataType.TYPE_STRING.equals( dataType ) ) {
-            return param.substring( 1,
-                                    param.length() - 1 );
+            if ( param.startsWith( "\"" ) && param.endsWith( "\"" ) ) {
+                return param.substring( 1,
+                                        param.length() - 1 );
+            } else {
+                return param;
+            }
         } else if ( DataType.TYPE_NUMERIC_BIGDECIMAL.equals( dataType ) ) {
             if ( isJavaDialect ) {
                 return param.substring( "new java.math.BigDecimal(\"".length(),
