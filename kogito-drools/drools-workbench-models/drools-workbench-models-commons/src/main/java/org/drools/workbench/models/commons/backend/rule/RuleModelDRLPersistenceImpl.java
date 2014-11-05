@@ -16,6 +16,17 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.AccumulateDescr;
@@ -110,18 +121,7 @@ import org.drools.workbench.models.datamodel.workitems.PortableParameterDefiniti
 import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static org.drools.core.util.StringUtils.splitArgumentsList;
+import static org.drools.core.util.StringUtils.*;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.*;
 
 /**
@@ -3064,16 +3064,24 @@ public class RuleModelDRLPersistenceImpl
                                                      Float.class.getName() );
             }
         }
+
+        final int fieldNature = inferFieldNature( dataType,
+                                                  value,
+                                                  boundParams,
+                                                  isJavaDialect );
+
+        //If the field is a formula don't adjust the param value
+        String paramValue = value;
+        if ( fieldNature != FieldNatureType.TYPE_FORMULA ) {
+            paramValue = adjustParam( dataType,
+                                      value,
+                                      boundParams,
+                                      isJavaDialect );
+        }
         ActionFieldValue fieldValue = new ActionFieldValue( field,
-                                                            adjustParam( dataType,
-                                                                         value,
-                                                                         boundParams,
-                                                                         isJavaDialect ),
+                                                            paramValue,
                                                             dataType );
-        fieldValue.setNature( inferFieldNature( dataType,
-                                                value,
-                                                boundParams,
-                                                isJavaDialect ) );
+        fieldValue.setNature( fieldNature );
         return fieldValue;
     }
 
