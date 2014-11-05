@@ -39,6 +39,7 @@ import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.User;
+import org.kie.api.task.model.Group;
 import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.FaultData;
@@ -806,7 +807,7 @@ public class TaskDataImpl implements InternalTaskData {
         }
     }
 
-    static GroupImpl convertToGroupImpl(GroupImpl group) { 
+    static GroupImpl convertToGroupImpl(Group group) { 
         if( group == null ) { 
             return null;
         }
