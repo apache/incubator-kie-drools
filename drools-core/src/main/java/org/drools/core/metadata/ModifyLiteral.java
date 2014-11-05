@@ -105,6 +105,7 @@ public abstract class ModifyLiteral<T> extends AbstractWMTask<T> implements Modi
         return target;
     }
 
+
     protected void computeModificationMasks( InternalKnowledgeBase knowledgeBase ) {
         List<String> settableProperties = getSettableProperties( target, knowledgeBase );
         modificationMask = PropertySpecificUtil.getEmptyPropertyReactiveMask( settableProperties.size() );
@@ -114,12 +115,15 @@ public abstract class ModifyLiteral<T> extends AbstractWMTask<T> implements Modi
             for ( int j = 0; j < with.length; j++ ) {
                 inverseSettableProperties[ j ] = getSettableProperties( with[ j ], knowledgeBase );
                 extraMasks[ j ] = PropertySpecificUtil.getEmptyPropertyReactiveMask( inverseSettableProperties[ j ].size() );
+            }
+            for ( int j = 0; j < with.length; j++ ) {
                 task.computeModificationMasks( modificationMask, settableProperties, with, extraMasks, inverseSettableProperties );
             }
         } else {
             task.computeModificationMasks( modificationMask, settableProperties, null, null, null );
         }
     }
+
 
     protected List<String> getSettableProperties( Object o, InternalKnowledgeBase knowledgeBase ) {
         if ( knowledgeBase != null ) {
