@@ -23,35 +23,31 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class LinearDistributionNearbyRandomTest {
+public class BetaDistributionNearbyRandomTest {
 
     @Test(expected = IllegalArgumentException.class)
-    public void sizeMaximumTooLow(){
-        NearbyRandom nearbyRandom = new LinearDistributionNearbyRandom(-10);
+    public void betaDistributionAlphaTooLow(){
+        NearbyRandom nearbyRandom = new BetaDistributionNearbyRandom(-0.2, 0.3);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void betaDistributionBetaTooLow(){
+        NearbyRandom nearbyRandom = new BetaDistributionNearbyRandom(0.2, -0.3);
     }
 
     @Test
-    public void nextInt() {
+    public void nextIntUniform() {
         Random random = mock(Random.class);
-        NearbyRandom nearbyRandom = new LinearDistributionNearbyRandom(100);
+        NearbyRandom nearbyRandom = new BetaDistributionNearbyRandom(1.0, 1.0);
 
         when(random.nextDouble()).thenReturn(0.0);
         assertEquals(0, nearbyRandom.nextInt(random, 500));
-        when(random.nextDouble()).thenReturn(2.0 / 100.0);
+        when(random.nextDouble()).thenReturn(1.0 / 500.0);
         assertEquals(1, nearbyRandom.nextInt(random, 500));
-        when(random.nextDouble()).thenReturn(2.0 / 100.0 + 2.0 / 100.0 + 2.0 / 10000.0);
+        when(random.nextDouble()).thenReturn(2.0 / 500.0);
         assertEquals(2, nearbyRandom.nextInt(random, 500));
-        when(random.nextDouble()).thenReturn(2.0 / 100.0 + 2.0 / 100.0 + 2.0 / 10000.0 + 2.0 / 100.0 + 4.0 / 10000.0);
+        when(random.nextDouble()).thenReturn(3.0 / 500.0);
         assertEquals(3, nearbyRandom.nextInt(random, 500));
-        when(random.nextDouble()).thenReturn(Math.nextAfter(1.0, Double.NEGATIVE_INFINITY));
-        assertEquals(99, nearbyRandom.nextInt(random, 500));
-
-        when(random.nextDouble()).thenReturn(0.0);
-        assertEquals(0, nearbyRandom.nextInt(random, 10));
-        when(random.nextDouble()).thenReturn(2.0 / 10.0);
-        assertEquals(1, nearbyRandom.nextInt(random, 10));
-        when(random.nextDouble()).thenReturn(Math.nextAfter(1.0, Double.NEGATIVE_INFINITY));
-        assertEquals(9, nearbyRandom.nextInt(random, 10));
     }
 
 }

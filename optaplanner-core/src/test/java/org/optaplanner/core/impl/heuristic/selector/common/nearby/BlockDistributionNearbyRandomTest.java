@@ -25,6 +25,36 @@ import static org.mockito.Mockito.*;
 
 public class BlockDistributionNearbyRandomTest {
 
+    @Test(expected = IllegalArgumentException.class)
+    public void sizeMinimumTooLow(){
+        NearbyRandom nearbyRandom = new BlockDistributionNearbyRandom(-10, 300, 0.2, 0.0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void sizeMaximumTooLow(){
+        NearbyRandom nearbyRandom = new BlockDistributionNearbyRandom(10, 8, 0.2, 0.0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void sizeRatioTooLow(){
+        NearbyRandom nearbyRandom = new BlockDistributionNearbyRandom(10, 300, -0.2, 0.0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void sizeRatioTooHigh(){
+        NearbyRandom nearbyRandom = new BlockDistributionNearbyRandom(10, 300, 1.2, 0.0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void uniformDistributionProbabilityTooLow(){
+        NearbyRandom nearbyRandom = new BlockDistributionNearbyRandom(10, 300, 0.2, 1.3);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void uniformDistributionProbabilityTooHigh(){
+        NearbyRandom nearbyRandom = new BlockDistributionNearbyRandom(10, 300, 0.2, -0.3);
+    }
+
     @Test
     public void nextInt() {
         Random random = mock(Random.class);
