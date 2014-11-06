@@ -3072,11 +3072,17 @@ public class RuleModelDRLPersistenceImpl
 
         //If the field is a formula don't adjust the param value
         String paramValue = value;
-        if ( fieldNature != FieldNatureType.TYPE_FORMULA ) {
-            paramValue = adjustParam( dataType,
-                                      value,
-                                      boundParams,
-                                      isJavaDialect );
+        switch ( fieldNature ) {
+            case FieldNatureType.TYPE_FORMULA:
+                break;
+            case FieldNatureType.TYPE_VARIABLE:
+                paramValue = "=" + paramValue;
+                break;
+            default:
+                paramValue = adjustParam( dataType,
+                                          value,
+                                          boundParams,
+                                          isJavaDialect );
         }
         ActionFieldValue fieldValue = new ActionFieldValue( field,
                                                             paramValue,
