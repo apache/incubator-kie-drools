@@ -34,7 +34,7 @@ public class TaskTransactionInterceptor extends AbstractInterceptor {
 	private CommandService             commandService;
     private TransactionManager         txm;
     private TaskPersistenceContextManager  tpm;
-    private boolean eagerDisabled = true;
+    private boolean eagerDisabled = false;
     
     public TaskTransactionInterceptor(Environment environment) {
     	this.eagerDisabled = Boolean.getBoolean("jbpm.ht.eager.disabled");
