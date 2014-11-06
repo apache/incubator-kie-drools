@@ -3143,7 +3143,7 @@ public class RuleModelDRLPersistenceImpl
                                   isJavaDialect,
                                   boundParams,
                                   dmo );
-            } else if ( singleExpr.startsWith( "eval" ) ) {
+            } else if ( singleExpr.startsWith( "eval(" ) ) {
                 return new EvalExpr( unwrapParenthesis( singleExpr ) );
             } else {
                 return new SimpleExpr( singleExpr,
