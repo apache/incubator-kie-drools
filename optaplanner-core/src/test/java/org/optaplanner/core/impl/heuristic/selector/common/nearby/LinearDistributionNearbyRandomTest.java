@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 public class LinearDistributionNearbyRandomTest {
 
     @Test(expected = IllegalArgumentException.class)
-    public void sizeMaximumTooLow(){
+    public void sizeMaximumTooLow() {
         NearbyRandom nearbyRandom = new LinearDistributionNearbyRandom(-10);
     }
 

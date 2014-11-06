@@ -26,12 +26,12 @@ import static org.mockito.Mockito.*;
 public class BetaDistributionNearbyRandomTest {
 
     @Test(expected = IllegalArgumentException.class)
-    public void betaDistributionAlphaTooLow(){
+    public void betaDistributionAlphaTooLow() {
         NearbyRandom nearbyRandom = new BetaDistributionNearbyRandom(-0.2, 0.3);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void betaDistributionBetaTooLow(){
+    public void betaDistributionBetaTooLow() {
         NearbyRandom nearbyRandom = new BetaDistributionNearbyRandom(0.2, -0.3);
     }
 
