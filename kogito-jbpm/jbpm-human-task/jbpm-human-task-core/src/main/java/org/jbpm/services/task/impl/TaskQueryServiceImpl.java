@@ -776,7 +776,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         }
        
         // 4. close query clause, if parameters have been applied
-        if( ! queryAppender.getFirstUse() ) { 
+        if( queryAppender.hasBeenUsed() ) { 
             queryBuilder.append(")"); 
         }
      

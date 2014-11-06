@@ -476,13 +476,13 @@ public class JPAAuditLogService implements AuditLogService {
         StringBuilder queryBuilder = new StringBuilder(queryBase);
         QueryAndParameterAppender queryAppender = new QueryAndParameterAppender(queryBuilder, queryParams, true);
 
-        // 1b. add other tables (used in kie-remote-services to cross-query on variables, etc.. )
+        // 1. add other tables (used in kie-remote-services to cross-query on variables, etc.. )
         ServiceLoader<QueryModificationService> queryModServiceLdr = ServiceLoader.load(QueryModificationService.class);
         for( QueryModificationService queryModService : queryModServiceLdr ) { 
            queryModService.addTablesToQuery(queryBuilder, queryData);
         }
       
-        // 3a. add extended criteria 
+        // 2. add extended criteria 
         for( QueryModificationService queryModService : queryModServiceLdr ) { 
            queryModService.addCriteriaToQuery(queryBuilder, queryData, queryAppender);
         }
@@ -490,7 +490,7 @@ public class JPAAuditLogService implements AuditLogService {
         boolean addLastCriteria = false;
         List<Object[]> varValCriteriaList = new ArrayList<Object[]>();
         
-        // apply normal query parameters
+        // 3. apply normal query parameters
         if( ! queryData.unionParametersAreEmpty() ) { 
             checkVarValCriteria((List<String>) queryData.getUnionParameters().remove(VAR_VALUE_ID_LIST), true, false, varValCriteriaList);
             if( queryData.getUnionParameters().remove(LAST_VARIABLE_LIST) != null ) { 
@@ -517,7 +517,7 @@ public class JPAAuditLogService implements AuditLogService {
                         false);
             }
         }
-        // apply range query parameters
+        // 4. apply range query parameters
         if( ! queryData.unionRangeParametersAreEmpty() ) { 
             for( Entry<String, List<? extends Object>> paramsEntry : queryData.getUnionRangeParameters().entrySet() ) { 
                 String listId = paramsEntry.getKey();
@@ -536,7 +536,7 @@ public class JPAAuditLogService implements AuditLogService {
                         false);
             }
         }
-        // apply regex query parameters
+        // 5. apply regex query parameters
         if( ! queryData.unionRegexParametersAreEmpty() ) { 
             checkVarValCriteria(queryData.getUnionRegexParameters().remove(VAR_VALUE_ID_LIST), true, true, varValCriteriaList);
             for( Entry<String, List<String>> paramsEntry : queryData.getUnionRegexParameters().entrySet() ) { 
@@ -558,24 +558,28 @@ public class JPAAuditLogService implements AuditLogService {
             }
         }
         
-        if( ! queryAppender.getFirstUse() ) { 
+        if( queryAppender.hasBeenUsed() ) { 
             queryBuilder.append(")"); 
         }
-        boolean whereClauseAdded = queryAppender.getFirstUse();
+        
+        // 6. Add special criteria 
+        boolean addWhereClause = ! queryAppender.hasBeenUsed();
         if( ! varValCriteriaList.isEmpty() ) { 
-            addVarValCriteria(whereClauseAdded, queryBuilder, queryAppender, queryParams, varValCriteriaList);
-            whereClauseAdded = false;
+            addVarValCriteria(addWhereClause, queryBuilder, queryAppender, "l", varValCriteriaList);
+            addWhereClause = false;
         }
         if( addLastCriteria ) { 
-            addLastInstanceCriteria(whereClauseAdded, queryBuilder);
+            addLastInstanceCriteria(addWhereClause, queryBuilder);
         }
        
-        // apply filter, ordering, etc.. 
+        // 7. apply filter, ordering, etc.. 
         applyMetaCriteria(queryBuilder, queryData);
+        
+        // 8. return query
         return queryBuilder.toString();
     }
 
-    private static void checkVarValCriteria(List<String> varValList, boolean union, boolean regex, List<Object[]> varValCriteriaList) { 
+    public static void checkVarValCriteria(List<String> varValList, boolean union, boolean regex, List<Object[]> varValCriteriaList) { 
         if( varValList == null || varValList.isEmpty() ) { 
             return;
         }
@@ -589,10 +593,13 @@ public class JPAAuditLogService implements AuditLogService {
         }
     }
     
-    private static void addVarValCriteria(boolean whereAnd, StringBuilder queryBuilder, 
-            QueryAndParameterAppender queryAppender, Map<String, Object> queryParams, 
+    public static void addVarValCriteria(
+            boolean addWhereClause, 
+            StringBuilder queryBuilder, 
+            QueryAndParameterAppender queryAppender, 
+            String tableId,
             List<Object []> varValCriteriaList) { 
-        if( ! whereAnd ) { 
+        if( ! addWhereClause ) { 
             queryBuilder.append("\n");
         }
       
@@ -601,26 +608,26 @@ public class JPAAuditLogService implements AuditLogService {
 
            // Start with WHERE, OR, or AND?
            String andOr = null;
-           if( ! whereAnd ) { 
+           if( addWhereClause ) { 
+               queryBuilder.append( "WHERE" );
+               addWhereClause = false;
+           } else { 
                if( ((Integer) varValCriteria[0]) % 2 == 1 ) { 
                    andOr = "AND"; 
                } else { 
                    andOr = "OR";
                }
                queryBuilder.append( andOr );
-           } else { 
-               queryBuilder.append( "WHERE" );
-               whereAnd = false;
-           }
+           } 
           
            // var id: add query parameter
            String varIdQueryParamName = queryAppender.generateParamName();
-           queryParams.put(varIdQueryParamName, varValCriteria[1]);
+           queryAppender.addNamedQueryParam(varIdQueryParamName, varValCriteria[1]);
            // var id: append to the query
-           queryBuilder.append(" (l.variableId = :").append(varIdQueryParamName).append(" ");
+           queryBuilder.append(" ( ").append(tableId).append(".variableId = :").append(varIdQueryParamName).append(" ");
            
            // val: append to the query
-           queryBuilder.append("AND l.value ");
+           queryBuilder.append("AND ").append(tableId).append(".value ");
            String valQueryParamName = queryAppender.generateParamName();
            String val;
            if( ((Integer) varValCriteria[0]) >= 2 ) { 
@@ -630,9 +637,9 @@ public class JPAAuditLogService implements AuditLogService {
                val = (String) varValCriteria[2];
               queryBuilder.append("= :").append(valQueryParamName);
            }
-           queryBuilder.append(") ");
+           queryBuilder.append(" ) ");
            // val: add query parameter
-           queryParams.put(valQueryParamName, val);
+           queryAppender.addNamedQueryParam(valQueryParamName, val);
        }
     }
     
