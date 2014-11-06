@@ -16,13 +16,11 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.DefaultSubChainSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
@@ -34,34 +32,33 @@ public class SubChainChangeMoveSelectorTest {
     @Test(expected = IllegalStateException.class)
     public void differentValueDescriptorException() {
         SubChainSelector subChainSelector = mock(DefaultSubChainSelector.class);
-        GenuineVariableDescriptor descriptor = SelectorTestUtils.mockVariableDescriptor(TestdataEntity.class, "value");
+        GenuineVariableDescriptor descriptor = TestdataEntity.buildVariableDescriptorForValue();
         when(subChainSelector.getVariableDescriptor()).thenReturn(descriptor);
-        EntityIndependentValueSelector valueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
-                SelectorTestUtils.mockVariableDescriptor(TestdataEntity.class, "val"));
+        EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
+        GenuineVariableDescriptor otherDescriptor = TestdataEntity.buildVariableDescriptorForValue();
+        when(valueSelector.getVariableDescriptor()).thenReturn(otherDescriptor);
         SubChainChangeMoveSelector testedSelector =
                 new SubChainChangeMoveSelector(subChainSelector, valueSelector, true, true);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void determinedSelectionWithNeverendingChainSelector() {
+    public void determinedSelectionWithNeverEndingChainSelector() {
         SubChainSelector subChainSelector = mock(DefaultSubChainSelector.class);
         when(subChainSelector.isNeverEnding()).thenReturn(true);
-        GenuineVariableDescriptor descriptor = SelectorTestUtils.mockVariableDescriptor(TestdataEntity.class, "value");
+        GenuineVariableDescriptor descriptor = TestdataEntity.buildVariableDescriptorForValue();
         when(subChainSelector.getVariableDescriptor()).thenReturn(descriptor);
-        EntityIndependentValueSelector valueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
-                SelectorTestUtils.mockVariableDescriptor(TestdataEntity.class, "val"));
+        EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(descriptor);
         SubChainChangeMoveSelector testedSelector =
                 new SubChainChangeMoveSelector(subChainSelector, valueSelector, false, true);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void determinedSelectionWithNeverendingValueSelector() {
+    public void determinedSelectionWithNeverEndingValueSelector() {
         SubChainSelector subChainSelector = mock(DefaultSubChainSelector.class);
-        GenuineVariableDescriptor descriptor = SelectorTestUtils.mockVariableDescriptor(TestdataEntity.class, "value");
+        GenuineVariableDescriptor descriptor = TestdataEntity.buildVariableDescriptorForValue();
         when(subChainSelector.getVariableDescriptor()).thenReturn(descriptor);
-        EntityIndependentValueSelector valueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
-                SelectorTestUtils.mockVariableDescriptor(TestdataEntity.class, "val"));
+        EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         when(valueSelector.isNeverEnding()).thenReturn(true);
         when(valueSelector.getVariableDescriptor()).thenReturn(descriptor);
         SubChainChangeMoveSelector testedSelector =
@@ -71,49 +68,47 @@ public class SubChainChangeMoveSelectorTest {
     @Test
     public void isCountable() {
         SubChainSelector subChainSelector = mock(DefaultSubChainSelector.class);
-        GenuineVariableDescriptor descriptor = SelectorTestUtils.mockVariableDescriptor(TestdataEntity.class, "value");
+        GenuineVariableDescriptor descriptor = TestdataEntity.buildVariableDescriptorForValue();
         when(subChainSelector.getVariableDescriptor()).thenReturn(descriptor);
-        EntityIndependentValueSelector valueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
-                SelectorTestUtils.mockVariableDescriptor(TestdataEntity.class, "val"));
+        EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(descriptor);
         SubChainChangeMoveSelector testedSelector =
                 new SubChainChangeMoveSelector(subChainSelector, valueSelector, true, true);
 
         when(subChainSelector.isCountable()).thenReturn(false);
         when(valueSelector.isCountable()).thenReturn(true);
-        assertFalse(testedSelector.isCountable());
+        assertEquals(false, testedSelector.isCountable());
 
         when(subChainSelector.isCountable()).thenReturn(true);
         when(valueSelector.isCountable()).thenReturn(false);
-        assertFalse(testedSelector.isCountable());
+        assertEquals(false, testedSelector.isCountable());
 
         when(subChainSelector.isCountable()).thenReturn(true);
         when(valueSelector.isCountable()).thenReturn(true);
-        assertTrue(testedSelector.isCountable());
+        assertEquals(true, testedSelector.isCountable());
 
         when(subChainSelector.isCountable()).thenReturn(false);
         when(valueSelector.isCountable()).thenReturn(false);
-        assertFalse(testedSelector.isCountable());
+        assertEquals(false, testedSelector.isCountable());
     }
 
     @Test
     public void getSize() {
         SubChainSelector subChainSelector = mock(DefaultSubChainSelector.class);
-        GenuineVariableDescriptor descriptor = SelectorTestUtils.mockVariableDescriptor(TestdataEntity.class, "value");
+        GenuineVariableDescriptor descriptor = TestdataEntity.buildVariableDescriptorForValue();
         when(subChainSelector.getVariableDescriptor()).thenReturn(descriptor);
-        EntityIndependentValueSelector valueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
-                SelectorTestUtils.mockVariableDescriptor(TestdataEntity.class, "val"));
+        EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(descriptor);
         SubChainChangeMoveSelector testedSelector =
                 new SubChainChangeMoveSelector(subChainSelector, valueSelector, true, true);
 
         when(subChainSelector.getSize()).thenReturn(1L);
         when(valueSelector.getSize()).thenReturn(2L);
-        assertTrue(testedSelector.getSize() == 2);
+        assertEquals(2, testedSelector.getSize());
 
         when(subChainSelector.getSize()).thenReturn(100L);
         when(valueSelector.getSize()).thenReturn(200L);
-        assertTrue(testedSelector.getSize() == 20000);
+        assertEquals(20000, testedSelector.getSize());
     }
 
 }
