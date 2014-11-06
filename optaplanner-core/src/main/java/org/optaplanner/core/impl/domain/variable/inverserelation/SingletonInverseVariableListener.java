@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable.listener;
+package org.optaplanner.core.impl.domain.variable.inverserelation;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class InverseRelationVariableListener implements VariableListener<Object> {
+public class SingletonInverseVariableListener implements VariableListener<Object>, SingletonInverseVariableSupply {
 
     private final ShadowVariableDescriptor shadowVariableDescriptor;
     private final VariableDescriptor sourceVariableDescriptor;
 
-    public InverseRelationVariableListener(ShadowVariableDescriptor shadowVariableDescriptor,
+    public SingletonInverseVariableListener(ShadowVariableDescriptor shadowVariableDescriptor,
             VariableDescriptor sourceVariableDescriptor) {
         this.shadowVariableDescriptor = shadowVariableDescriptor;
         this.sourceVariableDescriptor = sourceVariableDescriptor;
@@ -89,6 +90,10 @@ public class InverseRelationVariableListener implements VariableListener<Object>
             shadowVariableDescriptor.setValue(shadowEntity, null);
             scoreDirector.afterVariableChanged(shadowVariableDescriptor, shadowEntity);
         }
+    }
+
+    public Object getInverseSingleton(Object planningValue) {
+        return shadowVariableDescriptor.getValue(planningValue);
     }
 
 }

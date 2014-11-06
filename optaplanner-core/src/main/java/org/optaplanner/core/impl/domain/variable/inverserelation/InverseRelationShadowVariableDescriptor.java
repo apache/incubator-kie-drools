@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable.descriptor;
+package org.optaplanner.core.impl.domain.variable.inverserelation;
 
 import java.beans.PropertyDescriptor;
 
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
-import org.optaplanner.core.impl.domain.variable.listener.InverseRelationVariableListener;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 
 public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescriptor {
@@ -83,7 +85,7 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
 
     @Override
     public VariableListener buildVariableListener() {
-        return new InverseRelationVariableListener(this, sourceVariableDescriptor);
+        return new SingletonInverseVariableListener(this, sourceVariableDescriptor);
     }
 
 }

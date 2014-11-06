@@ -25,6 +25,8 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * It should never change a genuine variable or a problem fact.
  * It can change its shadow variable on multiple entity instances
  * (for example: an arrivalTime change affects all trailing entities too)
+ * <p/>
+ * Each {@link ScoreDirector} has a different {@link VariableListener} instance, so it can be stateful.
  */
 public interface VariableListener<EntityG> {
 

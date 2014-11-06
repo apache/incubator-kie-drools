@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable.listener;
+package org.optaplanner.core.impl.domain.variable.inverserelation;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.mappedby.TestdataMapped
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class InverseRelationVariableListenerTest {
+public class SingletonInverseVariableListenerTest {
 
     @Test
     public void chained() {
@@ -40,7 +40,7 @@ public class InverseRelationVariableListenerTest {
         ShadowVariableDescriptor nextEntityVariableDescriptor
                 = solutionDescriptor.findEntityDescriptorOrFail(TestdataMappedByChainedObject.class)
                 .getShadowVariableDescriptor("nextEntity");
-        InverseRelationVariableListener variableListener = new InverseRelationVariableListener(
+        SingletonInverseVariableListener variableListener = new SingletonInverseVariableListener(
                 nextEntityVariableDescriptor,
                 solutionDescriptor.findEntityDescriptorOrFail(TestdataMappedByChainedEntity.class)
                         .getGenuineVariableDescriptor("chainedObject"));

@@ -4595,3 +4595,5 @@ Before in *.java:
 After in *.java:
     ... = new CompositeMove(moves); // Not recommended
 
+[IMPL_DETAIL] InverseRelationShadowVariableListener renamed to SingletonInverseVariableListener.
+It and InverseRelationShadowVariableDescriptor moved to the package ...impl.domain.variable.inverserelation.
