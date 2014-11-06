@@ -8,6 +8,7 @@ import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionFieldFunction;
+import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.*;
@@ -69,32 +70,31 @@ public class ActionCallMethodBuilder {
         return actionFieldFunctions;
     }
 
-    private String getAdjustedParameter( String param,
-                                         String dataType ) {
-        String adjustedParam;
-        if ( boundParams.containsKey( param ) ) {
-            adjustedParam = param;
-        } else {
-            adjustedParam = adjustParam( dataType,
-                                         param,
-                                         boundParams,
-                                         isJavaDialect );
-        }
-        return adjustedParam;
-    }
-
     private ActionFieldFunction getActionFieldFunction( String param,
                                                         String dataType ) {
-        ActionFieldFunction actionFiled = new ActionFieldFunction( null,
-                                                                   getAdjustedParameter( param,
-                                                                                         dataType ),
+        final int fieldNature = inferFieldNature( dataType,
+                                                  param,
+                                                  boundParams,
+                                                  isJavaDialect );
+
+        //If the field is a formula don't adjust the param value
+        String paramValue = param;
+        switch ( fieldNature ) {
+            case FieldNatureType.TYPE_FORMULA:
+                break;
+            case FieldNatureType.TYPE_VARIABLE:
+                break;
+            default:
+                paramValue = adjustParam( dataType,
+                                          param,
+                                          boundParams,
+                                          isJavaDialect );
+        }
+        ActionFieldFunction actionField = new ActionFieldFunction( methodName,
+                                                                   paramValue,
                                                                    dataType );
-        actionFiled.setNature( inferFieldNature( dataType,
-                                                 param,
-                                                 boundParams,
-                                                 isJavaDialect ) );
-        actionFiled.setField( methodName );
-        return actionFiled;
+        actionField.setNature( fieldNature );
+        return actionField;
     }
 
     private String getDataType( String param ) {
