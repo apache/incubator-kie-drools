@@ -5681,6 +5681,63 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                       RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
     }
 
+    @Test
+    //https://issues.jboss.org/browse/GUVNOR-2144
+    public void testRuleModelPersistenceHelperUnwrapParenthesis() throws Exception {
+        String drl = "package org.test;\n"
+                + "rule \"Load all schedules\"\n"
+                + "dialect \"mvel\"\n"
+                + "agenda-group \"LoadSchedules\"\n"
+                + "salience 900\n"
+                + "  when\n"
+                + "    $bundle : Bundle( evaluated == false )\n"
+                + "  then\n"
+                + "    $bundle.setEvaluated( true );\n"
+                + "    update( $bundle );\n"
+                + "end";
+
+        //Expected is different as we convert "update" to "modify" blocks
+        String expected = "package org.test;\n"
+                + "rule \"Load all schedules\"\n"
+                + "dialect \"mvel\"\n"
+                + "agenda-group \"LoadSchedules\"\n"
+                + "salience 900\n"
+                + "  when\n"
+                + "    $bundle : Bundle( evaluated == false )\n"
+                + "  then\n"
+                + "    modify( $bundle ) {\n"
+                + "      setEvaluated( true )\n"
+                + "    }\n"
+                + "end";
+
+        addModelField( "org.test.Bundle",
+                       "this",
+                       "org.test.Bundle",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Person",
+                       "evaluated",
+                       Boolean.class.getName(),
+                       DataType.TYPE_BOOLEAN );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        assertEquals( 1,
+                      m.rhs.length );
+        assertEquals( 3,
+                      m.attributes.length );
+
+        assertEqualsIgnoreWhitespace( expected,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",
