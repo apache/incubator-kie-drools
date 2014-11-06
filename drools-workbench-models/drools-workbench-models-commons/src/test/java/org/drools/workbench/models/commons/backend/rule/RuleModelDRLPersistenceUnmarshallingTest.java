@@ -5392,6 +5392,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1160658
     public void testRHSFormulaTruncation() throws Exception {
         String drl = "package org.test;\n"
                 + "rule \"rule1\"\n"
@@ -5427,6 +5428,210 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       m.lhs.length );
         assertEquals( 1,
                       m.rhs.length );
+
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1158813
+    public void testLHSFromCollectWithoutListDeclared() throws Exception {
+        String drl = "package org.test;\n"
+                + "rule \"rule1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "  c : Customer( )\n"
+                + "  items : java.util.List( eval( size == c.items.size )) \n"
+                + "  from collect ( var : Item( price > 10 )) \n"
+                + "then \n"
+                + "end";
+
+        addModelField( "org.test.Customer",
+                       "this",
+                       "org.test.Customer",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Item",
+                       "this",
+                       "org.test.Item",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Item",
+                       "price",
+                       "java.lang.Double",
+                       DataType.TYPE_NUMERIC_DOUBLE );
+
+        addMethodInformation( "org.test.Customer",
+                              "items",
+                              new ArrayList<String>() {{
+                              }},
+                              DataType.TYPE_NUMERIC_INTEGER,
+                              null,
+                              DataType.TYPE_NUMERIC_INTEGER );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 2,
+                      m.lhs.length );
+        assertEquals( 0,
+                      m.rhs.length );
+
+        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
+        final FactPattern fp = (FactPattern) m.lhs[ 0 ];
+        assertEquals( "Customer",
+                      fp.getFactType() );
+        assertEquals( "c",
+                      fp.getBoundName() );
+        assertEquals( 0,
+                      fp.getNumberOfConstraints() );
+
+        assertTrue( m.lhs[ 1 ] instanceof FromCollectCompositeFactPattern );
+        final FromCollectCompositeFactPattern fcfp = (FromCollectCompositeFactPattern) m.lhs[ 1 ];
+        assertNotNull( fcfp.getFactPattern() );
+        assertEquals( "java.util.List",
+                      fcfp.getFactPattern().getFactType() );
+        assertEquals( "items",
+                      fcfp.getFactPattern().getBoundName() );
+        assertEquals( 1,
+                      fcfp.getFactPattern().getNumberOfConstraints() );
+        assertTrue( fcfp.getFactPattern().getConstraint( 0 ) instanceof SingleFieldConstraint );
+        final SingleFieldConstraint sfc0 = (SingleFieldConstraint) fcfp.getFactPattern().getConstraint( 0 );
+        assertNull( sfc0.getFactType() );
+        assertNull( sfc0.getFieldName() );
+        assertEquals( "size == c.items.size",
+                      sfc0.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_PREDICATE,
+                      sfc0.getConstraintValueType() );
+
+        assertNotNull( fcfp.getRightPattern() );
+        assertTrue( fcfp.getRightPattern() instanceof FactPattern );
+        final FactPattern rfp = (FactPattern) fcfp.getRightPattern();
+        assertEquals( "Item",
+                      rfp.getFactType() );
+        assertEquals( "var",
+                      rfp.getBoundName() );
+        assertEquals( 1,
+                      rfp.getNumberOfConstraints() );
+        assertTrue( rfp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        final SingleFieldConstraint sfc1 = (SingleFieldConstraint) rfp.getConstraint( 0 );
+        assertEquals( "Item",
+                      sfc1.getFactType() );
+        assertEquals( "price",
+                      sfc1.getFieldName() );
+        assertEquals( "10",
+                      sfc1.getValue() );
+        assertEquals( ">",
+                      sfc1.getOperator() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      sfc1.getConstraintValueType() );
+
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1158813
+    public void testLHSFromCollectWithListDeclared() throws Exception {
+        String drl = "package org.test;\n"
+                + "rule \"rule1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "  c : Customer( )\n"
+                + "  items : List( eval( size == c.items.size )) \n"
+                + "  from collect ( var : Item( price > 10 )) \n"
+                + "then \n"
+                + "end";
+
+        addModelField( "org.test.Customer",
+                       "this",
+                       "org.test.Customer",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Item",
+                       "this",
+                       "org.test.Item",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Item",
+                       "price",
+                       "java.lang.Double",
+                       DataType.TYPE_NUMERIC_DOUBLE );
+        addModelField( "java.util.List",
+                       "this",
+                       "java.util.List",
+                       DataType.TYPE_THIS );
+
+        addMethodInformation( "org.test.Customer",
+                              "items",
+                              new ArrayList<String>() {{
+                              }},
+                              DataType.TYPE_NUMERIC_INTEGER,
+                              null,
+                              DataType.TYPE_NUMERIC_INTEGER );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 2,
+                      m.lhs.length );
+        assertEquals( 0,
+                      m.rhs.length );
+
+        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
+        final FactPattern fp = (FactPattern) m.lhs[ 0 ];
+        assertEquals( "Customer",
+                      fp.getFactType() );
+        assertEquals( "c",
+                      fp.getBoundName() );
+        assertEquals( 0,
+                      fp.getNumberOfConstraints() );
+
+        assertTrue( m.lhs[ 1 ] instanceof FromCollectCompositeFactPattern );
+        final FromCollectCompositeFactPattern fcfp = (FromCollectCompositeFactPattern) m.lhs[ 1 ];
+        assertNotNull( fcfp.getFactPattern() );
+        assertEquals( "List",
+                      fcfp.getFactPattern().getFactType() );
+        assertEquals( "items",
+                      fcfp.getFactPattern().getBoundName() );
+        assertEquals( 1,
+                      fcfp.getFactPattern().getNumberOfConstraints() );
+        assertTrue( fcfp.getFactPattern().getConstraint( 0 ) instanceof SingleFieldConstraint );
+        final SingleFieldConstraint sfc0 = (SingleFieldConstraint) fcfp.getFactPattern().getConstraint( 0 );
+        assertNull( sfc0.getFactType() );
+        assertNull( sfc0.getFieldName() );
+        assertEquals( "size == c.items.size",
+                      sfc0.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_PREDICATE,
+                      sfc0.getConstraintValueType() );
+
+        assertNotNull( fcfp.getRightPattern() );
+        assertTrue( fcfp.getRightPattern() instanceof FactPattern );
+        final FactPattern rfp = (FactPattern) fcfp.getRightPattern();
+        assertEquals( "Item",
+                      rfp.getFactType() );
+        assertEquals( "var",
+                      rfp.getBoundName() );
+        assertEquals( 1,
+                      rfp.getNumberOfConstraints() );
+        assertTrue( rfp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        final SingleFieldConstraint sfc1 = (SingleFieldConstraint) rfp.getConstraint( 0 );
+        assertEquals( "Item",
+                      sfc1.getFactType() );
+        assertEquals( "price",
+                      sfc1.getFieldName() );
+        assertEquals( "10",
+                      sfc1.getValue() );
+        assertEquals( ">",
+                      sfc1.getOperator() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      sfc1.getConstraintValueType() );
 
         assertEqualsIgnoreWhitespace( drl,
                                       RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
