@@ -81,7 +81,6 @@ class RuleModelPersistenceHelper {
                                                                                                           isJavaDialect ) );
                 return FieldNatureType.TYPE_LITERAL;
             } catch ( ParseException e ) {
-                e.printStackTrace();
                 return FieldNatureType.TYPE_FORMULA;
             }
 
@@ -318,8 +317,12 @@ class RuleModelPersistenceHelper {
                                final Map<String, String> boundParams,
                                final boolean isJavaDialect ) {
         if ( DataType.TYPE_DATE.equals( dataType ) ) {
-            return param.substring( "sdf.parse(\"".length(),
-                                    param.length() - 2 );
+            if ( param.contains( "sdf.parse(\"" ) ) {
+                return param.substring( "sdf.parse(\"".length(),
+                                        param.length() - 2 );
+            } else {
+                return param;
+            }
         } else if ( DataType.TYPE_STRING.equals( dataType ) ) {
             if ( param.startsWith( "\"" ) && param.endsWith( "\"" ) ) {
                 return param.substring( 1,
