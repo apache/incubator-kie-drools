@@ -37,6 +37,7 @@ import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.CEPWindow;
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.ConnectiveConstraint;
 import org.drools.workbench.models.datamodel.rule.DSLComplexVariableValue;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.DSLVariableValue;
@@ -5736,6 +5737,120 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         assertEqualsIgnoreWhitespace( expected,
                                       RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://issues.jboss.org/browse/GUVNOR-2141
+    public void testSingleFieldConstraintConnectives1() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "Applicant( age < 55 || > 75 )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
+
+        assertNotNull( m );
+        assertEquals( "rule1",
+                      m.name );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals( "Applicant",
+                      fp.getFactType() );
+
+        assertEquals( 1,
+                      fp.getConstraintList().getConstraints().length );
+        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        SingleFieldConstraint sfp = (SingleFieldConstraint) fp.getConstraint( 0 );
+        assertEquals( "Applicant",
+                      sfp.getFactType() );
+        assertEquals( "age",
+                      sfp.getFieldName() );
+        assertEquals( "<",
+                      sfp.getOperator() );
+        assertEquals( "55",
+                      sfp.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      sfp.getConstraintValueType() );
+
+        assertEquals( 1,
+                      sfp.getConnectives().length );
+        ConnectiveConstraint cc = sfp.getConnectives()[ 0 ];
+        assertEquals( "Applicant",
+                      cc.getFactType() );
+        assertEquals( "age",
+                      cc.getFieldName() );
+        assertEquals( "|| >",
+                      cc.getOperator() );
+        assertEquals( "75",
+                      cc.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      cc.getConstraintValueType() );
+    }
+
+    @Test
+    //https://issues.jboss.org/browse/GUVNOR-2141
+    public void testSingleFieldConstraintConnectives2() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "Applicant( age == 55 || == 75 )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
+
+        assertNotNull( m );
+        assertEquals( "rule1",
+                      m.name );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals( "Applicant",
+                      fp.getFactType() );
+
+        assertEquals( 1,
+                      fp.getConstraintList().getConstraints().length );
+        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        SingleFieldConstraint sfp = (SingleFieldConstraint) fp.getConstraint( 0 );
+        assertEquals( "Applicant",
+                      sfp.getFactType() );
+        assertEquals( "age",
+                      sfp.getFieldName() );
+        assertEquals( "==",
+                      sfp.getOperator() );
+        assertEquals( "55",
+                      sfp.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      sfp.getConstraintValueType() );
+
+        assertEquals( 1,
+                      sfp.getConnectives().length );
+        ConnectiveConstraint cc = sfp.getConnectives()[ 0 ];
+        assertEquals( "Applicant",
+                      cc.getFactType() );
+        assertEquals( "age",
+                      cc.getFieldName() );
+        assertEquals( "|| ==",
+                      cc.getOperator() );
+        assertEquals( "75",
+                      cc.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      cc.getConstraintValueType() );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,

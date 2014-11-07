@@ -2557,7 +2557,18 @@ public class RuleModelDRLPersistenceImpl
         }
     }
 
-    private static String findOperator( final String expr ) {
+    private static String findOperator( String expr ) {
+        //ConnectiveConstraints are handled SimpleExpr.setOperatorAndValueOnConstraint(). Therefore we
+        //only need to try to find the first operator before the ConnectiveConstraint separator.
+        if ( expr.contains( "&&" ) ) {
+            expr = expr.substring( 0,
+                                   expr.indexOf( "&&" ) ).trim();
+        }
+        if ( expr.contains( "||" ) ) {
+            expr = expr.substring( 0,
+                                   expr.indexOf( "||" ) ).trim();
+        }
+
         final Set<String> potentialOperators = new HashSet<String>();
         for ( Operator op : Operator.getAllOperators() ) {
             String opString = op.getOperatorString();
@@ -2587,10 +2598,10 @@ public class RuleModelDRLPersistenceImpl
         }
 
         if ( expr.contains( " not in " ) ) {
-            return "not in";
+            return " not in ";
         }
         if ( expr.contains( " in " ) ) {
-            return "in";
+            return " in ";
         }
         return null;
     }
@@ -3300,7 +3311,7 @@ public class RuleModelDRLPersistenceImpl
             } else {
                 operator = findOperator( expr );
                 if ( operator != null ) {
-                    int opPos = expr.lastIndexOf( operator );
+                    int opPos = expr.indexOf( operator );
                     fieldName = expr.substring( 0,
                                                 opPos ).trim();
                     value = expr.substring( opPos + operator.length(),
@@ -3313,7 +3324,7 @@ public class RuleModelDRLPersistenceImpl
                                           factPattern,
                                           fieldName,
                                           value,
-                                          operator,
+                                          operator == null ? null : operator.trim(),
                                           isExpression );
         }
 
@@ -3740,7 +3751,10 @@ public class RuleModelDRLPersistenceImpl
                     String connectiveValue = constraint.substring( connectiveOperator.length() ).trim();
 
                     connectiveConstraints[ i ] = new ConnectiveConstraint();
-                    connectiveConstraints[ i ].setOperator( ( isAnd ? "&& " : "|| " ) + connectiveOperator );
+                    connectiveConstraints[ i ].setOperator( ( isAnd ? "&& " : "|| " ) + ( connectiveOperator == null ? null : connectiveOperator.trim() ) );
+                    connectiveConstraints[ i ].setFactType( factPattern.getFactType() );
+                    connectiveConstraints[ i ].setFieldName( con.getFieldName() );
+                    connectiveConstraints[ i ].setFieldType( con.getFieldType() );
                     setValueOnConstraint( m,
                                           operator,
                                           factPattern,
