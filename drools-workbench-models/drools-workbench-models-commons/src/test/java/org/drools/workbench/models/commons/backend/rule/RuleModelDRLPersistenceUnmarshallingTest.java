@@ -18,6 +18,7 @@ package org.drools.workbench.models.commons.backend.rule;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -5743,9 +5744,10 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     //https://issues.jboss.org/browse/GUVNOR-2141
     public void testSingleFieldConstraintConnectives1() {
         String drl = "rule \"rule1\"\n"
-                + "when\n"
-                + "Applicant( age < 55 || > 75 )\n"
-                + "then\n"
+                + "dialect \"mvel\"\n"
+                + "  when\n"
+                + "    Applicant( age < 55 || > 75 )\n"
+                + "  then\n"
                 + "end";
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
@@ -5794,15 +5796,19 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       cc.getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
                       cc.getConstraintValueType() );
+
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
     }
 
     @Test
     //https://issues.jboss.org/browse/GUVNOR-2141
     public void testSingleFieldConstraintConnectives2() {
         String drl = "rule \"rule1\"\n"
-                + "when\n"
-                + "Applicant( age == 55 || == 75 )\n"
-                + "then\n"
+                + "dialect \"mvel\"\n"
+                + "  when\n"
+                + "    Applicant( age == 55 || == 75 )\n"
+                + "  then\n"
                 + "end";
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
@@ -5851,6 +5857,286 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       cc.getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
                       cc.getConstraintValueType() );
+
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://issues.jboss.org/browse/GUVNOR-2143
+    public void testNewKeywordVariableNamePrefix1() {
+        String oldValue = System.getProperty( "drools.dateformat" );
+        try {
+
+            System.setProperty( "drools.dateformat",
+                                "dd-MMM-yyyy" );
+
+            String drl = "package org.test;\n"
+                    + "rule \"rule1\"\n"
+                    + "  dialect \"java\"\n"
+                    + "  when\n"
+                    + "    $bundle : Bundle( $treatmentEffectiveDt : treatmentEffectiveDt )\n"
+                    + "  then\n"
+                    + "    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");\n"
+                    + "    DateTime newStartDate = new DateTime();\n"
+                    + "    modify( $bundle ) {\n"
+                    + "      setTreatmentEffectiveDt( newStartDate.toDate() )"
+                    + "    }\n"
+                    + "end\n";
+
+            addModelField( "org.test.Bundle",
+                           "this",
+                           "org.test.Bundle",
+                           DataType.TYPE_THIS );
+            addModelField( "org.test.Bundle",
+                           "treatmentEffectiveDt",
+                           Date.class.getName(),
+                           DataType.TYPE_DATE );
+
+            when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+            RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                               Collections.EMPTY_LIST,
+                                                                               dmo );
+
+            assertNotNull( m );
+            assertEquals( "rule1",
+                          m.name );
+
+            assertEquals( 1,
+                          m.lhs.length );
+            IPattern p = m.lhs[ 0 ];
+            assertTrue( p instanceof FactPattern );
+
+            FactPattern fp = (FactPattern) p;
+            assertEquals( "Bundle",
+                          fp.getFactType() );
+            assertEquals( "$bundle",
+                          fp.getBoundName() );
+
+            assertEquals( 1,
+                          fp.getConstraintList().getConstraints().length );
+            assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+            SingleFieldConstraint sfp = (SingleFieldConstraint) fp.getConstraint( 0 );
+            assertEquals( "Bundle",
+                          sfp.getFactType() );
+            assertEquals( "treatmentEffectiveDt",
+                          sfp.getFieldName() );
+            assertEquals( "$treatmentEffectiveDt",
+                          sfp.getFieldBinding() );
+            assertNull( sfp.getOperator() );
+            assertNull( sfp.getValue() );
+            assertEquals( BaseSingleFieldConstraint.TYPE_UNDEFINED,
+                          sfp.getConstraintValueType() );
+
+            assertEquals( 2,
+                          m.rhs.length );
+
+            assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
+            FreeFormLine ffl = (FreeFormLine) m.rhs[ 0 ];
+            assertEquals( "DateTime newStartDate = new DateTime();",
+                          ffl.getText() );
+
+            assertTrue( m.rhs[ 1 ] instanceof ActionUpdateField );
+            ActionUpdateField auf = (ActionUpdateField) m.rhs[ 1 ];
+            assertEquals( "$bundle",
+                          auf.getVariable() );
+            assertEquals( 1,
+                          auf.getFieldValues().length );
+            ActionFieldValue afv = auf.getFieldValues()[ 0 ];
+            assertEquals( "treatmentEffectiveDt",
+                          afv.getField() );
+            assertEquals( "newStartDate.toDate()",
+                          afv.getValue() );
+            assertEquals( FieldNatureType.TYPE_FORMULA,
+                          afv.getNature() );
+
+            assertEqualsIgnoreWhitespace( drl,
+                                          RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+        } finally {
+            if ( oldValue == null ) {
+                System.clearProperty( "drools.dateformat" );
+            } else {
+                System.setProperty( "drools.dateformat",
+                                    oldValue );
+            }
+        }
+    }
+
+    @Test
+    //https://issues.jboss.org/browse/GUVNOR-2143
+    public void testNewKeywordVariableNamePrefix2() {
+        String oldValue = System.getProperty( "drools.dateformat" );
+        try {
+
+            System.setProperty( "drools.dateformat",
+                                "dd-MMM-yyyy" );
+
+            String drl = "package org.test;\n"
+                    + "rule \"rule1\"\n"
+                    + "  dialect \"java\"\n"
+                    + "  when\n"
+                    + "    $a : Applicant()\n"
+                    + "  then\n"
+                    + "    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");\n"
+                    + "    java.util.Date newStartDate = new java.util.Date();\n"
+                    + "    modify( $a ) {\n"
+                    + "      setApplicantDate( newStartDate )"
+                    + "    }\n"
+                    + "end\n";
+
+            addModelField( "org.test.Applicant",
+                           "this",
+                           "org.test.Applicant",
+                           DataType.TYPE_THIS );
+            addModelField( "org.test.Applicant",
+                           "applicantDate",
+                           Date.class.getName(),
+                           DataType.TYPE_DATE );
+
+            when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+            RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                               Collections.EMPTY_LIST,
+                                                                               dmo );
+
+            assertNotNull( m );
+            assertEquals( "rule1",
+                          m.name );
+
+            assertEquals( 1,
+                          m.lhs.length );
+            IPattern p = m.lhs[ 0 ];
+            assertTrue( p instanceof FactPattern );
+
+            FactPattern fp = (FactPattern) p;
+            assertEquals( "Applicant",
+                          fp.getFactType() );
+            assertEquals( "$a",
+                          fp.getBoundName() );
+
+            assertNull( fp.getConstraintList() );
+
+            assertEquals( 2,
+                          m.rhs.length );
+
+            assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
+            FreeFormLine ffl = (FreeFormLine) m.rhs[ 0 ];
+            assertEquals( "java.util.Date newStartDate = new java.util.Date();",
+                          ffl.getText() );
+
+            assertTrue( m.rhs[ 1 ] instanceof ActionUpdateField );
+            ActionUpdateField auf = (ActionUpdateField) m.rhs[ 1 ];
+            assertEquals( "$a",
+                          auf.getVariable() );
+            assertEquals( 1,
+                          auf.getFieldValues().length );
+            ActionFieldValue afv = auf.getFieldValues()[ 0 ];
+            assertEquals( "applicantDate",
+                          afv.getField() );
+            assertEquals( "newStartDate",
+                          afv.getValue() );
+            assertEquals( FieldNatureType.TYPE_FORMULA,
+                          afv.getNature() );
+
+            assertEqualsIgnoreWhitespace( drl,
+                                          RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+        } finally {
+            if ( oldValue == null ) {
+                System.clearProperty( "drools.dateformat" );
+            } else {
+                System.setProperty( "drools.dateformat",
+                                    oldValue );
+            }
+        }
+    }
+
+    @Test
+    //https://issues.jboss.org/browse/GUVNOR-2143
+    public void testNewKeywordVariableNamePrefix3() {
+        String oldValue = System.getProperty( "drools.dateformat" );
+        try {
+
+            System.setProperty( "drools.dateformat",
+                                "dd-MMM-yyyy" );
+
+            String drl = "package org.test;\n"
+                    + "rule \"rule1\"\n"
+                    + "  dialect \"java\"\n"
+                    + "  when\n"
+                    + "    $a : Applicant()\n"
+                    + "  then\n"
+                    + "    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");\n"
+                    + "    java.util.Date newStartDate = new java.util.Date();\n"
+                    + "    modify( $a ) \n"
+                    + "    { setApplicantDate( newStartDate ) }\n"
+                    + "end\n";
+
+            addModelField( "org.test.Applicant",
+                           "this",
+                           "org.test.Applicant",
+                           DataType.TYPE_THIS );
+            addModelField( "org.test.Applicant",
+                           "applicantDate",
+                           Date.class.getName(),
+                           DataType.TYPE_DATE );
+
+            when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+            RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                               Collections.EMPTY_LIST,
+                                                                               dmo );
+
+            assertNotNull( m );
+            assertEquals( "rule1",
+                          m.name );
+
+            assertEquals( 1,
+                          m.lhs.length );
+            IPattern p = m.lhs[ 0 ];
+            assertTrue( p instanceof FactPattern );
+
+            FactPattern fp = (FactPattern) p;
+            assertEquals( "Applicant",
+                          fp.getFactType() );
+            assertEquals( "$a",
+                          fp.getBoundName() );
+
+            assertNull( fp.getConstraintList() );
+
+            assertEquals( 2,
+                          m.rhs.length );
+
+            assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
+            FreeFormLine ffl = (FreeFormLine) m.rhs[ 0 ];
+            assertEquals( "java.util.Date newStartDate = new java.util.Date();",
+                          ffl.getText() );
+
+            assertTrue( m.rhs[ 1 ] instanceof ActionUpdateField );
+            ActionUpdateField auf = (ActionUpdateField) m.rhs[ 1 ];
+            assertEquals( "$a",
+                          auf.getVariable() );
+            assertEquals( 1,
+                          auf.getFieldValues().length );
+            ActionFieldValue afv = auf.getFieldValues()[ 0 ];
+            assertEquals( "applicantDate",
+                          afv.getField() );
+            assertEquals( "newStartDate",
+                          afv.getValue() );
+            assertEquals( FieldNatureType.TYPE_FORMULA,
+                          afv.getNature() );
+
+            assertEqualsIgnoreWhitespace( drl,
+                                          RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+        } finally {
+            if ( oldValue == null ) {
+                System.clearProperty( "drools.dateformat" );
+            } else {
+                System.setProperty( "drools.dateformat",
+                                    oldValue );
+            }
+        }
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
