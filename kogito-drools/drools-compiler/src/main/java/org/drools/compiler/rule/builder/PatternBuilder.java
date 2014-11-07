@@ -34,6 +34,7 @@ import org.drools.compiler.lang.descr.BindingDescr;
 import org.drools.compiler.lang.descr.ConnectiveType;
 import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
+import org.drools.compiler.lang.descr.ExpressionDescr;
 import org.drools.compiler.lang.descr.LiteralRestrictionDescr;
 import org.drools.compiler.lang.descr.OperatorDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
@@ -81,6 +82,7 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.constraint.EvaluatorConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.rule.constraint.NegConstraint;
+import org.drools.core.rule.constraint.XpathConstraint;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.Constraint;
@@ -244,13 +246,12 @@ public class PatternBuilder
             return rce;
         }
 
-        Pattern pattern;
-
         boolean duplicateBindings = objectType instanceof ClassObjectType &&
                                     context.getDeclarationResolver().isDuplicated( context.getRule(),
                                                                                    patternDescr.getIdentifier(),
                                                                                    ((ClassObjectType) objectType).getClassName() );
 
+        Pattern pattern;
         if ( !StringUtils.isEmpty( patternDescr.getIdentifier() ) && !duplicateBindings ) {
 
             pattern = new Pattern( context.getNextPatternId(),
@@ -674,20 +675,20 @@ public class PatternBuilder
                         final Pattern pattern,
                         final BaseDescr original,
                         final String expr ) {
-        ConstraintConnectiveDescr result = parseExpression( context,
-                                                            patternDescr,
-                                                            original,
-                                                            expr );
+        ConstraintConnectiveDescr result = parseExpression(context,
+                                                           patternDescr,
+                                                           original,
+                                                           expr);
         if ( result == null ) {
             return;
         }
         result.copyLocation( original );
         MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext().setRuleContext(context);
-        build( context,
-               patternDescr,
-               pattern,
-               result,
-               mvelCtx );
+        build(context,
+              patternDescr,
+              pattern,
+              result,
+              mvelCtx);
     }
 
     protected void build( RuleBuildContext context,
@@ -697,7 +698,11 @@ public class PatternBuilder
                           MVELDumper.MVELDumperContext mvelCtx ) {
         List<BaseDescr> initialDescrs = new ArrayList<BaseDescr>( descr.getDescrs() );
         for ( BaseDescr d : initialDescrs ) {
-            buildCcdDescr(context, patternDescr, pattern, d, descr, mvelCtx);
+            if ( isXPathDescr(d)) {
+                buildXPathDescr(context, patternDescr, pattern, d, descr, mvelCtx);
+            } else {
+                buildCcdDescr(context, patternDescr, pattern, d, descr, mvelCtx);
+            }
         }
 
         if ( descr.getDescrs().size() > initialDescrs.size() ) {
@@ -719,6 +724,75 @@ public class PatternBuilder
                     pattern.addConstraint( c );
                 }
             }
+        }
+    }
+
+    private boolean isXPathDescr(BaseDescr descr) {
+        return descr instanceof ExpressionDescr && ((ExpressionDescr)descr).getExpression().startsWith("/");
+    }
+
+    private void buildXPathDescr( RuleBuildContext context,
+                                  PatternDescr patternDescr,
+                                  Pattern pattern,
+                                  BaseDescr descr,
+                                  ConstraintConnectiveDescr ccd,
+                                  MVELDumper.MVELDumperContext mvelCtx ) {
+
+        String expression = ((ExpressionDescr)descr).getExpression();
+        XpathAnalysis xpathAnalysis = XpathAnalysis.analyze(expression);
+
+        if (xpathAnalysis == null) {
+            context.addError(new DescrBuildError(context.getParentDescr(),
+                                                 descr,
+                                                 null,
+                                                 "Invalid xpath expression '" + expression + "'"));
+            return;
+        }
+
+        XpathConstraint xpathConstraint = new XpathConstraint();
+        ObjectType objectType = pattern.getObjectType();
+        Class<?> patternClass = ((ClassObjectType) objectType).getClassType();
+
+        ObjectType originalType = pattern.getObjectType();
+
+        for (XpathAnalysis.XpathPart part : xpathAnalysis) {
+            XpathConstraint.XpathChunk xpathChunk = xpathConstraint.addChunck(patternClass, part.getField(), part.isIterate());
+
+            if (xpathChunk == null) {
+                context.addError(new DescrBuildError(context.getParentDescr(),
+                                                     descr,
+                                                     null,
+                                                     "Invalid xpath expression '" + expression + "': cannot access " + part.getField() + " on " + patternClass));
+                pattern.setObjectType(originalType);
+                return;
+            }
+
+            patternClass = xpathChunk.getReturnedClass();
+            pattern.setObjectType(new ClassObjectType(patternClass));
+
+            for (String constraint : part.getConstraints()) {
+                ConstraintConnectiveDescr result = parseExpression( context,
+                                                                    patternDescr,
+                                                                    new ExprConstraintDescr(constraint),
+                                                                    constraint );
+                build(context,
+                      patternDescr,
+                      pattern,
+                      result,
+                      mvelCtx);
+
+                for (Constraint c : pattern.getConstraints()) {
+                    xpathChunk.addConstraint(c);
+                }
+                pattern.clearConstraints();
+            }
+        }
+
+        pattern.setObjectType(originalType);
+        pattern.addConstraint(xpathConstraint);
+
+        if (descr instanceof BindingDescr) {
+            xpathConstraint.setDeclaration( pattern.addDeclaration( ((BindingDescr)descr).getVariable() ) );
         }
     }
 

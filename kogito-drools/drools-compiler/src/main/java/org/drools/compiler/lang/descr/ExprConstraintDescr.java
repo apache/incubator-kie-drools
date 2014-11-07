@@ -19,7 +19,7 @@ package org.drools.compiler.lang.descr;
  * This represents a constraint in a pattern defined by an arbitrary
  * expression. The constraint can be any valid java/mvel expression.
  */
-public class ExprConstraintDescr extends BaseDescr {
+public class ExprConstraintDescr extends BaseDescr implements ExpressionDescr {
 
     private static final long serialVersionUID = 520l;
     

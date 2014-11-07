@@ -16,7 +16,7 @@
 
 package org.drools.compiler.lang.descr;
 
-public class BindingDescr extends BaseDescr {
+public class BindingDescr extends BaseDescr implements ExpressionDescr {
     
     private static final long serialVersionUID = 520l;
     

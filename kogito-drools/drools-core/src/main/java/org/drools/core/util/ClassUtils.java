@@ -18,7 +18,6 @@ package org.drools.core.util;
 
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
-import org.drools.core.factmodel.traits.Thing;
 import org.kie.api.definition.type.Modifies;
 import org.kie.internal.utils.ClassLoaderUtil;
 
@@ -50,6 +49,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
+
+import static org.drools.core.util.StringUtils.ucFirst;
 
 public final class ClassUtils {
     private static final ProtectionDomain  PROTECTION_DOMAIN;
@@ -367,6 +368,22 @@ public final class ClassUtils {
             settableProperties.add(setter.setter);
         }
         return settableProperties;
+    }
+
+    public static Method getAccessor(Class<?> clazz, String field) {
+        try {
+            return clazz.getMethod("get" + ucFirst(field));
+        } catch (NoSuchMethodException e) {
+            try {
+                return clazz.getMethod(field);
+            } catch (NoSuchMethodException e1) {
+                try {
+                    return clazz.getMethod("is" + ucFirst(field));
+                } catch (NoSuchMethodException e2) {
+                    return null;
+                }
+            }
+        }
     }
 
     private static void processModifiesAnnotation(Class<?> clazz, Set<SetterInClass> props, Method m) {

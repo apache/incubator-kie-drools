@@ -17,7 +17,6 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
@@ -25,8 +24,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
@@ -38,6 +35,8 @@ import org.drools.core.rule.From;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.index.LeftTupleList;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -84,7 +83,7 @@ public class FromNode extends LeftTupleSource
         this.betaConstraints = (binder == null) ? EmptyBetaConstraints.getInstance() : binder;
         this.tupleMemoryEnabled = tupleMemoryEnabled;
         this.from = from;
-        resultClass = ((ClassObjectType)this.from.getResultPattern().getObjectType()).getClassType();
+        resultClass = this.from.getResultClass();
 
         initMasks(context, tupleSource);
     }
@@ -97,7 +96,7 @@ public class FromNode extends LeftTupleSource
         betaConstraints = (BetaConstraints) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
         from = (From) in.readObject();
-        resultClass = ((ClassObjectType)this.from.getResultPattern().getObjectType()).getClassType();
+        resultClass = from.getResultClass();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -170,8 +169,7 @@ public class FromNode extends LeftTupleSource
                                                                          null );
         }
 
-        RightTuple rightTuple = newRightTuple( handle, null );
-        return rightTuple;
+        return newRightTuple( handle, null );
     }
 
 

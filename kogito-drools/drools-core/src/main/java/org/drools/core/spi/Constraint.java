@@ -16,9 +16,9 @@
 
 package org.drools.core.spi;
 
-import java.io.Externalizable;
-
 import org.drools.core.rule.Declaration;
+
+import java.io.Externalizable;
 
 public interface Constraint
     extends
@@ -75,7 +75,8 @@ public interface Constraint
 
         UNKNOWN("UNKNOWN"),
         ALPHA("ALPHA"),
-        BETA("BETA");
+        BETA("BETA"),
+        XPATH("XPATH");
 
         private String desc;
 
