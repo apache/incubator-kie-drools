@@ -16,6 +16,14 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.WorkingMemory;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.spi.DataProvider;
+import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
+import org.drools.core.spi.Wireable;
+import org.kie.internal.security.KiePolicyHelper;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -28,24 +36,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.spi.DataProvider;
-import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.Tuple;
-import org.drools.core.spi.Wireable;
-import org.kie.internal.security.KiePolicyHelper;
-
 public class From extends ConditionalElement
-    implements
-    Externalizable,
-    Wireable,
-    PatternSource {
+        implements
+        Externalizable,
+        Wireable,
+        PatternSource {
 
     private static final long serialVersionUID = 510l;
 
     private DataProvider      dataProvider;
-    
+
     private Pattern           resultPattern;
+
+    private Class<?>          resultClass;
 
     public From() {
     }
@@ -55,15 +58,17 @@ public class From extends ConditionalElement
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        dataProvider    = (DataProvider)in.readObject();
+        dataProvider    = ( DataProvider ) in.readObject();
         resultPattern   = ( Pattern ) in.readObject();
+        resultClass     = ( Class<?> ) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(dataProvider);
+        out.writeObject( dataProvider );
         out.writeObject(  resultPattern );
+        out.writeObject(  resultClass );
     }
-    
+
     public void wire(Object object) {
         this.dataProvider = KiePolicyHelper.isPolicyEnabled() ? new SafeDataProvider(( DataProvider ) object) : ( DataProvider ) object;
     }
@@ -102,11 +107,19 @@ public class From extends ConditionalElement
     public void setResultPattern(Pattern pattern) {
         this.resultPattern = pattern;
     }
-    
+
     public Pattern getResultPattern() {
         return this.resultPattern;
     }
-    
+
+    public Class<?> getResultClass() {
+        return resultClass != null ? resultClass : ((ClassObjectType)resultPattern.getObjectType()).getClassType();
+    }
+
+    public void setResultClass(Class<?> resultClass) {
+        this.resultClass = resultClass;
+    }
+
     private static class SafeDataProvider implements DataProvider, Serializable {
         private static final long serialVersionUID = -1539933583656828737L;
         private DataProvider delegate;
@@ -130,10 +143,10 @@ public class From extends ConditionalElement
         }
 
         @Override
-        public Iterator getResults(final Tuple tuple, 
-                final WorkingMemory wm, 
-                final PropagationContext ctx, 
-                final Object providerContext) {
+        public Iterator getResults(final Tuple tuple,
+                                   final WorkingMemory wm,
+                                   final PropagationContext ctx,
+                                   final Object providerContext) {
             return AccessController.doPrivileged(new PrivilegedAction<Iterator>() {
                 @Override
                 public Iterator run() {
@@ -146,7 +159,7 @@ public class From extends ConditionalElement
         public void replaceDeclaration(Declaration declaration, Declaration resolved) {
             delegate.replaceDeclaration(declaration, resolved);
         }
-        
+
         @Override
         public SafeDataProvider clone() {
             return new SafeDataProvider( delegate.clone() );

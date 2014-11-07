@@ -16,7 +16,7 @@
 
 package org.drools.compiler.lang.descr;
 
-public class AtomicExprDescr extends BaseDescr {
+public class AtomicExprDescr extends BaseDescr implements ExpressionDescr {
     private static final long serialVersionUID = 510l;
 
     private String            expression;

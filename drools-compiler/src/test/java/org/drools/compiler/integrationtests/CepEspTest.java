@@ -100,8 +100,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-public class
-        CepEspTest extends CommonTestMethodBase {
+public class CepEspTest extends CommonTestMethodBase {
     
     @Test(timeout=10000)
     public void testComplexTimestamp() {
@@ -3925,13 +3924,14 @@ public class
                      "System.out.println( \"Success\" );\n" +
                      "list.add( 1 ); \n" +
                      "end\n";
+
         KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
         StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+
         ArrayList list = new ArrayList( 1 );
         ks.setGlobal( "list", list );
         ks.fireAllRules();
         assertEquals( Arrays.asList( 1 ), list );
-
     }
 
     @Test

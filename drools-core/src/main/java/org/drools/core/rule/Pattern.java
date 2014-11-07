@@ -298,6 +298,10 @@ public class Pattern
         this.constraints.remove( constraint );
     }
 
+    public void clearConstraints() {
+        this.constraints.clear();
+    }
+
     public List<MvelConstraint> getCombinableConstraints() {
         if (constraints.size() < 2) {
             return null;

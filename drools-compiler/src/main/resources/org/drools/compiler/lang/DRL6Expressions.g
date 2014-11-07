@@ -508,7 +508,11 @@ unaryExpressionNotPlusMinus returns [BaseDescr result]
         | ({inMap == 0 && ternOp == 0 && input.LA(2) == DRL6Lexer.UNIFY}? (var=ID UNIFY 
                 { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($UNIFY, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, true); helper.setStart( bind, $var ); } } ))
         )?
-        left=primary { if( buildDescr ) { $result = $left.result; } }
+
+        ( (DIV ID)=>left2=xpathPrimary { if( buildDescr ) { $result = $left2.result; } }
+          | left1=primary { if( buildDescr ) { $result = $left1.result; } }
+        )
+
         ((selector)=>selector)*
         {
             if( buildDescr ) {
@@ -545,6 +549,14 @@ primitiveType
     |	long_key
     |	float_key
     |	double_key
+    ;
+
+xpathPrimary returns [BaseDescr result]
+    : xpathChunk+
+    ;
+
+xpathChunk returns [BaseDescr result]
+    : (DIV ID)=> DIV ID (DOT ID)* (LEFT_SQUARE expressionList RIGHT_SQUARE)?
     ;
 
 primary returns [BaseDescr result]

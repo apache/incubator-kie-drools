@@ -16,11 +16,6 @@
 
 package org.drools.core.reteoo.builder;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.mvel.ActivationPropertyHandler;
@@ -32,11 +27,11 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.PropagationQueuingNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
+import org.drools.core.rule.From;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.IntervalProviderConstraint;
 import org.drools.core.rule.InvalidPatternException;
@@ -45,6 +40,7 @@ import org.drools.core.rule.PatternSource;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowReference;
+import org.drools.core.rule.constraint.XpathConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Constraint;
@@ -55,6 +51,14 @@ import org.drools.core.time.impl.Timer;
 import org.kie.api.conf.EventProcessingOption;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+
+import static org.drools.core.reteoo.builder.GroupElementBuilder.AndBuilder.buildJoinNode;
+import static org.drools.core.reteoo.builder.GroupElementBuilder.AndBuilder.buildTupleSource;
 
 /**
  * A builder for patterns
@@ -97,21 +101,13 @@ public class PatternBuilder
             }
         }
 
-        final List<AlphaNodeFieldConstraint> alphaConstraints = new LinkedList<AlphaNodeFieldConstraint>();
-        final List<BetaNodeFieldConstraint> betaConstraints = new LinkedList<BetaNodeFieldConstraint>();
-        final List<Behavior> behaviors = pattern.getBehaviors();
-
-        this.createConstraints( context,
-                                utils,
-                                pattern,
-                                alphaConstraints,
-                                betaConstraints );
+        Constraints constraints = createConstraints(context, utils, pattern);
 
         // Create BetaConstraints object
-        context.setBetaconstraints( betaConstraints );
+        context.setBetaconstraints( constraints.betaConstraints );
 
         if ( pattern.getSource() != null ) {
-            context.setAlphaConstraints( alphaConstraints );
+            context.setAlphaConstraints( constraints.alphaConstraints );
             final int currentOffset = context.getCurrentPatternOffset();
 
             PatternSource source = pattern.getSource();
@@ -122,9 +118,7 @@ public class PatternBuilder
                 throw new RuntimeException( "Unknown pattern source type: "+source.getClass()+" for source "+source+" on pattern "+pattern );
             }
 
-            builder.build( context,
-                           utils,
-                           source );
+            builder.build( context, utils, source );
             // restoring offset
             context.setCurrentPatternOffset( currentOffset );
         } else {
@@ -134,78 +128,97 @@ public class PatternBuilder
             builder.build( context, utils, source );
         }
 
-        if ( pattern.getSource() == null || 
-                ( !( pattern.getSource() instanceof WindowReference ) && 
-                  ( context.getCurrentEntryPoint() != EntryPointId.DEFAULT || ! behaviors.isEmpty() ) ) ){
-            attachObjectTypeNode( context,
-                                  utils,
-                                  pattern );
-        }
-        
-        if( ! behaviors.isEmpty() ) {
-            // build the window node:
-            WindowNode wn = new WindowNode( context.getNextId(),
-                                            alphaConstraints,
-                                            behaviors,
-                                            context.getObjectSource(),
-                                            context );
-            context.setObjectSource( (WindowNode) utils.attachNode( context, 
-                                                                    wn ) );
-            
-            // alpha constraints added to the window node already
-            alphaConstraints.clear();
-        }
+        buildBehaviors(context, utils, pattern, constraints);
 
         if ( context.getObjectSource() != null ) {
-            attachAlphaNodes( context,
-                              utils,
-                              pattern,
-                              alphaConstraints );
+            attachAlphaNodes( context, utils, pattern, constraints.alphaConstraints );
         }
+
+        buildXpathConstraints(context, utils, pattern, constraints);
 
         // last thing to do is increment the offset, since if the pattern has a source,
         // offset must be overriden
         context.incrementCurrentPatternOffset();
     }
 
-    private void createConstraints(BuildContext context,
-                                   BuildUtils utils,
-                                   Pattern pattern,
-                                   List<AlphaNodeFieldConstraint> alphaConstraints,
-                                   List<BetaNodeFieldConstraint> betaConstraints) {
+    private void buildBehaviors(BuildContext context, BuildUtils utils, Pattern pattern, Constraints constraints) {
+        final List<Behavior> behaviors = pattern.getBehaviors();
+        if ( pattern.getSource() == null ||
+                ( !( pattern.getSource() instanceof WindowReference) &&
+                  ( context.getCurrentEntryPoint() != EntryPointId.DEFAULT || ! behaviors.isEmpty() ) ) ){
+            attachObjectTypeNode( context, utils, pattern );
+        }
 
-        final List< ? > constraints = pattern.getConstraints();
+        if( ! behaviors.isEmpty() ) {
+            // build the window node:
+            WindowNode wn = new WindowNode( context.getNextId(),
+                                            constraints.alphaConstraints,
+                                            behaviors,
+                                            context.getObjectSource(),
+                                            context );
+            context.setObjectSource( (WindowNode) utils.attachNode( context, wn ) );
 
+            // alpha constraints added to the window node already
+            constraints.alphaConstraints.clear();
+        }
+    }
+
+    private void buildXpathConstraints(BuildContext context, BuildUtils utils, Pattern pattern, Constraints constraints) {
+        if (!constraints.xpathConstraints.isEmpty()) {
+            buildTupleSource(context, utils);
+
+            List<BetaNodeFieldConstraint> xpathConstraints = context.getBetaconstraints();
+            context.setBetaconstraints(Collections.<BetaNodeFieldConstraint>emptyList());
+            buildJoinNode(context, utils);
+            context.setBetaconstraints(xpathConstraints);
+
+            context.setAlphaConstraints(constraints.alphaConstraints);
+            ReteooComponentBuilder builder = utils.getBuilderFor(From.class);
+            for (XpathConstraint xpathConstraint : constraints.xpathConstraints) {
+                context.incrementCurrentPatternOffset();
+                Declaration declaration = xpathConstraint.getDeclaration();
+
+                Pattern clonedPattern = new Pattern( pattern.getIndex(),
+                                                     context.getCurrentPatternOffset(),
+                                                     new ClassObjectType( xpathConstraint.getResultClass() ),
+                                                     declaration.getIdentifier(),
+                                                     declaration.isInternalFact() );
+
+                declaration.setPattern( clonedPattern );
+                builder.build(context, utils, xpathConstraint.asFrom());
+            }
+        }
+    }
+
+    private Constraints createConstraints(BuildContext context, BuildUtils utils, Pattern pattern) {
+        Constraints constraints = new Constraints();
         // check if cross products for identity patterns should be disabled
         checkRemoveIdentities( context,
                                pattern,
-                               betaConstraints );
+                               constraints.betaConstraints );
 
         // checks if this pattern is nested inside a NOT CE
         final boolean isNegative = isNegative( context );
 
-        for ( final Iterator< ? > it = constraints.iterator(); it.hasNext(); ) {
-            final Object object = it.next();
-            // Check if its a declaration
-            if ( object instanceof Declaration ) {
-                // nothing to be done
-                continue;
+        for ( Constraint constraint : pattern.getConstraints() ) {
+            switch (constraint.getType()) {
+                case ALPHA:
+                    linkAlphaConstraint( (AlphaNodeFieldConstraint) constraint, constraints.alphaConstraints );
+                    break;
+                case BETA:
+                    linkBetaConstraint( (BetaNodeFieldConstraint) constraint, constraints.betaConstraints );
+                    if ( isNegative && context.getKnowledgeBase().getConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM && pattern.getObjectType().isEvent() && constraint.isTemporal() ) {
+                        checkDelaying( context, constraint );
+                    }
+                    break;
+                case XPATH:
+                    constraints.xpathConstraints.add( (XpathConstraint) constraint );
+                    break;
+                default:
+                    throw new RuntimeException( "Unknown constraint type: " + constraint.getType() + ". This is a bug. Please contact development team." );
             }
-
-            final Constraint constraint = (Constraint) object;
-            if ( constraint.getType().equals( Constraint.ConstraintType.ALPHA ) ) {
-                linkAlphaConstraint( (AlphaNodeFieldConstraint) constraint, alphaConstraints );
-            } else if ( constraint.getType().equals( Constraint.ConstraintType.BETA ) ) {
-                linkBetaConstraint( (BetaNodeFieldConstraint) constraint, betaConstraints );
-                if ( isNegative && context.getKnowledgeBase().getConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM && pattern.getObjectType().isEvent() && constraint.isTemporal() ) {
-                    checkDelaying( context,
-                            constraint );
-                }
-            } else {
-                throw new RuntimeException( "Unknown constraint type: " + constraint.getType() + ". This is a bug. Please contact development team." );
-            }
-
         }
+        return constraints;
     }
 
     protected void linkBetaConstraint( BetaNodeFieldConstraint constraint, List<BetaNodeFieldConstraint> betaConstraints ) {
@@ -428,5 +441,11 @@ public class PatternBuilder
     public boolean requiresLeftActivation(final BuildUtils utils,
                                           final RuleConditionElement rce) {
         return ((Pattern) rce).getSource() != null || ! ((Pattern) rce).getBehaviors().isEmpty() ;
+    }
+
+    private static class Constraints {
+        private final List<AlphaNodeFieldConstraint> alphaConstraints = new LinkedList<AlphaNodeFieldConstraint>();
+        private final List<BetaNodeFieldConstraint> betaConstraints = new LinkedList<BetaNodeFieldConstraint>();
+        private final List<XpathConstraint> xpathConstraints = new LinkedList<XpathConstraint>();
     }
 }
