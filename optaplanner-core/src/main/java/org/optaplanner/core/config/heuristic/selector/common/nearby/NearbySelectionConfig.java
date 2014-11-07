@@ -28,6 +28,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.nearby.BlockDistribut
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.LinearDistributionNearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.ParabolicDistributionNearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.nearby.NearEntityNearbyEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
@@ -46,6 +47,8 @@ public class NearbySelectionConfig extends SelectorConfig {
     protected Double blockDistributionUniformDistributionProbability = null;
 
     protected Integer linearDistributionSizeMaximum = null;
+
+    protected Integer parabolicDistributionSizeMaximum = null;
 
     protected Double betaDistributionAlpha = null;
     protected Double betaDistributionBeta = null;
@@ -104,6 +107,14 @@ public class NearbySelectionConfig extends SelectorConfig {
 
     public void setLinearDistributionSizeMaximum(Integer linearDistributionSizeMaximum) {
         this.linearDistributionSizeMaximum = linearDistributionSizeMaximum;
+    }
+
+    public Integer getParabolicDistributionSizeMaximum() {
+        return parabolicDistributionSizeMaximum;
+    }
+
+    public void setParabolicDistributionSizeMaximum(Integer parabolicDistributionSizeMaximum) {
+        this.parabolicDistributionSizeMaximum = parabolicDistributionSizeMaximum;
     }
 
     public Double getBetaDistributionAlpha() {
@@ -184,19 +195,32 @@ public class NearbySelectionConfig extends SelectorConfig {
                 || blockDistributionSizeRatio != null
                 || blockDistributionUniformDistributionProbability != null;
         boolean linearDistributionEnabled = linearDistributionSizeMaximum != null;
+        boolean parabolicDistributionEnabled = parabolicDistributionSizeMaximum != null;
         boolean betaDistributionEnabled = betaDistributionAlpha != null
                 || betaDistributionBeta != null;
         if (blockDistributionEnabled && linearDistributionEnabled) {
             throw new IllegalArgumentException("The nearbySelectorConfig (" + this
                     + ") has both blockDistribution and linearDistribution parameters.");
         }
+        if (blockDistributionEnabled && parabolicDistributionEnabled) {
+            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
+                    + ") has both blockDistribution and parabolicDistribution parameters.");
+        }
         if (blockDistributionEnabled && betaDistributionEnabled) {
             throw new IllegalArgumentException("The nearbySelectorConfig (" + this
                     + ") has both blockDistribution and betaDistribution parameters.");
         }
+        if (linearDistributionEnabled && parabolicDistributionEnabled) {
+            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
+                    + ") has both linearDistribution and parabolicDistribution parameters.");
+        }
         if (linearDistributionEnabled && betaDistributionEnabled) {
             throw new IllegalArgumentException("The nearbySelectorConfig (" + this
                     + ") has both linearDistribution and betaDistribution parameters.");
+        }
+        if (parabolicDistributionEnabled && betaDistributionEnabled) {
+            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
+                    + ") has both parabolicDistribution and betaDistribution parameters.");
         }
         if (blockDistributionEnabled) {
             int sizeMinimum = blockDistributionSizeMinimum == null ? 0 : blockDistributionSizeMinimum;
@@ -207,6 +231,9 @@ public class NearbySelectionConfig extends SelectorConfig {
         } else if (linearDistributionEnabled) {
             int sizeMaximum = linearDistributionSizeMaximum == null ? Integer.MAX_VALUE : linearDistributionSizeMaximum;
             return new LinearDistributionNearbyRandom(sizeMaximum);
+        } else if (parabolicDistributionEnabled) {
+            int sizeMaximum = parabolicDistributionSizeMaximum == null ? Integer.MAX_VALUE : parabolicDistributionSizeMaximum;
+            return new ParabolicDistributionNearbyRandom(sizeMaximum);
         } else if (betaDistributionEnabled) {
             double alpha = betaDistributionAlpha == null ? 1.0 : betaDistributionAlpha;
             double beta = betaDistributionBeta == null ? 5.0 : betaDistributionBeta;
@@ -235,6 +262,8 @@ public class NearbySelectionConfig extends SelectorConfig {
                 inheritedConfig.getBlockDistributionUniformDistributionProbability());
         linearDistributionSizeMaximum = ConfigUtils.inheritOverwritableProperty(linearDistributionSizeMaximum,
                 inheritedConfig.getLinearDistributionSizeMaximum());
+        parabolicDistributionSizeMaximum = ConfigUtils.inheritOverwritableProperty(parabolicDistributionSizeMaximum,
+                inheritedConfig.getParabolicDistributionSizeMaximum());
         betaDistributionAlpha = ConfigUtils.inheritOverwritableProperty(betaDistributionAlpha,
                 inheritedConfig.getBetaDistributionAlpha());
         betaDistributionBeta = ConfigUtils.inheritOverwritableProperty(betaDistributionBeta,
