@@ -18,7 +18,7 @@ import java.util.Set;
 public class QueryAndParameterAppender {
 
     private boolean startWithWhere = false;
-    private boolean firstUse = true;
+    private boolean noClauseAddedYet = true;
     private boolean alreadyUsed = false;
     private final StringBuilder queryBuilder;
     private final Map<String, Object> queryParams;
@@ -36,6 +36,18 @@ public class QueryAndParameterAppender {
         this.startWithWhere = useWhere;
     }
 
+    public boolean hasBeenUsed() {
+        return ! this.noClauseAddedYet;
+    }
+
+    public void markAsUsed() {
+        this.noClauseAddedYet = false;
+    }
+
+    public void addNamedQueryParam(String name, Object value) { 
+        queryParams.put(name, value);
+    }
+    
     // "Normal" query parameters --------------------------------------------------------------------------------------------------
 
     public <T> void addQueryParameters( List<? extends Object> paramList, String listId, Class<T> type, String fieldName,
@@ -132,7 +144,7 @@ public class QueryAndParameterAppender {
         // add query string to query builder and fill params map
         internalAddToQueryBuilder(queryClause.toString(), union);
         for( Entry<String, T> nameMinMaxEntry : paramNameMinMaxMap.entrySet() ) { 
-            queryParams.put(nameMinMaxEntry.getKey(), nameMinMaxEntry.getValue());
+            addNamedQueryParam(nameMinMaxEntry.getKey(), nameMinMaxEntry.getValue());
         }
         queryBuilderModificationCleanup();
     }
@@ -197,43 +209,37 @@ public class QueryAndParameterAppender {
         // add query string to query builder and fill params map
         internalAddToQueryBuilder(queryClause.toString(), union);
         for( Entry<String, String> nameRegexEntry : paramNameRegexMap.entrySet() ) {
-            queryParams.put(nameRegexEntry.getKey(), nameRegexEntry.getValue());
+            addNamedQueryParam(nameRegexEntry.getKey(), nameRegexEntry.getValue());
         }
         queryBuilderModificationCleanup();
     }
-
-    public boolean getFirstUse() {
-        return this.firstUse;
-    }
-
-    // private helper methods =====================================================================================================
 
     private <T> void addToQueryBuilder( String query, boolean union, List<T> paramValList, String paramName ) {
         // modify query builder
         internalAddToQueryBuilder(query, union);
         // add query parameters
         Set<T> paramVals = new HashSet<T>(paramValList);
-        queryParams.put(paramName, paramVals);
+        addNamedQueryParam(paramName, paramVals);
         // cleanup
         queryBuilderModificationCleanup();
     }
 
     private void internalAddToQueryBuilder( String query, boolean union ) {
-        if( this.firstUse ) {
+        if( this.noClauseAddedYet ) {
             if( startWithWhere ) {
                 queryBuilder.append(" WHERE");
             } else {
                 queryBuilder.append(" AND");
             }
             queryBuilder.append(" (");
-            this.firstUse = false;
+            this.noClauseAddedYet = false;
         } else if( this.alreadyUsed ) {
             queryBuilder.append(union ? "\nOR " : "\nAND ");
         }
         queryBuilder.append(query);
     }
 
-    private void queryBuilderModificationCleanup() {
+    public void queryBuilderModificationCleanup() {
         this.alreadyUsed = true;
     }
 
