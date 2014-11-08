@@ -37,10 +37,18 @@ public class ParabolicDistributionNearbyRandomTest {
 
         when(random.nextDouble()).thenReturn(0.0);
         assertEquals(0, nearbyRandom.nextInt(random, 500));
-//        when(random.nextDouble()).thenReturn((99.0 * 99.0) * 3.0 / 1000000.0);
-//        assertEquals(1, nearbyRandom.nextInt(random, 500));
-//        when(random.nextDouble()).thenReturn((99.0 * 99.0 + 98.0 * 98.0) * 3.0 / 1000000.0);
-//        assertEquals(2, nearbyRandom.nextInt(random, 500));
+        when(random.nextDouble()).thenReturn(1.0 - Math.pow(1 - 1.0 / 100.0, 3.0));
+        assertEquals(1, nearbyRandom.nextInt(random, 500));
+        when(random.nextDouble()).thenReturn(1.0 - Math.pow(1 - 2.0 / 100.0, 3.0));
+        assertEquals(2, nearbyRandom.nextInt(random, 500));
+        when(random.nextDouble()).thenReturn(Math.nextAfter(1.0, Double.NEGATIVE_INFINITY));
+        assertEquals(99, nearbyRandom.nextInt(random, 500));
+
+
+        when(random.nextDouble()).thenReturn(0.0);
+        assertEquals(0, nearbyRandom.nextInt(random, 10));
+        when(random.nextDouble()).thenReturn(Math.nextAfter(1.0, Double.NEGATIVE_INFINITY));
+        assertEquals(9, nearbyRandom.nextInt(random, 10));
     }
 
 }
