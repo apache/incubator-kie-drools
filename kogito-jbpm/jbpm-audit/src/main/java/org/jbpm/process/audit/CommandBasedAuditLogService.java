@@ -36,6 +36,11 @@ public class CommandBasedAuditLogService implements AuditLogService {
     }
 
     @Override
+    public List<ProcessInstanceLog> findActiveProcessInstances() {
+        return executor.execute(new FindActiveProcessInstancesCommand());
+    }
+
+    @Override
     public List<ProcessInstanceLog> findProcessInstances(String processId) {
         return executor.execute(new FindProcessInstancesCommand(processId));
     }

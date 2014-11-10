@@ -136,6 +136,17 @@ public class JPAAuditLogService implements AuditLogService {
     }
 
     /* (non-Javadoc)
+     * @see org.jbpm.process.audit.AuditLogService#findActiveProcessInstances(java.lang.String)
+     */
+    @Override
+    public List<ProcessInstanceLog> findActiveProcessInstances() {
+        EntityManager em = getEntityManager();
+        Query query = em
+                .createQuery("FROM ProcessInstanceLog p WHERE p.end is null");
+        return executeQuery(query, em, ProcessInstanceLog.class);
+    }
+    
+    /* (non-Javadoc)
      * @see org.jbpm.process.audit.AuditLogService#findProcessInstances(java.lang.String)
      */
     @Override

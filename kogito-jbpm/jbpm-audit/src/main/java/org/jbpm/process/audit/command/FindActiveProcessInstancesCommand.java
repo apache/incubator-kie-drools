@@ -34,7 +34,7 @@ public class FindActiveProcessInstancesCommand extends AuditCommand<List<Process
     /** generated serial version UID */
     private static final long serialVersionUID = 3096240261041200350L;
 
-    @XmlAttribute(required=true)
+    @XmlAttribute(required=false)
     @XmlSchemaType(name="string")
     private String processId = null;
     
@@ -51,7 +51,11 @@ public class FindActiveProcessInstancesCommand extends AuditCommand<List<Process
 	
     public List<ProcessInstanceLog> execute(Context cntxt) {
         setLogEnvironment(cntxt);
-        return this.auditLogService.findActiveProcessInstances(processId);
+        if( processId != null && ! processId.trim().isEmpty() ) { 
+            return this.auditLogService.findActiveProcessInstances(processId);
+        } else { 
+            return this.auditLogService.findActiveProcessInstances();
+        }
     }
 
     public String getProcessId() {

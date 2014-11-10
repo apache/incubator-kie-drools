@@ -341,6 +341,8 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         // record the initial count to compare to later
         List<ProcessInstanceLog> processInstances = auditLogService.findProcessInstances("com.sample.ruleflow");
         int initialProcessInstanceSize = processInstances.size();
+        processInstances = auditLogService.findActiveProcessInstances();
+        int initialActiveProcessInstanceSize = processInstances.size();
         
         // prepare variable value
         String variableValue = "very short value that should be trimmed by custom variable log length";
@@ -354,7 +356,9 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         params.put("list", list);
         params.put("s", variableValue);
         long processInstanceId = session.startProcess("com.sample.ruleflow3", params).getId();
-
+        int numActiveProcesses = auditLogService.findActiveProcessInstances().size();
+        assertEquals( "find active processes did not work", initialActiveProcessInstanceSize + 1, numActiveProcesses );
+ 
         // Test findVariableInstancesByName* methods: check for variables (only) in active processes
         List<VariableInstanceLog> varLogs = auditLogService.findVariableInstancesByName("s", true) ;
         assertFalse( varLogs.isEmpty() );

@@ -40,6 +40,8 @@ public interface AuditLogService extends AuditService {
 	@Override
     public List<ProcessInstanceLog> findProcessInstances();
 
+    public List<ProcessInstanceLog> findActiveProcessInstances();
+    
     public List<ProcessInstanceLog> findProcessInstances(String processId);
 
     public List<ProcessInstanceLog> findActiveProcessInstances(String processId);
