@@ -273,10 +273,13 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         // This test depends from the former one (UGLY!) and must be run immediately after it
         KieServices ks = KieServices.Factory.get();
 
-        KieContainer kieContainer = ks.newKieContainer(ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT"));
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
+        KieContainer kieContainer = ks.newKieContainer(releaseId);
 
         KieSession ksession2 = kieContainer.newKieSession("KSession1");
         checkKSession(ksession2, 15);
+
+        ks.getRepository().removeKieModule(releaseId);
     }
 
     @Test
