@@ -280,6 +280,11 @@ public abstract class AbstractKieModule
         return false;
     }
 
+    public boolean hasResource(String fileName) {
+        byte[] bytes = getBytes(fileName);
+        return bytes != null && bytes.length > 0;
+    }
+
     public Resource getResource(String fileName) {
         byte[] bytes = getBytes(fileName);
         if (bytes != null && bytes.length > 0) {

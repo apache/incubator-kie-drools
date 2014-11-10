@@ -1,11 +1,5 @@
 package org.drools.compiler.kie.builder.impl;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
@@ -15,6 +9,10 @@ import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.definition.KnowledgePackage;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.Map;
 
 public interface InternalKieModule extends KieModule {
 
@@ -32,6 +30,7 @@ public interface InternalKieModule extends KieModule {
     
     byte[] getBytes( );  
     
+    boolean hasResource( String fileName );
     Resource getResource( String fileName );
 
     ResourceConfiguration getResourceConfiguration( String fileName );

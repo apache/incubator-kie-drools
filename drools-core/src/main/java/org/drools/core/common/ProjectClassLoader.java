@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,8 +36,11 @@ public class ProjectClassLoader extends ClassLoader {
 
     private Set<String> loadedClasses = new HashSet<String>();
 
-    private ProjectClassLoader(ClassLoader parent) {
+    private final ResourceProvider resourceProvider;
+
+    private ProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider) {
         super(parent);
+        this.resourceProvider = resourceProvider;
     }
 
     public static class IBMClassLoader extends ProjectClassLoader {
@@ -46,8 +48,8 @@ public class ProjectClassLoader extends ClassLoader {
 
         private static final Enumeration<URL> EMPTY_RESOURCE_ENUM = new Vector<URL>().elements();
 
-        private IBMClassLoader(ClassLoader parent) {
-            super(parent);
+        private IBMClassLoader(ClassLoader parent, ResourceProvider resourceProvider) {
+            super(parent, resourceProvider);
             Method m = null;
             try {
                 m = parent.getClass().getMethod("findResources", String.class);
@@ -63,8 +65,8 @@ public class ProjectClassLoader extends ClassLoader {
         }
     }
 
-    private static ProjectClassLoader internalCreate(ClassLoader parent) {
-        return isIBM_JVM ? new IBMClassLoader(parent) : new ProjectClassLoader(parent);
+    private static ProjectClassLoader internalCreate(ClassLoader parent, ResourceProvider resourceProvider) {
+        return isIBM_JVM ? new IBMClassLoader(parent, resourceProvider) : new ProjectClassLoader(parent, resourceProvider);
     }
 
     public static ClassLoader getClassLoader(final ClassLoader classLoader,
@@ -75,10 +77,6 @@ public class ProjectClassLoader extends ClassLoader {
             projectClassLoader.setDroolsClassLoader(cls.getClassLoader());
         }
         return projectClassLoader;
-    }
-
-    public static ProjectClassLoader createProjectClassLoader() {
-        return internalCreate(findParentClassLoader());
     }
 
     public static ClassLoader findParentClassLoader() {
@@ -93,11 +91,19 @@ public class ProjectClassLoader extends ClassLoader {
     }
 
 
+    public static ProjectClassLoader createProjectClassLoader() {
+        return internalCreate(findParentClassLoader(), null);
+    }
+
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent) {
+        return createProjectClassLoader(parent, (ResourceProvider)null);
+    }
+
+    public static ProjectClassLoader createProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider) {
         if (parent == null) {
-            return createProjectClassLoader();
+            return internalCreate(findParentClassLoader(), resourceProvider);
         }
-        return parent instanceof ProjectClassLoader ? (ProjectClassLoader)parent : internalCreate(parent);
+        return parent instanceof ProjectClassLoader ? (ProjectClassLoader)parent : internalCreate(parent, resourceProvider);
     }
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent, Map<String, byte[]> store) {
@@ -214,7 +220,18 @@ public class ProjectClassLoader extends ClassLoader {
     @Override
     public InputStream getResourceAsStream(String name) {
         byte[] bytecode = getBytecode(name);
-        return bytecode != null ? new ByteArrayInputStream( bytecode ) : super.getResourceAsStream(name);
+        if (bytecode != null) {
+            return new ByteArrayInputStream( bytecode );
+        }
+        if (resourceProvider != null) {
+            try {
+                InputStream is = resourceProvider.getResourceAsStream(name);
+                if (is != null) {
+                    return is;
+                }
+            } catch (IOException e) { }
+        }
+        return super.getResourceAsStream(name);
     }
 
     @Override
@@ -225,7 +242,51 @@ public class ProjectClassLoader extends ClassLoader {
                 return resource;
             }
         }
+        if (resourceProvider != null) {
+            URL resource = resourceProvider.getResource(name);
+            if (resource != null) {
+                return resource;
+            }
+        }
         return super.getResource(name);
+    }
+
+    @Override
+    public Enumeration<URL> getResources(String name) throws IOException {
+        Enumeration<URL> resources = super.getResources(name);
+        if (resourceProvider != null) {
+            URL providedResource = resourceProvider.getResource(name);
+            if (resources != null) {
+                return new ResourcesEnum(providedResource, resources);
+            }
+        }
+        return resources;
+    }
+
+    private static class ResourcesEnum implements Enumeration<URL> {
+
+        private URL providedResource;
+        private final Enumeration<URL> resources;
+
+        private ResourcesEnum(URL providedResource, Enumeration<URL> resources) {
+            this.providedResource = providedResource;
+            this.resources = resources;
+        }
+
+        @Override
+        public boolean hasMoreElements() {
+            return providedResource != null || resources.hasMoreElements();
+        }
+
+        @Override
+        public URL nextElement() {
+            if (providedResource != null) {
+                URL result = providedResource;
+                providedResource = null;
+                return result;
+            }
+            return resources.nextElement();
+        }
     }
 
     public byte[] getBytecode(String resourceName) {
