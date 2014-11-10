@@ -1,25 +1,13 @@
 package org.kie.scanner;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieRepositoryImpl;
 import org.drools.compiler.kie.builder.impl.KieServicesImpl;
-import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -33,6 +21,14 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
@@ -214,11 +210,11 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         Collection<Rule> rules = packages.iterator().next().getRules();
         assertEquals(2, rules.size());
 
+        ks.getRepository().removeKieModule(releaseId);
 
         // deploy new version
         File kjar1 = new File(prefix + "src/test/resources/kjar/kjar-module-after.jar");
         File pom1 = new File(prefix + "src/test/resources/kjar/pom-kjar.xml");
-
 
         repository.deployArtifact(releaseId, kjar1, pom1);
 
@@ -230,6 +226,8 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         assertEquals(1, packages2.size());
         Collection<Rule> rules2 = packages2.iterator().next().getRules();
         assertEquals(4, rules2.size());
+
+        ks.getRepository().removeKieModule(releaseId);
     }
 
     @Test
