@@ -23,6 +23,7 @@ import org.drools.compiler.StockTick;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.compiler.Foo;
 import org.drools.compiler.Pet;
+import org.drools.compiler.State;
 import org.drools.core.base.UndefinedCalendarExcption;
 import org.drools.core.common.TimedRuleExecution;
 import org.drools.core.time.SessionPseudoClock;
@@ -1822,4 +1823,132 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals(2, list.size());
     }
+
+	@Test(timeout = 10000)
+	public void testIntervalRuleInsertion() throws Exception {
+		String str = "";
+
+		str += "package org.simple\n";
+		str += "global java.util.List list \n";
+		str += "import org.drools.compiler.Alarm\n";
+		str += "    rule \"Interval Alarm\"\n";
+		str += "        timer(cron:0/5 * * * * ?)\n";
+		str += "    when not Alarm()\n";
+		str += "    then\n";
+		str += "        insert(new Alarm());\n";
+		str += "        list.add(\"fired\"); \n";
+		str += "    end\n";
+		
+		KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+		conf.setOption(TimedRuleExectionOption.YES);
+		// Does not fail when using pseudo clock due to the subsequent call to fireAllRules
+
+		KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+		KieSession ksession = createKnowledgeSession(kbase, conf);
+
+		List list = new ArrayList();
+		ksession.setGlobal("list", list);
+		
+		State state = new State();
+		state.setFlag(false);
+		ksession.insert(state);
+
+		ksession.fireAllRules();
+
+        assertEquals( 0, list.size() );
+
+        Thread.sleep(7000);
+        assertEquals( 1, list.size() );
+		
+	}
+	
+	@Test(timeout = 10000)
+	public void testIntervalRuleModify() throws Exception {
+		String str = "";
+
+		str += "package org.simple\n";
+		str += "global java.util.List list \n";
+		str += "import org.drools.compiler.State\n";
+		str += "    rule \"Interval State Update\"\n";
+		str += "        timer(cron:0/5 * * * * ?)\n";
+		str += "    when\n";
+		str += "	   $s : State(flag==false)\n";
+		str += "    then\n";
+		str += "       modify($s){setFlag(true)};\n";
+		str += "    end\n";
+		
+		str += "    rule \"Fire State True\"\n";
+		str += "    when\n";
+		str += "       $s : State(flag==true)\n";
+		str += "    then\n";
+		str += "        list.add(\"fired\"); \n";
+		str += "    end\n";
+		
+		KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+		conf.setOption(TimedRuleExectionOption.YES);
+		// Does not fail when using pseudo clock due to the subsequent call to fireAllRules
+
+		KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+		KieSession ksession = createKnowledgeSession(kbase, conf);
+
+		List list = new ArrayList();
+		ksession.setGlobal("list", list);
+		
+		State state = new State();
+		state.setFlag(false);
+		ksession.insert(state);
+
+		assertEquals( 0, list.size() );
+		
+		ksession.fireAllRules();
+
+        Thread.sleep(7000);
+        assertEquals( 1, list.size() );
+	}
+
+	@Test(timeout = 10000)
+	public void testIntervalRuleSetFocus() throws Exception {
+		String str = "";
+
+		str += "package org.simple\n";
+		str += "global java.util.List list \n";
+		str += "import org.drools.compiler.State\n";
+		str += "    rule \"Interval State Update\"\n";
+		str += "        timer(cron:0/5 * * * * ?)\n";
+		str += "    when\n";
+		str += "	   State()\n";
+		str += "    then\n";
+		str += "       drools.setFocus( \"test_agenda\" );\n";
+		str += "    end\n";
+		
+		str += "    rule \"Fire State True\"\n";
+		str += "        agenda-group \"test_agenda\"\n";
+		str += "    when\n";
+		str += "        State()\n";
+		str += "    then\n";
+		str += "        list.add(\"fired\"); \n";
+		str += "    end\n";
+		
+		KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+		conf.setOption(TimedRuleExectionOption.YES);
+		// Does not fail when using pseudo clock due to the subsequent call to fireAllRules
+
+		KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+		KieSession ksession = createKnowledgeSession(kbase, conf);
+
+		List list = new ArrayList();
+		ksession.setGlobal("list", list);
+		
+		State state = new State();
+		state.setFlag(false);
+		ksession.insert(state);
+
+		assertEquals( 0, list.size() );
+		
+		ksession.fireAllRules();
+
+        Thread.sleep(7000);
+        assertEquals( 1, list.size() );
+	}
+    
 }
