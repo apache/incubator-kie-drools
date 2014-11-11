@@ -26,13 +26,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.naming.InitialContext;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.sql.DataSource;
+import javax.transaction.Status;
+import javax.transaction.UserTransaction;
 
 import org.drools.core.audit.WorkingMemoryInMemoryLogger;
 import org.drools.core.audit.event.LogEvent;
 import org.drools.core.audit.event.RuleFlowNodeLogEvent;
+import org.drools.persistence.jta.JtaTransactionManager;
+import org.jbpm.process.audit.AuditLogService;
+import org.jbpm.process.audit.JPAAuditLogService;
+import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
@@ -203,6 +210,16 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
             if (ds != null) {
                 ds.close();
                 ds = null;
+            }
+            try { 
+                InitialContext context = new InitialContext();
+                UserTransaction ut = (UserTransaction) context.lookup( JtaTransactionManager.DEFAULT_USER_TRANSACTION_NAME );
+                if( ut.getStatus() != Status.STATUS_NO_TRANSACTION ) { 
+                    ut.setRollbackOnly();
+                    ut.rollback();
+                }
+            } catch( Exception e ) { 
+                // do nothing
             }
         }        
     }
