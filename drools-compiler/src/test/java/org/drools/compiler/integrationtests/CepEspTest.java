@@ -2802,7 +2802,7 @@ public class CepEspTest extends CommonTestMethodBase {
                 this.populateSessionWithStocks(ksession, stockFactory);
             }
             // let the engine finish its job
-            Thread.sleep(5000);
+            Thread.sleep(2000);
 
         } finally {
             ksession.halt();
