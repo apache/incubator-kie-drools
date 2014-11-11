@@ -138,4 +138,20 @@ public class ProbabilityEntitySelectorTest {
         entitySelector.constructCache(mock(DefaultSolverScope.class));
         assertEquals(4, entitySelector.getSize());
     }
+
+    @Test(expected = IllegalStateException.class)
+    public void withNeverEndingSelection() {
+        EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
+        when(childEntitySelector.isNeverEnding()).thenReturn(true);
+        SelectionProbabilityWeightFactory prob = mock(SelectionProbabilityWeightFactory.class);
+        ProbabilityEntitySelector entitySelector = new ProbabilityEntitySelector(childEntitySelector, SelectionCacheType.STEP, prob);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void withoutCachedSelectionType() {
+        EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
+        SelectionProbabilityWeightFactory prob = mock(SelectionProbabilityWeightFactory.class);
+        ProbabilityEntitySelector entitySelector = new ProbabilityEntitySelector(childEntitySelector, SelectionCacheType.JUST_IN_TIME, prob);
+    }
+
 }
