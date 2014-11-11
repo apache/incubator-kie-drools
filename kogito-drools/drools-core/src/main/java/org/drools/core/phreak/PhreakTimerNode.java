@@ -1,16 +1,11 @@
 package org.drools.core.phreak;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.TimedRuleExecution;
-import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.PersisterHelper;
@@ -41,10 +36,16 @@ import org.drools.core.util.LinkedList;
 import org.drools.core.util.index.LeftTupleList;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.Calendars;
+import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.kie.api.runtime.rule.PropagationContext;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 public class PhreakTimerNode {
     private static final Logger log = LoggerFactory.getLogger( PhreakTimerNode.class );
@@ -481,6 +482,7 @@ public class PhreakTimerNode {
                           pmem.getRuleAgendaItem().getRuleExecutor());
 
             pmem.getRuleAgendaItem().getRuleExecutor().fire(wm, outerStack);
+            ((InternalAgenda) wm.getAgenda()).fireAllRules(null, -1);
         }
     }
 
