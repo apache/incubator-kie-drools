@@ -19,11 +19,15 @@ package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 import org.junit.Test;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
+import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+
+import java.util.Iterator;
+import java.util.ListIterator;
 
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
@@ -102,6 +106,43 @@ public class CachingEntitySelectorTest {
         verifyPhaseLifecycle(childEntitySelector, 1, 2, 5);
         verify(childEntitySelector, times(timesCalled)).iterator();
         verify(childEntitySelector, times(timesCalled)).getSize();
+    }
+
+    @Test(expected=IllegalStateException.class)
+    public void listIteratorWithRandomSelection() {
+        EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
+        CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, true);
+        cachingEntitySelector.listIterator();
+    }
+
+    @Test(expected=IllegalStateException.class)
+    public void indexedListIteratorWithRandomSelection() {
+        EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
+        CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, true);
+        cachingEntitySelector.listIterator(0);
+    }
+
+    @Test
+    public void isNeverEnding() {
+        EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
+        CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, true);
+        assertTrue(cachingEntitySelector.isNeverEnding());
+        cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, false);
+        assertFalse(cachingEntitySelector.isNeverEnding());
+    }
+
+    @Test
+    public void iterator() {
+        EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
+        when(childEntitySelector.getSize()).thenReturn(1L);
+
+        CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, true);
+        cachingEntitySelector.constructCache(null);
+        assertTrue(cachingEntitySelector.iterator() instanceof CachedListRandomIterator);
+
+        cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, false);
+        cachingEntitySelector.constructCache(null);
+        assertFalse(cachingEntitySelector.iterator() instanceof CachedListRandomIterator);
     }
 
 }

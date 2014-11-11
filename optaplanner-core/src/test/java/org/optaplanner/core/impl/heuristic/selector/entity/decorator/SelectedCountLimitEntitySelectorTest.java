@@ -146,4 +146,30 @@ public class SelectedCountLimitEntitySelectorTest {
         verify(childEntitySelector, times(5)).getSize();
     }
 
+    @Test
+    public void isCountable() {
+        EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
+        EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, 5L);
+        assertTrue(entitySelector.isCountable());
+    }
+
+    @Test
+    public void isNeverEnding() {
+        EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
+        EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, 5L);
+        assertFalse(entitySelector.isNeverEnding());
+    }
+
+    @Test
+    public void getSize() {
+        EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
+        when(childEntitySelector.getSize()).thenReturn(1L);
+        EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, 5L);
+        assertEquals(1, entitySelector.getSize());
+        when(childEntitySelector.getSize()).thenReturn(5L);
+        assertEquals(5, entitySelector.getSize());
+        when(childEntitySelector.getSize()).thenReturn(10L);
+        assertEquals(5, entitySelector.getSize());
+    }
+
 }
