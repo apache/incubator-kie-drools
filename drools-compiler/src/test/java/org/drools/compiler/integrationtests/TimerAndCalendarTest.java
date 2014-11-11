@@ -1,5 +1,37 @@
 package org.drools.compiler.integrationtests;
 
+import org.drools.compiler.Alarm;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.FactA;
+import org.drools.compiler.Foo;
+import org.drools.compiler.Pet;
+import org.drools.compiler.StockTick;
+import org.drools.core.base.UndefinedCalendarExcption;
+import org.drools.core.time.SessionPseudoClock;
+import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.core.util.DateUtils;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.DefaultAgendaEventListener;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.conf.TimedRuleExectionOption;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.time.Calendar;
+import org.kie.api.time.SessionClock;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.RuleEngineOption;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,47 +40,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.drools.compiler.Alarm;
-import org.drools.compiler.Cheese;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.FactA;
-import org.drools.compiler.StockTick;
-import org.kie.api.runtime.rule.FactHandle;
-import org.drools.compiler.Foo;
-import org.drools.compiler.Pet;
-import org.drools.core.base.UndefinedCalendarExcption;
-import org.drools.core.common.TimedRuleExecution;
-import org.drools.core.time.SessionPseudoClock;
-import org.junit.Ignore;
-import org.kie.api.event.rule.DefaultAgendaEventListener;
-import org.kie.api.runtime.conf.TimedRuleExectionOption;
-import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
-import org.drools.core.time.impl.PseudoClockScheduler;
-import org.drools.core.util.DateUtils;
-import org.junit.Test;
-import org.kie.api.definition.rule.Rule;
-import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.time.Calendar;
-import org.kie.api.time.SessionClock;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class TimerAndCalendarTest extends CommonTestMethodBase {
 
@@ -1821,5 +1816,36 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         pseudoClock.advanceTime(35, TimeUnit.SECONDS);
         ksession.fireAllRules();
         assertEquals(2, list.size());
+    }
+
+    @Test
+    public void testIntervalRuleInsertion() throws Exception {
+        // DROOLS-620
+        // Does not fail when using pseudo clock due to the subsequent call to fireAllRules
+        String str =
+                "package org.simple\n" +
+                "global java.util.List list\n" +
+                "import org.drools.compiler.Alarm\n" +
+                "rule \"Interval Alarm\"\n" +
+                "timer(int: 1s 1s)\n" +
+                "when " +
+                "    not Alarm()\n" +
+                "then\n" +
+                "    insert(new Alarm());\n" +
+                "    list.add(\"fired\"); \n" +
+                "end\n";
+
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption(TimedRuleExectionOption.YES);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = createKnowledgeSession(kbase, conf);
+
+        List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() );
+        Thread.sleep( 3000 );
+        assertEquals( 1, list.size() );
     }
 }
