@@ -17,6 +17,7 @@
 package org.drools.core.base;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.Thing;
@@ -52,7 +53,8 @@ public class SequentialKnowledgeHelper
     private Activation                         activation;
     private Tuple                              tuple;
     private final InternalWorkingMemoryActions workingMemory;
-    private IdentityHashMap<Object,FactHandle>              identityMap;
+    private IdentityHashMap<Object,InternalFactHandle>
+                                               identityMap;
 
     public SequentialKnowledgeHelper(final WorkingMemory workingMemory) {
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
@@ -63,7 +65,7 @@ public class SequentialKnowledgeHelper
         this.subrule = agendaItem.getSubRule();
         this.activation = agendaItem;
         this.tuple = agendaItem.getTuple();
-        this.identityMap = new IdentityHashMap<Object,FactHandle>();
+        this.identityMap = new IdentityHashMap<Object,InternalFactHandle>();
     }
     
     public void reset() {
@@ -156,11 +158,11 @@ public class SequentialKnowledgeHelper
         return Collections.unmodifiableMap( this.workingMemory.getChannels() );
     }
 
-    public IdentityHashMap<Object, FactHandle> getIdentityMap() {
+    public IdentityHashMap<Object, InternalFactHandle> getIdentityMap() {
         return this.identityMap;
     }
 
-    public void setIdentityMap(IdentityHashMap<Object, FactHandle> identityMap) {
+    public void setIdentityMap(IdentityHashMap<Object, InternalFactHandle> identityMap) {
         this.identityMap = identityMap;
     }
 
@@ -220,48 +222,48 @@ public class SequentialKnowledgeHelper
     public void cancelRemainingPreviousLogicalDependencies() {
     }
 
-    public FactHandle insert(Object object) {
+    public InternalFactHandle insert(Object object) {
         return null;
     }
 
-    public FactHandle insert(Object object,
+    public InternalFactHandle insert(Object object,
                        boolean dynamic) {
         return null;
     }
 
     @Override
-    public void insertLogical(Object object, Mode belief) {
-
+    public InternalFactHandle insertLogical(Object object, Mode belief) {
+        return null;
     }
 
     @Override
-    public void insertLogical(Object object, Mode... beliefs) {
-
+    public InternalFactHandle insertLogical(Object object, Mode... beliefs) {
+        return null;
     }
 
-    public void insertLogical(Object object) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    public void insertLogical(Object object,
-                              boolean dynamic) {
-        // TODO Auto-generated method stub
-        
-    }
-    
-    public void insertLogical(Object object,
-                              Object value) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    public FactHandle getFactHandle(Object object) {
+    public InternalFactHandle insertLogical(Object object) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public FactHandle getFactHandle(FactHandle handle) {
+    public InternalFactHandle insertLogical(Object object,
+                                    boolean dynamic) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    public InternalFactHandle insertLogical(Object object,
+                                    Object value) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public InternalFactHandle getFactHandle(Object object) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public InternalFactHandle getFactHandle(InternalFactHandle handle) {
         // TODO Auto-generated method stub
         return null;
     }

@@ -37,10 +37,10 @@ public class ReteSimpleBeliefSystem
         return this.tms;
     }
 
-    public void insert(LogicalDependency<SimpleMode> node,
-                       BeliefSet<SimpleMode> beliefSet,
-                       PropagationContext context,
-                       ObjectTypeConf typeConf) {
+    public BeliefSet<SimpleMode> insert(LogicalDependency<SimpleMode> node,
+                                        BeliefSet<SimpleMode> beliefSet,
+                                        PropagationContext context,
+                                        ObjectTypeConf typeConf) {
         boolean empty = beliefSet.isEmpty();
 
         beliefSet.add( node.getMode() );
@@ -55,6 +55,7 @@ public class ReteSimpleBeliefSystem
                        typeConf,
                        null );
         }
+        return beliefSet;
     }
 
     public void read(LogicalDependency<SimpleMode> node,

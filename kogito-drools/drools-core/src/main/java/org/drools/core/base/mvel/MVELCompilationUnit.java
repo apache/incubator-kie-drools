@@ -339,9 +339,9 @@ public class MVELCompilationUnit
             }
         }
 
-        IdentityHashMap<Object, FactHandle> identityMap = null;
+        IdentityHashMap<Object, InternalFactHandle> identityMap = null;
         if ( knowledgeHelper != null ) {
-            identityMap = new IdentityHashMap<Object, FactHandle>();
+            identityMap = new IdentityHashMap<Object, InternalFactHandle>();
         }
 
         if ( tuples != null ) {

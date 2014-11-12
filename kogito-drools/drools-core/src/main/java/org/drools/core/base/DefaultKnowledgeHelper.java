@@ -106,7 +106,8 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     private Tuple                                     tuple;
     private InternalWorkingMemoryActions              workingMemory;
 
-    private IdentityHashMap<Object, FactHandle>       identityMap;
+    private IdentityHashMap<Object, InternalFactHandle>
+                                                      identityMap;
 
     private LinkedList<LogicalDependency<T>>          previousJustified;
 
@@ -135,7 +136,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         activation = (Activation) in.readObject();
         tuple = (Tuple) in.readObject();
         workingMemory = (InternalWorkingMemoryActions) in.readObject();
-        identityMap = (IdentityHashMap<Object, FactHandle>) in.readObject();
+        identityMap = (IdentityHashMap<Object, InternalFactHandle>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -225,70 +226,70 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         }
     }
 
-    public FactHandle insert(final Object object) {
+    public InternalFactHandle insert(final Object object) {
         return insert( object,
                        false );
     }
 
-    public FactHandle insert(final Object object,
-                       final boolean dynamic) {
-        FactHandle handle = this.workingMemory.insert( object,
-                                                           null,
-                                                           dynamic,
-                                                           false,
-                                                           this.activation.getRule(),
-                                                           this.activation );
+    public InternalFactHandle insert(final Object object,
+                                     final boolean dynamic) {
+        InternalFactHandle handle = (InternalFactHandle) this.workingMemory.insert( object,
+                                                                                    null,
+                                                                                    dynamic,
+                                                                                    false,
+                                                                                    this.activation.getRule(),
+                                                                                    this.activation );
         if ( this.identityMap != null ) {
             this.getIdentityMap().put( object,
                                        handle );
         }
-        
+
         return handle;
     }
 
     @Override
-    public void insertLogical(Object object, Mode belief) {
-        insertLogical( object,
-                       belief,
-                       false );
+    public InternalFactHandle insertLogical(Object object, Mode belief) {
+        return insertLogical( object,
+                              belief,
+                              false );
     }
 
     @Override
-    public void insertLogical(Object object, Mode... beliefs) {
-        insertLogical( object,
-                       beliefs,
-                       false );
+    public InternalFactHandle insertLogical(Object object, Mode... beliefs) {
+        return insertLogical( object,
+                              beliefs,
+                              false );
     }
 
-    public void insertLogical(final Object object) {
-        insertLogical( object,
-                       false );
+    public InternalFactHandle insertLogical(final Object object) {
+        return insertLogical( object,
+                              false );
     }
     
-    public void insertLogical(final Object object,final boolean dynamic) {
-        insertLogical( object,
-                       null,
-                       dynamic );
+    public InternalFactHandle insertLogical(final Object object,final boolean dynamic) {
+        return insertLogical( object,
+                              null,
+                              dynamic );
     }    
 
-    public void insertLogical(final Object object,
+    public InternalFactHandle insertLogical(final Object object,
                               final Object value) {
-        insertLogical( object,
-                       value,
-                       false );
+        return insertLogical( object,
+                              value,
+                              false );
     }
-    public void insertLogical(final Object object,
-                              final Object value,
-                              final boolean dynamic) {
+    public InternalFactHandle insertLogical(final Object object,
+                                    final Object value,
+                                    final boolean dynamic) {
 
         if ( object == null ) {
             // prevent nulls from being inserted logically
-            return;
+            return null;
         }
 
         if ( !activation.isMatched() ) {
             // Activation is already unmatched, can't do logical insertions against it
-            return;
+            return null;
         }
         // iterate to find previous equal logical insertion
         LogicalDependency<T> dep = null;
@@ -304,12 +305,13 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         if ( dep != null ) {
             // Add the previous matching logical dependency back into the list           
             this.activation.addLogicalDependency( dep );
+            return ( (BeliefSet) dep.getJustified() ).getFactHandle();
         } else {
             // no previous matching logical dependency, so create a new one
-            FactHandle handle = workingMemory.getTruthMaintenanceSystem().insert(object,
-                                                                                 value,
-                                                                                 this.activation.getRule(),
-                                                                                 this.activation);
+            InternalFactHandle handle = workingMemory.getTruthMaintenanceSystem().insert(object,
+                                                                                         value,
+                                                                                         this.activation.getRule(),
+                                                                                         this.activation);
 //            FactHandle handle = this.workingMemory.insert( object,
 //                                                           value,
 //                                                           dynamic,
@@ -321,6 +323,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
                 this.getIdentityMap().put( object,
                                            handle );
             }
+            return handle;
         }
     }
     
@@ -352,8 +355,8 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         ((RuleTerminalNode)match.getTerminalNode()).cancelMatch( match,  workingMemory);
     }
 
-    public FactHandle getFactHandle(Object object) {
-        FactHandle handle = null;
+    public InternalFactHandle getFactHandle(Object object) {
+        InternalFactHandle handle = null;
         if ( identityMap != null ) {
             handle = identityMap.get( object );
         }
@@ -375,9 +378,9 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         return handle;
     }
     
-    public FactHandle getFactHandle(FactHandle handle) {
+    public InternalFactHandle getFactHandle(InternalFactHandle handle) {
         Object object = ((InternalFactHandle)handle).getObject();
-        handle = getFactHandleFromWM( object );
+        handle = (InternalFactHandle) getFactHandleFromWM( object );
         if ( handle == null ) {
             throw new RuntimeException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
@@ -394,7 +397,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
                                                                       this.activation );
         if ( getIdentityMap() != null ) {
             this.getIdentityMap().put( newObject,
-                                       handle );
+                                       h );
         }
     }
 
@@ -488,7 +491,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
             
             if ( identityMap != null ) {
                 getIdentityMap().put( object,
-                                      wmTmp.getFactHandleByIdentity( object ) );
+                                      (InternalFactHandle) wmTmp.getFactHandleByIdentity( object ) );
             }
             return object;
         }
@@ -518,23 +521,23 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     /**
      * @return the identityMap
      */
-    public IdentityHashMap<Object, FactHandle> getIdentityMap() {
+    public IdentityHashMap<Object, InternalFactHandle> getIdentityMap() {
         return identityMap;
     }
 
     /**
      * @param identityMap the identityMap to set
      */
-    public void setIdentityMap(IdentityHashMap<Object, FactHandle> identityMap) {
+    public void setIdentityMap(IdentityHashMap<Object, InternalFactHandle> identityMap) {
         this.identityMap = identityMap;
     }
 
-    private FactHandle getFactHandleFromWM(final Object object) {
-        FactHandle handle = null;
+    private InternalFactHandle getFactHandleFromWM(final Object object) {
+        InternalFactHandle handle = null;
         // entry point null means it is a generated fact, not a regular inserted fact
         // NOTE: it would probably be a good idea to create a specific attribute for that
             for ( EntryPoint ep : workingMemory.getEntryPoints() ) {
-                handle = (FactHandle) ep.getFactHandle( object );
+                handle = (InternalFactHandle) ep.getFactHandle( object );
                 if ( identityMap != null ) {
                     identityMap.put( object,
                                      handle );
