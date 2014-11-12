@@ -1,5 +1,6 @@
 package org.drools.persistence;
 
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -15,14 +16,20 @@ public class TransactionSynchronizationContainer implements TransactionSynchroni
 
     @Override
     public void beforeCompletion() {
-        for (TransactionSynchronization txSync : synchronizations) {
+        Iterator<TransactionSynchronization> it = synchronizations.iterator();
+        while (it.hasNext()) {
+
+            TransactionSynchronization txSync = it.next();
             txSync.beforeCompletion();
         }
     }
 
     @Override
     public void afterCompletion(int status) {
-        for (TransactionSynchronization txSync : synchronizations) {
+        Iterator<TransactionSynchronization> it = synchronizations.iterator();
+        while (it.hasNext()) {
+
+            TransactionSynchronization txSync = it.next();
             txSync.afterCompletion(status);
         }
     }
