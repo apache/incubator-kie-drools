@@ -252,7 +252,7 @@ public class SingleSessionCommandService
             config.setMarshallWorkItems( false );
         }
 
-        this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
+        this.sessionInfo.setJPASessionMashallingHelper(this.marshallingHelper);
 
         // The CommandService for the TimerJobFactoryManager must be set before any timer jobs are scheduled. 
         // Otherwise, if overdue jobs are scheduled (and then run before the .commandService field can be set), 
@@ -420,7 +420,7 @@ public class SingleSessionCommandService
             rollbackTransaction( re, transactionOwner );
             throw re;
         } catch ( Exception t1 ) {
-            rollbackTransaction( t1, transactionOwner );
+            rollbackTransaction(t1, transactionOwner);
             throw new RuntimeException( "Wrapped exception see cause", t1 );
         }
     }
@@ -471,6 +471,12 @@ public class SingleSessionCommandService
             // not used
         }
 
+        @Override
+        public String toString() {
+            return "SynchronizationImpl{" +
+                    "service=" + service.sessionInfo +  " cmd=" + service.toString() +
+                    '}';
+        }
     }
 
     public KieSession getKieSession() {
