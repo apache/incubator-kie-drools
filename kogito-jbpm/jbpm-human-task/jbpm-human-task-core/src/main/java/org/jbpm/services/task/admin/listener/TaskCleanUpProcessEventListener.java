@@ -49,5 +49,9 @@ public class TaskCleanUpProcessEventListener extends DefaultProcessEventListener
         taskService.archiveTasks(completedTasksByProcessId);
         taskService.removeTasks(completedTasksByProcessId);
     }
-   
+
+	public void setTaskService(InternalTaskService taskService) {
+		this.taskService = taskService;
+	}
+    
 }

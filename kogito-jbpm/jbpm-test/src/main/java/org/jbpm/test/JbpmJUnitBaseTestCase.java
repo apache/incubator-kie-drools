@@ -37,11 +37,10 @@ import org.drools.core.audit.WorkingMemoryInMemoryLogger;
 import org.drools.core.audit.event.LogEvent;
 import org.drools.core.audit.event.RuleFlowNodeLogEvent;
 import org.drools.persistence.jta.JtaTransactionManager;
-import org.jbpm.process.audit.AuditLogService;
-import org.jbpm.process.audit.JPAAuditLogService;
-import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
+import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
+import org.jbpm.runtime.manager.impl.SimpleRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
@@ -49,6 +48,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.kie.api.definition.process.Node;
+import org.kie.api.event.process.ProcessEventListener;
+import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
@@ -66,6 +67,7 @@ import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.manager.context.EmptyContext;
@@ -132,6 +134,11 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     private WorkingMemoryInMemoryLogger inMemoryLogger;    
    
     protected Set<RuntimeEngine> activeEngines = new HashSet<RuntimeEngine>();
+    
+    protected Map<String, WorkItemHandler> customHandlers = new HashMap<String, WorkItemHandler>();
+    protected List<ProcessEventListener> customProcessListeners = new ArrayList<ProcessEventListener>();
+    protected List<AgendaEventListener> customAgendaListeners = new ArrayList<AgendaEventListener>();
+    protected List<TaskLifeCycleEventListener> customTaskListeners = new ArrayList<TaskLifeCycleEventListener>();
 
     /**
      * The most simple test case configuration:
@@ -198,6 +205,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
 
     @After
     public void tearDown() throws Exception {
+    	clearCustomRegistry();
         disposeRuntimeManager();
         clearHistory();
         if (setupDataSource) {
@@ -312,14 +320,111 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
             builder = RuntimeEnvironmentBuilder.Factory.get()
         			.newEmptyBuilder()
             .addConfiguration("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName())
-            .addConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
+            .addConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName())
+            .registerableItemsFactory(new SimpleRegisterableItemsFactory() {
+
+				@Override
+				public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
+					Map<String, WorkItemHandler> handlers = new HashMap<String, WorkItemHandler>();
+					handlers.putAll(super.getWorkItemHandlers(runtime));
+					handlers.putAll(customHandlers);
+					return handlers;
+				}
+	
+				@Override
+				public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
+					List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
+					listeners.addAll(customProcessListeners);
+					return listeners;
+				}
+	
+				@Override
+				public List<AgendaEventListener> getAgendaEventListeners( RuntimeEngine runtime) {
+					List<AgendaEventListener> listeners = super.getAgendaEventListeners(runtime);
+					listeners.addAll(customAgendaListeners);
+					return listeners;
+				}
+	
+				@Override
+				public List<TaskLifeCycleEventListener> getTaskListeners() {
+					List<TaskLifeCycleEventListener> listeners = super.getTaskListeners();
+					listeners.addAll(customTaskListeners);
+					return listeners;
+				}
+	        	
+	        });
+            
         } else if (sessionPersistence) {
             builder = RuntimeEnvironmentBuilder.Factory.get()
         			.newDefaultBuilder()
-            .entityManagerFactory(emf);
+            .entityManagerFactory(emf)
+            .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
+
+				@Override
+				public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
+					Map<String, WorkItemHandler> handlers = new HashMap<String, WorkItemHandler>();
+					handlers.putAll(super.getWorkItemHandlers(runtime));
+					handlers.putAll(customHandlers);
+					return handlers;
+				}
+	
+				@Override
+				public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
+					List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
+					listeners.addAll(customProcessListeners);
+					return listeners;
+				}
+	
+				@Override
+				public List<AgendaEventListener> getAgendaEventListeners( RuntimeEngine runtime) {
+					List<AgendaEventListener> listeners = super.getAgendaEventListeners(runtime);
+					listeners.addAll(customAgendaListeners);
+					return listeners;
+				}
+	
+				@Override
+				public List<TaskLifeCycleEventListener> getTaskListeners() {
+					List<TaskLifeCycleEventListener> listeners = super.getTaskListeners();
+					listeners.addAll(customTaskListeners);
+					return listeners;
+				}
+	        	
+	        });
         } else {
             builder = RuntimeEnvironmentBuilder.Factory.get()
-        			.newDefaultInMemoryBuilder();       
+        			.newDefaultInMemoryBuilder()
+        			.registerableItemsFactory(new DefaultRegisterableItemsFactory() {
+
+				@Override
+				public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
+					Map<String, WorkItemHandler> handlers = new HashMap<String, WorkItemHandler>();
+					handlers.putAll(super.getWorkItemHandlers(runtime));
+					handlers.putAll(customHandlers);
+					return handlers;
+				}
+	
+				@Override
+				public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
+					List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
+					listeners.addAll(customProcessListeners);
+					return listeners;
+				}
+	
+				@Override
+				public List<AgendaEventListener> getAgendaEventListeners( RuntimeEngine runtime) {
+					List<AgendaEventListener> listeners = super.getAgendaEventListeners(runtime);
+					listeners.addAll(customAgendaListeners);
+					return listeners;
+				}
+	
+				@Override
+				public List<TaskLifeCycleEventListener> getTaskListeners() {
+					List<TaskLifeCycleEventListener> listeners = super.getTaskListeners();
+					listeners.addAll(customTaskListeners);
+					return listeners;
+				}
+	        	
+	        });       
         }
         builder.userGroupCallback(new JBossUserGroupCallbackImpl("classpath:/usergroups.properties"));
         
@@ -666,6 +771,14 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
         }
     }
     
+    protected void clearCustomRegistry() {
+    	this.customAgendaListeners.clear();
+    	this.customHandlers.clear();
+    	this.customProcessListeners.clear();
+    	this.customTaskListeners.clear();
+    }
+    
+    
     protected TestWorkItemHandler getTestWorkItemHandler() {
         return workItemHandler;
     }
@@ -676,6 +789,22 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     
     protected WorkingMemoryInMemoryLogger getInMemoryLogger() {
         return inMemoryLogger;
+    }
+    
+    public void addProcessEventListener(ProcessEventListener listener) {
+    	customProcessListeners.add(listener);
+    }
+    
+    public void addAgendaEventListener(AgendaEventListener listener) {
+    	customAgendaListeners.add(listener);
+    }
+    
+    public void addTaskEventListener(TaskLifeCycleEventListener listener) {
+    	customTaskListeners.add(listener);
+    }
+    
+    public void addWorkItemHandler(String name, WorkItemHandler handler) {
+    	customHandlers.put(name, handler);
     }
 
     protected static class TestWorkItemHandler implements WorkItemHandler {

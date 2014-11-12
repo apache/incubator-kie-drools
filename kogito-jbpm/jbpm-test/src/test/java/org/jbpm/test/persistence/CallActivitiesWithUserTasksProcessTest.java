@@ -34,11 +34,12 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
-import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
+import org.kie.internal.task.api.InternalTaskService;
 
 
 @RunWith(Parameterized.class)
@@ -66,10 +67,14 @@ public class CallActivitiesWithUserTasksProcessTest extends JbpmJUnitBaseTestCas
   
     @Test
     public void testCallActivitiesWithUserTasks() throws Exception {
+    	TaskCleanUpProcessEventListener taskListener = new TaskCleanUpProcessEventListener(null);
+    	addWorkItemHandler("Sysout", new SystemOutWorkItemHandler());
+    	addProcessEventListener(taskListener);
+    	
         InitialContext context = new InitialContext();
         UserTransaction ut =  (UserTransaction) context.lookup( JtaTransactionManager.DEFAULT_USER_TRANSACTION_NAME ); 
         
-        createRuntimeManager(strategy, (String) null, "BPMN2-CallActivityWithTask-Main.bpmn2", "BPMN2-CallActivityWithTask-Sub.bpmn2");
+        RuntimeManager manager = createRuntimeManager(strategy, (String) null, "BPMN2-CallActivityWithTask-Main.bpmn2", "BPMN2-CallActivityWithTask-Sub.bpmn2");
        
         RuntimeEngine runtimeEngine;
         if( Strategy.SINGLETON.equals(strategy) ) { 
@@ -82,10 +87,9 @@ public class CallActivitiesWithUserTasksProcessTest extends JbpmJUnitBaseTestCas
         
         KieSession ksession = runtimeEngine.getKieSession();
         TaskService taskService = runtimeEngine.getTaskService();
-
-        ksession.addEventListener(new TaskCleanUpProcessEventListener(taskService));        
-        ksession.getWorkItemManager().registerWorkItemHandler("Sysout", new SystemOutWorkItemHandler());
-                 
+        // set created task service on listener
+        taskListener.setTaskService((InternalTaskService) taskService);
+        
         if( userManagedTx ) { 
             ut.begin();
         }
@@ -96,7 +100,18 @@ public class CallActivitiesWithUserTasksProcessTest extends JbpmJUnitBaseTestCas
         
         if( userManagedTx ) { 
             ut.commit();
+            manager.disposeRuntimeEngine(runtimeEngine);
+            runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+            ksession = runtimeEngine.getKieSession();
+            taskService = runtimeEngine.getTaskService();
+            taskListener.setTaskService((InternalTaskService) taskService);
             ut.begin();
+        } else {
+            manager.disposeRuntimeEngine(runtimeEngine);
+            runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+            ksession = runtimeEngine.getKieSession();
+            taskService = runtimeEngine.getTaskService();
+            taskListener.setTaskService((InternalTaskService) taskService);
         }
         
         List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
@@ -110,7 +125,18 @@ public class CallActivitiesWithUserTasksProcessTest extends JbpmJUnitBaseTestCas
         
         if( userManagedTx ) { 
             ut.commit();
+            manager.disposeRuntimeEngine(runtimeEngine);
+            runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+            ksession = runtimeEngine.getKieSession();
+            taskService = runtimeEngine.getTaskService();
+            taskListener.setTaskService((InternalTaskService) taskService);
             ut.begin();
+        } else {
+            manager.disposeRuntimeEngine(runtimeEngine);
+            runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+            ksession = runtimeEngine.getKieSession();
+            taskService = runtimeEngine.getTaskService();
+            taskListener.setTaskService((InternalTaskService) taskService);
         }
         
         tasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
@@ -136,10 +162,13 @@ public class CallActivitiesWithUserTasksProcessTest extends JbpmJUnitBaseTestCas
     
     @Test
     public void testCallActivitiesWith2ndUserTaskInSub() throws Exception {
+    	TaskCleanUpProcessEventListener taskListener = new TaskCleanUpProcessEventListener(null);
+    	addWorkItemHandler("Sysout", new SystemOutWorkItemHandler());
+    	addProcessEventListener(taskListener);
         InitialContext context = new InitialContext();
         UserTransaction ut =  (UserTransaction) context.lookup( JtaTransactionManager.DEFAULT_USER_TRANSACTION_NAME ); 
         
-        createRuntimeManager(strategy, (String) null, "BPMN2-CallActivityWithTaskInSub-Main.bpmn2", "BPMN2-CallActivityWithTaskInSub-Sub.bpmn2");
+        RuntimeManager manager = createRuntimeManager(strategy, (String) null, "BPMN2-CallActivityWithTaskInSub-Main.bpmn2", "BPMN2-CallActivityWithTaskInSub-Sub.bpmn2");
        
         RuntimeEngine runtimeEngine;
         if( Strategy.SINGLETON.equals(strategy) ) { 
@@ -152,10 +181,9 @@ public class CallActivitiesWithUserTasksProcessTest extends JbpmJUnitBaseTestCas
         
         KieSession ksession = runtimeEngine.getKieSession();
         TaskService taskService = runtimeEngine.getTaskService();
+        // set created task service on listener
+        taskListener.setTaskService((InternalTaskService) taskService);
 
-        ksession.addEventListener(new TaskCleanUpProcessEventListener(taskService));        
-        ksession.getWorkItemManager().registerWorkItemHandler("Sysout", new SystemOutWorkItemHandler());
-                 
         if( userManagedTx ) { 
             ut.begin();
         }
@@ -166,7 +194,20 @@ public class CallActivitiesWithUserTasksProcessTest extends JbpmJUnitBaseTestCas
         
         if( userManagedTx ) { 
             ut.commit();
+            
+            manager.disposeRuntimeEngine(runtimeEngine);
+            runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+            ksession = runtimeEngine.getKieSession();
+            taskService = runtimeEngine.getTaskService();
+            taskListener.setTaskService((InternalTaskService) taskService);
+            
             ut.begin();
+        } else {
+            manager.disposeRuntimeEngine(runtimeEngine);
+            runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+            ksession = runtimeEngine.getKieSession();
+            taskService = runtimeEngine.getTaskService();
+            taskListener.setTaskService((InternalTaskService) taskService);
         }
         
         List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
@@ -179,7 +220,18 @@ public class CallActivitiesWithUserTasksProcessTest extends JbpmJUnitBaseTestCas
       
         if( userManagedTx ) { 
             ut.commit();
+            manager.disposeRuntimeEngine(runtimeEngine);
+            runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+            ksession = runtimeEngine.getKieSession();
+            taskService = runtimeEngine.getTaskService();
+            taskListener.setTaskService((InternalTaskService) taskService);
             ut.begin();
+        } else {
+            manager.disposeRuntimeEngine(runtimeEngine);
+            runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+            ksession = runtimeEngine.getKieSession();
+            taskService = runtimeEngine.getTaskService();
+            taskListener.setTaskService((InternalTaskService) taskService);
         }
         
         // sub process task 
@@ -193,7 +245,18 @@ public class CallActivitiesWithUserTasksProcessTest extends JbpmJUnitBaseTestCas
         
         if( userManagedTx ) { 
             ut.commit();
+            manager.disposeRuntimeEngine(runtimeEngine);
+            runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+            ksession = runtimeEngine.getKieSession();
+            taskService = runtimeEngine.getTaskService();
+            taskListener.setTaskService((InternalTaskService) taskService);
             ut.begin();
+        } else {
+            manager.disposeRuntimeEngine(runtimeEngine);
+            runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+            ksession = runtimeEngine.getKieSession();
+            taskService = runtimeEngine.getTaskService();
+            taskListener.setTaskService((InternalTaskService) taskService);
         }
         
         tasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
@@ -207,7 +270,18 @@ public class CallActivitiesWithUserTasksProcessTest extends JbpmJUnitBaseTestCas
         
         if( userManagedTx ) { 
             ut.commit();
+            manager.disposeRuntimeEngine(runtimeEngine);
+            runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+            ksession = runtimeEngine.getKieSession();
+            taskService = runtimeEngine.getTaskService();
+            taskListener.setTaskService((InternalTaskService) taskService);
             ut.begin();
+        } else {
+            manager.disposeRuntimeEngine(runtimeEngine);
+            runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+            ksession = runtimeEngine.getKieSession();
+            taskService = runtimeEngine.getTaskService();
+            taskListener.setTaskService((InternalTaskService) taskService);
         }
         
         // sub process task 
