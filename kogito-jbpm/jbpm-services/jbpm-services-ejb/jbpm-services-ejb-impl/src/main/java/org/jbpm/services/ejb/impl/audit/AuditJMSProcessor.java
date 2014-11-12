@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.kie.services.impl.audit;
+package org.jbpm.services.ejb.impl.audit;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManagerFactory;
