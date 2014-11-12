@@ -17,6 +17,7 @@
 package org.drools.core.spi;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
@@ -59,7 +60,7 @@ public interface KnowledgeHelper
      * @param object -
      *            the object to be asserted
      */
-    FactHandle insert(Object object) ;
+    InternalFactHandle insert(Object object) ;
     
     /**
      * Asserts an object specifying that it implement the onPropertyChange
@@ -70,23 +71,23 @@ public interface KnowledgeHelper
      * @param dynamic -
      *            specifies the object implements onPropertyChangeListener
      */
-    FactHandle insert(Object object,
+    InternalFactHandle insert(Object object,
                 boolean dynamic) ;
     
-    public void insertLogical(Object object) ;
+    public InternalFactHandle insertLogical(Object object) ;
     
-    public void insertLogical(Object object,
+    public InternalFactHandle insertLogical(Object object,
                               boolean dynamic) ;
 
-    public void insertLogical(Object object, Mode belief) ;
+    public InternalFactHandle insertLogical(Object object, Mode belief) ;
 
-    public void insertLogical(Object object, Mode... beliefs) ;
+    public InternalFactHandle insertLogical(Object object, Mode... beliefs) ;
     
     public void cancelRemainingPreviousLogicalDependencies();
     
-    FactHandle getFactHandle(Object object);
+    InternalFactHandle getFactHandle(Object object);
     
-    FactHandle getFactHandle(FactHandle handle);
+    InternalFactHandle getFactHandle(InternalFactHandle handle);
     
     void update(FactHandle handle, Object newObject);
 
@@ -137,9 +138,9 @@ public interface KnowledgeHelper
     
     void halt();
 
-    IdentityHashMap<Object, FactHandle> getIdentityMap();
+    IdentityHashMap<Object, InternalFactHandle> getIdentityMap();
 
-    void setIdentityMap(IdentityHashMap<Object, FactHandle> identityMap);
+    void setIdentityMap(IdentityHashMap<Object, InternalFactHandle> identityMap);
     
     <T> T getContext(Class<T> contextClass);
 
