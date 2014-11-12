@@ -332,4 +332,14 @@ public class StepCountingHillClimbingAcceptorTest extends AbstractAcceptorTest {
         acceptor.phaseEnded(phaseScope);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void zeroStepCountingHillClimbingSize() {
+        StepCountingHillClimbingAcceptor acceptor = new StepCountingHillClimbingAcceptor(0, StepCountingHillClimbingType.STEP);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void negativeStepCountingHillClimbingSize() {
+        StepCountingHillClimbingAcceptor acceptor = new StepCountingHillClimbingAcceptor(-1, StepCountingHillClimbingType.STEP);
+    }
+
 }

@@ -242,4 +242,17 @@ public class LateAcceptanceAcceptorTest extends AbstractAcceptorTest {
         acceptor.phaseEnded(phaseScope);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void zeroLateAcceptanceSize() {
+        LateAcceptanceAcceptor acceptor = new LateAcceptanceAcceptor();
+        acceptor.setLateAcceptanceSize(0);
+        acceptor.phaseStarted(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void negativeLateAcceptanceSize() {
+        LateAcceptanceAcceptor acceptor = new LateAcceptanceAcceptor();
+        acceptor.setLateAcceptanceSize(-1);
+        acceptor.phaseStarted(null);
+    }
 }

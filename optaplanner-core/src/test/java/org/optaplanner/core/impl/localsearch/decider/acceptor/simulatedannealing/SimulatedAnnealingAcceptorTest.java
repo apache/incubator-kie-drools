@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.localsearch.decider.acceptor.simulatedannealin
 import java.util.Random;
 
 import org.junit.Test;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptorTest;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
@@ -82,6 +83,13 @@ public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
         phaseScope.setLastCompletedStepScope(stepScope2);
 
         acceptor.phaseEnded(phaseScope);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void negativeLateSimulatedAnnealingSize() {
+        SimulatedAnnealingAcceptor acceptor = new SimulatedAnnealingAcceptor();
+        acceptor.setStartingTemperature(HardMediumSoftScore.parseScore("1, -1, 2"));
+        acceptor.phaseStarted(null);
     }
 
 }
