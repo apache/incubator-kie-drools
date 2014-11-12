@@ -127,6 +127,7 @@ public class ProcessAssetDesc implements ProcessDefinition {
         hash = 17 * hash + (this.knowledgeType != null ? this.knowledgeType.hashCode() : 0);
         hash = 17 * hash + (this.namespace != null ? this.namespace.hashCode() : 0);    
         hash = 17 * hash + (this.originalPath != null ? this.originalPath.hashCode() : 0);
+        hash = 17 * hash + (this.deploymentId != null ? this.deploymentId.hashCode() : 0);
         return hash;
     }
 
@@ -161,6 +162,9 @@ public class ProcessAssetDesc implements ProcessDefinition {
             return false;
         }
         if ((this.originalPath == null) ? (other.originalPath != null) : !this.originalPath.equals(other.originalPath)) {
+            return false;
+        }
+        if ((this.deploymentId == null) ? (other.deploymentId != null) : !this.deploymentId.equals(other.deploymentId)) {
             return false;
         }
         return true;
