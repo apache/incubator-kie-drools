@@ -36,6 +36,7 @@ import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.test.util.AbstractBaseTest;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
+import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,6 +79,21 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         }
         MavenRepository repository = getMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
+        
+        ReleaseId releaseId3 = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, "1.1.0-SNAPSHOT");
+        
+        InternalKieModule kJar3 = createKieJar(ks, releaseId3, processes);
+        File pom3 = new File("target/kmodule3", "pom.xml");
+        pom3.getParentFile().mkdirs();
+        try {
+            FileOutputStream fs = new FileOutputStream(pom3);
+            fs.write(getPom(releaseId3).getBytes());
+            fs.close();
+        } catch (Exception e) {
+            
+        }
+        repository = getMavenRepository();
+        repository.deployArtifact(releaseId3, kJar3, pom3);
     }
     
     @After
@@ -475,5 +491,29 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	
     	pi = processService.getProcessInstance(processInstanceId);    	
     	assertNull(pi);
+    }
+    
+    @Test
+    public void testStartProcessFromLatestDeployment() {
+    	assertNotNull(deploymentService);
+        
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        KModuleDeploymentUnit deploymentUnit2 = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, "1.1.0-SNAPSHOT");
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        deploymentService.deploy(deploymentUnit2);
+        units.add(deploymentUnit2);
+    	assertNotNull(processService);
+    	
+    	long processInstanceId = processService.startProcess(GROUP_ID+":"+ARTIFACT_ID+":LATEST", "customtask");
+    	assertNotNull(processInstanceId);
+    	
+    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
+    	assertNull(pi);
+    	
+    	ProcessInstanceDesc piDesc = runtimeDataService.getProcessInstanceById(processInstanceId);
+    	assertNotNull(piDesc);
+    	assertEquals(deploymentUnit2.getIdentifier(), piDesc.getDeploymentId());
     }
 }
