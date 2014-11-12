@@ -38,6 +38,7 @@ import org.drools.persistence.jta.JtaTransactionManager;
 import org.kie.api.KieBase;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
@@ -429,6 +430,17 @@ public class SingleSessionCommandService
                 this.service.rollback();
             }
 
+
+            if (this.service.txm != null) {
+                ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) this.service.env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
+
+                for (ObjectMarshallingStrategy strategy : strategies) {
+                    if (strategy instanceof TransactionAware) {
+                        ((TransactionAware) strategy).onEnd(this.service.txm);
+                    }
+                }
+            }
+
             this.service.jpm.endCommandScopedEntityManager();
 
             KieSession ksession = this.service.ksession;
@@ -498,7 +510,7 @@ public class SingleSessionCommandService
             try {
                 transactionOwner = txm.begin();
                 
-                    persistenceContext.joinTransaction();
+                persistenceContext.joinTransaction();
                 
                 initExistingKnowledgeSession( sessionInfo.getId(),
                         marshallingHelper.getKbase(),
@@ -508,6 +520,16 @@ public class SingleSessionCommandService
                 jpm.beginCommandScopedEntityManager();
 
                 registerRollbackSync();
+
+                if (txm != null) {
+                    ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
+
+                    for (ObjectMarshallingStrategy strategy : strategies) {
+                        if (strategy instanceof TransactionAware) {
+                            ((TransactionAware) strategy).onStart(txm);
+                        }
+                    }
+                }
 
                 T result = null;
                 if( command instanceof BatchExecutionCommand) {

@@ -30,15 +30,19 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Id;
 
 import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.persistence.TransactionAware;
+import org.drools.persistence.TransactionManager;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy {
+public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy, TransactionAware {
     private static Logger log = LoggerFactory.getLogger(JPAPlaceholderResolverStrategy.class);
     private EntityManagerFactory emf;
+
+    private static final ThreadLocal<EntityManager> persister = new ThreadLocal<EntityManager>();
     
     public JPAPlaceholderResolverStrategy(Environment env) {
         this.emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
@@ -54,7 +58,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
 
     public void write(ObjectOutputStream os, Object object) throws IOException {
         Object id = getClassIdValue(object);
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = getEntityManager();
         if (id == null) {
             em.persist(object);
             id = getClassIdValue(object);
@@ -73,7 +77,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         String canonicalName = is.readUTF();
         Object id = is.readObject();
 
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = getEntityManager();
         return em.find(Class.forName(canonicalName), id);
     }
 
@@ -81,7 +85,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
                           ObjectOutputStream os, 
                           Object object) throws IOException {
         Object id = getClassIdValue(object);
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = getEntityManager();
         if (id == null) {
             em.persist(object);
             id = getClassIdValue(object);
@@ -110,7 +114,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         String canonicalName = is.readUTF();
         Object id = is.readObject();
 
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = getEntityManager();
         return em.find(Class.forName(canonicalName), id);
     }
     
@@ -191,4 +195,28 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         return false;
     }
 
+    @Override
+    public void onStart(TransactionManager txm) {
+        if (persister.get() == null) {
+            EntityManager em = emf.createEntityManager();
+            persister.set(em);
+        }
+    }
+
+    @Override
+    public void onEnd(TransactionManager txm) {
+        EntityManager em = persister.get();
+        if (em != null) {
+            em.close();
+            persister.set(null);
+        }
+    }
+
+    private EntityManager getEntityManager() {
+        EntityManager em = persister.get();
+        if (em != null) {
+            return em;
+        }
+        return emf.createEntityManager();
+    }
 }
