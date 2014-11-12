@@ -41,7 +41,7 @@ public interface RuleContext extends KieContext {
      * 
      * @param object the fact to insert into the knowledge session
      */
-    void insertLogical(Object object);
+    FactHandle insertLogical(Object object);
     
     /**
      * Logically inserts a fact into the KnowledgeSession, justified by the current
@@ -49,7 +49,7 @@ public interface RuleContext extends KieContext {
      * 
      * @param object the fact to insert into the knowledge session
      */
-    void insertLogical(Object object, Object value);    
+    FactHandle insertLogical(Object object, Object value);
     
     /** 
      * This is an experimental feature that must be explicitly enabled via DeclarativeAgendaOption, which is off by default. This method may change or disable at any time.
