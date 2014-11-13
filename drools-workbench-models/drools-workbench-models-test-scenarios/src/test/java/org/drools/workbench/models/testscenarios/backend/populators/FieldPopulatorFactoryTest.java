@@ -33,14 +33,12 @@ public class FieldPopulatorFactoryTest {
 
     private FieldPopulatorFactory fieldPopulatorFactory;
     private TypeResolver typeResolver;
-    private ClassLoader classLoader;
 
     @Before
     public void setUp() throws Exception {
         Object factObject = mock(Object.class);
         typeResolver = mock(TypeResolver.class);
-        classLoader = Thread.currentThread().getContextClassLoader();
-        fieldPopulatorFactory = new FieldPopulatorFactory(factObject, typeResolver, classLoader);
+        fieldPopulatorFactory = new FieldPopulatorFactory(factObject, typeResolver);
     }
 
     @Test

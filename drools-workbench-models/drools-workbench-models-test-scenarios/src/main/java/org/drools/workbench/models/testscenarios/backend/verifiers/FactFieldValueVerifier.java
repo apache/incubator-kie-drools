@@ -49,15 +49,14 @@ public class FactFieldValueVerifier {
     public FactFieldValueVerifier(Map<String, Object> populatedData,
                                   String factName,
                                   Object factObject,
-                                  final TypeResolver resolver,
-                                  final ClassLoader classLoader) {
+                                  final TypeResolver resolver) {
         this.populatedData = populatedData;
         this.factName = factName;
         this.factObject = factObject;
         this.resolver = resolver;
 
         this.pconf = new ParserConfiguration();
-        pconf.setClassLoader(classLoader);
+        pconf.setClassLoader(resolver.getClassLoader());
         this.pctx = new ParserContext(pconf);
         pctx.setStrongTyping(true);
     }

@@ -36,15 +36,14 @@ public class EnumFieldPopulator extends FieldPopulator {
     public EnumFieldPopulator(Object factObject,
                               String fieldName,
                               String fieldValue,
-                              TypeResolver typeResolver,
-                              ClassLoader classLoader) {
+                              TypeResolver typeResolver) {
         super( factObject,
                fieldName );
         this.typeResolver = typeResolver;
         this.fieldValue = fieldValue;
 
         this.pconf = new ParserConfiguration();
-        pconf.setClassLoader( classLoader );
+        pconf.setClassLoader( typeResolver.getClassLoader() ); // classLoader );
         this.pctx = new ParserContext( pconf );
         pctx.setStrongTyping( true );
     }
