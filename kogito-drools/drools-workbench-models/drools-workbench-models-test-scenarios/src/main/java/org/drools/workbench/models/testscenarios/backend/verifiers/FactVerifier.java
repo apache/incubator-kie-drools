@@ -30,16 +30,13 @@ public class FactVerifier {
     private final TypeResolver resolver;
     private final KieSession ksession;
     private final Map<String, Object> globalData;
-    private final ClassLoader classLoader;
 
     public FactVerifier( Map<String, Object> populatedData,
                          TypeResolver resolver,
-                         ClassLoader classLoader,
                          KieSession ksession,
                          Map<String, Object> globalData ) {
         this.populatedData = populatedData;
         this.resolver = resolver;
-        this.classLoader = classLoader;
         this.ksession = ksession;
         this.globalData = globalData;
     }
@@ -62,8 +59,7 @@ public class FactVerifier {
                                                                                        verifyFact.getName(),
                                                                                        populatedData,
                                                                                        globalData ),
-                                                                               resolver,
-                                                                               classLoader );
+                                                                               resolver );
             fieldVerifier.checkFields( verifyFact.getFieldValues() );
         } else {
             for ( Object object : ksession.getObjects() ) {
@@ -94,8 +90,7 @@ public class FactVerifier {
             FactFieldValueVerifier fieldVerifier = new FactFieldValueVerifier( populatedData,
                                                                                verifyFact.getName(),
                                                                                factObject,
-                                                                               resolver,
-                                                                               classLoader );
+                                                                               resolver );
             fieldVerifier.checkFields( verifyFact.getFieldValues() );
             if ( verifyFact.wasSuccessful() ) {
                 return true;

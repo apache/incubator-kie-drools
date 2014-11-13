@@ -31,16 +31,13 @@ abstract class FactPopulatorBase
 
     protected final Map<String, Object> populatedData;
     protected final TypeResolver typeResolver;
-    protected final ClassLoader classLoader;
     protected final FactData fact;
 
     public FactPopulatorBase(Map<String, Object> populatedData,
                              TypeResolver typeResolver,
-                             ClassLoader classLoader,
                              FactData fact) throws ClassNotFoundException {
         this.populatedData = populatedData;
         this.typeResolver = typeResolver;
-        this.classLoader = classLoader;
         this.fact = fact;
     }
 
@@ -52,8 +49,7 @@ abstract class FactPopulatorBase
             throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
 
         FieldPopulatorFactory fieldPopulatorFactory = new FieldPopulatorFactory(factObject,
-                typeResolver,
-                classLoader);
+                typeResolver);
 
         List<FieldPopulator> fieldPopulators = new ArrayList<FieldPopulator>();
         for (Field field : fact.getFieldData()) {

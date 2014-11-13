@@ -80,7 +80,7 @@ public class FactPopulatorTest {
                                 "=30 + 3" ) ),
                 false );
 
-        factPopulator.add( new NewFactPopulator( populatedData, getTypeResolver(), getClassLoader(), factData ) );
+        factPopulator.add( new NewFactPopulator( populatedData, getTypeResolver(), factData ) );
 
         factPopulator.populate();
 
@@ -105,7 +105,7 @@ public class FactPopulatorTest {
                                           asList( (Field) fieldData ),
                                           false );
 
-        factPopulator.add( new NewFactPopulator( populatedData, getTypeResolver(), getClassLoader(), factData ) );
+        factPopulator.add( new NewFactPopulator( populatedData, getTypeResolver(), factData ) );
 
         factPopulator.populate();
 
@@ -132,7 +132,7 @@ public class FactPopulatorTest {
                                 "42" ) ),
                 false );
 
-        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, getClassLoader(), cheeseFactData ) );
+        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, cheeseFactData ) );
 
         FactData outerFactData = new FactData(
                 "OuterFact",
@@ -146,7 +146,7 @@ public class FactPopulatorTest {
                                 "=c1" ) ),
                 false );
 
-        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, getClassLoader(), outerFactData ) );
+        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, outerFactData ) );
 
         factPopulator.populate();
 
@@ -174,7 +174,7 @@ public class FactPopulatorTest {
                                 "=c1" ) ),
                 false );
 
-        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, getClassLoader(), outerFactData ) );
+        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, outerFactData ) );
 
         FactData cheeseFactData = new FactData(
                 "Cheese",
@@ -188,7 +188,7 @@ public class FactPopulatorTest {
                                 "42" ) ),
                 false );
 
-        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, getClassLoader(), cheeseFactData ) );
+        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, cheeseFactData ) );
 
         factPopulator.populate();
 
@@ -206,7 +206,6 @@ public class FactPopulatorTest {
                 new NewFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        getClassLoader(),
                         new FactData( "Cheese",
                                       "c1",
                                       new ArrayList<Field>(),
@@ -225,7 +224,6 @@ public class FactPopulatorTest {
                 new NewFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        getClassLoader(),
                         new FactData( "Cheese",
                                       "c1",
                                       Arrays.<Field>asList(
@@ -255,7 +253,6 @@ public class FactPopulatorTest {
                 new ExistingFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        getClassLoader(),
                         new FactData(
                                 "Cheese",
                                 "x",
@@ -281,7 +278,6 @@ public class FactPopulatorTest {
                 new NewFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        getClassLoader(),
                         new FactData(
                                 "Cheese",
                                 "c1",
@@ -297,7 +293,6 @@ public class FactPopulatorTest {
                 new NewFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        getClassLoader(),
                         new FactData(
                                 "OuterFact",
                                 "p1",
@@ -327,7 +322,6 @@ public class FactPopulatorTest {
                 new NewFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        getClassLoader(),
                         new FactData(
                                 "SqlDateWrapper",
                                 "c1",
@@ -353,7 +347,6 @@ public class FactPopulatorTest {
                 new NewFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        getClassLoader(),
                         new FactData( "Cheese",
                                       "c1",
                                       Arrays.<Field>asList(
@@ -368,7 +361,6 @@ public class FactPopulatorTest {
                 new NewFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        getClassLoader(),
                         new FactData(
                                 "Cheese",
                                 "c2",
@@ -405,7 +397,6 @@ public class FactPopulatorTest {
                 new ExistingFactPopulator(
                         populatedData,
                         getTypeResolver(),
-                        getClassLoader(),
                         new FactData(
                                 "Cheese",
                                 "x",
@@ -438,7 +429,7 @@ public class FactPopulatorTest {
                                                             "42" ) ),
                                      false );
 
-        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, getClassLoader(), fd1 ) );
+        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, fd1 ) );
 
         FactData fd2 = new FactData( "Cheese",
                                      "f2",
@@ -448,7 +439,7 @@ public class FactPopulatorTest {
                                              new FieldData( "price",
                                                             "43" ) ),
                                      false );
-        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, getClassLoader(), fd2 ) );
+        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, fd2 ) );
 
         FactData fd3 = new FactData( "Cheese",
                                      "f3",
@@ -459,7 +450,7 @@ public class FactPopulatorTest {
                                                             "45" ) ),
                                      false );
 
-        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, getClassLoader(), fd3 ) );
+        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, fd3 ) );
 
         FieldData field = new FieldData();
         field.setName( "cheeses" );
@@ -471,7 +462,7 @@ public class FactPopulatorTest {
                                      "listChesse",
                                      lstField,
                                      false );
-        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, getClassLoader(), lst ) );
+        factPopulator.add( new NewFactPopulator( populatedData, typeResolver, lst ) );
 
         factPopulator.populate();
 
@@ -520,19 +511,16 @@ public class FactPopulatorTest {
         factPopulator.add( new NewFactPopulator(
                 populatedData,
                 typeResolver,
-                Thread.currentThread().getContextClassLoader(),
                 cheeseryFactData ) );
 
         factPopulator.add( new NewFactPopulator(
                 populatedData,
                 typeResolver,
-                Thread.currentThread().getContextClassLoader(),
                 cheeseFactData1 ) );
 
         factPopulator.add( new NewFactPopulator(
                 populatedData,
                 typeResolver,
-                Thread.currentThread().getContextClassLoader(),
                 cheeseFactData2 ) );
 
         factPopulator.populate();
@@ -567,7 +555,6 @@ public class FactPopulatorTest {
         factPopulator.add( new NewFactPopulator(
                 populatedData,
                 typeResolver,
-                Thread.currentThread().getContextClassLoader(),
                 wrapperFactData ) );
 
         factPopulator.populate();

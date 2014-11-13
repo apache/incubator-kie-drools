@@ -32,13 +32,11 @@ class NewFactPopulator extends FactPopulatorBase {
     public NewFactPopulator(
             Map<String, Object> populatedData,
             TypeResolver typeResolver,
-            ClassLoader classLoader,
             FactData fact ) throws ClassNotFoundException,
             InstantiationException,
             IllegalAccessException {
         super( populatedData,
                typeResolver,
-               classLoader,
                fact );
         factObject = resolveFactObject();
     }

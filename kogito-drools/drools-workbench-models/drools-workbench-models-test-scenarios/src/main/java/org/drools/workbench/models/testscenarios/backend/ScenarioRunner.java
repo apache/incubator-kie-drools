@@ -27,7 +27,6 @@ import java.util.Set;
 
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.workbench.models.testscenarios.backend.populators.FactPopulator;
 import org.drools.workbench.models.testscenarios.backend.populators.FactPopulatorFactory;
 import org.drools.workbench.models.testscenarios.shared.ActivateRuleFlowGroup;
@@ -86,7 +85,6 @@ public class ScenarioRunner {
 
         final Map<String, Object> populatedData = new HashMap<String, Object>();
         final Map<String, Object> globalData = new HashMap<String, Object>();
-        final ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 
         // This looks safe!
         final KieBase kieBase = ksession.getKieBase();
@@ -97,13 +95,11 @@ public class ScenarioRunner {
 
         this.workingMemoryWrapper = new TestScenarioKSessionWrapper( ksession,
                                                                      resolver,
-                                                                     classloader,
                                                                      populatedData,
                                                                      globalData );
         this.factPopulatorFactory = new FactPopulatorFactory( populatedData,
                                                               globalData,
-                                                              resolver,
-                                                              classloader );
+                                                              resolver );
         this.factPopulator = new FactPopulator( ksession,
                                                 populatedData );
 

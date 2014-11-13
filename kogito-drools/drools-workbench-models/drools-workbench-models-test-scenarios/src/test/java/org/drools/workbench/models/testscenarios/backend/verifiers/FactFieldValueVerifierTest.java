@@ -28,8 +28,7 @@ public class FactFieldValueVerifierTest extends TestCase {
                 populatedData,
                 "sqlDateWrapper",
                 sqlDateWrapper,
-                typeResolver,
-                Thread.currentThread().getContextClassLoader());
+                typeResolver);
 
         List<VerifyField> fieldValues = new ArrayList<VerifyField>();
         VerifyField verifyField = new VerifyField("sqlDate", "12-DEC-2012", "==");

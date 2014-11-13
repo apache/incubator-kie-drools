@@ -45,17 +45,14 @@ public class TestScenarioKSessionWrapper {
     private final MethodExecutor methodExecutor;
     private final Map<String, Object> populatedData;
 
-    private final ClassLoader classLoader;
 
     public TestScenarioKSessionWrapper( KieSession ksession,
                                         final TypeResolver resolver,
-                                        final ClassLoader classLoader,
                                         Map<String, Object> populatedData,
                                         Map<String, Object> globalData ) {
         this.ksession = ksession;
         this.populatedData = populatedData;
         this.methodExecutor = new MethodExecutor( populatedData );
-        this.classLoader = classLoader;
 
         factVerifier = initFactVerifier( resolver,
                                          globalData );
@@ -65,7 +62,6 @@ public class TestScenarioKSessionWrapper {
                                            Map<String, Object> globalData ) {
         return new FactVerifier( populatedData,
                                  resolver,
-                                 classLoader,
                                  ksession,
                                  globalData );
     }

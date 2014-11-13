@@ -31,14 +31,12 @@ class GlobalFactPopulator extends FactPopulatorBase {
 
     public GlobalFactPopulator( Map<String, Object> populatedData,
                                 TypeResolver typeResolver,
-                                ClassLoader classLoader,
                                 FactData fact,
                                 Map<String, Object> globalData ) throws ClassNotFoundException,
             InstantiationException,
             IllegalAccessException {
         super( populatedData,
                typeResolver,
-               classLoader,
                fact );
 
         factObject = resolveFactObject();

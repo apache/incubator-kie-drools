@@ -290,6 +290,30 @@ public class ScenarioRunnerTest extends RuleUnit {
             assertTrue(field.getSuccessResult());
         }
     }
+    @Test
+    public void testVerifyFactsWithEnumWildCardImport() throws Exception {
+
+        FieldData cheeseType = new FieldData(
+                "cheeseType",
+                "CheeseType.CHEDDAR"
+        );
+        cheeseType.setNature(FieldData.TYPE_ENUM);
+        FactData f1 = new FactData(
+                "Cheese",
+                "f1",
+                Arrays.<Field>asList(cheeseType),
+                false
+        );
+
+        Scenario scenario = new Scenario();
+        scenario.setPackageName("org.drools.workbench.models.testscenarios.backend");
+        scenario.getFixtures().add(f1);
+
+        ScenarioRunner runner = new ScenarioRunner(ksession);
+
+        runner.run(scenario);
+
+    }
 
     @Test
     public void testTestingEventListener() throws Exception {

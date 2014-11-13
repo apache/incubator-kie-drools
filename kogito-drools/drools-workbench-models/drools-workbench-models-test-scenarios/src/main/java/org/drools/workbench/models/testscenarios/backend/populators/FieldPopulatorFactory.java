@@ -29,14 +29,11 @@ class FieldPopulatorFactory {
 
     private final Object factObject;
     private final TypeResolver typeResolver;
-    private final ClassLoader classLoader;
 
     public FieldPopulatorFactory(Object factObject,
-                                 TypeResolver typeResolver,
-                                 ClassLoader classLoader) {
+                                 TypeResolver typeResolver) {
         this.factObject = factObject;
         this.typeResolver = typeResolver;
-        this.classLoader = classLoader;
     }
 
     public FieldPopulator getFieldPopulator(Field field) throws ClassNotFoundException,
@@ -53,8 +50,7 @@ class FieldPopulatorFactory {
         } else if (field instanceof FactAssignmentField ) {
             return new FactAssignmentFieldPopulator(factObject,
                     (FactAssignmentField) field,
-                    typeResolver,
-                    classLoader);
+                    typeResolver);
         } else if (field instanceof CollectionFieldData) {
             return new CollectionFieldPopulator(
                     factObject,
@@ -80,8 +76,7 @@ class FieldPopulatorFactory {
             return new EnumFieldPopulator(factObject,
                     fieldData.getName(),
                     fieldData.getValue(),
-                    typeResolver,
-                    classLoader);
+                    typeResolver);
         } else if (isDate(fieldData.getName())) {
             return new DateFieldPopulator(
                     factObject,
