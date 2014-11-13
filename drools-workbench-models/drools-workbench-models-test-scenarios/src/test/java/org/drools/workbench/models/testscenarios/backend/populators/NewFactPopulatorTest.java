@@ -65,7 +65,6 @@ public class NewFactPopulatorTest {
         NewFactPopulator newFactPopulator = new NewFactPopulator(
                                                                   populatedData,
                                                                   typeResolver,
-                                                                  Thread.currentThread().getContextClassLoader(),
                                                                   fact );
 
         newFactPopulator.populate( workingMemory, new HashMap<String, FactHandle>() );

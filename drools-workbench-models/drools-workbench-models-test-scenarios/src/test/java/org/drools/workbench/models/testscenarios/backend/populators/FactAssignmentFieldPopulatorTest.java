@@ -43,7 +43,7 @@ public class FactAssignmentFieldPopulatorTest {
 
         FactAssignmentField factAssignmentField = new FactAssignmentField("cheese", "Cheese");
 
-        FactAssignmentFieldPopulator factAssignmentFieldPopulator = new FactAssignmentFieldPopulator(mouse, factAssignmentField, typeResolver, classLoader);
+        FactAssignmentFieldPopulator factAssignmentFieldPopulator = new FactAssignmentFieldPopulator(mouse, factAssignmentField, typeResolver);
 
         factAssignmentFieldPopulator.populate(new HashMap<String, Object>());
 
@@ -61,7 +61,7 @@ public class FactAssignmentFieldPopulatorTest {
         FactAssignmentField factAssignmentField = new FactAssignmentField("cheese", "Cheese");
         factAssignmentField.getFact().getFieldData().add(new FieldData("type", "Best cheddar EVER! (tm)"));
 
-        FactAssignmentFieldPopulator factAssignmentFieldPopulator = new FactAssignmentFieldPopulator(mouse, factAssignmentField, typeResolver, classLoader);
+        FactAssignmentFieldPopulator factAssignmentFieldPopulator = new FactAssignmentFieldPopulator(mouse, factAssignmentField, typeResolver);
 
         factAssignmentFieldPopulator.populate(new HashMap<String, Object>());
 
@@ -79,7 +79,7 @@ public class FactAssignmentFieldPopulatorTest {
         FactAssignmentField factAssignmentField = createFactAssignmentField();
         addFactAssignmentFieldIntoFactAssignmentField(factAssignmentField, 5);
 
-        FactAssignmentFieldPopulator factAssignmentFieldPopulator = new FactAssignmentFieldPopulator(matryoshkaDoll, factAssignmentField, typeResolver, classLoader);
+        FactAssignmentFieldPopulator factAssignmentFieldPopulator = new FactAssignmentFieldPopulator(matryoshkaDoll, factAssignmentField, typeResolver);
 
         factAssignmentFieldPopulator.populate(new HashMap<String, Object>());
 
