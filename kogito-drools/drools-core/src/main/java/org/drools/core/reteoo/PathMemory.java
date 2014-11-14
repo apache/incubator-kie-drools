@@ -144,7 +144,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
                 return;
             }
 
-            if ( !agendaItem.isQueued() && !agendaItem.isBlocked() ) {
+            if ( !agendaItem.isQueued() ) {
                 if ( isLogTraceEnabled ) {
                     log.trace("Queue RuleAgendaItem {}", agendaItem);
                 }

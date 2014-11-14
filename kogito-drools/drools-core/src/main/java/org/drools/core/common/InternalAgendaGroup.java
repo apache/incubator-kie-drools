@@ -64,6 +64,8 @@ public interface InternalAgendaGroup extends AgendaGroup {
 
     Map<Long, String> getNodeInstances();
 
+    void visited();
+
     void setWorkingMemory(InternalWorkingMemory workingMemory);
 
     InternalWorkingMemory getWorkingMemory();
@@ -72,4 +74,6 @@ public interface InternalAgendaGroup extends AgendaGroup {
     void hasRuleFlowListener(boolean hasRuleFlowLister);
 
     boolean isRuleFlowListener();
+
+    public boolean isSequential();
 }

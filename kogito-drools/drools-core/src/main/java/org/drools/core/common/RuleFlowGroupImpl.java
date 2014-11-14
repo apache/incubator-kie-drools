@@ -354,6 +354,11 @@ public class RuleFlowGroupImpl
         return "RuleFlowGroup '" + this.agendaGroup.remove() + "'";
     }
 
+    @Override
+    public void visited() {
+        agendaGroup.visited();
+    }
+
     public int size() {
         synchronized ( agendaGroup ) {
             return agendaGroup.size();
@@ -430,5 +435,10 @@ public class RuleFlowGroupImpl
         public void execute(InternalKnowledgeRuntime kruntime) {
             execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
         }
+    }
+
+    @Override
+    public boolean isSequential() {
+        return agendaGroup.isSequential();
     }
 }
