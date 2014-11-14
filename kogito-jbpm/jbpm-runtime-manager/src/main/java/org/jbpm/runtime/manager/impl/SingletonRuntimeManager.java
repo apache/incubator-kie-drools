@@ -75,7 +75,10 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
     }
     
     public void init() {
-
+    	if (System.getProperty("org.kie.tx.lock.enabled") == null &&
+    			((SimpleRuntimeEnvironment)environment).getEnvironmentTemplate().get("TRANSACTION_LOCK_ENABLED") == null) {
+    		((SimpleRuntimeEnvironment)environment).getEnvironmentTemplate().set("TRANSACTION_LOCK_ENABLED", "true");
+    	}
         // TODO should we proxy/wrap the ksession so we capture dispose.destroy method calls?
         String location = getLocation();
         Integer knownSessionId = getPersistedSessionId(location, identifier);
