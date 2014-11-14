@@ -87,7 +87,7 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
                 selection = newSelection;
             }
             vrpWriter.write("DEMAND_SECTION\n");
-            // maximumDemand is 2 times the averageDemand. And the averageDemand is 2/3th of available capacity
+            // maximumDemand is 2 times the averageDemand. And the averageDemand is 2/3rd of available capacity
             int maximumDemand = (4 * vehicleListSize * capacity) / (locationListSize * 3);
             Random random = new Random(37);
             vrpWriter.write("1 0\n");
