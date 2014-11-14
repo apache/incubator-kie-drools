@@ -51,6 +51,11 @@ public class PhreakConflictResolver
 
     public final int compare(final Activation existing,
                              final Activation adding) {
+        return doCompare( existing, adding );
+    }
+
+    public final static int doCompare(final Activation existing,
+                             final Activation adding) {
         final int s1 = existing.getSalience();
         final int s2 = adding.getSalience();
 

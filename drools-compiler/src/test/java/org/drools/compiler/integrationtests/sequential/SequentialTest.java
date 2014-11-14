@@ -6,6 +6,7 @@ import org.drools.compiler.Message;
 import org.drools.compiler.Person;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.integrationtests.DynamicRulesTest;
+import org.drools.compiler.phreak.A;
 import org.drools.core.util.IoUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,9 +42,156 @@ public class SequentialTest extends CommonTestMethodBase {
 
     @Before
     public void setup() {
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( phreak );
         kconf.setOption( SequentialOption.YES );
+    }
+
+    @Test
+    public void testSequentialPlusPhreakOperationComplex() throws Exception {
+        String str = "";
+        str += "package org.drools.compiler.test\n";
+        str +="import " + A.class.getCanonicalName() + "\n";
+        str +="global  " + List.class.getCanonicalName() + " list\n";
+
+
+        // Focus is done as g1, g2, g1 to demonstrate that groups will not re-activate
+        str +="rule r0 when\n";
+        str +="then\n";
+        str +="    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( 'g1' ).setFocus();\n";
+        str +="    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( 'g2' ).setFocus();\n";
+        str +="    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( 'g1' ).setFocus();\n";
+        str +="end\n";
+        str +="rule r1 agenda-group 'g1' when\n";
+        str +="    a : A( object > 0 )\n";
+        str +="then\n";
+        str +="    list.add( drools.getRule().getName() );\n";
+        str +="    modify(a) { setObject( 3 ) };\n";
+        str +="end\n";
+
+        // r1_x is here to show they do not react when g2.r9 changes A o=2,
+        // i.e. checking that re-activating g1 won't cause it to pick up previous non evaluated rules.
+        // this is mostly checking that the no linking doesn't interfere with the expected results.
+        str +="rule r1_x agenda-group 'g1' when\n";
+        str +="    a : A( object == 2 )\n";
+        str +="then\n";
+        str +="    list.add( drools.getRule().getName() );\n";
+        str +="end\n";
+
+        // r1_y is here to show it does not react when A is changed to o=5 in r3
+        str +="rule r1_y agenda-group 'g1' when\n";
+        str +="    a : A( object == 5 )\n";
+        str +="then\n";
+        str +="    list.add( drools.getRule().getName() );\n";
+        str +="end\n";
+
+        str +="rule r2 agenda-group 'g1' when\n";
+        str +="    a : A( object < 3 )\n";
+        str +="then\n";
+        str +="    list.add( drools.getRule().getName() );\n";
+        str +="end\n";
+        str +="rule r3 agenda-group 'g1' when\n";
+        str +="    a : A(object >= 3  )\n";
+        str +="then\n";
+        str +="    modify(a) { setObject( 5 ) };\n";
+        str +="    list.add( drools.getRule().getName() );\n";
+        str +="end\n";
+
+        // Checks that itself, f3 and r1_y do not react as they are higher up
+        str +="rule r4 agenda-group 'g1' when\n";
+        str +="    a : A(object >= 3  )\n";
+        str +="then\n";
+        str +="    modify(a) { setObject( 5 ) };\n";
+        str +="    list.add( drools.getRule().getName() );\n";
+        str +="end\n";
+
+        // Checks that while this at one point matches, it does not match by the time g2 is entered
+        // nor does it react when r9 changes a o=2
+        str +="rule r6 agenda-group 'g2' when\n";
+        str +="    a : A(object < 5  )\n";
+        str +="then\n";
+        str +="    list.add( drools.getRule().getName() );\n";
+        str +="end\n";
+
+        str +="rule r7 agenda-group 'g2' when\n";
+        str +="    a : A(object >= 3  )\n";
+        str +="then\n";
+        str +="    list.add( drools.getRule().getName() );\n";
+        str +="end\n";
+        str +="rule r8 agenda-group 'g2' when\n";
+        str +="    a : A(object >= 5  )\n";
+        str +="then\n";
+        str +="    list.add( drools.getRule().getName() );\n";
+        str +="end\n";
+
+        // This changes A o=2 to check if g1.r1_x incorrect reacts when g1 is re-entered
+        str +="rule r9 agenda-group 'g2' when\n";
+        str +="    a : A(object >= 5  )\n";
+        str +="then\n";
+        str +="    modify(a) { setObject( 2 ) };\n";
+        str +="    list.add( drools.getRule().getName() );\n";
+        str +="end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf, str);
+        StatelessKnowledgeSession ksession = createStatelessKnowledgeSession( kbase );
+        final List list = new ArrayList();
+        ksession.setGlobal( "list",
+                            list );
+
+        ksession.execute( CommandFactory.newInsertElements(Arrays.asList( new Object[]{new A(1)} )) );
+
+        assertEquals( 6, list.size() );
+        assertEquals( "r1", list.get(0));
+        assertEquals( "r3", list.get(1));
+        assertEquals( "r4", list.get(2));
+        assertEquals( "r7", list.get(3));
+        assertEquals( "r8", list.get(4));
+        assertEquals( "r9", list.get(5));
+    }
+
+    @Test
+    public void testSequentialPlusPhreakRevisitOriginallyEmptyGroup() throws Exception {
+        String str = "";
+        str += "package org.drools.compiler.test\n";
+        str +="import " + A.class.getCanonicalName() + "\n";
+        str +="global  " + List.class.getCanonicalName() + " list\n";
+
+        // Focus is done as g1, g2, g1 to demonstrate that groups will not re-activate
+        str +="rule r0 when\n";
+        str +="then\n";
+        str +="    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( 'g1' ).setFocus();\n";
+        str +="    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( 'g2' ).setFocus();\n";
+        str +="    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( 'g1' ).setFocus();\n";
+        str +="end\n";
+
+        // r1_x is here to show they do not react when g2.r9 changes A o=2,
+        // i.e. checking that re-activating g1 won't cause it to pick up previous non evaluated rules.
+        // this is mostly checking that the none linking doesn't interfere with the expected results.
+        // additional checks this works if g1 never had any Matches on the first visit
+        str +="rule r1_x agenda-group 'g1' when\n";
+        str +="    a : A( object == 2 )\n";
+        str +="then\n";
+        str +="    list.add( drools.getRule().getName() );\n";
+        str +="end\n";
+
+        // This changes A o=2 to check if g1.r1_x incorrect reacts when g1 is re-entered
+        str +="rule r9 agenda-group 'g2' when\n";
+        str +="    a : A(object >= 5  )\n";
+        str +="then\n";
+        str +="    modify(a) { setObject( 2 ) };\n";
+        str +="    list.add( drools.getRule().getName() );\n";
+        str +="end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf, str);
+        StatelessKnowledgeSession ksession = createStatelessKnowledgeSession( kbase );
+        final List list = new ArrayList();
+        ksession.setGlobal( "list",
+                            list );
+
+        ksession.execute( CommandFactory.newInsertElements(Arrays.asList( new Object[]{new A(5)} )) );
+
+        assertEquals( 1, list.size() );
+        assertEquals( "r9", list.get(0));
     }
 
     @Test
