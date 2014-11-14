@@ -40,7 +40,7 @@ public class PillarChangeMoveTest {
         TestdataEntityProvidingEntity a = new TestdataEntityProvidingEntity("a", Arrays.asList(v1, v2, v3), null);
         TestdataEntityProvidingEntity b = new TestdataEntityProvidingEntity("b", Arrays.asList(v2, v3, v4, v5), null);
         TestdataEntityProvidingEntity c = new TestdataEntityProvidingEntity("c", Arrays.asList(v4, v5), null);
-        TestdataEntityProvidingEntity z = new TestdataEntityProvidingEntity("c", Arrays.asList(v1, v2, v3, v4, v5), null);
+        TestdataEntityProvidingEntity z = new TestdataEntityProvidingEntity("z", Arrays.asList(v1, v2, v3, v4, v5), null);
 
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
         EntityDescriptor entityDescriptor = TestdataEntityProvidingEntity.buildEntityDescriptor();
@@ -66,6 +66,56 @@ public class PillarChangeMoveTest {
         abMove = new PillarChangeMove(Arrays.<Object>asList(a, b),
                 entityDescriptor.getGenuineVariableDescriptor("value"), v4);
         assertEquals(false, abMove.isMoveDoable(scoreDirector));
+    }
+
+    @Test
+    public void doMove() {
+        TestdataValue v1 = new TestdataValue("1");
+        TestdataValue v2 = new TestdataValue("2");
+        TestdataValue v3 = new TestdataValue("3");
+        TestdataValue v4 = new TestdataValue("4");
+        TestdataValue v5 = new TestdataValue("5");
+
+        TestdataEntityProvidingEntity a = new TestdataEntityProvidingEntity("a", Arrays.asList(v1, v2, v3), null);
+        TestdataEntityProvidingEntity b = new TestdataEntityProvidingEntity("b", Arrays.asList(v2, v3, v4, v5), null);
+        TestdataEntityProvidingEntity c = new TestdataEntityProvidingEntity("c", Arrays.asList(v3, v4, v5), null);
+
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        EntityDescriptor entityDescriptor = TestdataEntityProvidingEntity.buildEntityDescriptor();
+
+        PillarChangeMove abMove = new PillarChangeMove(Arrays.<Object>asList(a, b),
+                entityDescriptor.getGenuineVariableDescriptor("value"), v2);
+
+        a.setValue(v3);
+        b.setValue(v3);
+        abMove.doMove(scoreDirector);
+        assertEquals(v2, a.getValue());
+        assertEquals(v2, b.getValue());
+
+        a.setValue(v2);
+        b.setValue(v2);
+        abMove.doMove(scoreDirector);
+        assertEquals(v2, a.getValue());
+        assertEquals(v2, b.getValue());
+
+        PillarChangeMove abcMove = new PillarChangeMove(Arrays.<Object>asList(a, b, c),
+                entityDescriptor.getGenuineVariableDescriptor("value"), v2);
+
+        a.setValue(v2);
+        b.setValue(v2);
+        c.setValue(v2);
+        abcMove.doMove(scoreDirector);
+        assertEquals(v2, a.getValue());
+        assertEquals(v2, b.getValue());
+        assertEquals(v2, c.getValue());
+
+        a.setValue(v3);
+        b.setValue(v3);
+        c.setValue(v3);
+        abcMove.doMove(scoreDirector);
+        assertEquals(v2, a.getValue());
+        assertEquals(v2, b.getValue());
+        assertEquals(v2, c.getValue());
     }
 
 }
