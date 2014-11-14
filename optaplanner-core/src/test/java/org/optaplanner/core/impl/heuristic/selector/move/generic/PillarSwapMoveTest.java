@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
 import java.util.Arrays;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -40,7 +41,7 @@ public class PillarSwapMoveTest {
         TestdataEntityProvidingEntity a = new TestdataEntityProvidingEntity("a", Arrays.asList(v1, v2, v3), null);
         TestdataEntityProvidingEntity b = new TestdataEntityProvidingEntity("b", Arrays.asList(v2, v3, v4, v5), null);
         TestdataEntityProvidingEntity c = new TestdataEntityProvidingEntity("c", Arrays.asList(v4, v5), null);
-        TestdataEntityProvidingEntity z = new TestdataEntityProvidingEntity("c", Arrays.asList(v1, v2, v3, v4, v5), null);
+        TestdataEntityProvidingEntity z = new TestdataEntityProvidingEntity("z", Arrays.asList(v1, v2, v3, v4, v5), null);
 
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
         EntityDescriptor entityDescriptor = TestdataEntityProvidingEntity.buildEntityDescriptor();
@@ -112,6 +113,111 @@ public class PillarSwapMoveTest {
         b.setValue(v2);
         z.setValue(v2);
         assertEquals(false, abzMove.isMoveDoable(scoreDirector));
+    }
+
+    @Test
+    public void doMove() {
+        TestdataValue v1 = new TestdataValue("1");
+        TestdataValue v2 = new TestdataValue("2");
+        TestdataValue v3 = new TestdataValue("3");
+        TestdataValue v4 = new TestdataValue("4");
+        TestdataValue v5 = new TestdataValue("5");
+
+        TestdataEntityProvidingEntity a = new TestdataEntityProvidingEntity("a", Arrays.asList(v1, v2, v3, v4), null);
+        TestdataEntityProvidingEntity b = new TestdataEntityProvidingEntity("b", Arrays.asList(v2, v3, v4, v5), null);
+        TestdataEntityProvidingEntity c = new TestdataEntityProvidingEntity("c", Arrays.asList(v4, v5), null);
+        TestdataEntityProvidingEntity z = new TestdataEntityProvidingEntity("z", Arrays.asList(v1, v2, v3, v4, v5), null);
+
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        EntityDescriptor entityDescriptor = TestdataEntityProvidingEntity.buildEntityDescriptor();
+
+        PillarSwapMove abMove = new PillarSwapMove(entityDescriptor.getGenuineVariableDescriptors(),
+                Arrays.<Object>asList(a), Arrays.<Object>asList(b));
+
+        a.setValue(v1);
+        b.setValue(v1);
+        abMove.doMove(scoreDirector);
+        assertEquals(v1, a.getValue());
+        assertEquals(v1, b.getValue());
+
+        a.setValue(v2);
+        b.setValue(v1);
+        abMove.doMove(scoreDirector);
+        assertEquals(v1, a.getValue());
+        assertEquals(v2, b.getValue());
+
+        a.setValue(v3);
+        b.setValue(v2);
+        abMove.doMove(scoreDirector);
+        assertEquals(v2, a.getValue());
+        assertEquals(v3, b.getValue());
+        abMove.doMove(scoreDirector);
+        assertEquals(v3, a.getValue());
+        assertEquals(v2, b.getValue());
+
+        PillarSwapMove abzMove = new PillarSwapMove(entityDescriptor.getGenuineVariableDescriptors(),
+                Arrays.<Object>asList(a, b), Arrays.<Object>asList(z));
+
+        a.setValue(v3);
+        b.setValue(v3);
+        z.setValue(v2);
+        abzMove.doMove(scoreDirector);
+        assertEquals(v2, a.getValue());
+        assertEquals(v2, b.getValue());
+        assertEquals(v3, z.getValue());
+        abzMove.doMove(scoreDirector);
+        assertEquals(v3, a.getValue());
+        assertEquals(v3, b.getValue());
+        assertEquals(v2, z.getValue());
+
+        a.setValue(v3);
+        b.setValue(v3);
+        z.setValue(v4);
+        abzMove.doMove(scoreDirector);
+        assertEquals(v4, a.getValue());
+        assertEquals(v4, b.getValue());
+        assertEquals(v3, z.getValue());
+        abzMove.doMove(scoreDirector);
+        assertEquals(v3, a.getValue());
+        assertEquals(v3, b.getValue());
+        assertEquals(v4, z.getValue());
+
+        PillarSwapMove abczMove = new PillarSwapMove(entityDescriptor.getGenuineVariableDescriptors(),
+                Arrays.<Object>asList(a), Arrays.<Object>asList(b, c, z));
+
+        a.setValue(v2);
+        b.setValue(v3);
+        c.setValue(v3);
+        z.setValue(v3);
+        abczMove.doMove(scoreDirector);
+        assertEquals(v3, a.getValue());
+        assertEquals(v2, b.getValue());
+        assertEquals(v2, c.getValue());
+        assertEquals(v2, z.getValue());
+        abczMove.doMove(scoreDirector);
+        assertEquals(v2, a.getValue());
+        assertEquals(v3, b.getValue());
+        assertEquals(v3, c.getValue());
+        assertEquals(v3, z.getValue());
+
+        PillarSwapMove abczMove2 = new PillarSwapMove(entityDescriptor.getGenuineVariableDescriptors(),
+                Arrays.<Object>asList(a, b), Arrays.<Object>asList(c, z));
+
+        a.setValue(v4);
+        b.setValue(v4);
+        c.setValue(v3);
+        z.setValue(v3);
+        abczMove2.doMove(scoreDirector);
+        assertEquals(v3, a.getValue());
+        assertEquals(v3, b.getValue());
+        assertEquals(v4, c.getValue());
+        assertEquals(v4, z.getValue());
+        abczMove2.doMove(scoreDirector);
+        assertEquals(v4, a.getValue());
+        assertEquals(v4, b.getValue());
+        assertEquals(v3, c.getValue());
+        assertEquals(v3, z.getValue());
+
     }
 
 }
