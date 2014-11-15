@@ -77,12 +77,20 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
         rcf.getTraitFactory().mode = newMode;
         switch ( newMode ) {
             case MAP    :
-                cbf.setPropertyWrapperBuilder( new TraitMapPropertyWrapperClassBuilderImpl() );
-                cbf.setTraitProxyBuilder( new TraitMapProxyClassBuilderImpl() );
+                if ( ! ( cbf.getPropertyWrapperBuilder() instanceof TraitMapProxyClassBuilderImpl ) ) {
+                    cbf.setPropertyWrapperBuilder( new TraitMapPropertyWrapperClassBuilderImpl() );
+                }
+                if ( ! ( cbf.getTraitProxyBuilder() instanceof TraitMapProxyClassBuilderImpl ) ) {
+                    cbf.setTraitProxyBuilder( new TraitMapProxyClassBuilderImpl() );
+                }
                 break;
             case TRIPLES:
-                cbf.setPropertyWrapperBuilder( new TraitTriplePropertyWrapperClassBuilderImpl() );
-                cbf.setTraitProxyBuilder( new TraitTripleProxyClassBuilderImpl() );
+                if ( ! ( cbf.getPropertyWrapperBuilder() instanceof TraitTriplePropertyWrapperClassBuilderImpl ) ) {
+                    cbf.setPropertyWrapperBuilder( new TraitTriplePropertyWrapperClassBuilderImpl() );
+                }
+                if ( ! ( cbf.getTraitProxyBuilder() instanceof TraitTripleProxyClassBuilderImpl ) ) {
+                    cbf.setTraitProxyBuilder( new TraitTripleProxyClassBuilderImpl() );
+                }
                 break;
             default     :   throw new RuntimeException( " This should not happen : unexpected property wrapping method " + newMode );
         }
