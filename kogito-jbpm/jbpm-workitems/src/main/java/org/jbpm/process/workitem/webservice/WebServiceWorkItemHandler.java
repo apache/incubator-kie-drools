@@ -27,6 +27,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.endpoint.ClientCallback;
+import org.apache.cxf.endpoint.dynamic.DynamicClientFactory;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import org.apache.cxf.message.Message;
 import org.drools.core.process.instance.impl.WorkItemImpl;
@@ -51,7 +52,7 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
     private static Logger logger = LoggerFactory.getLogger(WebServiceWorkItemHandler.class);
     
     private ConcurrentHashMap<String, Client> clients = new ConcurrentHashMap<String, Client>();
-    private JaxWsDynamicClientFactory dcf;
+    private DynamicClientFactory dcf = null;
     private KieSession ksession;
     private int asyncTimeout = 10;
     private ClassLoader classLoader;
@@ -63,22 +64,19 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
     }
     
     public WebServiceWorkItemHandler(KieSession ksession) {
-        this.dcf = JaxWsDynamicClientFactory.newInstance();
         this.ksession = ksession;
     }
     
     public WebServiceWorkItemHandler(KieSession ksession, ClassLoader classloader) {
-        this.dcf = JaxWsDynamicClientFactory.newInstance();
         this.ksession = ksession;
         this.classLoader = classloader;
     }
     
     public WebServiceWorkItemHandler(KieSession ksession, int timeout) {
-        this.dcf = JaxWsDynamicClientFactory.newInstance();
         this.ksession = ksession;
         this.asyncTimeout = timeout;
     }
-
+    
     public void executeWorkItem(WorkItem workItem, final WorkItemManager manager) {
     	
     	// since JaxWsDynamicClientFactory will change the TCCL we need to restore it after creating client
@@ -200,7 +198,7 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
         String importNamespace = (String) workItem.getParameter("Namespace");
         if (importLocation != null && importLocation.trim().length() > 0 
         		&& importNamespace != null && importNamespace.trim().length() > 0) {
-        	Client client = dcf.createClient(importLocation, new QName(importNamespace, interfaceRef), getInternalClassLoader(), null);
+        	Client client = getDynamicClientFactory().createClient(importLocation, new QName(importNamespace, interfaceRef), getInternalClassLoader(), null);
             clients.put(interfaceRef, client);
             return client;
         }
@@ -215,7 +213,7 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
             for (Bpmn2Import importObj : typedImports) {
                 if (WSDL_IMPORT_TYPE.equalsIgnoreCase(importObj.getType())) {
                     try {
-                        client = dcf.createClient(importObj.getLocation(), new QName(importObj.getNamespace(), interfaceRef), getInternalClassLoader(), null);
+                        client = getDynamicClientFactory().createClient(importObj.getLocation(), new QName(importObj.getNamespace(), interfaceRef), getInternalClassLoader(), null);
                         clients.put(interfaceRef, client);
                         return client;
                     } catch (Exception e) {
@@ -226,6 +224,13 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
             }
         }
         return null;
+    }
+    
+    protected synchronized DynamicClientFactory getDynamicClientFactory() {
+    	if (this.dcf == null) {
+    		this.dcf = JaxWsDynamicClientFactory.newInstance();
+    	}
+    	return this.dcf;
     }
 
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {

@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.namespace.QName;
 
 import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.endpoint.dynamic.DynamicClientFactory;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import org.apache.cxf.message.Message;
 import org.kie.api.runtime.process.WorkItem;
@@ -50,7 +51,7 @@ public class WebServiceCommand implements Command, Cacheable {
     
     private static final Logger logger = LoggerFactory.getLogger(WebServiceCommand.class);
     private volatile static ConcurrentHashMap<String, Client> clients = new ConcurrentHashMap<String, Client>();
-    private JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
+    private DynamicClientFactory dcf = null;
 
     @Override
     public ExecutionResults execute(CommandContext ctx) throws Exception {
@@ -111,13 +112,20 @@ public class WebServiceCommand implements Command, Cacheable {
         if (importLocation != null && importLocation.trim().length() > 0 
                 && importNamespace != null && importNamespace.trim().length() > 0) {
         	
-            Client client = dcf.createClient(importLocation, new QName(importNamespace, interfaceRef), Thread.currentThread().getContextClassLoader(), null);
+            Client client = getDynamicClientFactory().createClient(importLocation, new QName(importNamespace, interfaceRef), Thread.currentThread().getContextClassLoader(), null);
             clients.put(interfaceRef, client);
             return client;
         	
         }
 
         return null;
+    }
+    
+    protected synchronized DynamicClientFactory getDynamicClientFactory() {
+    	if (this.dcf == null) {
+    		this.dcf = JaxWsDynamicClientFactory.newInstance();
+    	}
+    	return this.dcf;
     }
     
 	@Override
