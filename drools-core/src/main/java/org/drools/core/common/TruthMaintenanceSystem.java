@@ -116,13 +116,13 @@ public class TruthMaintenanceSystem {
         }
 
         // Any logical propagations are handled via the TMS.addLogicalDependency
-        addLogicalDependency(fh,
-                             object,
-                             tmsValue,
-                             activation,
-                             activation.getPropagationContext(),
-                             rule,
-                             typeConf);
+        fh = addLogicalDependency(fh,
+                                  object,
+                                  tmsValue,
+                                  activation,
+                                  activation.getPropagationContext(),
+                                  rule,
+                                  typeConf);
 
         return fh;
     }
@@ -199,24 +199,24 @@ public class TruthMaintenanceSystem {
         addLogicalDependency( handle, object, value, activation, context, rule, typeConf, true );
     }
 
-    public void addLogicalDependency(final InternalFactHandle handle,
-                                     final Object object,
-                                     final Object value,
-                                     final Activation activation,
-                                     final PropagationContext context,
-                                     final RuleImpl rule,
-                                     final ObjectTypeConf typeConf) {
-        addLogicalDependency( handle, object, value, activation, context, rule, typeConf, false );
+    public InternalFactHandle addLogicalDependency(final InternalFactHandle handle,
+                                                   final Object object,
+                                                   final Object value,
+                                                   final Activation activation,
+                                                   final PropagationContext context,
+                                                   final RuleImpl rule,
+                                                   final ObjectTypeConf typeConf) {
+        return addLogicalDependency( handle, object, value, activation, context, rule, typeConf, false );
     }
 
-    public void addLogicalDependency(final InternalFactHandle handle,
-                                     final Object object,
-                                     final Object value,
-                                     final Activation activation,
-                                     final PropagationContext context,
-                                     final RuleImpl rule,
-                                     final ObjectTypeConf typeConf,
-                                     final boolean read) {
+    public InternalFactHandle addLogicalDependency(final InternalFactHandle handle,
+                                                   final Object object,
+                                                   final Object value,
+                                                   final Activation activation,
+                                                   final PropagationContext context,
+                                                   final RuleImpl rule,
+                                                   final ObjectTypeConf typeConf,
+                                                   final boolean read) {
         BeliefSystem beliefSystem = defaultBeliefSystem;
         if ( value != null && value instanceof Mode & !( value instanceof SimpleMode ) ) {
             Mode mode = (Mode) value;
@@ -242,8 +242,9 @@ public class TruthMaintenanceSystem {
             // used when deserialising
             beliefSystem.read( node, beliefSet, context, typeConf );
         } else {
-            beliefSystem.insert( node, beliefSet, context, typeConf );
+            beliefSet = beliefSystem.insert( node, beliefSet, context, typeConf );
         }
+        return beliefSet.getFactHandle();
     }
 
     public void clear() {

@@ -42,10 +42,10 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
         return this.tms;
     }
 
-    public void insert(LogicalDependency<M> node,
-                       BeliefSet<M> beliefSet,
-                       PropagationContext context,
-                       ObjectTypeConf typeConf) {
+    public BeliefSet<M> insert(LogicalDependency<M> node,
+                               BeliefSet<M> beliefSet,
+                               PropagationContext context,
+                               ObjectTypeConf typeConf) {
         log.trace( "TMSInsert {} {}", node.getObject(), node.getMode().getValue() );
 
         JTMSBeliefSet jtmsBeliefSet = (JTMSBeliefSet) beliefSet;
@@ -76,6 +76,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
         } else {
             processBeliefSet(node, context, jtmsBeliefSet, wasDecided,wasNegated, fh);
         }
+        return beliefSet;
     }
 
     public void read(LogicalDependency<M> node,

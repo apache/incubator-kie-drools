@@ -19,10 +19,10 @@ public interface BeliefSystem<M extends ModedAssertion<M>> {
      * @param context
      * @param typeConf
      */
-    public void insert(LogicalDependency<M> node,
-                       BeliefSet<M> beliefSet,
-                       PropagationContext context,
-                       ObjectTypeConf typeConf);
+    public BeliefSet<M> insert(LogicalDependency<M> node,
+                               BeliefSet<M> beliefSet,
+                               PropagationContext context,
+                               ObjectTypeConf typeConf);
     
     /**
      * The typeConf has not yet been looked up, so we leave it to the implementation to decide if it needs it or not.

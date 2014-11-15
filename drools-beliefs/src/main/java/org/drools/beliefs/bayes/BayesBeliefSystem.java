@@ -24,7 +24,7 @@ public class BayesBeliefSystem<M extends BayesHardEvidence<M>> implements Belief
     }
 
     @Override
-    public void insert(LogicalDependency<M> node, BeliefSet<M> beliefSet, PropagationContext context, ObjectTypeConf typeConf) {
+    public BeliefSet<M> insert(LogicalDependency<M> node, BeliefSet<M> beliefSet, PropagationContext context, ObjectTypeConf typeConf) {
         boolean wasEmpty = beliefSet.isEmpty();
         boolean wasDecided = beliefSet.isDecided();
 
@@ -49,6 +49,7 @@ public class BayesBeliefSystem<M extends BayesHardEvidence<M>> implements Belief
             bayesInstance.setDecided(var, true);
             bayesInstance.setLikelyhood( var, evidence.getDistribution() );
         }
+        return beliefSet;
     }
 
     @Override
