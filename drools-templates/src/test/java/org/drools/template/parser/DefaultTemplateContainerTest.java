@@ -54,6 +54,31 @@ public class DefaultTemplateContainerTest {
         assertTrue( contents.endsWith( "then\nend\n" ) );
     }
 
+    @Test
+    public void testParseTemplateNoPackageWithImport() {
+        //https://bugzilla.redhat.com/show_bug.cgi?id=1147099
+        InputStream is = DefaultTemplateContainerTest.class.getResourceAsStream( "/templates/test_template_no_package_with_import.drl" );
+        DefaultTemplateContainer t = new DefaultTemplateContainer( is );
+        assertEquals( "import org.drools.template.jdbc.Person;\n",
+                      t.getHeader() );
+        assertEquals( 1,
+                      t.getColumns().length );
+        assertEquals( "name",
+                      t.getColumns()[ 0 ].getName() );
+        Map<String, RuleTemplate> templates = t.getTemplates();
+        assertEquals( 1,
+                      templates.size() );
+        RuleTemplate template = templates.get( "template1" );
+        assertNotNull( template );
+        List<TemplateColumn> columns = template.getColumns();
+        assertEquals( 1, columns.size() );
+        TemplateColumn column = (TemplateColumn) columns.get( 0 );
+        assertEquals( "name", column.getName() );
+        String contents = template.getContents();
+        assertTrue( contents.startsWith( "rule \"Rule_@{row.rowNumber}\"" ) );
+        assertTrue( contents.endsWith( "then\nend\n" ) );
+    }
+
     /*
      * Smoke-test to verify it's possible to load a template containing 
      * indented keywords without exception
@@ -61,10 +86,10 @@ public class DefaultTemplateContainerTest {
     @Test
     public void testParseTemplateIndentedKeywords() {
         InputStream is = DefaultTemplateContainerTest.class
-                .getResourceAsStream("/templates/rule_template_indented.drl");
-        new DefaultTemplateContainer(is);
+                .getResourceAsStream( "/templates/rule_template_indented.drl" );
+        new DefaultTemplateContainer( is );
     }
-    
+
     @Test
     public void testParseTemplateConditions() {
         InputStream is = DefaultTemplateContainerTest.class.getResourceAsStream( "/templates/test_template_conditions.drl" );
