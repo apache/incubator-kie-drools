@@ -946,4 +946,11 @@ public class SynchronizedTaskService
 	    return taskService.taskQuery(userId);
 	}
 
+        @Override
+        public List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId, String language, List<Status> statuses) {
+            synchronized (ksession) {
+                return taskService.getTasksAssignedAsBusinessAdministratorByStatus(userId, language, statuses);
+            }
+        }
+
 }

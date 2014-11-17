@@ -181,7 +181,11 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId, String language) {
 		return executor.execute(new GetTaskAssignedAsBusinessAdminCommand(userId));
 	}
-
+    
+	public List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId, String language ,List<Status> statuses) {
+        return executor.execute(new GetTaskAssignedAsBusinessAdminCommand(userId,statuses));
+    }
+	
 	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, String language) {
 		return getTasksAssignedAsPotentialOwner(userId, null, null, null);
 	}

@@ -278,6 +278,16 @@ public interface RuntimeDataService {
 	 * @return
 	 */
 	List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId, QueryFilter filter);
+	
+	/**
+     * Return a list of assigned tasks as a Business Administrator for with one of the listed
+     * statuses
+     * @param userId
+     * @param status
+     * @param filter
+     * @return
+     */
+	List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId, List<Status> statuses, QueryFilter filter);
 
 	/**
 	 * Return a list of tasks the user is eligible for.

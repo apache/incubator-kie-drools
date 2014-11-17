@@ -59,6 +59,19 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
     }
 
     @Test
+    public void testGetTasksAssignedAsBusinessAdministratorByStatusWithUserLangNoTask() {
+       List<Status> allActiveStatus = new ArrayList<Status>(){{
+            this.add(Status.Created);
+            this.add(Status.Ready);
+            this.add(Status.Reserved);
+            this.add(Status.InProgress);
+            this.add(Status.Suspended);
+          }};
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsBusinessAdministratorByStatus("Bobba Fet", "en-UK",allActiveStatus);
+        assertEquals(0, tasks.size());
+    }
+    
+    @Test
     public void testGetTasksAssignedAsBusinessAdministratorWithUserLangOneTask() {
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";

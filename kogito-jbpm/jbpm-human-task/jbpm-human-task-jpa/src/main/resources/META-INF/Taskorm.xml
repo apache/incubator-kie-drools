@@ -31,6 +31,37 @@
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
+    <named-query name="TasksAssignedAsBusinessAdministratorByStatus">
+        <query>
+            select distinct 
+            new org.jbpm.services.task.query.TaskSummaryImpl(
+                t.id,
+                t.name,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId              )
+            from
+            TaskImpl t,
+            OrganizationalEntityImpl businessAdministrator
+            where
+            t.archived = 0 and
+            businessAdministrator.id = :userId and
+            businessAdministrator in elements ( t.peopleAssignments.businessAdministrators  )  and
+            t.taskData.status in (:status) 
+           
+            order by t.id DESC
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
     <named-query name="TasksAssignedAsExcludedOwner">
         <query>
             select distinct 

@@ -510,7 +510,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 	public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId, QueryFilter filter) {
 		return taskService.getTasksAssignedAsBusinessAdministrator(userId, filter.getLanguage());
 	}
-
+	
 	@Override
 	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, QueryFilter filter) {
 		return ((InternalTaskService)taskService).getTasksAssignedAsPotentialOwner(userId, null , null, filter);
@@ -762,6 +762,13 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
             return false;
         }
         
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId,
+                                                                             List<Status> statuses,
+                                                                             QueryFilter filter) {
+        return ((InternalTaskService)taskService).getTasksAssignedAsBusinessAdministratorByStatus(userId, filter.getLanguage(), statuses);
     }
 
 

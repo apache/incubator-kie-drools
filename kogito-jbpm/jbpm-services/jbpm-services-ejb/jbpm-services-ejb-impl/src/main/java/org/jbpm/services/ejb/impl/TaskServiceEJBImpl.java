@@ -80,6 +80,11 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
 	}
 
 	@Override
+    public List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId, String language ,List<Status> statuses) {
+        return delegate.getTasksAssignedAsBusinessAdministratorByStatus(userId, language, statuses);
+    }
+	
+	@Override
 	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, String language) {
 		return delegate.getTasksAssignedAsPotentialOwner(userId, language);
 	}

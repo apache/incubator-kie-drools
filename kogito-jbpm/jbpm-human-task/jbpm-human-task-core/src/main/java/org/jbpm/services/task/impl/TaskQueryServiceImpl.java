@@ -129,9 +129,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     }
     
     public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId) {
-        return (List<TaskSummary>) persistenceContext.queryWithParametersInTransaction("TasksAssignedAsBusinessAdministrator",
-        		persistenceContext.addParametersToMap("userId", userId),
-                ClassUtil.<List<TaskSummary>>castClass(List.class));
+        return getTasksAssignedAsBusinessAdministratorByStatus(userId,allActiveStatus);
     }
 
     public List<TaskSummary> getTasksAssignedAsExcludedOwner(String userId) {
@@ -805,6 +803,15 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         POTENTIAL_OWNER_ID_LIST,
         BUSINESS_ADMIN_ID_LIST
     };
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId, List<Status> status) { 
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("userId", userId);
+        params.put("status", status);
+        return (List<TaskSummary>) persistenceContext.queryWithParametersInTransaction("TasksAssignedAsBusinessAdministratorByStatus",params,
+                 ClassUtil.<List<TaskSummary>>castClass(List.class));
+    }
    
     /**
      * This is a small utility class which helps out 
