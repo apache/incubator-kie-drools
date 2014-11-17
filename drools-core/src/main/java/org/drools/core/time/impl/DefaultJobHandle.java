@@ -16,18 +16,15 @@
 
 package org.drools.core.time.impl;
 
+import org.drools.core.time.Job;
+
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.drools.core.time.Job;
-import org.drools.core.time.JobHandle;
 
 /**
  * A default implementation for the JobHandle interface
  */
-public class DefaultJobHandle
-    implements
-    JobHandle, Serializable {
+public class DefaultJobHandle extends AbstractJobHandle implements Serializable {
 
     private static final long serialVersionUID = 510l;
 

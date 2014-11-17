@@ -17,10 +17,12 @@
 package org.drools.core.time;
 
 
+import org.drools.core.util.LinkedListNode;
+
 /**
  * An interface for Job Handles
  */
-public interface JobHandle {
+public interface JobHandle extends LinkedListNode<JobHandle> {
     
     public long getId();
 
