@@ -87,6 +87,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
                 if (trimmed.length() > 0) {
                     if (trimmed.startsWith("template header")) {
                         inHeader = true;
+
                     } else if (trimmed.startsWith("template")) {
                         inTemplate = true;
                         inHeader = false;
@@ -102,20 +103,34 @@ public class DefaultTemplateContainer implements TemplateContainer {
                         }
                         inHeader = false;
                         header.append(line).append("\n");
+
+                    } else if (trimmed.startsWith("import")) {
+                        if (inHeader == false) {
+                            throw new DecisionTableParseException(
+                                    "Missing header");
+                        }
+                        inHeader = false;
+                        header.append(line).append("\n");
+
                     } else if (inHeader) {
                         addColumn(cf.getColumn(trimmed));
+
                     } else if (!inTemplate && !inHeader) {
                         header.append(line).append("\n");
+
                     } else if (!inContents && trimmed.startsWith("rule")) {
                         inContents = true;
                         contents.append(line).append("\n");
+
                     } else if (trimmed.equals("end template")) {
                         template.setContents(contents.toString());
                         contents.setLength(0);
                         inTemplate = false;
                         inContents = false;
+
                     } else if (inContents) {
                         contents.append(line).append("\n");
+
                     } else if (inTemplate) {
                         template.addColumn(trimmed);
                     }
