@@ -26,4 +26,6 @@ public interface InternalKieScanner extends KieScanner {
     ReleaseId getCurrentReleaseId();
 
     Status getStatus();
+
+    long getPollingInterval();
 }
