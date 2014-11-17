@@ -230,4 +230,6 @@ public interface InternalTaskService extends TaskService {
     List<TaskSummary> getTasksByVariousFields( String userId, Map <String, List<?>> parameters, boolean union);
     
     TaskQueryBuilder taskQuery(String userId);
+    
+    List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId, String language ,List<Status> statuses);
 }
