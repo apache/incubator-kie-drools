@@ -1,6 +1,19 @@
 package org.drools.compiler.kie.builder.impl;
 
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.io.internal.InternalResource;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.KieRepository;
+import org.kie.api.builder.KieScannerFactoryService;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.io.Resource;
+import org.kie.api.runtime.KieContainer;
+import org.kie.internal.utils.ServiceRegistryImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -19,21 +32,7 @@ import java.util.Stack;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.kproject.ReleaseIdImpl;
-import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.core.io.internal.InternalResource;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.KieRepository;
-import org.kie.api.builder.KieScanner;
-import org.kie.api.builder.KieScannerFactoryService;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.io.Resource;
-import org.kie.api.runtime.KieContainer;
-import org.kie.internal.utils.ServiceRegistryImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
 
 public class KieRepositoryImpl
         implements
@@ -280,12 +279,14 @@ public class KieRepositoryImpl
                 KieModule kieModule = artifactMap.get(new ComparableVersion(releaseId.getVersion()));
                 if ( kieModule != null && releaseId.isSnapshot() ) {
                     String oldSnapshotVersion = ((ReleaseIdImpl)kieModule.getReleaseId()).getSnapshotVersion();
-                    String currentSnapshotVersion = kieScanner.getArtifactVersion(releaseId);
-                    if ( oldSnapshotVersion != null && currentSnapshotVersion != null &&
-                         new ComparableVersion(currentSnapshotVersion).compareTo(new ComparableVersion(oldSnapshotVersion)) > 0) {
-                        // if the snapshot currently available on the maven repo is newer than the cached one
-                        // return null to enforce the building of this newer version
-                        return null;
+                    if ( oldSnapshotVersion != null ) {
+                        String currentSnapshotVersion = kieScanner.getArtifactVersion(releaseId);
+                        if (currentSnapshotVersion != null &&
+                            new ComparableVersion(currentSnapshotVersion).compareTo(new ComparableVersion(oldSnapshotVersion)) > 0) {
+                            // if the snapshot currently available on the maven repo is newer than the cached one
+                            // return null to enforce the building of this newer version
+                            return null;
+                        }
                     }
                 }
                 return kieModule;
