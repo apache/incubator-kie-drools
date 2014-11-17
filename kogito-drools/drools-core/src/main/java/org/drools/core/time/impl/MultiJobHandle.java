@@ -16,18 +16,16 @@
 
 package org.drools.core.time.impl;
 
+import org.drools.core.time.JobHandle;
+
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.drools.core.time.JobHandle;
 
 
 /**
  * A JobHandle container for scheduling multiple jobs
  */
-public class MultiJobHandle
-    implements
-    JobHandle {
+public class MultiJobHandle extends AbstractJobHandle {
     
     private static final long serialVersionUID = 510l;
     

@@ -17,6 +17,7 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -380,6 +381,10 @@ public class EntryPointNode extends ObjectSource
             cachedNodes[i].retractObject( handle,
                                           context,
                                           workingMemory );
+        }
+
+        if (handle instanceof EventFactHandle) {
+            ((EventFactHandle) handle).unscheduleAllJobs(workingMemory);
         }
     }
 

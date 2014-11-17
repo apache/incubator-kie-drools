@@ -294,24 +294,22 @@ public class ObjectTypeNode extends ObjectSource
 
         if ( context.getReaderContext() == null && this.objectType.isEvent() && this.expirationOffset >= 0 && this.expirationOffset != Long.MAX_VALUE ) {
             // schedule expiration
-            WorkingMemoryReteExpireAction expire = new WorkingMemoryReteExpireAction( factHandle,
-                                                                                      this );
+            WorkingMemoryReteExpireAction expire = new WorkingMemoryReteExpireAction( factHandle, this );
             TimerService clock = workingMemory.getTimerService();
 
             // DROOLS-455 the calculation of the effectiveEnd may overflow and become negative
-            long effectiveEnd = ((EventFactHandle) factHandle).getEndTimestamp() + this.expirationOffset;
+            EventFactHandle eventFactHandle = (EventFactHandle) factHandle;
+            long effectiveEnd = eventFactHandle.getEndTimestamp() + this.expirationOffset;
             long nextTimestamp = Math.max( clock.getCurrentTime(),
                                            effectiveEnd >= 0 ? effectiveEnd : Long.MAX_VALUE );
             JobContext jobctx = new ExpireJobContext( expire,
                                                       workingMemory );
-            JobHandle handle = clock.scheduleJob( job,
-                                                  jobctx,
-                                                  new PointInTimeTrigger( nextTimestamp,
-                                                                          null,
-                                                                          null ) );
-            jobctx.setJobHandle( handle );
+            JobHandle jobHandle = clock.scheduleJob( job,
+                                                     jobctx,
+                                                     new PointInTimeTrigger( nextTimestamp, null, null ) );
+            jobctx.setJobHandle( jobHandle );
+            eventFactHandle.addJob( jobHandle );
         }
-
     }
 
     /**
@@ -576,9 +574,9 @@ public class ObjectTypeNode extends ObjectSource
 
         public void execute(JobContext ctx) {
             ExpireJobContext context = (ExpireJobContext) ctx;
-            context.workingMemory.queueWorkingMemoryAction( context.expireAction );
+            context.workingMemory.queueWorkingMemoryAction(context.expireAction);
+            ((EventFactHandle)context.getExpireAction().getFactHandle()).removeJob(context.getJobHandle());
         }
-
     }
 
     public static class ExpireJobContext
@@ -722,12 +720,11 @@ public class ObjectTypeNode extends ObjectSource
             
             JobContext jobctx = new ExpireJobContext( new WorkingMemoryReteExpireAction(factHandle, otn),
                                                       inCtx.wm );
-            JobHandle handle = clock.scheduleJob( job,
-                                                  jobctx,
-                                                  new PointInTimeTrigger( _expire.getNextFireTimestamp(),
-                                                                          null,
-                                                                          null ) );
-            jobctx.setJobHandle( handle );
+            JobHandle jobHandle = clock.scheduleJob( job,
+                                                     jobctx,
+                                                     new PointInTimeTrigger( _expire.getNextFireTimestamp(), null, null ) );
+            jobctx.setJobHandle( jobHandle );
+            ((EventFactHandle) factHandle).addJob(jobHandle);
         }
     }
 
