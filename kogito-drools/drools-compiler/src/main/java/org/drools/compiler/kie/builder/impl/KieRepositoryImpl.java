@@ -166,6 +166,8 @@ public class KieRepositoryImpl
         public Status getStatus() {
             return Status.STOPPED;
         }
+
+        public long getPollingInterval() { return 0; }
     }
 
     public KieModule addKieModule(Resource resource, Resource... dependencies) {

@@ -55,6 +55,8 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     private KieScannerMBean mbean;
 
+    private long pollingInterval;
+
     public synchronized void setKieContainer(KieContainer kieContainer) {
         if (this.kieContainer != null) {
             throw new RuntimeException("Cannot change KieContainer on an already initialized KieScanner");
@@ -213,7 +215,12 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
             timer.cancel();
             timer = null;
         }
+        this.pollingInterval = 0;
         status = Status.STOPPED;
+    }
+
+    public synchronized long getPollingInterval() {
+        return this.pollingInterval;
     }
     
     public void shutdown() {
@@ -225,6 +232,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     private void startScanTask(long pollingInterval) {
         status = Status.RUNNING;
+        this.pollingInterval = pollingInterval;
         timer = new Timer(true);
         timer.schedule(new ScanTask(), pollingInterval, pollingInterval);
     }
