@@ -18,20 +18,21 @@ package org.drools.core.reteoo;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ShadowProxy;
+import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.util.Iterator;
-import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.Iterator;
+import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -395,6 +396,10 @@ public class EntryPointNode extends ObjectSource
             cachedNodes[i].retractObject( handle,
                                           context,
                                           workingMemory );
+        }
+
+        if (handle instanceof EventFactHandle) {
+            ((EventFactHandle) handle).unscheduleAllJobs(workingMemory);
         }
     }
 
