@@ -1,0 +1,14 @@
+template header
+name
+
+import org.drools.template.jdbc.Person;
+
+template "template1"
+name
+rule "Rule_@{row.rowNumber}"
+    when
+        User( name == "@{name}" )
+    then
+end
+end template
+
