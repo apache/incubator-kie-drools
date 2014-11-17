@@ -308,7 +308,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
       &lt;acceptorType&gt;HILL_CLIMBING&lt;/acceptorType&gt;
     &lt;/acceptor&gt;
     &lt;forager&gt;
-      &lt;acceptedCountLimit&gt;1&lt;/acceptedCountLimit&gt;
+      &lt;acceptedCountLimit&gt;1000&lt;/acceptedCountLimit&gt;
     &lt;/forager&gt;
   &lt;/localSearch&gt;</programlisting>
     </section>
