@@ -53,14 +53,14 @@ public class ProcessAssetDesc implements ProcessDefinition {
 
     
     public ProcessAssetDesc(String id, String name, String version, String packageName, String type, String knowledgeType, String namespace, String deploymentId) {
-        this.id = id;
-        this.name = name;
-        this.version = version;
-        this.packageName = packageName;
-        this.type = type;
-        this.knowledgeType = knowledgeType;
-        this.namespace = namespace;
-        this.deploymentId = deploymentId;
+        this.id = safeValue(id);
+        this.name = safeValue(name);
+        this.version = safeValue(version);
+        this.packageName = safeValue(packageName);
+        this.type = safeValue(type);
+        this.knowledgeType = safeValue(knowledgeType);
+        this.namespace = safeValue(namespace);
+        this.deploymentId = safeValue(deploymentId);
     }
     
     public String getId() {
@@ -258,5 +258,11 @@ public class ProcessAssetDesc implements ProcessDefinition {
 		this.reusableSubProcesses = reusableSubProcesses;
 	}
     
-
+    private String safeValue(String value) {
+    	if (value == null) {
+    		return "";
+    	}
+    	
+    	return value;
+    }
 }
