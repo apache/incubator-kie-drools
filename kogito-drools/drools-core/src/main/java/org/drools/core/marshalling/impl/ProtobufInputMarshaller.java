@@ -820,7 +820,7 @@ public class ProtobufInputMarshaller {
             RuleAgendaItem rai = null;
             while ( (rai = rneaToFire.poll()) != null ) {
                 RuleExecutor ruleExecutor = rai.getRuleExecutor();
-                ruleExecutor.reEvaluateNetwork( wm, new org.drools.core.util.LinkedList<StackEntry>(), false );
+                ruleExecutor.reEvaluateNetwork( wm, new org.drools.core.util.LinkedList<StackEntry>() );
                 ruleExecutor.removeRuleAgendaItemWhenEmpty( wm );
             }
         }

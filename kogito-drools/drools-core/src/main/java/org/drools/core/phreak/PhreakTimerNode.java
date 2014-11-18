@@ -1,6 +1,5 @@
 package org.drools.core.phreak;
 
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.LeftTupleSetsImpl;
@@ -481,8 +480,9 @@ public class PhreakTimerNode {
                           new HashSet<String>(), true,
                           pmem.getRuleAgendaItem().getRuleExecutor());
 
-            pmem.getRuleAgendaItem().getRuleExecutor().fire(wm, outerStack);
-            ((InternalAgenda) wm.getAgenda()).fireAllRules(null, -1);
+            RuleExecutor ruleExecutor = pmem.getRuleAgendaItem().getRuleExecutor();
+            ruleExecutor.reEvaluateNetwork(wm, outerStack);
+            ruleExecutor.fire(wm, outerStack);
         }
     }
 
