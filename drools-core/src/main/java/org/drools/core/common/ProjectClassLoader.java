@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 
@@ -34,7 +35,7 @@ public class ProjectClassLoader extends ClassLoader {
 
     private InternalTypesClassLoader typesClassLoader;
 
-    private Set<String> loadedClasses = new HashSet<String>();
+    private final Map<String, Class<?>> loadedClasses = new ConcurrentHashMap<String, Class<?>>();
 
     private final ResourceProvider resourceProvider;
 
@@ -113,13 +114,20 @@ public class ProjectClassLoader extends ClassLoader {
     }
 
     @Override
-    protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-        loadedClasses.add(name);
-        try {
-            return internalLoadClass(name, resolve);
-        } catch (ClassNotFoundException e2) {
-            return loadType(name, resolve);
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        Class<?> cls = loadedClasses.get(name);
+        if (cls != null) {
+            return cls;
         }
+        synchronized (this) {
+            try {
+                cls = internalLoadClass(name, resolve);
+            } catch (ClassNotFoundException e2) {
+                cls = loadType(name, resolve);
+            }
+        }
+        loadedClasses.put(name, cls);
+        return cls;
     }
 
     private Class<?> internalLoadClass(String name, boolean resolve) throws ClassNotFoundException {
@@ -214,7 +222,7 @@ public class ProjectClassLoader extends ClassLoader {
     }
 
     public boolean isClassInUse(String className) {
-        return loadedClasses.contains(className);
+        return loadedClasses.containsKey(className);
     }
 
     @Override
@@ -358,6 +366,7 @@ public class ProjectClassLoader extends ClassLoader {
     public synchronized void reinitTypes() {
         typesClassLoader = null;
         nonExistingClasses.clear();
+        loadedClasses.clear();
     }
 
     private static class ClassBytecode {

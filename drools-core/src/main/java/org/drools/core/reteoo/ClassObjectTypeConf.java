@@ -83,7 +83,7 @@ public class ClassObjectTypeConf
         isEvent = typeDecl != null && typeDecl.getRole() == Role.Type.EVENT;
         isTrait = determineTraitStatus();
 
-        ObjectType objectType = kBase.getClassFieldAccessorCache().getClassObjectType( new ClassObjectType( clazz, isEvent ) );
+        ObjectType objectType = kBase.getClassFieldAccessorCache().getClassObjectType( new ClassObjectType( clazz, isEvent ), false );
 
         this.concreteObjectTypeNode = kBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
         if ( this.concreteObjectTypeNode == null ) {
