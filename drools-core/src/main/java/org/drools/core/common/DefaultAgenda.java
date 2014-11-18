@@ -799,7 +799,7 @@ public class DefaultAgenda
             group.setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
             for ( Match a : group.getActivations() ) {
                 if ( ((Activation) a).isRuleAgendaItem() ) {
-                    ((RuleAgendaItem) a).getRuleExecutor().reEvaluateNetwork( this.workingMemory, new org.drools.core.util.LinkedList<StackEntry>(), false );
+                    ((RuleAgendaItem) a).getRuleExecutor().reEvaluateNetwork( this.workingMemory, new org.drools.core.util.LinkedList<StackEntry>() );
                 }
             }
 

@@ -272,7 +272,7 @@ public class ProtobufOutputMarshaller {
             for ( Activation activation : ((InternalAgenda)wm.getAgenda()).getActivations() ) {
                 if ( activation.isRuleAgendaItem() /*&& evaluated.contains( activation.getRule().getPackageName()+"."+activation.getRule().getName() )*/ ) {
                     // evaluate it
-                    ((RuleAgendaItem)activation).getRuleExecutor().reEvaluateNetwork( wm, null, false );
+                    ((RuleAgendaItem)activation).getRuleExecutor().reEvaluateNetwork( wm, null );
                     ((RuleAgendaItem)activation).getRuleExecutor().removeRuleAgendaItemWhenEmpty( wm );
                 }
             }

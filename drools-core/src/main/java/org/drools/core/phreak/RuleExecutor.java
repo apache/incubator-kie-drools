@@ -92,25 +92,18 @@ public class RuleExecutor {
         wm.executeQueuedActions();
     }
 
-    public synchronized int evaluateNetworkAndFire(InternalWorkingMemory wm,
-            final AgendaFilter filter,
-            int fireCount,
-            int fireLimit) {
+    public synchronized int evaluateNetworkAndFire( InternalWorkingMemory wm,
+                                                    final AgendaFilter filter,
+                                                    int fireCount,
+                                                    int fireLimit ) {
         LinkedList<StackEntry> outerStack = new LinkedList<StackEntry>();
-
-        InternalAgenda agenda = (InternalAgenda) wm.getAgenda();
-        boolean fireUntilHalt = agenda.isFireUntilHalt();
-
-        reEvaluateNetwork(wm, outerStack, fireUntilHalt);
+        reEvaluateNetwork(wm, outerStack);
         wm.executeQueuedActions();
-
-        return fire(wm, filter, fireCount, fireLimit, outerStack, agenda, fireUntilHalt);
+        return fire(wm, filter, fireCount, fireLimit, outerStack, (InternalAgenda) wm.getAgenda());
     }
 
     public synchronized void fire(InternalWorkingMemory wm, LinkedList<StackEntry> outerStack) {
-        InternalAgenda agenda = (InternalAgenda) wm.getAgenda();
-        boolean fireUntilHalt = agenda.isFireUntilHalt();
-        fire(wm, null, 0, Integer.MAX_VALUE, outerStack, agenda, fireUntilHalt);
+        fire(wm, null, 0, Integer.MAX_VALUE, outerStack, (InternalAgenda) wm.getAgenda());
     }
 
     private int fire( InternalWorkingMemory wm,
@@ -118,8 +111,7 @@ public class RuleExecutor {
                       int fireCount,
                       int fireLimit,
                       LinkedList<StackEntry> outerStack,
-                      InternalAgenda agenda,
-                      boolean fireUntilHalt) {
+                      InternalAgenda agenda) {
         int localFireCount = 0;
         if (!tupleList.isEmpty()) {
             if (!fireExitedEarly && isDeclarativeAgendaEnabled()) {
@@ -177,7 +169,7 @@ public class RuleExecutor {
                     if (haltRuleFiring(nextRule, fireCount, fireLimit, localFireCount, agenda, salience)) {
                         break; // another rule has high priority and is on the agenda, so evaluate it first
                     }
-                    reEvaluateNetwork(wm, outerStack, fireUntilHalt);
+                    reEvaluateNetwork(wm, outerStack);
                     wm.executeQueuedActions();
                 }
 
@@ -238,7 +230,7 @@ public class RuleExecutor {
         }
     }
 
-    public synchronized void reEvaluateNetwork(InternalWorkingMemory wm, LinkedList<StackEntry> outerStack, boolean fireUntilHalt) {
+    public synchronized void reEvaluateNetwork(InternalWorkingMemory wm, LinkedList<StackEntry> outerStack) {
         if (isDirty() || (pmem.getStreamQueue() != null && !pmem.getStreamQueue().isEmpty())) {
             setDirty(false);
             TupleEntryQueue queue = pmem.getStreamQueue() != null ? pmem.getStreamQueue().takeAllForFlushing() : null;
