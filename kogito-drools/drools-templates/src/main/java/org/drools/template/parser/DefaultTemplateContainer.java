@@ -105,10 +105,6 @@ public class DefaultTemplateContainer implements TemplateContainer {
                         header.append(line).append("\n");
 
                     } else if (trimmed.startsWith("import")) {
-                        if (inHeader == false) {
-                            throw new DecisionTableParseException(
-                                    "Missing header");
-                        }
                         inHeader = false;
                         header.append(line).append("\n");
 
