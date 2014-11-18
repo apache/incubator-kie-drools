@@ -211,7 +211,7 @@ public class ObjectTypeNode extends ObjectSource
         // this is here as not all objectTypeNodes used ClassObjectTypes in packages (i.e. rules with those nodes did not exist yet)
         // and thus have no wiring targets
         if ( objectType instanceof ClassObjectType ) {
-            objectType = ((DroolsObjectInputStream) in).getKnowledgeBase().getClassFieldAccessorCache().getClassObjectType( (ClassObjectType) objectType );
+            objectType = ((DroolsObjectInputStream) in).getKnowledgeBase().getClassFieldAccessorCache().getClassObjectType( (ClassObjectType) objectType, true );
         }
 
         objectMemoryEnabled = in.readBoolean();
