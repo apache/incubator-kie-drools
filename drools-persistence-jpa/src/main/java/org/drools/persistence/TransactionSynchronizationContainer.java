@@ -16,28 +16,26 @@ public class TransactionSynchronizationContainer implements TransactionSynchroni
 
     @Override
     public void beforeCompletion() {
-        Iterator<TransactionSynchronization> it = synchronizations.iterator();
-        while (it.hasNext()) {
+        TransactionSynchronization[] txSyncArray = synchronizations.toArray(new TransactionSynchronization[synchronizations.size()]);
 
-            TransactionSynchronization txSync = it.next();
+        for (TransactionSynchronization txSync : txSyncArray) {
+
             txSync.beforeCompletion();
         }
     }
 
     @Override
     public void afterCompletion(int status) {
-        Iterator<TransactionSynchronization> it = synchronizations.iterator();
-        while (it.hasNext()) {
+        TransactionSynchronization[] txSyncArray = synchronizations.toArray(new TransactionSynchronization[synchronizations.size()]);
 
-            TransactionSynchronization txSync = it.next();
+        for (TransactionSynchronization txSync : txSyncArray) {
+
             txSync.afterCompletion(status);
         }
     }
 
     public void addTransactionSynchronization(TransactionSynchronization txSync) {
-        if (this.synchronizations.contains(txSync)) {
-            logger.debug("Already registered {}", txSync);
-        }
+
         this.synchronizations.add(txSync);
         logger.debug("Adding sync {} total syncs ", txSync, synchronizations.size());
     }
