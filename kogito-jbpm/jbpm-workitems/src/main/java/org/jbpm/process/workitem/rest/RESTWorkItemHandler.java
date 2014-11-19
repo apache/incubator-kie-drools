@@ -18,20 +18,40 @@ package org.jbpm.process.workitem.rest;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.AuthCache;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicAuthCache;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -127,39 +147,51 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         Integer readTimeout = getParamAsInt(params.get("ReadTimeout"));
         if (readTimeout==null) readTimeout = 60000;
 
-        HttpClient httpclient = new HttpClient();
-        httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(connectTimeout);
-        httpclient.getHttpConnectionManager().getParams().setSoTimeout(readTimeout);
+        RequestConfig config = RequestConfig.custom()
+                .setSocketTimeout(readTimeout)
+                .setConnectTimeout(connectTimeout)
+                .setConnectionRequestTimeout(connectTimeout)
+                .build();
+
+        HttpClientBuilder clientBuilder = HttpClientBuilder.create()
+                .setDefaultRequestConfig(config);
+        
+        CloseableHttpClient httpClient = clientBuilder.build();
 	        
-        HttpMethod theMethod = null;
+        RequestBuilder builder = null;
         if ("GET".equals(method)) {
-        	theMethod = new GetMethod(urlStr); 
+        	builder = RequestBuilder.get().setUri(urlStr);
         } else if ("POST".equals(method)) {
-        	theMethod = new PostMethod(urlStr);
-        	setBody(theMethod, params);
+        	builder = RequestBuilder.post().setUri(urlStr);
+        	setBody(builder, params);
         } else if ("PUT".equals(method)) {
-            theMethod = new PutMethod(urlStr);
-            setBody(theMethod, params);
+        	builder = RequestBuilder.put().setUri(urlStr);
+            setBody(builder, params);
         } else if ("DELETE".equals(method)) {
-            theMethod = new DeleteMethod(urlStr);            
+        	builder = RequestBuilder.delete().setUri(urlStr);
         } else {
             throw new IllegalArgumentException("Method " + method + " is not supported");
         }
-        doAuthorization(httpclient, theMethod, params);
         try {
-        	int responseCode = httpclient.executeMethod(theMethod);
+            HttpResponse response = doRequestWithAuthorization(httpClient, builder, params);
+        	StatusLine statusLine = response.getStatusLine();
+        	int responseCode = statusLine.getStatusCode();
 	        Map<String, Object> results = new HashMap<String, Object>();
+	        HttpEntity respEntity = response.getEntity();
+	        String responseBody = null;
+	        if( respEntity != null ) { 
+	            responseBody = EntityUtils.toString(respEntity);
+	        }
 	        if (responseCode >= 200 && responseCode < 300) {
-	        	theMethod.getResponseBody();
-	            postProcessResult(theMethod.getResponseBodyAsString(), results);
-	            results.put("StatusMsg", "request to endpoint " + urlStr + " successfully completed " + theMethod.getStatusText());
+	            postProcessResult(responseBody, results);
+	            results.put("StatusMsg", "request to endpoint " + urlStr + " successfully completed " + statusLine.getReasonPhrase());
 	        } else {
 	        	if (handleException) {
-	        		handleException(new RESTServiceException(responseCode, theMethod.getResponseBodyAsString(), urlStr));
+	        		handleException(new RESTServiceException(responseCode, responseBody, urlStr));
 	        	} else {
-		            logger.warn("Unsuccessful response from REST server (status {}, endpoint {}, response {}", 
-		                    responseCode, urlStr, theMethod.getResponseBodyAsString());
-		            results.put("StatusMsg", "endpoint " + urlStr + " could not be reached: " + theMethod.getResponseBodyAsString());
+		            logger.warn("Unsuccessful response from REST server (status: {}, endpoint: {}, response: {}", 
+		                    responseCode, urlStr, responseBody);
+		            results.put("StatusMsg", "endpoint " + urlStr + " could not be reached: " + responseBody);
 	        	}
 	        }
             results.put("Status", responseCode);
@@ -169,7 +201,11 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     	} catch (Exception e) {
     		handleException(e);
     	} finally {
-    		theMethod.releaseConnection();
+    	    try { 
+    	        httpClient.close();
+    	    } catch( Exception e ) { 
+    	        // no idea if this throws something, but we still don't care!
+    	    }
     	}
     }
 	
@@ -186,12 +222,16 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 		return null;
 	}
     
-	protected void setBody(HttpMethod theMethod, Map<String, Object> params) {
+	protected void setBody(RequestBuilder builder, Map<String, Object> params) {
         if (params.containsKey("Content")) {
             try {
-                ((EntityEnclosingMethod)theMethod).setRequestEntity(new StringRequestEntity((String)params.get("Content"), (String)params.get("ContentType"), null));
+                String content = (String) params.get("Content");
+                StringEntity entity = new StringEntity(content);
+                String contentType = (String)params.get("ContentType");
+                entity.setContentType(contentType);
+                builder.setEntity(entity);
             } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException("Cannot set body for REST request " + theMethod, e);
+                throw new RuntimeException("Cannot set body for REST request [" + builder.getMethod() + "] " + builder.getUri(), e);
             }
         }
     }
@@ -200,10 +240,30 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         results.put("Result", result);
     }
 
-    protected void doAuthorization(HttpClient httpclient, HttpMethod method, Map<String, Object> params) {
+    /**
+     * This method does the actual request, including the setup for authorization. 
+     * </p>
+     * It is <b>not</b> responsible for cleaning up after the last request that it does.
+     * </p>
+     * It <i>is</i> responsible for cleaning up after all previous request, such as for form-based authentication, that happen.
+     * 
+     * @param httpclient The {@link HttpClient} instance
+     * @param requestBuilder The {@link RequestBuilder} instance
+     * @param params The parameters that may be needed for authentication
+     * @return A {@link HttpResponse} instance from which we can extract the content
+     */
+    protected HttpResponse doRequestWithAuthorization(CloseableHttpClient httpclient, RequestBuilder requestBuilder, Map<String, Object> params) {
+        // no authorization
     	if (type == null) {
-    		return;
+    	    HttpUriRequest request = requestBuilder.build();
+    	    try {
+                return httpclient.execute(request);
+            } catch( Exception e ) {
+                throw new RuntimeException("Could not execute request [" + request.getMethod() + "] " + request.getURI(), e);
+            }
     	}
+    
+    	// user/password
     	String u = (String) params.get("Username");
     	String p = (String) params.get("Password");
     	if (u == null || p == null) {
@@ -216,16 +276,59 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         if (p == null) {
         	throw new IllegalArgumentException("Could not find password");
         }
+        
         if (type == AuthenticationType.BASIC) {
-        	
-        	httpclient.getState().setCredentials(
-    			new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM),
+            // basic auth
+            URI requestUri = requestBuilder.getUri();
+            
+        	// Create AuthCache instance and add it: so that HttpClient thinks that it has already queried (as per the HTTP spec) 
+        	// - generate BASIC scheme object and add it to the local auth cache
+        	AuthCache authCache = new BasicAuthCache();
+        	BasicScheme basicAuth = new BasicScheme();
+        	authCache.put(new HttpHost(requestUri.getHost()), basicAuth);
+
+        	// - add AuthCache to the execution context:
+        	HttpClientContext clientContext = HttpClientContext.create();
+            CredentialsProvider credsProvider = new BasicCredentialsProvider();
+        	credsProvider.setCredentials(
+        	    // specify host and port, since that is safer/more secure
+    			new AuthScope(requestUri.getHost(), requestUri.getPort(), AuthScope.ANY_REALM),
     			new UsernamePasswordCredentials(u, p)
-    			
         	);
-        	method.setDoAuthentication(true);
-        	httpclient.getParams().setAuthenticationPreemptive(true);
+        	clientContext.setCredentialsProvider(credsProvider);
+        	clientContext.setAuthCache(authCache);
+      
+        	// - execute request
+        	HttpUriRequest request = requestBuilder.build();
+        	try {
+                return httpclient.execute(request, clientContext);
+            } catch( Exception e ) {
+                throw new RuntimeException("Could not execute request with preemptive authentication [" + request.getMethod() + "] " + request.getURI(), e);
+            } 
         } else if (type == AuthenticationType.FORM_BASED) {
+            // form auth
+            
+            // 1. do initial request to trigger authentication 
+        	HttpUriRequest request = requestBuilder.build();
+        	int statusCode = -1;
+        	try {
+        	    HttpResponse initialResponse = httpclient.execute(request);
+        	    statusCode = initialResponse.getStatusLine().getStatusCode();
+        	} catch (IOException e) {
+        		throw new RuntimeException("Could not execute request for form-based authentication", e);
+            } finally {
+                // weird, but this is the method that releases resources, including the connection
+                request.abort();
+            }
+ 
+        	// 1b. form authentication requests should have a status of 401
+        	// See: www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2
+        	if( statusCode != HttpStatus.SC_UNAUTHORIZED ) { 
+        	    logger.error("Expected form authentication request with status {} but status on response is {}: proceeding anyways", 
+        	            HttpStatus.SC_UNAUTHORIZED, statusCode);
+        	}
+        	
+        	// 2. do POST form request to authentiate
         	String authUrlStr = (String) params.get("AuthUrl");
         	if (authUrlStr == null) {
         		authUrlStr = authUrl;
@@ -233,25 +336,31 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         	if (authUrlStr == null) {
                 throw new IllegalArgumentException("Could not find authentication url");
             }
-        	try {
-        		httpclient.executeMethod(method);
-        	} catch (IOException e) {
-        		throw new RuntimeException("Could not execute request for form-based authentication", e);
-            } finally {
-            	method.releaseConnection();
-            }
-            PostMethod authMethod = new PostMethod(authUrlStr);
-            NameValuePair[] data = {
-        		new NameValuePair("j_username", u),
-                new NameValuePair("j_password", p)
-    		};
-            authMethod.setRequestBody(data);
+            HttpPost authMethod = new HttpPost(authUrlStr);
+            List<NameValuePair> formParams = new ArrayList<NameValuePair>(2);
+            formParams.add(new BasicNameValuePair("j_username", u));
+            formParams.add(new BasicNameValuePair("j_password", p));
+            UrlEncodedFormEntity formEntity;
             try {
-                httpclient.executeMethod(authMethod);
+                formEntity = new UrlEncodedFormEntity(formParams);
+            } catch( UnsupportedEncodingException uee ) {
+                throw new RuntimeException("Could not encode authentication parameters into request body", uee);
+            }
+            authMethod.setEntity(formEntity);
+            try {
+                httpclient.execute(authMethod);
             } catch (IOException e) {
         		throw new RuntimeException("Could not initialize form-based authentication", e);
             } finally {
                 authMethod.releaseConnection();
+            }
+           
+            // 3. rebuild request and execute
+            request = requestBuilder.build();
+            try {
+                return httpclient.execute(request);
+            } catch( Exception e ) {
+                throw new RuntimeException("Could not execute request [" + request.getMethod() + "] " + request.getURI(), e);
             }
         } else {
         	throw new RuntimeException("Unknown AuthenticationType " + type);

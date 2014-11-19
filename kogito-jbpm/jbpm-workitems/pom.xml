@@ -149,8 +149,9 @@
     </dependency>
     <!-- REST -->
     <dependency>
-      <groupId>commons-httpclient</groupId>
-      <artifactId>commons-httpclient</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.3.5</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
