@@ -37,7 +37,7 @@ public class GetTaskAssignedAsBusinessAdminCommand extends UserGroupCallbackTask
         TaskContext context = (TaskContext) cntxt;
         doCallbackUserOperation(userId, context);
         doUserGroupCallbackOperation(userId, null, context);
-        if (status == null && status.size()==0){
+        if (status == null || status.isEmpty()){
             return context.getTaskQueryService().getTasksAssignedAsBusinessAdministrator(userId);
         }
         return context.getTaskQueryService().getTasksAssignedAsBusinessAdministratorByStatus(userId,status);
