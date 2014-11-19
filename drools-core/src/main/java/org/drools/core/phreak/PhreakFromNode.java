@@ -40,7 +40,7 @@ public class PhreakFromNode {
                        LeftTupleSets stagedLeftTuples) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(fromNode, fm, sink, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            doLeftDeletes(fm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
@@ -66,7 +66,7 @@ public class PhreakFromNode {
         BetaConstraints betaConstraints = fromNode.getBetaConstraints();
         AlphaNodeFieldConstraint[] alphaConstraints = fromNode.getAlphaConstraints();
         DataProvider dataProvider = fromNode.getDataProvider();
-        Class resultClass = fromNode.getResultClass();
+        Class<?> resultClass = fromNode.getResultClass();
 
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
@@ -108,7 +108,6 @@ public class PhreakFromNode {
                                              propagationContext,
                                              wm,
                                              fm,
-                                             bm,
                                              context,
                                              useLeftMemory,
                                              trgLeftTuples,
@@ -133,12 +132,11 @@ public class PhreakFromNode {
                               LeftTupleSets trgLeftTuples,
                               LeftTupleSets stagedLeftTuples) {
         BetaMemory bm = fm.getBetaMemory();
-        LeftTupleMemory ltm = bm.getLeftTupleMemory();
         ContextEntry[] context = bm.getContext();
         BetaConstraints betaConstraints = fromNode.getBetaConstraints();
         AlphaNodeFieldConstraint[] alphaConstraints = fromNode.getAlphaConstraints();
         DataProvider dataProvider = fromNode.getDataProvider();
-        Class resultClass = fromNode.getResultClass();
+        Class<?> resultClass = fromNode.getResultClass();
 
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
@@ -189,7 +187,6 @@ public class PhreakFromNode {
                                              propagationContext,
                                              wm,
                                              fm,
-                                             bm,
                                              context,
                                              true,
                                              trgLeftTuples,
@@ -211,10 +208,7 @@ public class PhreakFromNode {
         betaConstraints.resetTuple(context);
     }
 
-    public void doLeftDeletes(FromNode fromNode,
-                              FromMemory fm,
-                              LeftTupleSink sink,
-                              InternalWorkingMemory wm,
+    public void doLeftDeletes(FromMemory fm,
                               LeftTupleSets srcLeftTuples,
                               LeftTupleSets trgLeftTuples,
                               LeftTupleSets stagedLeftTuples) {
@@ -270,7 +264,6 @@ public class PhreakFromNode {
                                                 final PropagationContext propagationContext,
                                                 final InternalWorkingMemory wm,
                                                 final FromMemory fm,
-                                                final BetaMemory bm,
                                                 final ContextEntry[] context,
                                                 final boolean useLeftMemory,
                                                 LeftTupleSets trgLeftTuples,

@@ -31,7 +31,7 @@ public class PhreakRuleTerminalNode {
                        LeftTupleSets srcLeftTuples,
                        RuleExecutor executor) {
         if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(rtnNode, wm, srcLeftTuples, executor);
+            doLeftDeletes(wm, srcLeftTuples, executor);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
@@ -98,7 +98,7 @@ public class PhreakRuleTerminalNode {
               leftTuple.getPropagationContext().getType() != org.kie.api.runtime.rule.PropagationContext.RULE_ADDITION ) {
             long handleRecency = ((InternalFactHandle) pctx.getFactHandle()).getRecency();
             InternalAgendaGroup agendaGroup = executor.getRuleAgendaItem().getAgendaGroup();
-            if (blockedByLockOnActive(rtnNode.getRule(), agenda, pctx, handleRecency, agendaGroup)) {
+            if (blockedByLockOnActive(rtnNode.getRule(), pctx, handleRecency, agendaGroup)) {
                 es.getAgendaEventSupport().fireActivationCancelled(rtnLeftTuple, wm, MatchCancelledCause.FILTER );
                 return;
             }
@@ -181,7 +181,7 @@ public class PhreakRuleTerminalNode {
 
                 long handleRecency = ((InternalFactHandle) pctx.getFactHandle()).getRecency();
                 InternalAgendaGroup agendaGroup = executor.getRuleAgendaItem().getAgendaGroup();
-                if (blockedByLockOnActive(rtnNode.getRule(), agenda, pctx, handleRecency, agendaGroup)) {
+                if (blockedByLockOnActive(rtnNode.getRule(), pctx, handleRecency, agendaGroup)) {
                     addToExector = false;
                 }
             }
@@ -206,8 +206,7 @@ public class PhreakRuleTerminalNode {
         }
     }
 
-    public void doLeftDeletes(TerminalNode rtnNode,
-                              InternalWorkingMemory wm,
+    public void doLeftDeletes(InternalWorkingMemory wm,
                               LeftTupleSets srcLeftTuples,
                               RuleExecutor executor) {
 
@@ -246,7 +245,6 @@ public class PhreakRuleTerminalNode {
     }
 
     private static boolean blockedByLockOnActive(RuleImpl rule,
-                                          InternalAgenda agenda,
                                           PropagationContext pctx,
                                           long handleRecency,
                                           InternalAgendaGroup agendaGroup) {
