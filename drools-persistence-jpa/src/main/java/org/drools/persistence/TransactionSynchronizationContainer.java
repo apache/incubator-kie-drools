@@ -35,6 +35,9 @@ public class TransactionSynchronizationContainer implements TransactionSynchroni
     }
 
     public void addTransactionSynchronization(TransactionSynchronization txSync) {
+        if (this.synchronizations.contains(txSync)) {
+            logger.debug("Already registered {}", txSync);
+        }
         this.synchronizations.add(txSync);
         logger.debug("Adding sync {} total syncs ", txSync, synchronizations.size());
     }
