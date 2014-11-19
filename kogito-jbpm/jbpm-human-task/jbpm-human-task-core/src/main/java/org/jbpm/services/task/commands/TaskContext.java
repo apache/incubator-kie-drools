@@ -16,7 +16,6 @@
 package org.jbpm.services.task.commands;
 
 import org.jbpm.services.task.events.TaskEventSupport;
-import org.jbpm.services.task.identity.UserGroupLifeCycleManagerDecorator;
 import org.jbpm.services.task.impl.TaskAdminServiceImpl;
 import org.jbpm.services.task.impl.TaskAttachmentServiceImpl;
 import org.jbpm.services.task.impl.TaskCommentServiceImpl;
@@ -71,8 +70,7 @@ public class TaskContext implements org.kie.internal.task.api.TaskContext {
     
     public TaskInstanceService getTaskInstanceService() {
         return new TaskInstanceServiceImpl(this, persistenceContext,
-        		new UserGroupLifeCycleManagerDecorator(getUserGroupCallback(),
-        		new MVELLifeCycleManager(this, persistenceContext, getTaskContentService(), taskEventSupport)),
+        		new MVELLifeCycleManager(this, persistenceContext, getTaskContentService(), taskEventSupport),
         		taskEventSupport, environment);
     }
     

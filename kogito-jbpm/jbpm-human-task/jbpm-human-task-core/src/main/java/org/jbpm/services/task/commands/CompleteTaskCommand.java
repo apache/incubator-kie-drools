@@ -64,7 +64,8 @@ public class CompleteTaskCommand extends UserGroupCallbackTaskCommand<Void> {
 	public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         doCallbackUserOperation(userId, context);
-        doUserGroupCallbackOperation(userId, null, context);
+        groupIds = doUserGroupCallbackOperation(userId, null, context);
+        context.set("local:groups", groupIds);
         
         TaskInstanceService instanceService = context.getTaskInstanceService();
         instanceService.complete(taskId, userId, data);

@@ -46,7 +46,8 @@ public class ExitTaskCommand extends UserGroupCallbackTaskCommand<Void> {
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         doCallbackUserOperation(userId, context);
-        doUserGroupCallbackOperation(userId, null, context);
+        groupIds = doUserGroupCallbackOperation(userId, null, context);
+        context.set("local:groups", groupIds);
     	context.getTaskInstanceService().exit(taskId, userId);
     	return null;
         

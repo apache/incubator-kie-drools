@@ -112,11 +112,11 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     public void activate(long taskId, String userId) {
-        lifeCycleManager.taskOperation(Operation.Activate, taskId, userId, null, null, null);
+        lifeCycleManager.taskOperation(Operation.Activate, taskId, userId, null, null, toGroups(null));
     }
 
     public void claim(long taskId, String userId) {
-        lifeCycleManager.taskOperation(Operation.Claim, taskId, userId, null, null, null);
+        lifeCycleManager.taskOperation(Operation.Claim, taskId, userId, null, null, toGroups(null));
     }
 
     public void claim(long taskId, String userId, List<String> groupIds) {
@@ -130,7 +130,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
                 persistenceContext.addParametersToMap("userId", userId, "status", status),
                 ClassUtil.<List<TaskSummary>>castClass(List.class));;
         if (queryTasks.size() > 0) {
-            lifeCycleManager.taskOperation(Operation.Claim, queryTasks.get(0).getId(), userId, null, null, null);
+            lifeCycleManager.taskOperation(Operation.Claim, queryTasks.get(0).getId(), userId, null, null, toGroups(null));
         } else {
         	logger.info("No task available to assign for user {}", userId);
         }
@@ -143,18 +143,18 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
                 persistenceContext.addParametersToMap("userId", userId, "status", status, "groupIds", groupIds),
                 ClassUtil.<List<TaskSummary>>castClass(List.class));;
         if (queryTasks.size() > 0) {
-            lifeCycleManager.taskOperation(Operation.Claim, queryTasks.get(0).getId(), userId, null, null, null);
+            lifeCycleManager.taskOperation(Operation.Claim, queryTasks.get(0).getId(), userId, null, null, groupIds);
         } else {
             logger.info("No task available to assign for user {} and groups {}", userId, groupIds);
         }
     }
 
     public void complete(long taskId, String userId, Map<String, Object> data) {
-        lifeCycleManager.taskOperation(Operation.Complete, taskId, userId, null, data, null);
+        lifeCycleManager.taskOperation(Operation.Complete, taskId, userId, null, data, toGroups(null));
     }
 
     public void delegate(long taskId, String userId, String targetUserId) {
-        lifeCycleManager.taskOperation(Operation.Delegate, taskId, userId, targetUserId, null, null);
+        lifeCycleManager.taskOperation(Operation.Delegate, taskId, userId, targetUserId, null, toGroups(null));
     }
 
     public void deleteFault(long taskId, String userId) {
@@ -180,19 +180,19 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     public void exit(long taskId, String userId) {
-        lifeCycleManager.taskOperation(Operation.Exit, taskId, userId, null, null, null);
+        lifeCycleManager.taskOperation(Operation.Exit, taskId, userId, null, null, toGroups(null));
     }
 
     public void fail(long taskId, String userId, Map<String, Object> faultData) {
-        lifeCycleManager.taskOperation(Operation.Fail, taskId, userId, null, faultData, null);
+        lifeCycleManager.taskOperation(Operation.Fail, taskId, userId, null, faultData, toGroups(null));
     }
 
     public void forward(long taskId, String userId, String targetEntityId) {
-        lifeCycleManager.taskOperation(Operation.Forward, taskId, userId, targetEntityId, null, null);
+        lifeCycleManager.taskOperation(Operation.Forward, taskId, userId, targetEntityId, null, toGroups(null));
     }
 
     public void release(long taskId, String userId) {
-        lifeCycleManager.taskOperation(Operation.Release, taskId, userId, null, null, null);
+        lifeCycleManager.taskOperation(Operation.Release, taskId, userId, null, null, toGroups(null));
     }
 
     public void remove(long taskId, String userId) {
@@ -206,7 +206,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     public void resume(long taskId, String userId) {
-        lifeCycleManager.taskOperation(Operation.Resume, taskId, userId, null, null, null);
+        lifeCycleManager.taskOperation(Operation.Resume, taskId, userId, null, null, toGroups(null));
     }
 
     public void setFault(long taskId, String userId, FaultData fault) {
@@ -241,23 +241,23 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     public void skip(long taskId, String userId) {
-        lifeCycleManager.taskOperation(Operation.Skip, taskId, userId, null, null, null);
+        lifeCycleManager.taskOperation(Operation.Skip, taskId, userId, null, null, toGroups(null));
     }
 
     public void start(long taskId, String userId) {
-        lifeCycleManager.taskOperation(Operation.Start, taskId, userId, null, null, null);
+        lifeCycleManager.taskOperation(Operation.Start, taskId, userId, null, null, toGroups(null));
     }
 
     public void stop(long taskId, String userId) {
-        lifeCycleManager.taskOperation(Operation.Stop, taskId, userId, null, null, null);
+        lifeCycleManager.taskOperation(Operation.Stop, taskId, userId, null, null, toGroups(null));
     }
 
     public void suspend(long taskId, String userId) {
-        lifeCycleManager.taskOperation(Operation.Suspend, taskId, userId, null, null, null);
+        lifeCycleManager.taskOperation(Operation.Suspend, taskId, userId, null, null, toGroups(null));
     }
 
     public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {      
-        lifeCycleManager.taskOperation(Operation.Nominate, taskId, userId, null, null, null, 
+        lifeCycleManager.taskOperation(Operation.Nominate, taskId, userId, null, null, toGroups(null), 
         		potentialOwners.toArray(new OrganizationalEntity[potentialOwners.size()]));
     }
 
@@ -330,5 +330,12 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         ((InternalTask) task).setSubject(subject);
     }
     
-
+    @SuppressWarnings("unchecked")
+	protected List<String> toGroups(List<String> groups) {
+    	if (groups == null) {
+    		return (List<String>) context.get("local:groups");
+    	}
+    	
+    	return groups;
+    }
 }

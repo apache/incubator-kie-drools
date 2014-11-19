@@ -66,7 +66,8 @@ public class NominateTaskCommand extends UserGroupCallbackTaskCommand<Void> {
         doCallbackUserOperation(userId, context);
         List<OrganizationalEntity> realPotOwners = convertListFromJaxbImplToInterface(potentialOwners);
         doCallbackOperationForPotentialOwners(realPotOwners, context);
-        doUserGroupCallbackOperation(userId, null, context);
+        groupIds = doUserGroupCallbackOperation(userId, null, context);
+        context.set("local:groups", groupIds);
         context.getTaskInstanceService().nominate(taskId, userId, realPotOwners);
         return null;
     }

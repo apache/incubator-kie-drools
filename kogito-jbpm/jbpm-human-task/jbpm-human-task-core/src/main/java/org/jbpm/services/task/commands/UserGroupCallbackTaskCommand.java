@@ -68,11 +68,10 @@ public class UserGroupCallbackTaskCommand<T> extends TaskCommand<T> {
 	    
     protected List<String> doUserGroupCallbackOperation(String userId, List<String> groupIds, TaskContext context) {
 
-        doCallbackUserOperation(userId, context);
-        doCallbackGroupsOperation(userId, groupIds, context);
-        List<String> allGroupIds = null;
 
-        return filterGroups(context.getUserGroupCallback().getGroupsForUser(userId, groupIds, allGroupIds));
+        groupIds = doCallbackGroupsOperation(userId, groupIds, context);
+
+        return filterGroups(groupIds);
 
     }
 
@@ -117,7 +116,7 @@ public class UserGroupCallbackTaskCommand<T> extends TaskCommand<T> {
     	}
     }
 
-    protected void doCallbackGroupsOperation(String userId, List<String> groupIds, TaskContext context) {
+    protected List<String> doCallbackGroupsOperation(String userId, List<String> groupIds, TaskContext context) {
 
         if (userId != null) {
 
@@ -138,6 +137,7 @@ public class UserGroupCallbackTaskCommand<T> extends TaskCommand<T> {
                             addGroupFromCallbackOperation(group, context);
                         }
                         userGroupsMap.put(userId, true);
+                        groupIds = userGroups;
                     }
                 }
             }
@@ -148,6 +148,8 @@ public class UserGroupCallbackTaskCommand<T> extends TaskCommand<T> {
                 }
             }
         }
+        
+        return groupIds;
 
     }
 

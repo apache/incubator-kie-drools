@@ -47,7 +47,8 @@ public class ClaimTaskCommand extends UserGroupCallbackTaskCommand<Void> {
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         doCallbackUserOperation(userId, context);
-        doUserGroupCallbackOperation(userId, null, context);
+        groupIds = doUserGroupCallbackOperation(userId, null, context);
+        context.set("local:groups", groupIds);
     	context.getTaskInstanceService().claim(taskId, userId);
     	return null;
         

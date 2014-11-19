@@ -60,7 +60,8 @@ public class DelegateTaskCommand extends UserGroupCallbackTaskCommand<Void> {
         TaskContext context = (TaskContext) cntxt;
         doCallbackUserOperation(userId, context);
         doCallbackUserOperation(targetEntityId, context);
-        doUserGroupCallbackOperation(userId, null, context);
+        groupIds = doUserGroupCallbackOperation(userId, null, context);
+        context.set("local:groups", groupIds);
     	context.getTaskInstanceService().delegate(taskId, userId, targetEntityId);
     	return null;
            

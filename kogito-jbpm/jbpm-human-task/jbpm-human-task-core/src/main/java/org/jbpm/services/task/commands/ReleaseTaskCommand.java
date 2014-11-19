@@ -47,7 +47,8 @@ public class ReleaseTaskCommand extends UserGroupCallbackTaskCommand<Void> {
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         doCallbackUserOperation(userId, context);
-        doUserGroupCallbackOperation(userId, null, context);
+        groupIds = doUserGroupCallbackOperation(userId, null, context);
+        context.set("local:groups", groupIds);
     	context.getTaskInstanceService().release(taskId, userId);
     	return null;
        
