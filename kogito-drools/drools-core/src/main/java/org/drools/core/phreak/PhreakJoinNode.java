@@ -27,11 +27,11 @@ public class PhreakJoinNode {
         RightTupleSets srcRightTuples = bm.getStagedRightTuples().takeAll();
 
         if (srcRightTuples.getDeleteFirst() != null) {
-            doRightDeletes(joinNode, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
+            doRightDeletes(bm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(joinNode, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            doLeftDeletes(bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null ) {
@@ -85,7 +85,6 @@ public class PhreakJoinNode {
             }
 
             FastIterator it = joinNode.getRightIterator(rtm);
-            PropagationContext context = leftTuple.getPropagationContext();
 
             constraints.updateFromTuple(contextEntry,
                                         wm,
@@ -176,8 +175,6 @@ public class PhreakJoinNode {
 
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
-
-            PropagationContext context = leftTuple.getPropagationContext();
 
             constraints.updateFromTuple(contextEntry,
                                         wm,
@@ -377,9 +374,7 @@ public class PhreakJoinNode {
         return childLeftTuple;
     }
 
-    public void doLeftDeletes(JoinNode joinNode,
-                              BetaMemory bm,
-                              InternalWorkingMemory wm,
+    public void doLeftDeletes(BetaMemory bm,
                               LeftTupleSets srcLeftTuples,
                               LeftTupleSets trgLeftTuples,
                               LeftTupleSets stagedLeftTuples) {
@@ -404,9 +399,7 @@ public class PhreakJoinNode {
         }
     }
 
-    public void doRightDeletes(JoinNode joinNode,
-                               BetaMemory bm,
-                               InternalWorkingMemory wm,
+    public void doRightDeletes(BetaMemory bm,
                                RightTupleSets srcRightTuples,
                                LeftTupleSets trgLeftTuples,
                                LeftTupleSets stagedLeftTuples) {
@@ -418,7 +411,6 @@ public class PhreakJoinNode {
                 // it may have been staged and never actually added
                 rtm.remove(rightTuple);
             }
-            ;
 
             if (rightTuple.getFirstChild() != null) {
                 LeftTuple childLeftTuple = rightTuple.getFirstChild();

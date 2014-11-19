@@ -134,12 +134,9 @@ public class RuleExecutor {
             LeftTuple lastLeftTuple = null;
             for (; leftTuple != null; lastLeftTuple = leftTuple, leftTuple = getNextLeftTuple()) {
 
-                PropagationContext pctx = leftTuple.getPropagationContext();
-                pctx = RuleTerminalNode.findMostRecentPropagationContext(leftTuple, pctx);
-
                 //check if the rule is not effective or
                 // if the current Rule is no-loop and the origin rule is the same then return
-                if (cancelAndContinue(wm, rtn, rule, leftTuple, pctx, filter)) {
+                if (cancelAndContinue(wm, rtn, rule, leftTuple, filter)) {
                     continue;
                 }
 
@@ -344,7 +341,7 @@ public class RuleExecutor {
             RuleTerminalNode rtn,
             RuleImpl rule,
             LeftTuple leftTuple,
-            PropagationContext pctx, AgendaFilter filter) {
+            AgendaFilter filter) {
         // NB. stopped setting the LT.object to Boolean.TRUE, that Reteoo did.
         if ( !rule.isEffective(leftTuple, rtn, wm) ) {
             return true;

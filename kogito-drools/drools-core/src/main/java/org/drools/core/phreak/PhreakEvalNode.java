@@ -28,7 +28,7 @@ public class PhreakEvalNode {
                        LeftTupleSets stagedLeftTuples) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(evalNode, em, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            doLeftDeletes(srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
@@ -136,10 +136,7 @@ public class PhreakEvalNode {
         }
     }
 
-    public void doLeftDeletes(EvalConditionNode evalNode,
-                              EvalMemory em,
-                              InternalWorkingMemory wm,
-                              LeftTupleSets srcLeftTuples,
+    public void doLeftDeletes(LeftTupleSets srcLeftTuples,
                               LeftTupleSets trgLeftTuples,
                               LeftTupleSets stagedLeftTuples) {
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {

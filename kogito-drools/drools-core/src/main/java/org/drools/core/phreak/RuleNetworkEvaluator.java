@@ -58,16 +58,16 @@ public class RuleNetworkEvaluator {
 
     private static final Logger log = LoggerFactory.getLogger(RuleNetworkEvaluator.class);
 
-    private static PhreakJoinNode         pJoinNode   = new PhreakJoinNode();
-    private static PhreakEvalNode         pEvalNode   = new PhreakEvalNode();
-    private static PhreakFromNode         pFromNode   = new PhreakFromNode();
-    private static PhreakNotNode          pNotNode    = new PhreakNotNode();
-    private static PhreakExistsNode       pExistsNode = new PhreakExistsNode();
-    private static PhreakAccumulateNode   pAccNode    = new PhreakAccumulateNode();
-    private static PhreakBranchNode       pBranchNode = new PhreakBranchNode();
-    private static PhreakQueryNode        pQueryNode  = new PhreakQueryNode();
-    private static PhreakTimerNode        pTimerNode  = new PhreakTimerNode();
-    private static PhreakRuleTerminalNode pRtNode     = new PhreakRuleTerminalNode();
+    private static final PhreakJoinNode         pJoinNode   = new PhreakJoinNode();
+    private static final PhreakEvalNode         pEvalNode   = new PhreakEvalNode();
+    private static final PhreakFromNode         pFromNode   = new PhreakFromNode();
+    private static final PhreakNotNode          pNotNode    = new PhreakNotNode();
+    private static final PhreakExistsNode       pExistsNode = new PhreakExistsNode();
+    private static final PhreakAccumulateNode   pAccNode    = new PhreakAccumulateNode();
+    private static final PhreakBranchNode       pBranchNode = new PhreakBranchNode();
+    private static final PhreakQueryNode        pQueryNode  = new PhreakQueryNode();
+    private static final PhreakTimerNode        pTimerNode  = new PhreakTimerNode();
+    private static final PhreakRuleTerminalNode pRtNode     = new PhreakRuleTerminalNode();
 
     private static int cycle = 0;
 
@@ -320,7 +320,7 @@ public class RuleNetworkEvaluator {
                 }
                 break;
             } else if (NodeTypeEnums.RightInputAdaterNode == node.getType()) {
-                doRiaNode2(wm, srcTuples, (RightInputAdapterNode) node, stack);
+                doRiaNode2(wm, srcTuples, (RightInputAdapterNode) node);
                 break;
             }
 
@@ -410,8 +410,7 @@ public class RuleNetworkEvaluator {
             if ( smem.isEmpty() ) {
                 SegmentUtilities.createChildSegments(wm, smem, ((LeftTupleSource) node).getSinkPropagator() );
             }
-            LeftTupleSets lts = smem.getFirst().getStagedLeftTuples().takeAll();
-            return lts;
+            return smem.getFirst().getStagedLeftTuples().takeAll();
         } else {
             return null;
         }
@@ -610,8 +609,7 @@ public class RuleNetworkEvaluator {
 
     private void doRiaNode2(InternalWorkingMemory wm,
                             LeftTupleSets srcTuples,
-                            RightInputAdapterNode riaNode,
-                            LinkedList<StackEntry> stack) {
+                            RightInputAdapterNode riaNode) {
 
         ObjectSink[] sinks = riaNode.getSinkPropagator().getSinks();
 
@@ -714,14 +712,9 @@ public class RuleNetworkEvaluator {
         srcTuples.resetAll();
     }
 
-    public boolean isRuleExecutor() {
-        return true;
-    }
-
     public static void findLeftTupleBlocker(BetaNode betaNode, RightTupleMemory rtm,
                                              ContextEntry[] contextEntry, BetaConstraints constraints,
-                                             LeftTuple leftTuple, FastIterator it,
-                                             PropagationContext context, boolean useLeftMemory) {
+                                             LeftTuple leftTuple, FastIterator it, boolean useLeftMemory) {
         // This method will also remove rightTuples that are from subnetwork where no leftmemory use used
 
         for (RightTuple rightTuple = betaNode.getFirstRightTuple(leftTuple, rtm, null, it); rightTuple != null; ) {

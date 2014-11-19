@@ -36,7 +36,7 @@ public class PhreakExistsNode {
 
 
         if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(existsNode, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            doLeftDeletes(bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null )  {
@@ -94,7 +94,6 @@ public class PhreakExistsNode {
             LeftTuple next = leftTuple.getStagedNext();
 
             FastIterator it = existsNode.getRightIterator(rtm);
-            PropagationContext context = leftTuple.getPropagationContext();
 
             boolean useLeftMemory = RuleNetworkEvaluator.useLeftMemory(existsNode, leftTuple);
 
@@ -103,7 +102,7 @@ public class PhreakExistsNode {
                                         leftTuple);
 
             // This method will also remove rightTuples that are from subnetwork where no leftmemory use used
-            RuleNetworkEvaluator.findLeftTupleBlocker(existsNode, rtm, contextEntry, constraints, leftTuple, it, context, useLeftMemory);
+            RuleNetworkEvaluator.findLeftTupleBlocker(existsNode, rtm, contextEntry, constraints, leftTuple, it, useLeftMemory);
 
             if (leftTuple.getBlocker() != null) {
                 // tuple is not blocked to propagate
@@ -254,15 +253,8 @@ public class PhreakExistsNode {
                 ltm.add(leftTuple); // add to memory so other fact handles can attempt to match
 
                 if (leftTuple.getFirstChild() != null) {
-                    // with previous children, delete
-                    if (leftTuple.getFirstChild() != null) {
-                        LeftTuple childLeftTuple = leftTuple.getFirstChild();
-
-                        if (childLeftTuple != null) {
-                            // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
-                            childLeftTuple = RuleNetworkEvaluator.deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
-                        }
-                    }
+                    // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
+                    RuleNetworkEvaluator.deleteLeftChild(leftTuple.getFirstChild(), trgLeftTuples, stagedLeftTuples);
                 }
                 // with no previous children. do nothing.
             } else if (leftTuple.getFirstChild() == null) {
@@ -272,16 +264,14 @@ public class PhreakExistsNode {
                                                              leftTuple.getBlocker().getPropagationContext(), tupleMemory));
             } else {
                 // blocked, with previous children, modify
-                if (leftTuple.getFirstChild() != null) {
-                    LeftTuple childLeftTuple = leftTuple.getFirstChild();
+                LeftTuple childLeftTuple = leftTuple.getFirstChild();
 
-                    while (childLeftTuple != null) {
-                        childLeftTuple.setPropagationContext(leftTuple.getBlocker().getPropagationContext());
-                        updateChildLeftTuple(childLeftTuple, stagedLeftTuples, trgLeftTuples);
+                while (childLeftTuple != null) {
+                    childLeftTuple.setPropagationContext(leftTuple.getBlocker().getPropagationContext());
+                    updateChildLeftTuple(childLeftTuple, stagedLeftTuples, trgLeftTuples);
 
-                        childLeftTuple.reAddRight();
-                        childLeftTuple = childLeftTuple.getLeftParentNext();
-                    }
+                    childLeftTuple.reAddRight();
+                    childLeftTuple = childLeftTuple.getLeftParentNext();
                 }
             }
 
@@ -401,7 +391,7 @@ public class PhreakExistsNode {
                         LeftTuple childLeftTuple = leftTuple.getFirstChild();
                         if (childLeftTuple != null) {
                             childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
-                            childLeftTuple = RuleNetworkEvaluator.deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
+                            RuleNetworkEvaluator.deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
                         }
                     }
 
@@ -415,9 +405,7 @@ public class PhreakExistsNode {
         constraints.resetFactHandle(contextEntry);
     }
 
-    public void doLeftDeletes(ExistsNode existsNode,
-                              BetaMemory bm,
-                              InternalWorkingMemory wm,
+    public void doLeftDeletes(BetaMemory bm,
                               LeftTupleSets srcLeftTuples,
                               LeftTupleSets trgLeftTuples,
                               LeftTupleSets stagedLeftTuples) {
@@ -433,12 +421,8 @@ public class PhreakExistsNode {
                 }
             } else {
                 if (leftTuple.getFirstChild() != null) {
-                    LeftTuple childLeftTuple = leftTuple.getFirstChild();
-
-                    if (childLeftTuple != null) {
-                        // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
-                        childLeftTuple = RuleNetworkEvaluator.deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
-                    }
+                    // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
+                    RuleNetworkEvaluator.deleteLeftChild(leftTuple.getFirstChild(), trgLeftTuples, stagedLeftTuples);
                 }
                 blocker.removeBlocked(leftTuple);
             }
@@ -511,7 +495,7 @@ public class PhreakExistsNode {
                         LeftTuple childLeftTuple = leftTuple.getFirstChild();
                         if (childLeftTuple != null) {
                             childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
-                            childLeftTuple = RuleNetworkEvaluator.deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
+                            RuleNetworkEvaluator.deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
                         }
                     }
 

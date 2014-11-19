@@ -16,14 +16,6 @@
 
 package org.drools.core.base.accumulators;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.rule.Declaration;
@@ -34,6 +26,14 @@ import org.drools.core.spi.ReturnValueExpression.SafeReturnValueExpression;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
 import org.kie.internal.security.KiePolicyHelper;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A Java accumulator function executor implementation
@@ -113,7 +113,7 @@ public class JavaAccumulatorFunctionExecutor
                                                        workingMemory,
                                                        workingMemoryContext ).getValue();
         if ( this.function.supportsReverse() ) {
-            ((JavaAccumulatorFunctionContext) context).reverseSupport.put( Integer.valueOf( handle.getId() ),
+            ((JavaAccumulatorFunctionContext) context).reverseSupport.put( handle.getId(),
                                                                            value );
         }
         this.function.accumulate( ((JavaAccumulatorFunctionContext) context).context,
@@ -128,7 +128,7 @@ public class JavaAccumulatorFunctionExecutor
                         Declaration[] innerDeclarations,
                         WorkingMemory workingMemory) throws Exception {
 
-        final Object value = ((JavaAccumulatorFunctionContext) context).reverseSupport.remove( Integer.valueOf( handle.getId() ) );
+        final Object value = ((JavaAccumulatorFunctionContext) context).reverseSupport.remove(handle.getId());
         this.function.reverse( ((JavaAccumulatorFunctionContext) context).context,
                                value );
     }
