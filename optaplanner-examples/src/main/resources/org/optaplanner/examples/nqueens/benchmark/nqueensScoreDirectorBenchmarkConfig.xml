@@ -38,7 +38,7 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>TS with Simple Java</name>
+    <name>TS with Easy Java</name>
     <solver>
       <scoreDirectorFactory>
         <easyScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensEasyScoreCalculator</easyScoreCalculatorClass>
