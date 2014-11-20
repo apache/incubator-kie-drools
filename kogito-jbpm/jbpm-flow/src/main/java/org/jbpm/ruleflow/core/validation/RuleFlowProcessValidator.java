@@ -361,7 +361,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     Work work = workItemNode.getWork();
                     if (work.getName() == null || work.getName().trim().length() == 0) {
                         errors.add(new ProcessValidationErrorImpl(process,
-                            "Task node '" + node.getName() + "' [" + node.getId() + "] has no work name."));
+                            "Task node '" + node.getName() + "' [" + node.getId() + "] has no task type."));
                     }
                 }
                 if (workItemNode.getTimers() != null) {
