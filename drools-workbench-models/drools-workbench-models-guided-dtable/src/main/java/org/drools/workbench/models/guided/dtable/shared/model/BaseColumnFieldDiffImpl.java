@@ -127,9 +127,25 @@ public class BaseColumnFieldDiffImpl implements BaseColumnFieldDiff {
             //Both DataTypes are equal here, so just check one DCV's type
             switch ( dcv1.getDataType() ) {
                 case BOOLEAN:
-                    return dcv1.getBooleanValue().equals( dcv2.getBooleanValue() );
+                    if ( dcv1.getBooleanValue() == null && dcv2.getBooleanValue() == null ) {
+                        return true;
+                    } else if ( dcv1.getBooleanValue() == null && dcv2.getBooleanValue() != null ) {
+                        return false;
+                    } else if ( dcv1.getBooleanValue() != null && dcv2.getBooleanValue() == null ) {
+                        return false;
+                    } else {
+                        return dcv1.getBooleanValue().equals( dcv2.getBooleanValue() );
+                    }
                 case DATE:
-                    return dcv1.getDateValue().equals( dcv2.getDateValue() );
+                    if ( dcv1.getDateValue() == null && dcv2.getDateValue() == null ) {
+                        return true;
+                    } else if ( dcv1.getDateValue() == null && dcv2.getDateValue() != null ) {
+                        return false;
+                    } else if ( dcv1.getDateValue() != null && dcv2.getDateValue() == null ) {
+                        return false;
+                    } else {
+                        return dcv1.getDateValue().equals( dcv2.getDateValue() );
+                    }
                 case NUMERIC:
                 case NUMERIC_BIGDECIMAL:
                 case NUMERIC_BIGINTEGER:
@@ -139,9 +155,25 @@ public class BaseColumnFieldDiffImpl implements BaseColumnFieldDiff {
                 case NUMERIC_INTEGER:
                 case NUMERIC_LONG:
                 case NUMERIC_SHORT:
-                    return dcv1.getNumericValue().equals( dcv2.getNumericValue() );
+                    if ( dcv1.getNumericValue() == null && dcv2.getNumericValue() == null ) {
+                        return true;
+                    } else if ( dcv1.getNumericValue() == null && dcv2.getNumericValue() != null ) {
+                        return false;
+                    } else if ( dcv1.getNumericValue() != null && dcv2.getNumericValue() == null ) {
+                        return false;
+                    } else {
+                        return dcv1.getNumericValue().equals( dcv2.getNumericValue() );
+                    }
                 default:
-                    return dcv1.getStringValue().equals( dcv2.getStringValue() );
+                    if ( dcv1.getStringValue() == null && dcv2.getStringValue() == null ) {
+                        return true;
+                    } else if ( dcv1.getStringValue() == null && dcv2.getStringValue() != null ) {
+                        return false;
+                    } else if ( dcv1.getStringValue() != null && dcv2.getStringValue() == null ) {
+                        return false;
+                    } else {
+                        return dcv1.getStringValue().equals( dcv2.getStringValue() );
+                    }
             }
         }
     }
