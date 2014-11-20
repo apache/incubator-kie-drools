@@ -20,6 +20,10 @@
   <dependencies>
     <dependency>
       <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-audit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
       <artifactId>jbpm-services-api</artifactId>
     </dependency>
     <dependency>
