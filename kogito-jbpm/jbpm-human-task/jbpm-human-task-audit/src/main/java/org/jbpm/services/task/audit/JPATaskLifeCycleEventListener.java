@@ -250,8 +250,18 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
     @Override
     public void afterTaskReleasedEvent(TaskEvent event) {
         
-        
+        Task ti = event.getTask();
+        TaskPersistenceContext persistenceContext = ((TaskContext)event.getTaskContext()).getPersistenceContext();
         //@TODO: Remove UserAuditTask and create a new GroupAuditTask for lucene  
+        AuditTaskImpl auditTaskImpl = getAuditTask(event, persistenceContext, ti);
+        if (auditTaskImpl == null) {
+        	logger.warn("Unable find audit task entry for task id {} '{}', skipping audit task update", ti.getId(), ti.getName());
+        	return;
+        }
+        auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
+        
+            
+        persistenceContext.merge(auditTaskImpl);
 
     }
 
@@ -444,10 +454,10 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         	logger.warn("Unable find audit task entry for task id {} '{}', skipping audit task update", ti.getId(), ti.getName());
         	return;
         }
-        auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
         auditTaskImpl.setActualOwner(userId);
             
         persistenceContext.merge(auditTaskImpl);
+        
     }
 
     @Override
