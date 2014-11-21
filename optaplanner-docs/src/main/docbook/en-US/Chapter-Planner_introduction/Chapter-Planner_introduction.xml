@@ -12,12 +12,13 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Planner_introduction/optaPlannerLogo.png" />
+        <imagedata fileref="images/Chapter-Planner_introduction/optaPlannerLogo.png"/>
       </imageobject>
     </mediaobject>
 
     <para><emphasis role="bold"><link xlink:href="http://www.optaplanner.org">OptaPlanner</link> is a lightweight,
-    embeddable planning engine that optimizes planning problems.</emphasis> It solves use cases, such as:</para>
+    embeddable constraint satisfaction engine which optimizes planning problems.</emphasis> It solves use cases such
+    as:</para>
 
     <itemizedlist>
       <listitem>
@@ -78,13 +79,26 @@
     <para>OptaPlanner helps normal Java<superscript>TM</superscript> programmers solve constraint satisfaction problems
     efficiently. Under the hood, it combines optimization heuristics and metaheuristics with very efficient score
     calculation.</para>
+  </section>
+
+  <section xml:id="requirements">
+    <title>Requirements</title>
 
     <para>OptaPlanner is <emphasis>open source</emphasis> software, released under <link
     xlink:href="http://www.apache.org/licenses/LICENSE-2.0.html">the Apache Software License 2.0</link>. This license is
     very liberal and allows reuse for commercial purposes. Read <link
-    xlink:href="http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN">the layman's explanation</link>.
-    OptaPlanner is 100% pure Java<superscript>TM</superscript>, runs on <link xlink:href="compatibility">any JVM</link>
-    and is available in <link linkend="useWithMavenGradleEtc">the Maven Central Repository</link> too.</para>
+    xlink:href="http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN">the layman's
+    explanation</link>.</para>
+
+    <para>OptaPlanner is 100% pure Java<superscript>TM</superscript> and runs on any JVM 1.6 or higher. It <link
+    linkend="integration">integrates very easily</link> with other Java<superscript>TM</superscript> technologies.
+    OptaPlanner is available in <link linkend="useWithMavenGradleEtc">the Maven Central Repository</link>.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Planner_introduction/compatibility.png"/>
+      </imageobject>
+    </mediaobject>
   </section>
 
   <section xml:id="whatIsAPlanningProblem">
@@ -362,16 +376,15 @@ $ runExamples.bat</programlisting>
   &lt;/dependencyManagement&gt;</programlisting>
 
       <para>If you're still using ANT (without Ivy), copy all the jars from the download zip's
-      <filename>binaries</filename> directory and manually verify that your classpath doesn't contain duplicate
-      jars.</para>
+      <filename>binaries</filename> directory in your classpath.</para>
 
       <note>
         <para>The download zip's <filename>binaries</filename> directory contains far more jars then
         <literal>optaplanner-core</literal> actually uses. It also contains the jars used by other modules, such as
         <literal>optaplanner-benchmark</literal>.</para>
 
-        <para>Check the maven repository <filename>pom.xml</filename> files to determine the minimal dependency set for
-        a specific version of a specific module.</para>
+        <para>Check the maven repository <filename>pom.xml</filename> files to determine the minimal dependency set of a
+        specific module (for a specific version).</para>
       </note>
     </section>
 
@@ -406,7 +419,7 @@ $ mvn clean install -DskipTests
 ...</programlisting>
 
           <note>
-            <para>The first time, Maven might take a lot time, because it needs to download jars.</para>
+            <para>The first time, Maven might take a long time, because it needs to download jars.</para>
           </note>
         </listitem>
 
@@ -429,108 +442,108 @@ $ mvn exec:exec
     </section>
   </section>
 
-  <section xml:id="statusOfOptaPlanner">
-    <title>Status of OptaPlanner</title>
+  <section xml:id="governance">
+    <title>Governance</title>
 
-    <para>OptaPlanner is:</para>
+    <section xml:id="statusOfOptaPlanner">
+      <title>Status of OptaPlanner</title>
 
-    <itemizedlist>
-      <listitem>
-        <para><emphasis role="bold">Stable</emphasis>: Heavily tested with unit, integration and stress tests.</para>
-      </listitem>
+      <para>OptaPlanner is:</para>
 
-      <listitem>
-        <para><emphasis role="bold">Reliable</emphasis>: Used in production across the world.</para>
-      </listitem>
+      <itemizedlist>
+        <listitem>
+          <para><emphasis role="bold">Stable</emphasis>: Heavily tested with unit, integration and stress tests.</para>
+        </listitem>
 
-      <listitem>
-        <para><emphasis role="bold">Scalable</emphasis>: One of the examples handles 50 000 variables with 5 000
-        variables each, multiple constraint types and billions of possible constraint matches.</para>
-      </listitem>
+        <listitem>
+          <para><emphasis role="bold">Reliable</emphasis>: Used in production across the world.</para>
+        </listitem>
 
-      <listitem>
-        <para><emphasis role="bold">Documented</emphasis>: See this detailed manual or one of the many examples.</para>
-      </listitem>
-    </itemizedlist>
+        <listitem>
+          <para><emphasis role="bold">Scalable</emphasis>: One of the examples handles 50 000 variables with 5 000
+          variables each, multiple constraint types and billions of possible constraint matches.</para>
+        </listitem>
 
-    <para>OptaPlanner has a public API:</para>
+        <listitem>
+          <para><emphasis role="bold">Documented</emphasis>: See this detailed manual or one of the many
+          examples.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
 
-    <itemizedlist>
-      <listitem>
-        <para><emphasis role="bold">Public API</emphasis>: All classes in the package namespace <emphasis
-        role="bold">org.optaplanner.core.api</emphasis> are 100% backwards compatible in future releases.</para>
-      </listitem>
+    <section xml:id="backwardsCompatibility">
+      <title>Backwards compatibility</title>
 
-      <listitem>
-        <para><emphasis role="bold">Impl classes</emphasis>: All classes in the package namespace <emphasis
-        role="bold">org.optaplanner.core.impl</emphasis> are not backwards compatible: they might change in future
-        releases. The recipe called <link
-        xlink:href="https://github.com/droolsjbpm/optaplanner/blob/master/optaplanner-distribution/src/main/assembly/filtered-resources/UpgradeFromPreviousVersionRecipe.txt"><filename>UpgradeFromPreviousVersionRecipe.txt</filename></link>
-        describes every such change and on how to quickly deal with it when upgrading to a newer version. That recipe
-        file is included in every release zip.</para>
-      </listitem>
+      <para>OptaPlanner separates its API and implementation:</para>
 
-      <listitem>
-        <para><emphasis role="bold">XML configuration</emphasis>: The XML solver configuration is backwards compatible
-        for all elements, except for elements that require the use of non public API classes. The XML solver
-        configuration is defined by the classes in the package namespace <emphasis
-        role="bold">org.optaplanner.core.config</emphasis>.</para>
-      </listitem>
-    </itemizedlist>
+      <itemizedlist>
+        <listitem>
+          <para><emphasis role="bold">Public API</emphasis>: All classes in the package namespace <emphasis
+          role="bold">org.optaplanner.core.api</emphasis> are 100% backwards compatible in future releases.</para>
+        </listitem>
 
-    <note>
-      <para>This documentation covers some impl classes too. Those documented impl classes are reliable and safe to use
-      (unless explicitly marked as experimental in this documentation), but we're just entirely comfortable yet to write
-      their signatures in stone.</para>
-    </note>
-  </section>
+        <listitem>
+          <para><emphasis role="bold">Impl classes</emphasis>: All classes in the package namespace <emphasis
+          role="bold">org.optaplanner.core.impl</emphasis> are not backwards compatible: they might change in future
+          releases. The recipe called <link
+          xlink:href="https://github.com/droolsjbpm/optaplanner/blob/master/optaplanner-distribution/src/main/assembly/filtered-resources/UpgradeFromPreviousVersionRecipe.txt"><filename>UpgradeFromPreviousVersionRecipe.txt</filename></link>
+          describes every such change and on how to quickly deal with it when upgrading to a newer version. That recipe
+          file is included in every release zip.</para>
+        </listitem>
 
-  <section xml:id="compatibility">
-    <title>Compatibility</title>
+        <listitem>
+          <para><emphasis role="bold">XML configuration</emphasis>: The XML solver configuration is backwards compatible
+          for all elements, except for elements that require the use of non public API classes. The XML solver
+          configuration is defined by the classes in the package namespace <emphasis
+          role="bold">org.optaplanner.core.config</emphasis>.</para>
+        </listitem>
+      </itemizedlist>
 
-    <para>OptaPlanner is 100% pure Java<superscript>TM</superscript> and runs on any JVM 1.6 or higher.</para>
+      <note>
+        <para>This documentation covers some impl classes too. Those documented impl classes are reliable and safe to
+        use (unless explicitly marked as experimental in this documentation), but we're just entirely comfortable yet to
+        write their signatures in stone.</para>
+      </note>
+    </section>
 
-    <mediaobject>
-      <imageobject>
-        <imagedata fileref="images/Chapter-Planner_introduction/compatibility.png"/>
-      </imageobject>
-    </mediaobject>
-  </section>
+    <section xml:id="communityAndSupport">
+      <title>Community and support</title>
 
-  <section xml:id="relationshipWithKie">
-    <title>Relationship with Drools and jBPM</title>
+      <para>For news and articles, check <link xlink:href="http://www.optaplanner.org/blog/">our blog</link>, Google+
+      (<link xlink:href="https://plus.google.com/+OptaPlannerOrg">OptaPlanner</link>, <link
+      xlink:href="https://plus.google.com/+GeoffreyDeSmet">Geoffrey De Smet</link>) and twitter (<link
+      xlink:href="http://twitter.com/optaplanner">OptaPlanner</link>, <link
+      xlink:href="http://twitter.com/geoffreydesmet">Geoffrey De Smet</link>). <emphasis role="bold">If OptaPlanner
+      helps you, help us by blogging or tweeting about it!</emphasis></para>
 
-    <para>OptaPlanner is part of the <link xlink:href="http://www.kiegroup.org">KIE group of projects</link>. It
-    releases regularly (often once or twice per month) together with the <link
-    xlink:href="http://www.drools.org/">Drools</link> rule engine and the <link
-    xlink:href="http://www.jbpm.org/">jBPM</link> workflow engine.</para>
+      <para>Public questions are welcome on <link xlink:href="http://www.optaplanner.org/community/forum.html">our
+      community forum</link>. Bugs and feature requests are welcome in <link
+      xlink:href="https://issues.jboss.org/browse/PLANNER">our issue tracker</link>. Pull requests are very welcome on
+      GitHub and get priority treatment! By open sourcing your improvements, you 'll benefit from our peer review and
+      from our improvements made on top of your improvements.</para>
 
-    <mediaobject>
-      <imageobject>
-        <imagedata fileref="images/Chapter-Planner_introduction/kieFunctionalityOverview.png"/>
-      </imageobject>
-    </mediaobject>
+      <para>Red Hat sponsors OptaPlanner development by employing the core team. For enterprise support and consulting,
+      take a look at <link xlink:href="http://www.optaplanner.org/community/product.html">the BRMS and BPMS
+      products</link> (which contain OptaPlanner) or <link
+      xlink:href="http://www.redhat.com/en/about/contact/sales">contact Red Hat</link>.</para>
+    </section>
 
-    <para>See <link linkend="architectureOverview">the architecture overview</link> to learn more about the optional
-    integration with Drools.</para>
-  </section>
+    <section xml:id="relationshipWithKie">
+      <title>Relationship with Drools and jBPM</title>
 
-  <section xml:id="questionsIssuesAndBlog">
-    <title>Questions, issues and blog</title>
+      <para>OptaPlanner is part of the <link xlink:href="http://www.kiegroup.org">KIE group of projects</link>. It
+      releases regularly (often once or twice per month) together with the <link
+      xlink:href="http://www.drools.org/">Drools</link> rule engine and the <link
+      xlink:href="http://www.jbpm.org/">jBPM</link> workflow engine.</para>
 
-    <para>Questions and suggestions are welcome on <link
-    xlink:href="http://www.optaplanner.org/community/forum.html">our forum</link>. Report any issue (such as a bug,
-    improvement or a new feature request) for the OptaPlanner code or for this manual in <link
-    xlink:href="https://issues.jboss.org/browse/PLANNER">our issue tracker</link>.</para>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Planner_introduction/kieFunctionalityOverview.png"/>
+        </imageobject>
+      </mediaobject>
 
-    <para>Pull requests are very welcome and get priority treatment! By open sourcing your improvements, you 'll benefit
-    from our peer review and from our improvements made upon your improvements.</para>
-
-    <para>Check <link xlink:href="http://www.optaplanner.org/blog/">our blog</link>, Google+ (<link
-    xlink:href="https://plus.google.com/+OptaPlannerOrg">OptaPlanner</link>, <link
-    xlink:href="https://plus.google.com/+GeoffreyDeSmet">Geoffrey De Smet</link>) and twitter (<link
-    xlink:href="http://twitter.com/optaplanner">OptaPlanner</link>, <link
-    xlink:href="http://twitter.com/geoffreydesmet">Geoffrey De Smet</link>) for news and articles. <emphasis
-    role="bold">If OptaPlanner helps you, help us by blogging or tweeting about it!</emphasis></para>
+      <para>See <link linkend="architectureOverview">the architecture overview</link> to learn more about the optional
+      integration with Drools.</para>
+    </section>
   </section>
 </chapter>

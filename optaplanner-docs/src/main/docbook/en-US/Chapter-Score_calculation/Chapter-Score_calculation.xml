@@ -854,8 +854,8 @@
           <para>Add multiple <literal>&lt;scoreDrl&gt;</literal> elements if the score rules are split across multiple
           DRL files.</para>
 
-          <para>Optionally, you can also set drools configuration properties but beware of backwards compatibility
-          issues:</para>
+          <para>Optionally, you can also set drools configuration properties (but be careful of backwards compatibility
+          issues):</para>
 
           <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     ...
