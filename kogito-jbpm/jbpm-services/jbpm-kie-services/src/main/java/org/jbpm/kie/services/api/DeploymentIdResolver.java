@@ -55,7 +55,7 @@ public class DeploymentIdResolver {
 				}
 			}
 		} catch (Exception e) {
-			logger.warn("Unable to resolve latest version of deployment {} due to {}", deploymentId, e.getMessage());
+			logger.debug("Unable to resolve latest version of deployment {} due to {}", deploymentId, e.getMessage());
 		}
 		return deploymentId;
 	}
