@@ -260,11 +260,11 @@ public class DefaultAgenda
     public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
         RuleBaseConfiguration rbc = ((InternalRuleBase) this.workingMemory.getRuleBase()).getConfiguration();
-        if ( rbc.isSequential() ) {
-            this.knowledgeHelper = rbc.getComponentFactory().getKnowledgeHelperFactory().newSequentialKnowledgeHelper( this.workingMemory );
-        } else {
+//        if ( rbc.isSequential() ) {
+//            this.knowledgeHelper = rbc.getComponentFactory().getKnowledgeHelperFactory().newSequentialKnowledgeHelper( this.workingMemory );
+//        } else {
             this.knowledgeHelper = rbc.getComponentFactory().getKnowledgeHelperFactory().newStatefulKnowledgeHelper( this.workingMemory );
-        }
+//        }
     }
 
     /*
@@ -533,7 +533,7 @@ public class DefaultAgenda
             // No populated queues found so pop the focusStack and repeat
             if ( empty && (this.focusStack.size() > 1) ) {
                 agendaGroup.setActive( false );
-                this.focusStack.removeLast();
+                removeLast();
                 if ( agendaGroup.isAutoDeactivate() && !agendaGroup.getNodeInstances().isEmpty() ) {
                     innerDeactiveRuleFlowGroup((InternalRuleFlowGroup) agendaGroup);
                 }
@@ -549,9 +549,30 @@ public class DefaultAgenda
         if ( agendaGroup != null &&  !agendaGroup.isActive() ) {
                 // only update recency, if not already active. It may be active already if the use called setFocus
                 agendaGroup.setActivatedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
-                agendaGroup.setActive( true );
+                agendaGroup.setActive(true);
         }
         return agendaGroup;
+    }
+
+    public InternalAgendaGroup removeLast() {
+        InternalAgendaGroup group = (InternalAgendaGroup) this.focusStack.removeLast();
+        group.visited();
+        return group;
+    }
+
+    public boolean removeGroup(InternalAgendaGroup group) {
+        boolean existed = this.focusStack.remove(group);
+        group.visited();
+
+        return existed;
+    }
+
+    public void clearFocusStack() {
+        InternalAgendaGroup[] groups = focusStack.toArray(new InternalAgendaGroup[focusStack.size()]);
+        for ( InternalAgendaGroup group : groups ) {
+            group.visited();
+        }
+        this.focusStack.clear();
     }
 
     public RuleAgendaItem peekNextRule() {
@@ -630,7 +651,7 @@ public class DefaultAgenda
      * @see org.kie.common.AgendaI#getStack()
      */
     public AgendaGroup[] getStack() {
-        return this.focusStack.toArray( new AgendaGroup[this.focusStack.size()] );
+        return this.focusStack.toArray(new AgendaGroup[this.focusStack.size()]);
     }
 
     public LinkedList<AgendaGroup> getStackList() {
@@ -702,7 +723,7 @@ public class DefaultAgenda
         }
         ((EventSupport) this.workingMemory).getAgendaEventSupport().fireBeforeRuleFlowGroupDeactivated( group,
                                                                                                         this.workingMemory );
-        while ( this.focusStack.remove( group ) ); // keep removing while group is on the stack
+        while ( removeGroup(group) ); // keep removing while group is on the stack
         group.setActive(false);
         innerDeactiveRuleFlowGroup(group);
     }
@@ -710,7 +731,7 @@ public class DefaultAgenda
     private void innerDeactiveRuleFlowGroup(InternalRuleFlowGroup group) {
         group.hasRuleFlowListener(false);
         group.getNodeInstances().clear();
-        ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupDeactivated( group, this.workingMemory );
+        ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupDeactivated(group, this.workingMemory);
     }
 
     /*
@@ -770,8 +791,8 @@ public class DefaultAgenda
 
     public void clear() {
         // reset focus stack
-        this.focusStack.clear();
-        this.focusStack.add( getMainAgendaGroup() );
+        clearFocusStack();
+        this.focusStack.add(getMainAgendaGroup());
 
         //reset all agenda groups
         for ( InternalAgendaGroup group : this.agendaGroups.values() ) {
