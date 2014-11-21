@@ -24,9 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -34,23 +34,31 @@ import org.apache.http.StatusLine;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.util.EntityUtils;
 import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
@@ -89,11 +97,23 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	private String password;
 	private AuthenticationType type;
 	private String authUrl;	
+	// protected for test purpose
+	protected static boolean HTTP_CLIENT_API_43 = true;
+	
+	static {
+		try {
+			Class.forName("org.apache.http.client.methods.RequestBuilder");
+			HTTP_CLIENT_API_43 = true;
+		} catch (ClassNotFoundException e) {
+			HTTP_CLIENT_API_43 = false;
+		}		
+	}
 	
 	/**
 	 * Used when no authentication is required
 	 */
 	public RESTWorkItemHandler() {
+		logger.debug("REST work item handler will use http client 4.3 api " + HTTP_CLIENT_API_43);
 	}
 	
 	/**
@@ -102,6 +122,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	 * @param password - password to be used for authentication
 	 */
 	public RESTWorkItemHandler(String username, String password) {
+		this();
 		this.username = username;
 		this.password = password;
 		this.type = AuthenticationType.BASIC;
@@ -114,6 +135,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	 * @param authUrl
 	 */
 	public RESTWorkItemHandler(String username, String password, String authUrl) {
+		this();
 		this.username = username;
 		this.password = password;
 		this.type = AuthenticationType.FORM_BASED;
@@ -147,33 +169,11 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         Integer readTimeout = getParamAsInt(params.get("ReadTimeout"));
         if (readTimeout==null) readTimeout = 60000;
 
-        RequestConfig config = RequestConfig.custom()
-                .setSocketTimeout(readTimeout)
-                .setConnectTimeout(connectTimeout)
-                .setConnectionRequestTimeout(connectTimeout)
-                .build();
-
-        HttpClientBuilder clientBuilder = HttpClientBuilder.create()
-                .setDefaultRequestConfig(config);
-        
-        CloseableHttpClient httpClient = clientBuilder.build();
+        HttpClient httpClient = getHttpClient(readTimeout, connectTimeout);
 	        
-        RequestBuilder builder = null;
-        if ("GET".equals(method)) {
-        	builder = RequestBuilder.get().setUri(urlStr);
-        } else if ("POST".equals(method)) {
-        	builder = RequestBuilder.post().setUri(urlStr);
-        	setBody(builder, params);
-        } else if ("PUT".equals(method)) {
-        	builder = RequestBuilder.put().setUri(urlStr);
-            setBody(builder, params);
-        } else if ("DELETE".equals(method)) {
-        	builder = RequestBuilder.delete().setUri(urlStr);
-        } else {
-            throw new IllegalArgumentException("Method " + method + " is not supported");
-        }
+        Object methodObject = configureRequest(method, urlStr, params);
         try {
-            HttpResponse response = doRequestWithAuthorization(httpClient, builder, params);
+            HttpResponse response = doRequestWithAuthorization(httpClient, methodObject, params);
         	StatusLine statusLine = response.getStatusLine();
         	int responseCode = statusLine.getStatusCode();
 	        Map<String, Object> results = new HashMap<String, Object>();
@@ -202,7 +202,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     		handleException(e);
     	} finally {
     	    try { 
-    	        httpClient.close();
+    	        close(httpClient, methodObject);
     	    } catch( Exception e ) { 
     	        // no idea if this throws something, but we still don't care!
     	    }
@@ -235,9 +235,23 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
             }
         }
     }
+	
+	protected void setBody(HttpRequestBase theMethod, Map<String, Object> params) {
+        if (params.containsKey("Content")) {
+            ((HttpEntityEnclosingRequestBase)theMethod).setEntity(new StringEntity((String)params.get("Content"), ContentType.create((String)params.get("ContentType"))));
+        }
+	}
 
     protected void postProcessResult(String result, Map<String, Object> results) {
         results.put("Result", result);
+    }
+    
+    protected HttpResponse doRequestWithAuthorization(HttpClient httpclient, Object method, Map<String, Object> params) {
+    	if (HTTP_CLIENT_API_43) {
+    		return doRequestWithAuthorization(httpclient, (RequestBuilder) method, params);
+    	} else {
+    		return doRequestWithAuthorization(httpclient, (HttpRequestBase) method, params);
+    	}
     }
 
     /**
@@ -252,7 +266,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
      * @param params The parameters that may be needed for authentication
      * @return A {@link HttpResponse} instance from which we can extract the content
      */
-    protected HttpResponse doRequestWithAuthorization(CloseableHttpClient httpclient, RequestBuilder requestBuilder, Map<String, Object> params) {
+    protected HttpResponse doRequestWithAuthorization(HttpClient httpclient, RequestBuilder requestBuilder, Map<String, Object> params) {
         // no authorization
     	if (type == null) {
     	    HttpUriRequest request = requestBuilder.build();
@@ -366,6 +380,91 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         	throw new RuntimeException("Unknown AuthenticationType " + type);
         }
     }
+    
+    protected HttpResponse doRequestWithAuthorization(HttpClient httpclient, HttpRequestBase httpMethod, Map<String, Object> params) {
+    	if (type == null) {
+    		try {
+                return httpclient.execute(httpMethod);
+            } catch( Exception e ) {
+                throw new RuntimeException("Could not execute request [" + httpMethod.getMethod() + "] " + httpMethod.getURI(), e);
+            }
+    	}
+    	String u = (String) params.get("Username");
+    	String p = (String) params.get("Password");
+    	if (u == null || p == null) {
+    		u = this.username;
+    		p = this.password;
+    	}
+        if (u == null) {
+        	throw new IllegalArgumentException("Could not find username");
+        }
+        if (p == null) {
+        	throw new IllegalArgumentException("Could not find password");
+        }
+        if (type == AuthenticationType.BASIC) {
+        	
+        	HttpHost targetHost = new HttpHost(httpMethod.getURI().getHost(), httpMethod.getURI().getPort(), httpMethod.getURI().getScheme());
+            ((DefaultHttpClient)httpclient).getCredentialsProvider().setCredentials(
+                    new AuthScope(targetHost.getHostName(), targetHost.getPort()),
+                    new UsernamePasswordCredentials(u, p));
+
+            
+            // Create AuthCache instance
+            AuthCache authCache = new BasicAuthCache();
+            // Generate BASIC scheme object and add it to the local
+            // auth cache
+            BasicScheme basicAuth = new BasicScheme();
+            authCache.put(targetHost, basicAuth);
+
+            // Add AuthCache to the execution context
+            BasicHttpContext localcontext = new BasicHttpContext();
+            localcontext.setAttribute(ClientContext.AUTH_CACHE, authCache);            
+            
+            try {
+                return httpclient.execute(targetHost, httpMethod, localcontext);
+            } catch( Exception e ) {
+                throw new RuntimeException("Could not execute request [" + httpMethod.getMethod() + "] " + httpMethod.getURI(), e);
+            }
+        } else if (type == AuthenticationType.FORM_BASED) {
+        	String authUrlStr = (String) params.get("AuthUrl");
+        	if (authUrlStr == null) {
+        		authUrlStr = authUrl;
+        	}
+        	if (authUrlStr == null) {
+                throw new IllegalArgumentException("Could not find authentication url");
+            }
+        	try {
+        		httpclient.execute(httpMethod);
+        	} catch (IOException e) {
+        		throw new RuntimeException("Could not execute request for form-based authentication", e);
+            } finally {
+            	httpMethod.releaseConnection();
+            }
+        	HttpPost authMethod = new HttpPost(authUrlStr);
+
+            List <NameValuePair> nvps = new ArrayList <NameValuePair>();
+            nvps.add(new BasicNameValuePair("j_username", u));
+            nvps.add(new BasicNameValuePair("j_password", p));
+
+            authMethod.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
+            try {
+                httpclient.execute(authMethod);
+            } catch (IOException e) {
+        		throw new RuntimeException("Could not initialize form-based authentication", e);
+            } finally {
+                authMethod.releaseConnection();
+            }
+            
+            try {
+                return httpclient.execute(httpMethod);
+            } catch( Exception e ) {
+                throw new RuntimeException("Could not execute request [" + httpMethod.getMethod() + "] " + httpMethod.getURI(), e);
+            }
+        } else {
+        	throw new RuntimeException("Unknown AuthenticationType " + type);
+        }
+
+    }
 
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
         // Do nothing, this work item cannot be aborted
@@ -376,4 +475,76 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     	FORM_BASED
     }
 
+    
+    protected HttpClient getHttpClient(Integer readTimeout, Integer connectTimeout) {
+    	
+    	if (HTTP_CLIENT_API_43) {
+            RequestConfig config = RequestConfig.custom()
+                    .setSocketTimeout(readTimeout)
+                    .setConnectTimeout(connectTimeout)
+                    .setConnectionRequestTimeout(connectTimeout)
+                    .build();
+
+            HttpClientBuilder clientBuilder = HttpClientBuilder.create()
+                    .setDefaultRequestConfig(config);
+            
+            HttpClient httpClient = clientBuilder.build();
+            
+            return httpClient;
+
+    	} else {
+	        DefaultHttpClient httpClient = new DefaultHttpClient();
+	        httpClient.getParams().setIntParameter(CoreConnectionPNames.SO_TIMEOUT, readTimeout);
+	        httpClient.getParams().setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, connectTimeout);
+	        
+	        return httpClient;
+    	}
+    }
+    
+    protected void close(HttpClient httpClient, Object httpMethod) throws IOException {
+    	if (HTTP_CLIENT_API_43) {
+    		((CloseableHttpClient) httpClient).close();
+    	} else {
+    		((HttpRequestBase)httpMethod).releaseConnection();
+    	}
+    }
+    
+    protected Object configureRequest(String method, String urlStr, Map<String, Object> params) {
+    	
+    	if (HTTP_CLIENT_API_43) {
+            RequestBuilder builder = null;
+            if ("GET".equals(method)) {
+            	builder = RequestBuilder.get().setUri(urlStr);
+            } else if ("POST".equals(method)) {
+            	builder = RequestBuilder.post().setUri(urlStr);
+            	setBody(builder, params);
+            } else if ("PUT".equals(method)) {
+            	builder = RequestBuilder.put().setUri(urlStr);
+                setBody(builder, params);
+            } else if ("DELETE".equals(method)) {
+            	builder = RequestBuilder.delete().setUri(urlStr);
+            } else {
+                throw new IllegalArgumentException("Method " + method + " is not supported");
+            }
+            
+            return builder;
+    	} else {
+    		HttpRequestBase theMethod = null;
+            if ("GET".equals(method)) {
+            	theMethod = new HttpGet(urlStr); 
+            } else if ("POST".equals(method)) {
+            	theMethod = new HttpPost(urlStr);
+            	setBody(theMethod, params);
+            } else if ("PUT".equals(method)) {
+                theMethod = new HttpPut(urlStr);
+                setBody(theMethod, params);
+            } else if ("DELETE".equals(method)) {
+                theMethod = new HttpDelete(urlStr);            
+            } else {
+                throw new IllegalArgumentException("Method " + method + " is not supported");
+            }
+            
+            return theMethod;
+    	}
+    }
 }

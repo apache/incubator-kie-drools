@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 
 import javax.ws.rs.ext.RuntimeDelegate;
@@ -14,16 +16,36 @@ import org.apache.cxf.jaxrs.provider.JAXBElementProvider;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 
+@RunWith(Parameterized.class)
 public class RestWorkItemHandlerTest {
 
+    @Parameters(name="Http Client 4.3 api = {0}")
+    public static Collection<Object[]> parameters() {
+        Object[][] locking = new Object[][] { 
+                { true }, 
+                { false },
+                };
+        return Arrays.asList(locking);
+    };
+  
+    private final boolean httpClient43;
+	
     private final static String serverURL = "http://localhost:9998/test";
     private static Server server;
+    
+    public RestWorkItemHandlerTest(boolean httpClient43) {
+    	this.httpClient43 = httpClient43;
+    }
 
     @SuppressWarnings({ "rawtypes"})
     @BeforeClass
@@ -42,6 +64,11 @@ public class RestWorkItemHandlerTest {
     public static void destroy() throws Exception {
         server.stop();
         server.destroy();
+    }
+    
+    @Before
+    public void setClientApiVersion() {
+    	RESTWorkItemHandler.HTTP_CLIENT_API_43 = httpClient43;
     }
     
     @Test
