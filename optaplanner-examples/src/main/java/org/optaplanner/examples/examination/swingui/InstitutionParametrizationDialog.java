@@ -17,6 +17,7 @@
 package org.optaplanner.examples.examination.swingui;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -51,6 +52,7 @@ public class InstitutionParametrizationDialog extends JDialog {
     private JSpinner frontLoadLastPeriodSizeField;
     private JSpinner frontLoadPenaltyField;
     protected final AbstractAction saveAction;
+    protected final AbstractAction cancelAction;
 
     public InstitutionParametrizationDialog(Frame owner, ExaminationPanel examinationPanel) {
         super(owner, "Edit institution score parametrization", true);
@@ -58,13 +60,22 @@ public class InstitutionParametrizationDialog extends JDialog {
         JPanel contentPanel = new JPanel(new BorderLayout(5, 5));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         contentPanel.add(createFormPanel(), BorderLayout.CENTER);
+        JPanel buttonPanel = new JPanel(new FlowLayout());
         saveAction = new AbstractAction("Save") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 save();
             }
         };
-        contentPanel.add(new JButton(saveAction), BorderLayout.SOUTH);
+        buttonPanel.add(new JButton(saveAction));
+        cancelAction = new AbstractAction("Cancel") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+            }
+        };
+        buttonPanel.add(new JButton(cancelAction));
+        contentPanel.add(buttonPanel, BorderLayout.SOUTH);
         setContentPane(contentPanel);
         pack();
     }

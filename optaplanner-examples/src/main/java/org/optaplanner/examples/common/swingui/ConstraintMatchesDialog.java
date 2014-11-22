@@ -16,11 +16,18 @@
 
 package org.optaplanner.examples.common.swingui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Set;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
@@ -65,9 +72,10 @@ public class ConstraintMatchesDialog extends JDialog {
             JScrollPane tableScrollPane = new JScrollPane(table);
             tableScrollPane.setPreferredSize(new Dimension(700, 300));
             splitPane.setTopComponent(tableScrollPane);
+            JPanel bottomPanel = new JPanel(new BorderLayout());
             final JTextArea detailTextArea = new JTextArea(10, 80);
             JScrollPane detailScrollPane = new JScrollPane(detailTextArea);
-            splitPane.setBottomComponent(detailScrollPane);
+            bottomPanel.add(detailScrollPane, BorderLayout.CENTER);
             table.getSelectionModel().addListSelectionListener(
                     new ListSelectionListener() {
                         public void valueChanged(ListSelectionEvent event) {
@@ -83,6 +91,16 @@ public class ConstraintMatchesDialog extends JDialog {
                         }
                     }
             );
+            JPanel buttonPanel = new JPanel(new FlowLayout());
+            Action okAction = new AbstractAction("OK") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setVisible(false);
+                }
+            };
+            buttonPanel.add(new JButton(okAction));
+            bottomPanel.add(buttonPanel, BorderLayout.SOUTH);
+            splitPane.setBottomComponent(bottomPanel);
             splitPane.setResizeWeight(1.0);
             setContentPane(splitPane);
         }
