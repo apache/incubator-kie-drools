@@ -36,8 +36,6 @@ public class ActionWorkItemCol52 extends ActionCol52 {
      */
     public static final String FIELD_WORKITEM_DEFINITION_NAME = "workItemDefinitionName";
 
-    public static final String FIELD_WORKITEM_DEFINITION_DISPLAY_NAME = "workItemDefinitionDisplayName";
-
     public static final String FIELD_WORKITEM_DEFINITION_PARAMETER_NAME = "workItemDefinitionParameterName";
 
     public static final String FIELD_WORKITEM_DEFINITION_PARAMETER_VALUE = "workItemDefinitionParameterValue";
@@ -66,9 +64,6 @@ public class ActionWorkItemCol52 extends ActionCol52 {
             result.add( new BaseColumnFieldDiffImpl( FIELD_WORKITEM_DEFINITION_NAME,
                                                      thisDefinition.getName(),
                                                      null ) );
-            result.add( new BaseColumnFieldDiffImpl( FIELD_WORKITEM_DEFINITION_DISPLAY_NAME,
-                                                     thisDefinition.getDisplayName(),
-                                                     null ) );
             for ( PortableParameterDefinition parameter : thisDefinition.getParameters() ) {
                 result.add( new BaseColumnFieldDiffImpl( FIELD_WORKITEM_DEFINITION_PARAMETER_NAME,
                                                          parameter.getName(),
@@ -82,9 +77,6 @@ public class ActionWorkItemCol52 extends ActionCol52 {
             result.add( new BaseColumnFieldDiffImpl( FIELD_WORKITEM_DEFINITION_NAME,
                                                      null,
                                                      otherDefinition.getName() ) );
-            result.add( new BaseColumnFieldDiffImpl( FIELD_WORKITEM_DEFINITION_DISPLAY_NAME,
-                                                     null,
-                                                     otherDefinition.getDisplayName() ) );
             for ( PortableParameterDefinition parameter : otherDefinition.getParameters() ) {
                 result.add( new BaseColumnFieldDiffImpl( FIELD_WORKITEM_DEFINITION_PARAMETER_NAME,
                                                          null,
@@ -99,11 +91,6 @@ public class ActionWorkItemCol52 extends ActionCol52 {
                 result.add( new BaseColumnFieldDiffImpl( FIELD_WORKITEM_DEFINITION_NAME,
                                                          thisDefinition.getName(),
                                                          otherDefinition.getName() ) );
-            }
-            if ( !thisDefinition.getDisplayName().equals( otherDefinition.getDisplayName() ) ) {
-                result.add( new BaseColumnFieldDiffImpl( FIELD_WORKITEM_DEFINITION_DISPLAY_NAME,
-                                                         thisDefinition.getDisplayName(),
-                                                         otherDefinition.getDisplayName() ) );
             }
             final List<String> thisDefinitionParameterNames = Arrays.asList( thisDefinition.getParameterNames() );
             final List<String> otherDefinitionParameterNames = Arrays.asList( otherDefinition.getParameterNames() );
@@ -136,17 +123,26 @@ public class ActionWorkItemCol52 extends ActionCol52 {
             final List<String> parameterNamesUpdated = new ArrayList<String>( thisDefinitionParameterNames );
             parameterNamesUpdated.retainAll( otherDefinitionParameterNames );
             for ( String parameterName : parameterNamesUpdated ) {
+                boolean parameterNamesDiffer = false;
                 if ( !isEqualOrNull( thisDefinition.getParameter( parameterName ).getName(),
                                      otherDefinition.getParameter( parameterName ).getName() ) ) {
                     result.add( new BaseColumnFieldDiffImpl( FIELD_WORKITEM_DEFINITION_PARAMETER_NAME,
                                                              thisDefinition.getParameter( parameterName ).getName(),
                                                              otherDefinition.getParameter( parameterName ).getName() ) );
+                    parameterNamesDiffer = true;
                 }
                 if ( !isEqualOrNull( thisDefinition.getParameter( parameterName ).asString(),
                                      otherDefinition.getParameter( parameterName ).asString() ) ) {
-                    result.add( new BaseColumnFieldDiffImpl( FIELD_WORKITEM_DEFINITION_PARAMETER_VALUE,
-                                                             thisDefinition.getParameter( parameterName ).asString(),
-                                                             otherDefinition.getParameter( parameterName ).asString() ) );
+                    if ( !parameterNamesDiffer ) {
+                        result.add( new WorkItemColumnParameterValueDiffImpl( FIELD_WORKITEM_DEFINITION_PARAMETER_VALUE,
+                                                                              thisDefinition.getParameter( parameterName ).getName(),
+                                                                              thisDefinition.getParameter( parameterName ).asString(),
+                                                                              otherDefinition.getParameter( parameterName ).asString() ) );
+                    } else {
+                        result.add( new BaseColumnFieldDiffImpl( FIELD_WORKITEM_DEFINITION_PARAMETER_VALUE,
+                                                                 thisDefinition.getParameter( parameterName ).asString(),
+                                                                 otherDefinition.getParameter( parameterName ).asString() ) );
+                    }
                 }
             }
         }
