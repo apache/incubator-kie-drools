@@ -142,7 +142,9 @@ public class SolverAndPersistenceFrame extends JFrame {
 
     private JComponent createQuickOpenPanel() {
         JPanel quickOpenPanel = new JPanel(new BorderLayout());
-        quickOpenPanel.add(new JLabel("Quick open"), BorderLayout.NORTH);
+        JLabel quickOpenLabel = new JLabel("Quick open");
+        quickOpenLabel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        quickOpenPanel.add(quickOpenLabel, BorderLayout.NORTH);
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                 createQuickOpenUnsolvedPanel(), createQuickOpenSolvedPanel());
         splitPane.setResizeWeight(0.8);
@@ -155,7 +157,7 @@ public class SolverAndPersistenceFrame extends JFrame {
         quickOpenUnsolvedPanel = new JPanel();
         quickOpenUnsolvedActionList = new ArrayList<Action>();
         List<File> unsolvedFileList = solutionBusiness.getUnsolvedFileList();
-        return createQuickOpenPanel(quickOpenUnsolvedPanel, "Unsolved (XStream XML)", quickOpenUnsolvedActionList,
+        return createQuickOpenPanel(quickOpenUnsolvedPanel, "Unsolved dataset", quickOpenUnsolvedActionList,
                 unsolvedFileList);
     }
 
@@ -163,7 +165,7 @@ public class SolverAndPersistenceFrame extends JFrame {
         quickOpenSolvedPanel = new JPanel();
         quickOpenSolvedActionList = new ArrayList<Action>();
         List<File> solvedFileList = solutionBusiness.getSolvedFileList();
-        return createQuickOpenPanel(quickOpenSolvedPanel, "Solved (XStream XML)", quickOpenSolvedActionList,
+        return createQuickOpenPanel(quickOpenSolvedPanel, "Solved dataset", quickOpenSolvedActionList,
                 solvedFileList);
     }
 
@@ -206,7 +208,7 @@ public class SolverAndPersistenceFrame extends JFrame {
         private File file;
 
         public QuickOpenAction(File file) {
-            super(file.getName());
+            super(file.getName().replaceAll("\\.xml$", ""));
             this.file = file;
         }
 
