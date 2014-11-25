@@ -103,8 +103,6 @@ public interface InternalTaskService extends TaskService {
 
     List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds);
 
-    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds,  int firstResult, int maxResults);
-
     List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status);
 
     List<TaskSummary> getTasksAssignedAsRecipient(String userId);
@@ -212,22 +210,6 @@ public interface InternalTaskService extends TaskService {
     void removeMarshallerContext(String ownerId);
     
     ContentMarshallerContext getMarshallerContext(Task task);
-    
-    /**
-     * This method will be deleted in jBPM 7.x
-     * @see {@link #taskQuery()}
-     */
-    @Deprecated
-    List<TaskSummary> getTasksByVariousFields( String userId, List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds, 
-            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, 
-            List<Status> status,  boolean union);
-  
-    /**
-     * This method will be deleted in jBPM 7.x
-     * @see {@link #taskQuery()}
-     */
-    @Deprecated
-    List<TaskSummary> getTasksByVariousFields( String userId, Map <String, List<?>> parameters, boolean union);
     
     TaskQueryBuilder taskQuery(String userId);
     
