@@ -29,4 +29,5 @@ public class ActionInsertLogicalFact extends ActionInsertFact {
         super();
     }
 
+
 }

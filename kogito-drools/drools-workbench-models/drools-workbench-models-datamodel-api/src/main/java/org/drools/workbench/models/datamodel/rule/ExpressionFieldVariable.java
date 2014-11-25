@@ -35,4 +35,5 @@ public class ExpressionFieldVariable extends ExpressionText {
     public void accept( ExpressionVisitor visitor ) {
         visitor.visit( this );
     }
+
 }

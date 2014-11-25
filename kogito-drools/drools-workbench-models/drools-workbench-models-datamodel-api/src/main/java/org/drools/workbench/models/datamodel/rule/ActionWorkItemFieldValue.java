@@ -54,4 +54,29 @@ public class ActionWorkItemFieldValue extends ActionFieldValue {
         return workItemParameterClassName;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionWorkItemFieldValue that = (ActionWorkItemFieldValue) o;
+
+        if (workItemName != null ? !workItemName.equals(that.workItemName) : that.workItemName != null) return false;
+        if (workItemParameterClassName != null ? !workItemParameterClassName.equals(that.workItemParameterClassName) : that.workItemParameterClassName != null)
+            return false;
+        if (workItemParameterName != null ? !workItemParameterName.equals(that.workItemParameterName) : that.workItemParameterName != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (workItemName != null ? workItemName.hashCode() : 0);
+        result = 31 * result + (workItemParameterName != null ? workItemParameterName.hashCode() : 0);
+        result = 31 * result + (workItemParameterClassName != null ? workItemParameterClassName.hashCode() : 0);
+        return result;
+    }
 }

@@ -36,5 +36,22 @@ public class FreeFormLine implements IAction,
     public void setText( final String text ) {
         this.text = text;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FreeFormLine that = (FreeFormLine) o;
+
+        if (text != null ? !text.equals(that.text) : that.text != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return text != null ? text.hashCode() : 0;
+    }
 }
 

@@ -16,6 +16,8 @@
 
 package org.drools.workbench.models.datamodel.rule;
 
+import java.util.Arrays;
+
 /**
  * Represents first order logic like Or, Not, Exists.
  */
@@ -109,5 +111,25 @@ public class CompositeFactPattern
 
     public void setType( String type ) {
         this.type = type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CompositeFactPattern that = (CompositeFactPattern) o;
+
+        if (!Arrays.equals(patterns, that.patterns)) return false;
+        if (type != null ? !type.equals(that.type) : that.type != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = type != null ? type.hashCode() : 0;
+        result = 31 * result + (patterns != null ? Arrays.hashCode(patterns) : 0);
+        return result;
     }
 }

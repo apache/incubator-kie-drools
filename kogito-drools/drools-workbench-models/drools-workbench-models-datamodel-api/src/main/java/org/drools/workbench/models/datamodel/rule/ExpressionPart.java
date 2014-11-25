@@ -93,4 +93,33 @@ public abstract class ExpressionPart
     public void accept( ExpressionVisitor visitor ) {
         visitor.visit( this );
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ExpressionPart that = (ExpressionPart) o;
+
+        if (classType != null ? !classType.equals(that.classType) : that.classType != null) return false;
+        if (genericType != null ? !genericType.equals(that.genericType) : that.genericType != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (next != null ? !next.equals(that.next) : that.next != null) return false;
+        if (parametricType != null ? !parametricType.equals(that.parametricType) : that.parametricType != null)
+            return false;
+        if (prev != null ? !prev.equals(that.prev) : that.prev != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = prev != null ? prev.hashCode() : 0;
+        result = 31 * result + (next != null ? next.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (classType != null ? classType.hashCode() : 0);
+        result = 31 * result + (genericType != null ? genericType.hashCode() : 0);
+        result = 31 * result + (parametricType != null ? parametricType.hashCode() : 0);
+        return result;
+    }
 }

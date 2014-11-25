@@ -89,4 +89,21 @@ public class ExpressionMethod extends ExpressionPart {
     public void accept( ExpressionVisitor visitor ) {
         visitor.visit( this );
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ExpressionMethod that = (ExpressionMethod) o;
+
+        if (params != null ? !params.equals(that.params) : that.params != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return params != null ? params.hashCode() : 0;
+    }
 }

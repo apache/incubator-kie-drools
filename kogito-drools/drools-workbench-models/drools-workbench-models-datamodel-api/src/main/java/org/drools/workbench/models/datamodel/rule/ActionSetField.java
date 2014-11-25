@@ -39,4 +39,24 @@ public class ActionSetField extends ActionFieldList {
     public void setVariable( String variable ) {
         this.variable = variable;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionSetField that = (ActionSetField) o;
+
+        if (variable != null ? !variable.equals(that.variable) : that.variable != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (variable != null ? variable.hashCode() : 0);
+        return result;
+    }
 }

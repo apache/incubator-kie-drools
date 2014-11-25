@@ -97,4 +97,32 @@ public class FromAccumulateCompositeFactPattern extends FromCompositeFactPattern
         this.function = function;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FromAccumulateCompositeFactPattern that = (FromAccumulateCompositeFactPattern) o;
+
+        if (actionCode != null ? !actionCode.equals(that.actionCode) : that.actionCode != null) return false;
+        if (function != null ? !function.equals(that.function) : that.function != null) return false;
+        if (initCode != null ? !initCode.equals(that.initCode) : that.initCode != null) return false;
+        if (resultCode != null ? !resultCode.equals(that.resultCode) : that.resultCode != null) return false;
+        if (reverseCode != null ? !reverseCode.equals(that.reverseCode) : that.reverseCode != null) return false;
+        if (sourcePattern != null ? !sourcePattern.equals(that.sourcePattern) : that.sourcePattern != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = sourcePattern != null ? sourcePattern.hashCode() : 0;
+        result = 31 * result + (initCode != null ? initCode.hashCode() : 0);
+        result = 31 * result + (actionCode != null ? actionCode.hashCode() : 0);
+        result = 31 * result + (reverseCode != null ? reverseCode.hashCode() : 0);
+        result = 31 * result + (resultCode != null ? resultCode.hashCode() : 0);
+        result = 31 * result + (function != null ? function.hashCode() : 0);
+        return result;
+    }
 }

@@ -43,4 +43,25 @@ public class ActionGlobalCollectionAdd implements IAction {
     public void setFactName( String factName ) {
         this.factName = factName;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ActionGlobalCollectionAdd that = (ActionGlobalCollectionAdd) o;
+
+        if (factName != null ? !factName.equals(that.factName) : that.factName != null) return false;
+        if (globalName != null ? !globalName.equals(that.globalName) : that.globalName != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = globalName != null ? globalName.hashCode() : 0;
+        result = 31 * result + (factName != null ? factName.hashCode() : 0);
+        return result;
+    }
 }
+

@@ -150,4 +150,31 @@ public class FactPattern
     public CompositeFieldConstraint getConstraintList() {
         return constraintList;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FactPattern that = (FactPattern) o;
+
+        if (isNegated != that.isNegated) return false;
+        if (boundName != null ? !boundName.equals(that.boundName) : that.boundName != null) return false;
+        if (constraintList != null ? !constraintList.equals(that.constraintList) : that.constraintList != null)
+            return false;
+        if (factType != null ? !factType.equals(that.factType) : that.factType != null) return false;
+        if (window != null ? !window.equals(that.window) : that.window != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = constraintList != null ? constraintList.hashCode() : 0;
+        result = 31 * result + (factType != null ? factType.hashCode() : 0);
+        result = 31 * result + (boundName != null ? boundName.hashCode() : 0);
+        result = 31 * result + (isNegated ? 1 : 0);
+        result = 31 * result + (window != null ? window.hashCode() : 0);
+        return result;
+    }
 }
