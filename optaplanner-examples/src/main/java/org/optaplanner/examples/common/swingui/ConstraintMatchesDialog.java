@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -73,6 +74,9 @@ public class ConstraintMatchesDialog extends JDialog {
             tableScrollPane.setPreferredSize(new Dimension(700, 300));
             splitPane.setTopComponent(tableScrollPane);
             JPanel bottomPanel = new JPanel(new BorderLayout());
+            JLabel detailLabel = new JLabel("Constraint matches of selected constraint type");
+            detailLabel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+            bottomPanel.add(detailLabel, BorderLayout.NORTH);
             final JTextArea detailTextArea = new JTextArea(10, 80);
             JScrollPane detailScrollPane = new JScrollPane(detailTextArea);
             bottomPanel.add(detailScrollPane, BorderLayout.CENTER);

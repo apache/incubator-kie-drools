@@ -39,8 +39,6 @@ import org.slf4j.LoggerFactory;
 
 public class InstitutionParametrizationDialog extends JDialog {
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
-
     protected final ExaminationPanel examinationPanel;
 
     private JSpinner twoInARowPenaltyField;
