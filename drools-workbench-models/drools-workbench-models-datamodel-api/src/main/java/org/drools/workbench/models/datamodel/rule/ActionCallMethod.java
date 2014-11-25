@@ -78,4 +78,24 @@ public class ActionCallMethod extends ActionSetField {
                     "Cannot assign field values of types other than ActionFieldFunction." );
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ActionCallMethod that = (ActionCallMethod) o;
+
+        if (state != that.state) return false;
+        if (methodName != null ? !methodName.equals(that.methodName) : that.methodName != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = state;
+        result = 31 * result + (methodName != null ? methodName.hashCode() : 0);
+        return result;
+    }
 }

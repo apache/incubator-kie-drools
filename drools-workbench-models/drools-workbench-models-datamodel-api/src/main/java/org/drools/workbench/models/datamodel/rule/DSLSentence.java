@@ -252,4 +252,25 @@ public class DSLSentence
         return new DSLComplexVariableValue( id, value );
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DSLSentence that = (DSLSentence) o;
+
+        if (definition != null ? !definition.equals(that.definition) : that.definition != null) return false;
+        if (sentence != null ? !sentence.equals(that.sentence) : that.sentence != null) return false;
+        if (values != null ? !values.equals(that.values) : that.values != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = sentence != null ? sentence.hashCode() : 0;
+        result = 31 * result + (definition != null ? definition.hashCode() : 0);
+        result = 31 * result + (values != null ? values.hashCode() : 0);
+        return result;
+    }
 }

@@ -17,6 +17,7 @@
 package org.drools.workbench.models.datamodel.rule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -845,4 +846,42 @@ public class RuleModel implements HasImports,
         this.packageName = packageName;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RuleModel ruleModel = (RuleModel) o;
+
+        if (isNegated != ruleModel.isNegated) return false;
+        if (!Arrays.equals(attributes, ruleModel.attributes)) return false;
+        if (imports != null ? !imports.equals(ruleModel.imports) : ruleModel.imports != null) return false;
+        if (!Arrays.equals(lhs, ruleModel.lhs)) return false;
+        if (!Arrays.equals(metadataList, ruleModel.metadataList)) return false;
+        if (modelVersion != null ? !modelVersion.equals(ruleModel.modelVersion) : ruleModel.modelVersion != null)
+            return false;
+        if (name != null ? !name.equals(ruleModel.name) : ruleModel.name != null) return false;
+        if (packageName != null ? !packageName.equals(ruleModel.packageName) : ruleModel.packageName != null)
+            return false;
+        if (parentName != null ? !parentName.equals(ruleModel.parentName) : ruleModel.parentName != null) return false;
+        if (!Arrays.equals(rhs, ruleModel.rhs)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (parentName != null ? parentName.hashCode() : 0);
+        result = 31 * result + (modelVersion != null ? modelVersion.hashCode() : 0);
+        result = 31 * result + (attributes != null ? Arrays.hashCode(attributes) : 0);
+        result = 31 * result + (metadataList != null ? Arrays.hashCode(metadataList) : 0);
+        result = 31 * result + (lhs != null ? Arrays.hashCode(lhs) : 0);
+        result = 31 * result + (rhs != null ? Arrays.hashCode(rhs) : 0);
+        result = 31 * result + (imports != null ? imports.hashCode() : 0);
+        result = 31 * result + (packageName != null ? packageName.hashCode() : 0);
+        result = 31 * result + (isNegated ? 1 : 0);
+        return result;
+    }
 }

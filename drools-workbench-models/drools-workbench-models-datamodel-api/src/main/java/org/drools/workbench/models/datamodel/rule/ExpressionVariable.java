@@ -45,4 +45,24 @@ public class ExpressionVariable extends ExpressionPart {
     public void accept( ExpressionVisitor visitor ) {
         visitor.visit( this );
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ExpressionVariable that = (ExpressionVariable) o;
+
+        if (fact != null ? !fact.equals(that.fact) : that.fact != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (fact != null ? fact.hashCode() : 0);
+        return result;
+    }
 }

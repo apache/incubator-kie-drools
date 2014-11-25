@@ -16,6 +16,8 @@
 
 package org.drools.workbench.models.datamodel.rule;
 
+import java.util.Arrays;
+
 /**
  * This class is the parent for field setting or assertion actions.
  * <p/>
@@ -70,4 +72,20 @@ public abstract class ActionFieldList
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ActionFieldList that = (ActionFieldList) o;
+
+        if (!Arrays.equals(fieldValues, that.fieldValues)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return fieldValues != null ? Arrays.hashCode(fieldValues) : 0;
+    }
 }

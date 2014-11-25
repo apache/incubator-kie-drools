@@ -85,4 +85,23 @@ public class CEPWindow
         return this.parameters.size() > 0;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CEPWindow cepWindow = (CEPWindow) o;
+
+        if (operator != null ? !operator.equals(cepWindow.operator) : cepWindow.operator != null) return false;
+        if (parameters != null ? !parameters.equals(cepWindow.parameters) : cepWindow.parameters != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = operator != null ? operator.hashCode() : 0;
+        result = 31 * result + (parameters != null ? parameters.hashCode() : 0);
+        return result;
+    }
 }

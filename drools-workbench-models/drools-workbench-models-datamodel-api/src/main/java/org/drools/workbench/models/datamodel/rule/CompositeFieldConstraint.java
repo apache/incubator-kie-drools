@@ -16,6 +16,8 @@
 
 package org.drools.workbench.models.datamodel.rule;
 
+import java.util.Arrays;
+
 /**
  * This is a field constraint that may span multiple fields.
  */
@@ -130,5 +132,26 @@ public class CompositeFieldConstraint
 
     public void setCompositeJunctionType( String compositeJunctionType ) {
         this.compositeJunctionType = compositeJunctionType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CompositeFieldConstraint that = (CompositeFieldConstraint) o;
+
+        if (compositeJunctionType != null ? !compositeJunctionType.equals(that.compositeJunctionType) : that.compositeJunctionType != null)
+            return false;
+        if (!Arrays.equals(constraints, that.constraints)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = compositeJunctionType != null ? compositeJunctionType.hashCode() : 0;
+        result = 31 * result + (constraints != null ? Arrays.hashCode(constraints) : 0);
+        return result;
     }
 }

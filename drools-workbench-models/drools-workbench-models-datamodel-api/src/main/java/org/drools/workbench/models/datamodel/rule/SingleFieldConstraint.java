@@ -16,6 +16,8 @@
 
 package org.drools.workbench.models.datamodel.rule;
 
+import java.util.Arrays;
+
 /**
  * This represents a constraint on a fact - involving a SINGLE FIELD. Can also
  * include optional "connective constraints" that extend the options for
@@ -168,5 +170,37 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint
 
     public void setConnectives( ConnectiveConstraint[] connectives ) {
         this.connectives = connectives;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        SingleFieldConstraint that = (SingleFieldConstraint) o;
+
+        if (!Arrays.equals(connectives, that.connectives)) return false;
+        if (factType != null ? !factType.equals(that.factType) : that.factType != null) return false;
+        if (fieldBinding != null ? !fieldBinding.equals(that.fieldBinding) : that.fieldBinding != null) return false;
+        if (fieldName != null ? !fieldName.equals(that.fieldName) : that.fieldName != null) return false;
+        if (fieldType != null ? !fieldType.equals(that.fieldType) : that.fieldType != null) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (parent != null ? !parent.equals(that.parent) : that.parent != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (fieldBinding != null ? fieldBinding.hashCode() : 0);
+        result = 31 * result + (factType != null ? factType.hashCode() : 0);
+        result = 31 * result + (fieldName != null ? fieldName.hashCode() : 0);
+        result = 31 * result + (fieldType != null ? fieldType.hashCode() : 0);
+        result = 31 * result + (parent != null ? parent.hashCode() : 0);
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (connectives != null ? Arrays.hashCode(connectives) : 0);
+        return result;
     }
 }

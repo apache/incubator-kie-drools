@@ -38,4 +38,21 @@ public class ActionExecuteWorkItem
         this.workDefinition = workDefinition;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ActionExecuteWorkItem that = (ActionExecuteWorkItem) o;
+
+        if (workDefinition != null ? !workDefinition.equals(that.workDefinition) : that.workDefinition != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return workDefinition != null ? workDefinition.hashCode() : 0;
+    }
 }
