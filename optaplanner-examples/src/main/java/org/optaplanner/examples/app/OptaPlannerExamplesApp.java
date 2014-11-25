@@ -200,7 +200,7 @@ public class OptaPlannerExamplesApp extends JFrame {
     }
 
     private JPanel createDescriptionPanel() {
-        JPanel descriptionPanel = new JPanel(new BorderLayout());
+        JPanel descriptionPanel = new JPanel(new BorderLayout(2, 2));
         descriptionPanel.add(new JLabel("Description"), BorderLayout.NORTH);
         descriptionTextArea = new JTextArea(8, 70);
         descriptionTextArea.setEditable(false);

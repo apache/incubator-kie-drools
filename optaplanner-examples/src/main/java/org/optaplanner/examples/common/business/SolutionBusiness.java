@@ -37,6 +37,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
@@ -50,6 +51,7 @@ public class SolutionBusiness {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
+    private final CommonApp app;
     private SolutionDao solutionDao;
 
     private AbstractSolutionImporter importer;
@@ -64,6 +66,22 @@ public class SolutionBusiness {
     private volatile Solver solver;
     private String solutionFileName = null;
     private ScoreDirector guiScoreDirector;
+
+    public SolutionBusiness(CommonApp app) {
+        this.app = app;
+    }
+
+    public String getAppName() {
+        return app.getName();
+    }
+
+    public String getAppDescription() {
+        return app.getDescription();
+    }
+
+    public String getAppIconResource() {
+        return app.getIconResource();
+    }
 
     public void setSolutionDao(SolutionDao solutionDao) {
         this.solutionDao = solutionDao;

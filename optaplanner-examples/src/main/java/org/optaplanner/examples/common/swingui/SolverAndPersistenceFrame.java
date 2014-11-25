@@ -45,6 +45,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
@@ -66,7 +67,6 @@ public class SolverAndPersistenceFrame extends JFrame {
     public static final ImageIcon OPTA_PLANNER_ICON = new ImageIcon(
             SolverAndPersistenceFrame.class.getResource("optaPlannerIcon.png"));
 
-    private final String titlePrefix;
     private final SolutionBusiness solutionBusiness;
 
     private SolutionPanel solutionPanel;
@@ -90,10 +90,8 @@ public class SolverAndPersistenceFrame extends JFrame {
     private JTextField scoreField;
     private ShowConstraintMatchesDialogAction showConstraintMatchesDialogAction;
 
-    public SolverAndPersistenceFrame(SolutionBusiness solutionBusiness, SolutionPanel solutionPanel,
-            String titlePrefix) {
-        super(titlePrefix);
-        this.titlePrefix = titlePrefix;
+    public SolverAndPersistenceFrame(SolutionBusiness solutionBusiness, SolutionPanel solutionPanel) {
+        super(solutionBusiness.getAppName() + " OptaPlanner example");
         this.solutionBusiness = solutionBusiness;
         this.solutionPanel = solutionPanel;
         setIconImage(OPTA_PLANNER_ICON.getImage());
@@ -495,11 +493,22 @@ public class SolverAndPersistenceFrame extends JFrame {
 
     private JPanel createMiddlePanel() {
         middlePanel = new JPanel(new CardLayout());
+        JPanel usageExplanationPanel = new JPanel(new BorderLayout(5, 5));
         ImageIcon usageExplanationIcon = new ImageIcon(getClass().getResource(solutionPanel.getUsageExplanationPath()));
         JLabel usageExplanationLabel = new JLabel(usageExplanationIcon);
         // Allow splitPane divider to be moved to the right
         usageExplanationLabel.setMinimumSize(new Dimension(100, 100));
-        middlePanel.add(usageExplanationLabel, "usageExplanationPanel");
+        usageExplanationPanel.add(usageExplanationLabel, BorderLayout.CENTER);
+        JPanel descriptionPanel = new JPanel(new BorderLayout(2, 2));
+        descriptionPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        descriptionPanel.add(new JLabel("Example description"), BorderLayout.NORTH);
+        JTextArea descriptionTextArea = new JTextArea(8, 70);
+        descriptionTextArea.setEditable(false);
+        descriptionTextArea.setText(solutionBusiness.getAppDescription());
+        descriptionPanel.add(new JScrollPane(descriptionTextArea,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
+        usageExplanationPanel.add(descriptionPanel, BorderLayout.SOUTH);
+        middlePanel.add(usageExplanationPanel, "usageExplanationPanel");
         JComponent wrappedSolutionPanel;
         if (solutionPanel.isWrapInScrollPane()) {
             wrappedSolutionPanel = new JScrollPane(solutionPanel);
@@ -541,7 +550,7 @@ public class SolverAndPersistenceFrame extends JFrame {
     }
 
     private void setSolutionLoaded() {
-        setTitle(titlePrefix + " - " + solutionBusiness.getSolutionFileName());
+        setTitle(solutionBusiness.getAppName() + " - " + solutionBusiness.getSolutionFileName());
         ((CardLayout) middlePanel.getLayout()).show(middlePanel, "solutionPanel");
         solveAction.setEnabled(true);
         saveAction.setEnabled(true);
