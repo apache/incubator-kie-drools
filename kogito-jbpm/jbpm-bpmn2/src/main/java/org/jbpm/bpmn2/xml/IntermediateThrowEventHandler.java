@@ -302,6 +302,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 								"Could not find escalation " + escalationRef);
 					}
 					String faultName = escalation.getEscalationCode();
+					String variable = (String) actionNode.getMetaData("MappingVariable");
 					actionNode
 							.setAction(new DroolsConsequenceAction(
 									"java",
@@ -310,10 +311,16 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 											+ "\");"
 											+ EOL
 											+ "if (scopeInstance != null) {"
-											+ EOL
+											+ EOL 
+											+ " Object tVariable = "+ (variable == null ? "null" : variable)+";"
+											+ "org.jbpm.workflow.core.node.Transformation transformation = (org.jbpm.workflow.core.node.Transformation)kcontext.getNodeInstance().getNode().getMetaData().get(\"Transformation\");"
+											+ "if (transformation != null) {"
+											+ "  tVariable = new org.jbpm.process.core.event.EventTransformerImpl(transformation)"
+											+ "  .transformEvent("+(variable == null ? "null" : variable)+");"
+											+ "}"
 											+ "  scopeInstance.handleException(\""
 											+ faultName
-											+ "\", null);"
+											+ "\", tVariable);"
 											+ EOL
 											+ "} else {"
 											+ EOL

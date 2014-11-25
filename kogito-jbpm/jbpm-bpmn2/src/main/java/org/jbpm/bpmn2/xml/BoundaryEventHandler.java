@@ -123,7 +123,13 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("escalationEventDefinition".equals(nodeName)) {
+            if ("dataOutput".equals(nodeName)) {
+                String id = ((Element) xmlNode).getAttribute("id");
+                String outputName = ((Element) xmlNode).getAttribute("name");
+                dataOutputs.put(id, outputName);
+            } else if ("dataOutputAssociation".equals(nodeName)) {
+                readDataOutputAssociation(xmlNode, eventNode);
+            } else if ("escalationEventDefinition".equals(nodeName)) {
                 String escalationRef = ((Element) xmlNode).getAttribute("escalationRef");
                 if (escalationRef != null && escalationRef.trim().length() > 0) {
                     Map<String, Escalation> escalations = (Map<String, Escalation>)

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- origin at X=0.0 Y=0.0 -->
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:java="http://www.java.com/javaTypes" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.1.1.201410152001" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="ItemDefinition_4" structureRef="String"/>
+  <bpmn2:itemDefinition id="ItemDefinition_144" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="ItemDefinition_145" structureRef="Boolean"/>
+  <bpmn2:itemDefinition id="ItemDefinition_23" structureRef="Object"/>
+  <bpmn2:escalation id="Escalation" escalationCode="java.lang.RuntimeException" name="Escalation"/>
+  <bpmn2:process id="BPMN2BoundaryEscalationEventOnTask" tns:version="1" tns:packageName="defaultPackage" tns:adHoc="false" name="BPMN2-BoundaryEscalationEventOnTask" isExecutable="true" processType="Private">
+    <bpmn2:property id="Property_1" itemSubjectRef="ItemDefinition_23"/>
+    <bpmn2:property id="Property_2" itemSubjectRef="ItemDefinition_23"/>
+    <bpmn2:property id="Property_3" itemSubjectRef="ItemDefinition_23"/>
+    <bpmn2:subProcess id="SubProcess_1" name="Sub Process 1">
+      <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_9</bpmn2:outgoing>
+      <bpmn2:startEvent id="StartEvent_2" name="Start Event 2">
+        <bpmn2:outgoing>SequenceFlow_11</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:endEvent id="EndEvent_5" name="End Event 5">
+        <bpmn2:incoming>SequenceFlow_10</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:sequenceFlow id="SequenceFlow_10" tns:priority="1" name="" sourceRef="IntermediateThrowEvent_1" targetRef="EndEvent_5"/>
+      <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_1" name="Intermediate Throw Event 1">
+        <bpmn2:incoming>SequenceFlow_11</bpmn2:incoming>
+        <bpmn2:outgoing>SequenceFlow_10</bpmn2:outgoing>
+        <bpmn2:dataInput id="DataInput_18" itemSubjectRef="ItemDefinition_23" name="Escalation_5_Input"/>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_17">
+          <bpmn2:sourceRef>Property_2</bpmn2:sourceRef>
+          <bpmn2:targetRef>DataInput_18</bpmn2:targetRef>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:inputSet id="InputSet_6" name="Input Set 6">
+          <bpmn2:dataInputRefs>DataInput_18</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:escalationEventDefinition id="EscalationEventDefinition_5" escalationRef="Escalation"/>
+      </bpmn2:intermediateThrowEvent>
+      <bpmn2:sequenceFlow id="SequenceFlow_11" tns:priority="1" name="" sourceRef="StartEvent_2" targetRef="IntermediateThrowEvent_1"/>
+    </bpmn2:subProcess>
+    <bpmn2:sequenceFlow id="SequenceFlow_9" tns:priority="1" name="" sourceRef="SubProcess_1" targetRef="EndEvent_4"/>
+    <bpmn2:boundaryEvent id="BoundaryEvent_2" name="" attachedToRef="SubProcess_1">
+      <bpmn2:outgoing>SequenceFlow_12</bpmn2:outgoing>
+      <bpmn2:dataOutput id="DataOutput_4" itemSubjectRef="ItemDefinition_23" name="Escalation_6_Output"/>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_3">
+        <bpmn2:sourceRef>DataOutput_4</bpmn2:sourceRef>
+        <bpmn2:targetRef>Property_3</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+      <bpmn2:outputSet id="OutputSet_6" name="Output Set 6">
+        <bpmn2:dataOutputRefs>DataOutput_4</bpmn2:dataOutputRefs>
+      </bpmn2:outputSet>
+      <bpmn2:escalationEventDefinition id="EscalationEventDefinition_6" escalationRef="Escalation"/>
+    </bpmn2:boundaryEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_12" tns:priority="1" name="" sourceRef="BoundaryEvent_2" targetRef="ScriptTask_2"/>
+    <bpmn2:scriptTask id="ScriptTask_2" name="SubProcessHandler" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>SequenceFlow_12</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_13</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Handling SubProcess &quot; + Property_2 + &quot; &quot; + Property_3);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_13" tns:priority="1" name="" sourceRef="ScriptTask_2" targetRef="EndEvent_6"/>
+    <bpmn2:endEvent id="EndEvent_6" name="SubProcessHandlerEnd">
+      <bpmn2:incoming>SequenceFlow_13</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:endEvent id="EndEvent_4" name="SubProcessEnd">
+      <bpmn2:incoming>SequenceFlow_9</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:startEvent id="StartEvent_1" name="StartProcess">
+      <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" sourceRef="StartEvent_1" targetRef="SubProcess_1"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="BPMN2BoundaryEscalationEventOnTask">
+      <bpmndi:BPMNShape id="BPMNShape_SubProcess_1" bpmnElement="SubProcess_1" isExpanded="true">
+        <dc:Bounds height="150.0" width="300.0" x="230.0" y="110.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_1" labelStyle="BPMNLabelStyle_1">
+          <dc:Bounds height="14.0" width="81.0" x="296.0" y="3.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="StartEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="70.0" y="167.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_1" labelStyle="BPMNLabelStyle_1">
+          <dc:Bounds height="14.0" width="71.0" x="28.0" y="185.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ParallelGateway_1">
+        <dc:Bounds height="50.0" width="50.0" x="155.0" y="139.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_2" labelStyle="BPMNLabelStyle_1">
+          <dc:Bounds height="14.0" width="24.0" x="168.0" y="189.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_2">
+        <dc:Bounds height="36.0" width="36.0" x="412.0" y="266.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_6" labelStyle="BPMNLabelStyle_1">
+          <dc:Bounds height="14.0" width="75.0" x="393.0" y="302.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_4" bpmnElement="EndEvent_4">
+        <dc:Bounds height="36.0" width="36.0" x="648.0" y="167.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_3" labelStyle="BPMNLabelStyle_1">
+          <dc:Bounds height="28.0" width="90.0" x="631.0" y="93.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_2" bpmnElement="StartEvent_2">
+        <dc:Bounds height="36.0" width="36.0" x="248.0" y="163.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_5" labelStyle="BPMNLabelStyle_1">
+          <dc:Bounds height="14.0" width="68.0" x="292.0" y="89.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_5" bpmnElement="EndEvent_5">
+        <dc:Bounds height="36.0" width="36.0" x="430.0" y="168.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_10" labelStyle="BPMNLabelStyle_1">
+          <dc:Bounds height="14.0" width="65.0" x="476.0" y="94.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_IntermediateThrowEvent_1" bpmnElement="IntermediateThrowEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="349.0" y="169.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_11" labelStyle="BPMNLabelStyle_1">
+          <dc:Bounds height="28.0" width="77.0" x="389.0" y="95.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_6" bpmnElement="EndEvent_6">
+        <dc:Bounds height="36.0" width="36.0" x="710.0" y="357.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_14" labelStyle="BPMNLabelStyle_1">
+          <dc:Bounds height="28.0" width="134.0" x="714.0" y="237.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_2" bpmnElement="BoundaryEvent_2">
+        <dc:Bounds height="36.0" width="36.0" x="512.0" y="242.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_12" labelStyle="BPMNLabelStyle_1"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="ScriptTask_2">
+        <dc:Bounds height="50.0" width="110.0" x="548.0" y="350.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_13" labelStyle="BPMNLabelStyle_1">
+          <dc:Bounds height="28.0" width="112.0" x="584.0" y="205.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="SequenceFlow_9" sourceElement="BPMNShape_SubProcess_1" targetElement="BPMNShape_EndEvent_4">
+        <di:waypoint xsi:type="dc:Point" x="530.0" y="185.0"/>
+        <di:waypoint xsi:type="dc:Point" x="583.0" y="185.0"/>
+        <di:waypoint xsi:type="dc:Point" x="583.0" y="185.0"/>
+        <di:waypoint xsi:type="dc:Point" x="648.0" y="185.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_18" labelStyle="BPMNLabelStyle_1"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_10" bpmnElement="SequenceFlow_10" sourceElement="BPMNShape_IntermediateThrowEvent_1" targetElement="BPMNShape_EndEvent_5">
+        <di:waypoint xsi:type="dc:Point" x="385.0" y="187.0"/>
+        <di:waypoint xsi:type="dc:Point" x="405.0" y="187.0"/>
+        <di:waypoint xsi:type="dc:Point" x="405.0" y="186.0"/>
+        <di:waypoint xsi:type="dc:Point" x="430.0" y="186.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_19" labelStyle="BPMNLabelStyle_1"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_11" bpmnElement="SequenceFlow_11" sourceElement="BPMNShape_StartEvent_2" targetElement="BPMNShape_IntermediateThrowEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="284.0" y="181.0"/>
+        <di:waypoint xsi:type="dc:Point" x="313.0" y="181.0"/>
+        <di:waypoint xsi:type="dc:Point" x="313.0" y="187.0"/>
+        <di:waypoint xsi:type="dc:Point" x="349.0" y="187.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_20" labelStyle="BPMNLabelStyle_1"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_12" bpmnElement="SequenceFlow_12" sourceElement="BPMNShape_BoundaryEvent_2" targetElement="BPMNShape_ScriptTask_2">
+        <di:waypoint xsi:type="dc:Point" x="530.0" y="278.0"/>
+        <di:waypoint xsi:type="dc:Point" x="530.0" y="375.0"/>
+        <di:waypoint xsi:type="dc:Point" x="548.0" y="375.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_21" labelStyle="BPMNLabelStyle_1"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_13" bpmnElement="SequenceFlow_13" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_EndEvent_6">
+        <di:waypoint xsi:type="dc:Point" x="658.0" y="375.0"/>
+        <di:waypoint xsi:type="dc:Point" x="681.0" y="375.0"/>
+        <di:waypoint xsi:type="dc:Point" x="681.0" y="375.0"/>
+        <di:waypoint xsi:type="dc:Point" x="710.0" y="375.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_22" labelStyle="BPMNLabelStyle_1"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_SubProcess_1">
+        <di:waypoint xsi:type="dc:Point" x="106.0" y="185.0"/>
+        <di:waypoint xsi:type="dc:Point" x="161.0" y="185.0"/>
+        <di:waypoint xsi:type="dc:Point" x="161.0" y="185.0"/>
+        <di:waypoint xsi:type="dc:Point" x="230.0" y="185.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+    <bpmndi:BPMNLabelStyle id="BPMNLabelStyle_1">
+      <dc:Font name="arial" size="9.0"/>
+    </bpmndi:BPMNLabelStyle>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

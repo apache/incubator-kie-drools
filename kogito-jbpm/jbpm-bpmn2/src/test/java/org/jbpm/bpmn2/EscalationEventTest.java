@@ -22,19 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
-import org.jbpm.bpmn2.handler.SendTaskHandler;
-import org.jbpm.bpmn2.handler.ServiceTaskHandler;
-import org.jbpm.bpmn2.handler.SignallingTaskHandlerDecorator;
-import org.jbpm.bpmn2.objects.ExceptionService;
-import org.jbpm.bpmn2.objects.MyError;
-import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
-import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
-import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -47,16 +35,9 @@ import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
-import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.command.Context;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -271,5 +252,16 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
         KieSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("EscalationEndEvent");
         assertProcessInstanceAborted(processInstance.getId(), ksession);
+    }
+    
+    @Test
+    public void testEscalationBoundaryEventAndIntermediate() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("escalation/BPMN2-EscalationWithDataMapping.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        Map<String, Object> sessionArgs = new HashMap<String, Object>();
+        sessionArgs.put("Property_2", new java.lang.RuntimeException());
+        ProcessInstance processInstance = ksession.startProcess("BPMN2BoundaryEscalationEventOnTask", sessionArgs);
+        assertProcessInstanceCompleted(processInstance);
+        assertProcessVarValue(processInstance, "Property_3", "java.lang.RuntimeException");
     }
 }

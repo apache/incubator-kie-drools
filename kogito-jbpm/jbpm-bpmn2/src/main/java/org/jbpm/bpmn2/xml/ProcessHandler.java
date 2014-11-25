@@ -385,11 +385,13 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             compositeNode.setDefaultContext(exceptionScope);
         }
         
+        String variable = ((EventNode)node).getVariableName();
         ActionExceptionHandler exceptionHandler = new ActionExceptionHandler();
         DroolsConsequenceAction action = new DroolsConsequenceAction("java", 
-                    PROCESS_INSTANCE_SIGNAL_EVENT + "Escalation-" + attachedTo + "-" + escalationCode + "\", null);");
+                    PROCESS_INSTANCE_SIGNAL_EVENT + "Escalation-" + attachedTo + "-" + escalationCode + "\", kcontext.getVariable(\"" + variable +"\"));");
         
         exceptionHandler.setAction(action);
+        exceptionHandler.setFaultVariable(variable);
         exceptionScope.setExceptionHandler(escalationCode, exceptionHandler);
         if (escalationStructureRef != null) {
         	exceptionScope.setExceptionHandler(escalationStructureRef, exceptionHandler);
