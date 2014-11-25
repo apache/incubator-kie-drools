@@ -132,7 +132,7 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
         }
         //make sure all process instance were completed
         engine = manager.getRuntimeEngine(EmptyContext.get());
-        AuditService logService = engine.getAuditLogService();
+        AuditService logService = engine.getAuditService();
         //active
         List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("IntermediateCatchEvent");
         assertNotNull(logs);

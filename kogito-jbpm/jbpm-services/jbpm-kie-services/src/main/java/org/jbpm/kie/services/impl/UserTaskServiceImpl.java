@@ -985,7 +985,7 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 				}
 				
 				@Override
-				public AuditService getAuditLogService() {
+				public AuditService getAuditService() {
 					throw new UnsupportedOperationException("Not supported in this impl");
 				}
 			};

@@ -336,7 +336,7 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         ksession.getWorkItemManager().completeWorkItem(1, null);
         
         
-        AuditService logService = runtime.getAuditLogService();
+        AuditService logService = runtime.getAuditService();
         
         List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("ParentProcess");
         assertNotNull(logs);
@@ -388,7 +388,7 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         
         assertNull(ksession.getProcessInstance(pi.getId()));
         
-        AuditService logService = runtime.getAuditLogService();
+        AuditService logService = runtime.getAuditService();
         
         List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("BPMN2-BusinessRuleTask");
         assertNotNull(logs);
@@ -433,7 +433,7 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         
         assertNull(ksession.getProcessInstance(pi.getId()));
                 
-        AuditService logService = runtime.getAuditLogService();
+        AuditService logService = runtime.getAuditService();
         
         List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("BPMN2-BusinessRuleTask");
         assertNotNull(logs);
@@ -556,7 +556,7 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         assertNull(ksession.getProcessInstance(pi.getId()));
         assertEquals(1, list.size());
                 
-        AuditService logService = runtime.getAuditLogService();
+        AuditService logService = runtime.getAuditService();
         
         List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("BPMN2-BusinessRuleTask");
         assertNotNull(logs);
@@ -591,7 +591,7 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         
         ksession.startProcess("com.sample.bpmn.hello");
         
-        AuditService auditService = runtime.getAuditLogService();
+        AuditService auditService = runtime.getAuditService();
         
         List<? extends ProcessInstanceLog> throwProcessLogs = auditService.findProcessInstances("com.sample.bpmn.hello");
         List<? extends ProcessInstanceLog> catchProcessLogs = auditService.findProcessInstances("com.sample.bpmn.Second");

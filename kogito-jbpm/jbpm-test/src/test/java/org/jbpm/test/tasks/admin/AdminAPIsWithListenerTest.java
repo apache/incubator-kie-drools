@@ -288,7 +288,7 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitBaseTestCase {
         assertProcessInstanceAborted(pi.getId(), ksession);
         
         
-        AuditService logService = runtime.getAuditLogService();
+        AuditService logService = runtime.getAuditService();
         
         List<? extends ProcessInstanceLog> logs = logService.findProcessInstances("com.mycompany.sample");
         assertNotNull(logs);

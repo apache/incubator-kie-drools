@@ -214,7 +214,7 @@ public class MultipleRuntimeManagerTest extends AbstractBaseTest {
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
         
-        AuditService logService = runtime.getAuditLogService();
+        AuditService logService = runtime.getAuditService();
         
         List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("UserTask");
         assertNotNull(logs);      

@@ -535,7 +535,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
         RuntimeEngine runtimeEngine = manager.getRuntimeEngine(context);
         activeEngines.add(runtimeEngine);
         if (sessionPersistence) {            
-            logService = runtimeEngine.getAuditLogService();               
+            logService = runtimeEngine.getAuditService();               
             
         } else {            
             inMemoryLogger = new WorkingMemoryInMemoryLogger((StatefulKnowledgeSession) runtimeEngine.getKieSession());
@@ -763,7 +763,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
         if (sessionPersistence && logService != null) {
         	RuntimeManager manager = createRuntimeManager();
         	RuntimeEngine engine = manager.getRuntimeEngine(null);
-        	engine.getAuditLogService().clear();
+        	engine.getAuditService().clear();
         	manager.disposeRuntimeEngine(engine);
         	manager.close();
         } else if (inMemoryLogger != null) {

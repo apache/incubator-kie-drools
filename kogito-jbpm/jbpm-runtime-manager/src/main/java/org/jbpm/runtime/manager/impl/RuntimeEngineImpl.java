@@ -132,7 +132,7 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
     }
 
 	@Override
-	public AuditService getAuditLogService() {	
+	public AuditService getAuditService() {	
 		if (auditService == null) {
 			boolean usePersistence = ((InternalRuntimeManager)manager).getEnvironment().usePersistence();
 			if (usePersistence) {

@@ -361,7 +361,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         ksession.getWorkItemManager().completeWorkItem(1, null);
         
         
-        AuditService logService = runtime.getAuditLogService();
+        AuditService logService = runtime.getAuditService();
         
         List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("ParentProcess");
         assertNotNull(logs);
@@ -752,7 +752,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         // ksession for process instance #1
         // since there is no process instance yet we need to get new session
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
-        runtime.getAuditLogService();
+        runtime.getAuditService();
 
     }
     
@@ -776,7 +776,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         int ksession1Id = ksession.getId();
         assertTrue(ksession1Id == 2);
         
-        AuditService auditService = runtime.getAuditLogService();
+        AuditService auditService = runtime.getAuditService();
         assertNotNull(auditService);
         
         List<? extends ProcessInstanceLog> logs = auditService.findProcessInstances();
@@ -814,7 +814,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         ksession = runtime.getKieSession();
         assertEquals(ksession1Id, ksession.getId());
         
-        auditService = runtime.getAuditLogService();
+        auditService = runtime.getAuditService();
         
         ksession.getWorkItemManager().completeWorkItem(1, null);
         // since process is completed now session should not be there any more
@@ -872,7 +872,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         // Aborting the parent process
         ksession.abortProcessInstance(pi1.getId());
 
-        AuditService logService = runtime.getAuditLogService();
+        AuditService logService = runtime.getAuditService();
 
         List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("ParentProcess");
         assertNotNull(logs);
@@ -923,7 +923,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         // Aborting the parent process
         ksession.abortProcessInstance(pi1.getId());
 
-        AuditService logService = runtime.getAuditLogService();
+        AuditService logService = runtime.getAuditService();
 
         List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("DependentParentProcess");
         assertNotNull(logs);
@@ -1049,7 +1049,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         
         ksession.startProcess("com.sample.bpmn.hello");
         
-        AuditService auditService = runtime.getAuditLogService();
+        AuditService auditService = runtime.getAuditService();
         
         List<? extends ProcessInstanceLog> throwProcessLogs = auditService.findProcessInstances("com.sample.bpmn.hello");
         List<? extends ProcessInstanceLog> catchProcessLogs = auditService.findProcessInstances("com.sample.bpmn.Second");

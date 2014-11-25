@@ -152,7 +152,7 @@ public class SessionTest extends AbstractBaseTest {
 		Thread.sleep(1000);
 	      //make sure all process instance were completed
 		RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
-		AuditService logService = runtime.getAuditLogService();       
+		AuditService logService = runtime.getAuditService();       
         //active
         List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("com.sample.bpmn.hello");
         assertNotNull(logs);
@@ -197,7 +197,7 @@ public class SessionTest extends AbstractBaseTest {
 		}
 		//make sure all process instance were completed
 		RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
-		AuditService logService = runtime.getAuditLogService();
+		AuditService logService = runtime.getAuditService();
         
 		//active
 		List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("com.sample.bpmn.hello");
@@ -243,7 +243,7 @@ public class SessionTest extends AbstractBaseTest {
         }
         RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
         //make sure all process instance were completed
-        AuditService logService = runtime.getAuditLogService();
+        AuditService logService = runtime.getAuditService();
         
         //active
         List<? extends ProcessInstanceLog> logs = logService.findActiveProcessInstances("com.sample.bpmn.hello");
