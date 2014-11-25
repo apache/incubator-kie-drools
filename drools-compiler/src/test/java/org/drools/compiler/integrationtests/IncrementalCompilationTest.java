@@ -7,6 +7,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -15,6 +16,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.ResourceType;
@@ -181,6 +183,56 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         // Create a session and fire rules
         KieContainer kc = ks.newKieContainer( km.getReleaseId() );
         KieSession ksession = kc.newKieSession();
+        ksession.insert( new Message( "Hello World" ) );
+        assertEquals( 1, ksession.fireAllRules() );
+
+        // Create a new jar for version 1.1.0
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        km = createAndDeployJar( ks, releaseId2, drl1, drl2_2 );
+
+        // try to update the container to version 1.1.0
+        kc.updateToVersion( releaseId2 );
+
+        // continue working with the session
+        ksession.insert( new Message( "Hello World" ) );
+        assertEquals( 3, ksession.fireAllRules() );
+    }
+    
+    @Test
+    public void testKJarUpgradeSameSessionInStreamMode() throws Exception {
+        String drl1 = "package org.drools.compiler\n" +
+                "rule R1 when\n" +
+                "   $m : Message()\n" +
+                "then\n" +
+                "end\n";
+
+        String drl2_1 = "package org.drools.compiler\n" +
+                "rule R2_1 when\n" +
+                "   $m : Message( message == \"Hi Universe\" )\n" +
+                "then\n" +
+                "end\n";
+
+        String drl2_2 = "package org.drools.compiler\n" +
+                "rule R2_2 when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl1, drl2_1 );
+        
+        // Create configuration with EventProcessingOption.STREAM
+        KieBaseConfiguration config = KieServices.Factory.get()
+        		.newKieBaseConfiguration();
+        		config.setOption(EventProcessingOption.STREAM);
+
+        // Create a session and fire rules
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+        
+        KieSession ksession = kc.newKieBase(config).newKieSession();
         ksession.insert( new Message( "Hello World" ) );
         assertEquals( 1, ksession.fireAllRules() );
 
