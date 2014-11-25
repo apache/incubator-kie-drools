@@ -256,6 +256,7 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
 	public List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds) {
 		return delegate.getTasksAssignedByGroups(groupIds);
 	}
+	
 	@Override
 	public List<TaskSummary> getTasksByVariousFields(String userId, List<Long> workItemIds,
 			List<Long> taskIds, List<Long> procInstIds, List<String> busAdmins,
