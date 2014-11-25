@@ -41,6 +41,7 @@
               javax.naming;resolution:=optional,
               org.drools.container.spring.beans.persistence;resolution:=optional,
               org.drools.core.marshalling.impl;resolution:=optional,
+              org.jbpm.persistence;resolution:=optional,
               org.hibernate.proxy;resolution:=optional,
               org.kie.spring.persistence;resolution:=optional,
               org.hibernate;resolution:=optional,
