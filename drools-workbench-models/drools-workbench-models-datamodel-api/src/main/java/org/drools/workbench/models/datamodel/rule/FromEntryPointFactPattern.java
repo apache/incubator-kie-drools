@@ -28,4 +28,24 @@ public class FromEntryPointFactPattern extends FromCompositeFactPattern {
         this.entryPointName = entryPointName;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        FromEntryPointFactPattern that = (FromEntryPointFactPattern) o;
+
+        if (entryPointName != null ? !entryPointName.equals(that.entryPointName) : that.entryPointName != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (entryPointName != null ? entryPointName.hashCode() : 0);
+        return result;
+    }
 }

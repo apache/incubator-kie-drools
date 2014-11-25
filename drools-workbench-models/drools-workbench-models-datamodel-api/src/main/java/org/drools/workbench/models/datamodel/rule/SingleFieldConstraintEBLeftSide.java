@@ -102,4 +102,23 @@ public class SingleFieldConstraintEBLeftSide extends SingleFieldConstraint {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        SingleFieldConstraintEBLeftSide that = (SingleFieldConstraintEBLeftSide) o;
+
+        if (expLeftSide != null ? !expLeftSide.equals(that.expLeftSide) : that.expLeftSide != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (expLeftSide != null ? expLeftSide.hashCode() : 0);
+        return result;
+    }
 }

@@ -48,4 +48,23 @@ public class FromCompositeFactPattern implements IFactPattern {
         return this.factPattern.getFactType();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FromCompositeFactPattern that = (FromCompositeFactPattern) o;
+
+        if (expression != null ? !expression.equals(that.expression) : that.expression != null) return false;
+        if (factPattern != null ? !factPattern.equals(that.factPattern) : that.factPattern != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = factPattern != null ? factPattern.hashCode() : 0;
+        result = 31 * result + (expression != null ? expression.hashCode() : 0);
+        return result;
+    }
 }

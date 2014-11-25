@@ -40,4 +40,21 @@ public class ActionFieldFunction extends ActionFieldValue {
     public String getMethod() {
         return this.method;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ActionFieldFunction that = (ActionFieldFunction) o;
+
+        if (method != null ? !method.equals(that.method) : that.method != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return method != null ? method.hashCode() : 0;
+    }
 }

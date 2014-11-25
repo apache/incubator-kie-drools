@@ -52,4 +52,28 @@ public class ActionInsertFact extends ActionFieldList {
     public void setFactType( String factType ) {
         this.factType = factType;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionInsertFact that = (ActionInsertFact) o;
+
+        if (isBound != that.isBound) return false;
+        if (boundName != null ? !boundName.equals(that.boundName) : that.boundName != null) return false;
+        if (factType != null ? !factType.equals(that.factType) : that.factType != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (factType != null ? factType.hashCode() : 0);
+        result = 31 * result + (boundName != null ? boundName.hashCode() : 0);
+        result = 31 * result + (isBound ? 1 : 0);
+        return result;
+    }
 }

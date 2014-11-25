@@ -38,4 +38,5 @@ public class ExpressionGlobalVariable extends ExpressionPart {
     public void accept( ExpressionVisitor visitor ) {
         visitor.visit( this );
     }
+
 }
