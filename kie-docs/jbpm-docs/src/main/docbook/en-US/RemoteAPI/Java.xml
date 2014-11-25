@@ -9,7 +9,7 @@
   <title>Remote Java API</title>
   
     <para>The Remote Java API provides <code>KieSession</code>, <code>TaskService</code> and
-        <code>AuditLogService</code> interfaces to the JMS and REST APIs.</para>
+        <code>AuditService</code> interfaces to the JMS and REST APIs.</para>
     
     <para>The interface implementations provided by the Remote Java API take care of the underlying
       logic needed to communicate with the JMS or REST APIs. In other words, these implementations
@@ -20,7 +20,7 @@
   <important>
     <title>The Remote Java API provides clients, not "instances"</title>
     <para>While the <code>KieSession</code>, <code>TaskSerivce</code> and
-        <code>AuditLogService</code> instances provided by the Remote Java API may "look" and "feel"
+        <code>AuditService</code> instances provided by the Remote Java API may "look" and "feel"
       like local instances of the same interfaces, please make sure to remember that these instances
       are only wrappers around a REST or jMS client that interacts with a remote REST or JMS
       API.</para>
@@ -29,7 +29,7 @@
       Remote Java API client instance on the <emphasis>client</emphasis> side will throw a
         <code>RuntimeException</code> indicating that the REST call failed. This is different from
       the behaviour of a "real" (or local) instance of a <code>KieSession</code>,
-        <code>TaskSerivce</code> and <code>AuditLogService</code> instance because the exception the
+        <code>TaskSerivce</code> and <code>AuditService</code> instance because the exception the
       local instances will throw will relate to how the operation failed. Also, while local
       instances require different handling (such as having to dispose of a <code>KieSession</code>),
       client instances provided by the Remote Java API hold no state and thus do not require any
@@ -87,9 +87,9 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><command>AuditLogService RemoteRuntimeEngine.getAuditLogService()</command></term>
+        <term><command>AuditService RemoteRuntimeEngine.getAuditService()</command></term>
         <listitem>
-          <para>This method instantiates a new (client) <command>AuditLogService</command>
+          <para>This method instantiates a new (client) <command>AuditService</command>
             instance.</para>
         </listitem>
       </varlistentry>
@@ -292,7 +292,7 @@
   KieSession ksession = engine.getKieSession();
   TaskService taskService = engine.getTaskService();
 
-  // Each opertion on a KieSession, TaskService or AuditLogService (client) instance 
+  // Each opertion on a KieSession, TaskService or AuditService (client) instance 
   // sends a request for the operation to the server side and waits for the response
   // If something goes wrong on the server side, the client will throw an exception. 
   ProcessInstance processInstance 
@@ -324,7 +324,7 @@
       <title>Remote REST Java API exceptions</title>
       
       <para>Because the Remote REST Java API clients implement the existing <code>KieSession</code>,
-          <code>TaskService</code> and <code>AuditLogService</code> interfaces, the exceptions
+          <code>TaskService</code> and <code>AuditService</code> interfaces, the exceptions
         thrown by the client implementations must be instances of a
         <code>RuntimeException</code>.</para>
       
@@ -677,7 +677,7 @@ private static InitialContext getRemoteInitialContext(String jbossServerHostName
     <title>Supported methods</title>
     
     <para>As mentioned above, the Remote Java API provides client-like instances of the <code>RuntimeEngine</code>, <code>KieSession</code>,
-      <code>TaskService</code> and <code>AuditLogService</code> interfaces.</para>
+      <code>TaskService</code> and <code>AuditService</code> interfaces.</para>
     
     <para>This means that while many of the methods in those interfaces are available, some are not. The following tables lists the methods
       which are available. Methods not listed in the below, will throw an <code>UnsupportedOperationException</code> explaining that the 
@@ -1031,7 +1031,7 @@ private static InitialContext getRemoteInitialContext(String jbossServerHostName
     </table>
     
       <table frame="all">
-        <title>Available <code>AuditLogService</code> methods</title>
+        <title>Available <code>AuditService</code> methods</title>
         <tgroup cols="2" align="left" rowsep="1" colsep="1">
           <colspec colnum="1" colname="c1" colwidth="1*"></colspec>
           <colspec colnum="2" colname="c2" colwidth="3.55*"></colspec>

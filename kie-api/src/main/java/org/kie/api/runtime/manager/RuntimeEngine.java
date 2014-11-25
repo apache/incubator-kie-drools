@@ -49,5 +49,5 @@ public interface RuntimeEngine {
      * as process instance, node instance and variable log entries.
      * @return
      */
-    AuditService getAuditLogService();
+    AuditService getAuditService();
 }
