@@ -623,7 +623,7 @@ public class VariablePersistenceStrategyTest extends AbstractBaseTest {
     }
     
     private StatefulKnowledgeSession reloadSession(StatefulKnowledgeSession ksession, KnowledgeBase kbase, Environment env){
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         ksession.dispose();
         return JPAKnowledgeService.loadStatefulKnowledgeSession( sessionId, kbase, null, env);
     }

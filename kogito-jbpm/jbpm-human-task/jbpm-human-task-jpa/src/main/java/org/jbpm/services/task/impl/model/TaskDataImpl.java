@@ -99,7 +99,7 @@ public class TaskDataImpl implements InternalTaskData {
     
     private String deploymentId;
     
-    private int processSessionId;
+    private long processSessionId;
 
     @OneToMany(cascade = CascadeType.ALL, targetEntity=CommentImpl.class)
     @JoinColumn(name = "TaskData_Comments_Id", nullable = true)
@@ -261,7 +261,7 @@ public class TaskDataImpl implements InternalTaskData {
         
         if (processSessionId != -1) {
             out.writeBoolean(true);
-            out.writeInt(processSessionId);
+            out.writeLong(processSessionId);
         } else {
             out.writeBoolean(false);
         }
@@ -363,7 +363,7 @@ public class TaskDataImpl implements InternalTaskData {
         }
         
         if (in.readBoolean()) {
-            processSessionId = in.readInt();
+            processSessionId = in.readLong();
         }
         
         comments = CollectionUtils.readCommentList(in);
@@ -484,11 +484,11 @@ public class TaskDataImpl implements InternalTaskData {
 		this.processId = processId;
 	}
 	
-	public int getProcessSessionId() {
+	public long getProcessSessionId() {
 		return processSessionId;
 	}
 
-	public void setProcessSessionId(int processSessionId) {
+	public void setProcessSessionId(long processSessionId) {
 		this.processSessionId = processSessionId;
 	}
 

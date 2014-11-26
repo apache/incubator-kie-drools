@@ -443,7 +443,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         kruntime.addEventListener(new DefaultAgendaEventListener() {
             public void afterRuleFlowGroupDeactivated(final RuleFlowGroupDeactivatedEvent event) {
             	if (kruntime instanceof StatefulKnowledgeSession) {
-                    signalManager.signalEvent( "RuleFlowGroup_" + event.getRuleFlowGroup().getName() + "_" + ((StatefulKnowledgeSession) kruntime).getId(),
+                    signalManager.signalEvent( "RuleFlowGroup_" + event.getRuleFlowGroup().getName() + "_" + ((StatefulKnowledgeSession) kruntime).getIdentifier(),
                             null );
             	} else {
                     signalManager.signalEvent( "RuleFlowGroup_" + event.getRuleFlowGroup().getName(),

@@ -106,10 +106,10 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     	
     	if (engineInitEager) {
 			KieSession ksession = null;
-			Integer ksessionId = null;
+			Long ksessionId = null;
 			if (contextId == null || context instanceof EmptyContext) {
 				ksession = factory.newKieSession();
-				ksessionId = ksession.getId();
+				ksessionId = ksession.getIdentifier();
 			} else {
 				RuntimeEngine localRuntime = findLocalRuntime(contextId);
 				if (localRuntime != null) {
@@ -136,7 +136,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
 			}
     		// lazy initialization of ksession and task service
 	    	if (contextId != null && !(context instanceof EmptyContext)) {
-	    		Integer found = mapper.findMapping(context, this.identifier);
+	    		Long found = mapper.findMapping(context, this.identifier);
 			    if (found == null) {
 			        throw new SessionNotFoundException("No session found for context " + context.getContextId());
 			    }
@@ -159,17 +159,17 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         if (context == null || context.getContextId() == null) {
             return;
         }
-        Integer ksessionId = mapper.findMapping(context, this.identifier);
+        Long ksessionId = mapper.findMapping(context, this.identifier);
                 
         if (ksessionId == null) {
             // make sure ksession is not use by any other context
-            Object contextId = mapper.findContextId(ksession.getId(), this.identifier);
+            Object contextId = mapper.findContextId(ksession.getIdentifier(), this.identifier);
             if (contextId != null) {
-                throw new IllegalStateException("KieSession with id " + ksession.getId() + " is already used by another context");
+                throw new IllegalStateException("KieSession with id " + ksession.getIdentifier() + " is already used by another context");
             }
             return;
         }
-        if (ksession.getId() != ksessionId) {
+        if (ksession.getIdentifier() != ksessionId) {
             throw new IllegalStateException("Invalid session was used for this context " + context);
         }
         
@@ -183,7 +183,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     	removeLocalRuntime(runtime);
     	if (runtime instanceof Disposable) {
         	// special handling for in memory to not allow to dispose if there is any context in the mapper
-        	if (mapper instanceof InMemoryMapper && ((InMemoryMapper)mapper).hasContext(runtime.getKieSession().getId())){
+        	if (mapper instanceof InMemoryMapper && ((InMemoryMapper)mapper).hasContext(runtime.getKieSession().getIdentifier())){
         		return;
         	}
             ((Disposable) runtime).dispose();
@@ -206,8 +206,8 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     }
 
     
-    public boolean validate(Integer ksessionId, Long processInstanceId) {
-        Integer mapped = this.mapper.findMapping(ProcessInstanceIdContext.get(processInstanceId), this.identifier);
+    public boolean validate(Long ksessionId, Long processInstanceId) {
+    	Long mapped = this.mapper.findMapping(ProcessInstanceIdContext.get(processInstanceId), this.identifier);
         if (mapped == ksessionId) {
             return true;
         }
@@ -218,11 +218,11 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
 
     private class MaintainMappingListener extends DefaultProcessEventListener {
 
-        private Integer ksessionId;
+        private Long ksessionId;
         private RuntimeEngine runtime;
         private String managerId;
         
-        MaintainMappingListener(Integer ksessionId, RuntimeEngine runtime, String managerId) {
+        MaintainMappingListener(Long ksessionId, RuntimeEngine runtime, String managerId) {
         	this.ksessionId = ksessionId;
             this.runtime = runtime;
             this.managerId = managerId;
@@ -324,8 +324,8 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         
         if (!"false".equalsIgnoreCase(System.getProperty("org.jbpm.rm.init.timer"))) {
         	if (mapper instanceof JPAMapper) {
-        		List<Integer> ksessionsToInit = ((JPAMapper) mapper).findKSessionToInit(this.identifier);
-        		for (Integer id : ksessionsToInit) {
+        		List<Long> ksessionsToInit = ((JPAMapper) mapper).findKSessionToInit(this.identifier);
+        		for (Long id : ksessionsToInit) {
         			initialKsession = factory.findKieSessionById(id);
         			initialKsession.execute(new DisposeKSessionCommand(initialKsession, this));
         		}
@@ -361,7 +361,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             if (tm != null && tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
                     && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
                     && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
-            	TransactionManagerHelper.registerTransactionSyncInContainer(tm, new OrderedTransactionSynchronization(5, "PPIRM-"+initialKsession.getId()) {
+            	TransactionManagerHelper.registerTransactionSyncInContainer(tm, new OrderedTransactionSynchronization(5, "PPIRM-"+initialKsession.getIdentifier()) {
 					
                     @Override
                     public void beforeCompletion() {
@@ -406,7 +406,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             if (tm != null && tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
                     && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
                     && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
-            	TransactionManagerHelper.registerTransactionSyncInContainer(tm, new OrderedTransactionSynchronization(5, "PPIRM-"+initialKsession.getId()) {
+            	TransactionManagerHelper.registerTransactionSyncInContainer(tm, new OrderedTransactionSynchronization(5, "PPIRM-"+initialKsession.getIdentifier()) {
 					
                     @Override
                     public void beforeCompletion() {                           
@@ -435,10 +435,10 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     		Object contextId = context.getContextId();
     		
     		KieSession ksession = null;
-            Integer ksessionId = null;
+    		Long ksessionId = null;
             if (contextId == null || context instanceof EmptyContext ) { 
                 ksession = factory.newKieSession();
-                ksessionId = ksession.getId();                 
+                ksessionId = ksession.getIdentifier();                 
             } else {
                 RuntimeEngine localRuntime = ((PerProcessInstanceRuntimeManager)manager).findLocalRuntime(contextId);
                 if (localRuntime != null && ((RuntimeEngineImpl)engine).internalGetKieSession() != null) {

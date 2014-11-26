@@ -82,17 +82,17 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         assertTrue(sessionId == 0);
         
         runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();       
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         // dispose session that should not have affect on the session at all
         manager.disposeRuntimeEngine(runtime);
         
         ksession = manager.getRuntimeEngine(EmptyContext.get()).getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         
         // close manager which will close session maintained by the manager
         manager.close();
@@ -113,17 +113,17 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         assertTrue(sessionId == 1);
         
         runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         // dispose session that should not have affect on the session at all
         manager.disposeRuntimeEngine(runtime);
         
         ksession = manager.getRuntimeEngine(EmptyContext.get()).getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         
         // close manager which will close session maintained by the manager
         manager.close();
@@ -144,17 +144,17 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         assertTrue(sessionId == 1);
         
         runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         // dispose session that should not have affect on the session at all
         manager.disposeRuntimeEngine(runtime);
         
         ksession = manager.getRuntimeEngine(EmptyContext.get()).getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         
         // close manager which will close session maintained by the manager
         manager.close();
@@ -167,17 +167,17 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
-        sessionId = ksession.getId();
+        sessionId = ksession.getIdentifier();
         assertTrue(sessionId == 1);
         
         runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         // dispose session that should not have affect on the session at all
         manager.disposeRuntimeEngine(runtime);
         
         ksession = manager.getRuntimeEngine(EmptyContext.get()).getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         
         // close manager which will close session maintained by the manager
         manager.close();
@@ -199,17 +199,17 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         assertTrue(sessionId == 1);
         
         runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         // dispose session that should not have affect on the session at all
         manager.disposeRuntimeEngine(runtime);
         
         ksession = manager.getRuntimeEngine(EmptyContext.get()).getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         
         // close manager which will close session maintained by the manager
         manager.close();
@@ -223,17 +223,17 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
-        sessionId = ksession.getId();
+        sessionId = ksession.getIdentifier();
         assertTrue(sessionId == 2);
         
         runtime = manager2.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         // dispose session that should not have affect on the session at all
         manager2.disposeRuntimeEngine(runtime);
         
         ksession = manager2.getRuntimeEngine(EmptyContext.get()).getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         
         // close manager which will close session maintained by the manager
         manager2.close();
@@ -247,17 +247,17 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
-        sessionId = ksession.getId();
+        sessionId = ksession.getIdentifier();
         assertTrue(sessionId == 1);
         
         runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         // dispose session that should not have affect on the session at all
         manager.disposeRuntimeEngine(runtime);
         
         ksession = manager.getRuntimeEngine(EmptyContext.get()).getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         
         // close manager which will close session maintained by the manager
         manager.close();
@@ -271,17 +271,17 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
-        sessionId = ksession.getId();
+        sessionId = ksession.getIdentifier();
         assertTrue(sessionId == 2);
         
         runtime = manager2.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         // dispose session that should not have affect on the session at all
         manager2.disposeRuntimeEngine(runtime);
         
         ksession = manager2.getRuntimeEngine(EmptyContext.get()).getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         
         // close manager which will close session maintained by the manager
         manager2.close();        
@@ -326,7 +326,7 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
-        int ksession1Id = ksession.getId();
+        long ksession1Id = ksession.getIdentifier();
         assertTrue(ksession1Id == 1);
 
         ProcessInstance pi1 = ksession.startProcess("ParentProcess");
@@ -373,12 +373,12 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         assertTrue(sessionId == 1);
         
         runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         
         // start process
         ProcessInstance pi = ksession.createProcessInstance("BPMN2-BusinessRuleTask", null);
@@ -420,12 +420,12 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         assertTrue(sessionId == 1);
         
         runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         
         // start process
         ksession.addEventListener(new RuleAwareProcessEventLister());
@@ -466,20 +466,20 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         assertTrue(sessionId == 0);
         
         runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();       
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         // dispose session that should not have affect on the session at all
         manager.disposeRuntimeEngine(runtime);
         
         ksession = manager.getRuntimeEngine(EmptyContext.get()).getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         
         ksession.dispose();
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         
         // close manager which will close session maintained by the manager
         manager.close();
@@ -540,12 +540,12 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         assertTrue(sessionId == 1);
         
         runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         
         // start process
         ProcessInstance pi = ksession.createProcessInstance("BPMN2-BusinessRuleTask", null);

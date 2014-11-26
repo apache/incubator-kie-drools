@@ -359,7 +359,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
 
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
-        int ksessionId = ksession.getId();
+        long ksessionId = ksession.getIdentifier();
         
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
         ut.begin();
@@ -408,7 +408,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         KieSession ksession = runtime.getKieSession();
         
         
-        int ksessionId = ksession.getId();
+        long ksessionId = ksession.getIdentifier();
         
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "R3/PT1S");
@@ -464,7 +464,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
 
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
-        int ksessionId = ksession.getId();
+        long ksessionId = ksession.getIdentifier();
         
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
         ut.begin();

@@ -162,7 +162,11 @@ public class ProtobufProcessMarshaller
         timer.setDelay( _timer.getDelay() );
         timer.setPeriod( _timer.getPeriod() );
         timer.setProcessInstanceId( _timer.getProcessInstanceId() );
-        timer.setSessionId( _timer.getSessionId() );
+        if (_timer.hasDEPRECATEDSessionId()) {
+        	timer.setSessionId( _timer.getDEPRECATEDSessionId() );
+        } else {
+        	timer.setSessionId( _timer.getSessionId() );
+        }
         timer.setActivated( new Date( _timer.getActivatedTime() ) );
         if ( _timer.hasLastTriggered() ) {
             timer.setLastTriggered( new Date( _timer.getLastTriggered() ) );

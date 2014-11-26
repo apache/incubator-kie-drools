@@ -86,7 +86,7 @@ public class PersistenceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
-        int ksession1Id = ksession.getId();
+        long ksession1Id = ksession.getIdentifier();
         assertTrue(ksession1Id == 2);
 
         ProcessInstance pi1 = ksession.startProcess("UserTask");

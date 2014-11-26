@@ -51,7 +51,7 @@ public class StatefulProcessSession extends AbstractRuntime implements StatefulK
 	private Environment environment;
 	private TimerService timerService;
 	protected Queue<WorkingMemoryAction> actionQueue;
-	private int id;
+	private Long id;
 	private MapGlobalResolver globals = new MapGlobalResolver();
 	
 	public StatefulProcessSession(KnowledgeBase kbase, KieSessionConfiguration sessionConfiguration, Environment environment) {
@@ -186,12 +186,12 @@ public class StatefulProcessSession extends AbstractRuntime implements StatefulK
 		}
 	}
 	
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	public int getId() {
-		return id;
+		return id.intValue();
 	}
 	
 	public void setEndOperationListener(EndOperationListener listener) {
@@ -381,5 +381,11 @@ public class StatefulProcessSession extends AbstractRuntime implements StatefulK
     public void destroy() {
         dispose();
     }
+
+	@Override
+	public long getIdentifier() {
+		return id;
+	}
+
 
 }

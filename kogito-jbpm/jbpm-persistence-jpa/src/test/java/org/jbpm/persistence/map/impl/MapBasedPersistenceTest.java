@@ -44,7 +44,7 @@ public class MapBasedPersistenceTest extends MapPersistenceTest {
     }
     
     @Override
-    protected StatefulKnowledgeSession disposeAndReloadSession(StatefulKnowledgeSession ksession, int ksessionId,
+    protected StatefulKnowledgeSession disposeAndReloadSession(StatefulKnowledgeSession ksession, long ksessionId,
                                                              KieBase kbase) {
         ksession.dispose();
         EnvironmentBuilder envBuilder = new ProcessStorageEnvironmentBuilder( storage );
@@ -70,7 +70,7 @@ public class MapBasedPersistenceTest extends MapPersistenceTest {
     private static class SimpleProcessStorage
         implements
         ProcessStorage {
-        private Map<Integer, SessionInfo>      ksessions = new HashMap<Integer, SessionInfo>();
+        private Map<Long, SessionInfo>      ksessions = new HashMap<Long, SessionInfo>();
         private Map<Long, ProcessInstanceInfo> processes = new HashMap<Long, ProcessInstanceInfo>();
         private Map<Long, WorkItemInfo>        workItems = new HashMap<Long, WorkItemInfo>();
 
@@ -80,7 +80,7 @@ public class MapBasedPersistenceTest extends MapPersistenceTest {
                            ksessionInfo );
         }
 
-        public SessionInfo findSessionInfo(Integer id) {
+        public SessionInfo findSessionInfo(Long id) {
             return ksessions.get( id );
         }
 
@@ -132,8 +132,8 @@ public class MapBasedPersistenceTest extends MapPersistenceTest {
             workItems.remove( workItemInfo.getId() );
         }
 
-        public Integer getNextStatefulKnowledgeSessionId() {
-            return  ksessions.size() + 1 ;
+        public Long getNextStatefulKnowledgeSessionId() {
+            return  new Long(ksessions.size() + 1) ;
         }
 
         @Override

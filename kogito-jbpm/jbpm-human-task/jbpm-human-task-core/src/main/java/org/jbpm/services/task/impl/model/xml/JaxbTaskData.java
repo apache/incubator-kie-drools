@@ -98,8 +98,8 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     private String processId;
 
     @XmlElement(name = "process-session-id")
-    @XmlSchemaType(name = "int")
-    private Integer processSessionId;
+    @XmlSchemaType(name = "long")
+    private Long processSessionId;
 
     @XmlElement
     private List<JaxbComment> comments;
@@ -232,7 +232,7 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     }
 
     @Override
-    public int getProcessSessionId() {
+    public long getProcessSessionId() {
         return processSessionId;
     }
 
@@ -387,7 +387,7 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
         this.processId = processId;
     }
 
-    public void setProcessSessionId(Integer processSessionId) {
+    public void setProcessSessionId(Long processSessionId) {
         this.processSessionId = processSessionId;
     }
 

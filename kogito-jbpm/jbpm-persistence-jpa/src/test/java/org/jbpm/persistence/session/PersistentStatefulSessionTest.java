@@ -194,7 +194,7 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
                       list.size() );
         
         // now load the ksession
-        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( ksession.getId(), kbase, null, env );
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( ksession.getIdentifier(), kbase, null, env );
         
         ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
         ut.begin();
@@ -218,7 +218,7 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         int origNumObjects = ksession.getObjects().size();
-        int id = ksession.getId();
+        long id = ksession.getIdentifier();
         
         ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
         ksession.insert( "TestString" );
@@ -280,7 +280,7 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        int id = ksession.getId();
+        long id = ksession.getIdentifier();
         
         UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
         ut.begin();
@@ -357,7 +357,7 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        int id = ksession.getId();
+        long id = ksession.getIdentifier();
         
         ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
         logger.debug( "Started process instance {}", processInstance.getId() );
@@ -386,7 +386,7 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        int id = ksession.getId();
+        long id = ksession.getIdentifier();
         
         ksession.insert(new ArrayList<Object>());
 
@@ -412,7 +412,7 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        int id = ksession.getId();
+        long id = ksession.getIdentifier();
         
         ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
         logger.debug( "Started process instance {}", processInstance.getId() );
@@ -536,7 +536,7 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        int id = ksession.getId();
+        long id = ksession.getIdentifier();
         
         ProcessInstance processInstance = ksession.startProcess( "com.sample.SuperProcess" );
         logger.debug( "Started process instance {}", processInstance.getId() );
@@ -583,7 +583,7 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        int id = ksession.getId();
+        long id = ksession.getIdentifier();
 
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("name", "John Doe");

@@ -375,7 +375,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         
         Task task = taskService.getTaskById(taskSummary.getId());
         assertEquals(AccessType.Inline, ((InternalTaskData) task.getTaskData()).getDocumentAccessType());
-        assertEquals(task.getTaskData().getProcessSessionId(), TestStatefulKnowledgeSession.testSessionId);
+        assertEquals(task.getTaskData().getProcessSessionId(), TestStatefulKnowledgeSession.testSessionId.intValue());
         long contentId = task.getTaskData().getDocumentContentId();
         assertTrue(contentId != -1);
 

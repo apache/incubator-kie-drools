@@ -59,8 +59,8 @@ public class UnmarshallingOverdueTimersTest extends AbstractBaseTest {
         return JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
     }
 
-    private static int knowledgeSessionDispose(StatefulKnowledgeSession ksession) {
-        int ksessionId = ksession.getId();
+    private static long knowledgeSessionDispose(StatefulKnowledgeSession ksession) {
+        long ksessionId = ksession.getIdentifier();
         logger.debug("disposing of ksesssion");
         ksession.dispose();
         return ksessionId;
@@ -121,11 +121,11 @@ public class UnmarshallingOverdueTimersTest extends AbstractBaseTest {
 
             // dispose of session 
             KieSessionConfiguration config = ksession.getSessionConfiguration();
-            int ksessionId = knowledgeSessionDispose(ksession);
+            long ksessionId = knowledgeSessionDispose(ksession);
             
             // print info for next test
             if( debug ) { 
-                sessionPropVal = Integer.toString(ksessionId);
+                sessionPropVal = Long.toString(ksessionId);
             }
             else { 
                 logger.info("export {}={}", sessionPropName, ksessionId );

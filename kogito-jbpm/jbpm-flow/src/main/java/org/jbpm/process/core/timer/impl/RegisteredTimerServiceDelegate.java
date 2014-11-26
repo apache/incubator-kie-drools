@@ -103,7 +103,7 @@ public class RegisteredTimerServiceDelegate implements TimerService, InternalSch
     }
 
     @Override
-    public Collection<TimerJobInstance> getTimerJobInstances(int id) {        
+    public Collection<TimerJobInstance> getTimerJobInstances(long id) {        
         return timerService.getTimerJobInstances(id);
     }
 

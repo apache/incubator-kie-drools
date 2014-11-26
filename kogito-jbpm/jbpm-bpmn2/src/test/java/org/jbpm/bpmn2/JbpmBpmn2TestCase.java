@@ -475,7 +475,7 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
     
     protected KieSession restoreSession(KieSession ksession, boolean noCache) {
         if (sessionPersistence) {
-            int id = ksession.getId();
+            long id = ksession.getIdentifier();
             KieBase kbase = ksession.getKieBase();
             Environment env = null;
             if (noCache) {

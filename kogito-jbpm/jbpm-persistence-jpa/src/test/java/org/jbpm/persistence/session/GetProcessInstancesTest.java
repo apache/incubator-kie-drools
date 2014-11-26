@@ -39,7 +39,7 @@ public class GetProcessInstancesTest extends AbstractBaseTest {
     
     private Environment env;
     private KnowledgeBase kbase;
-    private int sessionId;
+    private long sessionId;
     
     public GetProcessInstancesTest(boolean locking) { 
        this.useLocking = locking; 
@@ -58,7 +58,7 @@ public class GetProcessInstancesTest extends AbstractBaseTest {
 
         kbase = createBase();
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
-        sessionId = ksession.getId();
+        sessionId = ksession.getIdentifier();
         ksession.dispose();
     }
 

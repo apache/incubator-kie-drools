@@ -96,7 +96,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
     private String getRuleSetEventType() {
     	InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
     	if (kruntime instanceof StatefulKnowledgeSession) {
-    		return "RuleFlowGroup_" + getRuleFlowGroup() + "_" + ((StatefulKnowledgeSession) kruntime).getId();
+    		return "RuleFlowGroup_" + getRuleFlowGroup() + "_" + ((StatefulKnowledgeSession) kruntime).getIdentifier();
     	} else {
     		return "RuleFlowGroup_" + getRuleFlowGroup();
     	}

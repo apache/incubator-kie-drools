@@ -53,7 +53,7 @@ public class JPAMapper implements Mapper {
 
     
     @Override
-    public void saveMapping(Context context, Integer ksessionId, String ownerId) {
+    public void saveMapping(Context context, Long ksessionId, String ownerId) {
 		EntityManagerInfo info = getEntityManager(context);
 		EntityManager em = info.getEntityManager();
 		em.persist(new ContextMappingInfo(resolveContext(context, em).getContextId().toString(),
@@ -65,7 +65,7 @@ public class JPAMapper implements Mapper {
     }
 
     @Override
-    public Integer findMapping(Context context, String ownerId) {
+    public Long findMapping(Context context, String ownerId) {
     	EntityManagerInfo info = getEntityManager(context);
     	EntityManager em = info.getEntityManager();
         try {
@@ -138,7 +138,7 @@ public class JPAMapper implements Mapper {
 
 
     @Override
-    public Object findContextId(Integer ksessionId, String ownerId) {
+    public Object findContextId(Long ksessionId, String ownerId) {
         EntityManagerInfo info = getEntityManager(null);
     	EntityManager em = info.getEntityManager();
         try {
@@ -200,7 +200,7 @@ public class JPAMapper implements Mapper {
     
     
     @SuppressWarnings("unchecked")
-	public List<Integer> findKSessionToInit(String ownerId) {
+	public List<Long> findKSessionToInit(String ownerId) {
         EntityManager em = emf.createEntityManager();
         Query findQuery = em.createNamedQuery("FindKSessionToInit").setParameter("ownerId", ownerId);
         return findQuery.getResultList();

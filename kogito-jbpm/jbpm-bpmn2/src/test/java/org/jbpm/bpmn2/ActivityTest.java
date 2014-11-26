@@ -548,7 +548,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getId(), null);
 
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         Environment env = ksession.getEnvironment();
 
         ksession.dispose();
@@ -723,7 +723,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getId(), res);
 
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         Environment env = ksession.getEnvironment();
 
         logger.info("dispose");

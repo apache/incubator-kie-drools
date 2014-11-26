@@ -55,7 +55,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         assertEquals(0, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         Environment env = ksession.getEnvironment();
 
         final List<Long> list = new ArrayList<Long>();
@@ -106,7 +106,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         assertEquals(0, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         Environment env = ksession.getEnvironment();
 
         final List<Long> list = new ArrayList<Long>();
@@ -153,7 +153,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseFromDisc("rules-timer.drl");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         Environment env = ksession.getEnvironment();
 
         final List<String> list = new ArrayList<String>();
@@ -196,7 +196,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("rules-timer.drl");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         Environment env = ksession.getEnvironment();
 
         final List<String> list = new ArrayList<String>();

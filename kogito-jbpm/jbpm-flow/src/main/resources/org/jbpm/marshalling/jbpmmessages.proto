@@ -180,7 +180,8 @@ message ProcessTimer {
         optional int64 process_instance_id = 5;
         optional int64 activated_time = 6;
         optional int64 last_triggered = 7;
-        optional int32 sessionId = 8;
+        optional int32 DEPRECATED_sessionId = 8;
+        optional int64 sessionId = 9;
     }
 }
 

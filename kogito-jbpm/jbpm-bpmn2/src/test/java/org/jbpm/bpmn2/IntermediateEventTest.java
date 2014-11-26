@@ -1064,7 +1064,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         };
         ksession.addEventListener(listener);
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         Environment env = ksession.getEnvironment();
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
                 new DoNothingWorkItemHandler());

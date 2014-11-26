@@ -58,7 +58,7 @@ public class TimerPersistenceTest extends JbpmJUnitBaseTestCase {
         createRuntimeManager(PROCESS_FILE_NAME);
         RuntimeEngine runtimeEngine = getRuntimeEngine();
         KieSession ksession = runtimeEngine.getKieSession();
-        int ksessionId = ksession.getId();
+        long ksessionId = ksession.getIdentifier();
         assertTrue("session id not saved.", ksessionId > 0);
         
         HumanTaskMockHandler humanTaskMockHandler = new HumanTaskMockHandler();
@@ -81,7 +81,7 @@ public class TimerPersistenceTest extends JbpmJUnitBaseTestCase {
         createRuntimeManager(PROCESS_FILE_NAME);
         RuntimeEngine runtimeEngine = getRuntimeEngine();
         KieSession ksession = runtimeEngine.getKieSession();
-        int ksessionId = ksession.getId();
+        long ksessionId = ksession.getIdentifier();
     
         // Start the process
         ProcessInstance process = ksession.startProcess(DELAY_TIMER_PROCESS);
@@ -135,7 +135,7 @@ public class TimerPersistenceTest extends JbpmJUnitBaseTestCase {
         createRuntimeManager(PROCESS_FILE_NAME);
         RuntimeEngine runtimeEngine = getRuntimeEngine();
         KieSession ksession = runtimeEngine.getKieSession();
-        int ksessionId = ksession.getId();
+        long ksessionId = ksession.getIdentifier();
         assertTrue("session id not saved.", ksessionId > 0);
         
         HumanTaskMockHandler humanTaskMockHandler = new HumanTaskMockHandler();

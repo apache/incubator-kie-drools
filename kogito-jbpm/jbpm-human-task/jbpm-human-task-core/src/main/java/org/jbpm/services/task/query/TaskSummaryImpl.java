@@ -46,7 +46,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
     private Date expirationTime;
     private long processInstanceId;
     private String processId;
-    private int processSessionId;
+    private long processSessionId;
     private String deploymentId;
     private SubTasksStrategy subTaskStrategy;
     private long parentId;
@@ -66,7 +66,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
             Date activationTime,
             Date expirationTime,
             String processId,
-            int processSessionId,
+            long processSessionId,
             long processInstanceId,
             String deploymentId,
             SubTasksStrategy subTaskStrategy,
@@ -217,7 +217,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
             out.writeBoolean(false);
         }
 
-        out.writeInt(processSessionId);
+        out.writeLong(processSessionId);
 
         if (subTaskStrategy != null) {
             out.writeBoolean(true);
@@ -279,7 +279,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
             processId = in.readUTF();
         }
 
-        processSessionId = in.readInt();
+        processSessionId = in.readLong();
 
         if (in.readBoolean()) {
             subTaskStrategy = SubTasksStrategy.valueOf(in.readUTF());
@@ -404,11 +404,11 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         this.processId = processId;
     }
 
-    public Integer getProcessSessionId() {
+    public Long getProcessSessionId() {
         return processSessionId;
     }
 
-    public void setProcessSessionId(int processSessionId) {
+    public void setProcessSessionId(long processSessionId) {
         this.processSessionId = processSessionId;
     }
 
@@ -460,7 +460,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         result = prime * result + ((status == null) ? 0 : status.hashCode());
         result = prime * result + ((subject == null) ? 0 : subject.hashCode());
         result = prime * result + ((processId == null) ? 0 : processId.hashCode());
-        result = prime * result + processSessionId;
+        result = prime * result + (int) (processSessionId ^ (processSessionId >>> 32));
         return result;
     }
 
@@ -590,4 +590,5 @@ public class TaskSummaryImpl implements InternalTaskSummary {
     public String getDeploymentId() {
         return deploymentId;
     }
+
 }

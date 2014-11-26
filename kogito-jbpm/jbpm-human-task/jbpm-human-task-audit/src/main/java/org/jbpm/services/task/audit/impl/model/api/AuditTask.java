@@ -67,9 +67,9 @@ public interface AuditTask {
 
     void setProcessId(String processId);
 
-    int getProcessSessionId();
+    long getProcessSessionId();
 
-    void setProcessSessionId(int processSessionId);
+    void setProcessSessionId(long processSessionId);
 
     long getParentId();
 

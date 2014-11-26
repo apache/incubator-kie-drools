@@ -81,7 +81,7 @@ public class TimerManager {
             }
             timer.setId(++timerId);
             timer.setProcessInstanceId(processInstance.getId());
-            timer.setSessionId(((KieSession) kruntime).getId());
+            timer.setSessionId(((KieSession) kruntime).getIdentifier());
             timer.setActivated(new Date());
 
             Trigger trigger = new IntervalTrigger(timerService.getCurrentTime(), null, null, timer.getRepeatLimit(),
@@ -106,7 +106,7 @@ public class TimerManager {
             }
             timer.setId(++timerId);
             timer.setProcessInstanceId(-1l);
-            timer.setSessionId(((StatefulKnowledgeSession) kruntime).getId());
+            timer.setSessionId(((StatefulKnowledgeSession) kruntime).getIdentifier());
             timer.setActivated(new Date());
 
             Trigger trigger = null;
@@ -359,7 +359,7 @@ public class TimerManager {
         private Trigger trigger;
 
         private JobHandle jobHandle;
-        private Integer sessionId;
+        private Long sessionId;
 
         public ProcessJobContext(final TimerInstance timer, final Trigger trigger, final Long processInstanceId,
                 final InternalKnowledgeRuntime kruntime) {
@@ -394,7 +394,7 @@ public class TimerManager {
             return timer;
         }
 
-        public Integer getSessionId() {
+        public Long getSessionId() {
             return sessionId;
         }
 

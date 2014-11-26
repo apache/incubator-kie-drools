@@ -36,7 +36,7 @@ public abstract class MapPersistenceTest extends AbstractBaseTest {
         KieBase kbase = createKieBase(ProcessCreatorForHelp.newProcessWithOneWork( processId, workName ));
 
         StatefulKnowledgeSession ksession = createSession(kbase);
-        int ksessionId = ksession.getId();
+        long ksessionId = ksession.getIdentifier();
 
         DummyWorkItemHandler handler = new DummyWorkItemHandler();
         ksession.getWorkItemManager()
@@ -90,9 +90,9 @@ public abstract class MapPersistenceTest extends AbstractBaseTest {
         KieBase kbase = createKieBase(ProcessCreatorForHelp.newProcessWithOneWork( processId, workName ) );
 
         StatefulKnowledgeSession ksession1 = createSession(kbase);
-        int ksession1Id = ksession1.getId();
+        long ksession1Id = ksession1.getIdentifier();
         StatefulKnowledgeSession ksession2 = createSession(kbase);
-        int ksession2Id = ksession2.getId();
+        long ksession2Id = ksession2.getIdentifier();
 
         DummyWorkItemHandler handler1 = new DummyWorkItemHandler();
         ksession1.getWorkItemManager()
@@ -134,7 +134,7 @@ public abstract class MapPersistenceTest extends AbstractBaseTest {
         StatefulKnowledgeSession ksession1 = createSession(kbase1);
         StatefulKnowledgeSession ksession2 = createSession(kbase2);
 
-        Assert.assertNotSame(ksession1.getId(), ksession2.getId());
+        Assert.assertNotSame(ksession1.getIdentifier(), ksession2.getIdentifier());
 
     }
 
@@ -154,7 +154,7 @@ public abstract class MapPersistenceTest extends AbstractBaseTest {
         StatefulKnowledgeSession ksession1 = createSession(kbase1);
         StatefulKnowledgeSession ksession2 = createSession(kbase2);
 
-        Assert.assertNotSame(ksession1.getId(), ksession2.getId());
+        Assert.assertNotSame(ksession1.getIdentifier(), ksession2.getIdentifier());
 
         Long processInstance1Id = ksession1.startProcess(processId).getId();
 
@@ -247,7 +247,7 @@ public abstract class MapPersistenceTest extends AbstractBaseTest {
     protected abstract StatefulKnowledgeSession createSession(KieBase kbase);
     
     protected abstract StatefulKnowledgeSession disposeAndReloadSession(StatefulKnowledgeSession crmPersistentSession,
-                                                                        int ksessionId,
+                                                                        long ksessionId,
                                                                         KieBase kbase);
 
     protected abstract int getProcessInstancesCount();

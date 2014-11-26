@@ -28,16 +28,16 @@ import org.kie.internal.runtime.manager.Mapper;
  */
 public class InMemoryMapper implements Mapper {
 
-    private Map<Object, Integer> mapping = new ConcurrentHashMap<Object, Integer>();
+    private Map<Object, Long> mapping = new ConcurrentHashMap<Object, Long>();
     
     
     @Override
-    public void saveMapping(Context<?> context, Integer ksessionId, String ownerId) {
+    public void saveMapping(Context<?> context, Long ksessionId, String ownerId) {
         this.mapping.put(context.getContextId(), ksessionId);
     }
 
     @Override
-    public Integer findMapping(Context<?> context, String ownerId) {
+    public Long findMapping(Context<?> context, String ownerId) {
         return this.mapping.get(context.getContextId());
     }
 
@@ -47,10 +47,10 @@ public class InMemoryMapper implements Mapper {
     }
 
     @Override
-    public Object findContextId(Integer ksessionId, String ownerId) {
+    public Object findContextId(Long ksessionId, String ownerId) {
         if (mapping.containsValue(ksessionId)) {
-            for (Map.Entry<Object, Integer> entry : mapping.entrySet()) {
-                if (entry.getValue() == ksessionId) {
+            for (Map.Entry<Object, Long> entry : mapping.entrySet()) {
+                if (entry.getValue().equals(ksessionId)) {
                     return entry.getKey();
                 }
             }
@@ -58,7 +58,7 @@ public class InMemoryMapper implements Mapper {
         return null;
     }
 
-    public boolean hasContext(Integer ksessionId) {
+    public boolean hasContext(Long ksessionId) {
     	return mapping.containsValue(ksessionId);
     }
 }

@@ -81,7 +81,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
     	}
         // TODO should we proxy/wrap the ksession so we capture dispose.destroy method calls?
         String location = getLocation();
-        Integer knownSessionId = getPersistedSessionId(location, identifier);
+        Long knownSessionId = getPersistedSessionId(location, identifier);
         InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();
         
         
@@ -96,7 +96,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
         if (this.singleton == null) {
             
             this.singleton = new SynchronizedRuntimeImpl(factory.newKieSession(), internalTaskService);            
-            persistSessionId(location, identifier, singleton.getKieSession().getId());
+            persistSessionId(location, identifier, singleton.getKieSession().getIdentifier());
         }
         ((RuntimeEngineImpl) singleton).setManager(this);
         configureRuntimeOnTaskService(internalTaskService, singleton);
@@ -122,7 +122,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
     	if (isClosed()) {
     		throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
     	}
-        if (this.singleton != null && this.singleton.getKieSession().getId() != ksession.getId()) {
+        if (this.singleton != null && this.singleton.getKieSession().getIdentifier() != ksession.getIdentifier()) {
             throw new IllegalStateException("Invalid session was used for this context " + context);
         }
     }
@@ -157,22 +157,26 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
      * @param identifier of the manager owning this ksessionId
      * @return sessionId if file was found otherwise 0
      */
-    protected int getPersistedSessionId(String location, String identifier) {
+    protected Long getPersistedSessionId(String location, String identifier) {
         File sessionIdStore = new File(location + File.separator + identifier+ "-jbpmSessionId.ser");
         if (sessionIdStore.exists()) {
-            Integer knownSessionId = null; 
+        	Long knownSessionId = null; 
             FileInputStream fis = null;
             ObjectInputStream in = null;
             try {
                 fis = new FileInputStream(sessionIdStore);
                 in = new ObjectInputStream(fis);
                 
-                knownSessionId = (Integer) in.readObject();
+            	Object tmp = in.readObject();
+            	if (tmp instanceof Integer) {
+            		tmp = new Long((Integer) tmp);
+            	}
+        		knownSessionId = (Long) tmp;
                 
-                return knownSessionId.intValue();
+                return knownSessionId.longValue();
                 
             } catch (Exception e) {
-                return 0;
+                return 0L;
             } finally {
                 if (in != null) {
                     try {
@@ -190,7 +194,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
             }
             
         } else {
-            return 0;
+            return 0L;
         }
     }
     
@@ -200,7 +204,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
      * @param identifier of the manager owning this ksessionId
      * @param ksessionId value of ksessionId to be stored
      */
-    protected void persistSessionId(String location, String identifier, int ksessionId) {
+    protected void persistSessionId(String location, String identifier, Long ksessionId) {
         if (location == null) {
             return;
         }
@@ -209,7 +213,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
         try {
             fos = new FileOutputStream(location + File.separator + identifier + "-jbpmSessionId.ser");
             out = new ObjectOutputStream(fos);
-            out.writeObject(Integer.valueOf(ksessionId));
+            out.writeObject(Long.valueOf(ksessionId));
             out.close();
         } catch (IOException ex) {
 //            logger.warn("Error when persisting known session id", ex);

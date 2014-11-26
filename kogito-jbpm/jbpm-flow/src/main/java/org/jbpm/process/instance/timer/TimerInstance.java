@@ -36,7 +36,7 @@ public class TimerInstance implements Serializable{
     private Date lastTriggered;
     private long processInstanceId;
     private int repeatLimit = -1;
-    private int sessionId;
+    private long sessionId;
     private String cronExpression;
     
     public long getId() {
@@ -117,11 +117,11 @@ public class TimerInstance implements Serializable{
         this.repeatLimit = stopAfter;
     }
 
-    public int getSessionId() {
+    public long getSessionId() {
         return sessionId;
     }
 
-    public void setSessionId(int sessionId) {
+    public void setSessionId(long sessionId) {
         this.sessionId = sessionId;
     }
 

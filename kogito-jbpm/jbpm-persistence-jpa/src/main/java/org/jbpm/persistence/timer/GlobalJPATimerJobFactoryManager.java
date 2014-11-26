@@ -37,7 +37,7 @@ public class GlobalJPATimerJobFactoryManager implements TimerJobFactoryManager {
 
     private Map<Long, TimerJobInstance> emptyStore = new HashMap<Long,TimerJobInstance>();
     private CommandService commandService;
-    private Map<Integer, Map<Long, TimerJobInstance>> timerInstances;
+    private Map<Long, Map<Long, TimerJobInstance>> timerInstances;
     private Map<Long, TimerJobInstance> singleTimerInstances;
     
     public void setCommandService(CommandService commandService) {
@@ -45,7 +45,7 @@ public class GlobalJPATimerJobFactoryManager implements TimerJobFactoryManager {
     }
     
     public GlobalJPATimerJobFactoryManager() {
-        timerInstances = new ConcurrentHashMap<Integer, Map<Long, TimerJobInstance>>();
+        timerInstances = new ConcurrentHashMap<Long, Map<Long, TimerJobInstance>>();
         singleTimerInstances = new ConcurrentHashMap<Long, TimerJobInstance>();
         
     }
@@ -55,7 +55,7 @@ public class GlobalJPATimerJobFactoryManager implements TimerJobFactoryManager {
                                                    Trigger trigger,
                                                    JobHandle handle,
                                                    InternalSchedulerService scheduler) {
-    	int sessionId = -1;
+    	long sessionId = -1;
     	if (ctx instanceof ProcessJobContext) {
             sessionId = ((ProcessJobContext) ctx).getSessionId();
             Map<Long, TimerJobInstance> instances = timerInstances.get(sessionId);
@@ -83,7 +83,7 @@ public class GlobalJPATimerJobFactoryManager implements TimerJobFactoryManager {
         }
         Map<Long, TimerJobInstance> instances = null;
         if (ctx instanceof ProcessJobContext) {
-            int sessionId = ((ProcessJobContext)ctx).getSessionId();
+            long sessionId = ((ProcessJobContext)ctx).getSessionId();
             instances = timerInstances.get(sessionId);
             if (instances == null) {
                 instances = new ConcurrentHashMap<Long, TimerJobInstance>();
@@ -103,7 +103,7 @@ public class GlobalJPATimerJobFactoryManager implements TimerJobFactoryManager {
         }
         Map<Long, TimerJobInstance> instances = null;
         if (ctx instanceof ProcessJobContext) {
-            int sessionId = ((ProcessJobContext)ctx).getSessionId();
+            long sessionId = ((ProcessJobContext)ctx).getSessionId();
             instances = timerInstances.get(sessionId);
             if (instances == null) {
                 instances = new ConcurrentHashMap<Long, TimerJobInstance>();

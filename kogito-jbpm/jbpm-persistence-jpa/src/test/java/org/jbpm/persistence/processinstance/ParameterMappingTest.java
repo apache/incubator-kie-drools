@@ -62,7 +62,7 @@ public class ParameterMappingTest extends AbstractBaseTest {
         }
 
         ksession = JPAKnowledgeService.newStatefulKnowledgeSession(createKnowledgeBase(), null, env);
-        assertTrue("Valid KnowledgeSession could not be created.", ksession != null && ksession.getId() > 0);
+        assertTrue("Valid KnowledgeSession could not be created.", ksession != null && ksession.getIdentifier() > 0);
 
         listener = new ProcessListener();
         ksession.addEventListener(listener);

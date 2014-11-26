@@ -80,26 +80,26 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         assertTrue(sessionId == 0);
         manager.disposeRuntimeEngine(runtime);
         
         runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();    
         // session id should be 1+ previous session id
-        assertEquals(sessionId+1, ksession.getId());
-        sessionId = ksession.getId();
+        assertEquals(sessionId+1, ksession.getIdentifier());
+        sessionId = ksession.getIdentifier();
         manager.disposeRuntimeEngine(runtime);
         
         runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();         
         // session id should be 1+ previous session id
-        assertEquals(sessionId+1, ksession.getId());
+        assertEquals(sessionId+1, ksession.getIdentifier());
         manager.disposeRuntimeEngine(runtime);     
         
         // when trying to access session after dispose 
         try {
-            ksession.getId();
+            ksession.getIdentifier();
             fail("Should fail as session manager was closed and with that it's session");
         } catch (IllegalStateException e) {
             
@@ -123,26 +123,26 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         assertTrue(sessionId == 1);
         manager.disposeRuntimeEngine(runtime);
         
         runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();    
         // session id should be 1+ previous session id
-        assertEquals(sessionId+1, ksession.getId());
-        sessionId = ksession.getId();
+        assertEquals(sessionId+1, ksession.getIdentifier());
+        sessionId = ksession.getIdentifier();
         manager.disposeRuntimeEngine(runtime);
         
         runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();         
         // session id should be 1+ previous session id
-        assertEquals(sessionId+1, ksession.getId());
+        assertEquals(sessionId+1, ksession.getIdentifier());
         manager.disposeRuntimeEngine(runtime);       
         
         // when trying to access session after dispose 
         try {
-            ksession.getId();
+            ksession.getIdentifier();
             fail("Should fail as session manager was closed and with that it's session");
         } catch (IllegalStateException e) {
             
@@ -170,7 +170,7 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         assertTrue(sessionId == 1);
         
         ut.commit();
@@ -178,7 +178,7 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
         // since session was created with transaction tx sync is registered to dispose session
         // so now session should already be disposed
         try {
-            ksession.getId();
+            ksession.getIdentifier();
             fail("Should fail as session manager was closed and with that it's session");
         } catch (IllegalStateException e) {
             
@@ -205,7 +205,7 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
-        int ksession1Id = ksession.getId();
+        long ksession1Id = ksession.getIdentifier();
         assertTrue(ksession1Id == 1);
 
         ProcessInstance pi1 = ksession.startProcess("ParentProcess");

@@ -544,9 +544,9 @@ public class SessionTest extends AbstractBaseTest {
 		synchronized((SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) runtime.getKieSession()).getCommandService()) {
 			UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
 			ut.begin();
-			logger.debug("Starting process on ksession {}", runtime.getKieSession().getId());
+			logger.debug("Starting process on ksession {}", runtime.getKieSession().getIdentifier());
 			ProcessInstance processInstance = runtime.getKieSession().startProcess("com.sample.bpmn.hello", null);
-			logger.debug("Started process instance {} on ksession {}", processInstance.getId(), runtime.getKieSession().getId());
+			logger.debug("Started process instance {} on ksession {}", processInstance.getId(), runtime.getKieSession().getIdentifier());
 			long workItemId = ((HumanTaskNodeInstance) ((WorkflowProcessInstance) processInstance).getNodeInstances().iterator().next()).getWorkItemId();
 			taskId = runtime.getTaskService().getTaskByWorkItemId(workItemId).getId();
 			logger.debug("Created task {}", taskId);

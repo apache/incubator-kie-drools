@@ -138,7 +138,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
             taskData.setDeploymentId(deploymentId);            
         }
         if (session != null && (session instanceof KieSession)) {
-            taskData.setProcessSessionId(((KieSession) session).getId());
+            taskData.setProcessSessionId(((KieSession) session).getIdentifier());
         }
         taskData.setSkipable(!"false".equals(workItem.getParameter("Skippable")));
         //Sub Task Data

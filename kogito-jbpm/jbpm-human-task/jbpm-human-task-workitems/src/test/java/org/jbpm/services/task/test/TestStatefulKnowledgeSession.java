@@ -33,7 +33,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class TestStatefulKnowledgeSession extends AbstractRuntime implements StatefulKnowledgeSession {
 
-    public static int testSessionId = 5;
+    public static Long testSessionId = 5L;
     private Environment env;
 
     public Calendars getCalendars() {
@@ -266,7 +266,11 @@ public class TestStatefulKnowledgeSession extends AbstractRuntime implements Sta
     }
 
     public int getId() {
-        return testSessionId;
+        return testSessionId.intValue();
+    }
+    
+    public long getIdentifier() {
+    	return testSessionId;
     }
 
     @Override

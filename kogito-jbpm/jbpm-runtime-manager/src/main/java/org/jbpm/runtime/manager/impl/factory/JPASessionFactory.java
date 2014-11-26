@@ -46,7 +46,7 @@ public class JPASessionFactory implements SessionFactory {
     }
 
     @Override
-    public KieSession findKieSessionById(Integer sessionId) {
+    public KieSession findKieSessionById(Long sessionId) {
         if (sessionId == null) {
             return null;
         }

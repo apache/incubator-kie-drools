@@ -99,7 +99,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
-        int ksession1Id = ksession.getId();
+        long ksession1Id = ksession.getIdentifier();
         assertTrue(ksession1Id == 1);
         
         // FIXME quick hack to overcome problems with same pi ids when not using persistence
@@ -111,7 +111,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession2 = runtime2.getKieSession();
 
         assertNotNull(ksession2);       
-        int ksession2Id = ksession2.getId();
+        long ksession2Id = ksession2.getIdentifier();
         assertTrue(ksession2Id == 2);
         
         ProcessInstance pi1 = ksession.startProcess("UserTask");
@@ -123,11 +123,11 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         assertEquals(ProcessInstance.STATE_ACTIVE, pi2.getState());
         runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
         ksession = runtime.getKieSession();
-        assertEquals(ksession1Id, ksession.getId());
+        assertEquals(ksession1Id, ksession.getIdentifier());
         
         runtime2 = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId()));
         ksession2 = runtime2.getKieSession();
-        assertEquals(ksession2Id, ksession2.getId());
+        assertEquals(ksession2Id, ksession2.getIdentifier());
         manager.close();
     }
 
@@ -149,7 +149,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
-        int ksession1Id = ksession.getId();
+        long ksession1Id = ksession.getIdentifier();
         assertTrue(ksession1Id == 2);
 
         // ksession for process instance #2
@@ -158,7 +158,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession2 = runtime2.getKieSession();
 
         assertNotNull(ksession2);       
-        int ksession2Id = ksession2.getId();
+        long ksession2Id = ksession2.getIdentifier();
         assertTrue(ksession2Id == 3);
         
         ProcessInstance pi1 = ksession.startProcess("UserTask");
@@ -171,7 +171,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         
         runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
         ksession = runtime.getKieSession();
-        assertEquals(ksession1Id, ksession.getId());
+        assertEquals(ksession1Id, ksession.getIdentifier());
         
         ksession.getWorkItemManager().completeWorkItem(1, null);
         // since process is completed now session should not be there any more
@@ -184,7 +184,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         
         runtime2 = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId()));;
         ksession2 = runtime2.getKieSession();
-        assertEquals(ksession2Id, ksession2.getId());
+        assertEquals(ksession2Id, ksession2.getIdentifier());
         
         ksession2.getWorkItemManager().completeWorkItem(2, null);
         // since process is completed now session should not be there any more
@@ -217,7 +217,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
-        int ksession1Id = ksession.getId();
+        long ksession1Id = ksession.getIdentifier();
         assertTrue(ksession1Id == 2);
 
         // ksession for process instance #2
@@ -227,7 +227,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession2 = runtime2.getKieSession();
 
         assertNotNull(ksession2);       
-        int ksession2Id = ksession2.getId();
+        long ksession2Id = ksession2.getIdentifier();
         assertTrue(ksession2Id == 3);
         
         ProcessInstance pi1 = ((CorrelationAwareProcessRuntime)ksession).startProcess("UserTask", key, null);
@@ -240,7 +240,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         
         runtime = manager.getRuntimeEngine(CorrelationKeyContext.get(key));
         ksession = runtime.getKieSession();
-        assertEquals(ksession1Id, ksession.getId());
+        assertEquals(ksession1Id, ksession.getIdentifier());
         
         ksession.getWorkItemManager().completeWorkItem(1, null);
         // since process is completed now session should not be there any more
@@ -253,7 +253,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         
         runtime2 = manager.getRuntimeEngine(CorrelationKeyContext.get(key2));
         ksession2 = runtime2.getKieSession();
-        assertEquals(ksession2Id, ksession2.getId());
+        assertEquals(ksession2Id, ksession2.getIdentifier());
         
         ksession2.getWorkItemManager().completeWorkItem(2, null);
         // since process is completed now session should not be there any more
@@ -283,7 +283,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
-        int ksession1Id = ksession.getId();
+        long ksession1Id = ksession.getIdentifier();
         assertTrue(ksession1Id == 2);
 
         // ksession for process instance #2
@@ -292,7 +292,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession2 = runtime2.getKieSession();
 
         assertNotNull(ksession2);       
-        int ksession2Id = ksession2.getId();
+        long ksession2Id = ksession2.getIdentifier();
         assertTrue(ksession2Id == 3);
         
         ProcessInstance pi1 = ksession.startProcess("UserTask");
@@ -305,7 +305,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         
         runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
         ksession = runtime.getKieSession();
-        assertEquals(ksession1Id, ksession.getId());
+        assertEquals(ksession1Id, ksession.getIdentifier());
         
         ksession.getWorkItemManager().completeWorkItem(1, null);
         // since process is completed now session should not be there any more
@@ -341,7 +341,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
-        int ksession1Id = ksession.getId();
+        long ksession1Id = ksession.getIdentifier();
         assertTrue(ksession1Id == 2);
 
         ProcessInstance pi1 = ksession.startProcess("ParentProcess");
@@ -403,7 +403,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
-        int ksession1Id = ksession.getId();
+        long ksession1Id = ksession.getIdentifier();
         assertTrue(ksession1Id == 2);
 
         ProcessInstance pi1 = ksession.startProcess("UserTask");
@@ -465,7 +465,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
-        int ksession1Id = ksession.getId();
+        long ksession1Id = ksession.getIdentifier();
         assertTrue(ksession1Id == 1);
         
         // FIXME quick hack to overcome problems with same pi ids when not using persistence
@@ -477,7 +477,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession2 = runtime2.getKieSession();
 
         assertNotNull(ksession2);       
-        int ksession2Id = ksession2.getId();
+        long ksession2Id = ksession2.getIdentifier();
         assertTrue(ksession2Id == 2);
         
         ProcessInstance pi1 = ksession.startProcess("UserTask");
@@ -493,11 +493,11 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         
         runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
         ksession = runtime.getKieSession();
-        assertEquals(ksession1Id, ksession.getId());
+        assertEquals(ksession1Id, ksession.getIdentifier());
         
         runtime2 = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId()));
         ksession2 = runtime2.getKieSession();
-        assertEquals(ksession2Id, ksession2.getId());
+        assertEquals(ksession2Id, ksession2.getIdentifier());
         manager.close();
     }
     
@@ -565,7 +565,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
-        int ksession1Id = ksession.getId();
+        long ksession1Id = ksession.getIdentifier();
         assertTrue(ksession1Id == 1);
         
         // FIXME quick hack to overcome problems with same pi ids when not using persistence
@@ -577,7 +577,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession2 = runtime2.getKieSession();
 
         assertNotNull(ksession2);       
-        int ksession2Id = ksession2.getId();
+        long ksession2Id = ksession2.getIdentifier();
         assertTrue(ksession2Id == 2);
         
         ProcessInstance pi1 = ksession.startProcess("UserTask");
@@ -589,11 +589,11 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         assertEquals(ProcessInstance.STATE_ACTIVE, pi2.getState());
         runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
         ksession = runtime.getKieSession();
-        assertEquals(ksession1Id, ksession.getId());
+        assertEquals(ksession1Id, ksession.getIdentifier());
         
         runtime2 = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId()));
         ksession2 = runtime2.getKieSession();
-        assertEquals(ksession2Id, ksession2.getId());
+        assertEquals(ksession2Id, ksession2.getIdentifier());
         
         assertEquals(2,  addedTasks.size());
         manager.close();
@@ -641,7 +641,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
-        int ksession1Id = ksession.getId();
+        long ksession1Id = ksession.getIdentifier();
         assertTrue(ksession1Id == 1);
         
         // FIXME quick hack to overcome problems with same pi ids when not using persistence
@@ -653,7 +653,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession2 = runtime2.getKieSession();
 
         assertNotNull(ksession2);       
-        int ksession2Id = ksession2.getId();
+        long ksession2Id = ksession2.getIdentifier();
         assertTrue(ksession2Id == 2);
         
         ProcessInstance pi1 = ksession.startProcess("UserTask");
@@ -665,11 +665,11 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         assertEquals(ProcessInstance.STATE_ACTIVE, pi2.getState());
         runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
         ksession = runtime.getKieSession();
-        assertEquals(ksession1Id, ksession.getId());
+        assertEquals(ksession1Id, ksession.getIdentifier());
         
         runtime2 = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId()));
         ksession2 = runtime2.getKieSession();
-        assertEquals(ksession2Id, ksession2.getId());
+        assertEquals(ksession2Id, ksession2.getIdentifier());
         manager.close();
         // check if our custom task service factory was used
         assertTrue(customTaskServiceUsed.get());
@@ -773,7 +773,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
-        int ksession1Id = ksession.getId();
+        long ksession1Id = ksession.getIdentifier();
         assertTrue(ksession1Id == 2);
         
         AuditService auditService = runtime.getAuditService();
@@ -789,7 +789,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession2 = runtime2.getKieSession();
 
         assertNotNull(ksession2);       
-        int ksession2Id = ksession2.getId();
+        long ksession2Id = ksession2.getIdentifier();
         assertTrue(ksession2Id == 3);
         
         ProcessInstance pi1 = ksession.startProcess("UserTask");
@@ -812,7 +812,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         
         runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
         ksession = runtime.getKieSession();
-        assertEquals(ksession1Id, ksession.getId());
+        assertEquals(ksession1Id, ksession.getIdentifier());
         
         auditService = runtime.getAuditService();
         
@@ -827,7 +827,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         
         runtime2 = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId()));;
         ksession2 = runtime2.getKieSession();
-        assertEquals(ksession2Id, ksession2.getId());
+        assertEquals(ksession2Id, ksession2.getIdentifier());
         
         ksession2.getWorkItemManager().completeWorkItem(2, null);
         // since process is completed now session should not be there any more
@@ -862,7 +862,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);
-        int ksession1Id = ksession.getId();
+        long ksession1Id = ksession.getIdentifier();
         assertTrue(ksession1Id == 2);
 
         ProcessInstance pi1 = ksession.startProcess("ParentProcess");
@@ -913,7 +913,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);
-        int ksession1Id = ksession.getId();
+        long ksession1Id = ksession.getIdentifier();
         assertTrue(ksession1Id == 2);
 
         ProcessInstance pi1 = ksession.startProcess("DependentParentProcess");
@@ -966,7 +966,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
-        int ksession1Id = ksession.getId();
+        long ksession1Id = ksession.getIdentifier();
         assertTrue(ksession1Id == 2);
 
         // ksession for process instance #2
@@ -975,7 +975,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession2 = runtime2.getKieSession();
 
         assertNotNull(ksession2);       
-        int ksession2Id = ksession2.getId();
+        long ksession2Id = ksession2.getIdentifier();
         assertTrue(ksession2Id == 3);
         
         ProcessInstance pi1 = ksession.startProcess("UserTask");
@@ -996,14 +996,14 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         ut.begin();
         runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
         ksession = runtime.getKieSession();
-        assertEquals(ksession1Id, ksession.getId());
+        assertEquals(ksession1Id, ksession.getIdentifier());
         
         ksession.getWorkItemManager().completeWorkItem(1, null);
 
         
         runtime2 = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId()));;
         ksession2 = runtime2.getKieSession();
-        assertEquals(ksession2Id, ksession2.getId());
+        assertEquals(ksession2Id, ksession2.getIdentifier());
         
         ksession2.getWorkItemManager().completeWorkItem(2, null);
 

@@ -90,12 +90,12 @@ public class ConcurrentOperationsTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         assertTrue(sessionId == 1);
         
         runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
         ut.begin();
@@ -142,12 +142,12 @@ public class ConcurrentOperationsTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
         assertTrue(sessionId == 1);
         
         runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
-        assertEquals(sessionId, ksession.getId());
+        assertEquals(sessionId, ksession.getIdentifier());
         
         
         ProcessInstance processInstance = ksession.startProcess("customandhumantask");
