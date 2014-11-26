@@ -299,7 +299,7 @@ public class TimerAndCalendarTest {
 
         StatefulKnowledgeSession ksession1 = JPAKnowledgeService.newStatefulKnowledgeSession(kbase1, null,
                 createEnvironment(context));
-        int ksessionId = ksession1.getId();
+        long ksessionId = ksession1.getIdentifier();
 
         ArrayList<String> list = new ArrayList<String>();
         ksession1.setGlobal( "list", list );
@@ -360,7 +360,7 @@ public class TimerAndCalendarTest {
 
     private StatefulKnowledgeSession disposeAndReloadSession(StatefulKnowledgeSession ksession,
                                                              KnowledgeBase kbase) {
-        int ksessionId = ksession.getId();
+        long ksessionId = ksession.getIdentifier();
         ksession.dispose();
 
         final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();

@@ -104,7 +104,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                                                                        buildContext );
         liaNode.attach(context);
 
-        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1, kBase );
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1L, kBase );
 
         final MockLeftTupleSink sink = new MockLeftTupleSink();
         liaNode.addTupleSink( sink );

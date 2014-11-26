@@ -44,7 +44,7 @@ public interface InternalWorkingMemory
         WorkingMemory {
     public int getId();
     
-    public void setId(int id);
+    public void setId(Long id);
 
     public void setRuleRuntimeEventSupport(RuleRuntimeEventSupport workingMemoryEventSupport);
 

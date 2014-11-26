@@ -162,7 +162,7 @@ public class RuleUnlinkingTest {
         kconf.setOption( RuleEngineOption.PHREAK );
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl( 1, kBase );
+        StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl( 1L, kBase );
 
         PathMemory rs = (PathMemory) wm.getNodeMemory( rtn1 );
         assertFalse( rs.isRuleLinked() );
@@ -185,7 +185,7 @@ public class RuleUnlinkingTest {
         kconf.setOption( RuleEngineOption.PHREAK );
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl( 1, kBase );
+        StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl( 1L, kBase );
 
         BetaMemory bm = null;
         List<PathMemory> list;
@@ -283,7 +283,7 @@ public class RuleUnlinkingTest {
         kconf.setOption( RuleEngineOption.PHREAK );
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl( 1, kBase );
+        StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl( 1L, kBase );
 
         BetaMemory bm = null;
         List<PathMemory> list;

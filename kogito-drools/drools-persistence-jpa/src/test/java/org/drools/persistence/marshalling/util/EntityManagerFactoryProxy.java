@@ -54,7 +54,7 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
     protected transient static ThreadLocal<Map<WorkItemInfo, byte []>> managedWorkItemInfoDataMap;
     protected transient static ThreadLocal<Map<Object, byte []>> managedProcessInstanceInfoDataMap;
     
-    protected transient static ThreadLocal<Map<Integer, byte[]>> sessionMarshalledDataMap;
+    protected transient static ThreadLocal<Map<Long, byte[]>> sessionMarshalledDataMap;
     protected transient static ThreadLocal<Map<Long, byte[]>> workItemMarshalledDataMap;
     protected transient static ThreadLocal<Map<Long, byte[]>> processInstanceInfoMarshalledDataMap;
         
@@ -124,11 +124,11 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
         if( args[0] instanceof SessionInfo ) { 
             if( managedSessionInfoDataMap == null ) { 
                 managedSessionInfoDataMap = new ThreadLocal<Map<SessionInfo, byte[]>>();
-                sessionMarshalledDataMap = new ThreadLocal<Map<Integer, byte[]>>();
+                sessionMarshalledDataMap = new ThreadLocal<Map<Long, byte[]>>();
             }
             if( managedSessionInfoDataMap.get() == null ) {
                 managedSessionInfoDataMap.set(new HashMap<SessionInfo, byte[]>());
-                sessionMarshalledDataMap.set(new HashMap<Integer, byte[]>());
+                sessionMarshalledDataMap.set(new HashMap<Long, byte[]>());
             }
         }
         else if( args[0] instanceof WorkItemInfo ) { 

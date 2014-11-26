@@ -117,7 +117,7 @@ public class SingleSessionCommandService
         }
 
         // update the session id to be the same as the session info id
-        ((InternalKnowledgeRuntime) ksession).setId( this.sessionInfo.getId() );
+        ((InternalKnowledgeRuntime) ksession).setId( this.sessionInfo.getId());
     }
 
     protected void initNewKnowledgeSession(KieBase kbase, KieSessionConfiguration conf) { 
@@ -148,7 +148,7 @@ public class SingleSessionCommandService
         ((AcceptsTimerJobFactoryManager) ((InternalKnowledgeRuntime) ksession).getTimerService()).getTimerJobFactoryManager().setCommandService( this );
     }
     
-    public SingleSessionCommandService(Integer sessionId,
+    public SingleSessionCommandService(Long sessionId,
                                        KieBase kbase,
                                        KieSessionConfiguration conf,
                                        Environment env) {
@@ -197,7 +197,7 @@ public class SingleSessionCommandService
         }
     }
 
-    protected void initExistingKnowledgeSession(Integer sessionId,
+    protected void initExistingKnowledgeSession(Long sessionId,
                                 KieBase kbase,
                                 KieSessionConfiguration conf,
                                 PersistenceContext persistenceContext) {
@@ -406,7 +406,7 @@ public class SingleSessionCommandService
         }
     }
 
-    public int getSessionId() {
+    public Long getSessionId() {
         return sessionInfo.getId();
     }
 

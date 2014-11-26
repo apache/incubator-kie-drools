@@ -23,6 +23,7 @@ public class KnowledgeStoreServiceImpl implements KnowledgeStoreService {
 			((EnvironmentAdapter) environment).delegate));
 	}
 
+    @Deprecated
 	public StatefulKnowledgeSession loadStatefulKnowledgeSession(int id,
 			KnowledgeBase kbase, KnowledgeSessionConfiguration configuration,
 			Environment environment) {
@@ -32,5 +33,15 @@ public class KnowledgeStoreServiceImpl implements KnowledgeStoreService {
 			configuration == null ? null : ((KnowledgeSessionConfigurationAdapter) configuration).getDelegate(), 
 			((EnvironmentAdapter) environment).delegate));
 	}
+
+    public StatefulKnowledgeSession loadStatefulKnowledgeSession(Long id,
+            KnowledgeBase kbase, KnowledgeSessionConfiguration configuration,
+            Environment environment) {
+        return new StatefulKnowledgeSessionAdapter(JPAKnowledgeService.loadStatefulKnowledgeSession(
+                id,
+                (KieBase) ((KnowledgeBaseAdapter) kbase).delegate,
+                configuration == null ? null : ((KnowledgeSessionConfigurationAdapter) configuration).getDelegate(),
+                ((EnvironmentAdapter) environment).delegate));
+    }
 
 }

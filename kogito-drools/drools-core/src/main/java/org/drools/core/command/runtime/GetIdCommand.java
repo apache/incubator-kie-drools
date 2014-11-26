@@ -30,7 +30,7 @@ import org.kie.api.runtime.KieSession;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetIdCommand
     implements
-    GenericCommand<Integer> {
+    GenericCommand<Long> {
 
     private static final long serialVersionUID = 510l;
 
@@ -38,9 +38,9 @@ public class GetIdCommand
     public GetIdCommand() {
     }
 
-    public Integer execute(Context context) {
+    public Long execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-        return ((StatefulKnowledgeSessionImpl)ksession).getId();
+        return ((StatefulKnowledgeSessionImpl)ksession).getIdentifier();
     }
 
     public String toString() {

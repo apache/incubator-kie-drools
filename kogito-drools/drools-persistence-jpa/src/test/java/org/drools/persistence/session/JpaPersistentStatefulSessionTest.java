@@ -156,7 +156,7 @@ public class JpaPersistentStatefulSessionTest {
                 list.size() );
         String externalForm = atomicFH.toExternalForm();
         
-        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(ksession.getId(), kbase, null, env);
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(ksession.getIdentifier(), kbase, null, env);
         
         atomicFH = ksession.execute(CommandFactory.fromExternalFactHandleCommand(externalForm));
         
@@ -288,7 +288,7 @@ public class JpaPersistentStatefulSessionTest {
                       list.size() );
         
         // now load the ksession
-        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( ksession.getId(), kbase, null, env );
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( ksession.getIdentifier(), kbase, null, env );
         
         ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
         ut.begin();
@@ -400,7 +400,7 @@ public class JpaPersistentStatefulSessionTest {
         ksession.insert( test2 );
         ksession.fireAllRules();
 
-        StatefulKnowledgeSession ksession2 = JPAKnowledgeService.loadStatefulKnowledgeSession(ksession.getId(), kbase, null, env);
+        StatefulKnowledgeSession ksession2 = JPAKnowledgeService.loadStatefulKnowledgeSession(ksession.getIdentifier(), kbase, null, env);
 
         Iterator c = ksession2.getObjects().iterator();
         List ref1 = (List) c.next();
@@ -463,7 +463,7 @@ public class JpaPersistentStatefulSessionTest {
 
         assertEquals( 3, list.size() );
 
-        int ksessionId = ksession.getId();
+        long ksessionId = ksession.getIdentifier();
         ksession.destroy();
 
         try {
@@ -512,7 +512,7 @@ public class JpaPersistentStatefulSessionTest {
 
         assertEquals( 3, list.size() );
 
-        int ksessionId = ksession.getId();
+        long ksessionId = ksession.getIdentifier();
         ksession.destroy();
 
         try {
@@ -552,7 +552,7 @@ public class JpaPersistentStatefulSessionTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        int sessionId = ksession.getId();
+        long sessionId = ksession.getIdentifier();
 
         Person p1 = new Person("John");
         p1.addAddress(new Address("x"));

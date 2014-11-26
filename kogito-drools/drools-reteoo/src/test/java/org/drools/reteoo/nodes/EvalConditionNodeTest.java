@@ -82,7 +82,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
 
     @Test
     public void testMemory() {
-        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase() );
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1L, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase() );
 
         final MockTupleSource source = new MockTupleSource( 12 );
 

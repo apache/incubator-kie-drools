@@ -5,7 +5,7 @@ import org.drools.persistence.info.WorkItemInfo;
 
 public interface KnowledgeSessionStorage {
 
-    SessionInfo findSessionInfo(Integer sessionId);
+    SessionInfo findSessionInfo(Long sessionId);
 
     void saveOrUpdate(SessionInfo storedObject);
 
@@ -21,6 +21,6 @@ public interface KnowledgeSessionStorage {
 
     void lock(WorkItemInfo workItemInfo);
     
-    Integer getNextStatefulKnowledgeSessionId();
+    Long getNextStatefulKnowledgeSessionId();
 
 }

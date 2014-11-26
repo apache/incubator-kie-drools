@@ -78,7 +78,7 @@ public class NotNodeTest extends DroolsTestCase {
         this.rule = new RuleImpl("test-rule");
         pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         this.context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
-        this.workingMemory = new StatefulKnowledgeSessionImpl(1, kBase);
+        this.workingMemory = new StatefulKnowledgeSessionImpl(1L, kBase);
 
         final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
 
@@ -388,7 +388,7 @@ public class NotNodeTest extends DroolsTestCase {
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(conf);
 
-        this.workingMemory = new StatefulKnowledgeSessionImpl( 1, kBase );
+        this.workingMemory = new StatefulKnowledgeSessionImpl( 1L, kBase );
 
         BuildContext buildContext = new BuildContext( kBase,
                                                       kBase.getReteooBuilder().getIdGenerator() );

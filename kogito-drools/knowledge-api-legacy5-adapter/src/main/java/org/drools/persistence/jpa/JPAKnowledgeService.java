@@ -124,6 +124,7 @@ public class JPAKnowledgeService {
                                                                              environment );
     }
 
+    @Deprecated
     public static StatefulKnowledgeSession loadStatefulKnowledgeSession(int id,
                                                                         KnowledgeBase kbase,
                                                                         KnowledgeSessionConfiguration configuration,
@@ -132,6 +133,16 @@ public class JPAKnowledgeService {
                                                                               kbase,
                                                                               configuration,
                                                                               environment );
+    }
+
+    public static StatefulKnowledgeSession loadStatefulKnowledgeSession(Long id,
+            KnowledgeBase kbase,
+            KnowledgeSessionConfiguration configuration,
+            Environment environment) {
+        return getJPAKnowledgeServiceProvider().loadStatefulKnowledgeSession( id,
+                kbase,
+                configuration,
+                environment );
     }
 
     private static synchronized void setJPAKnowledgeServiceProvider(KnowledgeStoreService provider) {

@@ -71,7 +71,7 @@ public class FactHandleMarshallingTest {
         KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
         SessionConfiguration sessionConf = ((SessionConfiguration) ksconf);
-        StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl(1, kBase, true, sessionConf, EnvironmentFactory.newEnvironment());
+        StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl(1L, kBase, true, sessionConf, EnvironmentFactory.newEnvironment());
         
         return wm;
     }

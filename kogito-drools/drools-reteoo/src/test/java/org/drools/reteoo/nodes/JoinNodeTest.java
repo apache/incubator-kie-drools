@@ -94,7 +94,7 @@ public class JoinNodeTest extends DroolsTestCase {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         this.context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
-        this.workingMemory = new StatefulKnowledgeSessionImpl(1, kBase);
+        this.workingMemory = new StatefulKnowledgeSessionImpl(1L, kBase);
 
         this.tupleSource = new MockTupleSource(4);
         this.objectSource = new MockObjectSource(4);
@@ -172,7 +172,7 @@ public class JoinNodeTest extends DroolsTestCase {
         when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ),
                                                any( ContextEntry.class ) ) ).thenReturn( true );
 
-        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase());
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1L, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase());
 
 
         final MockObjectSource objectSource = new MockObjectSource( 1 );
@@ -238,7 +238,7 @@ public class JoinNodeTest extends DroolsTestCase {
         conf.setPhreakEnabled(false);
         conf.setSequential( true );
 
-        this.workingMemory = new StatefulKnowledgeSessionImpl( 1, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(conf) );
+        this.workingMemory = new StatefulKnowledgeSessionImpl( 1L, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(conf) );
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         BuildContext buildContext = new BuildContext( kBase, kBase.getReteooBuilder().getIdGenerator() );
@@ -515,7 +515,7 @@ public class JoinNodeTest extends DroolsTestCase {
         when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ),
                                                any( ContextEntry.class ) ) ).thenReturn( true );
 
-        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase() );
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1L, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase() );
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         BuildContext buildContext = new BuildContext( kBase, kBase.getReteooBuilder().getIdGenerator() );
@@ -571,7 +571,7 @@ public class JoinNodeTest extends DroolsTestCase {
         when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
         when( constraint.isAllowedCachedRight(any(LeftTupleImpl.class), any(ContextEntry.class))).thenReturn(true);
 
-        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl(1, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase());
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl(1L, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase());
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         BuildContext buildContext = new BuildContext( kBase, kBase.getReteooBuilder().getIdGenerator() );
