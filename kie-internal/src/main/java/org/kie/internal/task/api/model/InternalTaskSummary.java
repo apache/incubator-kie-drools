@@ -52,7 +52,7 @@ public interface InternalTaskSummary extends TaskSummary {
 
     void setProcessId(String processId);
 
-    void setProcessSessionId(int processSessionId);
+    void setProcessSessionId(long processSessionId);
 
     SubTasksStrategy getSubTaskStrategy();
 
