@@ -46,7 +46,7 @@ public class JpaPersistenceContext implements PersistenceContext {
         return entity;
     }
 
-    public SessionInfo findSessionInfo(Integer id) {
+    public SessionInfo findSessionInfo(Long id) {
 
         SessionInfo sessionInfo = null;
         if( this.pessimisticLocking ) {

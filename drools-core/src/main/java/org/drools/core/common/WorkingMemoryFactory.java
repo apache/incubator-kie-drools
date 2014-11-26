@@ -9,12 +9,12 @@ import org.drools.core.spi.FactHandleFactory;
 import org.kie.api.runtime.Environment;
 
 public interface WorkingMemoryFactory {
-    InternalWorkingMemory createWorkingMemory(final int id,
+    InternalWorkingMemory createWorkingMemory(final long id,
                                               final InternalKnowledgeBase kBase,
                                               final SessionConfiguration config,
                                               final Environment environment);
 
-    InternalWorkingMemory createWorkingMemory(final int id,
+    InternalWorkingMemory createWorkingMemory(final long id,
                                               final InternalKnowledgeBase kBase,
                                               final FactHandleFactory handleFactory,
                                               final InternalFactHandle initialFactHandle,
@@ -23,7 +23,7 @@ public interface WorkingMemoryFactory {
                                               final InternalAgenda agenda,
                                               final Environment environment);
 
-    InternalWorkingMemory createWorkingMemory(final int id,
+    InternalWorkingMemory createWorkingMemory(final long id,
                                               final InternalKnowledgeBase kBase,
                                               final FactHandleFactory handleFactory,
                                               final InternalFactHandle initialFactHandle,

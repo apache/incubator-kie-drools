@@ -28,19 +28,19 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
     public ReteWorkingMemory() {
     }
 
-    public ReteWorkingMemory(int id, InternalKnowledgeBase kBase) {
+    public ReteWorkingMemory(long id, InternalKnowledgeBase kBase) {
         super(id, kBase);
     }
 
-    public ReteWorkingMemory(int id, InternalKnowledgeBase kBase, boolean initInitFactHandle, SessionConfiguration config, Environment environment) {
+    public ReteWorkingMemory(long id, InternalKnowledgeBase kBase, boolean initInitFactHandle, SessionConfiguration config, Environment environment) {
         super(id, kBase, initInitFactHandle, config, environment);
     }
 
-    public ReteWorkingMemory(int id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
+    public ReteWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
         super(id, kBase, handleFactory, initialFactHandle, propagationContext, config, agenda, environment);
     }
 
-    public ReteWorkingMemory(int id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, Environment environment, RuleRuntimeEventSupport workingMemoryEventSupport, AgendaEventSupport agendaEventSupport, RuleEventListenerSupport ruleEventListenerSupport, InternalAgenda agenda) {
+    public ReteWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, Environment environment, RuleRuntimeEventSupport workingMemoryEventSupport, AgendaEventSupport agendaEventSupport, RuleEventListenerSupport ruleEventListenerSupport, InternalAgenda agenda) {
         super(id, kBase, handleFactory, false, propagationContext, config, environment, workingMemoryEventSupport, agendaEventSupport, ruleEventListenerSupport, agenda);
     }
 

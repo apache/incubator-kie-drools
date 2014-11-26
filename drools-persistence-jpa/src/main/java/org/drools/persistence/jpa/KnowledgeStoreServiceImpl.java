@@ -87,12 +87,33 @@ public class KnowledgeStoreServiceImpl
             throw new IllegalArgumentException( "Environment cannot be null" );
         }
 
-        CommandService commandService = (CommandService) buildCommandService( id,
+        CommandService commandService = (CommandService) buildCommandService( new Long(id),
                                                                               kbase,
                                                                               mergeConfig( configuration ),
                                                                               environment );
         commandService.getContext().set(EntryPointCreator.class.getName(),
                                         new CommandBasedEntryPointCreator(commandService));
+        return new CommandBasedStatefulKnowledgeSession( commandService );
+    }
+
+    public StatefulKnowledgeSession loadKieSession(Long id,
+            KieBase kbase,
+            KieSessionConfiguration configuration,
+            Environment environment) {
+        if ( configuration == null ) {
+            configuration = new SessionConfiguration();
+        }
+
+        if ( environment == null ) {
+            throw new IllegalArgumentException( "Environment cannot be null" );
+        }
+
+        CommandService commandService = (CommandService) buildCommandService( id,
+                kbase,
+                mergeConfig( configuration ),
+                environment );
+        commandService.getContext().set(EntryPointCreator.class.getName(),
+                new CommandBasedEntryPointCreator(commandService));
         return new CommandBasedStatefulKnowledgeSession( commandService );
     }
 
@@ -108,14 +129,14 @@ public class KnowledgeStoreServiceImpl
         }
     }
 
-    private CommandExecutor buildCommandService(Integer sessionId,
+    private CommandExecutor buildCommandService(Long sessionId,
                                                 KieBase kbase,
                                                 KieSessionConfiguration conf,
                                                 Environment env) {
 
         try {
             Class< ? extends CommandExecutor> serviceClass = getCommandServiceClass();
-            Constructor< ? extends CommandExecutor> constructor = serviceClass.getConstructor( Integer.class,
+            Constructor< ? extends CommandExecutor> constructor = serviceClass.getConstructor( Long.class,
                                                                                               KieBase.class,
                                                                                               KieSessionConfiguration.class,
                                                                                               Environment.class );

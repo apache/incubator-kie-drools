@@ -183,7 +183,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private static final long serialVersionUID = 510l;
     public    byte[] bytes;
-    protected int    id;
+    protected Long    id;
 
     /** The actual memory for the <code>JoinNode</code>s. */
     private NodeMemories nodeMemories;
@@ -273,7 +273,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
 
-    public StatefulKnowledgeSessionImpl(final int id,
+    public StatefulKnowledgeSessionImpl(final long id,
                                         final InternalKnowledgeBase kBase) {
         this(id,
              kBase,
@@ -282,7 +282,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
              EnvironmentFactory.newEnvironment());
     }
 
-    public StatefulKnowledgeSessionImpl(final int id,
+    public StatefulKnowledgeSessionImpl(final long id,
                                         final InternalKnowledgeBase kBase,
                                         boolean initInitFactHandle,
                                         final SessionConfiguration config,
@@ -300,7 +300,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
              null);
     }
 
-    public StatefulKnowledgeSessionImpl(final int id,
+    public StatefulKnowledgeSessionImpl(final long id,
                                         final InternalKnowledgeBase kBase,
                                         final FactHandleFactory handleFactory,
                                         final InternalFactHandle initialFactHandle,
@@ -322,7 +322,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
 
-    public StatefulKnowledgeSessionImpl(final int id,
+    public StatefulKnowledgeSessionImpl(final long id,
                                         final InternalKnowledgeBase kBase,
                                         final FactHandleFactory handleFactory,
                                         final boolean initInitFactHandle,
@@ -1217,10 +1217,15 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public int getId() {
         checkAlive();
+        return this.id.intValue();
+    }
+
+    public long getIdentifier() {
+        checkAlive();
         return this.id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         checkAlive();
         this.id = id;
     }

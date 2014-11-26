@@ -110,10 +110,10 @@ public class ReteooWorkingMemoryTest {
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         assertEquals( 0,
-                      ksession.getId() );
+                      ksession.getIdentifier() );
         ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
         assertEquals( 1,
-                      ksession.getId() );
+                      ksession.getIdentifier() );
     }
 
     @Test

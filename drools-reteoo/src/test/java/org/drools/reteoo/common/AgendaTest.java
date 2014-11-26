@@ -1939,7 +1939,7 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNodeLeftTuple tuple3_1 = new RuleTerminalNodeLeftTuple(new DefaultFactHandle(4, "cheese"), node3, true);
         final RuleTerminalNodeLeftTuple tuple3_2 = new RuleTerminalNodeLeftTuple(new DefaultFactHandle(5, "cheese"), node3, true);
 
-        InternalWorkingMemory workingMemory = new StatefulKnowledgeSessionImpl(0, kBase);
+        InternalWorkingMemory workingMemory = new StatefulKnowledgeSessionImpl(0L, kBase);
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 

@@ -20,7 +20,7 @@ public class SessionInfo implements Transformable {
     
     private @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="sessionInfoIdSeq")
-    Integer                        id;
+    Long                        id;
 
     @Version
     @Column(name = "OPTLOCK")     
@@ -40,7 +40,7 @@ public class SessionInfo implements Transformable {
         this.startDate = new Date();
     }
 
-    public Integer getId() {
+    public Long getId() {
         return this.id;
     }
     
@@ -81,7 +81,7 @@ public class SessionInfo implements Transformable {
         this.rulesByteArray  = this.helper.getSnapshot();
     }
 
-    public void setId(Integer ksessionId) {
+    public void setId(Long ksessionId) {
         this.id = ksessionId;
     }
 

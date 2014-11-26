@@ -195,7 +195,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         // TODO Auto-generated method stub
         
     }

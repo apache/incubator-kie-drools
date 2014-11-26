@@ -27,7 +27,13 @@ public interface KnowledgeStoreService {
                                                          KnowledgeSessionConfiguration configuration,
                                                          Environment environment);
 
+    @Deprecated
     StatefulKnowledgeSession loadStatefulKnowledgeSession(int id,
+                                                          KnowledgeBase kbase,
+                                                          KnowledgeSessionConfiguration configuration,
+                                                          Environment environment);
+
+    StatefulKnowledgeSession loadStatefulKnowledgeSession(Long id,
                                                           KnowledgeBase kbase,
                                                           KnowledgeSessionConfiguration configuration,
                                                           Environment environment);

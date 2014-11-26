@@ -87,7 +87,7 @@ public class AgendaRuleFlowGroupsTest {
 		// only main is available
 		assertEquals(1, groups.length);
 		assertEquals("MAIN", groups[0].getName());
-		int id = ksession.getId();
+		long id = ksession.getIdentifier();
 		List<String> list = new ArrayList<String>();
 		list.add("Test");
 		
@@ -113,7 +113,7 @@ public class AgendaRuleFlowGroupsTest {
         // only main is available
         assertEquals(1, groups.length);
         assertEquals("MAIN", groups[0].getName());
-        int id = ksession.getId();
+        long id = ksession.getIdentifier();
         List<String> list = new ArrayList<String>();
         list.add("Test");
         
@@ -140,7 +140,7 @@ public class AgendaRuleFlowGroupsTest {
         // only main is available
         assertEquals(1, groups.length);
         assertEquals("MAIN", groups[0].getName());
-        int id = ksession.getId();
+        long id = ksession.getIdentifier();
         List<String> list = new ArrayList<String>();
         list.add("Test");
         
@@ -169,7 +169,7 @@ public class AgendaRuleFlowGroupsTest {
         return ksession;
     }
 	
-	private CommandBasedStatefulKnowledgeSession createSession(int id, String...rules) {
+	private CommandBasedStatefulKnowledgeSession createSession(long id, String...rules) {
 		
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 		for (String rule : rules) {
