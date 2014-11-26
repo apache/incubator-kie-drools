@@ -44,6 +44,7 @@ import javax.swing.border.TitledBorder;
 import org.optaplanner.examples.cheaptime.app.CheapTimeApp;
 import org.optaplanner.examples.cloudbalancing.app.CloudBalancingApp;
 import org.optaplanner.examples.common.app.CommonApp;
+import org.optaplanner.examples.common.persistence.AbstractSolutionDao;
 import org.optaplanner.examples.common.swingui.OpenBrowserAction;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
@@ -62,6 +63,11 @@ import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingApp;
 
 public class OptaPlannerExamplesApp extends JFrame {
 
+    /**
+     * Supported system properties:
+     * {@link AbstractSolutionDao#DATA_DIR_SYSTEM_PROPERTY}
+     * @param args never null
+     */
     public static void main(String[] args) {
         CommonApp.prepareSwingEnvironment();
         OptaPlannerExamplesApp optaPlannerExamplesApp = new OptaPlannerExamplesApp();

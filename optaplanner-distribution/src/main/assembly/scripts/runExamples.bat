@@ -2,7 +2,7 @@
 setLocal enableExtensions enableDelayedExpansion
 
 rem You can use -Xmx128m or less too for most examples, but it might be slower
-set "jvmOptions=-Xms256m -Xmx1024m"
+set "jvmOptions=-Xms256m -Xmx1024m -Dorg.optaplanner.examples.dataDir=sources/data/"
 set "mainClass=org.optaplanner.examples.app.OptaPlannerExamplesApp"
 set "mainClasspath="
 for %%i in (binaries\*.jar) do (set "mainClasspath=!mainClasspath!;%%i")

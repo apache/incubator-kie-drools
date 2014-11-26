@@ -48,20 +48,10 @@
     </fileSet>
     <!-- Examples -->
     <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
-      <directory>../optaplanner-examples/data</directory>
-      <outputDirectory>examples/data</outputDirectory>
-      <includes>
-        <include>**/import/**/*.*</include>
-        <include>**/unsolved/**/*.xml</include>
-        <include>**/solved/**/*.xml</include>
-        <include>**/export/**/*.*</include>
-      </includes>
-    </fileSet>
-    <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
       <directory>../optaplanner-examples</directory>
       <outputDirectory>examples/sources</outputDirectory>
       <excludes>
-        <exclude>data/**</exclude>
+        <exclude>data/**/tmp-*.*</exclude>
         <exclude>target/**</exclude>
         <exclude>local/**</exclude>
         <exclude>.*/**</exclude>
@@ -97,25 +87,8 @@
         <exclude>org.optaplanner:optaplanner-docs</exclude>
         <exclude>*:sources</exclude>
       </excludes>
+      <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>binaries</outputDirectory>
-      <useStrictFiltering>true</useStrictFiltering>
-    </dependencySet>
-    <dependencySet>
-      <includes>
-        <include>org.optaplanner:optaplanner-examples:jar</include>
-        <include>org.jdom:jdom:jar</include>
-      </includes>
-      <excludes>
-        <exclude>*:sources</exclude>
-      </excludes>
-      <outputDirectory>examples/binaries</outputDirectory>
-      <useStrictFiltering>true</useStrictFiltering>
-    </dependencySet>
-    <dependencySet>
-      <includes>
-        <include>org.optaplanner:optaplanner-webexamples:war</include>
-      </includes>
-      <outputDirectory>webexamples/binaries</outputDirectory>
       <useStrictFiltering>true</useStrictFiltering>
     </dependencySet>
     <dependencySet>
@@ -126,8 +99,29 @@
         <exclude>org.optaplanner:optaplanner-examples:jar:sources</exclude>
         <exclude>org.optaplanner:optaplanner-webexamples:jar:sources</exclude>
       </excludes>
+      <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>sources</outputDirectory>
       <unpack>false</unpack>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+    <!-- Examples -->
+    <dependencySet>
+      <includes>
+        <include>org.optaplanner:optaplanner-examples:jar</include>
+        <include>org.jdom:jdom:jar</include>
+      </includes>
+      <excludes>
+        <exclude>*:sources</exclude>
+      </excludes>
+      <useProjectArtifact>false</useProjectArtifact>
+      <outputDirectory>examples/binaries</outputDirectory>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.optaplanner:optaplanner-webexamples:war</include>
+      </includes>
+      <outputDirectory>webexamples/binaries</outputDirectory>
       <useStrictFiltering>true</useStrictFiltering>
     </dependencySet>
     <!-- Reference manual -->
@@ -135,6 +129,7 @@
       <includes>
         <include>org.optaplanner:optaplanner-docs:jdocbook</include>
       </includes>
+      <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>reference_manual</outputDirectory>
       <!-- Workaround for https://jira.codehaus.org/browse/MASSEMBLY-557 -->
       <fileMode>755</fileMode>

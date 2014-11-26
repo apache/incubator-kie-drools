@@ -4,7 +4,7 @@
 cd `dirname $0`
 
 # You can use -Xmx128m or less too for most examples, but it might be slower
-jvmOptions="-Xms256m -Xmx1024m"
+jvmOptions="-Xms256m -Xmx1024m -Dorg.optaplanner.examples.dataDir=sources/data/"
 mainClass=org.optaplanner.examples.app.OptaPlannerExamplesApp
 mainClasspath=
 for i in binaries/*.jar; do

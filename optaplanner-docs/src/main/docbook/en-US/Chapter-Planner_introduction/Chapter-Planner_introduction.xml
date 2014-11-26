@@ -325,11 +325,6 @@ $ runExamples.bat</programlisting>
             <listitem>
               <para>VM parameters (optional): <literal>-Xmx512M -server</literal></para>
             </listitem>
-
-            <listitem>
-              <para>Working directory: <literal>examples</literal> (this is the directory that contains the directory
-              <literal>data</literal>)</para>
-            </listitem>
           </itemizedlist>
         </listitem>
 
