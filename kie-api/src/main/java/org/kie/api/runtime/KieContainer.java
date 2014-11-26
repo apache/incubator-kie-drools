@@ -62,6 +62,8 @@ public interface KieContainer {
 
     /**
      * Returns the default KieBase in this KieContainer.
+     * The returned KieBase will be managed by this KieContainer and then it will be updated
+     * when the KieContainer itself will be updated to a newer version of the KieModule.
      * @throws RuntimeException if this KieContainer doesn't have any default KieBase
      * @see org.kie.api.builder.model.KieBaseModel#setDefault(boolean)
      */
@@ -69,12 +71,16 @@ public interface KieContainer {
 
     /**
      * Returns the KieBase with the given name in this KieContainer.
+     * The returned KieBase will be managed by this KieContainer and then it will be updated
+     * when the KieContainer itself will be updated to a newer version of the KieModule.
      * @throws RuntimeException if this KieContainer doesn't have any KieBase with the given name
      */
     KieBase getKieBase(String kBaseName);
 
     /**
      * Creates a new default KieBase using the given configuration.
+     * The returned KieBase will be detached from this KieContainer and then will NOT be updated
+     * when the KieContainer itself will be updated to a newer version of the KieModule.
      * @throws RuntimeException if this KieContainer doesn't have any default KieBase
      * @see org.kie.api.builder.model.KieBaseModel#setDefault(boolean)
      */
@@ -82,6 +88,8 @@ public interface KieContainer {
 
     /**
      * Creates a new KieBase with the given name using the given configuration.
+     * The returned KieBase will be detached from this KieContainer and then will NOT be updated
+     * when the KieContainer itself will be updated to a newer version of the KieModule.
      * @throws RuntimeException if this KieContainer doesn't have any KieBase with the given name
      */
     KieBase newKieBase(String kBaseName, KieBaseConfiguration conf);
