@@ -33,5 +33,5 @@ if [ $? != 0 ] ; then
     echo
     echo "ERROR: Check if Java is installed and environment variable JAVA_HOME ($JAVA_HOME) is correct."
     # Prevent the terminal window to disappear before the user has seen the error message
-    read -p "Press [Enter] key to close this window."
+    read -p "Press [Enter] key to close this window." dummyVar
 fi
