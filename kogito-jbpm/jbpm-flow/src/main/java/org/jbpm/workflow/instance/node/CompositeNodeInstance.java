@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.process.instance.ProcessInstance;
-import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventNodeInterface;
@@ -251,6 +250,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     }
 
 	public void signalEvent(String type, Object event) {
+		List<NodeInstance> currentView = new ArrayList<NodeInstance>(this.nodeInstances);
 		super.signalEvent(type, event);
 		for (Node node: getCompositeNode().internalGetNodes()) {
 			if (node instanceof EventNodeInterface) {
@@ -262,7 +262,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 					    EventNodeInstanceInterface eventNodeInstance = (EventNodeInstanceInterface) getNodeInstance(node);
 					    eventNodeInstance.signalEvent(type, event);
 					} else {
-						List<NodeInstance> nodeInstances = getNodeInstances(node.getId());
+						List<NodeInstance> nodeInstances = getNodeInstances(node.getId(), currentView);
 						if (nodeInstances != null && !nodeInstances.isEmpty()) {
 							for (NodeInstance nodeInstance : nodeInstances) {
 								((EventNodeInstanceInterface) nodeInstance)
@@ -278,6 +278,18 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 	public List<NodeInstance> getNodeInstances(final long nodeId) {
 		List<NodeInstance> result = new ArrayList<NodeInstance>();
 		for (final Iterator<NodeInstance> iterator = this.nodeInstances
+				.iterator(); iterator.hasNext();) {
+			final NodeInstance nodeInstance = iterator.next();
+			if (nodeInstance.getNodeId() == nodeId) {
+				result.add(nodeInstance);
+			}
+		}
+		return result;
+	}
+	
+	public List<NodeInstance> getNodeInstances(final long nodeId, List<NodeInstance> currentView) {
+		List<NodeInstance> result = new ArrayList<NodeInstance>();
+		for (final Iterator<NodeInstance> iterator = currentView
 				.iterator(); iterator.hasNext();) {
 			final NodeInstance nodeInstance = iterator.next();
 			if (nodeInstance.getNodeId() == nodeId) {
