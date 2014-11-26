@@ -103,7 +103,14 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
         this.commandService = commandService;
     }
 
+    /**
+     * Deprecated use {@link #getIdentifier()} instead
+     */
+    @Deprecated
     public int getId() {
+        return commandService.execute( new GetIdCommand() ).intValue();
+    }
+    public long getIdentifier() {
         return commandService.execute( new GetIdCommand() );
     }
 

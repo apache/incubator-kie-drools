@@ -117,6 +117,11 @@ public class ExternalSheetListenerTest {
                 }
 
                 @Override
+                public long getIdentifier() {
+                    return 0L;
+                }
+
+                @Override
                 public void dispose() {
 
                 }

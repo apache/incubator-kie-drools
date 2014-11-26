@@ -142,7 +142,7 @@ public class ReloadSessionTest {
                 Integer.parseInt(((DefaultFactHandle) origFactHandle).getObject().toString()) == integerFact.intValue() );
         
         // Save the sessionInfo id in order to retrieve it later
-        int sessionInfoId = commandKSession.getId();
+        long sessionInfoId = commandKSession.getIdentifier();
         
         // Clean up the session, environment, etc.
         PersistenceContextManager pcm = (PersistenceContextManager) commandKSession.getEnvironment().get(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER);
@@ -189,7 +189,7 @@ public class ReloadSessionTest {
         assertEquals(1, ksession.getRuleRuntimeEventListeners().size());
         assertEquals(1, ksession.getAgendaEventListeners().size());
 
-        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(ksession.getId(), kbase, null, env);
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(ksession.getIdentifier(), kbase, null, env);
 
         assertEquals(1, ksession.getRuleRuntimeEventListeners().size());
         assertEquals(1, ksession.getAgendaEventListeners().size());

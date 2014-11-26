@@ -103,14 +103,14 @@ public abstract class MapPersistenceTest {
 
         StatefulKnowledgeSession crmPersistentSession = createSession(kbase);
 
-        long ksessionId = crmPersistentSession.getId();
+        long ksessionId = crmPersistentSession.getIdentifier();
         crmPersistentSession.fireAllRules();
 
         crmPersistentSession = disposeAndReloadSession(crmPersistentSession, kbase);
 
-        Assert.assertEquals(ksessionId, crmPersistentSession.getId());
+        Assert.assertEquals(ksessionId, crmPersistentSession.getIdentifier());
 
-        ksessionId = crmPersistentSession.getId();
+        ksessionId = crmPersistentSession.getIdentifier();
         crmPersistentSession.fireAllRules();
 
         crmPersistentSession = disposeAndReloadSession(crmPersistentSession, kbase);

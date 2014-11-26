@@ -159,7 +159,7 @@ public class JpaPersistenceTraitTest {
 
         assertEquals( 2,
                 list.size() );
-        int id = ksession.getId();
+        long id = ksession.getIdentifier();
 
 
         StatefulKnowledgeSession ksession2 = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
@@ -263,7 +263,7 @@ public class JpaPersistenceTraitTest {
 
         assertEquals( 2,
                 list.size() );
-        int id = ksession.getId();
+        long id = ksession.getIdentifier();
 
 
         StatefulKnowledgeSession ksession2 = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
@@ -349,7 +349,7 @@ public class JpaPersistenceTraitTest {
 
         assertEquals( 1,
                 list.size() );
-        int id = ksession.getId();
+        long id = ksession.getIdentifier();
 
 
         Collection yOld = ksession.getObjects();

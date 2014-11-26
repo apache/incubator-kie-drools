@@ -91,7 +91,7 @@ public class JpaOptLockPersistentStatefulSessionTest {
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         List<?> list = new ArrayList<Object>();
         for (int i = 0; i < 2; i++) {
-            new InsertAndFireThread(ksession.getId(), kbase, list).start();
+            new InsertAndFireThread(ksession.getIdentifier(), kbase, list).start();
         }
         try {
             Thread.sleep(1000);
@@ -104,11 +104,11 @@ public class JpaOptLockPersistentStatefulSessionTest {
 
     private class InsertAndFireThread extends Thread {
 
-        private int ksessionId;
+        private long ksessionId;
         private KnowledgeBase kbase;
         private List<?> list;
 
-        InsertAndFireThread(int ksessionId, KnowledgeBase kbase, List<?> list) {
+        InsertAndFireThread(long ksessionId, KnowledgeBase kbase, List<?> list) {
             this.ksessionId = ksessionId;
             this.kbase = kbase;
             this.list = list;

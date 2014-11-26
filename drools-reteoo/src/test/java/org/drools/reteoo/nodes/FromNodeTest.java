@@ -87,7 +87,7 @@ public class FromNodeTest {
     @Test
     public void testAlphaNode() {
         final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
-        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl(1, kBase);
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl(1L, kBase);
 
         final ClassFieldReader extractor = store.getReader(Cheese.class,
                                                            "type",
@@ -190,7 +190,7 @@ public class FromNodeTest {
     public void testBetaNode() {
         final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
 
-        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase() );
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1L, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase() );
 
         final ClassFieldReader priceExtractor = store.getReader( Cheese.class,
                                                                  "price",
@@ -305,7 +305,7 @@ public class FromNodeTest {
     @Test
     public void testRestract() {
         final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
-        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase() );
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1L, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase() );
         final ClassFieldReader extractor = store.getReader( Cheese.class,
                                                             "type",
                                                             getClass().getClassLoader() );
@@ -382,7 +382,7 @@ public class FromNodeTest {
     @Test
     public void testAssignable() {
         final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
-        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1, kBase );
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1L, kBase );
 
 
         final List list = new ArrayList();

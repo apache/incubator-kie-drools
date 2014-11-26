@@ -13,7 +13,7 @@ import java.io.Serializable;
 
 public class PhreakWorkingMemoryFactory implements WorkingMemoryFactory, Serializable {
 
-    public InternalWorkingMemory createWorkingMemory(int id, InternalKnowledgeBase kBase, SessionConfiguration config, Environment environment) {
+    public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, SessionConfiguration config, Environment environment) {
         InternalWorkingMemory cachedWm = kBase.getCachedSession(config, environment);
         if (cachedWm != null) {
             return cachedWm;
@@ -21,11 +21,11 @@ public class PhreakWorkingMemoryFactory implements WorkingMemoryFactory, Seriali
         return new StatefulKnowledgeSessionImpl(id, kBase, true, config,  environment);
     }
 
-    public InternalWorkingMemory createWorkingMemory(int id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
+    public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
         return new StatefulKnowledgeSessionImpl(id, kBase, handleFactory, initialFactHandle, propagationContext, config, agenda, environment);
     }
 
-    public InternalWorkingMemory createWorkingMemory(int id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, Environment environment, RuleRuntimeEventSupport workingMemoryEventSupport, AgendaEventSupport agendaEventSupport, RuleEventListenerSupport ruleEventListenerSupport, InternalAgenda agenda) {
+    public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, Environment environment, RuleRuntimeEventSupport workingMemoryEventSupport, AgendaEventSupport agendaEventSupport, RuleEventListenerSupport ruleEventListenerSupport, InternalAgenda agenda) {
         return new StatefulKnowledgeSessionImpl(id, kBase, handleFactory, true, propagationContext, config, environment, workingMemoryEventSupport, agendaEventSupport, ruleEventListenerSupport, agenda);
     }
 }

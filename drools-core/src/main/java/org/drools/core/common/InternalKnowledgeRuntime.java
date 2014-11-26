@@ -22,7 +22,7 @@ public interface InternalKnowledgeRuntime extends KnowledgeRuntime {
 
     InternalProcessRuntime getProcessRuntime();
 
-    void setId(int id);
+    void setId(Long id);
 
     void setEndOperationListener(EndOperationListener listener);
 

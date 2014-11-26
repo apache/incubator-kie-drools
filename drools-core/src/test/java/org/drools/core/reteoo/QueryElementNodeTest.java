@@ -151,7 +151,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
 
         public InstrumentedWorkingMemory(final int id,
                                          final InternalKnowledgeBase kBase) {
-            super( id,
+            super( new Long(id),
                    kBase );
         }
 

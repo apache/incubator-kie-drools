@@ -421,7 +421,7 @@ public class ReteTest extends DroolsTestCase {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(conf);
         buildContext = new BuildContext(kBase,
                                         kBase.getReteooBuilder().getIdGenerator());
-        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl(1, kBase);
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl(1L, kBase);
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = kBase.getRete();

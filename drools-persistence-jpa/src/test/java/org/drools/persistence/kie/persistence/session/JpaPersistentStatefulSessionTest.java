@@ -146,7 +146,7 @@ public class JpaPersistentStatefulSessionTest {
                 list.size() );
         String externalForm = atomicFH.toExternalForm();
         
-        ksession = ks.getStoreServices().loadKieSession(ksession.getId(), kbase, null, env);
+        ksession = ks.getStoreServices().loadKieSession(ksession.getIdentifier(), kbase, null, env);
         
         atomicFH = ksession.execute(CommandFactory.fromExternalFactHandleCommand(externalForm));
         
@@ -270,7 +270,7 @@ public class JpaPersistentStatefulSessionTest {
                       list.size() );
         
         // now load the ksession
-        ksession = ks.getStoreServices().loadKieSession( ksession.getId(), kbase, null, env );
+        ksession = ks.getStoreServices().loadKieSession( ksession.getIdentifier(), kbase, null, env );
         
         ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
         ut.begin();
@@ -375,7 +375,7 @@ public class JpaPersistentStatefulSessionTest {
         ksession.insert( test2 );
         ksession.fireAllRules();
 
-        KieSession ksession2 = ks.getStoreServices().loadKieSession(ksession.getId(), kbase, null, env);
+        KieSession ksession2 = ks.getStoreServices().loadKieSession(ksession.getIdentifier(), kbase, null, env);
 
         Iterator c = ksession2.getObjects().iterator();
         List ref1 = (List) c.next();

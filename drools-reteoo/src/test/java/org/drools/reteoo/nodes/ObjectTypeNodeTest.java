@@ -162,7 +162,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         buildContext = new BuildContext(kBase, kBase.getReteooBuilder().getIdGenerator());
         buildContext.setObjectTypeNodeMemoryEnabled(false);
 
-        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl(1,
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl(1L,
                                                                               kBase);
 
         final Rete source = kBase.getRete();
@@ -308,7 +308,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                                 null,
                                                                                 null);
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl(1, kBase);
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl(1L, kBase);
 
         final Rete source = new Rete(kBase);
 
@@ -374,7 +374,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     public void testAssertObjectWithShadowEnabled() throws Exception {
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl(1, kBase);
+        final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl(1L, kBase);
 
         final Rete source = kBase.getRete();
 

@@ -15,7 +15,7 @@ public interface PersistenceContext {
      */
     SessionInfo persist(SessionInfo sessionInfo);
 
-    public SessionInfo findSessionInfo(Integer id);
+    public SessionInfo findSessionInfo(Long id);
 
     void remove(SessionInfo sessionInfo);
     
