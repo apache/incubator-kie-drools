@@ -18,7 +18,6 @@ package org.jbpm.ruleflow.core.validation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -457,6 +456,15 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                        }
                    }
                    
+                } else {
+                	if( compositeNode.getIncomingConnections().size() == 0 ) { 
+                        errors.add(new ProcessValidationErrorImpl(process, 
+                                "Embedded subprocess '" + node.getName() + "' [" + node.getId() + "] does not have incoming connection." ));
+                    }
+                	if( compositeNode.getOutgoingConnections().size() == 0 ) { 
+                        errors.add(new ProcessValidationErrorImpl(process, 
+                                "Embedded subprocess '" + node.getName() + "' [" + node.getId() + "] does not have outgoing connection." ));
+                    }
                 }
                 validateNodes(compositeNode.getNodes(), errors, process);
             } else if (node instanceof EventNode) {

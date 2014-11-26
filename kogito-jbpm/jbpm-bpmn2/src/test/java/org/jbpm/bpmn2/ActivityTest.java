@@ -1637,4 +1637,15 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertNotNull(description);
         assertEquals("variable name for process", description);
     }
+    
+    @Test
+    public void testInvalidSubProcessNoOutgoingSF() throws Exception {
+    	try {
+    		KieBase kbase = createKnowledgeBase("subprocess/BPMN2-InvalidEmdeddedSubProcess.bpmn2");
+    		ksession = createKnowledgeSession(kbase);
+    		fail("Process should be invalid, there should be build errors");
+    	} catch (RuntimeException e) {
+    		// there should be build errors
+    	}
+    }
 }
