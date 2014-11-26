@@ -199,7 +199,7 @@ public class EndEventTest extends JbpmBpmn2TestCase {
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("BPMN2-ParallelSpitTerminate");
         
-        ksession.signalEvent("Signal_1", null, processInstance.getId());
+        ksession.signalEvent("Signal 1", null, processInstance.getId());
         
         assertProcessInstanceCompleted(processInstance);
         

@@ -72,6 +72,7 @@ public class SignalHandler extends BaseAbstractHandler implements Handler {
 		parser.startElementBuilder(localName, attrs);
 
 		String id = attrs.getValue("id");
+		String name = attrs.getValue("name");
 		String structureRef = attrs.getValue("structureRef");
 
         ProcessBuildData buildData = (ProcessBuildData) parser.getData();
@@ -81,7 +82,7 @@ public class SignalHandler extends BaseAbstractHandler implements Handler {
             buildData.setMetaData("Signals", signals);
         }
         
-        Signal s = new Signal(id, structureRef);
+        Signal s = new Signal(id, structureRef, name);
         signals.put(id, s);
         
 		return s;

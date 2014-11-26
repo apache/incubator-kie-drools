@@ -73,6 +73,7 @@ public class BPMNSemanticModule extends DefaultSemanticModule {
 
         addHandler("itemDefinition", new ItemDefinitionHandler());
         addHandler("message", new MessageHandler());
+        addHandler("signal", new SignalHandler());
         addHandler("interface", new InterfaceHandler());
         addHandler("operation", new OperationHandler());
         addHandler("inMessageRef", new InMessageRefHandler());

@@ -23,10 +23,17 @@ public class Signal implements Serializable {
 	private static final long serialVersionUID = 510l;
 	
     private String id;
+    private String name;
     private String structureRef;
     
     public Signal(String id, String structureRef) {
         this.id = id;
+        this.structureRef = structureRef;
+    }
+    
+    public Signal(String id, String structureRef, String name) {
+        this.id = id;
+        this.name = name;
         this.structureRef = structureRef;
     }
     
@@ -37,5 +44,9 @@ public class Signal implements Serializable {
     public String getStructureRef() {
         return structureRef;
     }
+
+	public String getName() {
+		return name;
+	}
 
 }
