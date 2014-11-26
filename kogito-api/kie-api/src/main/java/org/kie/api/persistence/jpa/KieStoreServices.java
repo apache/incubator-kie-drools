@@ -27,9 +27,18 @@ public interface KieStoreServices {
                              KieSessionConfiguration configuration,
                              Environment environment);
 
+    /**
+     * Deprecated use {@link  #loadKieSession(Long, KieBase, KieSessionConfiguration, Environment)} instead
+     */
+    @Deprecated
     KieSession loadKieSession(int id,
                               KieBase kbase,
                               KieSessionConfiguration configuration,
                               Environment environment);
+    
+    KieSession loadKieSession(Long id,
+            KieBase kbase,
+            KieSessionConfiguration configuration,
+            Environment environment);
 
 }

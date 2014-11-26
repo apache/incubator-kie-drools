@@ -47,7 +47,7 @@ public interface TaskData extends Externalizable {
     
     String getDeploymentId();
 
-	int getProcessSessionId();
+	long getProcessSessionId();
 
     String getDocumentType();
 

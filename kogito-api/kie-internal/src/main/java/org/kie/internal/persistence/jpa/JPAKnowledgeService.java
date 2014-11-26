@@ -123,6 +123,10 @@ public class JPAKnowledgeService {
                 environment);
     }
 
+    /**
+     * Deprecated use {@link #loadStatefulKnowledgeSession(Long, KieBase, KieSessionConfiguration, Environment)} instead
+     */
+    @Deprecated
     public static StatefulKnowledgeSession loadStatefulKnowledgeSession(int id,
                                                                         KieBase kbase,
                                                                         KieSessionConfiguration configuration,
@@ -132,6 +136,16 @@ public class JPAKnowledgeService {
                 configuration,
                 environment);
     }
+    
+    public static StatefulKnowledgeSession loadStatefulKnowledgeSession(Long id,
+            KieBase kbase,
+            KieSessionConfiguration configuration,
+            Environment environment) {
+		return (StatefulKnowledgeSession)getJPAKnowledgeServiceProvider().loadKieSession(id,
+		kbase,
+		configuration,
+		environment);
+	}
 
     private static synchronized void setJPAKnowledgeServiceProvider(KieStoreServices provider) {
         JPAKnowledgeService.provider = provider;

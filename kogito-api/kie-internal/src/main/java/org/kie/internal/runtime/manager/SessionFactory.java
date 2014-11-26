@@ -35,7 +35,7 @@ public interface SessionFactory {
      * @return loaded instance of <code>KieSession</code>
      * @throws RuntimeException in case session cannot be loaded
      */
-    KieSession findKieSessionById(Integer sessionId);
+    KieSession findKieSessionById(Long sessionId);
     
     /**
      * Closes the factory and releases all resources
