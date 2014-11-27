@@ -18,6 +18,7 @@ package org.jbpm.kie.services.impl.bpmn2;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.xml.ProcessHandler;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -39,20 +40,18 @@ public class ProcessGetInformationHandler extends ProcessHandler {
     @Override
     public Object start(String uri, String localName, Attributes attrs,
             ExtensibleXmlParser parser) throws SAXException {
-        final String processId = attrs.getValue("id");
-        final String processName = attrs.getValue("name");
-        final String packageName = attrs.getValue("http://www.jboss.org/drools", "package");
-        final String processType = attrs.getValue("type");
-        final String namespace = attrs.getValue("namespace");
-        final String version = attrs.getValue("http://www.jboss.org/drools", "version");
+    	RuleFlowProcess process = (RuleFlowProcess) super.start(uri, localName, attrs, parser);
         
-        ProcessDescRepoHelper value = new ProcessDescRepoHelper();        
-        value.setProcess(new ProcessAssetDesc(processId, processName, version, packageName, processType, "", namespace, ""));
-        repository.addProcessDescription(processId, value);
+    	ProcessDescRepoHelper value = new ProcessDescRepoHelper(); 
+        ProcessAssetDesc definition = new ProcessAssetDesc(process.getId(), process.getName(), process.getVersion()
+                , process.getPackageName(), process.getType(), process.getKnowledgeType().name(), process.getNamespace(), "");
+        
+        value.setProcess(definition);
+        repository.addProcessDescription(definition.getId(), value);
         
         repositoryHelper.setProcess(value.getProcess());
         
-        return super.start(uri, localName, attrs, parser);
+        return process;
     }
 
     

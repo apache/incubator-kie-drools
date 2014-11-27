@@ -103,11 +103,9 @@ public class BPMN2DataServiceImpl implements DefinitionService {
         KnowledgePackage pckg = kbuilder.getKnowledgePackages().iterator().next();
         
         org.kie.api.definition.process.Process process = pckg.getProcesses().iterator().next();
-        ProcessAssetDesc definition = new ProcessAssetDesc(process.getId(), process.getName(), process.getVersion()
-                , process.getPackageName(), process.getType(), process.getKnowledgeType().name(),
-                process.getNamespace(), "");
         
         ProcessDescRepoHelper helper = module.getRepo().removeProcessDescription(process.getId());
+        ProcessAssetDesc definition = helper.getProcess();
         
         definition.setAssociatedEntities(helper.getTaskAssignments());
         definition.setProcessVariables(helper.getInputs());

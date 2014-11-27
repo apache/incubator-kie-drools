@@ -31,6 +31,7 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.test.util.AbstractBaseTest;
 import org.jbpm.services.api.model.DeploymentUnit;
+import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.UserTaskDefinition;
 import org.junit.After;
 import org.junit.Before;
@@ -99,6 +100,15 @@ public class BPMN2DataServicesTest extends AbstractBaseTest {
       
         String processId = "org.jbpm.writedocument";
         
+        ProcessDefinition procDef = bpmn2Service.getProcessDefinition(deploymentUnit.getIdentifier(), processId);
+        assertNotNull(procDef);
+        
+        assertEquals(procDef.getId(), "org.jbpm.writedocument");
+        assertEquals(procDef.getName(), "humanTaskSample");
+        assertEquals(procDef.getKnowledgeType(), "PROCESS");
+        assertEquals(procDef.getPackageName(), "defaultPackage");
+        assertEquals(procDef.getType(), "RuleFlow");
+        assertEquals(procDef.getVersion(), "1");
 
         Collection<UserTaskDefinition> processTasks = bpmn2Service.getTasksDefinitions(deploymentUnit.getIdentifier(), processId);
         
