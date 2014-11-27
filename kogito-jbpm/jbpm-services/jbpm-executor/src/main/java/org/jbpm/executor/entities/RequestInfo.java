@@ -67,8 +67,10 @@ public class RequestInfo implements org.kie.internal.executor.api.RequestInfo, S
     private String owner;
     
     @Lob
+    @Column(length=2147483647)
     private byte[] requestData;
     @Lob
+    @Column(length=2147483647)
     private byte[] responseData;
     @OneToMany(cascade= CascadeType.ALL, mappedBy="requestInfo", fetch=FetchType.EAGER)
     private List<ErrorInfo> errorInfo = new ArrayList<ErrorInfo>();
