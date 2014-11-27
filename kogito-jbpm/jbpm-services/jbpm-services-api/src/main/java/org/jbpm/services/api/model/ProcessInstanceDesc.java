@@ -17,6 +17,7 @@
 package org.jbpm.services.api.model;
 
 import java.util.Date;
+import java.util.List;
 
 public interface ProcessInstanceDesc {
 	
@@ -37,4 +38,6 @@ public interface ProcessInstanceDesc {
     String getInitiator();
     
     String getProcessInstanceDescription();
+    
+    List<UserTaskInstanceDesc> getActiveTasks();
 }

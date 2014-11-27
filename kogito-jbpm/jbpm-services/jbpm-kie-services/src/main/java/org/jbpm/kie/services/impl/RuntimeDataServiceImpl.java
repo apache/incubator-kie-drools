@@ -305,7 +305,19 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         List<ProcessInstanceDesc> outputCollection = new ArrayList<ProcessInstanceDesc>();
         CollectionUtils.select(processInstances, new SecureInstancePredicate(identityProvider.getRoles()), outputCollection);
         if (!outputCollection.isEmpty()) {
-        	return outputCollection.iterator().next();
+        	ProcessInstanceDesc desc = outputCollection.iterator().next();
+        	List<String> statuses = new ArrayList<String>();
+        	statuses.add(Status.Ready.name());
+        	statuses.add(Status.Reserved.name());
+        	statuses.add(Status.InProgress.name());
+        	
+        	params = new HashMap<String, Object>();
+            params.put("processInstanceId", desc.getId());
+            params.put("statuses", statuses);
+            List<UserTaskInstanceDesc> tasks = commandService.execute(
+    				new QueryNameCommand<List<UserTaskInstanceDesc>>("getTaskInstancesByProcessInstanceId", params));
+        	((org.jbpm.kie.services.impl.model.ProcessInstanceDesc)desc).setActiveTasks(tasks);
+        	return desc;
         }
         return null;
    }

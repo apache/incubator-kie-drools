@@ -113,7 +113,9 @@ public interface RuntimeDataService {
     Collection<ProcessInstanceDesc> getProcessInstancesByDeploymentId(String deploymentId, List<Integer> states, QueryContext queryContext);
     
     /**
-     * Returns process instance descriptions found for given processInstanceId if found otherwise null. 
+     * Returns process instance descriptions found for given processInstanceId if found otherwise null. At the same time it will
+     * fetch all active tasks (in status: Ready, Reserved, InProgress) to provide information what user task is keeping instance
+     * and who owns them (if were already claimed). 
      * @param processInstanceId The id of the process instance to be fetched
      * @return Process instance information, in the form of a {@link ProcessInstanceDesc} instance.
      */

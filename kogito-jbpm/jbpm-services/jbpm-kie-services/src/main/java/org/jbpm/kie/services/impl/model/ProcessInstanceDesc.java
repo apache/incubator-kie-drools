@@ -17,6 +17,7 @@ package org.jbpm.kie.services.impl.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 
 public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessInstanceDesc, Serializable{
@@ -34,6 +35,8 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
     private Date dataTimeStamp;
 
     private String processInstanceDescription;
+    
+    private List<org.jbpm.services.api.model.UserTaskInstanceDesc> activeTasks;
 
     public ProcessInstanceDesc() {
         
@@ -120,5 +123,13 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
     public void setProcessInstanceDescription(String processInstanceDescription) {
         this.processInstanceDescription = processInstanceDescription;
     }
+
+	public List<org.jbpm.services.api.model.UserTaskInstanceDesc> getActiveTasks() {
+		return activeTasks;
+	}
+
+	public void setActiveTasks(List<org.jbpm.services.api.model.UserTaskInstanceDesc> activeTasks) {
+		this.activeTasks = activeTasks;
+	}
 
 }

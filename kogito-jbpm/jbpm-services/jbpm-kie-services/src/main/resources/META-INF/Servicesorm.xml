@@ -465,5 +465,32 @@
     </query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
+  
+    <named-query name="getTaskInstancesByProcessInstanceId">
+    <query>
+        select 
+        new org.jbpm.kie.services.impl.model.UserTaskInstanceDesc(
+        a.taskId,
+        a.status,
+        a.activationTime,
+        a.name,
+        a.description,
+        a.priority,
+        a.actualOwner,
+        a.createdBy,
+        a.deploymentId,
+        a.processId,
+        a.processInstanceId,
+        a.createdOn,
+        a.dueDate
+        )
+        from 
+          AuditTaskImpl a 
+        where 
+          a.processInstanceId = :processInstanceId
+          and a.status in ( :statuses) 
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
 
 </entity-mappings>

@@ -50,6 +50,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
@@ -390,6 +391,19 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	assertNotNull(instance);
     	assertEquals(1, (int)instance.getState());
     	assertEquals("org.jbpm.writedocument", instance.getProcessId());
+    	
+    	List<UserTaskInstanceDesc> tasks = instance.getActiveTasks();
+    	assertNotNull(tasks);
+    	assertEquals(1, tasks.size());
+    	
+    	UserTaskInstanceDesc activeTask = tasks.get(0);
+    	assertNotNull(activeTask);
+    	assertEquals(Status.Reserved.name(), activeTask.getStatus());
+    	assertEquals(instance.getId(), activeTask.getProcessInstanceId());
+    	assertEquals(instance.getProcessId(), activeTask.getProcessId());
+    	assertEquals("Write a Document", activeTask.getName());
+    	assertEquals("salaboy", activeTask.getActualOwner());
+    	assertEquals(deploymentUnit.getIdentifier(), activeTask.getDeploymentId());
     	
     	processService.abortProcessInstance(processInstanceId);
     	    	
