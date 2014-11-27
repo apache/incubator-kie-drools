@@ -183,7 +183,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     
     public Collection<ProcessDefinition> getProcessesByFilter(String filter, QueryContext queryContext) {
     	List<ProcessDefinition> outputCollection = new ArrayList<ProcessDefinition>();
-        CollectionUtils.select(availableProcesses, new RegExPredicate("^.*"+filter+".*$", identityProvider.getRoles()), outputCollection);
+        CollectionUtils.select(availableProcesses, new RegExPredicate("(?i)^.*"+filter+".*$", identityProvider.getRoles()), outputCollection);
         
         applySorting(outputCollection, queryContext);
         return applyPagnition(outputCollection, queryContext);
