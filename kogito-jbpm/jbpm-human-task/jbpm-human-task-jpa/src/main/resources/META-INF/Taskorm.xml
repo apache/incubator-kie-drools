@@ -973,6 +973,46 @@
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
+    <!-- for reminder  -->
+    <named-query name="UnescalatedEndDeadlinesByTaskIdForReminder">
+        <query>
+            select
+            new org.jbpm.services.task.query.DeadlineSummaryImpl(
+            t.id,
+            d.id,
+            d.date)
+            from
+            TaskImpl t,
+            DeadlineImpl d
+            where
+            t.id = :taskId and
+            t.archived = 0 and
+            d in elements( t.deadlines.endDeadlines )
+            order by
+            d.date
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+      
+    <named-query name="UnescalatedStartDeadlinesByTaskIdForReminder">
+        <query>
+            select
+            new org.jbpm.services.task.query.DeadlineSummaryImpl(
+            t.id,
+            d.id,
+            d.date)
+            from
+            TaskImpl t,
+            DeadlineImpl d
+            where
+            t.id = :taskId and
+            t.archived = 0 and
+            d in elements( t.deadlines.startDeadlines )
+            order by
+            d.date
+        </query>
+    </named-query>
+    <!-- for reminder end -->
     <named-query name="TaskByWorkItemId">
         <query>
             select

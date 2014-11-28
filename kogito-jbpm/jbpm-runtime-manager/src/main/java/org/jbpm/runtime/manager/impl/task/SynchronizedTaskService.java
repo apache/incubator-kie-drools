@@ -953,4 +953,13 @@ public class SynchronizedTaskService
             }
         }
 
+
+		@Override
+		public void executeReminderForTask(long taskId,String initiator) {
+			synchronized (ksession) {
+                taskService.executeReminderForTask(taskId,initiator);
+            }
+			
+		}
+
 }

@@ -677,5 +677,10 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
         throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
     }
 
+	@Override
+	public void executeReminderForTask(long taskId,String initiator) {
+		delegate.executeReminderForTask(taskId,initiator);
+	}
+
 
 }

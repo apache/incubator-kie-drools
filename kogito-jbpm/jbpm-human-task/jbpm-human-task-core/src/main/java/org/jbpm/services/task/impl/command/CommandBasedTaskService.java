@@ -1,6 +1,5 @@
 package org.jbpm.services.task.impl.command;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,6 +28,7 @@ import org.jbpm.services.task.commands.DeleteContentCommand;
 import org.jbpm.services.task.commands.DeleteFaultCommand;
 import org.jbpm.services.task.commands.DeleteOutputCommand;
 import org.jbpm.services.task.commands.DeployTaskDefCommand;
+import org.jbpm.services.task.commands.ExecuteReminderCommand;
 import org.jbpm.services.task.commands.ExecuteTaskRulesCommand;
 import org.jbpm.services.task.commands.ExitTaskCommand;
 import org.jbpm.services.task.commands.FailTaskCommand;
@@ -768,6 +768,10 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	@Override
 	public void removeTaskEventListener(TaskLifeCycleEventListener listener) {
 		taskEventSupport.removeEventListener(listener);
+	}
+	
+	public void executeReminderForTask(long taskId,String fromUser){
+		executor.execute(new ExecuteReminderCommand(taskId,fromUser));
 	}
 }
 
