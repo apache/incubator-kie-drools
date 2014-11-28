@@ -56,21 +56,18 @@ public class CompositeMoveTest {
 
     @Test
     public void buildEmptyMove() {
-        Move move = CompositeMove.buildMove(new ArrayList<Move>());
-        assertTrue(move instanceof NoChangeMove);
-
-        move = CompositeMove.buildMove();
-        assertTrue(move instanceof NoChangeMove);
+        assertInstanceOf(NoChangeMove.class, CompositeMove.buildMove(new ArrayList<Move>()));
+        assertInstanceOf(NoChangeMove.class, CompositeMove.buildMove());
     }
 
     @Test
     public void buildOneElemMove() {
         Move tmpMove = new DummyMove();
         Move move = CompositeMove.buildMove(Collections.singletonList(tmpMove));
-        assertTrue(move instanceof DummyMove);
+        assertInstanceOf(DummyMove.class, move);
 
         move = CompositeMove.buildMove(tmpMove);
-        assertTrue(move instanceof DummyMove);
+        assertInstanceOf(DummyMove.class, move);
     }
 
     @Test
@@ -78,14 +75,14 @@ public class CompositeMoveTest {
         Move first = new DummyMove();
         Move second = new NoChangeMove();
         Move move = CompositeMove.buildMove(Arrays.asList(first, second));
-        assertTrue(move instanceof CompositeMove);
-        assertTrue(((CompositeMove) move).getMoves()[0] instanceof DummyMove);
-        assertTrue(((CompositeMove) move).getMoves()[1] instanceof NoChangeMove);
+        assertInstanceOf(CompositeMove.class, move);
+        assertInstanceOf(DummyMove.class, ((CompositeMove) move).getMoves()[0]);
+        assertInstanceOf(NoChangeMove.class, ((CompositeMove) move).getMoves()[1]);
 
         move = CompositeMove.buildMove(first, second);
-        assertTrue(move instanceof CompositeMove);
-        assertTrue(((CompositeMove) move).getMoves()[0] instanceof DummyMove);
-        assertTrue(((CompositeMove) move).getMoves()[1] instanceof NoChangeMove);
+        assertInstanceOf(CompositeMove.class, move);
+        assertInstanceOf(DummyMove.class, ((CompositeMove) move).getMoves()[0]);
+        assertInstanceOf(NoChangeMove.class, ((CompositeMove) move).getMoves()[1]);
     }
 
     @Test
@@ -95,7 +92,7 @@ public class CompositeMoveTest {
         Move second = mock(DummyMove.class);
         when(second.isMoveDoable(scoreDirector)).thenReturn(false);
         Move move = CompositeMove.buildMove(first, second);
-        assertFalse(move.isMoveDoable(scoreDirector));
+        assertEquals(false, move.isMoveDoable(scoreDirector));
     }
 
     @Test
@@ -112,4 +109,5 @@ public class CompositeMoveTest {
         assertFalse(move.equals(new DummyMove()));
         assertTrue(move.equals(move));
     }
+
 }

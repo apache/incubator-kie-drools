@@ -52,7 +52,7 @@ public class FromSolutionEntitySelectorTest {
     }
 
     public void runOriginalWithoutEntityListDirtyAndMinimumCacheType(SelectionCacheType cacheType) {
-       TestdataSolution workingSolution = new TestdataSolution();
+        TestdataSolution workingSolution = new TestdataSolution();
         final List<Object> entityList = Arrays.<Object>asList(
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);

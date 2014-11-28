@@ -39,8 +39,6 @@ public class PillarChangeMoveTest {
 
         TestdataEntityProvidingEntity a = new TestdataEntityProvidingEntity("a", Arrays.asList(v1, v2, v3), null);
         TestdataEntityProvidingEntity b = new TestdataEntityProvidingEntity("b", Arrays.asList(v2, v3, v4, v5), null);
-        TestdataEntityProvidingEntity c = new TestdataEntityProvidingEntity("c", Arrays.asList(v4, v5), null);
-        TestdataEntityProvidingEntity z = new TestdataEntityProvidingEntity("z", Arrays.asList(v1, v2, v3, v4, v5), null);
 
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
         EntityDescriptor entityDescriptor = TestdataEntityProvidingEntity.buildEntityDescriptor();

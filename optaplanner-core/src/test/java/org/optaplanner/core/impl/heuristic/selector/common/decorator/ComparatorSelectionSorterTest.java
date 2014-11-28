@@ -14,7 +14,7 @@ public class ComparatorSelectionSorterTest {
 
     @Test
     public void sort() {
-        Object [] baseArray = new Object [] {3, 4, 3, 5, 1};
+        Object[] baseArray = new Object[] {3, 4, 3, 5, 1};
         List<Object> arrayToSort = new ArrayList<Object>();
         Collections.addAll(arrayToSort, baseArray);
         ComparatorSelectionSorter selectionSorter = new ComparatorSelectionSorter(new TestComparator(), SelectionSorterOrder.ASCENDING);
@@ -25,7 +25,7 @@ public class ComparatorSelectionSorterTest {
         Collections.addAll(arrayToSort, baseArray);
         selectionSorter = new ComparatorSelectionSorter(new TestComparator(), SelectionSorterOrder.DESCENDING);
         selectionSorter.sort(null, arrayToSort);
-        assertTrue(descandingSort(arrayToSort));
+        assertTrue(descendingSort(arrayToSort));
     }
 
     private boolean ascendingSort(List<Object> list) {
@@ -38,7 +38,7 @@ public class ComparatorSelectionSorterTest {
         return true;
     }
 
-    private boolean descandingSort(List<Object> list) {
+    private boolean descendingSort(List<Object> list) {
         Integer tmp = (Integer) list.get(0);
         for (Object aList : list) {
             if (tmp >= (Integer) aList) {

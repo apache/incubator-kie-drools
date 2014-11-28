@@ -20,67 +20,68 @@ public class CompositeEventPropagatingTest {
 
     @Test
     public void phaseStarted() {
-        List<Acceptor> acceptors = createAcceptors();
-        CompositeAcceptor acceptor = new CompositeAcceptor();
-        acceptor.setAcceptorList(acceptors);
-        acceptor.phaseStarted(null);
-        for (Acceptor acceptor_ : acceptors) {
-            assertTrue(((TestingAcceptor) acceptor_).isPhaseStarted());
+        List<Acceptor> acceptorList = createAcceptors();
+        CompositeAcceptor compositeAcceptor = new CompositeAcceptor();
+        compositeAcceptor.setAcceptorList(acceptorList);
+        compositeAcceptor.phaseStarted(null);
+        for (Acceptor acceptor : acceptorList) {
+            assertTrue(((TestingAcceptor) acceptor).isPhaseStarted());
         }
     }
 
     @Test
     public void phaseEnded() {
-        List<Acceptor> acceptors = createAcceptors();
-        CompositeAcceptor acceptor = new CompositeAcceptor();
-        acceptor.setAcceptorList(acceptors);
-        acceptor.phaseEnded(null);
-        for (Acceptor acceptor_ : acceptors) {
-            assertTrue(((TestingAcceptor) acceptor_).isPhaseEnded());
+        List<Acceptor> acceptorList = createAcceptors();
+        CompositeAcceptor compositeAcceptor = new CompositeAcceptor();
+        compositeAcceptor.setAcceptorList(acceptorList);
+        compositeAcceptor.phaseEnded(null);
+        for (Acceptor acceptor : acceptorList) {
+            assertTrue(((TestingAcceptor) acceptor).isPhaseEnded());
         }
     }
 
     @Test
     public void stepStarted() {
-        List<Acceptor> acceptors = createAcceptors();
-        CompositeAcceptor acceptor = new CompositeAcceptor();
-        acceptor.setAcceptorList(acceptors);
-        acceptor.stepStarted(null);
-        for (Acceptor acceptor_ : acceptors) {
-            assertTrue(((TestingAcceptor) acceptor_).isStepStarted());
+        List<Acceptor> acceptorList = createAcceptors();
+        CompositeAcceptor compositeAcceptor = new CompositeAcceptor();
+        compositeAcceptor.setAcceptorList(acceptorList);
+        compositeAcceptor.stepStarted(null);
+        for (Acceptor acceptor : acceptorList) {
+            assertTrue(((TestingAcceptor) acceptor).isStepStarted());
         }
     }
 
     @Test
     public void stepEnded() {
-        List<Acceptor> acceptors = createAcceptors();
-        CompositeAcceptor acceptor = new CompositeAcceptor();
-        acceptor.setAcceptorList(acceptors);
-        acceptor.stepEnded(null);
-        for (Acceptor acceptor_ : acceptors) {
-            assertTrue(((TestingAcceptor) acceptor_).isStepEnded());
+        List<Acceptor> acceptorList = createAcceptors();
+        CompositeAcceptor compositeAcceptor = new CompositeAcceptor();
+        compositeAcceptor.setAcceptorList(acceptorList);
+        compositeAcceptor.stepEnded(null);
+        for (Acceptor acceptor : acceptorList) {
+            assertTrue(((TestingAcceptor) acceptor).isStepEnded());
         }
     }
 
     @Test
     public void solvingStarted() {
-        List<Acceptor> acceptors = createAcceptors();
-        CompositeAcceptor acceptor = new CompositeAcceptor();
-        acceptor.setAcceptorList(acceptors);
-        acceptor.solvingStarted(null);
-        for (Acceptor acceptor_ : acceptors) {
-            assertTrue(((TestingAcceptor) acceptor_).isSolvingStarted());
+        List<Acceptor> acceptorList = createAcceptors();
+        CompositeAcceptor compositeAcceptor = new CompositeAcceptor();
+        compositeAcceptor.setAcceptorList(acceptorList);
+        compositeAcceptor.solvingStarted(null);
+        for (Acceptor acceptor : acceptorList) {
+            assertTrue(((TestingAcceptor) acceptor).isSolvingStarted());
         }
     }
 
     @Test
     public void solvingEnded() {
-        List<Acceptor> acceptors = createAcceptors();
-        CompositeAcceptor acceptor = new CompositeAcceptor();
-        acceptor.setAcceptorList(acceptors);
-        acceptor.solvingEnded(null);
-        for (Acceptor acceptor_ : acceptors) {
-            assertTrue(((TestingAcceptor) acceptor_).isSolvingEnded());
+        List<Acceptor> acceptorList = createAcceptors();
+        CompositeAcceptor compositeAcceptor = new CompositeAcceptor();
+        compositeAcceptor.setAcceptorList(acceptorList);
+        compositeAcceptor.solvingEnded(null);
+        for (Acceptor acceptor : acceptorList) {
+            assertTrue(((TestingAcceptor) acceptor).isSolvingEnded());
         }
     }
+
 }

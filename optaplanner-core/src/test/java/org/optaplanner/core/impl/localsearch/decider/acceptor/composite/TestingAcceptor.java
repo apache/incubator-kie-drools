@@ -84,4 +84,5 @@ public class TestingAcceptor extends AbstractAcceptor {
         super.solvingEnded(solverScope);
         this.solvingEnded = true;
     }
+
 }

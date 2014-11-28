@@ -108,14 +108,14 @@ public class CachingEntitySelectorTest {
         verify(childEntitySelector, times(timesCalled)).getSize();
     }
 
-    @Test(expected=IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void listIteratorWithRandomSelection() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, true);
         cachingEntitySelector.listIterator();
     }
 
-    @Test(expected=IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void indexedListIteratorWithRandomSelection() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, true);
@@ -138,11 +138,11 @@ public class CachingEntitySelectorTest {
 
         CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, true);
         cachingEntitySelector.constructCache(null);
-        assertTrue(cachingEntitySelector.iterator() instanceof CachedListRandomIterator);
+        assertInstanceOf(CachedListRandomIterator.class, cachingEntitySelector.iterator());
 
         cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, false);
         cachingEntitySelector.constructCache(null);
-        assertFalse(cachingEntitySelector.iterator() instanceof CachedListRandomIterator);
+        assertNotInstanceOf(CachedListRandomIterator.class, cachingEntitySelector.iterator());
     }
 
 }

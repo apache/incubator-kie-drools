@@ -26,11 +26,11 @@ public class CompositeAcceptingTest {
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection parameters() {
         return Arrays.asList(new Object[][]{
-                {new boolean [] {true, true, true}, true},
-                {new boolean [] {false, true, true}, false},
-                {new boolean [] {true, false, true}, false},
-                {new boolean [] {true, true, false}, false},
-                {new boolean [] {false, false, false}, false}
+                {new boolean[] {true, true, true}, true},
+                {new boolean[] {false, true, true}, false},
+                {new boolean[] {true, false, true}, false},
+                {new boolean[] {true, true, false}, false},
+                {new boolean[] {false, false, false}, false}
         });
     }
 

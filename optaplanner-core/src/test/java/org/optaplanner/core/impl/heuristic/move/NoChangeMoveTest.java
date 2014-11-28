@@ -3,34 +3,29 @@ package org.optaplanner.core.impl.heuristic.move;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertInstanceOf;
 
 public class NoChangeMoveTest {
 
-    private Move move;
-
-    @Before
-    public void init() {
-        this.move = new NoChangeMove();
-    }
-
     @Test
     public void isMoveDoable() {
-        assertTrue(move.isMoveDoable(null));
+        assertEquals(true, new NoChangeMove().isMoveDoable(null));
     }
 
     @Test
     public void createUndoMove() {
-        assertTrue(move.createUndoMove(null) instanceof  NoChangeMove);
+        assertInstanceOf(NoChangeMove.class, new NoChangeMove().createUndoMove(null));
     }
 
     @Test
     public void getPlanningEntities() {
-        assertTrue(move.getPlanningEntities().isEmpty());
+        assertEquals(true, new NoChangeMove().getPlanningEntities().isEmpty());
     }
 
     @Test
     public void getPlanningValues() {
-        assertTrue(move.getPlanningValues().isEmpty());
+        assertEquals(true, new NoChangeMove().getPlanningValues().isEmpty());
     }
+
 }
