@@ -214,4 +214,6 @@ public interface InternalTaskService extends TaskService {
     TaskQueryBuilder taskQuery(String userId);
     
     List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId, String language ,List<Status> statuses);
+    
+    void executeReminderForTask(long taskId,String fromUser);
 }
