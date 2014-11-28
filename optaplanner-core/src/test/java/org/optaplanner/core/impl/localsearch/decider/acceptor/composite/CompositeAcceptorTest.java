@@ -13,12 +13,12 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
-public class CompositeAcceptingTest {
+public class CompositeAcceptorTest {
 
     private final boolean[] acceptingStates;
     private final boolean result;
 
-    public CompositeAcceptingTest(boolean[] acceptingStates, boolean result) {
+    public CompositeAcceptorTest(boolean[] acceptingStates, boolean result) {
         this.acceptingStates = acceptingStates;
         this.result = result;
     }
@@ -36,12 +36,11 @@ public class CompositeAcceptingTest {
 
     @Test
     public void isAccepted() {
-        List<Acceptor> acceptors = Arrays.asList(
+        List<Acceptor> acceptorList = Arrays.asList(
                 (Acceptor) new TestingAcceptor(acceptingStates[0]),
                 new TestingAcceptor(acceptingStates[1]),
                 new TestingAcceptor(acceptingStates[2]));
-        CompositeAcceptor acceptor = new CompositeAcceptor();
-        acceptor.setAcceptorList(acceptors);
+        CompositeAcceptor acceptor = new CompositeAcceptor(acceptorList);
         assertEquals(result, acceptor.isAccepted(null));
     }
 

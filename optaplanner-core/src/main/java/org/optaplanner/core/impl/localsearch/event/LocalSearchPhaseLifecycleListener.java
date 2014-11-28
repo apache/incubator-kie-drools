@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.localsearch.event;
 
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.solver.event.SolverLifecycleListener;
 
 public interface LocalSearchPhaseLifecycleListener extends SolverLifecycleListener {

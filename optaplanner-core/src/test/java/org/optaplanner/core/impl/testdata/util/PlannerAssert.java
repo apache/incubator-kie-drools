@@ -22,6 +22,9 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.ComparisonFailure;
 import org.mockito.Matchers;
+import org.optaplanner.core.impl.constructionheuristic.event.ConstructionHeuristicPhaseLifecycleListener;
+import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicPhaseScope;
+import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.optaplanner.core.impl.heuristic.move.CompositeMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -33,6 +36,9 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
+import org.optaplanner.core.impl.localsearch.event.LocalSearchPhaseLifecycleListener;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
@@ -79,6 +85,26 @@ public class PlannerAssert extends Assert {
         verify(phaseLifecycleListener, times(stepCount)).stepStarted(Matchers.<AbstractStepScope>any());
         verify(phaseLifecycleListener, times(stepCount)).stepEnded(Matchers.<AbstractStepScope>any());
         verify(phaseLifecycleListener, times(phaseCount)).phaseEnded(Matchers.<AbstractPhaseScope>any());
+        verify(phaseLifecycleListener, times(solvingCount)).solvingEnded(Matchers.<DefaultSolverScope>any());
+    }
+
+    public static void verifyPhaseLifecycle(ConstructionHeuristicPhaseLifecycleListener phaseLifecycleListener,
+            int solvingCount, int phaseCount, int stepCount) {
+        verify(phaseLifecycleListener, times(solvingCount)).solvingStarted(Matchers.<DefaultSolverScope>any());
+        verify(phaseLifecycleListener, times(phaseCount)).phaseStarted(Matchers.<ConstructionHeuristicPhaseScope>any());
+        verify(phaseLifecycleListener, times(stepCount)).stepStarted(Matchers.<ConstructionHeuristicStepScope>any());
+        verify(phaseLifecycleListener, times(stepCount)).stepEnded(Matchers.<ConstructionHeuristicStepScope>any());
+        verify(phaseLifecycleListener, times(phaseCount)).phaseEnded(Matchers.<ConstructionHeuristicPhaseScope>any());
+        verify(phaseLifecycleListener, times(solvingCount)).solvingEnded(Matchers.<DefaultSolverScope>any());
+    }
+
+    public static void verifyPhaseLifecycle(LocalSearchPhaseLifecycleListener phaseLifecycleListener,
+            int solvingCount, int phaseCount, int stepCount) {
+        verify(phaseLifecycleListener, times(solvingCount)).solvingStarted(Matchers.<DefaultSolverScope>any());
+        verify(phaseLifecycleListener, times(phaseCount)).phaseStarted(Matchers.<LocalSearchPhaseScope>any());
+        verify(phaseLifecycleListener, times(stepCount)).stepStarted(Matchers.<LocalSearchStepScope>any());
+        verify(phaseLifecycleListener, times(stepCount)).stepEnded(Matchers.<LocalSearchStepScope>any());
+        verify(phaseLifecycleListener, times(phaseCount)).phaseEnded(Matchers.<LocalSearchPhaseScope>any());
         verify(phaseLifecycleListener, times(solvingCount)).solvingEnded(Matchers.<DefaultSolverScope>any());
     }
 

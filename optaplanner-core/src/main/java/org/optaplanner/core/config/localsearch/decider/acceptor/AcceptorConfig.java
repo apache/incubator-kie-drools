@@ -400,8 +400,7 @@ public class AcceptorConfig {
         if (acceptorList.size() == 1) {
             return acceptorList.get(0);
         } else if (acceptorList.size() > 1) {
-            CompositeAcceptor compositeAcceptor = new CompositeAcceptor();
-            compositeAcceptor.setAcceptorList(acceptorList);
+            CompositeAcceptor compositeAcceptor = new CompositeAcceptor(acceptorList);
             return compositeAcceptor;
         } else {
             // TODO Create a good all-round acceptor instead of fail-fasting.

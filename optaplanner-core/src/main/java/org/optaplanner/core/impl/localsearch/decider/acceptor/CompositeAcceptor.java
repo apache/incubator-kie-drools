@@ -16,12 +16,14 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * Combines several acceptors into one.
@@ -30,10 +32,14 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
  */
 public class CompositeAcceptor extends AbstractAcceptor {
 
-    protected List<Acceptor> acceptorList;
+    protected final List<Acceptor> acceptorList;
 
-    public void setAcceptorList(List<Acceptor> acceptorList) {
+    public CompositeAcceptor(List<Acceptor> acceptorList) {
         this.acceptorList = acceptorList;
+    }
+
+    public CompositeAcceptor(Acceptor... acceptors) {
+        this(Arrays.asList(acceptors));
     }
 
     // ************************************************************************
