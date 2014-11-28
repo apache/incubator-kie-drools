@@ -16,7 +16,10 @@
 
 package org.optaplanner.core.impl.heuristic.move;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.Test;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -51,4 +54,62 @@ public class CompositeMoveTest {
         verify(c, times(1)).doMove(scoreDirector);
     }
 
+    @Test
+    public void buildEmptyMove() {
+        Move move = CompositeMove.buildMove(new ArrayList<Move>());
+        assertTrue(move instanceof NoChangeMove);
+
+        move = CompositeMove.buildMove();
+        assertTrue(move instanceof NoChangeMove);
+    }
+
+    @Test
+    public void buildOneElemMove() {
+        Move tmpMove = new DummyMove();
+        Move move = CompositeMove.buildMove(Collections.singletonList(tmpMove));
+        assertTrue(move instanceof DummyMove);
+
+        move = CompositeMove.buildMove(tmpMove);
+        assertTrue(move instanceof DummyMove);
+    }
+
+    @Test
+    public void buildTwoElemMove() {
+        Move first = new DummyMove();
+        Move second = new NoChangeMove();
+        Move move = CompositeMove.buildMove(Arrays.asList(first, second));
+        assertTrue(move instanceof CompositeMove);
+        assertTrue(((CompositeMove) move).getMoves()[0] instanceof DummyMove);
+        assertTrue(((CompositeMove) move).getMoves()[1] instanceof NoChangeMove);
+
+        move = CompositeMove.buildMove(first, second);
+        assertTrue(move instanceof CompositeMove);
+        assertTrue(((CompositeMove) move).getMoves()[0] instanceof DummyMove);
+        assertTrue(((CompositeMove) move).getMoves()[1] instanceof NoChangeMove);
+    }
+
+    @Test
+    public void isMoveDoable() {
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        Move first = new DummyMove();
+        Move second = mock(DummyMove.class);
+        when(second.isMoveDoable(scoreDirector)).thenReturn(false);
+        Move move = CompositeMove.buildMove(first, second);
+        assertFalse(move.isMoveDoable(scoreDirector));
+    }
+
+    @Test
+    public void equals() {
+        Move first = new DummyMove();
+        Move second = new NoChangeMove();
+        Move move = CompositeMove.buildMove(Arrays.asList(first, second));
+        Move other = CompositeMove.buildMove(Arrays.asList(first, second));
+        assertTrue(move.equals(other));
+
+        move = CompositeMove.buildMove(Arrays.asList(first, second));
+        other = CompositeMove.buildMove(Arrays.asList(second, first));
+        assertFalse(move.equals(other));
+        assertFalse(move.equals(new DummyMove()));
+        assertTrue(move.equals(move));
+    }
 }

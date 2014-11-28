@@ -124,4 +124,18 @@ public class SortingEntitySelectorTest {
         verify(childEntitySelector, times(timesCalled)).getSize();
     }
 
+    @Test
+    public void isNeverEnding() {
+        EntitySelector entitySelector = new SortingEntitySelector(mock(EntitySelector.class), SelectionCacheType.PHASE,
+                mock(SelectionSorter.class));
+        assertFalse(entitySelector.isNeverEnding());
+    }
+
+    @Test
+    public void isCountable() {
+        EntitySelector entitySelector = new SortingEntitySelector(mock(EntitySelector.class), SelectionCacheType.PHASE,
+                mock(SelectionSorter.class));
+        assertTrue(entitySelector.isCountable());
+    }
+
 }

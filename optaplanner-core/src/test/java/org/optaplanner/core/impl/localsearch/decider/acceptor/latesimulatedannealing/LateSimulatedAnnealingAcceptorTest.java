@@ -111,4 +111,18 @@ public class LateSimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
         acceptor.phaseEnded(phaseScope);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void zeroLateSimulatedAnnealingSize() {
+        LateSimulatedAnnealingAcceptor acceptor = new LateSimulatedAnnealingAcceptor();
+        acceptor.setLateSimulatedAnnealingSize(0);
+        acceptor.phaseStarted(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void negativeLateSimulatedAnnealingSize() {
+        LateSimulatedAnnealingAcceptor acceptor= new LateSimulatedAnnealingAcceptor();
+        acceptor.setLateSimulatedAnnealingSize(-1);
+        acceptor.phaseStarted(null);
+    }
+
 }

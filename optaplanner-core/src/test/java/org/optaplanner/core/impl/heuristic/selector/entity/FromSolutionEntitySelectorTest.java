@@ -31,6 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import static org.mockito.Mockito.*;
+import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class FromSolutionEntitySelectorTest {
@@ -371,6 +372,22 @@ public class FromSolutionEntitySelectorTest {
         entitySelector.solvingEnded(solverScope);
 
         verify(entityDescriptor, times(4)).extractEntities(workingSolution);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void listIteratorWithRandomSelection() {
+        EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
+        when(entityDescriptor.getEntityClass()).thenReturn((Class)TestdataEntity.class);
+        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, SelectionCacheType.JUST_IN_TIME, true);
+        entitySelector.listIterator();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void indexedListIteratorWithRandomSelection() {
+        EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
+        when(entityDescriptor.getEntityClass()).thenReturn((Class)TestdataEntity.class);
+        FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, SelectionCacheType.JUST_IN_TIME, true);
+        entitySelector.listIterator(0);
     }
 
 }
