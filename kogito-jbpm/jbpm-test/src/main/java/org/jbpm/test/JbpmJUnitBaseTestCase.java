@@ -68,6 +68,7 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.task.TaskLifeCycleEventListener;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.manager.context.EmptyContext;
@@ -132,6 +133,8 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
 
     private AuditService logService;
     private WorkingMemoryInMemoryLogger inMemoryLogger;    
+    
+    protected UserGroupCallback userGroupCallback = new JBossUserGroupCallbackImpl("classpath:/usergroups.properties");
    
     protected Set<RuntimeEngine> activeEngines = new HashSet<RuntimeEngine>();
     
@@ -426,7 +429,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
 	        	
 	        });       
         }
-        builder.userGroupCallback(new JBossUserGroupCallbackImpl("classpath:/usergroups.properties"));
+        builder.userGroupCallback(userGroupCallback);
         
         for (Map.Entry<String, ResourceType> entry : resources.entrySet()) {            
             builder.addAsset(ResourceFactory.newClassPathResource(entry.getKey()), entry.getValue());

@@ -32,6 +32,8 @@ import org.slf4j.LoggerFactory;
 
 public class JBossUserGroupCallbackImpl extends AbstractUserGroupInfo implements UserGroupCallback {
 	
+	private String separator;
+
 	private static final Logger logger = LoggerFactory.getLogger(JBossUserGroupCallbackImpl.class);
 
 	private static final String DEFAULT_PROPERTIES_LOCATION = "file:" + System.getProperty("jboss.server.config.dir") + "/roles.properties";
@@ -60,13 +62,16 @@ public class JBossUserGroupCallbackImpl extends AbstractUserGroupInfo implements
 		if (userGroups == null) {
 			throw new IllegalArgumentException("UserGroups properties cannot be null");
 		}
+		this.separator = System.getProperty("org.jbpm.ht.user.separator", ",");
+	        
+
 		List<String> groups = null;
 		Iterator<Object> it = userGroups.keySet().iterator();
 		
 		while (it.hasNext()) {
 			String userId = (String) it.next();
 			
-			groups = Arrays.asList(userGroups.getProperty(userId, "").split(","));
+			groups = Arrays.asList(userGroups.getProperty(userId, "").split(separator));
 			groupStore.put(userId, groups);
 			allgroups.addAll(groups);
 			
