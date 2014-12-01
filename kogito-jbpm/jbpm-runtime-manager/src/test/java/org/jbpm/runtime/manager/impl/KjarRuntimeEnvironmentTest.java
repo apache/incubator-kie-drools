@@ -3,6 +3,7 @@ package org.jbpm.runtime.manager.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 import java.io.File;
@@ -41,6 +42,7 @@ import org.kie.api.task.UserGroupCallback;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.scanner.MavenRepository;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
@@ -283,6 +285,58 @@ public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
         ProcessInstance processInstance = engine.getKieSession().startProcess("ScriptTask", params);
         
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        
+    }
+    
+    @Test
+    public void testUserTaskFromKjarPPI() {
+    	KieServices ks = KieServices.Factory.get();
+          
+    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder(ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION))
+                .userGroupCallback(userGroupCallback)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);
+        assertNotNull(manager);
+        
+        RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        assertNotNull(engine);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        
+        ProcessInstance processInstance = engine.getKieSession().startProcess("UserTask", params);
+        
+        manager.disposeRuntimeEngine(engine);
+        engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));        
+        
+        List<TaskSummary> tasks = engine.getTaskService().getTasksAssignedAsPotentialOwner("john", "en-UK");
+        assertNotNull(tasks);
+        assertEquals(1, tasks.size());
+        
+        long taskId = tasks.get(0).getId();
+        
+        manager.disposeRuntimeEngine(engine);
+        engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+        
+        engine.getTaskService().start(taskId, "john");
+        
+        manager.disposeRuntimeEngine(engine);
+        engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+        
+        engine.getTaskService().complete(taskId, "john", null);
+        
+        manager.disposeRuntimeEngine(engine);
+        try {
+	        engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+	        
+	        processInstance = engine.getKieSession().getProcessInstance(processInstance.getId());
+	        assertNull(processInstance);
+	        fail("Should fail as process instance is already completed");
+        } catch (Exception e) {
+        	
+        }
+        manager.disposeRuntimeEngine(engine);
         
     }
     

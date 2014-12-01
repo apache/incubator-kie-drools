@@ -31,6 +31,7 @@ import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.runtime.manager.api.SchedulerProvider;
 import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
@@ -39,7 +40,6 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.task.UserGroupCallback;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -162,9 +162,9 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
     public KieSessionConfiguration getConfiguration() {
     	KieSessionConfiguration config = null;
     	if (this.sessionConfigProperties != null) {
-    		config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(this.sessionConfigProperties);
+    		config = KieServices.Factory.get().newKieSessionConfiguration(this.sessionConfigProperties, classLoader);
         } else {
-        	config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        	config = KieServices.Factory.get().newKieSessionConfiguration(null, classLoader);
         }
     	// add special option to fire activations marked as eager directly
     	config.setOption(ForceEagerActivationOption.YES);
