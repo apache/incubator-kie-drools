@@ -107,11 +107,13 @@ public class SessionConfiguration
         out.writeObject( queryListener );
         out.writeObject( timerJobFactoryType );
     }
-    
-    private static final SessionConfiguration defaultInstance = new SessionConfiguration();
+
+    private static class DefaultSessionConfiguration {
+        private static final SessionConfiguration defaultInstance = new SessionConfiguration();
+    }
     
     public static SessionConfiguration getDefaultInstance() {
-        return defaultInstance;
+        return DefaultSessionConfiguration.defaultInstance;
     }
 
     @SuppressWarnings("unchecked")
@@ -133,6 +135,10 @@ public class SessionConfiguration
      */
     public SessionConfiguration(Properties properties) {
         init( properties, null );
+    }
+
+    public SessionConfiguration(Properties properties, ClassLoader classLoader) {
+        init( properties, classLoader );
     }
 
     /**
@@ -566,7 +572,7 @@ public class SessionConfiguration
 
     @Override
     public int hashCode() {
-        if (this == defaultInstance) {
+        if (this == getDefaultInstance()) {
             return 0;
         }
         int result = (keepReference ? 1 : 0);

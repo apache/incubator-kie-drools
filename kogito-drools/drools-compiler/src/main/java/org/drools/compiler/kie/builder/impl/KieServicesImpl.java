@@ -1,6 +1,8 @@
 package org.drools.compiler.kie.builder.impl;
 
 import org.drools.compiler.kie.builder.impl.event.KieServicesEventListerner;
+import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.audit.KnowledgeRuntimeLoggerProviderImpl;
@@ -8,29 +10,25 @@ import org.drools.core.command.impl.CommandFactoryServiceImpl;
 import org.drools.core.concurrent.ExecutorProviderImpl;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.io.impl.ResourceFactoryServiceImpl;
-import org.drools.compiler.kproject.ReleaseIdImpl;
-import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.marshalling.impl.MarshallerProviderImpl;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieScannerFactoryService;
-import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.KieScanner;
+import org.kie.api.builder.KieScannerFactoryService;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.command.KieCommands;
 import org.kie.api.concurrent.KieExecutors;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.internal.io.ResourceFactoryService;
-import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.api.io.KieResources;
 import org.kie.api.logger.KieLoggers;
 import org.kie.api.marshalling.KieMarshallers;
 import org.kie.api.persistence.jpa.KieStoreServices;
+import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.internal.utils.ServiceRegistryImpl;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -177,6 +175,10 @@ public class KieServicesImpl implements InternalKieServices {
 
     public KieSessionConfiguration newKieSessionConfiguration(Properties properties) {
         return new SessionConfiguration(properties);
+    }
+
+    public KieSessionConfiguration newKieSessionConfiguration(Properties properties, ClassLoader classLoader) {
+        return new SessionConfiguration(properties, classLoader);
     }
 
     public Environment newEnvironment() {
