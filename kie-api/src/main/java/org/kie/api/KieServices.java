@@ -204,6 +204,15 @@ public interface KieServices {
     KieSessionConfiguration newKieSessionConfiguration(Properties properties);
 
     /**
+     * Create a KieSessionConfiguration on which properties can be set. Use
+     * the given properties file and ClassLoader - either of which can be null.
+     * @param properties properties
+     * @param classLoader classLoader
+     * @return new kiesession configuration
+     */
+    KieSessionConfiguration newKieSessionConfiguration(Properties properties, ClassLoader classLoader);
+
+    /**
      * Instantiate and return an Environment
      *
      * @return
