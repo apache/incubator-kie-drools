@@ -169,6 +169,44 @@
 <emphasis role="bold">end</emphasis>
 </programlisting>
     </example>
+
+	  <section>
+		  <title>Declaring enumerative types</title>
+		  <para>DRL also supports the declaration of enumerative types. Such type declarations require the additional keyword
+			  <emphasis>enum</emphasis>, followed by a comma separated list of admissible values terminated by a semicolon.
+		  </para>
+		  <example>
+<programlisting>
+<emphasis role="bold">declare enum</emphasis> DaysOfWeek
+   SUN,MON,TUE,WED,THU,FRI,SAT;
+<emphasis role="bold">end</emphasis>
+</programlisting>
+		  </example>
+		  <para>The compiler will generate a valid Java enum, with static methods valueOf() and values(), as well as instance methods
+			  ordinal(), compareTo() and name().</para>
+		  <para>Complex enums are also partially supported, declaring the internal fields similarly to a regular type declaration.
+			  Notice that as of version 6.x, enum fields do <emphasis>NOT</emphasis> support other declared types or enums</para>
+		  <example>
+<programlisting>
+<emphasis role="bold">declare enum</emphasis> DaysOfWeek
+   SUN("Sunday"),MON("Monday"),TUE("Tuesday"),WED("Wednesday"),THU("Thursday"),FRI("Friday"),SAT("Saturday");
+
+   fullName : String
+<emphasis role="bold">end</emphasis>
+			  </programlisting>
+		  </example>
+		  <para>Enumeratives can then be used in rules</para>
+		  <example>
+			  <title>Using declarative enumerations in rules</title>
+<programlisting><emphasis role="bold">rule</emphasis> "Using a declared Enum"
+<emphasis role="bold">when</emphasis>
+   $p : Employee( dayOff == DaysOfWeek.MONDAY )
+<emphasis role="bold">then</emphasis>
+   ...
+<emphasis role="bold">end</emphasis>
+</programlisting>
+		  </example>
+	  </section>
   </section>
 
   <section>
