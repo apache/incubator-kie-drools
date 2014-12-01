@@ -82,6 +82,7 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.XmlChangeSetReader;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
@@ -2177,6 +2178,10 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     public KnowledgeBase newKnowledgeBase() {
+        return newKnowledgeBase(null);
+    }
+
+    public KnowledgeBase newKnowledgeBase(KieBaseConfiguration conf) {
         KnowledgeBuilderErrors errors = getErrors();
         if (errors.size() > 0) {
             for (KnowledgeBuilderError error: errors) {
@@ -2184,7 +2189,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             }
             throw new IllegalArgumentException("Could not parse knowledge.");
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(conf);
         kbase.addKnowledgePackages(getKnowledgePackages());
         return kbase;
     }

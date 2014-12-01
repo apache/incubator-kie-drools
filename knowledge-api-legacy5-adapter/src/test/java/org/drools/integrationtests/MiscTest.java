@@ -20,6 +20,7 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.time.SessionPseudoClock;
 import org.junit.Test;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,6 +148,7 @@ public class MiscTest {
     
     @Test
     public void testConsequenceException() {
+        // BZ-1077834
         String str =
                 "package foo.bar\n" +
                 "rule R\n" +
@@ -164,6 +166,36 @@ public class MiscTest {
             // this is correct, succeeds
         } catch( Exception other) {
             fail("Wrong exception raised = "+other.getClass().getCanonicalName());
+        }
+    }
+
+    @Test
+    public void testConsequenceException2() {
+        // BZ-1077834
+        String str
+                = "package foo.bar\n"
+                  + "rule R\n"
+                  + "when\n"
+                  + "then\n"
+                  + "    throw new RuntimeException(\"foo\");"
+                  + "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes(Charset.forName("UTF-8"))), ResourceType.DRL);
+
+        if (kbuilder.hasErrors()) {
+            throw new RuntimeException("Drools compile errors: " + kbuilder.getErrors().toString());
+        }
+
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        try {
+            ksession.fireAllRules();
+        } catch (org.drools.runtime.rule.ConsequenceException e) {
+            // this is correct, succeeds
+        } catch (Exception other) {
+            fail("Wrong exception raised = " + other.getClass().getCanonicalName());
         }
     }
 
