@@ -4,7 +4,7 @@ Introduction
 OptaPlanner's public API classes are backwards compatible,
 but you might be using not-yet-public API classes (which are often documented in the reference manual too).
 This file describes how can you upgrade those from an earlier version to the latest,
-as well as general recommended changes.
+as well as easily apply general recommended changes.
 
 Every migration change has an indication how likely your code is going to be affected by this change:
 - [MAJOR] Very likely affects your code.
@@ -12,6 +12,12 @@ Every migration change has an indication how likely your code is going to be aff
 - [IMPL_DETAIL] Should not affect your code, unless you have very deep hacks.
 - [RECOMMENDED] Not a backward incompatible change, but you probably want to do this.
 - [README] Read this to better understand why the following MAJOR change was made.
+
+Important note for BRMS/BPMS customers: the BRMS/BPMS version does NOT match the optaplanner jar version.
+The sections below reference the optaplanner jar version. The mapping is as follows:
+- BRMS/BPMS 6.0 includes drools/optaplanner 6.0
+- BRMS/BPMS 6.1 includes drools/optaplanner 6.2
+So if you're upgrading to BRMS 6.1, follow the recipe to upgrade to 6.2.0.Final.
 
 From 5.* to 5.5.0.Final
 -----------------------
