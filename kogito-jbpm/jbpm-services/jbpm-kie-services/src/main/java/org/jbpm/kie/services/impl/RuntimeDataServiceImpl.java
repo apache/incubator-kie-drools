@@ -144,6 +144,8 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 						return o1.getName().compareTo(o2.getName());
 					} else if ("ProcessVersion".equals(queryContext.getOrderBy())) {
 						return o1.getVersion().compareTo(o2.getVersion());
+					} else if ("Project".equals(queryContext.getOrderBy())) {
+						return o1.getDeploymentId().compareTo(o2.getDeploymentId());
 					}
 					return 0;
 				}
