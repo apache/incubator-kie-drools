@@ -1,9 +1,11 @@
 package org.drools.core.common;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.factmodel.traits.TraitTypeEnum;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.RightTuple;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -11,13 +13,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-
-import org.drools.core.factmodel.traits.TraitFactory;
-import org.drools.core.factmodel.traits.TraitTypeEnum;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.RightTuple;
-import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.api.runtime.rule.FactHandle;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 @XmlRootElement(name="disconnected-fact-handle")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -106,18 +105,19 @@ public class DisconnectedFactHandle
         parseExternalForm( externalFormat );
     }
 
-    private void parseExternalForm(String externalFormat) {
+    private void parseExternalForm( String externalFormat ) {
         String[] elements = externalFormat.split( ":" );
-        if ( elements.length < 7 ) {
-            throw new IllegalArgumentException( "externalFormat did not have enough elements" );
+        if (elements.length < 7) {
+            throw new IllegalArgumentException( "externalFormat did not have enough elements ["+externalFormat+"]" );
         }
 
         this.id = Integer.parseInt( elements[1] );
         this.identityHashCode = Integer.parseInt( elements[2] );
-        this.objectHashCode = Integer.parseInt( elements[3] );
+        this.objectHashCode = Integer.parseInt(elements[3]);
         this.recency = Long.parseLong( elements[4] );
-        this.entryPointId = elements[5];
-        this.traitType = TraitTypeEnum.valueOf( elements[6] );
+        this.negated =  "pos".equals( elements[5] ) ? false :  true;
+        this.entryPointId = elements[6].trim();
+        this.traitType = elements.length > 7 ? TraitTypeEnum.valueOf( elements[7] ) : TraitTypeEnum.NON_TRAIT;
     }
 
     @Override
@@ -229,9 +229,25 @@ public class DisconnectedFactHandle
     }
 
     public String toExternalForm() {
+        return "0:" + this.id +
+               ":" +
+               getIdentityHashCode() +
+               ":" +
+               getObjectHashCode() +
+               ":" +
+               getRecency() +
+               ":" +
+               ( isNegated() ? "neg" : "pos" ) +
+               ":" +
+               this.entryPointId +
+               ":" +
+               this.traitType.name();
+    }
+/*
+    public String toExternalForm() {
         return "0:" + this.id + ":" + this.identityHashCode + ":" + this.objectHashCode + ":" + this.recency + ":" + this.entryPointId + ":" + this.traitType;
     }
-
+*/
     @XmlAttribute(name = "external-form")
     public String getExternalForm() {
         return toExternalForm();
