@@ -115,9 +115,8 @@ public class DisconnectedFactHandle
         this.identityHashCode = Integer.parseInt( elements[2] );
         this.objectHashCode = Integer.parseInt(elements[3]);
         this.recency = Long.parseLong( elements[4] );
-        this.negated =  "pos".equals( elements[5] ) ? false :  true;
-        this.entryPointId = elements[6].trim();
-        this.traitType = elements.length > 7 ? TraitTypeEnum.valueOf( elements[7] ) : TraitTypeEnum.NON_TRAIT;
+        this.entryPointId = elements[5].trim();
+        this.traitType = elements.length > 6 ? TraitTypeEnum.valueOf( elements[6] ) : TraitTypeEnum.NON_TRAIT;
     }
 
     @Override
@@ -237,17 +236,11 @@ public class DisconnectedFactHandle
                ":" +
                getRecency() +
                ":" +
-               ( isNegated() ? "neg" : "pos" ) +
-               ":" +
                this.entryPointId +
                ":" +
                this.traitType.name();
     }
-/*
-    public String toExternalForm() {
-        return "0:" + this.id + ":" + this.identityHashCode + ":" + this.objectHashCode + ":" + this.recency + ":" + this.entryPointId + ":" + this.traitType;
-    }
-*/
+
     @XmlAttribute(name = "external-form")
     public String getExternalForm() {
         return toExternalForm();
