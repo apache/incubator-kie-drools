@@ -13,10 +13,11 @@ with ( new Task() ) {
                 }),
     peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ new User('Administrator') ], }),
     names = [ new I18NText( 'en-UK', 'Simple Test Task')],
+    name = 'Simple Test Task',
     deadlines = ( with ( new Deadlines() ) {
         startDeadlines = [ 
             (with (new Deadline()) {
-                date = new Date( now.time + 1000 ),            
+                date = new Date( now.time + 100000 ),            
                 escalations = [ 
                     (with (new Escalation()) {
                         name = "My Start Escalation",
@@ -26,8 +27,8 @@ with ( new Task() ) {
                                 recipients = [ new User('Tony Stark'), new User('Darth Vader') ],
                                 emailHeaders = [ new Language("en-UK") : (with (new EmailNotificationHeader()) { 
                                     language = 'en-UK',
-                                    subject = "ReminderWithNotificationReserved:you have new task need start",
-                                    body = "task did not started"
+                                    subject = "ReminderWithNotificationReserved:you have new task to be started",
+                                    body = "task is not started"
                                 }) ]                                                                                                                                                                                  
                             }) 
                         ]                                               
@@ -37,7 +38,7 @@ with ( new Task() ) {
         ],
         endDeadlines = [ 
             (with (new Deadline()) {
-                date = new Date( now.time + 2000 ),            
+                date = new Date( now.time + 200000 ),            
                 escalations = [ 
                     (with (new Escalation()) {
                         name = "My end Escalation",
@@ -47,8 +48,8 @@ with ( new Task() ) {
                                 recipients = [ new User('Tony Stark'), new User('Darth Vader') ],
                                 emailHeaders = [ new Language("en-UK") : (with (new EmailNotificationHeader()) { 
                                     language = 'en-UK',
-                                    subject = "ReminderWithNotificationReserved:you have new task need complete",
-                                    body = "task did not completed"
+                                    subject = "ReminderWithNotificationReserved:you have new task to be completed",
+                                    body = "task is not completed"
                                 }) ]                                                                                                                                                                                  
                             }) 
                         ]                                               

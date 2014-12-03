@@ -16,7 +16,7 @@ with ( new Task() ) {
     deadlines = ( with ( new Deadlines() ) {
         startDeadlines = [ 
             (with (new Deadline()) {
-                date = new Date( now.time + 1000 ),            
+                date = new Date( now.time + 100000 ),            
                 escalations = [ 
                     (with (new Escalation()) {
                         name = "My Start Escalation",
@@ -26,8 +26,8 @@ with ( new Task() ) {
                                 recipients = [ new User('Tony Stark'), new User('Darth Vader') ],
                                 emailHeaders = [ new Language("en-UK") : (with (new EmailNotificationHeader()) { 
                                     language = 'en-UK',
-                                    subject = "ReminderWithNotificationInProgress:you have new task need start",
-                                    body = "task did not started"
+                                    subject = "ReminderWithNotificationInProgress:you have new task to be started",
+                                    body = "task is not started"
                                 }) ]                                                                                                                                                                                  
                             }) 
                         ]                                               
@@ -37,7 +37,7 @@ with ( new Task() ) {
         ],
         endDeadlines = [ 
             (with (new Deadline()) {
-                date = new Date( now.time + 2000 ),            
+                date = new Date( now.time + 200000 ),            
                 escalations = [ 
                     (with (new Escalation()) {
                         name = "My end Escalation",
@@ -47,8 +47,8 @@ with ( new Task() ) {
                                 recipients = [ new User('Tony Stark'), new User('Darth Vader') ],
                                 emailHeaders = [ new Language("en-UK") : (with (new EmailNotificationHeader()) { 
                                     language = 'en-UK',
-                                    subject = "ReminderWithNotificationInProgress:you have new task need complete",
-                                    body = "task did not completed"
+                                    subject = "ReminderWithNotificationInProgress:you have new task to be completed",
+                                    body = "task is not completed"
                                 }) ]                                                                                                                                                                                  
                             }) 
                         ]                                               

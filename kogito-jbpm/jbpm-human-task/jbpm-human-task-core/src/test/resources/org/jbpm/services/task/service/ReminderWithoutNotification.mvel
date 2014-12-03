@@ -11,5 +11,6 @@ with ( new Task() ) {
                    status = Status.Reserved
                 }),
     peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ new User('Administrator') ], }),
-    names = [ new I18NText( 'en-UK', 'Simple Test Task')]    
+    names = [ new I18NText( 'en-UK', 'Simple Test Task')],
+    name = 'Simple Test Task'    
 };

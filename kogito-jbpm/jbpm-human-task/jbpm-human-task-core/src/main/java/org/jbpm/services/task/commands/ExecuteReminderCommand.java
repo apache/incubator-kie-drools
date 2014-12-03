@@ -64,7 +64,7 @@ public class ExecuteReminderCommand extends TaskCommand<Void> {
     		+ "</b>"
     		+ "</body>"
     		+ "</html>";
-    private static final String defaultEmailSubject="You have a task ( ${taskName} ) of process ( ${processId} )  ";
+    private static final String defaultEmailSubject="You have a task ( ${taskName} ) of process ( ${processId} )";
 	@XmlElement
 	@XmlSchemaType(name="String")
     private String fromUser;
@@ -121,8 +121,7 @@ public class ExecuteReminderCommand extends TaskCommand<Void> {
 		return null;
 	}
 
-	private List<DeadlineSummaryImpl> getAlldeadlines(
-			TaskPersistenceContext persistenceContext, TaskData taskData) {
+	private List<DeadlineSummaryImpl> getAlldeadlines(TaskPersistenceContext persistenceContext, TaskData taskData) {
 		List<DeadlineSummaryImpl> resultList;
 		// get no-completed notification 
 		if(Status.InProgress == taskData.getStatus() || Status.Suspended == taskData.getStatus()){
@@ -149,8 +148,7 @@ public class ExecuteReminderCommand extends TaskCommand<Void> {
 		if (taskData != null) {
 		    // check if task is still in valid status
 		    if (DeadlineType.START.isValidStatus(taskData.getStatus()) || DeadlineType.END.isValidStatus(taskData.getStatus())) {
-		        Map<String, Object> variables = getVariables(ctx, persistenceContext, task,
-							taskData);
+		        Map<String, Object> variables = getVariables(ctx, persistenceContext, task, taskData);
 		        if (deadline == null || deadline.getEscalations() == null ) {
 		            return null;
 		        }
@@ -169,8 +167,8 @@ public class ExecuteReminderCommand extends TaskCommand<Void> {
 		return null;
 	}
 
-	private Map<String, Object> getVariables(TaskContext ctx,
-			TaskPersistenceContext persistenceContext, Task task,
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> getVariables(TaskContext ctx, TaskPersistenceContext persistenceContext, Task task,
 			TaskData taskData) {
 		Map<String, Object> variables;
 		Content content = persistenceContext.findContent(taskData.getDocumentContentId());
