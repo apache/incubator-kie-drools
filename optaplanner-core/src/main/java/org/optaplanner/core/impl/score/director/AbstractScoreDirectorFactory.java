@@ -39,6 +39,8 @@ public abstract class AbstractScoreDirectorFactory implements InnerScoreDirector
 
     protected InnerScoreDirectorFactory assertionScoreDirectorFactory = null;
 
+    protected boolean assertClonedSolution = false;
+
     public SolutionDescriptor getSolutionDescriptor() {
         return solutionDescriptor;
     }
@@ -69,6 +71,14 @@ public abstract class AbstractScoreDirectorFactory implements InnerScoreDirector
 
     public void setAssertionScoreDirectorFactory(InnerScoreDirectorFactory assertionScoreDirectorFactory) {
         this.assertionScoreDirectorFactory = assertionScoreDirectorFactory;
+    }
+
+    public boolean isAssertClonedSolution() {
+        return assertClonedSolution;
+    }
+
+    public void setAssertClonedSolution(boolean assertClonedSolution) {
+        this.assertClonedSolution = assertClonedSolution;
     }
 
     // ************************************************************************

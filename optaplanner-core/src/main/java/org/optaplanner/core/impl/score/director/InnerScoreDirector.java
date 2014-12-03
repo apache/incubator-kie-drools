@@ -52,7 +52,16 @@ public interface InnerScoreDirector extends ScoreDirector {
      */
     ScoreDefinition getScoreDefinition();
 
+    /**
+     * @return never null
+     */
     Solution cloneWorkingSolution();
+
+    /**
+     * @param originalSolution never null
+     * @return never null
+     */
+    Solution cloneSolution(Solution originalSolution);
 
     /**
      * @return >= 0

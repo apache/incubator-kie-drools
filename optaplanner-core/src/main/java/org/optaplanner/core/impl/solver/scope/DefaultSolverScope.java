@@ -197,8 +197,7 @@ public class DefaultSolverScope {
 
     public void setWorkingSolutionFromBestSolution() {
         // The workingSolution must never be the same instance as the bestSolution.
-        SolutionCloner cloner = scoreDirector.getSolutionDescriptor().getSolutionCloner();
-        scoreDirector.setWorkingSolution(cloner.cloneSolution(getBestSolution()));
+        scoreDirector.setWorkingSolution(scoreDirector.cloneSolution(bestSolution));
     }
 
     public String getBestScoreWithUninitializedPrefix() {

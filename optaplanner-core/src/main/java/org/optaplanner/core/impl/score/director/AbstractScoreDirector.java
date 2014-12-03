@@ -18,11 +18,14 @@ package org.optaplanner.core.impl.score.director;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -125,7 +128,36 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public Solution cloneWorkingSolution() {
-        return getSolutionDescriptor().getSolutionCloner().cloneSolution(workingSolution);
+        return cloneSolution(workingSolution);
+    }
+
+    public Solution cloneSolution(Solution originalSolution) {
+        SolutionDescriptor solutionDescriptor = getSolutionDescriptor();
+        Solution cloneSolution = solutionDescriptor.getSolutionCloner().cloneSolution(originalSolution);
+        if (scoreDirectorFactory.isAssertClonedSolution()) {
+            if (!ObjectUtils.equals(originalSolution.getScore(), cloneSolution.getScore())) {
+                throw new IllegalStateException("Cloning corruption: "
+                        + "the original's score (" + originalSolution.getScore()
+                        + ") is different from the clone's score (" + cloneSolution.getScore() + ").\n"
+                        + "Check the " + SolutionCloner.class.getSimpleName() + ".");
+            }
+            List<Object> originalEntityList = solutionDescriptor.getEntityList(originalSolution);
+            Map<Object, Object> originalEntityMap = new IdentityHashMap<Object, Object>(originalEntityList.size());
+            for (Object originalEntity : originalEntityList) {
+                originalEntityMap.put(originalEntity, null);
+            }
+            for (Object cloneEntity : solutionDescriptor.getEntityList(cloneSolution)) {
+                if (originalEntityMap.containsKey(cloneEntity)) {
+                    throw new IllegalStateException("Cloning corruption: "
+                            + "the same entity (" + cloneEntity
+                            + ") is present in both the original and the clone.\n"
+                            + "So when a planning variable in the original solution changes, "
+                            + "the cloned solution will change too.\n"
+                            + "Check the " + SolutionCloner.class.getSimpleName() + ".");
+                }
+            }
+        }
+        return cloneSolution;
     }
 
     public int getWorkingEntityCount() {

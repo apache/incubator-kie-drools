@@ -235,6 +235,9 @@ public class ScoreDirectorFactoryConfig {
         scoreDirectorFactory.setInitializingScoreTrend(InitializingScoreTrend.parseTrend(
                 initializingScoreTrend == null ? InitializingScoreTrendLevel.ANY.name() : initializingScoreTrend,
                 scoreDefinition.getLevelsSize()));
+        if (environmentMode.isNonIntrusiveFullAsserted()) {
+            scoreDirectorFactory.setAssertClonedSolution(true);
+        }
         return scoreDirectorFactory;
     }
 
