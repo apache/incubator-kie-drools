@@ -223,8 +223,6 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
                ":" +
                getRecency() +
                ":" +
-               ( isNegated() ? "neg" : "pos" ) +
-               ":" +
                ( ( this.entryPoint != null ) ? this.entryPoint.getEntryPointId() : "null" ) +
                ":" +
                this.traitType.name();
@@ -620,7 +618,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     private void createFromExternalFormat( String externalFormat ) {
         String[] elements = externalFormat.split( ":" );
-        if (elements.length < 7) {
+        if (elements.length < 6) {
             throw new IllegalArgumentException( "externalFormat did not have enough elements ["+externalFormat+"]" );
         }
 
@@ -628,12 +626,11 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         this.identityHashCode = Integer.parseInt( elements[2] );
         this.objectHashCode = Integer.parseInt( elements[3] );
         this.recency = Long.parseLong( elements[4] );
-        this.negated =  "pos".equals( elements[5] ) ? false :  true;
-        this.entryPoint = ( StringUtils.isEmpty( elements[6] ) || "null".equals( elements[6].trim() ) ) ? null
+        this.entryPoint = ( StringUtils.isEmpty( elements[5] ) || "null".equals( elements[5].trim() ) ) ? null
                                                                                                        : new DisconnectedWorkingMemoryEntryPoint(
-                elements[6].trim() );
+                elements[5].trim() );
         this.disconnected = true;
-        this.traitType = elements.length > 7 ? TraitTypeEnum.valueOf( elements[7] ) : TraitTypeEnum.NON_TRAIT;
+        this.traitType = elements.length > 6 ? TraitTypeEnum.valueOf( elements[6] ) : TraitTypeEnum.NON_TRAIT;
     }
 
 
