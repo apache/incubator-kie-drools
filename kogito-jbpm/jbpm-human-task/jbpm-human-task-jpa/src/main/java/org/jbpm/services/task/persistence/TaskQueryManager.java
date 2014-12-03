@@ -101,7 +101,7 @@ public class TaskQueryManager {
 
 			case XMLStreamConstants.CHARACTERS:
 				if (name != null) {
-					tagContent.append(" " + reader.getText().trim());
+					tagContent.append(reader.getText());
 				}
 				break;
 
