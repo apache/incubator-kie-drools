@@ -112,6 +112,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
 
     @Override
     public void dispose() {
+        super.dispose();
         if (kieSession != null) {
             kieSession.dispose();
             kieSession = null;

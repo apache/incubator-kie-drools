@@ -115,7 +115,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     public void setWorkingSolution(Solution workingSolution) {
         this.workingSolution = workingSolution;
         trailingEntityMapSupport.resetTrailingEntityMap(workingSolution);
-        // TODO variableListenerSupport.reset(workingSolution);
+        variableListenerSupport.resetWorkingSolution(this, workingSolution);
         setWorkingEntityListDirty();
     }
 
@@ -198,7 +198,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void dispose() {
-        // Do nothing
+        variableListenerSupport.clearWorkingSolution(this);
     }
 
     public Object getTrailingEntity(GenuineVariableDescriptor chainedVariableDescriptor, Object planningValue) {

@@ -21,9 +21,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 public class VariableListenerSupport {
 
@@ -49,21 +50,42 @@ public class VariableListenerSupport {
         }
     }
 
-    public void beforeEntityAdded(ScoreDirector scoreDirector, EntityDescriptor entityDescriptor,
+    public void resetWorkingSolution(InnerScoreDirector scoreDirector, Solution workingSolution) {
+        for (List<VariableListener> variableListenerList : variableListenerMap.values()) {
+            for (VariableListener variableListener : variableListenerList) {
+                if (variableListener instanceof StatefulVariableListener) {
+                    ((StatefulVariableListener) variableListener)
+                            .resetWorkingSolution(scoreDirector, workingSolution);
+                }
+            }
+        }
+    }
+
+    public void clearWorkingSolution(InnerScoreDirector scoreDirector) {
+        for (List<VariableListener> variableListenerList : variableListenerMap.values()) {
+            for (VariableListener variableListener : variableListenerList) {
+                if (variableListener instanceof StatefulVariableListener) {
+                    ((StatefulVariableListener) variableListener).clearWorkingSolution(scoreDirector);
+                }
+            }
+        }
+    }
+
+    public void beforeEntityAdded(InnerScoreDirector scoreDirector, EntityDescriptor entityDescriptor,
             Object entity) {
         for (VariableListener variableListener : entityVariableListenerMap.get(entityDescriptor)) {
             variableListener.beforeEntityAdded(scoreDirector, entity);
         }
     }
 
-    public void afterEntityAdded(ScoreDirector scoreDirector, EntityDescriptor entityDescriptor,
+    public void afterEntityAdded(InnerScoreDirector scoreDirector, EntityDescriptor entityDescriptor,
             Object entity) {
         for (VariableListener variableListener : entityVariableListenerMap.get(entityDescriptor)) {
             variableListener.afterEntityAdded(scoreDirector, entity);
         }
     }
 
-    public void beforeVariableChanged(ScoreDirector scoreDirector, VariableDescriptor variableDescriptor,
+    public void beforeVariableChanged(InnerScoreDirector scoreDirector, VariableDescriptor variableDescriptor,
             Object entity) {
         if (variableDescriptor.hasAnyShadow()) {
             for (VariableListener variableListener : variableListenerMap.get(variableDescriptor)) {
@@ -72,7 +94,7 @@ public class VariableListenerSupport {
         }
     }
 
-    public void afterVariableChanged(ScoreDirector scoreDirector, VariableDescriptor variableDescriptor,
+    public void afterVariableChanged(InnerScoreDirector scoreDirector, VariableDescriptor variableDescriptor,
             Object entity) {
         if (variableDescriptor.hasAnyShadow()) {
             for (VariableListener variableListener : variableListenerMap.get(variableDescriptor)) {
@@ -81,14 +103,14 @@ public class VariableListenerSupport {
         }
     }
 
-    public void beforeEntityRemoved(ScoreDirector scoreDirector, EntityDescriptor entityDescriptor,
+    public void beforeEntityRemoved(InnerScoreDirector scoreDirector, EntityDescriptor entityDescriptor,
             Object entity) {
         for (VariableListener variableListener : entityVariableListenerMap.get(entityDescriptor)) {
             variableListener.beforeEntityRemoved(scoreDirector, entity);
         }
     }
 
-    public void afterEntityRemoved(ScoreDirector scoreDirector, EntityDescriptor entityDescriptor,
+    public void afterEntityRemoved(InnerScoreDirector scoreDirector, EntityDescriptor entityDescriptor,
             Object entity) {
         for (VariableListener variableListener : entityVariableListenerMap.get(entityDescriptor)) {
             variableListener.afterEntityRemoved(scoreDirector, entity);

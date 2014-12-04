@@ -27,6 +27,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * (for example: an arrivalTime change affects all trailing entities too)
  * <p/>
  * Each {@link ScoreDirector} has a different {@link VariableListener} instance, so it can be stateful.
+ * If it is stateful, it should implement {@link StatefulVariableListener}.
  */
 public interface VariableListener<EntityG> {
 
