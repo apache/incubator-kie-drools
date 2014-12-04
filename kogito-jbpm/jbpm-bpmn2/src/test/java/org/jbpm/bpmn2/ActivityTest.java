@@ -1648,4 +1648,14 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     		// there should be build errors
     	}
     }
+    
+    @Test
+    public void testAdHocSubProcessEmptyCompleteExpression() throws Exception {
+        try { 
+        	createKnowledgeBaseWithoutDumper("BPMN2-AdHocSubProcessEmptyCompleteExpression.bpmn2");
+        	fail("Process should be invalid, there should be build errors");
+    	} catch (RuntimeException e) {
+    		// there should be build errors
+    	}
+    }
 }

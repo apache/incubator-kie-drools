@@ -60,7 +60,7 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
         		if ("getActivityInstanceAttribute(\"numberOfActiveInstances\") == 0".equals(expression)) {
         			dynamicNode.setAutoComplete(true);
         		} else {
-        			dynamicNode.setCompletionExpression(expression);
+        			dynamicNode.setCompletionExpression(expression == null?"":expression);
         		}
         	}
         	xmlNode = xmlNode.getNextSibling();

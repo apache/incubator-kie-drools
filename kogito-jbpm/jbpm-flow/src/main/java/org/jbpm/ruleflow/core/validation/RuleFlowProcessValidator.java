@@ -408,6 +408,10 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "Dynamic node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection"));
                 }
+                if ("".equals(dynamicNode.getCompletionExpression()) && !dynamicNode.isAutoComplete()) {
+                    errors.add(new ProcessValidationErrorImpl(process,
+                        "Dynamic node '" + node.getName() + "' [" + node.getId() + "] has no completion condition set"));
+                }
                 validateNodes(dynamicNode.getNodes(), errors, process);
             } else if (node instanceof CompositeNode) {
                 final CompositeNode compositeNode = (CompositeNode) node;
