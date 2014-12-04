@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.command.runtime.process.SetProcessInstanceVariablesCommand;
+import org.drools.core.command.runtime.process.StartProcessCommand;
 import org.drools.core.process.instance.WorkItemManager;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.services.api.DeploymentNotFoundException;
@@ -79,6 +80,10 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		if (deployedUnit == null) {
 			throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
 		}		
+		if (!deployedUnit.isActive()) {
+			throw new DeploymentNotFoundException("Deployments " + deploymentId + " is not active");
+		}
+		
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
 		
 		params = process(params, ((InternalRuntimeManager) manager).getEnvironment().getClassLoader());
@@ -389,6 +394,8 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		if (deployedUnit == null) {
 			throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
 		}
+		disallowWhenNotActive(deployedUnit, command);
+		
 		RuntimeManager manager = deployedUnit.getRuntimeManager();		
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
         KieSession ksession = engine.getKieSession();
@@ -406,6 +413,8 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		if (deployedUnit == null) {
 			throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
 		}
+		disallowWhenNotActive(deployedUnit, command);
+		
 		RuntimeManager manager = deployedUnit.getRuntimeManager();		
         RuntimeEngine engine = manager.getRuntimeEngine(context);
         KieSession ksession = engine.getKieSession();
@@ -414,6 +423,13 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }
+	}
+	
+	protected void disallowWhenNotActive(DeployedUnit deployedUnit, Command<?> cmd) {
+		if (!deployedUnit.isActive() &&
+				cmd instanceof StartProcessCommand) {
+			throw new DeploymentNotFoundException("Deployments " + deployedUnit.getDeploymentUnit().getIdentifier() + " is not active");
+		}
 	}
 	
 

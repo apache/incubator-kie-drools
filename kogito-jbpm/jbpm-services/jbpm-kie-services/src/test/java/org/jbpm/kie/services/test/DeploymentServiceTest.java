@@ -17,8 +17,10 @@
 package org.jbpm.kie.services.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 import java.io.File;
@@ -281,5 +283,58 @@ public class DeploymentServiceTest extends AbstractBaseTest {
         assertNotNull(deployedLatest.getRuntimeManager());
         
         assertEquals(deploymentUnit3.getIdentifier(), deployedLatest.getDeploymentUnit().getIdentifier());
+    }
+    
+    @Test
+    public void testDeploymentOfProcessesWithActivation() {
+        
+        assertNotNull(deploymentService);
+        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        
+        DeployedUnit deployed = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
+        assertNotNull(deployed);
+        assertNotNull(deployed.getDeploymentUnit());
+        assertNotNull(deployed.getRuntimeManager());
+        assertTrue(deployed.isActive());
+        
+        assertEquals(0, ((DeployedUnitImpl) deployed).getDeployedClasses().size());
+        
+        assertNotNull(runtimeDataService);
+        Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContext());
+        assertNotNull(processes);
+        assertEquals(5, processes.size());
+        
+        RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
+        assertNotNull(manager);
+
+        // then deactivate it
+        deploymentService.deactivate(deploymentUnit.getIdentifier());
+        
+        deployed = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
+        assertNotNull(deployed);
+        assertNotNull(deployed.getDeploymentUnit());
+        assertNotNull(deployed.getRuntimeManager());
+        assertFalse(deployed.isActive());
+        
+        processes = runtimeDataService.getProcesses(new QueryContext());
+        assertNotNull(processes);
+        assertEquals(0, processes.size());
+        
+        // and not activate it again
+        deploymentService.activate(deploymentUnit.getIdentifier());
+        
+        deployed = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
+        assertNotNull(deployed);
+        assertNotNull(deployed.getDeploymentUnit());
+        assertNotNull(deployed.getRuntimeManager());
+        assertTrue(deployed.isActive());
+        
+        processes = runtimeDataService.getProcesses(new QueryContext());
+        assertNotNull(processes);
+        assertEquals(5, processes.size());
     }
 }

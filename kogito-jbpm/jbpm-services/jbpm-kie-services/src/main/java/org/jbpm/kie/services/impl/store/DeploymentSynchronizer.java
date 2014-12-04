@@ -26,6 +26,7 @@ import org.jbpm.services.api.DeploymentEvent;
 import org.jbpm.services.api.DeploymentEventListener;
 import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.ListenerSupport;
+import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,11 +63,14 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 		try {
 			Collection<DeploymentUnit> enabledSet = new HashSet<DeploymentUnit>();
 			Collection<DeploymentUnit> disabledSet = new HashSet<DeploymentUnit>();
+			Collection<DeploymentUnit> activatedSet = new HashSet<DeploymentUnit>();
+			Collection<DeploymentUnit> deactivatedSet = new HashSet<DeploymentUnit>();
 			if (lastSync == null) {
 				// initial load
 				enabledSet = deploymentStore.getEnabledDeploymentUnits();
+				deactivatedSet = deploymentStore.getDeactivatedDeploymentUnits();
 			} else {
-				deploymentStore.getDeploymentUnitsByDate(lastSync, enabledSet, disabledSet);
+				deploymentStore.getDeploymentUnitsByDate(lastSync, enabledSet, disabledSet, activatedSet, deactivatedSet);
 			}
 			
 			logger.debug("About to synchronize deployment units, found new enabled {}, found new disabled {}", enabledSet, disabledSet);
@@ -100,6 +104,25 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 					}
 				}
 			}
+			
+			logger.debug("About to synchronize deployment units, found new activated {}, found new deactivated {}", activatedSet, deactivatedSet);
+			if (activatedSet != null) {
+				for (DeploymentUnit unit : activatedSet) {
+					DeployedUnit deployed = deploymentService.getDeployedUnit(unit.getIdentifier());
+					if (deployed != null && !deployed.isActive()) {
+						deploymentService.activate(unit.getIdentifier());
+					}
+				}
+			}
+			
+			if (deactivatedSet != null) {
+				for (DeploymentUnit unit : deactivatedSet) {
+					DeployedUnit deployed = deploymentService.getDeployedUnit(unit.getIdentifier());
+					if (deployed != null && deployed.isActive()) {
+						deploymentService.deactivate(unit.getIdentifier());
+					}
+				}
+			}
 		} catch (Throwable e) {
 			logger.error("Error while synchronizing deployments: {}", e.getMessage());
 		}
@@ -130,6 +153,28 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 			entries.remove(unit.getIdentifier());
 			logger.info("Deployment unit {} removed successfully", unit.getIdentifier());
 		}
+	}
+
+
+	@Override
+	public void onActivate(DeploymentEvent event) {
+		if (event != null && event.getDeployedUnit() != null) {
+			DeploymentUnit unit = event.getDeployedUnit().getDeploymentUnit();
+			deploymentStore.activateDeploymentUnit(unit);
+			logger.info("Deployment unit {} activated successfully", unit.getIdentifier());
+		}
+		
+	}
+
+
+	@Override
+	public void onDeactivate(DeploymentEvent event) {
+		if (event != null && event.getDeployedUnit() != null) {
+			DeploymentUnit unit = event.getDeployedUnit().getDeploymentUnit();
+			deploymentStore.deactivateDeploymentUnit(unit);
+			logger.info("Deployment unit {} deactivated successfully", unit.getIdentifier());
+		}
+		
 	}
 	
 }

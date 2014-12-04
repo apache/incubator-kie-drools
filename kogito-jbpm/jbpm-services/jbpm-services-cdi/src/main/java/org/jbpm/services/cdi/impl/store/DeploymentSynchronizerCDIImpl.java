@@ -9,6 +9,8 @@ import org.jbpm.kie.services.impl.store.DeploymentStore;
 import org.jbpm.kie.services.impl.store.DeploymentSynchronizer;
 import org.jbpm.services.api.DeploymentEvent;
 import org.jbpm.services.api.DeploymentService;
+import org.jbpm.services.cdi.Activate;
+import org.jbpm.services.cdi.Deactivate;
 import org.jbpm.services.cdi.Deploy;
 import org.jbpm.services.cdi.Undeploy;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
@@ -40,5 +42,15 @@ public class DeploymentSynchronizerCDIImpl extends DeploymentSynchronizer {
     public void onUnDeploy(@Observes@Undeploy DeploymentEvent event) {    	
     	super.onUnDeploy(event);
     }
+    
+    @Override
+	public void onActivate(@Observes@Activate DeploymentEvent event) {
+		super.onActivate(event);
+	}
+
+	@Override
+	public void onDeactivate(@Observes@Deactivate DeploymentEvent event) {
+		super.onDeactivate(event);
+	}
 	
 }

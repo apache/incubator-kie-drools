@@ -85,8 +85,10 @@ public class DeploymentStoreTest extends AbstractBaseTest {
 		
 		Collection<DeploymentUnit> unitsEnabled = new HashSet<DeploymentUnit>();
 		Collection<DeploymentUnit> unitsDisabled = new HashSet<DeploymentUnit>();
+		Collection<DeploymentUnit> unitsActivated = new HashSet<DeploymentUnit>();
+		Collection<DeploymentUnit> unitsDeactivated = new HashSet<DeploymentUnit>();
 		
-		store.getDeploymentUnitsByDate(date, unitsEnabled, unitsDisabled);
+		store.getDeploymentUnitsByDate(date, unitsEnabled, unitsDisabled, unitsActivated, unitsDeactivated);
 		assertNotNull(unitsEnabled);
 		assertEquals(2, unitsEnabled.size());
 		
@@ -99,8 +101,10 @@ public class DeploymentStoreTest extends AbstractBaseTest {
 		// verify
 		unitsEnabled.clear();
 		unitsDisabled.clear();
+		unitsActivated.clear();
+		unitsDeactivated.clear();
 		
-		store.getDeploymentUnitsByDate(date, unitsEnabled, unitsDisabled);
+		store.getDeploymentUnitsByDate(date, unitsEnabled, unitsDisabled, unitsActivated, unitsDeactivated);
 		assertNotNull(unitsEnabled);
 		assertEquals(0, unitsEnabled.size());
 		

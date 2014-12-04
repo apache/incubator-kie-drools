@@ -17,7 +17,9 @@
 package org.jbpm.services.ejb.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 import java.io.File;
@@ -171,6 +173,44 @@ public class DeploymentServiceEJBWithSyncIntegrationTest extends AbstractTestSup
 		deployed = deploymentService.getDeployedUnits();
     	assertNotNull(deployed);
     	assertEquals(0, deployed.size());
+    }
+    
+    @Test
+    public void testDeactivateAndActivateOfProcessesBySync() throws Exception {
+    	DeploymentStore store = new DeploymentStore();
+		store.setCommandService(commandService);
+		
+    	Collection<DeployedUnit> deployed = deploymentService.getDeployedUnits();
+    	assertNotNull(deployed);
+    	assertEquals(0, deployed.size());
+    	
+    	KModuleDeploymentUnit unit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);    		
+		deploymentService.deploy(unit);
+		units.add(unit);
+
+		deployed = deploymentService.getDeployedUnits();
+    	assertNotNull(deployed);
+    	assertEquals(1, deployed.size());
+    	assertTrue(deployed.iterator().next().isActive());
+    	Thread.sleep(3000);
+    	
+    	store.deactivateDeploymentUnit(unit);
+
+		Thread.sleep(3000);
+		
+		deployed = deploymentService.getDeployedUnits();
+    	assertNotNull(deployed);
+    	assertEquals(1, deployed.size());
+    	assertFalse(deployed.iterator().next().isActive());
+    	
+    	store.activateDeploymentUnit(unit);
+
+		Thread.sleep(3000);
+		
+		deployed = deploymentService.getDeployedUnits();
+    	assertNotNull(deployed);
+    	assertEquals(1, deployed.size());
+    	assertTrue(deployed.iterator().next().isActive());
     }
    
 }

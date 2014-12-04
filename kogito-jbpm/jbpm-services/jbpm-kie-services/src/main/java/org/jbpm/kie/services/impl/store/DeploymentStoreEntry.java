@@ -34,7 +34,7 @@ import javax.persistence.UniqueConstraint;
 @NamedQueries(value={
 		@NamedQuery(name="getDeploymentUnit", query="select d from DeploymentStoreEntry d where d.deploymentId=:deploymentId"),
 		@NamedQuery(name="getDeploymentUnitsByDate", query="select d from DeploymentStoreEntry d where d.updateDate >= :ludate"),
-		@NamedQuery(name="getDeploymentUnitsByState", query="select d from DeploymentStoreEntry d where d.state=:state")
+		@NamedQuery(name="getDeploymentUnitsByState", query="select d from DeploymentStoreEntry d where d.state in (:state)")
 })
 @Entity
 @Table(name="DeploymentStore", uniqueConstraints={@UniqueConstraint(columnNames="DEPLOYMENT_ID")})

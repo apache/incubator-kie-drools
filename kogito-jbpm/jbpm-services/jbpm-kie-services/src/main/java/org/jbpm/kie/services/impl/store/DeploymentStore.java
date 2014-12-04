@@ -35,6 +35,12 @@ import com.thoughtworks.xstream.XStream;
 
 public class DeploymentStore {
 	
+	private static final Integer STATE_DISABLED = 0;
+	private static final Integer STATE_ENABLED = 1;
+	private static final Integer STATE_ACTIVATED = 2;
+	private static final Integer STATE_DEACTIVATED = 3;
+	private static final Integer STATE_OBSOLETE = -1;
+	
 	private static final Logger logger = LoggerFactory.getLogger(DeploymentStore.class);
 
 	private final XStream xstream = new XStream();
@@ -49,7 +55,11 @@ public class DeploymentStore {
 	public Collection<DeploymentUnit> getEnabledDeploymentUnits() {
 		List<DeploymentUnit> activeDeployments = new ArrayList<DeploymentUnit>();
 		Map<String, Object> params = new HashMap<String, Object>();
-        params.put("state", 1);
+		List<Integer> states = new ArrayList<Integer>();
+		states.add(STATE_ENABLED);
+		states.add(STATE_ACTIVATED);
+		states.add(STATE_DEACTIVATED);
+        params.put("state", states);
         List<DeploymentStoreEntry> deployments = commandService.execute(
 				new QueryNameCommand<List<DeploymentStoreEntry>>("getDeploymentUnitsByState", params));
         
@@ -62,7 +72,26 @@ public class DeploymentStore {
         return activeDeployments;
 	}
 	
-	public void getDeploymentUnitsByDate(Date date, Collection<DeploymentUnit> enabled, Collection<DeploymentUnit> disabled) {
+	public Collection<DeploymentUnit> getDeactivatedDeploymentUnits() {
+		List<DeploymentUnit> activeDeployments = new ArrayList<DeploymentUnit>();
+		Map<String, Object> params = new HashMap<String, Object>();
+		List<Integer> states = new ArrayList<Integer>();
+		states.add(STATE_DEACTIVATED);
+        params.put("state", states);
+        List<DeploymentStoreEntry> deployments = commandService.execute(
+				new QueryNameCommand<List<DeploymentStoreEntry>>("getDeploymentUnitsByState", params));
+        
+        for (DeploymentStoreEntry entry : deployments) {
+        	DeploymentUnit unit = (DeploymentUnit) xstream.fromXML(entry.getDeploymentUnit());
+        	
+        	activeDeployments.add(unit);
+        }
+        
+        return activeDeployments;
+	}
+	
+	public void getDeploymentUnitsByDate(Date date, Collection<DeploymentUnit> enabled, Collection<DeploymentUnit> disabled,
+			Collection<DeploymentUnit> activated, Collection<DeploymentUnit> deactivated) {
 		
 		Map<String, Object> params = new HashMap<String, Object>();
         params.put("ludate", date);
@@ -71,12 +100,16 @@ public class DeploymentStore {
         
         for (DeploymentStoreEntry entry : deployments) {
         	DeploymentUnit unit = (DeploymentUnit) xstream.fromXML(entry.getDeploymentUnit());
-        	if (entry.getState() == 1) {
+        	if (entry.getState() == STATE_ENABLED) {
         		enabled.add(unit);
-        	} else if (entry.getState() == 0) {
+        	} else if (entry.getState() == STATE_DISABLED) {
         		disabled.add(unit);
+        	} else if (entry.getState() == STATE_ACTIVATED) {
+        		activated.add(unit);
+        	} else if (entry.getState() == STATE_DEACTIVATED) {
+        		deactivated.add(unit);
         	} else {
-        		logger.warn("Unknown state of deployment store entry {} for entry {} will be ignored", entry.getId(), entry);
+        		logger.warn("Unknown state of deployment store entry {} for {} will be ignored", entry.getId(), entry);
         	}
         }
         
@@ -87,7 +120,7 @@ public class DeploymentStore {
 		DeploymentStoreEntry entry = findDeploymentStoreByDeploymentId(unit.getIdentifier());
 		if (entry != null) {
 			// update only
-			entry.setState(1);// 0 - disabled, 1 - enabled
+			entry.setState(STATE_ENABLED);// 0 - disabled, 1 - enabled, 2 - activated, 3 - deactivated
 			entry.setUpdateDate(new Date());		
 			entry.setDeploymentUnit(unitContent);
 			
@@ -97,7 +130,7 @@ public class DeploymentStore {
 		
 		entry = new DeploymentStoreEntry();
 		entry.setDeploymentId(unit.getIdentifier());
-		entry.setState(1);// 0 - disabled, 1 - enabled
+		entry.setState(STATE_ENABLED);// 0 - disabled, 1 - enabled, 2 - activated, 3 - deactivated
 		entry.setUpdateDate(new Date());		
 		entry.setDeploymentUnit(unitContent);
 		
@@ -110,9 +143,35 @@ public class DeploymentStore {
 		DeploymentStoreEntry entry = findDeploymentStoreByDeploymentId(unit.getIdentifier());
 		if (entry != null) {
 			// update only
-			entry.setState(0);// 0 - disabled, 1 - enabled
+			entry.setState(STATE_DISABLED);// 0 - disabled, 1 - enabled, 2 - activated, 3 - deactivated
 			entry.setUpdateDate(new Date());		
 			
+			commandService.execute(new MergeObjectCommand(entry));	
+		}
+		
+	}
+	
+	public void deactivateDeploymentUnit(DeploymentUnit unit) {
+		
+		DeploymentStoreEntry entry = findDeploymentStoreByDeploymentId(unit.getIdentifier());
+		if (entry != null && entry.getState() != STATE_DEACTIVATED) {
+			// update only
+			entry.setState(STATE_DEACTIVATED);// 0 - disabled, 1 - enabled, 2 - activated, 3 - deactivated
+			entry.setUpdateDate(new Date());	
+						
+			commandService.execute(new MergeObjectCommand(entry));	
+		}
+		
+	}
+	
+	public void activateDeploymentUnit(DeploymentUnit unit) {
+		
+		DeploymentStoreEntry entry = findDeploymentStoreByDeploymentId(unit.getIdentifier());
+		if (entry != null && entry.getState() != STATE_ACTIVATED) {
+			// update only
+			entry.setState(STATE_ACTIVATED);// 0 - disabled, 1 - enabled, 2 - activated, 3 - deactivated
+			entry.setUpdateDate(new Date());	
+						
 			commandService.execute(new MergeObjectCommand(entry));	
 		}
 		
@@ -123,7 +182,7 @@ public class DeploymentStore {
 		DeploymentStoreEntry entry = findDeploymentStoreByDeploymentId(unit.getIdentifier());
 		if (entry != null) {
 			// update only
-			entry.setState(-1);// 0 - disabled, 1 - enabled, -1 - obsolete 
+			entry.setState(STATE_OBSOLETE);// 0 - disabled, 1 - enabled, -1 - obsolete 
 			entry.setUpdateDate(new Date());		
 			
 			commandService.execute(new MergeObjectCommand(entry));	

@@ -378,6 +378,24 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 	public void setMerger(DeploymentDescriptorMerger merger) {
 		this.merger = merger;
 	}
+
+	@Override
+	public void activate(String deploymentId) {
+		DeployedUnit deployed = getDeployedUnit(deploymentId);
+		if (deployed != null) {
+			((DeployedUnitImpl)deployed).setActive(true);
+			notifyOnActivate(deployed.getDeploymentUnit(), deployed);
+		}
+	}
+
+	@Override
+	public void deactivate(String deploymentId) {
+		DeployedUnit deployed = getDeployedUnit(deploymentId);
+		if (deployed != null) {
+			((DeployedUnitImpl)deployed).setActive(false);
+			notifyOnDeactivate(deployed.getDeploymentUnit(), deployed);
+		}
+	}
 	
 	
 }

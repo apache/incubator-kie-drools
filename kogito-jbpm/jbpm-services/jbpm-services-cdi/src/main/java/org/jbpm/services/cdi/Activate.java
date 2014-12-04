@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package org.jbpm.services.api.model;
+package org.jbpm.services.cdi;
 
-import java.util.Collection;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import org.kie.api.runtime.manager.RuntimeManager;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-public interface DeployedUnit {
+import javax.inject.Qualifier;
 
-    DeploymentUnit getDeploymentUnit();
-    
-    String getDeployedAssetLocation(String assetId);
-    
-    Collection<DeployedAsset> getDeployedAssets(); 
-    
-    Collection<Class<?>> getDeployedClasses(); 
-    
-    RuntimeManager getRuntimeManager();
-    
-    boolean isActive();
+@Qualifier
+@Target({PARAMETER, FIELD})
+@Retention(RUNTIME)
+public @interface Activate {
+
 }

@@ -34,6 +34,7 @@ public interface ProcessService {
 	 * @param processId The process's identifier 
 	 * @return process instance identifier
 	 * @throws RuntimeException in case of encountered errors
+	 * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist or is not active
 	 */
 	Long startProcess(String deploymentId, String processId);
 
@@ -45,6 +46,7 @@ public interface ProcessService {
 	 * @param params process variables
 	 * @return process instance identifier
 	 * @throws RuntimeException in case of encountered errors
+	 * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist or is not active
 	 */
     Long startProcess(String deploymentId, String processId, Map<String, Object> params);
 
@@ -186,7 +188,8 @@ public interface ProcessService {
      * @param deploymentId deployment information for the process's kjar
      * @param command actual command for execution
      * @return results of command execution
-     * @throws DeploymentNotFoundException in case deployment unit was not found
+     * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist 
+     * or is not active for restricted commands (e.g. start process)
      */
     public <T> T execute(String deploymentId, Command<T> command);
     
@@ -196,7 +199,8 @@ public interface ProcessService {
      * @param context context implementation to be used to get runtime engine
      * @param command actual command for execution
      * @return results of command execution
-     * @throws DeploymentNotFoundException in case deployment unit was not found
+     * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist 
+     * or is not active for restricted commands (e.g. start process)
      */
     public <T> T execute(String deploymentId, Context<?> context, Command<T> command);
 

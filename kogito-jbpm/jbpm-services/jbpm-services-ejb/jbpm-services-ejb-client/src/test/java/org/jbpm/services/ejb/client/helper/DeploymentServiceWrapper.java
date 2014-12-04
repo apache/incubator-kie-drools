@@ -59,5 +59,14 @@ public class DeploymentServiceWrapper implements DeploymentService {
 	public Collection<DeployedUnit> getDeployedUnits() {
 		throw new UnsupportedOperationException("Not supported");
 	}
+	@Override
+	public void activate(String deploymentId) {
+		remote.activate(deploymentId);
+		
+	}
+	@Override
+	public void deactivate(String deploymentId) {
+		remote.deactivate(deploymentId);
+	}
 
 }

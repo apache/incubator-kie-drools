@@ -17,6 +17,7 @@
 package org.jbpm.services.ejb.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -37,6 +38,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jbpm.kie.services.impl.DeployedUnitImpl;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
@@ -126,6 +128,21 @@ public class DeploymentServiceEJBIntegrationTest extends AbstractTestSupport {
         }
 
         repository.deployArtifact(releaseIdSupport, kJar2, pom2);
+        
+        ReleaseId releaseId3 = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, "1.1.0-SNAPSHOT");
+        
+        InternalKieModule kJar3 = createKieJar(ks, releaseId3, processes);
+        File pom3 = new File("target/kmodule3", "pom.xml");
+        pom3.getParentFile().mkdirs();
+        try {
+            FileOutputStream fs = new FileOutputStream(pom3);
+            fs.write(getPom(releaseId3).getBytes());
+            fs.close();
+        } catch (Exception e) {
+            
+        }
+        repository = getMavenRepository();
+        repository.deployArtifact(releaseId3, kJar3, pom3);
 	}
 	
 
@@ -256,5 +273,99 @@ public class DeploymentServiceEJBIntegrationTest extends AbstractTestSupport {
         } catch(Exception e) {
         	assertTrue(e.getMessage().endsWith("Unit with id org.jbpm.test:test-module:1.0.0-SNAPSHOT is already deployed"));
         }
+    }
+    
+    @Test
+    public void testDeploymentOfMultipleVersions() {
+        
+        assertNotNull(deploymentService);
+        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        DeploymentUnit deploymentUnit3 = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, "1.1.0-SNAPSHOT");
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        
+        deploymentService.deploy(deploymentUnit3);
+        units.add(deploymentUnit3);
+        
+        DeployedUnit deployed = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
+        assertNotNull(deployed);
+        assertNotNull(deployed.getDeploymentUnit());
+        assertNotNull(deployed.getRuntimeManager());
+        
+        assertEquals(0, ((DeployedUnitImpl) deployed).getDeployedClasses().size());       
+        
+        DeployedUnit deployed3 = deploymentService.getDeployedUnit(deploymentUnit3.getIdentifier());
+        assertNotNull(deployed3);
+        assertNotNull(deployed3.getDeploymentUnit());
+        assertNotNull(deployed3.getRuntimeManager());
+        
+        assertEquals(0, ((DeployedUnitImpl) deployed3).getDeployedClasses().size());
+        
+        assertNotNull(runtimeDataService);
+        Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContext());
+        assertNotNull(processes);
+        assertEquals(10, processes.size());
+        
+        DeployedUnit deployedLatest = deploymentService.getDeployedUnit(GROUP_ID+":"+ARTIFACT_ID+":LATEST");
+        assertNotNull(deployedLatest);
+        assertNotNull(deployedLatest.getDeploymentUnit());
+        assertNotNull(deployedLatest.getRuntimeManager());
+        
+        assertEquals(deploymentUnit3.getIdentifier(), deployedLatest.getDeploymentUnit().getIdentifier());
+    }
+    
+    @Test
+    public void testDeploymentOfProcessesWithActivation() {
+        
+        assertNotNull(deploymentService);
+        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        
+        DeployedUnit deployed = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
+        assertNotNull(deployed);
+        assertNotNull(deployed.getDeploymentUnit());
+        assertNotNull(deployed.getRuntimeManager());
+        assertTrue(deployed.isActive());
+        
+        assertEquals(0, ((DeployedUnitImpl) deployed).getDeployedClasses().size());
+        
+        assertNotNull(runtimeDataService);
+        Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContext());
+        assertNotNull(processes);
+        assertEquals(5, processes.size());
+        
+        RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
+        assertNotNull(manager);
+
+        // then deactivate it
+        deploymentService.deactivate(deploymentUnit.getIdentifier());
+        
+        deployed = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
+        assertNotNull(deployed);
+        assertNotNull(deployed.getDeploymentUnit());
+        assertNotNull(deployed.getRuntimeManager());
+        assertFalse(deployed.isActive());
+        
+        processes = runtimeDataService.getProcesses(new QueryContext());
+        assertNotNull(processes);
+        assertEquals(0, processes.size());
+        
+        // and not activate it again
+        deploymentService.activate(deploymentUnit.getIdentifier());
+        
+        deployed = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
+        assertNotNull(deployed);
+        assertNotNull(deployed.getDeploymentUnit());
+        assertNotNull(deployed.getRuntimeManager());
+        assertTrue(deployed.isActive());
+        
+        processes = runtimeDataService.getProcesses(new QueryContext());
+        assertNotNull(processes);
+        assertEquals(5, processes.size());
     }
 }

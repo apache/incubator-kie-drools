@@ -96,6 +96,19 @@ public abstract class AbstractDeploymentService implements DeploymentService, Li
     	}
     }
     
+    public void notifyOnActivate(DeploymentUnit unit, DeployedUnit deployedUnit){
+    	DeploymentEvent event = new DeploymentEvent(unit.getIdentifier(), deployedUnit);
+    	for (DeploymentEventListener listener : listeners) {
+    		listener.onActivate(event);
+    	}    
+    }
+    public void notifyOnDeactivate(DeploymentUnit unit, DeployedUnit deployedUnit){
+    	DeploymentEvent event = new DeploymentEvent(unit.getIdentifier(), deployedUnit);
+    	for (DeploymentEventListener listener : listeners) {
+    		listener.onDeactivate(event);
+    	}
+    }
+    
     public void commonDeploy(DeploymentUnit unit, DeployedUnitImpl deployedUnit, RuntimeEnvironment environemnt) {
 
         synchronized (this) {
@@ -181,15 +194,16 @@ public abstract class AbstractDeploymentService implements DeploymentService, Li
 
 	@Override
     public DeployedUnit getDeployedUnit(String deploymentUnitId) {
-        if (deploymentsMap.containsKey(deploymentUnitId)) {
-            return deploymentsMap.get(deploymentUnitId);
+		DeployedUnit deployedUnit = null;
+		if (deploymentsMap.containsKey(deploymentUnitId)) {
+			deployedUnit = deploymentsMap.get(deploymentUnitId);
         } else if (deploymentUnitId != null && deploymentUnitId.toLowerCase().contains("latest")) {
         	String matched = DeploymentIdResolver.matchAndReturnLatest(deploymentUnitId, deploymentsMap.keySet());
 
-    		return deploymentsMap.get(matched);        	
+        	deployedUnit = deploymentsMap.get(matched);        	
         }
-        
-        return null;
+		
+        return deployedUnit;
     }
     
     public Map<String, DeployedUnit> getDeploymentsMap() {

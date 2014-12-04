@@ -87,4 +87,16 @@ public class RuntimeDataServiceEJBImpl extends RuntimeDataServiceImpl implements
 		super.onUnDeploy(event);
 	}
 
+	@Lock(LockType.WRITE)
+	@Override
+	public void onActivate(DeploymentEvent event) {
+		super.onActivate(event);
+	}
+
+	@Lock(LockType.WRITE)
+	@Override
+	public void onDeactivate(DeploymentEvent event) {
+		super.onDeactivate(event);
+	}
+
 }

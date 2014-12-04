@@ -33,6 +33,8 @@ import org.jbpm.services.api.DeploymentEvent;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
+import org.jbpm.services.cdi.Activate;
+import org.jbpm.services.cdi.Deactivate;
 import org.jbpm.services.cdi.Deploy;
 import org.jbpm.services.cdi.Kjar;
 import org.jbpm.services.cdi.RequestScopedBackupIdentityProvider;
@@ -56,6 +58,13 @@ public class DeploymentServiceCDIImpl extends KModuleDeploymentService {
     @Inject
     @Undeploy
     protected Event<DeploymentEvent> undeploymentEvent;
+    @Inject
+    @Activate
+    protected Event<DeploymentEvent> activateEvent;
+    @Inject
+    @Deactivate
+    protected Event<DeploymentEvent> deactivateEvent;
+    
     
     @Inject
     private Instance<RequestScopedBackupIdentityProvider> backupProviders;
@@ -78,6 +87,20 @@ public class DeploymentServiceCDIImpl extends KModuleDeploymentService {
         }
 	}
 	
+	@Override
+	public void notifyOnActivate(DeploymentUnit unit, DeployedUnit deployedUnit) {
+		if (activateEvent != null && deployedUnit != null) {
+			activateEvent.fire(new DeploymentEvent(unit.getIdentifier(), deployedUnit));
+        }
+	}
+
+	@Override
+	public void notifyOnDeactivate(DeploymentUnit unit, DeployedUnit deployedUnit) {
+		if (deactivateEvent != null && deployedUnit != null) {
+			deactivateEvent.fire(new DeploymentEvent(unit.getIdentifier(), deployedUnit));
+        }
+	}
+
 	@Inject
 	@Override
 	public void setBpmn2Service(DefinitionService bpmn2Service) {
@@ -122,8 +145,4 @@ public class DeploymentServiceCDIImpl extends KModuleDeploymentService {
                     unit.getKsessionName());
         
 	}
-
-
-	
-	
 }

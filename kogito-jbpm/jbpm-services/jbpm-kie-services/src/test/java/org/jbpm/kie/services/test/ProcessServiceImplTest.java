@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 import java.io.File;
@@ -515,5 +516,68 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	ProcessInstanceDesc piDesc = runtimeDataService.getProcessInstanceById(processInstanceId);
     	assertNotNull(piDesc);
     	assertEquals(deploymentUnit2.getIdentifier(), piDesc.getDeploymentId());
+    }
+    
+    @Test
+    public void testStartProcessAfterDeactivation() {
+    	assertNotNull(deploymentService);
+        
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+    	assertNotNull(processService);
+    	
+    	deploymentService.deactivate(deploymentUnit.getIdentifier());
+    	
+    	try {
+    		processService.startProcess(deploymentUnit.getIdentifier(), "customtask");
+    		fail("Deployment is deactivated so cannot start new process instances");
+    	} catch (Exception e) {
+    		assertTrue(e.getMessage().contains("Deployments org.jbpm.test:test-module:1.0.0-SNAPSHOT is not active"));
+    	}
+
+    }
+    
+    @Test
+    public void testStartProcessAndCompleteWorkItemAfterDeactivation() {
+    	assertNotNull(deploymentService);
+        
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+    	assertNotNull(processService);
+    	
+    	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+    	assertNotNull(processInstanceId);
+    	
+    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
+    	assertNotNull(pi);
+    	
+    	deploymentService.deactivate(deploymentUnit.getIdentifier());
+    	
+    	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
+    	assertNotNull(activeNodes);
+    	assertEquals(1, activeNodes.size());    	
+    	assertEquals("Write a Document", activeNodes.iterator().next().getName());
+    	
+    	Map<String, Object> outcome = new HashMap<String, Object>();
+    	outcome.put("Result", "here is my first document");
+    	processService.completeWorkItem(activeNodes.iterator().next().getWorkItemId(), outcome);
+    	
+    	activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
+    	assertNotNull(activeNodes);
+    	assertEquals(2, activeNodes.size()); 
+    	
+    	Object variableValue = processService.getProcessInstanceVariable(processInstanceId, "approval_document");
+    	assertNotNull(variableValue);
+    	assertTrue(variableValue instanceof String);
+    	assertEquals("here is my first document", variableValue);
+
+    	processService.abortProcessInstance(processInstanceId);
+    	
+    	pi = processService.getProcessInstance(processInstanceId);    	
+    	assertNull(pi);
     }
 }

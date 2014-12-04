@@ -34,6 +34,8 @@ public class DeployedUnitImpl implements DeployedUnit {
     private DeploymentUnit unit;
     private RuntimeManager manager;
     
+    private boolean active = true;
+    
     private Map<String, DeployedAsset> assets = new HashMap<String, DeployedAsset>();
     private Set<Class<?>> classes = new CopyOnWriteArraySet<Class<?>>();
     
@@ -80,5 +82,13 @@ public class DeployedUnitImpl implements DeployedUnit {
     public Collection<Class<?>> getDeployedClasses() {
         return Collections.unmodifiableCollection(classes);
     }
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 
 }

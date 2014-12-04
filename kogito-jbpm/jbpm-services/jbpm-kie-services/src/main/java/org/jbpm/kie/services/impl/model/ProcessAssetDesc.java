@@ -47,6 +47,8 @@ public class ProcessAssetDesc implements ProcessDefinition {
     private Map<String, String> serviceTasks;
     private Map<String, String> processVariables;
     private Collection<String> reusableSubProcesses;
+    
+    private boolean active = true;
 
 	public ProcessAssetDesc() {
     }
@@ -93,7 +95,8 @@ public class ProcessAssetDesc implements ProcessDefinition {
  
     @Override
     public String toString() {
-        return "ProcessDesc{id=" + id + ", name=" + name + ", version=" + version + ", packageName=" + packageName + ", type=" + type + ", knowledgeType=" + knowledgeType + ", namespace=" + namespace + "}";
+        return "ProcessDesc{id=" + id + ", name=" + name + ", version=" + version + ", packageName=" + packageName 
+        		+ ", type=" + type + ", knowledgeType=" + knowledgeType + ", namespace=" + namespace + "active=" + active + "}";
     }
 
     public void setId(String id) {
@@ -265,4 +268,14 @@ public class ProcessAssetDesc implements ProcessDefinition {
     	
     	return value;
     }
+
+
+	public boolean isActive() {
+		return active;
+	}
+
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 }

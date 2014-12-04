@@ -22,4 +22,9 @@ public interface DeploymentEventListener {
 	void onDeploy(DeploymentEvent event);
 	
 	void onUnDeploy(DeploymentEvent event);
+	
+	void onActivate(DeploymentEvent event);
+	
+	void onDeactivate(DeploymentEvent event);
+	
 }

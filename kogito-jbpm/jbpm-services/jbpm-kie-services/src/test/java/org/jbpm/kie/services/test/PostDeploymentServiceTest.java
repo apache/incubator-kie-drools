@@ -158,6 +158,16 @@ public class PostDeploymentServiceTest extends AbstractBaseTest {
 				throw new IllegalArgumentException("On purpose");
 				
 			}
+
+			@Override
+			public void onActivate(DeploymentEvent event) {
+				
+			}
+
+			@Override
+			public void onDeactivate(DeploymentEvent event) {
+				
+			}
 		});
         DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION, "KBase-test", "ksession-test");
         try {
