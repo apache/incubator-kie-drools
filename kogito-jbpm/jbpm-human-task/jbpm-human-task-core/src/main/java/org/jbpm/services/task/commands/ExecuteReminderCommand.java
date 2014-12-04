@@ -192,8 +192,6 @@ public class ExecuteReminderCommand extends TaskCommand<Void> {
 	}
 	
 	private Notification buildDefaultNotification( TaskData taskData,Task task ){
-		TaskModelProvider.getFactory().newEmailNotificationHeader();
-		TaskModelProvider.getFactory().newLanguage();
 		EmailNotification emailNotificationImpl =  TaskModelProvider.getFactory().newEmialNotification();
 		Map<Language, EmailNotificationHeader> map = new HashMap<Language, EmailNotificationHeader>();
 		EmailNotificationHeader emailNotificationHeaderImpl = TaskModelProvider.getFactory().newEmailNotificationHeader();
