@@ -25,6 +25,8 @@ import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
 import org.jbpm.runtime.manager.impl.mapper.JPAMapper;
 import org.kie.api.runtime.EnvironmentName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of the RuntimeEnvironment that aims at providing all 
@@ -41,6 +43,8 @@ import org.kie.api.runtime.EnvironmentName;
  *
  */
 public class DefaultRuntimeEnvironment extends SimpleRuntimeEnvironment {
+	
+	private static final Logger logger = LoggerFactory.getLogger(DefaultRuntimeEnvironment.class);
 
     public DefaultRuntimeEnvironment() {
         this(null, discoverSchedulerService());
@@ -82,7 +86,17 @@ public class DefaultRuntimeEnvironment extends SimpleRuntimeEnvironment {
     protected static GlobalSchedulerService discoverSchedulerService() {
         if (System.getProperty("org.quartz.properties") != null) {
             return new QuartzSchedulerService();
-        } 
+        } else {
+        	// if there is ejb scheduler service available make use of it unless it's disabled
+        	if (!"true".equalsIgnoreCase(System.getProperty("org.kie.timer.ejb.disabled"))) {
+	        	try {
+	        		Class<?> clazz = Class.forName("org.jbpm.services.ejb.timer.EjbSchedulerService");
+	        		return (GlobalSchedulerService) clazz.newInstance();
+	        	} catch (Exception e) {
+	        		logger.debug("Unable to find on initialize ejb schduler service due to {}", e.getMessage());
+	        	}
+        	}
+        }
         return new ThreadPoolSchedulerService(3);
         
     }

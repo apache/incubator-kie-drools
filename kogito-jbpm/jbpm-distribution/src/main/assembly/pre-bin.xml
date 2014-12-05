@@ -20,6 +20,7 @@
         <include>org.jbpm:jbpm-services-ejb-api</include>
         <include>org.jbpm:jbpm-services-ejb-impl</include>
         <include>org.jbpm:jbpm-services-ejb-client</include>
+        <include>org.jbpm:jbpm-services-ejb-timer</include>
         <include>org.jbpm:jbpm-executor</include>
         <include>org.jbpm:jbpm-human-task-core</include>
         <include>org.jbpm:jbpm-human-task-workitems</include>
@@ -48,6 +49,7 @@
         <exclude>org.jbpm:jbpm-services-ejb-api</exclude>
         <exclude>org.jbpm:jbpm-services-ejb-impl</exclude>
         <exclude>org.jbpm:jbpm-services-ejb-client</exclude>
+        <exclude>org.jbpm:jbpm-services-ejb-timer</exclude>
         <exclude>org.jbpm:jbpm-executor</exclude>
         <exclude>org.jbpm:jbpm-human-task-core</exclude>
         <exclude>org.jbpm:jbpm-human-task-workitems</exclude>

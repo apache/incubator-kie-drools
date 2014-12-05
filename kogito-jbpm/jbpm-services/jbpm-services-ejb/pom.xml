@@ -11,6 +11,7 @@
   	<module>jbpm-services-ejb-api</module>
   	<module>jbpm-services-ejb-impl</module>
   	<module>jbpm-services-ejb-client</module>
+  	<module>jbpm-services-ejb-timer</module>
   </modules>
   <name>jBPM :: EJB Services </name>
 </project>
