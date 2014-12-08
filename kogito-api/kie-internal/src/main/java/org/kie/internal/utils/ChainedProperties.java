@@ -16,9 +16,6 @@
 
 package org.kie.internal.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.Externalizable;
 import java.io.File;
 import java.io.IOException;
@@ -27,11 +24,15 @@ import java.io.ObjectOutput;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Priority
@@ -57,14 +58,15 @@ public class ChainedProperties
     protected static transient Logger logger = LoggerFactory.getLogger(ChainedProperties.class);
     private static final int MAX_CACHE_ENTRIES = Integer.parseInt(System.getProperty("org.kie.property.cache.size", "100"));
     private static final boolean CACHE_ENABLED = Boolean.parseBoolean(System.getProperty("org.kie.property.cache.enabled", "false"));
-
-    protected static Map<CacheKey, Properties> cache = new LinkedHashMap<CacheKey, Properties>() {
+    
+	protected static Map<CacheKey, List<URL>> resourceUrlCache = new LinkedHashMap<CacheKey, List<URL>>() {
 		private static final long serialVersionUID = -2324394641773215253L;
-
-		protected boolean removeEldestEntry(Map.Entry<CacheKey, Properties> eldest) {
-            return size() > MAX_CACHE_ENTRIES;
-         }
-    };
+		
+		protected boolean removeEldestEntry(
+				Map.Entry<CacheKey, List<URL>> eldest) {
+			return size() > MAX_CACHE_ENTRIES;
+		}
+	};
     
     private List<Properties> props;
     private List<Properties> defaultProps;   
@@ -92,15 +94,15 @@ public class ChainedProperties
 
         // System property defined properties file
         loadProperties( System.getProperty( "drools." + confFileName ),
-                        this.props, null );
+                        this.props );
 
         // User home properties file
         loadProperties( System.getProperty( "user.home" ) + "/drools." + confFileName,
-                        this.props, null );
+                        this.props );
 
         // Working directory properties file
         loadProperties( "drools." + confFileName,
-                        this.props, null );
+                        this.props );
         
 //        if ( classLoader == null ) {
 //            classLoader = Thread.currentThread().getContextClassLoader();
@@ -179,7 +181,7 @@ public class ChainedProperties
             try {
                 Class<?> c = Class.forName("org.drools.compiler.lang.MVELDumper", false, classLoader);
                 URL confURL = c.getResource("/META-INF/drools.default." + confFileName);
-                loadProperties(confURL, this.defaultProps, null);
+                loadProperties(confURL, this.defaultProps);
             } catch (ClassNotFoundException e) { }
         }
     }
@@ -198,6 +200,29 @@ public class ChainedProperties
 
     private Enumeration<URL> getResources(String name,
                                           ClassLoader classLoader) {
+    	
+		if (CACHE_ENABLED) {
+			CacheKey cacheKey = new CacheKey(name, classLoader);
+			List<URL> urlList = resourceUrlCache.get(cacheKey);
+			
+			if (urlList == null) {
+				Enumeration<URL> resources = null;
+				try {
+					resources = classLoader.getResources(name);
+				} catch (IOException e) {
+					logger.error("error", e);
+				}
+				synchronized (resourceUrlCache) {
+					resourceUrlCache.put(cacheKey, Collections.list(resources));
+				}
+
+				return resources;
+			} else {
+
+				return Collections.enumeration(urlList);
+			}
+		}
+    	
         Enumeration<URL> enumeration = null;
         try {
             enumeration = classLoader.getResources(name);
@@ -284,18 +309,18 @@ public class ChainedProperties
         while ( enumeration.hasMoreElements() ) {
             URL url = (URL) enumeration.nextElement();
             loadProperties( url,
-                            chain, classLoader );
+                            chain );
         }
     }
 
     private void loadProperties(String fileName,
-                                List<Properties> chain, ClassLoader classLoader) {
+                                List<Properties> chain) {
         if ( fileName != null ) {
             File file = new File( fileName );
             if ( file != null && file.exists() ) {
                 try {
                     loadProperties( file.toURL(),
-                                    chain, classLoader );
+                                    chain );
                 } catch ( MalformedURLException e ) {
                     throw new IllegalArgumentException( "file.toURL() failed for " + fileName + " properties value '" + file + "'" );
                 }
@@ -306,20 +331,17 @@ public class ChainedProperties
     }
 
     private void loadProperties(URL confURL,
-                                List<Properties> chain, ClassLoader classLoader) {
+                                List<Properties> chain) {
         if ( confURL == null ) {
             return;
         }
-        Properties properties = fromCache(confURL.toString(), classLoader);
         try {
-        	if (properties == null) {
-        		properties = new Properties();
-	            java.io.InputStream is = confURL.openStream();
-	            properties.load( is );
-	            is.close();
-	            logger.debug("Loading from {} file for class loader {}, cache size {}", confURL.toString(), classLoader, cache.size());
-	            addToCache(confURL.toString(), classLoader, properties);
-        	}
+        	
+        	Properties properties = new Properties();
+            java.io.InputStream is = confURL.openStream();
+            properties.load( is );
+            is.close();
+        	
             chain.add( properties );
         } catch ( IOException e ) {
             //throw new IllegalArgumentException( "Invalid URL to properties file '" + confURL.toExternalForm() + "'" );
@@ -329,25 +351,6 @@ public class ChainedProperties
      * optional cache handling to improve performance to avoid duplicated loads of properties 
      */
     
-    protected Properties fromCache(String confFileName, ClassLoader classLoader) {
-    	Properties props = null;
-    	if (CACHE_ENABLED) {
-    		CacheKey cacheKey = new CacheKey(confFileName, classLoader);    		
-    		props = cache.get(cacheKey);    		    		
-    	}
-    	
-    	return props;
-    }
-    
-    protected void addToCache(String confFileName, ClassLoader classLoader, Properties properties) {
-    	if (CACHE_ENABLED) {
-	    	synchronized (cache) {
-	    		CacheKey cacheKey = new CacheKey(confFileName, classLoader);
-	    		
-	    		cache.put(cacheKey, properties);
-			}
-    	}
-    }
     
     private static class CacheKey {
     	private String confFileName; 
