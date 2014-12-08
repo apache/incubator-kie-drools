@@ -25,6 +25,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
+import org.optaplanner.core.impl.domain.variable.supply.Demand;
 
 public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
 
@@ -92,6 +93,11 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    @Override
+    public Demand getDemandOfVariableListenerAsSupply() {
+        return null;
+    }
 
     @Override
     public VariableListener buildVariableListener() {

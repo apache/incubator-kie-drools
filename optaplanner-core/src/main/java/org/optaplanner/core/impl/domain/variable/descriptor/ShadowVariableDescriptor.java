@@ -21,6 +21,8 @@ import java.beans.PropertyDescriptor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
+import org.optaplanner.core.impl.domain.variable.supply.Demand;
+import org.optaplanner.core.impl.domain.variable.supply.Supply;
 
 public abstract class ShadowVariableDescriptor extends VariableDescriptor {
 
@@ -37,6 +39,15 @@ public abstract class ShadowVariableDescriptor extends VariableDescriptor {
     // Worker methods
     // ************************************************************************
 
+    /**
+     * If not null, {@link #buildVariableListener()} can be cast to a {@link Supply}.
+     * @return sometimes null, if it doesn't represent a {@link Demand}
+     */
+    public abstract Demand getDemandOfVariableListenerAsSupply();
+
+    /**
+     * @return never null
+     */
     public abstract VariableListener buildVariableListener();
 
 }

@@ -21,11 +21,15 @@ import java.util.Iterator;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractOriginalSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedSwapMove;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class SwapMoveSelector extends GenericMoveSelector {
 
@@ -72,6 +76,22 @@ public class SwapMoveSelector extends GenericMoveSelector {
         phaseLifecycleSupport.addEventListener(leftEntitySelector);
         if (leftEntitySelector != rightEntitySelector) {
             phaseLifecycleSupport.addEventListener(rightEntitySelector);
+        }
+    }
+
+    @Override
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        super.solvingStarted(solverScope);
+        if (anyChained) {
+            SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
+            for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+                if (variableDescriptor.isChained()) {
+                    // TODO supply is demanded just to make sure it's there when it's demand again later.
+                    // Instead it should be remember for later
+                    SingletonInverseVariableSupply inverseVariableSupply = supplyManager.demand(
+                            new SingletonInverseVariableDemand(variableDescriptor));
+                }
+            }
         }
     }
 

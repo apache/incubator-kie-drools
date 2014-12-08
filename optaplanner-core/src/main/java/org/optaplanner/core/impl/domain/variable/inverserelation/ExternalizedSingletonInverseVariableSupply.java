@@ -41,9 +41,13 @@ public class ExternalizedSingletonInverseVariableSupply implements StatefulVaria
         this.sourceVariableDescriptor = sourceVariableDescriptor;
     }
 
-    public void resetWorkingSolution(ScoreDirector scoreDirector, Solution workingSolution) {
+    public VariableDescriptor getVariableDescriptor() {
+        return sourceVariableDescriptor;
+    }
+
+    public void resetWorkingSolution(ScoreDirector scoreDirector) {
         EntityDescriptor entityDescriptor = sourceVariableDescriptor.getEntityDescriptor();
-        List<Object> entityList = entityDescriptor.extractEntities(workingSolution);
+        List<Object> entityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
         inverseEntitySetMap = new IdentityHashMap<Object, Set<Object>>(entityList.size());
         for (Object entity : entityList) {
             insert(scoreDirector, entity);
@@ -80,6 +84,9 @@ public class ExternalizedSingletonInverseVariableSupply implements StatefulVaria
 
     protected void insert(ScoreDirector scoreDirector, Object entity) {
         Object value = sourceVariableDescriptor.getValue(entity);
+        if (value == null) {
+            return;
+        }
         Set<Object> inverseEntitySet = inverseEntitySetMap.get(value);
         if (inverseEntitySet == null) {
             inverseEntitySet = Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>());
@@ -96,6 +103,9 @@ public class ExternalizedSingletonInverseVariableSupply implements StatefulVaria
 
     protected void retract(ScoreDirector scoreDirector, Object entity) {
         Object value = sourceVariableDescriptor.getValue(entity);
+        if (value == null) {
+            return;
+        }
         Set<Object> inverseEntitySet = inverseEntitySetMap.get(value);
         boolean removeSucceeded = inverseEntitySet.remove(entity);
         if (!removeSucceeded) {

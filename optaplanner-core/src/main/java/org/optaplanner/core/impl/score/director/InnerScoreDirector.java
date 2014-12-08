@@ -22,6 +22,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public interface InnerScoreDirector extends ScoreDirector {
@@ -89,6 +90,11 @@ public interface InnerScoreDirector extends ScoreDirector {
      * @return at least 0L
      */
     long getCalculateCount();
+
+    /**
+     * @return never null
+     */
+    SupplyManager getSupplyManager();
 
     /**
      * Clones this {@link ScoreDirector} and its {@link Solution workingSolution}.

@@ -1,15 +1,9 @@
 package org.optaplanner.core.impl.score.director.easy;
 
 import org.junit.Test;
-import org.mockito.Matchers;
-import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-import org.optaplanner.core.impl.testdata.domain.chained.mappedby.TestdataMappedByChainedSolution;
-
-import java.util.Collection;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

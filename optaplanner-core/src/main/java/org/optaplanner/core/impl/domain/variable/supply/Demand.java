@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable.inverserelation;
+package org.optaplanner.core.impl.domain.variable.supply;
 
-import org.optaplanner.core.impl.domain.variable.supply.Supply;
+import java.io.Serializable;
 
 /**
- * Currently only supported for chained variables,
- * which guarantee that no 2 entities use the same planningValue.
+ * A subsystem submits a demand for a {@link Supply}.
+ * Implementations must overwrite {@link #equals(Object)} and {@link #hashCode()}.
+ * @param <S>
+ * @see Supply
+ * @see SupplyManager
  */
-public interface SingletonInverseVariableSupply extends Supply {
+public interface Demand<S extends Supply> extends Serializable {
 
     /**
-     * If entity1.varA = x then the inverse of x is entity1.
-     * @param planningValue never null
-     * @return sometimes null, an entity for which the planning variable is the planningValue.
+     * Only called if the domain model doesn't already support the demand (through a shadow variable usually).
+     * Equal demands share the same {@link Supply}.
+     * @return never null
      */
-    Object getInverseSingleton(Object planningValue);
+    S createExternalizedSupply();
 
 }

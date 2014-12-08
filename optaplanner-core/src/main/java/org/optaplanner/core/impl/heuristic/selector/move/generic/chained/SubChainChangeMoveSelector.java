@@ -19,12 +19,16 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 import java.util.Iterator;
 
 import com.google.common.collect.Iterators;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class SubChainChangeMoveSelector extends GenericMoveSelector {
 
@@ -60,6 +64,16 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
         }
         phaseLifecycleSupport.addEventListener(subChainSelector);
         phaseLifecycleSupport.addEventListener(valueSelector);
+    }
+
+    @Override
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        super.solvingStarted(solverScope);
+        SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
+        // TODO supply is demanded just to make sure it's there when it's demand again later.
+        // Instead it should be remember for later
+        SingletonInverseVariableSupply inverseVariableSupply = supplyManager.demand(
+                new SingletonInverseVariableDemand(valueSelector.getVariableDescriptor()));
     }
 
     // ************************************************************************

@@ -25,6 +25,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
+import org.optaplanner.core.impl.domain.variable.supply.Demand;
 
 public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescriptor {
 
@@ -82,6 +83,11 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    @Override
+    public Demand getDemandOfVariableListenerAsSupply() {
+        return new SingletonInverseVariableDemand(sourceVariableDescriptor);
+    }
 
     @Override
     public VariableListener buildVariableListener() {

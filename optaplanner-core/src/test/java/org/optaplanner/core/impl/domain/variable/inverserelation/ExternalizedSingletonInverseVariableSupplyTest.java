@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class ExternalizedSingletonInverseVariableSupplyTest {
 
@@ -48,7 +48,8 @@ public class ExternalizedSingletonInverseVariableSupplyTest {
         solution.setChainedAnchorList(Arrays.asList(a0, b0));
         solution.setChainedEntityList(Arrays.asList(a1, a2, a3, b1));
 
-        supply.resetWorkingSolution(scoreDirector, solution);
+        when(scoreDirector.getWorkingSolution()).thenReturn(solution);
+        supply.resetWorkingSolution(scoreDirector);
 
         assertSame(a1, supply.getInverseSingleton(a0));
         assertSame(a2, supply.getInverseSingleton(a1));

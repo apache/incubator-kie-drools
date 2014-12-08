@@ -39,7 +39,7 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 public class AbstractScoreDirectorTest {
 
     @Test
-    public void getTrailingEntityMap() {
+    public void getTrailingEntity() {
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
         TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);

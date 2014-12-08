@@ -19,11 +19,14 @@ package org.optaplanner.core.impl.domain.variable.descriptor;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
+import org.optaplanner.core.impl.domain.variable.supply.Demand;
+import org.optaplanner.core.impl.domain.variable.supply.Supply;
 
 public abstract class VariableDescriptor {
 
@@ -69,15 +72,17 @@ public abstract class VariableDescriptor {
         shadowVariableDescriptorList.add(shadowVariableDescriptor);
     }
 
-    public boolean hasAnyShadow() {
-        return !shadowVariableDescriptorList.isEmpty();
-    }
-
-    public List<VariableListener> buildVariableListenerList() {
+    public List<VariableListener> buildVariableListenerListAndRegisterSupply(Map<Demand, Supply> supplyMap) {
         List<VariableListener> variableListenerList = new ArrayList<VariableListener>(shadowVariableDescriptorList.size());
         // Always trigger the build-in shadow variables first
         for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptorList) {
-            variableListenerList.add(shadowVariableDescriptor.buildVariableListener());
+            VariableListener variableListener = shadowVariableDescriptor.buildVariableListener();
+            variableListenerList.add(variableListener);
+            // TODO the Demand with Supply registration is ugly code
+            Demand demand = shadowVariableDescriptor.getDemandOfVariableListenerAsSupply();
+            if (demand != null) {
+                supplyMap.put(demand, (Supply) variableListener);
+            }
         }
         return variableListenerList;
     }

@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.testdata.domain.chained.mappedby;
+package org.optaplanner.core.impl.testdata.domain.chained.next;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -8,45 +8,45 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
 @PlanningEntity
-public class TestdataMappedByChainedEntity extends TestdataObject implements TestdataMappedByChainedObject {
+public class TestdataNextAndChainedEntity extends TestdataObject implements TestdataNextAndChainedObject {
 
     public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataMappedByChainedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataMappedByChainedEntity.class);
+        SolutionDescriptor solutionDescriptor = TestdataNextAndChainedSolution.buildSolutionDescriptor();
+        return solutionDescriptor.findEntityDescriptorOrFail(TestdataNextAndChainedEntity.class);
     }
 
-    private TestdataMappedByChainedObject chainedObject;
+    private TestdataNextAndChainedObject chainedObject;
 
     // Shadow variables
-    private TestdataMappedByChainedEntity nextEntity;
+    private TestdataNextAndChainedEntity nextEntity;
 
-    public TestdataMappedByChainedEntity() {
+    public TestdataNextAndChainedEntity() {
     }
 
-    public TestdataMappedByChainedEntity(String code) {
+    public TestdataNextAndChainedEntity(String code) {
         super(code);
     }
 
-    public TestdataMappedByChainedEntity(String code, TestdataMappedByChainedObject chainedObject) {
+    public TestdataNextAndChainedEntity(String code, TestdataNextAndChainedObject chainedObject) {
         this(code);
         this.chainedObject = chainedObject;
     }
 
     @PlanningVariable(valueRangeProviderRefs = {"chainedAnchorRange", "chainedEntityRange"},
             graphType = PlanningVariableGraphType.CHAINED)
-    public TestdataMappedByChainedObject getChainedObject() {
+    public TestdataNextAndChainedObject getChainedObject() {
         return chainedObject;
     }
 
-    public void setChainedObject(TestdataMappedByChainedObject chainedObject) {
+    public void setChainedObject(TestdataNextAndChainedObject chainedObject) {
         this.chainedObject = chainedObject;
     }
 
-    public TestdataMappedByChainedEntity getNextEntity() {
+    public TestdataNextAndChainedEntity getNextEntity() {
         return nextEntity;
     }
 
-    public void setNextEntity(TestdataMappedByChainedEntity nextEntity) {
+    public void setNextEntity(TestdataNextAndChainedEntity nextEntity) {
         this.nextEntity = nextEntity;
     }
 

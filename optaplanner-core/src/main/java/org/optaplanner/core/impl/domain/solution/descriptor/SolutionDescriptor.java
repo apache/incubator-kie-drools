@@ -283,16 +283,6 @@ public class SolutionDescriptor {
         return chainedVariableDescriptors;
     }
 
-    public VariableListenerSupport buildVariableListenerSupport() {
-        // Order is important, hence LinkedHashMap
-        Map<VariableDescriptor, List<VariableListener>> variableListenerMap
-                = new LinkedHashMap<VariableDescriptor, List<VariableListener>>();
-        for (EntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
-            entityDescriptor.addDeclaredVariableListenersToMap(variableListenerMap);
-        }
-        return new VariableListenerSupport(variableListenerMap);
-    }
-
     public GenuineVariableDescriptor findGenuineVariableDescriptor(Object entity, String variableName) {
         EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
         return entityDescriptor.getGenuineVariableDescriptor(variableName);

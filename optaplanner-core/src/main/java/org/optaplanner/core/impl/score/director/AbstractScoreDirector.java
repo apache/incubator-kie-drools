@@ -33,9 +33,11 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListenerSupport;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.director.common.TrailingEntityMapSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +60,6 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
 
     protected final boolean constraintMatchEnabledPreference;
 
-    protected TrailingEntityMapSupport trailingEntityMapSupport;
     protected VariableListenerSupport variableListenerSupport;
 
     protected Solution workingSolution;
@@ -71,9 +72,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     protected AbstractScoreDirector(F scoreDirectorFactory, boolean constraintMatchEnabledPreference) {
         this.scoreDirectorFactory = scoreDirectorFactory;
         this.constraintMatchEnabledPreference = constraintMatchEnabledPreference;
-        SolutionDescriptor solutionDescriptor = getSolutionDescriptor();
-        trailingEntityMapSupport = new TrailingEntityMapSupport(solutionDescriptor);
-        variableListenerSupport = solutionDescriptor.buildVariableListenerSupport();
+        variableListenerSupport = new VariableListenerSupport(this);
     }
 
     public F getScoreDirectorFactory() {
@@ -108,14 +107,17 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         return calculateCount;
     }
 
+    public SupplyManager getSupplyManager() {
+        return variableListenerSupport;
+    }
+
     // ************************************************************************
     // Complex methods
     // ************************************************************************
 
     public void setWorkingSolution(Solution workingSolution) {
         this.workingSolution = workingSolution;
-        trailingEntityMapSupport.resetTrailingEntityMap(workingSolution);
-        variableListenerSupport.resetWorkingSolution(this, workingSolution);
+        variableListenerSupport.resetWorkingSolution(this);
         setWorkingEntityListDirty();
     }
 
@@ -201,8 +203,10 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         variableListenerSupport.clearWorkingSolution(this);
     }
 
+    // TODO remove this method and use the SingletonInverseVariableSupply directly
     public Object getTrailingEntity(GenuineVariableDescriptor chainedVariableDescriptor, Object planningValue) {
-        return trailingEntityMapSupport.getTrailingEntity(chainedVariableDescriptor, planningValue);
+        SingletonInverseVariableSupply supply = variableListenerSupport.demand(new SingletonInverseVariableDemand(chainedVariableDescriptor));
+        return supply.getInverseSingleton(planningValue);
     }
 
     // ************************************************************************
@@ -242,7 +246,6 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void afterEntityAdded(EntityDescriptor entityDescriptor, Object entity) {
-        trailingEntityMapSupport.insertInTrailingEntityMap(entityDescriptor, entity);
         variableListenerSupport.afterEntityAdded(this, entityDescriptor, entity);
         if (!allChangesWillBeUndoneBeforeStepEnds) {
             setWorkingEntityListDirty();
@@ -250,17 +253,14 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
-        trailingEntityMapSupport.retractFromTrailingEntityMap(variableDescriptor, entity);
         variableListenerSupport.beforeVariableChanged(this, variableDescriptor, entity);
     }
 
     public void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
-        trailingEntityMapSupport.insertInTrailingEntityMap(variableDescriptor, entity);
         variableListenerSupport.afterVariableChanged(this, variableDescriptor, entity);
     }
 
     public void beforeEntityRemoved(EntityDescriptor entityDescriptor, Object entity) {
-        trailingEntityMapSupport.retractFromTrailingEntityMap(entityDescriptor, entity);
         variableListenerSupport.beforeEntityRemoved(this, entityDescriptor, entity);
     }
 
@@ -280,7 +280,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void afterProblemFactAdded(Object problemFact) {
-        trailingEntityMapSupport.resetTrailingEntityMap(workingSolution); // TODO do not nuke it
+        variableListenerSupport.resetWorkingSolution(this); // TODO do not nuke it
     }
 
     public void beforeProblemFactChanged(Object problemFact) {
@@ -288,7 +288,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void afterProblemFactChanged(Object problemFact) {
-        trailingEntityMapSupport.resetTrailingEntityMap(workingSolution); // TODO do not nuke it
+        variableListenerSupport.resetWorkingSolution(this); // TODO do not nuke it
     }
 
     public void beforeProblemFactRemoved(Object problemFact) {
@@ -296,7 +296,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void afterProblemFactRemoved(Object problemFact) {
-        trailingEntityMapSupport.resetTrailingEntityMap(workingSolution); // TODO do not nuke it
+        variableListenerSupport.resetWorkingSolution(this); // TODO do not nuke it
     }
 
     // ************************************************************************

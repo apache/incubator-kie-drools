@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable.inverserelation;
-
-import org.optaplanner.core.impl.domain.variable.supply.Supply;
+package org.optaplanner.core.impl.domain.variable.supply;
 
 /**
- * Currently only supported for chained variables,
- * which guarantee that no 2 entities use the same planningValue.
+ * Provides a {@link Supply} for subsystems that submit a {@link Demand}.
  */
-public interface SingletonInverseVariableSupply extends Supply {
+public interface SupplyManager {
 
     /**
-     * If entity1.varA = x then the inverse of x is entity1.
-     * @param planningValue never null
-     * @return sometimes null, an entity for which the planning variable is the planningValue.
+     * Returns the {@link Supply} for a {@link Demand}, preferably an existing one.
+     * If the {@link Supply} doesn't exist yet (as part of the domain model or externalized), it creates and attaches it.
+     * @param demand never null
+     * @param <S>
+     * @return never null
      */
-    Object getInverseSingleton(Object planningValue);
+    <S extends Supply> S demand(Demand<S> demand);
 
 }

@@ -326,14 +326,12 @@ public class EntityDescriptor {
         return effectiveShadowVariableDescriptorMap.get(variableName);
     }
 
-    public void addDeclaredVariableListenersToMap(
-            Map<VariableDescriptor, List<VariableListener>> variableListenerMap) {
-        for (GenuineVariableDescriptor variableDescriptor : declaredGenuineVariableDescriptorMap.values()) {
-            variableListenerMap.put(variableDescriptor, variableDescriptor.buildVariableListenerList());
-        }
-        for (ShadowVariableDescriptor variableDescriptor : declaredShadowVariableDescriptorMap.values()) {
-            variableListenerMap.put(variableDescriptor, variableDescriptor.buildVariableListenerList());
-        }
+    public Collection<GenuineVariableDescriptor> getDeclaredGenuineVariableDescriptors() {
+        return declaredGenuineVariableDescriptorMap.values();
+    }
+
+    public Collection<ShadowVariableDescriptor> getDeclaredShadowVariableDescriptors() {
+        return declaredShadowVariableDescriptorMap.values();
     }
 
     public Collection<VariableDescriptor> getDeclaredVariableDescriptors() {
