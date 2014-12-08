@@ -137,10 +137,19 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 		}
 		DeploymentUnit unit = event.getDeployedUnit().getDeploymentUnit();
 		if (!entries.containsKey(unit.getIdentifier())) {
-			deploymentStore.enableDeploymentUnit(unit);
-			// when successfully stored add it to local store
-			entries.put(unit.getIdentifier(), unit);
-			logger.info("Deployment unit {} stored successfully", unit.getIdentifier());
+			
+			try {
+				deploymentStore.enableDeploymentUnit(unit);
+				// when successfully stored add it to local store
+				entries.put(unit.getIdentifier(), unit);
+				logger.info("Deployment unit {} stored successfully", unit.getIdentifier());
+			} catch (Exception e) {
+				if (e.getMessage() != null && e.getMessage().contains("ConstraintViolationException")) {
+					logger.info("Deployment {} already stored in deployment store", unit);
+				} else {
+					logger.error("Unable to store deployment {} in deployment store due to {}", e.getMessage());
+				}
+			}
 		}
 		
 	}
