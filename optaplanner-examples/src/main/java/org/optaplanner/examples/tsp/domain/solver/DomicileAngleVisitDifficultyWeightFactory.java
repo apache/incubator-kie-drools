@@ -41,10 +41,10 @@ public class DomicileAngleVisitDifficultyWeightFactory
 
         private final Visit visit;
         private final double domicileAngle;
-        private final int domicileRoundTripDistance;
+        private final long domicileRoundTripDistance;
 
         public DomicileAngleVisitDifficultyWeight(Visit visit,
-                double domicileAngle, int domicileRoundTripDistance) {
+                double domicileAngle, long domicileRoundTripDistance) {
             this.visit = visit;
             this.domicileAngle = domicileAngle;
             this.domicileRoundTripDistance = domicileRoundTripDistance;
