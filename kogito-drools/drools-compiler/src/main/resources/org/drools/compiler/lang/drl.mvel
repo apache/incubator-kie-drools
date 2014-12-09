@@ -93,7 +93,7 @@ then
 @comment{***************************************************************
                        ACCUMULATE FUNCTIONS TEMPLATE
 ************************************************************************ }
-@declare{"accFunctions"}@foreach{func:functions}@{func.function}( @foreach{p:func.params}@{p}@end{", "} )@end{",\n        "}@end{}
+@declare{"accFunctions"}@foreach{func:functions}@if{func.bind!=null}@{func.bind} : @end{}@{func.function}( @foreach{p:func.params}@{p}@end{", "} )@end{",\n        "}@end{}
 
 @comment{***************************************************************
                        CUSTOM ACCUMULATE TEMPLATE

@@ -1,0 +1,13 @@
+package org.test;
+
+rule R1 when
+  accumulate( $s1: String(), $sum : count( $s1 ) )
+then
+  System.out.println( $sum );
+end
+
+rule R2 when
+  $sum : Number() from accumulate( $s2: String(), count( $s2 ) )
+then
+  System.out.println( $sum );
+end
