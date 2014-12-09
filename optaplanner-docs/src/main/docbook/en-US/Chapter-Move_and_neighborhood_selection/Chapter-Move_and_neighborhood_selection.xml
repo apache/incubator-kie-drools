@@ -747,7 +747,7 @@
     &lt;/unionMoveSelector&gt;</programlisting>
 
         <para>Here's how it works. When <literal>Iterator&lt;Move&gt;.next()</literal> is called, a child
-        <literal>MoveSelector</literal> is randomly selected (1), which creates a random <literal>Move</literal>  (2, 3, 4) and is then returned (5):</para>
+        <literal>MoveSelector</literal> is randomly selected (1), which creates a random <literal>Move</literal> (2, 3, 4) and is then returned (5):</para>
 
         <mediaobject>
           <imageobject>
