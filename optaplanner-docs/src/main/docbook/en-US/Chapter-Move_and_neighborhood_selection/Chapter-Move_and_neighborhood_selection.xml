@@ -747,8 +747,7 @@
     &lt;/unionMoveSelector&gt;</programlisting>
 
         <para>Here's how it works. When <literal>Iterator&lt;Move&gt;.next()</literal> is called, a child
-        <literal>MoveSelector</literal> is randomly selected (1), which creates a random <literal>Move</literal> is
-        created (2, 3, 4) and is then returned (5):</para>
+        <literal>MoveSelector</literal> is randomly selected (1), which creates a random <literal>Move</literal>  (2, 3, 4) and is then returned (5):</para>
 
         <mediaobject>
           <imageobject>
@@ -912,7 +911,7 @@
       <para>It's mostly used in construction heuristics.</para>
 
       <note>
-        <para>If the choosen construction heuristic implies sorting, for example <literal>FIRST_FIT_DECREASING</literal>
+        <para>If the chosen construction heuristic implies sorting, for example <literal>FIRST_FIT_DECREASING</literal>
         implies that the <literal>EntitySelector</literal> is sorted, there is no need to explicitly configure a
         <literal>Selector</literal> with sorting. If you do explicitely configure the <literal>Selector</literal>, it
         overwrites the default settings of that construction heuristic.</para>
@@ -1078,7 +1077,7 @@
         </imageobject>
       </mediaobject>
 
-      <para>Each selection has a <literal>probabilityWeight</literal>, which determines the chance that's that selection
+      <para>Each selection has a <literal>probabilityWeight</literal>, which determines the chance that selection
       will be selected:</para>
 
       <programlisting language="java">public interface SelectionProbabilityWeightFactory&lt;T&gt; {
@@ -1142,7 +1141,7 @@
         &lt;/changeMoveSelector&gt;
       &lt;/cartesianProductMoveSelector&gt;</programlisting>
 
-      <para>Mimic selection is usefull to create a composite move from 2 moves that affect the same entity.</para>
+      <para>Mimic selection is useful to create a composite move from 2 moves that affect the same entity.</para>
     </section>
 
     <section xml:id="nearbySelection">
@@ -1183,7 +1182,7 @@
       as desired.</para>
 
       <para>A custom <literal>Move</literal> can be tailored to work to the advantage of your constraints. For example,
-      in examination scheduling, changing the period of an exam A also changes te period of all the exams that need to
+      in examination scheduling, changing the period of an exam A also changes the period of all the exams that need to
       coincide with exam A.</para>
 
       <para>A custom <literal>Move</literal> is also slightly faster than a generic <literal>Move</literal>. However,
@@ -1292,7 +1291,7 @@
       C2</emphasis>, instead of the move <emphasis>C2 to C0</emphasis>.</para>
 
       <para>A solver phase might do and undo the same <literal>Move</literal> more than once. In fact, many solver
-      phases will iteratively do an undo a number of moves to evaluate them, before selecting one of those and doing
+      phases will iteratively do and undo a number of moves to evaluate them, before selecting one of those and doing
       that move again (without undoing it this time).</para>
 
       <para>A <literal>Move</literal> must implement the <literal>getPlanningEntities()</literal> and
