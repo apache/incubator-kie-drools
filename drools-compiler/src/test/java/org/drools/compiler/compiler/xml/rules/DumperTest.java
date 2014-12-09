@@ -1,8 +1,8 @@
 package org.drools.compiler.compiler.xml.rules;
 
-import org.drools.compiler.lang.DrlDumper;
 import org.junit.Test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -116,5 +116,13 @@ public class DumperTest {
         assertTrue( out.contains( "declare enum Planets" ) );
         assertTrue( out.contains( "MERCURY" ) );
         assertTrue( out.contains( "7.1492e7" ) );
+    }
+
+    @Test
+    public void testRoundTripAccumulate() throws Exception {
+        String out = DumperTestHelper.dump( "test_Accumulate.drl" );
+        assertTrue( out.contains( "$sum : count( $s1 )" ) );
+        assertFalse( out.contains("null : count( $s2 )") );
+        assertTrue( out.contains("count( $s2 )") );
     }
 }
