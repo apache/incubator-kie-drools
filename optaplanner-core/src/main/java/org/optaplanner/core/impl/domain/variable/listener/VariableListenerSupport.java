@@ -21,9 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -47,39 +45,50 @@ public class VariableListenerSupport implements SupplyManager {
         variableListenerMap = new LinkedHashMap<VariableDescriptor, List<VariableListener>>();
         entityVariableListenerMap = new LinkedHashMap<EntityDescriptor, List<VariableListener>>();
         supplyMap = new LinkedHashMap<Demand, Supply>(variableListenerMap.size());
+    }
+
+    public void linkVariableListeners() {
         for (EntityDescriptor entityDescriptor : scoreDirector.getSolutionDescriptor().getEntityDescriptors()) {
             List<VariableListener> entityVariableListenerList = new ArrayList<VariableListener>();
             for (GenuineVariableDescriptor variableDescriptor : entityDescriptor.getDeclaredGenuineVariableDescriptors()) {
-                List<VariableListener> variableListenerList = variableDescriptor
-                        .buildVariableListenerListAndRegisterSupply(supplyMap);
-                variableListenerMap.put(variableDescriptor, variableListenerList);
-                entityVariableListenerList.addAll(variableListenerList);
+                buildVariableListeners(entityVariableListenerList, variableDescriptor);
             }
             for (ShadowVariableDescriptor variableDescriptor : entityDescriptor.getDeclaredShadowVariableDescriptors()) {
-                List<VariableListener> variableListenerList = variableDescriptor
-                        .buildVariableListenerListAndRegisterSupply(supplyMap);
-                variableListenerMap.put(variableDescriptor, variableListenerList);
-                entityVariableListenerList.addAll(variableListenerList);
+                buildVariableListeners(entityVariableListenerList, variableDescriptor);
             }
             entityVariableListenerMap.put(entityDescriptor, entityVariableListenerList);
         }
     }
 
+    public void buildVariableListeners(List<VariableListener> entityVariableListenerList,
+            VariableDescriptor variableDescriptor) {
+        List<ShadowVariableDescriptor> shadowVariableDescriptorList = variableDescriptor.getShadowVariableDescriptorList();
+        List<VariableListener> variableListenerList = new ArrayList<VariableListener>(shadowVariableDescriptorList.size());
+        // Trigger the build-in shadow variables first: they were registered first
+        for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptorList) {
+            VariableListener variableListener = shadowVariableDescriptor.buildVariableListener(scoreDirector);
+            variableListenerList.add(variableListener);
+            supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), variableListener);
+        }
+        variableListenerMap.put(variableDescriptor, variableListenerList);
+        entityVariableListenerList.addAll(variableListenerList);
+    }
+
     public <S extends Supply> S demand(Demand<S> demand) {
         S supply = (S) supplyMap.get(demand);
         if (supply == null) {
-            supply = demand.createExternalizedSupply();
+            supply = demand.createExternalizedSupply(scoreDirector);
             if (supply instanceof StatefulVariableListener) {
                 StatefulVariableListener statefulVariableListener = (StatefulVariableListener) supply;
                 statefulVariableListener.resetWorkingSolution(scoreDirector);
-                VariableDescriptor variableDescriptor = statefulVariableListener.getVariableDescriptor();
-                List<VariableListener> variableListenerList = variableListenerMap.get(variableDescriptor);
+                VariableDescriptor sourceVariableDescriptor = statefulVariableListener.getSourceVariableDescriptor();
+                List<VariableListener> variableListenerList = variableListenerMap.get(sourceVariableDescriptor);
                 if (variableListenerList == null) {
                     variableListenerList = new ArrayList<VariableListener>();
-                    variableListenerMap.put(variableDescriptor, variableListenerList);
+                    variableListenerMap.put(sourceVariableDescriptor, variableListenerList);
                 }
                 variableListenerList.add(statefulVariableListener);
-                EntityDescriptor entityDescriptor = variableDescriptor.getEntityDescriptor();
+                EntityDescriptor entityDescriptor = sourceVariableDescriptor.getEntityDescriptor();
                 List<VariableListener> entityVariableListenerList = entityVariableListenerMap.get(entityDescriptor);
                 if (entityVariableListenerList == null) {
                     entityVariableListenerList = new ArrayList<VariableListener>();

@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.domain.variable.listener;
 
+import org.optaplanner.core.impl.domain.variable.supply.Supply;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
@@ -29,7 +30,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * Each {@link ScoreDirector} has a different {@link VariableListener} instance, so it can be stateful.
  * If it is stateful, it should implement {@link StatefulVariableListener}.
  */
-public interface VariableListener<EntityG> {
+public interface VariableListener<EntityG> extends Supply {
 
     void beforeEntityAdded(ScoreDirector scoreDirector, EntityG entity);
 

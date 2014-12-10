@@ -2323,3 +2323,37 @@ After in *.java:
 
 [IMPL_DETAIL] InverseRelationShadowVariableListener renamed to SingletonInverseVariableListener.
 It and InverseRelationShadowVariableDescriptor moved to the package ...impl.domain.variable.inverserelation.
+
+
+From 6.2.0.CR3 to 6.2.0.CR4
+---------------------------
+
+[MAJOR] There is now out-of-the-box support for a shadow variable representing the anchor of a chained variable.
+For example, in a VRP each Customer (= entity) needs to know to which Vehicle (= anchor) it belongs.
+This declarative support allows build-in selectors to reuse that knowledge without duplicating the calculation.
+Before in *.java:
+    @PlanningEntity
+    public class Customer implements Standstill {
+
+        @PlanningVariable(...)
+        public Standstill getPreviousStandstill() {...}
+
+        @CustomShadowVariable(variableListenerClass = VehicleUpdatingVariableListener.class,
+                sources = {@CustomShadowVariable.Source(variableName = "previousStandstill")})
+        public Vehicle getVehicle() {...}
+
+    }
+    public class VehicleUpdatingVariableListener implements VariableListener<Customer> {
+        ...
+    }
+After in *.java:
+    @PlanningEntity
+    public class Customer implements Standstill {
+
+        @PlanningVariable(...)
+        public Standstill getPreviousStandstill() {...}
+
+        @AnchorShadowVariable(sourceVariableName = "previousStandstill")
+        public Vehicle getVehicle() {...}
+
+    }

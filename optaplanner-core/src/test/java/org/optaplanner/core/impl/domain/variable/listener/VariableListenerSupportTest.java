@@ -49,6 +49,7 @@ public class VariableListenerSupportTest {
         solution.setEntityList(Collections.<TestdataEntity>emptyList());
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         VariableListenerSupport variableListenerSupport = new VariableListenerSupport(scoreDirector);
+        variableListenerSupport.linkVariableListeners();
 
         VariableDescriptor variableDescriptor = solutionDescriptor.getEntityDescriptorStrict(TestdataEntity.class)
                 .getVariableDescriptor("value");
@@ -69,6 +70,7 @@ public class VariableListenerSupportTest {
         solution.setChainedEntityList(Collections.<TestdataChainedEntity>emptyList());
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         VariableListenerSupport variableListenerSupport = new VariableListenerSupport(scoreDirector);
+        variableListenerSupport.linkVariableListeners();
 
         VariableDescriptor variableDescriptor = solutionDescriptor.getEntityDescriptorStrict(TestdataChainedEntity.class)
                 .getVariableDescriptor("chainedObject");
@@ -90,6 +92,7 @@ public class VariableListenerSupportTest {
         solution.setChainedEntityList(Collections.<TestdataNextAndChainedEntity>emptyList());
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         VariableListenerSupport variableListenerSupport = new VariableListenerSupport(scoreDirector);
+        variableListenerSupport.linkVariableListeners();
 
         VariableDescriptor variableDescriptor = solutionDescriptor.getEntityDescriptorStrict(TestdataNextAndChainedEntity.class)
                 .getVariableDescriptor("chainedObject");

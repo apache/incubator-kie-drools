@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable.inverserelation;
+package org.optaplanner.core.impl.domain.variable.anchor;
 
 import java.io.Serializable;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public class SingletonInverseVariableDemand implements Demand<SingletonInverseVariableSupply>, Serializable {
+public class AnchorVariableDemand implements Demand<AnchorVariableSupply>, Serializable {
 
-    private static final int CLASS_NAME_HASH_CODE = SingletonInverseVariableDemand.class.getName().hashCode() * 37;
+    private static final int CLASS_NAME_HASH_CODE = AnchorVariableDemand.class.getName().hashCode() * 37;
 
     protected final VariableDescriptor sourceVariableDescriptor;
 
-    public SingletonInverseVariableDemand(VariableDescriptor sourceVariableDescriptor) {
+    public AnchorVariableDemand(VariableDescriptor sourceVariableDescriptor) {
         this.sourceVariableDescriptor = sourceVariableDescriptor;
     }
 
@@ -40,8 +42,10 @@ public class SingletonInverseVariableDemand implements Demand<SingletonInverseVa
     // Creation method
     // ************************************************************************
 
-    public SingletonInverseVariableSupply createExternalizedSupply(InnerScoreDirector scoreDirector) {
-        return new ExternalizedSingletonInverseVariableSupply(sourceVariableDescriptor);
+    public AnchorVariableSupply createExternalizedSupply(InnerScoreDirector scoreDirector) {
+        SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
+                .demand(new SingletonInverseVariableDemand(sourceVariableDescriptor));
+        return new ExternalizedAnchorVariableSupply(sourceVariableDescriptor, inverseVariableSupply);
     }
 
     // ************************************************************************
@@ -53,10 +57,10 @@ public class SingletonInverseVariableDemand implements Demand<SingletonInverseVa
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SingletonInverseVariableDemand)) {
+        if (!(o instanceof AnchorVariableDemand)) {
             return false;
         }
-        SingletonInverseVariableDemand other = (SingletonInverseVariableDemand) o;
+        AnchorVariableDemand other = (AnchorVariableDemand) o;
         if (!sourceVariableDescriptor.equals(other.sourceVariableDescriptor)) {
             return false;
         }

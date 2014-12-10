@@ -26,23 +26,23 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Specifies that a bean property is the inverse of a {@link PlanningVariable}, which implies it's a shadow variable.
+ * Specifies that a bean property is the anchor of a chained {@link PlanningVariable}, which implies it's a shadow variable.
  * <p/>
  * It is specified on a getter of a java bean property of a {@link PlanningEntity} class.
  */
 @Target({METHOD})
 @Retention(RUNTIME)
-public @interface InverseRelationShadowVariable {
+public @interface AnchorShadowVariable {
 
     /**
-     * In a bidirectional relationship, the shadow side (= the slave side) uses this property
-     * (and nothing else) to declare for which {@link PlanningVariable} (= the master side) it is a shadow.
+     * The source planning variable is a chained planning variable that leads to the anchor.
      * <p/>
-     * Both sides of a bidirectional relationship should be consistent: if A points to B, then B must point to A.
+     * Both the genuine variable and the shadow variable should be consistent:
+     * if A chains to B, then A must have the same anchor as B (unless B is the anchor).
      * <p/>
      * When the {@link Solver} changes a genuine variable, it adjusts the shadow variable accordingly.
      * In practice, the {@link Solver} ignores shadow variables (except for consistency housekeeping).
-     * @return the variable property name on the opposite end of this bidirectional relationship
+     * @return the variable property name on this entity class that leads to the anchor
      */
     String sourceVariableName();
 

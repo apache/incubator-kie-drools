@@ -41,7 +41,7 @@ public class ExternalizedSingletonInverseVariableSupply implements StatefulVaria
         this.sourceVariableDescriptor = sourceVariableDescriptor;
     }
 
-    public VariableDescriptor getVariableDescriptor() {
+    public VariableDescriptor getSourceVariableDescriptor() {
         return sourceVariableDescriptor;
     }
 

@@ -72,19 +72,8 @@ public abstract class VariableDescriptor {
         shadowVariableDescriptorList.add(shadowVariableDescriptor);
     }
 
-    public List<VariableListener> buildVariableListenerListAndRegisterSupply(Map<Demand, Supply> supplyMap) {
-        List<VariableListener> variableListenerList = new ArrayList<VariableListener>(shadowVariableDescriptorList.size());
-        // Always trigger the build-in shadow variables first
-        for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptorList) {
-            VariableListener variableListener = shadowVariableDescriptor.buildVariableListener();
-            variableListenerList.add(variableListener);
-            // TODO the Demand with Supply registration is ugly code
-            Demand demand = shadowVariableDescriptor.getDemandOfVariableListenerAsSupply();
-            if (demand != null) {
-                supplyMap.put(demand, (Supply) variableListener);
-            }
-        }
-        return variableListenerList;
+    public List<ShadowVariableDescriptor> getShadowVariableDescriptorList() {
+        return shadowVariableDescriptorList;
     }
 
     // ************************************************************************

@@ -41,7 +41,7 @@ public class SingletonInverseVariableListenerTest {
                 = solutionDescriptor.findEntityDescriptorOrFail(TestdataNextAndChainedObject.class)
                 .getShadowVariableDescriptor("nextEntity");
         SingletonInverseVariableListener variableListener = new SingletonInverseVariableListener(
-                nextEntityVariableDescriptor,
+                (InverseRelationShadowVariableDescriptor) nextEntityVariableDescriptor,
                 solutionDescriptor.findEntityDescriptorOrFail(TestdataNextAndChainedEntity.class)
                         .getGenuineVariableDescriptor("chainedObject"));
         ScoreDirector scoreDirector = mock(ScoreDirector.class);

@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable.inverserelation;
+package org.optaplanner.core.impl.domain.variable.custom;
 
 import java.io.Serializable;
 
-import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public class SingletonInverseVariableDemand implements Demand<SingletonInverseVariableSupply>, Serializable {
+/**
+ * Unlike other {@link Demand}s, a custom demand isn't equalized based on its sources, but based on its target.
+ * Therefore a custom shadow variable cannot be reused by build-in systems.
+ */
+public class CustomShadowVariableDemand implements Demand<SingletonInverseVariableSupply>, Serializable {
 
-    private static final int CLASS_NAME_HASH_CODE = SingletonInverseVariableDemand.class.getName().hashCode() * 37;
+    private static final int CLASS_NAME_HASH_CODE = CustomShadowVariableDemand.class.getName().hashCode() * 37;
 
-    protected final VariableDescriptor sourceVariableDescriptor;
+    private final CustomShadowVariableDescriptor targetShadowVariableDescriptor;
 
-    public SingletonInverseVariableDemand(VariableDescriptor sourceVariableDescriptor) {
-        this.sourceVariableDescriptor = sourceVariableDescriptor;
-    }
-
-    public VariableDescriptor getSourceVariableDescriptor() {
-        return sourceVariableDescriptor;
+    public CustomShadowVariableDemand(CustomShadowVariableDescriptor targetShadowVariableDescriptor) {
+        this.targetShadowVariableDescriptor = targetShadowVariableDescriptor;
     }
 
     // ************************************************************************
@@ -41,7 +41,7 @@ public class SingletonInverseVariableDemand implements Demand<SingletonInverseVa
     // ************************************************************************
 
     public SingletonInverseVariableSupply createExternalizedSupply(InnerScoreDirector scoreDirector) {
-        return new ExternalizedSingletonInverseVariableSupply(sourceVariableDescriptor);
+        throw new IllegalArgumentException("A custom shadow variable cannot be externalized.");
     }
 
     // ************************************************************************
@@ -53,24 +53,21 @@ public class SingletonInverseVariableDemand implements Demand<SingletonInverseVa
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SingletonInverseVariableDemand)) {
+        if (!(o instanceof CustomShadowVariableDemand)) {
             return false;
         }
-        SingletonInverseVariableDemand other = (SingletonInverseVariableDemand) o;
-        if (!sourceVariableDescriptor.equals(other.sourceVariableDescriptor)) {
-            return false;
-        }
-        return true;
+        CustomShadowVariableDemand other = (CustomShadowVariableDemand) o;
+        return targetShadowVariableDescriptor == other.targetShadowVariableDescriptor;
     }
 
     @Override
     public int hashCode() {
-        return CLASS_NAME_HASH_CODE + sourceVariableDescriptor.hashCode();
+        return CLASS_NAME_HASH_CODE + targetShadowVariableDescriptor.hashCode();
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + sourceVariableDescriptor.getSimpleEntityAndVariableName() + ")";
+        return getClass().getSimpleName();
     }
 
 }

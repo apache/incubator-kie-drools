@@ -33,6 +33,7 @@ import java.util.Map;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -40,12 +41,12 @@ import org.optaplanner.core.config.heuristic.selector.common.decorator.Selection
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.CustomShadowVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.anchor.AnchorShadowVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.custom.CustomShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.InverseRelationShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
@@ -161,7 +162,9 @@ public class EntityDescriptor {
             if (propertyGetter != null && propertyGetter.getDeclaringClass() == entityClass) {
                 Class<? extends Annotation> variableAnnotationClass = null;
                 for (Class<? extends Annotation> detectedAnnotationClass : Arrays.asList(
-                        PlanningVariable.class, InverseRelationShadowVariable.class, CustomShadowVariable.class)) {
+                        PlanningVariable.class,
+                        InverseRelationShadowVariable.class, AnchorShadowVariable.class,
+                        CustomShadowVariable.class)) {
                     if (propertyGetter.isAnnotationPresent(detectedAnnotationClass)) {
                         if (variableAnnotationClass != null) {
                             throw new IllegalStateException("The entityClass (" + entityClass
@@ -187,6 +190,11 @@ public class EntityDescriptor {
                         variableDescriptor.processAnnotations(descriptorPolicy);
                     } else if (variableAnnotationClass.equals(InverseRelationShadowVariable.class)) {
                         ShadowVariableDescriptor variableDescriptor = new InverseRelationShadowVariableDescriptor(
+                                this, propertyDescriptor);
+                        declaredShadowVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
+                        variableDescriptor.processAnnotations(descriptorPolicy);
+                    } else if (variableAnnotationClass.equals(AnchorShadowVariable.class)) {
+                        ShadowVariableDescriptor variableDescriptor = new AnchorShadowVariableDescriptor(
                                 this, propertyDescriptor);
                         declaredShadowVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
                         variableDescriptor.processAnnotations(descriptorPolicy);

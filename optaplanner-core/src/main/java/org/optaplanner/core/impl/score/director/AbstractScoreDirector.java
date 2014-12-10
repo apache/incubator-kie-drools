@@ -73,6 +73,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         this.scoreDirectorFactory = scoreDirectorFactory;
         this.constraintMatchEnabledPreference = constraintMatchEnabledPreference;
         variableListenerSupport = new VariableListenerSupport(this);
+        variableListenerSupport.linkVariableListeners();
     }
 
     public F getScoreDirectorFactory() {

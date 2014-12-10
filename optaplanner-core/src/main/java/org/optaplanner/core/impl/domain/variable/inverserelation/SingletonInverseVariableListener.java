@@ -23,10 +23,10 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class SingletonInverseVariableListener implements VariableListener<Object>, SingletonInverseVariableSupply {
 
-    protected final ShadowVariableDescriptor shadowVariableDescriptor;
+    protected final InverseRelationShadowVariableDescriptor shadowVariableDescriptor;
     protected final VariableDescriptor sourceVariableDescriptor;
 
-    public SingletonInverseVariableListener(ShadowVariableDescriptor shadowVariableDescriptor,
+    public SingletonInverseVariableListener(InverseRelationShadowVariableDescriptor shadowVariableDescriptor,
             VariableDescriptor sourceVariableDescriptor) {
         this.shadowVariableDescriptor = shadowVariableDescriptor;
         this.sourceVariableDescriptor = sourceVariableDescriptor;

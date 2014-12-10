@@ -14,25 +14,27 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable.inverserelation;
+package org.optaplanner.core.impl.domain.variable.anchor;
 
 import java.beans.PropertyDescriptor;
 
-import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
+import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescriptor {
+public class AnchorShadowVariableDescriptor extends ShadowVariableDescriptor {
 
     protected VariableDescriptor sourceVariableDescriptor;
 
-    public InverseRelationShadowVariableDescriptor(EntityDescriptor entityDescriptor,
+    public AnchorShadowVariableDescriptor(EntityDescriptor entityDescriptor,
             PropertyDescriptor propertyDescriptor) {
         super(entityDescriptor, propertyDescriptor);
     }
@@ -46,34 +48,23 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
     }
 
     public void linkShadowSources(DescriptorPolicy descriptorPolicy) {
-        InverseRelationShadowVariable shadowVariableAnnotation = variablePropertyAccessor.getReadMethod()
-                .getAnnotation(InverseRelationShadowVariable.class);
-        Class<?> masterClass = getVariablePropertyType();
-        EntityDescriptor sourceEntityDescriptor = getEntityDescriptor().getSolutionDescriptor()
-                .findEntityDescriptor(masterClass);
-        if (sourceEntityDescriptor == null) {
-            throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
-                    + " annotated property (" + variablePropertyAccessor.getName()
-                    + ") with a masterClass (" + masterClass
-                    + ") which is not a valid planning entity.");
-        }
+        AnchorShadowVariable shadowVariableAnnotation = variablePropertyAccessor.getReadMethod()
+                .getAnnotation(AnchorShadowVariable.class);
         String sourceVariableName = shadowVariableAnnotation.sourceVariableName();
-        sourceVariableDescriptor = sourceEntityDescriptor.getVariableDescriptor(sourceVariableName);
+        sourceVariableDescriptor = entityDescriptor.getVariableDescriptor(sourceVariableName);
         if (sourceVariableDescriptor == null) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
+                    + ") has a " + AnchorShadowVariable.class.getSimpleName()
                     + " annotated property (" + variablePropertyAccessor.getName()
                     + ") with sourceVariableName (" + sourceVariableName
                     + ") which is not a valid planning variable on entityClass ("
-                    + sourceEntityDescriptor.getEntityClass() + ").\n"
+                    + entityDescriptor.getEntityClass() + ").\n"
                     + entityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
         }
         if (!(sourceVariableDescriptor instanceof GenuineVariableDescriptor) ||
                 !((GenuineVariableDescriptor) sourceVariableDescriptor).isChained()) {
-            // TODO support for non-chained variables too, including shadow variables
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
+                    + ") has a " + AnchorShadowVariable.class.getSimpleName()
                     + " annotated property (" + variablePropertyAccessor.getName()
                     + ") with sourceVariableName (" + sourceVariableName
                     + ") which is not chained.");
@@ -87,12 +78,14 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
 
     @Override
     public Demand getProvidedDemand() {
-        return new SingletonInverseVariableDemand(sourceVariableDescriptor);
+        return new AnchorVariableDemand(sourceVariableDescriptor);
     }
 
     @Override
     public VariableListener buildVariableListener(InnerScoreDirector scoreDirector) {
-        return new SingletonInverseVariableListener(this, sourceVariableDescriptor);
+        SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
+                .demand(new SingletonInverseVariableDemand(sourceVariableDescriptor));
+        return new AnchorVariableListener(this, sourceVariableDescriptor, inverseVariableSupply);
     }
 
 }

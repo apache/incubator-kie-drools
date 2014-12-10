@@ -18,6 +18,8 @@ package org.optaplanner.core.impl.domain.variable.supply;
 
 import java.io.Serializable;
 
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+
 /**
  * A subsystem submits a demand for a {@link Supply}.
  * Implementations must overwrite {@link #equals(Object)} and {@link #hashCode()}.
@@ -30,8 +32,9 @@ public interface Demand<S extends Supply> extends Serializable {
     /**
      * Only called if the domain model doesn't already support the demand (through a shadow variable usually).
      * Equal demands share the same {@link Supply}.
+     * @param scoreDirector never null
      * @return never null
      */
-    S createExternalizedSupply();
+    S createExternalizedSupply(InnerScoreDirector scoreDirector);
 
 }

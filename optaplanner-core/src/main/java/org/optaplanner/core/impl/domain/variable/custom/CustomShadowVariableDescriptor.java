@@ -14,22 +14,28 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable.descriptor;
+package org.optaplanner.core.impl.domain.variable.custom;
 
 import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
 
     protected Class<? extends VariableListener> variableListenerClass;
+    protected List<VariableDescriptor> sourceVariableDescriptorList;
 
     public CustomShadowVariableDescriptor(EntityDescriptor entityDescriptor,
             PropertyDescriptor propertyDescriptor) {
@@ -59,6 +65,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
                 .getAnnotation(CustomShadowVariable.class);
         SolutionDescriptor solutionDescriptor = entityDescriptor.getSolutionDescriptor();
         CustomShadowVariable.Source[] sources = shadowVariableAnnotation.sources();
+        sourceVariableDescriptorList = new ArrayList<VariableDescriptor>(sources.length);
         for (CustomShadowVariable.Source source : sources) {
             EntityDescriptor sourceEntityDescriptor;
             Class<?> sourceEntityClass = source.entityClass();
@@ -87,6 +94,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
                         + entityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
             }
             sourceVariableDescriptor.registerShadowVariableDescriptor(this);
+            sourceVariableDescriptorList.add(sourceVariableDescriptor);
         }
     }
 
@@ -95,12 +103,12 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
     // ************************************************************************
 
     @Override
-    public Demand getDemandOfVariableListenerAsSupply() {
-        return null;
+    public Demand getProvidedDemand() {
+        return new CustomShadowVariableDemand(this);
     }
 
     @Override
-    public VariableListener buildVariableListener() {
+    public VariableListener buildVariableListener(InnerScoreDirector scoreDirector) {
         return ConfigUtils.newInstance(this, "variableListenerClass", variableListenerClass);
     }
 

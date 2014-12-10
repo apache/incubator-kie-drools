@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  */
 public interface StatefulVariableListener<EntityG> extends VariableListener<EntityG> {
 
-    VariableDescriptor getVariableDescriptor();
+    VariableDescriptor getSourceVariableDescriptor();
 
     void resetWorkingSolution(ScoreDirector scoreDirector);
 

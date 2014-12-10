@@ -23,6 +23,7 @@ import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 public abstract class ShadowVariableDescriptor extends VariableDescriptor {
 
@@ -40,14 +41,14 @@ public abstract class ShadowVariableDescriptor extends VariableDescriptor {
     // ************************************************************************
 
     /**
-     * If not null, {@link #buildVariableListener()} can be cast to a {@link Supply}.
-     * @return sometimes null, if it doesn't represent a {@link Demand}
-     */
-    public abstract Demand getDemandOfVariableListenerAsSupply();
-
-    /**
      * @return never null
      */
-    public abstract VariableListener buildVariableListener();
+    public abstract Demand getProvidedDemand();
+
+    /**
+     * @param scoreDirector never null
+     * @return never null
+     */
+    public abstract VariableListener buildVariableListener(InnerScoreDirector scoreDirector);
 
 }
