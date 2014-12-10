@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package org.jbpm.services.cdi.impl.form.providers;
+package org.jbpm.kie.services.impl.form.provider;
 
 import java.util.Map;
 
-import org.jbpm.kie.services.impl.form.provider.FreemakerFormProvider;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.kie.api.task.model.Task;
 
