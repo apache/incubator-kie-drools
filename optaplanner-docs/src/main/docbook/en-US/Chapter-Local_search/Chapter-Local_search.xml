@@ -273,7 +273,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
         </imageobject>
       </mediaobject>
 
-      <para>Notice that one a queen has moved, it can be moved again later. This is a good thing, because in an
+      <para>Notice that once a queen has moved, it can be moved again later. This is a good thing, because in an
       NP-complete problem it's impossible to predict what will be the optimal final value for a planning
       variable.</para>
     </section>

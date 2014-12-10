@@ -261,7 +261,7 @@
         </listitem>
 
         <listitem>
-          <para><literal>DECREASING_STRENGTH_IF_AVAILABLE</literal> (default): If the model supports <link
+          <para><literal>DECREASING_STRENGTH_IF_AVAILABLE</literal>: If the model supports <link
           linkend="planningValueStrength">planning value strength comparison</link>, behave like
           <literal>DECREASING_STRENGTH</literal>, else like <literal>NONE</literal>.</para>
         </listitem>

@@ -1420,7 +1420,7 @@ public class SeatDesignationDependency {
 
       <note>
         <para>The <literal>Solution</literal> instance given to the method <literal>solve(Solution)</literal> will be
-        changed by the <literal>Solver</literal>, but it do not mistake it for the best solution.</para>
+        changed by the <literal>Solver</literal>, but do not mistake it for the best solution.</para>
 
         <para>The <literal>Solution</literal> instance returned by the method <literal>getBestSolution()</literal> will
         most likely be a clone of the instance given to the method <literal>solve(Solution)</literal>, which means it's
