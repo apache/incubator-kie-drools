@@ -2,7 +2,7 @@
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
   <bpmn2:import importType="http://schemas.xmlsoap.org/wsdl/" location="http://127.0.0.1:9876/HelloService/greeting?wsdl" namespace="http://bpmn2.workitem.process.jbpm.org/"/>
   <bpmn2:itemDefinition id="_sItem" structureRef="java.lang.String"/>
-  <bpmn2:itemDefinition id="_sItemArray" structureRef="java.lang.Integer[]"/>
+  <bpmn2:itemDefinition id="_sItemArray" structureRef="java.lang.Object"/>
   <bpmn2:itemDefinition id="_sItem2" structureRef="java.lang.String"/>
   <bpmn2:itemDefinition id="_2_InMessageType" structureRef="java.lang.String"/>
   <bpmn2:message id="_2_InMessage" itemRef="_2_InMessageType" name="_2_InMessage"/>

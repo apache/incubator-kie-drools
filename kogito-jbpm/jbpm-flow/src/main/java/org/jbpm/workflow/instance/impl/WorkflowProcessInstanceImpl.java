@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.ContextInstance;
@@ -279,11 +280,13 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 	
 	public void setVariable(String name, Object value) {
+		VariableScope variableScope = (VariableScope) ((ContextContainer) getProcess()).getDefaultContext( VariableScope.VARIABLE_SCOPE );
 		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
 			getContextInstance(VariableScope.VARIABLE_SCOPE);
 		if (variableScopeInstance == null) {
 			throw new IllegalArgumentException("No variable scope found.");
 		}
+		variableScope.validateVariable(getProcessName(), name, value);
 		variableScopeInstance.setVariable(name, value);
 	}
 	

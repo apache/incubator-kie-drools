@@ -21,7 +21,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.process.core.datatype.DataType;
+import org.drools.core.process.core.datatype.impl.type.BooleanDataType;
+import org.drools.core.process.core.datatype.impl.type.FloatDataType;
+import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
 import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
+import org.drools.core.process.core.datatype.impl.type.StringDataType;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;
@@ -81,7 +85,28 @@ public class DataObjectHandler extends BaseAbstractHandler implements Handler {
 	        if (itemDefinitions != null) {
 	        	ItemDefinition itemDefinition = itemDefinitions.get(itemSubjectRef);
 	        	if (itemDefinition != null) {
-	        		dataType = new ObjectDataType(itemDefinition.getStructureRef());
+	        		
+	        	    String structureRef = itemDefinition.getStructureRef();
+	        	    
+	        	    if ("java.lang.Boolean".equals(structureRef) || "Boolean".equals(structureRef)) {
+	        	        dataType = new BooleanDataType();
+	        	        
+	        	    } else if ("java.lang.Integer".equals(structureRef) || "Integer".equals(structureRef)) {
+	        	        dataType = new IntegerDataType();
+	                    
+	        	    } else if ("java.lang.Float".equals(structureRef) || "Float".equals(structureRef)) {
+	        	        dataType = new FloatDataType();
+	                    
+	                } else if ("java.lang.String".equals(structureRef) || "String".equals(structureRef)) {
+	                    dataType = new StringDataType();
+	                    
+	                } else if ("java.lang.Object".equals(structureRef) || "Object".equals(structureRef)) {
+	                	// use FQCN of Object
+	                    dataType = new ObjectDataType("java.lang.Object");
+	                    
+	                } else {
+	                    dataType = new ObjectDataType(structureRef);
+	                }
 	        	}
 	        }
 			variable.setType(dataType);

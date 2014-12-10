@@ -1,10 +1,11 @@
 <bpmn2:definitions xmlns:bpmn2='http://www.omg.org/spec/BPMN/20100524/MODEL' xmlns:xrm='http://www.intalio.com/cloud/xrm' typeLanguage='http://www.java.com/javaTypes' expressionLanguage='http://www.mvel.org/2.0' id='600355600991789200' targetNamespace=''>
   <bpmn2:import importType='xrm' namespace='http://www.intalio.com/cloud/xrm'/>
   <bpmn2:itemDefinition id='objectType' structureRef='org.w3c.dom.Document'/>
+  <bpmn2:itemDefinition id='startype' structureRef='org.w3c.dom.Node'/>
   <bpmn2:process id='process'>
     <bpmn2:property id='instanceMetadata' itemSubjectRef='objectType'/>
     <bpmn2:property id='processMetadata' itemSubjectRef='objectType'/>
-    <bpmn2:property id='startMessage' itemSubjectRef='objectType'/>
+    <bpmn2:property id='startMessage' itemSubjectRef='startype'/>
     <bpmn2:startEvent id='_4E889155-DB85-44AB-A1F4-8C332A5555DE' name=''/>
     <bpmn2:scriptTask id='_F36C71AE-7F26-47F8-A587-F345C6563D65' name="">
       <bpmn2:script>System.out.println("yes")</bpmn2:script>

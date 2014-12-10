@@ -258,6 +258,8 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                         resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
                         if (variableScopeInstance != null && parameterValue != null) {
                               
+                    	 	variableScopeInstance.getVariableScope().validateVariable(getProcessInstance().getProcessName(), association.getTarget(), parameterValue);
+                             
                             variableScopeInstance.setVariable(association.getTarget(), parameterValue);
                         } else {
                             logger.warn("Could not find variable scope for variable {}", association.getTarget());
@@ -286,6 +288,8 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                         if (!dataType.getStringType().endsWith("java.lang.Object") && 
                                 !dataType.getStringType().endsWith("Object") && value instanceof String) {
                             value = dataType.readValue((String) value);
+                        } else {
+                        	variableScopeInstance.getVariableScope().validateVariable(getProcessInstance().getProcessName(), association.getTarget(), value);
                         }
                         variableScopeInstance.setVariable(association.getTarget(), value);
                     } else {

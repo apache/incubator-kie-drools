@@ -183,4 +183,49 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
+    
+    @Test(expected=RuntimeException.class)
+    public void testNotExistingVarBooleanStructureRefOnStart() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BooleanStructureRef.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("not existing", "invalid boolean");
+        ksession.startProcess("StructureRef", params);
+
+    }
+    
+    @Test(expected=RuntimeException.class)
+    public void testInvalidBooleanStructureRefOnStart() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BooleanStructureRef.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("test", "invalid boolean");
+        ksession.startProcess("StructureRef", params);
+ 
+    }
+    
+    @Test(expected=RuntimeException.class)
+    public void testInvalidBooleanStructureRefOnWIComplete() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-IntegerStructureRef.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        
+        ProcessInstance processInstance = ksession.startProcess("StructureRef");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+
+        Map<String, Object> res = new HashMap<String, Object>();
+        res.put("testHT", true);
+        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getId(), res);
+
+    }
 }

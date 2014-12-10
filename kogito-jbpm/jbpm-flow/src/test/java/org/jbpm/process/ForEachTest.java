@@ -83,7 +83,7 @@ public class ForEachTest extends AbstractBaseTest {
         variable.setName("persons");
         ListDataType listDataType = new ListDataType();
         ObjectDataType personDataType = new ObjectDataType();
-        personDataType.setClassName("org.drools.Person");
+        personDataType.setClassName("org.jbpm.process.test.Person");
         listDataType.setType(personDataType);
         variable.setType(listDataType);
         variables.add(variable);

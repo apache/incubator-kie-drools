@@ -798,7 +798,6 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("testWI", handler);
         ksession.getWorkItemManager().registerWorkItemHandler("testWI2", handler2);
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("x", -5);
         ProcessInstance processInstance = ksession.startProcess("Process_1", params);
         
         assertProcessInstanceActive(processInstance);

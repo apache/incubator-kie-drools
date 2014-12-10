@@ -162,6 +162,7 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
 	
 	private void setVariableDataType(Variable variable, Map<String, ItemDefinition> itemDefinitions) {
 		// retrieve type from item definition
+		
 		String itemSubjectRef = (String) variable.getMetaData("ItemSubjectRef");
         if (UndefinedDataType.getInstance().equals(variable.getType()) && itemDefinitions != null && itemSubjectRef != null) {
     		DataType dataType = new ObjectDataType();
@@ -182,7 +183,8 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
                     dataType = new StringDataType();
                     
                 } else if ("java.lang.Object".equals(structureRef) || "Object".equals(structureRef)) {
-                    dataType = new ObjectDataType(structureRef);
+                	// use FQCN of Object
+                    dataType = new ObjectDataType("java.lang.Object");
                     
                 } else {
                     dataType = new ObjectDataType(structureRef);

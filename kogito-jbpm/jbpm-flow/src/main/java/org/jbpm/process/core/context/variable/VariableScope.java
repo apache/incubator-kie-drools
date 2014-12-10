@@ -27,6 +27,8 @@ import org.jbpm.process.core.context.AbstractContext;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class VariableScope extends AbstractContext {
+	
+	private static final boolean VARIABLE_STRICT = Boolean.parseBoolean(System.getProperty("org.jbpm.variable.strict", "false"));
 
     public static final String VARIABLE_SCOPE = "VariableScope";
     
@@ -79,5 +81,22 @@ public class VariableScope extends AbstractContext {
         throw new IllegalArgumentException(
             "VariableScopes can only resolve variable names: " + param);
     }
+    
+	public void validateVariable(String processName, String name, Object value) {
+		if (!VARIABLE_STRICT) {
+			return;
+		}
+		Variable var = findVariable(name);
+    	if (var == null) {
+    		throw new IllegalArgumentException("Variable '" + name +"' is not defined in process " + processName);
+    	}
+    	if (var.getType() != null && value != null) {
+	    	boolean isValidType = var.getType().verifyDataType(value);
+	    	if (!isValidType) {
+	    		throw new IllegalArgumentException("Variable '" + name +"' has incorrect data type expected:" 
+	    						+ var.getType().getStringType() + " actual:" + value);
+	    	}
+    	}
+	}
 
 }

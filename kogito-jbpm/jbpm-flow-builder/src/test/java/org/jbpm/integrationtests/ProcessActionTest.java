@@ -241,14 +241,14 @@ public class ProcessActionTest  extends AbstractBaseTest {
             "\n" +
             "  <header>\n" +
 			"    <imports>\n" +
-			"      <import name=\"org.jbpm.integrationtests.ProcessActionTest.TestVariable\" />\n" +
+			"      <import name=\"org.jbpm.integrationtests.TestVariable\" />\n" +
 			"    </imports>\n" +
 			"    <globals>\n" +
 			"      <global identifier=\"list\" type=\"java.util.List\" />\n" +
 			"    </globals>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"person\" >\n" +
-    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.integrationtests.ProcessActionTest.TestVariable\" />\n" +
+    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.integrationtests.TestVariable\" />\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
             "  </header>\n" +
@@ -296,14 +296,14 @@ public class ProcessActionTest  extends AbstractBaseTest {
             "\n" +
             "  <header>\n" +
 			"    <imports>\n" +
-			"      <import name=\"org.jbpm.integrationtests.ProcessActionTest.TestVariable\" />\n" +
+			"      <import name=\"org.jbpm.integrationtests.TestVariable\" />\n" +
 			"    </imports>\n" +
 			"    <globals>\n" +
 			"      <global identifier=\"list\" type=\"java.util.List\" />\n" +
 			"    </globals>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"person\" >\n" +
-    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"TestVariable\" />\n" +
+    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.integrationtests.TestVariable\" />\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
             "  </header>\n" +
@@ -413,18 +413,5 @@ public class ProcessActionTest  extends AbstractBaseTest {
         assertEquals("Action2", list.get(0));
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
-	
-	public static class TestVariable {
-		
-		private String name;
-		
-		public TestVariable(String name) {
-			this.name = name;
-		}
-		
-		public String getName() {
-			return name;
-		}
-	
-	}
+
 }

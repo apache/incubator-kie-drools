@@ -16,7 +16,7 @@
 
   <process id="RuleTaskWithProcessInstance" tns:packageName="org.jbpm" name="RuleTask Process" isExecutable="true" processType="Private">
 
-    <property id="x" itemSubjectRef="_xItem"/>
+    <property id="fireball" itemSubjectRef="_xItem"/>
 
     <startEvent id="_1" name="Start" />
     <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>

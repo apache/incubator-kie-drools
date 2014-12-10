@@ -713,10 +713,8 @@ public class ProcessSplitTest extends AbstractBaseTest {
         List<Long> list = new ArrayList<Long>();
         workingMemory.setGlobal("list", list);
 
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("name", "John Doe");
         ProcessInstance processInstance = ( ProcessInstance )
-            workingMemory.startProcess("org.jbpm.process-split", params);
+            workingMemory.startProcess("org.jbpm.process-split");
         
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());

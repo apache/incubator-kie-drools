@@ -262,8 +262,6 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitBaseTestCase {
         
         // start a new process instance
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("userId", "krisv");
-        params.put("description", "Need a new laptop computer");
         ProcessInstance pi = ksession.startProcess("com.mycompany.sample", params);
 
         // obtain the task service

@@ -32,6 +32,12 @@
       <variable name="c" >
         <type name="org.drools.core.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyVariableSerializable" />
       </variable>
+      <variable name="f" >
+        <type name="org.drools.core.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyEntityOnlyFields" />
+      </variable>
+      <variable name="m" >
+        <type name="org.drools.core.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyEntityMethods" />
+      </variable>
     </variables>
   </header>
 

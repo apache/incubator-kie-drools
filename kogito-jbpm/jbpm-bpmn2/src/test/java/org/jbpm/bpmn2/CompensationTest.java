@@ -213,7 +213,7 @@ public class CompensationTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("x", "1");
+        params.put("x", 1);
         ProcessInstance processInstance = ksession.startProcess("CompensationSpecificSubProcess", params);
         
         // compensation activity (assoc. with script task) signaled *after* to-compensate script task

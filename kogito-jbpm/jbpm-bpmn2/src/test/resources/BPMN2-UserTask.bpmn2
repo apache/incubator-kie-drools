@@ -11,8 +11,9 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
+  <itemDefinition id="_sItem" structureRef="String" />
   <process processType="Private" isExecutable="true" id="UserTask" name="User Task" >
-
+    <property id="s" itemSubjectRef="_sItem"/>
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
     <userTask id="_2" name="Hello" >

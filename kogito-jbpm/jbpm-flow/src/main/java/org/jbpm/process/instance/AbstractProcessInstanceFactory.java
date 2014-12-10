@@ -19,11 +19,11 @@ package org.jbpm.process.instance;
 import java.util.Map;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.kie.api.definition.process.Process;
-import org.kie.internal.process.CorrelationKey;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.kie.api.definition.process.Process;
+import org.kie.internal.process.CorrelationKey;
 
 public abstract class AbstractProcessInstanceFactory implements ProcessInstanceFactory {
 	
@@ -45,8 +45,9 @@ public abstract class AbstractProcessInstanceFactory implements ProcessInstanceF
         if ( parameters != null ) {
             if ( variableScope != null ) {
                 for ( Map.Entry<String, Object> entry : parameters.entrySet() ) {
-                    variableScopeInstance.setVariable( entry.getKey(),
-                                                       entry.getValue() );
+                	
+                	variableScope.validateVariable(process.getName(), entry.getKey(), entry.getValue());
+                    variableScopeInstance.setVariable( entry.getKey(), entry.getValue() );
                 }
             } else {
                 throw new IllegalArgumentException( "This process does not support parameters!" );
@@ -55,6 +56,8 @@ public abstract class AbstractProcessInstanceFactory implements ProcessInstanceF
         
         return processInstance;
 	}
+	
+
 	
 	public abstract ProcessInstance createProcessInstance();
 
