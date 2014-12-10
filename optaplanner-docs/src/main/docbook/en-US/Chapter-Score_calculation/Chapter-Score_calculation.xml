@@ -138,8 +138,8 @@
         from that Computer.</para>
       </note>
 
-      <para>Three or more score levels are also supported. For example: a company might decide that profit outranks employee
-      satisfaction (or visa versa), while both are outranked by the constraints of physical reality.</para>
+      <para>Three or more score levels are also supported. For example: a company might decide that profit outranks
+      employee satisfaction (or visa versa), while both are outranked by the constraints of physical reality.</para>
     </section>
 
     <section xml:id="paretoScoring">
@@ -1029,8 +1029,8 @@ end</programlisting>
       <title>InitializingScoreTrend</title>
 
       <para>The <literal>InitializingScoreTrend</literal> specifies how the Score will change as more and more variables
-      are initialized (while the already initialized variables don't change). Some optimization algorithms (such Construction
-      Heuristics and Exhaustive Search) run faster if they have such information.</para>
+      are initialized (while the already initialized variables don't change). Some optimization algorithms (such
+      Construction Heuristics and Exhaustive Search) run faster if they have such information.</para>
 
       <para>For for the Score (or each <link linkend="scoreLevel">score level</link> separately), specify a
       trend:</para>
@@ -1043,7 +1043,7 @@ end</programlisting>
 
         <listitem>
           <para><literal>ONLY_UP</literal> (rare): Initializing an extra variable can only change the score positively.
-          Implies that either:</para>
+          Implies that:</para>
 
           <itemizedlist>
             <listitem>
@@ -1051,15 +1051,15 @@ end</programlisting>
             </listitem>
 
             <listitem>
-              <para>Initializing the next variable can unmatch a negative constraint matched by a previous initialized
-              variable.</para>
+              <para>And initializing the next variable can not unmatch a positive constraint that was matched by a
+              previous initialized variable.</para>
             </listitem>
           </itemizedlist>
         </listitem>
 
         <listitem>
           <para><literal>ONLY_DOWN</literal>: Initializing an extra variable can only change the score negatively.
-          Implies that either:</para>
+          Implies that:</para>
 
           <itemizedlist>
             <listitem>
@@ -1067,8 +1067,8 @@ end</programlisting>
             </listitem>
 
             <listitem>
-              <para>Initializing the next variable can unmatch a positive constraint matched by a previous initialized
-              variable.</para>
+              <para>And initializing the next variable can not unmatch a negative constraint that was matched by a
+              previous initialized variable.</para>
             </listitem>
           </itemizedlist>
         </listitem>

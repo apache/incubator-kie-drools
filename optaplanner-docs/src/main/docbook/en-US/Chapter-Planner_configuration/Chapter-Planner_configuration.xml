@@ -474,8 +474,8 @@ public class Queen {
       </section>
     </section>
 
-    <section xml:id="planningValueAndPlanningValueRanges">
-      <title>Planning value and planning value ranges</title>
+    <section xml:id="planningValueAndPlanningValueRange">
+      <title>Planning value and planning value range</title>
 
       <section>
         <title>Planning value</title>
@@ -857,9 +857,40 @@ public class Visit ... implements Standstill {
           </listitem>
         </itemizedlist>
       </section>
+    </section>
+
+    <section xml:id="shadowVariable">
+      <title>Shadow variable</title>
+
+      <section xml:id="shadowVariableIntroduction">
+        <title>Introduction</title>
+
+        <para>A shadow variable is a variables who's correct value can be deduced from the state of the genuine planning
+        variables. Even though such a variable violates the principle of normalization by definition, in some use cases
+        it can be very practical to use a shadow variable, especially to express the constraints more naturally. For
+        example in vehicle routing with time windows: the arrival time at a customer for a vehicle can be calculated
+        based on the previously visited customers of that vehicle (and the known travel times between 2
+        locations).</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Planner_configuration/planningVariableListener.png"/>
+          </imageobject>
+        </mediaobject>
+
+        <para>When the customers for a vehicle change, the arrival time for each customer is automatically adjusted. For
+        more information, see the <link linkend="vehicleRoutingDomainModel">vehicle routing domain model</link>.</para>
+
+        <para>From a score calculation perspective, a shadow variable is like any other planning variable. From an
+        optimization perspective, Planner effectively only optimizes the genuine variables (and mostly ignores the
+        shadow variables): it just assures that when a genuine variable changes, any dependent shadow variables are
+        changed accordingly.</para>
+
+        <para>There are several build-in shadow variables:</para>
+      </section>
 
       <section xml:id="bidirectionalVariable">
-        <title>Bi-directional variable</title>
+        <title>Bi-directional variable (inverse relation shadow variable)</title>
 
         <para>2 variables are bi-directional if their instances always point to each other (unless they point to null).
         So if A references B, then B references A.</para>
@@ -899,31 +930,37 @@ public interface Standstill {
         <para>The <literal>sourceVariableName</literal> property is the name of the planning variable on the return type
         of the getter.</para>
 
-        <para>The <literal>@InverseRelationShadowVariable</literal> variable is a form of a shadow variable: Planner
-        uses a build-in <literal>VariableListener</literal> to update its state.</para>
+        <para>Currently, only chained variables support a <literal>@InverseRelationShadowVariable</literal>
+        annotation.</para>
       </section>
 
-      <section xml:id="variableListener">
-        <title>Variable listener that updates shadow variables</title>
+      <section xml:id="anchorShadowVariable">
+        <title>Anchor shadow variable</title>
 
-        <para>A shadow variable is a variables who's correct value can be deduced from the state of the genuine planning
-        variables. Even though such a variable violates the principle of normalization by definition, in some use cases
-        it can be very practical to use a shadow variable, especially to express the constraints more naturally. For
-        example in vehicle routing with time windows: the arrival time at a customer for a vehicle can be calculated
-        based on the previously visited customers of that vehicle (and the known travel times between 2
-        locations).</para>
+        <para>An anchor shadow variable is the anchor of <link linkend="chainedPlanningVariable">a chained
+        variable</link>.</para>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Planner_configuration/planningVariableListener.png"/>
-          </imageobject>
-        </mediaobject>
+        <para>Annotate the anchor property as a <literal>@AnchorShadowVariable</literal> annotation:</para>
 
-        <para>As the customers for a vehicle change, the arrival time is automatically adjusted. For more information,
-        see the <link linkend="vehicleRoutingDomainModel">vehicle routing domain model</link>.</para>
+        <programlisting language="java">@PlanningEntity
+public class Customer {
 
-        <para>To use custom <literal>VariableListener</literal>, implement the interface and annotate it on the shadow
-        variable(s) that needs to change.</para>
+    @AnchorShadowVariable(sourceVariableName = "previousStandstill")
+    public Vehicle getVehicle() {...}
+    public void setVehicle(Vehicle vehicle) {...}
+
+}</programlisting>
+
+        <para>The <literal>sourceVariableName</literal> property is the name of the chained variable on the same entity
+        class.</para>
+      </section>
+
+      <section xml:id="customVariableListener">
+        <title>Custom <literal>VariableListener</literal></title>
+
+        <para>To update a shadow variable, Planner uses a <literal>VariableListener</literal>. To define a custom shadow
+        variable, write a custom <literal>VariableListener</literal>: implement the interface and annotate it on the
+        shadow variable that needs to change.</para>
 
         <programlisting language="java">    @PlanningVariable(...)
     public Standstill getPreviousStandstill() {
@@ -945,8 +982,8 @@ public interface Standstill {
           that that <literal>entityClass</literal> is also properly configured as a planning entity class in the solver
           config, or the <literal>VariableListener</literal> will simply never trigger.</para>
 
-          <para>Any class that has a shadow variable, is a planning entity class, even it has no genuine planning
-          variables.</para>
+          <para>Any class that has at least 1 shadow variable, is a planning entity class, even it has no genuine
+          planning variables.</para>
         </note>
 
         <para>For example, the VehicleUpdatingVariableListener assures that every <literal>Customer</literal> in a chain
@@ -986,11 +1023,6 @@ public interface Standstill {
         <warning>
           <para>Any change of a shadow variable must be told to the <literal>ScoreDirector</literal>.</para>
         </warning>
-
-        <para>From a score calculation perspective, a shadow variable is like any other planning variable. From an
-        optimization perspective, Planner effectively only optimizes the genuine variables (and mostly ignores the
-        shadow variables): it just assures that when a genuine variable changes, any dependent shadow variables are
-        changed accordingly.</para>
       </section>
     </section>
 
