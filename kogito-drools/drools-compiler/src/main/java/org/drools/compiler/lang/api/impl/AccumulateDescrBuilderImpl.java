@@ -89,10 +89,4 @@ public class AccumulateDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends 
         descr.setResultCode( expr );
         return this;
     }
-
-    public AccumulateDescrBuilder<P> multiFunction( boolean multifunct ) {
-        descr.setMultiFunction( multifunct );
-        return this;
-    }
-
 }

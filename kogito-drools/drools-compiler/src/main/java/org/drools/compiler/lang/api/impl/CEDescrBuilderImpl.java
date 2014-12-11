@@ -100,8 +100,7 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends Annot
         PatternDescrBuilder<CEDescrBuilder<P,T>> pdb = pattern("Object[]").isQuery( false );
         
         // create the accumulate builder with this CE as its parent 
-        AccumulateDescrBuilder<CEDescrBuilder<P, T>> accumulate = new AccumulateDescrBuilderImpl<CEDescrBuilder<P, T>>(this)
-                .multiFunction( true );
+        AccumulateDescrBuilder<CEDescrBuilder<P, T>> accumulate = new AccumulateDescrBuilderImpl<CEDescrBuilder<P, T>>(this);
         
         // set the accumulate descriptor as the source of that pattern descr
         pdb.getDescr().setSource( accumulate.getDescr() );

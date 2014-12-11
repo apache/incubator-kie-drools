@@ -375,6 +375,7 @@ public class PhreakAccumulateNode {
                         LeftTuple temp = childLeftTuple.getLeftParentNext();
                         childLeftTuple.reAddRight();
                         childLeftTuple = temp;
+                        isDirty = accumulate.hasRequiredDeclarations();
                     }
                 } else if (childLeftTuple != null && childLeftTuple.getRightParent() == rightTuple) {
                     LeftTuple temp = childLeftTuple.getLeftParentNext();

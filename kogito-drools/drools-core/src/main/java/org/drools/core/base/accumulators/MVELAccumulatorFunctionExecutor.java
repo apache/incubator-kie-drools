@@ -32,7 +32,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.MvelAccumulator;
 import org.drools.core.spi.Tuple;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
@@ -44,7 +44,7 @@ public class MVELAccumulatorFunctionExecutor
     implements
     MVELCompileable,
     Externalizable,
-    Accumulator {
+    MvelAccumulator {
 
     private static final long                          serialVersionUID = 510l;
 
@@ -155,6 +155,11 @@ public class MVELAccumulatorFunctionExecutor
 
     public Object createWorkingMemoryContext() {
         return null; //this.model.clone();
+    }
+
+    @Override
+    public Declaration[] getRequiredDeclarations() {
+        return unit.getPreviousDeclarations();
     }
 
     private static class MVELAccumulatorFunctionContext
