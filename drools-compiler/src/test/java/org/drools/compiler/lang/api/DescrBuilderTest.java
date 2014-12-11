@@ -20,9 +20,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
@@ -415,8 +418,8 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                             .source()
                                 .pattern("StockTick").constraint( "company == \"RHT\"" ).bind( "$p", "price", false ).end()
                             .end()
-                            .function( "sum", "$sum", "$p" )
-                            .function( "count", "$cnt", "$p" )
+                            .function( "sum", "$sum", false, "$p" )
+                            .function( "count", "$cnt", false, "$p" )
                         .end()
                     .end()
                     .rhs( "// some comment" )
@@ -559,6 +562,61 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         assertTrue( arg2 instanceof Pattern);
 
     }
+
+    @Test
+    public void testAccumulate() throws InstantiationException,
+            IllegalAccessException {
+
+        PackageDescrBuilder packBuilder =
+                DescrFactory.newPackage()
+                        .newGlobal().identifier( "list" ).type( List.class.getName() ).end()
+                        .name( "org.drools.compiler" )
+                            .newRule().name( "r1" )
+                                .lhs()
+                                    .pattern().id( "$tot", true ).type( Double.class.getName() ).end()
+                                    .accumulate().source().pattern().id( "$i", false ).type( Integer.class.getName() ).end().end()
+                                        .function( "sum", "$tot", true, "$i" )
+                                        .constraint( "$tot > 15" )
+                                .end()
+                            .end()
+                            .rhs( "list.add( $tot );" )
+                            .end()
+                            .newRule().name( "r2" )
+                                .attribute( "dialect", "mvel" )
+                                .lhs()
+                                    .pattern().id( "$tot", true ).type( Double.class.getName() ).end()
+                                    .accumulate().source().pattern().id( "$i", false ).type( Integer.class.getName() ).end().end()
+                                        .function( "sum", "$tot", true, "$i" )
+                                        .constraint( "$tot > 15" )
+                                .end()
+                            .end()
+                            .rhs( "list.add( $tot * 2 );" )
+                        .end();
+
+        String drl = new DrlDumper().dump( packBuilder.getDescr() );
+        System.out.println(drl);
+
+        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        System.err.println( knowledgeBuilder.getErrors() );
+        assertFalse(  knowledgeBuilder.getErrors().toString(), knowledgeBuilder.hasErrors() );
+
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.insert( 3 );
+        knowledgeSession.insert( 39 );
+        knowledgeSession.insert( 24.0 );
+        knowledgeSession.insert( 42.0 );
+
+        knowledgeSession.fireAllRules();
+        assertEquals( Arrays.asList( 42.0, 84.0 ), list );
+    }
+
 
     private KnowledgePackage compilePkgDescr( PackageDescr pkg ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

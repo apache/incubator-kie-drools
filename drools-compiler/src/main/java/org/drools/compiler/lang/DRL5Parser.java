@@ -3793,6 +3793,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
             } else {
                 // accumulate functions
                 accumulateFunction( accumulate,
+                                    false,
                                     null );
                 if ( state.failed ) return;
             }
@@ -3818,8 +3819,16 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
      * @throws RecognitionException
      */
     private void accumulateFunctionBinding( AccumulateDescrBuilder< ? > accumulate ) throws RecognitionException {
-        String label = label( DroolsEditorType.IDENTIFIER_VARIABLE );
+        String label = null;
+        boolean unif = false;
+        if (input.LA(2) == DRL6Lexer.COLON) {
+            label = label(DroolsEditorType.IDENTIFIER_VARIABLE);
+        } else if (input.LA(2) == DRL6Lexer.UNIFY) {
+            label = unif(DroolsEditorType.IDENTIFIER_VARIABLE);
+            unif = true;
+        }
         accumulateFunction( accumulate,
+                            unif,
                             label );
     }
 
@@ -3829,6 +3838,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
      * @throws RecognitionException
      */
     private void accumulateFunction( AccumulateDescrBuilder< ? > accumulate,
+                                     boolean unif,
                                      String label ) throws RecognitionException {
         Token function = match( input,
                                 DRL5Lexer.ID,
@@ -3843,6 +3853,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
         if ( state.backtracking == 0 ) {
             accumulate.function( function.getText(),
                                  label,
+                                 unif,
                                  parameters.toArray( new String[parameters.size()] ) );
         }
     }

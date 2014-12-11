@@ -2091,7 +2091,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                       "query getResults( String $mId, List $holders )\n" +
                       "  accumulate(  \n" +
                       "    $holder  : MessageHolder( id == $mId, $ans : msg ),\n" +
-                      "    $holders : collectList( $holder )\n" +
+                      "    $holders := collectList( $holder )\n" +
                       "  ) \n" +
                       "end\n" +
                       "\n" +
@@ -2120,6 +2120,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         assertTrue( o instanceof List );
         assertEquals( 1, ((List) o).size() );
     }
+
     @Test (timeout = 10000)
     public void testAccumulateWithWindow() {
         String str = "global java.util.Map map;\n" +
@@ -2764,6 +2765,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         String str = "package org.test; " +
                      "import java.util.*; " +
                      "global List list; " +
+                     "global List list2; " +
 
                      "declare Tick " +
                      "  tick : int " +
@@ -2771,13 +2773,14 @@ public class AccumulateTest extends CommonTestMethodBase {
 
                      "declare Data " +
                      "  values : List " +
+                     "  bias : int = 0 " +
                      "end " +
 
                      "rule Init " +
                      "when " +
                      "then " +
-                     "  insert( new Data( Arrays.asList( 1, 2, 3 ) ) ); " +
-                     "  insert( new Data( Arrays.asList( 4, 5, 6 ) ) ); " +
+                     "  insert( new Data( Arrays.asList( 1, 2, 3 ), 1 ) ); " +
+                     "  insert( new Data( Arrays.asList( 4, 5, 6 ), 2 ) ); " +
                      "  insert( new Tick( 0 ) );" +
                      "end " +
 
@@ -2793,33 +2796,48 @@ public class AccumulateTest extends CommonTestMethodBase {
                      "  } " +
                      "end " +
 
-                     "rule R " +
+                     "rule M " +
                      "  dialect 'mvel' " +
                      "when " +
                      "    Tick( $index : tick ) " +
-                     "    accumulate ( $data : Data()," +
-                     "                 $tot : sum( $data.values[ $index ] ) ) " +
+                     "    accumulate ( $data : Data( $bias : bias )," +
+                     "                 $tot : sum( $data.values[ $index ] + $bias ) ) " +
                      "then " +
-                     "    System.out.println( $tot + ' for ' + $index ); " +
+                     "    System.out.println( $tot + ' for J ' + $index ); " +
                      "    list.add( $tot ); " +
+                     "end " +
+
+                     "rule J " +
+                     "when " +
+                     "    Tick( $index : tick ) " +
+                     "    accumulate ( $data : Data( $bias : bias )," +
+                     "                 $tot : sum( ((Integer)$data.getValues().get( $index )) + $bias ) ) " +
+                     "then " +
+                     "    System.out.println( $tot + ' for M ' + $index ); " +
+                     "    list2.add( $tot ); " +
                      "end ";
 
         KieHelper helper = new KieHelper();
         KieSession ks = helper.addContent( str, ResourceType.DRL ).build().newKieSession();
         List list = new ArrayList(  );
         ks.setGlobal( "list", list );
+        List list2 = new ArrayList(  );
+        ks.setGlobal( "list2", list2 );
 
         // init data
         ks.fireAllRules();
-        assertEquals( Arrays.asList( 5.0 ), list );
+        assertEquals( Arrays.asList( 8.0 ), list );
+        assertEquals( Arrays.asList( 8.0 ), list2 );
 
         ks.insert( 1 );
         ks.fireAllRules();
-        assertEquals( Arrays.asList( 5.0, 7.0 ), list );
+        assertEquals( Arrays.asList( 8.0, 10.0 ), list );
+        assertEquals( Arrays.asList( 8.0, 10.0 ), list2 );
 
         ks.insert( 2 );
         ks.fireAllRules();
-        assertEquals( Arrays.asList( 5.0, 7.0, 9.0 ), list );
+        assertEquals( Arrays.asList( 8.0, 10.0, 12.0 ), list );
+        assertEquals( Arrays.asList( 8.0, 10.0, 12.0 ), list2 );
     }
 
     public static class ExpectedMessage {
