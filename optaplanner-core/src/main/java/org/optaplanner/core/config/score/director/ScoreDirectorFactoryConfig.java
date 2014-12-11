@@ -347,10 +347,6 @@ public class ScoreDirectorFactoryConfig {
                 throw new IllegalArgumentException("The scoreDrlList (" + scoreDrlList
                         + ") and the scoreDrlFileList (" + scoreDrlFileList + ") cannot both be empty.");
             }
-            if (!ConfigUtils.isEmptyCollection(scoreDrlList) && !ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
-                throw new IllegalArgumentException("The scoreDrlList (" + scoreDrlList
-                        + ") and the scoreDrlFileList (" + scoreDrlFileList + ") cannot both be non empty.");
-            }
             KieServices kieServices = KieServices.Factory.get();
             KieResources kieResources = kieServices.getResources();
             KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
@@ -402,9 +398,7 @@ public class ScoreDirectorFactoryConfig {
                     kieBaseConfiguration.setProperty(entry.getKey(), entry.getValue());
                 }
             }
-            KieBase kieBase = kieContainer.newKieBase(kieBaseConfiguration);
-
-            return kieBase;
+            return kieContainer.newKieBase(kieBaseConfiguration);
         }
     }
 
