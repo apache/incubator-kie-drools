@@ -2843,9 +2843,6 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
             AccumulateDescrBuilder< ? > accumulate = helper.start( pattern,
                                                                    AccumulateDescrBuilder.class,
                                                                    null );
-            if ( state.backtracking == 0 ) {
-                accumulate.multiFunction( true );
-            }
             try {
                 match( input,
                        DRL5Lexer.ID,

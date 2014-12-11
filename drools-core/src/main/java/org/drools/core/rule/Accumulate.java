@@ -174,4 +174,8 @@ public abstract class Accumulate extends ConditionalElement
         }
         return this.innerDeclarationCache;
     }
+
+    public boolean hasRequiredDeclarations() {
+        return requiredDeclarations != null && requiredDeclarations.length > 0;
+    }
 }

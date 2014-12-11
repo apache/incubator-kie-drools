@@ -44,6 +44,7 @@ import org.drools.core.rule.SingleAccumulate;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.spi.MvelAccumulator;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 import java.util.ArrayList;
@@ -106,7 +107,7 @@ public class MVELAccumulateBuilder
             Accumulator[] accumulators = null;
 
             final boolean readLocalsFromTuple = PackageBuilderUtil.isReadLocalsFromTuple(accumDescr, source);
-            
+
             if ( accumDescr.isExternalFunction() ) {
                 // uses accumulate functions
                 accumulators = buildExternalFunctions( context,
@@ -128,12 +129,20 @@ public class MVELAccumulateBuilder
                                                       readLocalsFromTuple );
             }
 
+            List<Declaration> requiredDeclarations = new ArrayList<Declaration>();
+            for ( Accumulator acc : accumulators ) {
+                MvelAccumulator mvelAcc = (MvelAccumulator) acc;
+                for ( Declaration decl : mvelAcc.getRequiredDeclarations() ) {
+                    requiredDeclarations.add( decl );
+                }
+            }
+
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
 
             Accumulate accumulate = null;
             if (accumDescr.isMultiFunction()) {
                 accumulate = new MultiAccumulate( source,
-                                                  null,
+                                                  requiredDeclarations.toArray( new Declaration[ requiredDeclarations.size() ] ),
                                                   accumulators );
                 int index = 0;
                 for ( Accumulator accumulator : accumulators ) {
@@ -143,7 +152,7 @@ public class MVELAccumulateBuilder
                 }
             } else {
                 accumulate = new SingleAccumulate( source,
-                                                   null,
+                                                   requiredDeclarations.toArray( new Declaration[ requiredDeclarations.size() ] ),
                                                    accumulators[0] );
                     data.addCompileable( ((SingleAccumulate)accumulate).new Wirer( ),
                                          (MVELCompileable) accumulators[0] );
@@ -204,11 +213,12 @@ public class MVELAccumulateBuilder
                             null,
                             "Duplicate declaration for variable '" + func.getBind() + "' in the rule '" + context.getRule().getName() + "'"));
                 } else {
-                    createResultBind( pattern,
-                                  index,
-                                  arrayReader,
-                                  func,
-                                  function );
+                    Declaration declr = pattern.addDeclaration( func.getBind() );
+                    if (accumDescr.isMultiFunction()) {
+                        declr.setReadAccessor(new ArrayElementReader(arrayReader, index, function.getResultType()));
+                    } else {
+                        declr.setReadAccessor(new SelfReferenceClassFieldReader( function.getResultType(), "this" ));
+                    }
                 }
             }
 
@@ -368,22 +378,4 @@ public class MVELAccumulateBuilder
 
         return usedDeclarations.toArray( new Declaration[usedDeclarations.size()] );
     }
-
-    private void createResultBind( final Pattern pattern,
-                                   int index,
-                                   InternalReadAccessor arrayReader,
-                                   AccumulateFunctionCallDescr fc,
-                                   AccumulateFunction function ) {
-        // bind function result on the result pattern
-        Declaration declr = pattern.addDeclaration( fc.getBind() );
-
-        Class< ? > type = function.getResultType();
-
-        // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.
-        ArrayElementReader reader = new ArrayElementReader( arrayReader,
-                                                            index,
-                                                            type );
-        declr.setReadAccessor( reader );
-    }
-
 }
