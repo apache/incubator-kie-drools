@@ -3412,10 +3412,10 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     @Test
     public void testFunctionCalls() {
         String drl =
-                "package org.mortgages;\n" +
-                        "import java.lang.Number;\n" +
-                        "import java.lang.String;\n" +
-                        "rule \"rule1\"\n"
+                "package org.mortgages;\n"
+                        + "import java.lang.Number;\n"
+                        + "import java.lang.String;\n"
+                        + "rule \"rule1\"\n"
                         + "dialect \"mvel\"\n"
                         + "when\n"
                         + "  s : String()\n"
@@ -3496,10 +3496,10 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     @Test
     public void testFunctionCalls2() {
         String drl =
-                "package org.mortgages;\n" +
-                        "import java.lang.Number;\n" +
-                        "import java.lang.String;\n" +
-                        "rule \"rule1\"\n"
+                "package org.mortgages;\n"
+                        + "import java.lang.Number;\n"
+                        + "import java.lang.String;\n"
+                        + "rule \"rule1\"\n"
                         + "dialect \"mvel\"\n"
                         + "when\n"
                         + "  s : String()\n"
@@ -3560,10 +3560,10 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     @Test
     public void testFunctionCalls3() {
         String drl =
-                "package org.mortgages;\n" +
-                        "import java.lang.Number;\n" +
-                        "import java.lang.String;\n" +
-                        "rule \"rule1\"\n"
+                "package org.mortgages;\n"
+                        + "import java.lang.Number;\n"
+                        + "import java.lang.String;\n"
+                        + "rule \"rule1\"\n"
                         + "dialect \"mvel\"\n"
                         + "when\n"
                         + "  $var : String()\n"
@@ -3679,6 +3679,72 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       actionCallMethod3.getFieldValues()[ 1 ].getNature() );
         assertEquals( DataType.TYPE_NUMERIC_INTEGER,
                       actionCallMethod3.getFieldValues()[ 1 ].getType() );
+
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    public void testFunctionCalls4_MultiParameterSetter() {
+        String drl =
+                "package org.mortgages;\n"
+                        + "import org.mortgages.classes.MyClass;\n"
+                        + "rule \"rule1\"\n"
+                        + "dialect \"mvel\"\n"
+                        + "when\n"
+                        + "  $c : MyClass()\n"
+                        + "then\n"
+                        + "  $c.setSomething(0, 1);\n"
+                        + "end\n";
+
+        Map<String, List<MethodInfo>> methodInformation = new HashMap<String, List<MethodInfo>>();
+        List<MethodInfo> mapMethodInformation = new ArrayList<MethodInfo>();
+        mapMethodInformation.add( new MethodInfo( "setSomething",
+                                                  Arrays.asList( new String[]{ DataType.TYPE_NUMERIC_INTEGER, DataType.TYPE_NUMERIC_INTEGER } ),
+                                                  "void",
+                                                  null,
+                                                  DataType.TYPE_STRING ) );
+
+        methodInformation.put( "org.mortgages.classes.MyClass",
+                               mapMethodInformation );
+
+        when( dmo.getProjectMethodInformation() ).thenReturn( methodInformation );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 Collections.EMPTY_LIST,
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
+
+        ActionCallMethod actionCallMethod1 = (ActionCallMethod) m.rhs[ 0 ];
+        assertEquals( 1,
+                      actionCallMethod1.getState() );
+        assertEquals( "setSomething",
+                      actionCallMethod1.getMethodName() );
+        assertEquals( "$c",
+                      actionCallMethod1.getVariable() );
+        assertEquals( 2,
+                      actionCallMethod1.getFieldValues().length );
+        assertEquals( "setSomething",
+                      actionCallMethod1.getFieldValues()[ 0 ].getField() );
+        assertEquals( "0",
+                      actionCallMethod1.getFieldValues()[ 0 ].getValue() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      actionCallMethod1.getFieldValues()[ 0 ].getNature() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      actionCallMethod1.getFieldValues()[ 0 ].getType() );
+        assertEquals( "setSomething",
+                      actionCallMethod1.getFieldValues()[ 1 ].getField() );
+        assertEquals( "1",
+                      actionCallMethod1.getFieldValues()[ 1 ].getValue() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      actionCallMethod1.getFieldValues()[ 1 ].getNature() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      actionCallMethod1.getFieldValues()[ 1 ].getType() );
 
         assertEqualsIgnoreWhitespace( drl,
                                       RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
