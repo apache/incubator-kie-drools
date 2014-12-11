@@ -6493,9 +6493,88 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       m.lhs.length );
         assertEquals( 3,
                       m.rhs.length );
-        assertTrue(m.rhs[0] instanceof FreeFormLine);
-        assertTrue(m.rhs[1] instanceof FreeFormLine);
-        assertTrue(m.rhs[2] instanceof FreeFormLine);
+        assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
+        assertTrue( m.rhs[ 1 ] instanceof FreeFormLine );
+        assertTrue( m.rhs[ 2 ] instanceof FreeFormLine );
+
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1136100
+    public void testLHSCustomAccumulateFunctions() throws Exception {
+        String drl = "package org.test;\n"
+                + "rule \"test\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "Double( ) from accumulate ( Applicant( $a : age != null ),\n"
+                + "init( double total = 0; ),\n"
+                + "action( total += $a; ),\n"
+                + "reverse( total -= $a; ),\n"
+                + "result( new Double( total ) ) )\n"
+                + "then\n"
+                + "end";
+
+        addModelField( Double.class.getName(),
+                       "this",
+                       Double.class.getName(),
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Applicant",
+                       "this",
+                       "org.test.Applicant",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Applicant",
+                       "age",
+                       Integer.class.getName(),
+                       DataType.TYPE_NUMERIC_INTEGER );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        assertEquals( 0,
+                      m.rhs.length );
+        assertTrue( m.lhs[ 0 ] instanceof FromAccumulateCompositeFactPattern );
+        final FromAccumulateCompositeFactPattern facfp = (FromAccumulateCompositeFactPattern) m.lhs[ 0 ];
+        assertEquals( "double total = 0;",
+                      facfp.getInitCode() );
+        assertEquals( "total += $a;",
+                      facfp.getActionCode() );
+        assertEquals( "total -= $a;",
+                      facfp.getReverseCode() );
+        assertEquals( "new Double( total )",
+                      facfp.getResultCode() );
+
+        assertNotNull( facfp.getFactPattern() );
+        assertTrue( facfp.getFactPattern() instanceof FactPattern );
+        final FactPattern fp = facfp.getFactPattern();
+        assertEquals( "Double",
+                      fp.getFactType() );
+        assertEquals( 0,
+                      fp.getNumberOfConstraints() );
+
+        assertNotNull( facfp.getSourcePattern() );
+        assertTrue( facfp.getSourcePattern() instanceof FactPattern );
+        final FactPattern fsp = (FactPattern) facfp.getSourcePattern();
+        assertEquals( "Applicant",
+                      fsp.getFactType() );
+        assertEquals( 1,
+                      fsp.getNumberOfConstraints() );
+        assertTrue( fsp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        final SingleFieldConstraint sfc = (SingleFieldConstraint) fsp.getConstraint( 0 );
+        assertEquals( "$a",
+                      sfc.getFieldBinding() );
+        assertEquals( "Applicant",
+                      sfc.getFactType() );
+        assertEquals( "!= null",
+                      sfc.getOperator() );
 
         assertEqualsIgnoreWhitespace( drl,
                                       RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
