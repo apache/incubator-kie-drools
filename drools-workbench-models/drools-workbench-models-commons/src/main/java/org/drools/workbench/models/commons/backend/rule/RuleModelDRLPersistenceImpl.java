@@ -2676,9 +2676,10 @@ public class RuleModelDRLPersistenceImpl
                     m.addRhsItem( action );
                     addModifiersToAction( modifiers,
                                           action,
+                                          modifiedVariable,
                                           boundParams,
                                           dmo,
-                                          m.getImports(),
+                                          m,
                                           isJavaDialect );
                     modifiedVariable = null;
                     modifiers = null;
@@ -2696,7 +2697,7 @@ public class RuleModelDRLPersistenceImpl
                                             action,
                                             boundParams,
                                             dmo,
-                                            m.getImports(),
+                                            m,
                                             isJavaDialect );
                     }
                 }
@@ -2714,7 +2715,7 @@ public class RuleModelDRLPersistenceImpl
                                             action,
                                             boundParams,
                                             dmo,
-                                            m.getImports(),
+                                            m,
                                             isJavaDialect );
                     }
                 }
@@ -2728,7 +2729,7 @@ public class RuleModelDRLPersistenceImpl
                                     action,
                                     boundParams,
                                     dmo,
-                                    m.getImports(),
+                                    m,
                                     isJavaDialect );
             } else if ( line.startsWith( "modify" ) ) {
                 int modifyBlockEnd = line.lastIndexOf( '}' );
@@ -2741,9 +2742,10 @@ public class RuleModelDRLPersistenceImpl
                     addModifiersToAction( line.substring( line.indexOf( '{' ) + 1,
                                                           modifyBlockEnd ).trim(),
                                           action,
+                                          variable,
                                           boundParams,
                                           dmo,
-                                          m.getImports(),
+                                          m,
                                           isJavaDialect );
                 } else {
                     modifiedVariable = line.substring( line.indexOf( '(' ) + 1,
@@ -2784,7 +2786,10 @@ public class RuleModelDRLPersistenceImpl
                         String methodName = line.substring( dotPos + 1,
                                                             argStart ).trim();
                         if ( isJavaIdentifier( methodName ) ) {
-                            if ( getSettedField( methodName ) != null ) {
+                            if ( getSettedField( m,
+                                                 methodName,
+                                                 boundParams.get( variable ),
+                                                 dmo ) != null ) {
                                 List<String> setters = setStatements.get( variable );
                                 if ( setters == null ) {
                                     setters = new ArrayList<String>();
@@ -2844,9 +2849,10 @@ public class RuleModelDRLPersistenceImpl
             ActionSetField action = new ActionSetField( entry.getKey() );
             addSettersToAction( entry.getValue(),
                                 action,
+                                entry.getKey(),
                                 boundParams,
                                 dmo,
-                                m.getImports(),
+                                m,
                                 isJavaDialect );
             m.addRhsItem( action,
                           setStatementsPosition.get( entry.getKey() ) );
@@ -2964,21 +2970,23 @@ public class RuleModelDRLPersistenceImpl
                                      final ActionFieldList action,
                                      final Map<String, String> boundParams,
                                      final PackageDataModelOracle dmo,
-                                     final Imports imports,
+                                     final RuleModel model,
                                      final boolean isJavaDialect ) {
         addSettersToAction( setStatements.remove( variable ),
                             action,
+                            variable,
                             boundParams,
                             dmo,
-                            imports,
+                            model,
                             isJavaDialect );
     }
 
     private void addSettersToAction( final List<String> setters,
                                      final ActionFieldList action,
+                                     final String variable,
                                      final Map<String, String> boundParams,
                                      final PackageDataModelOracle dmo,
-                                     final Imports imports,
+                                     final RuleModel model,
                                      final boolean isJavaDialect ) {
         if ( setters != null ) {
             for ( String statement : setters ) {
@@ -2987,9 +2995,10 @@ public class RuleModelDRLPersistenceImpl
                 String methodName = statement.substring( dotPos + 1,
                                                          argStart ).trim();
                 addSetterToAction( action,
+                                   variable,
                                    boundParams,
                                    dmo,
-                                   imports,
+                                   model,
                                    isJavaDialect,
                                    statement,
                                    methodName );
@@ -2999,18 +3008,20 @@ public class RuleModelDRLPersistenceImpl
 
     private void addModifiersToAction( final String modifiers,
                                        final ActionFieldList action,
+                                       final String variable,
                                        final Map<String, String> boundParams,
                                        final PackageDataModelOracle dmo,
-                                       final Imports imports,
+                                       final RuleModel model,
                                        final boolean isJavaDialect ) {
         for ( String statement : splitArgumentsList( modifiers ) ) {
             int argStart = statement.indexOf( '(' );
             String methodName = statement.substring( 0,
                                                      argStart ).trim();
             addSetterToAction( action,
+                               variable,
                                boundParams,
                                dmo,
-                               imports,
+                               model,
                                isJavaDialect,
                                statement,
                                methodName );
@@ -3018,19 +3029,23 @@ public class RuleModelDRLPersistenceImpl
     }
 
     private void addSetterToAction( final ActionFieldList action,
+                                    final String variable,
                                     final Map<String, String> boundParams,
                                     final PackageDataModelOracle dmo,
-                                    final Imports imports,
+                                    final RuleModel model,
                                     final boolean isJavaDialect,
                                     final String statement,
                                     final String methodName ) {
-        String field = getSettedField( methodName );
+        String field = getSettedField( model,
+                                       methodName,
+                                       boundParams.get( variable ),
+                                       dmo );
         String value = unwrapParenthesis( statement );
         String dataType = inferDataType( action,
                                          field,
                                          boundParams,
                                          dmo,
-                                         imports );
+                                         model.getImports() );
         if ( dataType == null ) {
             dataType = inferDataType( value,
                                       boundParams,
@@ -3116,7 +3131,23 @@ public class RuleModelDRLPersistenceImpl
         return true;
     }
 
-    private String getSettedField( final String methodName ) {
+    private String getSettedField( final RuleModel model,
+                                   final String methodName,
+                                   final String variableType,
+                                   final PackageDataModelOracle dmo ) {
+        //Check if method is MethodInformation as multiple parameter "setters" are handled as methods and not field mutators
+        List<MethodInfo> mis = RuleModelPersistenceHelper.getMethodInfosForType( model,
+                                                                                 dmo,
+                                                                                 variableType );
+        if ( mis != null ) {
+            for ( MethodInfo mi : mis ) {
+                if ( mi.getName().equals( methodName ) ) {
+                    return null;
+                }
+            }
+        }
+
+        //Check if method is a field mutator
         if ( methodName.length() > 3 && methodName.startsWith( "set" ) ) {
             String field = methodName.substring( 3 );
             if ( Character.isUpperCase( field.charAt( 0 ) ) ) {
