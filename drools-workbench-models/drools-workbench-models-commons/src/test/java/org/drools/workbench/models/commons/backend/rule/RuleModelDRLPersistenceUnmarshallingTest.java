@@ -2158,6 +2158,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( 1, actionGlobalCollectionAdd.getState() );
         assertEquals( 0, actionGlobalCollectionAdd.getFieldValues().length );
 
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
     }
 
     @Test
@@ -2255,7 +2257,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         String marshalled = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         System.out.println( marshalled );
-        assertEqualsIgnoreWhitespace( drl, marshalled );
+
+        assertEqualsIgnoreWhitespace( drl,
+                                      marshalled );
     }
 
     @Test
@@ -2302,6 +2306,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         String marshalled = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         System.out.println( marshalled );
+
         assertEqualsIgnoreWhitespace( drl,
                                       marshalled );
     }
@@ -3407,9 +3412,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     @Test
     public void testFunctionCalls() {
         String drl =
-                "package org.mortgages\n" +
-                        "import java.lang.Number\n" +
-                        "import java.lang.String\n" +
+                "package org.mortgages;\n" +
+                        "import java.lang.Number;\n" +
+                        "import java.lang.String;\n" +
                         "rule \"rule1\"\n"
                         + "dialect \"mvel\"\n"
                         + "when\n"
@@ -3422,48 +3427,261 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         Map<String, List<MethodInfo>> methodInformation = new HashMap<String, List<MethodInfo>>();
         List<MethodInfo> mapMethodInformation = new ArrayList<MethodInfo>();
         mapMethodInformation.add( new MethodInfo( "indexOf",
-                                                  Arrays.asList( new String[]{ "String" } ),
+                                                  Arrays.asList( new String[]{ DataType.TYPE_STRING } ),
                                                   "int",
                                                   null,
-                                                  "String" ) );
+                                                  DataType.TYPE_STRING ) );
         mapMethodInformation.add( new MethodInfo( "indexOf",
-                                                  Arrays.asList( new String[]{ "Integer" } ),
+                                                  Arrays.asList( new String[]{ DataType.TYPE_NUMERIC_INTEGER } ),
                                                   "int",
                                                   null,
-                                                  "String" ) );
+                                                  DataType.TYPE_STRING ) );
 
-        methodInformation.put( "java.lang.String", mapMethodInformation );
+        methodInformation.put( "java.lang.String",
+                               mapMethodInformation );
 
         when( dmo.getProjectMethodInformation() ).thenReturn( methodInformation );
 
-        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, Collections.EMPTY_LIST, dmo );
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 Collections.EMPTY_LIST,
+                                                                                 dmo );
 
         assertNotNull( m );
 
-        assertEquals( 2, m.rhs.length );
+        assertEquals( 2,
+                      m.rhs.length );
         assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
         assertTrue( m.rhs[ 1 ] instanceof ActionCallMethod );
 
         ActionCallMethod actionCallMethod1 = (ActionCallMethod) m.rhs[ 0 ];
-        assertEquals( 1, actionCallMethod1.getState() );
-        assertEquals( "indexOf", actionCallMethod1.getMethodName() );
-        assertEquals( "s", actionCallMethod1.getVariable() );
-        assertEquals( 1, actionCallMethod1.getFieldValues().length );
-        assertEquals( "indexOf", actionCallMethod1.getFieldValues()[ 0 ].getField() );
-        assertEquals( "s", actionCallMethod1.getFieldValues()[ 0 ].getValue() );
-        assertEquals( FieldNatureType.TYPE_VARIABLE, actionCallMethod1.getFieldValues()[ 0 ].getNature() );
-        assertEquals( "String", actionCallMethod1.getFieldValues()[ 0 ].getType() );
+        assertEquals( 1,
+                      actionCallMethod1.getState() );
+        assertEquals( "indexOf",
+                      actionCallMethod1.getMethodName() );
+        assertEquals( "s",
+                      actionCallMethod1.getVariable() );
+        assertEquals( 1,
+                      actionCallMethod1.getFieldValues().length );
+        assertEquals( "indexOf",
+                      actionCallMethod1.getFieldValues()[ 0 ].getField() );
+        assertEquals( "s",
+                      actionCallMethod1.getFieldValues()[ 0 ].getValue() );
+        assertEquals( FieldNatureType.TYPE_VARIABLE,
+                      actionCallMethod1.getFieldValues()[ 0 ].getNature() );
+        assertEquals( "String",
+                      actionCallMethod1.getFieldValues()[ 0 ].getType() );
 
         ActionCallMethod actionCallMethod2 = (ActionCallMethod) m.rhs[ 1 ];
-        assertEquals( 1, actionCallMethod2.getState() );
-        assertEquals( "indexOf", actionCallMethod2.getMethodName() );
-        assertEquals( "s", actionCallMethod2.getVariable() );
-        assertEquals( 1, actionCallMethod2.getFieldValues().length );
-        assertEquals( "indexOf", actionCallMethod2.getFieldValues()[ 0 ].getField() );
-        assertEquals( "0", actionCallMethod2.getFieldValues()[ 0 ].getValue() );
-        assertEquals( FieldNatureType.TYPE_LITERAL, actionCallMethod2.getFieldValues()[ 0 ].getNature() );
-        assertEquals( "Numeric", actionCallMethod2.getFieldValues()[ 0 ].getType() );
+        assertEquals( 1,
+                      actionCallMethod2.getState() );
+        assertEquals( "indexOf",
+                      actionCallMethod2.getMethodName() );
+        assertEquals( "s",
+                      actionCallMethod2.getVariable() );
+        assertEquals( 1,
+                      actionCallMethod2.getFieldValues().length );
+        assertEquals( "indexOf",
+                      actionCallMethod2.getFieldValues()[ 0 ].getField() );
+        assertEquals( "0",
+                      actionCallMethod2.getFieldValues()[ 0 ].getValue() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      actionCallMethod2.getFieldValues()[ 0 ].getNature() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      actionCallMethod2.getFieldValues()[ 0 ].getType() );
 
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    public void testFunctionCalls2() {
+        String drl =
+                "package org.mortgages;\n" +
+                        "import java.lang.Number;\n" +
+                        "import java.lang.String;\n" +
+                        "rule \"rule1\"\n"
+                        + "dialect \"mvel\"\n"
+                        + "when\n"
+                        + "  s : String()\n"
+                        + "then\n"
+                        + "  s.indexOf( 0 );\n"
+                        + "end\n";
+
+        Map<String, List<MethodInfo>> methodInformation = new HashMap<String, List<MethodInfo>>();
+        List<MethodInfo> mapMethodInformation = new ArrayList<MethodInfo>();
+        mapMethodInformation.add( new MethodInfo( "indexOf",
+                                                  Arrays.asList( new String[]{ DataType.TYPE_STRING } ),
+                                                  "int",
+                                                  null,
+                                                  DataType.TYPE_STRING ) );
+        mapMethodInformation.add( new MethodInfo( "indexOf",
+                                                  Arrays.asList( new String[]{ DataType.TYPE_NUMERIC_INTEGER } ),
+                                                  "int",
+                                                  null,
+                                                  DataType.TYPE_STRING ) );
+
+        methodInformation.put( "java.lang.String",
+                               mapMethodInformation );
+
+        when( dmo.getProjectMethodInformation() ).thenReturn( methodInformation );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 Collections.EMPTY_LIST,
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
+
+        ActionCallMethod actionCallMethod1 = (ActionCallMethod) m.rhs[ 0 ];
+        assertEquals( 1,
+                      actionCallMethod1.getState() );
+        assertEquals( "indexOf",
+                      actionCallMethod1.getMethodName() );
+        assertEquals( "s",
+                      actionCallMethod1.getVariable() );
+        assertEquals( 1,
+                      actionCallMethod1.getFieldValues().length );
+        assertEquals( "indexOf",
+                      actionCallMethod1.getFieldValues()[ 0 ].getField() );
+        assertEquals( "0",
+                      actionCallMethod1.getFieldValues()[ 0 ].getValue() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      actionCallMethod1.getFieldValues()[ 0 ].getNature() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      actionCallMethod1.getFieldValues()[ 0 ].getType() );
+
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    public void testFunctionCalls3() {
+        String drl =
+                "package org.mortgages;\n" +
+                        "import java.lang.Number;\n" +
+                        "import java.lang.String;\n" +
+                        "rule \"rule1\"\n"
+                        + "dialect \"mvel\"\n"
+                        + "when\n"
+                        + "  $var : String()\n"
+                        + "then\n"
+                        + "  $var.indexOf( $var );\n"
+                        + "  $var.endsWith( \".\" );\n"
+                        + "  $var.substring( 0, 1 );\n"
+                        + "end\n";
+
+        Map<String, List<MethodInfo>> methodInformation = new HashMap<String, List<MethodInfo>>();
+        List<MethodInfo> mapMethodInformation = new ArrayList<MethodInfo>();
+        mapMethodInformation.add( new MethodInfo( "indexOf",
+                                                  Arrays.asList( new String[]{ DataType.TYPE_STRING } ),
+                                                  "int",
+                                                  null,
+                                                  DataType.TYPE_STRING ) );
+        mapMethodInformation.add( new MethodInfo( "indexOf",
+                                                  Arrays.asList( new String[]{ DataType.TYPE_NUMERIC_INTEGER } ),
+                                                  "int",
+                                                  null,
+                                                  DataType.TYPE_STRING ) );
+        mapMethodInformation.add( new MethodInfo( "endsWith",
+                                                  Arrays.asList( new String[]{ DataType.TYPE_STRING } ),
+                                                  "boolean",
+                                                  null,
+                                                  DataType.TYPE_BOOLEAN ) );
+        mapMethodInformation.add( new MethodInfo( "substring",
+                                                  Arrays.asList( new String[]{ DataType.TYPE_NUMERIC_INTEGER } ),
+                                                  "String",
+                                                  null,
+                                                  DataType.TYPE_STRING ) );
+        mapMethodInformation.add( new MethodInfo( "substring",
+                                                  Arrays.asList( new String[]{ DataType.TYPE_NUMERIC_INTEGER, DataType.TYPE_NUMERIC_INTEGER } ),
+                                                  "String",
+                                                  null,
+                                                  DataType.TYPE_STRING ) );
+
+        methodInformation.put( "java.lang.String",
+                               mapMethodInformation );
+
+        when( dmo.getProjectMethodInformation() ).thenReturn( methodInformation );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 Collections.EMPTY_LIST,
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 3,
+                      m.rhs.length );
+        assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
+        assertTrue( m.rhs[ 1 ] instanceof ActionCallMethod );
+        assertTrue( m.rhs[ 2 ] instanceof ActionCallMethod );
+
+        ActionCallMethod actionCallMethod1 = (ActionCallMethod) m.rhs[ 0 ];
+        assertEquals( 1,
+                      actionCallMethod1.getState() );
+        assertEquals( "indexOf",
+                      actionCallMethod1.getMethodName() );
+        assertEquals( "$var",
+                      actionCallMethod1.getVariable() );
+        assertEquals( 1,
+                      actionCallMethod1.getFieldValues().length );
+        assertEquals( "indexOf",
+                      actionCallMethod1.getFieldValues()[ 0 ].getField() );
+        assertEquals( "$var",
+                      actionCallMethod1.getFieldValues()[ 0 ].getValue() );
+        assertEquals( FieldNatureType.TYPE_VARIABLE,
+                      actionCallMethod1.getFieldValues()[ 0 ].getNature() );
+        assertEquals( DataType.TYPE_STRING,
+                      actionCallMethod1.getFieldValues()[ 0 ].getType() );
+
+        ActionCallMethod actionCallMethod2 = (ActionCallMethod) m.rhs[ 1 ];
+        assertEquals( 1,
+                      actionCallMethod2.getState() );
+        assertEquals( "endsWith",
+                      actionCallMethod2.getMethodName() );
+        assertEquals( "$var",
+                      actionCallMethod2.getVariable() );
+        assertEquals( 1,
+                      actionCallMethod2.getFieldValues().length );
+        assertEquals( "endsWith",
+                      actionCallMethod2.getFieldValues()[ 0 ].getField() );
+        assertEquals( ".",
+                      actionCallMethod2.getFieldValues()[ 0 ].getValue() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      actionCallMethod2.getFieldValues()[ 0 ].getNature() );
+        assertEquals( DataType.TYPE_STRING,
+                      actionCallMethod2.getFieldValues()[ 0 ].getType() );
+
+        ActionCallMethod actionCallMethod3 = (ActionCallMethod) m.rhs[ 2 ];
+        assertEquals( 1,
+                      actionCallMethod3.getState() );
+        assertEquals( "substring",
+                      actionCallMethod3.getMethodName() );
+        assertEquals( "$var",
+                      actionCallMethod3.getVariable() );
+        assertEquals( 2,
+                      actionCallMethod3.getFieldValues().length );
+        assertEquals( "substring",
+                      actionCallMethod3.getFieldValues()[ 0 ].getField() );
+        assertEquals( "0",
+                      actionCallMethod3.getFieldValues()[ 0 ].getValue() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      actionCallMethod3.getFieldValues()[ 0 ].getNature() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      actionCallMethod3.getFieldValues()[ 0 ].getType() );
+        assertEquals( "substring",
+                      actionCallMethod3.getFieldValues()[ 1 ].getField() );
+        assertEquals( "1",
+                      actionCallMethod3.getFieldValues()[ 1 ].getValue() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      actionCallMethod3.getFieldValues()[ 1 ].getNature() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      actionCallMethod3.getFieldValues()[ 1 ].getType() );
+
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
     }
 
     @Test
@@ -4229,6 +4447,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( "$age", actionCallMethod.getFieldValue( 1 ).getValue() );
         assertEquals( 2, actionCallMethod.getFieldValue( 1 ).getNature() );
         assertEquals( "Integer", actionCallMethod.getFieldValue( 1 ).getType() );
+
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
     }
 
     @Test
@@ -5030,6 +5251,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       actionCallMethod.getFieldValue( 1 ).getNature() );
         assertEquals( "String",
                       actionCallMethod.getFieldValue( 1 ).getType() );
+
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
     }
 
     @Test
