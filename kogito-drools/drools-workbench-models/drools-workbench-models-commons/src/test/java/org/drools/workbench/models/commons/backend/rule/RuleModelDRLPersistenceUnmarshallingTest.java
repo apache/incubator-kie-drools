@@ -6429,6 +6429,78 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         }
     }
 
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1158176
+    public void testRHSEntryPointInsertion() throws Exception {
+        String drl = "package org.test;\n" +
+                "rule \"AgentBooking Rule\"\n" +
+                "dialect \"mvel\"\n" +
+                "  when\n" +
+                "    agent : Agent( )\n" +
+                "    currentDate : TransactionDate( )\n" +
+                "    Number( eval( intValue >=2 )) from accumulate (\n" +
+                "      resEvent : ReservationEvent( agentId == agent.agentId , resdate == currentDate.eventDate ) from entry-point \"reservationEvent\", \n" +
+                "      count(resEvent))\n" +
+                "  then\n" +
+                "    ReservationThresoldEvent thresoldevent = new ReservationThresoldEvent();\n" +
+                "    thresoldevent.setAgentId( agent.getAgentId() );\n" +
+                "    thresoldevent.setTxEventDate( currentDate.getEventDate() );\n" +
+                "    kcontext.getKnowledgeRuntime().getEntryPoint(\"reservationTraceEvent\").insert( thresoldevent );\n" +
+                "end";
+
+        addModelField( "org.test.Agent",
+                       "this",
+                       "org.test.Agent",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Agent",
+                       "agentId",
+                       Integer.class.getName(),
+                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField( "org.test.TransactionDate",
+                       "this",
+                       "org.test.TransactionDate",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.TransactionDate",
+                       "eventDate",
+                       Date.class.getName(),
+                       DataType.TYPE_DATE );
+        addModelField( "java.lang.Number",
+                       "intValue",
+                       Integer.class.getName(),
+                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField( "org.test.ReservationEvent",
+                       "this",
+                       "org.test.ReservationEvent",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.ReservationEvent",
+                       "agentId",
+                       Integer.class.getName(),
+                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField( "org.test.ReservationEvent",
+                       "resdate",
+                       Date.class.getName(),
+                       DataType.TYPE_DATE );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 3,
+                      m.lhs.length );
+        assertEquals( 3,
+                      m.rhs.length );
+        assertTrue(m.rhs[0] instanceof FreeFormLine);
+        assertTrue(m.rhs[1] instanceof FreeFormLine);
+        assertTrue(m.rhs[2] instanceof FreeFormLine);
+
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",

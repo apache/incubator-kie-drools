@@ -40,6 +40,7 @@ import org.drools.workbench.models.guided.dtree.shared.model.parser.messages.Dat
 import org.drools.workbench.models.guided.dtree.shared.model.parser.messages.UnsupportedFieldConstraintParserMessage;
 import org.drools.workbench.models.guided.dtree.shared.model.parser.messages.UnsupportedFieldConstraintTypeParserMessage;
 import org.drools.workbench.models.guided.dtree.shared.model.parser.messages.UnsupportedFieldNatureTypeParserMessage;
+import org.drools.workbench.models.guided.dtree.shared.model.parser.messages.UnsupportedIActionParserMessage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -383,7 +384,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
         assertNotNull( model.getParserErrors().get( 0 ).getMessages() );
         assertEquals( 1,
                       model.getParserErrors().get( 0 ).getMessages().size() );
-        assertTrue( model.getParserErrors().get( 0 ).getMessages().get( 0 ) instanceof BindingNotFoundParserMessage );
+        assertTrue( model.getParserErrors().get( 0 ).getMessages().get( 0 ) instanceof UnsupportedIActionParserMessage );
 
         final String drl2 = GuidedDecisionTreeDRLPersistence.getInstance().marshal( model );
         assertEqualsIgnoreWhitespace( drl,

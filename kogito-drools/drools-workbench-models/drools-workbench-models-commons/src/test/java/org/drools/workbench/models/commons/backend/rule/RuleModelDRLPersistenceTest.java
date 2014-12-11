@@ -3832,13 +3832,8 @@ public class RuleModelDRLPersistenceTest {
         assertEquals( 2,
                       m.rhs.length );
 
-        assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
-        final FreeFormLine ffl = (FreeFormLine) m.rhs[ 0 ];
-        assertEquals( "Here's something typed by the user as free-format DRL",
-                      ffl.getText() );
-
-        assertTrue( m.rhs[ 1 ] instanceof ActionSetField );
-        final ActionSetField a1 = (ActionSetField) m.rhs[ 1 ];
+        assertTrue( m.rhs[ 0 ] instanceof ActionSetField );
+        final ActionSetField a1 = (ActionSetField) m.rhs[ 0 ];
         assertEquals( "$a",
                       a1.getVariable() );
         assertEquals( 2,
@@ -3855,6 +3850,11 @@ public class RuleModelDRLPersistenceTest {
                       fv1a2.getField() );
         assertEquals( "40",
                       fv1a2.getValue() );
+
+        assertTrue( m.rhs[ 1 ] instanceof FreeFormLine );
+        final FreeFormLine ffl = (FreeFormLine) m.rhs[ 1 ];
+        assertEquals( "Here's something typed by the user as free-format DRL",
+                      ffl.getText() );
     }
 
     @Test

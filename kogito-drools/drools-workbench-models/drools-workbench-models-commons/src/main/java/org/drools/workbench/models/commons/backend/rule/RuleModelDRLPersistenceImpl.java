@@ -2684,6 +2684,7 @@ public class RuleModelDRLPersistenceImpl
                     modifiedVariable = null;
                     modifiers = null;
                 }
+
             } else if ( line.startsWith( "insertLogical" ) ) {
                 String fact = unwrapParenthesis( line );
                 String type = getStatementType( fact,
@@ -2701,6 +2702,7 @@ public class RuleModelDRLPersistenceImpl
                                             isJavaDialect );
                     }
                 }
+
             } else if ( line.startsWith( "insert" ) ) {
                 String fact = unwrapParenthesis( line );
                 String type = getStatementType( fact,
@@ -2719,6 +2721,7 @@ public class RuleModelDRLPersistenceImpl
                                             isJavaDialect );
                     }
                 }
+
             } else if ( line.startsWith( "update" ) ) {
                 String variable = unwrapParenthesis( line );
                 ActionUpdateField action = new ActionUpdateField();
@@ -2731,6 +2734,7 @@ public class RuleModelDRLPersistenceImpl
                                     dmo,
                                     m,
                                     isJavaDialect );
+
             } else if ( line.startsWith( "modify" ) ) {
                 int modifyBlockEnd = line.lastIndexOf( '}' );
                 if ( modifyBlockEnd > 0 ) {
@@ -2755,15 +2759,18 @@ public class RuleModelDRLPersistenceImpl
                         modifiers = line.substring( modifyBlockStart + 1 ).trim();
                     }
                 }
+
             } else if ( line.startsWith( "retract" ) || line.startsWith( "delete" ) ) {
                 String variable = unwrapParenthesis( line );
                 m.addRhsItem( new ActionRetractFact( variable ) );
+
             } else if ( line.startsWith( "org.drools.core.process.instance.impl.WorkItemImpl wiWorkItem" ) ) {
                 ActionExecuteWorkItem awi = new ActionExecuteWorkItem();
                 pwd = new PortableWorkDefinition();
                 pwd.setName( "WorkItem" );
                 awi.setWorkDefinition( pwd );
                 m.addRhsItem( awi );
+
             } else if ( line.startsWith( "wiWorkItem.getParameters().put" ) ) {
                 String statement = line.substring( "wiWorkItem.getParameters().put".length() );
                 statement = unwrapParenthesis( statement );
@@ -2774,48 +2781,55 @@ public class RuleModelDRLPersistenceImpl
                 pwd.addParameter( buildPortableParameterDefinition( name,
                                                                     value,
                                                                     boundParams ) );
+
             } else if ( line.startsWith( "wim.internalExecuteWorkItem" ) || line.startsWith( "wiWorkItem.setName" ) ) {
                 // ignore
+
             } else {
                 int dotPos = line.indexOf( '.' );
                 int argStart = line.indexOf( '(' );
                 if ( dotPos > 0 && argStart > dotPos ) {
                     String variable = line.substring( 0,
                                                       dotPos ).trim();
-                    if ( isJavaIdentifier( variable ) ) {
-                        String methodName = line.substring( dotPos + 1,
-                                                            argStart ).trim();
-                        if ( isJavaIdentifier( methodName ) ) {
-                            if ( getSettedField( m,
-                                                 methodName,
-                                                 boundParams.get( variable ),
-                                                 dmo ) != null ) {
-                                List<String> setters = setStatements.get( variable );
-                                if ( setters == null ) {
-                                    setters = new ArrayList<String>();
-                                    setStatements.put( variable,
-                                                       setters );
+
+                    if ( boundParams.containsKey( variable ) || factsType.containsKey( variable ) || expandedDRLInfo.hasGlobal( variable ) ) {
+                        if ( isJavaIdentifier( variable ) ) {
+                            String methodName = line.substring( dotPos + 1,
+                                                                argStart ).trim();
+                            if ( isJavaIdentifier( methodName ) ) {
+                                if ( getSettedField( m,
+                                                     methodName,
+                                                     boundParams.get( variable ),
+                                                     dmo ) != null ) {
+                                    List<String> setters = setStatements.get( variable );
+                                    if ( setters == null ) {
+                                        setters = new ArrayList<String>();
+                                        setStatements.put( variable,
+                                                           setters );
+                                    }
+                                    if ( !setStatementsPosition.containsKey( variable ) ) {
+                                        setStatementsPosition.put( variable,
+                                                                   lineCounter );
+                                    }
+                                    setters.add( line );
+                                } else if ( methodName.equals( "add" ) && expandedDRLInfo.hasGlobal( variable ) ) {
+                                    String factName = line.substring( argStart + 1,
+                                                                      line.lastIndexOf( ')' ) ).trim();
+                                    ActionGlobalCollectionAdd actionGlobalCollectionAdd = new ActionGlobalCollectionAdd();
+                                    actionGlobalCollectionAdd.setGlobalName( variable );
+                                    actionGlobalCollectionAdd.setFactName( factName );
+                                    m.addRhsItem( actionGlobalCollectionAdd );
+                                } else {
+                                    m.addRhsItem( getActionCallMethod( m,
+                                                                       isJavaDialect,
+                                                                       boundParams,
+                                                                       dmo,
+                                                                       line,
+                                                                       variable,
+                                                                       methodName ) );
                                 }
-                                setStatementsPosition.put( variable,
-                                                           lineCounter );
-                                setters.add( line );
-                            } else if ( methodName.equals( "add" ) && expandedDRLInfo.hasGlobal( variable ) ) {
-                                String factName = line.substring( argStart + 1,
-                                                                  line.lastIndexOf( ')' ) ).trim();
-                                ActionGlobalCollectionAdd actionGlobalCollectionAdd = new ActionGlobalCollectionAdd();
-                                actionGlobalCollectionAdd.setGlobalName( variable );
-                                actionGlobalCollectionAdd.setFactName( factName );
-                                m.addRhsItem( actionGlobalCollectionAdd );
-                            } else {
-                                m.addRhsItem( getActionCallMethod( m,
-                                                                   isJavaDialect,
-                                                                   boundParams,
-                                                                   dmo,
-                                                                   line,
-                                                                   variable,
-                                                                   methodName ) );
+                                continue;
                             }
-                            continue;
                         }
                     }
                 }
@@ -2845,17 +2859,32 @@ public class RuleModelDRLPersistenceImpl
             }
         }
 
+        //The "setStatements" variable, at this point, contains a record of unmatched "set" calls. Unmatched means that they do not
+        //have a relationship with a resolved "insert", "insertLogical", "update" or "modify" action. Resolved means the action had been
+        //identified as an explicit operation above; normally where the RHS line began with such a call. Therefore it is likely the
+        // variable they are modifying was recorded as Free Format DRL and hence the "sets" need to be Free Format DRL too.
         for ( Map.Entry<String, List<String>> entry : setStatements.entrySet() ) {
-            ActionSetField action = new ActionSetField( entry.getKey() );
-            addSettersToAction( entry.getValue(),
-                                action,
-                                entry.getKey(),
-                                boundParams,
-                                dmo,
-                                m,
-                                isJavaDialect );
-            m.addRhsItem( action,
-                          setStatementsPosition.get( entry.getKey() ) );
+            if ( boundParams.containsKey( entry.getKey() ) ) {
+                ActionSetField action = new ActionSetField( entry.getKey() );
+                addSettersToAction( entry.getValue(),
+                                    action,
+                                    entry.getKey(),
+                                    boundParams,
+                                    dmo,
+                                    m,
+                                    isJavaDialect );
+                m.addRhsItem( action,
+                              setStatementsPosition.get( entry.getKey() ) );
+            } else {
+                FreeFormLine action = new FreeFormLine();
+                StringBuilder sb = new StringBuilder();
+                for ( String setter : entry.getValue() ) {
+                    sb.append( setter ).append( "\n" );
+                }
+                action.setText( sb.toString() );
+                m.addRhsItem( action,
+                              setStatementsPosition.get( entry.getKey() ) );
+            }
         }
 
         if ( expandedDRLInfo.hasDsl ) {
