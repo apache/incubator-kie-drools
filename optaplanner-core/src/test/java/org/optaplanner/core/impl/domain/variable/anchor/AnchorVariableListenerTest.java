@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable.inverserelation;
+package org.optaplanner.core.impl.domain.variable.anchor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +23,10 @@ import org.junit.Test;
 import org.mockito.InOrder;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.inverserelation.InverseRelationShadowVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedEntity;
@@ -33,16 +36,22 @@ import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChaine
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class SingletonInverseVariableListenerTest {
+public class AnchorVariableListenerTest {
 
     @Test
     public void chained() {
         SolutionDescriptor solutionDescriptor = TestdataRichChainedSolution.buildSolutionDescriptor();
         EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataRichChainedEntity.class);
+        GenuineVariableDescriptor chainedObjectVariableDescriptor
+                = entityDescriptor.getGenuineVariableDescriptor("chainedObject");
         ShadowVariableDescriptor nextEntityVariableDescriptor = entityDescriptor.getShadowVariableDescriptor("nextEntity");
-        SingletonInverseVariableListener variableListener = new SingletonInverseVariableListener(
+        SingletonInverseVariableListener inverseVariableListener = new SingletonInverseVariableListener(
                 (InverseRelationShadowVariableDescriptor) nextEntityVariableDescriptor,
                 entityDescriptor.getGenuineVariableDescriptor("chainedObject"));
+        ShadowVariableDescriptor anchorVariableDescriptor = entityDescriptor.getShadowVariableDescriptor("anchor");
+        AnchorVariableListener variableListener = new AnchorVariableListener(
+                (AnchorShadowVariableDescriptor) anchorVariableDescriptor,
+                chainedObjectVariableDescriptor, inverseVariableListener);
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
 
         TestdataRichChainedAnchor a0 = new TestdataRichChainedAnchor("a0");
@@ -65,16 +74,25 @@ public class SingletonInverseVariableListenerTest {
         solution.setChainedAnchorList(Arrays.asList(a0, b0));
         solution.setChainedEntityList(Arrays.asList(a1, a2, a3, b1));
 
-        assertEquals(null, b1.getNextEntity());
+        assertSame(a0, a1.getAnchor());
+        assertSame(a0, a2.getAnchor());
+        assertSame(a0, a3.getAnchor());
+        assertSame(b0, b1.getAnchor());
 
+        inverseVariableListener.beforeVariableChanged(scoreDirector, a3);
         variableListener.beforeVariableChanged(scoreDirector, a3);
         a3.setChainedObject(b1);
+        inverseVariableListener.afterVariableChanged(scoreDirector, a3);
         variableListener.afterVariableChanged(scoreDirector, a3);
-        assertEquals(a3, b1.getNextEntity());
+
+        assertSame(a0, a1.getAnchor());
+        assertSame(a0, a2.getAnchor());
+        assertSame(b0, a3.getAnchor());
+        assertSame(b0, b1.getAnchor());
 
         InOrder inOrder = inOrder(scoreDirector);
-        inOrder.verify(scoreDirector).beforeVariableChanged(nextEntityVariableDescriptor, b1);
-        inOrder.verify(scoreDirector).afterVariableChanged(nextEntityVariableDescriptor, b1);
+        inOrder.verify(scoreDirector).beforeVariableChanged(anchorVariableDescriptor, a3);
+        inOrder.verify(scoreDirector).afterVariableChanged(anchorVariableDescriptor, a3);
         inOrder.verifyNoMoreInteractions();
     }
 

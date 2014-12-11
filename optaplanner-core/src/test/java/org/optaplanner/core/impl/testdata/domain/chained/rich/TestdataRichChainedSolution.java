@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.chained.next;
+package org.optaplanner.core.impl.testdata.domain.chained.rich;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,41 +29,41 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataUtils;
 
 @PlanningSolution
-public class TestdataNextAndChainedSolution extends TestdataObject implements Solution<SimpleScore> {
+public class TestdataRichChainedSolution extends TestdataObject implements Solution<SimpleScore> {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return TestdataUtils.buildSolutionDescriptor(TestdataNextAndChainedSolution.class,
-                TestdataNextAndChainedObject.class, TestdataNextAndChainedEntity.class);
+        return TestdataUtils.buildSolutionDescriptor(TestdataRichChainedSolution.class,
+                TestdataRichChainedObject.class, TestdataRichChainedEntity.class);
     }
 
-    private List<TestdataNextAndChainedAnchor> chainedAnchorList;
-    private List<TestdataNextAndChainedEntity> chainedEntityList;
+    private List<TestdataRichChainedAnchor> chainedAnchorList;
+    private List<TestdataRichChainedEntity> chainedEntityList;
 
     private SimpleScore score;
 
-    public TestdataNextAndChainedSolution() {
+    public TestdataRichChainedSolution() {
     }
 
-    public TestdataNextAndChainedSolution(String code) {
+    public TestdataRichChainedSolution(String code) {
         super(code);
     }
 
     @ValueRangeProvider(id = "chainedAnchorRange")
-    public List<TestdataNextAndChainedAnchor> getChainedAnchorList() {
+    public List<TestdataRichChainedAnchor> getChainedAnchorList() {
         return chainedAnchorList;
     }
 
-    public void setChainedAnchorList(List<TestdataNextAndChainedAnchor> chainedAnchorList) {
+    public void setChainedAnchorList(List<TestdataRichChainedAnchor> chainedAnchorList) {
         this.chainedAnchorList = chainedAnchorList;
     }
 
     @PlanningEntityCollectionProperty
     @ValueRangeProvider(id = "chainedEntityRange")
-    public List<TestdataNextAndChainedEntity> getChainedEntityList() {
+    public List<TestdataRichChainedEntity> getChainedEntityList() {
         return chainedEntityList;
     }
 
-    public void setChainedEntityList(List<TestdataNextAndChainedEntity> chainedEntityList) {
+    public void setChainedEntityList(List<TestdataRichChainedEntity> chainedEntityList) {
         this.chainedEntityList = chainedEntityList;
     }
 

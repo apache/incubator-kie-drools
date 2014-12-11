@@ -24,9 +24,9 @@ import org.mockito.InOrder;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.testdata.domain.chained.next.TestdataNextAndChainedAnchor;
-import org.optaplanner.core.impl.testdata.domain.chained.next.TestdataNextAndChainedEntity;
-import org.optaplanner.core.impl.testdata.domain.chained.next.TestdataNextAndChainedSolution;
+import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedAnchor;
+import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedSolution;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -35,25 +35,25 @@ public class IncrementalScoreDirectorTest {
 
     @Test
     public void variableListener() {
-        TestdataNextAndChainedAnchor a0 = new TestdataNextAndChainedAnchor("a0");
-        TestdataNextAndChainedEntity a1 = new TestdataNextAndChainedEntity("a1", a0);
+        TestdataRichChainedAnchor a0 = new TestdataRichChainedAnchor("a0");
+        TestdataRichChainedEntity a1 = new TestdataRichChainedEntity("a1", a0);
         a0.setNextEntity(a1);
-        TestdataNextAndChainedEntity a2 = new TestdataNextAndChainedEntity("a2", a1);
+        TestdataRichChainedEntity a2 = new TestdataRichChainedEntity("a2", a1);
         a1.setNextEntity(a2);
-        TestdataNextAndChainedEntity a3 = new TestdataNextAndChainedEntity("a3", a2);
+        TestdataRichChainedEntity a3 = new TestdataRichChainedEntity("a3", a2);
         a2.setNextEntity(a3);
 
-        TestdataNextAndChainedAnchor b0 = new TestdataNextAndChainedAnchor("b0");
-        TestdataNextAndChainedEntity b1 = new TestdataNextAndChainedEntity("b1", b0);
+        TestdataRichChainedAnchor b0 = new TestdataRichChainedAnchor("b0");
+        TestdataRichChainedEntity b1 = new TestdataRichChainedEntity("b1", b0);
         b0.setNextEntity(b1);
 
-        TestdataNextAndChainedSolution solution = new TestdataNextAndChainedSolution("solution");
-        List<TestdataNextAndChainedAnchor> anchorList = Arrays.asList(a0, b0);
+        TestdataRichChainedSolution solution = new TestdataRichChainedSolution("solution");
+        List<TestdataRichChainedAnchor> anchorList = Arrays.asList(a0, b0);
         solution.setChainedAnchorList(anchorList);
-        List<TestdataNextAndChainedEntity> originalEntityList = Arrays.asList(a1, a2, a3, b1);
+        List<TestdataRichChainedEntity> originalEntityList = Arrays.asList(a1, a2, a3, b1);
         solution.setChainedEntityList(originalEntityList);
 
-        SolutionDescriptor solutionDescriptor = TestdataNextAndChainedSolution.buildSolutionDescriptor();
+        SolutionDescriptor solutionDescriptor = TestdataRichChainedSolution.buildSolutionDescriptor();
         IncrementalScoreDirectorFactory scoreDirectorFactory = mock(IncrementalScoreDirectorFactory.class);
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         IncrementalScoreCalculator incrementalScoreCalculator = mock(IncrementalScoreCalculator.class);

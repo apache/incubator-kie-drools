@@ -1,16 +1,16 @@
-package org.optaplanner.core.impl.testdata.domain.chained.next;
+package org.optaplanner.core.impl.testdata.domain.chained.rich;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 
 @PlanningEntity
-public interface TestdataNextAndChainedObject {
+public interface TestdataRichChainedObject {
 
     /**
      * @return sometimes null
      */
     @InverseRelationShadowVariable(sourceVariableName = "chainedObject")
-    TestdataNextAndChainedEntity getNextEntity();
-    void setNextEntity(TestdataNextAndChainedEntity nextEntity);
+    TestdataRichChainedEntity getNextEntity();
+    void setNextEntity(TestdataRichChainedEntity nextEntity);
 
 }
