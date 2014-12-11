@@ -22,6 +22,12 @@ import org.drools.compiler.lang.api.DescrBuilder;
 import org.drools.compiler.lang.api.PatternDescrBuilder;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.ConditionalElementDescr;
+import org.drools.compiler.lang.descr.ExprConstraintDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+
+import java.util.List;
 
 /**
  * An implementation for the CollectDescrBuilder
@@ -63,9 +69,11 @@ public class AccumulateDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends 
 
     public AccumulateDescrBuilder<P> function( String name,
                                                String bind,
+                                               boolean unif,
                                                String... parameters ) {
         descr.addFunction( name,
                            bind,
+                           unif,
                            parameters );
         return this;
     }
@@ -87,6 +95,17 @@ public class AccumulateDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends 
 
     public AccumulateDescrBuilder<P> result( String expr ) {
         descr.setResultCode( expr );
+        return this;
+    }
+
+    @Override
+    public AccumulateDescrBuilder<P> constraint( String constr ) {
+        if ( parent instanceof PatternDescrBuilder ) {
+            ( (PatternDescrBuilder) parent ).constraint( constr );
+        } else if ( parent instanceof CEDescrBuilder ) {
+            List<? extends BaseDescr> args = ((ConditionalElementDescr) parent.getDescr()).getDescrs();
+            ( (PatternDescr) args.get( args.size() - 1 ) ).addConstraint( new ExprConstraintDescr( constr ) );
+        }
         return this;
     }
 }

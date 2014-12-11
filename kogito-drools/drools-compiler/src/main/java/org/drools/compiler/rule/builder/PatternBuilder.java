@@ -248,18 +248,19 @@ public class PatternBuilder
             return rce;
         }
 
-        boolean duplicateBindings = objectType instanceof ClassObjectType &&
+        String patternIdentifier = patternDescr.getIdentifier();
+        boolean duplicateBindings = patternIdentifier != null && objectType instanceof ClassObjectType &&
                                     context.getDeclarationResolver().isDuplicated( context.getRule(),
-                                                                                   patternDescr.getIdentifier(),
+                                                                                   patternIdentifier,
                                                                                    ((ClassObjectType) objectType).getClassName() );
 
         Pattern pattern;
-        if ( !StringUtils.isEmpty( patternDescr.getIdentifier() ) && !duplicateBindings ) {
+        if ( !StringUtils.isEmpty( patternIdentifier ) && !duplicateBindings ) {
 
             pattern = new Pattern( context.getNextPatternId(),
                                    0, // offset is 0 by default
                                    objectType,
-                                   patternDescr.getIdentifier(),
+                                   patternIdentifier,
                                    patternDescr.isInternalFact() );
             if ( objectType instanceof ClassObjectType ) {
                 // make sure PatternExtractor is wired up to correct ClassObjectType and set as a target for rewiring

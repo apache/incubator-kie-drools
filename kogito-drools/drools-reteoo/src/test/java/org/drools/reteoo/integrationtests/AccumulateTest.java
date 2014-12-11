@@ -2080,7 +2080,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                 "query getResults( String $mId, List $holders )\n" +
                 "  accumulate(  \n" +
                 "    $holder  : MessageHolder( id == $mId, $ans : msg ),\n" +
-                "    $holders : collectList( $holder )\n" +
+                "    $holders := collectList( $holder )\n" +
                 "  ) \n" +
                 "end\n" +
                 "\n" +

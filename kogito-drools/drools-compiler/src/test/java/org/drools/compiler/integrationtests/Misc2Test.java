@@ -5730,10 +5730,7 @@ public class Misc2Test extends CommonTestMethodBase {
         // BZ-1092084
         String str = "rule R salience 10 salience 100 when then end\n";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertEquals(1, results.getMessages().size());
+        assertDrlHasCompilationError(str, 1);
     }
 
     @Test
@@ -5818,10 +5815,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      " @role(event)\n" +
                      "end\n";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertEquals(1, results.getMessages().size());
+        assertDrlHasCompilationError(str, 1);
     }
 
     @Test
@@ -6278,10 +6272,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      " e : int[]\n" +
                      "end\n";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertEquals(1, results.getMessages().size());
+        assertDrlHasCompilationError(str, 1);
     }
 
     @Test
@@ -7175,9 +7166,45 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    )\n" +
                 "then end\n";
 
+        assertDrlHasCompilationError(str, 1);
+    }
+
+    private void assertDrlHasCompilationError(String str, int errorNr) {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertEquals(1, results.getMessages().size());
+        assertEquals(errorNr, results.getMessages().size());
+    }
+
+    @Test
+    public void testDuplicateDeclarationInAccumulate1() {
+        // DROOLS-727
+        String drl1 =
+                "import java.util.*\n" +
+                "rule \"Version 1 - crash\"\n" +
+                " when\n" +
+                " accumulate( Integer($int: intValue), $list: collectSet($int) )\n" +
+                " List() from collect( Integer($list not contains intValue) )\n\n" +
+                " accumulate( Integer($int: intValue), $list: collectSet($int) )\n" +
+                " then\n" +
+                "end\n";
+
+        assertDrlHasCompilationError(drl1, 1);
+    }
+
+    @Test
+    public void testDuplicateDeclarationInAccumulate2() {
+        // DROOLS-727
+        String drl1 =
+                "import java.util.*\n" +
+                "rule \"Version 2 - pass\"\n" +
+                "when\n" +
+                " $list: List() from collect( Integer() )\n\n" +
+                " accumulate( Integer($int: intValue), $list: collectSet($int) )\n" +
+                " List() from collect( Integer($list not contains intValue) )\n" +
+                "then\n" +
+                "end;\n";
+
+        assertDrlHasCompilationError(drl1, 1);
     }
 }

@@ -35,12 +35,16 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MultiAccumulate;
+import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.SingleAccumulate;
+import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.Constraint;
 import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.util.index.IndexUtil;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 import java.util.Arrays;
@@ -150,7 +154,7 @@ public class JavaAccumulateBuilder
                     return null;
                 }
 
-                bindReaderToDeclaration(context, accumDescr, pattern, fc, new ArrayElementReader(reader, index, function.getResultType()));
+                bindReaderToDeclaration(context, accumDescr, pattern, fc, new ArrayElementReader(reader, index, function.getResultType()), function.getResultType(), index);
                 accumulators[index++] = buildAccumulator(context, accumDescr, declsInScope, declCls, readLocalsFromTuple, sourceDeclArr, requiredDecl, fc, function);
             }
 
@@ -164,7 +168,7 @@ public class JavaAccumulateBuilder
                 return null;
             }
 
-            bindReaderToDeclaration(context, accumDescr, pattern, fc, new SelfReferenceClassFieldReader( function.getResultType(), "this" ));
+            bindReaderToDeclaration(context, accumDescr, pattern, fc, new SelfReferenceClassFieldReader( function.getResultType(), "this" ), function.getResultType(), -1);
             Accumulator accumulator = buildAccumulator(context, accumDescr, declsInScope, declCls, readLocalsFromTuple, sourceDeclArr, requiredDecl, fc, function);
 
             return new SingleAccumulate( source,
@@ -173,17 +177,35 @@ public class JavaAccumulateBuilder
         }
     }
 
-    private void bindReaderToDeclaration(RuleBuildContext context, AccumulateDescr accumDescr, Pattern pattern, AccumulateFunctionCallDescr fc, InternalReadAccessor readAccessor) {
-        // if there is a binding, create the binding
+    private void bindReaderToDeclaration( RuleBuildContext context, AccumulateDescr accumDescr, Pattern pattern, AccumulateFunctionCallDescr fc, InternalReadAccessor readAccessor, Class<?> resultType, int index ) {
         if ( fc.getBind() != null ) {
-            if ( pattern.getDeclaration( fc.getBind() ) != null ) {
-                context.addError(new DescrBuildError(context.getParentDescr(),
-                                                     accumDescr,
-                                                     null,
-                                                     "Duplicate declaration for variable '" + fc.getBind() + "' in the rule '" + context.getRule().getName() + "'"));
+            if ( context.getDeclarationResolver().isDuplicated( context.getRule(), fc.getBind(), resultType.getName() ) ) {
+                if ( ! fc.isUnification() ) {
+                    context.addError( new DescrBuildError( context.getParentDescr(),
+                                                           accumDescr,
+                                                           null,
+                                                           "Duplicate declaration for variable '" + fc.getBind() + "' in the rule '" + context.getRule().getName() + "'" ) );
+                } else {
+                    Declaration inner = context.getDeclarationResolver().getDeclaration( context.getRule(), fc.getBind() );
+                    Constraint c = new MvelConstraint( Arrays.asList( context.getPkg().getName() ),
+                                                       index >= 0
+                                                            ? "this[ " + index + " ] == " + fc.getBind()
+                                                            : "this == " + fc.getBind(),
+                                                       new Declaration[] { inner },
+                                                       null,
+                                                       IndexUtil.ConstraintType.EQUAL,
+                                                       context.getDeclarationResolver().getDeclaration( context.getRule(), fc.getBind() ),
+                                                       index >= 0
+                                                            ? new ArrayElementReader( readAccessor, index, resultType )
+                                                            : readAccessor,
+                                                       true);
+                    (( MutableTypeConstraint) c).setType( Constraint.ConstraintType.BETA );
+                    pattern.addConstraint( c );
+                    index++;
+                }
             } else {
                 Declaration declr = pattern.addDeclaration( fc.getBind() );
-                declr.setReadAccessor(readAccessor);
+                declr.setReadAccessor( readAccessor );
             }
         }
     }
@@ -253,7 +275,7 @@ public class JavaAccumulateBuilder
                                                                               final boolean readLocalsFromTuple ) {
         final String className = "accumulateExpression" + context.getNextId();
         final Map<String, Object> map = createVariableContext( className,
-                                                               fc.getParams().length > 0 ? fc.getParams()[0] : "\"\"",
+                                                               fc.getParams().length > 0 ? fc.getParams()[ 0 ] : "\"\"",
                                                                context,
                                                                previousDeclarations,
                                                                sourceDeclArr,

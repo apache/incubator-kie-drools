@@ -4140,7 +4140,8 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
             } else {
                 // accumulate functions
                 accumulateFunction(accumulate,
-                        null);
+                                   false,
+                                   null);
                 if (state.failed)
                     return;
             }
@@ -4167,9 +4168,17 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
      * @throws org.antlr.runtime.RecognitionException
      */
     private void accumulateFunctionBinding(AccumulateDescrBuilder<?> accumulate) throws RecognitionException {
-        String label = label(DroolsEditorType.IDENTIFIER_VARIABLE);
-        accumulateFunction(accumulate,
-                label);
+        String label = null;
+        boolean unif = false;
+        if (input.LA(2) == DRL6Lexer.COLON) {
+            label = label(DroolsEditorType.IDENTIFIER_VARIABLE);
+        } else if (input.LA(2) == DRL6Lexer.UNIFY) {
+            label = unif(DroolsEditorType.IDENTIFIER_VARIABLE);
+            unif = true;
+        }
+        accumulateFunction( accumulate,
+                            unif,
+                            label );
     }
 
     /**
@@ -4178,7 +4187,8 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
      * @throws org.antlr.runtime.RecognitionException
      */
     private void accumulateFunction(AccumulateDescrBuilder<?> accumulate,
-            String label) throws RecognitionException {
+                                    boolean unif,
+                                    String label) throws RecognitionException {
         Token function = match(input,
                 DRL6Lexer.ID,
                 null,
@@ -4194,6 +4204,7 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
         if (state.backtracking == 0) {
             accumulate.function(function.getText(),
                     label,
+                    unif,
                     parameters.toArray(new String[parameters.size()]));
         }
     }
