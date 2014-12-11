@@ -2756,4 +2756,68 @@ public class AccumulateTest extends CommonTestMethodBase {
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
         assertFalse(results.getMessages().isEmpty());
     }
+
+    @Test
+    public void testAccFunctionOpaqueJoins() throws Exception {
+        // DROOLS-661
+        String str = "package org.test; " +
+                     "import java.util.*; " +
+                     "global List list; " +
+
+                     "declare Tick " +
+                     "  tick : int " +
+                     "end " +
+
+                     "declare Data " +
+                     "  values : List " +
+                     "end " +
+
+                     "rule Init " +
+                     "when " +
+                     "then " +
+                     "  insert( new Data( Arrays.asList( 1, 2, 3 ) ) ); " +
+                     "  insert( new Data( Arrays.asList( 4, 5, 6 ) ) ); " +
+                     "  insert( new Tick( 0 ) );" +
+                     "end " +
+
+                     "rule Update " +
+                     "  no-loop " +
+                     "when " +
+                     "  $i : Integer() " +
+                     "  $t : Tick() " +
+                     "then " +
+                     "  System.out.println( 'Set tick to ' + $i ); " +
+                     "  modify( $t ) { " +
+                     "      setTick( $i ); " +
+                     "  } " +
+                     "end " +
+
+                     "rule R " +
+                     "  dialect 'mvel' " +
+                     "when " +
+                     "    Tick( $index : tick ) " +
+                     "    accumulate ( $data : Data()," +
+                     "                 $tot : sum( $data.values[ $index ] ) ) " +
+                     "then " +
+                     "    System.out.println( $tot + ' for ' + $index ); " +
+                     "    list.add( $tot ); " +
+                     "end ";
+
+        KieHelper helper = new KieHelper();
+        KieSession ks = helper.addContent( str, ResourceType.DRL ).build().newKieSession();
+        List list = new ArrayList(  );
+        ks.setGlobal( "list", list );
+
+        // init data
+        ks.fireAllRules();
+        assertEquals( Arrays.asList( 5.0 ), list );
+
+        ks.insert( 1 );
+        ks.fireAllRules();
+        assertEquals( Arrays.asList( 5.0, 7.0 ), list );
+
+        ks.insert( 2 );
+        ks.fireAllRules();
+        assertEquals( Arrays.asList( 5.0, 7.0, 9.0 ), list );
+    }
 }

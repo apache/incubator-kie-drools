@@ -3094,9 +3094,6 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
             AccumulateDescrBuilder<?> accumulate = helper.start(pattern,
                     AccumulateDescrBuilder.class,
                     null);
-            if (state.backtracking == 0) {
-                accumulate.multiFunction(true);
-            }
             try {
                 if (helper.validateIdentifierKey(DroolsSoftKeywords.ACCUMULATE)) {
                     match(input,

@@ -44,7 +44,6 @@ public class AccumulateDescr extends PatternSourceDescr
     private String[]                          declarations;
     private String                            className;
     private List<AccumulateFunctionCallDescr> functions        = null;
-    private boolean                           multiFunction;
 
     @SuppressWarnings("unchecked")
     public void readExternal( ObjectInput in ) throws IOException,
@@ -170,16 +169,10 @@ public class AccumulateDescr extends PatternSourceDescr
             functions = new ArrayList<AccumulateDescr.AccumulateFunctionCallDescr>();
         }
         this.functions.add( function );
-        if( functions.size() > 1 ) {
-            this.setMultiFunction( true );
-        }
     }
 
     public boolean removeFunction( AccumulateFunctionCallDescr function ) {
-        if ( functions != null ) {
-            return functions.remove( function );
-        }
-        return false;
+        return functions != null && functions.remove(function);
     }
 
     public boolean isExternalFunction() {
@@ -222,12 +215,8 @@ public class AccumulateDescr extends PatternSourceDescr
         return this.input != null;
     }
 
-    public void setMultiFunction( boolean multiFunction ) {
-        this.multiFunction = multiFunction;
-    }
-
     public boolean isMultiFunction() {
-        return multiFunction;
+        return functions != null && functions.size() > 1;
     }
 
     public static class AccumulateFunctionCallDescr
@@ -278,12 +267,15 @@ public class AccumulateDescr extends PatternSourceDescr
             if ( function == null ) {
                 if ( other.function != null ) return false;
             } else if ( !function.equals( other.function ) ) return false;
+
+
             if ( bind == null ) {
                 if ( other.bind != null ) return false;
-            } else if ( !bind.equals( other.bind ) ) return false;
-            if ( !Arrays.equals( params,
-                                 other.params ) ) return false;
-            return true;
+            } else if ( !bind.equals( other.bind ) ) {
+                return false;
+            }
+
+            return Arrays.equals( params, other.params );
         }
     }
 
