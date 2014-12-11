@@ -2371,6 +2371,10 @@ public class RuleModelDRLPersistenceImpl
                                                   isJavaDialect,
                                                   boundParams,
                                                   dmo ) );
+            fac.setInitCode( accumulate.getInitCode() );
+            fac.setActionCode( accumulate.getActionCode() );
+            fac.setReverseCode( accumulate.getReverseCode() );
+            fac.setResultCode( accumulate.getResultCode() );
 
             FactPattern factPattern = new FactPattern( pattern.getObjectType() );
             factPattern.setBoundName( pattern.getIdentifier() );
