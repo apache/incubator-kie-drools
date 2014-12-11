@@ -1,9 +1,18 @@
 package org.drools.workbench.models.commons.backend.rule;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.NumberUtils;
+import org.drools.core.util.DateUtils;
+import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
@@ -160,12 +169,125 @@ public class ActionCallMethodBuilder {
             return false;
         } else {
             for ( int index = 0; index < methodParams.size(); index++ ) {
-                if ( !methodParams.get( index ).equals( boundParams.get( parameters[ index ] ) ) ) {
+                final String methodParamDataType = methodParams.get( index );
+                final String paramDataType = assertParamDataType( methodParamDataType,
+                                                                  parameters[ index ].trim() );
+                if ( !methodParamDataType.equals( paramDataType ) ) {
                     return false;
                 }
             }
             return true;
         }
+    }
+
+    private String assertParamDataType( final String methodParamDataType,
+                                        final String paramValue ) {
+        if ( boundParams.containsKey( paramValue ) ) {
+            final String boundParamDataType = boundParams.get( paramValue );
+            return boundParamDataType;
+        } else {
+            if ( DataType.TYPE_BOOLEAN.equals( methodParamDataType ) ) {
+                if ( Boolean.TRUE.equals( Boolean.parseBoolean( paramValue ) ) || Boolean.FALSE.equals( Boolean.parseBoolean( paramValue ) ) ) {
+                    return methodParamDataType;
+                }
+                return null;
+
+            } else if ( DataType.TYPE_DATE.equals( methodParamDataType ) ) {
+                try {
+                    new SimpleDateFormat( DateUtils.getDateFormatMask(), Locale.ENGLISH ).parse( adjustParam( methodParamDataType,
+                                                                                                              paramValue,
+                                                                                                              Collections.EMPTY_MAP,
+                                                                                                              isJavaDialect ) );
+                    return methodParamDataType;
+                } catch ( ParseException e ) {
+                    return null;
+                }
+
+            } else if ( DataType.TYPE_STRING.equals( methodParamDataType ) ) {
+                if ( paramValue.startsWith( "\"" ) ) {
+                    return methodParamDataType;
+                }
+
+            } else if ( DataType.TYPE_NUMERIC.equals( methodParamDataType ) ) {
+                if ( !NumberUtils.isNumber( paramValue ) ) {
+                    return methodParamDataType;
+                }
+
+            } else if ( DataType.TYPE_NUMERIC_BIGDECIMAL.equals( methodParamDataType ) ) {
+                try {
+                    new BigDecimal( adjustParam( methodParamDataType,
+                                                 paramValue,
+                                                 Collections.EMPTY_MAP,
+                                                 isJavaDialect ) );
+                    return methodParamDataType;
+                } catch ( NumberFormatException e ) {
+                    return null;
+                }
+
+            } else if ( DataType.TYPE_NUMERIC_BIGINTEGER.equals( methodParamDataType ) ) {
+                try {
+                    new BigInteger( adjustParam( methodParamDataType,
+                                                 paramValue,
+                                                 Collections.EMPTY_MAP,
+                                                 isJavaDialect ) );
+                    return methodParamDataType;
+                } catch ( NumberFormatException e ) {
+                    return null;
+                }
+
+            } else if ( DataType.TYPE_NUMERIC_BYTE.equals( methodParamDataType ) ) {
+                try {
+                    new Byte( paramValue );
+                    return methodParamDataType;
+                } catch ( NumberFormatException e ) {
+                    return null;
+                }
+
+            } else if ( DataType.TYPE_NUMERIC_DOUBLE.equals( methodParamDataType ) ) {
+                try {
+                    new Double( paramValue );
+                    return methodParamDataType;
+                } catch ( NumberFormatException e ) {
+                    return null;
+                }
+
+            } else if ( DataType.TYPE_NUMERIC_FLOAT.equals( methodParamDataType ) ) {
+                try {
+                    new Float( paramValue );
+                    return methodParamDataType;
+                } catch ( NumberFormatException e ) {
+                    return null;
+                }
+
+            } else if ( DataType.TYPE_NUMERIC_INTEGER.equals( methodParamDataType ) ) {
+                try {
+                    new Integer( paramValue );
+                    return methodParamDataType;
+                } catch ( NumberFormatException e ) {
+                    return null;
+                }
+
+            } else if ( DataType.TYPE_NUMERIC_LONG.equals( methodParamDataType ) ) {
+                try {
+                    new Long( paramValue );
+                    return methodParamDataType;
+                } catch ( NumberFormatException e ) {
+                    return null;
+                }
+
+            } else if ( DataType.TYPE_NUMERIC_SHORT.equals( methodParamDataType ) ) {
+                try {
+                    new Short( paramValue );
+                    return methodParamDataType;
+                } catch ( NumberFormatException e ) {
+                    return null;
+                }
+
+            }
+
+            return null;
+        }
+
     }
 
 }

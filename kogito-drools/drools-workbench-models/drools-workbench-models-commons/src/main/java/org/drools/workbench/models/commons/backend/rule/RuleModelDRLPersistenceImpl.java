@@ -380,7 +380,9 @@ public class RuleModelDRLPersistenceImpl
             //Reconcile ActionSetField and ActionUpdateField calls
             final List<IAction> actions = new ArrayList<IAction>();
             for ( IAction action : model.rhs ) {
-                if ( action instanceof ActionSetField ) {
+                if ( action instanceof ActionCallMethod ) {
+                    actions.add( action );
+                } else if ( action instanceof ActionSetField ) {
                     final ActionSetField asf = (ActionSetField) action;
                     final ActionSetFieldWrapper afw = findExistingAction( asf,
                                                                           actions );
