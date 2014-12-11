@@ -54,12 +54,12 @@ public interface AccumulateDescrBuilder<P extends DescrBuilder< ?, ? >>
      * 
      * @param name the name of the function being called. Mandatory non-null parameter.
      * @param bind the name of the bound variable if there is one. Null if no binding should be made.
-     * @param parameters the array of parameters to the function. 
-     * 
-     * @return itself, so that it can be used as a fluent API
+     * @param isUnification true if the bound variable is expected to unify with the result of the acc function. false otherwise
+     *@param parameters the array of parameters to the function.
+     *  @return itself, so that it can be used as a fluent API
      */
-    public AccumulateDescrBuilder<P> function( String name, String bind, String... parameters);
-    
+    public AccumulateDescrBuilder<P> function( String name, String bind, boolean isUnification, String... parameters );
+
     /**
      * For accumulate CEs that use custom code blocks, this call
      * sets the content of the init code block. Please node that the
@@ -125,4 +125,6 @@ public interface AccumulateDescrBuilder<P extends DescrBuilder< ?, ? >>
     public AccumulateDescrBuilder<P> result( String expr );
 
     public P end();
+
+    public AccumulateDescrBuilder<P> constraint( String constr );
 }

@@ -73,6 +73,7 @@ public class AccumulateHelperHandler extends BaseAbstractHandler
         } else if ( localName.equals( "external-function" ) ) {
             accumulate.addFunction( element.getAttribute( "evaluator" ), 
                                     null, // no support to bindings yet?
+                                    false,
                                     new String[] { element.getAttribute( "expression" ) });
         }
 

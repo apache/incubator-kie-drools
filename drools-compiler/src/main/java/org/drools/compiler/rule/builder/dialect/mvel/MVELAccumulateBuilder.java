@@ -38,16 +38,21 @@ import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.MultiAccumulate;
+import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.SingleAccumulate;
+import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.Constraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.MvelAccumulator;
+import org.drools.core.util.index.IndexUtil;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -205,23 +210,6 @@ public class MVELAccumulateBuilder
                 return null;
             }
 
-            // if there is a binding, create the binding
-            if ( func.getBind() != null ) {
-                if ( pattern.getDeclaration( func.getBind() ) != null ) {
-                    context.addError(new DescrBuildError(context.getParentDescr(),
-                            accumDescr,
-                            null,
-                            "Duplicate declaration for variable '" + func.getBind() + "' in the rule '" + context.getRule().getName() + "'"));
-                } else {
-                    Declaration declr = pattern.addDeclaration( func.getBind() );
-                    if (accumDescr.isMultiFunction()) {
-                        declr.setReadAccessor(new ArrayElementReader(arrayReader, index, function.getResultType()));
-                    } else {
-                        declr.setReadAccessor(new SelfReferenceClassFieldReader( function.getResultType(), "this" ));
-                    }
-                }
-            }
-
             final AnalysisResult analysis = dialect.analyzeExpression( context,
                                                                        accumDescr,
                                                                        func.getParams().length > 0 ? func.getParams()[0] : "\"\"",
@@ -239,8 +227,44 @@ public class MVELAccumulateBuilder
                                                                        KnowledgeHelper.class,
                                                                        readLocalsFromTuple );
 
-            accumulators[index++] = new MVELAccumulatorFunctionExecutor( unit,
+            accumulators[index] = new MVELAccumulatorFunctionExecutor( unit,
                                                                          function );
+            // if there is a binding, create the binding
+            if ( func.getBind() != null ) {
+                if ( context.getDeclarationResolver().isDuplicated( context.getRule(), func.getBind(), function.getResultType().getName() ) ) {
+                    if ( ! func.isUnification() ) {
+                        context.addError( new DescrBuildError( context.getParentDescr(),
+                                                               accumDescr,
+                                                               null,
+                                                               "Duplicate declaration for variable '" + func.getBind() + "' in the rule '" + context.getRule().getName() + "'" ) );
+                    } else {
+                        Declaration inner = context.getDeclarationResolver().getDeclaration( context.getRule(), func.getBind() );
+                        Constraint c = new MvelConstraint( Arrays.asList( context.getPkg().getName() ),
+                                                           accumDescr.isMultiFunction()
+                                                                ? "this[ " + index + " ] == " + func.getBind()
+                                                                : "this == " + func.getBind(),
+                                                           new Declaration[] { inner },
+                                                           null,
+                                                           IndexUtil.ConstraintType.EQUAL,
+                                                           context.getDeclarationResolver().getDeclaration( context.getRule(), func.getBind() ),
+                                                           accumDescr.isMultiFunction()
+                                                                ? new ArrayElementReader( arrayReader, index, function.getResultType() )
+                                                                : new SelfReferenceClassFieldReader( function.getResultType(), "this" ),
+                                                           true);
+                        ((MutableTypeConstraint) c).setType( Constraint.ConstraintType.BETA );
+                        pattern.addConstraint( c );
+                        index++;
+                    }
+                } else {
+                    Declaration declr = pattern.addDeclaration( func.getBind() );
+                    if (accumDescr.isMultiFunction()) {
+                        declr.setReadAccessor(new ArrayElementReader(arrayReader, index, function.getResultType()));
+                    } else {
+                        declr.setReadAccessor(new SelfReferenceClassFieldReader( function.getResultType(), "this" ));
+                    }
+                }
+            }
+            index++;
         }
         return accumulators;
     }
