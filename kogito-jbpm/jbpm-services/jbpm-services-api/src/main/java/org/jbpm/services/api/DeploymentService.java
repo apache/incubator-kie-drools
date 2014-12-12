@@ -75,4 +75,6 @@ public interface DeploymentService {
      * @param deploymentId
      */
     void deactivate(String deploymentId);
+    
+    boolean isDeployed(String deploymentUnitId);
 }

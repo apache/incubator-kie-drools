@@ -70,4 +70,7 @@ public interface DeploymentServiceEJBRemote  {
      * @param deploymentId
      */
     void deactivate(String deploymentId);
+    
+    
+    boolean isDeployed(String deploymentUnitId);
 }

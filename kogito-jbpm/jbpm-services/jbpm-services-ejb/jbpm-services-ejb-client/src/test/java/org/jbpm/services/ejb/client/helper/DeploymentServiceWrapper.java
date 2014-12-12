@@ -69,4 +69,9 @@ public class DeploymentServiceWrapper implements DeploymentService {
 		remote.deactivate(deploymentId);
 	}
 
+        @Override
+        public boolean isDeployed(String deploymentUnitId) {
+            return remote.isDeployed(deploymentUnitId);
+        }
+
 }

@@ -59,6 +59,7 @@ public abstract class AbstractDeploymentService implements DeploymentService, Li
     
     protected Set<DeploymentEventListener> listeners = new HashSet<DeploymentEventListener>();
     
+    
     @Override
     public void addListener(DeploymentEventListener listener) {
     	this.listeners.add(listener);
@@ -82,7 +83,7 @@ public abstract class AbstractDeploymentService implements DeploymentService, Li
             throw new IllegalStateException("Unit with id " + unit.getIdentifier() + " is already deployed");
         }
     }
-    
+   
     public void notifyOnDeploy(DeploymentUnit unit, DeployedUnit deployedUnit){
     	DeploymentEvent event = new DeploymentEvent(unit.getIdentifier(), deployedUnit);
     	for (DeploymentEventListener listener : listeners) {
@@ -254,5 +255,9 @@ public abstract class AbstractDeploymentService implements DeploymentService, Li
         return auditEventBuilder;
     }
 	
+    @Override
+    public boolean isDeployed(String deploymentUnitId) {
+        return deploymentsMap.containsKey(deploymentUnitId);
+    }
 	
 }
