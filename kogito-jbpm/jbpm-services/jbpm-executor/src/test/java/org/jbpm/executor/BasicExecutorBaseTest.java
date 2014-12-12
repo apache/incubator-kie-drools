@@ -316,6 +316,42 @@ public abstract class BasicExecutorBaseTest {
 
 
     }
+    
+    @Test
+    public void cleanupLogExcecutionTest() throws InterruptedException {
+        CommandContext ctxCMD = new CommandContext();
+        ctxCMD.setData("businessKey", UUID.randomUUID().toString());
+
+        Long requestId = executorService.scheduleRequest("org.jbpm.executor.commands.ReoccurringPrintOutCommand", ctxCMD);
+
+        Thread.sleep(10000);
+
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests();
+        assertEquals(0, inErrorRequests.size());
+        List<RequestInfo> queuedRequests = executorService.getQueuedRequests();
+        assertEquals(1, queuedRequests.size());
+        List<RequestInfo> executedRequests = executorService.getCompletedRequests();
+        assertEquals(3, executedRequests.size());
+        
+        executorService.cancelRequest(requestId+3);
+
+        ctxCMD = new CommandContext();
+        ctxCMD.setData("businessKey", UUID.randomUUID().toString());
+        ctxCMD.setData("SingleRun", "true");
+        ctxCMD.setData("EmfName", "org.jbpm.executor");
+        ctxCMD.setData("SkipProcessLog", "true");
+        ctxCMD.setData("SkipTaskLog", "true");
+        executorService.scheduleRequest("org.jbpm.executor.commands.LogCleanupCommand", ctxCMD);
+        
+        Thread.sleep(5000);
+        
+        inErrorRequests = executorService.getInErrorRequests();
+        assertEquals(0, inErrorRequests.size());
+        queuedRequests = executorService.getQueuedRequests();
+        assertEquals(0, queuedRequests.size());
+        executedRequests = executorService.getCompletedRequests();
+        assertEquals(1, executedRequests.size());
+    }
 
     
     public void FIXMEfutureRequestTest() throws InterruptedException {
