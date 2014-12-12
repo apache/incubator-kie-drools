@@ -1842,13 +1842,19 @@ public class RuleModelDRLPersistenceImpl
                 String dslPattern = line.trim();
                 if ( dslPattern.length() > 0 ) {
                     if ( dslPattern.startsWith( "[when]" ) ) {
-                        expandedDRLInfo.lhsDslPatterns.add( extractDslPattern( dslPattern.substring( "[when]".length() ) ) );
+                        final String dslDefinition = dslPattern.substring( "[when]".length() );
+                        expandedDRLInfo.lhsDslPatterns.add( new SimpleDSLSentence( extractDslPattern( dslDefinition ),
+                                                                                   extractDslDrl( dslDefinition ) ) );
                     } else if ( dslPattern.startsWith( "[then]" ) ) {
-                        expandedDRLInfo.rhsDslPatterns.add( extractDslPattern( dslPattern.substring( "[then]".length() ) ) );
+                        final String dslDefinition = dslPattern.substring( "[then]".length() );
+                        expandedDRLInfo.rhsDslPatterns.add( new SimpleDSLSentence( extractDslPattern( dslDefinition ),
+                                                                                   extractDslDrl( dslDefinition ) ) );
                     } else if ( dslPattern.startsWith( "[" ) ) {
-                        String pattern = extractDslPattern( removeDslTopics( dslPattern ) );
-                        expandedDRLInfo.lhsDslPatterns.add( pattern );
-                        expandedDRLInfo.rhsDslPatterns.add( pattern );
+                        final String dslDefinition = removeDslTopics( dslPattern );
+                        expandedDRLInfo.lhsDslPatterns.add( new SimpleDSLSentence( extractDslPattern( dslDefinition ),
+                                                                                   extractDslDrl( dslDefinition ) ) );
+                        expandedDRLInfo.rhsDslPatterns.add( new SimpleDSLSentence( extractDslPattern( dslDefinition ),
+                                                                                   extractDslDrl( dslDefinition ) ) );
                     }
                 }
             }
@@ -1880,6 +1886,10 @@ public class RuleModelDRLPersistenceImpl
     private String extractDslPattern( final String line ) {
         return line.substring( 0,
                                line.indexOf( '=' ) ).trim();
+    }
+
+    private String extractDslDrl( final String line ) {
+        return line.substring( line.indexOf( '=' ) + 1 ).trim();
     }
 
     private RuleModel getRuleModel( final ExpandedDRLInfo expandedDRLInfo,
@@ -2087,8 +2097,8 @@ public class RuleModelDRLPersistenceImpl
 
         private Map<Integer, String> freeFormStatementsInLhs;
 
-        private List<String> lhsDslPatterns;
-        private List<String> rhsDslPatterns;
+        private List<SimpleDSLSentence> lhsDslPatterns;
+        private List<SimpleDSLSentence> rhsDslPatterns;
 
         private Set<String> globals = new HashSet<String>();
 
@@ -2097,8 +2107,8 @@ public class RuleModelDRLPersistenceImpl
             dslStatementsInLhs = new HashMap<Integer, String>();
             dslStatementsInRhs = new HashMap<Integer, String>();
             freeFormStatementsInLhs = new HashMap<Integer, String>();
-            lhsDslPatterns = new ArrayList<String>();
-            rhsDslPatterns = new ArrayList<String>();
+            lhsDslPatterns = new ArrayList<SimpleDSLSentence>();
+            rhsDslPatterns = new ArrayList<SimpleDSLSentence>();
         }
 
         public boolean hasGlobal( final String name ) {
@@ -2931,10 +2941,11 @@ public class RuleModelDRLPersistenceImpl
         return false;
     }
 
-    private DSLSentence toDSLSentence( final List<String> dslPatterns,
+    private DSLSentence toDSLSentence( final List<SimpleDSLSentence> simpleDslSentences,
                                        final String dslLine ) {
         DSLSentence dslSentence = new DSLSentence();
-        for ( String dslPattern : dslPatterns ) {
+        for ( SimpleDSLSentence simpleDslSentence : simpleDslSentences ) {
+            String dslPattern = simpleDslSentence.getDsl();
             // Dollar breaks the matcher, need to escape them.
             dslPattern = dslPattern.replace( "$",
                                              "\\$" );
@@ -2945,6 +2956,7 @@ public class RuleModelDRLPersistenceImpl
             if ( matcher.matches() ) {
                 dslPattern = dslPattern.replace( "\\$",
                                                  "$" );
+                dslSentence.setDrl( simpleDslSentence.getDrl() );
                 dslSentence.setDefinition( dslPattern );
                 for ( int i = 0; i < matcher.groupCount(); i++ ) {
                     dslSentence.getValues().get( i ).setValue( matcher.group( i + 1 ) );
@@ -3969,6 +3981,27 @@ public class RuleModelDRLPersistenceImpl
             con.setValue( expr );
             return con;
         }
+    }
+
+    private static class SimpleDSLSentence {
+
+        private String dsl;
+        private String drl;
+
+        private SimpleDSLSentence( final String dsl,
+                                   final String drl ) {
+            this.dsl = dsl;
+            this.drl = drl;
+        }
+
+        private String getDsl() {
+            return this.dsl;
+        }
+
+        private String getDrl() {
+            return this.drl;
+        }
+
     }
 
 }
