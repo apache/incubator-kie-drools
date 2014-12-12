@@ -79,6 +79,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         processes.add("repo/processes/general/EmptyHumanTask.bpmn");
         processes.add("repo/processes/general/humanTask.bpmn");
         processes.add("repo/processes/general/BPMN2-UserTask.bpmn2");
+        processes.add("repo/processes/general/SimpleHTProcess.bpmn2");
         
         InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
         File pom = new File("target/kmodule", "pom.xml");
@@ -135,11 +136,12 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	Collection<ProcessDefinition> definitions = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier(), new QueryContext());
     	assertNotNull(definitions);
     	
-    	assertEquals(3, definitions.size());
+    	assertEquals(4, definitions.size());
     	List<String> expectedProcessIds = new ArrayList<String>();
     	expectedProcessIds.add("org.jbpm.writedocument.empty");
     	expectedProcessIds.add("org.jbpm.writedocument");
     	expectedProcessIds.add("UserTask");
+    	expectedProcessIds.add("org.jboss.qa.bpms.HumanTask");
     	
     	for (ProcessDefinition def : definitions) {
     		assertTrue(expectedProcessIds.contains(def.getId()));
@@ -183,11 +185,12 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	Collection<ProcessDefinition> definitions = runtimeDataService.getProcesses(new QueryContext());
     	assertNotNull(definitions);
     	
-    	assertEquals(3, definitions.size());
+    	assertEquals(4, definitions.size());
     	List<String> expectedProcessIds = new ArrayList<String>();
     	expectedProcessIds.add("org.jbpm.writedocument.empty");
     	expectedProcessIds.add("org.jbpm.writedocument");
     	expectedProcessIds.add("UserTask");
+    	expectedProcessIds.add("org.jboss.qa.bpms.HumanTask");
     	
     	for (ProcessDefinition def : definitions) {
     		assertTrue(expectedProcessIds.contains(def.getId()));
@@ -199,11 +202,12 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	Collection<String> definitions = runtimeDataService.getProcessIds(deploymentUnit.getIdentifier(), new QueryContext());
     	assertNotNull(definitions);
     	
-    	assertEquals(3, definitions.size());
+    	assertEquals(4, definitions.size());
     	
     	assertTrue(definitions.contains("org.jbpm.writedocument.empty"));
     	assertTrue(definitions.contains("org.jbpm.writedocument"));  
     	assertTrue(definitions.contains("UserTask"));
+    	assertTrue(definitions.contains("org.jboss.qa.bpms.HumanTask"));
     }
     
     @Test
@@ -211,12 +215,13 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	Collection<ProcessDefinition> definitions = runtimeDataService.getProcesses(new QueryContext("ProcessName", true));
     	assertNotNull(definitions);
     	
-    	assertEquals(3, definitions.size());
+    	assertEquals(4, definitions.size());
     	List<String> expectedProcessIds = new ArrayList<String>();
     	
+    	expectedProcessIds.add("HumanTask");
     	expectedProcessIds.add("User Task");
     	expectedProcessIds.add("humanTaskSample");
-    	expectedProcessIds.add("humanTaskSample");    	
+    	expectedProcessIds.add("humanTaskSample");      	
     	
     	int index = 0;
     	for (ProcessDefinition def : definitions) {
@@ -231,11 +236,12 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	Collection<ProcessDefinition> definitions = runtimeDataService.getProcesses(new QueryContext("ProcessVersion", true));
     	assertNotNull(definitions);
     	
-    	assertEquals(3, definitions.size());
+    	assertEquals(4, definitions.size());
     	List<String> expectedProcessIds = new ArrayList<String>();
     	expectedProcessIds.add("UserTask");
+    	expectedProcessIds.add("org.jboss.qa.bpms.HumanTask");
     	expectedProcessIds.add("org.jbpm.writedocument.empty");
-    	expectedProcessIds.add("org.jbpm.writedocument");
+    	expectedProcessIds.add("org.jbpm.writedocument");    	
     	
     	int index = 0;
     	for (ProcessDefinition def : definitions) {
@@ -709,5 +715,27 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	assertEquals(processInstanceId, userTask.getProcessInstanceId());
     	assertEquals("Write a Document", userTask.getName());
     
+    }
+    
+    @Test
+    public void testGetTaskOwned() {
+    	processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jboss.qa.bpms.HumanTask");
+    	assertNotNull(processInstanceId);
+    	
+    	ProcessInstance instance = processService.getProcessInstance(processInstanceId);
+    	assertNotNull(instance);
+    	
+    	List<TaskSummary> tasks = runtimeDataService.getTasksOwned("john", new QueryFilter(0, 5));
+    	assertNotNull(tasks);
+    	assertEquals(1, tasks.size());
+
+    	TaskSummary userTask = tasks.get(0);
+    	
+    	assertNotNull(userTask);
+    	assertEquals(processInstanceId, userTask.getProcessInstanceId());
+    	assertEquals("Hello", userTask.getName());
+    	assertEquals("john", userTask.getActualOwnerId());
+    	assertEquals("Reserved", userTask.getStatusId());
+    	assertNotNull(userTask.getActualOwner());
     }
 }

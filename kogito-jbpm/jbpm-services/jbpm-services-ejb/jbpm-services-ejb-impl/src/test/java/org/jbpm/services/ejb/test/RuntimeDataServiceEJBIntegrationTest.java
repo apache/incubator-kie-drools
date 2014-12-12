@@ -61,7 +61,9 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryContext;
+import org.kie.internal.query.QueryFilter;
 import org.kie.scanner.MavenRepository;
 
 @RunWith(Arquillian.class)
@@ -102,6 +104,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
         List<String> processes = new ArrayList<String>();
         processes.add("processes/EmptyHumanTask.bpmn");
         processes.add("processes/humanTask.bpmn");
+        processes.add("processes/SimpleHTProcess.bpmn2");
         
         InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
         File pom = new File("target/kmodule", "pom.xml");
@@ -160,10 +163,11 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	Collection<ProcessDefinition> definitions = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier(), new QueryContext());
     	assertNotNull(definitions);
     	
-    	assertEquals(2, definitions.size());
+    	assertEquals(3, definitions.size());
     	List<String> expectedProcessIds = new ArrayList<String>();
     	expectedProcessIds.add("org.jbpm.writedocument.empty");
     	expectedProcessIds.add("org.jbpm.writedocument");
+    	expectedProcessIds.add("org.jboss.qa.bpms.HumanTask");
     	
     	for (ProcessDefinition def : definitions) {
     		assertTrue(expectedProcessIds.contains(def.getId()));
@@ -207,10 +211,11 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	Collection<ProcessDefinition> definitions = runtimeDataService.getProcesses(new QueryContext());
     	assertNotNull(definitions);
     	
-    	assertEquals(2, definitions.size());
+    	assertEquals(3, definitions.size());
     	List<String> expectedProcessIds = new ArrayList<String>();
     	expectedProcessIds.add("org.jbpm.writedocument.empty");
     	expectedProcessIds.add("org.jbpm.writedocument");
+    	expectedProcessIds.add("org.jboss.qa.bpms.HumanTask");
     	
     	for (ProcessDefinition def : definitions) {
     		assertTrue(expectedProcessIds.contains(def.getId()));
@@ -222,10 +227,12 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	Collection<String> definitions = runtimeDataService.getProcessIds(deploymentUnit.getIdentifier(), new QueryContext());
     	assertNotNull(definitions);
     	
-    	assertEquals(2, definitions.size());
+    	assertEquals(3, definitions.size());
     	
     	assertTrue(definitions.contains("org.jbpm.writedocument.empty"));
-    	assertTrue(definitions.contains("org.jbpm.writedocument"));    
+    	assertTrue(definitions.contains("org.jbpm.writedocument"));
+    	assertTrue(definitions.contains("org.jboss.qa.bpms.HumanTask"));
+    	
     }
     
     @Test
@@ -676,5 +683,27 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	assertEquals(processInstanceId, userTask.getProcessInstanceId());
     	assertEquals("Write a Document", userTask.getName());
     
+    }
+    
+    @Test
+    public void testGetTaskOwned() {
+    	processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jboss.qa.bpms.HumanTask");
+    	assertNotNull(processInstanceId);
+    	
+    	ProcessInstance instance = processService.getProcessInstance(processInstanceId);
+    	assertNotNull(instance);
+    	
+    	List<TaskSummary> tasks = runtimeDataService.getTasksOwned("john", new QueryFilter(0, 5));
+    	assertNotNull(tasks);
+    	assertEquals(1, tasks.size());
+
+    	TaskSummary userTask = tasks.get(0);
+    	
+    	assertNotNull(userTask);
+    	assertEquals(processInstanceId, userTask.getProcessInstanceId());
+    	assertEquals("Hello", userTask.getName());
+    	assertEquals("john", userTask.getActualOwnerId());
+    	assertEquals("Reserved", userTask.getStatusId());
+    	assertNotNull(userTask.getActualOwner());
     }
 }
