@@ -567,6 +567,26 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
      */
 
     /**
+     * @deprecated This method does not check the actual state of process instance. Use either
+     * {@link #assertProcessInstanceCompleted(long)} if session persistence is enabled or
+     * {@link #assertProcessInstanceNotActive(long, KieSession)} otherwise.
+     */
+    @Deprecated
+    public void assertProcessInstanceCompleted(long processInstanceId, KieSession ksession) {
+        assertNull(ksession.getProcessInstance(processInstanceId));
+    }
+
+    /**
+     * @deprecated This method does not check the actual state of process instance. Use either
+     * {@link #assertProcessInstanceAborted(long)} if session persistence is enabled or
+     * {@link #assertProcessInstanceNotActive(long, KieSession)} otherwise.
+     */
+    @Deprecated
+    public void assertProcessInstanceAborted(long processInstanceId, KieSession ksession) {
+        assertNull(ksession.getProcessInstance(processInstanceId));
+    }
+
+    /**
      * Asserts that process instance is active.
      * Does not require session persistence to be enabled.
      *
