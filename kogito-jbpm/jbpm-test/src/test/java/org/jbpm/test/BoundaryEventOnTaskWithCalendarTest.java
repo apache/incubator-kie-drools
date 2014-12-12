@@ -40,7 +40,7 @@ public class BoundaryEventOnTaskWithCalendarTest extends JbpmJUnitBaseTestCase {
         Thread.sleep(3000);
 
         assertNodeTriggered(processInstance.getId(), "Koniec1");
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getId());
     }
 
  
@@ -77,6 +77,6 @@ public class BoundaryEventOnTaskWithCalendarTest extends JbpmJUnitBaseTestCase {
         Thread.sleep(3000);
 
         assertNodeTriggered(processInstance.getId(), "Koniec1");
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getId());
     }
 }

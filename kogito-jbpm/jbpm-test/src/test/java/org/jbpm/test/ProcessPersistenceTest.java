@@ -25,7 +25,7 @@ public class ProcessPersistenceTest extends JbpmJUnitBaseTestCase {
 	    KieSession ksession = runtimeEngine.getKieSession();
 		ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
 		// check whether the process instance has completed successfully
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		assertProcessInstanceCompleted(processInstance.getId());
 		assertNodeTriggered(processInstance.getId(), "StartProcess", "Hello", "EndProcess");
 		manager.disposeRuntimeEngine(runtimeEngine);
 		manager.close();

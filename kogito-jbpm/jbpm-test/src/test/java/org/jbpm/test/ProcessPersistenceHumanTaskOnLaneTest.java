@@ -40,7 +40,7 @@ public class ProcessPersistenceHumanTaskOnLaneTest extends JbpmJUnitBaseTestCase
 
         ProcessInstance processInstance = ksession.startProcess("UserTask");
 
-        assertProcessInstanceActive(processInstance.getId(), ksession);
+        assertProcessInstanceActive(processInstance.getId());
         
 
         // simulating a system restart
@@ -82,7 +82,7 @@ public class ProcessPersistenceHumanTaskOnLaneTest extends JbpmJUnitBaseTestCase
         taskService.complete(task.getId(), taskUser, null);
 
 
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getId());
     }
     
     @Test 
@@ -94,7 +94,7 @@ public class ProcessPersistenceHumanTaskOnLaneTest extends JbpmJUnitBaseTestCase
 
         ProcessInstance processInstance = ksession.startProcess("UserTask");
 
-        assertProcessInstanceActive(processInstance.getId(), ksession);
+        assertProcessInstanceActive(processInstance.getId());
         
 
         // simulating a system restart
@@ -145,7 +145,7 @@ public class ProcessPersistenceHumanTaskOnLaneTest extends JbpmJUnitBaseTestCase
         taskService.complete(task.getId(), taskUser, null);
 
 
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getId());
     }
 
 	@SuppressWarnings("unchecked")
@@ -161,7 +161,7 @@ public class ProcessPersistenceHumanTaskOnLaneTest extends JbpmJUnitBaseTestCase
 
 		ProcessInstance processInstance = ksession.startProcess("UserTask");
 
-		assertProcessInstanceActive(processInstance.getId(), ksession);
+		assertProcessInstanceActive(processInstance.getId());
 		long task1 = -1;
 		long task2 = -1;
 
@@ -200,7 +200,7 @@ public class ProcessPersistenceHumanTaskOnLaneTest extends JbpmJUnitBaseTestCase
 		taskService.start(task.getId(), taskUser);
 		taskService.complete(task.getId(), taskUser, null);
 
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		assertProcessInstanceCompleted(processInstance.getId());
 
 		EntityManager em = getEmf().createEntityManager();
 		List<BAMTaskSummaryImpl> bamLogs = em.createQuery(

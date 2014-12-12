@@ -56,7 +56,7 @@ public class ProcessHumanTaskTest extends JbpmJUnitBaseTestCase {
 		taskService.complete(task.getId(), "mary", null);
 
 		assertNodeTriggered(processInstance.getId(), "End");
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		assertProcessInstanceNotActive(processInstance.getId(), ksession);
 	}
 	
     @Test
@@ -93,7 +93,7 @@ public class ProcessHumanTaskTest extends JbpmJUnitBaseTestCase {
         taskService.complete(task.getId(), "mary", null);
 
         assertNodeTriggered(processInstance.getId(), "End");
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceNotActive(processInstance.getId(), ksession);
     }
     
     @Test
@@ -125,7 +125,7 @@ public class ProcessHumanTaskTest extends JbpmJUnitBaseTestCase {
         taskService.complete(task.getId(), "mary", null);
 
         assertNodeTriggered(processInstance.getId(), "End");
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceNotActive(processInstance.getId(), ksession);
     }
 
     @Test
@@ -166,7 +166,7 @@ public class ProcessHumanTaskTest extends JbpmJUnitBaseTestCase {
         taskService.complete(task.getId(), "mary", null);
 
         assertNodeTriggered(processInstance.getId(), "End");
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceNotActive(processInstance.getId(), ksession);
         manager.disposeRuntimeEngine(runtimeEngine);
     }
 }

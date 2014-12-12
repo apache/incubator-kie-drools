@@ -60,6 +60,7 @@ import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.manager.audit.AuditService;
 import org.kie.api.runtime.manager.audit.NodeInstanceLog;
+import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -90,7 +91,7 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
  * * tearDown: executed @After and clears out history, closes <code>EntityManagerFactory</code> and data source, disposes <code>RuntimeEngine</code>'s and <code>RuntimeManager</code><br/>
  * <br/>
  * <b>KnowledgeBase and KnowledgeSession management methods</b>
- * * createRuntimeManager creates <code>RuntimeManager</code> for gives set of assets and selected strategy 
+ * * createRuntimeManager creates <code>RuntimeManager</code> for gives set of assets and selected strategy
  * <br/>
  * * disposeRuntimeManager disposes <code>RuntimeManager</code> currently active in the scope of test
  * <br/>
@@ -107,7 +108,7 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
  * * setupPoolingDataSource - sets up data source<br/>
  */
 public abstract class JbpmJUnitBaseTestCase extends Assert {
-    
+
     /**
      * Currently supported RuntimeEngine strategies
      */
@@ -116,28 +117,28 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
         REQUEST,
         PROCESS_INSTANCE;
     }
-    
+
     private static final Logger logger = LoggerFactory.getLogger(JbpmJUnitBaseTestCase.class);
-  
+
     protected boolean setupDataSource = false;
     protected boolean sessionPersistence = false;
     private String persistenceUnitName;
-    
+
     private EntityManagerFactory emf;
     private PoolingDataSource ds;
-    
+
     private TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-    
+
     private RuntimeManagerFactory managerFactory = RuntimeManagerFactory.Factory.get();
     protected RuntimeManager manager;
 
     private AuditService logService;
-    private WorkingMemoryInMemoryLogger inMemoryLogger;    
-    
+    private WorkingMemoryInMemoryLogger inMemoryLogger;
+
     protected UserGroupCallback userGroupCallback = new JBossUserGroupCallbackImpl("classpath:/usergroups.properties");
-   
+
     protected Set<RuntimeEngine> activeEngines = new HashSet<RuntimeEngine>();
-    
+
     protected Map<String, WorkItemHandler> customHandlers = new HashMap<String, WorkItemHandler>();
     protected List<ProcessEventListener> customProcessListeners = new ArrayList<ProcessEventListener>();
     protected List<AgendaEventListener> customAgendaListeners = new ArrayList<AgendaEventListener>();
@@ -157,7 +158,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
 
     /**
      * Allows to explicitly configure persistence and data source. This is the most common way of
-     * bootstrapping test cases for jBPM.<br/> 
+     * bootstrapping test cases for jBPM.<br/>
      * Use following configuration to execute in memory process management with human tasks persistence <br/>
      * <code>
      * super(true, false);
@@ -175,7 +176,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     public JbpmJUnitBaseTestCase(boolean setupDataSource, boolean sessionPersistence) {
         this(setupDataSource, sessionPersistence, "org.jbpm.persistence.jpa");
     }
-    
+
     /**
      * Same as {@link #JbpmJUnitBaseTestCase(boolean, boolean)} but allows to use another persistence unit name.
      * @param setupDataSource - true to configure data source under JNDI name: jdbc/jbpm-ds
@@ -203,7 +204,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
             emf = Persistence.createEntityManagerFactory(persistenceUnitName);
         }
         cleanupSingletonSessionId();
-        
+
     }
 
     @After
@@ -214,29 +215,29 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
         if (setupDataSource) {
             if (emf != null) {
                 emf.close();
-                emf = null;                
+                emf = null;
                	EntityManagerFactoryManager.get().clear();
-                
+
             }
             if (ds != null) {
                 ds.close();
                 ds = null;
             }
-            try { 
+            try {
                 InitialContext context = new InitialContext();
                 UserTransaction ut = (UserTransaction) context.lookup( JtaTransactionManager.DEFAULT_USER_TRANSACTION_NAME );
-                if( ut.getStatus() != Status.STATUS_NO_TRANSACTION ) { 
+                if( ut.getStatus() != Status.STATUS_NO_TRANSACTION ) {
                     ut.setRollbackOnly();
                     ut.rollback();
                 }
-            } catch( Exception e ) { 
+            } catch( Exception e ) {
                 // do nothing
             }
-        }        
+        }
     }
 
     /**
-     * Creates default configuration of <code>RuntimeManager</code> with SINGLETON strategy and all 
+     * Creates default configuration of <code>RuntimeManager</code> with SINGLETON strategy and all
      * <code>processes</code> being added to knowledge base.
      * <br/>
      * There should be only one <code>RuntimeManager</code> created during single test.
@@ -246,9 +247,9 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     protected RuntimeManager createRuntimeManager(String... process) {
         return createRuntimeManager(Strategy.SINGLETON, null, process);
     }
-    
+
     /**
-     * Creates default configuration of <code>RuntimeManager</code> with given <code>strategy</code> and all 
+     * Creates default configuration of <code>RuntimeManager</code> with given <code>strategy</code> and all
      * <code>processes</code> being added to knowledge base.
      * <br/>
      * There should be only one <code>RuntimeManager</code> created during single test.
@@ -266,7 +267,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     }
 
     /**
-     * Creates default configuration of <code>RuntimeManager</code> with SINGLETON strategy and all 
+     * Creates default configuration of <code>RuntimeManager</code> with SINGLETON strategy and all
      * <code>resources</code> being added to knowledge base.
      * <br/>
      * There should be only one <code>RuntimeManager</code> created during single test.
@@ -278,7 +279,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     }
 
     /**
-     * Creates default configuration of <code>RuntimeManager</code> with SINGLETON strategy and all 
+     * Creates default configuration of <code>RuntimeManager</code> with SINGLETON strategy and all
      * <code>resources</code> being added to knowledge base.
      * <br/>
      * There should be only one <code>RuntimeManager</code> created during single test.
@@ -289,9 +290,9 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     protected RuntimeManager createRuntimeManager(Map<String, ResourceType> resources, String identifier) {
         return createRuntimeManager(Strategy.SINGLETON, resources, identifier);
     }
-    
+
     /**
-     * Creates default configuration of <code>RuntimeManager</code> with given <code>strategy</code> and all 
+     * Creates default configuration of <code>RuntimeManager</code> with given <code>strategy</code> and all
      * <code>resources</code> being added to knowledge base.
      * <br/>
      * There should be only one <code>RuntimeManager</code> created during single test.
@@ -302,9 +303,9 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     protected RuntimeManager createRuntimeManager(Strategy strategy, Map<String, ResourceType> resources) {
         return createRuntimeManager(strategy, resources, null);
     }
-    
+
     /**
-     * Creates default configuration of <code>RuntimeManager</code> with given <code>strategy</code> and all 
+     * Creates default configuration of <code>RuntimeManager</code> with given <code>strategy</code> and all
      * <code>resources</code> being added to knowledge base.
      * <br/>
      * There should be only one <code>RuntimeManager</code> created during single test.
@@ -317,7 +318,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
         if (manager != null) {
             throw new IllegalStateException("There is already one RuntimeManager active");
         }
-        
+
         RuntimeEnvironmentBuilder builder = null;
         if (!setupDataSource){
             builder = RuntimeEnvironmentBuilder.Factory.get()
@@ -333,30 +334,30 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
 					handlers.putAll(customHandlers);
 					return handlers;
 				}
-	
+
 				@Override
 				public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
 					List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
 					listeners.addAll(customProcessListeners);
 					return listeners;
 				}
-	
+
 				@Override
 				public List<AgendaEventListener> getAgendaEventListeners( RuntimeEngine runtime) {
 					List<AgendaEventListener> listeners = super.getAgendaEventListeners(runtime);
 					listeners.addAll(customAgendaListeners);
 					return listeners;
 				}
-	
+
 				@Override
 				public List<TaskLifeCycleEventListener> getTaskListeners() {
 					List<TaskLifeCycleEventListener> listeners = super.getTaskListeners();
 					listeners.addAll(customTaskListeners);
 					return listeners;
 				}
-	        	
+
 	        });
-            
+
         } else if (sessionPersistence) {
             builder = RuntimeEnvironmentBuilder.Factory.get()
         			.newDefaultBuilder()
@@ -370,28 +371,28 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
 					handlers.putAll(customHandlers);
 					return handlers;
 				}
-	
+
 				@Override
 				public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
 					List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
 					listeners.addAll(customProcessListeners);
 					return listeners;
 				}
-	
+
 				@Override
 				public List<AgendaEventListener> getAgendaEventListeners( RuntimeEngine runtime) {
 					List<AgendaEventListener> listeners = super.getAgendaEventListeners(runtime);
 					listeners.addAll(customAgendaListeners);
 					return listeners;
 				}
-	
+
 				@Override
 				public List<TaskLifeCycleEventListener> getTaskListeners() {
 					List<TaskLifeCycleEventListener> listeners = super.getTaskListeners();
 					listeners.addAll(customTaskListeners);
 					return listeners;
 				}
-	        	
+
 	        });
         } else {
             builder = RuntimeEnvironmentBuilder.Factory.get()
@@ -405,46 +406,46 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
 					handlers.putAll(customHandlers);
 					return handlers;
 				}
-	
+
 				@Override
 				public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
 					List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
 					listeners.addAll(customProcessListeners);
 					return listeners;
 				}
-	
+
 				@Override
 				public List<AgendaEventListener> getAgendaEventListeners( RuntimeEngine runtime) {
 					List<AgendaEventListener> listeners = super.getAgendaEventListeners(runtime);
 					listeners.addAll(customAgendaListeners);
 					return listeners;
 				}
-	
+
 				@Override
 				public List<TaskLifeCycleEventListener> getTaskListeners() {
 					List<TaskLifeCycleEventListener> listeners = super.getTaskListeners();
 					listeners.addAll(customTaskListeners);
 					return listeners;
 				}
-	        	
-	        });       
+
+	        });
         }
         builder.userGroupCallback(userGroupCallback);
-        
-        for (Map.Entry<String, ResourceType> entry : resources.entrySet()) {            
+
+        for (Map.Entry<String, ResourceType> entry : resources.entrySet()) {
             builder.addAsset(ResourceFactory.newClassPathResource(entry.getKey()), entry.getValue());
         }
-        
+
         return createRuntimeManager(strategy, resources, builder.get(), identifier);
     }
-    
+
     /**
      * The lowest level of creation of <code>RuntimeManager</code> that expects to get <code>RuntimeEnvironment</code>
      * to be given as argument. It does not assume any particular configuration as it's considered manual creation
      * that allows to configure every single piece of <code>RuntimeManager</code>. <br/>
      * Use this only when you know what you do!
      * @param strategy - selected strategy of those that are supported
-     * @param resources - resources that shall be added to knowledge base 
+     * @param resources - resources that shall be added to knowledge base
      * @param environment - runtime environment used for <code>RuntimeManager</code> creation
      * @param identifier - identifies the runtime manager
      * @return new instance of RuntimeManager
@@ -464,8 +465,8 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
             break;
         case REQUEST:
             if (identifier == null) {
-                manager = managerFactory.newPerRequestRuntimeManager(environment);   
-            } else {  
+                manager = managerFactory.newPerRequestRuntimeManager(environment);
+            } else {
                 manager = managerFactory.newPerRequestRuntimeManager(environment, identifier);
             }
             break;
@@ -484,13 +485,13 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
             }
             break;
         }
-         
+
         return manager;
     }
 
     /**
      * Disposes currently active (in scope of a test) <code>RuntimeManager</code> together with all
-     * active <code>RuntimeEngine</code>'s that were created (in scope of a test). Usual use case is 
+     * active <code>RuntimeEngine</code>'s that were created (in scope of a test). Usual use case is
      * to simulate system shutdown.
      */
     protected void disposeRuntimeManager() {
@@ -523,9 +524,9 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     protected RuntimeEngine getRuntimeEngine() {
         return getRuntimeEngine(EmptyContext.get());
     }
-    
+
     /**
-     * Returns new <code>RuntimeEngine</code> built from the manager of this test case. Common use case is to maintain 
+     * Returns new <code>RuntimeEngine</code> built from the manager of this test case. Common use case is to maintain
      * same session for process instance and thus <code>ProcessInstanceIdContext</code> shall be used.
      * @param context - instance of the context that shall be used to create <code>RuntimeManager</code>
      * @return new RuntimeEngine instance
@@ -534,16 +535,16 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
         if (manager == null) {
             throw new IllegalStateException("RuntimeManager is not initialized, did you forgot to create it?");
         }
-         
+
         RuntimeEngine runtimeEngine = manager.getRuntimeEngine(context);
         activeEngines.add(runtimeEngine);
-        if (sessionPersistence) {            
-            logService = runtimeEngine.getAuditService();               
-            
-        } else {            
+        if (sessionPersistence) {
+            logService = runtimeEngine.getAuditService();
+
+        } else {
             inMemoryLogger = new WorkingMemoryInMemoryLogger((StatefulKnowledgeSession) runtimeEngine.getKieSession());
         }
-        
+
         return runtimeEngine;
     }
 
@@ -564,16 +565,67 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
      * *********** assert methods *************
      * ****************************************
      */
-    public void assertProcessInstanceCompleted(long processInstanceId, KieSession ksession) {
-        assertNull(ksession.getProcessInstance(processInstanceId));
-    }
 
-    public void assertProcessInstanceAborted(long processInstanceId, KieSession ksession) {
-        assertNull(ksession.getProcessInstance(processInstanceId));
-    }
-
+    /**
+     * Asserts that process instance is active.
+     * Does not require session persistence to be enabled.
+     *
+     * @param processInstanceId id of process instance
+     * @param ksession
+     */
     public void assertProcessInstanceActive(long processInstanceId, KieSession ksession) {
         assertNotNull(ksession.getProcessInstance(processInstanceId));
+    }
+
+    /**
+     * Asserts that process instance is not active.
+     * Does not require session persistence to be enabled.
+     *
+     * @param processInstanceId id of process instance
+     * @param ksession
+     */
+    public void assertProcessInstanceNotActive(long processInstanceId, KieSession ksession) {
+        assertNull(ksession.getProcessInstance(processInstanceId));
+    }
+
+    private void assertProcessInstanceState(long processInstanceId, Integer expectedState, String message) {
+        if (logService == null) {
+            throw new IllegalStateException("Audit service has not been initialized. Session persistence is probably " +
+                    "not enabled or you are not getting runtime engine using methods from JbpmJUnitBaseTestCase");
+        }
+        ProcessInstanceLog log = logService.findProcessInstance(processInstanceId);
+        assertNotNull("Process instance has not been found", log);
+        assertEquals(message, expectedState, log.getStatus());
+    }
+
+    /**
+     * Asserts that process instance is active.
+     * Makes use of AuditService which requires persistence to be enabled.
+     *
+     * @param processInstanceId id of process instance
+     */
+    public void assertProcessInstanceActive(long processInstanceId) {
+        assertProcessInstanceState(processInstanceId, ProcessInstance.STATE_ACTIVE, "Process instance is not active");
+    }
+
+    /**
+     * Asserts that process instance is completed.
+     * Makes use of AuditService which requires persistence to be enabled.
+     *
+     * @param processInstanceId id of process instance
+     */
+    public void assertProcessInstanceCompleted(long processInstanceId) {
+        assertProcessInstanceState(processInstanceId, ProcessInstance.STATE_COMPLETED, "Process instance is not completed");
+    }
+
+    /**
+     * Asserts that process instance is aborted.
+     * Makes use of AuditService which requires persistence to be enabled.
+     *
+     * @param processInstanceId id of process instance
+     */
+    public void assertProcessInstanceAborted(long processInstanceId) {
+        assertProcessInstanceState(processInstanceId, ProcessInstance.STATE_ABORTED, "Process instance is not aborted");
     }
 
     public void assertNodeActive(long processInstanceId, KieSession ksession, String... name) {
@@ -639,7 +691,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
             fail("Node(s) not executed: " + s);
         }
     }
-    
+
     public void assertProcessVarExists(ProcessInstance process, String... processVarNames) {
         WorkflowProcessInstanceImpl instance = (WorkflowProcessInstanceImpl) process;
         List<String> names = new ArrayList<String>();
@@ -739,11 +791,11 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
      * *********** helper methods *************
      * ****************************************
      */
-    
+
     protected EntityManagerFactory getEmf() {
         return this.emf;
     }
-    
+
     protected DataSource getDs() {
         return this.ds;
     }
@@ -761,7 +813,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
         pds.init();
         return pds;
     }
-    
+
     protected void clearHistory() {
         if (sessionPersistence && logService != null) {
         	RuntimeManager manager = createRuntimeManager();
@@ -773,39 +825,39 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
             inMemoryLogger.clear();
         }
     }
-    
+
     protected void clearCustomRegistry() {
     	this.customAgendaListeners.clear();
     	this.customHandlers.clear();
     	this.customProcessListeners.clear();
     	this.customTaskListeners.clear();
     }
-    
-    
+
+
     protected TestWorkItemHandler getTestWorkItemHandler() {
         return workItemHandler;
     }
-    
+
     protected AuditService getLogService() {
         return logService;
     }
-    
+
     protected WorkingMemoryInMemoryLogger getInMemoryLogger() {
         return inMemoryLogger;
     }
-    
+
     public void addProcessEventListener(ProcessEventListener listener) {
     	customProcessListeners.add(listener);
     }
-    
+
     public void addAgendaEventListener(AgendaEventListener listener) {
     	customAgendaListeners.add(listener);
     }
-    
+
     public void addTaskEventListener(TaskLifeCycleEventListener listener) {
     	customTaskListeners.add(listener);
     }
-    
+
     public void addWorkItemHandler(String name, WorkItemHandler handler) {
     	customHandlers.put(name, handler);
     }
@@ -844,17 +896,17 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     protected static void cleanupSingletonSessionId() {
         File tempDir = new File(System.getProperty("java.io.tmpdir"));
         if (tempDir.exists()) {
-            
+
             String[] jbpmSerFiles = tempDir.list(new FilenameFilter() {
-                
+
                 @Override
                 public boolean accept(File dir, String name) {
-                    
+
                     return name.endsWith("-jbpmSessionId.ser");
                 }
             });
             for (String file : jbpmSerFiles) {
-                
+
                 new File(tempDir, file).delete();
             }
         }

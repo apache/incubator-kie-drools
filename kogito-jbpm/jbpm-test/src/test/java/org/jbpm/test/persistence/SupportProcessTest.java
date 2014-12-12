@@ -47,7 +47,7 @@ public class SupportProcessTest extends JbpmJUnitBaseTestCase{
         params.put("customer", "salaboy");
         ProcessInstance processInstance = ksession.startProcess("support.process", params);
         
-        assertProcessInstanceActive(processInstance.getId(), ksession);
+        assertProcessInstanceActive(processInstance.getId());
         assertProcessVarExists(processInstance, "customer");
         // Configure Release
         List<TaskSummary> tasksAssignedToSalaboy = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
@@ -98,7 +98,7 @@ public class SupportProcessTest extends JbpmJUnitBaseTestCase{
         taskService.complete(notifySupportTask.getId(), "salaboy", output);
 
         
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getId());
         
     }
 }

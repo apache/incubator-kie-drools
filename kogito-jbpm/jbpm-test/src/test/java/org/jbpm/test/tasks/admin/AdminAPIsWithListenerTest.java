@@ -236,7 +236,7 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitBaseTestCase {
         taskService.start(taskId, "john");
         taskService.complete(taskId, "john", null);
         
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getId());
 
         final EntityManager em = emfTasks.createEntityManager();
 
@@ -256,7 +256,7 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitBaseTestCase {
     public void humanTaskTest() throws Exception {
 
         RuntimeManager manager = createRuntimeManager("subprocess-test/ht-main.bpmn", "subprocess-test/ht-sub.bpmn");
-        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
         ksession.addEventListener(new TaskCleanUpProcessEventListener(runtime.getTaskService()));
         
@@ -283,7 +283,7 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitBaseTestCase {
         ksession.abortProcessInstance(pi.getId());
 
         // main process instance shall be aborted
-        assertProcessInstanceAborted(pi.getId(), ksession);
+        assertProcessInstanceAborted(pi.getId());
         
         
         AuditService logService = runtime.getAuditService();

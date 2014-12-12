@@ -83,7 +83,7 @@ public class InclusiveGatewayWithHumanTasksProcessTest extends JbpmJUnitBaseTest
 		taskService.start(johntasks.get(0).getId(), userId);				
 		taskService.complete(johntasks.get(0).getId(), userId, new HashMap<String, Object>());
 		
-		assertProcessInstanceCompleted(pi.getId(), ksession);
+		assertProcessInstanceCompleted(pi.getId());
         
     }
 }

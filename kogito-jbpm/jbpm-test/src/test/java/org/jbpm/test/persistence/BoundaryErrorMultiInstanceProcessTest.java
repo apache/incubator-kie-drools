@@ -46,7 +46,7 @@ public class BoundaryErrorMultiInstanceProcessTest extends JbpmJUnitBaseTestCase
         params.put("approvers", new String[]{"salaboy", "mary"});
         ProcessInstance processInstance = ksession.startProcess("boundary-catch-error-event", params);
         
-        assertProcessInstanceActive(processInstance.getId(), ksession);
+        assertProcessInstanceActive(processInstance.getId());
         List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
         assertEquals(1, tasks.size());
 
@@ -97,7 +97,7 @@ public class BoundaryErrorMultiInstanceProcessTest extends JbpmJUnitBaseTestCase
         taskService.complete(salaboyTask.getId(), "salaboy", null);
         
         
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getId());
         
     }
 }

@@ -102,7 +102,7 @@ public class LocalTasksServiceTest extends JbpmJUnitBaseTestCase {
     @Test
     public void testMultipleActorsClaimedQuery() {
         RuntimeManager manager = createRuntimeManager("BPMN2-HumanTaskMultipleActors.bpmn2");        
-        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        RuntimeEngine runtime = getRuntimeEngine();
         KieSession ksession = runtime.getKieSession();
 
         // start a new process instance
@@ -126,7 +126,7 @@ public class LocalTasksServiceTest extends JbpmJUnitBaseTestCase {
 		taskService.start(task1.get(0).getId(), "krisv");
 		taskService.complete(task1.get(0).getId(), "krisv", null);
 		
-		assertProcessInstanceCompleted(pi.getId(), ksession);
+		assertProcessInstanceCompleted(pi.getId());
 		
 		manager.disposeRuntimeEngine(runtime);
     }

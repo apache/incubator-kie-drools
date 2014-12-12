@@ -31,7 +31,7 @@ public class JbpmParalellLoopTest extends JbpmJUnitBaseTestCase {
 
     ProcessInstance processInstance = ksession.startProcess("hu.tsm.ParalellLoopTest");
 
-    assertProcessInstanceActive(processInstance.getId(), ksession);
+    assertProcessInstanceActive(processInstance.getId());
 
     for (int i = 0; i < 20; i++) {
 
@@ -52,7 +52,7 @@ public class JbpmParalellLoopTest extends JbpmJUnitBaseTestCase {
     complete("john", "Approve");
     complete("mary", "Approve");
 
-    assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    assertProcessInstanceCompleted(processInstance.getId());
 
     manager.disposeRuntimeEngine(engine);
     manager.close();
@@ -71,7 +71,7 @@ public class JbpmParalellLoopTest extends JbpmJUnitBaseTestCase {
 
     ProcessInstance processInstance = ksession.startProcess("hu.tsm.ParalellLoopTest");
 
-    assertProcessInstanceActive(processInstance.getId(), ksession);
+    assertProcessInstanceActive(processInstance.getId());
 
     for (int i = 0; i < 20; i++) {
 
@@ -93,7 +93,7 @@ public class JbpmParalellLoopTest extends JbpmJUnitBaseTestCase {
     complete("john", "Approve");
     complete("mary", "Approve");
 
-    assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    assertProcessInstanceCompleted(processInstance.getId());
 
     manager.disposeRuntimeEngine(engine);
     manager.close();
@@ -112,7 +112,7 @@ public class JbpmParalellLoopTest extends JbpmJUnitBaseTestCase {
 
     ProcessInstance processInstance = ksession.startProcess("hu.tsm.ParalellLoopTest");
 
-    assertProcessInstanceActive(processInstance.getId(), ksession);
+    assertProcessInstanceActive(processInstance.getId());
 
     for (int i = 0; i < 20; i++) {
 
@@ -127,7 +127,7 @@ public class JbpmParalellLoopTest extends JbpmJUnitBaseTestCase {
     complete("john", "Approve");
     complete("mary", "Approve");
 
-    assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    assertProcessInstanceCompleted(processInstance.getId());
 
     manager.disposeRuntimeEngine(engine);
     manager.close();
@@ -146,7 +146,7 @@ public class JbpmParalellLoopTest extends JbpmJUnitBaseTestCase {
 
     ProcessInstance processInstance = ksession.startProcess("hu.tsm.ParalellLoopTest");
 
-    assertProcessInstanceActive(processInstance.getId(), ksession);
+    assertProcessInstanceActive(processInstance.getId());
 
     for (int i = 0; i < 20; i++) {
 
@@ -161,7 +161,7 @@ public class JbpmParalellLoopTest extends JbpmJUnitBaseTestCase {
     complete("john", "Approve");
     complete("mary", "Approve");
 
-    assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    assertProcessInstanceCompleted(processInstance.getId());
 
     manager.disposeRuntimeEngine(engine);
     manager.close();
@@ -180,7 +180,7 @@ public class JbpmParalellLoopTest extends JbpmJUnitBaseTestCase {
 
     ProcessInstance processInstance = ksession.startProcess("hu.tsm.ParalellLoopTest");
 
-    assertProcessInstanceActive(processInstance.getId(), ksession);
+    assertProcessInstanceActive(processInstance.getId());
 
     for (int i = 0; i < 20; i++) {
 
@@ -202,7 +202,7 @@ public class JbpmParalellLoopTest extends JbpmJUnitBaseTestCase {
     complete("john", "Approve");
     complete("mary", "Approve");
 
-    assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    assertProcessInstanceCompleted(processInstance.getId());
 
     manager.disposeRuntimeEngine(engine);
     manager.close();
@@ -221,12 +221,12 @@ public class JbpmParalellLoopTest extends JbpmJUnitBaseTestCase {
 
     ProcessInstance processInstance = ksession.startProcess("hu.tsm.ParalellLoopTest");
 
-    assertProcessInstanceActive(processInstance.getId(), ksession);
+    assertProcessInstanceActive(processInstance.getId());
 
     complete("john", "Approve");
     complete("mary", "Approve");
 
-    assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    assertProcessInstanceCompleted(processInstance.getId());
 
     manager.disposeRuntimeEngine(engine);
     manager.close();

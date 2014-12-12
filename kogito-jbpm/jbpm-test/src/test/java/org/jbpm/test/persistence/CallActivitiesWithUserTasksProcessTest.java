@@ -153,7 +153,7 @@ public class CallActivitiesWithUserTasksProcessTest extends JbpmJUnitBaseTestCas
             ut.begin();
         }
         
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceCompleted(processInstance.getId());
 
         if( userManagedTx ) { 
             ut.commit();
@@ -292,11 +292,12 @@ public class CallActivitiesWithUserTasksProcessTest extends JbpmJUnitBaseTestCas
         taskId = tasks.get(0).getId();
         taskService.start(taskId, "john");
         taskService.complete(taskId, "john", null);
-        
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
 
-        if( userManagedTx ) { 
+        if( userManagedTx ) {
+            assertProcessInstanceActive(processInstance.getId());
             ut.commit();
         }
+
+        assertProcessInstanceCompleted(processInstance.getId());
     }
 }

@@ -76,7 +76,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         taskService.complete(task.getId(), "mary", null);
 
         assertNodeTriggered(processInstance.getId(), "End");
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);       
+        assertProcessInstanceNotActive(processInstance.getId(), ksession);
     }
     
     @Test
@@ -112,7 +112,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         taskService.complete(task.getId(), "mary", null);
 
         assertNodeTriggered(processInstance.getId(), "End");
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);       
+        assertProcessInstanceNotActive(processInstance.getId(), ksession);
     }
 
     @Test
@@ -156,7 +156,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         taskService.complete(task.getId(), "mary", null);
 
         assertNodeTriggered(processInstance.getId(), "End");
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceNotActive(processInstance.getId(), ksession);
     }
     
     @Test
@@ -193,7 +193,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         taskService.complete(task.getId(), "mary", null);
 
         assertNodeTriggered(processInstance.getId(), "End");
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessInstanceNotActive(processInstance.getId(), ksession);
         
         
         processInstance = ((CorrelationAwareProcessRuntime)ksession).startProcess("com.sample.bpmn.hello", getCorrelationKey(), null);
@@ -222,7 +222,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         taskService.complete(task.getId(), "mary", null);
 
         assertNodeTriggered(processInstance.getId(), "End");
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);     
+        assertProcessInstanceNotActive(processInstance.getId(), ksession);
     }
     
     @Test
@@ -258,7 +258,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         taskService.complete(task.getId(), "mary", null);
 
         assertNodeTriggered(processInstance.getId(), "End");
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);       
+        assertProcessInstanceNotActive(processInstance.getId(), ksession);
     }
     
     @Test
@@ -298,7 +298,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         taskService.complete(task.getId(), "mary", null);
 
         assertNodeTriggered(processInstance.getId(), "End");
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);       
+        assertProcessInstanceNotActive(processInstance.getId(), ksession);
     }
     
     private CorrelationKey getCorrelationKey() {

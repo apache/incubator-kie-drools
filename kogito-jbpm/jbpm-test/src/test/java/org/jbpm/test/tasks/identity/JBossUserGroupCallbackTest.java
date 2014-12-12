@@ -18,7 +18,6 @@ import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.runtime.manager.context.EmptyContext;
 
 /**
  * This JUnit test is testing JBossUserGroupCallbackImpl with "," included in a Group ID of User Task
@@ -53,7 +52,7 @@ public class JBossUserGroupCallbackTest extends JbpmJUnitBaseTestCase {
     public void testProcess() throws Exception {
 
         RuntimeManager manager = createRuntimeManager(Strategy.PROCESS_INSTANCE, "default", "CustomSeparatorGroupIdUserTaskTest.bpmn");
-        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        RuntimeEngine runtime = getRuntimeEngine();
         KieSession ksession = runtime.getKieSession();
                                                         
         // start a new process instance
@@ -87,7 +86,7 @@ public class JBossUserGroupCallbackTest extends JbpmJUnitBaseTestCase {
             System.out.println("mary completed the task .");
         }
         
-		assertProcessInstanceCompleted(pi.getId(), ksession);
+		assertProcessInstanceCompleted(pi.getId());
 		System.out.println("Process Instance with id: '" + pi.getId() + "' , got completed successfully.");
 		
         manager.disposeRuntimeEngine(runtime);
