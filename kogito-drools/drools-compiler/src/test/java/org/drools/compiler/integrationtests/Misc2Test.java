@@ -6933,4 +6933,73 @@ public class Misc2Test extends CommonTestMethodBase {
         System.out.println(list);
         assertTrue(list.containsAll(asList(String.class, Integer.class)));
     }
+
+    @Test
+    public void testSubnetworkAccumulate() {
+        String drl =
+                "import " + StringWrapper.class.getCanonicalName() + ";\n" +
+                "global StringBuilder sb;" +
+                "rule R when\n" +
+                "  $s : String()\n" +
+                "  Number( $i : intValue ) from accumulate ($sw : StringWrapper( $value : value ) " +
+                "                                       and eval( $sw.contains($s) ), " +
+                "                                 sum($value) )\n" +
+                "then\n" +
+                "  sb.append($i);\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        StringBuilder sb = new StringBuilder();
+        ksession.setGlobal("sb", sb);
+
+        ksession.insert("test");
+        StringWrapper sw = new StringWrapper();
+        FactHandle swFH = ksession.insert(sw);
+        ksession.fireAllRules();
+
+        sw.setWrapped("test");
+        ksession.update(swFH, sw);
+        ksession.fireAllRules();
+
+        sw.setWrapped(null);
+        ksession.update(swFH, sw);
+        ksession.fireAllRules();
+
+        sw.setWrapped("test");
+        ksession.update(swFH, sw);
+        ksession.fireAllRules();
+
+        sw.setWrapped(null);
+        ksession.update(swFH, sw);
+        ksession.fireAllRules();
+
+        sw.setWrapped("test");
+        ksession.update(swFH, sw);
+        ksession.fireAllRules();
+
+        assertEquals("040404", sb.toString());
+    }
+
+    public static class StringWrapper {
+        private String wrapped;
+
+        public String getWrapped() {
+            return wrapped;
+        }
+
+        public void setWrapped(String wrapped) {
+            this.wrapped = wrapped;
+        }
+
+        public boolean contains(String s) {
+            return wrapped != null && wrapped.equals(s);
+        }
+
+        public int getValue() {
+            return wrapped != null ? wrapped.length() : 0;
+        }
+    }
 }

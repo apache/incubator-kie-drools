@@ -127,6 +127,8 @@ public class PhreakEvalNode {
                     }
 
                     trgLeftTuples.addDelete(childLeftTuple);
+                    childLeftTuple.unlinkFromLeftParent();
+                    childLeftTuple.unlinkFromRightParent();
                 }
                 // else do nothing
             }
