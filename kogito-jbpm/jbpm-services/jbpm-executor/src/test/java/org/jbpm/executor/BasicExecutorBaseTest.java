@@ -297,6 +297,25 @@ public abstract class BasicExecutorBaseTest {
 
 
     }
+    
+    @Test
+    public void reoccurringExcecutionTest() throws InterruptedException {
+        CommandContext ctxCMD = new CommandContext();
+        ctxCMD.setData("businessKey", UUID.randomUUID().toString());
+
+        executorService.scheduleRequest("org.jbpm.executor.commands.ReoccurringPrintOutCommand", ctxCMD);
+
+        Thread.sleep(10000);
+
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests();
+        assertEquals(0, inErrorRequests.size());
+        List<RequestInfo> queuedRequests = executorService.getQueuedRequests();
+        assertEquals(1, queuedRequests.size());
+        List<RequestInfo> executedRequests = executorService.getCompletedRequests();
+        assertEquals(3, executedRequests.size());
+
+
+    }
 
     
     public void FIXMEfutureRequestTest() throws InterruptedException {

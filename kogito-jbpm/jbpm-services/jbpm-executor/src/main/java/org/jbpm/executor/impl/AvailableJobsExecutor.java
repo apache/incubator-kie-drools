@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ExecutionResults;
 import org.kie.internal.executor.api.ExecutorQueryService;
 import org.kie.internal.executor.api.ExecutorStoreService;
+import org.kie.internal.executor.api.Reoccurring;
 import org.kie.internal.executor.api.STATUS;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
@@ -58,6 +60,7 @@ import org.slf4j.LoggerFactory;
 public class AvailableJobsExecutor {
 
     private static final Logger logger = LoggerFactory.getLogger(AvailableJobsExecutor.class);
+    private int retries = Integer.parseInt(System.getProperty("org.kie.executor.retry.count", "3"));
 
     private Map<String, Object> contextData = new HashMap<String, Object>();
    
@@ -88,6 +91,8 @@ public class AvailableJobsExecutor {
         try {
             RequestInfo request = (RequestInfo) queryService.getRequestForProcessing();
             if (request != null) {
+            	boolean processReoccurring = false;
+            	Command cmd = null;
                 CommandContext ctx = null;
                 List<CommandCallback> callbacks = null;
                 ClassLoader cl = getClassLoader(request.getDeploymentId());
@@ -118,7 +123,7 @@ public class AvailableJobsExecutor {
                     ctx.setData("ClassLoader", cl);
                     
                     
-                    Command cmd = classCacheManager.findCommand(request.getCommandName(), cl);
+                    cmd = classCacheManager.findCommand(request.getCommandName(), cl);
                     ExecutionResults results = cmd.execute(ctx);
                     
                     callbacks = classCacheManager.buildCommandCallback(ctx, cl);                
@@ -143,6 +148,7 @@ public class AvailableJobsExecutor {
                     request.setStatus(STATUS.DONE);
                      
                     executorStoreService.updateRequest(request);
+                    processReoccurring = true;
                     
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -174,10 +180,48 @@ public class AvailableJobsExecutor {
                                 handler.onCommandError(ctx, e);                        
                             }
                         }
-    
+                        processReoccurring = true;
                     }
     
-                } 
+                } finally {
+                	if (processReoccurring && cmd != null && cmd instanceof Reoccurring) {
+                		Date current = new Date();
+                		Date nextScheduleTime = ((Reoccurring) cmd).getScheduleTime();
+                		
+                		if (nextScheduleTime != null && nextScheduleTime.after(current)) {
+                			String businessKey = (String) ctx.getData("businessKey");
+                	        RequestInfo requestInfo = new RequestInfo();
+                	        requestInfo.setCommandName(cmd.getClass().getName());
+                	        requestInfo.setKey(businessKey);
+                	        requestInfo.setStatus(STATUS.QUEUED);
+                	        requestInfo.setTime(nextScheduleTime);
+                	        requestInfo.setMessage("Rescheduled reoccurring job");
+                	        requestInfo.setDeploymentId((String)ctx.getData("deploymentId"));
+                	        requestInfo.setOwner((String)ctx.getData("owner"));
+                	        if (ctx.getData("retries") != null) {
+                	            requestInfo.setRetries(Integer.valueOf(String.valueOf(ctx.getData("retries"))));
+                	        } else {
+                	            requestInfo.setRetries(retries);
+                	        }
+                	        if (ctx != null) {
+                	            try {
+                	            	// remove transient data
+                	            	ctx.getData().remove("ClassLoader");
+                	            	
+                	                ByteArrayOutputStream bout = new ByteArrayOutputStream();
+                	                ObjectOutputStream oout = new ObjectOutputStream(bout);
+                	                oout.writeObject(ctx);
+                	                requestInfo.setRequestData(bout.toByteArray());
+                	            } catch (IOException e) {
+                	                logger.warn("Error serializing context data", e);
+                	                requestInfo.setRequestData(null);
+                	            }
+                	        }
+                	        
+                	        executorStoreService.persistRequest(requestInfo);
+                		}
+                	}
+                }
             }
         } catch (Exception e) {
             logger.warn("Unexpected error while processin executor's job {}", e.getMessage(), e);
