@@ -14,12 +14,18 @@ import org.jbpm.process.audit.command.FindSubProcessInstancesCommand;
 import org.jbpm.process.audit.command.FindVariableInstancesByNameCommand;
 import org.jbpm.process.audit.command.FindVariableInstancesCommand;
 import org.jbpm.process.audit.query.NodeInstLogQueryBuilderImpl;
+import org.jbpm.process.audit.query.NodeInstanceLogDeleteBuilderImpl;
 import org.jbpm.process.audit.query.ProcInstLogQueryBuilderImpl;
+import org.jbpm.process.audit.query.ProcessInstanceLogDeleteBuilderImpl;
 import org.jbpm.process.audit.query.VarInstLogQueryBuilderImpl;
+import org.jbpm.process.audit.query.VarInstanceLogDeleteBuilderImpl;
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.internal.query.data.QueryData;
+import org.kie.internal.runtime.manager.audit.query.NodeInstanceLogDeleteBuilder;
 import org.kie.internal.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
+import org.kie.internal.runtime.manager.audit.query.ProcessInstanceLogDeleteBuilder;
 import org.kie.internal.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
+import org.kie.internal.runtime.manager.audit.query.VariableInstanceLogDeleteBuilder;
 import org.kie.internal.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
 
 public class CommandBasedAuditLogService implements AuditLogService {
@@ -104,6 +110,21 @@ public class CommandBasedAuditLogService implements AuditLogService {
     public ProcessInstanceLogQueryBuilder processInstanceLogQuery() {
         return new ProcInstLogQueryBuilderImpl(executor);
     }
+    
+	@Override
+	public ProcessInstanceLogDeleteBuilder processInstanceLogDelete() {
+		return new ProcessInstanceLogDeleteBuilderImpl(executor);
+	}
+	
+	@Override
+	public NodeInstanceLogDeleteBuilder nodeInstanceLogDelete() {
+		return new NodeInstanceLogDeleteBuilderImpl(executor);
+	}
+	
+	@Override
+	public VariableInstanceLogDeleteBuilder variableInstanceLogDelete() {
+		return new VarInstanceLogDeleteBuilderImpl(executor);
+	}
 
     @Override
     public List<org.kie.api.runtime.manager.audit.NodeInstanceLog> queryNodeInstanceLogs( QueryData queryData ) {

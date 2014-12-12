@@ -16,7 +16,38 @@
 
 package org.jbpm.process.audit;
 
-import static org.kie.internal.query.QueryParameterIdentifiers.*;
+import static org.kie.internal.query.QueryParameterIdentifiers.ASCENDING_VALUE;
+import static org.kie.internal.query.QueryParameterIdentifiers.DATE_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.DESCENDING_VALUE;
+import static org.kie.internal.query.QueryParameterIdentifiers.DURATION_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.END_DATE_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.EXTERNAL_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.FILTER;
+import static org.kie.internal.query.QueryParameterIdentifiers.FIRST_RESULT;
+import static org.kie.internal.query.QueryParameterIdentifiers.FLUSH_MODE;
+import static org.kie.internal.query.QueryParameterIdentifiers.IDENTITY_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.LAST_VARIABLE_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.MAX_RESULTS;
+import static org.kie.internal.query.QueryParameterIdentifiers.NODE_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.NODE_INSTANCE_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.NODE_NAME_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.NODE_TYPE_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.OLD_VALUE_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.ORDER_BY;
+import static org.kie.internal.query.QueryParameterIdentifiers.ORDER_TYPE;
+import static org.kie.internal.query.QueryParameterIdentifiers.OUTCOME_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_STATUS_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_NAME_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_VERSION_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.START_DATE_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.VALUE_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.VARIABLE_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.VARIABLE_INSTANCE_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.VAR_VALUE_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.VAR_VAL_SEPARATOR;
+import static org.kie.internal.query.QueryParameterIdentifiers.WORK_ITEM_ID_LIST;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,8 +68,11 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import org.jbpm.process.audit.query.NodeInstLogQueryBuilderImpl;
+import org.jbpm.process.audit.query.NodeInstanceLogDeleteBuilderImpl;
 import org.jbpm.process.audit.query.ProcInstLogQueryBuilderImpl;
+import org.jbpm.process.audit.query.ProcessInstanceLogDeleteBuilderImpl;
 import org.jbpm.process.audit.query.VarInstLogQueryBuilderImpl;
+import org.jbpm.process.audit.query.VarInstanceLogDeleteBuilderImpl;
 import org.jbpm.process.audit.strategy.PersistenceStrategy;
 import org.jbpm.process.audit.strategy.PersistenceStrategyType;
 import org.jbpm.process.audit.strategy.StandaloneJtaStrategy;
@@ -47,8 +81,11 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.query.QueryAndParameterAppender;
 import org.kie.internal.query.QueryModificationService;
 import org.kie.internal.query.data.QueryData;
+import org.kie.internal.runtime.manager.audit.query.NodeInstanceLogDeleteBuilder;
 import org.kie.internal.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
+import org.kie.internal.runtime.manager.audit.query.ProcessInstanceLogDeleteBuilder;
 import org.kie.internal.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
+import org.kie.internal.runtime.manager.audit.query.VariableInstanceLogDeleteBuilder;
 import org.kie.internal.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -362,6 +399,21 @@ public class JPAAuditLogService implements AuditLogService {
         return new ProcInstLogQueryBuilderImpl(this);
     }
     
+	@Override
+	public ProcessInstanceLogDeleteBuilder processInstanceLogDelete() {
+		return new ProcessInstanceLogDeleteBuilderImpl(this);
+	} 
+	
+	@Override
+    public NodeInstanceLogDeleteBuilder nodeInstanceLogDelete() {
+        return new NodeInstanceLogDeleteBuilderImpl(this);
+    }
+	
+	@Override
+    public VariableInstanceLogDeleteBuilder variableInstanceLogDelete() {
+        return new VarInstanceLogDeleteBuilderImpl(this);
+    }
+    
     // internal query methods/logic
    
     @Override
@@ -402,7 +454,19 @@ public class JPAAuditLogService implements AuditLogService {
     public static String PROCESS_INSTANCE_LOG_QUERY = 
                     "SELECT l "
                     + "FROM ProcessInstanceLog l\n";
- 
+    
+    public static String NODE_INSTANCE_LOG_DELETE = 
+            "DELETE "
+            + "FROM NodeInstanceLog l\n";
+
+	public static String VARIABLE_INSTANCE_LOG_DELETE = 
+	            "DELETE "
+	            + "FROM VariableInstanceLog l\n";
+	
+	public static String PROCESS_INSTANCE_LOG_DELETE = 
+	            "DELETE "
+	            + "FROM ProcessInstanceLog l\n";
+	 
    
     public static Map<String, String> criteriaFields = new ConcurrentHashMap<String, String>();
     public static Map<String, Class<?>> criteriaFieldClasses = new ConcurrentHashMap<String, Class<?>>();
@@ -438,7 +502,7 @@ public class JPAAuditLogService implements AuditLogService {
        
     }
    
-    private static void addCriteria( String listId, String fieldName, Class type ) { 
+    protected static void addCriteria( String listId, String fieldName, Class type ) { 
         criteriaFields.put(listId, fieldName);
         criteriaFieldClasses.put(listId, type );
     }
@@ -481,8 +545,56 @@ public class JPAAuditLogService implements AuditLogService {
         
         return result;
     }
+    
+    public int doDelete(QueryData queryData, Class<?> resultType) { 
+    	String queryBase;
+        if( ProcessInstanceLog.class.equals(resultType) ) { 
+            queryBase = PROCESS_INSTANCE_LOG_DELETE;
+        } else if( VariableInstanceLog.class.equals(resultType) ) { 
+            queryBase = VARIABLE_INSTANCE_LOG_DELETE;
+        } else if( NodeInstanceLog.class.equals(resultType) ) { 
+            queryBase = NODE_INSTANCE_LOG_DELETE;
+        } else { 
+            throw new IllegalStateException("Unsupported entity type: " + resultType.getName() );
+        }
+        return doDelete(queryBase, queryData, resultType);
+    }
+    
+    public int doDelete(String queryBase, QueryData queryData, Class<?> resultType) { 
+        // create query
+        
+        Map<String, Object> queryParams = new HashMap<String, Object>();
+        String queryString = createQuery(queryBase, queryData, queryParams, true);
+        
+        // logging
+        logger.debug("DELETE statement:\n {}", queryString);
+        if( logger.isDebugEnabled() ) {
+            StringBuilder paramsStr = new StringBuilder("PARAMS:");
+            Map<String, Object> orderedParams = new TreeMap<String, Object>(queryParams);
+            for( Entry<String, Object> entry : orderedParams.entrySet() ) { 
+                paramsStr.append("\n " + entry.getKey() + " : '" + entry.getValue() + "'");
+            }
+            logger.debug(paramsStr.toString());
+        }
+        
+    
+        // execute query
+        EntityManager em = getEntityManager();
+        Object newTx = joinTransaction(em);
+        Query query = em.createQuery(queryString);
+    
+        int result = executeWithParameters(queryParams, query);
+        
+        closeEntityManager(em, newTx);
+        
+        return result;
+    }
 
-    private static String createQuery(String queryBase, QueryData queryData, Map<String, Object> queryParams) { 
+    private static String createQuery(String queryBase, QueryData queryData, Map<String, Object> queryParams) {
+    	return createQuery(queryBase, queryData, queryParams, false);
+    }
+    
+    private static String createQuery(String queryBase, QueryData queryData, Map<String, Object> queryParams, boolean skipMetaParams) { 
         // setup
         StringBuilder queryBuilder = new StringBuilder(queryBase);
         QueryAndParameterAppender queryAppender = new QueryAndParameterAppender(queryBuilder, queryParams, true);
@@ -582,10 +694,10 @@ public class JPAAuditLogService implements AuditLogService {
         if( addLastCriteria ) { 
             addLastInstanceCriteria(addWhereClause, queryBuilder);
         }
-       
-        // 7. apply filter, ordering, etc.. 
-        applyMetaCriteria(queryBuilder, queryData);
-        
+       if (!skipMetaParams) {
+	        // 7. apply filter, ordering, etc.. 
+	        applyMetaCriteria(queryBuilder, queryData);
+       }
         // 8. return query
         return queryBuilder.toString();
     }
@@ -712,4 +824,33 @@ public class JPAAuditLogService implements AuditLogService {
         }
         return query.getResultList();
     } 
+    
+    private int executeWithParameters(Map<String, Object> params, Query query) {
+
+        if (params != null && !params.isEmpty()) {
+            for (String name : params.keySet()) {
+                if (FIRST_RESULT.equals(name)) {
+                    query.setFirstResult((Integer) params.get(name));
+                    continue;
+                }
+                if (MAX_RESULTS.equals(name)) {
+                    query.setMaxResults((Integer) params.get(name));
+                    continue;
+                }
+                if (FLUSH_MODE.equals(name)) {
+                    query.setFlushMode(FlushModeType.valueOf((String) params.get(name)));
+                    continue;
+                }// skip control parameters
+                else if (ORDER_TYPE.equals(name) 
+                        || ORDER_BY.equals(name)
+                        || FILTER.equals(name)) {
+                    continue;
+                }
+                query.setParameter(name, params.get(name));
+            }
+        }
+        return query.executeUpdate();
+    }
+
+
 }

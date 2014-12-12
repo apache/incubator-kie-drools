@@ -13,17 +13,17 @@ import org.kie.internal.command.Context;
 import org.kie.internal.query.AbstractQueryBuilderImpl;
 import org.kie.internal.runtime.manager.audit.query.AuditQueryBuilder;
 
-public class AbstractAuditQueryBuilderImpl<T> extends AbstractQueryBuilderImpl<T> implements AuditQueryBuilder<T> {
+public class AbstractAuditDeleteBuilderImpl<T> extends AbstractQueryBuilderImpl<T> implements AuditQueryBuilder<T> {
 
     protected final CommandExecutor executor; 
     protected final JPAAuditLogService jpaAuditService; 
     
-    protected AbstractAuditQueryBuilderImpl(JPAAuditLogService jpaService) { 
+    protected AbstractAuditDeleteBuilderImpl(JPAAuditLogService jpaService) { 
         this.executor = null;
         this.jpaAuditService = jpaService;
     }
     
-    protected AbstractAuditQueryBuilderImpl(CommandExecutor cmdExecutor) { 
+    protected AbstractAuditDeleteBuilderImpl(CommandExecutor cmdExecutor) { 
         this.executor = cmdExecutor;
         this.jpaAuditService = null;
     }
@@ -81,6 +81,17 @@ public class AbstractAuditQueryBuilderImpl<T> extends AbstractQueryBuilderImpl<T
         return (T) this;
     }
 
-    // query builder result methods
+    protected boolean checkIfNotNull(Object...parameter) {
+    	if( parameter == null ) { 
+            return true;
+        }
+        for( int i = 0; i < parameter.length; ++i ) { 
+           if( parameter[i] == null ) { 
+        	   return true;
+           }
+        }
+        
+        return false;
+    }
   
 }
