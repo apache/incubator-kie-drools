@@ -68,5 +68,12 @@ public interface QueryParameterIdentifiers {
     public static final String CREATED_BY_LIST = String.valueOf(idGen.getAndIncrement());
     public static final String TASK_STATUS_LIST = String.valueOf(idGen.getAndIncrement());
     public static final String LANGUAGE = String.valueOf(idGen.getAndIncrement());
+    public static final String DEPLOYMENT_ID = String.valueOf(idGen.getAndIncrement());
+    public static final String CREATED_ON_ID = String.valueOf(idGen.getAndIncrement());
+    public static final String TASK_EVENT_DATE_ID = String.valueOf(idGen.getAndIncrement());
+    
+    // executor identifiers
+    public static final String EXECUTOR_STATUS_ID = String.valueOf(idGen.getAndIncrement());
+    public static final String EXECUTOR_TIME_ID = String.valueOf(idGen.getAndIncrement());
     
 }
