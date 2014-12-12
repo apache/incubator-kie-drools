@@ -61,7 +61,7 @@ public class ObjectDataType implements DataType {
             return true;
         }
         try {
-            Class<?> clazz = Class.forName(className);
+            Class<?> clazz = Class.forName(className, true, value.getClass().getClassLoader());
             if (clazz.isInstance(value)) {
                 return true;
             }
