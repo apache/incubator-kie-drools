@@ -551,8 +551,8 @@ end
 //        )
 //
 //        ShiftAssignment(
-//            eval($workDayOfWeek == null) || (shiftDateDayOfWeek == $workDayOfWeek),
-//            eval($workShiftType == null) || (shiftType == $workShiftType),
+//            ($workDayOfWeek == null) || (shiftDateDayOfWeek == $workDayOfWeek),
+//            ($workShiftType == null) || (shiftType == $workShiftType),
 //            contract == $contract,
 //            $employee : employee, $workDayIndex : shiftDateDayIndex
 //        )
@@ -580,7 +580,7 @@ rule "unwantedPatternShiftType2DaysPattern"
             $employee : employee, $firstDayIndex : shiftDateDayIndex
         )
         ShiftAssignment(
-            eval($dayIndex1ShiftType == null) || (shiftType == $dayIndex1ShiftType),
+            ($dayIndex1ShiftType == null) || (shiftType == $dayIndex1ShiftType),
             employee == $employee,
             shiftDateDayIndex == ($firstDayIndex + 1)
         )

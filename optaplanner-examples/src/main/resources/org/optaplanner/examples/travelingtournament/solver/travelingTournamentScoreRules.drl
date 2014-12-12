@@ -34,28 +34,28 @@ global HardSoftScoreHolder scoreHolder;
 
 rule "fourConsecutiveHomeMatches"
     when
-        $m : Match($homeTeam : homeTeam, $day1 : day)
-        Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 1))
-        Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 2))
-        Match(homeTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 3))
+        Match($homeTeam : homeTeam, $firstDayIndex : day.getIndex())
+        Match(homeTeam == $homeTeam, day.getIndex() == $firstDayIndex + 1)
+        Match(homeTeam == $homeTeam, day.getIndex() == $firstDayIndex + 2)
+        Match(homeTeam == $homeTeam, day.getIndex() == $firstDayIndex + 3)
     then
         scoreHolder.addHardConstraintMatch(kcontext, -1);
 end
 
 rule "fourConsecutiveAwayMatches"
     when
-        $m : Match($awayTeam : awayTeam, $day1 : day)
-        Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 1))
-        Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 2))
-        Match(awayTeam == $awayTeam, eval(day.getIndex() == $day1.getIndex() + 3))
+        Match($awayTeam : awayTeam, $firstDayIndex : day.getIndex())
+        Match(awayTeam == $awayTeam, day.getIndex() == $firstDayIndex + 1)
+        Match(awayTeam == $awayTeam, day.getIndex() == $firstDayIndex + 2)
+        Match(awayTeam == $awayTeam, day.getIndex() == $firstDayIndex + 3)
     then
         scoreHolder.addHardConstraintMatch(kcontext, -1);
 end
 
 rule "matchRepeater"
     when
-        $m : Match($homeTeam : homeTeam, $awayTeam : awayTeam, $day1 : day)
-        Match(homeTeam == $awayTeam, awayTeam == $homeTeam, eval(day.getIndex() == $day1.getIndex() + 1))
+        Match($homeTeam : homeTeam, $awayTeam : awayTeam, $firstDayIndex : day.getIndex())
+        Match(homeTeam == $awayTeam, awayTeam == $homeTeam, day.getIndex() == $firstDayIndex + 1)
     then
         scoreHolder.addHardConstraintMatch(kcontext, -1);
 end
@@ -66,36 +66,36 @@ end
 
 rule "startToAwayHop"
     when
-        $m : Match($toTeam : homeTeam, $team : awayTeam, $day : day)
-        not Day(eval(index == $day.getIndex() - 1))
+        Match($toTeam : homeTeam, $team : awayTeam, $firstDayIndex : day.getIndex())
+        not Day(index == $firstDayIndex - 1)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $team.getDistance($toTeam));
 end
 rule "homeToAwayHop"
     when
-        $m1 : Match($team : homeTeam, $day1 : day)
-        $m2 : Match($toTeam : homeTeam, awayTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1))
+        Match($team : homeTeam, $firstDayIndex : day.getIndex())
+        Match($toTeam : homeTeam, awayTeam == $team, day.getIndex() == $firstDayIndex + 1)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $team.getDistance($toTeam));
 end
 rule "awayToAwayHop"
     when
-        $m1 : Match($fromTeam : homeTeam, $team : awayTeam, $day1 : day)
-        $m2 : Match($toTeam : homeTeam, awayTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1))
+        Match($fromTeam : homeTeam, $team : awayTeam, $firstDayIndex : day.getIndex())
+        Match($toTeam : homeTeam, awayTeam == $team, day.getIndex() == $firstDayIndex + 1)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $fromTeam.getDistance($toTeam));
 end
 rule "awayToHomeHop"
     when
-        $m1 : Match($fromTeam : homeTeam, $team : awayTeam, $day1 : day)
-        $m2 : Match(homeTeam == $team, eval(day.getIndex() == $day1.getIndex() + 1))
+        Match($fromTeam : homeTeam, $team : awayTeam, $firstDayIndex : day.getIndex())
+        Match(homeTeam == $team, day.getIndex() == $firstDayIndex + 1)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $fromTeam.getDistance($team));
 end
 rule "awayToEndHop"
     when
-        $m : Match($fromTeam : homeTeam, $team : awayTeam, $day : day)
-        not Day(eval(index == $day.getIndex() + 1))
+        Match($fromTeam : homeTeam, $team : awayTeam, $firstDayIndex : day.getIndex())
+        not Day(index == $firstDayIndex + 1)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $fromTeam.getDistance($team));
 end
