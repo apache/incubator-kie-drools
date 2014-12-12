@@ -34,6 +34,7 @@ public class DSLSentence
     public static final String BOOLEAN_TAG = "BOOLEAN";
     public static final String CUSTOM_FORM_TAG = "CF";
 
+    private String drl;
     private String sentence;
     private String definition;
     private List<DSLVariableValue> values;
@@ -105,6 +106,7 @@ public class DSLSentence
      */
     public DSLSentence copy() {
         final DSLSentence newOne = new DSLSentence();
+        newOne.drl = getDrl();
         newOne.definition = getDefinition();
         List<DSLVariableValue> variableValues = getValues();
         if ( variableValues != null ) {
@@ -115,11 +117,19 @@ public class DSLSentence
         return newOne;
     }
 
+    public String getDrl() {
+        return this.drl;
+    }
+
     public String getDefinition() {
         if ( definition == null ) {
             parseSentence();
         }
         return definition;
+    }
+
+    public void setDrl( String drl ) {
+        this.drl = drl;
     }
 
     public void setDefinition( String definition ) {
@@ -253,15 +263,25 @@ public class DSLSentence
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
 
         DSLSentence that = (DSLSentence) o;
 
-        if (definition != null ? !definition.equals(that.definition) : that.definition != null) return false;
-        if (sentence != null ? !sentence.equals(that.sentence) : that.sentence != null) return false;
-        if (values != null ? !values.equals(that.values) : that.values != null) return false;
+        if ( definition != null ? !definition.equals( that.definition ) : that.definition != null ) {
+            return false;
+        }
+        if ( sentence != null ? !sentence.equals( that.sentence ) : that.sentence != null ) {
+            return false;
+        }
+        if ( values != null ? !values.equals( that.values ) : that.values != null ) {
+            return false;
+        }
 
         return true;
     }
@@ -269,8 +289,8 @@ public class DSLSentence
     @Override
     public int hashCode() {
         int result = sentence != null ? sentence.hashCode() : 0;
-        result = 31 * result + (definition != null ? definition.hashCode() : 0);
-        result = 31 * result + (values != null ? values.hashCode() : 0);
+        result = 31 * result + ( definition != null ? definition.hashCode() : 0 );
+        result = 31 * result + ( values != null ? values.hashCode() : 0 );
         return result;
     }
 }

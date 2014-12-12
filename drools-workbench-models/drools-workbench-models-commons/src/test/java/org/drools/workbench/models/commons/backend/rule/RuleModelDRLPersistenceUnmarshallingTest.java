@@ -3262,12 +3262,16 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertTrue( m.lhs[ 0 ] instanceof DSLSentence );
 
         DSLSentence dslSentence = (DSLSentence) m.lhs[ 0 ];
+        assertEquals( "vertrag : Vertrag()",
+                      dslSentence.getDrl() );
         assertEquals( dslDefinition,
                       dslSentence.getDefinition() );
         assertEquals( 0,
                       dslSentence.getValues().size() );
 
         DSLSentence dslSentence2 = (DSLSentence) m.lhs[ 1 ];
+        assertEquals( "rabatt < {rabatt}",
+                      dslSentence2.getDrl() );
         assertEquals( dslDefinition2,
                       dslSentence2.getDefinition() );
         assertEquals( 1,
@@ -3302,9 +3306,12 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
         assertEquals( 1, model.lhs.length );
         DSLSentence dslSentence = (DSLSentence) model.lhs[ 0 ];
-        assertEquals( "test", dslSentence.getValues().get( 0 ).getValue() );
-        assertEquals( "111", dslSentence.getValues().get( 1 ).getValue() );
-
+        assertEquals( "Applicant( creditRating == \"{rating}\", age > {age} )",
+                      dslSentence.getDrl() );
+        assertEquals( "test",
+                      dslSentence.getValues().get( 0 ).getValue() );
+        assertEquals( "111",
+                      dslSentence.getValues().get( 1 ).getValue() );
     }
 
     @Test
