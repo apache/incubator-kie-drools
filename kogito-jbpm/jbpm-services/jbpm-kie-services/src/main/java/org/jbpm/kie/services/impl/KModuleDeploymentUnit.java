@@ -135,6 +135,9 @@ public class KModuleDeploymentUnit implements DeploymentUnit, Serializable {
     }
 
 	public MergeMode getMergeMode() {
+		if (mergeMode == null) {
+			mergeMode = MergeMode.MERGE_COLLECTIONS;
+		}
 		return mergeMode;
 	}
 

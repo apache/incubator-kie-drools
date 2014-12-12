@@ -39,7 +39,9 @@ public class DeploymentDescriptorMerger {
 		}
 		Stack<DeploymentDescriptor> stack = new Stack<DeploymentDescriptor>();
 		stack.addAll(descriptorHierarchy);
-		
+		if (mode == null) {
+			mode = MergeMode.MERGE_COLLECTIONS;
+		}
 		
 		while (stack.size() > 1) {		
 			DeploymentDescriptor master = stack.pop();

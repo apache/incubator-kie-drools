@@ -32,6 +32,10 @@ update task t set name = (select shorttext from I18NText where task_names_id = t
 update task t set subject = (select shorttext from I18NText where task_subjects_id = t.id);
 update task t set description = (select shorttext from I18NText where task_descriptions_id = t.id);
 
+INSERT INTO AuditTaskImpl (activationTime, actualOwner, createdBy, createdOn, deploymentId, description, dueDate, name, parentId, priority, processId, processInstanceId, processSessionId, status, taskId)
+SELECT activationTime, actualOwner_id, createdBy_id, createdOn, deploymentId, description, expirationTime, name, parentId, priority,processId, processInstanceId, processSessionId, status, id 
+FROM Task;
+
 --derby
 alter table SessionInfo alter column id set data type bigint;
 alter table AuditTaskImpl alter column processSessionId set data type bigint;
@@ -60,6 +64,10 @@ alter table Task add column subject varchar(255);
 update task t set name = (select shorttext from I18NText where task_names_id = t.id);
 update task t set subject = (select shorttext from I18NText where task_subjects_id = t.id);
 update task t set description = (select shorttext from I18NText where task_descriptions_id = t.id);
+
+INSERT INTO AuditTaskImpl (activationTime, actualOwner, createdBy, createdOn, deploymentId, description, dueDate, name, parentId, priority, processId, processInstanceId, processSessionId, status, taskId)
+SELECT activationTime, actualOwner_id, createdBy_id, createdOn, deploymentId, description, expirationTime, name, parentId, priority,processId, processInstanceId, processSessionId, status, id 
+FROM Task;
 
 -- h2
 ALTER TABLE SessionInfo ALTER COLUMN id bigint;
@@ -91,6 +99,10 @@ update task t set name = (select shorttext from I18NText where task_names_id = t
 update task t set subject = (select shorttext from I18NText where task_subjects_id = t.id);
 update task t set description = (select shorttext from I18NText where task_descriptions_id = t.id);
 
+INSERT INTO AuditTaskImpl (activationTime, actualOwner, createdBy, createdOn, deploymentId, description, dueDate, name, parentId, priority, processId, processInstanceId, processSessionId, status, taskId)
+SELECT activationTime, actualOwner_id, createdBy_id, createdOn, deploymentId, description, expirationTime, name, parentId, priority,processId, processInstanceId, processSessionId, status, id 
+FROM Task;
+
 -- hsqldb
 ALTER TABLE SessionInfo ALTER COLUMN id bigint;
 ALTER TABLE AuditTaskImpl ALTER COLUMN processSessionId bigint;
@@ -119,6 +131,10 @@ ALTER TABLE Task ADD COLUMN subject VARCHAR(255);
 update task t set name = (select shorttext from I18NText where task_names_id = t.id);
 update task t set subject = (select shorttext from I18NText where task_subjects_id = t.id);
 update task t set description = (select shorttext from I18NText where task_descriptions_id = t.id);
+
+INSERT INTO AuditTaskImpl (activationTime, actualOwner, createdBy, createdOn, deploymentId, description, dueDate, name, parentId, priority, processId, processInstanceId, processSessionId, status, taskId)
+SELECT activationTime, actualOwner_id, createdBy_id, createdOn, deploymentId, description, expirationTime, name, parentId, priority,processId, processInstanceId, processSessionId, status, id 
+FROM Task;
 
 -- mysql
 ALTER TABLE SessionInfo MODIFY id BIGINT;
@@ -161,6 +177,10 @@ update task t set name = (select shorttext from I18NText where task_names_id = t
 update task t set subject = (select shorttext from I18NText where task_subjects_id = t.id);
 update task t set description = (select shorttext from I18NText where task_descriptions_id = t.id);
         
+INSERT INTO AuditTaskImpl (activationTime, actualOwner, createdBy, createdOn, deploymentId, description, dueDate, name, parentId, priority, processId, processInstanceId, processSessionId, status, taskId)
+SELECT activationTime, actualOwner_id, createdBy_id, createdOn, deploymentId, description, expirationTime, name, parentId, priority,processId, processInstanceId, processSessionId, status, id 
+FROM Task;
+
 -- oracle
 alter table SessionInfo modify ( id number(19,0) );
 alter table AuditTaskImpl modify ( processSessionId number(19,0) );
@@ -191,6 +211,10 @@ alter table Task add (
 update task t set name = (select shorttext from I18NText where task_names_id = t.id);
 update task t set subject = (select shorttext from I18NText where task_subjects_id = t.id);
 update task t set description = (select shorttext from I18NText where task_descriptions_id = t.id);	
+
+INSERT INTO AuditTaskImpl (activationTime, actualOwner, createdBy, createdOn, deploymentId, description, dueDate, name, parentId, priority, processId, processInstanceId, processSessionId, status, taskId)
+SELECT activationTime, actualOwner_id, createdBy_id, createdOn, deploymentId, description, expirationTime, name, parentId, priority,processId, processInstanceId, processSessionId, status, id 
+FROM Task;
         
 -- postgres
 ALTER TABLE sessioninfo ALTER COLUMN id TYPE bigint;
@@ -222,6 +246,10 @@ update task t set name = (select shorttext from I18NText where task_names_id = t
 update task t set subject = (select shorttext from I18NText where task_subjects_id = t.id);
 update task t set description = (select shorttext from I18NText where task_descriptions_id = t.id);
 
+INSERT INTO AuditTaskImpl (activationTime, actualOwner, createdBy, createdOn, deploymentId, description, dueDate, name, parentId, priority, processId, processInstanceId, processSessionId, status, taskId)
+SELECT activationTime, actualOwner_id, createdBy_id, createdOn, deploymentId, description, expirationTime, name, parentId, priority,processId, processInstanceId, processSessionId, status, id 
+FROM Task;
+
 --sql server
 ALTER TABLE SessionInfo ALTER COLUMN id numeric(19,0);
 ALTER TABLE AuditTaskImpl ALTER COLUMN processSessionId numeric(19,0);
@@ -250,3 +278,7 @@ ALTER TABLE Task ADD subject varchar(255);
 update task t set name = (select shorttext from I18NText where task_names_id = t.id);
 update task t set subject = (select shorttext from I18NText where task_subjects_id = t.id);
 update task t set description = (select shorttext from I18NText where task_descriptions_id = t.id);
+
+INSERT INTO AuditTaskImpl (activationTime, actualOwner, createdBy, createdOn, deploymentId, description, dueDate, name, parentId, priority, processId, processInstanceId, processSessionId, status, taskId)
+SELECT activationTime, actualOwner_id, createdBy_id, createdOn, deploymentId, description, expirationTime, name, parentId, priority,processId, processInstanceId, processSessionId, status, id 
+FROM Task;
