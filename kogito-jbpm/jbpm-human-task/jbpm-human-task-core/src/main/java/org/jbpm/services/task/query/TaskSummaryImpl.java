@@ -225,6 +225,29 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         } else {
             out.writeBoolean(false);
         }
+        
+        if (actualOwnerId != null) {
+            out.writeBoolean(true);
+            out.writeUTF(actualOwnerId);
+        } else {
+            out.writeBoolean(false);
+        }
+        
+        if (createdById != null) {
+            out.writeBoolean(true);
+            out.writeUTF(createdById);
+        } else {
+            out.writeBoolean(false);
+        }
+        
+        if (statusId != null) {
+            out.writeBoolean(true);
+            out.writeUTF(statusId);
+        } else {
+            out.writeBoolean(false);
+        }
+        
+        out.writeBoolean(quickTaskSummary);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -284,6 +307,20 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         if (in.readBoolean()) {
             subTaskStrategy = SubTasksStrategy.valueOf(in.readUTF());
         }
+        
+        if (in.readBoolean()) {
+            actualOwnerId = in.readUTF();
+        }
+        
+        if (in.readBoolean()) {
+            createdById = in.readUTF();
+        }
+        
+        if (in.readBoolean()) {
+            statusId = in.readUTF();
+        }
+        
+        quickTaskSummary = in.readBoolean();
     }
 
     public Long getId() {
