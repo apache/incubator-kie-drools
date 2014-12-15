@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package org.jbpm.kie.services.test;
+package org.jbpm.services.ejb.test.identity;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.kie.internal.identity.IdentityProvider;
 
+@ApplicationScoped
 public class TestIdentityProvider implements IdentityProvider {
 	
 	private String name = "testUser";

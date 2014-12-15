@@ -29,6 +29,7 @@ public class QueryManager {
 	public static final String ORDER_BY_KEY = "orderby";
 	public static final String ASCENDING_KEY = "asc";
 	public static final String DESCENDING_KEY = "desc";
+	public static final String FILTER = "filter";
 	
 	private Map<String, String> queries = new ConcurrentHashMap<String, String>();
 	
@@ -55,23 +56,34 @@ public class QueryManager {
 	}
 	
 	public String getQuery(String name, Map<String, Object> params) {
-		String query = null;
+		StringBuffer query = null;
 		if (!queries.containsKey(name)) {
 			return null;
 		}
+		String operand = " and ";
+		
+		StringBuffer buf = new StringBuffer(queries.get(name));
+		if (buf.indexOf("where") == -1) {
+			operand = " where ";
+		}
+		if (params != null && params.containsKey(FILTER)) {
+			
+            buf.append(operand + params.get(FILTER));
+            query = buf;
+        }
 		
 		if (params != null && params.containsKey(ORDER_BY_KEY)) {
-			StringBuffer buf = new StringBuffer(queries.get(name)); 
+			 
 			buf.append(" \n ORDER BY " + adaptOrderBy((String)params.get("orderby")));
 			if (params.containsKey(ASCENDING_KEY)) {
 				buf.append(" ASC");
 			} else if (params.containsKey(DESCENDING_KEY)) {
 				buf.append(" DESC");
 			}
-			query = buf.toString();
+			query = buf;
 		}
 		
-		return query;
+		 return (query == null ? null : query.toString() );
 	}
 	
 	protected void parse(String ormFile) throws XMLStreamException {

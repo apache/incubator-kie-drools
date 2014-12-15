@@ -75,6 +75,8 @@ public abstract class AbstractBaseTest {
 	protected RuntimeDataService runtimeDataService;
 	protected ProcessService processService;
 	protected UserTaskService userTaskService;
+	
+	protected TestIdentityProvider identityProvider;
     
     @BeforeClass
     public static void configure() { 
@@ -99,7 +101,7 @@ public abstract class AbstractBaseTest {
 	protected void configureServices() {
 		buildDatasource();
 		emf = EntityManagerFactoryManager.get().getOrCreate("org.jbpm.domain");
-		
+		identityProvider = new TestIdentityProvider();
 		// build definition service
 		bpmn2Service = new BPMN2DataServiceImpl();    	
 		
@@ -107,13 +109,13 @@ public abstract class AbstractBaseTest {
 		deploymentService = new KModuleDeploymentService();
 		((KModuleDeploymentService)deploymentService).setBpmn2Service(bpmn2Service);
 		((KModuleDeploymentService)deploymentService).setEmf(emf);
-		((KModuleDeploymentService)deploymentService).setIdentityProvider(new TestIdentityProvider());
+		((KModuleDeploymentService)deploymentService).setIdentityProvider(identityProvider);
 		((KModuleDeploymentService)deploymentService).setManagerFactory(new RuntimeManagerFactoryImpl());
 		
 		// build runtime data service
 		runtimeDataService = new RuntimeDataServiceImpl();
 		((RuntimeDataServiceImpl) runtimeDataService).setCommandService(new TransactionalCommandService(emf));
-		((RuntimeDataServiceImpl) runtimeDataService).setIdentityProvider(new TestIdentityProvider());
+		((RuntimeDataServiceImpl) runtimeDataService).setIdentityProvider(identityProvider);
 		((RuntimeDataServiceImpl) runtimeDataService).setTaskService(HumanTaskServiceFactory.newTaskServiceConfigurator().entityManagerFactory(emf).getTaskService());
 		((KModuleDeploymentService)deploymentService).setRuntimeDataService(runtimeDataService);
 		

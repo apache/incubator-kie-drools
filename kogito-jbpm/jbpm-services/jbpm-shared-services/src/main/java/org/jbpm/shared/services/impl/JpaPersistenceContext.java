@@ -160,7 +160,8 @@ public class JpaPersistenceContext implements Context {
 				// skip control parameters
 				else if (QueryManager.ASCENDING_KEY.equals(name) 
 						|| QueryManager.DESCENDING_KEY.equals(name)
-						|| QueryManager.ORDER_BY_KEY.equals(name)) {
+						|| QueryManager.ORDER_BY_KEY.equals(name)
+						|| QueryManager.FILTER.equals(name)) {
 					continue;
 				}
 				query.setParameter(name, params.get(name));
