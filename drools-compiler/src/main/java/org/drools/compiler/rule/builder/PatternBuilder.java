@@ -132,6 +132,8 @@ public class PatternBuilder
 
     private static final java.util.regex.Pattern identifierRegexp = java.util.regex.Pattern.compile( "([\\p{L}_$][\\p{L}\\p{N}_$]*)" );
 
+    private static final java.util.regex.Pattern getterRegexp = java.util.regex.Pattern.compile( "get([\\p{L}_][\\p{L}\\p{N}_]*)\\(\\s*\\)" );
+
 
     public PatternBuilder() {
     }
@@ -1687,7 +1689,7 @@ public class PatternBuilder
     public static InternalReadAccessor getFieldReadAccessor( final RuleBuildContext context,
                                                              final BaseDescr descr,
                                                              final ObjectType objectType,
-                                                             final String fieldName,
+                                                             String fieldName,
                                                              final AcceptsReadAccessor target,
                                                              final boolean reportError ) {
         // reportError is needed as some times failure to build accessor is not a failure, just an indication that building is not possible so try something else.
@@ -1701,8 +1703,57 @@ public class PatternBuilder
             if ( target != null ) {
                 target.setReadAccessor( reader );
             }
-        } else if ( ! identifierRegexp.matcher( fieldName ).matches()
-                    || ( fieldName.indexOf( '.' ) > -1 || fieldName.indexOf( '[' ) > -1 || fieldName.indexOf( '(' ) > -1 ) ) {
+
+            return reader;
+        }
+
+        boolean isGetter = getterRegexp.matcher( fieldName ).matches();
+        if ( isGetter ) {
+            fieldName = fieldName.substring(3, fieldName.indexOf('(')).trim();
+        }
+
+        if ( isGetter || identifierRegexp.matcher( fieldName ).matches() ) {
+            Declaration decl = context.getDeclarationResolver().getDeclarations( context.getRule() ).get(fieldName);
+            if (decl != null && decl.getExtractor() instanceof ClassFieldReader && "this".equals(((ClassFieldReader)decl.getExtractor()).getFieldName())) {
+                return decl.getExtractor();
+            }
+
+            boolean alternatives = false;
+            try {
+                Map<String, Class< ? >> declarations = getDeclarationsMap( descr, context, false );
+                Map<String, Class< ? >> globals = context.getKnowledgeBuilder().getGlobals();
+                alternatives = declarations.containsKey( fieldName ) || globals.containsKey( fieldName );
+
+                reader = context.getPkg().getClassFieldAccessorStore().getReader( ((ClassObjectType) objectType).getClassName(),
+                                                                                  fieldName,
+                                                                                  target );
+            } catch ( final Exception e ) {
+                if ( reportError && ! alternatives && context.isTypesafe() ) {
+                    DialectUtil.copyErrorLocation(e,
+                                                  descr);
+                    context.addError(new DescrBuildError(context.getParentDescr(),
+                                                         descr,
+                                                         e,
+                                                         "Unable to create Field Extractor for '" + fieldName + "'" + e.getMessage()));
+                }
+                // if there was an error, set the reader back to null
+                reader = null;
+            } finally {
+
+                if (reportError && !alternatives) {
+                    Collection<KnowledgeBuilderResult> results = context.getPkg().getClassFieldAccessorStore().getWiringResults(((ClassObjectType) objectType).getClassType(), fieldName);
+                    if (!results.isEmpty()) {
+                        for (KnowledgeBuilderResult res : results) {
+                            if (res.getSeverity() == ResultSeverity.ERROR) {
+                                context.addError(new DroolsErrorWrapper(res));
+                            } else {
+                                context.addWarning(new DroolsWarningWrapper(res));
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
             // we need MVEL extractor for expressions
             Dialect dialect = context.getDialect();
             Map<String, Class< ? >> globals = context.getKnowledgeBuilder().getGlobals();
@@ -1727,9 +1778,9 @@ public class PatternBuilder
                     // something bad happened
                     if ( reportError ) {
                         context.addError(new DescrBuildError(context.getParentDescr(),
-                                descr,
-                                null,
-                                "Unable to analyze expression '" + fieldName + "'"));
+                                                             descr,
+                                                             null,
+                                                             "Unable to analyze expression '" + fieldName + "'"));
                     }
                     return null;
                 }
@@ -1739,9 +1790,9 @@ public class PatternBuilder
                 if ( !usedIdentifiers.getDeclrClasses().isEmpty() ) {
                     if ( reportError && descr instanceof BindingDescr ) {
                         context.addError(new DescrBuildError(context.getParentDescr(),
-                                descr,
-                                null,
-                                "Variables can not be used inside bindings. Variable " + usedIdentifiers.getDeclrClasses().keySet() + " is being used in binding '" + fieldName + "'"));
+                                                             descr,
+                                                             null,
+                                                             "Variables can not be used inside bindings. Variable " + usedIdentifiers.getDeclrClasses().keySet() + " is being used in binding '" + fieldName + "'"));
                     }
                     return null;
                 }
@@ -1749,9 +1800,9 @@ public class PatternBuilder
                 reader = context.getPkg().getClassFieldAccessorStore().getMVELReader( context.getPkg().getName(),
                                                                                       ((ClassObjectType) objectType).getClassName(),
                                                                                       fieldName,
-                                                                                      context.isTypesafe(), 
+                                                                                      context.isTypesafe(),
                                                                                       ((MVELAnalysisResult)analysis).getReturnType() );
-                
+
                 MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
                 ((MVELCompileable) reader).compile( data );
                 data.addCompileable( (MVELCompileable) reader );
@@ -1764,57 +1815,16 @@ public class PatternBuilder
 
                 if ( reportError ) {
                     DialectUtil.copyErrorLocation(e,
-                            descr);
+                                                  descr);
                     context.addError(new DescrBuildError(context.getParentDescr(),
-                            descr,
-                            e,
-                            "Unable to create reader for '" + fieldName + "':" + e.getMessage()));
+                                                         descr,
+                                                         e,
+                                                         "Unable to create reader for '" + fieldName + "':" + e.getMessage()));
                 }
                 // if there was an error, set the reader back to null
                 reader = null;
             } finally {
                 context.setDialect( dialect );
-            }
-        } else {
-            Declaration decl = context.getDeclarationResolver().getDeclarations( context.getRule() ).get(fieldName);
-            if (decl != null && decl.getExtractor() instanceof ClassFieldReader && "this".equals(((ClassFieldReader)decl.getExtractor()).getFieldName())) {
-                return decl.getExtractor();
-            }
-
-            boolean alternatives = false;
-            try {
-                Map<String, Class< ? >> declarations = getDeclarationsMap( descr, context, false );
-                Map<String, Class< ? >> globals = context.getKnowledgeBuilder().getGlobals();
-                alternatives = declarations.containsKey( fieldName ) || globals.containsKey( fieldName );
-
-                reader = context.getPkg().getClassFieldAccessorStore().getReader( ((ClassObjectType) objectType).getClassName(),
-                                                                                  fieldName,
-                                                                                  target );
-            } catch ( final Exception e ) {
-                if ( reportError && ! alternatives && context.isTypesafe() ) {
-                    DialectUtil.copyErrorLocation(e,
-                            descr);
-                    context.addError(new DescrBuildError(context.getParentDescr(),
-                            descr,
-                            e,
-                            "Unable to create Field Extractor for '" + fieldName + "'" + e.getMessage()));
-                }
-                // if there was an error, set the reader back to null
-                reader = null;
-            } finally {
-
-                if ( reportError && ! alternatives ) {
-                    Collection<KnowledgeBuilderResult> results = context.getPkg().getClassFieldAccessorStore().getWiringResults( ((ClassObjectType) objectType).getClassType(), fieldName );
-                    if ( ! results.isEmpty() ) {
-                        for ( KnowledgeBuilderResult res : results ) {
-                            if ( res.getSeverity() == ResultSeverity.ERROR ) {
-                                context.addError( new DroolsErrorWrapper( res ) );
-                            } else {
-                                context.addWarning( new DroolsWarningWrapper( res ) );
-                            }
-                        }
-                    }
-                }
             }
         }
 
