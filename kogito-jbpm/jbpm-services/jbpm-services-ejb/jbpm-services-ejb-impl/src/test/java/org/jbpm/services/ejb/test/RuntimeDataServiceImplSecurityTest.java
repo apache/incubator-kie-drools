@@ -390,14 +390,14 @@ public class RuntimeDataServiceImplSecurityTest extends AbstractTestSupport {
     	// search for aborted only
     	states.add(3);
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm", null, new QueryContext());
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm%", null, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm", null, new QueryContext());
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm%", null, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(3, (int)instances.iterator().next().getState());
@@ -577,14 +577,14 @@ public class RuntimeDataServiceImplSecurityTest extends AbstractTestSupport {
     	// search for aborted only
     	states.add(3);
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm", null, new QueryContext());
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm%", null, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm", null, new QueryContext());
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm%", null, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     }

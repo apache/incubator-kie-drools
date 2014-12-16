@@ -391,14 +391,14 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	// search for aborted only
     	states.add(3);
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm", null, new QueryContext());
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm%", null, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm", null, new QueryContext());
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm%", null, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(3, (int)instances.iterator().next().getState());
@@ -633,14 +633,14 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	// search for aborted only
     	states.add(3);
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm", null, new QueryContext());
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm%", null, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     	
     	processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
     	
-    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm", null, new QueryContext());
+    	instances = runtimeDataService.getProcessInstancesByProcessId(states, "org.jbpm%", null, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
     }

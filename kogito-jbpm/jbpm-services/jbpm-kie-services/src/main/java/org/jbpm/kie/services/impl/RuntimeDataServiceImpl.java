@@ -405,7 +405,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         Map<String, Object> params = new HashMap<String, Object>();
 
         params.put("states", states);        
-        params.put("processId", processId +"%");
+        params.put("processId", processId);
         applyQueryContext(params, queryContext);
         applyDeploymentFilter(params);
         if (initiator == null) {
@@ -429,7 +429,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         Map<String, Object> params = new HashMap<String, Object>();
         
         params.put("states", states);        
-        params.put("processName", processName +"%");
+        params.put("processName", processName);
         applyQueryContext(params, queryContext);
         applyDeploymentFilter(params);
         if (initiator == null) {
