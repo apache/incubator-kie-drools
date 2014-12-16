@@ -556,8 +556,14 @@ xpathPrimary returns [BaseDescr result]
     ;
 
 xpathChunk returns [BaseDescr result]
-    : (DIV ID)=> DIV ID (DOT ID)* (LEFT_SQUARE expressionList RIGHT_SQUARE)?
+    : (DIV ID)=> DIV ID (DOT ID)* (LEFT_SQUARE xpathExpressionList RIGHT_SQUARE)?
     ;
+
+xpathExpressionList returns [java.util.List<String> exprs]
+@init { $exprs = new java.util.ArrayList<String>();}
+  :   ((HASH ID)=> HASH ID | f=expression { $exprs.add( $f.text ); })
+      (COMMA s=expression { $exprs.add( $s.text ); })*
+  ;
 
 primary returns [BaseDescr result]
     :	(parExpression)=> expr=parExpression {  if( buildDescr  ) { $result = $expr.result; }  }

@@ -769,7 +769,21 @@ public class PatternBuilder
                 return;
             }
 
-            patternClass = xpathChunk.getReturnedClass();
+
+            if (part.getInlineCast() != null) {
+                try {
+                    patternClass = context.getDialect().getTypeResolver().resolveType(part.getInlineCast());
+                } catch (ClassNotFoundException e) {
+                    context.addError(new DescrBuildError(context.getParentDescr(),
+                                                         descr,
+                                                         null,
+                                                         "Unknown class " + part.getInlineCast() + " in xpath expression '" + expression + "'"));
+                    return;
+                }
+                part.addInlineCastConstraint(patternClass);
+            } else {
+                patternClass = xpathChunk.getReturnedClass();
+            }
             pattern.setObjectType(new ClassObjectType(patternClass));
 
             for (String constraint : part.getConstraints()) {
@@ -777,6 +791,10 @@ public class PatternBuilder
                                                                     patternDescr,
                                                                     new ExprConstraintDescr(constraint),
                                                                     constraint );
+                if (result == null) {
+                    continue;
+                }
+
                 build(context,
                       patternDescr,
                       pattern,
@@ -1837,13 +1855,22 @@ public class PatternBuilder
                                                          final String expression ) {
         DrlExprParser parser = new DrlExprParser( context.getConfiguration().getLanguageLevel() );
         ConstraintConnectiveDescr result = parser.parse( expression );
+
+        if (result == null) {
+            context.addError(new DescrBuildError(context.getParentDescr(),
+                                                 patternDescr,
+                                                 null,
+                                                 "Unable to parser pattern expression:\n" + expression));
+            return null;
+        }
+
         result.copyLocation( original );
         if ( parser.hasErrors() ) {
             for ( DroolsParserException error : parser.getErrors() ) {
                 context.addError(new DescrBuildError(context.getParentDescr(),
-                        patternDescr,
-                        null,
-                        "Unable to parser pattern expression:\n" + error.getMessage()));
+                                                     patternDescr,
+                                                     null,
+                                                     "Unable to parser pattern expression:\n" + error.getMessage()));
             }
             return null;
         }
