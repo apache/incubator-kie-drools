@@ -486,4 +486,83 @@ public class XpathTest {
         assertTrue(teenagers.contains("Charles"));
         assertTrue(teenagers.contains("Debbie"));
     }
+
+    @Test
+    public void testInlineCast() {
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "  Man( $toy: /wife/children[ #BabyGirl ]/toys )\n" +
+                "then\n" +
+                "  list.add( $toy.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        Woman alice = new Woman("Alice", 38);
+        Man bob = new Man("Bob", 40);
+        bob.setWife(alice);
+
+        BabyBoy charlie = new BabyBoy("Charles", 12);
+        BabyGirl debbie = new BabyGirl("Debbie", 8);
+        alice.addChild(charlie);
+        alice.addChild(debbie);
+
+        charlie.addToy(new Toy("car"));
+        charlie.addToy(new Toy("ball"));
+        debbie.addToy(new Toy("doll"));
+
+        ksession.insert(bob);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertTrue(list.contains("doll"));
+    }
+
+    @Test
+    public void testInlineCastWithConstraint() {
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "  Man( $name: /wife/children[ #BabyGirl, favoriteDollName.startsWith(\"A\") ].name )\n" +
+                "then\n" +
+                "  list.add( $name );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        Woman alice = new Woman("Alice", 38);
+        Man bob = new Man("Bob", 40);
+        bob.setWife(alice);
+
+        BabyBoy charlie = new BabyBoy("Charles", 12);
+        BabyGirl debbie = new BabyGirl("Debbie", 8, "Anna");
+        BabyGirl elisabeth = new BabyGirl("Elisabeth", 5, "Zoe");
+        BabyGirl farrah = new BabyGirl("Farrah", 3, "Agatha");
+        alice.addChild(charlie);
+        alice.addChild(debbie);
+        alice.addChild(elisabeth);
+        alice.addChild(farrah);
+
+        ksession.insert(bob);
+        ksession.fireAllRules();
+
+        assertEquals(2, list.size());
+        assertTrue(list.contains("Debbie"));
+        assertTrue(list.contains("Farrah"));
+    }
 }
