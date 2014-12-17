@@ -3542,7 +3542,7 @@ public class RuleModelDRLPersistenceImpl
                                                     boundParams );
             String classType = getFQFactType( m,
                                               factPattern.getFactType() );
-            con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( factPattern ) );
+            con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( factPattern.getFactType() ) );
 
             parseExpression( m,
                              classType,

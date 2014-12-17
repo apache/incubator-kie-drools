@@ -1193,7 +1193,7 @@ public class RuleModelDRLPersistenceTest {
 
         FactPattern p = new FactPattern( "Person" );
         SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
-        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p.getFactType() ) );
         con.getExpressionLeftSide().appendPart( new ExpressionField( "field1",
                                                                      "java.lang.String",
                                                                      DataType.TYPE_STRING ) );
@@ -1223,7 +1223,7 @@ public class RuleModelDRLPersistenceTest {
 
         FactPattern p = new FactPattern( "Person" );
         SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
-        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p.getFactType() ) );
         con.getExpressionLeftSide().appendPart( new ExpressionField( "field1",
                                                                      "CHEESE",
                                                                      DataType.TYPE_COMPARABLE ) );
@@ -1250,7 +1250,7 @@ public class RuleModelDRLPersistenceTest {
         m.name = "test expressionsNumber";
         FactPattern p = new FactPattern( "Person" );
         SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
-        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p.getFactType() ) );
         con.getExpressionLeftSide().appendPart( new ExpressionField( "field1",
                                                                      "java.lang.Integer",
                                                                      DataType.TYPE_NUMERIC_INTEGER ) );
@@ -1277,7 +1277,7 @@ public class RuleModelDRLPersistenceTest {
         m.name = "test expressionsDate";
         FactPattern p = new FactPattern( "Person" );
         SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
-        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p.getFactType() ) );
         con.getExpressionLeftSide().appendPart( new ExpressionField( "field1",
                                                                      "java.util.Date",
                                                                      DataType.TYPE_DATE ) );
@@ -1304,7 +1304,7 @@ public class RuleModelDRLPersistenceTest {
         m.name = "test expressionsBoolean";
         FactPattern p = new FactPattern( "Person" );
         SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
-        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p.getFactType() ) );
         con.getExpressionLeftSide().appendPart( new ExpressionField( "field1",
                                                                      "java.lang.Boolean",
                                                                      DataType.TYPE_BOOLEAN ) );
@@ -1331,7 +1331,7 @@ public class RuleModelDRLPersistenceTest {
         m.name = "test expressionsNestedString";
         FactPattern p = new FactPattern( "Person" );
         SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
-        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p.getFactType() ) );
         con.getExpressionLeftSide().appendPart( new ExpressionField( "favouriteCheese",
                                                                      "Cheese",
                                                                      DataType.TYPE_OBJECT ) );
@@ -1390,7 +1390,7 @@ public class RuleModelDRLPersistenceTest {
         m.name = "test expressionsNestedNumber";
         FactPattern p = new FactPattern( "Person" );
         SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
-        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p.getFactType() ) );
         con.getExpressionLeftSide().appendPart( new ExpressionField( "favouriteCheese",
                                                                      "Cheese",
                                                                      DataType.TYPE_OBJECT ) );
@@ -1449,7 +1449,7 @@ public class RuleModelDRLPersistenceTest {
         m.name = "test expressionsNestedDate";
         FactPattern p = new FactPattern( "Person" );
         SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
-        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p.getFactType() ) );
         con.getExpressionLeftSide().appendPart( new ExpressionField( "favouriteCheese",
                                                                      "Cheese",
                                                                      DataType.TYPE_OBJECT ) );
@@ -1508,7 +1508,7 @@ public class RuleModelDRLPersistenceTest {
         m.name = "test expressionsNestedJavaEnum";
         FactPattern p = new FactPattern( "Person" );
         SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
-        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p.getFactType() ) );
         con.getExpressionLeftSide().appendPart( new ExpressionField( "favouriteCheese",
                                                                      "Cheese",
                                                                      DataType.TYPE_OBJECT ) );
@@ -1567,7 +1567,7 @@ public class RuleModelDRLPersistenceTest {
         m.name = "test expressionsNestedBoolean";
         FactPattern p = new FactPattern( "Person" );
         SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
-        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p.getFactType() ) );
         con.getExpressionLeftSide().appendPart( new ExpressionField( "favouriteCheese",
                                                                      "Cheese",
                                                                      DataType.TYPE_OBJECT ) );
@@ -3582,7 +3582,8 @@ public class RuleModelDRLPersistenceTest {
 
         final FactPattern fp2 = new FactPattern( "Person" );
         final FromCompositeFactPattern ffp1 = new FromCompositeFactPattern();
-        ffp1.setExpression( new ExpressionFormLine( new ExpressionVariable( fp1 ) ) );
+        ffp1.setExpression( new ExpressionFormLine( new ExpressionVariable( fp1.getBoundName(),
+                                                                            fp1.getFactType() ) ) );
         ffp1.setFactPattern( fp2 );
         cp.addFactPattern( ffp1 );
         m.addLhsItem( cp );
@@ -4401,7 +4402,7 @@ public class RuleModelDRLPersistenceTest {
         p.addConstraint( con1 );
 
         SingleFieldConstraintEBLeftSide con2 = new SingleFieldConstraintEBLeftSide();
-        con2.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con2.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p.getFactType() ) );
         con2.getExpressionLeftSide().appendPart( new ExpressionMethod( "intValue",
                                                                        "int",
                                                                        DataType.TYPE_NUMERIC_INTEGER ) );
@@ -4451,7 +4452,7 @@ public class RuleModelDRLPersistenceTest {
         p.addConstraint( con1 );
 
         SingleFieldConstraintEBLeftSide con2 = new SingleFieldConstraintEBLeftSide();
-        con2.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con2.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p.getFactType() ) );
         con2.getExpressionLeftSide().appendPart( new ExpressionMethod( "intValue",
                                                                        "int",
                                                                        DataType.TYPE_NUMERIC_INTEGER ) );
