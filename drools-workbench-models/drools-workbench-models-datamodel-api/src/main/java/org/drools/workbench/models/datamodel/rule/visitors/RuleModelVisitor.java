@@ -222,7 +222,7 @@ public class RuleModelVisitor {
 
     private void visitFromCompositeFactPattern( FromCompositeFactPattern pattern ) {
         visit( pattern.getFactPattern() );
-        ToStringExpressionVisitor visitor = new ToStringExpressionVisitor( pattern.getExpression().getBinding() );
+        ToStringExpressionVisitor visitor = new ToStringExpressionVisitor();
         parseStringPattern( pattern.getExpression().getText( visitor ) );
     }
 
