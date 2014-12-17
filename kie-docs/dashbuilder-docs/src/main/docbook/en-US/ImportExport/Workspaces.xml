@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section xml:id="sect-dashbuilder-import-export-workspaces" xml:base=".." version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+
+
+  <title>Workspaces</title>
+
+  <para>
+    Workspace import &amp; export allows you to move one or more workspaces to other <emphasis>JBoss Dashbuilder</emphasis> installations.
+  </para>
+
+  <para>
+    The import &amp; export of a given workspace implies moving : 
+  </para>
+
+  <itemizedlist>
+    <listitem>
+      <para><emphasis role="bold">Envelope</emphasis>: The envelope currently used by the workspace.</para>
+    </listitem>
+    <listitem>
+      <para><emphasis role="bold">Sections</emphasis>: All the sections that compose the workspace.</para>
+    </listitem>
+    <listitem>
+      <para><emphasis role="bold">Panels</emphasis>: All the panels used in workspace sections.</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>
+    In order to <emphasis role="bold">export a workspace</emphasis> there exist a panel named <emphasis>Export workspaces</emphasis>.
+  </para> 
+  
+  <para>
+    It lists all the existing workspaces in the application and allows you to export one or more workspace definitions in a single XML file.
+  </para>
+
+  <figure>
+    <title>Export workspaces panel</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/ImportExport/workspace_export.png" valign="top"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
+
+  <para>
+    In order to <emphasis role="bold">import a workspace</emphasis> you can do it in two ways:
+  </para>
+
+  <itemizedlist>
+    <listitem>
+      <para>Using the <emphasis>Web User Interface</emphasis>.</para>
+      <para>It allows to upload a XML file that contain one or more workspace definitions.</para>
+      <figure>
+        <title>Import workspaces panel</title>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/ImportExport/workspace_import.png" valign="top"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
+    </listitem>
+    <listitem>
+      <para>Using the <emphasis>deployment scanner</emphasis>. </para>
+      <para>You can place your exported workspace definition files in the folder <emphasis>WEB-INF/deployments</emphasis>. Once application is starting, it scans ths deployment folder and import all the workspaces found.</para>
+      <para>Some important notes about automatic workspace importation using the <emphasis>deployment scanner</emphasis>:</para>
+      <itemizedlist>
+        <listitem>
+          <para>Workspaces are imported once and only on container startup time, not during application runtime</para>
+        </listitem>
+        <listitem>
+          <para>The XML workspace definition file must have extension <emphasis>workspace</emphasis>. Eg: my-workspace.workspace</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+  </itemizedlist>
+
+</section>

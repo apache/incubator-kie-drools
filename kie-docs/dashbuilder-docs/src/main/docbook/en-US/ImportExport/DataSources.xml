@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section xml:id="sect-dashbuilder-import-export-datasources" xml:base=".." version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+
+
+  <title>Data sources</title>
+
+  <para>
+    Data source import export allows you to import one or more external connection definitions into a <emphasis>JBoss Dashbuilder</emphasis> installation.
+  </para>
+
+  <para>
+    Data source exportation is not supported yet, there is no panel for exporting them.
+  </para>
+
+  <para>
+    In order to <emphasis role="bold">import a data source</emphasis> you can do it in two ways:
+  </para>
+
+  <itemizedlist>
+    <listitem>
+      <para>Manually using the <emphasis>Web User Interface</emphasis>.</para>
+      <para>Data source definitions are composed by not so many attributes, so an option is to create them in your target environment manually by using the <emphasis>Data source manager</emphasis> panel.</para>
+      <figure>
+        <title>Manually creation of a data source</title>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/ImportExport/datasource_creation.png" valign="top"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
+    </listitem>
+    <listitem>
+      <para>Using the <emphasis>deployment scanner</emphasis>. </para>
+      <para>You can place your data source definition property files in the folder <emphasis>WEB-INF/deployments</emphasis>. Once application is starting, it scans ths deployment folder and import all the workspaces found.</para>
+      
+      <para>Data source definition files are property files with the following allowed properties:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Common properties for all kind of data sources.</para>
+          <itemizedlist>
+            <listitem>
+              <para><emphasis>type</emphasis>: The type of the data source. It can be <emphasis>JNDI</emphasis> or <emphasis>JDBC</emphasis>.</para>
+            </listitem>
+            <listitem>
+              <para><emphasis>name</emphasis>: The data source name.</para>
+            </listitem>
+            <listitem>
+              <para><emphasis>testQuery</emphasis>: Defines a query for testing the data source when instantiated.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>
+          <para>Properties for a <emphasis>JDBC</emphasis> data source.</para>
+          <itemizedlist>
+            <listitem>
+              <para><emphasis>jdbcUrl</emphasis>: The JDBC URL for the connection.</para>
+            </listitem>
+            <listitem>
+              <para><emphasis>driverClass</emphasis>: The fully qualified class name of the driver to use.</para>
+            </listitem>
+            <listitem>
+              <para><emphasis>user</emphasis>: The connection username.</para>
+            </listitem>
+            <listitem>
+              <para><emphasis>password</emphasis>: The connection password.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>
+          <para>Properties for a <emphasis>JNDI</emphasis> data source.</para>
+          <itemizedlist>
+            <listitem>
+              <para><emphasis>jndiPath</emphasis>: The JNDI path for the data source bean.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+      <para>Some important notes about automatic data source importation using the <emphasis>deployment scanner</emphasis>:</para>
+      <itemizedlist>
+        <listitem>
+          <para>Data sources are imported once and only on container startup time, not during application runtime</para>
+        </listitem>
+        <listitem>
+          <para>The properties data source definition file must have extension <emphasis>datasource</emphasis>. Eg: my-datasource.datasource</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+  </itemizedlist>
+
+</section>
