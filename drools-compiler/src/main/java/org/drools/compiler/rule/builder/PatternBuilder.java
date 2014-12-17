@@ -787,19 +787,12 @@ public class PatternBuilder
             pattern.setObjectType(new ClassObjectType(patternClass));
 
             for (String constraint : part.getConstraints()) {
-                ConstraintConnectiveDescr result = parseExpression( context,
-                                                                    patternDescr,
-                                                                    new ExprConstraintDescr(constraint),
-                                                                    constraint );
+                ConstraintConnectiveDescr result = parseExpression(context, patternDescr, new ExprConstraintDescr(constraint), constraint );
                 if (result == null) {
                     continue;
                 }
 
-                build(context,
-                      patternDescr,
-                      pattern,
-                      result,
-                      mvelCtx);
+                build(context, patternDescr, pattern, result, mvelCtx);
 
                 for (Constraint c : pattern.getConstraints()) {
                     xpathChunk.addConstraint(c);
@@ -1860,7 +1853,7 @@ public class PatternBuilder
             context.addError(new DescrBuildError(context.getParentDescr(),
                                                  patternDescr,
                                                  null,
-                                                 "Unable to parser pattern expression:\n" + expression));
+                                                 "Unable to parse pattern expression:\n" + expression));
             return null;
         }
 
@@ -1870,7 +1863,7 @@ public class PatternBuilder
                 context.addError(new DescrBuildError(context.getParentDescr(),
                                                      patternDescr,
                                                      null,
-                                                     "Unable to parser pattern expression:\n" + error.getMessage()));
+                                                     "Unable to parse pattern expression:\n" + error.getMessage()));
             }
             return null;
         }
