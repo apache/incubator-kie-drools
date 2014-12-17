@@ -1207,8 +1207,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       expressionUnboundFact.getClassType() );
         assertEquals( "Person",
                       expressionUnboundFact.getGenericType() );
-        assertEquals( m.lhs[ 0 ],
-                      expressionUnboundFact.getFact() );
+        assertEquals( ( (FactPattern) m.lhs[ 0 ] ).getFactType(),
+                      expressionUnboundFact.getFactType() );
 
         assertNull( expressionUnboundFact.getPrevious() );
         assertEquals( ebLeftSide.getExpressionLeftSide().getParts().get( 1 ), expressionUnboundFact.getNext() );
@@ -1284,8 +1284,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       expressionUnboundFact.getClassType() );
         assertEquals( "Person",
                       expressionUnboundFact.getGenericType() );
-        assertEquals( m.lhs[ 0 ],
-                      expressionUnboundFact.getFact() );
+        assertEquals( ( (FactPattern) m.lhs[ 0 ] ).getFactType(),
+                      expressionUnboundFact.getFactType() );
 
         assertNull( expressionUnboundFact.getPrevious() );
         assertEquals( ebLeftSide.getExpressionLeftSide().getParts().get( 1 ),
@@ -1396,8 +1396,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       expressionUnboundFact.getClassType() );
         assertEquals( "Person",
                       expressionUnboundFact.getGenericType() );
-        assertEquals( m.lhs[ 0 ],
-                      expressionUnboundFact.getFact() );
+        assertEquals( ( (FactPattern) m.lhs[ 0 ] ).getFactType(),
+                      expressionUnboundFact.getFactType() );
 
         assertNull( expressionUnboundFact.getPrevious() );
         assertEquals( ebLeftSide.getExpressionLeftSide().getParts().get( 1 ), expressionUnboundFact.getNext() );
@@ -1944,8 +1944,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       expressionUnboundFact.getClassType() );
         assertEquals( "Person",
                       expressionUnboundFact.getGenericType() );
-        assertEquals( m.lhs[ 0 ],
-                      expressionUnboundFact.getFact() );
+        assertEquals( ( (FactPattern) m.lhs[ 0 ] ).getFactType(),
+                      expressionUnboundFact.getFactType() );
 
         assertEquals( null, expressionUnboundFact.getPrevious() );
         assertEquals( ebLeftSide.getExpressionLeftSide().getParts().get( 1 ),
@@ -2024,8 +2024,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       expressionUnboundFact.getClassType() );
         assertEquals( "ParentType",
                       expressionUnboundFact.getGenericType() );
-        assertEquals( m.lhs[ 0 ],
-                      expressionUnboundFact.getFact() );
+        assertEquals( ( (FactPattern) m.lhs[ 0 ] ).getFactType(),
+                      expressionUnboundFact.getFactType() );
 
         assertNull( expressionUnboundFact.getPrevious() );
         assertEquals( ebLeftSide.getExpressionLeftSide().getParts().get( 1 ), expressionUnboundFact.getNext() );
@@ -5382,7 +5382,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertTrue( exp.getExpressionLeftSide().getParts().get( 0 ) instanceof ExpressionUnboundFact );
         final ExpressionUnboundFact expPart0 = (ExpressionUnboundFact) exp.getExpressionLeftSide().getParts().get( 0 );
         assertEquals( "Number",
-                      expPart0.getFact().getFactType() );
+                      expPart0.getFactType() );
 
         assertTrue( exp.getExpressionLeftSide().getParts().get( 1 ) instanceof ExpressionMethod );
         final ExpressionMethod expPart1 = (ExpressionMethod) exp.getExpressionLeftSide().getParts().get( 1 );
@@ -5443,7 +5443,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertTrue( exp.getExpressionLeftSide().getParts().get( 0 ) instanceof ExpressionUnboundFact );
         final ExpressionUnboundFact expPart0 = (ExpressionUnboundFact) exp.getExpressionLeftSide().getParts().get( 0 );
         assertEquals( "Number",
-                      expPart0.getFact().getFactType() );
+                      expPart0.getFactType() );
 
         assertTrue( exp.getExpressionLeftSide().getParts().get( 1 ) instanceof ExpressionField );
         final ExpressionField expPart1 = (ExpressionField) exp.getExpressionLeftSide().getParts().get( 1 );
@@ -5513,7 +5513,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertTrue( exp.getExpressionLeftSide().getParts().get( 0 ) instanceof ExpressionUnboundFact );
         final ExpressionUnboundFact expPart0 = (ExpressionUnboundFact) exp.getExpressionLeftSide().getParts().get( 0 );
         assertEquals( "Parent",
-                      expPart0.getFact().getFactType() );
+                      expPart0.getFactType() );
 
         assertTrue( exp.getExpressionLeftSide().getParts().get( 1 ) instanceof ExpressionMethod );
         final ExpressionMethod expPart1 = (ExpressionMethod) exp.getExpressionLeftSide().getParts().get( 1 );
