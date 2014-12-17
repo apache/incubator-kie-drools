@@ -18,7 +18,7 @@ package org.drools.workbench.models.datamodel.rule;
 
 public class ExpressionVariable extends ExpressionPart {
 
-    private FactPattern fact;
+    private String factType;
 
     public ExpressionVariable() {
     }
@@ -29,16 +29,19 @@ public class ExpressionVariable extends ExpressionPart {
         super( fieldName, fieldClassType, fieldGenericType );
     }
 
-    public ExpressionVariable( FactPattern fact ) {
-        super( fact.getBoundName(), fact.getFactType(), fact.getFactType() );
-        if ( !fact.isBound() ) {
-            throw new RuntimeException( "the fact is not bounded: " + fact );
+    public ExpressionVariable( String binding,
+                               String factType ) {
+        super( binding,
+               factType,
+               factType );
+        if ( binding == null || binding.isEmpty() ) {
+            throw new RuntimeException( "the fact is not bounded: " + factType );
         }
-        this.fact = fact;
+        this.factType = factType;
     }
 
-    public FactPattern getFact() {
-        return fact;
+    public String getFactType() {
+        return factType;
     }
 
     @Override
@@ -47,14 +50,22 @@ public class ExpressionVariable extends ExpressionPart {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
 
         ExpressionVariable that = (ExpressionVariable) o;
 
-        if (fact != null ? !fact.equals(that.fact) : that.fact != null) return false;
+        if ( factType != null ? !factType.equals( that.factType ) : that.factType != null ) {
+            return false;
+        }
 
         return true;
     }
@@ -62,7 +73,7 @@ public class ExpressionVariable extends ExpressionPart {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (fact != null ? fact.hashCode() : 0);
+        result = 31 * result + ( factType != null ? factType.hashCode() : 0 );
         return result;
     }
 }

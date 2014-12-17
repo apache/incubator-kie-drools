@@ -71,12 +71,13 @@ public class CopyExpressionVisitor implements ExpressionVisitor {
     }
 
     public void visit( ExpressionVariable part ) {
-        add( new ExpressionVariable( part.getFact() ) );
+        add( new ExpressionVariable( part.getName(),
+                                     part.getFactType() ) );
         moveNext( part );
     }
 
     public void visit( ExpressionUnboundFact part ) {
-        add( new ExpressionUnboundFact( part.getFact() ) );
+        add( new ExpressionUnboundFact( part.getFactType() ) );
         moveNext( part );
     }
 
