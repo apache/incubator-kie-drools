@@ -28,7 +28,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -142,7 +141,7 @@ public class XpathConstraint extends MutableTypeConstraint {
 
         private Iterable<?> evaluate(InternalWorkingMemory workingMemory, LeftTuple leftTuple, Object object) {
             Iterator<XpathChunk> xpathChunkIterator = chunks.iterator();
-            List<Object> list = Arrays.asList(object);
+            List<Object> list = evaluateObject(workingMemory, leftTuple, xpathChunkIterator.next(), new ArrayList<Object>(), object);
             while (xpathChunkIterator.hasNext()) {
                 list = evaluate(workingMemory, leftTuple, xpathChunkIterator.next(), list);
             }
@@ -152,23 +151,28 @@ public class XpathConstraint extends MutableTypeConstraint {
         private List<Object> evaluate(InternalWorkingMemory workingMemory, LeftTuple leftTuple, XpathChunk chunk, Iterable<?> objects) {
             List<Object> list = new ArrayList<Object>();
             for (Object object : objects) {
-                Object result = chunk.evaluate(object);
-                if (chunk.iterate && result instanceof Iterable) {
-                    for (Object value : (Iterable<?>) result) {
-                        if (value instanceof ReactiveObject) {
-                            ((ReactiveObject) value).addParent(object);
-                        }
-                        if (value != null && (chunk.constraints == null || match(workingMemory, leftTuple, chunk.constraints, value))) {
-                            list.add(value);
-                        }
+                evaluateObject(workingMemory, leftTuple, chunk, list, object);
+            }
+            return list;
+        }
+
+        private List<Object> evaluateObject(InternalWorkingMemory workingMemory, LeftTuple leftTuple, XpathChunk chunk, List<Object> list, Object object) {
+            Object result = chunk.evaluate(object);
+            if (chunk.iterate && result instanceof Iterable) {
+                for (Object value : (Iterable<?>) result) {
+                    if (value instanceof ReactiveObject) {
+                        ((ReactiveObject) value).addParent(object);
                     }
-                } else {
-                    if (result instanceof ReactiveObject) {
-                        ((ReactiveObject) result).addParent(object);
+                    if (value != null && (chunk.constraints == null || match(workingMemory, leftTuple, chunk.constraints, value))) {
+                        list.add(value);
                     }
-                    if (result != null && (chunk.constraints == null || match(workingMemory, leftTuple, chunk.constraints, result))) {
-                        list.add(result);
-                    }
+                }
+            } else {
+                if (result instanceof ReactiveObject) {
+                    ((ReactiveObject) result).addParent(object);
+                }
+                if (result != null && (chunk.constraints == null || match(workingMemory, leftTuple, chunk.constraints, result))) {
+                    list.add(result);
                 }
             }
             return list;
