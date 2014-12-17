@@ -39,18 +39,14 @@ public class ToStringExpressionVisitor implements
                                        ExpressionVisitor {
 
     private StringBuilder sb;
-    private String bindVariable;
     private DRLConstraintValueBuilder constraintValueBuilder;
     private boolean first;
 
-    public ToStringExpressionVisitor( final String bindVariable ) {
-        this( bindVariable,
-              DRLConstraintValueBuilder.getBuilder( DRLConstraintValueBuilder.DEFAULT_DIALECT ) );
+    public ToStringExpressionVisitor() {
+        this( DRLConstraintValueBuilder.getBuilder( DRLConstraintValueBuilder.DEFAULT_DIALECT ) );
     }
 
-    public ToStringExpressionVisitor( final String bindVariable,
-                                      final DRLConstraintValueBuilder constraintValueBuilder ) {
-        this.bindVariable = bindVariable;
+    public ToStringExpressionVisitor( final DRLConstraintValueBuilder constraintValueBuilder ) {
         this.constraintValueBuilder = constraintValueBuilder;
     }
 
@@ -136,7 +132,7 @@ public class ToStringExpressionVisitor implements
     }
 
     public String getText() {
-        return ( bindVariable == null ? "" : bindVariable + ": " ) + sb.toString();
+        return sb.toString();
     }
 
     private String paramsToString( List<ExpressionFormLine> params ) {
@@ -145,8 +141,7 @@ public class ToStringExpressionVisitor implements
         }
         StringBuilder strParams = new StringBuilder();
         for ( ExpressionFormLine param : params ) {
-            ToStringExpressionVisitor visitor = new ToStringExpressionVisitor( param.getBinding(),
-                                                                               constraintValueBuilder );
+            ToStringExpressionVisitor visitor = new ToStringExpressionVisitor( constraintValueBuilder );
             visitor.visit( param.getRootExpression() );
             strParams.append( ", " ).append( visitor.getText() );
         }
