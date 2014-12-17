@@ -846,8 +846,7 @@ public class RuleModelDRLPersistenceImpl
         }
 
         private void renderExpression( final ExpressionFormLine expression ) {
-            final ToStringExpressionVisitor visitor = new ToStringExpressionVisitor( expression.getBinding(),
-                                                                                     constraintValueBuilder );
+            final ToStringExpressionVisitor visitor = new ToStringExpressionVisitor( constraintValueBuilder );
             buf.append( expression.getText( visitor ) );
         }
 
@@ -998,8 +997,7 @@ public class RuleModelDRLPersistenceImpl
                 if ( isConstraintComplete( constr ) ) {
                     if ( constr instanceof SingleFieldConstraintEBLeftSide ) {
                         final SingleFieldConstraintEBLeftSide sfcexp = ( (SingleFieldConstraintEBLeftSide) constr );
-                        final ToStringExpressionVisitor visitor = new ToStringExpressionVisitor( sfcexp.getExpressionLeftSide().getBinding(),
-                                                                                                 constraintValueBuilder );
+                        final ToStringExpressionVisitor visitor = new ToStringExpressionVisitor( constraintValueBuilder );
                         buf.append( sfcexp.getExpressionLeftSide().getText( visitor ) );
                     } else {
                         SingleFieldConstraint parent = (SingleFieldConstraint) constr.getParent();
@@ -1289,8 +1287,7 @@ public class RuleModelDRLPersistenceImpl
                                                   final StringBuilder buf ) {
             if ( expression != null ) {
                 buf.append( " " );
-                final ToStringExpressionVisitor visitor = new ToStringExpressionVisitor( expression.getBinding(),
-                                                                                         constraintValueBuilder );
+                final ToStringExpressionVisitor visitor = new ToStringExpressionVisitor( constraintValueBuilder );
                 buf.append( expression.getText( visitor ) );
                 buf.append( " " );
             }

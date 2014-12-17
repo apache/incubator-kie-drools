@@ -127,7 +127,7 @@ public class ExpressionFormLine
     }
 
     public boolean isBound() {
-        return binding != null;
+        return !( binding == null || binding.isEmpty() );
     }
 
     public String getBinding() {
@@ -143,15 +143,25 @@ public class ExpressionFormLine
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
 
         ExpressionFormLine that = (ExpressionFormLine) o;
 
-        if (index != that.index) return false;
-        if (binding != null ? !binding.equals(that.binding) : that.binding != null) return false;
-        if (parts != null ? !parts.equals(that.parts) : that.parts != null) return false;
+        if ( index != that.index ) {
+            return false;
+        }
+        if ( binding != null ? !binding.equals( that.binding ) : that.binding != null ) {
+            return false;
+        }
+        if ( parts != null ? !parts.equals( that.parts ) : that.parts != null ) {
+            return false;
+        }
 
         return true;
     }
@@ -159,7 +169,7 @@ public class ExpressionFormLine
     @Override
     public int hashCode() {
         int result = binding != null ? binding.hashCode() : 0;
-        result = 31 * result + (parts != null ? parts.hashCode() : 0);
+        result = 31 * result + ( parts != null ? parts.hashCode() : 0 );
         result = 31 * result + index;
         return result;
     }
