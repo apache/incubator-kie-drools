@@ -1,7 +1,6 @@
 package org.drools.impl.adapters;
 
 import org.drools.definition.KnowledgePackage;
-import org.drools.definition.process.*;
 import org.drools.definition.process.Process;
 import org.drools.definition.rule.Query;
 import org.drools.definition.rule.Rule;
@@ -14,6 +13,10 @@ import org.drools.runtime.StatelessKnowledgeSession;
 import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.internal.KnowledgeBase;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,9 +27,9 @@ import static org.drools.impl.adapters.KnowledgePackageAdapter.fromKiePackages;
 import static org.drools.impl.adapters.ProcessAdapter.adaptProcesses;
 import static org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.adaptStatefulKnowledgeSession;
 
-public class KnowledgeBaseAdapter implements org.drools.KnowledgeBase {
+public class KnowledgeBaseAdapter implements org.drools.KnowledgeBase, Externalizable {
 
-    public final KnowledgeBase delegate;
+    public KnowledgeBase delegate;
 
     private final Map<KnowledgeBaseEventListener, KieBaseEventListener> listeners = new HashMap<KnowledgeBaseEventListener, KieBaseEventListener>();
 
@@ -133,5 +136,15 @@ public class KnowledgeBaseAdapter implements org.drools.KnowledgeBase {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof KnowledgeBaseAdapter && delegate.equals(((KnowledgeBaseAdapter)obj).delegate);
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(delegate);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        delegate = (KnowledgeBase) in.readObject();
     }
 }
