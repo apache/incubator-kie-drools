@@ -7,19 +7,19 @@
          xmlns:ns="http://docbook.org/ns/docbook">
 
 
-  <title>Key performance indicators and data providers</title>
+  <title>Key performance indicators</title>
 
   <para>
     Workspace import &amp; export allows you to move your <emphasis>KPI</emphasis> and its <emphasis>data providers</emphasis> to other <emphasis>JBoss Dashbuilder</emphasis> installations.
   </para>
 
   <para>
-    The import &amp; export of a given KPI implies moving : 
+    The import &amp; export of a given KPI implies moving:
   </para>
 
   <itemizedlist>
     <listitem>
-      <para><emphasis role="bold">KPI definition</emphasis>: The type of KPI, its columns and its configurations.</para>
+      <para><emphasis role="bold">KPI definition</emphasis>: The type of KPI, its columns and its display configuration.</para>
     </listitem>
     <listitem>
       <para><emphasis role="bold">Data provider</emphasis>: The data provider definition that is used in the KPI.</para>
@@ -65,15 +65,15 @@
       </figure>
     </listitem>
     <listitem>
-      <para>Using the <emphasis>deployment scanner</emphasis>. </para>
-      <para>You can place your exported KPI definition files in the folder <emphasis>WEB-INF/deployments</emphasis>. Once application is starting, it scans ths deployment folder and import all the KPI found.</para>
-      <para>Some important notes about automatic KPI importation using the <emphasis>deployment scanner</emphasis>:</para>
+      <para>Using the <emphasis>Deployment Scanner</emphasis>. </para>
+      <para>Just by dropping the exported KPI definition files into the folder <emphasis>WEB-INF/deployments</emphasis>. Once the application starts, it will scan the deployment folder and will import all the KPIs files found.</para>
+      <para>Some important notes about automatic KPI importation using the <emphasis>Deployment Scanner</emphasis>:</para>
       <itemizedlist>
         <listitem>
-          <para>KPI and data providers are imported once and only on container startup time, not during application runtime</para>
+          <para>KPI and data providers are imported once and only at container startup time, not during application runtime</para>
         </listitem>
         <listitem>
-          <para>The XML KPI definition file must have extension <emphasis>kpis</emphasis>. Eg: my-kpis.kpis</para>
+          <para>The XML KPI definition file must have the extension <emphasis>kpis</emphasis>. Eg: my-kpis.kpis</para>
         </listitem>
       </itemizedlist>
     </listitem>

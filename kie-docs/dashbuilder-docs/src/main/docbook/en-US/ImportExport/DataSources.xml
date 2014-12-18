@@ -10,7 +10,7 @@
   <title>Data sources</title>
 
   <para>
-    Data source import export allows you to import one or more external connection definitions into a <emphasis>JBoss Dashbuilder</emphasis> installation.
+    Data source import export allows you to import one or more data source connection definitions into a <emphasis>JBoss Dashbuilder</emphasis> installation.
   </para>
 
   <para>
@@ -37,10 +37,10 @@
       </figure>
     </listitem>
     <listitem>
-      <para>Using the <emphasis>deployment scanner</emphasis>. </para>
-      <para>You can place your data source definition property files in the folder <emphasis>WEB-INF/deployments</emphasis>. Once application is starting, it scans ths deployment folder and import all the workspaces found.</para>
+      <para>Using the <emphasis>Deployment Scanner</emphasis>. </para>
+      <para>Just by dropping the data source definition files into the folder <emphasis>WEB-INF/deployments</emphasis>. Once application is starting, it scans ths deployment folder and import all the workspaces found.</para>
       
-      <para>Data source definition files are property files with the following allowed properties:</para>
+      <para>Data source definition files are property files with the following supported properties:</para>
 
       <itemizedlist>
         <listitem>
@@ -73,6 +73,21 @@
               <para><emphasis>password</emphasis>: The connection password.</para>
             </listitem>
           </itemizedlist>
+          <example>
+            <title>
+              Example of a <emphasis>JDBC data source</emphasis> descriptor
+            </title>
+
+            <programlisting>
+              type=JDBC
+              name=myCompanyDataSource
+              testQuery=SELECT count(*) FROM CUSTOMER
+              jdbcUrl=jdbc:postgresql://mydomain.com:5432/mycompany
+              driverClass=org.postgresorg.postgresql.Driver
+              user=system
+              password=dba
+            </programlisting>
+          </example>
         </listitem>
         <listitem>
           <para>Properties for a <emphasis>JNDI</emphasis> data source.</para>
@@ -81,6 +96,18 @@
               <para><emphasis>jndiPath</emphasis>: The JNDI path for the data source bean.</para>
             </listitem>
           </itemizedlist>
+          <example>
+            <title>
+              Example of a <emphasis>JNDI data source</emphasis> descriptor
+            </title>
+
+            <programlisting>
+              type=JNDI
+              name=myCompanyDataSource
+              testQuery=SELECT count(*) FROM CUSTOMER
+              jndiPath=java:comp/env/jdbc/mycompany
+            </programlisting>
+          </example>
         </listitem>
       </itemizedlist>
       <para>Some important notes about automatic data source importation using the <emphasis>deployment scanner</emphasis>:</para>
