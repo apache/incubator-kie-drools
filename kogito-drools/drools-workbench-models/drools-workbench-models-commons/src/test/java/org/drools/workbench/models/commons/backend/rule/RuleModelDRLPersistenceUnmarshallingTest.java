@@ -6587,6 +6587,170 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                       RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
     }
 
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1174360
+    public void testLHSMultipleAllOfTheFollowing() throws Exception {
+        String drl = "package org.test;\n" +
+                "rule \"test\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "PhoneNumber(\n" +
+                "( homePhone != null && homePhone matches \"\\\"+9199\\\"\" ) || \n" +
+                "( personalPhone != null && personalPhone matches \"\\\"+9188\\\"\" ) || \n" +
+                "( workPhone != null && workPhone matches \"\\\"+9177\\\"\") \n" +
+                ")\n" +
+                "then\n" +
+                "end\n";
+
+        addModelField( "org.test.PhoneNumber",
+                       "this",
+                       "org.test.PhoneNumber",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.PhoneNumber",
+                       "homePhone",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+        addModelField( "org.test.PhoneNumber",
+                       "personalPhone",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+        addModelField( "org.test.PhoneNumber",
+                       "workPhone",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        assertEquals( 0,
+                      m.rhs.length );
+
+        //Check Pattern
+        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
+        final FactPattern fp = (FactPattern) m.lhs[ 0 ];
+        assertEquals( "PhoneNumber",
+                      fp.getFactType() );
+        assertEquals( 1,
+                      fp.getNumberOfConstraints() );
+
+        assertTrue( fp.getConstraint( 0 ) instanceof CompositeFieldConstraint );
+        final CompositeFieldConstraint cfc = (CompositeFieldConstraint) fp.getConstraint( 0 );
+        assertEquals( "||",
+                      cfc.getCompositeJunctionType() );
+        assertEquals( 3,
+                      cfc.getNumberOfConstraints() );
+        assertTrue( cfc.getConstraint( 0 ) instanceof CompositeFieldConstraint );
+        assertTrue( cfc.getConstraint( 1 ) instanceof CompositeFieldConstraint );
+        assertTrue( cfc.getConstraint( 2 ) instanceof CompositeFieldConstraint );
+
+        //Check first composite field constraint
+        final CompositeFieldConstraint cfc_0 = (CompositeFieldConstraint) cfc.getConstraint( 0 );
+        assertEquals( "&&",
+                      cfc_0.getCompositeJunctionType() );
+        assertEquals( 2,
+                      cfc_0.getNumberOfConstraints() );
+        assertTrue( cfc_0.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        assertTrue( cfc_0.getConstraint( 1 ) instanceof SingleFieldConstraint );
+
+        final SingleFieldConstraint sfc_0_0 = (SingleFieldConstraint) cfc_0.getConstraint( 0 );
+        assertEquals( "PhoneNumber",
+                      sfc_0_0.getFactType() );
+        assertEquals( "homePhone",
+                      sfc_0_0.getFieldName() );
+        assertEquals( DataType.TYPE_STRING,
+                      sfc_0_0.getFieldType() );
+        assertEquals( "!= null",
+                      sfc_0_0.getOperator() );
+        assertNull( sfc_0_0.getValue() );
+
+        final SingleFieldConstraint sfc_0_1 = (SingleFieldConstraint) cfc_0.getConstraint( 1 );
+        assertEquals( "PhoneNumber",
+                      sfc_0_1.getFactType() );
+        assertEquals( "homePhone",
+                      sfc_0_1.getFieldName() );
+        assertEquals( DataType.TYPE_STRING,
+                      sfc_0_1.getFieldType() );
+        assertEquals( "matches",
+                      sfc_0_1.getOperator() );
+        assertEquals( "\\\"+9199\\\"",
+                      sfc_0_1.getValue() );
+
+        //Check second composite field constraint
+        final CompositeFieldConstraint cfc_1 = (CompositeFieldConstraint) cfc.getConstraint( 1 );
+        assertEquals( "&&",
+                      cfc_1.getCompositeJunctionType() );
+        assertEquals( 2,
+                      cfc_1.getNumberOfConstraints() );
+        assertTrue( cfc_1.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        assertTrue( cfc_1.getConstraint( 1 ) instanceof SingleFieldConstraint );
+
+        final SingleFieldConstraint sfc_1_0 = (SingleFieldConstraint) cfc_1.getConstraint( 0 );
+        assertEquals( "PhoneNumber",
+                      sfc_1_0.getFactType() );
+        assertEquals( "personalPhone",
+                      sfc_1_0.getFieldName() );
+        assertEquals( DataType.TYPE_STRING,
+                      sfc_1_0.getFieldType() );
+        assertEquals( "!= null",
+                      sfc_1_0.getOperator() );
+        assertNull( sfc_1_0.getValue() );
+
+        final SingleFieldConstraint sfc_1_1 = (SingleFieldConstraint) cfc_1.getConstraint( 1 );
+        assertEquals( "PhoneNumber",
+                      sfc_1_1.getFactType() );
+        assertEquals( "personalPhone",
+                      sfc_1_1.getFieldName() );
+        assertEquals( DataType.TYPE_STRING,
+                      sfc_1_1.getFieldType() );
+        assertEquals( "matches",
+                      sfc_1_1.getOperator() );
+        assertEquals( "\\\"+9188\\\"",
+                      sfc_1_1.getValue() );
+
+        //Check third composite field constraint
+        final CompositeFieldConstraint cfc_2 = (CompositeFieldConstraint) cfc.getConstraint( 2 );
+        assertEquals( "&&",
+                      cfc_2.getCompositeJunctionType() );
+        assertEquals( 2,
+                      cfc_2.getNumberOfConstraints() );
+        assertTrue( cfc_2.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        assertTrue( cfc_2.getConstraint( 1 ) instanceof SingleFieldConstraint );
+
+        final SingleFieldConstraint sfc_2_0 = (SingleFieldConstraint) cfc_2.getConstraint( 0 );
+        assertEquals( "PhoneNumber",
+                      sfc_2_0.getFactType() );
+        assertEquals( "workPhone",
+                      sfc_2_0.getFieldName() );
+        assertEquals( DataType.TYPE_STRING,
+                      sfc_2_0.getFieldType() );
+        assertEquals( "!= null",
+                      sfc_2_0.getOperator() );
+        assertNull( sfc_2_0.getValue() );
+
+        final SingleFieldConstraint sfc_2_1 = (SingleFieldConstraint) cfc_2.getConstraint( 1 );
+        assertEquals( "PhoneNumber",
+                      sfc_2_1.getFactType() );
+        assertEquals( "workPhone",
+                      sfc_2_1.getFieldName() );
+        assertEquals( DataType.TYPE_STRING,
+                      sfc_2_1.getFieldType() );
+        assertEquals( "matches",
+                      sfc_2_1.getOperator() );
+        assertEquals( "\\\"+9177\\\"",
+                      sfc_2_1.getValue() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",

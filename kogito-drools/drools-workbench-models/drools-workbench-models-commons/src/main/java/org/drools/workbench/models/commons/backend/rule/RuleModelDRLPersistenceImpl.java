@@ -3263,6 +3263,7 @@ public class RuleModelDRLPersistenceImpl
                 case START:
                     if ( ch == '(' ) {
                         status = SplitterState.NESTED;
+                        sb.append( ch );
                         nestingLevel++;
                     } else {
                         status = SplitterState.EXPR;
