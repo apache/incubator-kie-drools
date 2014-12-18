@@ -16,14 +16,14 @@
 
 package org.drools.core.reteoo.builder;
 
-import java.util.List;
-
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.rule.From;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
+
+import java.util.List;
 
 public class FromBuilder
     implements
@@ -40,12 +40,16 @@ public class FromBuilder
 
         @SuppressWarnings("unchecked")
         BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context, (List<BetaNodeFieldConstraint>) context.getBetaconstraints(), true );
-        
+
+        AlphaNodeFieldConstraint[] alphaNodeFieldConstraints = context.getAlphaConstraints() != null ?
+                                                               context.getAlphaConstraints().toArray( new AlphaNodeFieldConstraint[context.getAlphaConstraints().size()] ) :
+                                                               new AlphaNodeFieldConstraint[0];
+
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                 context.getComponentFactory().getNodeFactoryService().buildFromNode( context.getNextId(),
                                                                                      from.getDataProvider(),
                                                                                      context.getTupleSource(),
-                                                                                     context.getAlphaConstraints().toArray( new AlphaNodeFieldConstraint[context.getAlphaConstraints().size()] ),
+                                                                                     alphaNodeFieldConstraints,
                                                                                      betaConstraints,
                                                                                      context.isTupleMemoryEnabled(),
                                                                                      context,

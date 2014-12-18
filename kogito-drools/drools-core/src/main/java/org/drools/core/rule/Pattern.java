@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -284,6 +285,18 @@ public class Pattern
         this.constraints.add(index, constraint);
     }
 
+    public void addConstraints(Collection<Constraint> constraints) {
+        if ( this.constraints == Collections.EMPTY_LIST ) {
+            this.constraints = new ArrayList<Constraint>( constraints.size() );
+        }
+        for (Constraint constraint : constraints) {
+            if ( constraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
+                this.setConstraintType( (MutableTypeConstraint) constraint );
+            }
+            this.constraints.add(constraint);
+        }
+    }
+
     public void addConstraint(Constraint constraint) {
         if ( this.constraints == Collections.EMPTY_LIST ) {
             this.constraints = new ArrayList<Constraint>( 1 );
@@ -295,11 +308,7 @@ public class Pattern
     }
 
     public void removeConstraint(Constraint constraint) {
-        this.constraints.remove( constraint );
-    }
-
-    public void clearConstraints() {
-        this.constraints.clear();
+        this.constraints.remove(constraint);
     }
 
     public List<MvelConstraint> getCombinableConstraints() {

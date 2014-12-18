@@ -533,7 +533,7 @@ public class XpathTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Man( $name: /wife/children[ #BabyGirl, favoriteDollName.startsWith(\"A\") ].name )\n" +
+                "  Man( name == \"Bob\", $name: /wife/children[ #BabyGirl, favoriteDollName.startsWith(\"A\") ].name )\n" +
                 "then\n" +
                 "  list.add( $name );\n" +
                 "end\n";

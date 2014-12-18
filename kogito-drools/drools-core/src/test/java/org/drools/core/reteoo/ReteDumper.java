@@ -2,7 +2,7 @@ package org.drools.core.reteoo;
 
 import org.drools.core.common.BaseNode;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.KnowledgeRuntime;
 
@@ -17,6 +17,10 @@ public class ReteDumper {
     }
 
     public static void dumpRete(KnowledgeRuntime session) {
+        dumpRete((InternalKnowledgeBase)session.getKieBase());
+    }
+
+    public static void dumpRete(KieSession session) {
         dumpRete((InternalKnowledgeBase)session.getKieBase());
     }
 
