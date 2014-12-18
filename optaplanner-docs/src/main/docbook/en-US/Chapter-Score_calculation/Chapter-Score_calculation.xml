@@ -91,8 +91,21 @@
 
       <para>Score weighting is often used in use cases where you can put a price tag on everything. In that case, the
       positive constraints maximize revenue and the negative constraints minimize expenses: together they maximize
-      profit. Alternatively, score weighting is also often used to create social fairness. For example: nurses that
-      request a free day on New Year's eve pay a higher weight than on a normal day.</para>
+      profit. Alternatively, score weighting is also often used to create social fairness. For example: a nurse that
+      requests a free day pays a higher weight on New Year's eve than on a normal day.</para>
+
+      <para>Put a good weight on a constraint can be a difficult analytical decision, because it's about making choices
+      and tradeoffs with other constraints. However, a non-accurate weight is less damaging than not good
+      algorithms:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Score_calculation/scoreTradeoffInPerspective.png"/>
+        </imageobject>
+      </mediaobject>
+
+      <para>Furthermore, it is often useful to allow the planning end-user to recalibrate penalty weights in his/her
+      user interface, as demonstrated in the exam timetabling example.</para>
 
       <para>The weight of a constraint match can be dynamically based on the planning entities involved. For example in
       cloud balance: the weight of the soft constraint match for an active <literal>Computer</literal> is the
