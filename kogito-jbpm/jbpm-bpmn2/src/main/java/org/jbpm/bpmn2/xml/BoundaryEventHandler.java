@@ -190,8 +190,10 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
 		                throw new IllegalArgumentException("Could not find error " + errorRef);
 		            }
 		            String type = error.getErrorCode();
+		            boolean hasErrorCode = true;
 		            if (type == null) {
 		            	type = error.getId();
+		            	hasErrorCode = false;
 		            }
                     List<EventFilter> eventFilters = new ArrayList<EventFilter>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
@@ -199,6 +201,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                     eventFilters.add(eventFilter);
                     eventNode.setEventFilters(eventFilters);
                     eventNode.setMetaData("ErrorEvent", type);
+                    eventNode.setMetaData("HasErrorEvent", hasErrorCode);
                     eventNode.setMetaData("ErrorStructureRef", error.getStructureRef());
                 }
             }

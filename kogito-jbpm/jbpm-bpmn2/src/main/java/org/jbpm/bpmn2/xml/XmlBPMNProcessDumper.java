@@ -590,8 +590,12 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
         }
         for( org.jbpm.bpmn2.core.Error error : errors ) { 
             String id = XmlBPMNProcessDumper.replaceIllegalCharsAttribute(error.getId());
-            String code = XmlBPMNProcessDumper.replaceIllegalCharsAttribute(error.getErrorCode());
-            xmlDump.append("  <error id=\"" + id + "\" errorCode=\"" + code + "\"" );
+            String code = error.getErrorCode();
+            xmlDump.append("  <error id=\"" + id + "\"" );
+            if (error.getErrorCode() != null) {
+            	code = XmlBPMNProcessDumper.replaceIllegalCharsAttribute(code);
+            	xmlDump.append(" errorCode=\"" + code + "\"" );
+            }
             String structureRef = error.getStructureRef();
             if( structureRef != null ) { 
                 structureRef = XmlBPMNProcessDumper.replaceIllegalCharsAttribute(structureRef);

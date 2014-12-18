@@ -468,6 +468,9 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             if( errorCode.equals(listError.getErrorCode()) ) {
                 error = listError;
                 break;
+            } else if ( errorCode.equals(listError.getId()) ) {
+                error = listError;
+                break;
             }
         }
         if (error == null) {

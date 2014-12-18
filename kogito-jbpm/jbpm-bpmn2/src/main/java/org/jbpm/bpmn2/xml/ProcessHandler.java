@@ -419,6 +419,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             compositeNode.setDefaultContext(exceptionScope);
         }
         String errorCode = (String) node.getMetaData().get("ErrorEvent");
+        boolean hasErrorCode = (Boolean) node.getMetaData().get("HasErrorEvent");
         String errorStructureRef = (String) node.getMetaData().get("ErrorStructureRef");
         ActionExceptionHandler exceptionHandler = new ActionExceptionHandler();
         
@@ -429,7 +430,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         
         exceptionHandler.setAction(action);
         exceptionHandler.setFaultVariable(variable);
-        exceptionScope.setExceptionHandler(errorCode, exceptionHandler);
+        exceptionScope.setExceptionHandler(hasErrorCode?errorCode:null, exceptionHandler);
         if (errorStructureRef != null) {
         	exceptionScope.setExceptionHandler(errorStructureRef, exceptionHandler);
         }
