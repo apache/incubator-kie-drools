@@ -172,7 +172,7 @@ public class PatternBuilder
             buildJoinNode(context, utils);
             context.setBetaconstraints(xpathConstraints);
 
-            context.setAlphaConstraints(constraints.alphaConstraints);
+            context.setAlphaConstraints(null);
             ReteooComponentBuilder builder = utils.getBuilderFor(From.class);
             for (XpathConstraint xpathConstraint : constraints.xpathConstraints) {
                 context.incrementCurrentPatternOffset();
