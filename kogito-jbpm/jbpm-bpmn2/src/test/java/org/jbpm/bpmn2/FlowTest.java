@@ -1186,6 +1186,26 @@ public class FlowTest extends JbpmBpmn2TestCase {
     }
     
     @Test
+    public void testMultiInstanceLoopCharacteristicsProcessWithOutputCompletionCondition()
+            throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsProcessWithOutputCmpCond.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        Map<String, Object> params = new HashMap<String, Object>();
+        List<String> myList = new ArrayList<String>();
+        List<String> myListOut = new ArrayList<String>();
+        myList.add("First Item");
+        myList.add("Second Item");
+        params.put("list", myList);
+        params.put("listOut", myListOut);
+        assertEquals(0, myListOut.size());
+        ProcessInstance processInstance = ksession.startProcess(
+                "MultiInstanceLoopCharacteristicsProcessWithOutput", params);
+        assertProcessInstanceCompleted(processInstance);
+        assertEquals(1, myListOut.size());
+
+    }
+    
+    @Test
     public void testMultiInstanceLoopCharacteristicsProcessWithOutputAndScripts()
             throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsProcessWithOutputAndScripts.bpmn2");
@@ -1226,6 +1246,55 @@ public class FlowTest extends JbpmBpmn2TestCase {
                 "MultiInstanceLoopCharacteristicsTask", params);
         assertProcessInstanceCompleted(processInstance);
         assertEquals(2, myListOut.size());
+
+    }
+    
+    @Test
+    public void testMultiInstanceLoopCharacteristicsTaskWithOutputCompletionCondition()
+            throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsTaskWithOutputCmpCond.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new SystemOutWorkItemHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        List<String> myList = new ArrayList<String>();
+        List<String> myListOut = new ArrayList<String>();
+        myList.add("First Item");
+        myList.add("Second Item");
+        params.put("list", myList);
+        params.put("listOut", myListOut);
+        assertEquals(0, myListOut.size());
+        ProcessInstance processInstance = ksession.startProcess(
+                "MultiInstanceLoopCharacteristicsTask", params);
+        assertProcessInstanceCompleted(processInstance);
+        assertEquals(1, myListOut.size());
+
+    }
+    
+    @Test
+    public void testMultiInstanceLoopCharacteristicsTaskWithOutputCompletionCondition2()
+            throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsTaskWithOutputCmpCond2.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new SystemOutWorkItemHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        List<String> myList = new ArrayList<String>();
+        List<String> myListOut = new ArrayList<String>();
+        myList.add("approved");
+        myList.add("rejected");
+        myList.add("approved");
+        myList.add("approved");
+        myList.add("rejected");
+        params.put("list", myList);
+        params.put("listOut", myListOut);
+        assertEquals(0, myListOut.size());
+        ProcessInstance processInstance = ksession.startProcess(
+                "MultiInstanceLoopCharacteristicsTask", params);
+        assertProcessInstanceCompleted(processInstance);
+        // only two approved outcomes are required to complete multiinstance and since there was reject in between we should have
+        // three elements in the list
+        assertEquals(3, myListOut.size());
 
     }
 

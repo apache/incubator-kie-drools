@@ -414,6 +414,9 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                     forEachNode.setCollectionExpression(collectionName);
                 }
                 
+            } else if ("completionCondition".equals(nodeName)) {
+        		String expression = subNode.getTextContent();
+        		forEachNode.setCompletionConditionExpression(expression);
             }
             subNode = subNode.getNextSibling();
         }

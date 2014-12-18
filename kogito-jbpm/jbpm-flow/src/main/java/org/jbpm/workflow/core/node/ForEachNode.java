@@ -45,6 +45,7 @@ public class ForEachNode extends CompositeContextNode {
     private String outputVariableName;
     private String collectionExpression;
     private String outputCollectionExpression;
+    private String completionConditionExpression;
     private boolean waitForCompletion = true;
 
     public ForEachNode() {
@@ -290,4 +291,13 @@ public class ForEachNode extends CompositeContextNode {
         
         return ctx;
     }
+
+	public String getCompletionConditionExpression() {
+		return completionConditionExpression;
+	}
+
+	public void setCompletionConditionExpression(
+			String completionConditionExpression) {
+		this.completionConditionExpression = completionConditionExpression;
+	}
 }
