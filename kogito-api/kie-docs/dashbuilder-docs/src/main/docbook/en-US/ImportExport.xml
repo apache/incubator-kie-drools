@@ -20,7 +20,7 @@
       <para><emphasis role="bold">Workspaces</emphasis>: By exporting and importing workspaces you can move your set of pages with a given look and feel between installations.</para>
     </listitem>
     <listitem>
-      <para><emphasis role="bold">Key performance indicators and data providers:</emphasis>: By exporting and importing KPI you can move your indicators and its data providers between installations.</para>
+      <para><emphasis role="bold">Key performance indicators and data providers:</emphasis>: By exporting and importing KPIs you can move your indicators and its data providers between installations.</para>
     </listitem>
     <listitem>
       <para><emphasis role="bold">Data sources</emphasis>: By exporting and importing data sources you can move your external connection configurations between installations.</para>
@@ -37,10 +37,10 @@
       <para>There exist panels for importing each type of asset.</para>
     </listitem>
     <listitem>
-      <para>Using the <emphasis>deployment scanner</emphasis>.</para> 
+      <para>Using the <emphasis>Deployment Scanner</emphasis>.</para>
       <para>It allows to place your exported assets in a given folder inside the web application. Once application is starting, it scans the deployment folder and import the assets found.</para>
-      <para>Using the <emphasis>deployment scanner</emphasis> allows to deploy the application and perform the assets importation with no user interaction.</para>
-      <para>Its important to note that the assets are imported only on container startup time, not during application runtime.</para>
+      <para>Using the <emphasis>Deployment Scanner</emphasis> allows for the automatic deployment of assets on application start up time and does not requires the user intervention either.</para>
+      <para>It's important to note that assets are imported only on container startup time, not during application runtime.</para>
     </listitem>
   </itemizedlist>
   

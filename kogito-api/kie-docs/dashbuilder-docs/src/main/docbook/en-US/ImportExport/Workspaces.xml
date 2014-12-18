@@ -14,7 +14,7 @@
   </para>
 
   <para>
-    The import &amp; export of a given workspace implies moving : 
+    The import &amp; export of a given workspace implies moving:
   </para>
 
   <itemizedlist>
@@ -25,7 +25,7 @@
       <para><emphasis role="bold">Sections</emphasis>: All the sections that compose the workspace.</para>
     </listitem>
     <listitem>
-      <para><emphasis role="bold">Panels</emphasis>: All the panels used in workspace sections.</para>
+      <para><emphasis role="bold">Panels</emphasis>: All the panels used in the workspace sections.</para>
     </listitem>
   </itemizedlist>
 
@@ -34,7 +34,7 @@
   </para> 
   
   <para>
-    It lists all the existing workspaces in the application and allows you to export one or more workspace definitions in a single XML file.
+    It lists all the existing workspaces in the application and allows to export one or more workspace definitions in a single XML file.
   </para>
 
   <figure>
@@ -68,12 +68,12 @@
       </figure>
     </listitem>
     <listitem>
-      <para>Using the <emphasis>deployment scanner</emphasis>. </para>
-      <para>You can place your exported workspace definition files in the folder <emphasis>WEB-INF/deployments</emphasis>. Once application is starting, it scans ths deployment folder and import all the workspaces found.</para>
+      <para>Using the <emphasis>Deployment Scanner</emphasis>. </para>
+      <para>Just by dropping the workspace definition files into the folder <emphasis>WEB-INF/deployments</emphasis>. Once application is starting, it scans ths deployment folder and import all the workspaces found.</para>
       <para>Some important notes about automatic workspace importation using the <emphasis>deployment scanner</emphasis>:</para>
       <itemizedlist>
         <listitem>
-          <para>Workspaces are imported once and only on container startup time, not during application runtime</para>
+          <para>Workspaces are imported once and only at container startup time, not during application runtime</para>
         </listitem>
         <listitem>
           <para>The XML workspace definition file must have extension <emphasis>workspace</emphasis>. Eg: my-workspace.workspace</para>
