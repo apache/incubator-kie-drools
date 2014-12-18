@@ -32,6 +32,7 @@ import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
+import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,6 +47,7 @@ import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -328,5 +330,75 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
         
         assertEquals(1, handler.getWorkItems().size());
     } 
-    
+
+    @Test
+    public void testBoundaryErrorEventDefaultHandlerWithErrorCodeWithStructureRef() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-BoundaryErrorEventDefaultHandlerWithErrorCodeWithStructureRef.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ExceptionWorkItemHandler handler = new ExceptionWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+
+		try {
+			ProcessInstance processInstance = ksession
+					.startProcess("com.sample.bpmn.hello");
+			fail("This is not a default handler. So WorkflowRuntimeException must be thrown");
+		} catch (WorkflowRuntimeException e) {
+			assertTrue(true);
+		}
+    }
+
+    @Test
+    public void testBoundaryErrorEventDefaultHandlerWithErrorCodeWithoutStructureRef() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-BoundaryErrorEventDefaultHandlerWithErrorCodeWithoutStructureRef.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ExceptionWorkItemHandler handler = new ExceptionWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+
+		try {
+			ProcessInstance processInstance = ksession
+					.startProcess("com.sample.bpmn.hello");
+			fail("This is not a default handler. So WorkflowRuntimeException must be thrown");
+		} catch (WorkflowRuntimeException e) {
+			assertTrue(true);
+		}
+    }
+
+    @Test
+    public void testBoundaryErrorEventDefaultHandlerWithoutErrorCodeWithStructureRef() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-BoundaryErrorEventDefaultHandlerWithoutErrorCodeWithStructureRef.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ExceptionWorkItemHandler handler = new ExceptionWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+
+        ProcessInstance processInstance = ksession
+            .startProcess("com.sample.bpmn.hello");
+
+        assertNodeTriggered(processInstance.getId(), "Start", "User Task", "MyBoundaryErrorEvent");
+    }
+
+    @Test
+    public void testBoundaryErrorEventDefaultHandlerWithoutErrorCodeWithoutStructureRef() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-BoundaryErrorEventDefaultHandlerWithoutErrorCodeWithoutStructureRef.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ExceptionWorkItemHandler handler = new ExceptionWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+
+        ProcessInstance processInstance = ksession
+            .startProcess("com.sample.bpmn.hello");
+
+        assertNodeTriggered(processInstance.getId(), "Start", "User Task", "MyBoundaryErrorEvent");
+    }
+
+    class ExceptionWorkItemHandler implements WorkItemHandler {
+
+		@Override
+		public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+			throw new RuntimeException();
+		}
+
+		@Override
+		public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+		}
+
+    }
 }
