@@ -38,4 +38,5 @@
 
   <xi:include href="DataProviders/CSVProvider.xml"/>
   <xi:include href="DataProviders/SQLProvider.xml"/>
+  <xi:include href="DataProviders/LargeDataSets.xml"/>
 </section>
