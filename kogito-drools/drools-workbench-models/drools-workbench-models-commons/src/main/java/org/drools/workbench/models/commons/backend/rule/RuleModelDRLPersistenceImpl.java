@@ -1942,12 +1942,12 @@ public class RuleModelDRLPersistenceImpl
         for ( String line : lines ) {
             if ( ruleSection == RuleSection.HEADER ) {
                 drl.append( line ).append( "\n" );
-                if ( line.contains( "when" ) ) {
+                if ( isLHSStartMarker( line ) ) {
                     ruleSection = RuleSection.LHS;
                 }
                 continue;
             }
-            if ( ruleSection == RuleSection.LHS && line.contains( "then" ) ) {
+            if ( ruleSection == RuleSection.LHS && isRHSStartMarker( line ) ) {
                 thenLine = line;
                 ruleSection = RuleSection.RHS;
                 continue;
@@ -1970,6 +1970,16 @@ public class RuleModelDRLPersistenceImpl
                                       thenLine,
                                       lhsStatements,
                                       rhsStatements );
+    }
+
+    private boolean isLHSStartMarker( final String line ) {
+        final String lhsMarker = line.trim() + " ";
+        return lhsMarker.startsWith( "when " );
+    }
+
+    private boolean isRHSStartMarker( final String line ) {
+        final String rhsMarker = line.trim() + " ";
+        return rhsMarker.startsWith( "then " );
     }
 
     private int parenthesisBalance( String str ) {

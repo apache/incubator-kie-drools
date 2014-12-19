@@ -3627,7 +3627,7 @@ public class RuleModelDRLPersistenceTest {
     @Test
     public void testActionSetFieldValue() {
         final String drl = "rule \"r0\"\n" +
-                "dialect \"mvel\"" +
+                "dialect \"mvel\"\n" +
                 "when\n" +
                 "$a : Applicant( )\n" +
                 "then\n" +
@@ -3672,7 +3672,7 @@ public class RuleModelDRLPersistenceTest {
     @Test
     public void testActionCallMethod() {
         final String drl = "rule \"r0\"\n" +
-                "dialect \"mvel\"" +
+                "dialect \"mvel\"\n" +
                 "when\n" +
                 "$a : Applicant( )\n" +
                 "then\n" +
@@ -3719,7 +3719,7 @@ public class RuleModelDRLPersistenceTest {
         String global = "global java.util.ArrayList list";
         String drl =
                 "rule \"r0\"\n" +
-                        "dialect \"mvel\"" +
+                        "dialect \"mvel\"\n" +
                         "when\n" +
                         "$a : Applicant( )\n" +
                         "then\n" +

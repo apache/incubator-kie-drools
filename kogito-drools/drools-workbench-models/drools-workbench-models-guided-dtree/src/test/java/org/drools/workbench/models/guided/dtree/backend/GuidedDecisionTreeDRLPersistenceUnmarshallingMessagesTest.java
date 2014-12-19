@@ -239,7 +239,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
 
     @Test
     public void testSingleRule_UnsupportedFieldNatureType() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  $p : Person()\n" +
                 "then \n" +
@@ -291,7 +291,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
 
     @Test
     public void testSingleRule_BindingNotFoundWithModify() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  $p : Person()\n" +
                 "then \n" +
@@ -343,7 +343,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
 
     @Test
     public void testSingleRule_BindingNotFoundWithUpdate() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  $p : Person()\n" +
                 "then \n" +

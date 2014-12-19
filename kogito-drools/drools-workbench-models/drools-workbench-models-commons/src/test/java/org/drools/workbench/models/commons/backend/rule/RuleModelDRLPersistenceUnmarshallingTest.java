@@ -15,6 +15,8 @@ package org.drools.workbench.models.commons.backend.rule;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,6 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.lang.Expander;
+import org.drools.compiler.lang.dsl.DSLMappingFile;
+import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
+import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
@@ -3376,12 +3382,143 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
+    public void testDSLExpansionLHS2() {
+        String drl = "rule \"rule1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "There is an Applicant\n"
+                + "- credit rating is AA\n"
+                + "then\n"
+                + "end\n";
+
+        final String dslDefinition1 = "There is an Applicant";
+        final String dslFile1 = "[when]" + dslDefinition1 + "=Applicant( )";
+
+        final String dslDefinition2 = "- credit rating is {rating:ENUM:Applicant.creditRating}";
+        final String dslFile2 = "[when]" + dslDefinition2 + "=creditRating == {rating}";
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
+                                                                                         new ArrayList<String>(),
+                                                                                         dmo,
+                                                                                         new String[]{ dslFile1, dslFile2 } );
+
+        assertNotNull( m );
+
+        assertEquals( 2,
+                      m.lhs.length );
+        assertTrue( m.lhs[ 0 ] instanceof DSLSentence );
+        assertTrue( m.lhs[ 1 ] instanceof DSLSentence );
+
+        DSLSentence dslSentence1 = (DSLSentence) m.lhs[ 0 ];
+        assertEquals( dslDefinition1,
+                      dslSentence1.getDefinition() );
+        assertEquals( 0,
+                      dslSentence1.getValues().size() );
+
+        DSLSentence dslSentence2 = (DSLSentence) m.lhs[ 1 ];
+        assertEquals( dslDefinition2,
+                      dslSentence2.getDefinition() );
+        assertEquals( 1,
+                      dslSentence2.getValues().size() );
+        assertTrue( dslSentence2.getValues().get( 0 ) instanceof DSLComplexVariableValue );
+        DSLComplexVariableValue dslComplexVariableValue = (DSLComplexVariableValue) dslSentence2.getValues().get( 0 );
+        assertEquals( "AA",
+                      dslComplexVariableValue.getValue() );
+        assertEquals( "ENUM:Applicant.creditRating",
+                      dslComplexVariableValue.getId() );
+
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1173842
+    public void testDSLExpansionLHS_WithKeyword_then() {
+        String expected_dslr = "rule \"rule1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "There is an Applicant\n"
+                + "- age more then 55\n"
+                + "then\n"
+                + "end\n";
+        String expected_drl = "rule \"rule1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "Applicant( age > 55 )\n"
+                + "then\n"
+                + "end\n";
+
+        final String dslDefinition1 = "There is an Applicant";
+        final String dslFile1 = "[when]" + dslDefinition1 + "=Applicant( )";
+
+        final String dslDefinition2 = "- age more then {age}";
+        final String dslFile2 = "[when]" + dslDefinition2 + "=age > {age}";
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( expected_dslr,
+                                                                                         new ArrayList<String>(),
+                                                                                         dmo,
+                                                                                         new String[]{ dslFile1, dslFile2 } );
+
+        assertNotNull( m );
+
+        assertEquals( 2,
+                      m.lhs.length );
+        assertTrue( m.lhs[ 0 ] instanceof DSLSentence );
+        assertTrue( m.lhs[ 1 ] instanceof DSLSentence );
+
+        DSLSentence dslSentence1 = (DSLSentence) m.lhs[ 0 ];
+        assertEquals( dslDefinition1,
+                      dslSentence1.getDefinition() );
+        assertEquals( 0,
+                      dslSentence1.getValues().size() );
+
+        DSLSentence dslSentence2 = (DSLSentence) m.lhs[ 1 ];
+        assertEquals( dslDefinition2,
+                      dslSentence2.getDefinition() );
+        assertEquals( 1,
+                      dslSentence2.getValues().size() );
+        DSLVariableValue dslVariableValue = dslSentence2.getValues().get( 0 );
+        assertEquals( "55",
+                      dslVariableValue.getValue() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( expected_dslr,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+
+        //Check DSL expansion (as BZ stated runtime was flawed as well)
+        final Expander expander = new DefaultExpander();
+        final List<DSLMappingFile> dsls = new ArrayList<DSLMappingFile>();
+        try {
+            final DSLTokenizedMappingFile dslTokenizer1 = new DSLTokenizedMappingFile();
+            if ( dslTokenizer1.parseAndLoad( new StringReader( dslFile1 ) ) ) {
+                dsls.add( dslTokenizer1 );
+            } else {
+                fail();
+            }
+            final DSLTokenizedMappingFile dslTokenizer2 = new DSLTokenizedMappingFile();
+            if ( dslTokenizer2.parseAndLoad( new StringReader( dslFile2 ) ) ) {
+                dsls.add( dslTokenizer2 );
+            } else {
+                fail();
+            }
+        } catch ( IOException e ) {
+            fail();
+        }
+        for ( DSLMappingFile dsl : dsls ) {
+            expander.addDSLMapping( dsl.getMapping() );
+        }
+        final String actual_drl = expander.expand( expected_dslr );
+        assertEqualsIgnoreWhitespace( expected_drl,
+                                      actual_drl );
+    }
+
+    @Test
     public void testDSLExpansionRHS() {
         String drl = "rule \"rule1\"\n"
                 + "when\n"
-                + "$a : Applicant()"
+                + "> $a : Applicant()\n"
                 + "then\n"
-                + "Set applicant name to Bob"
+                + "Set applicant name to Bob\n"
                 + "end\n";
 
         final String dslDefinition = "Set applicant name to {name:\\w+ \\w+}";
