@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base=".."
+         xml:id="sect-dashbuilder-dataproviders-large_datasets"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+
+  <title>Dealing with high volume databases</title>
+
+  <para>The previous sections showed how data could be loaded from plain text like CSV files or query
+    from a database connection. When data is small enough, Dashbuilder can handle pretty well the small
+    data sets in memory as far as it doesn't exceed the 2MB size limit. However, must of the time, our data
+    sets are bigger and we can't upload all the data for Dashbuilder to handle it by its own. Is in these
+    cases where database backed queries can help us to implement nice drill down reports and charts without
+    preloading all the data.
+  </para>
+
+  <para>
+  Imagine a database containing two tables:
+  </para>
+
+  <figure>
+    <title>Stock trade tables</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/DataProviders/StockTradeDBTables.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
+
+  <para>
+    Now, let's take as an example a very simple example of a stock exchange dashboard which is fed from the two
+    tables above. The dashboard displays some indicators about several companies from several countries selling
+    their shares at a given price on every day closing date. The dashboard displays 4 KPIs as you can see in the
+    following screenshot:
+  </para>
+
+
+  <figure>
+    <title>Stock trade dashboard</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/DataProviders/StockTradeDashboard.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
+
+  <para>
+    All the indicators are displaying data coming from the two database tables defined above.
+
+    <itemizedlist>
+      <listitem>
+        <para>Bar chart - Average price per company</para>
+      </listitem>
+      <listitem>
+        <para>Area chart - Sales price evolution</para>
+      </listitem>
+      <listitem>
+        <para>Pie chart - Companies per country</para>
+      </listitem>
+      <listitem>
+        <para>Table report - Stock prices at closing date</para>
+      </listitem>
+    </itemizedlist>
+  </para>
+
+  <para>
+    What we're going to start discussing next is the two strategies we can use for building a dashboard.
+    This is an important aspect to consider, specially if we're facing big data scenarios.
+  </para>
+
+  <section>
+    <title>The <emphasis>in-memory</emphasis> strategy</title>
+
+    <para>
+      This strategy consists in creating a data provider which load all the data set rows by executing a
+      single SQL query over the two tables.
+    </para>
+
+    <programlisting>
+    SELECT C.NAME, C.COUNTRY, S.PRICE_PER_SHARE, S.CLOSING_DATE
+    FROM COMPANY C JOIN STOCK S ON (C.ID=S.ID_COMPANY)
+    </programlisting>
+
+    <para>
+      Every single indicator on the dashboard share the same data set. When filters are executed
+      from the UI no further SQLs are executed since all the calculations are done over the data set in memory.
+    </para>
+
+    <para>
+      Pros:
+      <itemizedlist>
+        <listitem>
+          <para>Data integration logic keeps very simple</para>
+        </listitem>
+        <listitem>
+          <para>Only a single data provider is needed</para>
+        </listitem>
+        <listitem>
+          <para>Faster configuration of KPIs since all the data set properties are available at design time</para>
+        </listitem>
+        <listitem>
+          <para>Multiple indicators from a single data provider</para>
+        </listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+      Cons:
+      <itemizedlist>
+        <listitem>
+          <para>Can't be applied on medium/large data sets due to poor performance</para>
+        </listitem>
+      </itemizedlist>
+    </para>
+
+  </section>
+
+  <section>
+    <title>The <emphasis>native</emphasis> strategy</title>
+
+    <para>
+      The native approach consists in having a data provider for every indicator in the dashboard
+      instead of loading an handling all the data set in memory. Every KPI is told what data has to display.
+      Every time the user filters on the dashboard, the SQLs are parsed, injected with the filter values
+      and re-executed. No data is hold in memory, the dashboard is always asking the DB for the data.
+    </para>
+
+    <para>
+      The SQL data providers are the following:
+
+      <itemizedlist>
+        <listitem>
+          <para>Bar chart - Average price per company</para>
+          <programlisting>
+          SELECT C.NAME, AVG(S.PRICE_PER_SHARE)
+          FROM COMPANY C JOIN STOCK S ON (C.ID=S.ID_COMPANY)
+          WHERE {sql_condition, optional, c.country, country}
+          AND {sql_condition, optional, c.name, name}
+          GROUP BY C.NAME
+          </programlisting>
+        </listitem>
+        <listitem>
+          <para>Area chart - Sales price evolution</para>
+          <programlisting>
+          SELECT S.CLOSING_DATE, AVG(S.PRICE_PER_SHARE)
+          FROM COMPANY C JOIN STOCK S ON (C.ID=S.ID_COMPANY)
+          WHERE {sql_condition, optional, c.country, country}
+          AND {sql_condition, optional, c.name, name}
+          GROUP BY CLOSING_DATE
+          </programlisting>
+        </listitem>
+        <listitem>
+          <para> Pie chart - Companies per country</para>
+          <programlisting>
+          SELECT COUNTRY, COUNT(ID)
+          FROM COMPANY
+          WHERE {sql_condition, optional, country, country}
+          AND {sql_condition, optional, name, name}
+          GROUP BY COUNTRY
+          </programlisting>
+        </listitem>
+        <listitem>
+          <para>Table report</para>
+          <programlisting>
+          SELECT C.NAME, C.COUNTRY, S.PRICE_PER_SHARE, S.CLOSING_DATE
+          FROM COMPANY C JOIN STOCK S ON (C.ID=S.ID_COMPANY)
+          WHERE {sql_condition, optional, c.country, country}
+          AND {sql_condition, optional, c.name, name}
+          </programlisting>
+        </listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+      As you can see every KPI is delegating the filter &amp; group by operations to the database.
+      The filter magic happens thanks to the <emphasis role="bold">{sql_condition}</emphasis> statements.
+      Every time a filter occurs in the UI the dashbuilder core gets all the SQL data providers referenced
+      by the KPIs and it parses/injects into those SQLs the current filter selections made by the user.
+      The signature of the <emphasis>sql_condition</emphasis> clause is the following:
+    </para>
+
+    <programlisting>
+      {sql_condition, [optional | required], [db column], [filter property]}
+    </programlisting>
+
+    <para>where:</para>
+
+    <itemizedlist>
+      <listitem>optional: if no filter exists for the given property then the condition is ignored.</listitem>
+      <listitem>required: if no filter is present  then the SQL returns no data.</listitem>
+      <listitem>db column: the db column where the current filter is applied.</listitem>
+      <listitem>filter property: the UI property which selected values are taken.</listitem>
+    </itemizedlist>
+
+    <para>
+      Pros:
+      <itemizedlist>
+        <listitem>
+          Support for high volumes of data. The database tables need to be properly indexed though.
+        </listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+      Cons:
+      <itemizedlist>
+        <listitem>
+          The set up of the data providers is a little bit more tricky  as it requires to create SQL queries
+          with the required filter, group by and sort operations for every KPI.
+        </listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+      When designing a dashboard never forget of thinking thoroughly about the origin, type and the volume of
+      the data we want to display in order to go for the right strategy.
+    </para>
+  </section>
+</section>
