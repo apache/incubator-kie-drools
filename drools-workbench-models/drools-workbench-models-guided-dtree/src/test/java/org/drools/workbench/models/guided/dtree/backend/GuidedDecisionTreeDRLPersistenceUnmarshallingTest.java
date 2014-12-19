@@ -2030,7 +2030,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ActionRetract() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  $p : Person( )\n" +
                 "then \n" +
@@ -2086,7 +2086,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ActionRetractWithConstraint() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  $p : Person( $n : name )\n" +
                 "then \n" +
@@ -2161,7 +2161,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ActionModify() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  $p : Person( )\n" +
                 "then \n" +
@@ -2235,7 +2235,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ActionModifyWithConstraint() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  $p : Person( $n : name )\n" +
                 "then \n" +
@@ -2334,7 +2334,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ActionModifyActionRetract() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  $p : Person( )\n" +
                 "then \n" +
@@ -2419,7 +2419,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ActionModifyMultipleFields() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  $p : Person( )\n" +
                 "then \n" +
@@ -2549,7 +2549,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ActionModifyDateFieldValue() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  $p : Person()\n" +
                 "then \n" +
@@ -2637,7 +2637,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ActionSet() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  $p : Person( )\n" +
                 "then \n" +
@@ -2709,7 +2709,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ActionSetWithConstraint() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  $p : Person( $n : name )\n" +
                 "then \n" +
@@ -2806,7 +2806,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ActionSetActionRetract() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  $p : Person( )\n" +
                 "then \n" +
@@ -2889,7 +2889,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ActionSetMultipleFields() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  $p : Person( )\n" +
                 "then \n" +
@@ -3104,7 +3104,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ActionInsert() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( )\n" +
                 "then \n" +
@@ -3177,7 +3177,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ActionInsertLogical() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( )\n" +
                 "then \n" +
@@ -3250,7 +3250,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ActionInsertDateFieldValue() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( )\n" +
                 "then \n" +
@@ -3335,7 +3335,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ActionInsertLogicalDateFieldValue() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( )\n" +
                 "then \n" +

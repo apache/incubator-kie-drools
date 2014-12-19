@@ -179,7 +179,7 @@ public class RuleModelDRLPersistenceUnmarshallingI18NTest {
                 "rule \"r1\"\n" +
                 "dialect \"mvel\"\n" +
                 "when\n" +
-                "Applicant( $a : age )" +
+                "Applicant( $a : age )\n" +
                 "then\n" +
                 "end";
 
@@ -219,7 +219,7 @@ public class RuleModelDRLPersistenceUnmarshallingI18NTest {
                 "rule \"r1\"\n" +
                 "dialect \"mvel\"\n" +
                 "when\n" +
-                "Applicant( 製品番号 : age )" +
+                "Applicant( 製品番号 : age )\n" +
                 "then\n" +
                 "end";
 
