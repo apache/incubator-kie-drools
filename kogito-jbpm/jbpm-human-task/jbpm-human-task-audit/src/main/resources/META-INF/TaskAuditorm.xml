@@ -27,19 +27,19 @@
    
     <named-query name="getAllAuditTasks">
         <query>
-            select a from AuditTaskImpl a order by a.taskId DESC  
+            select t from AuditTaskImpl t order by t.taskId DESC  
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
     <named-query name="getAllAuditTasksByUser">
         <query>
-            select a from AuditTaskImpl a where a.actualOwner = :owner order by a.taskId DESC  
+            select t from AuditTaskImpl t where t.actualOwner = :owner order by t.taskId DESC  
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
     <named-query name="getAuditTaskById">
         <query>
-            select a from AuditTaskImpl a where a.taskId = :taskId 
+            select t from AuditTaskImpl t where t.taskId = :taskId 
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>

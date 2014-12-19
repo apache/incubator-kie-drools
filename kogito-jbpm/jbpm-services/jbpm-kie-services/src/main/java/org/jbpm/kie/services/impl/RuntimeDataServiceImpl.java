@@ -52,6 +52,7 @@ import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.InternalTaskService;
+import org.kie.internal.task.api.AuditTask;
 
 
 
@@ -76,8 +77,10 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     
     private TaskService taskService;
     
+    
     public RuntimeDataServiceImpl() {
     	QueryManager.get().addNamedQueries("META-INF/Servicesorm.xml");
+        QueryManager.get().addNamedQueries("META-INF/TaskAuditorm.xml");
     }
 
     public void setCommandService(TransactionalCommandService commandService) {
@@ -92,7 +95,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     public void setTaskService(TaskService taskService) {
 		this.taskService = taskService;
 	}
-
+    
 	/*
      * start
      * helper methods to index data upon deployment
@@ -618,7 +621,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status, QueryFilter filter) {
 		return taskService.getTasksAssignedAsPotentialOwnerByStatus(userId, status, filter.getLanguage());
 	}
-
+        
 	@Override
 	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDateOptional(
 			String userId, List<Status> status, Date from, QueryFilter filter) {
@@ -681,6 +684,26 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
      * task methods
      */
     
+   /*
+    * start
+    *  task audit queries   
+    */     
+        @Override
+    public List<AuditTask> getAllAuditTask(String userId, QueryFilter filter){
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("owner", userId);
+        applyQueryContext(params, filter);
+        applyQueryFilter(params, filter);
+        List<AuditTask> auditTasks = commandService.execute(
+    				new QueryNameCommand<List<AuditTask>>("getAllAuditTasksByUser", params));
+        return auditTasks;
+    }    
+    
+    /*
+    * end
+    *  task audit queries   
+    */  
+        
     /*
      * start
      * predicates for collection filtering
@@ -897,4 +920,16 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
      * end
      * predicates for collection filtering
      */
+    
+     protected void applyQueryFilter(Map<String, Object> params, QueryFilter queryFilter) {
+    	if (queryFilter != null) {
+    	    applyQueryContext(params, queryFilter);
+        	if (queryFilter.getFilterParams() != null && !queryFilter.getFilterParams().isEmpty()) {
+        		params.put(FILTER, queryFilter.getFilterParams());
+        		for(String key : queryFilter.getParams().keySet()){
+                    params.put(key, queryFilter.getParams().get(key));
+                }
+        	}
+        }
+    }
 }

@@ -32,6 +32,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
+import org.kie.internal.task.api.AuditTask;
 
 /**
  * This service provides an interface to retrieve data about the runtime, including the following:
@@ -396,5 +397,15 @@ public interface RuntimeDataService {
 	 * @return
 	 */
 	List<TaskSummary> getTasksByStatusByProcessInstanceId(Long processInstanceId, List<Status> status, QueryFilter filter);
+        
+        /**
+	 * Get a list of tasks audit logs for the user provides applying the query filter
+	 * listed statuses.
+	 * 
+	 * @param userId
+	 * @param filter
+	 * @return
+	 */
+        List<AuditTask> getAllAuditTask(String userId, QueryFilter filter);
 	    
 }

@@ -18,7 +18,7 @@ package org.jbpm.services.task.audit.service;
 
 import java.util.List;
 
-import org.jbpm.services.task.audit.impl.model.api.AuditTask;
+import org.kie.internal.task.api.AuditTask;
 import org.kie.api.task.TaskService;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.model.TaskEvent;

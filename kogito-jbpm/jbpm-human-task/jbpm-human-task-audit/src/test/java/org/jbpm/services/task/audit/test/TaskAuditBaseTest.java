@@ -29,7 +29,7 @@ import org.jbpm.services.task.audit.commands.DeleteBAMTaskSummariesCommand;
 import org.jbpm.services.task.audit.commands.GetAuditEventsCommand;
 import org.jbpm.services.task.audit.commands.GetBAMTaskSummariesCommand;
 import org.jbpm.services.task.audit.impl.model.BAMTaskSummaryImpl;
-import org.jbpm.services.task.audit.impl.model.api.AuditTask;
+import org.kie.internal.task.api.AuditTask;
 import org.jbpm.services.task.audit.service.TaskAuditService;
 import org.jbpm.services.task.utils.TaskFluent;
 import org.junit.Test;

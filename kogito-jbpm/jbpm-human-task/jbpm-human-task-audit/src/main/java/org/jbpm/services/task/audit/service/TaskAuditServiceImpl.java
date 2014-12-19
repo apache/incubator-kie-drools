@@ -22,7 +22,7 @@ import org.jbpm.services.task.audit.commands.GetAllHistoryAuditTasksByUserComman
 import org.jbpm.services.task.audit.commands.GetAllHistoryAuditTasksCommand;
 import org.jbpm.services.task.audit.commands.GetAuditEventsByProcessInstanceIdCommand;
 import org.jbpm.services.task.audit.commands.GetAuditEventsCommand;
-import org.jbpm.services.task.audit.impl.model.api.AuditTask;
+import org.kie.internal.task.api.AuditTask;
 import org.kie.api.task.TaskService;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.InternalTaskService;
@@ -62,6 +62,6 @@ import org.kie.internal.task.api.model.TaskEvent;
     public void setTaskService(TaskService taskService) {
         this.taskService = (InternalTaskService) taskService;
     }
-
     
+     
 }

@@ -26,7 +26,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 
-import org.jbpm.services.task.audit.impl.model.api.AuditTask;
+import org.kie.internal.task.api.AuditTask;
 
 /**
  *
