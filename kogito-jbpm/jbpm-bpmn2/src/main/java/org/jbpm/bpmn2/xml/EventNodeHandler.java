@@ -46,17 +46,7 @@ public class EventNodeHandler extends AbstractNodeHandler {
     		writeNode("intermediateCatchEvent", eventNode, xmlDump, metaDataType);
     		xmlDump.append(">" + EOL);
             writeExtensionElements(eventNode, xmlDump);
-    		if (eventNode.getVariableName() != null) {
-    			xmlDump.append("      <dataOutput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(eventNode) + "_Output\" name=\"event\" />" + EOL);
-    			xmlDump.append("      <dataOutputAssociation>" + EOL);
-    			xmlDump.append(
-    				"      <sourceRef>" + XmlBPMNProcessDumper.getUniqueNodeId(eventNode) + "_Output</sourceRef>" + EOL +
-    				"      <targetRef>" + XmlDumper.replaceIllegalChars(eventNode.getVariableName()) + "</targetRef>" + EOL);
-    			xmlDump.append("      </dataOutputAssociation>" + EOL);
-    			xmlDump.append("      <outputSet>" + EOL);
-    			xmlDump.append("        <dataOutputRefs>" + XmlBPMNProcessDumper.getUniqueNodeId(eventNode) + "_Output</dataOutputRefs>" + EOL);
-    			xmlDump.append("      </outputSet>" + EOL);
-    		}
+            writeVariableName(eventNode, xmlDump);
     		if (eventNode.getEventFilters().size() > 0) {
     			String type = ((EventTypeFilter) eventNode.getEventFilters().get(0)).getType();
     			if (type.startsWith("Message-")) {

@@ -50,6 +50,7 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.EndNode;
+import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -515,6 +516,20 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             xmlNode = xmlNode.getNextSibling();
         }
     }
+
+	protected void writeVariableName(EventNode eventNode, StringBuilder xmlDump) {
+		if (eventNode.getVariableName() != null) {
+			xmlDump.append("      <dataOutput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(eventNode) + "_Output\" name=\"event\" />" + EOL);
+			xmlDump.append("      <dataOutputAssociation>" + EOL);
+			xmlDump.append(
+				"      <sourceRef>" + XmlBPMNProcessDumper.getUniqueNodeId(eventNode) + "_Output</sourceRef>" + EOL +
+				"      <targetRef>" + XmlDumper.replaceIllegalChars(eventNode.getVariableName()) + "</targetRef>" + EOL);
+			xmlDump.append("      </dataOutputAssociation>" + EOL);
+			xmlDump.append("      <outputSet>" + EOL);
+			xmlDump.append("        <dataOutputRefs>" + XmlBPMNProcessDumper.getUniqueNodeId(eventNode) + "_Output</dataOutputRefs>" + EOL);
+			xmlDump.append("      </outputSet>" + EOL);
+		}
+	}
     
 
 }

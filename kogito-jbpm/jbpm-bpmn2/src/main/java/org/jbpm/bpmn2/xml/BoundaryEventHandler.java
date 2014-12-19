@@ -466,6 +466,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
                 xmlDump.append(">" + EOL);
                 writeExtensionElements(node, xmlDump);
+                writeVariableName(eventNode, xmlDump);
                 String errorId = getErrorIdForErrorCode(type, eventNode);
                 xmlDump.append("      <errorEventDefinition errorRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(errorId) + "\" />" + EOL);
                 endNode("boundaryEvent", xmlDump);
@@ -543,5 +544,4 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
             }
         }
     }
-
 }
