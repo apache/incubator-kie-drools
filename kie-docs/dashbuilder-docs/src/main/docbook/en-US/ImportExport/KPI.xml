@@ -70,10 +70,16 @@
       <para>Some important notes about automatic KPI importation using the <emphasis>Deployment Scanner</emphasis>:</para>
       <itemizedlist>
         <listitem>
-          <para>KPI and data providers are imported once and only at container startup time, not during application runtime</para>
+          <para>KPI and data providers are imported once and only at deploy time, not during application runtime</para>
         </listitem>
         <listitem>
           <para>The XML KPI definition file must have the extension <emphasis>kpis</emphasis>. Eg: my-kpis.kpis</para>
+        </listitem>
+        <listitem>
+          <para>If the KPI or data provider definitions to import already exist (same logic identifier), they will be overwritten.</para>
+        </listitem>
+        <listitem>
+          <para>You can overwrite existing KPI or data provider by adding a new definition file in the deployment folder with a different name that the initial one. For example, initially you deploy a <emphasis>my-kpi.kpis</emphasis> file into the system, which contains a KPI with <emphasis>my-kpi</emphasis> as identifier. Then if you want to overwrite it, you can place a new file in the deployment folder named <emphasis>my-kpi-v2.kpis</emphasis> using same <emphasis>my-kpi</emphasis> identifier.</para>
         </listitem>
       </itemizedlist>
     </listitem>
