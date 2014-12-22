@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Assert;
-
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
 import org.jbpm.bpmn2.handler.SignallingTaskHandlerDecorator;
 import org.jbpm.bpmn2.objects.ExceptionOnPurposeHandler;
@@ -400,6 +398,19 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
             .startProcess("com.sample.bpmn.hello");
 
         assertEquals("java.lang.RuntimeException", getProcessVarValue(processInstance, "var1"));
+    }
+    
+	@Test
+    public void testBoundaryErrorEventStructureRef() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-BoundaryErrorEventStructureRef.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ExceptionWorkItemHandler handler = new ExceptionWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+
+        ProcessInstance processInstance = ksession
+                .startProcess("com.sample.bpmn.hello");
+
+        assertNodeTriggered(processInstance.getId(), "Start", "User Task", "MyBoundaryErrorEvent");
     }
 
     class ExceptionWorkItemHandler implements WorkItemHandler {
