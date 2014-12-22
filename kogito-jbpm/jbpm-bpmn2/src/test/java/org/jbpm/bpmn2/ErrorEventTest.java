@@ -389,6 +389,19 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
         assertNodeTriggered(processInstance.getId(), "Start", "User Task", "MyBoundaryErrorEvent");
     }
 
+    @Test
+    public void testBoundaryErrorEventStructureRef() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-BoundaryErrorEventStructureRef.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ExceptionWorkItemHandler handler = new ExceptionWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+
+        ProcessInstance processInstance = ksession
+                .startProcess("com.sample.bpmn.hello");
+
+        assertNodeTriggered(processInstance.getId(), "Start", "User Task", "MyBoundaryErrorEvent");
+    }
+
     class ExceptionWorkItemHandler implements WorkItemHandler {
 
 		@Override
