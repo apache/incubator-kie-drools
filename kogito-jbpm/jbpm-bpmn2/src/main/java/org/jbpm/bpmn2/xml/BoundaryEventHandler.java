@@ -24,6 +24,7 @@ import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.Error;
 import org.jbpm.bpmn2.core.Escalation;
+import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.bpmn2.core.Message;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.event.EventFilter;
@@ -195,6 +196,16 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
 		            	type = error.getId();
 		            	hasErrorCode = false;
 		            }
+		            String structureRef = error.getStructureRef();
+		            if (structureRef != null) {
+		            	Map<String, ItemDefinition> itemDefs = (Map<String, ItemDefinition>)((ProcessBuildData) 
+		            			parser.getData()).getMetaData("ItemDefinitions");
+		            	
+		            	if (itemDefs.containsKey(structureRef)) {
+		            		structureRef = itemDefs.get(structureRef).getStructureRef();
+		            	}
+		            }
+		            
                     List<EventFilter> eventFilters = new ArrayList<EventFilter>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
                     eventFilter.setType("Error-" + attachedTo + "-" + type);
@@ -202,7 +213,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                     eventNode.setEventFilters(eventFilters);
                     eventNode.setMetaData("ErrorEvent", type);
                     eventNode.setMetaData("HasErrorEvent", hasErrorCode);
-                    eventNode.setMetaData("ErrorStructureRef", error.getStructureRef());
+                    eventNode.setMetaData("ErrorStructureRef", structureRef);
                 }
             }
             xmlNode = xmlNode.getNextSibling();
@@ -468,7 +479,8 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 writeExtensionElements(node, xmlDump);
                 writeVariableName(eventNode, xmlDump);
                 String errorId = getErrorIdForErrorCode(type, eventNode);
-                xmlDump.append("      <errorEventDefinition errorRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(errorId) + "\" />" + EOL);
+                xmlDump.append("      <errorEventDefinition errorRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(errorId) + "\" " );
+                xmlDump.append("/>" + EOL);
                 endNode("boundaryEvent", xmlDump);
             } else if (type.startsWith("Timer-")) {
                 type = type.substring(attachedTo.length() + 7);

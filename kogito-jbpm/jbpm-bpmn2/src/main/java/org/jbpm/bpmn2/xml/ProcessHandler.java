@@ -157,6 +157,11 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		if (typedImports != null) {
 		    process.setMetaData("Bpmn2Imports", typedImports);
 		}
+		// register item definitions as meta data of process
+		Object itemDefinitions = ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
+		if (itemDefinitions != null) {
+		    process.setMetaData("ItemDefinitions", itemDefinitions);
+		}
 		
 		// for unique id's of nodes, start with one to avoid returning wrong nodes for dynamic nodes
 		parser.getMetaData().put("idGen", new AtomicInteger(1));

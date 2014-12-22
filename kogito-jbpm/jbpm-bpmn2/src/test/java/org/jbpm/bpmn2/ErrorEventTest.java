@@ -407,8 +407,7 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
         ExceptionWorkItemHandler handler = new ExceptionWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 
-        ProcessInstance processInstance = ksession
-                .startProcess("com.sample.bpmn.hello");
+        ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
 
         assertNodeTriggered(processInstance.getId(), "Start", "User Task", "MyBoundaryErrorEvent");
     }
