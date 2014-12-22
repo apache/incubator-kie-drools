@@ -40,7 +40,7 @@
       <para>Using the <emphasis>Deployment Scanner</emphasis>.</para>
       <para>It allows to place your exported assets in a given folder inside the web application. Once application is starting, it scans the deployment folder and import the assets found.</para>
       <para>Using the <emphasis>Deployment Scanner</emphasis> allows for the automatic deployment of assets on application start up time and does not requires the user intervention either.</para>
-      <para>It's important to note that assets are imported only on container startup time, not during application runtime.</para>
+      <para>It's important to note that assets are imported only at deploy time, not during application runtime.</para>
     </listitem>
   </itemizedlist>
   

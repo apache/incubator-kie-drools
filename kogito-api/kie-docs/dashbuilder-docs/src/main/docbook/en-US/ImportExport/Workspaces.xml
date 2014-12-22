@@ -34,7 +34,7 @@
   </para> 
   
   <para>
-    It lists all the existing workspaces in the application and allows to export one or more workspace definitions in a single XML file.
+    It lists all the existing workspaces in the application and allows to export one or more workspace definitions in a single XML file. Note that for versions previous to 6.2.0 the workspaces were exported in ZIP format.
   </para>
 
   <figure>
@@ -55,7 +55,7 @@
   <itemizedlist>
     <listitem>
       <para>Using the <emphasis>Web User Interface</emphasis>.</para>
-      <para>It allows to upload a XML file that contain one or more workspace definitions.</para>
+      <para>It allows to upload a XML file that contain one or more workspace definitions. A ZIP file containing some workspace definitions in XML format is allowed too for backwards compatibility.</para>
       <figure>
         <title>Import workspaces panel</title>
         <screenshot>
@@ -73,10 +73,16 @@
       <para>Some important notes about automatic workspace importation using the <emphasis>deployment scanner</emphasis>:</para>
       <itemizedlist>
         <listitem>
-          <para>Workspaces are imported once and only at container startup time, not during application runtime</para>
+          <para>Workspaces are imported once and only at deploy time, not during application runtime</para>
         </listitem>
         <listitem>
           <para>The XML workspace definition file must have extension <emphasis>workspace</emphasis>. Eg: my-workspace.workspace</para>
+        </listitem>
+        <listitem>
+          <para>If the workspace to import already exists (same workspace logic identifier), it will be overwritten.</para>
+        </listitem>
+        <listitem>
+          <para>You can overwrite existing workspaces by adding a workspace definition file in the deployment folder with a different name that the initial one. For example, initially you deploy a <emphasis>my-workspace.workspace</emphasis> file into the system, which contains a workspace with <emphasis>my-workspace</emphasis> as identifier. Then if you want to overwrite it, you can place a new file in the deployment folder named <emphasis>my-workspace-v2.workspace</emphasis> using same <emphasis>my-workspace</emphasis> identifier.</para>
         </listitem>
       </itemizedlist>
     </listitem>

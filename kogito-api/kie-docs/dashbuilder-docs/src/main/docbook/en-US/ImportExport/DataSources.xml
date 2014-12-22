@@ -113,10 +113,16 @@
       <para>Some important notes about automatic data source importation using the <emphasis>deployment scanner</emphasis>:</para>
       <itemizedlist>
         <listitem>
-          <para>Data sources are imported once and only on container startup time, not during application runtime</para>
+          <para>Data sources are imported once and only at deploy time, not during application runtime</para>
         </listitem>
         <listitem>
           <para>The properties data source definition file must have extension <emphasis>datasource</emphasis>. Eg: my-datasource.datasource</para>
+        </listitem>
+        <listitem>
+          <para>If the data source definition to import already exist (same name), it will be overwritten.</para>
+        </listitem>
+        <listitem>
+          <para>You can overwrite existing data sources by adding a new definition file in the deployment folder with a different name that the initial one. For example, initially you deploy a <emphasis>my-datasource.datasource</emphasis> file into the system, which contains a data source with <emphasis>my-datasource</emphasis> as name. Then if you want to overwrite it, you can place a new file in the deployment folder named <emphasis>my-datasource-v2.datasource</emphasis> using same <emphasis>my-datasource</emphasis> identifier.</para>
         </listitem>
       </itemizedlist>
     </listitem>
