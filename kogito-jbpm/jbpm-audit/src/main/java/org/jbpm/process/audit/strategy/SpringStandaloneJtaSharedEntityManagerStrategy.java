@@ -6,15 +6,18 @@ import javax.persistence.EntityManagerFactory;
 public class SpringStandaloneJtaSharedEntityManagerStrategy extends StandaloneJtaStrategy {
 
     private final EntityManager em;
+    private boolean manageTx;
     
     public SpringStandaloneJtaSharedEntityManagerStrategy(EntityManagerFactory emf) {
         super(null);
         this.em = emf.createEntityManager();
+        this.manageTx = true;
     }
     
     public SpringStandaloneJtaSharedEntityManagerStrategy(EntityManager em) {
         super(null);
         this.em = em;
+        this.manageTx = false;
     }
 
     @Override
@@ -25,8 +28,18 @@ public class SpringStandaloneJtaSharedEntityManagerStrategy extends StandaloneJt
     @Override
     public void leaveTransaction(EntityManager em, Object transaction) {
         // do not close or clear the entity manager
-        
-        commitTransaction(transaction);
+        if (manageTx) {
+        	commitTransaction(transaction);
+        }
     }
+
+	@Override
+	public Object joinTransaction(EntityManager em) {
+		if (manageTx) {
+			return super.joinTransaction(em);
+		}
+		
+		return manageTx;
+	}
 
 }

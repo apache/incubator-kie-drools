@@ -6,13 +6,16 @@ import javax.persistence.EntityManagerFactory;
 public class SpringStandaloneLocalSharedEntityManagerStrategy implements PersistenceStrategy {
 
     private EntityManager em;
+    private boolean manageTx;
     
     public SpringStandaloneLocalSharedEntityManagerStrategy(EntityManagerFactory emf) {
        this.em = emf.createEntityManager();
+       this.manageTx = true;
     }
 
     public SpringStandaloneLocalSharedEntityManagerStrategy(EntityManager em) {
        this.em = em;
+       this.manageTx = false;
     }
 
     @Override
@@ -22,13 +25,17 @@ public class SpringStandaloneLocalSharedEntityManagerStrategy implements Persist
 
     @Override
     public Object joinTransaction(EntityManager em) {
-        em.getTransaction().begin();
-        return true;
+        if (manageTx) {
+        	em.getTransaction().begin();
+        }
+        return manageTx;
     }
 
     @Override
     public void leaveTransaction(EntityManager em, Object transaction) {
-        em.getTransaction().commit();
+        if (manageTx) {
+        	em.getTransaction().commit();
+        }
     }
 
     @Override
