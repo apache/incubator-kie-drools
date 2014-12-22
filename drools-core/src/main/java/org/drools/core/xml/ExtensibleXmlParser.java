@@ -223,7 +223,15 @@ public class ExtensibleXmlParser extends DefaultHandler {
                 throw new RuntimeException( "Unable to create new DOM Document",
                                             e );
             }
-            
+            // XXE protection start
+            try {
+                f.setFeature("http://xml.org/sax/features/external-general-entities", false);
+                f.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+
+            } catch (ParserConfigurationException e) {
+                logger.warn("Unable to set parser features due to {}", e.getMessage());
+            }
+            // XXE protection end
             try {
                 this.document = f.newDocumentBuilder().newDocument();
             } catch ( Exception e ) {
@@ -254,6 +262,15 @@ public class ExtensibleXmlParser extends DefaultHandler {
             }
             
             factory.setNamespaceAware( true );
+            // XXE protection start
+            try {
+                factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+                factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+
+            } catch (ParserConfigurationException e) {
+                logger.warn("Unable to set parser features due to {}", e.getMessage());
+            }
+            // XXE protection end
 
             final String isValidatingString = System.getProperty( "drools.schema.validating" );
             if ( System.getProperty( "drools.schema.validating" ) != null ) {
