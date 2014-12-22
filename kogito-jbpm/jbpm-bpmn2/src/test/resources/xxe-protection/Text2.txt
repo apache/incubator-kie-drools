@@ -1,0 +1,2 @@
+System.out.println("Yikes! This script has been read from Text2.txt via an external entity.");
+kcontext.setVariable("testScript2", "XXE issue");

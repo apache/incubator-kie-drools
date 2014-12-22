@@ -17,6 +17,8 @@
 package org.jbpm.bpmn2;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,6 +28,7 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.drools.core.util.IoUtils;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
@@ -47,6 +50,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
+import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -882,6 +886,45 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         KieSession ksession = createKnowledgeSession(kbase);
         
         runTestSignallingExceptionServiceTask(ksession);
+    }
+    
+    @Test
+    public void testXXEProcessVulnerability() throws Exception {
+    	Resource processResource = ResourceFactory.newClassPathResource("xxe-protection/BPMN2-XXE-Process.bpmn2");
+    	
+    	File dtdFile = new File("src/test/resources/xxe-protection/external.dtd");
+    	assertTrue(dtdFile.exists());
+    	
+    	String dtdContent = IoUtils.readFileAsString(dtdFile);
+    	dtdContent = dtdContent.replaceAll("@@PATH@@", dtdFile.getParentFile().getAbsolutePath());
+    	
+    	IoUtils.write(dtdFile, dtdContent.getBytes("UTF-8"));
+    	
+    	byte[] data = IoUtils.readBytesFromInputStream(processResource.getInputStream());
+    	String processAsString = new String(data, "UTF-8");
+    	// replace place holders with actual paths
+    	File testFiles = new File("src/test/resources/xxe-protection");
+    	
+    	assertTrue(testFiles.exists());
+    	
+    	String path = testFiles.getAbsolutePath();
+    	processAsString = processAsString.replaceAll("@@PATH@@", path);
+    	
+    	Resource resource = ResourceFactory.newReaderResource(new StringReader(processAsString));
+    	resource.setSourcePath(processResource.getSourcePath());
+    	resource.setTargetPath(processResource.getTargetPath());
+    	
+        KieBase kbase = createKnowledgeBaseFromResources(resource);
+        KieSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance processInstance = ksession.startProcess("async-examples.bp1");
+        
+        String var1 = getProcessVarValue(processInstance, "testScript1");
+        String var2 = getProcessVarValue(processInstance, "testScript2");
+        
+        assertNull(var1);
+        assertNull(var2);
+        
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
     
     public static void runTestSignallingExceptionServiceTask(KieSession ksession) throws Exception {

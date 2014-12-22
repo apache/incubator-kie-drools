@@ -1,0 +1,2 @@
+    <!ENTITY xxe2 SYSTEM "file:///Users/maciejswiderski/Development/git-repos/jbpm-main/jbpm-bpmn2/src/test/resources/xxe-protection/Text2.txt" >
+
