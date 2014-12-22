@@ -201,7 +201,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         }
     }
 
-    protected <T> Collection<T> applyPagnition(List<T> input, QueryContext queryContext) {
+    protected <T> Collection<T> applyPaginition(List<T> input, QueryContext queryContext) {
         if (queryContext != null) {
         	int start = queryContext.getOffset();
         	int end = start + queryContext.getCount();
@@ -255,7 +255,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         CollectionUtils.select(availableProcesses, new ByDeploymentIdPredicate(deploymentId, identityProvider.getRoles()), outputCollection);
         
         applySorting(outputCollection, queryContext);
-        return applyPagnition(outputCollection, queryContext);
+        return applyPaginition(outputCollection, queryContext);
     }
     
     public ProcessDefinition getProcessesByDeploymentIdProcessId(String deploymentId, String processId) {
@@ -273,7 +273,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         CollectionUtils.select(availableProcesses, new RegExPredicate("(?i)^.*"+filter+".*$", identityProvider.getRoles()), outputCollection);
         
         applySorting(outputCollection, queryContext);
-        return applyPagnition(outputCollection, queryContext);
+        return applyPaginition(outputCollection, queryContext);
     }
 
     public ProcessDefinition getProcessById(String processId){
@@ -291,7 +291,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     	CollectionUtils.select(availableProcesses, new SecurePredicate(identityProvider.getRoles(), false), outputCollection);
     	
     	applySorting(outputCollection, queryContext);
-    	return applyPagnition(outputCollection, queryContext);
+    	return applyPaginition(outputCollection, queryContext);
     }
 
     @Override
@@ -305,7 +305,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
                 processIds.add(procAssetDesc.getId());
             }
         }
-        return applyPagnition(processIds, queryContext);
+        return applyPaginition(processIds, queryContext);
     }
     /*
      * end
