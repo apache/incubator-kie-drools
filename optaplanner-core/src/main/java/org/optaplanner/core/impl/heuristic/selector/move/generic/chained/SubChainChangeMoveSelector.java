@@ -71,7 +71,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
         super.solvingStarted(solverScope);
         SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
         // TODO supply is demanded just to make sure it's there when it's demand again later.
-        // Instead it should be remember for later
+        // Instead it should be remembered for later
         SingletonInverseVariableSupply inverseVariableSupply = supplyManager.demand(
                 new SingletonInverseVariableDemand(valueSelector.getVariableDescriptor()));
     }

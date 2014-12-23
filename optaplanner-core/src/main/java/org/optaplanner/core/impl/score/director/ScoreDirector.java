@@ -84,6 +84,8 @@ public interface ScoreDirector {
 
     void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity);
 
+    void changeVariableFacade(VariableDescriptor variableDescriptor, Object entity, Object newValue);
+
     void beforeEntityRemoved(Object entity);
 
     void afterEntityRemoved(Object entity);

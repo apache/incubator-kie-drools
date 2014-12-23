@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
-import org.optaplanner.core.impl.testdata.util.SerializationTestUtils;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
 
@@ -127,8 +127,8 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
     public void serializeAndDeserialize() {
         HardSoftBigDecimalScore input = HardSoftBigDecimalScore.valueOf(
                 new BigDecimal("-12.3"), new BigDecimal("3400.5"));
-        SerializationTestUtils.serializeAndDeserializeWithAll(input,
-                new SerializationTestUtils.OutputAsserter<HardSoftBigDecimalScore>() {
+        PlannerTestUtils.serializeAndDeserializeWithAll(input,
+                new PlannerTestUtils.OutputAsserter<HardSoftBigDecimalScore>() {
                     public void assertOutput(HardSoftBigDecimalScore output) {
                         assertEquals(new BigDecimal("-12.3"), output.getHardScore());
                         assertEquals(new BigDecimal("3400.5"), output.getSoftScore());

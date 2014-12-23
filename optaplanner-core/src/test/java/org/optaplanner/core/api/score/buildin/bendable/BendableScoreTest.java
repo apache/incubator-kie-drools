@@ -19,7 +19,7 @@ package org.optaplanner.core.api.score.buildin.bendable;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
-import org.optaplanner.core.impl.testdata.util.SerializationTestUtils;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
 
@@ -225,8 +225,8 @@ public class BendableScoreTest extends AbstractScoreTest {
     @Test
     public void serializeAndDeserialize() {
         BendableScore input = scoreDefinitionHSS.createScore(-5, -300, -4000);
-        SerializationTestUtils.serializeAndDeserializeWithAll(input,
-                new SerializationTestUtils.OutputAsserter<BendableScore>() {
+        PlannerTestUtils.serializeAndDeserializeWithAll(input,
+                new PlannerTestUtils.OutputAsserter<BendableScore>() {
                     public void assertOutput(BendableScore output) {
                         assertEquals(1, output.getHardLevelsSize());
                         assertEquals(-5, output.getHardScore(0));

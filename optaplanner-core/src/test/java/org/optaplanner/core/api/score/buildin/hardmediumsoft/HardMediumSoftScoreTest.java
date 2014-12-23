@@ -18,7 +18,7 @@ package org.optaplanner.core.api.score.buildin.hardmediumsoft;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
-import org.optaplanner.core.impl.testdata.util.SerializationTestUtils;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
 
@@ -128,8 +128,8 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
     @Test
     public void serializeAndDeserialize() {
         HardMediumSoftScore input = HardMediumSoftScore.valueOf(-12, 3400, -56);
-        SerializationTestUtils.serializeAndDeserializeWithAll(input,
-                new SerializationTestUtils.OutputAsserter<HardMediumSoftScore>() {
+        PlannerTestUtils.serializeAndDeserializeWithAll(input,
+                new PlannerTestUtils.OutputAsserter<HardMediumSoftScore>() {
                     public void assertOutput(HardMediumSoftScore output) {
                         assertEquals(-12, output.getHardScore());
                         assertEquals(3400, output.getMediumScore());

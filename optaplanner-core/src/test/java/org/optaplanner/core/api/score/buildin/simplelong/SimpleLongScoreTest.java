@@ -18,7 +18,7 @@ package org.optaplanner.core.api.score.buildin.simplelong;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
-import org.optaplanner.core.impl.testdata.util.SerializationTestUtils;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
 
@@ -108,8 +108,8 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
     @Test
     public void serializeAndDeserialize() {
         SimpleLongScore input = SimpleLongScore.valueOf(123L);
-        SerializationTestUtils.serializeAndDeserializeWithAll(input,
-                new SerializationTestUtils.OutputAsserter<SimpleLongScore>() {
+        PlannerTestUtils.serializeAndDeserializeWithAll(input,
+                new PlannerTestUtils.OutputAsserter<SimpleLongScore>() {
                     public void assertOutput(SimpleLongScore output) {
                         assertEquals(123L, output.getScore());
                     }

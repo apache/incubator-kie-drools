@@ -22,7 +22,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.score.buildin.bendablebigdecimal.BendableBigDecimalScoreDefinition;
-import org.optaplanner.core.impl.testdata.util.SerializationTestUtils;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
 
@@ -245,8 +245,8 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
     @Test
     public void serializeAndDeserialize() {
         BendableBigDecimalScore input = scoreDefinitionHSS.createScore(MINUS_FIVE, MINUS_300, MINUS_4000);
-        SerializationTestUtils.serializeAndDeserializeWithAll(input,
-                new SerializationTestUtils.OutputAsserter<BendableBigDecimalScore>() {
+        PlannerTestUtils.serializeAndDeserializeWithAll(input,
+                new PlannerTestUtils.OutputAsserter<BendableBigDecimalScore>() {
                     public void assertOutput(BendableBigDecimalScore output) {
                         assertEquals(1, output.getHardLevelsSize());
                         assertEquals(MINUS_FIVE, output.getHardScore(0));

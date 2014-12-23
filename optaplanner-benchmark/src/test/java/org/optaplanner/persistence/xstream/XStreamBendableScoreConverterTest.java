@@ -21,7 +21,7 @@ import java.io.Serializable;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.core.impl.testdata.util.SerializationTestUtils;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.persistence.xstream.impl.score.XStreamBendableScoreConverter;
 
 import static org.junit.Assert.*;
@@ -31,8 +31,8 @@ public class XStreamBendableScoreConverterTest {
     @Test
     public void serializeAndDeserializeWithNullField() {
         XStreamBendableScoreConverterTestObject input = new XStreamBendableScoreConverterTestObject(null);
-        SerializationTestUtils.serializeAndDeserializeWithAll(input,
-                new SerializationTestUtils.OutputAsserter<XStreamBendableScoreConverterTestObject>() {
+        PlannerTestUtils.serializeAndDeserializeWithAll(input,
+                new PlannerTestUtils.OutputAsserter<XStreamBendableScoreConverterTestObject>() {
                     public void assertOutput(XStreamBendableScoreConverterTestObject output) {
                         assertEquals(null, output.getScore());
                     }
@@ -44,8 +44,8 @@ public class XStreamBendableScoreConverterTest {
     public void serializeAndDeserialize() {
         XStreamBendableScoreConverterTestObject input = new XStreamBendableScoreConverterTestObject(
                 BendableScore.valueOf(new int[]{-5}, new int[]{-300, -4000}));
-        SerializationTestUtils.serializeAndDeserializeWithAll(input,
-                new SerializationTestUtils.OutputAsserter<XStreamBendableScoreConverterTestObject>() {
+        PlannerTestUtils.serializeAndDeserializeWithAll(input,
+                new PlannerTestUtils.OutputAsserter<XStreamBendableScoreConverterTestObject>() {
                     public void assertOutput(XStreamBendableScoreConverterTestObject output) {
                         BendableScore score = output.getScore();
                         assertEquals(1, score.getHardLevelsSize());

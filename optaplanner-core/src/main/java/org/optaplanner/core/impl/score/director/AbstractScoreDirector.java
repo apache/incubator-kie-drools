@@ -261,6 +261,12 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         variableListenerSupport.afterVariableChanged(this, variableDescriptor, entity);
     }
 
+    public void changeVariableFacade(VariableDescriptor variableDescriptor, Object entity, Object newValue) {
+        beforeVariableChanged(variableDescriptor, entity);
+        variableDescriptor.setValue(entity, newValue);
+        afterVariableChanged(variableDescriptor, entity);
+    }
+
     public void beforeEntityRemoved(EntityDescriptor entityDescriptor, Object entity) {
         variableListenerSupport.beforeEntityRemoved(this, entityDescriptor, entity);
     }

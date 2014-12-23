@@ -15,8 +15,7 @@ public class ChainedChangeMoveTest {
 
     @Test
     public void noTrailing() {
-        EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
-        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor("chainedObject");
+        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -47,8 +46,7 @@ public class ChainedChangeMoveTest {
 
     @Test
     public void oldAndNewTrailing() {
-        EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
-        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor("chainedObject");
+        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");

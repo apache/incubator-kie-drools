@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,37 +14,36 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.heuristic.selector.move.generic;
+package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
-import java.util.Collection;
 import java.util.Iterator;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.anchor.AnchorVariableDemand;
+import org.optaplanner.core.impl.domain.variable.anchor.AnchorVariableSupply;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
-import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractOriginalSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedSwapMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-public class SwapMoveSelector extends GenericMoveSelector {
+public class TwoOptMoveSelector extends GenericMoveSelector {
 
     protected final EntitySelector leftEntitySelector;
     protected final EntitySelector rightEntitySelector;
-    protected final Collection<GenuineVariableDescriptor> variableDescriptors;
+    protected final GenuineVariableDescriptor variableDescriptor;
     protected final boolean randomSelection;
 
-    protected final boolean anyChained;
+    protected AnchorVariableSupply anchorVariableSupply;
 
-    public SwapMoveSelector(EntitySelector leftEntitySelector, EntitySelector rightEntitySelector,
-            Collection<GenuineVariableDescriptor> variableDescriptors, boolean randomSelection) {
+    public TwoOptMoveSelector(EntitySelector leftEntitySelector, EntitySelector rightEntitySelector,
+            GenuineVariableDescriptor variableDescriptor, boolean randomSelection) {
         this.leftEntitySelector = leftEntitySelector;
         this.rightEntitySelector = rightEntitySelector;
-        this.variableDescriptors = variableDescriptors;
+        this.variableDescriptor = variableDescriptor;
         this.randomSelection = randomSelection;
         EntityDescriptor leftEntityDescriptor = leftEntitySelector.getEntityDescriptor();
         EntityDescriptor rightEntityDescriptor = rightEntitySelector.getEntityDescriptor();
@@ -54,25 +53,19 @@ public class SwapMoveSelector extends GenericMoveSelector {
                     + ") which is not equal to the rightEntitySelector's entityClass ("
                     + rightEntityDescriptor.getEntityClass() + ").");
         }
-        boolean anyChained = false;
-        if (variableDescriptors.isEmpty()) {
+        if (!variableDescriptor.isChained()) {
             throw new IllegalStateException("The selector (" + this
-                    + ")'s variableDescriptors (" + variableDescriptors + ") is empty.");
+                    + ")'s variableDescriptor (" + variableDescriptor
+                    + ") must be chained (" + variableDescriptor.isChained() + ").");
         }
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
-            if (!variableDescriptor.getEntityDescriptor().getEntityClass().isAssignableFrom(
-                    leftEntityDescriptor.getEntityClass())) {
-                throw new IllegalStateException("The selector (" + this
-                        + ") has a variableDescriptor with a entityClass ("
-                        + variableDescriptor.getEntityDescriptor().getEntityClass()
-                        + ") which is not equal or a superclass to the leftEntitySelector's entityClass ("
-                        + leftEntityDescriptor.getEntityClass() + ").");
-            }
-            if (variableDescriptor.isChained()) {
-                anyChained = true;
-            }
+        if (!variableDescriptor.getEntityDescriptor().getEntityClass().isAssignableFrom(
+                leftEntityDescriptor.getEntityClass())) {
+            throw new IllegalStateException("The selector (" + this
+                    + ") has a variableDescriptor with a entityClass ("
+                    + variableDescriptor.getEntityDescriptor().getEntityClass()
+                    + ") which is not equal or a superclass to the leftEntitySelector's entityClass ("
+                    + leftEntityDescriptor.getEntityClass() + ").");
         }
-        this.anyChained = anyChained;
         phaseLifecycleSupport.addEventListener(leftEntitySelector);
         if (leftEntitySelector != rightEntitySelector) {
             phaseLifecycleSupport.addEventListener(rightEntitySelector);
@@ -82,17 +75,17 @@ public class SwapMoveSelector extends GenericMoveSelector {
     @Override
     public void solvingStarted(DefaultSolverScope solverScope) {
         super.solvingStarted(solverScope);
-        if (anyChained) {
-            SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
-            for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
-                if (variableDescriptor.isChained()) {
-                    // TODO supply is demanded just to make sure it's there when it's demand again later.
-                    // Instead it should be remembered for later
-                    SingletonInverseVariableSupply inverseVariableSupply = supplyManager.demand(
-                            new SingletonInverseVariableDemand(variableDescriptor));
-                }
-            }
-        }
+        SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
+        // TODO supply is demanded just to make sure it's there when it's demand again later.
+        // Instead it should be remembered for later
+        anchorVariableSupply = supplyManager.demand(
+                new AnchorVariableDemand(variableDescriptor));
+    }
+
+    @Override
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        super.solvingEnded(solverScope);
+        anchorVariableSupply = null;
     }
 
     // ************************************************************************
@@ -116,18 +109,14 @@ public class SwapMoveSelector extends GenericMoveSelector {
             return new AbstractOriginalSwapIterator<Move, Object>(leftEntitySelector, rightEntitySelector) {
                 @Override
                 protected Move newSwapSelection(Object leftSubSelection, Object rightSubSelection) {
-                    return anyChained
-                            ? new ChainedSwapMove(variableDescriptors, leftSubSelection, rightSubSelection)
-                            : new SwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
+                    return new TwoOptMove(variableDescriptor, anchorVariableSupply, leftSubSelection, rightSubSelection);
                 }
             };
         } else {
             return new AbstractRandomSwapIterator<Move, Object>(leftEntitySelector, rightEntitySelector) {
                 @Override
                 protected Move newSwapSelection(Object leftSubSelection, Object rightSubSelection) {
-                    return anyChained
-                            ? new ChainedSwapMove(variableDescriptors, leftSubSelection, rightSubSelection)
-                            : new SwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
+                    return new TwoOptMove(variableDescriptor, anchorVariableSupply, leftSubSelection, rightSubSelection);
                 }
             };
         }
