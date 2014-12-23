@@ -45,8 +45,15 @@ public class TransactionLockInterceptor extends AbstractInterceptor {
     private ReentrantLock lock = new ReentrantLock();
     private Environment environment;
 
+    private String releaseTxKey;
+
     public TransactionLockInterceptor(Environment environment) {
+        this(environment, "tx-unlock");
+    }
+
+    public TransactionLockInterceptor(Environment environment, String releaseTxKey) {
         this.environment = environment;
+        this.releaseTxKey = releaseTxKey;
         this.active = Boolean.getBoolean("org.kie.tx.lock.enabled");
         if (environment.get("TRANSACTION_LOCK_ENABLED") != null) {
             this.active = Boolean.parseBoolean(environment.get("TRANSACTION_LOCK_ENABLED").toString());
@@ -80,7 +87,7 @@ public class TransactionLockInterceptor extends AbstractInterceptor {
 
     protected void release(TransactionManager txm) {
         try {
-            TransactionManagerHelper.registerTransactionSyncInContainer(txm, new OrderedTransactionSynchronization(100, "tx-unlock") {
+            TransactionManagerHelper.registerTransactionSyncInContainer(txm, new OrderedTransactionSynchronization(100, releaseTxKey) {
 
                 @Override
                 public void beforeCompletion() {
