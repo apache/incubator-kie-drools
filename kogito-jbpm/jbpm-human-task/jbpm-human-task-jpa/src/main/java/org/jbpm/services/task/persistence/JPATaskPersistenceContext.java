@@ -4,6 +4,8 @@ package org.jbpm.services.task.persistence;
 import static org.kie.internal.query.QueryParameterIdentifiers.*;
 import static org.jbpm.services.task.persistence.TaskQueryManager.*;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +15,7 @@ import java.util.TreeMap;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
+import javax.persistence.Id;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
 
@@ -81,6 +84,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		check();
 		this.em.persist( task );
         if( this.pessimisticLocking ) { 
+        	this.em.flush();
             return this.em.find(TaskImpl.class, task.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
         }
         return task;
@@ -104,7 +108,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public Group findGroup(String groupId) {
 		check();
 		if( this.pessimisticLocking ) { 
-            return this.em.find( GroupImpl.class, groupId, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            return this.em.find( GroupImpl.class, groupId, LockModeType.PESSIMISTIC_WRITE );
         }
         return this.em.find( GroupImpl.class, groupId );
 	}
@@ -115,7 +119,8 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		try {
 			this.em.persist( group );
 	        if( this.pessimisticLocking ) { 
-	            return this.em.find(GroupImpl.class, group.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+	        	this.em.flush();
+	            return this.em.find(GroupImpl.class, group.getId(), LockModeType.PESSIMISTIC_WRITE );
 	        }
 		} catch (EntityExistsException e) {
     		throw new RuntimeException("Group already exists with " + group 
@@ -141,7 +146,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public User findUser(String userId) {
 		check();
 		if( this.pessimisticLocking ) { 
-            return this.em.find( UserImpl.class, userId, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            return this.em.find( UserImpl.class, userId, LockModeType.PESSIMISTIC_WRITE );
         }
         return this.em.find( UserImpl.class, userId );
 	}
@@ -152,7 +157,8 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		try {
 			this.em.persist( user );
 	        if( this.pessimisticLocking ) { 
-	            return this.em.find(UserImpl.class, user.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+	        	this.em.flush();
+	            return this.em.find(UserImpl.class, user.getId(), LockModeType.PESSIMISTIC_WRITE );
 	        }
 		} catch (EntityExistsException e) {
     		throw new RuntimeException("User already exists with " + user 
@@ -178,7 +184,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public OrganizationalEntity findOrgEntity(String orgEntityId) {
 		check();
 		if( this.pessimisticLocking ) { 
-            return this.em.find( OrganizationalEntityImpl.class, orgEntityId, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            return this.em.find( OrganizationalEntityImpl.class, orgEntityId, LockModeType.PESSIMISTIC_WRITE );
         }
         return this.em.find( OrganizationalEntityImpl.class, orgEntityId );
 	}
@@ -191,7 +197,8 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
         	try {
 	        	this.em.persist( orgEntity );
 	            if( this.pessimisticLocking ) { 
-	                return this.em.find(OrganizationalEntityImpl.class, orgEntity.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+	            	this.em.flush();
+	                return this.em.find(OrganizationalEntityImpl.class, orgEntity.getId(), LockModeType.PESSIMISTIC_WRITE );
 	            }
         	} catch (EntityExistsException e) {
         		throw new RuntimeException("Organizational entity already exists with " + orgEntity 
@@ -219,7 +226,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public Content findContent(Long contentId) {
 		check();
 		if( this.pessimisticLocking ) { 
-            return this.em.find( ContentImpl.class, contentId, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            return this.em.find( ContentImpl.class, contentId, LockModeType.PESSIMISTIC_WRITE );
         }
         return this.em.find( ContentImpl.class, contentId );
 	}
@@ -229,7 +236,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		check();
 		this.em.persist( content );
         if( this.pessimisticLocking ) { 
-            return this.em.find(ContentImpl.class, content.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            return this.em.find(ContentImpl.class, content.getId(), LockModeType.PESSIMISTIC_WRITE );
         }
         return content;
 	}
@@ -251,7 +258,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public Attachment findAttachment(Long attachmentId) {
 		check();
 		if( this.pessimisticLocking ) { 
-            return this.em.find( AttachmentImpl.class, attachmentId, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            return this.em.find( AttachmentImpl.class, attachmentId, LockModeType.PESSIMISTIC_WRITE );
         }
         return this.em.find( AttachmentImpl.class, attachmentId );
 	}
@@ -261,7 +268,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		check();
 		this.em.persist( attachment );
         if( this.pessimisticLocking ) { 
-            return this.em.find(AttachmentImpl.class, attachment.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            return this.em.find(AttachmentImpl.class, attachment.getId(), LockModeType.PESSIMISTIC_WRITE );
         }
         return attachment;
 	}
@@ -283,7 +290,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public Comment findComment(Long commentId) {
 		check();
 		if( this.pessimisticLocking ) { 
-            return this.em.find( CommentImpl.class, commentId, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            return this.em.find( CommentImpl.class, commentId, LockModeType.PESSIMISTIC_WRITE );
         }
         return this.em.find( CommentImpl.class, commentId );
 	}
@@ -293,7 +300,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		check();
 		this.em.persist( comment );
         if( this.pessimisticLocking ) { 
-            return this.em.find(CommentImpl.class, comment.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            return this.em.find(CommentImpl.class, comment.getId(), LockModeType.PESSIMISTIC_WRITE );
         }
         return comment;
 	}
@@ -315,7 +322,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public Deadline findDeadline(Long deadlineId) {
 		check();
 		if( this.pessimisticLocking ) { 
-            return this.em.find( DeadlineImpl.class, deadlineId, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            return this.em.find( DeadlineImpl.class, deadlineId, LockModeType.PESSIMISTIC_WRITE );
         }
         return this.em.find( DeadlineImpl.class, deadlineId );
 	}
@@ -325,7 +332,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		check();
 		this.em.persist( deadline );
         if( this.pessimisticLocking ) { 
-            return this.em.find(DeadlineImpl.class, deadline.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            return this.em.find(DeadlineImpl.class, deadline.getId(), LockModeType.PESSIMISTIC_WRITE );
         }
         return deadline;
 	}
@@ -422,7 +429,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 			Class<T> clazz) {
 		check();
 		Query query = getQueryByName(queryName, params);
-		return queryStringWithParameters(params, singleResult, LockModeType.PESSIMISTIC_FORCE_INCREMENT, clazz, query);	
+		return queryStringWithParameters(params, singleResult, LockModeType.PESSIMISTIC_WRITE, clazz, query);	
 	}
 
 	@Override
@@ -454,10 +461,16 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
         return parameters;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T persist(T object) {
 		check();
-		this.em.persist( object );        
+		this.em.persist( object ); 
+		if( this.pessimisticLocking ) { 
+			this.em.flush();
+			Object primaryKey = getFieldValueWithAnnotation(object, Id.class);			
+            return (T) this.em.find( object.getClass(), primaryKey, LockModeType.PESSIMISTIC_WRITE );
+        }
         return object;
 	}
 
@@ -465,7 +478,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public <T> T find(Class<T> entityClass, Object primaryKey) {
 		check();
 		if( this.pessimisticLocking ) { 
-            return this.em.find( entityClass, primaryKey, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+            return this.em.find( entityClass, primaryKey, LockModeType.PESSIMISTIC_WRITE );
         }
         return this.em.find( entityClass, primaryKey );
 	}
@@ -485,7 +498,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 
 	private <T> T queryStringWithParameters(Map<String, Object> params, boolean singleResult, LockModeType lockMode,
 			Class<T> clazz, Query query) {
-		;
+		
 		if (lockMode != null) {
 			query.setLockMode(lockMode);
 		}
@@ -558,6 +571,22 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		}
 		
 		return query;
+	}
+	
+	private Object getFieldValueWithAnnotation(Object object, Class<? extends Annotation> annotation) {
+		try {
+			Field[] fields = object.getClass().getDeclaredFields();
+			
+			for (Field f : fields) {
+				if (f.isAnnotationPresent(annotation)) {
+					f.setAccessible(true);
+					return f.get(object);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("Unable to find primary key of class {} sure to {}", object.getClass(), e.getMessage());
+		}
+		return null;
 	}
 
 }

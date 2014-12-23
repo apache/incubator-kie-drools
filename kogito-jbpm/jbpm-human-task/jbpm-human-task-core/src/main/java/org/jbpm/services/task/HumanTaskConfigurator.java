@@ -61,6 +61,7 @@ public class HumanTaskConfigurator {
 	private static final Logger logger = LoggerFactory.getLogger(HumanTaskConfigurator.class);
 	
 	private static final String DEFAULT_INTERCEPTOR = "org.jbpm.services.task.persistence.TaskTransactionInterceptor";
+	private static final String TX_LOCK_INTERCEPTOR = "org.drools.persistence.jta.TransactionLockInterceptor";
 
     private TaskService service;
     private TaskCommandExecutorImpl commandExecutor;
@@ -139,6 +140,7 @@ public class HumanTaskConfigurator {
         	}
         	environment.set(EnvironmentName.TASK_USER_INFO, userInfo);
         	addDefaultInterceptor();
+        	addTransactionLockInterceptor();
         	for (PriorityInterceptor pInterceptor : interceptors) {
         		this.commandExecutor.addInterceptor(pInterceptor.getInterceptor());
         	}        	
@@ -167,7 +169,22 @@ public class HumanTaskConfigurator {
     		interceptor(5, defaultInterceptor);
     	} catch (Exception e) {
     		logger.warn("No default interceptor found of type {} might be mssing jbpm-human-task-jpa module on classpath (error {}",
-    				DEFAULT_INTERCEPTOR, e.getMessage());
+    				DEFAULT_INTERCEPTOR, e.getMessage(), e);
+    	}
+    }
+    
+    @SuppressWarnings("unchecked")
+	protected void addTransactionLockInterceptor() {
+    	// add default interceptor if present
+    	try {
+    		Class<Interceptor> defaultInterceptorClass = (Class<Interceptor>) Class.forName(TX_LOCK_INTERCEPTOR);
+    		Constructor<Interceptor> constructor = defaultInterceptorClass.getConstructor(new Class[] {Environment.class, String.class});
+    		
+    		Interceptor defaultInterceptor = constructor.newInstance(this.environment, "task-service-tx-unlock");
+    		interceptor(6, defaultInterceptor);
+    	} catch (Exception e) {
+    		logger.warn("No tx lock interceptor found of type {} might be mssing drools-persistence-jpa module on classpath (error {}",
+    				DEFAULT_INTERCEPTOR, e.getMessage(), e);
     	}
     }
    

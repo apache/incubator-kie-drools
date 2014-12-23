@@ -36,7 +36,6 @@
    
     <properties>
       <property name="hibernate.dialect" value="${maven.hibernate.dialect}" />
-      <property name="hibernate.connection.autocommit" value="false" />
 
       <property name="hibernate.max_fetch_depth" value="3" />
       <property name="hibernate.hbm2ddl.auto" value="create-drop" />

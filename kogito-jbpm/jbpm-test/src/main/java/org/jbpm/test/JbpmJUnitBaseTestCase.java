@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.naming.InitialContext;
@@ -143,6 +144,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     protected List<ProcessEventListener> customProcessListeners = new ArrayList<ProcessEventListener>();
     protected List<AgendaEventListener> customAgendaListeners = new ArrayList<AgendaEventListener>();
     protected List<TaskLifeCycleEventListener> customTaskListeners = new ArrayList<TaskLifeCycleEventListener>();
+    protected Map<String, Object> customEnvironmentEntries = new HashMap<String, Object>();
 
     /**
      * The most simple test case configuration:
@@ -431,6 +433,10 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
 	        });
         }
         builder.userGroupCallback(userGroupCallback);
+        
+        for (Entry<String, Object> envEntry : customEnvironmentEntries.entrySet()) {
+        	builder.addEnvironmentEntry(envEntry.getKey(), envEntry.getValue());
+        }
 
         for (Map.Entry<String, ResourceType> entry : resources.entrySet()) {
             builder.addAsset(ResourceFactory.newClassPathResource(entry.getKey()), entry.getValue());
@@ -880,6 +886,10 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
 
     public void addWorkItemHandler(String name, WorkItemHandler handler) {
     	customHandlers.put(name, handler);
+    }
+    
+    public void addEnvironmentEntry(String name, Object value) {
+    	customEnvironmentEntries.put(name, value);
     }
 
     protected static class TestWorkItemHandler implements WorkItemHandler {
