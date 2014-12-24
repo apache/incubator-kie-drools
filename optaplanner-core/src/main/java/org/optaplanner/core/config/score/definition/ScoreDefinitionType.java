@@ -36,5 +36,6 @@ public enum ScoreDefinitionType {
     HARD_MEDIUM_SOFT,
     HARD_MEDIUM_SOFT_LONG,
     BENDABLE,
+    BENDABLE_LONG,
     BENDABLE_BIG_DECIMAL;
 }
