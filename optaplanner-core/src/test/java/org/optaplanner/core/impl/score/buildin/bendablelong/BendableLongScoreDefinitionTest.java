@@ -56,7 +56,7 @@ public class BendableLongScoreDefinitionTest {
         int levelSize = hardLevelSize + softLevelSize;
         long[] scores = new long[levelSize];
         for (int i = 0; i < levelSize; i++) {
-            scores[i] = Integer.MAX_VALUE + i;
+            scores[i] = ((long) Integer.MAX_VALUE) + i;
         }
         BendableLongScoreDefinition bendableLongScoreDefinition = new BendableLongScoreDefinition(hardLevelSize, softLevelSize);
         BendableLongScore bendableLongScore = bendableLongScoreDefinition.createScore(scores);

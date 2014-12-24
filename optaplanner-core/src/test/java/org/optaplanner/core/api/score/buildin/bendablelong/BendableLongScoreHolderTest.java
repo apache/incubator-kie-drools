@@ -39,26 +39,20 @@ public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
     public void addConstraintMatch(boolean constraintMatchEnabled) {
         BendableLongScoreHolder scoreHolder = new BendableLongScoreHolder(constraintMatchEnabled, 1, 2);
 
-        long value1 = 1000000000000L;
-        long value2 = 1000000000001L;
-        long value3 = 1000000000002L;
-        long value4 = 1000000000003L;
-        long value5 = -1000000000004L;
-
-        scoreHolder.addHardConstraintMatch(createRuleContext("scoreRule1"), 0,  value1); // Rule match added
+        scoreHolder.addHardConstraintMatch(createRuleContext("scoreRule1"), 0, 1000000000001L); // Rule match added
 
         RuleContext ruleContext2 = createRuleContext("scoreRule2");
-        scoreHolder.addHardConstraintMatch(ruleContext2, 0, value2); // Rule match added
+        scoreHolder.addHardConstraintMatch(ruleContext2, 0, 1000000000020L); // Rule match added
         callUnMatch(ruleContext2); // Rule match removed
 
         RuleContext ruleContext3 = createRuleContext("scoreRule3");
-        scoreHolder.addSoftConstraintMatch(ruleContext3, 0, value3); // Rule match added
-        scoreHolder.addSoftConstraintMatch(ruleContext3, 0, value4); // Rule match modified
+        scoreHolder.addSoftConstraintMatch(ruleContext3, 0, 1000000000300L); // Rule match added
+        scoreHolder.addSoftConstraintMatch(ruleContext3, 0, 1000000040000L); // Rule match modified
 
-        scoreHolder.addSoftConstraintMatch(createRuleContext("scoreRule4"), 1, value5); // Rule match added
+        scoreHolder.addSoftConstraintMatch(createRuleContext("scoreRule4"), 1, -1000000500000L); // Rule match added
 
-        assertEquals(BendableLongScore.valueOf(new long[]{value1},
-                new long[]{value4, value5}), scoreHolder.extractScore());
+        assertEquals(BendableLongScore.valueOf(new long[]{1000000000001L},
+                new long[]{1000000040000L, -1000000500000L}), scoreHolder.extractScore());
         if (constraintMatchEnabled) {
             assertEquals(4, scoreHolder.getConstraintMatchTotals().size());
         }

@@ -19,18 +19,19 @@ package org.optaplanner.core.api.score.buildin.bendablelong;
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.buildin.bendablelong.BendableLongScoreDefinition;
 
 import java.util.Arrays;
 
 /**
- * This {@link org.optaplanner.core.api.score.Score} is based on n levels of long constraints.
+ * This {@link Score} is based on n levels of long constraints.
  * The number of levels is bendable at configuration time.
  * <p/>
  * This class is immutable.
  * <p/>
  * The {@link #getHardLevelsSize()} and {@link #getSoftLevelsSize()} must be the same as in the
- * {@link org.optaplanner.core.impl.score.buildin.bendablelong.BendableLongScoreDefinition} used.
- * @see org.optaplanner.core.api.score.Score
+ * {@link BendableLongScoreDefinition} used.
+ * @see Score
  */
 public final class BendableLongScore extends AbstractScore<BendableLongScore>
         implements FeasibilityScore<BendableLongScore> {
