@@ -57,6 +57,8 @@ public class KieBuilderImpl
     static final String           JAVA_ROOT      = "src/main/java/";
     static final String           JAVA_TEST_ROOT = "src/test/java/";
 
+    private static final String RESOURCES_ROOT_DOT_SEPARATOR = RESOURCES_ROOT.replace( '/', '.' );
+
     private ResultsImpl           results;
     private final ResourceReader  srcMfs;
 
@@ -322,9 +324,23 @@ public class KieBuilderImpl
                 if ( isNegative ) {
                     pkgName = pkgName.substring( 1 );
                 }
-                if ( pkgName.equals( "*" ) || pkgNameForFile.endsWith( pkgName ) ||
-                     (pkgName.endsWith( ".*" ) && pkgNameForFile.contains( pkgName.substring( 0, pkgName.length() - 2 ) )) ) {
+                if ( pkgName.equals( "*" ) || pkgNameForFile.endsWith( pkgName ) ) {
                     return !isNegative;
+                }
+                if (pkgName.endsWith( ".*" )) {
+                    String relativePkgNameForFile = pkgNameForFile.startsWith(RESOURCES_ROOT_DOT_SEPARATOR) ?
+                                                    pkgNameForFile.substring(RESOURCES_ROOT_DOT_SEPARATOR.length()) :
+                                                    pkgNameForFile;
+                    String pkgNameNoWildcard = pkgName.substring( 0, pkgName.length() - 2 );
+                    if ( relativePkgNameForFile.equals(pkgNameNoWildcard) || relativePkgNameForFile.startsWith(pkgNameNoWildcard + "." ) ) {
+                        return !isNegative;
+                    }
+                    if (relativePkgNameForFile.startsWith(kieBase.getName() + ".")) {
+                        relativePkgNameForFile = relativePkgNameForFile.substring(kieBase.getName().length() + 1);
+                        if ( relativePkgNameForFile.equals(pkgNameNoWildcard) || relativePkgNameForFile.startsWith(pkgNameNoWildcard + "." ) ) {
+                            return !isNegative;
+                        }
+                    }
                 }
             }
             return false;
