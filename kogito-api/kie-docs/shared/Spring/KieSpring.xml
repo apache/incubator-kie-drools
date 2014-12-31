@@ -29,6 +29,12 @@
           <listitem>
             <para>kie:kmodule</para>
           </listitem>
+          <listitem>
+            <para>kie:import (from version 6.2)</para>
+          </listitem>
+          <listitem>
+            <para>kie:releaseId (from version 6.2)</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
@@ -55,15 +61,12 @@
           <listitem>
             <para>drools:resources</para>
           </listitem>
-
           <listitem>
             <para>drools:resource</para>
           </listitem>
-
           <listitem>
             <para>drools:grid</para>
           </listitem>
-
           <listitem>
             <para>drools:grid-node</para>
           </listitem>
@@ -92,9 +95,7 @@
           <thead>
             <row>
               <entry align="center">Attribute</entry>
-
               <entry align="center">Description</entry>
-
               <entry align="center">Required</entry>
             </row>
           </thead>
@@ -102,11 +103,9 @@
           <tbody>
             <row>
               <entry>id</entry>
-
               <entry>Bean's <emphasis>id</emphasis> is the name to be
               referenced from other beans. Standard Spring ID semantics
               apply.</entry>
-
               <entry>Yes</entry>
             </row>
           </tbody>
@@ -164,61 +163,47 @@
 
               <row>
                 <entry>includes</entry>
-
                 <entry>kbase names to be included. All resources from the
                 corresponding kbase are included in this kbase.</entry>
-
                 <entry>No</entry>
               </row>
 
               <row>
                 <entry>default</entry>
-
                 <entry>Default kbase</entry>
-
                 <entry>No</entry>
               </row>
 
               <row>
                 <entry>default</entry>
-
                 <entry>Boolean (TRUE/FALSE). Default kbase, if not provided,
                 it is assumed to be FALSE</entry>
-
                 <entry>No</entry>
               </row>
 
               <row>
                 <entry>scope</entry>
-
-                <entry>.</entry>
-
+                <entry>prototype | singleton. If not provided assumed to be singleton (default)</entry>
                 <entry>No</entry>
               </row>
 
               <row>
                 <entry>eventProcessingMode</entry>
-
                 <entry>Event Processing Mode. Valid options are STREAM,
                 CLOUD</entry>
-
                 <entry>No</entry>
               </row>
 
               <row>
                 <entry>equalsBehavior</entry>
-
                 <entry>Valid options are IDENTITY, EQUALITY</entry>
-
                 <entry>No</entry>
               </row>
 
               <row>
                 <entry>declarativeAgenda</entry>
-
                 <entry>Valid options are enabled, disabled, true,
                 false</entry>
-
                 <entry>No</entry>
               </row>
             </tbody>
@@ -255,6 +240,16 @@
           class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;</programlisting>
         </example>
       </section>
+      <section>
+        <title>Spring Bean Scope (for KieBase and KieSession)</title>
+        <para>
+          When defining a KieBase or a KieSession, you have the option of declaring a scope for that bean.
+          For example, To force Spring to produce a new bean instance each time one is needed, you should declare the bean's scope
+          attribute to be 'prototype'.
+          Similar way if you want Spring to return the same bean instance each time one is needed,
+          you should declare the bean's scope attribute to be 'singleton'.
+        </para>
+      </section>
     </section>
 
     <section>
@@ -262,21 +257,29 @@
 
       <para>For proper initialization of the kmodule objects (kbase/ksession),
       it is mandatory for a bean of type
-      <code>org.kie.spring.KModuleBeanFactoryPostProcessor</code> be
+      <code>org.kie.spring.KModuleBeanFactoryPostProcessor</code> or
+        <code>org.kie.spring.annotations.KModuleAnnotationPostProcessor</code> be
       defined.</para>
 
       <example>
-        <title>kie-spring post processorbean definition</title>
+        <title>Regular kie-spring post processorbean definition</title>
 
         <programlisting language="xml">&lt;bean id="kiePostProcessor" 
           class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;</programlisting>
       </example>
-      
-      
+      <para></para>
+      <example>
+        <title>kie-spring post processorbean definition when annotations are used</title>
+
+        <programlisting language="xml">&lt;bean id="kiePostProcessor"
+          class="org.kie.spring.annotations.KModuleAnnotationPostProcessor"/&gt;</programlisting>
+      </example>
+
 
       <note><para>Without the
-      org.kie.spring.KModuleBeanFactoryPostProcessor bean
-      definition, the kie-spring integration will not work.</para></note>
+      org.kie.spring.KModuleBeanFactoryPostProcessor or org.kie.spring.annotations.KModuleAnnotationPostProcessor bean
+      definition, the kie-spring integration will fail to work.</para></note>
+
     </section>
 
     <section>
@@ -296,9 +299,7 @@
             <thead>
               <row>
                 <entry align="center">Attribute</entry>
-
                 <entry align="center">Description</entry>
-
                 <entry align="center">Required</entry>
               </row>
             </thead>
@@ -306,54 +307,42 @@
             <tbody>
               <row>
                 <entry>name</entry>
-
                 <entry>ksession's name.</entry>
-
                 <entry>Yes</entry>
               </row>
 
               <row>
                 <entry>type</entry>
-
                 <entry>is the session <emphasis>stateful</emphasis> or
                 <emphasis>stateless?</emphasis>. If this attribute is empty or
                 missing, the session is assumed to be of type
                 Stateful.</entry>
-
                 <entry>No</entry>
               </row>
 
               <row>
                 <entry>default</entry>
-
                 <entry>Is this the default session?</entry>
-
                 <entry>no</entry>
               </row>
 
               <row>
                 <entry>scope</entry>
-
-                <entry>.</entry>
-
+                <entry>prototype | singleton. If not provided assumed to be singleton (default)</entry>
                 <entry>no</entry>
               </row>
 
               <row>
                 <entry>clockType</entry>
-
                 <entry>REALTIME or PSEUDO</entry>
-
                 <entry>no</entry>
               </row>
 
               <row>
                 <entry>listeners-ref</entry>
-
                 <entry>Specifies the reference to the event listeners group
                 (see <link linkend="kie-grouping-listeners">'Defining a Group
                 of listeners'</link> section below).</entry>
-
                 <entry>no</entry>
               </row>
             </tbody>
@@ -373,6 +362,308 @@
 &lt;bean id="kiePostProcessor" 
           class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;</programlisting>
         </example>
+      </section>
+      <section>
+        <title>Spring Bean Scope (for KieBase and KieSession)</title>
+        <para>
+          When defining a KieBase or a KieSession, you have the option of declaring a scope for that bean.
+          For example, To force Spring to produce a new bean instance each time one is needed, you should declare the bean's scope
+          attribute to be 'prototype'.
+          Similar way if you want Spring to return the same bean instance each time one is needed,
+          you should declare the bean's scope attribute to be 'singleton'.
+        </para>
+      </section>
+    </section>
+
+    <section>
+      <title>Kie:ReleaseId</title>
+      <para>
+      </para>
+      <section>
+        <title>&lt;kie:releaseId&gt;'s parameters as attributes:</title>
+
+        <table><title>Sample</title>
+          <tgroup align="left" cols="3" colsep="1" rowsep="1">
+            <thead>
+              <row>
+                <entry align="center">Attribute</entry>
+                <entry align="center">Description</entry>
+                <entry align="center">Required</entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry>id</entry>
+                <entry>Bean's <emphasis>id</emphasis> is the name to be
+                  referenced from other beans. Standard Spring ID semantics
+                  apply.</entry>
+                <entry>Yes</entry>
+              </row>
+              <row>
+                <entry>groupId</entry>
+                <entry>groupId from Maven GAV</entry>
+                <entry>Yes</entry>
+              </row>
+              <row>
+                <entry>artifactId</entry>
+                <entry>artifactId from Maven GAV</entry>
+                <entry>Yes</entry>
+              </row>
+              <row>
+                <entry>version</entry>
+                <entry>version from Maven GAV</entry>
+                <entry>Yes</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+
+        <example>
+          <title>releaseId definition example</title>
+
+          <programlisting language="xml">&lt;kie:releaseId id="beanId" groupId="org.kie.spring"
+            artifactId="named-artifactId" version="1.0.0-SNAPSHOT"/&gt;</programlisting>
+        </example>
+      </section>
+    </section>
+
+    <section>
+      <title>Kie:Import</title>
+      <para>Starting with version 6.2, kie-spring allows for importing of kie objects from kjars found on the classpath. Two modes of importing the kie objects are currently supported.</para>
+      <table>
+        <tgroup align="left" cols="3" colsep="1" rowsep="1">
+          <thead>
+            <row>
+              <entry align="center">Attribute</entry>
+              <entry align="center">Description</entry>
+              <entry align="center">Required</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>releaseId</entry>
+              <entry>Reference to a Bean ID. Standard Spring ID semantics
+                apply.</entry>
+              <entry>No</entry>
+            </row>
+            <row>
+              <entry>enableScanner</entry>
+              <entry>Enable Scanner. This attribute is used only if 'releaseId' is specified.</entry>
+              <entry>No</entry>
+            </row>
+            <row>
+              <entry>scannerInterval</entry>
+              <entry>Scanning Interval in milli seconds. This attribute is used only if 'releaseId' is specified.</entry>
+              <entry>No</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      <section>
+        <title>Global Import</title>
+        <para>The <emphasis>import</emphasis> tag will force the automatic scan of all the jars on the classpath, initialize the Kie Objects (Kbase/KSessions) and import these objects into the spring context.</para>
+        <figure>
+          <title>Global Import</title>
+          <programlisting language="xml">&lt;kie:import /&gt;</programlisting>
+        </figure>
+      </section>
+      <section>
+        <title>Specific Import - ReleaseId</title>
+        <para>Using the <emphasis>releaseId-ref</emphasis> attribute on the import tag will initialize the specific Kie Objects (Kbase/KSessions) and import these objects into the spring context.</para>
+        <figure>
+          <title>Import Kie Objects using a releaseId</title>
+          <programlisting language="xml">&lt;kie:import releaseId-ref="namedKieSession"/&gt;
+&lt;kie:releaseId id="namedKieSession" groupId="org.drools"
+            artifactId="named-kiesession" version="6.3.0-SNAPSHOT"/&gt;
+          </programlisting>
+        </figure>
+        <para>Kie Scanning feature can be enabled for KieBase's imported with a specific releaseId. This feature is currently not available for global imports.</para>
+        <figure>
+          <title>Import Kie Objects using a releaseId - Enable Scanner</title>
+          <programlisting language="xml">&lt;kie:import releaseId-ref="namedKieSession"
+            enableScanner="true" scannerInterval="1000"/&gt;
+
+&lt;kie:releaseId id="namedKieSession" groupId="org.drools"
+            artifactId="named-kiesession" version="6.3.0-SNAPSHOT"/&gt;
+          </programlisting>
+        </figure>
+        <para>If the scanner is defined and enabled, an implicit <emphasis>KieScanner</emphasis> object is created and inserted into the spring context. It can be retrived from the
+        spring context.</para>
+        <figure>
+          <title>Retriving the KieScanner from Spring Context</title>
+          <programlisting language="JAVA">
+// the implicit name would be releaseId#scanner
+KieScanner releaseIdScanner = context.getBean("namedKieSession#scanner", KieScanner.class);
+releaseIdScanner.scanNow();
+          </programlisting>
+        </figure>
+        <note><para>kie-ci must be available on the classpath for the releaseId importing feature to work.</para></note>
+      </section>
+    </section>
+
+    <section>
+      <title>Annotations</title>
+      <para>@KContainer, @KBase and @KSession all support an optional 'name' attribute. Spring typically
+        does "get" when it injects, all injections receive the same instance for the same set
+        of annotations. the 'name' annotation forces a unique instance for each name, although all
+        instance for that name will be identity equals.</para>
+      <section>
+        <title>@KReleaseId</title>
+        <para>Used to bind an instance to a specific version of a KieModule. If kie-ci is on the
+          classpath this will resolve dependencies automatically, downloading from remote
+          repositories.</para>
+      </section>
+      <section>
+        <title>@KContainer</title>
+        <figure>
+          <title>Injects Classpath KieContainer</title>
+          <programlisting language="JAVA">@KContainer
+private KieContainer kContainer;</programlisting>
+        </figure>
+        <figure>
+          <title>Injects KieContainer for Dynamic KieModule</title>
+          <programlisting language="JAVA">@KContainer
+@KReleaseId(groupId = "jar1", artifactId = "art1", version = "1.1")
+private KieContainer kContainer;</programlisting>
+        </figure>
+        <figure>
+          <title>Injects named KieContainer for Dynamic KieModule</title>
+          <programlisting language="JAVA">@KContainer(name = "kc1")
+@KReleaseId(groupId = "jar1", artifactId = "art1", version = "1.1")
+private KieContainer kContainer;</programlisting>
+        </figure>
+      </section>
+      <section>
+        <title>@KBase</title>
+        <para>The default argument, if given, maps to the value attribute and specifies the name of the KieBase from the
+          spring xml file.</para>
+        <figure>
+          <title>Injects the Default KieBase from the Classpath KieContainer</title>
+          <programlisting language="JAVA">@KBase
+private KieBase kbase;</programlisting>
+        </figure>
+        <figure>
+          <title>Injects the Default KieBase from a Dynamic KieModule</title>
+          <programlisting language="JAVA">@KBase
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
+private KieBase kbase;</programlisting>
+        </figure>
+        <figure>
+          <title>Side by side version loading for 'jar1.KBase1' KieBase</title>
+          <programlisting language="JAVA">@KBase("kbase1")
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
+private KieBase kbase1v10;
+
+@KBase("kbase1")
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.1")
+private KieBase kbase1v11;</programlisting>
+        </figure>
+        <figure>
+          <title>Side by side version loading for 'jar1.ksession1' KieSession</title>
+          <programlisting language="JAVA">@KSession("ksession1")
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
+private KieSession ksession11kb2;
+
+@KSession("ksession1")
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.1")
+private KieSession ksession11kb2;</programlisting>
+        </figure>
+      </section>
+      <section>
+        <title>@KSession for KieSession</title>
+        <para>The default argument, if given, maps to the value attribute and specifies the name of the KieSession from the
+          kmodule.xml or spring xml file</para>
+        <figure>
+          <title>Injects the Default KieSession from the Classpath KieContainer</title>
+          <programlisting language="JAVA">@KSession
+private KieSession ksession;</programlisting>
+        </figure>
+        <figure>
+          <title>Injects the Default KieSession from a Dynamic KieModule</title>
+          <programlisting language="JAVA">@KSession
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
+private KieSession ksession;</programlisting>
+        </figure>
+        <figure>
+          <title>Side by side version loading for 'jar1.KBase1' KieBase</title>
+          <programlisting language="JAVA">@KSession("ksession1")
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
+private KieSession ksessionv10;
+
+@KSession("ksession1")
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.1")
+private KieSession ksessionv11;</programlisting>
+        </figure>
+        <figure>
+          <title>Use 'name' attribute to force new Instance for 'jar1.KBase1' KieSession</title>
+          <programlisting language="JAVA">@KSession("ksession1")
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
+private KieSession ksession1ks1
+
+@KSession("ksession1")
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
+private KieSession ksession1ks2</programlisting>
+        </figure>
+      </section>
+      <section>
+        <title>@KSession for StatelessKieSession</title>
+        <para>The default argument, if given, maps to the value attribute and specifies the name of the KieSession from the
+          kmodule.xml or spring xml file.</para>
+        <figure>
+          <title>Injects the Default StatelessKieSession from the Classpath KieContainer</title>
+          <programlisting language="JAVA">@KSession
+private StatelessKieSession ksession;</programlisting>
+        </figure>
+        <figure>
+          <title>Injects the Default StatelessKieSession from a Dynamic KieModule</title>
+          <programlisting language="JAVA">@KSession
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
+private StatelessKieSession ksession;</programlisting>
+        </figure>
+        <figure>
+          <title>Side by side version loading for 'jar1.KBase1' KieBase</title>
+          <programlisting language="JAVA">@KSession("ksession1")
+@KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.0")
+private StatelessKieSession ksessionv10;
+
+@KSession("ksession1")
+@KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.1")
+private StatelessKieSession ksessionv11;</programlisting>
+        </figure>
+        <figure>
+          <programlisting language="JAVA">@KSession(value="ksession1", name="ks1")
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
+private StatelessKieSession ksession1ks1
+
+@KSession(value="ksession1", name="ks2")
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
+private StatelessKieSession ksession1ks2</programlisting>
+        </figure>
+      </section>
+      <section>
+        <title>IMPORTANT NOTE</title>
+
+        <para>When annotations are used, For proper initialization of the kmodule objects (kbase/ksession),
+          it is mandatory for either a bean of type
+          <code>org.kie.spring.annotations.KModuleAnnotationPostProcessor</code> be
+          defined</para> or spring component-scan be enabled. One of the code snippets as shown below is required.
+
+        <example>
+          <title>kie-spring annotations post processor bean definition</title>
+
+          <programlisting language="xml">&lt;bean id="kiePostProcessor"
+            class="org.kie.spring.annotations.KModuleAnnotationPostProcessor"/&gt;</programlisting>
+        </example>
+
+        <example>
+          <title>kie-spring annotations - Component Scanning</title>
+          <programlisting language="xml">&lt;context:component-scan base-package="org.kie.spring.annotations"/&gt;</programlisting>
+        </example>
+
+        <note>
+          <para>The post processor is different when annotations are used.</para>
+        </note>
+
       </section>
     </section>
 
@@ -624,15 +915,15 @@
 
           <itemizedlist>
             <listitem>
-              <para>drools:agendaEventListener...</para>
+              <para>kie:agendaEventListener...</para>
             </listitem>
 
             <listitem>
-              <para>drools:ruleRuntimeEventListener...</para>
+              <para>kie:ruleRuntimeEventListener...</para>
             </listitem>
 
             <listitem>
-              <para>drools:processEventListener...</para>
+              <para>kie:processEventListener...</para>
             </listitem>
           </itemizedlist>
 
@@ -983,6 +1274,100 @@ adaptor.close();</programlisting>
           class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;
 </programlisting>
       </example>
+    </section>
+
+    <section>
+      <title>Leveraging Other Spring Features</title>
+      <para>This section provides details on leveraging other standard spring features when integrating with Drools Expert.</para>
+      <section>
+        <title>Using Spring Expressions (Spel) </title>
+        <para></para>
+          <programlisting language="xml">&lt;kie:kmodule id="batch_commands_module"&gt;
+  &lt;kie:kbase name="drl_kiesample" packages="#{packageRepository.packages}"&gt;
+    &lt;kie:ksession name="ksessionForCommands" type="stateful"/&gt;
+  &lt;/kie:kbase&gt;
+&lt;/kie:kmodule&gt;
+
+&lt;bean id="kiePostProcessor"
+      class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;
+
+&lt;bean id="packageRepository" class="sample.package.class.PackageRepo"&gt;
+  &lt;property name="packages" value="drl_kiesample3"&gt;
+&lt;/bean&gt;
+          </programlisting>
+        <para></para>
+          <programlisting language="xml">&lt;kie:kmodule id="loggers_module"&gt;
+  &lt;kie:kbase name="drl_kiesample" packages="drl_kiesample"&gt;
+    &lt;kie:ksession name="ConsoleLogger-statefulSession" type="stateful"&gt;
+      &lt;kie:fileLogger id="fl" file="#{ systemProperties['java.io.tmpdir'] }/log1"/&gt;
+      &lt;kie:fileLogger id="tfl" file="#{ systemProperties['java.io.tmpdir'] }/log2"
+            threaded="true" interval="5"/&gt;
+    &lt;/kie:ksession&gt;
+  &lt;/kie:kbase&gt;
+&lt;/kie:kmodule&gt;
+
+&lt;bean id="kiePostProcessor"
+            class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;</programlisting>
+      </section>
+      <section>
+        <title>Using Spring Profiles </title>
+        <para>Spring 3.1 introduces a new profile attribute to the beans element of the spring-beans schema.
+          This attribute acts as a switch when enabling and disabling profiles in different environments. One potential use of this attribute
+        can be to have the same kbase defined with debug loggers in 'dev' environment and without loggers in 'prod' environment.</para>
+        <para>
+          The below code snippet illustrates the concept of 'profiles'.
+        </para>
+          <programlisting language="xml">&lt;beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:kie="http://drools.org/schema/kie-spring"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+http://drools.org/schema/kie-spring http://drools.org/schema/kie-spring.xsd"&gt;
+  &lt;beans profile="development"&gt;
+    &lt;kie:kmodule id="test-kmodule"&gt;
+      &lt;kie:kbase name="drl_kiesample" packages="drl_kiesample"&gt;
+        &lt;kie:ksession name="ksession1" type="stateless"&gt;
+            &lt;kie:consoleLogger /&gt;
+        &lt;/kie:ksession&gt;
+      &lt;/kie:kbase&gt;
+    &lt;/kie:kmodule&gt;
+    ...
+  &lt;/beans&gt;
+
+  &lt;beans profile="production"&gt;
+    &lt;kie:kmodule id="test-kmodule"&gt;
+      &lt;kie:kbase name="drl_kiesample" packages="drl_kiesample"&gt;
+        &lt;kie:ksession name="ksession1" type="stateless"/&gt;
+      &lt;/kie:kbase&gt;
+    &lt;/kie:kmodule&gt;
+    ...
+  &lt;/beans&gt;
+&lt;/beans&gt;</programlisting>
+      </section>
+      <para>
+        As shown above, the Spring XML contains the definition of the profiles. While loading the <emphasis>ApplicationContext</emphasis>
+        you have to tell Spring which profile you’re loading.
+      </para>
+      <para>
+        There are several ways of selecting your profile and the most useful is by using the "spring.profiles.active" system property.
+      </para>
+      <programlisting>System.setProperty("spring.profiles.active", "development");
+ApplicationContext ctx = new ClassPathXmlApplicationContext("beans.xml");</programlisting>
+      <para>
+        Obviously, it is not a good practice to hard code things as shown above and the recommended practice is to keep the system
+        properties definitions independent of the application.
+      </para>
+      <programlisting>-Dspring.profiles.active="development"</programlisting>
+      <para>
+        The profiles can also be loaded and enabled programmtically
+      </para>
+      <programlisting>...
+GenericXmlApplicationContext ctx = new GenericXmlApplicationContext("beans.xml");
+ConfigurableEnvironment env = ctx.getEnvironment();
+env.setActiveProfiles("development");
+ctx.refresh();
+...
+      </programlisting>
     </section>
   </section>
 
