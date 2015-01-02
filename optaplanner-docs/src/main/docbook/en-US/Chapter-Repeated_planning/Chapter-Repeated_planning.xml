@@ -119,7 +119,13 @@ public class ShiftAssignment {
 
       <para>Replanning an existing plan can be very disruptive on the plan. If the plan affects humans (such as
       employees, drivers, ...), very disruptive changes are often undesirable. In such cases, nonvolatile replanning
-      helps: the gain of changing a plan must be higher than the disruption it causes. </para>
+      helps: the gain of changing a plan must be higher than the disruption it causes.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Repeated_planning/nonvolatileReplanning.png" format="PNG"/>
+        </imageobject>
+      </mediaobject>
 
       <para>For example, in the Machine Reassignment example, the entity has both the planning variable
       <literal>machine</literal> and its original value <literal>originalMachine</literal>:</para>
