@@ -7002,4 +7002,22 @@ public class Misc2Test extends CommonTestMethodBase {
             return wrapped != null ? wrapped.length() : 0;
         }
     }
+
+    @Test
+    public void testImportInner() throws Exception {
+        // DROOLS-677
+        String drl =
+                "package org.drools.test; " +
+                "import " + Misc2Test.class.getName() + "; " +
+
+                "declare Foo " +
+                "   bar : Misc2Test.AA " +
+                "end " +
+                "" ;
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        assertTrue( helper.verify().getMessages( org.kie.api.builder.Message.Level.ERROR ).isEmpty() );
+    }
+
 }
