@@ -169,18 +169,21 @@ public class TypeDeclarationNameResolver {
                                 TypeResolver typeResolver,
                                 List<TypeDefinition> unresolvedTypes,
                                 boolean forceResolution ) {
+        boolean qualified = TypeDeclarationUtils.isQualified( type );
 
-        if ( ! TypeDeclarationUtils.isQualified( type ) ) {
+        if ( ! qualified ) {
             type = TypeDeclarationUtils.lookupSimpleNameByImports( type, typeDescr, packageDescr, kbuilder.getRootClassLoader() );
         }
 
-        if ( ! TypeDeclarationUtils.isQualified( type ) ) {
-            type = TypeDeclarationUtils.resolveType( type,
-                                                     packageDescr,
-                                                     kbuilder.getPackageRegistry( packageDescr.getNamespace() ) );
-        }
+        // if not qualified yet, it has to be resolved
+        // DROOLS-677 : if qualified, it may be a partial name (e.g. an inner class)
+        type = TypeDeclarationUtils.resolveType( type,
+                                                 packageDescr,
+                                                 kbuilder.getPackageRegistry( packageDescr.getNamespace() ) );
+        qualified = TypeDeclarationUtils.isQualified( type );
 
-        if ( ! TypeDeclarationUtils.isQualified( type ) ) {
+
+        if ( ! qualified ) {
             try {
                 Class klass = typeResolver.resolveType( type, TypeResolver.EXCLUDE_ANNOTATION_CLASS_FILTER );
                 type = klass.getCanonicalName();
@@ -190,14 +193,15 @@ public class TypeDeclarationNameResolver {
             }
         } else {
             type = TypeDeclarationUtils.typeName2ClassName( type, kbuilder.getRootClassLoader() );
+            qualified = TypeDeclarationUtils.isQualified( type );
         }
 
-        if ( forceResolution && ! TypeDeclarationUtils.isQualified( type ) ) {
+        if ( forceResolution && ! qualified ) {
             TypeDeclaration temp = new TypeDeclaration( type );
             temp.setTypeClassName( type );
             unresolvedTypes.add( new TypeDefinition( temp, null ) );
         }
-        return TypeDeclarationUtils.isQualified( type ) ? type : null;
+        return qualified ? type : null;
     }
 
 
