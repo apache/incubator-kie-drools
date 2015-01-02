@@ -93,12 +93,17 @@ public class TypeDeclarationUtils {
         }
 
         //look among imports
-        for (ImportDescr id : packageDescr.getImports()) {
-            String fqKlass = id.getTarget();
-            if ( fqKlass.endsWith( "." + klass ) ) {
-                //logger.info("Replace supertype " + sup + " with full name " + id.getTarget());
-                return arrayIndex < 0 ? fqKlass : fqKlass + arraySuffix;
+        String temp = klass;
+        while ( temp.length() > 0 ) {
+            for ( ImportDescr id : packageDescr.getImports() ) {
+                String fqKlass = id.getTarget();
+                if ( fqKlass.endsWith( "." + temp ) ) {
+                    //logger.info("Replace supertype " + sup + " with full name " + id.getTarget());
+                    fqKlass = fqKlass.substring( 0, fqKlass.lastIndexOf( temp ) ) + klass;
+                    return arrayIndex < 0 ? fqKlass : fqKlass + arraySuffix;
+                }
             }
+            temp = temp.substring( 0, Math.max( 0, temp.lastIndexOf( '.' ) ) );
         }
 
         //look among local declarations
