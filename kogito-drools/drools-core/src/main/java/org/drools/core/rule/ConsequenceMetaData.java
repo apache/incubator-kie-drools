@@ -32,7 +32,7 @@ public class ConsequenceMetaData implements Externalizable {
 
     @Override
     public String toString() {
-        return statements.toString();
+        return statements != null ? statements.toString() : "";
     }
 
     public static class Statement implements Externalizable {
