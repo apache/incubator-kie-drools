@@ -348,7 +348,11 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);
         params.put("status", status);
-        params.put("groupIds", groupIds);
+        if(groupIds == null){
+            params.put("groupIds", Collections.EMPTY_LIST);
+        }else{
+            params.put("groupIds", groupIds);
+        }
         applyQueryFilter(params, filter);
 
         return (List<TaskSummary>) persistenceContext.queryWithParametersInTransaction("NewTasksAssignedAsPotentialOwner", 
@@ -415,6 +419,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                                             List<Status> status, Date expirationDate) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("expirationDate", expirationDate);
+        
         return (List<TaskSummary>) getTasksAssignedAsPotentialOwner(userId, groupIds, status,
                 new QueryFilter("t.taskData.expirationTime = :expirationDate", params, "order by t.id", false));
         
@@ -601,7 +606,11 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                                                                         List<Status> status) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);
-        params.put("groupIds", groupIds);
+        if(groupIds != null){
+            params.put("groupIds", groupIds);
+        }else{
+            params.put("groupIds", Collections.EMPTY_LIST);
+        }
         params.put("status", status);
         
         return (List<TaskSummary>) persistenceContext.queryWithParametersInTransaction("QuickTasksAssignedAsPotentialOwnerWithGroupsByStatus", 
