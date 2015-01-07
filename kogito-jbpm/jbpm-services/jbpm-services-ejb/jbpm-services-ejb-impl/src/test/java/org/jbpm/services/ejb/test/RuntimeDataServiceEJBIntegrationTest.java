@@ -706,4 +706,75 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	assertEquals("Reserved", userTask.getStatusId());
     	assertNotNull(userTask.getActualOwner());
     }
+    
+    @Test
+    public void testGetTaskAssignedAsBusinessAdmin() {
+    	processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+    	assertNotNull(processInstanceId);
+    	
+    	processService.getProcessInstance(processInstanceId);
+    	
+    	
+    	List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsBusinessAdministrator("Administrator", new QueryFilter(0, 5));
+    	assertNotNull(tasks);
+    	assertEquals(1, tasks.size());
+    	
+    	TaskSummary userTask = tasks.get(0);    
+    	assertNotNull(userTask);
+    	assertEquals(processInstanceId, userTask.getProcessInstanceId());
+    	assertEquals("Write a Document", userTask.getName());
+    
+    }
+    
+    @Test
+    public void testGetTaskAssignedAsBusinessAdminPaging() {
+
+    	for (int i = 0; i < 10; i++) {
+    	
+    		processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+    	}
+    	
+    	List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsBusinessAdministrator("Administrator", new QueryFilter(0, 5));
+    	assertNotNull(tasks);
+    	assertEquals(5, tasks.size());
+    	
+    	TaskSummary userTask = tasks.get(0);    
+    	assertNotNull(userTask);    	
+    	assertEquals("Write a Document", userTask.getName());
+    
+    	Collection<ProcessInstanceDesc> activeProcesses = runtimeDataService.getProcessInstances(new QueryContext(0,  20));
+    	for (ProcessInstanceDesc pi : activeProcesses) {
+    		processService.abortProcessInstance(pi.getId());
+    	}
+    }
+    
+    @Test
+    public void testGetTaskAssignedAsBusinessAdminPagingAndFiltering() {
+    	long processInstanceId = -1;
+    	for (int i = 0; i < 10; i++) {
+    	
+    		processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+    	}
+    	
+    	Map<String, Object> params = new HashMap<String, Object>();
+        params.put("processInstanceId", processInstanceId);
+		QueryFilter qf = new QueryFilter( "t.taskData.processInstanceId = :processInstanceId", 
+                            params, "t.id", false);
+		qf.setOffset(0);
+		qf.setCount(5);
+    	
+    	List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsBusinessAdministrator("Administrator", qf);
+    	assertNotNull(tasks);
+    	assertEquals(1, tasks.size());
+    	
+    	TaskSummary userTask = tasks.get(0);    
+    	assertNotNull(userTask);    	
+    	assertEquals("Write a Document", userTask.getName());
+    	assertEquals(processInstanceId, (long)userTask.getProcessInstanceId());
+    
+    	Collection<ProcessInstanceDesc> activeProcesses = runtimeDataService.getProcessInstances(new QueryContext(0,  20));
+    	for (ProcessInstanceDesc pi : activeProcesses) {
+    		processService.abortProcessInstance(pi.getId());
+    	}
+    }
 }

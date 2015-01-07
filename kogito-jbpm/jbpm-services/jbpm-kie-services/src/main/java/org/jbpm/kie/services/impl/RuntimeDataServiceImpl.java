@@ -51,8 +51,8 @@ import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
-import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.AuditTask;
+import org.kie.internal.task.api.InternalTaskService;
 
 
 
@@ -81,6 +81,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     public RuntimeDataServiceImpl() {
     	QueryManager.get().addNamedQueries("META-INF/Servicesorm.xml");
         QueryManager.get().addNamedQueries("META-INF/TaskAuditorm.xml");
+        QueryManager.get().addNamedQueries("META-INF/Taskorm.xml");
     }
 
     public void setCommandService(TransactionalCommandService commandService) {
@@ -599,7 +600,22 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 
 	@Override
 	public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId, QueryFilter filter) {
-		return taskService.getTasksAssignedAsBusinessAdministrator(userId, filter.getLanguage());
+		
+		List<Status> allActiveStatus = new ArrayList<Status>();
+		allActiveStatus.add(Status.Created);
+		allActiveStatus.add(Status.Ready);
+		allActiveStatus.add(Status.Reserved);
+		allActiveStatus.add(Status.InProgress);
+		allActiveStatus.add(Status.Suspended);
+	        
+		Map<String, Object> params = new HashMap<String, Object>();
+        params.put("userId", userId);
+        params.put("status", allActiveStatus);
+        applyQueryContext(params, filter);
+        applyQueryFilter(params, filter);
+        return (List<TaskSummary>) commandService.execute(
+				new QueryNameCommand<List<TaskSummary>>("TasksAssignedAsBusinessAdministratorByStatus",params));
+			
 	}
 	
 	@Override
@@ -662,12 +678,13 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 
 	@Override
 	public List<TaskSummary> getTasksOwned(String userId, QueryFilter filter) {
-		return taskService.getTasksOwned(userId, filter.getLanguage());
+		
+        return ((InternalTaskService)taskService).getTasksOwned(userId, null, filter);        
 	}
 
 	@Override
 	public List<TaskSummary> getTasksOwnedByStatus(String userId, List<Status> status, QueryFilter filter) {
-		return taskService.getTasksOwnedByStatus(userId, status, filter.getLanguage());
+		return ((InternalTaskService)taskService).getTasksOwned(userId, status, filter);
 	}
 
 	@Override
@@ -932,4 +949,5 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         	}
         }
     }
+
 }
