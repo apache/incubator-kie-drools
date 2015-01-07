@@ -122,11 +122,13 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                     final FieldIndex fieldIndex = registerFieldIndex( index,
                                                                       readAccessor );
 
-                    if ( fieldIndex.getCount() >= this.alphaNodeHashingThreshold && this.alphaNodeHashingThreshold != 0 ) {
+                    //DROOLS-678 : prevent null values from being hashed as 0s
+                    final FieldValue value = indexableConstraint.getField();
+                    if ( fieldIndex.getCount() >= this.alphaNodeHashingThreshold && this.alphaNodeHashingThreshold != 0 && ! value.isNull() ) {
                         if ( !fieldIndex.isHashed() ) {
                             hashSinks( fieldIndex );
                         }
-                        final FieldValue value = indexableConstraint.getField();
+
                         // no need to check, we know  the sink  does not exist
                         this.hashedSinkMap.put( new HashKey( index,
                                                              value,

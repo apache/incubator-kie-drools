@@ -7020,4 +7020,48 @@ public class Misc2Test extends CommonTestMethodBase {
         assertTrue( helper.verify().getMessages( org.kie.api.builder.Message.Level.ERROR ).isEmpty() );
     }
 
+    @Test
+    //DROOLS-678
+    public void testAlphaIndexing() throws Exception {
+        String drl =
+                "    package org.drools.test; " +
+
+                "    declare ObjectB " +
+                "       name : String " +
+                "       intValue : Integer " +
+                "    end " +
+
+                "    rule 'insert object' " +
+                "       when " +
+                "       then " +
+                "           insert( new ObjectB( null, 0 ) ); " +
+                "    end " +
+
+                "    rule 'rule 1' " +
+                "       when " +
+                "           ObjectB( intValue == 1 ) " +
+                "       then " +
+                "    end " +
+
+                "    rule 'rule 2' " +
+                "       when " +
+                "           ObjectB( intValue == 2 ) " +
+                "       then " +
+                "    end " +
+
+                "    rule 'rule 3' " +
+                "       when " +
+                "           $b : ObjectB( intValue == null ) " +
+                "       then\n" +
+                "           System.out.println( $b ); " +
+                "    end" +
+                "\n" ;
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        assertTrue( helper.verify().getMessages( org.kie.api.builder.Message.Level.ERROR ).isEmpty() );
+        KieSession ks = helper.build(  ).newKieSession();
+        assertEquals( 1, ks.fireAllRules() );
+    }
+
 }
