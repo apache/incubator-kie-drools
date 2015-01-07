@@ -130,6 +130,16 @@ public interface RuntimeDataService {
      *         the given criteria (deploymentId and states).
      */
     Collection<ProcessInstanceDesc> getProcessInstancesByProcessDefinition(String processDefId, QueryContext queryContext);
+    
+    /**
+     * Returns list of process instance descriptions found for given process definition id
+     * @param processDefId The id of the process (definition) 
+     * @param states A list of possible state (int) values that the {@link ProcessInstance} can have.
+     * @param queryContext control parameters for the result e.g. sorting, paging
+     * @return A list of {@link ProcessInstanceDesc} instances representing the process instances that match
+     *         the given criteria (deploymentId and states).
+     */
+    Collection<ProcessInstanceDesc> getProcessInstancesByProcessDefinition(String processDefId, List<Integer> states, QueryContext queryContext);
 
     
     // Node and Variable instance information

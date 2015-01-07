@@ -385,6 +385,54 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     }
     
     @Test
+    public void testGetProcessInstancesByProcessIdAndStatus() {
+    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
+    	assertNotNull(instances);
+    	assertEquals(0, instances.size());
+    	
+    	processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+    	assertNotNull(processInstanceId);
+    	
+    	Long processInstanceIdToAbort = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+    	
+    	List<Integer> statuses = new ArrayList<Integer>();
+    	statuses.add(ProcessInstance.STATE_ACTIVE);
+    	
+    	instances = runtimeDataService.getProcessInstancesByProcessDefinition("org.jbpm.writedocument", statuses, new QueryContext());
+    	assertNotNull(instances);
+    	assertEquals(2, instances.size());
+
+    	for (ProcessInstanceDesc instance : instances) {
+	    	assertEquals(ProcessInstance.STATE_ACTIVE, (int)instance.getState());
+	    	assertEquals("org.jbpm.writedocument", instance.getProcessId());
+    	}
+    	
+    	processService.abortProcessInstance(processInstanceIdToAbort);
+    	
+    	instances = runtimeDataService.getProcessInstancesByProcessDefinition("org.jbpm.writedocument", statuses, new QueryContext());
+    	assertNotNull(instances);
+    	assertEquals(1, instances.size());
+    	ProcessInstanceDesc instance2 = instances.iterator().next();
+    	assertEquals(ProcessInstance.STATE_ACTIVE, (int)instance2.getState());
+    	assertEquals("org.jbpm.writedocument", instance2.getProcessId());
+    	
+    	processService.abortProcessInstance(processInstanceId);
+    	processInstanceId = null;
+    	
+    	statuses.clear();
+    	statuses.add(ProcessInstance.STATE_ABORTED);
+    	
+    	instances = runtimeDataService.getProcessInstancesByProcessDefinition("org.jbpm.writedocument", statuses, new QueryContext());
+    	assertNotNull(instances);
+    	assertEquals(2, instances.size());
+
+    	for (ProcessInstanceDesc instance : instances) {
+	    	assertEquals(ProcessInstance.STATE_ABORTED, (int)instance.getState());
+	    	assertEquals("org.jbpm.writedocument", instance.getProcessId());
+    	}
+    }
+    
+    @Test
     public void testGetProcessInstanceById() {
     	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
     	assertNotNull(instances);

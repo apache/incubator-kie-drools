@@ -375,6 +375,21 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         return Collections.unmodifiableCollection(processInstances);
     }
     
+
+	@Override
+	public Collection<ProcessInstanceDesc> getProcessInstancesByProcessDefinition(String processDefId, List<Integer> states, QueryContext queryContext) {
+		Map<String, Object> params = new HashMap<String, Object>();
+        params.put("processId", processDefId);
+        params.put("states", states);
+        applyQueryContext(params, queryContext);
+        applyDeploymentFilter(params);
+    	List<ProcessInstanceDesc> processInstances = commandService.execute(
+				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByProcessIdAndStatus",
+              params));
+
+        return Collections.unmodifiableCollection(processInstances);
+	}
+    
     public ProcessInstanceDesc getProcessInstanceById(long processId) {
     	Map<String, Object> params = new HashMap<String, Object>();
         params.put("processId", processId);
