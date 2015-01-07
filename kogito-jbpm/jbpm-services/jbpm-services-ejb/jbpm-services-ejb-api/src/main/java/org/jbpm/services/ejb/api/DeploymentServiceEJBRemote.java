@@ -71,6 +71,10 @@ public interface DeploymentServiceEJBRemote  {
      */
     void deactivate(String deploymentId);
     
-    
+    /**
+     * Performs a check if given deployment is already active
+     * @param deploymentUnitId
+     * @return
+     */
     boolean isDeployed(String deploymentUnitId);
 }

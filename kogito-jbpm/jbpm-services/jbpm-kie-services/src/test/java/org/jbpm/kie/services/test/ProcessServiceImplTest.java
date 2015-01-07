@@ -160,6 +160,9 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         units.add(deploymentUnit);
     	assertNotNull(processService);
     	
+    	boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
     	assertNotNull(processInstanceId);
     	
@@ -180,6 +183,10 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	// first start first instance
     	long processInstanceId1 = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
@@ -214,6 +221,10 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "signal");
@@ -241,6 +252,10 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	// first start first instance
     	long processInstanceId1 = processService.startProcess(deploymentUnit.getIdentifier(), "signal");
@@ -275,6 +290,10 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+        
     	assertNotNull(processService);
     	
     	Map<String, Object> params = new HashMap<String, Object>();
@@ -338,6 +357,10 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
@@ -378,6 +401,10 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	    	
     	assertNotNull(processService);
     	
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
@@ -415,6 +442,10 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
@@ -447,6 +478,10 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
@@ -480,6 +515,10 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
@@ -503,8 +542,16 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
         deploymentService.deploy(deploymentUnit2);
         units.add(deploymentUnit2);
+        
+        isDeployed = deploymentService.isDeployed(deploymentUnit2.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	long processInstanceId = processService.startProcess(GROUP_ID+":"+ARTIFACT_ID+":LATEST", "customtask");
@@ -526,6 +573,10 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	deploymentService.deactivate(deploymentUnit.getIdentifier());
@@ -547,6 +598,10 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");

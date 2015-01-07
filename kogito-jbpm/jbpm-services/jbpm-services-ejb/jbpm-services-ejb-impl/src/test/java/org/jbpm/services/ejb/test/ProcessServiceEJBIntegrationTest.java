@@ -132,6 +132,10 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "customtask");
@@ -149,6 +153,10 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	Map<String, Object> params = new HashMap<String, Object>();
@@ -169,6 +177,10 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
@@ -191,6 +203,10 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	// first start first instance
     	long processInstanceId1 = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
@@ -225,6 +241,10 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "signal");
@@ -252,6 +272,10 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	// first start first instance
     	long processInstanceId1 = processService.startProcess(deploymentUnit.getIdentifier(), "signal");
@@ -286,6 +310,10 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	Map<String, Object> params = new HashMap<String, Object>();
@@ -349,6 +377,10 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
@@ -389,6 +421,10 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
@@ -426,6 +462,10 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
@@ -458,6 +498,10 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
@@ -491,6 +535,10 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
@@ -513,6 +561,10 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	deploymentService.deactivate(deploymentUnit.getIdentifier());
@@ -532,6 +584,10 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+    	assertTrue(isDeployed);
+    	
     	assertNotNull(processService);
     	
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
