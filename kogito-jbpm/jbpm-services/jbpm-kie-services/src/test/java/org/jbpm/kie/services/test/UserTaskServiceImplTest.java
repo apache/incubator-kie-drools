@@ -571,6 +571,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	assertNotNull(attachment);
     	assertEquals("john", attachment.getAttachedBy().getId());
     	assertNotNull(attachment.getAttachmentContentId());
+    	assertEquals("java.lang.String", attachment.getContentType());
     	
     	userTaskService.deleteAttachment(taskId, attId);
     	

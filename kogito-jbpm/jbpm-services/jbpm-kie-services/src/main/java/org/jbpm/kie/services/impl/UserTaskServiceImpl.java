@@ -785,6 +785,7 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			att.setAccessType(AccessType.Inline);
 			att.setAttachedAt(new Date());
 			att.setAttachedBy(TaskModelProvider.getFactory().newUser(userId));
+			att.setContentType(attachment.getClass().getName());
 	        
 			Content content = TaskModelProvider.getFactory().newContent();
 	        
