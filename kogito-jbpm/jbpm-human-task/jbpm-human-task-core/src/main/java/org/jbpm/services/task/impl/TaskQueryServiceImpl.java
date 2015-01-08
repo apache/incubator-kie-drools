@@ -75,6 +75,19 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     private TaskPersistenceContext persistenceContext;
     private UserGroupCallback userGroupCallback;
     
+    protected List<?> adoptList(List<?> source, List<?> values) {
+    	
+    	if (source == null || source.isEmpty()) {
+    		List<Object> data = new ArrayList<Object>();    		
+    		for (Object value : values) {
+    			data.add(value);
+    		}
+    		
+    		return data;
+    	}
+    	return source;
+    }
+    
     protected void applyQueryFilter(Map<String, Object> params, QueryFilter queryFilter) {
     	if (queryFilter != null) {
     	    applyQueryContext(params, queryFilter);
@@ -347,12 +360,9 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, List<Status> status, QueryFilter filter) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);
-        params.put("status", status);
-        if(groupIds == null){
-            params.put("groupIds", Collections.EMPTY_LIST);
-        }else{
-            params.put("groupIds", groupIds);
-        }
+        params.put("status", adoptList(status, allActiveStatus));        
+        params.put("groupIds", adoptList(groupIds, Collections.singletonList("")));
+        
         applyQueryFilter(params, filter);
 
         return (List<TaskSummary>) persistenceContext.queryWithParametersInTransaction("NewTasksAssignedAsPotentialOwner", 
@@ -606,12 +616,8 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                                                                         List<Status> status) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);
-        if(groupIds != null){
-            params.put("groupIds", groupIds);
-        }else{
-            params.put("groupIds", Collections.EMPTY_LIST);
-        }
-        params.put("status", status);
+        params.put("status", adoptList(status, allActiveStatus));        
+        params.put("groupIds", adoptList(groupIds, Collections.singletonList("")));
         
         return (List<TaskSummary>) persistenceContext.queryWithParametersInTransaction("QuickTasksAssignedAsPotentialOwnerWithGroupsByStatus", 
         		params,
