@@ -27,12 +27,12 @@ public class ScoreCardModel implements HasImports,
                                        HasPackageName {
 
     private String name;
-    private String reasonCodesAlgorithm;
     private double baselineScore;
     private double initialScore;
     private boolean useReasonCodes;
     private String factName = "";
     private String fieldName = "";
+    private String reasonCodesAlgorithm = "";
     private String reasonCodeField = "";
 
     private List<Characteristic> characteristics = new ArrayList<Characteristic>();
@@ -40,8 +40,8 @@ public class ScoreCardModel implements HasImports,
 
     private Imports imports = new Imports();
 
-    private String agendaGroup="";
-    private String ruleFlowGroup="";
+    private String agendaGroup = "";
+    private String ruleFlowGroup = "";
 
     public ScoreCardModel() {
     }
@@ -142,7 +142,7 @@ public class ScoreCardModel implements HasImports,
         return ruleFlowGroup;
     }
 
-    public void setRuleFlowGroup(String ruleFlowGroup) {
+    public void setRuleFlowGroup( String ruleFlowGroup ) {
         this.ruleFlowGroup = ruleFlowGroup;
     }
 
@@ -150,7 +150,84 @@ public class ScoreCardModel implements HasImports,
         return agendaGroup;
     }
 
-    public void setAgendaGroup(String agendaGroup) {
+    public void setAgendaGroup( String agendaGroup ) {
         this.agendaGroup = agendaGroup;
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof ScoreCardModel ) ) {
+            return false;
+        }
+
+        ScoreCardModel that = (ScoreCardModel) o;
+
+        if ( Double.compare( that.baselineScore, baselineScore ) != 0 ) {
+            return false;
+        }
+        if ( Double.compare( that.initialScore, initialScore ) != 0 ) {
+            return false;
+        }
+        if ( useReasonCodes != that.useReasonCodes ) {
+            return false;
+        }
+        if ( agendaGroup != null ? !agendaGroup.equals( that.agendaGroup ) : that.agendaGroup != null ) {
+            return false;
+        }
+        if ( characteristics != null ? !characteristics.equals( that.characteristics ) : that.characteristics != null ) {
+            return false;
+        }
+        if ( factName != null ? !factName.equals( that.factName ) : that.factName != null ) {
+            return false;
+        }
+        if ( fieldName != null ? !fieldName.equals( that.fieldName ) : that.fieldName != null ) {
+            return false;
+        }
+        if ( imports != null ? !imports.equals( that.imports ) : that.imports != null ) {
+            return false;
+        }
+        if ( name != null ? !name.equals( that.name ) : that.name != null ) {
+            return false;
+        }
+        if ( packageName != null ? !packageName.equals( that.packageName ) : that.packageName != null ) {
+            return false;
+        }
+        if ( reasonCodeField != null ? !reasonCodeField.equals( that.reasonCodeField ) : that.reasonCodeField != null ) {
+            return false;
+        }
+        if ( reasonCodesAlgorithm != null ? !reasonCodesAlgorithm.equals( that.reasonCodesAlgorithm ) : that.reasonCodesAlgorithm != null ) {
+            return false;
+        }
+        if ( ruleFlowGroup != null ? !ruleFlowGroup.equals( that.ruleFlowGroup ) : that.ruleFlowGroup != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = name != null ? name.hashCode() : 0;
+        result = 31 * result + ( reasonCodesAlgorithm != null ? reasonCodesAlgorithm.hashCode() : 0 );
+        temp = Double.doubleToLongBits( baselineScore );
+        result = 31 * result + (int) ( temp ^ ( temp >>> 32 ) );
+        temp = Double.doubleToLongBits( initialScore );
+        result = 31 * result + (int) ( temp ^ ( temp >>> 32 ) );
+        result = 31 * result + ( useReasonCodes ? 1 : 0 );
+        result = 31 * result + ( factName != null ? factName.hashCode() : 0 );
+        result = 31 * result + ( fieldName != null ? fieldName.hashCode() : 0 );
+        result = 31 * result + ( reasonCodeField != null ? reasonCodeField.hashCode() : 0 );
+        result = 31 * result + ( characteristics != null ? characteristics.hashCode() : 0 );
+        result = 31 * result + ( packageName != null ? packageName.hashCode() : 0 );
+        result = 31 * result + ( imports != null ? imports.hashCode() : 0 );
+        result = 31 * result + ( agendaGroup != null ? agendaGroup.hashCode() : 0 );
+        result = 31 * result + ( ruleFlowGroup != null ? ruleFlowGroup.hashCode() : 0 );
+        return result;
+    }
+
 }

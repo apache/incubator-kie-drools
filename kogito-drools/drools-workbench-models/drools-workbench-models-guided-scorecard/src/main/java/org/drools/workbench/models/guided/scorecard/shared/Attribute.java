@@ -62,4 +62,42 @@ public class Attribute {
         this.reasonCode = reasonCode;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof Attribute ) ) {
+            return false;
+        }
+
+        Attribute attribute = (Attribute) o;
+
+        if ( Double.compare( attribute.partialScore, partialScore ) != 0 ) {
+            return false;
+        }
+        if ( operator != null ? !operator.equals( attribute.operator ) : attribute.operator != null ) {
+            return false;
+        }
+        if ( reasonCode != null ? !reasonCode.equals( attribute.reasonCode ) : attribute.reasonCode != null ) {
+            return false;
+        }
+        if ( value != null ? !value.equals( attribute.value ) : attribute.value != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = value != null ? value.hashCode() : 0;
+        temp = Double.doubleToLongBits( partialScore );
+        result = 31 * result + (int) ( temp ^ ( temp >>> 32 ) );
+        result = 31 * result + ( reasonCode != null ? reasonCode.hashCode() : 0 );
+        result = 31 * result + ( operator != null ? operator.hashCode() : 0 );
+        return result;
+    }
 }
