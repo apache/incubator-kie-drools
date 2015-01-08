@@ -58,6 +58,8 @@ public class BusinessCalendarImpl implements BusinessCalendar {
 
     private Properties businessCalendarConfiguration;
     
+    private static final long HOUR_IN_MILLIS = 60 * 60 * 1000;
+    
     private int daysPerWeek;
     private int hoursInDay;
     private int startHour; 
@@ -240,6 +242,7 @@ public class BusinessCalendarImpl implements BusinessCalendar {
             for (int i = 0; i < numberOfDays; i++) {
                 c.add(Calendar.DAY_OF_YEAR, 1);
                 handleWeekend(c);
+                handleHoliday(c);
             }
         }
 
@@ -255,6 +258,7 @@ public class BusinessCalendarImpl implements BusinessCalendar {
         time = hours - (numberOfDays * hoursInDay);
         c.add(Calendar.HOUR, time);
         handleWeekend(c);
+        handleHoliday(c);
         
         currentCalHour = c.get(Calendar.HOUR_OF_DAY);
         if (currentCalHour >= endHour) {
@@ -307,8 +311,18 @@ public class BusinessCalendarImpl implements BusinessCalendar {
                 if (current.after(holiday.getFrom()) && current.before(holiday.getTo())) {
                     
                     Calendar tmp = new GregorianCalendar();
-                    tmp.setTime(holiday.getTo());                    
-                    c.add(Calendar.DAY_OF_YEAR, tmp.get(Calendar.DAY_OF_YEAR) - c.get(Calendar.DAY_OF_YEAR));
+                    tmp.setTime(holiday.getTo());   
+                    
+                    Calendar tmp2 = new GregorianCalendar();
+                    tmp2.setTime(current);
+                    tmp2.set(Calendar.HOUR_OF_DAY, 0);
+                    tmp2.set(Calendar.MINUTE, 0);
+                    tmp2.set(Calendar.SECOND, 0);
+
+                    long difference = tmp.getTimeInMillis() - tmp2.getTimeInMillis();
+                    
+                    c.add(Calendar.HOUR_OF_DAY, (int) (difference/HOUR_IN_MILLIS));
+                    
                     handleWeekend(c);
                     break;
                 }

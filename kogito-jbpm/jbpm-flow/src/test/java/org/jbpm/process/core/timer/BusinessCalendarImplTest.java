@@ -95,7 +95,7 @@ public class BusinessCalendarImplTest extends AbstractBaseTest {
     @Test
     public void testCalculateMinutesPassingOverHoliday() {
         Properties config = new Properties();
-        config.setProperty(BusinessCalendarImpl.HOLIDAYS, "2012-05-10:2012-05-19");
+        config.setProperty(BusinessCalendarImpl.HOLIDAYS, "2012-05-12:2012-05-19");
         String expectedDate = "2012-05-21 09:15";
         
         SessionPseudoClock clock = new StaticPseudoClock(parseToDateWithTime("2012-05-11 16:45").getTime());
@@ -228,7 +228,7 @@ public class BusinessCalendarImplTest extends AbstractBaseTest {
     public void testCalculateDaysPassingOverHolidayAtYearEnd() {
         Properties config = new Properties();
         config.setProperty(BusinessCalendarImpl.HOLIDAYS, "2012-12-31:2013-01-01");
-        String expectedDate = "2013-01-02 09:15";
+        String expectedDate = "2013-01-04 09:15";
         
         SessionPseudoClock clock = new StaticPseudoClock(parseToDateWithTime("2012-12-28 16:45").getTime());        
         BusinessCalendarImpl businessCal = new BusinessCalendarImpl(config, clock);
@@ -280,6 +280,20 @@ public class BusinessCalendarImplTest extends AbstractBaseTest {
         Date result = businessCal.calculateBusinessTimeAsDate("P1DT4H20M");
         
         assertEquals(expectedDate, formatDate("yyyy-MM-dd HH:mm", result));
+    }
+    
+    @Test
+    public void testSingleHolidayWithinGivenTime() {
+    	final Properties props = new Properties();
+		props.put(BusinessCalendarImpl.HOLIDAYS, "2015-01-13");
+		String expectedDate = "2015-01-15 11:38";
+ 
+		SessionPseudoClock clock = new StaticPseudoClock(parseToDateWithTime("2015-01-08 11:38").getTime());
+ 
+		BusinessCalendarImpl businessCalendarImpl = new BusinessCalendarImpl(props, clock);
+ 
+		Date result = businessCalendarImpl.calculateBusinessTimeAsDate("4d");
+		assertEquals(expectedDate, formatDate("yyyy-MM-dd HH:mm", result));
     }
     
     private Date parseToDate(String dateString) {
