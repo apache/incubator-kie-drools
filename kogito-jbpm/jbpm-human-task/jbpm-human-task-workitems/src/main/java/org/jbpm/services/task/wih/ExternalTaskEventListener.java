@@ -53,7 +53,7 @@ public class ExternalTaskEventListener implements TaskLifeCycleEventListener {
         if (task.getTaskData().getStatus() == Status.Completed) {
             String userId = task.getTaskData().getActualOwner().getId();
             Map<String, Object> results = new HashMap<String, Object>();
-            results.put("ActorId", userId);
+            
             long contentId = task.getTaskData().getOutputContentId();
             if (contentId != -1) {
                 Content content = runtime.getTaskService().getContentById(contentId);
@@ -71,9 +71,10 @@ public class ExternalTaskEventListener implements TaskLifeCycleEventListener {
                         }
                     }
                 }
-
+                results.put("ActorId", userId);
                 session.getWorkItemManager().completeWorkItem(task.getTaskData().getWorkItemId(), results);
             } else {
+            	results.put("ActorId", userId);
                 session.getWorkItemManager().completeWorkItem(workItemId, results);
             }
         } else {

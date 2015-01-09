@@ -90,6 +90,11 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         taskService.complete(task.getId(), "Darth Vader", null);
 
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
+        
+        String actualOwner = (String) manager.getResults().get("ActorId");
+        assertNotNull(actualOwner);
+        assertEquals("Darth Vader", actualOwner);
+        
     }
     @Test
     public void testTaskMultipleActors() throws Exception {
@@ -731,6 +736,39 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
     }
     
+    @Test
+    public void testTaskCompleteGroupActors() throws Exception {
+
+    	TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("NodeName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("GroupId", "Crusaders");
+        workItem.setProcessInstanceId(10);
+        getHandler().executeWorkItem(workItem, manager);
+
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Luke Cage", "en-UK");
+        assertEquals(1, tasks.size());
+        TaskSummary taskSummary = tasks.get(0);
+        assertEquals("TaskName", taskSummary.getName());
+        assertEquals(10, taskSummary.getPriority().intValue());
+        assertEquals("Comment", taskSummary.getDescription());
+        assertEquals(Status.Ready, taskSummary.getStatus());
+
+        taskService.claim(taskSummary.getId(), "Luke Cage");
+ 
+        taskService.start(taskSummary.getId(), "Luke Cage");
+        taskService.complete(taskSummary.getId(), "Luke Cage", null);
+
+        assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
+        
+        String actualOwner = (String) manager.getResults().get("ActorId");
+        assertNotNull(actualOwner);
+        assertEquals("Luke Cage", actualOwner);
+    }
     
     public void setHandler(WorkItemHandler handler) {
         this.handler = handler;

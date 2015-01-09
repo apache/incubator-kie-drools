@@ -29,7 +29,7 @@ public class NonManagedTaskEventListener implements TaskLifeCycleEventListener {
         if (task.getTaskData().getStatus() == Status.Completed) {
             String userId = task.getTaskData().getActualOwner().getId();
             Map<String, Object> results = new HashMap<String, Object>();
-            results.put("ActorId", userId);
+            
             long contentId = task.getTaskData().getOutputContentId();
             if (contentId != -1) {
                 Content content = taskService.getContentById(contentId);
@@ -44,9 +44,10 @@ public class NonManagedTaskEventListener implements TaskLifeCycleEventListener {
                         }
                     }
                 }
-
+                results.put("ActorId", userId);
                 ksession.getWorkItemManager().completeWorkItem(task.getTaskData().getWorkItemId(), results);
             } else {
+            	results.put("ActorId", userId);
             	ksession.getWorkItemManager().completeWorkItem(workItemId, results);
             }
         } else {
