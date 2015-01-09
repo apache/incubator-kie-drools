@@ -39,14 +39,13 @@ import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
-import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
-import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 public class AddRemoveRule {
@@ -507,10 +506,10 @@ public class AddRemoveRule {
         }
         ObjectTypeNode otn = (ObjectTypeNode) os;
         final ObjectTypeNodeMemory omem = (ObjectTypeNodeMemory) wm.getNodeMemory(otn);
-        Iterator it = omem.getObjectHashSet().iterator();
+        Iterator<InternalFactHandle> it = omem.iterator();
 
-        for (ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next()) {
-            InternalFactHandle fh = (InternalFactHandle) entry.getValue();
+        while (it.hasNext()) {
+            InternalFactHandle fh = it.next();
             for (LeftTuple childLt = fh.getFirstLeftTuple(); childLt != null; ) {
                 LeftTuple next = childLt.getLeftParentNext();
                 //stagedLeftTuples
@@ -667,11 +666,11 @@ public class AddRemoveRule {
         }
         ObjectTypeNode otn = (ObjectTypeNode) os;
         final ObjectTypeNodeMemory omem = (ObjectTypeNodeMemory) wm.getNodeMemory(otn);
-        Iterator it = omem.getObjectHashSet().iterator();
         LeftTupleSink firstLiaSink = lian.getSinkPropagator().getFirstLeftTupleSink();
+        Iterator<InternalFactHandle> it = omem.iterator();
 
-        for (ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next()) {
-            InternalFactHandle fh = (InternalFactHandle) entry.getValue();
+        while (it.hasNext()) {
+            InternalFactHandle fh = it.next();
             if (fh.getFirstLeftTuple() != null ) {
                 for (LeftTuple childLt = fh.getFirstLeftTuple(); childLt != null; childLt = childLt.getLeftParentNext()) {
                     if ( childLt.getSink() == firstLiaSink ) {

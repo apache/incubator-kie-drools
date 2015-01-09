@@ -16,20 +16,10 @@
 
 package org.drools.core.common;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
-
-import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.base.TraitHelper;
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.base.TraitHelper;
+import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -43,13 +33,20 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.Iterator;
-import org.drools.core.util.ObjectHashSet;
-import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
@@ -109,8 +106,7 @@ public class NamedEntryPoint
         this.typeConfReg = new ObjectTypeConfigurationRegistry(this.kBase);
         this.handleFactory = this.wm.getFactHandleFactory();
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        this.objectStore = new SingleThreadedObjectStore(this.kBase.getConfiguration(),
-                                                         this.lock);
+        this.objectStore = new ClassAwareObjectStore(this.kBase.getConfiguration(), this.lock);
         this.traitHelper = new TraitHelper( wm, this );
     }
 
@@ -359,12 +355,7 @@ public class NamedEntryPoint
             }
 
             if ( originalObject != object || !AssertBehaviour.IDENTITY.equals( this.kBase.getConfiguration().getAssertBehaviour() ) ) {
-                this.objectStore.removeHandle( handle );
-
-                // set anyway, so that it updates the hashCodes
-                handle.setObject( object );
-                this.objectStore.addHandle( handle,
-                                            object );
+                this.objectStore.updateHandle(handle, object);
             }
 
             this.handleFactory.increaseFactHandleRecency( handle );
@@ -689,7 +680,7 @@ public class NamedEntryPoint
     }
 
     public Object getObject(FactHandle factHandle) {
-        return this.objectStore.getObjectForHandle(factHandle);
+        return this.objectStore.getObjectForHandle((InternalFactHandle)factHandle);
     }
 
     @SuppressWarnings("unchecked")
@@ -763,11 +754,11 @@ public class NamedEntryPoint
                 // only, as the facts will always be in their concrete object type nodes
                 // even if they were also asserted into higher level OTNs as well
                 ObjectTypeNode otn = conf.getConcreteObjectTypeNode();
-                final ObjectHashSet memory = ((ObjectTypeNodeMemory) this.getInternalWorkingMemory().getNodeMemory( otn )).memory;
-                Iterator it = memory.iterator();
-                for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-                    InternalFactHandle handle = (InternalFactHandle) entry.getValue();
-                    removePropertyChangeListener( handle, false );
+                if (otn != null) {
+                    Iterator<InternalFactHandle> it = ((ObjectTypeNodeMemory) this.getInternalWorkingMemory().getNodeMemory(otn)).iterator();
+                    while (it.hasNext()) {
+                        removePropertyChangeListener(it.next(), false);
+                    }
                 }
             }
         }

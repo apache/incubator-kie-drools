@@ -19,7 +19,6 @@ package org.drools.core.reteoo;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -42,10 +41,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ReteTest extends DroolsTestCase {
     private PropagationContextFactory pctxFactory;
@@ -60,11 +56,8 @@ public class ReteTest extends DroolsTestCase {
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         this.buildContext = new BuildContext(kBase,
                                              kBase.getReteooBuilder().getIdGenerator());
-        this.entryPoint = new EntryPointNode(0,
-                                             kBase.getRete(),
-                                             buildContext);
-        this.entryPoint.attach(buildContext);
 
+        this.entryPoint = buildContext.getKnowledgeBase().getRete().getEntryPointNodes().values().iterator().next();;
     }
 
     /**
@@ -91,7 +84,7 @@ public class ReteTest extends DroolsTestCase {
         final List<ObjectTypeNode> list = rete.getObjectTypeNodes();
 
         // Check the ObjectTypeNodes are correctly added to Rete
-        assertEquals(2,
+        assertEquals(3,
                      list.size());
 
         assertTrue(list.contains(objectTypeNode));
@@ -232,7 +225,7 @@ public class ReteTest extends DroolsTestCase {
 
         ksession.insert(list);
 
-        assertEquals(2,
+        assertEquals(1,
                      rete.getObjectTypeNodes().size());
     }
 
@@ -434,7 +427,7 @@ public class ReteTest extends DroolsTestCase {
                                                                  entryPoint,
                                                                  new ClassObjectType(Cheese.class),
                                                                  buildContext);
-        objectTypeNode.attach();
+        objectTypeNode.attach(buildContext);
         final MockObjectSink sink1 = new MockObjectSink();
         objectTypeNode.addObjectSink(sink1);
 

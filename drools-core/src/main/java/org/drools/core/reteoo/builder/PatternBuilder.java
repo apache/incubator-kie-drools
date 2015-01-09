@@ -22,8 +22,6 @@ import org.drools.core.base.mvel.ActivationPropertyHandler;
 import org.drools.core.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
 import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InstanceNotEqualsConstraint;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -280,34 +278,6 @@ public class PatternBuilder
             }
         }
         return false;
-    }
-
-    public static ObjectTypeNode attachObjectTypeNode(BuildContext context,
-                                                      ObjectType objectType) {
-        final InternalKnowledgeBase ruleBase = context.getKnowledgeBase();
-        ruleBase.lock();
-        try {
-            InternalWorkingMemory[] wms = context.getWorkingMemories();
-            NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
-
-            EntryPointNode epn = ruleBase.getRete().getEntryPointNode( context.getCurrentEntryPoint() );
-            if ( epn == null ) {
-                epn = nfactory.buildEntryPointNode( context.getNextId(), ruleBase.getRete(), context );
-                epn.attach( context );
-            }
-
-            ObjectTypeNode otn = nfactory.buildObjectTypeNode( context.getNextId(), epn, objectType, context );
-
-            long expirationOffset = getExpiratioOffsetForType( context,
-                                                               objectType );
-            otn.setExpirationOffset( expirationOffset );
-
-            otn.attach( context );
-
-            return otn;
-        } finally {
-            ruleBase.unlock();
-        }
     }
 
     private static long getExpiratioOffsetForType(BuildContext context,

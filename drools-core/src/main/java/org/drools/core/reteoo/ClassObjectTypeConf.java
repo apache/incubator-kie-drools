@@ -22,8 +22,6 @@ import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.reteoo.builder.PatternBuilder;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Activation;
@@ -54,8 +52,9 @@ public class ClassObjectTypeConf
     private transient InternalKnowledgeBase kBase;
     private ObjectTypeNode[]           objectTypeNodes;
 
+    private ObjectType                 objectType;
     private ObjectTypeNode             concreteObjectTypeNode;
-    private EntryPointId                 entryPoint;
+    private EntryPointId               entryPoint;
 
     private TypeDeclaration            typeDecl;
     
@@ -66,8 +65,9 @@ public class ClassObjectTypeConf
 
     private boolean                    isEvent;
 
-    private boolean                    isTrait;
+    private long                       expirationOffset = -1;
 
+    private boolean                    isTrait;
 
     public ClassObjectTypeConf() {
 
@@ -79,34 +79,18 @@ public class ClassObjectTypeConf
         this.cls = (Activation.class.isAssignableFrom( clazz ) ) ? ClassObjectType.Match_ObjectType.getClassType() : clazz;
         this.kBase = kBase;
         this.entryPoint = entryPoint;
+
         this.typeDecl = kBase.getTypeDeclaration( clazz );
         isEvent = typeDecl != null && typeDecl.getRole() == Role.Type.EVENT;
+        if (isEvent && typeDecl != null) {
+            expirationOffset = typeDecl.getExpirationOffset();
+        }
+
         isTrait = determineTraitStatus();
 
-        ObjectType objectType = kBase.getClassFieldAccessorCache().getClassObjectType( new ClassObjectType( clazz, isEvent ), false );
+        this.objectType = kBase.getClassFieldAccessorCache().getClassObjectType( new ClassObjectType( clazz, isEvent ), false );
 
         this.concreteObjectTypeNode = kBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
-        if ( this.concreteObjectTypeNode == null ) {
-            BuildContext context = new BuildContext( kBase,
-                                                     kBase.getReteooBuilder().getIdGenerator() );
-            context.setCurrentEntryPoint( entryPoint );
-            if ( DroolsQuery.class == clazz ) {
-                context.setTupleMemoryEnabled( false );
-                context.setObjectTypeNodeMemoryEnabled( false );
-            } else if ( context.getKnowledgeBase().getConfiguration().isSequential() ) {
-                // We are in sequential mode, so no nodes should have memory
-//                context.setTupleMemoryEnabled( false );
-//                context.setObjectTypeNodeMemoryEnabled( false );
-                  context.setTupleMemoryEnabled( true );
-                  context.setObjectTypeNodeMemoryEnabled( true );
-            } else {
-                context.setTupleMemoryEnabled( true );
-                context.setObjectTypeNodeMemoryEnabled( true );
-            }
-            // there must exist an ObjectTypeNode for this concrete class
-            this.concreteObjectTypeNode = PatternBuilder.attachObjectTypeNode( context,
-                                                                               objectType );
-        }
 
         this.supportsPropertyListeners = checkPropertyListenerSupport( clazz );
 
@@ -119,6 +103,7 @@ public class ClassObjectTypeConf
         kBase = (InternalKnowledgeBase) stream.readObject();
         cls = (Class<?>) stream.readObject();
         objectTypeNodes = (ObjectTypeNode[]) stream.readObject();
+        objectType = (ObjectType) stream.readObject();
         concreteObjectTypeNode = (ObjectTypeNode) stream.readObject();
         entryPoint = (EntryPointId) stream.readObject();
         tmsEnabled = stream.readBoolean();
@@ -126,12 +111,14 @@ public class ClassObjectTypeConf
         supportsPropertyListeners = stream.readBoolean();
         isEvent = stream.readBoolean();
         isTrait = stream.readBoolean();
+        expirationOffset = stream.readLong();
     }
 
     public void writeExternal(ObjectOutput stream) throws IOException {
         stream.writeObject( kBase );
         stream.writeObject( cls );
         stream.writeObject( objectTypeNodes );
+        stream.writeObject( objectType );
         stream.writeObject( concreteObjectTypeNode );
         stream.writeObject( entryPoint );
         stream.writeBoolean( tmsEnabled );
@@ -139,14 +126,26 @@ public class ClassObjectTypeConf
         stream.writeBoolean( supportsPropertyListeners );
         stream.writeBoolean( isEvent );
         stream.writeBoolean(isTrait);
+        stream.writeLong(expirationOffset);
     }
 
     public boolean isAssignableFrom(Object object) {
         return this.cls.isAssignableFrom( (Class<?>) object );
     }
 
+    public long getExpirationOffset() {
+        return expirationOffset;
+    }
+
+    public void setExpirationOffset(long expirationOffset) {
+        this.expirationOffset = expirationOffset;
+    }
+
     public ObjectTypeNode getConcreteObjectTypeNode() {
-        return this.concreteObjectTypeNode;
+        if (concreteObjectTypeNode == null) {
+            concreteObjectTypeNode = kBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
+        }
+        return concreteObjectTypeNode;
     }
 
     private boolean checkPropertyListenerSupport( Class<?> clazz ) {
@@ -219,11 +218,11 @@ public class ClassObjectTypeConf
     }
 
     public boolean isActive() {
-        return getConcreteObjectTypeNode().getSinkPropagator().getSinks().length > 0;
+        ObjectTypeNode otn = getConcreteObjectTypeNode();
+        return otn != null && otn.getSinkPropagator().getSinks().length > 0;
     }
 
     public boolean isEvent() {
-//        return this.concreteObjectTypeNode.getObjectType().isEvent();
         return this.isEvent;
     }
 

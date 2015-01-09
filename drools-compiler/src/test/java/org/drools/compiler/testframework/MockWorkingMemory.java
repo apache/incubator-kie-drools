@@ -1,18 +1,5 @@
 package org.drools.compiler.testframework;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-
-import org.kie.api.event.kiebase.KieBaseEventListener;
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -44,6 +31,7 @@ import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.TimerService;
 import org.drools.core.type.DateFormats;
+import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.Calendars;
@@ -54,7 +42,19 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.SessionClock;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
 
 public class MockWorkingMemory implements InternalWorkingMemory {
                 
@@ -322,12 +322,12 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-    public Iterator< ? > iterateFactHandles() {
+    public Iterator<InternalFactHandle> iterateFactHandles() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public Iterator< ? > iterateFactHandles(org.kie.api.runtime.ObjectFilter filter) {
+    public Iterator<InternalFactHandle> iterateFactHandles(org.kie.api.runtime.ObjectFilter filter) {
         // TODO Auto-generated method stub
         return null;
     }

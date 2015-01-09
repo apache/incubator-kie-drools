@@ -17,28 +17,14 @@
  */
 package org.drools.compiler.integrationtests;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.drools.core.ClockType;
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.core.SessionConfiguration;
 import org.drools.compiler.StockTick;
 import org.drools.compiler.StockTickInterface;
+import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.core.ClockType;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.EntryPointId;
@@ -46,25 +32,35 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Assert;
 import org.junit.Test;
-import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.internal.KnowledgeBase;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
-import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.time.SessionClock;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.mockito.ArgumentCaptor;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests related to the stream support features
@@ -469,8 +465,7 @@ public class StreamsTest extends CommonTestMethodBase {
         assertThat(ksession.getObjects().size(),
                    equalTo(2));
         assertThat((Collection<Object>) ksession.getObjects(),
-                   hasItems((Object) st1,
-                            st2));
+                   hasItems((Object) st1, st2));
 
         ksession.fireAllRules();
 

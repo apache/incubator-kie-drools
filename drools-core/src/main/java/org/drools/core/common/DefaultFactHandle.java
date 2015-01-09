@@ -70,6 +70,8 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     private boolean                 negated;
 
+    private String                  objectClassName;
+
     // ----------------------------------------------------------------------
     // Constructors
     // ----------------------------------------------------------------------
@@ -117,8 +119,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         this.id = id;
         this.entryPoint = wmEntryPoint;
         this.recency = recency;
-        this.object = object;
-        this.objectHashCode = ( object != null ) ? object.hashCode() : 0;
+        setObject( object );
         this.identityHashCode = identityHashCode;
         this.traitType = isTraitOrTraitable ? determineTraitType() : TraitTypeEnum.NON_TRAIT;
     }
@@ -131,10 +132,10 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
             Object object) {
         this.id = id;
         this.entryPoint = ( wmEntryPointId == null ) ? null : new DisconnectedWorkingMemoryEntryPoint( wmEntryPointId );
+        this.recency = recency;
+        setObject( object );
         this.identityHashCode = identityHashCode;
         this.objectHashCode = objectHashCode;
-        this.recency = recency;
-        this.object = object;
         this.disconnected = true;
         this.traitType = TraitTypeEnum.NON_TRAIT;
     }
@@ -225,7 +226,9 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
                ":" +
                ( ( this.entryPoint != null ) ? this.entryPoint.getEntryPointId() : "null" ) +
                ":" +
-               this.traitType.name();
+               this.traitType.name() +
+               ":" +
+               this.objectClassName;
     }
 
     @XmlAttribute(name = "external-form")
@@ -268,9 +271,19 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         return this.object;
     }
 
+    public String getObjectClassName() {
+        return this.objectClassName;
+    }
+
     public void setObject( final Object object ) {
         this.object = object;
-        this.objectHashCode = ( object != null ) ? object.hashCode() : 0;
+        if (object != null) {
+            this.objectClassName = object.getClass().getName();
+            this.objectHashCode = object.hashCode();
+        } else {
+            this.objectHashCode = 0;
+        }
+
         if ( isTraitOrTraitable() ) {
             TraitTypeEnum newType = determineTraitType();
             if ( ! ( this.traitType == TraitTypeEnum.LEGACY_TRAITABLE && newType != TraitTypeEnum.LEGACY_TRAITABLE ) ) {
@@ -625,12 +638,13 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         this.id = Integer.parseInt( elements[1] );
         this.identityHashCode = Integer.parseInt( elements[2] );
         this.objectHashCode = Integer.parseInt( elements[3] );
-        this.recency = Long.parseLong( elements[4] );
+        this.recency = Long.parseLong(elements[4] );
         this.entryPoint = ( StringUtils.isEmpty( elements[5] ) || "null".equals( elements[5].trim() ) ) ? null
                                                                                                        : new DisconnectedWorkingMemoryEntryPoint(
                 elements[5].trim() );
         this.disconnected = true;
         this.traitType = elements.length > 6 ? TraitTypeEnum.valueOf( elements[6] ) : TraitTypeEnum.NON_TRAIT;
+        this.objectClassName = elements.length > 7 ? elements[7] : null;
     }
 
 

@@ -31,6 +31,8 @@ public interface InternalFactHandle
 
     Object getObject();
 
+    String getObjectClassName();
+
     void setObject(Object object);
 
     void setEqualityKey(EqualityKey key);

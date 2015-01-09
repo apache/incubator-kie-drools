@@ -85,7 +85,11 @@ public class QueryElementFactHandle
         }
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
-    
+
+    public String getObjectClassName() {
+        return this.object != null ? object.getClass().getName() : null;
+    }
+
     public void setObject(Object object) {
         this.object = object;
     }    

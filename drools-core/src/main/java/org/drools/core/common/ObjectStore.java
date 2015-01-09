@@ -16,11 +16,9 @@
 
 package org.drools.core.common;
 
-import java.util.Iterator;
+import org.kie.api.runtime.ObjectFilter;
 
-import org.drools.core.util.HashTableIterator;
-import org.drools.core.util.JavaIteratorAdapter;
-import org.kie.api.runtime.rule.FactHandle;
+import java.util.Iterator;
 
 public interface ObjectStore {
 
@@ -30,7 +28,7 @@ public interface ObjectStore {
     
     void clear();
 
-    Object getObjectForHandle(FactHandle handle);
+    Object getObjectForHandle(InternalFactHandle handle);
     
     InternalFactHandle reconnect(InternalFactHandle factHandle);
 
@@ -38,36 +36,34 @@ public interface ObjectStore {
     
     InternalFactHandle getHandleForObjectIdentity(Object object);
 
-    void updateHandle(InternalFactHandle handle,
-                                      Object object);
+    void updateHandle(InternalFactHandle handle, Object object);
 
-    public abstract void addHandle(InternalFactHandle handle,
-                                   Object object);
+    void addHandle(InternalFactHandle handle, Object object);
 
-    public abstract void removeHandle(final InternalFactHandle handle);
+    void removeHandle(final InternalFactHandle handle);
 
     /**
      * This class is not thread safe, changes to the working memory during iteration may give unexpected results
      */
-    public abstract Iterator iterateObjects();
+    Iterator<Object> iterateObjects();
 
     /**
      * This class is not thread safe, changes to the working memory during iteration may give unexpected results
      */
-    public abstract Iterator iterateObjects(org.kie.api.runtime.ObjectFilter filter);
+    Iterator<Object> iterateObjects(ObjectFilter filter);
 
     /**
      * This class is not thread safe, changes to the working memory during iteration may give unexpected results
      */
-    public abstract Iterator iterateFactHandles();
+    Iterator<InternalFactHandle> iterateFactHandles();
 
     /**
      * This class is not thread safe, changes to the working memory during iteration may give unexpected results
      */
-    public abstract Iterator iterateFactHandles(org.kie.api.runtime.ObjectFilter filter);
+    Iterator<InternalFactHandle> iterateFactHandles(ObjectFilter filter);
 
-    public Iterator iterateNegObjects(org.kie.api.runtime.ObjectFilter filter);
+    Iterator<Object> iterateNegObjects(ObjectFilter filter);
 
-    public Iterator iterateNegFactHandles(org.kie.api.runtime.ObjectFilter filter);
+    Iterator<InternalFactHandle> iterateNegFactHandles(ObjectFilter filter);
 
 }

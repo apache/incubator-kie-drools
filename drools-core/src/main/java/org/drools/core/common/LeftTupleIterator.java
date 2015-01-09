@@ -1,12 +1,5 @@
 package org.drools.core.common;
 
-import org.drools.core.reteoo.LeftTupleMemory;
-import org.drools.core.reteoo.NodeTypeEnums;
-import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.util.FastIterator;
-import org.drools.core.util.Iterator;
-import org.drools.core.util.ObjectHashSet;
-import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
@@ -27,9 +20,8 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.RightTuple;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.drools.core.util.FastIterator;
+import org.drools.core.util.Iterator;
 
 public class LeftTupleIterator
     implements
@@ -40,10 +32,7 @@ public class LeftTupleIterator
 
     protected   LeftTuple           currentLeftTuple;
 
-    // Iterates object type nodes
-    private   ObjectEntry           factHandleEntry;
-
-    Iterator                        otnIterator;
+    private   java.util.Iterator<InternalFactHandle> otnIterator;
 
     LeftTupleIterator() {
 
@@ -137,11 +126,10 @@ public class LeftTupleIterator
             }
             otn = (ObjectTypeNode) os;
 
-            ObjectHashSet memory = ((ObjectTypeNodeMemory) wm.getNodeMemory( otn )).memory;
-            otnIterator = memory.iterator();
+            otnIterator = ((ObjectTypeNodeMemory) wm.getNodeMemory( otn )).iterator();
 
-            for ( factHandleEntry = (ObjectEntry) otnIterator.next(); factHandleEntry != null; factHandleEntry = (ObjectEntry) otnIterator.next() ) {
-                InternalFactHandle handle = (InternalFactHandle) factHandleEntry.getValue();
+            while (otnIterator.hasNext()) {
+                InternalFactHandle handle = otnIterator.next();
                 for ( LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
                     if ( leftTuple.getLeftTupleSink() == sink ) {
                         return leftTuple;
@@ -151,15 +139,10 @@ public class LeftTupleIterator
         } else if ( source instanceof EvalConditionNode || source instanceof QueryElementNode ) {
             LeftTuple parentLeftTuple = null;
             
-            if ( source instanceof EvalConditionNode ) {
-                parentLeftTuple = getFirstLeftTuple( ((EvalConditionNode) source).getLeftTupleSource(),
-                                                     (LeftTupleSink) source,
-                                                     wm );
-            } else {
-                parentLeftTuple = getFirstLeftTuple( ((QueryElementNode) source).getLeftTupleSource(),
-                                                     (LeftTupleSink) source,
-                                                     wm );
-            }
+            parentLeftTuple = getFirstLeftTuple( source.getLeftTupleSource(),
+                                                 (LeftTupleSink) source,
+                                                 wm );
+
             while ( parentLeftTuple != null ) {
                 for ( LeftTuple leftTuple = parentLeftTuple.getFirstChild(); leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
                     if ( leftTuple.getLeftTupleSink() == sink ) {
@@ -167,17 +150,10 @@ public class LeftTupleIterator
                     }
                 }
                 
-                if ( source instanceof EvalConditionNode ) {
-                    parentLeftTuple = getNextLeftTuple( ((EvalConditionNode) source).getLeftTupleSource(),
-                                                         (LeftTupleSink) source,
-                                                         parentLeftTuple,
-                                                         wm );
-                } else {
-                    parentLeftTuple = getNextLeftTuple( ((QueryElementNode) source).getLeftTupleSource(),
-                                                         (LeftTupleSink) source,
-                                                         parentLeftTuple,
-                                                         wm );
-                }                
+                parentLeftTuple = getNextLeftTuple(  source.getLeftTupleSource(),
+                                                     (LeftTupleSink) source,
+                                                     parentLeftTuple,
+                                                     wm );
             }
         }
         return null;
@@ -188,7 +164,7 @@ public class LeftTupleIterator
                                       LeftTuple leftTuple,
                                       InternalWorkingMemory wm) {
 
-        if ( factHandleEntry != null ) {
+        if ( otnIterator != null ) {
             LeftTuple leftParent = leftTuple.getLeftParent();
             
             while ( leftTuple != null ) {
@@ -206,17 +182,10 @@ public class LeftTupleIterator
             if ( leftParent != null ) {
                 // we know it has to be evalNode query element node
                 while ( leftParent != null ) {
-                    if ( source instanceof EvalConditionNode ) {
-                        leftParent = getNextLeftTuple( ((EvalConditionNode) source).getLeftTupleSource(),
-                                                             (LeftTupleSink) source,
-                                                             leftParent,
-                                                             wm );
-                    } else {
-                        leftParent = getNextLeftTuple( ((QueryElementNode) source).getLeftTupleSource(),
-                                                             (LeftTupleSink) source,
-                                                             leftParent,
-                                                             wm );
-                    }                     
+                    leftParent = getNextLeftTuple( source.getLeftTupleSource(),
+                                                   (LeftTupleSink) source,
+                                                   leftParent,
+                                                   wm );
 
                     if ( leftParent != null ) {
                         for ( leftTuple = leftParent.getFirstChild(); leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
@@ -229,14 +198,9 @@ public class LeftTupleIterator
                 return null;
             }
 
-            if ( factHandleEntry == null ) {
-                // we've exhausted this OTN
-                return null;
-            }
-
-            // We have exhausted the current FactHandle, now try the next                     
-            for ( factHandleEntry = (ObjectEntry) otnIterator.next(); factHandleEntry != null; factHandleEntry = (ObjectEntry) otnIterator.next() ) {
-                InternalFactHandle handle = (InternalFactHandle) factHandleEntry.getValue();
+            // We have exhausted the current FactHandle, now try the next
+            while ( otnIterator.hasNext() ) {
+                InternalFactHandle handle = otnIterator.next();
                 for ( leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
                     if ( leftTuple.getLeftTupleSink() == sink ) {
                         return leftTuple;
@@ -244,7 +208,6 @@ public class LeftTupleIterator
                 }
             }
             // We've exhausted this OTN so set the iterator to null
-            factHandleEntry = null;
             otnIterator = null;
 
         } else if ( wm.getKnowledgeBase().getConfiguration().isPhreakEnabled() && source instanceof AccumulateNode ) {

@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
 import static junit.framework.TestCase.assertNotSame;
 import static junit.framework.TestCase.assertSame;
 import static org.junit.Assert.*;
@@ -166,7 +165,7 @@ public class RemoveRuleTest {
         wm.insert(new E(1));
         wm.fireAllRules();
 
-        assertEquals( 13, countNodeMemories(wm.getNodeMemories()));
+        assertEquals( 8, countNodeMemories(wm.getNodeMemories()));
 
         kbase1.addKnowledgePackages( buildKnowledgePackage("r2", "   a : A() B() C(2;) D() E()\n") );
         wm.fireAllRules();
@@ -195,7 +194,7 @@ public class RemoveRuleTest {
 
 
         kbase1.removeRule("org.kie", "r2");
-        assertEquals( 13, countNodeMemories(wm.getNodeMemories()));
+        assertEquals( 11, countNodeMemories(wm.getNodeMemories()));
 
         assertNull( sm.getFirst());
 
@@ -229,7 +228,7 @@ public class RemoveRuleTest {
         wm.insert(new E(1));
         wm.fireAllRules();
 
-        assertEquals( 13, countNodeMemories(wm.getNodeMemories()));
+        assertEquals( 8, countNodeMemories(wm.getNodeMemories()));
 
         kbase1.addKnowledgePackages( buildKnowledgePackage("r2", "   a:A() B() eval(1==1) eval(1==1) C(2;) \n") );
         wm.fireAllRules();
@@ -261,7 +260,7 @@ public class RemoveRuleTest {
 
 
         kbase1.removeRule("org.kie", "r2");
-        assertEquals( 13, countNodeMemories(wm.getNodeMemories()));
+        assertEquals( 9, countNodeMemories(wm.getNodeMemories()));
 
         assertNull( sm.getFirst());
 
@@ -295,7 +294,7 @@ public class RemoveRuleTest {
 
         wm.fireAllRules();
         assertEquals( 3, list.size() );
-        assertEquals( 13, countNodeMemories(wm.getNodeMemories()));
+        assertEquals( 8, countNodeMemories(wm.getNodeMemories()));
 
         kbase1.addKnowledgePackages( buildKnowledgePackage("r2", "   a : A() B(2;) C() D() E()\n") );
         wm.fireAllRules();
@@ -401,11 +400,11 @@ public class RemoveRuleTest {
 
         wm.fireAllRules();
         assertEquals( 2, list.size() );
-        assertEquals( 12, countNodeMemories(wm.getNodeMemories()));
+        assertEquals( 7, countNodeMemories(wm.getNodeMemories()));
 
         kbase1.addKnowledgePackages( buildKnowledgePackage("r2", "   A() B() C() D() E()\n") );
         wm.fireAllRules();
-        assertEquals( 13, countNodeMemories(wm.getNodeMemories()));
+        assertEquals( 8, countNodeMemories(wm.getNodeMemories()));
         assertEquals(4, list.size() );
 
         RuleTerminalNode rtn1 = getRtn("r1", kbase1);
@@ -431,7 +430,7 @@ public class RemoveRuleTest {
         pmem1 = ( PathMemory ) wm.getNodeMemory(rtn1);
         kbase1.removeRule("org.kie", "r2");
         System.out.println( "---" );
-        assertEquals( 12, countNodeMemories(wm.getNodeMemories()));
+        assertEquals( 7, countNodeMemories(wm.getNodeMemories()));
         assertNull( sm.getFirst() );
 
         pmem1 = ( PathMemory ) wm.getNodeMemory(rtn1);

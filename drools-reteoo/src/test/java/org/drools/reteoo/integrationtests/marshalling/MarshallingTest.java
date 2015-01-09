@@ -1177,12 +1177,12 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         // Make sure the rete node map is created correctly
         Map<Integer, BaseNode> nodes = RuleBaseNodes.getNodeMap((InternalKnowledgeBase) kBase);
-        assertEquals( 2,
+        assertEquals( 3,
                       nodes.size() );
         assertEquals( "Person",
-                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 2 )).getObjectType()).getClassType().getSimpleName() );
+                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 3 )).getObjectType()).getClassType().getSimpleName() );
         assertEquals( "Rule 1",
-                      ((RuleTerminalNode) nodes.get( 4 )).getRule().getName() );
+                      ((RuleTerminalNode) nodes.get( 5 )).getRule().getName() );
 
         StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
 
@@ -1222,15 +1222,15 @@ public class MarshallingTest extends CommonTestMethodBase {
         // Make sure the rete node map is created correctly
         Map<Integer, BaseNode> nodes = RuleBaseNodes.getNodeMap((InternalKnowledgeBase) kBase);
 
-        assertEquals( 4,
+        assertEquals( 5,
                       nodes.size() );
         assertEquals( "Cheese",
-                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 2 )).getObjectType()).getClassType().getSimpleName() );
+                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 3 )).getObjectType()).getClassType().getSimpleName() );
         assertEquals( "Person",
-                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 4 )).getObjectType()).getClassType().getSimpleName() );
-        assertTrue( "Should end with JoinNode",  nodes.get( 5 ).getClass().getSimpleName().endsWith( "JoinNode") );
+                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 5 )).getObjectType()).getClassType().getSimpleName() );
+        assertTrue( "Should end with JoinNode",  nodes.get( 6 ).getClass().getSimpleName().endsWith( "JoinNode") );
         assertEquals( "Rule 1",
-                      ((RuleTerminalNode) nodes.get( 6 )).getRule().getName() );
+                      ((RuleTerminalNode) nodes.get( 7 )).getRule().getName() );
 
         StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
 

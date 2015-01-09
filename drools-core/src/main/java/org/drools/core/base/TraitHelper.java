@@ -493,9 +493,9 @@ public class TraitHelper implements Externalizable {
     private <K> InternalFactHandle lookupHandleForWrapper( K core ) {
         for ( EntryPoint ep : workingMemory.getEntryPoints() ) {
             ObjectStore store = ((InternalWorkingMemoryEntryPoint) ep).getObjectStore();
-            Iterator iter = store.iterateFactHandles();
+            Iterator<InternalFactHandle> iter = store.iterateFactHandles();
             while ( iter.hasNext() ) {
-                InternalFactHandle handle = (InternalFactHandle) iter.next();
+                InternalFactHandle handle = iter.next();
                 if ( handle.isTraitable() && handle.getObject() instanceof CoreWrapper && ( (CoreWrapper) handle.getObject() ).getCore() == core ) {
                     return handle;
                 }
