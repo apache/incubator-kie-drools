@@ -20,38 +20,37 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 
 public interface ObjectTypeConf {
-	public String getTypeName();
-	
-    public ObjectTypeNode[] getObjectTypeNodes();
+	String getTypeName();
 
-    public ObjectTypeNode getConcreteObjectTypeNode();
+    ObjectTypeNode[] getObjectTypeNodes();
 
-    public void resetCache();
+    ObjectTypeNode getConcreteObjectTypeNode();
 
-    public boolean isAssignableFrom(Object object);
+    void resetCache();
 
-    public boolean isActive();
+    boolean isAssignableFrom(Object object);
 
-    public boolean isEvent();
+    boolean isActive();
 
-    public boolean isTrait();
+    boolean isEvent();
 
-    public boolean isDynamic();
+    boolean isTrait();
+
+    boolean isDynamic();
    
-    public TypeDeclaration getTypeDeclaration();
+    TypeDeclaration getTypeDeclaration();
     
     /** Whether or not, TMS is active for this object type. */
-    public boolean isTMSEnabled();
+    boolean isTMSEnabled();
 
-    public boolean isTraitTMSEnabled();
+    boolean isTraitTMSEnabled();
 
     /**
      * Enable TMS for this object type. 
      * */
-    public void enableTMS();
+    void enableTMS();
     
-    public EntryPointId getEntryPoint();
+    EntryPointId getEntryPoint();
     
-    public boolean isSupportsPropertyChangeListeners();
-
+    boolean isSupportsPropertyChangeListeners();
 }

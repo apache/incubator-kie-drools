@@ -14,9 +14,9 @@ import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.Match;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -29,11 +29,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public class AddRuleTest {
 
@@ -275,11 +274,14 @@ public class AddRuleTest {
         assertEquals( "r1", ((Match)list.get(1)).getRule().getName() );
         assertEquals( "r1", ((Match)list.get(2)).getRule().getName() );
         assertEquals( "r2", ((Match)list.get(3)).getRule().getName() );
-        assertEquals( 3, ((A)((Match)list.get(3)).getDeclarationValue("a")).getObject() );
         assertEquals( "r2", ((Match)list.get(4)).getRule().getName() );
-        assertEquals( 2, ((A)((Match)list.get(4)).getDeclarationValue("a")).getObject() );
         assertEquals( "r2", ((Match)list.get(5)).getRule().getName() );
-        assertEquals( 1, ((A)((Match)list.get(5)).getDeclarationValue("a")).getObject() );
+
+        List results = new ArrayList();
+        results.add(((A)((Match)list.get(3)).getDeclarationValue("a")).getObject());
+        results.add(((A)((Match)list.get(4)).getDeclarationValue("a")).getObject());
+        results.add(((A)((Match)list.get(5)).getDeclarationValue("a")).getObject());
+        assertTrue(results.containsAll(asList(1, 2, 3)));
     }
 
     @Test

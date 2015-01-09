@@ -17,7 +17,6 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -39,10 +38,8 @@ public class PropertyChangeListenerTest {
     public void setUp() throws Exception {
         this.kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         this.buildContext = new BuildContext( kBase, kBase.getReteooBuilder().getIdGenerator() );
-        this.entryPoint = new EntryPointNode( 0,
-                                              this.kBase.getRete(),
-                                              buildContext );
-        this.entryPoint.attach(buildContext);
+
+        this.entryPoint = buildContext.getKnowledgeBase().getRete().getEntryPointNodes().values().iterator().next();;
     }
     
     @Test

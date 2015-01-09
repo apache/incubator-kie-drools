@@ -43,6 +43,8 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
     void lock();
     void unlock();
 
+    boolean flushModifications();
+
     int nextWorkingMemoryCounter();
 
     int getWorkingMemoryCounter();

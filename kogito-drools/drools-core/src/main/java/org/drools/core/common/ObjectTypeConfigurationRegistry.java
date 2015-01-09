@@ -16,11 +16,6 @@
 
 package org.drools.core.common;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.facttemplates.Fact;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -29,6 +24,11 @@ import org.drools.core.reteoo.FactTemplateTypeConf;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Activation;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class ObjectTypeConfigurationRegistry implements Serializable {
     private static final long serialVersionUID = 510l;
@@ -82,7 +82,10 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
         return objectTypeConf;
     }
 
-    
+    public ObjectTypeConf getObjectTypeConfByClass(Class<?> cls) {
+        return typeConfMap.get(cls);
+    }
+
     public Collection<ObjectTypeConf> values() {
         return this.typeConfMap.values();
     }

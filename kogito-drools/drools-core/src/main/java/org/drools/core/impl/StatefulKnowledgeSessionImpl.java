@@ -69,6 +69,7 @@ import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.phreak.SegmentUtilities;
+import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -533,12 +534,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void update(FactHandle factHandle) {
-        this.update( factHandle,
-                     ((InternalFactHandle) factHandle).getObject() );
+        this.update(factHandle,
+                    ((InternalFactHandle) factHandle).getObject());
     }
 
     public void abortProcessInstance(long id) {
-        this.getProcessRuntime().abortProcessInstance( id );
+        this.getProcessRuntime().abortProcessInstance(id);
     }
 
     public void signalEvent(String type,
@@ -743,14 +744,18 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             return (T) result;
         } finally {
             endBatchExecution();
+            if (kBase.flushModifications()) {
+                fireAllRules();
+            }
         }
     }
 
     public void initInitialFact(InternalKnowledgeBase kBase, MarshallerReaderContext context) {
         this.initialFactHandle = new DefaultFactHandle(0, InitialFactImpl.getInstance(), 0,  defaultEntryPoint );
 
-        ObjectTypeConf otc = this.defaultEntryPoint.getObjectTypeConfigurationRegistry()
-                                                   .getObjectTypeConf(this.defaultEntryPoint.getEntryPoint(), this.initialFactHandle.getObject());
+        ClassObjectTypeConf otc = (ClassObjectTypeConf) defaultEntryPoint.getObjectTypeConfigurationRegistry()
+                                                                         .getObjectTypeConf(defaultEntryPoint.getEntryPoint(),
+                                                                                            initialFactHandle.getObject());
         PropagationContextFactory ctxFact = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
 
 
@@ -758,7 +763,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                                                          null , initialFactHandle, defaultEntryPoint.getEntryPoint(),
                                                                          context );
 
-        otc.getConcreteObjectTypeNode().assertObject(this.initialFactHandle, pctx, this );
+        otc.getConcreteObjectTypeNode().assertInitialFact(this.initialFactHandle, pctx, this);
     }
 
     private void initManagementBeans() {
@@ -816,7 +821,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
             executeQueuedActions();
 
-            this.handleFactory.destroyFactHandle( handle );
+            this.handleFactory.destroyFactHandle( handle);
 
             return new QueryResultsImpl( (List<QueryRowWithSubruleIndex>) queryObject.getQueryResultCollector().getResults(),
                                          decls.toArray( new Map[decls.size()] ),
@@ -863,7 +868,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             InternalFactHandle handle = this.handleFactory.newFactHandle( queryObject,
                                                                           null,
                                                                           this,
-                                                                          this );
+                                                                          this);
 
             final PropagationContext pCtx = pctxFactory.createPropagationContext(getNextPropagationIdCounter(), PropagationContext.INSERTION,
                                                                                  null, null, handle, getEntryPoint());
@@ -1128,7 +1133,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void addEventListener(final AgendaEventListener listener) {
-        this.agendaEventSupport.addEventListener( listener );
+        this.agendaEventSupport.addEventListener( listener);
     }
 
     public void removeEventListener(final AgendaEventListener listener) {
@@ -1145,7 +1150,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void removeEventListener(KieBaseEventListener listener) {
-        this.kBase.removeEventListener( listener );
+        this.kBase.removeEventListener( listener);
         this.kieBaseEventListeners.remove(listener);
     }
 
@@ -1155,7 +1160,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void removeEventListener(final RuleEventListener listener) {
-        this.ruleEventListenerSupport.removeEventListener( listener );
+        this.ruleEventListenerSupport.removeEventListener( listener);
     }
 
     public List getRuleEventListeners() {
@@ -1257,11 +1262,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void clearActivationGroup(final String group) {
-        this.agenda.clearAndCancelActivationGroup( group );
+        this.agenda.clearAndCancelActivationGroup( group);
     }
 
     public void clearRuleFlowGroup(final String group) {
-        this.agenda.clearAndCancelRuleFlowGroup( group );
+        this.agenda.clearAndCancelRuleFlowGroup( group);
     }
 
     public InternalKnowledgeBase getKnowledgeBase() {
@@ -1294,22 +1299,32 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                         true ) ) {
             try {
                 startOperation();
-                kBase.readLock();
-
-                // do we need to call this in advance?
-                executeQueuedActions();
-
-                int fireCount = 0;
-                fireCount = this.agenda.fireAllRules( agendaFilter,
-                                                      fireLimit );
-                return fireCount;
+                return internalFireAllRules(agendaFilter, fireLimit);
             } finally {
-                kBase.readUnlock();
                 endOperation();
                 this.firing.set( false );
             }
         }
         return 0;
+    }
+
+    private int internalFireAllRules(AgendaFilter agendaFilter, int fireLimit) {
+        int fireCount = 0;
+        try {
+            kBase.readLock();
+
+            // do we need to call this in advance?
+            executeQueuedActions();
+
+            fireCount = this.agenda.fireAllRules( agendaFilter,
+                                                  fireLimit );
+        } finally {
+            kBase.readUnlock();
+            if (kBase.flushModifications()) {
+                fireCount += internalFireAllRules(agendaFilter, fireLimit);
+            }
+        }
+        return fireCount;
     }
 
     /**
@@ -1378,14 +1393,14 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      * @see org.drools.core.WorkingMemory
      */
     public FactHandle getFactHandle(final Object object) {
-        return this.defaultEntryPoint.getFactHandle( object );
+        return this.defaultEntryPoint.getFactHandle( object);
     }
 
     /**
      * @see org.drools.core.WorkingMemory
      */
     public FactHandle getFactHandleByIdentity(final Object object) {
-        return getObjectStore().getHandleForObjectIdentity( object );
+        return getObjectStore().getHandleForObjectIdentity( object);
     }
 
     /**
@@ -1408,7 +1423,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      * This class is not thread safe, changes to the working memory during
      * iteration may give unexpected results
      */
-    public Iterator iterateFactHandles() {
+    public Iterator<InternalFactHandle> iterateFactHandles() {
         return getObjectStore().iterateFactHandles();
     }
 
@@ -1416,13 +1431,13 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      * This class is not thread safe, changes to the working memory during
      * iteration may give unexpected results
      */
-    public Iterator iterateFactHandles(org.kie.api.runtime.ObjectFilter filter) {
+    public Iterator<InternalFactHandle> iterateFactHandles(org.kie.api.runtime.ObjectFilter filter) {
         return getObjectStore().iterateFactHandles( filter );
     }
 
     public QueryResultsImpl getQueryResults(final String query) {
         return getQueryResults( query,
-                                null );
+                                null);
     }
 
     public void setFocus(final String focus) {
@@ -1458,17 +1473,17 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     @Override
     public <T, K, X extends TraitableBean> Thing<K> shed( Activation activation, TraitableBean<K, X> core, Class<T> trait ) {
-        return this.defaultEntryPoint.getTraitHelper().shed( core, trait, activation );
+        return this.defaultEntryPoint.getTraitHelper().shed( core, trait, activation);
     }
 
     @Override
     public <T, K> T don( Activation activation, K core, Collection<Class<? extends Thing>> traits, boolean b, Mode[] modes ) {
-        return this.defaultEntryPoint.getTraitHelper().don( activation, core, traits, b, modes );
+        return this.defaultEntryPoint.getTraitHelper().don( activation, core, traits, b, modes);
     }
 
     @Override
     public <T, K> T don( Activation activation, K core, Class<T> trait, boolean b, Mode[] modes ) {
-        return this.defaultEntryPoint.getTraitHelper().don( activation, core, trait, b, modes );
+        return this.defaultEntryPoint.getTraitHelper().don( activation, core, trait, b, modes);
     }
 
     public FactHandle insert(final Object object,
@@ -1794,6 +1809,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         private InternalFactHandle factHandle;
         private ObjectTypeNode node;
 
+        public WorkingMemoryReteExpireAction(final InternalFactHandle factHandle) {
+            this.factHandle = factHandle;
+        }
+
         public WorkingMemoryReteExpireAction(final InternalFactHandle factHandle,
                                              final ObjectTypeNode node) {
             this.factHandle = factHandle;
@@ -1825,23 +1844,25 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         public WorkingMemoryReteExpireAction(MarshallerReaderContext context,
                                              ProtobufMessages.ActionQueue.Action _action) {
             this.factHandle = context.handles.get(_action.getExpire().getHandleId());
-            this.node = (ObjectTypeNode) context.sinks.get(Integer.valueOf(_action.getExpire().getNodeId()));
+            if (_action.getExpire().getNodeId() > 0) {
+                this.node = (ObjectTypeNode) context.sinks.get(Integer.valueOf(_action.getExpire().getNodeId()));
+            }
         }
 
         public void write(MarshallerWriteContext context) throws IOException {
             context.writeShort(WorkingMemoryAction.WorkingMemoryReteExpireAction);
             context.writeInt(this.factHandle.getId());
-            context.writeInt(this.node.getId());
+            context.writeInt(this.node != null ? this.node.getId() : -1);
         }
 
         public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) {
             return ProtobufMessages.ActionQueue.Action.newBuilder()
-                                               .setType(ProtobufMessages.ActionQueue.ActionType.EXPIRE)
-                                               .setExpire(ProtobufMessages.ActionQueue.Expire.newBuilder()
-                                                                                      .setHandleId(this.factHandle.getId())
-                                                                                      .setNodeId(this.node.getId())
-                                                                                      .build())
-                                               .build();
+                                                      .setType(ProtobufMessages.ActionQueue.ActionType.EXPIRE)
+                                                      .setExpire(ProtobufMessages.ActionQueue.Expire.newBuilder()
+                                                                                                    .setHandleId(this.factHandle.getId())
+                                                                                                    .setNodeId(this.node != null ? this.node.getId() : -1)
+                                                                                                    .build())
+                                                      .build();
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
@@ -1853,9 +1874,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                                                                         null, null, this.factHandle);
                 ((EventFactHandle) factHandle).setExpired(true);
                 if ( factHandle.getEqualityKey() == null || factHandle.getEqualityKey().getLogicalFactHandle() != factHandle ) {
-                    this.node.retractObject(factHandle,
-                                            context,
-                                            workingMemory);
+                    if (this.node != null) {
+                        this.node.retractObject(factHandle, context, workingMemory);
+                    } else {
+                        workingMemory.getEntryPoint(factHandle.getEntryPoint().getEntryPointId()).delete(factHandle);
+                    }
 
                     context.evaluateActionQueue(workingMemory);
                     // if no activations for this expired event

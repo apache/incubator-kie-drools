@@ -27,15 +27,14 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.Rete;
-import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.ObjectHashMap;
-import org.drools.core.util.ObjectHashSet;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.runtime.beliefs.Mode;
 
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -269,27 +268,21 @@ public class TruthMaintenanceSystem {
         final Rete source = ep.getKnowledgeBase().getRete();
         final ClassObjectType cot = new ClassObjectType( object.getClass() );
 
-        final Map<ObjectType, ObjectTypeNode> map = source.getObjectTypeNodes( ep.entryPoint );
+        final Map<ObjectType, ObjectTypeNode> map = source.getObjectTypeNodes(ep.entryPoint);
         final ObjectTypeNode node = map.get( cot );
-        final ObjectHashSet memory = ((ObjectTypeNodeMemory) ep.getInternalWorkingMemory().getNodeMemory(node)).memory;
 
-        // All objects of this type that are already there were certainly stated,
-        // since this method call happens at the first logical insert, for any given type.
-        org.drools.core.util.Iterator it = memory.iterator();
-
-        for ( Object obj = it.next(); obj != null; obj = it.next() ) {
-
-            org.drools.core.util.ObjectHashSet.ObjectEntry holder = (org.drools.core.util.ObjectHashSet.ObjectEntry) obj;
-
-            InternalFactHandle handle = (InternalFactHandle) holder.getValue();
-
-            if ( handle != null && handle.getEqualityKey() == null ) {
-                EqualityKey key = new EqualityKey( handle );
-                handle.setEqualityKey( key );
-                key.setStatus(EqualityKey.STATED);
-
-                put(key);
-
+        if (node != null) {
+            // All objects of this type that are already there were certainly stated,
+            // since this method call happens at the first logical insert, for any given type.
+            Iterator<InternalFactHandle> it = ((ObjectTypeNodeMemory) ep.getInternalWorkingMemory().getNodeMemory(node)).iterator();
+            while (it.hasNext()) {
+                InternalFactHandle handle = it.next();
+                if (handle != null && handle.getEqualityKey() == null) {
+                    EqualityKey key = new EqualityKey(handle);
+                    handle.setEqualityKey(key);
+                    key.setStatus(EqualityKey.STATED);
+                    put(key);
+                }
             }
         }
 

@@ -23,14 +23,13 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.Iterator;
-import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.drools.core.util.bitmask.BitMask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,9 +38,12 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static org.drools.core.reteoo.ObjectTypeNode.scheduleExpiration;
 
 /**
  * A node that is an entry point into the Rete network.
@@ -75,9 +77,9 @@ public class EntryPointNode extends ObjectSource
      * The object type nodes under this node
      */
     private Map<ObjectType, ObjectTypeNode> objectTypeNodes;
-    
+
     private ObjectTypeNode queryNode;
-    
+
     private ObjectTypeNode activationNode;
 
     // ------------------------------------------------------------
@@ -131,8 +133,8 @@ public class EntryPointNode extends ObjectSource
 
     public short getType() {
         return NodeTypeEnums.EntryPointNode;
-    }     
-    
+    }
+
     /**
      * @return the entryPoint
      */
@@ -142,120 +144,129 @@ public class EntryPointNode extends ObjectSource
     void setEntryPoint(EntryPointId entryPoint) {
         this.entryPoint = entryPoint;
     }
-    
+
     public void assertQuery(final InternalFactHandle factHandle,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
         if ( queryNode == null ) {
             this.queryNode = objectTypeNodes.get( ClassObjectType.DroolsQuery_ObjectType );
         }
-        
+
         if ( queryNode != null ) {
             // There may be no queries defined
             this.queryNode.assertObject( factHandle, context, workingMemory );
-        }       
+        }
     }
-    
+
     public void retractQuery(final InternalFactHandle factHandle,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
         if ( queryNode == null ) {
             this.queryNode = objectTypeNodes.get( ClassObjectType.DroolsQuery_ObjectType );
         }
-        
+
         if ( queryNode != null ) {
             // There may be no queries defined
             this.queryNode.retractObject( factHandle, context, workingMemory );
-        }       
-    }    
-    
+        }
+    }
+
     public void modifyQuery(final InternalFactHandle factHandle,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
          if ( queryNode == null ) {
              this.queryNode = objectTypeNodes.get( ClassObjectType.DroolsQuery_ObjectType );
          }
-         
+
          if ( queryNode != null ) {
              ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple(), this );
              factHandle.clearLeftTuples();
              factHandle.clearRightTuples();
-             
+
              // There may be no queries defined
              this.queryNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
              modifyPreviousTuples.retractTuples( context, workingMemory );
-         }       
-     } 
-    
+         }
+     }
+
     public ObjectTypeNode getQueryNode() {
         if ( queryNode == null ) {
             this.queryNode = objectTypeNodes.get( ClassObjectType.DroolsQuery_ObjectType );
-        }        
+        }
         return this.queryNode;
     }
-    
+
     public void assertActivation(final InternalFactHandle factHandle,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
         if ( activationNode == null ) {
             this.activationNode = objectTypeNodes.get( ClassObjectType.Match_ObjectType );
         }
-        
+
         if ( activationNode != null ) {
             // There may be no queries defined
             this.activationNode.assertObject( factHandle, context, workingMemory );
-        }       
+        }
     }
-    
+
     public void retractActivation(final InternalFactHandle factHandle,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
         if ( activationNode == null ) {
             this.activationNode = objectTypeNodes.get( ClassObjectType.Match_ObjectType );
         }
-        
+
         if ( activationNode != null ) {
             // There may be no queries defined
-            this.activationNode.retractObject( factHandle, context, workingMemory );
-        }       
-    }    
-    
+            this.activationNode.retractObject(factHandle, context, workingMemory);
+        }
+    }
+
     public void modifyActivation(final InternalFactHandle factHandle,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
          if ( activationNode == null ) {
              this.activationNode = objectTypeNodes.get( ClassObjectType.Match_ObjectType );
          }
-         
+
          if ( activationNode != null ) {
              ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple(), this );
              factHandle.clearLeftTuples();
              factHandle.clearRightTuples();
-             
+
              // There may be no queries defined
              this.activationNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
              modifyPreviousTuples.retractTuples( context, workingMemory );
-         }       
-         
-     }      
+         }
+
+     }
 
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final ObjectTypeConf objectTypeConf,
                              final InternalWorkingMemory workingMemory) {
         if ( log.isTraceEnabled() ) {
-            log.trace( "Insert {}", handle.toString()  );
+            log.trace("Insert {}", handle.toString());
         }
 
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
-        for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
-            cachedNodes[i].assertObject( handle,
-                                         context,
-                                         workingMemory );
+        for (int i = 0, length = cachedNodes.length; i < length; i++) {
+            cachedNodes[i].assertObject(handle,
+                                        context,
+                                        workingMemory);
+        }
+
+        if (objectTypeConf.getConcreteObjectTypeNode() == null && context.getReaderContext() == null) {
+            long expirationOffset = ((ClassObjectTypeConf) objectTypeConf).getExpirationOffset();
+            if ( expirationOffset >= 0 && expirationOffset != Long.MAX_VALUE ) {
+                scheduleExpiration(context, workingMemory, handle, expirationOffset,
+                                   new StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction(handle));
+            }
         }
     }
-    
+
+
     public void modifyObject(final InternalFactHandle handle,
                              final PropagationContext pctx,
                              final ObjectTypeConf objectTypeConf,
@@ -265,12 +276,12 @@ public class EntryPointNode extends ObjectSource
         }
 
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
-        
+
         // make a reference to the previous tuples, then null then on the handle
         ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(handle.getFirstLeftTuple(), handle.getFirstRightTuple(), this );
         handle.clearLeftTuples();
         handle.clearRightTuples();
-        
+
         for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
             cachedNodes[i].modifyObject( handle,
                                          modifyPreviousTuples,
@@ -284,7 +295,7 @@ public class EntryPointNode extends ObjectSource
                     modifyPreviousTuples.removeRightTuple();
 
                     doRightDelete(pctx, wm, rightTuple);
-                    
+
                     rightTuple = modifyPreviousTuples.peekRightTuple();
                 }
 
@@ -321,7 +332,7 @@ public class EntryPointNode extends ObjectSource
 
     public void doRightDelete(PropagationContext pctx, InternalWorkingMemory wm, RightTuple rightTuple) {
         rightTuple.setPropagationContext( pctx );
-        rightTuple.getRightTupleSink().retractRightTuple( rightTuple, pctx, wm );
+        rightTuple.getRightTupleSink().retractRightTuple(rightTuple, pctx, wm);
     }
 
     public void modifyObject(InternalFactHandle factHandle,
@@ -399,8 +410,8 @@ public class EntryPointNode extends ObjectSource
      */
     public void addObjectSink(final ObjectSink objectSink) {
         final ObjectTypeNode node = (ObjectTypeNode) objectSink;
-        this.objectTypeNodes.put( node.getObjectType(),
-                                  node );
+        this.objectTypeNodes.put(node.getObjectType(),
+                                 node);
     }
 
     public void removeObjectSink(final ObjectSink objectSink) {
@@ -468,12 +479,12 @@ public class EntryPointNode extends ObjectSource
         InternalWorkingMemoryEntryPoint wmEntryPoint = (InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( this.entryPoint.getEntryPointId() );
 
         for ( ObjectTypeConf objectTypeConf : wmEntryPoint.getObjectTypeConfigurationRegistry().values() ) {
-            if ( newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {
+            if ( objectTypeConf.getConcreteObjectTypeNode() != null && newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {
                 objectTypeConf.resetCache();
                 ObjectTypeNode sourceNode = objectTypeConf.getConcreteObjectTypeNode();
-                Iterator it = ((ObjectTypeNodeMemory) workingMemory.getNodeMemory( sourceNode )).memory.iterator();
-                for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-                    sink.assertObject( (InternalFactHandle) entry.getValue(),
+                Iterator<InternalFactHandle> it = ((ObjectTypeNodeMemory) workingMemory.getNodeMemory( sourceNode )).iterator();
+                while ( it.hasNext() ) {
+                    sink.assertObject( it.next(),
                                        context,
                                        workingMemory );
                 }

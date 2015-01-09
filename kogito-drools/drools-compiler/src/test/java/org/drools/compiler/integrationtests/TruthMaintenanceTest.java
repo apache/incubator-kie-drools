@@ -1,68 +1,52 @@
 package org.drools.compiler.integrationtests;
 
-import static org.drools.compiler.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CheeseEqual;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Father;
+import org.drools.compiler.Person;
+import org.drools.compiler.Sensor;
+import org.drools.compiler.YoungestFather;
+import org.drools.core.ClassObjectFilter;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.common.EqualityKey;
+import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.NamedEntryPoint;
+import org.drools.core.common.TruthMaintenanceSystem;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.core.rule.EntryPointId;
+import org.drools.core.util.ObjectHashMap;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.ConsequenceException;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.RuleEngineOption;
+import org.kie.internal.definition.KnowledgePackage;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.logger.KnowledgeRuntimeLogger;
+import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.Cheese;
-import org.drools.compiler.CheeseEqual;
-import org.drools.core.ClassObjectFilter;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Father;
-import org.drools.compiler.Person;
-import org.drools.compiler.Sensor;
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.compiler.YoungestFather;
-import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.EqualityKey;
-import org.drools.core.common.InternalAgenda;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.LogicalDependency;
-import org.drools.core.common.NamedEntryPoint;
-import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.core.io.impl.ByteArrayResource;
-import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
-import org.drools.core.util.LinkedListEntry;
-import org.drools.core.util.ObjectHashMap;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.rule.EntryPointId;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.kie.api.KieBase;
-import org.kie.api.conf.EqualityBehaviorOption;
-import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.rule.ConsequenceException;
-import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
-import org.kie.internal.KnowledgeBase;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
-import org.kie.internal.definition.KnowledgePackage;
-import org.kie.api.event.rule.ObjectDeletedEvent;
-import org.kie.api.event.rule.ObjectInsertedEvent;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.logger.KnowledgeRuntimeLogger;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.utils.KieHelper;
-import org.mockito.ArgumentCaptor;
+import static org.drools.compiler.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
+import static org.mockito.Mockito.mock;
 
 public class TruthMaintenanceTest extends CommonTestMethodBase {
 
@@ -1300,7 +1284,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         }
     }
 
-    @Test //(timeout=10000)
+    @Test(timeout=10000)
     public void testTMSWithEquivalentSubclasses() {
         String droolsSource =
                 "package project_java_rules2_xxx \n" +
@@ -1341,13 +1325,12 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         session.insert( "go" );
         session.fireAllRules();
 
-        assertNotNull( ((DefaultFactHandle) handle).getEqualityKey() );
         session.dispose();
     }
 
 
 
-    @Test //(timeout=10000)
+    @Test(timeout=10000)
     public void testRestateJustified() {
         String droolsSource =
                 "package org.drools.tms.test; \n" +

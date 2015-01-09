@@ -88,30 +88,41 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
 
             try {
                 startOperation();
-                kBase.readLock();
 
-                // If we're already firing a rule, then it'll pick up the firing for any other assertObject(..) that get
-                // nested inside, avoiding concurrent-modification exceptions, depending on code paths of the actions.
-                if ( liaPropagations != null && isSequential() ) {
-                    for ( Iterator it = liaPropagations.iterator(); it.hasNext(); ) {
-                        ((LIANodePropagation) it.next()).doPropagation( this );
-                    }
-                }
-
-                // do we need to call this in advance?
-                executeQueuedActions();
-
-                int fireCount = 0;
-                fireCount = this.agenda.fireAllRules( agendaFilter,
-                                                      fireLimit );
-                return fireCount;
+                return internalFireAllRules(agendaFilter, fireLimit);
             } finally {
-                kBase.readUnlock();
                 endOperation();
                 this.firing.set( false );
             }
         }
         return 0;
+    }
+
+    private int internalFireAllRules(AgendaFilter agendaFilter, int fireLimit) {
+        int fireCount = 0;
+        try {
+            kBase.readLock();
+
+            // If we're already firing a rule, then it'll pick up the firing for any other assertObject(..) that get
+            // nested inside, avoiding concurrent-modification exceptions, depending on code paths of the actions.
+            if ( liaPropagations != null && isSequential() ) {
+                for ( Iterator it = liaPropagations.iterator(); it.hasNext(); ) {
+                    ((LIANodePropagation) it.next()).doPropagation( this );
+                }
+            }
+
+            // do we need to call this in advance?
+            executeQueuedActions();
+
+            fireCount = this.agenda.fireAllRules( agendaFilter,
+                                                  fireLimit );
+        } finally {
+            kBase.readUnlock();
+            if (kBase.flushModifications()) {
+                fireCount += internalFireAllRules(agendaFilter, fireLimit);
+            }
+        }
+        return fireCount;
     }
 
     public void closeLiveQuery(final InternalFactHandle factHandle) {

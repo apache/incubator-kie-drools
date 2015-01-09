@@ -55,12 +55,12 @@ public class SegmentPropagationTest {
         joinNode.addTupleSink( sinkNode0 );
         
         sinkNode1 = new JoinNode();
-        sinkNode1.setId( 2 );
+        sinkNode1.setId( 3 );
         sinkNode1.setConstraints( new EmptyBetaConstraints() );        
         joinNode.addTupleSink( sinkNode1 );   
         
         sinkNode2 = new JoinNode();
-        sinkNode2.setId( 3 );
+        sinkNode2.setId( 4 );
         sinkNode2.setConstraints( new EmptyBetaConstraints() );        
         joinNode.addTupleSink( sinkNode2 );
 

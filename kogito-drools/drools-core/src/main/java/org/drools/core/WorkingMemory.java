@@ -16,10 +16,7 @@
 
 package org.drools.core;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.spi.AsyncExceptionHandler;
 import org.drools.core.spi.GlobalResolver;
@@ -30,6 +27,10 @@ import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.SessionClock;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * A knowledge session for a <code>RuleBase</code>.
@@ -162,7 +163,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return
      *     the Iterator
      */
-    Iterator<?> iterateFactHandles();
+    Iterator<InternalFactHandle> iterateFactHandles();
 
     /**
      *  Returns an Iterator for the Objects in the Working Memory. This Iterator will filter out
@@ -174,7 +175,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return
      *     the Iterator
      */
-    Iterator<?> iterateFactHandles(org.kie.api.runtime.ObjectFilter filter);
+    Iterator<InternalFactHandle> iterateFactHandles(org.kie.api.runtime.ObjectFilter filter);
 
     /**
      * Set the focus to the specified AgendaGroup

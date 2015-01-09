@@ -32,14 +32,13 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.Iterator;
-import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.drools.core.util.bitmask.BitMask;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -306,11 +305,10 @@ public class WindowNode extends ObjectSource
 
         try {
             final ObjectTypeNodeMemory omem = (ObjectTypeNodeMemory) wm.getNodeMemory( getObjectTypeNode());
-            Iterator it = omem.getObjectHashSet().iterator();
+            Iterator<InternalFactHandle> it = omem.iterator();
 
-            for (ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next()) {
-                InternalFactHandle fh = (InternalFactHandle) entry.getValue();
-                sink.assertObject(fh,
+            while (it.hasNext()) {
+                sink.assertObject(it.next(),
                                   context,
                                   wm);
             }

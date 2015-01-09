@@ -16,12 +16,10 @@
 
 package org.drools.core.util.debug;
 
-import java.util.Stack;
-
 import org.drools.core.common.NetworkNode;
-import org.drools.core.util.ObjectHashSet;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
+
+import java.util.Stack;
 
 public class ObjectTypeNodeVisitor extends AbstractNetworkNodeVisitor {
     
@@ -37,12 +35,6 @@ public class ObjectTypeNodeVisitor extends AbstractNetworkNodeVisitor {
         ObjectTypeNode otn = (ObjectTypeNode) node;
         DefaultNodeInfo ni = (DefaultNodeInfo) info.getNodeInfo( node );
         ni.setMemoryEnabled( otn.isObjectMemoryEnabled() );
-        
-        if( otn.isObjectMemoryEnabled() ) {
-            final ObjectHashSet memory = ((ObjectTypeNodeMemory) info.getSession().getNodeMemory( otn )).memory;
-            ni.setFactMemorySize( memory.size() );
-        }
-
     }
 
 }

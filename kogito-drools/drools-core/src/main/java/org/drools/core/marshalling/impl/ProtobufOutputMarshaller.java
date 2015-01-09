@@ -84,7 +84,6 @@ import org.drools.core.util.ObjectHashMap;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.internal.runtime.beliefs.Mode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -242,14 +241,17 @@ public class ProtobufOutputMarshaller {
                     }
     	});
         for( ObjectTypeConf otc : otcs ) {
-    		final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) context.wm.getNodeMemory( otc.getConcreteObjectTypeNode() );
-    		if( memory != null && ! memory.memory.isEmpty() ) {
-        		ObjectTypeConfiguration _otc = ObjectTypeConfiguration.newBuilder()
-                        .setType( otc.getTypeName() )
-                        .setTmsEnabled( otc.isTMSEnabled() )
-                        .build();
-                _epb.addOtc(_otc );
-    		}
+            ObjectTypeNode objectTypeNode = otc.getConcreteObjectTypeNode();
+            if (objectTypeNode != null) {
+                final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) context.wm.getNodeMemory(objectTypeNode);
+                if (memory != null) {
+                    ObjectTypeConfiguration _otc = ObjectTypeConfiguration.newBuilder()
+                                                                          .setType(otc.getTypeName())
+                                                                          .setTmsEnabled(otc.isTMSEnabled())
+                                                                          .build();
+                    _epb.addOtc(_otc);
+                }
+            }
     	}
 	}
 
@@ -759,8 +761,8 @@ public class ProtobufOutputMarshaller {
         int size = objectStore.size();
         InternalFactHandle[] handles = new InternalFactHandle[size];
         int i = 0;
-        for ( Iterator< ? > it = objectStore.iterateFactHandles(); it.hasNext(); ) {
-            handles[i++] = (InternalFactHandle) it.next();
+        for ( Iterator<InternalFactHandle> it = objectStore.iterateFactHandles(); it.hasNext(); ) {
+            handles[i++] = it.next();
         }
 
         Arrays.sort( handles,
