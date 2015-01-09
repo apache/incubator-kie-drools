@@ -7,7 +7,7 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Local search</title>
 
-  <section>
+  <section xml:id="localSearchOverview">
     <title>Overview</title>
 
     <para>Local Search starts from an initial solution and evolves that single solution into a mostly better and better
@@ -22,7 +22,7 @@
     it's usually required to configure a construction heuristic solver phase before it.</para>
   </section>
 
-  <section>
+  <section xml:id="localSearchConcepts">
     <title>Local Search concepts</title>
 
     <section>
@@ -640,7 +640,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
 
         <listitem>
           <para><literal>STRATEGIC_OSCILLATION_BY_LEVEL_ON_BEST_SCORE</literal>: Like
-          <literal>STRATEGIC_OSCILLATION_BY_LEVEL</literal>, but define improving as better than the bet score (instead
+          <literal>STRATEGIC_OSCILLATION_BY_LEVEL</literal>, but define improving as better than the best score (instead
           of the last completed step score).</para>
         </listitem>
       </itemizedlist>

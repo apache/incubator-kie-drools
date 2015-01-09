@@ -149,7 +149,7 @@
     </mediaobject>
   </section>
 
-  <section>
+  <section xml:id="optimizationAlgorithmsOverview">
     <title>Optimization algorithms overview</title>
 
     <table>
@@ -501,7 +501,7 @@
     xlink:href="http://www.cleveralgorithms.com/">Clever Algorithms</link>.</para>
   </section>
 
-  <section>
+  <section xml:id="whichOptimizationAlgorithmsShouldIUse">
     <title>Which optimization algorithms should I use?</title>
 
     <para>The <emphasis>best</emphasis> optimization algorithms configuration for your use case depends heavily on your
@@ -653,7 +653,7 @@
     <para>Configure <link linkend="logging">logging</link> to display the log messages of each scope.</para>
   </section>
 
-  <section>
+  <section xml:id="termination">
     <title>Termination</title>
 
     <para>Not all phases terminate automatically and sometimes you don't want to wait that long anyway. A
@@ -664,7 +664,7 @@
     reasons: the time is up, the perfect score has been reached, ... The only thing you can't depend on, is on finding
     the optimal solution (unless you know the optimal score), because a metaheuristic algorithm generally doesn't know
     it when it finds the optimal solution. For real-life problems this doesn't turn out to be much of a problem, because
-    finding the optimal solution could take billions of years, so you 'll want to terminate sooner anyway. The only
+    finding the optimal solution could take years, so you 'll want to terminate sooner anyway. The only
     thing that matters is finding the best solution in the available time.</para>
 
     <para>For synchronous termination, configure a <literal>Termination</literal> on a <literal>Solver</literal> or a
@@ -868,7 +868,7 @@
       obvious improvements on that solution before terminating.</para>
     </section>
 
-    <section>
+    <section xml:id="asynchronousTermination">
       <title>Asynchronous termination from another thread</title>
 
       <para>Sometimes you'll want to terminate a Solver early from another thread, for example because a user action or

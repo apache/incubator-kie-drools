@@ -45,7 +45,7 @@
     </mediaobject>
   </section>
 
-  <section>
+  <section xml:id="solverConfiguration">
     <title>Solver configuration</title>
 
     <section xml:id="solverConfigurationByXML">

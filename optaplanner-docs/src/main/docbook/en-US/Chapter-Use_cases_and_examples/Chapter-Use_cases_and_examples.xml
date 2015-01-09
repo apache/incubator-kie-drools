@@ -751,7 +751,7 @@
     academic research.</para>
   </section>
 
-  <section>
+  <section xml:id="basicExamples">
     <title>Basic examples</title>
 
     <section xml:id="nQueens">
@@ -1123,7 +1123,7 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
     </section>
   </section>
 
-  <section>
+  <section xml:id="realExamples">
     <title>Real examples</title>
 
     <section xml:id="curriculumCourse">
@@ -1701,7 +1701,7 @@ testdata13 has 5 specialisms, 4 equipments, 5 departments, 125 rooms, 368 beds, 
     </section>
   </section>
 
-  <section>
+  <section xml:id="difficultExamples">
     <title>Difficult examples</title>
 
     <section xml:id="examination">
