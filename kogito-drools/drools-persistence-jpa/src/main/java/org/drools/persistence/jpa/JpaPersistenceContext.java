@@ -40,7 +40,8 @@ public class JpaPersistenceContext implements PersistenceContext {
     public SessionInfo persist(SessionInfo entity) {
         this.em.persist( entity );
         TransactionManagerHelper.addToUpdatableSet(txm, entity);
-        if( this.pessimisticLocking ) { 
+        if( this.pessimisticLocking ) {
+            this.em.flush();
             return this.em.find(SessionInfo.class, entity.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
         }
         return entity;
@@ -95,6 +96,7 @@ public class JpaPersistenceContext implements PersistenceContext {
         em.persist( workItemInfo );
         TransactionManagerHelper.addToUpdatableSet(txm, workItemInfo);
         if( this.pessimisticLocking ) {
+            this.em.flush();
             return em.find(WorkItemInfo.class, workItemInfo.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT);
         }
 
