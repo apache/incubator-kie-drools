@@ -15,6 +15,7 @@
  */
 package org.jbpm.runtime.manager.impl;
 
+import javax.naming.InitialContext;
 import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.process.core.timer.GlobalSchedulerService;
@@ -91,6 +92,8 @@ public class DefaultRuntimeEnvironment extends SimpleRuntimeEnvironment {
         	if (!"true".equalsIgnoreCase(System.getProperty("org.kie.timer.ejb.disabled"))) {
 	        	try {
 	        		Class<?> clazz = Class.forName("org.jbpm.services.ejb.timer.EjbSchedulerService");
+	        		// to ensure ejb timer service is actually available let's jndi look up
+	        		InitialContext.doLookup("java:module/EJBTimerScheduler");
 	        		return (GlobalSchedulerService) clazz.newInstance();
 	        	} catch (Exception e) {
 	        		logger.debug("Unable to find on initialize ejb schduler service due to {}", e.getMessage());

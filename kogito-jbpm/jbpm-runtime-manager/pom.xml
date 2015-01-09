@@ -198,6 +198,7 @@
               javax.enterprise.inject.spi,
               javax.enterprise.util,
               javax.inject,
+              javax.naming,
               javax.persistence,
               javax.xml,
               javax.xml.bind,
