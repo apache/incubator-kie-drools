@@ -236,6 +236,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		check();
 		this.em.persist( content );
         if( this.pessimisticLocking ) { 
+        	this.em.flush();
             return this.em.find(ContentImpl.class, content.getId(), LockModeType.PESSIMISTIC_WRITE );
         }
         return content;
@@ -268,6 +269,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		check();
 		this.em.persist( attachment );
         if( this.pessimisticLocking ) { 
+        	this.em.flush();
             return this.em.find(AttachmentImpl.class, attachment.getId(), LockModeType.PESSIMISTIC_WRITE );
         }
         return attachment;
@@ -300,6 +302,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		check();
 		this.em.persist( comment );
         if( this.pessimisticLocking ) { 
+        	this.em.flush();
             return this.em.find(CommentImpl.class, comment.getId(), LockModeType.PESSIMISTIC_WRITE );
         }
         return comment;
@@ -332,6 +335,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		check();
 		this.em.persist( deadline );
         if( this.pessimisticLocking ) { 
+        	this.em.flush();
             return this.em.find(DeadlineImpl.class, deadline.getId(), LockModeType.PESSIMISTIC_WRITE );
         }
         return deadline;

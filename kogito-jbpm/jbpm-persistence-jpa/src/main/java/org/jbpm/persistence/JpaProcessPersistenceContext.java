@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
@@ -39,16 +38,18 @@ public class JpaProcessPersistenceContext extends JpaPersistenceContext
         em.persist(processInstanceInfo);
         TransactionManagerHelper.addToUpdatableSet(txm, processInstanceInfo);
         if( this.pessimisticLocking ) { 
+        	em.flush();
             return em.find(ProcessInstanceInfo.class, processInstanceInfo.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
         }
         return processInstanceInfo;
     }
 
     public ProcessInstanceInfo findProcessInstanceInfo(Long processId) {
-        if( this.pessimisticLocking ) { 
-            return getEntityManager().find( ProcessInstanceInfo.class, processId, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+    	EntityManager em = getEntityManager();       
+    	if( this.pessimisticLocking ) { 
+            return em.find( ProcessInstanceInfo.class, processId, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
         }
-        return getEntityManager().find( ProcessInstanceInfo.class, processId );
+        return em.find( ProcessInstanceInfo.class, processId );
     }
 
     public void remove(ProcessInstanceInfo processInstanceInfo) {
@@ -103,6 +104,7 @@ public class JpaProcessPersistenceContext extends JpaPersistenceContext
         EntityManager em = getEntityManager();
         em.persist( correlationKeyInfo );
         if( this.pessimisticLocking) {
+        	em.flush();
             return em.find(CorrelationKeyInfo.class, correlationKeyInfo.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT);
         }
         return correlationKeyInfo;
