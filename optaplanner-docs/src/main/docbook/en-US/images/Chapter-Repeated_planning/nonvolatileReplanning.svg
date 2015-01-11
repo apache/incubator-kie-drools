@@ -245,11 +245,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.795"
-     inkscape:cx="400"
-     inkscape:cy="300"
+     inkscape:zoom="1.1242998"
+     inkscape:cx="363.89492"
+     inkscape:cy="186.50165"
      inkscape:document-units="px"
-     inkscape:current-layer="layer5"
+     inkscape:current-layer="layer4"
      showgrid="true"
      width="800px"
      borderlayer="true"
@@ -329,7 +329,7 @@
            x="349.99924"
            y="33.77755"
            style="font-size:14px;text-align:start;text-anchor:start;fill:#2e3436" /></flowRegion><flowPara
-         id="flowPara5079">-100soft per moved item</flowPara></flowRoot>    <g
+         id="flowPara5079">-100soft per moved process</flowPara></flowRoot>    <g
        style="display:inline"
        transform="translate(-183.70605,140.00048)"
        id="g4967">
@@ -473,7 +473,31 @@
              y="85.110077"
              style="font-size:14px;text-align:start;text-anchor:start;fill:#ce5c00" /></flowRegion><flowPara
            id="flowPara5063">-500soft</flowPara></flowRoot>    </g>
-  </g>
+    <flowRoot
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#2e3436;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot3377"
+       xml:space="preserve"
+       transform="translate(-33.61377,466.62241)"><flowRegion
+         id="flowRegion3379"><rect
+           style="font-size:14px;text-align:center;text-anchor:middle;fill:#2e3436"
+           y="33.77755"
+           x="349.99924"
+           height="40"
+           width="180"
+           id="rect3381" /></flowRegion><flowPara
+         id="flowPara3383">4 moved processes</flowPara></flowRoot>    <flowRoot
+       transform="translate(226.19482,466.62241)"
+       xml:space="preserve"
+       id="flowRoot3385"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#2e3436;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"><flowRegion
+         id="flowRegion3387"><rect
+           id="rect3389"
+           width="180"
+           height="40"
+           x="349.99924"
+           y="33.77755"
+           style="font-size:14px;text-align:center;text-anchor:middle;fill:#2e3436" /></flowRegion><flowPara
+         id="flowPara3391">2 moved processes</flowPara></flowRoot>  </g>
   <g
      inkscape:groupmode="layer"
      id="layer5"
@@ -1287,7 +1311,19 @@
              width="80.000168"
              id="rect4945" /></flowRegion><flowPara
            id="flowPara4947">-500soft</flowPara></flowRoot>    </g>
-  </g>
+    <flowRoot
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#a40000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot3369"
+       xml:space="preserve"
+       transform="translate(-235.00075,93.314239)"><flowRegion
+         id="flowRegion3371"><rect
+           style="font-size:14px;text-align:end;text-anchor:end;fill:#a40000"
+           y="83.89135"
+           x="235.00034"
+           height="50"
+           width="99.999992"
+           id="rect3373" /></flowRegion><flowPara
+         id="flowPara3375">computer X breaks down</flowPara></flowRoot>  </g>
   <g
      inkscape:label="Base"
      inkscape:groupmode="layer"

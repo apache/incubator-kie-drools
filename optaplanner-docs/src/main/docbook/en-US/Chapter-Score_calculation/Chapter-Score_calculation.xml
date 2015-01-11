@@ -22,23 +22,32 @@
 
       <para>Planner cannot automatically know which <literal>Solution</literal> is best for your business, so you need
       to tell it how to calculate the score of a given <literal>Solution</literal> according to your business needs.
-      There are multiple score techniques that you can use and combine:</para>
+      If you forget or unable to implement an important constraint, the solution is probably useless:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Score_calculation/optimalWithIncompleteConstraints.png"/>
+        </imageobject>
+      </mediaobject>
+
+      <para>Luckily, Planner is very flexible to define constraints, thanks to these score techniques, which can be
+      used and combined as much as needed:</para>
 
       <itemizedlist>
         <listitem>
-          <para>Maximize or minimize a constraint: score constraint signum (positive or negative)</para>
+          <para><emphasis role="bold">Score signum (positive or negative)</emphasis>: maximize or minimize a constraint type.</para>
         </listitem>
 
         <listitem>
-          <para>Put a cost/profit on constraints: score constraint weight</para>
+          <para><emphasis role="bold">Score weight</emphasis>: put a cost/profit on a constraint type.</para>
         </listitem>
 
         <listitem>
-          <para>Prioritize constraints: score level</para>
+          <para><emphasis role="bold">Score level</emphasis>: prioritize a group of constraint types</para>
         </listitem>
 
         <listitem>
-          <para>Pareto scoring</para>
+          <para><emphasis role="bold">Pareto scoring</emphasis></para>
         </listitem>
       </itemizedlist>
     </section>
