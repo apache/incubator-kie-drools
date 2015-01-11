@@ -445,7 +445,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/summaryStatistic.png" format="PNG"/>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/summaryStatistic.png"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -577,7 +577,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestScoreStatistic.png" format="PNG"/>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestScoreStatistic.png"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -608,7 +608,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/stepScoreStatistic.png" format="PNG"/>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/stepScoreStatistic.png"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -638,8 +638,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/calculateCountPerSecondStatistic.png"
-                       format="PNG"/>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/calculateCountPerSecondStatistic.png"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -671,7 +670,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestSolutionMutationStatistic.png" format="PNG"/>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestSolutionMutationStatistic.png"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -695,7 +694,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/moveCountPerStepStatistic.png" format="PNG"/>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/moveCountPerStepStatistic.png"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -721,7 +720,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/memoryUseStatistic.png" format="PNG"/>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/memoryUseStatistic.png"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -783,8 +782,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/constraintMatchTotalBestScoreStatistic.png"
-                       format="PNG"/>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/constraintMatchTotalBestScoreStatistic.png"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -814,8 +812,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/constraintMatchTotalStepScoreStatistic.png"
-                       format="PNG"/>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/constraintMatchTotalStepScoreStatistic.png"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -845,8 +842,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/pickedMoveTypeBestScoreDiffStatistic.png"
-                       format="PNG"/>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/pickedMoveTypeBestScoreDiffStatistic.png"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -867,8 +863,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/pickedMoveTypeStepScoreDiffStatistic.png"
-                       format="PNG"/>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/pickedMoveTypeStepScoreDiffStatistic.png"/>
           </imageobject>
         </mediaobject>
       </figure>

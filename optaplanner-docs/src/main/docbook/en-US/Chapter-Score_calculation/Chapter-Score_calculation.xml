@@ -181,8 +181,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/Chapter-Score_calculation/paretoOptimizationScoring.png"
-                     format="PNG"/>
+          <imagedata fileref="images/Chapter-Score_calculation/paretoOptimizationScoring.png"/>
         </imageobject>
       </mediaobject>
 
@@ -959,7 +958,7 @@ end</programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Score_calculation/unsolvedNQueens04.png" format="PNG"/>
+            <imagedata fileref="images/Chapter-Score_calculation/unsolvedNQueens04.png"/>
           </imageobject>
         </mediaobject>
 
@@ -1195,7 +1194,7 @@ end</programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Score_calculation/deltaBasedScoreCalculationNQueens04.png" format="PNG"/>
+            <imagedata fileref="images/Chapter-Score_calculation/deltaBasedScoreCalculationNQueens04.png"/>
           </imageobject>
         </mediaobject>
       </figure>

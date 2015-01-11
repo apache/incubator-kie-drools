@@ -36,7 +36,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Local_search/decideNextStepNQueens04.png" format="PNG"/>
+            <imagedata fileref="images/Chapter-Local_search/decideNextStepNQueens04.png"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -54,7 +54,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Local_search/allStepsNQueens04.png" format="PNG"/>
+            <imagedata fileref="images/Chapter-Local_search/allStepsNQueens04.png"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -139,7 +139,7 @@ INFO  Solving ended: time spent (41), best score (0), average calculate count pe
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Local_search/decideNextStepNQueens04.png" format="PNG"/>
+          <imagedata fileref="images/Chapter-Local_search/decideNextStepNQueens04.png"/>
         </imageobject>
       </mediaobject>
 

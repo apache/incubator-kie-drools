@@ -796,8 +796,7 @@
           <mediaobject>
             <imageobject>
               <imagedata align="center"
-                         fileref="images/Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png"
-                         format="PNG"/>
+                         fileref="images/Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png"/>
             </imageobject>
           </mediaobject>
         </figure>
@@ -814,7 +813,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="images/Chapter-Use_cases_and_examples/solvedNQueens04.png" format="PNG"/>
+              <imagedata align="center" fileref="images/Chapter-Use_cases_and_examples/solvedNQueens04.png"/>
             </imageobject>
           </mediaobject>
         </figure>
@@ -917,8 +916,7 @@
               <row>
                 <entry morerows="3"><mediaobject>
                     <imageobject>
-                      <imagedata fileref="images/Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png"
-                                 format="PNG"/>
+                      <imagedata fileref="images/Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png"/>
                     </imageobject>
                   </mediaobject></entry>
 

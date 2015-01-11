@@ -77,8 +77,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Repeated_planning/continuousPlanningPatientAdmissionSchedule.png"
-                   format="PNG"/>
+        <imagedata fileref="images/Chapter-Repeated_planning/continuousPlanningPatientAdmissionSchedule.png"/>
       </imageobject>
     </mediaobject>
 
@@ -123,7 +122,7 @@ public class ShiftAssignment {
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Repeated_planning/nonvolatileReplanning.png" format="PNG"/>
+          <imagedata fileref="images/Chapter-Repeated_planning/nonvolatileReplanning.png"/>
         </imageobject>
       </mediaobject>
 
@@ -174,7 +173,7 @@ end</programlisting>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Repeated_planning/realTimePlanningVehicleRouting.png" format="PNG"/>
+        <imagedata fileref="images/Chapter-Repeated_planning/realTimePlanningVehicleRouting.png"/>
       </imageobject>
     </mediaobject>
 

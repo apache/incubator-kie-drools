@@ -1360,7 +1360,7 @@ public class SeatDesignationDependency {
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Planner_configuration/uninitializedNQueens04.png" format="PNG"/>
+              <imagedata fileref="images/Chapter-Planner_configuration/uninitializedNQueens04.png"/>
             </imageobject>
           </mediaobject>
         </figure>
@@ -1439,7 +1439,7 @@ public class SeatDesignationDependency {
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Planner_configuration/solvedNQueens04.png" format="PNG"/>
+            <imagedata fileref="images/Chapter-Planner_configuration/solvedNQueens04.png"/>
           </imageobject>
         </mediaobject>
       </figure>
