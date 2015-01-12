@@ -1,5 +1,6 @@
 package org.jbpm.services.task.commands;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -12,13 +13,15 @@ import org.kie.api.task.model.Task;
 import org.kie.internal.command.Context;
 import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.TaskContentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @XmlRootElement(name="get-task-content-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetTaskContentCommand extends TaskCommand<Map<String, Object>> {
 
 	private static final long serialVersionUID = 5911387213149078240L;
-
+	private static final Logger logger = LoggerFactory.getLogger(GetTaskContentCommand.class);
 	
 	public GetTaskContentCommand() {
 	}
@@ -41,8 +44,11 @@ public class GetTaskContentCommand extends TaskCommand<Map<String, Object>> {
         ContentMarshallerContext mContext = contentService.getMarshallerContext(taskById);
         Object unmarshalledObject = ContentMarshallerHelper.unmarshall(contentById.getContent(), mContext.getEnvironment(), mContext.getClassloader());
         if (!(unmarshalledObject instanceof Map)) {
-            throw new IllegalStateException(" The Task Content Needs to be a Map in order to use this method and it was: "+unmarshalledObject.getClass());
-
+            logger.debug(" The Task Content is not of type Map, it was: {} so packaging it into new map under Content key ", unmarshalledObject.getClass());
+            Map<String, Object> content = new HashMap<String, Object>();
+            content.put("Content", unmarshalledObject);
+            
+            return content;
         }
         Map<String, Object> content = (Map<String, Object>) unmarshalledObject;
         
