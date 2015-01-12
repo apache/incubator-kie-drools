@@ -132,10 +132,10 @@ KieContainer kContainer = kieServices.getKieClasspathContainer();</programlistin
         xmlns="http://jboss.org/kie/6.0.0/kmodule"&gt;
   &lt;kbase name="KBase1" default="true" eventProcessingMode="cloud" equalsBehavior="equality" declarativeAgenda="enabled" packages="org.domain.pkg1"&gt;
     &lt;ksession name="KSession2_1" type="stateful" default="true/"&gt;
-    &lt;ksession name="KSession2_1" type="stateless" default="false/" beliefSystem="jtms"&gt;
+    &lt;ksession name="KSession2_2" type="stateless" default="false/" beliefSystem="jtms"&gt;
   &lt;/kbase&gt;
   &lt;kbase name="KBase2" default="false" eventProcessingMode="stream" equalsBehavior="equality" declarativeAgenda="enabled" packages="org.domain.pkg2, org.domain.pkg3" includes="KBase1"&gt;
-    &lt;ksession name="KSession2_1" type="stateful" default="false" clockType="realtime"&gt;
+    &lt;ksession name="KSession3_1" type="stateful" default="false" clockType="realtime"&gt;
       &lt;fileLogger file="drools.log" threaded="true" interval="10"/&gt;
       &lt;workItemHandlers&gt;
         &lt;workItemHandler name="name" type="org.domain.WorkItemHandler"/&gt;
