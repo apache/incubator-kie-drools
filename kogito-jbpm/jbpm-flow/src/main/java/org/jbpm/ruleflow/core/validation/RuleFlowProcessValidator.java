@@ -29,6 +29,7 @@ import org.drools.core.process.core.Work;
 import org.drools.core.process.core.datatype.DataType;
 import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.core.time.TimeUtils;
+import org.drools.core.time.impl.CronExpression;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.event.EventFilter;
@@ -640,9 +641,13 @@ public class RuleFlowProcessValidator implements ProcessValidator {
 	    	            if (timer.getPeriod() != null) {
 	    	                TimeUtils.parseTimeString(timer.getDelay());
 	    	            } else {
-	    	                // when using ISO date/time period is not set
-	    	                DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
-
+	    	            	if (CronExpression.isValidExpression(timer.getDelay())){
+	    	            		
+	    	            	} else {
+	    	            	
+		    	                // when using ISO date/time period is not set
+		    	                DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
+	    	            	}
 	    	            }
 	    	            break;
 	    	        case Timer.TIME_DURATION:

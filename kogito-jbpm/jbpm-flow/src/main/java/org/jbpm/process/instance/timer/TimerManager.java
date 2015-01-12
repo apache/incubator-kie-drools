@@ -83,10 +83,18 @@ public class TimerManager {
             timer.setProcessInstanceId(processInstance.getId());
             timer.setSessionId(((KieSession) kruntime).getIdentifier());
             timer.setActivated(new Date());
-
-            Trigger trigger = new IntervalTrigger(timerService.getCurrentTime(), null, null, timer.getRepeatLimit(),
+            
+            Trigger trigger = null;
+            
+            if (timer.getCronExpression() != null) {
+                Date startTime = new Date(timerService.getCurrentTime() + 1000);
+                trigger = new CronTrigger(timerService.getCurrentTime(), startTime, null, -1, timer.getCronExpression(), null, null);
+                // cron timers are by nature repeatable
+                timer.setPeriod(1);
+            } else {
+            	trigger = new IntervalTrigger(timerService.getCurrentTime(), null, null, timer.getRepeatLimit(),
                     timer.getDelay(), timer.getPeriod(), null, null);
-
+            }
             ProcessJobContext ctx = new ProcessJobContext(timer, trigger, processInstance.getId(), this.kruntime);
 
             JobHandle jobHandle = this.timerService.scheduleJob(processJob, ctx, trigger);

@@ -235,14 +235,16 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 String timeDuration = null;
                 String timeCycle = null;
                 String timeDate = null;
+                String language = "";
                 org.w3c.dom.Node subNode = xmlNode.getFirstChild();
                 while (subNode instanceof Element) {
                     String subNodeName = subNode.getNodeName();
                     if ("timeDuration".equals(subNodeName)) {
-                        timeDuration = subNode.getTextContent();
+                        timeDuration = subNode.getTextContent();                        
                         break;
                     } else if ("timeCycle".equals(subNodeName)) {
                         timeCycle = subNode.getTextContent();
+                        language = ((Element) subNode).getAttribute("language");
                         break;
                     } else if ("timeDate".equals(subNodeName)) {
                         timeDate = subNode.getTextContent();
@@ -256,7 +258,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                     eventFilter.setType("Timer-" + attachedTo + "-" + timeDuration);
                     eventFilters.add(eventFilter);
                     eventNode.setEventFilters(eventFilters);
-                    eventNode.setMetaData("TimeDuration", timeDuration);
+                    eventNode.setMetaData("TimeDuration", timeDuration);                    
                 } else if (timeCycle != null && timeCycle.trim().length() > 0) {
                     List<EventFilter> eventFilters = new ArrayList<EventFilter>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
@@ -264,6 +266,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                     eventFilters.add(eventFilter);
                     eventNode.setEventFilters(eventFilters);
                     eventNode.setMetaData("TimeCycle", timeCycle);
+                    eventNode.setMetaData("Language", language);
                 } else if (timeDate != null && timeDate.trim().length() > 0) {
                     List<EventFilter> eventFilters = new ArrayList<EventFilter>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
@@ -272,6 +275,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                     eventNode.setEventFilters(eventFilters);
                     eventNode.setMetaData("TimeDate", timeDate);
                 }
+                
             }
             xmlNode = xmlNode.getNextSibling();
         }
@@ -495,11 +499,17 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 String duration = (String) eventNode.getMetaData("TimeDuration");
                 String cycle = (String) eventNode.getMetaData("TimeCycle");
                 
+                
                 if (duration != null && cycle != null) {
-                    xmlDump.append(
+                	String lang = (String) eventNode.getMetaData("Language");
+                	String language = "";
+                	if (lang != null && !lang.isEmpty()) {
+                		language = "language=\""+lang + "\" ";
+                	}
+                	xmlDump.append(
                             "      <timerEventDefinition>" + EOL +
                             "        <timeDuration xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(duration) + "</timeDuration>" + EOL +
-                            "        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(cycle) + "</timeCycle>" + EOL +
+                            "        <timeCycle xsi:type=\"tFormalExpression\" " +language +">" + XmlDumper.replaceIllegalChars(cycle) + "</timeCycle>" + EOL +
                             "      </timerEventDefinition>" + EOL);
                 } else if (duration != null) {
                     xmlDump.append(
@@ -507,9 +517,14 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                             "        <timeDuration xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(duration) + "</timeDuration>" + EOL +
                             "      </timerEventDefinition>" + EOL);
                 } else {
+                	String lang = (String) eventNode.getMetaData("Language");
+                	String language = "";
+                	if (lang != null && !lang.isEmpty()) {
+                		language = "language=\""+lang + "\" ";
+                	}
                     xmlDump.append(
                             "      <timerEventDefinition>" + EOL +
-                            "        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(cycle) + "</timeCycle>" + EOL +
+                            "        <timeCycle xsi:type=\"tFormalExpression\" " +language +">" + XmlDumper.replaceIllegalChars(cycle) + "</timeCycle>" + EOL +
                             "      </timerEventDefinition>" + EOL);
                 }
                 endNode("boundaryEvent", xmlDump);

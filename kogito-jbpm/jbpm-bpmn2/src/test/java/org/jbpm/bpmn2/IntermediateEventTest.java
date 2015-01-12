@@ -1983,6 +1983,60 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertNodeTriggered(processInstance.getId(), "StartProcess", "UserTask", "EndProcess", "event");
 
     }
+    
+    @Test
+    public void testTimerBoundaryEventCronCycle() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-BoundaryTimerCycleCron.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        ProcessInstance processInstance = ksession.startProcess("boundaryTimerCycleCron");
+        assertProcessInstanceActive(processInstance);
+        
+        List<WorkItem> workItems = handler.getWorkItems();
+        assertNotNull(workItems);
+        assertEquals(1, workItems.size());
+        
+        Thread.sleep(3000);
+        assertProcessInstanceActive(processInstance);
+        workItems = handler.getWorkItems();
+        assertNotNull(workItems);
+        assertEquals(3, workItems.size());
+        
+        ksession.abortProcessInstance(processInstance.getId());
+        
+        assertProcessInstanceFinished(processInstance, ksession);
+
+    }
+    
+    @Test
+    public void testIntermediateCatchEventTimerCycleCron() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerCycleCron.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName().equals("timer")) {
+                    list.add(event.getProcessInstance().getId());
+                }
+            }
+
+        });
+        
+        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
+        assertProcessInstanceActive(processInstance);
+
+        Thread.sleep(3000);
+        assertProcessInstanceActive(processInstance);        
+        assertEquals(3, list.size());
+        
+        ksession.abortProcessInstance(processInstance.getId());        
+        assertProcessInstanceFinished(processInstance, ksession);
+    }
 
     /*
      * helper methods
