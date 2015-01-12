@@ -57,8 +57,6 @@
                 <descriptor>src/main/assembly/pre-bin.xml</descriptor>
                 <descriptor>src/main/assembly/bin.xml</descriptor>
                 <descriptor>src/main/assembly/src.xml</descriptor>
-                <!--descriptor>src/main/assembly/docs-build.xml</descriptor>
-                <descriptor>src/main/assembly/docs.xml</descriptor-->
                 <descriptor>src/main/assembly/assembly-jbpm.xml</descriptor>
                 <!-- installer and examples -->
                 <descriptor>src/main/assembly/installer.xml</descriptor>
