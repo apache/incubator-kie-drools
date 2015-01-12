@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.core.util.StringUtils;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.test.util.AbstractBaseTest;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
@@ -53,6 +54,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.model.InternalTask;
 import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +77,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         List<String> processes = new ArrayList<String>();
         processes.add("repo/processes/general/EmptyHumanTask.bpmn");
         processes.add("repo/processes/general/humanTask.bpmn");
+        processes.add("repo/processes/general/NoFormNameHumanTask.bpmn");
         
         InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
         File pom = new File("target/kmodule", "pom.xml");
@@ -594,5 +597,22 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	assertNotNull(task);
     	assertEquals(taskId, task.getId());
     	assertEquals("Write a Document", task.getName());
+    }
+    
+    @Test
+    public void testGetTask() {
+    	processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument.noform");
+    	assertNotNull(processInstanceId);
+    	List<Long> taskIds = runtimeDataService.getTasksByProcessInstanceId(processInstanceId);
+    	assertNotNull(taskIds);
+    	assertEquals(1, taskIds.size());
+    	
+    	Long taskId = taskIds.get(0);
+    	
+    	Task taskInstance = userTaskService.getTask(taskId);
+    	assertNotNull(taskInstance);
+    	assertEquals(Status.Reserved, taskInstance.getTaskData().getStatus());
+    	assertEquals("Write a Document", taskInstance.getName());
+    	assertTrue(StringUtils.isEmpty(((InternalTask)taskInstance).getFormName()));
     }
 }

@@ -125,13 +125,31 @@ public class TaskImpl implements InternalTask {
         } else {
         	out.writeUTF("");
         }
-        out.writeUTF(formName);
         
-        out.writeUTF(name);
+        if (formName != null) {
+        	out.writeUTF(formName);
+        } else {
+        	out.writeUTF("");
+        }
         
-        out.writeUTF(subject);
+        if (name != null) {
+        	out.writeUTF(name);
+        } else {
+        	out.writeUTF("");
+        }
+               
+        if (subject != null) {
+        	out.writeUTF(subject);
+        } else {
+        	out.writeUTF("");
+        }
+               
+        if (description != null) {
+        	out.writeUTF(description);
+        } else {
+        	out.writeUTF("");
+        }
         
-        out.writeUTF(description);
         
         CollectionUtils.writeI18NTextList( names, out );
         CollectionUtils.writeI18NTextList( subjects, out );
