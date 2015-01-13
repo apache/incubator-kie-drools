@@ -20,10 +20,6 @@
       </listitem>
 
       <listitem>
-        <para><literal>eap-6</literal>: tailored to JBoss EAP 6</para>
-      </listitem>
-
-      <listitem>
         <para><literal>tomcat7</literal>: the generic war, works on Tomcat and Jetty</para>
       </listitem>
     </itemizedlist>
