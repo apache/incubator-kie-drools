@@ -165,27 +165,81 @@
           <para>A <emphasis role="bold">problem fact</emphasis> class: used by the score constraints, but does NOT
           change during planning (as long as the problem stays the same). For example: <literal>Bed</literal>,
           <literal>Room</literal>, <literal>Shift</literal>, <literal>Employee</literal>, <literal>Topic</literal>,
-          <literal>Period</literal>, ...</para>
+          <literal>Period</literal>, ... All the properties of a problem fact class are problem properties.</para>
         </listitem>
 
         <listitem>
           <para>A <emphasis role="bold">planning entity</emphasis> class: used by the score constraints and changes
           during planning. For example: <literal>BedDesignation</literal>, <literal>ShiftAssignment</literal>,
-          <literal>Exam</literal>, ...</para>
+          <literal>Exam</literal>, ... The properties that change during planning are planning variables. The other
+          properties are problem properties.</para>
         </listitem>
       </itemizedlist>
 
       <para>Ask yourself: <emphasis>What class changes during planning?</emphasis> <emphasis>Which class has variables
       that I want the <literal>Solver</literal> to change for me?</emphasis> That class is a planning entity. Most use
-      cases have only 1 planning entity class.</para>
+      cases have only 1 planning entity class. Most use cases also have only 1 planning variable per planning entity
+      class.</para>
 
       <note>
-        <para>In <link linkend="realTimePlanning">real-time planning</link>, problem facts can change during planning,
-        because the problem itself changes. However, that doesn't make them planning entities.</para>
+        <para>In <link linkend="realTimePlanning">real-time planning</link>, even thought the problem itself changes,
+        problem facts don't really change during planning, instead they change between planning (because the Solver
+        temporarly stops to apply the problem fact changes).</para>
       </note>
 
-      <para>A good model can greatly improve the success of your planning implementation. For inspiration, take a look
-      at how the examples modeled their domain:</para>
+      <para>A good model can greatly improve the success of your planning implementation. Follow these guidelines to
+      design a good model:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>In a <emphasis>many to one</emphasis> relationship, it's normally the <emphasis>many</emphasis> side
+          that is the planning entity class. The property referencing the other side is then the planning variable. For
+          example in employee rostering: the planning entity class is <literal>ShiftAssignment</literal>, not
+          <literal>Employee</literal>, and the planning variable is <literal>ShiftAssignment.getEmployee()</literal>
+          because 1 <literal>Employee</literal> has multiple <literal>ShiftAssignment</literal>s but 1
+          <literal>ShiftAssignment</literal> has only 1 <literal>Employee</literal>.</para>
+        </listitem>
+
+        <listitem>
+          <para>A planning entity class should have at least 1 problem property. A planning entity class with only
+          planning variables can normally be simplified by converting 1 of those planning variables into a problem
+          property. That heavily decreases <link linkend="searchSpaceSize">the search space size</link>. For example in
+          employee rostering: the <literal>ShiftAssignment</literal>'s <literal>getShift()</literal> is a problem
+          property and the <literal>getEmployee()</literal> is a planning variable. If both were a planning variable,
+          solving it would be far less efficient.</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>A surrogate ID does not suffice as that at least 1 problem property. It needs to be understandable
+              by the business. A business key does suffice. This prevents an unassigned entity from being nameless
+              (unidentifiable by the business).</para>
+            </listitem>
+
+            <listitem>
+              <para>This way, there is no need to add a hard constraint to assure that 2 planning entities are
+              different: they are already different due to their problem properties.</para>
+            </listitem>
+
+            <listitem>
+              <para>In some cases, multiple planning entities have the same problem property. In such cases, it can be
+              useful to create an extra problem property to distinguish them. For example in employee rostering:
+              <literal>ShiftAssignment</literal> has besides the problem property <literal>Shift</literal> also the
+              problem property <literal>indexInShift</literal>.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>The number of planning entities is recommended to be fixed during planning. When in doubt which property
+          should be a planning variable and which should be a problem property, choose it so the number of planning
+          entities is fixed. For example in employee rostering: if the planning entity class would have been
+          <literal>EmployeeAssignment</literal> with a problem property <literal>getEmployee()</literal> and a planning
+          variable <literal>getShift()</literal>, than it's impossible to accurately predict how many
+          <literal>EmployeeAssignment</literal> instances to make per <literal>Employee</literal>.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>For inspiration, take a look at how the examples modeled their domain:</para>
 
       <mediaobject>
         <imageobject>
@@ -193,14 +247,14 @@
         </imageobject>
       </mediaobject>
 
-      <para>When in doubt, it's usually the many side of a many to one relationship that is the planning entity. For
-      example in employee rostering, the planning entity class is <literal>ShiftAssignment</literal>, not
-      <literal>Employee</literal>. Vehicle routing is special, because it uses a <link
-      linkend="chainedPlanningVariable">chained planning variable</link>.</para>
+      <note>
+        <para>Vehicle routing is special, because it uses a <link linkend="chainedPlanningVariable">chained planning
+        variable</link>.</para>
+      </note>
 
       <para><emphasis role="bold">In OptaPlanner all problems facts and planning entities are plain old JavaBeans
-      (POJO's).</emphasis> You can load them from a database (JDBC/JPA/JDO), an XML file, a data repository, a noSQL
-      cloud, ...: OptaPlanner doesn't care.</para>
+      (POJO's).</emphasis> You can load them from a database, an XML file, a data repository, a noSQL cloud, ... (see
+      <link linkend="integration">Integration</link>): OptaPlanner doesn't care.</para>
     </section>
 
     <section xml:id="problemFact">
