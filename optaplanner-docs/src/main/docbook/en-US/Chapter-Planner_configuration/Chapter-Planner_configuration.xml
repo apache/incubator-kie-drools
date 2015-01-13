@@ -564,18 +564,19 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
         <section xml:id="valueRangeProviderOnPlanningEntity">
           <title><literal>ValueRangeProvider</literal> on the planning entity</title>
 
-          <para>Each planning entity has its own set of possible planning values for a planning variable. For example,
-          if a teacher can <emphasis role="bold">never</emphasis> teach in a room that does not belong to his
-          department, lectures of that teacher can limit their room value range to the rooms of his department.</para>
+          <para>Each planning entity has its own value range (a set of possible planning values) for the planning
+          variable. For example, if a teacher can <emphasis role="bold">never</emphasis> teach in a room that does not
+          belong to his department, lectures of that teacher can limit their room value range to the rooms of his
+          department.</para>
 
-          <programlisting language="java">    @PlanningVariable(valueRangeProviderRefs = {"possibleRoomRange"})
+          <programlisting language="java">    @PlanningVariable(valueRangeProviderRefs = {"departmentRoomRange"})
     public Room getRoom() {
         return room;
     }
 
-    @ValueRangeProvider(id = "possibleRoomRange")
+    @ValueRangeProvider(id = "departmentRoomRange")
     public List&lt;Room&gt; getPossibleRoomList() {
-        return getCourse().getTeacher().getPossibleRoomList();
+        return getCourse().getTeacher().getDepartment().getRoomList();
     }</programlisting>
 
           <para>Never use this to enforce a soft constraint (or even a hard constraint when the problem might not have a
@@ -594,9 +595,15 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
           range. That would only try to make it solve the planning problem itself and interfere with the optimization
           algorithms.</para>
 
+          <para>Every entity has its own <literal>List</literal> instance, except if multiple entity have the same value
+          range. For example, if teacher A and B belong to the same department, they use the same
+          <literal>List&lt;Room&gt;</literal> instance. Furthermore, each <literal>List</literal> contains a subset of
+          the same set of planning value instances. For example, if department A and B can both use room X, then their
+          <literal>List&lt;Room&gt;</literal> instances contain the same <literal>Room</literal> instance.</para>
+
           <warning>
             <para>A value range on planning entity is not (yet) compatible with a <link
-            linkend="chainedPlanningVariable">chained</link> variable, nor with generic swap moves.</para>
+            linkend="chainedPlanningVariable">chained</link> variable.</para>
           </warning>
         </section>
 
