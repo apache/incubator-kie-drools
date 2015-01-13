@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Event Metadata</title>
+
+  <para>All events have a set of metadata associated to them. Most of the
+  metadata values have defaults that are automatically assigned to each event
+  when they are inserted into the working memory, but it is possible to change
+  the default on an event type basis, using the metadata tags listed
+  below.</para>
+
+  <para>For the examples, lets assume the user has the following class in the
+  application domain model:</para>
+
+  <example>
+    <title>the VoiceCall fact class</title>
+
+    <programlisting language="java">/**
+ * A class that represents a voice call in 
+ * a Telecom domain model
+ */
+public class VoiceCall {
+    private String  originNumber;
+    private String  destinationNumber;
+    private Date    callDateTime;
+    private long    callDuration;          // in milliseconds
+
+    // constructors, getters and setters
+}
+</programlisting>
+  </example>
+
+  <section>
+    <title>@role</title>
+
+    <para>The @role meta data was already discussed in the previous section
+    and is presented here for completeness:</para>
+
+    <programlisting><emphasis>@role</emphasis>( &lt;fact|event&gt; )
+</programlisting>
+
+    <para>It annotates a given fact type as either a regular fact or event. It
+    accepts either "fact" or "event" as a parameter. Default is "fact".</para>
+
+    <example>
+      <title>declaring VoiceCall as an event type</title>
+
+      <programlisting><emphasis role="bold">declare</emphasis> VoiceCall
+    <emphasis>@role</emphasis>( event )
+<emphasis role="bold">end</emphasis>
+</programlisting>
+    </example>
+
+    <para/>
+  </section>
+
+  <section>
+    <title>@timestamp</title>
+
+    <para>Every event has an associated timestamp assigned to it. By default,
+    the timestamp for a given event is read from the Session Clock and
+    assigned to the event at the time the event is inserted into the working
+    memory. Although, sometimes, the event has the timestamp as one of it's
+    own attributes. In this case, the user may tell the engine to use the
+    timestamp from the event's attribute instead of reading it from the
+    Session Clock.</para>
+
+    <programlisting><emphasis>@timestamp</emphasis>( &lt;attributeName&gt; )</programlisting>
+
+    <para>To tell the engine what attribute to use as the source of the
+    event's timestamp, just list the attribute name as a parameter to the
+    @timestamp tag.</para>
+
+    <example>
+      <title>declaring the VoiceCall timestamp attribute</title>
+
+      <programlisting><emphasis role="bold">declare</emphasis> VoiceCall
+    <emphasis>@role</emphasis>( event )
+    <emphasis>@timestamp</emphasis>( callDateTime )
+<emphasis role="bold">end</emphasis>
+</programlisting>
+    </example>
+  </section>
+
+  <section>
+    <title>@duration</title>
+
+    <para>Drools supports both event semantics: point-in-time events and
+    interval-based events. A point-in-time event is represented as an
+    interval-based event whose duration is zero. By default, all events have
+    duration zero. The user may attribute a different duration for an event by
+    declaring which attribute in the event type contains the duration of the
+    event.</para>
+
+    <programlisting><emphasis>@duration</emphasis>( &lt;attributeName&gt; )</programlisting>
+
+    <para>So, for our VoiceCall fact type, the declaration would be:</para>
+
+    <example>
+      <title>declaring the VoiceCall duration attribute</title>
+
+      <programlisting><emphasis role="bold">declare</emphasis> VoiceCall
+    <emphasis>@role</emphasis>( event )
+    <emphasis>@timestamp</emphasis>( callDateTime )
+    <emphasis>@duration</emphasis>( callDuration )
+<emphasis role="bold">end</emphasis></programlisting>
+    </example>
+  </section>
+
+  <section>
+    <title>@expires</title>
+
+    <important>
+      <para>This tag is only considered when running the engine in STREAM
+      mode. Also, additional discussion on the effects of using this tag is
+      made on the Memory Management section. It is included here for
+      completeness.</para>
+    </important>
+
+    <para>Events may be automatically expired after some time in the working
+    memory. Typically this happens when, based on the existing rules in the
+    knowledge base, the event can no longer match and activate any rules.
+    Although, it is possible to explicitly define when an event should
+    expire.</para>
+
+    <programlisting><emphasis>@expires</emphasis>( &lt;timeOffset&gt; )</programlisting>
+
+    <para>The value of <emphasis>timeOffset</emphasis> is a temporal interval
+    in the form:</para>
+
+    <programlisting>[#d][#h][#m][#s][#[ms]]</programlisting>
+
+    <para>Where <emphasis>[ ]</emphasis> means an optional parameter and
+    <emphasis>#</emphasis> means a numeric value.</para>
+
+    <para>So, to declare that the VoiceCall facts should be expired after 1
+    hour and 35 minutes after they are inserted into the working memory, the
+    user would write:</para>
+
+    <example>
+      <title>declaring the expiration offset for the VoiceCall events</title>
+
+      <programlisting><emphasis role="bold">declare</emphasis> VoiceCall
+    <emphasis>@role</emphasis>( event )
+    <emphasis>@timestamp</emphasis>( callDateTime )
+    <emphasis>@duration</emphasis>( callDuration )
+    <emphasis>@expires</emphasis>( 1h35m )
+<emphasis role="bold">end</emphasis></programlisting>
+    </example>
+
+    <para>The @expires policy will take precedence and override the implicit
+    expiration offset calculated from temporal constraints and sliding windows
+    in the knowledge base.</para>
+  </section>
+</section>

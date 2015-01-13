@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="190" height="71"
+     viewBox="0 0 190 73">
+<title>SuperSuffix</title>
+<rect x='20.5' y='21.5' width='51.49' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Arguments.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='40.49' x='26' y='30.83'>Arguments</text>
+</a>
+<rect x='20.5' y='55.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='26' y='65.43'>.</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 37.40 62.5 L 42.4 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 40.40 60.5 L 42.4 62.5 L 40.4 64.5'/>
+<rect x='42.9' y='55.5' width='44.98' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Identifier.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='33.98' x='48.40' y='64.83'>Identifier</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 87.88 62.5 L 92.88 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 90.88 60.5 L 92.88 62.5 L 90.88 64.5'/>
+<rect x='108.38' y='42.5' width='51.49' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Arguments.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='40.49' x='113.88' y='51.83'>Arguments</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 105.88 47.5 L 107.88 49.5 L 105.88 51.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 92.88 62.5 L 174.87 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 92.88 62.5 A 5 5 0 0 0 97.88 57.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 97.88 54.5 A 5 5 0 0 1 102.88 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 102.88 49.5 L 107.88 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 174.87 62.5 A 5 5 0 0 1 169.87 57.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 169.87 54.5 A 5 5 0 0 0 164.87 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 159.87 49.5 L 164.87 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 97.88 57.5 L 97.88 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 169.87 57.5 L 169.87 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 10 45.5 L 15 45.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 179.87 45.5 L 184.87 45.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 15 33.5 A 5 5 0 0 1 20 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 20 62.5 A 5 5 0 0 1 15 57.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 15 57.5 L 15 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 179.87 33.5 A 5 5 0 0 0 174.87 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 174.87 62.5 A 5 5 0 0 0 179.87 57.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 179.87 57.5 L 179.87 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 71.99 28.5 L 174.87 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 174.87 62.5 L 174.87 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 184.87 45.5 L 189.87 45.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 187.87 43.5 L 189.87 45.5 L 187.87 47.5'/>
+<text font-size='10' font-family='Times' font-weight='normal' kerning='0' letter-spacing='0' xml:id='SuperSuffix' x='0' y='8.33'>SuperSuffix</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 0 45.5 L 10 45.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 8 43.5 L 10 45.5 L 8 47.5'/>
+</svg>

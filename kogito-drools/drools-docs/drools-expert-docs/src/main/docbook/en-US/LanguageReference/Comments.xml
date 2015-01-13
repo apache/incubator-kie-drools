@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Comments</title>
+
+  <para>Comments are sections of text that are ignored by the rule engine.
+  They are stripped out when they are encountered, except inside semantic code
+  blocks, like the RHS of a rule.</para>
+
+  <section>
+    <title>Single line comment</title>
+
+    <para>To create single line comments, you can use '//'. The parser will
+    ignore anything in the line after the comment symbol. Example:</para>
+
+    <programlisting>rule "Testing Comments"
+when
+    // this is a single line comment
+    eval( true ) // this is a comment in the same line of a pattern
+then
+    // this is a comment inside a semantic code block
+end
+</programlisting>
+
+    <warning>
+      <para>Drools also supports for backward compatibility the use of '#' for
+      single line comments, but this is deprecated and will be removed in
+      future releases.</para>
+    </warning>
+  </section>
+
+  <section>
+    <title>Multi-line comment</title>
+
+    <figure>
+      <title>Multi-line comment</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Rule_Language/multi_line_comment.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Multi-line comments are used to comment blocks of text, both in and
+    outside semantic code blocks. Example:</para>
+
+    <programlisting>rule "Test Multi-line Comments"
+when
+    /* this is a multi-line comment
+       in the left hand side of a rule */
+    eval( true )
+then
+    /* and this is a multi-line comment
+       in the right hand side of a rule */
+end </programlisting>
+  </section>
+</section>

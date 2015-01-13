@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Hello World</title>
+
+  <screen><emphasis role="bold">Name:</emphasis> Hello World
+<emphasis role="bold">Main class:</emphasis> org.drools.examples.helloworld.HelloWorldExample
+<emphasis role="bold">Module:</emphasis> drools-examples
+<emphasis role="bold">Type:</emphasis> Java application
+<emphasis role="bold">Rules file:</emphasis> HelloWorld.drl
+<emphasis role="bold">Objective:</emphasis> demonstrate basic rules in use</screen>
+
+  <para>The "Hello World" example shows a simple example of rules usage, and
+  both the MVEL and Java dialects.</para>
+
+  <para>This example demonstrates how to build Knowledge Bases and Sessions.
+  Also, audit logging and debug outputs are shown, which is omitted
+  from other examples as it's all very similar. A <code>KnowledgeBuilder</code>
+  is used to turn a DRL source file into <code>Package</code> objects which
+  the Knowledge Base can consume. The add method takes a <code>Resource</code>
+  interface and a Resource Type as parameters. The <code>Resource</code> can be 
+  used to retrieve a DRL source file from various locations; in this case the
+  DRL file is being retrieved from the classpath using a
+  <code>ResourceFactory</code>, but it could come from a disk file or a URL.
+  Here, we only add a single DRL source file, but multiple DRL files can be 
+  added. Also, DRL files with different namespaces can be added, where
+  the Knowledge Builder creates a package for each namespace. Multiple
+  packages of different namespaces can be added to the same Knowledge Base.
+  When all the DRL files have been added, we should check the builder for 
+  errors. While the Knowledge Base will validate the package, it will only
+  have access to the error information as a String, so if you wish to debug
+  the error information you should do it on the <code>KnowledgeBuilder</code>
+  instance. Once you know the builder is error free, get the
+  <code>Package</code> collection, instantiate a <code>KnowledgeBase</code>
+  from the <code>KnowledgeBaseFactory</code> and add the package
+  collection.</para>
+
+  <example>
+    <title>HelloWorld: Creating the KnowledgeBase and Session</title>
+
+    <programlisting language="java">final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+// this will parse and compile in one step
+kbuilder.add(ResourceFactory.newClassPathResource("HelloWorld.drl",
+        HelloWorldExample.class), ResourceType.DRL);
+
+// Check the builder for errors
+if (kbuilder.hasErrors()) {
+    System.out.println(kbuilder.getErrors().toString());
+    throw new RuntimeException("Unable to compile \"HelloWorld.drl\".");
+}
+
+// get the compiled packages (which are serializable)
+final Collection&lt;KnowledgePackage&gt; pkgs = kbuilder.getKnowledgePackages();
+
+// add the packages to a KnowledgeBase (deploy the knowledge packages).
+final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+kbase.addKnowledgePackages(pkgs);
+
+final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();</programlisting>
+  </example>
+
+  <para>Drools has an event model that exposes much of what's happening
+  internally. Two default debug listeners are supplied,
+  <code>DebugAgendaEventListener</code> and 
+  <code>DebugWorkingMemoryEventListener</code> which print out
+  debug event information to the <code>System.err</code> stream displayed
+  in the Console window. Adding listeners to a
+  Session is trivial, as shown below. The <code>KnowledgeRuntimeLogger</code>
+  provides execution auditing, the result of which can be viewed in a
+  graphical viewer. The logger is actually a specialised implementation
+  built on the Agenda and Working Memory listeners. When the engine has
+  finished executing, <code>logger.close()</code> must be called.</para>
+
+  <para>Most of the examples use the Audit logging features of Drools to
+  record execution flow for later inspection.</para>
+
+  <example>
+    <title>HelloWorld: Event logging and Auditing</title>
+
+    <programlisting language="java">// setup the debug listeners
+ksession.addEventListener( new DebugAgendaEventListener() );
+ksession.addEventListener( new DebugWorkingMemoryEventListener() );
+        
+// setup the audit logging
+KnowledgeRuntimeLogger logger =
+  KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/helloworld");</programlisting>
+  </example>
+
+  <para>The single class used in this example is very simple. It has two
+  fields: the message, which is a String and the status which can be one
+  of the two integers <code>HELLO</code> or <code>GOODBYE</code>.</para>
+
+  <example>
+    <title>HelloWorld example: Message Class</title>
+
+    <programlisting language="java">public static class Message {
+    public static final int HELLO   = 0;
+    public static final int GOODBYE = 1;
+
+    private String          message;
+    private int             status; 
+    ...
+}</programlisting>
+  </example>
+
+  <para>A single <code>Message</code> object is created with the
+  message text "Hello World" and the status <code>HELLO</code> and then
+  inserted into the engine, at which point <code>fireAllRules()</code>
+  is executed. Remember that all the network evaluation is done
+  during the insert time, so that by the time the program execution reaches the
+  <code>fireAllRules()</code> method call the engine already knows which rules
+  are fully matches and able to fire.</para>
+
+  <example>
+    <title>HelloWorld: Execution</title>
+
+    <programlisting language="java">final Message message = new Message();
+message.setMessage("Hello World");
+message.setStatus(Message.HELLO);
+ksession.insert(message);
+
+ksession.fireAllRules();
+
+logger.close();
+
+ksession.dispose();    </programlisting>
+  </example>
+
+  <para>To execute the example as a Java application:</para>
+
+  <orderedlist>
+    <listitem>
+      <para>Open the class org.drools.examples.helloworld.HelloWorldExample in your
+      Eclipse IDE</para>
+    </listitem>
+
+    <listitem>
+      <para>Right-click the class and select "Run as..." and then "Java
+      application"</para>
+    </listitem>
+  </orderedlist>
+
+  <para>If we put a breakpoint on the <code>fireAllRules()</code> method
+  and select the <code>ksession</code> variable, we can see that the
+  "Hello World" rule is already activated and on the Agenda, confirming
+  that all the pattern matching work was already done during the insert.</para>
+
+  <figure>
+    <title>Hello World: fireAllRules Agenda View</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata width="100%"
+                     fileref="images/Chapter-Examples/HelloWorldExample/helloworld_agenda1.png" />
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>The may application print outs go to to System.out while the debug
+  listener print outs go to System.err.</para>
+
+  <example>
+    <title>HelloWorld: System.out in the Console window</title>
+
+    <programlisting>Hello World
+Goodbye cruel world</programlisting>
+  </example>
+
+  <example>
+    <title>HelloWorld: System.err in the Console window</title>
+
+    <programlisting>==&gt;[ActivationCreated(0): rule=Hello World; 
+                   tuple=[fid:1:1:org.drools.examples.helloworld.HelloWorldExample$Message@17cec96]]
+[ObjectInserted: handle=[fid:1:1:org.drools.examples.helloworld.HelloWorldExample$Message@17cec96];
+                 object=org.drools.examples.helloworld.HelloWorldExample$Message@17cec96]
+[BeforeActivationFired: rule=Hello World; 
+                   tuple=[fid:1:1:org.drools.examples.helloworld.HelloWorldExample$Message@17cec96]]
+==&gt;[ActivationCreated(4): rule=Good Bye; 
+                   tuple=[fid:1:2:org.drools.examples.helloworld.HelloWorldExample$Message@17cec96]]
+[ObjectUpdated: handle=[fid:1:2:org.drools.examples.helloworld.HelloWorldExample$Message@17cec96];
+                old_object=org.drools.examples.helloworld.HelloWorldExample$Message@17cec96;
+                new_object=org.drools.examples.helloworld.HelloWorldExample$Message@17cec96]
+[AfterActivationFired(0): rule=Hello World]
+[BeforeActivationFired: rule=Good Bye; 
+                   tuple=[fid:1:2:org.drools.examples.helloworld.HelloWorldExample$Message@17cec96]]
+[AfterActivationFired(4): rule=Good Bye]  </programlisting>
+  </example>
+
+  <para>The LHS (after <literal>when</literal>) section of the rule states that it will be
+  activated for each <code>Message</code> object inserted into the Working
+  Memory whose status is <code>Message.HELLO</code>. Besides that, two 
+  variable bindings are created: the variable <code>message</code> is bound
+  to the <code>message</code> attribute and the variable <code>m</code>
+  is bound to the matched <code>Message</code> object itself.</para>
+
+  <para>The RHS (after <literal>then</literal>) or consequence part of the rule is
+  written using the MVEL expression language, as declared by
+  the rule's attribute <code>dialect</code>. After printing the content of
+  the bound variable <code>message</code> to <code>System.out</code>,
+  the rule changes the values of the <code>message</code> and
+  <code>status</code> attributes of the <code>Message</code> object
+  bound to <code>m</code>. This is done MVEL's <literal>modify</literal> statement,
+  which allows you to apply a block of assignments in one statement, with the
+  engine being automatically notified of the changes at the end of the 
+  block.</para>
+
+  <example>
+    <title>HelloWorld: rule "Hello World"</title>
+
+    <programlisting>rule "Hello World"
+      dialect "mvel"
+  when
+      m : Message( status == Message.HELLO, message : message )
+  then
+      System.out.println( message ); 
+      modify ( m ) { message = "Goodbye cruel world",
+                     status = Message.GOODBYE };
+end</programlisting>
+  </example>
+
+  <para>We can set a breakpoint into the DRL, on the <literal>modify</literal>
+  call, and inspect the Agenda view again during the execution of the
+  rule's consequence. This time we start the execution via "Debug As"
+  and "Drools application" and not by running a "Java application":</para>
+
+  <orderedlist>
+    <listitem>
+      <para>Open the class <code>org.drools.examples.HelloWorld</code> in your
+      Eclipse IDE.</para>
+    </listitem>
+
+    <listitem>
+      <para>Right-click the class and select "Debug as..." and then "Drools
+      application".</para>
+    </listitem>
+  </orderedlist>
+
+  <para>Now we can see that the other rule <code>"Good Bye"</code>, which
+  uses the Java dialect, is activated and placed on the Agenda.</para>
+
+  <figure>
+    <title>Hello World: rule "Hello World" Agenda View</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Examples/HelloWorldExample/helloworld_agenda2.png" />
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>The "Good Bye" rule, which specifies the "java" dialect, is similar
+  to the "Hello World" rule except that it matches <code>Message</code>
+  objects whose  status is <code>Message.GOODBYE</code>.</para>
+
+  <example>
+    <title>HelloWorld: rule "Good Bye"</title>
+
+    <programlisting>rule "Good Bye"
+      dialect "java"
+  when
+      Message( status == Message.GOODBYE, message : message )
+  then
+      System.out.println( message ); 
+end</programlisting>
+  </example>
+
+  <para>Remember the Java code where we used the
+  <code>KnowledgeRuntimeLoggerFactory</code> method <code>newFileLogger</code>
+  to create a <code>KnowledgeRuntimeLogger</code> and called
+  <code>logger.close()</code> at the end. This created an audit log file that
+  can be shown in the Audit view. We use the Audit view in many of the
+  examples to demonstrate the example execution flow. In the view screen shot
+  below we can see that the object is inserted, which creates an activation
+  for the "Hello World" rule; the activation is then executed which updates
+  the <code>Message</code> object causing the "Good Bye" rule to
+  activate; finally the "Good Bye" rule also executes. Selecting an event in
+  the Audit view highlights the origin event in green; therefore the
+  "Activation created" event is highlighted in green as the origin of the
+  "Activation executed" event.</para>
+
+  <figure>
+    <title>Hello World: Audit View</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata width="100%"
+                   fileref="images/Chapter-Examples/HelloWorldExample/helloworld_auditview1.png" />
+      </imageobject>
+    </mediaobject>
+  </figure>
+</section>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="343" height="71"
+     viewBox="0 0 343 73">
+<title>ModifyStatement</title>
+<rect x='10.5' y='55.5' rx='7.75' ry='7.75' width='43.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<a xlink:href='modify.svg'>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='32.9' x='16' y='65.43'>modify</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 54.40 62.5 L 59.4 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 57.40 60.5 L 59.4 62.5 L 57.4 64.5'/>
+<rect x='59.9' y='55.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.89999999999998' x='65.40' y='65.43'>(</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 76.80 62.5 L 81.8 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 79.80 60.5 L 81.8 62.5 L 79.8 64.5'/>
+<rect x='82.3' y='55.5' width='71.5' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='ConditionalExpr.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='60.5' x='87.80' y='64.83'>ConditionalExpr</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 153.80 62.5 L 158.8 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 156.80 60.5 L 158.8 62.5 L 156.8 64.5'/>
+<rect x='159.3' y='55.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='164.80' y='65.43'>)</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 176.20 62.5 L 181.2 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 179.20 60.5 L 181.2 62.5 L 179.2 64.5'/>
+<rect x='181.7' y='55.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='187.20' y='65.43'>{</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 198.60 62.5 L 203.6 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 201.60 60.5 L 203.6 62.5 L 201.6 64.5'/>
+<rect x='224.1' y='42.5' width='71.5' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='ConditionalExpr.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='60.5' x='229.60' y='51.83'>ConditionalExpr</text>
+</a>
+<rect x='251.4' y='21.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.90000000000006' x='256.90' y='31.43'>,</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 248.90 26.5 L 250.9 28.5 L 248.9 30.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 213.60 49.5 L 223.6 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 295.60 49.5 L 305.6 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 223.60 28.5 L 250.9 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 268.30 28.5 L 295.6 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 223.60 49.5 A 5 5 0 0 1 218.60 44.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 218.60 33.5 A 5 5 0 0 1 223.60 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 295.60 49.5 A 5 5 0 0 0 300.60 44.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 300.60 33.5 A 5 5 0 0 0 295.60 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 218.60 44.5 L 218.6 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 300.60 44.5 L 300.6 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 307.60 47.5 L 305.6 49.5 L 307.6 51.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 203.60 62.5 L 315.6 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 213.60 62.5 A 5 5 0 0 1 208.60 57.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 208.60 54.5 A 5 5 0 0 1 213.60 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 305.60 62.5 A 5 5 0 0 0 310.60 57.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 310.60 54.5 A 5 5 0 0 0 305.60 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 208.60 57.5 L 208.6 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 310.60 57.5 L 310.6 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 315.60 62.5 L 320.6 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 318.60 60.5 L 320.6 62.5 L 318.6 64.5'/>
+<rect x='321.1' y='55.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='326.60' y='65.43'>}</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 338 62.5 L 343 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 341 60.5 L 343 62.5 L 341 64.5'/>
+<text font-size='10' font-family='Times' font-weight='normal' kerning='0' letter-spacing='0' xml:id='ModifyStatement' x='0' y='8.33'>ModifyStatement</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 0 62.5 L 10 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 8 60.5 L 10 62.5 L 8 64.5'/>
+</svg>

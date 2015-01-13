@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>When partitioning is useful</title>
+
+    <para>Knowledge base partitioning is a very powerful feature for specific
+    scenarios, but it is not a general case solution. To understand if this
+    feature would be useful for a given scenario, the user may follow the
+    checklist below:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>Does your hardware contains multiple processors?</para>
+      </listitem>
+
+      <listitem>
+        <para>Does your knowledge session process a high volume of
+        facts?</para>
+      </listitem>
+
+      <listitem>
+        <para>Are the LHS of your rules expensive to evaluate? (ex: use
+        expensive "from" expressions)</para>
+      </listitem>
+
+      <listitem>
+        <para>Does your knowledge base contains hundreds or more rules?</para>
+      </listitem>
+    </orderedlist>
+
+    <para>If the answer to all the questions above is "yes", then this feature
+    will probably increase the overall performance of your rulebase
+    evaluation. </para>
+</section>

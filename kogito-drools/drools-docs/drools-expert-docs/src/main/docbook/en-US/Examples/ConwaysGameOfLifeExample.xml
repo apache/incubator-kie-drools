@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+    <title>Conway's Game Of Life</title>
+
+    <programlisting><emphasis role="bold">Name:</emphasis> Conway's Game Of Life
+<emphasis role="bold">Main class:</emphasis> org.drools.examples.conway.ConwayAgendaGroupRun
+            org.drools.examples.conway.ConwayRuleFlowGroupRun
+<emphasis role="bold">Module:</emphasis> droolsjbpm-integration-examples (Note: this is in a different download, the droolsjbpm-integration download.)
+<emphasis role="bold">Type:</emphasis> Java application
+<emphasis role="bold">Rules file:</emphasis> conway-ruleflow.drl conway-agendagroup.drl
+<emphasis role="bold">Objective:</emphasis> Demonstrates 'accumulate', 'collect' and 'from'</programlisting>
+
+    <para>Conway's Game Of Life, described in <link
+    xlink:href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life">http://en.wikipedia.org/wiki/Conway's_Game_of_Life</link> and in
+    <link
+    xlink:href="http://www.math.com/students/wonders/life/life.html">http://www.math.com/students/wonders/life/life.html</link>,
+    is a famous cellular automaton conceived in the early 1970's by the
+    mathematician John Conway. While the system is well known as "Conway's
+    Game Of Life", it really isn't a game at all. Conway's system is more like
+    a simulation of a form of life. Don't be intimidated. The system
+    is terribly simple and terribly interesting. Math and Computer Science
+    students alike have marvelled over Conway's system for more than 30 years
+    now. The application
+    presented here is a Swing-based implementation of Conway's Game of Life.
+    The rules that govern the system are implemented as business rules using
+    Drools. This document will explain the rules that drive the simulation and
+    discuss the Drools parts of the implementation.</para>
+
+    <para>We'll first introduce the grid view, shown below, designed for the
+    visualisation of the game, showing the "arena" where the life simulation
+    takes place. Initially the grid is empty, meaning that there are no live
+    cells in the system. Each cell is either alive or dead, with live cells
+    showing a green ball. Preselected patterns of live cells can be
+    chosen from the "Pattern" drop-down list. Alternatively, individual
+    cells can be doubled-clicked to toggle them between live and dead. It's
+    important to understand that each cell is related to its neighboring cells,
+    which is fundamental for the game's rules. Neighbors include not only
+    cells to the left, right, top and bottom but also cells that are connected
+    diagonally, so that each cell has a total of 8 neighbors. Exceptions
+    are the four corner cells which have only three neighbors, and the cells
+    along the four border, with five neighbors each.</para>
+
+    <figure>
+      <title>Conway's Game of Life: Starting a new game</title>
+
+      <mediaobject>
+        <imageobject>
+    <imagedata width="100%"
+                     fileref="images/Chapter-Examples/ConwaysGameOfLifeExample/conway1.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>So what are the basic rules that govern this game? Its goal is to
+    show the development of a population, generation by generation. Each
+    generation results from the preceding one, based on the simultaneous
+    evaluation of all cells. This is the simple set of rules that
+    govern what the next generation will look like:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>If a live cell has fewer than 2 live neighbors, it dies of
+        loneliness.</para>
+      </listitem>
+
+      <listitem>
+        <para>If a live cell has more than 3 live neighbors, it dies from
+        overcrowding.</para>
+      </listitem>
+
+      <listitem>
+        <para>If a dead cell has exactly 3 live neighbors, it comes to
+        life.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>That is all there is to it. Any cell that doesn't meet any of those
+    criteria is left as is for the next generation. With those simple rules in
+    mind, go back and play with the system a little bit more and step through
+    some generations, one at a time, and notice these rules taking their
+    effect.</para>
+
+    <para>The screenshot below shows an example generation, with a number of
+    live cells. Don't worry about matching the exact patterns represented in
+    the screen shot. Just get some groups of cells added to the grid. Once you
+    have groups of live cells in the grid, or select a pre-designed pattern,
+    click the "Next Generation" button and notice what happens. Some of the
+    live cells are killed (the green ball disappears) and some dead cells come
+    to life (a green ball appears). Step through several generations and see
+    if you notice any patterns. If you click on the "Start" button, the system
+    will evolve itself so you don't need to click the "Next Generation" button
+    over and over. Play with the system a little and then come back here for
+    more details of how the application works.</para>
+
+    <figure>
+      <title>Conway's Game of Life: A running game</title>
+
+      <mediaobject>
+        <imageobject>
+    <imagedata width="100%"
+                     fileref="images/Chapter-Examples/ConwaysGameOfLifeExample/conway2.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Now lets delve into the code. As this is an advanced example we'll
+    assume that by now you know your way around the Drools framework and are
+    able to connect the presented highlight, so that we'll just focus at a
+    high level overview. The example has two ways to execute, one way 
+    uses Agenda Groups to manage execution flow, and the other one uses
+    Rule Flow Groups to manage execution flow. These two versions are
+    implemented in <code>ConwayAgendaGroupRun</code> and
+    <code>ConwayRuleFlowGroupRun</code>, respectively. Here,
+    we'll discuss the Rule Flow version, as it's what most people will
+    use.</para>
+
+    <para>All the <code>Cell</code> objects are inserted into the Session
+    and the rules in the <literal>ruleflow-group</literal> "register neighbor" are
+    allowed to execute by the Rule Flow process. This group of four rules
+    creates <code>Neighbor</code> relations between some cell and its
+    northeastern, northern, northwestern and western neighbors. This
+    relation is bidirectional, which takes care of the other four directions.
+    Border cells don't need any special treatment - they simply won't be
+    paired with neighboring cells where there isn't any. By
+    the time all activations have fired for these rules, all cells are related
+    to all their neighboring cells.</para>
+
+    <example>
+      <title>Conway's Game of Life: Register Cell Neighbour relations</title>
+
+      <programlisting>rule "register north east"
+    ruleflow-group "register neighbor"
+when
+    $cell: Cell( $row : row, $col : col )            
+    $northEast : Cell( row  == ($row - 1), col == ( $col + 1 ) )    
+then                    
+    insert( new Neighbor( $cell, $northEast ) );
+    insert( new Neighbor( $northEast, $cell ) );        
+end
+
+rule "register north"
+    ruleflow-group "register neighbor"  
+when
+    $cell: Cell( $row : row, $col : col )   
+    $north : Cell( row  == ($row - 1), col == $col )    
+then        
+    insert( new Neighbor( $cell, $north ) );
+    insert( new Neighbor( $north, $cell ) );        
+end
+
+rule "register north west"
+    ruleflow-group "register neighbor"
+when
+    $cell: Cell( $row : row, $col : col )           
+    $northWest : Cell( row  == ($row - 1), col == ( $col - 1 ) )                        
+then        
+    insert( new Neighbor( $cell, $northWest ) );
+    insert( new Neighbor( $northWest, $cell ) );        
+end
+
+rule "register west"
+    ruleflow-group "register neighbor"
+when
+    $cell: Cell( $row : row, $col : col )          
+    $west : Cell( row  == $row, col == ( $col - 1 ) )                       
+then        
+    insert( new Neighbor( $cell, $west ) );
+    insert( new Neighbor( $west, $cell ) );         
+end</programlisting>
+    </example>
+
+    <para>Once all the cells are inserted, some Java code applies the pattern
+    to the grid, setting certain cells to Live. Then, when the user clicks
+    "Start" or "Next Generation", it executes the "Generation" ruleflow. This
+    ruleflow is responsible for the management of all changes of cells in each
+    generation cycle.</para>
+
+    <figure>
+      <title>Conway's Game of Life: rule flow "Generation"</title>
+
+      <mediaobject>
+        <imageobject>
+    <imagedata fileref="images/Chapter-Examples/ConwaysGameOfLifeExample/conway_ruleflow_generation.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The rule flow process first enters the "evaluate" group, which means
+    that any active rule in the group can fire. The rules in this group apply
+    the Game-of-Life rules discussed in the beginning of the example,
+    determining the cells to be killed and the ones to be given life. We use
+    the "phase" attribute to drive the reasoning of the Cell by specific
+    groups of rules; typically the phase is tied to a Rule Flow Group in the
+    Rule Flow process definition. Notice that it doesn't actually change the
+    state of any <code>Cell</code> objectss at this point; this is because 
+    it's evaluating the grid in turn and it must complete the full evaluation
+    until those changes can be applied. To achieve this, it sets the cell to
+    a "phase" which is either <code>Phase.KILL</code> or
+    <code>Phase.BIRTH</code>, used later to control actions applied
+    to the <code>Cell</code> object.</para>
+
+    <example>
+      <title>Conway's Game of Life: Evaluate Cells with state changes</title>
+
+      <programlisting>rule "Kill The Lonely"
+    ruleflow-group "evaluate"
+    no-loop
+when
+//  A live cell has fewer than 2 live neighbors
+    theCell: Cell( liveNeighbors &lt; 2, cellState == CellState.LIVE,
+                   phase == Phase.EVALUATE )
+then
+    modify( theCell ){
+        setPhase( Phase.KILL );
+    }
+end
+
+rule "Kill The Overcrowded"
+    ruleflow-group "evaluate"
+    no-loop
+when
+//  A live cell has more than 3 live neighbors
+    theCell: Cell( liveNeighbors &gt; 3, cellState == CellState.LIVE,
+                   phase == Phase.EVALUATE )
+then
+    modify( theCell ){
+        setPhase( Phase.KILL );
+    }
+end
+
+rule "Give Birth"
+    ruleflow-group "evaluate"
+    no-loop
+when
+//  A dead cell has 3 live neighbors
+    theCell: Cell( liveNeighbors == 3, cellState == CellState.DEAD,
+                   phase == Phase.EVALUATE )
+then
+    modify( theCell ){
+        theCell.setPhase( Phase.BIRTH );
+    }
+end
+</programlisting>
+    </example>
+
+    <para>Once all <code>Cell</code> objects in the grid have been evaluated,
+    we first clear any calculation activations that occurred from any previous
+    data changes. This is done via the "reset calculate" rule, which clears
+    any activations in the "calculate" group. We then enter a split in the
+    rule flow which allows any activations in both the "kill" and the "birth"
+    group to fire. These rules are responsible for applying the state
+    change.</para>
+
+    <example>
+      <title>Conway's Game of Life: Apply the state changes</title>
+
+      <programlisting>rule "reset calculate"
+    ruleflow-group "reset calculate"
+when
+then
+    WorkingMemory wm = drools.getWorkingMemory();
+    wm.clearRuleFlowGroup( "calculate" );
+end
+
+rule "kill"
+    ruleflow-group "kill"
+    no-loop
+when
+    theCell: Cell( phase == Phase.KILL )
+then
+    modify( theCell ){
+        setCellState( CellState.DEAD ),
+        setPhase( Phase.DONE );   
+    }
+end 
+ 
+rule "birth"
+    ruleflow-group "birth"
+    no-loop
+when
+    theCell: Cell( phase == Phase.BIRTH )
+then
+    modify( theCell ){
+        setCellState( CellState.LIVE ),
+        setPhase( Phase.DONE );
+    }
+end </programlisting>
+    </example>
+
+    <para>At this stage, a number of <code>Cell</code> objects have been
+    modified with the state changed to either <code>LIVE</code> or
+    <code>DEAD</code>. Now we get to see the power of the
+    <code>Neighbor</code> facts defining the cell relations. When a cell
+    becomes live or dead, we use the <code>Neighbor</code> relation to
+    iterate over all surrounding cells, increasing or decreasing the
+    <code>liveNeighbor</code> count. Any cell that has its count changed
+    is also set to to the <code>EVALUATE</code> phase, to make sure
+    it is included in the reasoning during the evaluation stage of the
+    Rule Flow Process. Notice that we don't have to do any iteration
+    ourselves; simply by applying the relations in the rules we make
+    the rule engine do all the hard work for us, with a minimal amount of
+    code. Once the live count has been determined and set for all cells,
+    the Rule Flow Process comes to and end. If the user has initially
+    clicked the "Start" button, the engine will restart the rule flow;
+    otherwise the user may request another generation.</para>
+
+    <example>
+      <title>Conway's Game of Life: Evaluate cells with state changes</title>
+
+      <programlisting>rule "Calculate Live"
+    ruleflow-group "calculate"
+    lock-on-active  
+when
+    theCell: Cell( cellState == CellState.LIVE )
+    Neighbor( cell == theCell, $neighbor : neighbor ) 
+then
+    modify( $neighbor ){
+        setLiveNeighbors( $neighbor.getLiveNeighbors() + 1 ),
+        setPhase( Phase.EVALUATE );   
+    }
+end 
+
+rule "Calculate Dead"
+    ruleflow-group "calculate"
+    lock-on-active  
+when
+    theCell: Cell( cellState == CellState.DEAD )
+    Neighbor( cell == theCell, $neighbor : neighbor )
+then
+    modify( $neighbor ){
+        setLiveNeighbors( $neighbor.getLiveNeighbors() - 1 ),
+        setPhase( Phase.EVALUATE );
+    }
+end </programlisting>
+    </example>
+  </section>

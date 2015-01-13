@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Deploying</title>
+
+  <section>
+    <title>KnowledgePackage and Knowledge Definitions</title>
+
+    <para>A Knowledge Package is a collection of Knowledge Definitions, such
+    as rules and processes. It is created by the Knowledge Builder, as
+    described in the chapter "Building". Knowledge Packages are self-contained
+    and serializable, and they currently form the basic deployment
+    unit.</para>
+
+    <figure>
+      <title>KnowledgePackage</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/KiePackage.png"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Knowledge Packages are added to the Knowledge Base. However, a
+    Knowledge Package instance cannot be reused once it's added to the
+    Knowledge Base. If you need to add it to another Knowledge Base, try
+    serializing it first and using the "cloned" result. We hope to fix this
+    limitation in future versions of Drools.</para>
+  </section>
+
+  <section>
+    <title>KnowledgeBase</title>
+
+    <para>The Knowledge Base is a repository of all the application's
+    knowledge definitions. It may contain rules, processes, functions, and
+    type models. The Knowledge Base itself does not contain instance data,
+    known as facts; instead, sessions are created from the Knowledge Base into
+    which data can be inserted and where process instances may be started.
+    Creating the Knowledge Base can be heavy, whereas session creation is very
+    light, so it is recommended that Knowledge Bases be cached where possible
+    to allow for repeated session creation.</para>
+
+    <figure>
+      <title>KieBase</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/KieBase.png"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>A <code>KnowledgeBase</code> object is also serializable, and some
+    people may prefer to build and then store a <code>KnowledgeBase</code>,
+    treating it also as a unit of deployment, instead of the Knowledge
+    Packages.</para>
+
+    <para>The KnowledgeBase is created using the KnowledgeBaseFactory.</para>
+
+    <figure>
+      <title>KnowledgeBaseFactory</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/KnowledgeBaseFactory.png"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>A KnowledgeBase can be created using the default
+    configuration.</para>
+
+    <example>
+      <title>Creating a new KnowledgeBase</title>
+
+      <programlisting language="java">KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();</programlisting>
+    </example>
+
+    <para>If a custom class loader was used with the
+    <code>KnowledgeBuilder</code> to resolve types not in the default class
+    loader, then that must also be set on the <code>KnowledgeBase</code>. The
+    technique for this is the same as with the
+    <code>KnowledgeBuilder</code>.</para>
+
+    <example>
+      <title>Creating a new KnowledgeBase with a custom ClassLoader</title>
+
+      <programlisting language="java">KnowledgeBaseConfiguration kbaseConf =
+    KnowledgeBaseFactory.createKnowledgeBaseConfiguration( null, cl );
+KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );</programlisting>
+    </example>
+  </section>
+
+  <section>
+    <title>In-Process Building and Deployment</title>
+
+    <para>This is the simplest form of deployment. It compiles the knowledge
+    definitions and adds them to the Knowledge Base in the same JVM. This
+    approach requires drools-core.jar and drools-compiler.jar to be on the
+    classpath.</para>
+
+    <example>
+      <title>Add KnowledgePackages to a KnowledgeBase</title>
+
+      <programlisting language="java">Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
+
+KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+kbase.addKnowledgePackages( kpkgs );</programlisting>
+    </example>
+
+    <para>Note that the <code>addKnowledgePackages(kpkgs)</code> method can be
+    called iteratively to add additional knowledge.</para>
+  </section>
+
+  <section>
+    <title>Building and Deployment in Separate Processes</title>
+
+    <para>Both the <code>KnowledgeBase</code> and the
+    <code>KnowledgePackage</code> are units of deployment and serializable.
+    This means you can have one machine do any necessary building, requiring
+    <filename>drools-compiler.jar</filename>, and have another machine deploy
+    and execute everything, needing only
+    <filename>drools-core.jar</filename>.</para>
+
+    <para>Although serialization is standard Java, we present an example of
+    how one machine might write out the deployment unit and how another
+    machine might read in and use that deployment unit.</para>
+
+    <example>
+      <title>Writing the KnowledgePackage to an OutputStream</title>
+
+      <programlisting language="java">ObjectOutputStream out = new ObjectOutputStream( new FileOutputStream( fileName ) );
+out.writeObject( kpkgs );
+out.close();
+</programlisting>
+    </example>
+
+    <example>
+      <title>Reading the KnowledgePackage from an InputStream</title>
+
+      <programlisting language="java">ObjectInputStream in = new ObjectInputStream( new FileInputStream( fileName ) );
+// The input stream might contain an individual
+// package or a collection.
+@SuppressWarnings( "unchecked" )
+Collection&lt;KnowledgePackage&gt; kpkgs =
+    ()in.readObject( Collection&lt;KnowledgePackage&gt; );
+in.close();
+
+KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+kbase.addKnowledgePackages( kpkgs );
+</programlisting>
+    </example>
+
+    <para>The <code>KnowledgeBase</code> is also serializable and some people
+    may prefer to build and then store the <code>KnowledgeBase</code> itself,
+    instead of the Knowledge Packages.</para>
+
+    <para>Drools Guvnor, our server side management system, uses this
+    deployment approach. After Guvnor has compiled and published serialized
+    Knowledge Packages on a URL, Drools can use the URL resource type to load
+    them.</para>
+  </section>
+
+  <section>
+    <title>StatefulknowledgeSessions and KnowledgeBase Modifications</title>
+
+    <para>Stateful Knowledge Sessions will be discussed in more detail in
+    section "Running". The <code>KnowledgeBase</code> creates and returns
+    <code>StatefulKnowledgeSession</code> objects, and it may optionally keep
+    references to those. When <code>KnowledgeBase</code> modifications occur
+    those modifications are applied against the data in the sessions. This
+    reference is a weak reference and it is also optional, which is controlled
+    by a boolean flag.</para>
+  </section>
+
+  <section>
+    <title>KnowledgeAgent</title>
+
+    <para>The <code>KnowlegeAgent</code> provides automatic loading, caching
+    and re-loading of resources and is configured from a properties files. The
+    Knowledge Agent can update or rebuild this Knowlege Base as the resources
+    it uses are changed. The strategy for this is determined by the
+    configuration given to the factory, but it is typically pull-based using
+    regular polling. We hope to add push-based updates and rebuilds in future
+    versions. The Knowledge Agent will continuously scan all the added
+    resources, using a default polling interval of 60 seconds. If their date
+    of the last modification is updated it will rebuild the cached Knowledge
+    Base using the new resources.</para>
+
+    <figure>
+      <title>KnowledgeAgent</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/KnowledgeAgent.png"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The <code>KnowlegeBuilder</code> is created using a
+    <code>KnowledgeBuilderFactory</code> object. The agent must specify a
+    name, which is used in the log files to associate a log entry with the
+    corresponding agent.</para>
+
+    <example>
+      <title>Creating the KnowledgeAgent</title>
+
+      <programlisting language="java">KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent" );
+</programlisting>
+    </example>
+
+    <figure>
+      <title>KnowledgeAgentFactory</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/KnowledgeAgentFactory.png"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The following example constructs an agent that will build a new
+    KnowledgeBase from the specified ChangeSet. (See section "Building" for
+    more details on the ChangeSet format.) Note that the method can be called
+    iteratively to add new resources over time. The Knowledge Agent polls the
+    resources added from the ChangeSet every 60 seconds, the default interval,
+    to see if they are updated. Whenever changes are found it will construct a
+    new Knowledge Base or apply the modifications to the existing Knowledge
+    Base according to its configuration. If the change set specifies a
+    resource that is a directory its contents will be scanned for changes,
+    too.</para>
+
+    <example>
+      <title>Writing the KnowledgePackage to an OutputStream</title>
+
+      <programlisting language="java">KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent" );
+kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) );
+KnowledgeBase kbase = kagent.getKnowledgeBase();
+</programlisting>
+    </example>
+
+    <para>Resource scanning is not on by default, it's a service and must be
+    started, and the same is true for notification. Both can be done via the
+    ResourceFactory.</para>
+
+    <example>
+      <title>Starting the Scanning and Notification Services</title>
+
+      <programlisting language="java">ResourceFactory.getResourceChangeNotifierService().start();
+ResourceFactory.getResourceChangeScannerService().start();
+</programlisting>
+    </example>
+
+    <para>The default resource scanning period may be changed via the
+    <code>ResourceChangeScannerService</code>. A suitably updated
+    <code>ResourceChangeScannerConfiguration</code> object is passed to the
+    service's <code>configure()</code> method, which allows for the service to
+    be reconfigured on demand.</para>
+
+    <example>
+      <title>Changing the Scanning Intervals</title>
+
+      <programlisting language="java">ResourceChangeScannerConfiguration sconf =
+    ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
+// Set the disk scanning interval to 30s, default is 60s.
+sconf.setProperty( "drools.resource.scanner.interval", "30" );
+ResourceFactory.getResourceChangeScannerService().configure( sconf );
+</programlisting>
+    </example>
+
+    <para>Knowledge Agents can take an empty Knowledge Base or a populated
+    one. If a populated Knowledge Base is provided, the Knowledge Agent will
+    run an iterator from Knowledge Base and subscribe to the resources that it
+    finds. While it is possible for the Knowledge Builder to build all
+    resources found in a directory, that information is lost by the Knowledge
+    Builder so that those directories will not be continuously scanned. Only
+    directories specified as part of the <code>applyChangeSet(Resource)</code>
+    method are monitored.</para>
+
+    <para>One of the advantages of providing <code>KnowledgeBase</code> as the
+    starting point is that you can provide it with a
+    <code>KnowledgeBaseConfiguration</code>. When resource changes are
+    detected and a new <code>KnowledgeBase</code> object is instantiated, it
+    will use the <code>KnowledgeBaseConfiguration</code> of the previous
+    <code>KnowledgeBase</code> object.</para>
+
+    <example>
+      <title>Using an existing KnowledgeBase</title>
+
+      <programlisting language="java">KnowledgeBaseConfiguration kbaseConf =
+    KnowledgeBaseFactory.createKnowledgeBaseConfiguration( null, cl );
+KnowledgeBase kbase KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
+// Populate kbase with resources here.
+
+KnowledgeAgent kagent =
+    KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent", kbase );
+KnowledgeBase kbase = kagent.getKnowledgeBase();
+</programlisting>
+    </example>
+
+    <para>In the above example <code>getKnowledgeBase()</code> will return the
+    same provided kbase instance until resource changes are detected and a new
+    Knowledge Base is built. When the new Knowledge Base is built, it will be
+    done with the <code>KnowledgeBaseConfiguration</code> that was provided to
+    the previous <code>KnowledgeBase</code>.</para>
+
+    <para>As mentioned previously, a ChangeSet XML can specify a directory and
+    all of its contents will be added. If this ChangeSet XML is used with the
+    <code>applyChangeSet()</code> method it will also add any directories to
+    the scanning process. When the directory scan detects an additional file,
+    it will be added to the Knowledge Base; any removed file is removed from
+    the Knowledge Base, and modified files will be removed from the Knowledge
+    Base.</para>
+
+    <example>
+      <title>ChangeSet XML which adds a directories contents</title>
+
+      <programlisting language="xml">&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+            xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+            xs:schemaLocation='http://drools.org/drools-5.0/change-set.xsd' &gt;
+   &lt;add&gt;
+      &lt;resource source='file:/projects/myproject/myrules' type='PKG' /&gt;
+   &lt;/add&gt;
+&lt;/change-set&gt;
+</programlisting>
+    </example>
+
+    <para>Note that for the resource type PKG the drools-compiler dependency
+    is not needed as the Knowledge Agent is able to handle those with just
+    drools-core.</para>
+
+    <para>The <code>KnowledgeAgentConfiguration</code> can be used to modify a
+    Knowledge Agent's default behavior. You could use this to load the
+    resources from a directory, while inhibiting the continuous scan for
+    changes of that directory.</para>
+
+    <example>
+      <title>Change the Scanning Behavior</title>
+
+      <programlisting language="java">KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+KnowledgeAgentConfiguration kaconf =
+    KnowledgeAgentFactory.newKnowledgeAgentConfiguation();
+// Do not scan directories, just files.
+kaconf.setProperty( "drools.agent.scanDirectories", "false" );
+KnowledgeAgent kagent =
+    KnowledgeAgentFactory.newKnowledgeAgent( "test agent", kaconf );
+</programlisting>
+    </example>
+
+    <para>Previously we mentioned Drools Guvnor and how it can build and
+    publish serialized Knowledge Packages on a URL, and that the ChangeSet XML
+    can handle URLs and Packages. Taken together, this forms an importanty
+    deployment scenario for the Knowledge Agent.</para>
+  </section>
+</section>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="./" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>KnowledgeBase Partitioning</title>
+
+  <warning>
+    <para>THIS FEATURE IS NO LONGER SUPPORTED. It may be reintroduced in the
+    future, but trying to use it in the current version will raise an
+    exception.</para>
+  </warning>
+
+  <para>The classic Rete algorithm is usually executed using a single thread.
+  Although, as confirmed in several opportunities by Dr. Forgy, the algorithm
+  itself is parallelizable. Drools implementation of the ReteOO algorithm
+  supports coarse grained parallelization through rulebase
+  partitioning.</para>
+
+  <para>When this option is enabled, the rulebase will be partitioned in
+  several independent partitions and a pool of worker threads will be used to
+  propagate facts through the partitions. The implementation guarantees that
+  at most one worker thread will be executing tasks for a given partition, but
+  multiple partitions may be "active" at a single point in time.</para>
+
+  <para>Everything should be transparent to the user, except that all working
+  memory actions (insert/retract/modify) are executed asynchronously.</para>
+
+  <important>
+    <para>This feature enables parallel LHS evaluation, but does not change
+    the behavior of rule firing. I.e., rules will continue to fire
+    sequentially, according to the conflict resolution strategy.</para>
+  </important>
+
+  <xi:include href="Section-RulebasePartitioning_WhenPartitioningIsUseful.xml" />
+
+  <xi:include href="Section-RulebasePartitioning_HowToConfigurePartitioning.xml" />
+
+  <xi:include href="Section-RulebasePartitioning_MultithreadingManagement.xml" />
+</section>
