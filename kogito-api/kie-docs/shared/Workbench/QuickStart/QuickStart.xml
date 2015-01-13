@@ -120,7 +120,7 @@
       </listitem>
 
       <listitem>
-        <para>Version follows Maven conventions.</para>
+        <para>Version is set as 1.0 by default.</para>
       </listitem>
     </itemizedlist>
 
@@ -143,7 +143,7 @@
     <para>After a project has been created you need to define Types to be used
     by your rules.</para>
 
-    <para>Select "Data Modeller" from the "Tools" menu.</para>
+    <para>Select "Data Object" from the "New Item" menu.</para>
 
     <note>
       <para>You can also use types contained in existing JARs.</para>
@@ -152,7 +152,7 @@
     </note>
 
     <figure>
-      <title>Selecting "Data Modeller"</title>
+      <title>Creating "Data Object"</title>
 
       <mediaobject>
         <imageobject>
@@ -163,10 +163,10 @@
       </mediaobject>
     </figure>
 
-    <para>Click on "Create" to create a new type.</para>
+    <para>Set the name and select a package for the new type.</para>
 
     <figure>
-      <title>Selecting "Create" (type)</title>
+      <title>Creating a new type</title>
 
       <mediaobject>
         <imageobject>
@@ -177,10 +177,10 @@
       </mediaobject>
     </figure>
 
-    <para>Enter the required details for the type.</para>
+    <para>Set field name and type and click on "Create" to create a field for the type.</para>
 
     <figure>
-      <title>Entering required details</title>
+      <title>Click "Create" and add the field</title>
 
       <mediaobject>
         <imageobject>
@@ -191,21 +191,7 @@
       </mediaobject>
     </figure>
 
-    <para>Click on "Create" to create a field for the type.</para>
-
-    <figure>
-      <title>Selecting "Create" (field)</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center"
-                     fileref="images/Workbench/QuickStart/QuickStart11.png"
-                     format="PNG"/>
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <para>Click "Save" to create the model.</para>
+    <para>Click "Save" to update the model.</para>
 
     <figure>
       <title>Clicking "Save"</title>
@@ -213,7 +199,7 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center"
-                     fileref="images/Workbench/QuickStart/QuickStart12.png"
+                     fileref="images/Workbench/QuickStart/QuickStart11.png"
                      format="PNG"/>
         </imageobject>
       </mediaobject>
@@ -231,7 +217,7 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center"
-                     fileref="images/Workbench/QuickStart/QuickStart13.png"
+                     fileref="images/Workbench/QuickStart/QuickStart12.png"
                      format="PNG"/>
         </imageobject>
       </mediaobject>
@@ -245,7 +231,7 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center"
-                     fileref="images/Workbench/QuickStart/QuickStart14.png"
+                     fileref="images/Workbench/QuickStart/QuickStart13.png"
                      format="PNG"/>
         </imageobject>
       </mediaobject>
@@ -264,7 +250,7 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center"
-                     fileref="images/Workbench/QuickStart/QuickStart15.png"
+                     fileref="images/Workbench/QuickStart/QuickStart14.png"
                      format="PNG"/>
         </imageobject>
       </mediaobject>
@@ -278,7 +264,7 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center"
-                     fileref="images/Workbench/QuickStart/QuickStart16.png"
+                     fileref="images/Workbench/QuickStart/QuickStart15.png"
                      format="PNG"/>
         </imageobject>
       </mediaobject>
@@ -291,7 +277,7 @@
     <para>Once rules have been defined within a project; the project can be
     built and deployed to the Workbench's Maven Artifact Repository.</para>
 
-    <para>To build a project select the "Project Editor" from the "Tools"
+    <para>To build a project select the "Project Editor" from the "Project"
     menu.</para>
 
     <figure>
@@ -300,7 +286,7 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center"
-                     fileref="images/Workbench/QuickStart/QuickStart17.png"
+                     fileref="images/Workbench/QuickStart/QuickStart16.png"
                      format="PNG"/>
         </imageobject>
       </mediaobject>
@@ -324,7 +310,7 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center"
-                     fileref="images/Workbench/QuickStart/QuickStart18.png"
+                     fileref="images/Workbench/QuickStart/QuickStart17.png"
                      format="PNG"/>
         </imageobject>
       </mediaobject>
