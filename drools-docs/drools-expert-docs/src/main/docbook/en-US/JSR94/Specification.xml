@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Specification</title>
+
+  <para>This sections introduces the specification with the included packages
+  javax.rules and javax.rules.admin. If you have read this section, you should
+  know, which classes are included and what their purpose is.</para>
+
+  <para>The Java Rule Engine API is divided in two packages. You use
+  "javax.rules" mainly for executing the rule engine and "javax.rules.admin"
+  for administration.</para>
+
+  <section>
+    <title>javax.rules</title>
+
+    <para>The next sections are dealing with the interfaces, classes and
+    exceptions which are included in the javax.rules package.</para>
+
+    <section>
+      <title>Interfaces</title>
+
+      <itemizedlist>
+        <listitem>
+          <para><interfacename>Handle</interfacename></para>
+
+          <para>The Handle is used to retrieve an Object back from the
+          <classname>WorkingMemory</classname> , which was added there in a
+          <classname>StatefulRuleSession</classname> . With the
+          <classname>Handle</classname> you can modify or remove an
+          <classname>Object</classname> from the
+          <classname>WorkingMemory</classname> . To modify an Object call
+          <methodname>updateObject()</methodname> from the
+          <classname>StatefulRuleSession</classname> . To remove it, call
+          <methodname>removeObject()</methodname> with the
+          <classname>Handle</classname> as the Parameter. Inside of the
+          implementation of the Java Rule Engine API will be called the
+          <methodname>modifyObject()</methodname> and
+          <methodname>retractObject()</methodname> methods of the encapsulated
+          Knowledge (Drools and jBPM) API.</para>
+        </listitem>
+
+        <listitem>
+          <para><interfacename>ObjectFilter</interfacename></para>
+
+          <para>This interface is used to filter objects for
+          RuleSession.</para>
+        </listitem>
+
+        <listitem>
+          <para><interfacename>RuleExecutionSetMetadata</interfacename></para>
+
+          <para>The RuleExecutionSetMetadata is used to store name,
+          description and URI for a RuleExecutionSet.</para>
+        </listitem>
+
+        <listitem>
+          <para><interfacename>RuleRuntime</interfacename></para>
+
+          <para>The RuleRuntime is the key to a RuleSession. The RuleRuntime
+          obtained from the RuleServiceProvider.</para>
+
+          <para>If you retrieve a RuleRuntime call createRuleSession() to open
+          a RuleSession.</para>
+
+          <para>Through the RuleRuntime you can retrieve a list of URIs of all
+          RuleExecutionSets, which were registered by a RuleAdministrator. You
+          need the URI as a String to open a RuleSession to the rule engine.
+          The rule engine will use the rules of the RuleExecutionSet inside of
+          the RuleSession.</para>
+
+          <para>Important: The Map is used for Globals. Globals were formerly
+          called ApplicationData (in Drools 2.x). The key needs to be the
+          identifier of the Global and the Value the object you want to use as
+          a Global.</para>
+        </listitem>
+
+        <listitem>
+          <para><interfacename>RuleSession</interfacename></para>
+
+          <para>The RuleSession is the object you are working with, if you
+          want to contact the rule engine.</para>
+
+          <para>If you are getting a RuleSession from the RuleRuntime, then it
+          will be either a StatefulRuleSession or a
+          StatelessRuleSession.</para>
+
+          <para>Please call in both cases the release()-method that all
+          resources will be freed.</para>
+        </listitem>
+
+        <listitem>
+          <para><interfacename>StatefulRuleSession </interfacename></para>
+
+          <para>A stateful Rule Session you are using, if you need to run the
+          rule engine more than once. You get the chance to assert objects,
+          execute rules, assert objects again etc..</para>
+
+          <para>You will get a Handle for every object which you are asserting
+          to the Rule Session. Do not lose it, you will need it, to retract or
+          modify objects in the Working Memory. You are having no direct
+          contact to Drools´ Working Memory which is used inside the
+          implementation, for this you got the RuleSession.</para>
+        </listitem>
+
+        <listitem>
+          <para><interfacename>StatelessRuleSession </interfacename></para>
+
+          <para>A stateless RuleSession means, that you are having only one
+          contact to the rule engine. You are giving a list of objects to the
+          rule engine and the rule engine asserts them all and starts
+          execution immediately. The result is a list of objects. The content
+          of the result list depends on your rules. If your rules are not
+          modifying or retracting any objects from the Working Memory, you
+          should get all objects, you added back.</para>
+
+          <para>There is a possibility using an ObjectFilter which will filter
+          the resulting list of objects before you get it.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Classes</title>
+
+      <itemizedlist>
+        <listitem>
+          <para><classname>RuleServiceProvider</classname></para>
+
+          <para>The RuleServiceProvider gives you the RuleAdministrator or a
+          RuleRuntime, which you need to open a new Rule Session. To get the
+          RuleServiceProvider call
+          RuleServiceProviderManager.getRuleServiceProvider().</para>
+
+          <para>In J2EE environment you can bind the RuleServiceProvider to
+          the JNDI and make a lookup to get it in all your
+          applications.</para>
+        </listitem>
+
+        <listitem>
+          <para><classname> RuleServiceProviderManager </classname></para>
+
+          <para>The RuleServiceProvider is often compared with the
+          DriverManager, which you use in JDBC. It works like setting up the
+          Driver for a DataBase.</para>
+
+          <para>To load the Drools Rule Service Provider use:</para>
+
+          <para><code>Class ruleServiceProviderClass =
+          Class.forName("org.drools.jsr94.rules.RuleServiceProviderImpl");</code></para>
+
+          <para>If you did not register it, yet, do it now:</para>
+
+          <para><code>RuleServiceProviderManager.registerRuleServiceProvider(
+          "http://jboss.com/products/rules", ruleServiceProviderClass);
+          </code></para>
+
+          <para>Now you can get your RuleServiceProvider calling:</para>
+
+          <para><code>RuleServiceProviderManager.getRuleServiceProvider("http://jboss.com/products/rules")</code>;</para>
+
+          <para>If you do not need the RuleServiceProvider any more,
+          deregister it:</para>
+
+          <para><code>RuleServiceProviderManager.deregisterRuleServiceProvider(
+          "http://jboss.com/products/rules"); </code></para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Exceptions</title>
+
+      <itemizedlist>
+        <listitem>
+          <para><classname>ConfigurationException</classname></para>
+
+          <para>This exception is thrown when a user configuration error has
+          been made.</para>
+        </listitem>
+
+        <listitem>
+          <para><classname>InvalidHandleException</classname></para>
+
+          <para>This exception is thrown when a client passes an invalid
+          Handle to the rule engine.</para>
+        </listitem>
+
+        <listitem>
+          <para><classname> InvalidRuleSessionException </classname></para>
+
+          <para>The InvalidRuleSessionException should be thrown when a method
+          is invoked on a RuleSession and the internal state of the
+          RuleSession is invalid. This may have occurred because a
+          StatefulRuleSession has been serialized and external resources can
+          no longer be accessed. This exception is also used to signal that a
+          RuleSession is in an invalid state (such as an attempt to use it
+          after the release method has been called) (Taken from JCP API
+          Documentation).</para>
+        </listitem>
+
+        <listitem>
+          <para><classname>RuleException</classname></para>
+
+          <para>Base class for all Exception classes in the javax.rules
+          package (Taken from JCP API Documentation).</para>
+        </listitem>
+
+        <listitem>
+          <para><classname>RuleExecutionException</classname></para>
+
+          <para>This exception is not thrown in the Drools 3 JSR 94
+          implementation</para>
+        </listitem>
+
+        <listitem>
+          <para><classname> RuleExecutionSetNotFoundException
+          </classname></para>
+
+          <para>This exception is thrown if a client requests a
+          RuleExecutionSet from the RuleRuntime and the URI or
+          RuleExecutionSet cannot be found (Taken from JCP API
+          Documentation).</para>
+        </listitem>
+
+        <listitem>
+          <para><classname> RuleSessionCreateException </classname></para>
+
+          <para>This exception is thrown when a client requests a RuleSession
+          from the RuleRuntime and an error occurs that prevents a RuleSession
+          from being returned (Taken from JCP API Documentation).</para>
+        </listitem>
+
+        <listitem>
+          <para><classname> RuleSessionTypeUnsupportedException
+          </classname></para>
+
+          <para>This exception is thrown when a client requests a RuleSession
+          and the vendor does not support the given type (defined in the
+          RuleRuntime) or the RuleExecutionSet itself does not support the
+          requested mode (Taken from JCP API Documentation).</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+  </section>
+
+  <section>
+    <title>javax.rules.admin</title>
+
+    <para>In this section all the interfaces and exceptions from the
+    javax.rules.admin package are explained.</para>
+
+    <section>
+      <title>Interfaces</title>
+
+      <itemizedlist>
+        <listitem>
+          <para><interfacename>LocalRuleExecutionSetProvider</interfacename></para>
+
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para><interfacename>Rule</interfacename></para>
+
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para><interfacename>RuleAdministrator</interfacename></para>
+
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para><interfacename>RuleExecutionSet</interfacename></para>
+
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para><interfacename>RuleExecutionSetProvider</interfacename></para>
+
+          <para></para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Exceptions</title>
+
+      <itemizedlist>
+        <listitem>
+          <para><classname>RuleAdministrationException</classname></para>
+
+          <para>Base class for all administration RuleException classes in the
+          javax.rules.admin package (Taken from JCP API Documentation).</para>
+        </listitem>
+
+        <listitem>
+          <para><classname> RuleExecutionSetCreateException
+          </classname></para>
+
+          <para>This exception is thrown if an error occurs while creating a
+          rule execution set (Taken from JCP API Documentation).</para>
+        </listitem>
+
+        <listitem>
+          <para><classname> RuleExecutionSetDeregistrationException
+          </classname></para>
+
+          <para>This exception is thrown if an exception occurs while
+          unregistering a rule execution set from a URI (Taken from JCP API
+          Documentation).</para>
+        </listitem>
+
+        <listitem>
+          <para><classname> RuleExecutionSetRegisterException
+          </classname></para>
+
+          <para>This exception is thrown if an exception occurs while
+          registering a rule execution set to a URI (Taken from JCP API
+          Documentation).</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+  </section>
+</section>

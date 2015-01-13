@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Declaring and Using Entry Points</title>
+
+  <para>Entry points are declared implicitly in Drools by directly making use
+  of them in rules. I.e. referencing an entry point in a rule will make the
+  engine, at compile time, to identify and create the proper internal
+  structures to support that entry point. </para>
+
+  <para>So, for instance, lets imagine a banking application, where
+  transactions are fed into the system coming from streams. One of the streams
+  contains all the transactions executed in ATM machines. So, if one of the
+  rules says: a withdraw is authorized if and only if the account balance is
+  over the requested withdraw amount, the rule would look like:</para>
+
+  <example>
+      <title>Example of Stream Usage</title>
+
+      <programlisting>rule "authorize withdraw"
+when
+    WithdrawRequest( $ai : accountId, $am : amount ) from entry-point "ATM Stream"
+    CheckingAccount( accountId == $ai, balance &gt; $am )
+then
+    // authorize withdraw
+end
+</programlisting>
+    </example>
+  <para>In the previous example, the engine compiler will identify that
+  the pattern is tied to the entry point "ATM Stream" and will both create all
+  the necessary structures for the rulebase to support the "ATM Stream" and
+  will only match WithdrawRequests coming from the "ATM Stream". In the
+  previous example, the rule is also joining the event from the stream with a
+  fact from the main working memory (CheckingAccount).</para>
+
+  <para>Now, lets imagine a second rule that states that a fee of $2 must be
+  applied to any account for which a withdraw request is placed at a bank
+  branch:</para>
+
+  <example>
+      <title>Using a different Stream</title>
+
+      <programlisting>rule "apply fee on withdraws on branches"
+when
+    WithdrawRequest( $ai : accountId, processed == true ) from entry-point "Branch Stream"
+    CheckingAccount( accountId == $ai )
+then
+    // apply a $2 fee on the account
+end
+</programlisting>
+    </example>
+  <para>The previous rule will match events of the exact same type as
+  the first rule (WithdrawRequest), but from two different streams, so an
+  event inserted into "ATM Stream" will never be evaluated against the pattern
+  on the second rule, because the rule states that it is only interested in
+  patterns coming from the "Branch Stream".</para>
+
+  <para>So, entry points, besides being a proper abstraction for streams, are
+  also a way to scope facts in the working memory, and a valuable tool for
+  reducing cross products explosions. But that is a subject for another
+  time.</para>
+
+  <para>Inserting events into an entry point is equally simple. Instead of
+  inserting events directly into the working memory, insert them into the
+  entry point as shown in the example below:</para>
+
+  <example>
+      <title>Inserting facts into an entry point</title>
+
+      <programlisting language="java">// create your rulebase and your session as usual
+StatefulKnowledgeSession session = ...
+
+// get a reference to the entry point
+WorkingMemoryEntryPoint atmStream = session.getWorkingMemoryEntryPoint( "ATM Stream" );
+
+// and start inserting your facts into the entry point
+atmStream.insert( aWithdrawRequest );
+</programlisting>
+    </example>
+
+  <para>The previous example shows how to manually insert facts into a given
+  entry point. Although, usually, the application will use one of the many
+  adapters to plug a stream end point, like a JMS queue, directly into the
+  engine entry point, without coding the inserts manually. The Drools pipeline
+  API has several adapters and helpers to do that as well as examples on how
+  to do it.</para>
+</section>

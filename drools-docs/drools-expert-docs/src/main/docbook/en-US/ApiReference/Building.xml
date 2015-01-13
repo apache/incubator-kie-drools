@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Building</title>
+
+  <figure>
+    <title>org.drools.core.builder</title>
+
+    <mediaobject>
+      <imageobject>
+        <!-- HACK remove me when https://issues.jboss.org/browse/PRESSGANG-81 is fixed -->
+        <imagedata fileref="images/Chapter-User_Guide/builder.png" width="75%"/>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <section>
+    <title>Building Using Code</title>
+
+    <para>The KnowledgeBuilder is responsible for taking source files, such as
+    a DRL file or an Excel file, and turning them into a Knowledge Package of
+    rule and process definitions which a Knowledge Base can consume. An object
+    of the class <code>ResourceType</code> indicates the type of resource the builder
+    is being asked to process.</para>
+
+    <para>The <code>ResourceFactory</code> provides capabilities to load
+    resources from a number of sources, such as a java.io.Reader, the classpath,
+    a URL, a java.io.File, or a byte elements. Binary files, such as decision tables
+    (Excel's' .xls files), should not be passed in with Reader, which is only 
+    suitable for text based resources.</para>
+
+    <figure>
+      <title>KnowledgeBuilder</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/KieBuilder.png"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The KnowledgeBuilder is created using the
+    KnowledgeBuilderFactory.</para>
+
+    <figure>
+      <title>KnowledgeBuilderFactory</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/KnowledgeBuilderFactory.png"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>A KnowledgeBuilder can be created using the default
+    configuration.</para>
+
+    <example>
+      <title>Creating a new KnowledgeBuilder</title>
+
+      <programlisting language="java">KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();</programlisting>
+    </example>
+
+    <para>A configuration can be created using the
+    <code>KnowledgeBuilderFactory</code>. This allows the behavior of the
+    Knowledge Builder to be modified. The most common usage is to provide a
+    custom class loader so that the <code>KnowledgeBuilder</code> object can
+    resolve classes that are not in the default classpath. The first parameter
+    is for properties and is optional, i.e., it may be left null, in which
+    case the default options will be used. The options parameter can be used
+    for things like changing the dialect or registering new accumulator
+    functions.</para>
+
+    <example>
+      <title>Creating a new KnowledgeBuilder with a custom ClassLoader</title>
+
+      <programlisting language="java">KnowledgeBuilderConfiguration kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, classLoader );
+KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilderConf);
+</programlisting>
+    </example>
+
+    <para>Resources of any type can be added iteratively. Below, a DRL file is
+    added. The Knowledge Builder can handle multiple namespaces, so you can 
+    combine resources regardless of their namespace.</para>
+
+    <example>
+      <title>Adding DRL Resources</title>
+
+      <programlisting language="java">kbuilder.add( ResourceFactory.newFileResource( "/project/myrules.drl" ),
+              ResourceType.DRL);
+</programlisting>
+    </example>
+
+    <para>It is a best practice to check the compilation results after
+    each resource addition. The KnowledgeBuilder can report compilation results
+    of 3 different severities: ERROR, WARNING and INFO.</para>
+
+    <para>An ERROR indicates that the compilation of the resource failed.
+    You should not add more resources or retrieve the Knowledge Packages if
+    there are errors. <code>getKnowledgePackages()</code> returns an empty
+    list if there are errors.</para>
+
+    <para>WARNING and INFO results can be ignored, but are available for
+    inspection nonetheless.</para>
+
+    <para>To check and retrieve the build results for a list of severities,
+    the KnowledgeBuilder API offers a couple of methods:</para>
+
+    <example>
+      <title>KnowledgeBuilder result inspection methods</title>
+
+      <programlisting>    /**
+     * Return the knowledge builder results for the listed severities.
+     * @param severities
+     * @return
+     */
+    KnowledgeBuilderResults getResults(ResultSeverity... severities);
+    
+    /**
+     * Checks if the builder generated any results of the listed severities
+     * @param severities
+     * @return
+     */
+    boolean hasResults(ResultSeverity... severities ;</programlisting>
+    </example>
+
+    <para>The KnowledgeBuilder API also has two helper methods to
+    inspect for errors only: <code>hasErrors()</code> and
+    <code>getErrors()</code>:</para>
+
+    <example>
+      <title>Validating</title>
+
+      <programlisting language="java">if( kbuilder.hasErrors() ) {
+    System.out.println( kbuilder.getErrors() );
+    return;
+}
+</programlisting>
+    </example>
+
+    <para>When all the resources have been added and there are no errors the
+    collection of Knowledge Packages can be retrieved. It is a java.util.Collection
+    because there is one KnowledgePackage per package namespace. These
+    Knowledge Packages are serializable and often used as a unit of
+    deployment.</para>
+
+    <example>
+      <title>Getting the KnowledgePackages</title>
+
+      <programlisting language="java">Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
+</programlisting>
+    </example>
+
+    <para>The final example puts it all together.</para>
+
+    <example>
+      <title>Putting it all together</title>
+
+      <programlisting language="java">KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+if( kbuilder.hasErrors() ) {
+    System.out.println( kbuilder.getErrors() );
+    return;
+}
+
+KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+kbuilder.add( ResourceFactory.newFileResource( "/project/myrules1.drl" ),
+              ResourceType.DRL);
+kbuilder.add( ResourceFactory.newFileResource( "/project/myrules2.drl" ),
+              ResourceType.DRL);
+
+if( kbuilder.hasErrors() ) {
+    System.out.println( kbuilder.getErrors() );
+    return;
+}
+
+Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
+</programlisting>
+    </example>
+    <para>The KnowledgeBuilder also has a batch mode, with a fluent interface, that
+    allows to build multiple DRLs at once as in the following example:</para>
+
+    <example>
+      <title>Using KnowledgeBuilder in batch mode</title>
+
+      <programlisting language="java">KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+kbuilder.batch()
+        .add( ResourceFactory.newFileResource( "/project/myrules1.drl" ), ResourceType.DRL )
+        .add( ResourceFactory.newFileResource( "/project/myrules2.drl" ), ResourceType.DRL )
+        .add( ResourceFactory.newFileResource( "/project/mytypes1.drl" ), ResourceType.DRL )
+        .build();
+      </programlisting>
+    </example>
+
+    <para>In this way it is no longer necessary to build the DRL files in the right order (e.g., first the DRLs
+    containing the type declarations and then the ones with the rules using them) and it will also be possible to have
+    circular references among them.</para>
+
+    <para>Moreover, the KnowledgeBuilder (regardless if you are using the batch mode or not) also allows to discard
+    what has been added with the last DRL(s) build. This can be useful to recover from having added an
+    erroneous DRL to the KnowledgeBuilder, as shown below.</para>
+
+    <example>
+      <title>Discard the build of the last added DRL</title>
+
+      <programlisting language="java">kbuilder.add( ResourceFactory.newFileResource( "/project/wrong.drl" ), ResourceType.DRL );
+if ( kbuilder.hasErrors() ) {
+    kbuilder.undo();
+}
+      </programlisting>
+    </example>
+  </section>
+
+  <section>
+    <title>Building Using Configuration and the ChangeSet XML</title>
+
+    <para>Instead of adding the resources to create definitions
+    programmatically it is also possible to do it by configuration, via the
+    ChangeSet XML. The simple XML file supports three elements: add, remove,
+    and modify, each of which has a sequence of &lt;resource&gt; subelements
+    defining a configuration entity. The following XML schema is
+    <emphasis>not</emphasis> normative and intended for illustration
+    only.</para>
+
+    <example>
+      <title>XML Schema for ChangeSet XML (not normative)</title>
+
+      <programlisting language="xml">&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://drools.org/drools-5.0/change-set"
+           targetNamespace="http://drools.org/drools-5.0/change-set"&gt;
+
+  &lt;xs:element name="change-set" type="ChangeSet"/&gt;
+
+  &lt;xs:complexType name="ChangeSet"&gt;
+    &lt;xs:choice maxOccurs="unbounded"&gt;
+      &lt;xs:element name="add"    type="Operation"/&gt;
+      &lt;xs:element name="remove" type="Operation"/&gt;
+      &lt;xs:element name="modify" type="Operation"/&gt;
+    &lt;/xs:choice&gt;
+  &lt;/xs:complexType&gt;
+
+  &lt;xs:complexType name="Operation"&gt;
+    &lt;xs:sequence&gt;
+      &lt;xs:element name="resource" type="Resource"
+                  maxOccurs="unbounded"/&gt;
+    &lt;/xs:sequence&gt;
+  &lt;/xs:complexType&gt;
+
+  &lt;xs:complexType name="Resource"&gt;
+    &lt;xs:sequence&gt;
+      <!-- To be used with &lt;resource type="DTABLE"...&gt> -->
+      &lt;xs:element name="decisiontable-conf" type="DecTabConf"
+                  minOccurs="0"/&gt;
+    &lt;/xs:sequence&gt;
+    <!-- java.net.URL, plus "classpath" protocol -->
+    &lt;xs:attribute name="source" type="xs:string"/&gt;
+    &lt;xs:attribute name="type"   type="ResourceType"/&gt;
+  &lt;/xs:complexType&gt;
+
+  &lt;xs:complexType name="DecTabConf"&gt;
+    &lt;xs:attribute name="input-type"     type="DecTabInpType"/&gt;
+    &lt;xs:attribute name="worksheet-name" type="xs:string"
+                  use="optional"/&gt;
+  &lt;/xs:complexType&gt;
+
+  <!-- according to org.drools.core.builder.ResourceType -->
+  &lt;xs:simpleType name="ResourceType"&gt;
+    &lt;xs:restriction base="xs:string"&gt;
+      &lt;xs:enumeration value="DRL"/&gt;
+      &lt;xs:enumeration value="XDRL"/&gt;
+      &lt;xs:enumeration value="DSL"/&gt;
+      &lt;xs:enumeration value="DSLR"/&gt;
+      &lt;xs:enumeration value="DRF"/&gt;
+      &lt;xs:enumeration value="DTABLE"/&gt;
+      &lt;xs:enumeration value="PKG"/&gt;
+      &lt;xs:enumeration value="BRL"/&gt;
+      &lt;xs:enumeration value="CHANGE_SET"/&gt;
+    &lt;/xs:restriction&gt;
+  &lt;/xs:simpleType&gt;
+
+  <!-- according to org.drools.core.builder.DecisionTableInputType -->
+  &lt;xs:simpleType name="DecTabInpType"&gt;
+    &lt;xs:restriction base="xs:string"&gt;
+      &lt;xs:enumeration value="XLS"/&gt;
+      &lt;xs:enumeration value="CSV"/&gt;
+    &lt;/xs:restriction&gt;
+  &lt;/xs:simpleType&gt;
+
+&lt;/xs:schema&gt;</programlisting>
+    </example>
+
+    <para>Currently only the add element is supported, but the others will be
+    implemented to support iterative changes. The following example loads a
+    single DRL file.</para>
+
+    <example>
+      <title>Simple ChangeSet XML</title>
+
+      <programlisting language="xml">&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+             xs:schemaLocation='http://drools.org/drools-5.0/change-set.xsd http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
+   &lt;add&gt;
+      &lt;resource source='file:/project/myrules.drl' type='DRL' /&gt;
+   &lt;/add&gt;
+&lt;/change-set&gt;
+</programlisting>
+    </example>
+
+    <para>Notice the <code>file:</code> prefix, which signifies the protocol
+    for the resource. The Change Set supports all the protocols provided by
+    java.net.URL, such as "file" and "http", as well as an additional
+    "classpath". Currently the type attribute must always be specified for a
+    resource, as it is not inferred from the file name extension. Using the
+    ClassPath resource loader in Java allows you to specify the Class Loader
+    to be used to locate the resource but this is not possible from XML.
+    Instead, the Class Loader will default to the one used by the Knowledge
+    Builder unless the ChangeSet XML is itself loaded by the ClassPath
+    resource, in which case it will use the Class Loader specified for that
+    resource.</para>
+
+    <para>Currently you still need to use the API to load that ChangeSet, but
+    we will add support for containers such as Spring in the future, so that
+    the process of creating a Knowledge Base can be done completely by XML
+    configuration. Loading resources using an XML file couldn't be simpler, as
+    it's just another resource type.</para>
+
+    <example>
+      <title>Loading the ChangeSet XML</title>
+
+      <programlisting language="java">kbuilder.add( ResourceFactory.newUrlResource( url ), ResourceType.CHANGE_SET );
+</programlisting>
+    </example>
+
+    <para>Change Sets can include any number of resources, and they even
+    support additional configuration information, which currently is only
+    needed for decision tables. Below, the example is expanded to load rules
+    via HTTP from a URL location, and an Excel decision table from the
+    classpath.</para>
+
+    <example>
+      <title>ChangeSet XML with resource configuration</title>
+
+      <programlisting language="xml">&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+             xs:schemaLocation='http://drools.org/drools-5.0/change-set.xsd http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
+  &lt;add&gt;
+       &lt;resource source='http:org/domain/myrules.drl' type='DRL' /&gt;
+       &lt;resource source='classpath:data/IntegrationExampleTest.xls' type="DTABLE"&gt;
+           &lt;decisiontable-conf input-type="XLS" worksheet-name="Tables_2" /&gt;
+       &lt;/resource&gt;
+   &lt;/add&gt;
+ &lt;/change-set&gt;
+</programlisting>
+    </example>
+
+    <para>The Change Set is especially useful when working with a Knowledge
+    Agent, as it allows for change notification and automatic rebuilding of
+    the Knowledge Base, which is covered in more detail in the section on the
+    Knowledge Agent, under Deploying.</para>
+
+    <para>Directories can also be specified, to add all resources in that
+    folder. Currently it is expected that all resources in that folder are of
+    the same type. If you use the Knowledge Agent it will provide a continous
+    scanning for added, modified or removed resources and rebuild the cached
+    Knowledge Base. The KnowledgeAgent provides more information on
+    this.</para>
+
+    <example>
+      <title>ChangeSet XML which adds a directory's contents</title>
+
+      <programlisting language="xml">&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
+            xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+            xs:schemaLocation='http://drools.org/drools-5.0/change-set.xsd http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
+   &lt;add&gt;
+      &lt;resource source='file:/projects/myproject/myrules' type='DRL' /&gt;
+   &lt;/add&gt;
+&lt;/change-set&gt;
+</programlisting>
+    </example>
+  </section>
+
+  <section id="changingTheDefaultBuildResultSeverity">
+    <title>Changing the Default Build Result Severity</title>
+
+    <para>In some cases, it is possible to change the default severity of a
+    type of build result. For instance, when a new rule with the same name
+    of an existing rule is added to a package, the default behavior is to
+    replace the old rule by the new rule and report it as an INFO. This is
+    probably ideal for most use cases, but in some deployments the user
+    might want to prevent the rule update and report it as an error.</para>
+
+    <para>Changing the default severity for a result type is configured
+    like any other option in Drools and can be done by API
+    calls, system properties or configuration files. As of this version,
+    Drools supports configurable result severity for rule updates and function
+    updates. To configure it using system properties or configuration files,
+    the user has to use the following properties:</para>
+
+    <example>
+      <title>Setting the severity using properties</title>
+
+      <programlisting>// sets the severity of rule updates
+drools.kbuilder.severity.duplicateRule = &lt;INFO|WARNING|ERROR&gt;
+// sets the severity of function updates
+drools.kbuilder.severity.duplicateFunction = &lt;INFO|WARNING|ERROR&gt;
+</programlisting>
+    </example>
+
+    <para>To configure it through the API:</para>
+
+    <example>
+      <title>Setting the severity using the API</title>
+
+      <programlisting>KnowledgeBuilderConfiguration kbconf = ...
+
+// sets the severity of rule updates to error
+kbconf.setOption( KBuilderSeverityOption.get( "drools.kbuilder.severity.duplicateRule", ResultSeverity.ERROR ) ); 
+// sets the severity of function updates to error
+kbconf.setOption( KBuilderSeverityOption.get( "drools.kbuilder.severity.duplicateFunction", ResultSeverity.ERROR ) ); 
+</programlisting>
+    </example>
+
+    <para/>
+
+    <para/>
+  </section>
+</section>

@@ -1,0 +1,1074 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Decision Tables in Spreadsheets</title>
+
+  <para>Decision tables are a "precise yet compact" (ref. Wikipedia) way of representing conditional logic, and are well
+  suited to <emphasis>business</emphasis> level rules.</para>
+
+  <para>Drools supports managing rules in a spreadsheet format. Supported formats are Excel (XLS), and CSV, which means
+  that a variety of spreadsheet programs (such as Microsoft Excel, OpenOffice.org Calc amongst others) can be utilized.
+  It is expected that web based decision table editors will be included in a near future release.</para>
+
+  <para>Decision tables are an old concept (in software terms) but have proven useful over the years. Very briefly
+  speaking, in Drools decision tables are a way to generate rules driven from the data entered into a spreadsheet. All
+  the usual features of a spreadsheet for data capture and manipulation can be taken advantage of.</para>
+
+  <section>
+    <title>When to Use Decision Tables</title>
+
+    <para>Consider decision tables as a course of action if rules exist that can be expressed as rule templates and
+    data: each row of a decision table provides data that is combined with a template to generate a rule.</para>
+
+    <para>Many businesses already use spreadsheets for managing data, calculations, etc. If you are happy to continue
+    this way, you can also manage your business rules this way. This also assumes you are happy to manage packages of
+    rules in <filename>.xls</filename> or <filename>.csv</filename> files. Decision tables are not recommended for rules
+    that do not follow a set of templates, or where there are a small number of rules (or if there is a dislike towards
+    software like Excel or OpenOffice.org). They are ideal in the sense that there can be control over what
+    <emphasis>parameters</emphasis> of rules can be edited, without exposing the rules directly.</para>
+
+    <para>Decision tables also provide a degree of insulation from the underlying object model.</para>
+  </section>
+
+  <section>
+    <title>Overview</title>
+
+    <para>Here are some examples of real world decision tables (slightly edited to protect the
+      innocent).</para>
+
+    <figure>
+      <title> Using Excel to edit a decision table </title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Decision_Tables/excel.png" format="PNG" width="100%"
+            />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+
+
+    <figure>
+      <title> Multiple actions for a rule row </title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Decision_Tables/actions.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+
+    <figure>
+      <title> Using OpenOffice.org </title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Decision_Tables/open_office.png" width="100%"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+
+    <para>In the above examples, the technical aspects of the decision table have been collapsed
+      away (using a standard spreadsheet feature).</para>
+
+    <para>The rules start from row 17, with each row resulting in a rule. The conditions are in
+      columns C, D, E, etc., the actions being off-screen. The values in the cells are quite simple,
+      and their meaning is indicated by the headers in Row 16. Column B is just a description. It is
+      customary to use color to make it obvious what the different areas of the table mean.</para>
+
+    <note>
+      <para>Note that although the decision tables look like they process top down, this is not
+        necessarily the case. Ideally, rules are authored without regard for the order of rows,
+        simply because this makes maintenance easier, as rows will not need to be shifted around all
+        the time.</para>
+    </note>
+
+    <para>As each row is a rule, the same principles apply. As the rule engine processes the facts,
+      any rules that match may fire. (Some people are confused by this. It is possible to clear the
+      agenda when a rule fires and simulate a very simple decision table where only the first match
+      effects an action.) Also note that you can have multiple tables on one spreadsheet. This way,
+      rules can be grouped where they share common templates, yet at the end of the day they are all
+      combined into one rule package. Decision tables are essentially a tool to generate DRL rules
+      automatically.</para>
+
+    <figure>
+      <title> A real world example using multiple tables for grouping like rules </title>
+      <screenshot>
+
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Decision_Tables/multi_table.png" width="100%"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+  </section>
+
+  <section>
+    <title>How Decision Tables Work</title>
+
+    <para>The key point to keep in mind is that in a decision table each row is a rule, and each
+      column in that row is either a condition or action for that rule.</para>
+
+    <figure>
+      <title> Rows and columns </title>
+      <screenshot>
+
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Decision_Tables/row_col.png" width="100%"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+
+    <para>The spreadsheet looks for the <firstterm>RuleTable</firstterm> keyword to indicate the
+      start of a rule table (both the starting row and column). Other keywords are also used to
+      define other package level attributes (covered later). It is important to keep the keywords in
+      one column. By convention the second column ("B") is used for this, but it can be any column
+      (convention is to leave a margin on the left for notes). In the following diagram, C is
+      actually the column where it starts. Everything to the left of this is ignored.</para>
+
+    <para>If we expand the hidden sections, it starts to make more sense how it works; note the
+      keywords in column C.</para>
+
+    <figure>
+      <title> Expanded for rule templates </title>
+      <screenshot>
+
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Decision_Tables/expanded.png" width="100%"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+
+    <para>Now the hidden magic which makes it work can be seen. The RuleSet keyword indicates the
+      name to be used in the <emphasis>rule package</emphasis> that will encompass all the rules.
+      This name is optional, using a default, but it <emphasis>must</emphasis> have the
+        <emphasis>RuleSet</emphasis> keyword in the cell immediately to the right.</para>
+
+    <para>The other keywords visible in Column C are Import and Sequential which will be covered
+      later. The RuleTable keyword is important as it indicates that a chunk of rules will follow,
+      based on some rule templates. After the RuleTable keyword there is a name, used to prefix the
+      names of the generated rules. The sheet name and row numbers are appended to guarantee unique
+      rule names.</para>
+
+    <warning>
+      <para>The RuleTable name combined with the sheet name must be unique across all spreadsheet
+        files in the same KnowledgeBase. If that's not the case, some rules might have the same name
+        and only 1 of them will be applied. To show such ignored rules, <link
+          linkend="changingTheDefaultBuildResultSeverity">raise the severity of such rule name
+          conflicts</link>.</para>
+    </warning>
+
+    <para> The column of RuleTable indicates the column in which the rules start; columns to the
+      left are ignored.</para>
+
+    <note>
+      <para>In general the keywords make up name-value pairs.</para>
+    </note>
+
+    <para>Referring to row 14 (the row immediately after RuleTable), the keywords CONDITION and
+      ACTION indicate that the data in the columns below are for either the LHS or the RHS parts of
+      a rule. There are other attributes on the rule which can also be optionally set this
+      way.</para>
+
+    <para>Row 15 contains declarations of <firstterm>ObjectTypes</firstterm>. The content in this
+      row is optional, but if this option is not in use, the row must be left blank; however this
+      option is usually found to be quite useful. When using this row, the values in the cells below
+      (row 16) become constraints on that object type. In the above case, it generates
+        <code>Person(age=="42")</code> and <code>Cheese(type=="stilton")</code>, where 42 and
+      "stilton" come from row 18. In the above example, the "==" is implicit; if just a field name
+      is given the translator assumes that it is to generate an exact match.</para>
+
+    <note>
+      <para>An ObjectType declaration can span columns (via merged cells), meaning that all columns
+        below the merged range are to be combined into one set of constraints within a single
+        pattern matching a single fact at a time, as opposed to non-merged cells containing the same
+        ObjectType, but resulting in different patterns, potentially matching different or identical
+        facts.</para>
+    </note>
+
+    <para>Row 16 contains the rule templates themselves. They can use the "$param" placeholder to
+      indicate where data from the cells below should be interpolated. (For multiple insertions, use
+      "$1", "$2", etc., indicating parameters from a comma-separated list in a cell below.) Row 17
+      is ignored; it may contain textual descriptions of the column's purpose.</para>
+
+    <para>Rows 18 and 19 show data, which will be combined (interpolated) with the templates in row
+      15, to generate rules. If a cell contains no data, then its template is ignored. (This would
+      mean that some condition or action does not apply for that rule row.) Rule rows are read until
+      there is a blank row. Multiple RuleTables can exist in a sheet. Row 20 contains another
+      keyword, and a value. The row positions of keywords like this do not matter (most people put
+      them at the top) but their column should be the same one where the RuleTable or RuleSet
+      keywords should appear. In our case column C has been chosen to be significant, but any other
+      column could be used instead.</para>
+
+    <para>In the above example, rules would be rendered like the following (as it uses the
+      "ObjectType" row):</para>
+
+    <screen>//row 18
+rule "Cheese_fans_18"
+when
+    Person(age=="42")
+    Cheese(type=="stilton")
+then
+    list.add("Old man stilton");
+end
+</screen>
+
+    <note>
+      <para>The constraints <code>age=="42"</code> and <code>type=="stilton"</code> are interpreted
+        as single constraints, to be added to the respective ObjectType in the cell above. If the
+        cells above were spanned, then there could be multiple constraints on one "column".</para>
+    </note>
+
+    <warning>
+      <para>Very large decision tables may have very large memory requirements.</para>
+    </warning>
+  </section>
+
+  <section>
+    <title>Spreadsheet Syntax</title>
+
+    <section>
+      <title>Spreadsheet Structure</title>
+
+      <para>There are two types of rectangular areas defining data that is used for generating a DRL file. One, marked
+      by a cell labelled <code>RuleSet</code>, defines all DRL items except rules. The other one may occur repeatedly
+      and is to the right and below a cell whose contents begin with <code>RuleTable</code>. These areas represent the
+      actual decision tables, each area resulting in a set of rules of similar structure.</para>
+
+      <para>A Rule Set area may contain cell pairs, one below the <code>RuleSet</code> cell and containing a keyword
+      designating the kind of value contained in the other one that follows in the same row.</para>
+
+      <para>The columns of a Rule Table area define patterns and constraints for the left hand sides of the rules
+      derived from it, actions for the consequences of the rules, and the values of individual rule attributes. Thus, a
+      Rule Table area should contain one or more columns, both for conditions and actions, and an arbitrary selection of
+      columns for rule attributes, at most one column for each of these. The first four rows following the row with the
+      cell marked with <code>RuleTable</code> are earmarked as header area, mostly used for the definition of code to
+      construct the rules. It is any additional row below these four header rows that spawns another rule, with its data
+      providing for variations in the code defined in the Rule Table header.</para>
+
+      <para>All keywords are case insensitive.</para>
+
+      <para>Only the first worksheet is examined for decision tables.</para>
+    </section>
+
+    <section>
+      <title>Rule Set Entries</title>
+
+      <para>Entries in a Rule Set area may define DRL constructs (except rules), and specify rule attributes. While
+      entries for constructs may be used repeatedly, each rule attribute may be given at most once, and it applies to
+      all rules unless it is overruled by the same attribute being defined within the Rule Table area.</para>
+
+      <para>Entries must be given in a vertically stacked sequence of cell pairs. The first one contains a keyword and
+      the one to its right the value, as shown in the table below. This sequence of cell pairs may be interrupted by
+      blank rows or even a Rule Table, as long as the column marked by <code>RuleSet</code> is upheld as the one
+      containing the keyword.</para>
+
+      <table>
+        <title>Entries in the Rule Set area</title>
+
+        <tgroup cols="3">
+          <thead>
+            <row>
+              <entry>Keyword</entry>
+
+              <entry>Value</entry>
+
+              <entry>Usage</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>RuleSet</entry>
+
+              <entry>The package name for the generated DRL file. Optional, the default is
+              <code>rule_table</code>.</entry>
+
+              <entry>Must be First entry.</entry>
+            </row>
+
+            <row>
+              <entry>Sequential</entry>
+
+              <entry>"true" or "false". If "true", then salience is used to ensure that rules fire from the top
+              down.</entry>
+
+              <entry>Optional, at most once. If omitted, no firing order is imposed.</entry>
+            </row>
+
+            <row>
+              <entry>EscapeQuotes</entry>
+
+              <entry>"true" or "false". If "true", then quotation marks are escaped so that they appear literally in the
+              DRL.</entry>
+
+              <entry>Optional, at most once. If omitted, quotation marks are escaped.</entry>
+            </row>
+
+            <row>
+              <entry>Import</entry>
+
+              <entry>A comma-separated list of Java classes to import.</entry>
+
+              <entry>Optional, may be used repeatedly.</entry>
+            </row>
+
+            <row>
+              <entry>Variables</entry>
+
+              <entry>Declarations of DRL globals, i.e., a type followed by a variable name. Multiple global definitions
+              must be separated with a comma.</entry>
+
+              <entry>Optional, may be used repeatedly.</entry>
+            </row>
+
+            <row>
+              <entry>Functions</entry>
+
+              <entry>One or more function definitions, according to DRL syntax.</entry>
+
+              <entry>Optional, may be used repeatedly.</entry>
+            </row>
+
+            <row>
+              <entry>Queries</entry>
+
+              <entry>One or more query definitions, according to DRL syntax.</entry>
+
+              <entry>Optional, may be used repeatedly.</entry>
+            </row>
+
+            <row>
+              <entry>Declare</entry>
+
+              <entry>One or more declarative types, according to DRL syntax.</entry>
+
+              <entry>Optional, may be used repeatedly.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <warning>
+        <para>In some locales, MS Office, LibreOffice and OpenOffice will encode a double quoth <literal>"</literal>
+        differently, which will cause a compilation error. The difference is often hard to see. For example:
+        <literal>“A”</literal> will fail, but <literal>"A"</literal> will work.</para>
+      </warning>
+
+      <para>For defining rule attributes that apply to all rules in the generated DRL file you can use any of the
+      entries in the following table. Notice, however, that the proper keyword must be used. Also, each of these
+      attributes may be used only once.</para>
+
+      <important>
+        <para>Rule attributes specified in a Rule Set area will affect all rule assets in the same package (not only
+        in the spreadsheet). Unless you are sure that the spreadsheet is the only one rule asset in the package, the
+        recommendation is to specify rule attributes not in a Rule Set area but in a Rule Table columns for each
+        rule instead.</para>
+      </important>
+
+      <table>
+        <title>Rule attribute entries in the Rule Set area</title>
+
+        <tgroup cols="3">
+          <thead>
+            <row>
+              <entry>Keyword</entry>
+
+              <entry>Initial</entry>
+
+              <entry>Value</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>PRIORITY</entry>
+
+              <entry>P</entry>
+
+              <entry>An integer defining the "salience" value for the rule. Overridden by the "Sequential" flag.</entry>
+            </row>
+
+            <row>
+              <entry>DURATION</entry>
+
+              <entry>D</entry>
+
+              <entry>A long integer value defining the "duration" value for the rule.</entry>
+            </row>
+
+            <row>
+              <entry>TIMER</entry>
+
+              <entry>T</entry>
+
+              <entry>A timer definition. See "Timers and Calendars".</entry>
+            </row>
+
+            <row>
+              <entry>CALENDARS</entry>
+
+              <entry>E</entry>
+
+              <entry>A calendars definition. See "Timers and Calendars".</entry>
+            </row>
+
+            <row>
+              <entry>NO-LOOP</entry>
+
+              <entry>U</entry>
+
+              <entry>A Boolean value. "true" inhibits looping of rules due to changes made by its consequence.</entry>
+            </row>
+
+            <row>
+              <entry>LOCK-ON-ACTIVE</entry>
+
+              <entry>L</entry>
+
+              <entry>A Boolean value. "true" inhibits additional activations of all rules with this flag set within the
+              same ruleflow or agenda group.</entry>
+            </row>
+
+            <row>
+              <entry>AUTO-FOCUS</entry>
+
+              <entry>F</entry>
+
+              <entry>A Boolean value. "true" for a rule within an agenda group causes activations of the rule to
+              automatically give the focus to the group.</entry>
+            </row>
+
+            <row>
+              <entry>ACTIVATION-GROUP</entry>
+
+              <entry>X</entry>
+
+              <entry>A string identifying an activation (or XOR) group. Only one rule within an activation group will
+              fire, i.e., the first one to fire cancels any existing activations of other rules within the same
+              group.</entry>
+            </row>
+
+            <row>
+              <entry>AGENDA-GROUP</entry>
+
+              <entry>G</entry>
+
+              <entry>A string identifying an agenda group, which has to be activated by giving it the "focus", which is
+              one way of controlling the flow between groups of rules.</entry>
+            </row>
+
+            <row>
+              <entry>RULEFLOW-GROUP</entry>
+
+              <entry>R</entry>
+
+              <entry>A string identifying a rule-flow group.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+
+    <section>
+      <title>Rule Tables</title>
+
+      <para>All Rule Tables begin with a cell containing "RuleTable", optionally followed by a string within the same
+      cell. The string is used as the initial part of the name for all rules derived from this Rule Table, with the row
+      number appended for distinction. (This automatic naming can be overridden by using a NAME column.) All other cells
+      defining rules of this Rule Table are below and to the right of this cell.</para>
+
+      <para>The next row defines the column type, with each column resulting in a part of the condition or the
+      consequence, or providing some rule attribute, the rule name or a comment. The table below shows which column
+      headers are available; additional columns may be used according to the table showing rule attribute entries given
+      in the preceding section. Note that each attribute column may be used at most once. For a column header, either
+      use the keyword or any other word beginning with the letter given in the "Initial" column of these tables.</para>
+
+      <table>
+        <title>Column Headers in the Rule Table</title>
+
+        <tgroup cols="4">
+          <thead>
+            <row>
+              <entry>Keyword</entry>
+
+              <entry>Initial</entry>
+
+              <entry>Value</entry>
+
+              <entry>Usage</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>NAME</entry>
+
+              <entry>N</entry>
+
+              <entry>Provides the name for the rule generated from that row. The default is constructed from the text
+              following the RuleTable tag and the row number.</entry>
+
+              <entry>At most one column</entry>
+            </row>
+
+            <row>
+              <entry>DESCRIPTION</entry>
+
+              <entry>I</entry>
+
+              <entry>A text, resulting in a comment within the generated rule.</entry>
+
+              <entry>At most one column</entry>
+            </row>
+
+            <row>
+              <entry>CONDITION</entry>
+
+              <entry>C</entry>
+
+              <entry>Code snippet and interpolated values for constructing a constraint within a pattern in a
+              condition.</entry>
+
+              <entry>At least one per rule table</entry>
+            </row>
+
+            <row>
+              <entry>ACTION</entry>
+
+              <entry>A</entry>
+
+              <entry>Code snippet and interpolated values for constructing an action for the consequence of the
+              rule.</entry>
+
+              <entry>At least one per rule table</entry>
+            </row>
+
+            <row>
+              <entry>METADATA</entry>
+
+              <entry>@</entry>
+
+              <entry>Code snippet and interpolated values for constructing a metadata entry for the rule.</entry>
+
+              <entry>Optional, any number of columns</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <para>Given a column headed CONDITION, the cells in successive lines result in a conditional element.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Text in the first cell below CONDITION develops into a pattern for the rule condition, with the snippet
+          in the next line becoming a constraint. If the cell is merged with one or more neighbours, a single pattern
+          with multiple constraints is formed: all constraints are combined into a parenthesized list and appended to
+          the text in this cell. The cell may be left blank, which means that the code snippet in the next row must
+          result in a valid conditional element on its own.</para>
+
+          <para>To include a pattern without constraints, you can write the pattern in front of the text for another
+          pattern.</para>
+
+          <para>The pattern may be written with or without an empty pair of parentheses. A "from" clause may be appended
+          to the pattern.</para>
+
+          <para>If the pattern ends with "eval", code snippets are supposed to produce boolean expressions for inclusion
+          into a pair of parentheses after "eval".</para>
+        </listitem>
+
+        <listitem>
+          <para>Text in the second cell below CONDITION is processed in two steps.</para>
+
+          <orderedlist>
+            <listitem>
+              <para>The code snippet in this cell is modified by interpolating values from cells farther down in the
+              column. If you want to create a constraint consisting of a comparison using "==" with the value from the
+              cells below, the field selector alone is sufficient. Any other comparison operator must be specified as
+              the last item within the snippet, and the value from the cells below is appended. For all other constraint
+              forms, you must mark the position for including the contents of a cell with the symbol
+              <code>$param</code>. Multiple insertions are possible by using the symbols <code>$1</code>,
+              <code>$2</code>, etc., and a comma-separated list of values in the cells below.</para>
+
+              <para>A text according to the pattern
+              <code>forall(</code><emphasis>delimiter</emphasis><code>){</code><emphasis>snippet</emphasis><code>}</code>
+              is expanded by repeating the <emphasis>snippet</emphasis> once for each of the values of the
+              comma-separated list of values in each of the cells below, inserting the value in place of the symbol
+              <code>$</code> and by joining these expansions by the given <emphasis>delimiter</emphasis>. Note that the
+              forall construct may be surrounded by other text.</para>
+            </listitem>
+
+            <listitem>
+              <para>If the cell in the preceding row is not empty, the completed code snippet is added to the
+              conditional element from that cell. A pair of parentheses is provided automatically, as well as a
+              separating comma if multiple constraints are added to a pattern in a merged cell.</para>
+
+              <para>If the cell above is empty, the interpolated result is used as is.</para>
+            </listitem>
+          </orderedlist>
+        </listitem>
+
+        <listitem>
+          <para>Text in the third cell below CONDITION is for documentation only. It should be used to indicate the
+          column's purpose to a human reader.</para>
+        </listitem>
+
+        <listitem>
+          <para>From the fourth row on, non-blank entries provide data for interpolation as described above. A blank
+          cell results in the omission of the conditional element or constraint for this rule.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Given a column headed ACTION, the cells in successive lines result in an action statement.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Text in the first cell below ACTION is optional. If present, it is interpreted as an object
+          reference.</para>
+        </listitem>
+
+        <listitem>
+          <para>Text in the second cell below ACTION is processed in two steps.</para>
+
+          <orderedlist>
+            <listitem>
+              <para>The code snippet in this cell is modified by interpolating values from cells farther down in the
+              column. For a singular insertion, mark the position for including the contents of a cell with the symbol
+              <code>$param</code>. Multiple insertions are possible by using the symbols <code>$1</code>,
+              <code>$2</code>, etc., and a comma-separated list of values in the cells below.</para>
+
+              <para>A method call without interpolation can be achieved by a text without any marker symbols. In this
+              case, use any non-blank entry in a row below to include the statement.</para>
+
+              <para>The forall construct is available here, too.</para>
+            </listitem>
+
+            <listitem>
+              <para>If the first cell is not empty, its text, followed by a period, the text in the second cell and a
+              terminating semicolon are stringed together, resulting in a method call which is added as an action
+              statement for the consequence.</para>
+
+              <para>If the cell above is empty, the interpolated result is used as is.</para>
+            </listitem>
+          </orderedlist>
+        </listitem>
+
+        <listitem>
+          <para>Text in the third cell below ACTION is for documentation only. It should be used to indicate the
+          column's purpose to a human reader.</para>
+        </listitem>
+
+        <listitem>
+          <para>From the fourth row on, non-blank entries provide data for interpolation as described above. A blank
+          cell results in the omission of the action statement for this rule.</para>
+        </listitem>
+      </itemizedlist>
+
+      <note>
+        <para>Using <code>$1</code> instead of <code>$param</code> works in most cases, but it will fail if the
+        replacement text contains a comma: then, only the part preceding the first comma is inserted. Use this
+        "abbreviation" judiciously.</para>
+      </note>
+
+      <para>Given a column headed METADATA, the cells in successive lines result in a metadata annotation for the
+      generated rules.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Text in the first cell below METADATA is ignored.</para>
+        </listitem>
+
+        <listitem>
+          <para>Text in the second cell below METADATA is subject to interpolation, as described above, using values
+          from the cells in the rule rows. The metadata marker character <code>@</code> is prefixed automatically, and
+          thus it should not be included in the text for this cell.</para>
+        </listitem>
+
+        <listitem>
+          <para>Text in the third cell below METADATA is for documentation only. It should be used to indicate the
+          column's purpose to a human reader.</para>
+        </listitem>
+
+        <listitem>
+          <para>From the fourth row on, non-blank entries provide data for interpolation as described above. A blank
+          cell results in the omission of the metadata annotation for this rule.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Examples</title>
+
+      <para>The various interpolations are illustrated in the following example.</para>
+
+      <example>
+        <title>Interpolating cell data</title>
+
+        <para>If the template is <code>Foo(bar == $param)</code> and the cell is <code>42</code>,
+          then the result is <code>Foo(bar == 42)</code>.</para>
+
+        <para>If the template is <code>Foo(bar &lt; $1, baz == $2)</code> and the cell contains
+            <code>42,43</code>, the result will be <code>Foo(bar &lt; 42, baz ==43)</code>.</para>
+
+        <para>The template <code>forall(&amp;&amp;){bar != $}</code> with a cell containing
+            <code>42,43</code> results in <code>bar != 42 &amp;&amp; bar != 43</code>.</para>
+      </example>
+
+      <para>The next example demonstrates the joint effect of a cell defining the pattern type and
+        the code snippet below it. <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Decision_Tables/spanned_column.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot> This spreadsheet section shows how the <code>Person</code> type declaration
+        spans 2 columns, and thus both constraints will appear as <code>Person(age == ..., type ==
+          ...)</code>. Since only the field names are present in the snippet, they imply an equality
+        test.</para>
+
+      <para>In the following example the marker symbol <code>$param</code> is used. <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Decision_Tables/with_param.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot> The result of this column is the pattern <code>Person(age == "42"))</code>.
+        You may have noticed that the marker and the operator "==" are redundant.</para>
+
+      <para>The next example illustrates that a trailing insertion marker can be omitted. <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Decision_Tables/operator_completion.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot> Here, appending the value from the cell is implied, resulting in
+          <code>Person(age &lt; "42")).</code></para>
+
+      <para>You can provide the definition of a binding variable, as in the example below. . <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Decision_Tables/with_binding.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot> Here, the result is <code>c: Cheese(type == "stilton").</code> Note that the
+        quotes are provided automatically. Actually, anything can be placed in the object type row.
+        Apart from the definition of a binding variable, it could also be an additional pattern that
+        is to be inserted literally.</para>
+
+      <para>A simple construction of an action statement with the insertion of a single value is
+        shown below. <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Decision_Tables/consequence.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot> The cell below the ACTION header is left blank. Using this style, anything can
+        be placed in the consequence, not just a single method call. (The same technique is
+        applicable within a CONDITION column as well.)</para>
+
+      <para>Below is a comprehensive example, showing the use of various column headers. It is not
+        an error to have no value below a column header (as in the NO-LOOP column): here, the
+        attribute will not be applied in any of the rules. <figure>
+          <title> Example usage of keywords for imports, headers, etc. </title>
+          <screenshot>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/Chapter-Decision_Tables/Key.png" width="100%"/>
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
+      </para>
+
+      <para>And, finally, here is an example of Import, Variables and Functions. <figure>
+          <title> Example usage of keywords for functions, etc. </title>
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/Chapter-Decision_Tables/keywords.png"/>
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure> Multiple package names within the same cell must be separated by a comma. Also,
+        the pairs of type and variable names must be comma-separated. Functions, however, must be
+        written as they appear in a DRL file. This should appear in the same column as the "RuleSet"
+        keyword; it could be above, between or below all the rule rows.</para>
+
+      <note>
+        <para>It may be more convenient to use Import, Variables, Functions and Queries repeatedly
+          rather than packing several definitions into a single cell.</para>
+      </note>
+    </section>
+  </section>
+
+  <section>
+    <title>Creating and integrating Spreadsheet based Decision Tables</title>
+
+    <para>The API to use spreadsheet based decision tables is in the drools-decisiontables module. There is really only
+    one class to look at: <literal>SpreadsheetCompiler</literal>. This class will take spreadsheets in various formats,
+    and generate rules in DRL (which you can then use in the normal way). The <literal>SpreadsheetCompiler</literal> can
+    just be used to generate partial rule files if it is wished, and assemble it into a complete rule package after the
+    fact (this allows the separation of technical and non-technical aspects of the rules if needed).</para>
+
+    <para>To get started, a sample spreadsheet can be used as a base. Alternatively, if the plug-in
+      is being used (Rule Workbench IDE), the wizard can generate a spreadsheet from a template (to
+      edit it an xls compatible spreadsheet editor will need to be used). 
+      <figure>
+        <title> Wizard in the IDE </title>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Decision_Tables/wizard.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
+    </para>
+  </section>
+
+  <section>
+    <title>Managing Business Rules in Decision Tables</title>
+
+    <section>
+      <title>Workflow and Collaboration</title>
+
+      <para>Spreadsheets are well established business tools (in use for over 25 years). Decision tables lend themselves
+      to close collaboration between IT and domain experts, while making the business rules clear to business analysts,
+      it is an ideal separation of concerns.</para>
+
+      <para>Typically, the whole process of authoring rules (coming up with a new decision table) would be something
+      like:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Business analyst takes a template decision table (from a repository, or from IT)</para>
+        </listitem>
+
+        <listitem>
+          <para>Decision table business language descriptions are entered in the table(s)</para>
+        </listitem>
+
+        <listitem>
+          <para>Decision table rules (rows) are entered (roughly)</para>
+        </listitem>
+
+        <listitem>
+          <para>Decision table is handed to a technical resource, who maps the business language (descriptions) to
+          scripts (this may involve software development of course, if it is a new application or data model)</para>
+        </listitem>
+
+        <listitem>
+          <para>Technical person hands back and reviews the modifications with the business analyst.</para>
+        </listitem>
+
+        <listitem>
+          <para>The business analyst can continue editing the rule rows as needed (moving columns around is also fine
+          etc).</para>
+        </listitem>
+
+        <listitem>
+          <para>In parallel, the technical person can develop test cases for the rules (liaising with business analysts)
+          as these test cases can be used to verify rules and rule changes once the system is running.</para>
+        </listitem>
+      </orderedlist>
+    </section>
+
+    <section>
+      <title>Using spreadsheet features</title>
+
+      <para>Features of applications like Excel can be used to provide assistance in entering data
+        into spreadsheets, such as validating fields. Lists that are stored in other worksheets can
+        be used to provide valid lists of values for cells, like in the following diagram. 
+        <figure>
+          <screenshot>
+            <title> Wizard in the IDE </title>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/Chapter-Decision_Tables/lists.png"/>
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
+      </para>
+
+      <para>Some applications provide a limited ability to keep a history of changes, but it is recommended to use an
+      alternative means of revision control. When changes are being made to rules over time, older versions are archived
+      (many open source solutions exist for this, such as Subversion or Git).</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Rule Templates</title>
+
+    <para>Related to decision tables (but not necessarily requiring a spreadsheet) are "Rule
+      Templates" (in the drools-templates module). These use any tabular data source as a source of
+      rule data - populating a template to generate many rules. This can allow both for more
+      flexible spreadsheets, but also rules in existing databases for instance (at the cost of
+      developing the template up front to generate the rules).</para>
+
+    <para>With Rule Templates the data is separated from the rule and there are no restrictions on
+      which part of the rule is data-driven. So whilst you can do everything you could do in
+      decision tables you can also do the following:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>store your data in a database (or any other format)</para>
+      </listitem>
+
+      <listitem>
+        <para>conditionally generate rules based on the values in the data</para>
+      </listitem>
+
+      <listitem>
+        <para>use data for any part of your rules (e.g. condition operator, class name, property
+          name)</para>
+      </listitem>
+
+      <listitem>
+        <para>run different templates over the same data</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>As an example, a more classic decision table is shown, but without any hidden rows for the
+      rule meta data (so the spreadsheet only contains the raw data to generate the rules).</para>
+
+    <figure> <title> Template data </title>
+      <screenshot>
+        
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Decision_Tables/template1.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+
+    <para>See the <filename>ExampleCheese.xls</filename> in the examples download for the above
+      spreadsheet.</para>
+
+    <para>If this was a regular decision table there would be hidden rows before row 1 and between
+      rows 1 and 2 containing rule metadata. With rule templates the data is completely separate
+      from the rules. This has two handy consequences - you can apply multiple rule templates to the
+      same data and your data is not tied to your rules at all. So what does the template look
+      like?</para>
+
+    <programlisting>
+1  template header
+2  age
+3  type
+4  log
+5
+6  package org.drools.examples.templates;
+7
+8  global java.util.List list;
+9
+10 template "cheesefans"
+11
+12 rule "Cheese fans_@{row.rowNumber}"
+13 when
+14    Person(age == @{age})
+15    Cheese(type == "@{type}")
+16 then
+17    list.add("@{log}");
+18 end
+19
+20 end template
+</programlisting>
+
+    <para>Annotations to the preceding program listing: <itemizedlist>
+        <listitem>
+          <para>Line 1: All rule templates start with <code>template header</code>.</para>
+        </listitem>
+
+        <listitem>
+          <para>Lines 2-4: Following the header is the list of columns in the order they appear in
+            the data. In this case we are calling the first column <code>age</code>, the second
+              <code>type</code> and the third <code>log</code>.</para>
+        </listitem>
+
+        <listitem>
+          <para>Line 5: An empty line signifies the end of the column definitions.</para>
+        </listitem>
+
+        <listitem>
+          <para>Lines 6-9: Standard rule header text. This is standard rule DRL and will appear at
+            the top of the generated DRL. Put the package statement and any imports and global and
+            function definitions into this section.</para>
+        </listitem>
+
+        <listitem>
+          <para>Line 10: The keyword <code>template</code> signals the start of a rule template.
+            There can be more than one template in a template file, but each template should have a
+            unique name.</para>
+        </listitem>
+
+        <listitem>
+          <para>Lines 11-18: The rule template - see below for details.</para>
+        </listitem>
+
+        <listitem>
+          <para>Line 20: The keywords <code>end template</code> signify the end of the
+            template.</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>The rule templates rely on MVEL to do substitution using the syntax @{token_name}. There
+      is currently one built-in expression, @{row.rowNumber} which gives a unique number for each
+      row of data and enables you to generate unique rule names. For each row of data a rule will be
+      generated with the values in the data substituted for the tokens in the template. With the
+      example data above the following rule file would be generated:</para>
+
+    <programlisting>
+package org.drools.examples.templates;
+
+global java.util.List list;
+
+rule "Cheese fans_1"
+when
+  Person(age == 42)
+  Cheese(type == "stilton")
+then
+  list.add("Old man stilton");
+end
+
+rule "Cheese fans_2"
+when
+  Person(age == 21)
+  Cheese(type == "cheddar")
+then
+  list.add("Young man cheddar");
+end
+</programlisting>
+
+    <para>The code to run this is simple:</para>
+
+    <programlisting language="java">
+DecisionTableConfiguration dtableconfiguration =
+    KnowledgeBuilderFactory.newDecisionTableConfiguration();
+dtableconfiguration.setInputType( DecisionTableInputType.XLS );
+
+KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+kbuilder.add( ResourceFactory.newClassPathResource( getSpreadsheetName(),
+                                                    getClass() ),
+              ResourceType.DTABLE,
+              dtableconfiguration );
+</programlisting>
+  </section>
+</section>
