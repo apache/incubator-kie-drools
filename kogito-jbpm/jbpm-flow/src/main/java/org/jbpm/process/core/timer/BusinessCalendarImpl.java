@@ -318,6 +318,7 @@ public class BusinessCalendarImpl implements BusinessCalendar {
                     tmp2.set(Calendar.HOUR_OF_DAY, 0);
                     tmp2.set(Calendar.MINUTE, 0);
                     tmp2.set(Calendar.SECOND, 0);
+                    tmp2.set(Calendar.MILLISECOND, 0);
 
                     long difference = tmp.getTimeInMillis() - tmp2.getTimeInMillis();
                     

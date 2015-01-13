@@ -288,7 +288,7 @@ public class BusinessCalendarImplTest extends AbstractBaseTest {
 		props.put(BusinessCalendarImpl.HOLIDAYS, "2015-01-13");
 		String expectedDate = "2015-01-15 11:38";
  
-		SessionPseudoClock clock = new StaticPseudoClock(parseToDateWithTime("2015-01-08 11:38").getTime());
+		SessionPseudoClock clock = new StaticPseudoClock(parseToDateWithTimeAndMillis("2015-01-08 11:38:30.198").getTime());
  
 		BusinessCalendarImpl businessCalendarImpl = new BusinessCalendarImpl(props, clock);
  
@@ -311,6 +311,19 @@ public class BusinessCalendarImplTest extends AbstractBaseTest {
     
     private Date parseToDateWithTime(String dateString) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        
+        Date testTime;
+        try {
+            testTime = sdf.parse(dateString);
+            
+            return testTime;
+        } catch (ParseException e) {
+            return null;
+        }        
+    }
+    
+    private Date parseToDateWithTimeAndMillis(String dateString) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         
         Date testTime;
         try {
