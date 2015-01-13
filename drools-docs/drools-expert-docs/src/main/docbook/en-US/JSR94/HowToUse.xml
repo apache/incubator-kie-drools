@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>How To Use</title>
+
+  <para>There are two parts to working with JSR94. The first part is the
+  administrative API that deals with building and registering RuleExecutionSet objects,
+  the second part is runtime session execution of these RuleExecutionSets.</para>
+
+  <section>
+    <title>Building and Registering RuleExecutionSets</title>
+
+    <para>The RuleServiceProviderManager manages the registration and
+    retrieval of RuleServiceProviders. The Drools RuleServiceProvider
+    implementation is automatically registered via a static block when the
+    class is loaded using Class.forName, in much the same way as JDBC
+    drivers.</para>
+
+    <example>
+        <title>Automatic RuleServiceProvider Registration</title>
+
+        <programlisting language="java">// RuleServiceProviderImpl is registered to "http://drools.org/"
+// via a static initialization block
+Class.forName("org.drools.jsr94.rules.RuleServiceProviderImpl");
+
+// Get the rule service provider from the provider manager.
+RuleServiceProvider ruleServiceProvider =
+  RuleServiceProviderManager.getRuleServiceProvider("http://drools.org/");</programlisting>
+      </example>
+    <para>The RuleServiceProvider provides access to the RuleRuntime and
+    RuleAdministrator APIs. The RuleAdministrator provides an administration
+    API for the management of RuleExecutionSet objects, making it possible to
+    register a RuleExecutionSet that can then be retrieved via the
+    RuleRuntime.</para>
+
+    <para>First, you need to create a RuleExecutionSet before it can be
+    registered; RuleAdministrator provides factory methods to return an empty
+    LocalRuleExecutionSetProvider or RuleExecutionSetProvider. The
+    LocalRuleExecutionSetProvider should be used to load a RuleExecutionSets
+    from local sources that are not serializable, like Streams. The
+    RuleExecutionSetProvider can be used to load RuleExecutionSets from
+    serializable sources, like DOM Elements or Packages. Both the
+    "ruleAdministrator.getLocalRuleExecutionSetProvider( null );" and the
+    "ruleAdministrator.getRuleExecutionSetProvider( null );" take null as a
+    parameter, as the properties map for these methods is not currently
+    used.</para>
+
+    <example>
+      <title>Registering a LocalRuleExecutionSet with the RuleAdministrator
+      API</title>
+
+      <programlisting language="java">// Get the RuleAdministration
+RuleAdministrator ruleAdministrator = ruleServiceProvider.getRuleAdministrator();
+LocalRuleExecutionSetProvider ruleExecutionSetProvider =
+  ruleAdministrator.getLocalRuleExecutionSetProvider( null );
+
+// Create a Reader for the drl
+URL drlUrl = new URL("http://mydomain.org/sources/myrules.drl");
+Reader drlReader = new InputStreamReader(  drlUrl.openStream()  );
+
+// Create the RuleExecutionSet for the drl
+RuleExecutionSet ruleExecutionSet =
+  ruleExecutionSetProvider.createRuleExecutionSet( drlReader, null );
+</programlisting>
+    </example>
+
+    <para>"ruleExecutionSetProvider.createRuleExecutionSet( reader, null )" in
+    the above example takes a null parameter for the properties map; however
+    it can actually be used to provide configuration for the incoming source.
+    When null is passed the default is used to load the input as a drl.
+    Allowed keys for a map are "source" and "dsl". The key "source" takes "drl" or
+    "xml" as its value; you set "source" to "drl" to load a DRL, or to "xml" to
+    load an XML source; "xml" will ignore any "dsl" key/value settings. The
+    "dsl" key can take a Reader or a String (the contents of the dsl) as a
+    value.</para>
+
+    <example>
+      <title>Specifying a DSL when registering a LocalRuleExecutionSet</title>
+
+      <programlisting language="java">// Get the RuleAdministration
+RuleAdministration ruleAdministrator = ruleServiceProvider.getRuleAdministrator();
+LocalRuleExecutionSetProvider ruleExecutionSetProvider =
+  ruleAdministrator.getLocalRuleExecutionSetProvider( null );
+
+// Create a Reader for the drl
+URL drlUrl = new URL("http://mydomain.org/sources/myrules.drl");
+Reader drlReader = new InputStreamReader(  drlUrl.openStream()  );
+
+// Create a Reader for the dsl and a put in the properties map
+URL dslUrl = new URL("http://mydomain.org/sources/myrules.dsl");
+Reader dslReader = new InputStreamReader( dslUrl.openStream()  );
+Map properties = new HashMap();
+properties.put( "source", "drl" );
+properties.put( "dsl", dslReader );
+
+// Create the RuleExecutionSet for the drl and dsl
+RuleExecutionSet ruleExecutionSet =
+  ruleExecutionSetProvider.createRuleExecutionSet( reader, properties );
+</programlisting>
+    </example>
+
+    <para>When registering a RuleExecutionSet you must specify the name to be
+    used for its retrieval. There is also a field to pass properties, which is
+    currently unused - so just pass null.</para>
+
+    <example>
+      <title>Register the RuleExecutionSet</title>
+
+      <programlisting language="java">// Register the RuleExecutionSet with the RuleAdministrator
+String uri = ruleExecutionSet.getName();
+ruleAdministrator.registerRuleExecutionSet(uri, ruleExecutionSet, null);</programlisting>
+    </example>
+  </section>
+
+  <section>
+    <title>Using Stateful and Stateless RuleSessions</title>
+
+    <para>The Runtime, obtained from the RuleServiceProvider, is used to
+    create stateful and stateless rule engine sessions.</para>
+
+    <example>
+      <title>Getting the RuleRuntime</title>
+
+      <programlisting language="java">RuleRuntime ruleRuntime = ruleServiceProvider.getRuleRuntime();</programlisting>
+    </example>
+
+    <para>To create a rule session you must use one of the two RuleRuntime
+    public constants. These are "RuleRuntime.STATEFUL_SESSION_TYPE" and
+    "RuleRuntime.STATELESS_SESSION_TYPE", accompanying the URI to the
+    RuleExecutionSet you wish to instantiate a RuleSession for. The properties
+    map can be null, or it can be used to specify globals, as shown in the
+    next section. The createRuleSession(...) method returns a RuleSession
+    instance which must then be cast to StatefulRuleSession or
+    StatelessRuleSession.</para>
+
+    <example>
+      <title>Stateful Rule</title>
+
+      <programlisting language="java">(StatefulRuleSession) session =
+  ruleRuntime.createRuleSession( uri,
+                                 null,
+                                 RuleRuntime.STATEFUL_SESSION_TYPE );
+session.addObject( new PurchaseOrder( "lots of cheese" ) );
+session.executeRules();</programlisting>
+    </example>
+
+    <para>The StatelessRuleSession has a very simple API; you can only call
+    executeRules(List list) passing a list of objects, and an optional filter,
+    the resulting objects are then returned.</para>
+
+    <example>
+      <title>Stateless</title>
+
+      <programlisting language="java">(StatelessRuleSession) session =
+  ruleRuntime.createRuleSession( uri,
+                                 null,
+                                 RuleRuntime.STATELESS_SESSION_TYPE );
+List list = new ArrayList();
+list.add( new PurchaseOrder( "even more cheese" ) );
+
+List results = new ArrayList();
+results = session.executeRules( list );</programlisting>
+    </example>
+
+    <section>
+      <title>Globals</title>
+
+      <para>It is possible to support globals with JSR94, in a manner that is
+      not portable, by using the properties map passed to the RuleSession factory
+      method. Globals must be defined in the DRL or XML file first, otherwise
+      an exception will be thrown. The key represents the identifier declared
+      in the DRL or XML, and the value is the instance you wish to be used in
+      the execution. In the following example the results are collected in a
+      java.util.List which is used as global:</para>
+
+      <programlisting language="java">java.util.List globalList = new java.util.ArrayList( );
+java.util.Map map = new java.util.HashMap( );
+map.put( "list", globalList ); 
+//Open a stateless Session
+StatelessRuleSession srs =
+  (StatelessRuleSession) runtime.createRuleSession( "SistersRules",
+                                                    map,
+                                                    RuleRuntime.STATELESS_SESSION_TYPE );
+...
+// Persons added to List
+// call executeRules( ) giving a List of Objects as parameter
+// There are rules which will put Objects in the List
+// fetch the list from the map
+List list = (java.util.List) map.get("list");</programlisting>
+
+      <para>Do not forget to declare the global "list" in your DRL:</para>
+
+      <programlisting>package SistersRules; 
+import org.drools.jsr94.rules.Person; 
+global java.util.List list
+rule FindSisters 
+when 
+    $person1 : Person ( $name1:name ) 
+    $person2 : Person ( $name2:name ) 
+    eval( $person1.hasSister($person2) ) 
+then 
+    list.add($person1.getName() + " and " + $person2.getName() +" are sisters"); 
+    assert( $person1.getName() + " and " + $person2.getName() +" are sisters"); 
+end</programlisting>
+    </section>
+  </section>
+</section>
