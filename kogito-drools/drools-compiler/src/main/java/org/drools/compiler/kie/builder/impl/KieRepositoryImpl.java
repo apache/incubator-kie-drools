@@ -69,7 +69,7 @@ public class KieRepositoryImpl
 
     public void addKieModule(KieModule kieModule) {
         kieModuleRepo.store(kieModule);
-        log.info("KieModule was added:" + kieModule);
+        log.info("KieModule was added: " + kieModule);
     }
 
     public KieModule getKieModule(ReleaseId releaseId) {
@@ -170,13 +170,13 @@ public class KieRepositoryImpl
     }
 
     public KieModule addKieModule(Resource resource, Resource... dependencies) {
-        log.info("Adding KieModule from resource :" + resource);
+        log.info("Adding KieModule from resource: " + resource);
         KieModule kModule = getKieModule(resource);
         if (dependencies != null && dependencies.length > 0) {
             for (Resource depRes : dependencies) {
                 InternalKieModule depKModule = (InternalKieModule) getKieModule(depRes);
                 ((InternalKieModule) kModule).addKieDependency(depKModule);
-                log.info("Adding KieModule dependency from resource :" + resource);
+                log.info("Adding KieModule dependency from resource: " + resource);
             }
         }
 
@@ -201,7 +201,7 @@ public class KieRepositoryImpl
                     urlPath = "jar:" + urlPath + "!/" + KieModuleModelImpl.KMODULE_JAR_PATH;
                 }
                 kModule = ClasspathKieProject.fetchKModule(new URL(urlPath));
-                log.debug("fetched KieModule from resource :" + resource);
+                log.debug("Fetched KieModule from resource: " + resource);
             } else {
                 // might be a byte[] resource
                 MemoryFileSystem mfs = MemoryFileSystem.readFromJar(res.getInputStream());
@@ -215,7 +215,7 @@ public class KieRepositoryImpl
             }
             return kModule;
         } catch (Exception e) {
-            throw new RuntimeException("Unable to fetch module from resource :" + res, e);
+            throw new RuntimeException("Unable to fetch module from resource: " + res, e);
         }
     }
 

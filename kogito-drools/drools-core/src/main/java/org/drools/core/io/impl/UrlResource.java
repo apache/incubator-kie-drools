@@ -226,9 +226,9 @@ public class UrlResource extends BaseResource
             fout.flush();
             fout.close();
             in.close();
-
+            
             File cacheFile = getCacheFile();
-            fi.renameTo(cacheFile);
+            fi.renameTo(cacheFile);            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -410,7 +410,7 @@ public class UrlResource extends BaseResource
     }
 
     public String toString() {
-        return "[UrlResource path='" + this.url.toString() + "']";
+        return "UrlResource[path=" + this.url.toString() + "]";
     }
 
     private static File getCacheDir() {

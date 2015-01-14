@@ -172,7 +172,7 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
     }
     
     public String toString() {
-        return "[FileResource file='" + this.file.toString() + "']";
+        return "FileResource[file=" + this.file.toString() + "]";
     }
     
     public boolean equals(Object object) {

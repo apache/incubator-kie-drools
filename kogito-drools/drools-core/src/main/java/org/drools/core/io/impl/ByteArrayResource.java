@@ -125,7 +125,7 @@ public class ByteArrayResource extends BaseResource
     }
     
     public String toString() {
-        return "[ByteArrayResource resource=" + Arrays.toString(this.bytes) + "]";
+        return "ByteArrayResource[resource=" + Arrays.toString(this.bytes) + "]";
     }
 
 

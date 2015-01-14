@@ -100,7 +100,7 @@ public class DescrResource extends BaseResource implements InternalResource, Ext
     }
     
     public String toString() {
-        return "[DescrResource resource=" + this.descr + "']";
+        return "DescrResource[resource=" + this.descr + "]";
     }
 
 }

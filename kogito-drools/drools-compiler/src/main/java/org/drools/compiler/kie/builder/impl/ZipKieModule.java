@@ -50,6 +50,6 @@ public class ZipKieModule extends AbstractKieModule implements InternalKieModule
     }
 
     public String toString() {
-        return "ZipKieModule[ ReleaseId=" + getReleaseId() + "file=" + file + "]";
+        return "ZipKieModule[releaseId=" + getReleaseId() + ",file=" + file + "]";
     }
 }

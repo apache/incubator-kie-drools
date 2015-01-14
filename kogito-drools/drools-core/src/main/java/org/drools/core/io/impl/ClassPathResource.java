@@ -307,7 +307,7 @@ public class ClassPathResource extends BaseResource
     }
 
     public String toString() {
-        return "[ClassPathResource path='" + this.path + "']";
+        return "ClassPathResource[path=" + this.path + "]";
     }
 
 }
