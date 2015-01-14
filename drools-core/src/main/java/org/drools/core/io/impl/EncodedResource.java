@@ -135,7 +135,7 @@ public class EncodedResource  extends BaseResource implements InternalResource, 
     }
     
     public String toString() {
-        return "[EncodedResource resource=" + this.resource + " encoding='" + this.encoding + "']";
+        return "EncodedResource[resource=" + this.resource + ",encoding=" + this.encoding + "]";
     }
 
 }
