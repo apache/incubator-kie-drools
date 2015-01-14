@@ -10,7 +10,7 @@
   <section xml:id="examplesOverview">
     <title>Examples overview</title>
 
-    <para>OptaPlanner has several examples. In this manual we explain OptaPlanner mainly using the n queens example and
+    <para>Planner has several examples. In this manual we explain mainly using the n queens example and
     cloud balancing example. So it's advisable to read at least those sections.</para>
 
     <para>The source code of all these examples is available in the distribution zip under
@@ -747,7 +747,7 @@
       </listitem>
     </itemizedlist>
 
-    <para>These realistic competitions provide an objective comparison of OptaPlanner with competitive software and
+    <para>These realistic competitions provide an objective comparison of Planner with competitive software and
     academic research.</para>
   </section>
 
@@ -1054,7 +1054,7 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
         </itemizedlist>
 
         <para>Drools Expert also has the normal Miss Manners example (which is much smaller) and employs an exhaustive
-        heuristic to solve it. OptaPlanner's implementation is far more scalable because it uses heuristics to find the
+        heuristic to solve it. Planner's implementation is far more scalable because it uses heuristics to find the
         best solution and Drools Expert to calculate the score of each solution.</para>
       </section>
 
@@ -1491,8 +1491,8 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
         xlink:href="http://leafletjs.com">Leaflet</link>.</para>
 
         <para>Take special care that the road costs between 2 points use the same optimization criteria as the one used
-        in OptaPlanner. For example, GraphHopper etc will by default return the fastest route, not the shortest route.
-        Don't use the km (or miles) distances of the fastest GPS routes to optimize the shortest trip in OptaPlanner:
+        in Planner. For example, GraphHopper etc will by default return the fastest route, not the shortest route.
+        Don't use the km (or miles) distances of the fastest GPS routes to optimize the shortest trip in Planner:
         this leads to a suboptimal solution as shown below:</para>
 
         <mediaobject>
@@ -1798,7 +1798,7 @@ testdata13 has 5 specialisms, 4 equipments, 5 departments, 125 rooms, 368 beds, 
         <para>The problem is defined by <link
         xlink:href="http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm">the International Timetabling
         Competition 2007 track 1</link>. Geoffrey De Smet finished 4th in that competition with a very early version of
-        OptaPlanner. Many improvements have been made since then.</para>
+        Planner. Many improvements have been made since then.</para>
       </section>
 
       <section>

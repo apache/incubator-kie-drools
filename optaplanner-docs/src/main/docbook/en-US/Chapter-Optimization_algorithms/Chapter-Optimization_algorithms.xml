@@ -108,8 +108,8 @@
     </itemizedlist>
 
     <para>Given these requirements, and despite the promises of some salesmen, it's usually impossible for anyone or
-    anything to find the optimal solution. Therefore, OptaPlanner focuses on finding the best solution in available
-    time. In <link linkend="examplesOverview">realistic, independent competitions</link>, OptaPlanner often comes out as
+    anything to find the optimal solution. Therefore, Planner focuses on finding the best solution in available
+    time. In <link linkend="examplesOverview">realistic, independent competitions</link>, it often comes out as
     the best <emphasis>reusable</emphasis> software.</para>
 
     <para>The nature of NP-complete problems make scaling a prime concern. <emphasis role="bold">The result quality of a
@@ -123,8 +123,8 @@
   <section xml:id="architectureOverview">
     <title>Architecture overview</title>
 
-    <para>OptaPlanner is the first framework to combine optimization algorithms (metaheuristics, ...) with score
-    calculation by a rule engine such as Drools Expert. This combination turns out to be a very efficient,
+    <para>Planner is the first framework to combine optimization algorithms (metaheuristics, ...) with score
+    calculation by a rule engine (such as Drools Expert). This combination turns out to be a very efficient,
     because:</para>
 
     <itemizedlist>

@@ -356,7 +356,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
         <literal>1000</literal>.</para>
       </important>
 
-      <para>OptaPlanner implements several tabu types:</para>
+      <para>Planner implements several tabu types:</para>
 
       <itemizedlist>
         <listitem>

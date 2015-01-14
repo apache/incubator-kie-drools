@@ -461,7 +461,7 @@
         This does not apply to <emphasis>logically inserted</emphasis> objects, which can be changed by the score rules
         who logically inserted them in the first place.</para>
 
-        <para>OptaPlanner will not recalculate the score of a <literal>Solution</literal> if it can predict it (unless
+        <para>Planner will not recalculate the score of a <literal>Solution</literal> if it can predict it (unless
         an <link linkend="environmentMode">environmentMode assertion</link> is enabled). For example, after a winning
         step is done, there is no need to calculate the score because that move was done and undone earlier. As a
         result, there's no guarantee that such changes applied during score calculation are actually done.</para>
@@ -916,8 +916,8 @@
         <section xml:id="droolsScoreCalculationKieBase">
           <title>A KieBase (possibly defined by Drools Workbench)</title>
 
-          <para>If you prefer to build the <literal>KieBase</literal> yourself or if you're combining OptaPlanner with
-          KIE Workbench (formerly known as Guvnor), you can set the <literal>KieBase</literal> on the
+          <para>To build the <literal>KieBase</literal> yourself or to combine Planner with
+          KIE Workbench (formerly known as Guvnor), set the <literal>KieBase</literal> on the
           <literal>SolverFactory</literal> before building the <literal>Solver</literal>:</para>
 
           <programlisting language="java">    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig.setKieBase(kieBase);</programlisting>
@@ -927,7 +927,7 @@
 
             <orderedlist>
               <listitem>
-                <para>Upload the optaplanner-core jar as a POJO model.</para>
+                <para>Upload the <literal>optaplanner-core</literal> jar as a POJO model.</para>
               </listitem>
 
               <listitem>

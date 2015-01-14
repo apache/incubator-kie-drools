@@ -10,7 +10,7 @@
   <section xml:id="plannerConfigurationOverview">
     <title>Overview</title>
 
-    <para>Solving a planning problem with OptaPlanner consists out of 5 steps:</para>
+    <para>Solving a planning problem with Planner consists out of 5 steps:</para>
 
     <orderedlist>
       <listitem>
@@ -115,7 +115,7 @@
 
       <para>These various parts of a configuration are explained further in this manual.</para>
 
-      <para><emphasis role="bold">OptaPlanner makes it relatively easy to switch optimization algorithm(s) just by
+      <para><emphasis role="bold">Planner makes it relatively easy to switch optimization algorithm(s) just by
       changing the configuration.</emphasis> There's even a <literal>Benchmarker</literal> utility which allows you to
       play out different configurations against each other and report the most appropriate configuration for your use
       case.</para>
@@ -252,9 +252,9 @@
         variable</link>.</para>
       </note>
 
-      <para><emphasis role="bold">In OptaPlanner all problems facts and planning entities are plain old JavaBeans
+      <para><emphasis role="bold">In Planner all problems facts and planning entities are plain old JavaBeans
       (POJO's).</emphasis> You can load them from a database, an XML file, a data repository, a noSQL cloud, ... (see
-      <link linkend="integration">Integration</link>): OptaPlanner doesn't care.</para>
+      <link linkend="integration">Integration</link>): Planner doesn't care.</para>
     </section>
 
     <section xml:id="problemFact">
@@ -687,7 +687,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 
           <note>
             <para>Return <literal>CountableValueRange</literal> instead of <literal>ValueRange</literal> whenever
-            possible (so OptaPlanner knows it's countable).</para>
+            possible (so Planner knows it's countable).</para>
           </note>
 
           <para>The <literal>ValueRangeFactory</literal> supports several value class types:</para>
@@ -1593,7 +1593,7 @@ public class SeatDesignationDependency {
         <title>REPRODUCIBLE (default)</title>
 
         <para>The reproducible mode is the default mode because it is recommended during development. In this mode, 2
-        runs in the same OptaPlanner version will execute the same code in the same order. <emphasis role="bold">Those 2
+        runs in the same Planner version will execute the same code in the same order. <emphasis role="bold">Those 2
         runs will have the same result at every step</emphasis>, except if the note below applies. This enables you to
         reproduce bugs consistently. It also allows you to benchmark certain refactorings (such as a score constraint
         performance optimization) fairly across runs.</para>

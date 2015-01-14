@@ -179,7 +179,7 @@ end</programlisting>
 
     <para>In the example above, 3 customers are added at different times (<literal>07:56</literal>,
     <literal>08:02</literal> and <literal>08:45</literal>), after the original customer set finished solving at
-    <literal>07:55</literal> and in some cases after the vehicles already left. OptaPlanner can handle such scenario's
+    <literal>07:55</literal> and in some cases after the vehicles already left. Planner can handle such scenario's
     with <literal>ProblemFactChange</literal> (in combination with <link linkend="immovablePlanningEntities">immovable
     planning entities</link>).</para>
 

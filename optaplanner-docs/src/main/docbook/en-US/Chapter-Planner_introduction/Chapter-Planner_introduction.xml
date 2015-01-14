@@ -353,8 +353,8 @@ $ runExamples.bat</programlisting>
       <para>This is similar for Gradle, Ivy and Buildr. To identify the latest version, check <link
       xlink:href="http://search.maven.org/#search|ga|1|org.optaplanner">the central maven repository</link>.</para>
 
-      <para>Because you might end up using other optaplanner modules too, it's recommended to import the
-      <literal>optaplanner-bom</literal> in Maven's <literal>dependencyManagement</literal> so the optaplanner version
+      <para>Because you might end up using other OptaPlanner modules too, it's recommended to import the
+      <literal>optaplanner-bom</literal> in Maven's <literal>dependencyManagement</literal> so the OptaPlanner version
       is specified only once:</para>
 
       <programlisting language="xml">  &lt;dependencyManagement&gt;

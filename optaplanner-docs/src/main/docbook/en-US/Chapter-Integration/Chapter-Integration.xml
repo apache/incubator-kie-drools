@@ -10,7 +10,7 @@
   <section xml:id="integrationOverview">
     <title>Overview</title>
 
-    <para>OptaPlanner's input and output data (the planning problem and the best solution) are plain old JavaBeans
+    <para>Planner's input and output data (the planning problem and the best solution) are plain old JavaBeans
     (POJO's), so integration with other Java technologies is straightforward. For example:</para>
 
     <itemizedlist>
@@ -48,7 +48,7 @@
       database.</para>
 
       <note>
-        <para>Do not confuse JPA's <literal>@Entity</literal> annotation with OptaPlanner's
+        <para>Do not confuse JPA's <literal>@Entity</literal> annotation with Planner's
         <literal>@PlanningEntity</literal> annotation. They can appear both on the same class.</para>
       </note>
     </section>
@@ -75,7 +75,7 @@
       <title>Camel and Karaf</title>
 
       <para><link xlink:href="http://camel.apache.org/">Camel</link> is an enterprise integration framework which
-      includes support for OptaPlanner (starting from Camel 2.13). It can expose OptaPlanner as a REST service, a SOAP
+      includes support for Planner (starting from Camel 2.13). It can expose a use case as a REST service, a SOAP
       service, a JMS service, ...</para>
 
       <para><link xlink:href="http://camel.apache.org/optaplanner.html">Read the documentation for the camel-optaplanner
@@ -89,14 +89,14 @@
     <section xml:id="integrationWithJBossModules">
       <title>JBoss modules, WildFly and JBoss EAP</title>
 
-      <para>To deploy an OptaPlanner web application on WildFly, simply include the optaplanner dependency jars in the
+      <para>To deploy an Planner web application on WildFly, simply include the optaplanner dependency jars in the
       <literal>war</literal> file's <literal>WEB-INF/lib</literal> directory (just like any other dependency) as shown
       in the <literal>optaplanner-webexamples-*.war</literal>. However, in this approach the war file can easily grow to
       several MB in size, which is fine for a one-time deployment, but too heavyweight for frequent redeployments
       (especially over a slow network connection).</para>
 
       <para>The remedy is to use deliver the optaplanner jars in a JBoss module to WildFly and create a skinny war.
-      Let's create an Optaplanner module called <emphasis>org.optaplanner</emphasis>:</para>
+      Let's create an module called <emphasis>org.optaplanner</emphasis>:</para>
 
       <orderedlist>
         <listitem>
@@ -173,10 +173,11 @@
     <section xml:id="integrationWithOSGi">
       <title>OSGi</title>
 
-      <para>OptaPlanner's jars include OSGi metadata to function properly in an OSGi environment too.</para>
+      <para>The <literal>optaplanner-core</literal> jar includes OSGi metadata to function properly in an OSGi
+      environment too.</para>
 
       <note>
-        <para>OptaPlanner does <emphasis>not</emphasis> require OSGi. It works perfectly fine in a normal Java
+        <para>Planner does <emphasis>not</emphasis> require OSGi. It works perfectly fine in a normal Java
         environment too.</para>
       </note>
     </section>
@@ -184,7 +185,7 @@
     <section xml:id="integrationWithAndroid">
       <title>Android</title>
 
-      <para>OptaPlanner does not work out-of-the-box on Android yet, because it is not a complete JVM. For more
+      <para>Planner does not work out-of-the-box on Android yet, because it is not a complete JVM. For more
       information and workarounds, <link xlink:href="https://issues.jboss.org/browse/PLANNER-146">see this
       issue</link>.</para>
     </section>
@@ -193,15 +194,14 @@
   <section xml:id="integrationWithHumanPlanners">
     <title>Integration with human planners (politics)</title>
 
-    <para>A good OptaPlanner implementation beats any good human planner for non-trivial datasets. Many human planners
+    <para>A good Planner implementation beats any good human planner for non-trivial datasets. Many human planners
     fail to accept this, often because they feel threatened by an automated system.</para>
 
-    <para>But despite that, OptaPlanner can benefit from a human planner as supervisor:</para>
+    <para>But despite that, Planner can benefit from a human planner as supervisor:</para>
 
     <itemizedlist>
       <listitem>
-        <para><emphasis role="bold">The human planner defines and validates the score function of
-        OptaPlanner.</emphasis></para>
+        <para><emphasis role="bold">The human planner defines and validates the score function.</emphasis></para>
 
         <itemizedlist>
           <listitem>
@@ -217,15 +217,15 @@
       </listitem>
 
       <listitem>
-        <para><emphasis role="bold">The human planner is always in control of OptaPlanner.</emphasis></para>
+        <para><emphasis role="bold">The human planner is always in control of Planner.</emphasis></para>
 
         <itemizedlist>
           <listitem>
             <para>As shown in the course scheduling example, the human planner can lock 1 or more planning variables to
             a specific planning value and make those immovable. Because they are <link
-            linkend="immovablePlanningEntities">immovable</link>, OptaPlanner does not change them: it optimizes the
+            linkend="immovablePlanningEntities">immovable</link>, Planner does not change them: it optimizes the
             planning around the enforcements made by the human. If the human planner locks all planning variables,
-            he/she sidelines OptaPlanner completely.</para>
+            he/she sidelines Planner completely.</para>
           </listitem>
 
           <listitem>

@@ -21,9 +21,8 @@
       </imageobject>
     </mediaobject>
 
-    <para>A future version of OptaPlanner will have native support for several forms of partitioning. Meanwhile, you can
-    implement it yourself as shown in the image above. Use an OptaPlanner <literal>Solver</literal> to solve each
-    piece.</para>
+    <para>A future version of Planner will have native support for several forms of partitioning. Meanwhile, you can
+    implement it yourself as shown in the image above. Use an <literal>Solver</literal> to solve each piece.</para>
 
     <note>
       <para>Not all use cases can be partitioned. It only works on use cases for which the planning entities and value

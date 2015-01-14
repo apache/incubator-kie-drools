@@ -69,8 +69,8 @@
         <para>Academic papers use the term lower bound instead of optimistic bound (and the term upper bound instead of
         pessimistic bound), because they minimize the score.</para>
 
-        <para>OptaPlanner maximizes the score (because it supports combining negative and positive constraints).
-        Therefore, for clarity, OptaPlanner uses different terms, as it would be confusing to use the term lower bound
+        <para>Planner maximizes the score (because it supports combining negative and positive constraints).
+        Therefore, for clarity, it uses different terms, as it would be confusing to use the term lower bound
         for a bound which is always higher.</para>
       </note>
 

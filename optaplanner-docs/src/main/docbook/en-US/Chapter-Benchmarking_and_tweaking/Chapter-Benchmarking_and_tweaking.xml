@@ -10,13 +10,14 @@
   <section>
     <title>Finding the best <literal>Solver</literal> configuration</title>
 
-    <para>OptaPlanner supports several optimization algorithms, but you're probably wondering which is the best one?
+    <para>Planner supports several optimization algorithms, so you're probably wondering which is the best one?
     Although some optimization algorithms generally perform better than others, it really depends on your problem
     domain. Most solver phases have parameters which can be tweaked. Those parameters can influence the results a lot,
     even though most solver phases work pretty well out-of-the-box.</para>
 
-    <para>Luckily, OptaPlanner includes a benchmarker, which allows you to play out different solver phases with
-    different settings against each other, so you can pick the best configuration for your planning problem.</para>
+    <para>Luckily, Planner includes a benchmarker, which allows you to play out different solver phases with
+    different settings against each other in development, so you can use the best configuration for your planning
+    problem in production.</para>
 
     <mediaobject>
       <imageobject>
@@ -29,7 +30,7 @@
     <title>Doing a benchmark</title>
 
     <section>
-      <title>Adding a dependency on optaplanner-benchmark</title>
+      <title>Adding a dependency on <literal>optaplanner-benchmark</literal></title>
 
       <para>The benchmarker is in a separate artifact called <literal>optaplanner-benchmark</literal>.</para>
 
@@ -129,7 +130,7 @@
       </note>
 
       <para>If an <literal>Exception</literal> or <literal>Error</literal> occurs in a single benchmark, the entire
-      Benchmarker will not fail-fast (unlike everything else in OptaPlanner). Instead, the Benchmarker will continue to
+      Benchmarker will not fail-fast (unlike everything else in Planner). Instead, the Benchmarker will continue to
       run all other benchmarks, write the benchmark report and then fail (if there is at least 1 failing single
       benchmark). The failing benchmarks will be clearly marked as such in the benchmark report.</para>
     </section>

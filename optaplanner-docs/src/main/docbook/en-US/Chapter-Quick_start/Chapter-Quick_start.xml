@@ -71,7 +71,7 @@
       bigger processes first and assigns the smaller processes to the remaining space. As you can see, it's not optimal,
       because it does not leave enough room to assign the yellow process D.</para>
 
-      <para>OptaPlanner does find the more optimal solution fast, by using additional, smarter algorithms. And it scales
+      <para>Planner does find the more optimal solution fast, by using additional, smarter algorithms. And it scales
       too: both in data (more processes, more computers) and constraints (more hardware requirements, other
       constraints). So let's take a look how we can use Planner for this.</para>
     </section>
