@@ -17,6 +17,7 @@
 package org.jbpm.services.cdi.impl;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
@@ -73,7 +74,13 @@ public class DeploymentServiceCDIImpl extends KModuleDeploymentService {
     public void onInit() {
     	super.onInit();
     }
-    
+
+    @PreDestroy
+	@Override
+	public void shutdown() {
+		super.shutdown();
+	}
+
 	@Override
 	public void notifyOnDeploy(DeploymentUnit unit, DeployedUnit deployedUnit) {
 		if (deploymentEvent != null) {

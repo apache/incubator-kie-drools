@@ -17,6 +17,7 @@
 package org.jbpm.services.ejb.impl;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
@@ -67,6 +68,12 @@ public class DeploymentServiceEJBImpl extends KModuleDeploymentService implement
 		}
 		setManagerFactory(new RuntimeManagerFactoryImpl());
 		super.onInit();
+	}
+	
+    @PreDestroy
+	@Override
+	public void shutdown() {
+		super.shutdown();
 	}
 	
 	@Resource

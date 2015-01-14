@@ -49,8 +49,12 @@ import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.query.QueryContext;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDeploymentService implements DeploymentService, ListenerSupport {
+	
+	private static Logger logger = LoggerFactory.getLogger(AbstractDeploymentService.class);
     
     protected RuntimeManagerFactory managerFactory;     
     protected RuntimeDataService runtimeDataService;    
@@ -258,6 +262,19 @@ public abstract class AbstractDeploymentService implements DeploymentService, Li
     @Override
     public boolean isDeployed(String deploymentUnitId) {
         return deploymentsMap.containsKey(deploymentUnitId);
+    }
+    
+    public void shutdown() {
+    	Collection<DeployedUnit> deployedUnits = getDeployedUnits();
+    	
+    	for (DeployedUnit deployed : deployedUnits) {
+    		try {
+    			deployed.getRuntimeManager().close();
+    		} catch (Exception e) {
+    			logger.warn("Error encountered while shutting down deplyment {} due to {}", 
+    					deployed.getDeploymentUnit().getIdentifier(), e.getMessage());
+    		}
+    	}
     }
 	
 }
