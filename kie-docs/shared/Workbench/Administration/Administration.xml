@@ -54,13 +54,6 @@
     <para>One of the biggest advantage of using GIT as backend is the ability to clone a repository from external and
       use your preferred tools to edit and build your assets.</para>
 
-    <note>
-      <para>It's important to follow Workbench structure: each project defined in a directory in repository root.</para>
-    </note>
-
-    <warning>
-      <para>Workbench doesn't support multi projects</para>
-    </warning>
 
     <warning>
       <para><emphasis role="bold">Never</emphasis> clone your repositories directly from <link
