@@ -523,45 +523,105 @@ descriptor.getBuilder()
        </section>
        <section>
               <section>
-                     <title>Deployment Units List</title>
-                     <para>You can access to the Deployment Units List under the Runtime menu (TODO:
-                            fix image and menu name)</para>
+                     <title>Process Deployments</title>
+                     <para>You can access to the Process Deployments List under the Deploy top level menu of the KIE Workbench</para>
                      <mediaobject>
                             <imageobject>
                                    <imagedata align="center" format="PNG" role=""
-                                          fileref="images/RuntimeManagement/runtime.png" width="400"
+                                          fileref="images/RuntimeManagement/process-deployments.png" 
                                    />
                             </imageobject>
                      </mediaobject>
-                     <para>The Deployment Unit list shows all the Deployment Units deployed into the
+                     <para>The Deployed Unit list shows all the Process Deployed Units into the
                             platform that are already enabled to be used. Each deployment unit can
-                            contain multiple business processes and business rules. By default the
-                            list is populated by Building and Deploying a KIE Module using the
-                            Project Editor Screen. When you Build and Deploy a </para>
+                            contain multiple business processes and business rules. In order to have your 
+                         process and rules deployed and listed in this list, you need ot Build and Deploy 
+                         your KIE projects from the Authoring Perspective or via the Remote Endpoints. 
+                         If your processes and rules are in a KIE Project listed in this list and you have correspondent the 
+                        rights you should be able to see the process definitions in the Process Definitions Perspective. 
+                         
+                     </para>
                      <mediaobject>
-                            <imageobject>
-                                   <imagedata align="center" format="PNG" role=""
-                                          fileref="images/RuntimeManagement/deployment-units-list.png"
-                                          width="400"/>
-                            </imageobject>
+                         <imageobject>
+                             <imagedata align="center" format="PNG" role=""
+                                              fileref="images/RuntimeManagement/deployed-unit-list.png"
+                                              width="700"/>
+                         </imageobject>
                      </mediaobject>
-                     <para>You also have the option to deploy custom Deployment Units with other
-                            options different from the defaults. When a KIE Project is deployed, by
-                            default the "DEFAULT" KIE Base and KIE Sessions are used and the
-                            SINGLETON Strategy is used. You can select a different KIE Base and KIE
-                            Session using the New Deployment Unit. </para>
+                     <para>From the Authoring Perspective (Build and Deploy), a default deployment will be performed, 
+                         for a more advanced deployments you can trigger a custom deployment with other
+                         options from this screen. </para>
                      <mediaobject>
-                            <imageobject>
-                                   <imagedata align="center" format="PNG" role=""
-                                          fileref="images/RuntimeManagement/deployment-new.png"
-                                          width="400"/>
-                            </imageobject>
+                         <imageobject>
+                             <imagedata align="center" format="PNG" role=""
+                                              fileref="images/RuntimeManagement/build-and-deploy.png"
+                                              width="700"/>
+                         </imageobject>
+                     </mediaobject>
+                     <para>By clicking the New Deployment Unit (+) button you will be able to 
+                         select a different KIE Base, KIE Session, Strategy and Merge Mode for your deployment. 
+                         By default the "DEFAULT" KIE Base and KIE Sessions are used, the
+                         SINGLETON Strategy is selected and the Merge Mode is set to "Merge Collection". </para>
+                     <mediaobject>
+                         <imageobject>
+                             <imagedata align="center" format="PNG" role=""
+                                              fileref="images/RuntimeManagement/new-deployment.png"
+                                              />
+                         </imageobject>
                      </mediaobject>
               </section>
        </section>
        <section>
-              <title>Jobs</title>
-              <para>TBD</para>
+           <title>Jobs</title>
+           <para>The Jobs perspective allows you to monitor and trigger Asynchronous Jobs schedulled to the jBPM Executor Service.
+               You can access to the Jobs List from the Deploy top level menu of the KIE Workbench.
+           </para>
+           <mediaobject>
+               <imageobject>
+                   <imagedata align="center" format="PNG" role=""
+                                              fileref="images/RuntimeManagement/jobs-menu.png" 
+                   />
+               </imageobject>
+           </mediaobject>
+           <para>
+               The Jobs List shows all the Jobs that were schedulled and their status. The Filter on top of the table 
+               helps the administrator to monitor the Jobs execution and take corrective actions in case of Failure. 
+               Check the jBPM Executor section of the documentation for more information. 
+               
+           </para>
+           <mediaobject>
+               <imageobject>
+                   <imagedata align="center" format="PNG" role=""
+                                              fileref="images/RuntimeManagement/jobs-actions.png" 
+                   />
+               </imageobject>
+           </mediaobject>
+           <para> Administrators have also the option to configure the jBPM Executor Service Settings and to start and stop the
+               service from the User Interface via the Actions -> Settings option.
+           </para>
+            <mediaobject>
+               <imageobject>
+                   <imagedata align="center" format="PNG" role=""
+                                              fileref="images/RuntimeManagement/jobs-service-settings.png" width="400"
+                   />
+               </imageobject>
+           </mediaobject>
+           <para> Administrators can also schedulle manually new Jobs from the User Interface via the Actions -> Settings option. 
+               By specifing the command class name and the parameters needed to run the command a new Job can be created. This manually created jobs will
+               not be associated with any process instance.
+               Notice also that the Due Date paramenter allows the execution to be derrefered 
+               for the future. If the Due Date is the time of schedulling the jBPM Executor Service will execute the command as soon as there
+               is an Executor Thread available. The number of retries will help the command to be executed more than once if it fails. This can help in situations
+               when the business logic requires an external service to be called where the runtime cannot rely on that service to be available 100% of the time. 
+  
+           </para>
+            <mediaobject>
+               <imageobject>
+                   <imagedata align="center" format="PNG" role=""
+                                              fileref="images/RuntimeManagement/jobs-new.png" width="400"
+                   />
+               </imageobject>
+           </mediaobject>
        </section>
 
 </chapter>
