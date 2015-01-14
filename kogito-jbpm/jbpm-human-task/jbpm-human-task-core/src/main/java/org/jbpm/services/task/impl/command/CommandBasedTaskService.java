@@ -29,7 +29,6 @@ import org.jbpm.services.task.commands.DeleteFaultCommand;
 import org.jbpm.services.task.commands.DeleteOutputCommand;
 import org.jbpm.services.task.commands.DeployTaskDefCommand;
 import org.jbpm.services.task.commands.ExecuteReminderCommand;
-import org.jbpm.services.task.commands.ExecuteTaskRulesCommand;
 import org.jbpm.services.task.commands.ExitTaskCommand;
 import org.jbpm.services.task.commands.FailTaskCommand;
 import org.jbpm.services.task.commands.ForwardTaskCommand;
@@ -90,7 +89,6 @@ import org.jbpm.services.task.commands.UndeployTaskDefCommand;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.jbpm.services.task.impl.TaskQueryBuilderImpl;
-import org.jbpm.services.task.rule.TaskRuleService;
 import org.kie.api.command.Command;
 import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.model.Attachment;
@@ -145,7 +143,6 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	public void complete(long taskId, String userId, Map<String, Object> data) {
 		executor.execute(new CompositeCommand<Void>(
 				new CompleteTaskCommand(taskId, userId, data),
-				new ExecuteTaskRulesCommand(taskId, userId, data, TaskRuleService.COMPLETE_TASK_SCOPE),
 				new ProcessSubTaskCommand(taskId, userId, data),
 				new CancelDeadlineCommand(taskId, true, true)));
 	}

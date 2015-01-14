@@ -24,6 +24,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
+import org.jbpm.services.task.rule.TaskRuleService;
+import org.kie.api.task.model.Task;
 import org.kie.internal.command.Context;
 import org.kie.internal.task.api.TaskInstanceService;
 
@@ -66,6 +68,9 @@ public class CompleteTaskCommand extends UserGroupCallbackTaskCommand<Void> {
         doCallbackUserOperation(userId, context);
         groupIds = doUserGroupCallbackOperation(userId, null, context);
         context.set("local:groups", groupIds);
+        
+        Task task = context.getTaskQueryService().getTaskInstanceById(taskId);        
+        context.getTaskRuleService().executeRules(task, userId, data, TaskRuleService.COMPLETE_TASK_SCOPE);
         
         TaskInstanceService instanceService = context.getTaskInstanceService();
         instanceService.complete(taskId, userId, data);
