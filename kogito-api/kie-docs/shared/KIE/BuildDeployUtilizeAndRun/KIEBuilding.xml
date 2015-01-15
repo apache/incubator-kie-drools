@@ -130,6 +130,9 @@ KieContainer kContainer = kieServices.getKieClasspathContainer();</programlistin
 
       <programlisting language="xml">&lt;kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="http://jboss.org/kie/6.0.0/kmodule"&gt;
+  &lt;configuration&gt;
+    &lt;property key="drools.evaluator.supersetOf" value="org.mycompany.SupersetOfEvaluatorDefinition"/&gt;
+  &lt;/configuration&gt;
   &lt;kbase name="KBase1" default="true" eventProcessingMode="cloud" equalsBehavior="equality" declarativeAgenda="enabled" packages="org.domain.pkg1"&gt;
     &lt;ksession name="KSession2_1" type="stateful" default="true/"&gt;
     &lt;ksession name="KSession2_2" type="stateless" default="false/" beliefSystem="jtms"&gt;
@@ -151,7 +154,12 @@ KieContainer kContainer = kieServices.getKieClasspathContainer();</programlistin
 &lt;/kmodule&gt;</programlisting>
     </example>
 
-    <para>Here 2 <code>KieBase</code>s have been defined and it is possible to instance 2 different types of
+    <para>Here the &lt;configuration&gt; tag contains a list of key-value pairs that are the optional properties
+    used to configure the <code>KieBase</code>s building process. For instance this sample kmodule.xml file defines
+    an additional custom operator named <code>supersetOf</code> and implemented by the
+    <code>org.mycompany.SupersetOfEvaluatorDefinition</code> class.</para>
+
+    <para>After this 2 <code>KieBase</code>s have been defined and it is possible to instance 2 different types of
     <code>KieSession</code>s from the first one, while only one from the second. A list of the attributes that
     can be defined on the kbase tag, together with their meaning and default values follows:</para>
 
