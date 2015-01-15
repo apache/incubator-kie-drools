@@ -7064,4 +7064,32 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 1, ks.fireAllRules() );
     }
 
+    @Test
+    public void testMvelConstraintErrorMessage() throws Exception {
+        // DROOLS-687
+        String drl =
+                "    import org.drools.compiler.Person; " +
+                "    import org.drools.compiler.Address; " +
+
+                "    rule 'hello person' " +
+                "       when " +
+                "           Person( address.street == 'abbey' ) " +
+                "       then " +
+                "    end " +
+                "\n" ;
+
+        KieHelper helper = new KieHelper();
+        helper.addContent(drl, ResourceType.DRL);
+        assertTrue(helper.verify().getMessages( org.kie.api.builder.Message.Level.ERROR).isEmpty());
+        KieSession ks = helper.build().newKieSession();
+        Person john = new Person("John"); // address is null
+        try {
+            ks.insert(john);
+            ks.fireAllRules();
+        } catch (Exception e) {
+            e.printStackTrace(); // Does this produce helpful error message?
+        }
+
+        // This test is written to check the error message so no assert.
+    }
 }
