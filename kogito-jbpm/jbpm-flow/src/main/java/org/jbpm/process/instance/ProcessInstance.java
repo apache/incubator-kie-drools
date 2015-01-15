@@ -52,8 +52,6 @@ public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInst
     
     String getOutcome();
     
-    long getParentProcessInstanceId();
-    
     void setParentProcessInstanceId(long parentId);
     
     Map<String, Object> getMetaData();
