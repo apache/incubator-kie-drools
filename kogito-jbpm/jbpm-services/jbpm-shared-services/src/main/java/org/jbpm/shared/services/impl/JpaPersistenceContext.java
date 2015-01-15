@@ -154,7 +154,9 @@ public class JpaPersistenceContext implements Context {
 					continue;
 				}
 				else if (MAX_RESULTS.equals(name)) {
-					query.setMaxResults((Integer) params.get(name));
+					if (((Integer) params.get(name)) > -1) {
+						query.setMaxResults((Integer) params.get(name));
+					}
 					continue;
 				} 
 				// skip control parameters

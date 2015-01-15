@@ -513,7 +513,9 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 					query.setFirstResult((Integer) paramEntry.getValue());
 					continue;
 				} else if (MAX_RESULTS.equals(name)) {
-					query.setMaxResults((Integer) paramEntry.getValue());
+					if (((Integer) paramEntry.getValue()) > -1) {
+						query.setMaxResults((Integer) paramEntry.getValue());
+					}
 					continue;
 				} else if (FLUSH_MODE.equals(name)) {
 					query.setFlushMode(FlushModeType.valueOf((String) paramEntry.getValue()));
