@@ -266,8 +266,14 @@ public class JaxbTask implements InternalTask {
             ((InternalI18NText) text).setLanguage(n.getLanguage());
             ((InternalI18NText) text).setText(n.getText());
             names.add(text);
-        }
+        }        
         ((InternalTask)taskImpl).setNames(names);
+        if (this.getName() != null) {
+        	((InternalTask)taskImpl).setName(this.getName());	
+        } else if (!this.getNames().isEmpty()) {
+        	((InternalTask)taskImpl).setName(this.getNames().get(0).getText());
+        }
+        
         List<I18NText> descriptions = new ArrayList<I18NText>();
         for (I18NText n: this.getDescriptions()) {
             I18NText text = TaskModelProvider.getFactory().newI18NText();
@@ -276,6 +282,13 @@ public class JaxbTask implements InternalTask {
             names.add(text);
         }
         ((InternalTask)taskImpl).setDescriptions(descriptions);
+        
+        if (this.getDescription() != null) {
+        	((InternalTask)taskImpl).setDescription(this.getDescription());	
+        } else if (!this.getDescriptions().isEmpty()) {
+        	((InternalTask)taskImpl).setDescription(this.getDescriptions().get(0).getText());
+        }
+        
         List<I18NText> subjects = new ArrayList<I18NText>();
         for (I18NText n: this.getSubjects()) {
             I18NText text = TaskModelProvider.getFactory().newI18NText();
@@ -284,6 +297,13 @@ public class JaxbTask implements InternalTask {
             names.add(text);
         }
         ((InternalTask)taskImpl).setSubjects(subjects);
+        
+        if (this.getSubject() != null) {
+        	((InternalTask)taskImpl).setSubject(this.getSubject());	
+        } else if (!this.getSubjects().isEmpty()) {
+        	((InternalTask)taskImpl).setSubject(this.getSubjects().get(0).getText());
+        }
+        
         ((InternalTask)taskImpl).setPriority(this.getPriority());
         InternalTaskData taskData = (InternalTaskData) TaskModelProvider.getFactory().newTaskData();
         taskData.setWorkItemId(this.getTaskData().getWorkItemId());
@@ -417,7 +437,5 @@ public class JaxbTask implements InternalTask {
     public void setDescription(String description) {
         this.description = description;
     }
-    
-    
 
 }

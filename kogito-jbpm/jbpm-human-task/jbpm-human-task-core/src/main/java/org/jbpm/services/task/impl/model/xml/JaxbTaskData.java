@@ -218,12 +218,12 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
 
     @Override
     public long getWorkItemId() {
-        return workItemId;
+        return whenNull(workItemId, -1l);
     }
 
     @Override
     public long getProcessInstanceId() {
-        return processInstanceId;
+        return whenNull(processInstanceId, -1l);
     }
 
     @Override
@@ -233,7 +233,7 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
 
     @Override
     public long getProcessSessionId() {
-        return processSessionId;
+        return whenNull(processSessionId, -1l);
     }
 
     @Override
@@ -243,7 +243,7 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
 
     @Override
     public long getDocumentContentId() {
-        return documentContentId;
+        return whenNull(documentContentId, -1l);
     }
 
     @Override
@@ -253,7 +253,7 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
 
     @Override
     public long getOutputContentId() {
-        return outputContentId;
+        return whenNull(outputContentId, -1l);
     }
 
     @Override
@@ -268,7 +268,7 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
 
     @Override
     public long getFaultContentId() {
-        return faultContentId;
+        return whenNull(faultContentId, -1l);
     }
 
     @Override
@@ -311,7 +311,7 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
 
     @Override
     public long getParentId() {
-        return parentId;
+        return whenNull(parentId, -1l);
     }
 
     @Override
@@ -399,4 +399,12 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
         this.deploymentId = deploymentId;
     }
 
+    @SuppressWarnings("unchecked")
+	private <T> T whenNull(Object value, T defaultValue) {
+    	if (value == null) {
+    		return defaultValue;
+    	}
+    	
+    	return (T) value;
+    }
 }
