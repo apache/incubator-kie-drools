@@ -23,18 +23,26 @@ import org.kie.internal.process.CorrelationKeyFactory;
 public class JPACorrelationKeyFactory implements CorrelationKeyFactory {
 
     public CorrelationKey newCorrelationKey(String businessKey) {
+        if (businessKey.isEmpty()) {
+            throw new IllegalArgumentException("businessKey cannot be empty");
+        }
+
         CorrelationKeyInfo correlationKey = new CorrelationKeyInfo();
         correlationKey.addProperty(new CorrelationPropertyInfo(null, businessKey));
-        
+
         return correlationKey;
     }
-    
+
     public CorrelationKey newCorrelationKey(List<String> properties) {
+        if (properties.isEmpty()) {
+            throw new IllegalArgumentException("properties cannot be empty");
+        }
+
         CorrelationKeyInfo correlationKey = new CorrelationKeyInfo();
         for (String businessKey : properties) {
             correlationKey.addProperty(new CorrelationPropertyInfo(null, businessKey));
         }
-        
+
         return correlationKey;
     }
 }
