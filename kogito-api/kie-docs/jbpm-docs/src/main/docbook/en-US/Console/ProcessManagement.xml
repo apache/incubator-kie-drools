@@ -12,16 +12,18 @@
                 process definitions and process instances. 
          </para>
          <para>
-                Once you have modelled and configured all the technical details to run a process definition
-                your process definition will appear in the Process Definitions List. Once you have the process
-                in the Process Definition List, you can start new instances of it. 
-                The following sections describes the features provided by each of these screens.
+                Once you have modelled, configured all the technical details and build and deployed your projects containing your business processes you 
+             should be able to see all the available process definitions in the Process Definition List. For all the process definitions listed in the 
+             Process Definitions List you will be able to inspect the Process Definition details and start as many Process Instances as needed.
+                The following sections describes the features provided by all the screens in charge of the manupulation of process definitions and 
+             process instances.
                 You can find these screens under the Process Management Menu, in the jBPM Console NG or in Kie Workbench.
          </para>
          
          <para>
-                You can find the source code for this module here: 
+                You can find the source code related with the process definition and instances manupilation inside this module:
                 https://github.com/droolsjbpm/jbpm-console-ng/tree/master/jbpm-console-ng-process-runtime
+                
          </para>
          
          
@@ -41,7 +43,7 @@
                 <section>
                        <title>The Process Definition List</title>
                        <para> The process definition list shows all the available process definitions that were deployed into the platform. 
-                              Look at the Deployments section for more information about how to check all the deployment units available. </para>
+                              Look at the Deployments section for more information about how to check all the deploymed units available in the platform runtime. </para>
                        
                        <mediaobject>
                             <imageobject>
@@ -72,11 +74,20 @@
                        <para>Notice that you can View the Process Model (Read Only mode) using the Options Menu in the top bar. You can also
                               look at all the process instances for the selected process definition by going to Options -> View Process Instances.
                        </para>
+                       
+                       
+                       <mediaobject>
+                            <imageobject>
+                                   <imagedata align="center" format="PNG" role=""
+                                          fileref="images/Console/process-model.png"
+                                          width="700"/>
+                            </imageobject>
+                     </mediaobject>
                 </section>
                 
                 <section>
                      <title>Creating Process Instances</title>
-                       <para> You can create new Process Instances from the Process Definition List or from the Process Definition Detail view. </para>
+                       <para> You can create new Process Instances from the Process Definition List (Action Column) or from the Process Definition Detail view. </para>
                        
                        <mediaobject>
                               <imageobject>
@@ -85,10 +96,50 @@
                                      
                               </imageobject>
                        </mediaobject>
-                       <para>When you want to create a Process Instance usually a Form will be presented to introduce the information required
-                              by the process to be started. Once you complete the form and click into the Start Process button, the instance will be created and
-                              the details of the Process Instance will be displayed on top of the Process Definition Details. </para>
+                       <para>When you create a Process Instance usually a Form will be presented to introduce the information required
+                              by the process to be started. Once you complete the required information and click on the Submit button, the instance will be created and
+                              the details of the Process Instance will be displayed on top of the Process Definition Details. 
+                       
+                       </para>
                 </section>
          </section>
-
+         <section>
+             <title>Process Instances</title>
+                
+             <para>The process instances section is composed by two main screens: the Process Instance Lists and the
+                 Process Instance Details. In this case the Process Instance Details provides several tabs with the 
+                 runtime information related with the process. </para>
+             <mediaobject>
+                 <imageobject>
+                     <imagedata align="center" format="PNG" role="" 
+                                                fileref="images/Console/process-instances-list.png"  width="400" />
+                                     
+                 </imageobject>
+             </mediaobject>
+             <para>
+                 Each row inside the process instance list represent a running process instance from a particular Process Definition. 
+                 Each execution is differentiated from all the others by the internal state of the information that the process is manipulating. 
+                 In order to inspect this information you can click in each row to see the process instance details.
+             </para>   
+             <mediaobject>
+                 <imageobject>
+                     <imagedata align="center" format="PNG" role="" 
+                                                fileref="images/Console/process-instances-details.png"  width="400" />
+                                     
+                 </imageobject>
+             </mediaobject>   
+             <para>
+                 As you can see the Process Instance Detail first tab gives you a quick overview about what is going on inside the process. This is by showing 
+                 the current state of the instance and also the current activity that is being executed.
+                 The process variables tab display all the process variables  that are being manipulated by the instance with the exception of the variables that contains
+                 documents. 
+             </para> 
+             <mediaobject>
+                 <imageobject>
+                     <imagedata align="center" format="PNG" role="" 
+                                                fileref="images/Console/process-instances-details.png"  width="400" />
+                                     
+                 </imageobject>
+             </mediaobject>      
+         </section>
 </section>
