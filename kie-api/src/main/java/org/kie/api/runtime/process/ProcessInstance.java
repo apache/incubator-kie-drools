@@ -75,4 +75,10 @@ public interface ProcessInstance
      */
     int getState();
     
+    /**
+     * Returns parent process instance id if this process instance has a parent
+     * @return the unique id of parent process instance
+     */
+    long getParentProcessInstanceId();
+    
 }
