@@ -389,4 +389,22 @@
       </screenshot>
     </figure>
   </section>
+
+  <section>
+    <title>Guided Decision Tree Editor</title>
+    <para>A new editor has been added to support modelling of simple decision trees.</para>
+    <para>See the applicable section within the User Guide for more information about usage.</para>
+    <figure>
+      <title>Example Guided Decision Tree</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Workbench/ReleaseNotes/GuidedDecisionTree1.png"
+              format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+  </section>
+
 </section>

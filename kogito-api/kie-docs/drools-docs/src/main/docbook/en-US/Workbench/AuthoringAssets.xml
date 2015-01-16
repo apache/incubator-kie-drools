@@ -11,6 +11,7 @@
   <xi:include href="GuidedRuleEditor.xml" />
      <xi:include href="GuidedRuleTemplateEditor.xml" />
      <xi:include href="GuidedDecisionTableEditor.xml" />
+     <xi:include href="GuidedDecisionTreeEditor.xml" />
      <xi:include href="XLSDecisionTable.xml" />
    <xi:include href="GuidedScorecardEditor.xml" />
    <xi:include href="TestScenarioEditor.xml" />
