@@ -747,12 +747,13 @@ public class DefaultAgenda
         while ( removeGroup(group) ); // keep removing while group is on the stack
         group.setActive(false);
         innerDeactiveRuleFlowGroup(group);
+        ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupDeactivated(group,
+                                                                                                      this.workingMemory);
     }
 
     private void innerDeactiveRuleFlowGroup(InternalRuleFlowGroup group) {
         group.hasRuleFlowListener(false);
         group.getNodeInstances().clear();
-        ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupDeactivated(group, this.workingMemory);
     }
 
     /*
