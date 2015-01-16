@@ -131,10 +131,36 @@
     </section>
   </section>
 
+  <section xml:id="wb.ProjectExplorerDownloads">
+    <title>Download Project or Repository</title>
+    <para>Download Download and Download Repository make it possible to download the project or repository as a zip file.</para>
+       <figure>
+        <title>Repository and Project Downloads</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Downloads.png"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+  </section>
+
+  <section xml:id="wb.ProjectExplorerBranchSelector">
+    <title>Branch selector</title>
+    <para>A branch selector will be visible if the repository has more than a single branch.</para>
+       <figure>
+        <title>Branch selector</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Branch-Selector.png"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+  </section>
+
   <section xml:id="wb.ProjectExplorerCopyRenameDeleteActions">
-    <title>Copy, Rename and Delete Actions</title>
+    <title>Copy, Rename, Delete and Download Actions</title>
     <para>Copy, rename and delete actions are available on <emphasis role="italic">Links </emphasis> mode, for packages
-      (in of Project View) and for files and directories as well (in Repository View).</para>
+      (in of Project View) and for files and directories as well (in Repository View). Download action is available for directories. Download downloads the  selected the selected directory as a zip file.</para>
     <itemizedlist>
       <listitem>
         <para> A : Copy</para>
@@ -144,6 +170,9 @@
       </listitem>
       <listitem>
         <para> C : Delete</para>
+      </listitem>
+      <listitem>
+        <para> D : Download</para>
       </listitem>
     </itemizedlist>
     <figure>
