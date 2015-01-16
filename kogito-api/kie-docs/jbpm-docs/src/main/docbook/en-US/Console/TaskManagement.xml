@@ -14,7 +14,9 @@
               the source code of these screens here: <link
                      xlink:href="https://github.com/droolsjbpm/jbpm-console-ng/tree/master/jbpm-console-ng-human-tasks"
                      >https://github.com/droolsjbpm/jbpm-console-ng/tree/master/jbpm-console-ng-human-tasks
-              </link> .  At the end of this section you will find a technical description about how
+              </link> . Feel free to report issues, send Pull Requests and get in contact with the team via comments in github.
+
+              At the end of this section you will find a technical description about how
               to customize these views. </para>
 
        <section>
@@ -23,40 +25,37 @@
                      list where tasks assigned to him/her will be displayed. Each user will be able
                      to create its own personal tasks or work on tasks that were create as a result
                      of a business process execution.</para>
-              <para>You can access to the Task List under the <emphasis role="bold">Work</emphasis>
+              <para>You can access to the Task List under the <emphasis role="bold">Tasks</emphasis>
                      main menu:</para>
               <mediaobject>
                      <imageobject>
                             <imagedata align="center" format="PNG" role=""
-                                   fileref="images/Console/work.png"/>
+                                   fileref="images/Console/task-menu.png"/>
                      </imageobject>
               </mediaobject>
 
               <section>
                      <title>Task List (Personal and Group Tasks)</title>
-                     <para>Pending tasks can be displayed using different metaphors depending on
-                            what the user is interested on. We are currently providing two different
-                            views explained in the sections below: <emphasis role="bold"
-                                   >Grid</emphasis> and <emphasis role="bold">Calendar</emphasis>
-                            View. </para>
+                     <para>Pending tasks for each user will be displayed in their task list screen.
+                     Notice that you will not be able to see assigned tasks from another user different from the one that is currenlty logged in.</para>
                      <section>
-                            <title>Task List (Grid View)</title>
+                            <title>Task List </title>
                             <para>If you are interested in having a tabular view of all the pending
                                    tasks for a specific person or group you can use the <emphasis
                                           role="bold">Grid</emphasis> View. The list will show all
                                    the pending tasks ordered by the columns presented. You can
-                                   change the default ordering clicking on the column header.  In
-                                   future version more advanced filters will be provided and the
-                                   search mechanism will be improved to look for task internal data.
-                                   This view offer a more traditional BPM Task List view. </para>
+                                   change the default ordering clicking on the column header. 
+                                   This view offer a more traditional BPM Task List view where you can sort the data based on
+                                   different columns. 
+                            </para>
                             <mediaobject>
                                    <imageobject>
                                           <imagedata align="center" format="PNG" role=""
-                                                 fileref="images/Console/task-list-grid.png"
+                                                 fileref="images/Console/task-list.png"
                                                  width="700"/>
                                    </imageobject>
                             </mediaobject>
-                            <para>With this current version you can filter based on the tasks
+                            <para>You can filter your tasks based on the task
                                    status:</para>
                             <para>
                                    <itemizedlist>
@@ -83,69 +82,26 @@
                                                   completed and for that reason they will not be
                                                   displayed.</para>
                                           </listitem>
+                                          <listitem>
+                                                 <para>Admin: show all the tasks where the currently logged
+                                                     user was set as business administrator for such task. 
+                                                 </para>
+                                          </listitem>
                                    </itemizedlist>
                             </para>
                      </section>
-                     <section>
-                            <title>Task List (Calendar View)</title>
-                            <para>If you want a more time oriented view of your pending tasks you
-                                   can use the Calendar View. This view arrange the tasks based on
-                                   the Task Due Date. You can switch between three different ranges:
-                                   Day, Week or Month.</para>
-
-                            <para>The Day view shows all the tasks that Due Today. Notice that you
-                                   can change the selected date using the calendar or using the Next
-                                   and Previous button. The Today button will be enabled when you
-                                   are in a different day than today, and when you click it it will
-                                   return the selection to the current date.</para>
-
-                            <mediaobject>
-                                   <imageobject>
-                                          <imagedata align="center" format="PNG" role=""
-                                                 fileref="images/Console/task-list-calendar-day.png"
-                                                 width="700"/>
-                                   </imageobject>
-                            </mediaobject>
-
-                            <para>The Week view shows all the tasks pending for the current week.
-                                   You can change the selected week using the calendar or the Next
-                                   and Previous button. If you click on the Today button, you will
-                                   be moved to the week the current week. </para>
-
-                            <mediaobject>
-                                   <imageobject>
-                                          <imagedata align="center" format="PNG" role=""
-                                                 fileref="images/Console/task-list-calendar-week.png"
-                                                 width="700"/>
-                                   </imageobject>
-                            </mediaobject>
-
-                            <para>The Month view shows all the tasks that due on the selected month.
-                                   You can change the month using the calendar or the Next and
-                                   Previous button. If you click on the Today button the calendar
-                                   will show all the tasks that due in the current month. </para>
-
-                            <mediaobject>
-                                   <imageobject>
-                                          <imagedata align="center" format="PNG" role=""
-                                                 fileref="images/Console/task-list-calendar-month.png"
-                                                 width="700"/>
-                                   </imageobject>
-                            </mediaobject>
-
-                     </section>
+                     
               </section>
               <section>
                      <title>Task Details</title>
-                     <para>You can access to the Task Details by clicking in a task row (in both
-                            Grid and Calendar Views). The details associated with a task can be
+                     <para>You can access to the Task Details by clicking in a task row. The details associated with a task can be
                             changed, like for example the Due Date, the Priority or the task
                             description.</para>
 
                      <mediaobject>
                             <imageobject>
                                    <imagedata align="center" format="PNG" role=""
-                                          fileref="images/Console/task-list-grid-and-details.png"
+                                          fileref="images/Console/task-details.png"
                                           width="700"/>
                             </imageobject>
                      </mediaobject>
@@ -157,22 +113,32 @@
                      <mediaobject>
                             <imageobject>
                                    <imagedata align="center" format="PNG" role=""
-                                          fileref="images/Console/task-details-process-context-full.png"
+                                          fileref="images/Console/task-process-context.png"
                                           width="400" />
                             </imageobject>
                      </mediaobject>
-
-                     <para>Finally you can see the Task Log, which allows you to see all the
-                            operations that has been executed on the task since its creation.</para>
-
+                     
+                     <para>The Task Assignments tab allows you to delegate the task to another person or group if you are not able to
+                         continue working on it.</para>
                      <mediaobject>
                             <imageobject>
                                    <imagedata align="center" format="PNG" role=""
-                                          fileref="images/Console/task-log.png" width="400"
+                                          fileref="images/Console/task-assignments.png" width="400"
                                          />
                             </imageobject>
                      </mediaobject>
 
+                     <para>You can also add while you are working on a task comments about the progress.</para>
+
+                     <mediaobject>
+                            <imageobject>
+                                   <imagedata align="center" format="PNG" role=""
+                                          fileref="images/Console/task-comments.png" width="400"
+                                         />
+                            </imageobject>
+                     </mediaobject>
+
+                     
               </section>
               <section>
                      <title>Work on a Task</title>
@@ -194,32 +160,21 @@
                      </mediaobject>
               </section>
               <section>
-                     <title>Task Assignments</title>
-                     <para>You can Delegate tasks to different people when you are not able to work
-                            on them. </para>
+                     <title>Task Forms generated by the Form Modeller</title>
+                     <para>As part of your projects you can model your forms for your human tasks, 
+                         providing a rich interface for collecting data. This shows the Form Modeller canvas
+                         while designing the previously Task Form.
+                     </para>
                      <mediaobject>
                             <imageobject>
                                    <imagedata align="center" format="PNG" role=""
-                                          fileref="images/Console/task-assignments.png"
+                                          fileref="images/Console/task-form-modeller-designed.png"
                                           width="400"/>
                             </imageobject>
                      </mediaobject>
               </section>
 
-              <section>
-                     <title>Task Comments</title>
-                     <para>You can add comments to your tasks to keep track of the progress or to
-                            keep information related to the task. Notice that if you delegate the
-                            task other users can also add comments helping on the collaboration to
-                            complete the task.</para>
-                     <mediaobject>
-                            <imageobject>
-                                   <imagedata align="center" format="PNG" role=""
-                                          fileref="images/Console/task-comments.png"
-                                          width="400"/>
-                            </imageobject>
-                     </mediaobject>
-              </section>
+              
 
        </section>
        <section>

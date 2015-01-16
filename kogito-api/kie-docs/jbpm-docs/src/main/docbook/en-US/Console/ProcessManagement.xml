@@ -17,13 +17,15 @@
              Process Definitions List you will be able to inspect the Process Definition details and start as many Process Instances as needed.
                 The following sections describes the features provided by all the screens in charge of the manupulation of process definitions and 
              process instances.
-                You can find these screens under the Process Management Menu, in the jBPM Console NG or in Kie Workbench.
+                You can find these screens under the <emphasis role="bold">Process Management</emphasis> Menu, in the jBPM Console NG or in Kie Workbench.
          </para>
          
          <para>
                 You can find the source code related with the process definition and instances manupilation inside this module:
-                https://github.com/droolsjbpm/jbpm-console-ng/tree/master/jbpm-console-ng-process-runtime
-                
+                <link xlink:href="http://github.com/droolsjbpm/jbpm-console-ng/tree/master/jbpm-console-ng-process-runtime">
+                    http://github.com/droolsjbpm/jbpm-console-ng/tree/master/jbpm-console-ng-process-runtime
+                </link>
+                Feel free to report issues, send Pull Requests and get in contact with the team via comments in github.
          </para>
          
          
@@ -137,9 +139,44 @@
              <mediaobject>
                  <imageobject>
                      <imagedata align="center" format="PNG" role="" 
-                                                fileref="images/Console/process-instances-details.png"  width="400" />
+                                                fileref="images/Console/process-instances-variables.png"  width="400" />
                                      
                  </imageobject>
-             </mediaobject>      
+             </mediaobject>
+             <para>
+                 If the process contains a variable of the type: org.jbpm.Document it will be listed in the Documents tab, for easy access, download and manipulation
+                 of the attached documents. Notice that at this point you cannot attach new documents to currently running instances, but this feature will be added in future versions.
+             </para> 
+             <mediaobject>
+                 <imageobject>
+                     <imagedata align="center" format="PNG" role="" 
+                                                fileref="images/Console/process-instances-documents.png"  width="400" />
+                                     
+                 </imageobject>
+             </mediaobject>  
+             <para>
+                 Finally, the Logs tab shows two types of logs for different end users. There are two types of Logs available inside the tab: Business and Technical.
+                 
+             </para>
+               
+             <mediaobject>
+                 <imageobject>
+                     <imagedata align="center" format="PNG" role="" 
+                                                fileref="images/Console/process-instances-logs.png"  width="400" />
+                                     
+                 </imageobject>
+             </mediaobject>        
+             <para>
+                 To complement the process logs you can open the Process Model that shows the completed activies in grey and the current activities
+                 highlighted in red.
+             </para> 
+             
+            <mediaobject>
+                 <imageobject>
+                     <imagedata align="center" format="PNG" role="" 
+                                                fileref="images/Console/process-instances-running-model.png"  width="400" />
+                                     
+                 </imageobject>
+            </mediaobject>         
          </section>
 </section>
