@@ -9,6 +9,7 @@
     <version>6.3.0-SNAPSHOT</version>
   </parent>
 
+  <groupId>org.jbpm</groupId>
   <artifactId>jbpm-docs</artifactId>
   <packaging>jdocbook</packaging>
 
