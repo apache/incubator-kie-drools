@@ -26,7 +26,6 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.LeftTupleEntry;
@@ -382,22 +381,19 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     private static void doUpdateSegmentMemory(LeftTuple leftTuple, PropagationContext pctx, InternalWorkingMemory wm, boolean linkOrNotify,
                                               final LiaNodeMemory lm, SegmentMemory sm, LeftTupleSets leftTuples, LeftTupleSink sink) {
-        synchronized ( ((SynchronizedLeftTupleSets)leftTuples).getLock() ) {
-            // @TODO I synchronized this, as I'm not 100% of the thread interactions here, it might be possible to remove this later.
-            if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
-                // if LeftTuple is already staged, leave it there
-                leftTuple.setPropagationContext( pctx );
-                boolean stagedUpdateWasEmpty = false;
-                if ( ((BaseNode)sm.getRootNode()).isStreamMode() && sm.getStreamQueue() != null ) {
-                    stagedUpdateWasEmpty = sm.getStreamQueue().addUpdate(new LeftTupleEntry(leftTuple, pctx, sm.getNodeMemories().getFirst(), pctx.getType()));
-                } else {
-                    stagedUpdateWasEmpty = leftTuples.addUpdate(leftTuple);
-                }
+        if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
+            // if LeftTuple is already staged, leave it there
+            leftTuple.setPropagationContext( pctx );
+            boolean stagedUpdateWasEmpty = false;
+            if ( ((BaseNode)sm.getRootNode()).isStreamMode() && sm.getStreamQueue() != null ) {
+                stagedUpdateWasEmpty = sm.getStreamQueue().addUpdate(new LeftTupleEntry(leftTuple, pctx, sm.getNodeMemories().getFirst(), pctx.getType()));
+            } else {
+                stagedUpdateWasEmpty = leftTuples.addUpdate(leftTuple);
+            }
 
-                if ( stagedUpdateWasEmpty  && linkOrNotify ) {
-                    // staged is empty, so notify rule, to force re-evaluation
-                    lm.setNodeDirty(wm);
-                }
+            if ( stagedUpdateWasEmpty  && linkOrNotify ) {
+                // staged is empty, so notify rule, to force re-evaluation
+                lm.setNodeDirty(wm);
             }
         }
     }
