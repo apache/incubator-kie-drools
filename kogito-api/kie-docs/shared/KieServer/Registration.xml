@@ -7,7 +7,28 @@
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title></title>
+  <title>Registering a server</title>
 
-  <para></para>
+  <para>To register a new <emphasis role="bold">Kie Execution Server</emphasis> instance, click on
+                     <emphasis role="bold">Deploy → Rule Deployments</emphasis> in Business Central.
+              This will open up the screen to show you any existing servers that you have
+              registered. Click on Register to bring up the screen for entering details for a new
+              server.</para>
+       <para>Enter details of your new server by specifying the endpoint and giving it a unique and
+              identifiable name. </para>
+       <para>The endpoint should be the same you used to verify that the server was running in the
+              previous section and looks like this:
+                     <code>http://SERVER:PORT/CONTEXT/rest/server</code>. Also provide a unique
+              identifiable name for this server. </para>
+       <para>Although the username/password sections are not mandatory, unless you specifically take
+              away the authentication required for your kie-server webapp, then you will need to
+              enter these. These values should match the ones created in the previous section when
+              you were installing this webapp with the role of <code>kie-server</code>.</para>
+       <para>Click <emphasis role="bold">Connect</emphasis> to connect and register this server. If
+              you have successfully entered all the details, your server will be listed in the Rule
+              Deployments Screen. </para>
+       <para>Common errors at this stage include issues like invalid username/password or the
+              username not having the required <code>kie-server</code> role or the endpoint not
+              being correct. All of these issues will give the same error: <emphasis role="italic"
+                     >Can't connect to endpoint</emphasis></para>
 </section>
