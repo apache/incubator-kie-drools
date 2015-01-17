@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter xml:id=“ch.kie.server"
+<chapter xml:id="ch.kie.server"
          version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
          xml:base="./" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -8,10 +8,10 @@
   <title>Kie Execution Server</title>
 
   <xi:include href="Introduction.xml" />
-  <xi:include href="Deployment.xml" />
-  <xi:include href=“Registration.xml" />
-  <xi:include href=“Creation.xml" />
-  <xi:include href=“Management.xml" />
-  <xi:include href=“RestAPI.xml" />
+  <xi:include href="Install.xml" />
+  <xi:include href="Registration.xml" />
+  <xi:include href="Creation.xml" />
+  <xi:include href="Management.xml" />
+  <xi:include href="RestAPI.xml" />
 
 </chapter>

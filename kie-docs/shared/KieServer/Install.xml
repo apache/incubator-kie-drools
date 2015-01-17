@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+  xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Installing the Kie Execution Server</title>
+  <para>The BRMS Execution Server is distributed as a web application archive (WAR) file with the
+    name of kie-server.war. By default, when you install BRMS, this WAR file is installed and
+    deployed in your web container. Consequently this gives you automatic access to this web
+    application with the URL of <code>http://SERVER:PORT/CONTEXT/</code>. </para>
+  <para>You can of course, copy this WAR file and deploy it in any other web container (Red Hat
+    JBoss Web Server or another EAP install, for example) and have this execution server available
+    from other web containers. Note that you must deploy the WAR file that is compatible for your
+    web container. The BRMS Execution Server bundled with the EAP install is only suitable for
+    installation on another EAP install, while the one bundled with the Generic deployment is
+    suitable for installation on Red Hat JBoss Web Server only.</para>
+  <para>To install the Kie Execution Server and verify it is running, complete the following
+    steps:</para>
+  <para>
+    <orderedlist>
+      <listitem>
+        <para>Deploy the WAR file into your web container.</para>
+      </listitem>
+      <listitem>
+        <para>Create a user with the role of <code>kie-server</code> on the web container.</para>
+      </listitem>
+      <listitem>
+        <para>Test that you can access the execution engine by navigating to the endpoint in a
+          browser window: <code>http://SERVER:PORT/CONTEXT/rest/server/</code> with the web
+          container running. For example, if the web container is running on your local machine and
+          you are using the default context, you can access it on the following URL:
+            <code>http://localhost:8080/kie-server-6.2.0.GA-redhat1/rest/server</code>.</para>
+      </listitem>
+      <listitem>
+        <para>When prompted for username/password, type in the username and password that you
+          created in step 2.</para>
+      </listitem>
+      <listitem>
+        <para>Once authenticated, you will see an XML response in the form of engine status, similar
+          to this:<example>
+            <title>sample handshaking server response</title>
+            <para>&lt;response type="SUCCESS" msg="Kie Server info" ></para>
+            <para>    &lt;kie-server-info></para>
+            <para>        &lt;version>6.2.0.GA-redhat-1&lt;/version></para>
+            <para>    &lt;/kie-server-info></para>
+            <para>&lt;/response></para>
+          </example></para>
+      </listitem>
+    </orderedlist>
+  </para>
+</section>
