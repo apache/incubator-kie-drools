@@ -58,7 +58,7 @@ public interface TaskService extends CommandExecutor {
     List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, String language);
 
     @Deprecated
-    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, int firstResult, int maxResults);
+    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResults);
 
     List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status, String language);
 
@@ -89,9 +89,9 @@ public interface TaskService extends CommandExecutor {
     Content getContentById(long contentId);
 
     Attachment getAttachmentById(long attachId);
-    
-    Map<String, Object> getTaskContent(long taskId);
 
+    Map<String, Object> getTaskContent(long taskId);
+    
     /**
      * This method will be removed in jBPM 7.x because of new methods that better implement this functionality.
      * </p>
@@ -111,8 +111,8 @@ public interface TaskService extends CommandExecutor {
     @Deprecated
     List<TaskSummary> getTasksByVariousFields( String userId, List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds, 
             List<String> busAdmins, List<String> potOwners, List<String> taskOwners, 
-            List<Status> status,  boolean union);
-  
+            List<Status> status, List<String> language, boolean union);
+    
     /**
      * This method will be removed in jBPM 7.x because of new methods that better implement this functionality.
      * </p>
