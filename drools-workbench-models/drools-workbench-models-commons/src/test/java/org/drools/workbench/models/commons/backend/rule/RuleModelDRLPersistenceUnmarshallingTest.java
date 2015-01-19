@@ -6888,6 +6888,57 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                       RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
     }
 
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1175333
+    public void testRHSFreeFormDRL() throws Exception {
+        String drl = "package org.test;\n" +
+                "rule \"Validate Down Payment\"\n" +
+                "dialect \"mvel\"\n" +
+                "ruleflow-group \"validation\"\n" +
+                "when\n" +
+                "  property : Property( )\n" +
+                "  Application( downPayment < 0 || downPayment > property.price )\n" +
+                "then\n" +
+                "  ValidationError fact0 = new ValidationError();\n" +
+                "  fact0.setCause( \"Down payment can't be negative or larger than property value\" );\n" +
+                "  insert( fact0 );\n" +
+                "  System.out.println(\"Executed Rule: \" + drools.getRule().getName() );\n" +
+                "end\n";
+
+        addModelField( "org.test.Property",
+                       "this",
+                       "org.test.Property",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Property",
+                       "price",
+                       Integer.class.getName(),
+                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField( "org.test.Application",
+                       "this",
+                       "org.test.Application",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Application",
+                       "downPayment",
+                       Integer.class.getName(),
+                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField( "org.test.ValidationError",
+                       "this",
+                       "org.test.ValidationError",
+                       DataType.TYPE_THIS );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",
