@@ -15,5 +15,5 @@
   <xi:include href="General/ChangingLayout.xml"/>
   <xi:include href="Authoring/Authoring.xml"/>
   <xi:include href="Embedding/Embedding.xml"/>
-
+  <xi:include href="AssetManagement/AssetManagement.xml"/>
 </chapter>
