@@ -204,9 +204,8 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
 	}
 
 	@Override
-	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId,
-			List<String> groupIds, int firstResult, int maxResults) {
-		return delegate.getTasksAssignedAsPotentialOwner(userId, groupIds, firstResult, maxResults);
+	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResults) {
+		return delegate.getTasksAssignedAsPotentialOwner(userId, groupIds, language, firstResult, maxResults);
 	}
 
 	@Override
@@ -261,9 +260,9 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
 	public List<TaskSummary> getTasksByVariousFields(String userId, List<Long> workItemIds,
 			List<Long> taskIds, List<Long> procInstIds, List<String> busAdmins,
 			List<String> potOwners, List<String> taskOwners,
-			List<Status> status, boolean union) {
+			List<Status> status, List<String> languages, boolean union) {
 		return delegate.getTasksByVariousFields(userId, workItemIds, taskIds, procInstIds, 
-				busAdmins, potOwners, taskOwners, status, union);
+				busAdmins, potOwners, taskOwners, status, languages, union);
 	}
 
 	@Override

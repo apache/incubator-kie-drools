@@ -206,8 +206,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	    return getTasksAssignedAsPotentialOwner(userId, groupIds, null, null);
 	}
         
-	public List<TaskSummary> getTasksAssignedAsPotentialOwner(
-			String userId, List<String> groupIds, List<Status> status, QueryFilter filter) {
+	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, List<Status> status, QueryFilter filter) {
 		return executor.execute(new GetTaskAssignedAsPotentialOwnerCommand(userId, groupIds, status, filter));
 	}
         
@@ -236,9 +235,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	}
         
         @Override
-	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId,
-			List<String> groupIds, int firstResult,
-			int maxResults) {
+	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResults) {
 		return getTasksAssignedAsPotentialOwner(userId, groupIds, null, new QueryFilter(firstResult, maxResults));
 	}
 
@@ -281,9 +278,8 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
      */
     @Deprecated
     public List<TaskSummary> getTasksByVariousFields(String userId, List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
-            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, List<Status> statuses, 
+            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, List<Status> statuses, List<String> languages,
             boolean union) {
-
         GetTasksByVariousFieldsCommand cmd = new GetTasksByVariousFieldsCommand(workItemIds, taskIds, procInstIds, 
 		        busAdmins, potOwners, taskOwners, 
 		        statuses, union);

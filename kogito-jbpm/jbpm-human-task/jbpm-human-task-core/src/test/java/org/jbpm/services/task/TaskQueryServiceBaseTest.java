@@ -17,7 +17,6 @@
 package org.jbpm.services.task;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -27,12 +26,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
-import org.jbpm.services.task.commands.GetTasksByVariousFieldsCommand;
 import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -40,12 +37,9 @@ import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.query.QueryParameterIdentifiers;
-import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.InternalI18NText;
 import org.kie.internal.task.api.model.InternalTask;
-import org.kie.internal.task.api.model.InternalTaskData;
 
 public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest {
     
@@ -208,7 +202,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
     public void testGetTasksAssignedAsPotentialOwnerWithUserGroupsLangOffsetCountNoTask() {
         List<String> groupIds = new ArrayList<String>();
         groupIds.add("Crusaders");
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds,  0, 1);
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds, null, 0, 1);
         assertEquals(0, tasks.size());
     }
         
@@ -227,7 +221,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         taskService.addTask(task2, new HashMap<String, Object>());       
         List<String> groupIds = new ArrayList<String>();
         groupIds.add("Crusaders");
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds, 0, 1);
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds, null, 0, 1);
         assertEquals(1, tasks.size());
         // FIXME tasks are returned in random order
         // assertEquals("First task", tasks.get(0).getName());
@@ -248,7 +242,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         taskService.addTask(task2, new HashMap<String, Object>());       
         List<String> groupIds = new ArrayList<String>();
         groupIds.add("Crusaders");
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds, 0, 2);
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds, null, 0, 2);
         assertEquals(2, tasks.size());
         // FIXME tasks are returned in random order
         // assertEquals("First task", tasks.get(0).getName());
@@ -270,7 +264,7 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         taskService.addTask(task2, new HashMap<String, Object>());       
         List<String> groupIds = new ArrayList<String>();
         groupIds.add("Crusaders");
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds,  1, 1);
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds, null, 1, 1);
         // FIXME tasks are returned in random order
         // assertEquals(1, tasks.size());
         // assertEquals("Second task", tasks.get(0).getName());

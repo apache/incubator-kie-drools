@@ -134,7 +134,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             potOwners.add(potOwner);
         }
        
-        List<TaskSummary> results = taskService.getTasksByVariousFields(stakeHolder, workItemIds, null, null, null, null, null, null, false);
+        List<TaskSummary> results = taskService.getTasksByVariousFields(stakeHolder, workItemIds, null, null, null, null, null, null, null, false);
         assertEquals("List of tasks", 1, results.size());
 
         {
@@ -173,7 +173,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         }
 
         // everything
-        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, null, null, false);
+        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, null, null, null, false);
         assertEquals("List of tasks", 3, results.size());
         testOrderByTaskIdAscending(results);
         
@@ -188,25 +188,25 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         assertEquals( "Did not order when returning tasks (first task id: " + results.get(0).getId(), firstTaskId.longValue(), results.get(0).getId().longValue());
         
         // single param tests
-        results = taskService.getTasksByVariousFields(stakeHolder, workItemIds, null, null, null, null, null, null, false);
+        results = taskService.getTasksByVariousFields(stakeHolder, workItemIds, null, null, null, null, null, null, null, false);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
-        results = taskService.getTasksByVariousFields(stakeHolder, null, taskIds, null, null, null, null, null, false );
+        results = taskService.getTasksByVariousFields(stakeHolder, null, taskIds, null, null, null, null, null, null, false );
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
-        results = taskService.getTasksByVariousFields(stakeHolder, null, null, procInstIds, null, null, null, null, false);
+        results = taskService.getTasksByVariousFields(stakeHolder, null, null, procInstIds, null, null, null, null, null, false);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
-        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, busAdmins, null, null, null, false);
+        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, busAdmins, null, null, null, null, false);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
-        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, potOwners, null, null, false);
+        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, potOwners, null, null, null, false);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
-        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, potOwners, null, false);
+        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, potOwners, null, null, false);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
-        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, null, statuses, false);
+        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, null, statuses, null, false);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
         
@@ -215,28 +215,28 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         testLongList.add(workItemIds.get(0));
         List<Long> testLongListTwo = new ArrayList<Long>();
         testLongListTwo.add(taskIds.get(1));
-        results = taskService.getTasksByVariousFields(stakeHolder, testLongList, testLongListTwo, null, null, null, null, null, false);
+        results = taskService.getTasksByVariousFields(stakeHolder, testLongList, testLongListTwo, null, null, null, null, null, null, false);
         assertEquals("List of tasks", 0, results.size());
-        results = taskService.getTasksByVariousFields(stakeHolder, testLongList, testLongListTwo, null, null, null, null, null, true);
+        results = taskService.getTasksByVariousFields(stakeHolder, testLongList, testLongListTwo, null, null, null, null, null, null, true);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
         
         // task id and/or process instance id 
         testLongList.clear();
         testLongList.add(procInstIds.get(1));
-        results = taskService.getTasksByVariousFields(stakeHolder, null, testLongListTwo, testLongList, null, null, null, null, true);
+        results = taskService.getTasksByVariousFields(stakeHolder, null, testLongListTwo, testLongList, null, null, null, null, null, true);
         assertEquals("List of tasks", 1, results.size());
         testOrderByTaskIdAscending(results);
-        results = taskService.getTasksByVariousFields(stakeHolder, null, testLongListTwo, testLongList, null, null, null, null, false);
+        results = taskService.getTasksByVariousFields(stakeHolder, null, testLongListTwo, testLongList, null, null, null, null, null, false);
         assertEquals("List of tasks", 1, results.size());
         testOrderByTaskIdAscending(results);
         
         // process instance id and/or bus admin 
         List<String> testStringList = new ArrayList<String>();
         testStringList.add(busAdmins.get(0));
-        results = taskService.getTasksByVariousFields(stakeHolder, null, testLongListTwo, null, testStringList, null, null, null, false);
+        results = taskService.getTasksByVariousFields(stakeHolder, null, testLongListTwo, null, testStringList, null, null, null, null, false);
         assertEquals("List of tasks", 0, results.size());
-        results = taskService.getTasksByVariousFields(stakeHolder, null, testLongListTwo, null, testStringList, null, null, null, true);
+        results = taskService.getTasksByVariousFields(stakeHolder, null, testLongListTwo, null, testStringList, null, null, null, null, true);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
     
@@ -245,33 +245,33 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         testStringList.add(busAdmins.get(1));
         List<String> testStringListTwo = new ArrayList<String>();
         testStringListTwo.add(potOwners.get(0));
-        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, testStringList, testStringListTwo, null, null, false);
+        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, testStringList, testStringListTwo, null, null, null, false);
         assertEquals("List of tasks", 0, results.size());
-        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, testStringList, testStringListTwo, null, null, true);
+        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, testStringList, testStringListTwo, null, null, null, true);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
         
         // pot owner and/or task owner
         testStringList.clear();
         testStringList.add(tasks[1].getTaskData().getActualOwner().getId());
-        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, testStringListTwo, testStringList, null, false);
+        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, testStringListTwo, testStringList, null, null, false);
         assertEquals("List of tasks", 0, results.size());
-        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, testStringListTwo, testStringList, null, true);
+        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, testStringListTwo, testStringList, null, null, true);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
         
         // task owner and/or status
         List<Status> testStatusList = new ArrayList<Status>();
         testStatusList.add(statuses.get(0));
-        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, testStringList, testStatusList, false);
+        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, testStringList, testStatusList, null, false);
         assertEquals("List of tasks", 0, results.size());
-        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, testStringList, testStatusList, true);
+        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, testStringList, testStatusList, null, true);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
         
         // deploymentId
         testStatusList.add(statuses.get(0));
-        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, testStringList, testStatusList, false);
+        results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, testStringList, testStatusList, null, false);
         
     }
     
@@ -299,14 +299,14 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         ((InternalTaskData) task.getTaskData()).setProcessInstanceId(1);
         taskService.addTask(task, new HashMap<String, Object>());
         
-        List<TaskSummary> results = taskService.getTasksByVariousFields("Administrator", null, null, null, null, potOwners,  null, null, false);
+        List<TaskSummary> results = taskService.getTasksByVariousFields("Administrator", null, null, null, null, potOwners,  null, null, null, false);
        
         assertNotNull(results);
         assertEquals(1, results.size());
         TaskSummary resultTask = results.get(0);
        
         // "Wintermute" does not have the proper permissions
-        results = taskService.getTasksByVariousFields("Wintermute", null, null, null, null, potOwners,  null, null, false);
+        results = taskService.getTasksByVariousFields("Wintermute", null, null, null, null, potOwners,  null, null, null, false);
         assertEquals(0, results.size());
     }
     
@@ -327,7 +327,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         ((InternalTaskData) task.getTaskData()).setProcessInstanceId(1);
         taskService.addTask(task, new HashMap<String, Object>());
         
-        List<TaskSummary> results = taskService.getTasksByVariousFields(potOwner, null, null, null, busAdmins, null, null, null, false);
+        List<TaskSummary> results = taskService.getTasksByVariousFields(potOwner, null, null, null, busAdmins, null, null, null, null, false);
         
         assertNotNull(results);
         assertEquals(1, results.size());
