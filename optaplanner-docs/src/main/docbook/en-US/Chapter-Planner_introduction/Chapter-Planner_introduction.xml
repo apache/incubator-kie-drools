@@ -74,7 +74,7 @@
     <para>Every organization faces planning problems: provide products or services with a limited set of
     <emphasis>constrained</emphasis> resources (employees, assets, time and money). OptaPlanner optimizes such planning
     to do more business with less resources. This is known as <emphasis>Constraint Satisfaction Programming</emphasis>
-    (which is part of the discipline <emphasis>Operations Research</emphasis>).</para>
+    (which is part of the <emphasis>Operations Research</emphasis> discipline).</para>
 
     <para>OptaPlanner helps normal Java<superscript>TM</superscript> programmers solve constraint satisfaction problems
     efficiently. Under the hood, it combines optimization heuristics and metaheuristics with very efficient score
@@ -179,7 +179,7 @@
 
       <para>These constraints define the <emphasis>score calculation</emphasis> (AKA <emphasis>fitness
       function</emphasis>) of a planning problem. Each solution of a planning problem can be graded with a score.
-      <emphasis role="bold">With OptaPlanner, score constraints are written in an Object Orientated language, such as
+      <emphasis role="bold">With OptaPlanner, score constraints are written in an Object Oriented language, such as
       Java code or Drools rules</emphasis>. Such code is easy, flexible and scalable.</para>
     </section>
 

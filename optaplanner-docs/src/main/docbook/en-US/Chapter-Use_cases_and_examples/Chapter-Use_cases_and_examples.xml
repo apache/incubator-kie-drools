@@ -760,7 +760,7 @@
       <section>
         <title>Problem statement</title>
 
-        <para>Place n queens on a n sized chessboard so no 2 queens can attach each other. The most common n queens
+        <para>Place n queens on a n sized chessboard so no 2 queens can attack each other. The most common n queens
         puzzle is the 8 queens puzzle, with <emphasis>n = 8</emphasis>:</para>
 
         <mediaobject>
@@ -1161,7 +1161,7 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
           </listitem>
 
           <listitem>
-            <para>Minimum working days: Lectures of the same course should be spread into a minimum number of
+            <para>Minimum working days: Lectures of the same course should be spread out into a minimum number of
             days.</para>
           </listitem>
 
@@ -1217,7 +1217,7 @@ comp14 has 68 teachers,  60 curricula,  85 courses, 275 lectures, 25 periods, 17
         <title>Problem statement</title>
 
         <para>Assign each process to a machine. All processes already have an original (unoptimized) assignment. Each
-        process requires an amount of each resource (such as CPU, RAM, ...). This is more complex version of the Cloud
+        process requires an amount of each resource (such as CPU, RAM, ...). This is a more complex version of the Cloud
         Balancing example.</para>
 
         <para>Hard constraints:</para>
@@ -1232,7 +1232,7 @@ comp14 has 68 teachers,  60 curricula,  85 courses, 275 lectures, 25 periods, 17
           </listitem>
 
           <listitem>
-            <para>Spread: Processes of the same service must be spread across locations.</para>
+            <para>Spread: Processes of the same service must be spread out across locations.</para>
           </listitem>
 
           <listitem>
@@ -1355,7 +1355,7 @@ model_b_10 has  3 resources,  5 neighborhoods, 100 locations, 5000 machines,  48
               </listitem>
 
               <listitem>
-                <para>Customer due time: a vehicle must arrive in time, before the customer's due time.</para>
+                <para>Customer due time: a vehicle must arrive on time, before the customer's due time.</para>
               </listitem>
             </itemizedlist>
           </listitem>
@@ -1369,7 +1369,7 @@ model_b_10 has  3 resources,  5 neighborhoods, 100 locations, 5000 machines,  48
           </listitem>
         </itemizedlist>
 
-        <para>The capacitated vehicle routing problem (CVRP) and it's timewindowed variant (CVRPTW) are defined by <link
+        <para>The capacitated vehicle routing problem (CVRP) and its timewindowed variant (CVRPTW) are defined by <link
         xlink:href="http://neo.lcc.uma.es/vrp/">the VRP web</link>.</para>
       </section>
 
@@ -1648,7 +1648,7 @@ Schedule B-10 has 20 projects, 460 jobs, 1300 execution modes, 42 resources and 
 
         <itemizedlist>
           <listitem>
-            <para>A patient can prefer a maximum room size, for example if he/she want a single room. Weight:
+            <para>A patient can prefer a maximum room size, for example if he/she wants a single room. Weight:
             <literal>-8soft * nightCount</literal>.</para>
           </listitem>
 
@@ -1663,7 +1663,7 @@ Schedule B-10 has 20 projects, 460 jobs, 1300 execution modes, 42 resources and 
 
             <itemizedlist>
               <listitem>
-                <para>That room specialism should be priority 1. Weight: <literal>-10soft * (priority - 1) *
+                <para>That room speciality should be priority 1. Weight: <literal>-10soft * (priority - 1) *
                 nightCount</literal>.</para>
               </listitem>
             </itemizedlist>

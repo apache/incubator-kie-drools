@@ -187,7 +187,7 @@
 
       <para>Scores are considered equal far more often. It's left up to a human to choose the better out of a set of
       best solutions (with equal scores) found by Planner. In the example above, the user must choose between solution A
-      (3 apples and 1 orange) and solution B (1 apples and 6 oranges). It's guaranteed that Planner has not found
+      (3 apples and 1 orange) and solution B (1 apple and 6 oranges). It's guaranteed that Planner has not found
       another solution which has more apples or more oranges or even a better combination of both (such as 2 apples and
       3 oranges).</para>
 
@@ -196,10 +196,10 @@
       <literal>BestSolutionRecaller</literal>). Future versions will provide out-of-the-box support.</para>
 
       <note>
-        <para>A pareto <literal>Score</literal>'s method <literal>compareTo</literal> is not transitive because it does
-        a pareto comparison. For example: 2 apples is greater than 1 apple. 1 apples is equal to 1 orange. Yet, 2 apples
+        <para>A pareto <literal>Score</literal>'s <literal>compareTo</literal> method is not transitive because it does
+        a pareto comparison. For example: having 2 apples is greater than 1 apple. 1 apple is equal to 1 orange. Yet, 2 apples
         are not greater than 1 orange (but actually equal). Pareto comparison violates the contract of the interface
-        <literal>java.lang.Comparable</literal>'s method <literal>compareTo</literal>, but Planner's systems are
+        <literal>java.lang.Comparable</literal>'s <literal>compareTo</literal> method, but Planner's systems are
         <emphasis>pareto comparison safe</emphasis>, unless explicitly stated otherwise in this documentation.</para>
       </note>
     </section>
@@ -227,9 +227,9 @@
 }</programlisting>
 
       <para>The <literal>Score</literal> implementation to use depends on your use case. Your score might not
-      efficiently fit in a single <literal>long</literal> value. Planner has several build-in <literal>Score</literal>
+      efficiently fit in a single <literal>long</literal> value. Planner has several built-in <literal>Score</literal>
       implementations, but you can implement a custom <literal>Score</literal> too. Most use cases tend to use the
-      build-in <literal>HardSoftScore</literal>.</para>
+      built-in <literal>HardSoftScore</literal>.</para>
 
       <mediaobject>
         <imageobject>
@@ -288,7 +288,7 @@
     <title>Choose a Score definition</title>
 
     <para>Each <literal>Score</literal> implementation also has a <literal>ScoreDefinition</literal> implementation. For
-    example: <literal>SimpleScore</literal> is definied by <literal>SimpleScoreDefinition</literal>.</para>
+    example: <literal>SimpleScore</literal> is defined by <literal>SimpleScoreDefinition</literal>.</para>
 
     <section xml:id="simpleScore">
       <title>SimpleScore</title>
@@ -413,8 +413,8 @@
 
       <para>The <literal>ScoreDefinition</literal> interface defines the score representation.</para>
 
-      <para>To implement a custom Score, you'll also need to implement a custom <literal>ScoreDefinition</literal>.
-      Extend <literal>AbstractScoreDefinition</literal> (preferable by copy pasting
+      <para>To implement a custom <literal>Score</literal>, you'll also need to implement a custom <literal>ScoreDefinition</literal>.
+      Extend <literal>AbstractScoreDefinition</literal> (preferably by copy pasting
       <literal>HardSoftScoreDefinition</literal>) and start from there.</para>
 
       <para>Then hook your custom <literal>ScoreDefinition</literal> in your
@@ -453,13 +453,13 @@
       <para>Every score calculation type can use any Score definition. For example, easy Java score calculation can
       output a <literal>HardSoftScore</literal>.</para>
 
-      <para>All score calculation types are Object Orientated and can reuse existing Java code.</para>
+      <para>All score calculation types are Object Oriented and can reuse existing Java code.</para>
 
       <important>
         <para>The score calculation should be read-only: it should not change the planning entities or the problem facts
         in any way. For example, it must not call a setter method on a planning entity in a Drools score rule's RHS.
         This does not apply to <emphasis>logically inserted</emphasis> objects, which can be changed by the score rules
-        who logically inserted them in the first place.</para>
+        that logically inserted them in the first place.</para>
 
         <para>Planner will not recalculate the score of a <literal>Solution</literal> if it can predict it (unless
         an <link linkend="environmentMode">environmentMode assertion</link> is enabled). For example, after a winning
@@ -741,8 +741,8 @@
 
       <para>Optionally, to explain a score with <literal>ScoreDirector.getConstraintMatchTotals()</literal> or to get
       better output when the <literal>IncrementalScoreCalculator</literal> is corrupted in
-      <literal>environmentMode</literal> <literal>FAST_ASSERT</literal> or <literal>FULL_ASSERT</literal>, implement the
-      interface <literal>ConstraintMatchAwareIncrementalScoreCalculator</literal> too:</para>
+      <literal>FAST_ASSERT</literal> or <literal>FULL_ASSERT environmentMode</literal>, implement also the
+      <literal>ConstraintMatchAwareIncrementalScoreCalculator</literal> interface:</para>
 
       <programlisting language="java">public interface ConstraintMatchAwareIncrementalScoreCalculator&lt;Sol extends Solution&gt; {
 
@@ -821,7 +821,7 @@
 
                 <itemizedlist>
                   <listitem>
-                    <para>In every release, the Drools rule engine tends to become faster.</para>
+                    <para>In every release, the Drools rule engine tends to become faster</para>
                   </listitem>
                 </itemizedlist>
               </listitem>
@@ -969,14 +969,14 @@ end</programlisting>
 
         <note>
           <para>Notice that every score rule will relate to at least 1 planning entity class (directly or indirectly
-          though a logically inserted fact).</para>
+          through a logically inserted fact).</para>
 
           <para>This is normal: it would be a waste of time to write a score rule that only relates to problem facts, as
           the consequence will never change during planning, no matter what the possible solution.</para>
         </note>
 
         <note>
-          <para>The variable <literal>kcontext</literal> is a magic variable in Drools Expert. The scoreHolder's method
+          <para>The <literal>kcontext</literal> variable is a magic variable in Drools Expert. The <literal>scoreHolder</literal>'s method
           uses it to do incremental score calculation correctly and to create a <literal>ConstraintMatch</literal>
           instance.</para>
         </note>
@@ -1235,9 +1235,9 @@ end</programlisting>
     </section>
 
     <section xml:id="buildInHardConstraint">
-      <title>Build-in hard constraint</title>
+      <title>Built-in hard constraint</title>
 
-      <para>Instead of implementing a hard constraint, you can sometimes make it build-in too. For example: If
+      <para>Instead of implementing a hard constraint, you can sometimes make it built-in too. For example: If
       <literal>Lecture</literal> A should never be assigned to <literal>Room</literal> X, but it uses ValueRangeProvider
       on Solution, the <literal>Solver</literal> will often try to assign it to <literal>Room</literal> X too (only to
       find out that it breaks a hard constraint). Use <link linkend="filteredSelection">filtered selection</link> to
@@ -1297,9 +1297,9 @@ end</programlisting>
         </listitem>
 
         <listitem>
-          <para>2 exams needs to be conducted at the same time, but you're only move 1 exam at a time. So the solver has
-          a disincentive move one of those exams to another timeslot without moving the other in the same move. Add a
-          course-grained move that moves both exams at the same time.</para>
+          <para>2 exams need to be conducted at the same time, but you're only moving 1 exam at a time. So the solver has
+          to move one of those exams to another timeslot without moving the other in the same move. Add a
+          coarse-grained move that moves both exams at the same time.</para>
         </listitem>
       </itemizedlist>
 
@@ -1348,7 +1348,7 @@ end</programlisting>
         </listitem>
 
         <listitem>
-          <para>Add course-grained moves and union select them with the existing fine-grained moves. A course-grained
+          <para>Add coarse-grained moves and union select them with the existing fine-grained moves. A coarse-grained
           move effectively does multiple moves to directly get out of a score trap with a single move. For example: move
           multiple items from the same container to another container.</para>
         </listitem>
@@ -1392,7 +1392,7 @@ end</programlisting>
       </mediaobject>
 
       <para>As shown above, the <emphasis>squared workload</emphasis> implementation guarantees that if you select 2
-      employees from a given solution and make their distribution between those 2 employees more fair that the resulting
+      employees from a given solution and make their distribution between those 2 employees fairer, then the resulting
       new solution will have a better overall score.</para>
     </section>
   </section>
