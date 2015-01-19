@@ -152,7 +152,7 @@
     <section xml:id="isThisClassAProblemFactOrPlanningEntity">
       <title>Is this class a problem fact or planning entity?</title>
 
-      <para>Look at a dataset of your planning problem. You 'll recognize domain classes in there, each of which can be
+      <para>Look at a dataset of your planning problem. You'll recognize domain classes in there, each of which can be
       categorized as one of these:</para>
 
       <itemizedlist>
@@ -431,7 +431,7 @@ public class Queen {
           ordering.</para>
         </important>
 
-        <para><emphasis>None of the current planning variable state should be used to compare planning entity
+        <para><emphasis>None of the current planning variable states should be used to compare planning entity
         difficult.</emphasis> During Construction Heuristics, those variables are likely to be <literal>null</literal>
         anyway. For example, a <literal>Queen</literal>'s <literal>row</literal> variable should not be used.</para>
       </section>
@@ -480,7 +480,7 @@ public class Queen {
 
         <para>By default, an initialized planning variable cannot be <literal>null</literal>, so an initialized solution
         will never use <literal>null</literal> for any of its planning variables. In an over-constrained use case, this
-        can be contra productive. For example: in task assignment with too many tasks for the workforce, we would rather
+        can be counterproductive. For example: in task assignment with too many tasks for the workforce, we would rather
         leave low priority tasks unassigned instead of assigning them to an overloaded worker.</para>
 
         <para>To allow an initialized planning variable to be <literal>null</literal>, set <literal>nullable</literal>
@@ -640,9 +640,9 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 
           <note>
             <para>By limiting the value range specifically of 1 planning entity, you are effectively creating a
-            <emphasis>build-in hard constraint</emphasis>. This can be a very good thing, as the number of possible
+            <emphasis>built-in hard constraint</emphasis>. This can be a very good thing, as the number of possible
             solutions is severely lowered. But this can also be a bad thing because it takes away the freedom of the
-            optimization algorithms to temporarily break that constraint in order to escape a local optima.</para>
+            optimization algorithms to temporarily break that constraint in order to escape from a local optimum.</para>
           </note>
 
           <para>A planning entity should <emphasis>not</emphasis> use other planning entities to determinate its value
@@ -851,7 +851,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
           in a database) and implement a score constraint for the last entity back to the anchor.</para>
         </note>
 
-        <para>The optimization algorithms and build-in <literal>Move</literal>'s do chain correction to guarantee that
+        <para>The optimization algorithms and built-in <literal>Move</literal>'s do chain correction to guarantee that
         the model stays valid:</para>
 
         <mediaobject>
@@ -926,7 +926,7 @@ public class Visit ... implements Standstill {
       <section xml:id="shadowVariableIntroduction">
         <title>Introduction</title>
 
-        <para>A shadow variable is a variables who's correct value can be deduced from the state of the genuine planning
+        <para>A shadow variable is a variable whose correct value can be deduced from the state of the genuine planning
         variables. Even though such a variable violates the principle of normalization by definition, in some use cases
         it can be very practical to use a shadow variable, especially to express the constraints more naturally. For
         example in vehicle routing with time windows: the arrival time at a customer for a vehicle can be calculated
@@ -1047,7 +1047,7 @@ public class Customer {
           planning variables.</para>
         </note>
 
-        <para>For example, the VehicleUpdatingVariableListener assures that every <literal>Customer</literal> in a chain
+        <para>For example, the <literal>VehicleUpdatingVariableListener</literal> assures that every <literal>Customer</literal> in a chain
         has the same <literal>Vehicle</literal>, namely the chain's anchor.</para>
 
         <programlisting language="java">public class VehicleUpdatingVariableListener implements VariableListener&lt;Customer&gt; {
@@ -1099,7 +1099,7 @@ public class Customer {
         list.</para>
 
         <para>A planning problem is actually a unsolved planning solution or - stated differently - an uninitialized
-        <literal>Solution</literal>. Therefor, that wrapping class must implement the <literal>Solution</literal>
+        <literal>Solution</literal>. Therefore, that wrapping class must implement the <literal>Solution</literal>
         interface. For example in n queens, that <literal>NQueens</literal> class implements
         <literal>Solution</literal>, yet every <literal>Queen</literal> in a fresh <literal>NQueens</literal> class is
         not yet assigned to a <literal>Row</literal> (their <literal>row</literal> property is <literal>null</literal>).
@@ -1211,7 +1211,7 @@ public class Customer {
           match because the elements of that <literal>Collection</literal> aren't in the Drools working memory.</para>
         </note>
 
-        <para>The method <literal>getProblemFacts()</literal> is not called much: at most only once per solver phase per
+        <para>The <literal>getProblemFacts()</literal> method is not called much: at most only once per solver phase per
         solver thread.</para>
       </section>
 
@@ -1219,7 +1219,7 @@ public class Customer {
         <title>Cached problem fact</title>
 
         <para>A cached problem fact is a problem fact that doesn't exist in the real domain model, but is calculated
-        before the <literal>Solver</literal> really starts solving. The method <literal>getProblemFacts()</literal> has
+        before the <literal>Solver</literal> really starts solving. The <literal>getProblemFacts()</literal> method has
         the chance to enrich the domain model with such cached problem facts, which can lead to simpler and faster score
         constraints.</para>
 
@@ -1330,8 +1330,8 @@ public class SeatDesignationDependency {
         <section>
           <title>Custom cloning: Make <literal>Solution</literal> implement <literal>PlanningCloneable</literal></title>
 
-          <para>If your Solution implements PlanningCloneable, Planner will automatically choose to clone it by calling
-          the method <literal>planningClone()</literal>.</para>
+          <para>If your <literal>Solution</literal> implements <literal>PlanningCloneable</literal>, Planner will automatically choose to clone it by calling
+          the <literal>planningClone()</literal> method.</para>
 
           <programlisting language="java">public interface PlanningCloneable&lt;T&gt; {
 
@@ -1467,7 +1467,7 @@ public class SeatDesignationDependency {
 
       <para>A <literal>Solver</literal> can only solve 1 planning problem instance at a time. A
       <literal>Solver</literal> should only be accessed from a single thread, except for the methods that are
-      specifically javadocced as being thread-safe. It's build with a <literal>SolverFactory</literal>, do not implement
+      specifically javadocced as being thread-safe. It's built with a <literal>SolverFactory</literal>, do not implement
       or build it yourself.</para>
     </section>
 
@@ -1478,7 +1478,7 @@ public class SeatDesignationDependency {
 
       <itemizedlist>
         <listitem>
-          <para>A <literal>Solver</literal> build from a solver configuration</para>
+          <para>A <literal>Solver</literal> built from a solver configuration</para>
         </listitem>
 
         <listitem>
@@ -1491,7 +1491,7 @@ public class SeatDesignationDependency {
       <programlisting language="java">    solver.solve(planningProblem);
     Solution bestSolution = solver.getBestSolution();</programlisting>
 
-      <para>For example in n queens, the method <literal>getBestSolution()</literal> will return an
+      <para>For example in n queens, the <literal>getBestSolution()</literal> method will return an
       <literal>NQueens</literal> instance with every <literal>Queen</literal> assigned to a
       <literal>Row</literal>.</para>
 
@@ -1515,13 +1515,13 @@ public class SeatDesignationDependency {
         <para>The <literal>Solution</literal> instance given to the method <literal>solve(Solution)</literal> will be
         changed by the <literal>Solver</literal>, but do not mistake it for the best solution.</para>
 
-        <para>The <literal>Solution</literal> instance returned by the method <literal>getBestSolution()</literal> will
+        <para>The <literal>Solution</literal> instance returned by the <literal>getBestSolution()</literal> method will
         most likely be a clone of the instance given to the method <literal>solve(Solution)</literal>, which means it's
         a different instance.</para>
       </note>
 
       <note>
-        <para>The <literal>Solution</literal> instance given to the method <literal>solve(Solution)</literal> does not
+        <para>The <literal>Solution</literal> instance given to the <literal>solve(Solution)</literal> method does not
         need to be uninitialized. It can be partially or fully initialized, which is likely to be the case in <link
         linkend="repeatedPlanning">repeated planning</link>.</para>
       </note>
@@ -1714,7 +1714,7 @@ INFO  Solving ended: time spent (24), best score (0), average calculate count pe
       &lt;version&gt;1.x&lt;/version&gt;
     &lt;/dependency&gt;</programlisting>
 
-      <para>Configure the logging level on the package <literal>org.optaplanner</literal> in your
+      <para>Configure the logging level on the <literal>org.optaplanner</literal> package in your
       <filename>logback.xml</filename> file:</para>
 
       <programlisting language="xml">&lt;configuration&gt;

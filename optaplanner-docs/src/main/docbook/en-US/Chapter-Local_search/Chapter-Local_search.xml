@@ -284,7 +284,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
       <para>Hill Climbing always takes improving moves. This may seem like a good thing, but it's not: <emphasis
       role="bold">Hill Climbing can easily get stuck in a local optimum.</emphasis> This happens when it reaches a
       solution for which all the moves deteriorate the score. Even if it picks one of those moves, the next step might
-      go back to the original solution and which case chasing it's own tail:</para>
+      go back to the original solution and which case chasing its own tail:</para>
 
       <mediaobject>
         <imageobject>
@@ -445,7 +445,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
 
       <para>Simulated Annealing evaluates only a few moves per step, so it steps quickly. In the classic implementation,
       the first accepted move is the winning step. A move is accepted if it doesn't decrease the score or - in case it
-      does decrease the score - if passes a random check. The chance that a decreasing move passes the random check
+      does decrease the score - it passes a random check. The chance that a decreasing move passes the random check
       decreases relative to the size of the score decrement and the time the phase has been running (which is
       represented as the temperature).</para>
 
@@ -505,7 +505,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
       <title>Algorithm description</title>
 
       <para>Late Acceptance (also known as Late Acceptance Hill Climbing) also evaluates only a few moves per step. A
-      move is accepted if does not decrease the score, or if it leads to a score that is at least the late score (which
+      move is accepted if it does not decrease the score, or if it leads to a score that is at least the late score (which
       is the winning score of a fixed number of steps ago).</para>
 
       <mediaobject>
@@ -560,7 +560,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
       <title>Algorithm description</title>
 
       <para>Step Counting Hill Climbing also evaluates only a few moves per step. For a number of steps, it keeps the
-      step score as a threshold. A move is accepted if does not decrease the score, or if it leads to a score that is at
+      step score as a threshold. A move is accepted if it does not decrease the score, or if it leads to a score that is at
       least the threshold score.</para>
 
       <para>Scientific paper: <link xlink:href="https://www.cs.nott.ac.uk/~yxb/SCHC/SCHC_mista2013_79.pdf"><emphasis>An

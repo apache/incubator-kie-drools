@@ -57,7 +57,7 @@
       </note>
 
       <para>All optimization algorithms use <literal>Move</literal>'s to transition from one solution to a neighbor
-      solution. Therefor, all the optimization algorithms are confronted with <literal>Move</literal> selection: the
+      solution. Therefore, all the optimization algorithms are confronted with <literal>Move</literal> selection: the
       craft of creating and iterating moves efficiently and the art of finding the most promising subset of random moves
       to evaluate first.</para>
     </section>
@@ -162,7 +162,7 @@
         <para>Almost every <literal>moveSelector</literal> configuration injected into a metaheuristic algorithm should
         include a changeMoveSelector or a custom implementation. This guarantees that every possible
         <literal>Solution</literal> can be reached through applying a number of moves in sequence (not taking <link
-        linkend="scoreTrap">score traps</link> into account). Of course, normally it is unioned with other, more course
+        linkend="scoreTrap">score traps</link> into account). Of course, normally it is unioned with other, more coarse
         grained move selectors.</para>
       </important>
     </section>
@@ -181,7 +181,7 @@
 
       <para>Although a <literal>SwapMove</literal> on a single variable is essentially just 2
       <literal>ChangeMove</literal>s, it's often the winning step where the first of the 2
-      <literal>ChangeMove</literal>s would not be the winning step because it leave the solution in a state with broken
+      <literal>ChangeMove</literal>s would not be the winning step because it leaves the solution in a state with broken
       hard constraints. For example: swapping the room of 2 lectures doesn't bring the solution in a intermediate state
       where both lectures are in the same room which breaks a hard constraint.</para>
 
@@ -363,14 +363,14 @@
         of at least size <literal>2</literal>.</para>
       </note>
 
-      <para>The property <literal>selectReversingMoveToo</literal> (defaults to true) enabled selecting the reverse of
+      <para>The <literal>selectReversingMoveToo</literal> property (defaults to true) enables selecting the reverse of
       every subchain too.</para>
     </section>
 
     <section xml:id="subChainSwapMoveSelector">
       <title>subChainSwapMoveSelector</title>
 
-      <para>The <literal>subChainSwapMove</literal> selects 2 different subChains and moves it to another place in a
+      <para>The <literal>subChainSwapMoveSelector</literal> selects 2 different subChains and moves them to another place in a
       different or the same anchor chain.</para>
 
       <para>Simplest configuration:</para>
@@ -415,8 +415,8 @@
     <section xml:id="unionMoveSelector">
       <title>unionMoveSelector</title>
 
-      <para>A <literal>unionMoveSelector</literal> selects a <literal>Move</literal> by selecting 1 of its child
-      <literal>MoveSelector</literal>s to supply the next <literal>Move</literal>.</para>
+      <para>A <literal>unionMoveSelector</literal> selects a <literal>Move</literal> by selecting 1 of its 
+      <literal>MoveSelector</literal> children to supply the next <literal>Move</literal>.</para>
 
       <para>Simplest configuration:</para>
 
@@ -448,8 +448,8 @@
     &lt;/unionMoveSelector&gt;</programlisting>
 
       <para>The <literal>selectorProbabilityWeightFactory</literal> determines in <literal>selectionOrder</literal>
-      <literal>RANDOM</literal> how often a child MoveSelector is selected to supply the next Move. By default, each
-      child <literal>MoveSelector</literal> has the same chance of being selected.</para>
+      <literal>RANDOM</literal> how often a <literal>MoveSelector</literal> child is selected to supply the next Move. By default, each
+      <literal>MoveSelector</literal> child has the same chance of being selected.</para>
 
       <mediaobject>
         <imageobject>
@@ -457,7 +457,7 @@
         </imageobject>
       </mediaobject>
 
-      <para>Change the fixedProbabilityWeight of such a child to select it more often. For example, the
+      <para>Change the <literal>fixedProbabilityWeight</literal> of such a child to select it more often. For example, the
       <literal>unionMoveSelector</literal> can return a <literal>SwapMove</literal> twice as often as a
       <literal>ChangeMove</literal>:</para>
 
@@ -488,8 +488,8 @@
       <title>cartesianProductMoveSelector</title>
 
       <para>A <literal>cartesianProductMoveSelector</literal> selects a new <literal>CompositeMove</literal>. It builds
-      that <literal>CompositeMove</literal> by selecting 1 <literal>Move</literal> per child
-      <literal>MoveSelector</literal> and adding it to the <literal>CompositeMove</literal>.</para>
+      that <literal>CompositeMove</literal> by selecting 1 <literal>Move</literal> per
+      <literal>MoveSelector</literal> child and adding it to the <literal>CompositeMove</literal>.</para>
 
       <para>Simplest configuration:</para>
 
@@ -517,10 +517,10 @@
       ...
     &lt;/cartesianProductMoveSelector&gt;</programlisting>
 
-      <para>The propery <literal>ignoreEmptyChildIterators</literal> (true by default) will ignore every empty
+      <para>The <literal>ignoreEmptyChildIterators</literal> property (true by default) will ignore every empty
       <literal>childMoveSelector</literal> to avoid returning no moves. For example: a cartesian product of
       <literal>changeMoveSelector</literal> A and B, for which B is empty (because all it's entities are immovable)
-      returns no moves if <literal>ignoreEmptyChildIterators</literal> is <literal>false</literal> and the moves of A if
+      returns no move if <literal>ignoreEmptyChildIterators</literal> is <literal>false</literal> and the moves of A if
       <literal>ignoreEmptyChildIterators</literal> is <literal>true</literal>.</para>
     </section>
   </section>
@@ -809,7 +809,7 @@
 
         <para>This combination is often a worthy competitor for medium use cases, especially with fast stepping
         optimization algorithms (such as simulated annealing). Unlike cached shuffled selection, it doesn't waste time
-        shuffling the move list at the beginning of every step.</para>
+        shuffling the moves list at the beginning of every step.</para>
 
         <programlisting language="xml">    &lt;unionMoveSelector&gt;
       &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
@@ -834,13 +834,13 @@
         </listitem>
 
         <listitem>
-          <para>Doing the move would break <link linkend="buildInHardConstraint">a build-in hard constraint</link>, so
-          the solution would be infeasible but the score function doesn't check build-in hard constraints (for
+          <para>Doing the move would break <link linkend="buildInHardConstraint">a built-in hard constraint</link>, so
+          the solution would be infeasible but the score function doesn't check built-in hard constraints (for
           performance gain). For example, don't change a gym lecture to a room which is not a gym room.</para>
 
           <itemizedlist>
             <listitem>
-              <para>Note that any build-in hard constraint must usually be filtered on every move type. For example,
+              <para>Note that any built-in hard constraint must usually be filtered on every move type. For example,
               also don't swap the room of a gym lecture with another lecture if the other lecture's original room isn't
               a gym room.</para>
             </listitem>
@@ -866,9 +866,9 @@
 
 }</programlisting>
 
-      <para>Implement the method <literal>accept</literal> to return <literal>false</literal> on a discarded
-      <literal>selection</literal>. Unaccepted moves will not be selected and will therefore never have their method
-      <literal>doMove</literal> called.</para>
+      <para>Implement the <literal>accept</literal> method to return <literal>false</literal> on a discarded
+      <literal>selection</literal>. Unaccepted moves will not be selected and will therefore never have their
+      <literal>doMove</literal> method called.</para>
 
       <programlisting language="java">public class DifferentCourseSwapMoveFilter implements SelectionFilter&lt;SwapMove&gt; {
 
@@ -880,7 +880,7 @@
 
 }</programlisting>
 
-      <para>Apply the filter on the lowest level possible. In most cases, you 'll need to know both the entity and the
+      <para>Apply the filter on the lowest level possible. In most cases, you'll need to know both the entity and the
       value involved and you'll have to apply a <literal>filterClass</literal> on the
       <literal>moveSelector</literal>:</para>
 
@@ -905,8 +905,8 @@
 
       <para>Sorted selection can happen on any Selector in the selector tree, including any
       <literal>MoveSelector</literal>, <literal>EntitySelector</literal> or <literal>ValueSelector</literal>. It does
-      not work with <literal>cacheType</literal> <literal>JUST_IN_TIME</literal> and <literal>it only works with
-      selectionOrder</literal> <literal>SORTED</literal>.</para>
+      not work with <literal>cacheType</literal> <literal>JUST_IN_TIME</literal> and it only works with
+      <literal>selectionOrder SORTED</literal>.</para>
 
       <para>It's mostly used in construction heuristics.</para>
 
@@ -1068,8 +1068,8 @@
 
       <para>Probabilistic selection can happen on any Selector in the selector tree, including any
       <literal>MoveSelector</literal>, <literal>EntitySelector</literal> or <literal>ValueSelector</literal>. It does
-      not work with <literal>cacheType</literal> <literal>JUST_IN_TIME</literal> and <literal>it only works with
-      selectionOrder</literal> <literal>PROBABILISTIC</literal>.</para>
+      not work with <literal>cacheType</literal> <literal>JUST_IN_TIME</literal> and it only works with
+      <literal>selectionOrder PROBABILISTIC</literal>.</para>
 
       <mediaobject>
         <imageobject>
@@ -1170,7 +1170,7 @@
       a look at such a best solution: it will likely be a local optima. Try to figure out if there's a move that could
       get out of that local optima faster.</para>
 
-      <para>If you find one, implement that course-grained move, mix it with the existing moves and benchmark it against
+      <para>If you find one, implement that coarse-grained move, mix it with the existing moves and benchmark it against
       the previous configurations to see if you want to keep it.</para>
     </section>
 
@@ -1229,7 +1229,7 @@
       row.</para>
 
       <para>Planner calls the <literal>doMove(ScoreDirector)</literal> method to do a move. The <literal>Move</literal>
-      implementation must notify the <literal>ScoreDirector</literal> of any changes it make to planning entity's
+      implementation must notify the <literal>ScoreDirector</literal> of any changes it makes to planning entity's
       variables:</para>
 
       <programlisting language="java">    public void doMove(ScoreDirector scoreDirector) {
@@ -1238,8 +1238,8 @@
         scoreDirector.afterVariableChanged(queen, "row"); // after changes are made to the queen.row
     }</programlisting>
 
-      <para>You need to call the methods <literal>scoreDirector.beforeVariableChanged(Object, String)</literal> and
-      <literal>scoreDirector.afterVariableChanged(Object, String)</literal> directly before and after modifying the
+      <para>You need to call the <literal>scoreDirector.beforeVariableChanged(Object, String)</literal> and
+      <literal>scoreDirector.afterVariableChanged(Object, String)</literal> methods directly before and after modifying the
       entity.</para>
 
       <note>
@@ -1399,7 +1399,7 @@
       &lt;moveListFactoryClass&gt;org.optaplanner.examples.nqueens.solver.move.factory.RowChangeMoveFactory&lt;/moveListFactoryClass&gt;
     &lt;/moveListFactory&gt;</programlisting>
 
-      <para>Because the <literal>MoveListFactory</literal> generates all moves at once in a List&lt;Move&gt;, it does
+      <para>Because the <literal>MoveListFactory</literal> generates all moves at once in a <literal>List&lt;Move&gt;</literal>, it does
       not support <literal>cacheType</literal> <literal>JUST_IN_TIME</literal>. Therefore,
       <literal>moveListFactory</literal> uses <literal>cacheType</literal> <literal>STEP</literal> by default and it
       scales badly in memory footprint.</para>
@@ -1408,8 +1408,8 @@
     <section xml:id="moveIteratorFactory">
       <title><literal>MoveIteratorFactory</literal>: generate custom moves just in time</title>
 
-      <para>Use this advanced form to generate custom moves by implementing the interface
-      <literal>MoveIteratorFactory</literal>:</para>
+      <para>Use this advanced form to generate custom moves by implementing the
+      <literal>MoveIteratorFactory</literal> interface:</para>
 
       <programlisting language="java">public interface MoveIteratorFactory {
 
@@ -1421,9 +1421,9 @@
 
 }</programlisting>
 
-      <para>The method <literal>getSize()</literal> must give an estimation of the size. It doesn't need to be correct.
-      The method <literal>createOriginalMoveIterator</literal> is called if the <literal>selectionOrder is</literal>
-      <literal>ORIGINAL</literal> or if it is cached. The method <literal>createRandomMoveIterator</literal> is called
+      <para>The <literal>getSize()</literal> method must give an estimation of the size. It doesn't need to be correct.
+      The <literal>createOriginalMoveIterator</literal> method is called if the <literal>selectionOrder</literal> is
+      <literal>ORIGINAL</literal> or if it is cached. The <literal>createRandomMoveIterator</literal> method is called
       for <literal>selectionOrder</literal> <literal>RANDOM</literal> combined with cacheType
       <literal>JUST_IN_TIME</literal>.</para>
 

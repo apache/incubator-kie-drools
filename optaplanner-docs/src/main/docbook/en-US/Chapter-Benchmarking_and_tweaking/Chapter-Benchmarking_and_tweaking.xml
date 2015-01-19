@@ -296,7 +296,7 @@
     <section xml:id="writingTheOutputSolutionOfTheBenchmarkRuns">
       <title>Writing the output solution of the benchmark runs</title>
 
-      <para>The best solution of each benchmark run can be written to the in the <literal>benchmarkDirectory</literal>.
+      <para>The best solution of each benchmark run can be written in the <literal>benchmarkDirectory</literal>.
       By default, this is disabled, because the files are rarely used and considered bloat. Also, on large datasets,
       writing the best solution of each single benchmark can take quite some time and memory (causing an
       <literal>OutOfMemoryError</literal>), especially in a verbose format like XStream.</para>
@@ -342,8 +342,8 @@
     <section>
       <title>HTML report</title>
 
-      <para>After the running a benchmark, a HTML report will be written in the <literal>benchmarkDirectory</literal>
-      with the filename <filename>index.html</filename>. Open it in your browser. It has a nice overview of your
+      <para>After running a benchmark, an HTML report will be written in the <literal>benchmarkDirectory</literal>
+      with the <filename>index.html</filename> filename. Open it in your browser. It has a nice overview of your
       benchmark including:</para>
 
       <itemizedlist>
@@ -469,7 +469,7 @@
     <section xml:id="benchmarkReportWinningScoreDifferenceSummary">
       <title>Winning score difference summary (graph and table)</title>
 
-      <para>Shows the winning score difference score per <literal>inputSolutionFile</literal> for each solver
+      <para>Shows the winning score difference per <literal>inputSolutionFile</literal> for each solver
       configuration. The winning score difference is the score difference with the score of the winning solver
       configuration for that particular <literal>inputSolutionFile</literal>.</para>
 

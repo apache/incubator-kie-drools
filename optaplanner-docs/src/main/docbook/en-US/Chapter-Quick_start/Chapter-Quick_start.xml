@@ -126,7 +126,7 @@
 
         <listitem>
           <para>Planning variable: the property (or properties) of a planning entity class that changes during planning.
-          In this examples, that's the property <literal>computer</literal> on the class
+          In this example, that's the property <literal>computer</literal> on the class
           <literal>Process</literal>.</para>
         </listitem>
 
@@ -309,8 +309,8 @@
       <section>
         <title>The class <literal>Computer</literal></title>
 
-        <para>The class <literal>Computer</literal> is a POJO (Plain Old Java Object), nothing special. Usually, you'll
-        have more of these kind of classes.</para>
+        <para>The  <literal>Computer</literal> class is a POJO (Plain Old Java Object), nothing special. Usually, you'll
+        have more of this kind of classes.</para>
 
         <example>
           <title>CloudComputer.java</title>
@@ -328,9 +328,9 @@
       </section>
 
       <section>
-        <title>The class <literal>Process</literal></title>
+        <title>The <literal>Process</literal> class</title>
 
-        <para>The class <literal>Process</literal> is a little bit special. We need to tell Planner that it can change
+        <para>The <literal>Process</literal> class is a little bit special. We need to tell Planner that it can change
         the field <literal>computer</literal>, so we annotate the class with <literal>@PlanningEntity</literal> and the
         getter <literal>getComputer</literal> with <literal>@PlanningVariable</literal>:</para>
 
@@ -375,13 +375,13 @@ public class CloudProcess ... {
       <section>
         <title>The class <literal>CloudBalance</literal></title>
 
-        <para>The class <literal>CloudBalance</literal> implements the <filename>Solution</filename> interface. It holds
-        a list of all computers and processes. We need to tell Planner how to retrieve the collection of process which
+        <para>The <literal>CloudBalance</literal> class implements the <filename>Solution</filename> interface. It holds
+        a list of all computers and processes. We need to tell Planner how to retrieve the collection of processes which
         it can change, so we need to annotate the getter <literal>getProcessList</literal> with
         <literal>@PlanningEntityCollectionProperty</literal>.</para>
 
         <para>The <literal>CloudBalance</literal> class also has a property <literal>score</literal> which is the
-        <literal>Score</literal> of that <literal>Solution</literal> instance in it's current state:</para>
+        <literal>Score</literal> of that <literal>Solution</literal> instance in its current state:</para>
 
         <example>
           <title>CloudBalance.java</title>
@@ -430,7 +430,7 @@ public class CloudProcess ... {
 }</programlisting>
         </example>
 
-        <para>The method <literal>getProblemFacts()</literal> is only needed for score calculation with Drools. It's not
+        <para>The <literal>getProblemFacts()</literal> method is only needed for score calculation with Drools. It's not
         needed for the other score calculation types.</para>
       </section>
     </section>
@@ -479,7 +479,7 @@ public class CloudProcess ... {
     &lt;easyScoreCalculatorClass&gt;org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingEasyScoreCalculator&lt;/easyScoreCalculatorClass&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
-        <para>Just implement the method <literal>calculateScore(Solution)</literal> to return a
+        <para>Just implement the <literal>calculateScore(Solution)</literal> method to return a
         <literal>HardSoftScore</literal> instance.</para>
 
         <example>
