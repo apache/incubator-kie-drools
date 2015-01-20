@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.task.model.Content;
 import org.kie.internal.jaxb.StringKeyObjectValueMapXmlAdapter;
 
@@ -49,6 +50,10 @@ public class JaxbContent implements Content {
         }
         this.id = content.getId();
         this.content = content.getContent();
+        Object unmarshalledContent = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        if( unmarshalledContent != null && unmarshalledContent instanceof Map ) { 
+           contentMap = (Map<String, Object>) unmarshalledContent;
+        }
     }
     
     @Override

@@ -121,7 +121,7 @@ public abstract class HumanTaskServicesBaseTest {
         }
     }
 
-    protected void xmlRoundTripContent(Content content) {
+    protected JaxbContent xmlRoundTripContent(Content content) {
         JaxbContent xmlContent = new JaxbContent(content);
         JaxbContent xmlCopy = null;
         try { 
@@ -155,6 +155,8 @@ public abstract class HumanTaskServicesBaseTest {
         assertNotNull( "Round tripped JaxbContent is null!", xmlCopy );
         Object roundTrip = ContentMarshallerHelper.unmarshall(xmlCopy.getContent(), null);
         Assert.assertEquals(orig, roundTrip);
+        
+        return xmlCopy;
     }
     
     protected static final String DATASOURCE_PROPERTIES = "/datasource.properties";
