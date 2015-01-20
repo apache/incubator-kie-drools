@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.io.internal.InternalResource;
@@ -225,9 +226,9 @@ public class UrlResource extends BaseResource
             fout.flush();
             fout.close();
             in.close();
-            
+
             File cacheFile = getCacheFile();
-            fi.renameTo(cacheFile);            
+            fi.renameTo(cacheFile);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -247,7 +248,7 @@ public class UrlResource extends BaseResource
         if (con instanceof HttpURLConnection) {
             if ("enabled".equalsIgnoreCase(basicAuthentication)) {
                 String userpassword = username + ":" + password;
-                byte[] authEncBytes = userpassword.getBytes(IoUtils.UTF8_CHARSET);
+                byte[] authEncBytes = Base64.encodeBase64( userpassword.getBytes(IoUtils.UTF8_CHARSET) );
 
                 ((HttpURLConnection) con).setRequestProperty("Authorization",
                         "Basic " + new String(authEncBytes, IoUtils.UTF8_CHARSET));
@@ -314,7 +315,7 @@ public class UrlResource extends BaseResource
                 //OK we will return it from the local cached copy, as remote one isn't available..
                 return getCacheFile().lastModified();
             } else {
-                throw new RuntimeException("Unable to get LastMofified for ClasspathResource",
+                throw new RuntimeException("Unable to get LastModified for ClasspathResource",
                         e);
             }
         }
@@ -332,7 +333,7 @@ public class UrlResource extends BaseResource
                 ((HttpURLConnection) conn).setRequestMethod("HEAD");
                 if ("enabled".equalsIgnoreCase(basicAuthentication)) {
                     String userpassword = username + ":" + password;
-                    byte[] authEncBytes = userpassword.getBytes(IoUtils.UTF8_CHARSET);
+                    byte[] authEncBytes = Base64.encodeBase64( userpassword.getBytes(IoUtils.UTF8_CHARSET) );
 
                     ((HttpURLConnection) conn).setRequestProperty("Authorization",
                             "Basic " + new String(authEncBytes, IoUtils.UTF8_CHARSET));

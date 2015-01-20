@@ -104,6 +104,13 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <!-- Base64 encoding -->
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+
   </dependencies>
 
   <profiles>
