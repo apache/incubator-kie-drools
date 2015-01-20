@@ -7,7 +7,65 @@
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title></title>
+  <title>Managing Containers</title>
 
-  <para></para>
+  <para>Containers within the Execution Server can be started, stopped and updated from within
+              Business Central.⁠ </para>
+       <section>
+              <title>Starting a Container</title>
+              <para>Once registered, a Container is in the 'Stopped' mode. It can be started by
+                     first selecting it and then clicking the Start button. You can also select
+                     multiple Containers and start them all at the same time. </para>
+              <para>Once the Container is in the 'Running' mode, a green arrow appears next to it.
+                     If there are any errors starting the Container(s), red icons appear next to
+                     Containers and the Execution Server that they are deployed on. </para>
+              <para>You should check the logs of both the Execution Server and the current Business
+                     Central to see what the errors are before redeploying the Containers (and
+                     possibly the Execution Server).⁠</para>
+       </section>
+       <section>
+              <title>Stoping and Deleting a Container</title>
+              <para>Similar to starting a Container, select the Container(s) that you want to
+                     stop (or delete) and click the Stop button (which replaces the Start button for that
+                     Container once it has entered the 'Running' mode) or the Delete button.⁠</para>
+       </section>
+       <section>
+              <title>Updating a Container</title>
+              <para>You can update deployed <code>KieContainers</code> without restarting the
+                     Execution Server. This is useful in cases where the Business Rules change,
+                     creating new versions of packages to be provisioned.</para>
+              <para>You can have multiple versions of the same package provisioned and deployed,
+                     each to a different <code>KieContainer</code>. </para>
+              <para>To update deployments in a <code>KieContainer</code> dynamically, click on the
+                     icon next to the Container. This will open up the Container Info screen. An
+                     example of this screen is shown here:</para>
+              <para>
+                     <important>
+                            <para><?oxy_custom_start type="oxy_content_highlight" color="255,64,0"?>INSERT
+                                   SCREENSHOT HERE<?oxy_custom_end?></para>
+                     </important>
+              </para>
+              <para>The Container Info screen is a useful tool because it not only allows you to see
+                     the endpoint for this <code>KieContainer</code>, but it also allows you to
+                     either manually or automatically refresh the provision if an update is
+                     available. The update can be manual or automatic:</para>
+              <para><emphasis role="bold">Manual Update:</emphasis> To manually update a
+                            <code>KieContainer</code>, enter the new Version number in the Version
+                     box and click on the <emphasis role="bold">Update</emphasis> button. You can of
+                     course, update the Group Id or the Artifact Id , if these have changed as well.
+                     Once updated, the Execution server updates the container and shows you the
+                     resolved GAV attributes at the bottom of the screen in the <emphasis
+                            role="bold">Resolved Release Id</emphasis> section. </para>
+              <para><emphasis role="bold">Automatic Update:</emphasis> If you want a deployed
+                     Container to always have the latest version of your deployment without manually
+                     editing it, you will need to set the Version property to the value of
+                            <code>LATEST</code> and start a <code>Scanner</code>. This will ensure
+                     that the deployed provision always contains the latest version. The Scanner can
+                     be started just once on demand by clicking the Scan Now button or you can start
+                     it in the background with scans happening at a specified interval (in
+                     seconds).You can also set this value to <code>LATEST</code> when you are first
+                     creating this deployment. The <emphasis role="bold">Resolved Release
+                            Id</emphasis> in this case will show you the actual, latest version
+                     number.</para>
+       </section>
 </section>
