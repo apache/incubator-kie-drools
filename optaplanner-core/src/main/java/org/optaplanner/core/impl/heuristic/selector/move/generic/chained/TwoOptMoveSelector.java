@@ -76,8 +76,6 @@ public class TwoOptMoveSelector extends GenericMoveSelector {
     public void solvingStarted(DefaultSolverScope solverScope) {
         super.solvingStarted(solverScope);
         SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
-        // TODO supply is demanded just to make sure it's there when it's demand again later.
-        // Instead it should be remembered for later
         anchorVariableSupply = supplyManager.demand(
                 new AnchorVariableDemand(variableDescriptor));
     }

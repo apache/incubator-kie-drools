@@ -18,14 +18,14 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
 import java.util.Iterator;
 
-import com.google.common.collect.Iterators;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
-import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
+import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractOriginalChangeIterator;
+import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractRandomChangeIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
@@ -88,91 +88,40 @@ public class ChangeMoveSelector extends GenericMoveSelector {
     }
 
     public Iterator<Move> iterator() {
+        final GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
         if (!randomSelection) {
-            return new OriginalChangeMoveIterator();
-        } else {
-            return new RandomChangeMoveIterator();
-        }
-    }
-
-    private class OriginalChangeMoveIterator extends UpcomingSelectionIterator<Move> {
-
-        private Iterator<Object> entityIterator;
-        private Iterator<Object> valueIterator;
-
-        private Object upcomingEntity;
-
-        private OriginalChangeMoveIterator() {
-            entityIterator = entitySelector.iterator();
-            // Don't do hasNext() in constructor (to avoid upcoming selections breaking mimic recording)
-            valueIterator = Iterators.emptyIterator();
-        }
-
-        @Override
-        protected Move createUpcomingSelection() {
-            while (!valueIterator.hasNext()) {
-                if (!entityIterator.hasNext()) {
-                    return noUpcomingSelection();
-                }
-                upcomingEntity = entityIterator.next();
-                valueIterator = valueSelector.iterator(upcomingEntity);
-            }
-            Object toValue = valueIterator.next();
-
-            return chained
-                    ? new ChainedChangeMove(upcomingEntity, valueSelector.getVariableDescriptor(), toValue)
-                    : new ChangeMove(upcomingEntity, valueSelector.getVariableDescriptor(), toValue);
-        }
-
-    }
-
-    private class RandomChangeMoveIterator extends UpcomingSelectionIterator<Move> {
-
-        private Iterator<Object> entityIterator;
-
-        private RandomChangeMoveIterator() {
-            entityIterator = entitySelector.iterator();
-            // Don't do hasNext() in constructor (to avoid upcoming selections breaking mimic recording)
-        }
-
-        @Override
-        protected Move createUpcomingSelection() {
-            // Ideally, this code should have read:
-            //     Object entity = entityIterator.next();
-            //     Iterator<Object> valueIterator = valueSelector.iterator(entity);
-            //     Object toValue = valueIterator.next();
-            // But empty selectors and ending selectors (such as non-random or shuffled) make it more complex
-            if (!entityIterator.hasNext()) {
-                entityIterator = entitySelector.iterator();
-                if (!entityIterator.hasNext()) {
-                    return noUpcomingSelection();
-                }
-            }
-            Object entity = entityIterator.next();
-
-            Iterator<Object> valueIterator = valueSelector.iterator(entity);
-            int entityIteratorCreationCount = 0;
-            // This loop is mostly only relevant when the entityIterator or valueIterator is non-random or shuffled
-            while (!valueIterator.hasNext()) {
-                // Try the next entity
-                if (!entityIterator.hasNext()) {
-                    entityIterator = entitySelector.iterator();
-                    entityIteratorCreationCount++;
-                    if (entityIteratorCreationCount >= 2) {
-                        // All entity-value combinations have been tried (some even more than once)
-                        return noUpcomingSelection();
+            if (chained) {
+                return new AbstractOriginalChangeIterator<Move>(entitySelector, valueSelector) {
+                    @Override
+                    protected Move newChangeSelection(Object entity, Object toValue) {
+                            return new ChainedChangeMove(entity, variableDescriptor, toValue);
                     }
-                }
-                entity = entityIterator.next();
-                valueIterator = valueSelector.iterator(entity);
+                };
+            } else {
+                return new AbstractOriginalChangeIterator<Move>(entitySelector, valueSelector) {
+                    @Override
+                    protected Move newChangeSelection(Object entity, Object toValue) {
+                        return new ChangeMove(entity, variableDescriptor, toValue);
+                    }
+                };
             }
-            Object toValue = valueIterator.next();
-
-            return chained
-                    ? new ChainedChangeMove(entity, valueSelector.getVariableDescriptor(), toValue)
-                    : new ChangeMove(entity, valueSelector.getVariableDescriptor(), toValue);
+        } else {
+            if (chained) {
+                return new AbstractRandomChangeIterator<Move>(entitySelector, valueSelector) {
+                    @Override
+                    protected Move newChangeSelection(Object entity, Object toValue) {
+                        return new ChainedChangeMove(entity, variableDescriptor, toValue);
+                    }
+                };
+            } else {
+                return new AbstractRandomChangeIterator<Move>(entitySelector, valueSelector) {
+                    @Override
+                    protected Move newChangeSelection(Object entity, Object toValue) {
+                        return new ChangeMove(entity, variableDescriptor, toValue);
+                    }
+                };
+            }
         }
-
     }
 
     @Override
