@@ -20,7 +20,10 @@ import org.jbpm.services.task.commands.ProcessSubTaskCommand;
 import org.jbpm.services.task.commands.SkipTaskCommand;
 import org.jbpm.services.task.commands.StartTaskCommand;
 import org.jbpm.services.task.impl.factories.TaskFactory;
+import org.jbpm.services.task.impl.model.ContentImpl;
+import org.jbpm.services.task.impl.model.xml.JaxbContent;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
+import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.junit.Assume;
 import org.junit.Test;
 import org.kie.api.task.model.Status;
@@ -165,5 +168,23 @@ public abstract class AbstractTaskSerializationTest {
         GetTaskAssignedAsPotentialOwnerCommand copyCmd = testRoundTrip(cmd);
         
         ComparePair.compareObjectsViaFields(cmd, copyCmd);
+    }
+    
+    
+    @Test
+    public void jaxbContentTest() throws Exception { 
+        Assume.assumeFalse(getType().equals(TestType.YAML));
+       ContentImpl content = new ContentImpl();
+       content.setId(23);
+       
+       Map<String, Object> map = new HashMap<String, Object>();
+       map.put("life", new Integer(23));
+       map.put("sick", new Long(45));
+       byte [] bytes = ContentMarshallerHelper.marshallContent(map, null);
+       content.setContent(bytes);
+        
+       JaxbContent jaxbContent = new JaxbContent(content); 
+       JaxbContent copyJaxbCnt = testRoundTrip(jaxbContent);
+       ComparePair.compareObjectsViaFields(jaxbContent, copyJaxbCnt);
     }
 }

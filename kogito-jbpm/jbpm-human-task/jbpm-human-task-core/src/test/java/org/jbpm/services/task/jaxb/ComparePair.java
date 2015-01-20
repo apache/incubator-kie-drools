@@ -5,10 +5,14 @@ import static org.junit.Assert.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
+import org.jbpm.services.task.utils.CollectionUtils;
 import org.kie.api.task.model.Task;
 
 public class ComparePair {
@@ -186,8 +190,19 @@ public class ComparePair {
                 if (copyFieldVal != origFieldVal) {
                     assertNotNull(failMsg + "in copy!", copyFieldVal);
                     assertNotNull(failMsg + "in original!", origFieldVal);
-                    if (origFieldVal.getClass().getPackage().getName().startsWith("java.")) {
-                        assertEquals(origClass.getSimpleName() + "." + field.getName(), origFieldVal, copyFieldVal);
+                    Package pkg = origFieldVal.getClass().getPackage();
+                    if (pkg == null || pkg.getName().startsWith("java.")) {
+                        if( origFieldVal.getClass().isArray() ) { 
+                            if( origFieldVal instanceof byte[] ) { 
+                                assertArrayEquals(origClass.getSimpleName() + "." + field.getName(), (byte []) origFieldVal, (byte []) copyFieldVal);
+                            } 
+                        } else if( origFieldVal instanceof Map<?, ?> && copyFieldVal instanceof Map<?, ?> ) { 
+                            org.apache.commons.collections.CollectionUtils.disjunction(
+                                    ((Map) origFieldVal).values(),
+                                    ((Map) copyFieldVal).values());
+                        } else {
+                            assertEquals(origClass.getSimpleName() + "." + field.getName(), origFieldVal, copyFieldVal);
+                        }
                     } else {
                         compareObjectsViaFields(origFieldVal, copyFieldVal, skipFields);
                     }
@@ -196,7 +211,7 @@ public class ComparePair {
                 throw new RuntimeException("Unable to access " + field.getName() + " when testing " + origClass.getSimpleName()
                         + ".", e);
             }
-
         }
     }
+    
 }

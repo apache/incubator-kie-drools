@@ -162,6 +162,11 @@
       <artifactId>unboundid-ldapsdk</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

@@ -22,12 +22,12 @@ usersgroups = [ new User('Darth Vader') : [new Group( "Knights Templer" ),  new 
                 new User('sales-rep') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
                 new User('Wintermute') : [new Group( "AI" )],
                 new User('Neuromancer') : [new Group( "AI" )],
-                new User('Hideo') : [new Group( "Pilot" )],
-                new User('invalid') : [new Group( "invalid" )],
-                new User('Maelcum') : [new Group( "Ninja" )],
+                new User('Hideo') : [new Group( "Ninja" )],
+                new User('Maelcum') : [new Group( "Pilot" )],
                 new User('Parzival') : [new Group( "Player" )],
                 new User('Art3mis') : [new Group( "Player" )],
                 new User('Aech') : [new Group( "Player" )],
                 new User('vampire') : [new Group( "Stake Holder" )],
+                new User('invalid') : [new Group( "invalid" )],
               ];       
 return usersgroups;

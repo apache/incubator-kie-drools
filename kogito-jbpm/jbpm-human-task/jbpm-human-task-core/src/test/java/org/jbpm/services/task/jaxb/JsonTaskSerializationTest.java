@@ -1,6 +1,10 @@
 package org.jbpm.services.task.jaxb;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.jbpm.services.task.impl.model.ContentImpl;
+import org.jbpm.services.task.impl.model.xml.JaxbContent;
+import org.junit.Test;
+import org.kie.api.task.model.Content;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,4 +36,5 @@ public class JsonTaskSerializationTest extends AbstractTaskSerializationTest {
     /**
      * None at the moment
      */
+
 }
