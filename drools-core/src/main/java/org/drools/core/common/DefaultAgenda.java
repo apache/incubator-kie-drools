@@ -555,8 +555,15 @@ public class DefaultAgenda
             if ( empty && (this.focusStack.size() > 1) ) {
                 agendaGroup.setActive( false );
                 removeLast();
+
                 if ( agendaGroup.isAutoDeactivate() && !agendaGroup.getNodeInstances().isEmpty() ) {
+                    ((EventSupport) this.workingMemory).getAgendaEventSupport().fireBeforeRuleFlowGroupDeactivated( (InternalRuleFlowGroup) agendaGroup,
+                            this.workingMemory );
+
                     innerDeactiveRuleFlowGroup((InternalRuleFlowGroup) agendaGroup);
+
+                    ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupDeactivated(( InternalRuleFlowGroup) agendaGroup,
+                            this.workingMemory);
                 }
                 final EventSupport eventsupport = (EventSupport) this.workingMemory;
                 eventsupport.getAgendaEventSupport().fireAgendaGroupPopped( agendaGroup,
