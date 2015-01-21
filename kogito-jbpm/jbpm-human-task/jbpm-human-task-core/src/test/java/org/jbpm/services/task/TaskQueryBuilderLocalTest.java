@@ -544,6 +544,39 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
                 
         List<TaskSummary> results = queryBuilder.businessAdmin(busAdmins.toArray(new String[busAdmins.size()])).buildQuery().getResultList();
         assertEquals( 3, results.size() );
+        
+        // pagination
+        {
+            // Add two more tasks, in order to have a quorum
+            long workItemId = 59;
+            long procInstId = 12111;
+            String busAdmin = "Wintermute";
+            String potOwner = "molly";
+            String deploymentId = "Dixie Flatline";
+            String name = "Complete Mission";
+            taskImpl = addTask(workItemId, procInstId, busAdmin, potOwner, name, deploymentId);
+            
+            // Add two more tasks, in order to have a quorum
+            ++workItemId;
+            ++procInstId;
+            busAdmin = "Neuromancer";
+            potOwner = "case";
+            deploymentId = "Linda Lee";
+            name = "Resurrect";
+            taskImpl = addTask(workItemId, procInstId, busAdmin, potOwner, name, deploymentId);
+        }
+            
+        results = queryBuilder.clear().buildQuery().getResultList();
+        assertTrue("Result list too small to test: " + results.size(), results.size() == 5 );
+        
+        results = queryBuilder.clear().offset(1).buildQuery().getResultList();
+        assertTrue("Expected 4, not " + results.size() + " results", results.size() == 4 );
+        
+        results = queryBuilder.clear().offset(1).maxResults(3).buildQuery().getResultList();
+        assertTrue("Expected 3, not " + results.size() + " results", results.size() == 3 );
+        
+        results = queryBuilder.clear().offset(3).maxResults(3).buildQuery().getResultList();
+        assertTrue("Expected 2, not " + results.size() + " results", results.size() == 2 );
     }
 
     @Test

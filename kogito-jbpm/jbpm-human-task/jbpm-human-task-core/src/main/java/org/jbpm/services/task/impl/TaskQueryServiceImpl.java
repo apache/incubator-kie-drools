@@ -102,17 +102,25 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     
     protected void applyQueryContext(Map<String, Object> params, QueryContext queryContext) {
     	if (queryContext != null) {
-        	params.put(FIRST_RESULT, queryContext.getOffset());
-        	params.put(MAX_RESULTS, queryContext.getCount());
+    	    Integer offset = queryContext.getOffset(); 
+    	    if( offset != null && offset > 0 ) { 
+    	        params.put(FIRST_RESULT, offset);
+    	    }
+    	    Integer count = queryContext.getCount();
+    	    if( count != null && count > 0 ) { 
+    	        params.put(MAX_RESULTS, count);
+    	    }
         	
         	if (queryContext.getOrderBy() != null && !queryContext.getOrderBy().isEmpty()) {
         		params.put(ORDER_BY, queryContext.getOrderBy());
-        	
-	        	if (queryContext.isAscending()) {
-	        		params.put(ORDER_TYPE, ASCENDING_VALUE);
-	        	} else {
-	        		params.put(ORDER_TYPE, DESCENDING_VALUE);
-	        	}
+        
+        		if( queryContext.isAscending() != null ) { 
+        		    if (queryContext.isAscending()) {
+        		        params.put(ORDER_TYPE, ASCENDING_VALUE);
+        		    } else {
+        		        params.put(ORDER_TYPE, DESCENDING_VALUE);
+        		    }
+        		}
         	}
     	}
     }
