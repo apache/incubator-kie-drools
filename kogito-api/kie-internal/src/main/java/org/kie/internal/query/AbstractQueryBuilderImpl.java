@@ -5,6 +5,9 @@ import org.kie.internal.query.data.QueryData;
 public abstract class AbstractQueryBuilderImpl<T> {
 
     protected QueryData queryData = new QueryData();
+    { 
+        queryData.getQueryContext().setCount(0);
+    }
    
     public QueryData getQueryData() { 
         return queryData;
