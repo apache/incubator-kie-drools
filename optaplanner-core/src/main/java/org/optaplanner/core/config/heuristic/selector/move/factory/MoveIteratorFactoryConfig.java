@@ -44,6 +44,10 @@ public class MoveIteratorFactoryConfig extends MoveSelectorConfig {
 
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
+        if (moveIteratorFactoryClass == null) {
+            throw new IllegalArgumentException("The moveIteratorFactoryConfig (" + this
+                    + ") lacks a moveListFactoryClass (" + moveIteratorFactoryClass + ").");
+        }
         MoveIteratorFactory moveIteratorFactory = ConfigUtils.newInstance(this,
                 "moveIteratorFactoryClass", moveIteratorFactoryClass);
         return new MoveIteratorFactoryToMoveSelectorBridge(moveIteratorFactory, randomSelection);

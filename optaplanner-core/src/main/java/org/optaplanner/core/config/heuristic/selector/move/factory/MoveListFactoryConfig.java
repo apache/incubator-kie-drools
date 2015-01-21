@@ -49,6 +49,10 @@ public class MoveListFactoryConfig extends MoveSelectorConfig {
 
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
+        if (moveListFactoryClass == null) {
+            throw new IllegalArgumentException("The moveListFactoryConfig (" + this
+                    + ") lacks a moveListFactoryClass (" + moveListFactoryClass + ").");
+        }
         MoveListFactory moveListFactory = ConfigUtils.newInstance(this,
                 "moveListFactoryClass", moveListFactoryClass);
         // MoveListFactoryToMoveSelectorBridge caches by design, so it uses the minimumCacheType
