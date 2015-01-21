@@ -39,14 +39,15 @@
       </listitem>
       <listitem>
         <para>Once authenticated, you will see an XML response in the form of engine status, similar
-          to this:<example>
+          to this:</para>
+        <example>
             <title>sample handshaking server response</title>
-            <para>&lt;response type="SUCCESS" msg="Kie Server info" ></para>
-            <para>    &lt;kie-server-info></para>
-            <para>        &lt;version>6.2.0.GA-redhat-1&lt;/version></para>
-            <para>    &lt;/kie-server-info></para>
-            <para>&lt;/response></para>
-          </example></para>
+            <programlisting>&lt;response type="SUCCESS" msg="Kie Server info" >
+  &lt;kie-server-info>  
+    &lt;version>6.2.0.GA-redhat-1&lt;/version>
+  &lt;/kie-server-info>
+&lt;/response>            </programlisting>
+          </example>
       </listitem>
     </orderedlist>
   </para>
