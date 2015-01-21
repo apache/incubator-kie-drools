@@ -470,6 +470,26 @@ public class AuditQueryTest extends JPAAuditLogService {
         resultList = builder.buildQuery().getResultList();
         assertEquals( "work item id query result", 2, resultList.size());
         }
+        
+        // pagination
+        int maxResults = 5;
+        resultList = this.nodeInstanceLogQuery().buildQuery().getResultList();
+        assertTrue( "Not enough to do pagination test", resultList.size() > maxResults );
+        resultList = this.nodeInstanceLogQuery()
+                .maxResults(maxResults)
+                .orderBy(org.kie.internal.runtime.manager.audit.query.NodeInstanceLogQueryBuilder.OrderBy.processInstanceId)
+                .buildQuery().getResultList();
+        assertTrue( "Only expected"  + maxResults + " results, not " + resultList.size(), resultList.size() <= 5 );
+        
+        int offset = 3;
+        List<org.kie.api.runtime.manager.audit.NodeInstanceLog> newResultList = this.nodeInstanceLogQuery()
+                .maxResults(maxResults)
+                .offset(offset)
+                .orderBy(org.kie.internal.runtime.manager.audit.query.NodeInstanceLogQueryBuilder.OrderBy.processInstanceId)
+                .buildQuery().getResultList();
+        assertTrue( "Only expected"  + maxResults + " results, not " + newResultList.size(), newResultList.size() <= 5 );
+        assertEquals( "Offset should have been " + offset + ": " + resultList.get(offset).getProcessInstanceId() + " != " + newResultList.get(0).getProcessInstanceId(),
+                resultList.get(offset).getProcessInstanceId(), newResultList.get(0).getProcessInstanceId() );
     }
     
     @Test
@@ -586,6 +606,10 @@ public class AuditQueryTest extends JPAAuditLogService {
        resultList = builder.buildQuery().getResultList(); 
        assertEquals( "literal regex identity result", this.processInstanceLogQuery().buildQuery().getResultList().size(), resultList.size());
     }       
+   
+    private static int MAX = 2;
+    private static int MIN = 1;
+    private static int BOTH = 0;
     
     @Test
     public void rangeQueryBuilderTest() { 
@@ -610,34 +634,63 @@ public class AuditQueryTest extends JPAAuditLogService {
  
        int lastElemIndex = durationOrderedProcInstLogList.size()-1;
        builder = this.processInstanceLogQuery();
-       builder.durationMax(durationOrderedProcInstLogList.get(0).getDuration());
+       long max = durationOrderedProcInstLogList.get(0).getDuration();
+       builder.durationMax(max);
        resultList = builder.buildQuery().getResultList();
-       assertTrue( "duration max result: " + resultList.size(), resultList.size() == 1 || resultList.size() == 2);
+       verifyMaxMinDuration( resultList, MAX, max );
            
        builder = this.processInstanceLogQuery();
-       builder.durationMin(durationOrderedProcInstLogList.get(lastElemIndex).getDuration());
+       long min = durationOrderedProcInstLogList.get(lastElemIndex).getDuration();
+       builder.durationMin(min);
        resultList = builder.buildQuery().getResultList();
        duration = resultList.get(0).getDuration();
-       assertTrue( "duration min result: " + resultList.size(), resultList.size() == 1 || resultList.size() == 2);
+       verifyMaxMinDuration(resultList, MIN, min);
            
+       // union max and min
        builder = this.processInstanceLogQuery();
-       builder.durationMin(durationOrderedProcInstLogList.get(lastElemIndex).getDuration());
-       builder.durationMax(durationOrderedProcInstLogList.get(0).getDuration());
+       min = durationOrderedProcInstLogList.get(lastElemIndex).getDuration();
+       builder.durationMin(min);
+       max = durationOrderedProcInstLogList.get(0).getDuration();
+       builder.durationMax(max);
        resultList = builder.buildQuery().getResultList();
-       assertTrue( "duration union min, max result: " + resultList.size(), resultList.size() == 1 || resultList.size() == 2);
-          
+       for( org.kie.api.runtime.manager.audit.ProcessInstanceLog log : resultList ) { 
+           long dur = log.getDuration();
+           assertTrue( "Duration " + dur + " is neither larger than min + " + min + " nor smaller than max" + max, 
+                   dur >= min || dur <= max );
+       }
+         
+       // empty intersection (larger than large min, smaller than small max )
        builder = this.processInstanceLogQuery().intersect();
-       builder.durationMin(durationOrderedProcInstLogList.get(lastElemIndex).getDuration());
-       builder.durationMax(durationOrderedProcInstLogList.get(0).getDuration());
+       min = durationOrderedProcInstLogList.get(lastElemIndex).getDuration();
+       builder.durationMin(min);
+       max = durationOrderedProcInstLogList.get(0).getDuration();
+       builder.durationMax(max);
        resultList = builder.buildQuery().getResultList();
-       assertEquals( "duration empty intersect min, max result", 0, resultList.size());
+       verifyMaxMinDuration(resultList, BOTH, min, max);
        
        builder = this.processInstanceLogQuery().intersect();
-       builder.durationMin(durationOrderedProcInstLogList.get(2).getDuration());
-       builder.durationMax(durationOrderedProcInstLogList.get(3).getDuration());
+       min = durationOrderedProcInstLogList.get(2).getDuration();
+       max = durationOrderedProcInstLogList.get(3).getDuration();
+       builder.durationMin(min);
+       builder.durationMax(max);
        resultList = builder.buildQuery().getResultList();
        // there are 2 ProcessInstanceLog's with the same duration
-       assertTrue( "duration intersect min, max result: " + resultList.size(), resultList.size() == 2 || resultList.size() == 3);
+       verifyMaxMinDuration(resultList, BOTH, min, max );
+    }
+
+    private void verifyMaxMinDuration( List<org.kie.api.runtime.manager.audit.ProcessInstanceLog> procInstLogs, int test, long... maxOrMin ) {
+       for( org.kie.api.runtime.manager.audit.ProcessInstanceLog log : procInstLogs ) { 
+           assertNotNull( "Duration is null" , log.getDuration() );
+           long dur = log.getDuration();
+           if( test == MAX ) { 
+               assertTrue( "Duration " + dur + " is larger than max " + maxOrMin[0] + ": " + dur, dur <= maxOrMin[0] ); 
+           } else if( test == MIN ) { 
+               assertTrue( "Duration " + dur + " is smaller than min " + maxOrMin[0], dur >= maxOrMin[0] ); 
+           } else { // BOTH
+               assertTrue( "Duration " + dur + " is smaller than min " + maxOrMin[0], dur >= maxOrMin[0] ); 
+               assertTrue( "Duration " + dur + " is larger than max " + maxOrMin[1], dur <= maxOrMin[1] ); 
+           }
+       }
     }
     
     @Test

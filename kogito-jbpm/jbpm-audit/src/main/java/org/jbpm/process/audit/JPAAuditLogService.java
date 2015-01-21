@@ -79,6 +79,7 @@ import org.jbpm.process.audit.strategy.StandaloneJtaStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.query.QueryAndParameterAppender;
+import org.kie.internal.query.QueryContext;
 import org.kie.internal.query.QueryModificationService;
 import org.kie.internal.query.data.QueryData;
 import org.kie.internal.runtime.manager.audit.query.NodeInstanceLogDeleteBuilder;
@@ -506,7 +507,13 @@ public class JPAAuditLogService implements AuditLogService {
         criteriaFields.put(listId, fieldName);
         criteriaFieldClasses.put(listId, type );
     }
-    
+   
+    /**
+     * 
+     * @param queryData
+     * @param resultType
+     * @return
+     */
     public <T> List<T> doQuery(QueryData queryData, Class<T> resultType) { 
         // create query
         String queryBase;
@@ -520,6 +527,7 @@ public class JPAAuditLogService implements AuditLogService {
             throw new IllegalStateException("Unsupported result type: " + resultType.getName() );
         }
         Map<String, Object> queryParams = new HashMap<String, Object>();
+        // also does order by: @see #adaptOrderBy(String) 
         String queryString = createQuery(queryBase, queryData, queryParams);
         
         // logging
@@ -532,13 +540,17 @@ public class JPAAuditLogService implements AuditLogService {
             }
             logger.debug(paramsStr.toString());
         }
-        
     
-        // execute query
+        // create JPA query object
         EntityManager em = getEntityManager();
         Object newTx = joinTransaction(em);
         Query query = em.createQuery(queryString);
-    
+
+        // apply meta criteria
+        queryParams.put(FIRST_RESULT, queryData.getQueryContext().getOffset());
+        queryParams.put(MAX_RESULTS, queryData.getQueryContext().getCount());
+       
+        // execute query
         List<T> result = queryWithParameters(queryParams, LockModeType.NONE, resultType, query);
         
         closeEntityManager(em, newTx);
@@ -796,59 +808,49 @@ public class JPAAuditLogService implements AuditLogService {
         }
     }
 
+    private void applyMetaQueryParameters(Map<String, Object> params, Query query) {
+        if (params != null && !params.isEmpty()) {
+            for (String name : params.keySet()) {
+                Object paramVal = params.get(name);
+                if( paramVal == null ) { 
+                    continue;
+                }
+                if (FIRST_RESULT.equals(name)) {
+                    if( ((Integer) paramVal) > 0 ) { 
+                        query.setFirstResult((Integer) params.get(name));
+                    }
+                    continue;
+                }
+                if (MAX_RESULTS.equals(name)) {
+                    if( ((Integer) paramVal) > 0 ) { 
+                        query.setMaxResults((Integer) params.get(name));
+                    }
+                    continue;
+                }
+                if (FLUSH_MODE.equals(name)) {
+                    query.setFlushMode(FlushModeType.valueOf((String) params.get(name)));
+                    continue;
+                }// skip control parameters
+                else if (ORDER_TYPE.equals(name) 
+                        || ORDER_BY.equals(name)
+                        || FILTER.equals(name)) {
+                    continue;
+                }
+                query.setParameter(name, params.get(name));
+            }
+        } 
+    }
+    
     private <T> List<T> queryWithParameters(Map<String, Object> params, LockModeType lockMode, Class<T> clazz, Query query) {
         if (lockMode != null) {
             query.setLockMode(lockMode);
         }
-        if (params != null && !params.isEmpty()) {
-            for (String name : params.keySet()) {
-                if (FIRST_RESULT.equals(name)) {
-                    query.setFirstResult((Integer) params.get(name));
-                    continue;
-                }
-                if (MAX_RESULTS.equals(name)) {
-                    query.setMaxResults((Integer) params.get(name));
-                    continue;
-                }
-                if (FLUSH_MODE.equals(name)) {
-                    query.setFlushMode(FlushModeType.valueOf((String) params.get(name)));
-                    continue;
-                }// skip control parameters
-                else if (ORDER_TYPE.equals(name) 
-                        || ORDER_BY.equals(name)
-                        || FILTER.equals(name)) {
-                    continue;
-                }
-                query.setParameter(name, params.get(name));
-            }
-        }
+        applyMetaQueryParameters(params, query);
         return query.getResultList();
     } 
     
     private int executeWithParameters(Map<String, Object> params, Query query) {
-
-        if (params != null && !params.isEmpty()) {
-            for (String name : params.keySet()) {
-                if (FIRST_RESULT.equals(name)) {
-                    query.setFirstResult((Integer) params.get(name));
-                    continue;
-                }
-                if (MAX_RESULTS.equals(name)) {
-                    query.setMaxResults((Integer) params.get(name));
-                    continue;
-                }
-                if (FLUSH_MODE.equals(name)) {
-                    query.setFlushMode(FlushModeType.valueOf((String) params.get(name)));
-                    continue;
-                }// skip control parameters
-                else if (ORDER_TYPE.equals(name) 
-                        || ORDER_BY.equals(name)
-                        || FILTER.equals(name)) {
-                    continue;
-                }
-                query.setParameter(name, params.get(name));
-            }
-        }
+        applyMetaQueryParameters(params, query);
         return query.executeUpdate();
     }
 
