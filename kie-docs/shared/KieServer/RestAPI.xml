@@ -7,7 +7,219 @@
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title></title>
+  <title>REST API</title>
 
-  <para></para>
+  <para>The Execution Server supports the following commands via the REST API. </para>
+       <para>Please note the following before using these commands: </para>
+       <para>
+              <itemizedlist>
+                     <listitem>
+                            <para>The base URL for these will remain as the endpoint defined earlier
+                                   (for example:
+                                          <code>http://SERVER:PORT/CONTEXT/rest/server/</code>
+                                   )</para>
+                     </listitem>
+                     <listitem>
+                            <para>All requests require basic HTTP Authentication for the role
+                                   kie-server as indicated earlier.</para>
+                     </listitem>
+              </itemizedlist>
+       </para>
+       <section>
+              <title>[GET] /</title>
+              <para>Returns the Execution Server information</para>
+              <example><title>Example Server Response</title>
+                     <programlisting>&lt;response type="SUCCESS" msg="Kie Server info"> 
+  &lt;kie-server-info> 
+    &lt;version>6.2.0.redhat-1&lt;/version> 
+  &lt;/kie-server-info> 
+&lt;/response></programlisting>
+              </example>
+       </section>
+       
+       <section>
+              <title>[POST] /</title>
+              <para>Using POST HTTP method, you can execute various commands on the Execution
+                     Server. E.g: create-container, list-containers, dispose-container and call-container.</para>
+       </section>
+       
+       <section>
+              <title>[GET] /containers</title>
+              <para>Returns a list of containers that have been created on this Execution
+                     Server.</para>
+              <example><title>Example Server Response</title>
+                     <programlisting>&lt;response type="SUCCESS" msg="List of created containers"> 
+  &lt;kie-containers> 
+    &lt;kie-container container-id="MyProjectContainer" status="STARTED"> 
+      &lt;release-id>
+        &lt;artifact-id>Project1&lt;/artifact-id> 
+        &lt;group-id>com.redhat&lt;/group-id>
+        &lt;version>1.0&lt;/version> 
+      &lt;/release-id> 
+      &lt;resolved-release-id>
+        &lt;artifact-id>Project1&lt;/artifact-id> 
+        &lt;group-id>com.redhat&lt;/group-id>
+        &lt;version>1.0&lt;/version> 
+      &lt;/resolved-release-id> 
+    &lt;/kie-container>
+  &lt;/kie-containers> 
+&lt;/response></programlisting>
+              </example>
+       </section>
+       
+       <section>
+              <title>⁠[GET] /containers/{id}</title>
+              <para>Returns the status and information about a particular container. For example,
+                     executing
+                            <code>http://SERVER:PORT/CONTEXT/rest/server/containers/MyProjectContainer</code>
+                     could return the following example container info.</para>
+              <example><title>Example Server Response</title>
+                     <programlisting>⁠&lt;response type="SUCCESS" msg="Info for container MyProjectContainer">
+  &lt;kie-container container-id="MyProjectContainer" status="STARTED"> 
+    &lt;release-id>
+      &lt;artifact-id>Project1&lt;/artifact-id> 
+      &lt;group-id>com.redhat&lt;/group-id>
+      &lt;version>1.0&lt;/version> 
+    &lt;/release-id> 
+    &lt;resolved-release-id>
+      &lt;artifact-id>Project1&lt;/artifact-id> 
+      &lt;group-id>com.redhat&lt;/group-id>
+      &lt;version>1.0&lt;/version> 
+    &lt;/resolved-release-id> 
+  &lt;/kie-container>
+&lt;/response></programlisting>
+              </example>
+       </section>
+       
+       <section>
+              <title>[PUT] /containers/{id}</title>
+              <para>Allows you to create a new Container in the Execution Server. For example, to
+                     create a Container with the id of <emphasis role="bold"
+                            >MyRESTContainer</emphasis> the complete endpoint will be:
+                            <code>http://SERVER:PORT/CONTEXT/rest/server/containers/MyRESTContainer</code>.
+                     An example of request is:⁠</para>
+              <example><title>Example Request to create a container</title>
+                     <programlisting>&lt;kie-container container-id="MyRESTContainer">
+  &lt;release-id>
+    &lt;artifact-id>Project1&lt;/artifact-id> 
+    &lt;group-id>com.redhat&lt;/group-id>
+    &lt;version>1.0&lt;/version> 
+  &lt;/release-id> 
+&lt;/kie-container></programlisting>
+              </example>
+              <para>And the response from the server, if
+                     successful, would be be:</para>
+              <example><title>Example Server Response when creating a container</title>
+                     <programlisting>&lt;response type="SUCCESS" msg="Container MyRESTContainer successfully deployed with module com.redhat:Project1:1.0"> 
+  &lt;kie-container container-id="MyProjectContainer" status="STARTED"> 
+    &lt;release-id>
+      &lt;artifact-id>Project1&lt;/artifact-id> 
+      &lt;group-id>com.redhat&lt;/group-id>
+      &lt;version>1.0&lt;/version> 
+    &lt;/release-id> 
+    &lt;resolved-release-id>
+      &lt;artifact-id>Project1&lt;/artifact-id> 
+      &lt;group-id>com.redhat&lt;/group-id>
+      &lt;version>1.0&lt;/version> 
+    &lt;/resolved-release-id> 
+  &lt;/kie-container>
+&lt;/response></programlisting>
+              </example>
+       </section>
+       
+       <section>
+              <title>[DELETE] /containers/{id}</title>
+              <para>⁠Disposes the Container specified by the id. For example, executing
+                            <code>http://SERVER:PORT/CONTEXT/rest/server/containers/MyProjectContainer</code>
+                     using the DELETE HTTP method will return the following server response:⁠</para>
+              <example><title>Example Server Response disposing a container</title>
+                     <programlisting>&lt;response type="SUCCESS" msg="Container MyProjectContainer successfully disposed."/></programlisting>
+              </example>
+       </section>
+       
+       <section>
+              <title>[POST] /containers/{id}</title>
+              <para>Executes operations and commands against the specified Container. You can send
+                     commands to this Container in the body of the POST request. For example, to
+                     fire all rules for Container with id MyRESTContainer
+                            (<code>http://SERVER:PORT/CONTEXT/rest/server/containers/MyRESTContainer</code>),
+                     you would send the fire-all-rules command to it as shown below (in the body of
+                     the POST request):</para>
+              <example><title>Example Server Request to fire all rules</title>
+                     <programlisting>&lt;fire-all-rules/></programlisting>
+              </example>
+              <para>Any valid command (of the type org.kie.api.Command) with
+                     correct attributes can be used.</para>
+       </section>
+       
+       <section>
+              <title>[GET] /containers/{id}/release-id</title>
+              <para>Returns the full
+                     release id for the Container specified by the id.</para>
+              <example><title>Example Server Response</title>
+                     <programlisting>⁠⁠&lt;response type="SUCCESS" msg="ReleaseId for container MyProjectContainer">
+  &lt;release-id>
+    &lt;artifact-id>Project1&lt;/artifact-id> 
+    &lt;group-id>com.redhat&lt;/group-id>
+    &lt;version>1.0&lt;/version> 
+  &lt;/release-id> 
+&lt;/response></programlisting>
+              </example>
+       </section>
+       
+       <section>
+              <title>[POST] /containers/{id}/release-id</title>
+              <para>Allows you to update the release id of
+                     the container deployment. Send the new complete release id to the Server.</para>
+              <example><title>Example Server Request</title>
+                     <programlisting>&lt;release-id>    
+  &lt;artifact-id>Project1&lt;/artifact-id>
+  &lt;group-id>com.redhat&lt;/group-id>    
+  &lt;version>1.1&lt;/version>
+&lt;/release-id> </programlisting>
+              </example>
+              <para>The Server will respond with a success or error message, similar to
+                     the one below:⁠</para>
+              <example><title>Example Server Response</title>
+                     <programlisting>&lt;response type="SUCCESS" msg="Release id successfully updated."> 
+  &lt;release-id>
+    &lt;artifact-id>Project1&lt;/artifact-id> 
+    &lt;group-id>com.redhat&lt;/group-id>
+    &lt;version>1.0&lt;/version> 
+  &lt;/release-id> 
+&lt;/response></programlisting>
+              </example>
+       </section>
+       
+       <section>
+              <title>[GET] /containers/{id}/scanner</title>
+              <para>Returns information about the scanner for this Container's
+                     automatic updates.⁠</para>
+              <example><title>Example Server Response</title>
+                     <programlisting>&lt;response type="SUCCESS" msg="Scanner info successfully retrieved"> 
+  &lt;kie-scanner status="DISPOSED"/> 
+&lt;/response></programlisting>
+              </example>
+       </section>
+       
+       <section>
+              <title>[POST] /containers/{id}/scanner</title>
+              <para>Allows you to start or stop a scanner that controls polling for updated
+                     Container deployments. To start the scanner, send a request similar to:
+                            <code>http://SERVER:PORT/CONTEXT/rest/server/containers/{container-id}/scanner</code>
+                     with the following POST data.⁠</para>
+              <example><title>Example Server Request to start the scanner</title>
+                     <programlisting>&lt;kie-scanner status="STARTED" poll-interval="20"/></programlisting>
+              </example>
+              <para>⁠The poll-interval attribute is in seconds. The response from the server will be similar
+                     to:⁠</para>
+              <example><title>Example Server Response</title>
+                     <programlisting>&lt;response type="SUCCESS" msg="Kie scanner successfully created."> 
+  &lt;kie-scanner status="STARTED"/> 
+&lt;/response></programlisting>
+              </example>
+              <para>To stop the Scanner, replace the status with <code>DISPOSED</code> and remove
+                     the poll-interval attribute.</para>
+       </section>
+       
 </section>
