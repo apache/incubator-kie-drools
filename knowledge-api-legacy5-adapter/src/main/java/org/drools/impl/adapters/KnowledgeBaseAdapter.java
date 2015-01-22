@@ -33,6 +33,8 @@ public class KnowledgeBaseAdapter implements org.drools.KnowledgeBase, Externali
 
     private final Map<KnowledgeBaseEventListener, KieBaseEventListener> listeners = new HashMap<KnowledgeBaseEventListener, KieBaseEventListener>();
 
+    public KnowledgeBaseAdapter() { }
+
     public KnowledgeBaseAdapter(KnowledgeBase delegate) {
         this.delegate = delegate;
     }
