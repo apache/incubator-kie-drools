@@ -85,7 +85,12 @@ public class RuleModelUpgradeHelper3
 
     private void fixConstraints( FactPattern fp,
                                  SingleFieldConstraint sfc ) {
-        sfc.setFactType( fp.getFactType() );
+        final FieldConstraint parent = sfc.getParent();
+        if ( parent == null ) {
+            sfc.setFactType( fp.getFactType() );
+        } else if ( parent instanceof SingleFieldConstraint ) {
+            sfc.setFactType( ( (SingleFieldConstraint) parent ).getFieldType() );
+        }
         sfc.setFieldName( fixFieldName( sfc.getFieldName() ) );
         if ( sfc.getConnectives() == null ) {
             return;
