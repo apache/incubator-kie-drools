@@ -771,10 +771,8 @@
             where
             t.archived = 0 and
             t.taskData.status = :status and
-            
-           
 
-            t.taskData.activationTime &lt; :since
+            t.taskData.activationTime &gt; :since
             
             order by t.id DESC
         </query>

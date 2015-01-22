@@ -2427,4 +2427,65 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
         // 6.1.x no longer uses shortText in API and Taskorm.xml so no assert.
     }
+    
+    @Test
+    public void testCompleteByActiveTasks() {
+        
+
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { activationTime = new Date(), processInstanceId = 123 } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ],businessAdministrators = [ new User('Administrator') ], }),";
+        str += "name = 'This is my task name' })";
+
+        Date creationTime = new Date();
+        
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+
+
+        long taskId = task.getId();
+        assertNotNull(task.getTaskData().getActivationTime());
+
+        // Go straight from Ready to Inprogress
+        taskService.start(taskId, "Darth Vader");
+        
+        List<TaskSummary> activeTasks = taskService.getActiveTasks();
+        assertNotNull(activeTasks);
+        assertEquals(1,  activeTasks.size());
+        
+        activeTasks = taskService.getActiveTasks(creationTime);
+        assertNotNull(activeTasks);
+        assertEquals(1,  activeTasks.size());
+
+
+        Task task1 = taskService.getTaskById(taskId);
+        assertEquals(Status.InProgress, task1.getTaskData().getStatus());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
+
+        // Check is Complete
+
+        taskService.complete(taskId, "Darth Vader", null);
+
+        Task task2 = taskService.getTaskById(taskId);
+        assertEquals(Status.Completed, task2.getTaskData().getStatus());
+        assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
+        
+        List<TaskSummary> completedTasks = taskService.getCompletedTasks();
+        assertNotNull(completedTasks);
+        assertEquals(1,  completedTasks.size());
+        
+        completedTasks = taskService.getCompletedTasks(creationTime);
+        assertNotNull(completedTasks);
+        assertEquals(1,  completedTasks.size());
+        
+        completedTasks = taskService.getCompletedTasksByProcessId(123l);
+        assertNotNull(completedTasks);
+        assertEquals(1,  completedTasks.size());
+        
+        taskService.archiveTasks(completedTasks);
+        
+        List<TaskSummary> archiveddTasks = taskService.getArchivedTasks();
+        assertNotNull(archiveddTasks);
+        assertEquals(1,  archiveddTasks.size());
+    }
 }
