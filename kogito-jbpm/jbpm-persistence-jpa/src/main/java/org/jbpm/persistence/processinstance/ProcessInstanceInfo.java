@@ -10,10 +10,20 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
@@ -25,7 +35,6 @@ import org.jbpm.marshalling.impl.JBPMMessages;
 import org.jbpm.marshalling.impl.ProcessInstanceMarshaller;
 import org.jbpm.marshalling.impl.ProcessMarshallerRegistry;
 import org.jbpm.marshalling.impl.ProtobufRuleFlowProcessInstanceMarshaller;
-import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.runtime.Environment;
@@ -145,7 +154,7 @@ public class ProcessInstanceInfo implements Transformable {
                                               Environment env,
                                               boolean readOnly) {
         this.env = env;
-        if ( processInstance == null ) {
+        if ( processInstance == null ) {        	
             try {
                 ByteArrayInputStream bais = new ByteArrayInputStream( processInstanceByteArray );
                 MarshallerReaderContext context = new MarshallerReaderContext( bais,
@@ -228,6 +237,9 @@ public class ProcessInstanceInfo implements Transformable {
                 eventTypes.add( type );
             }
         }
+        if (!processInstance.getProcessId().equals(this.processId)) {
+    		this.processId = processInstance.getProcessId();
+    	}
         ((WorkflowProcessInstanceImpl) processInstance).setPersisted(true);
     }
 
