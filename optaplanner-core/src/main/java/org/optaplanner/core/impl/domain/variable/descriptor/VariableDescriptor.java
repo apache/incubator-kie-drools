@@ -76,6 +76,10 @@ public abstract class VariableDescriptor {
         return shadowVariableDescriptorList;
     }
 
+    public boolean isValueNoPotentialAnchor(Object value) {
+        return entityDescriptor.getEntityClass().isAssignableFrom(value.getClass());
+    }
+
     // ************************************************************************
     // Extraction methods
     // ************************************************************************

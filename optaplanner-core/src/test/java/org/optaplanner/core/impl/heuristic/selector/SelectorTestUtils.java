@@ -35,6 +35,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -215,7 +216,8 @@ public class SelectorTestUtils {
         TestdataChainedObject chainedObject = chainedObjects[0];
         for (int i = 1; i < chainedObjects.length; i++) {
             TestdataChainedEntity chainedEntity = (TestdataChainedEntity) chainedObjects[i];
-            assertEquals("Chained entity (" + chainedEntity + ")'s chainedObject",
+            assertEquals("In expected chain (" + Arrays.toString(chainedObjects)
+                            + "), the entity (" + chainedEntity + ")'s chainedObject's value is",
                     chainedObject, chainedEntity.getChainedObject());
             chainedObject = chainedEntity;
         }

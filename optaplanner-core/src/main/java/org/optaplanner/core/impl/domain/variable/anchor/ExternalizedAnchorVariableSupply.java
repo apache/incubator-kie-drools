@@ -95,8 +95,7 @@ public class ExternalizedAnchorVariableSupply implements StatefulVariableListene
         Object anchor;
         if (previousEntity == null) {
             anchor = null;
-        } else if (previousVariableDescriptor.getEntityDescriptor().getEntityClass()
-                .isAssignableFrom(previousEntity.getClass())) {
+        } else if (previousVariableDescriptor.isValueNoPotentialAnchor(previousEntity)) {
             anchor = anchorMap.get(previousEntity);
         } else {
             anchor = previousEntity;

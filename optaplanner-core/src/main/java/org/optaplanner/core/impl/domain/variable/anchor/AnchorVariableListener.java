@@ -63,8 +63,7 @@ public class AnchorVariableListener implements VariableListener<Object>, AnchorV
         Object anchor;
         if (previousEntity == null) {
             anchor = null;
-        } else if (previousVariableDescriptor.getEntityDescriptor().getEntityClass()
-                .isAssignableFrom(previousEntity.getClass())) {
+        } else if (previousVariableDescriptor.isValueNoPotentialAnchor(previousEntity)) {
             anchor = anchorShadowVariableDescriptor.getValue(previousEntity);
         } else {
             anchor = previousEntity;
