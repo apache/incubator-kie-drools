@@ -77,7 +77,7 @@ public interface ProcessInstance
     
     /**
      * Returns parent process instance id if this process instance has a parent
-     * @return the unique id of parent process instance
+     * @return the unique id of parent process instance, 0 if this process instance doesn't have a parent
      */
     long getParentProcessInstanceId();
     
