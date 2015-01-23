@@ -650,7 +650,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 	
 	@Override
 	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status, QueryFilter filter) {
-		return taskService.getTasksAssignedAsPotentialOwnerByStatus(userId, status, filter.getLanguage());
+		return ((InternalTaskService)taskService).getTasksAssignedAsPotentialOwner(userId, null, status, filter);
 	}
         
 	@Override
@@ -709,7 +709,23 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 
 	@Override
 	public List<TaskSummary> getTasksByStatusByProcessInstanceId(Long processInstanceId, List<Status> status, QueryFilter filter) {
-		return taskService.getTasksByStatusByProcessInstanceId(processInstanceId, status, filter.getLanguage());
+
+		if (status == null || status.isEmpty()) {
+
+			status = new ArrayList<Status>();
+			status.add(Status.Created);
+			status.add(Status.Ready);
+			status.add(Status.Reserved);
+			status.add(Status.InProgress);
+			status.add(Status.Suspended);
+		}
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("processInstanceId", processInstanceId);
+		params.put("status", status);
+		applyQueryContext(params, filter);
+		applyQueryFilter(params, filter);
+		return (List<TaskSummary>) commandService.execute(new QueryNameCommand<List<TaskSummary>>("TasksByStatusByProcessId", params));
 	}
 	/*
      * end
