@@ -340,6 +340,7 @@ public class TypeDeclarationBuilder {
                         tempDescr.setFields(typeDescr.getFields());
                         tempDescr.setType(target,
                                           typeDescr.getNamespace());
+                        tempDescr.setTrait( true );
                         tempDescr.addSuperType(typeDescr.getType());
                         TypeDeclaration tempDeclr = new TypeDeclaration(target);
                         tempDeclr.setKind(TypeDeclaration.Kind.TRAIT);
@@ -359,8 +360,6 @@ public class TypeDeclarationBuilder {
                         tempDef.setDefinedClass(resolvedType);
                         tempDef.setAbstrakt(true);
                         tempDeclr.setTypeClassDef(tempDef);
-
-                        type.setKind(TypeDeclaration.Kind.CLASS);
 
                         declaredClassBuilder.generateBeanFromDefinition( tempDescr,
                                                                          tempDeclr,
