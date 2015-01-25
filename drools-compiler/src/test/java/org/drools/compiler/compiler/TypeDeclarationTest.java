@@ -1060,4 +1060,42 @@ public class TypeDeclarationTest {
     }
 
 
+
+    @Test()
+    public void testTraitExtendPojo() {
+        //DROOLS-697
+        final String s1 = "package test;\n" +
+
+                          "declare Poojo " +
+                          "end " +
+
+                          "declare trait Mask extends Poojo " +
+                          "end " +
+                          "";
+
+        KieHelper kh = new KieHelper();
+        kh.addContent( s1, ResourceType.DRL );
+
+        assertEquals( 1, kh.verify().getMessages( Message.Level.ERROR ).size() );
+    }
+
+    @Test()
+    public void testPojoExtendInterface() {
+        //DROOLS-697
+        final String s1 = "package test;\n" +
+
+                          "declare Poojo extends Mask " +
+                          "end " +
+
+                          "declare trait Mask " +
+                          "end " +
+                          "";
+
+        KieHelper kh = new KieHelper();
+        kh.addContent( s1, ResourceType.DRL );
+
+        assertEquals( 1, kh.verify().getMessages( Message.Level.ERROR ).size() );
+    }
+
+
 }
