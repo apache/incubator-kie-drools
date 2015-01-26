@@ -168,7 +168,15 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     }
     
     protected List<String> getDeploymentsForUser() {
-    	String identityName = identityProvider.getName();
+    	String identityName = null;
+    	List<String> roles = null;
+    	try {
+	    	identityName = identityProvider.getName();
+	    	roles = identityProvider.getRoles();
+    	} catch (Exception e) {
+    		// in case there is no way to collect either name of roles of the requesting used return empty list
+    		return new ArrayList<String>();
+    	}
     	List<String> usersDeploymentIds = userDeploymentIdsCache.get(identityName);
     	if (usersDeploymentIds != null) {
     		return usersDeploymentIds;
@@ -178,7 +186,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     	userDeploymentIdsCache.put(identityName, usersDeploymentIds);
     	boolean isSecured = false;
     	for (Map.Entry<String, List<String>> entry : deploymentsRoles.entrySet()){
-    		if (entry.getValue().isEmpty() || CollectionUtils.containsAny(identityProvider.getRoles(), entry.getValue())) {
+    		if (entry.getValue().isEmpty() || CollectionUtils.containsAny(roles, entry.getValue())) {
     			usersDeploymentIds.add(entry.getKey());
     		}
     		if (entry.getValue() != null && !entry.getValue().isEmpty()) {
