@@ -38,12 +38,12 @@ public class ScoreDifferencePercentage implements Serializable {
         }
         double[] percentageLevels = new double[baseLevels.length];
         for (int i = 0; i < baseLevels.length; i++) {
-            percentageLevels[i] = calculatePercentageLevel(baseLevels[i], valueLevels[i]);
+            percentageLevels[i] = calculateScoreDifferencePercentageLevel(baseLevels[i], valueLevels[i]);
         }
         return new ScoreDifferencePercentage(percentageLevels);
     }
 
-    private static double calculatePercentageLevel(double baseLevel, double valueLevel) {
+    private static double calculateScoreDifferencePercentageLevel(double baseLevel, double valueLevel) {
         double differenceLevel = valueLevel - baseLevel;
         if (baseLevel < 0.0) {
             return differenceLevel / - baseLevel;
@@ -74,6 +74,11 @@ public class ScoreDifferencePercentage implements Serializable {
     // ************************************************************************
 
     public ScoreDifferencePercentage add(ScoreDifferencePercentage augment) {
+        if (percentageLevels.length != augment.getPercentageLevels().length) {
+            throw new IllegalStateException("The augment (" + augment + ")'s levelsLength (" +
+                    augment.getPercentageLevels().length + ") is different from the base (" +
+                    this + ")'s levelsLength (" + percentageLevels.length + ").");
+        }
         double[] newPercentageLevels = new double[percentageLevels.length];
         for (int i = 0; i < percentageLevels.length; i++) {
             newPercentageLevels[i] = percentageLevels[i] + augment.percentageLevels[i];
@@ -82,6 +87,11 @@ public class ScoreDifferencePercentage implements Serializable {
     }
 
     public ScoreDifferencePercentage subtract(ScoreDifferencePercentage subtrahend) {
+        if (percentageLevels.length != subtrahend.getPercentageLevels().length) {
+            throw new IllegalStateException("The subtrahend (" + subtrahend + ")'s levelsLength (" +
+                    subtrahend.getPercentageLevels().length + ") is different from the base (" +
+                    this + ")'s levelsLength (" + percentageLevels.length + ").");
+        }
         double[] newPercentageLevels = new double[percentageLevels.length];
         for (int i = 0; i < percentageLevels.length; i++) {
             newPercentageLevels[i] = percentageLevels[i] - subtrahend.percentageLevels[i];
