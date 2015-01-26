@@ -20,26 +20,26 @@
       <para><emphasis role="bold">Workspaces</emphasis>: By exporting and importing workspaces you can move your set of pages with a given look and feel between installations.</para>
     </listitem>
     <listitem>
-      <para><emphasis role="bold">Key performance indicators and data providers:</emphasis>: By exporting and importing KPIs you can move your indicators and its data providers between installations.</para>
+      <para><emphasis role="bold">Key performance indicators and data providers</emphasis>: By exporting and importing KPIs you can move your indicators and their data providers between installations.</para>
     </listitem>
     <listitem>
       <para><emphasis role="bold">Data sources</emphasis>: By exporting and importing data sources you can move your external connection configurations between installations.</para>
     </listitem>
   </itemizedlist>
 
-  <para>In general, asset <emphasis role="bold">exportation</emphasis> must be done using the <emphasis>Web User Interface</emphasis>. There exist a panel for exporting each type of asset.</para>
+  <para>In general, asset <emphasis role="bold">export</emphasis> must be done using the <emphasis>Web User Interface</emphasis>. There exist a panel for exporting each type of asset.</para>
   
-  <para>On the other hand, asset <emphasis role="bold">importation</emphasis> can be done in two ways:</para>
+  <para>On the other hand, asset <emphasis role="bold">import</emphasis> can be done in two ways:</para>
   
   <itemizedlist>
     <listitem>
       <para>Using the <emphasis>Web User Interface</emphasis>.</para>
-      <para>There exist panels for importing each type of asset.</para>
+      <para>There are panels for importing each type of asset.</para>
     </listitem>
     <listitem>
       <para>Using the <emphasis>Deployment Scanner</emphasis>.</para>
-      <para>It allows to place your exported assets in a given folder inside the web application. Once application is starting, it scans the deployment folder and import the assets found.</para>
-      <para>Using the <emphasis>Deployment Scanner</emphasis> allows for the automatic deployment of assets on application start up time and does not requires the user intervention either.</para>
+      <para>It allows to place your exported assets in a given folder inside the web application. On application startup it scans the deployments folder and imports the assets found.</para>
+      <para>Using the <emphasis>Deployment Scanner</emphasis> allows for the automatic deployment of assets on application start up and does not require the user intervention either.</para>
       <para>It's important to note that assets are imported only at deploy time, not during application runtime.</para>
     </listitem>
   </itemizedlist>

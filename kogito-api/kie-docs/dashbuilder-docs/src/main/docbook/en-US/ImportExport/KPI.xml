@@ -10,7 +10,7 @@
   <title>Key performance indicators</title>
 
   <para>
-    Workspace import &amp; export allows you to move your <emphasis>KPI</emphasis> and its <emphasis>data providers</emphasis> to other <emphasis>JBoss Dashbuilder</emphasis> installations.
+    Dashboard import &amp; export allows you to move your <emphasis>KPI</emphasis> and its <emphasis>data providers</emphasis> to other <emphasis>JBoss Dashbuilder</emphasis> installations.
   </para>
 
   <para>
@@ -27,11 +27,11 @@
   </itemizedlist>
 
   <para>
-    In order to <emphasis role="bold">export a KPI</emphasis> there exist a panel named <emphasis>Export dashboards</emphasis>.
+    In order to <emphasis role="bold">export a KPI</emphasis> there is a panel named <emphasis>Export dashboards</emphasis>.
   </para> 
   
   <para>
-    It lists all the existing KPI in the application and allows you to export one or more KPI definitions in a single XML file.
+    It lists all the existing KPIs in the application and allows you to export one or more KPI definitions in a single XML file.
   </para>
 
   <figure>
@@ -46,13 +46,13 @@
   </figure>
 
   <para>
-    In order to <emphasis role="bold">import a KPI</emphasis> you can do it in two ways:
+    You can <emphasis role="bold">import a KPI</emphasis> in two ways:
   </para>
 
   <itemizedlist>
     <listitem>
       <para>Using the <emphasis>Web User Interface</emphasis>.</para>
-      <para>It allows to upload a XML file that contain one or more KPI definitions.</para>
+      <para>It allows uploading a XML file that contains one or more KPI definitions.</para>
       <figure>
         <title>Import dashboards panel</title>
         <screenshot>
@@ -67,7 +67,7 @@
     <listitem>
       <para>Using the <emphasis>Deployment Scanner</emphasis>. </para>
       <para>Just by dropping the exported KPI definition files into the folder <emphasis>WEB-INF/deployments</emphasis>. Once the application starts, it will scan the deployment folder and will import all the KPIs files found.</para>
-      <para>Some important notes about automatic KPI importation using the <emphasis>Deployment Scanner</emphasis>:</para>
+      <para>Some important notes about automatic KPI import using the <emphasis>Deployment Scanner</emphasis>:</para>
       <itemizedlist>
         <listitem>
           <para>KPI and data providers are imported once and only at deploy time, not during application runtime</para>

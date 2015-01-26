@@ -30,7 +30,7 @@
   </itemizedlist>
 
   <para>
-    In order to <emphasis role="bold">export a workspace</emphasis> there exist a panel named <emphasis>Export workspaces</emphasis>.
+    In order to <emphasis role="bold">export a workspace</emphasis> there exists a panel named <emphasis>Export workspaces</emphasis>.
   </para> 
   
   <para>
@@ -49,13 +49,13 @@
   </figure>
 
   <para>
-    In order to <emphasis role="bold">import a workspace</emphasis> you can do it in two ways:
+    You can <emphasis role="bold">import a workspace</emphasis> in two ways:
   </para>
 
   <itemizedlist>
     <listitem>
       <para>Using the <emphasis>Web User Interface</emphasis>.</para>
-      <para>It allows to upload a XML file that contain one or more workspace definitions. A ZIP file containing some workspace definitions in XML format is allowed too for backwards compatibility.</para>
+      <para>It allows uploading a XML file that contain one or more workspace definitions. A ZIP file containing some workspace definitions in XML format is allowed too for backwards compatibility.</para>
       <figure>
         <title>Import workspaces panel</title>
         <screenshot>
@@ -68,9 +68,9 @@
       </figure>
     </listitem>
     <listitem>
-      <para>Using the <emphasis>Deployment Scanner</emphasis>. </para>
-      <para>Just by dropping the workspace definition files into the folder <emphasis>WEB-INF/deployments</emphasis>. Once application is starting, it scans ths deployment folder and import all the workspaces found.</para>
-      <para>Some important notes about automatic workspace importation using the <emphasis>deployment scanner</emphasis>:</para>
+      <para>Using the <emphasis>Deployment Scanner</emphasis>.</para>
+      <para>Just by dropping the workspace definition files into the folder <emphasis>WEB-INF/deployments</emphasis>. Once application is starting, it scans the deployments folder and imports all the workspaces found.</para>
+      <para>Some important notes about automatic workspace import using the <emphasis>deployment scanner</emphasis>:</para>
       <itemizedlist>
         <listitem>
           <para>Workspaces are imported once and only at deploy time, not during application runtime</para>

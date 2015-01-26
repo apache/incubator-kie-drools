@@ -10,11 +10,11 @@
   <title>Data sources</title>
 
   <para>
-    Data source import export allows you to import one or more data source connection definitions into a <emphasis>JBoss Dashbuilder</emphasis> installation.
+    Data source import &amp; export allows you to import one or more data source connection definitions into a <emphasis>JBoss Dashbuilder</emphasis> installation.
   </para>
 
   <para>
-    Data source exportation is not supported yet, there is no panel for exporting them.
+    Data source export is not supported yet, there is no panel for exporting them.
   </para>
 
   <para>
@@ -24,7 +24,7 @@
   <itemizedlist>
     <listitem>
       <para>Manually using the <emphasis>Web User Interface</emphasis>.</para>
-      <para>Data source definitions are composed by not so many attributes, so an option is to create them in your target environment manually by using the <emphasis>Data source manager</emphasis> panel.</para>
+      <para>Data source definitions consist of few attributes, so an option is to create them in your target environment manually by using the <emphasis>Data source manager</emphasis> panel.</para>
       <figure>
         <title>Manually creation of a data source</title>
         <screenshot>
@@ -37,8 +37,8 @@
       </figure>
     </listitem>
     <listitem>
-      <para>Using the <emphasis>Deployment Scanner</emphasis>. </para>
-      <para>Just by dropping the data source definition files into the folder <emphasis>WEB-INF/deployments</emphasis>. Once application is starting, it scans ths deployment folder and import all the workspaces found.</para>
+      <para>Using the <emphasis>Deployment Scanner</emphasis>.</para>
+      <para>Just by dropping the data source definition files into the folder <emphasis>WEB-INF/deployments</emphasis>. On startup the application scans the deployments folder and import all the workspaces it finds.</para>
       
       <para>Data source definition files are property files with the following supported properties:</para>
 
@@ -110,7 +110,7 @@
           </example>
         </listitem>
       </itemizedlist>
-      <para>Some important notes about automatic data source importation using the <emphasis>deployment scanner</emphasis>:</para>
+      <para>Some important notes about automatic data source import using the <emphasis>deployment scanner</emphasis>:</para>
       <itemizedlist>
         <listitem>
           <para>Data sources are imported once and only at deploy time, not during application runtime</para>
