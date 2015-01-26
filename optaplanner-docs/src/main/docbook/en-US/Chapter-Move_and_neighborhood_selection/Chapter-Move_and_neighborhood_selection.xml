@@ -153,6 +153,7 @@
       &lt;valueSelector&gt;
         &lt;variableName&gt;room&lt;/variableName&gt;
         ...
+        &lt;nearbySelection&gt;...&lt;/nearbySelection&gt;
       &lt;/valueSelector&gt;
     &lt;/changeMoveSelector&gt;</programlisting>
 
@@ -198,7 +199,9 @@
         ...
       &lt;/entitySelector&gt;
       &lt;secondaryEntitySelector&gt;
+        &lt;entityClass&gt;...Lecture&lt;/entityClass&gt;
         ...
+        &lt;nearbySelection&gt;...&lt;/nearbySelection&gt;
       &lt;/secondaryEntitySelector&gt;
       &lt;variableNameInclude&gt;room&lt;/variableNameInclude&gt;
       &lt;variableNameInclude&gt;...&lt;/variableNameInclude&gt;
@@ -315,12 +318,54 @@
       linkend="pillarChangeMoveSelector">pillarChangeMoveSelector</link>.</para>
     </section>
 
+    <section xml:id="tailChainSwapMoveSelector">
+      <title>tailChainSwapMoveSelector or 2-opt (chained variables only)</title>
+
+      <para>A <emphasis>tailChain</emphasis> is a set of planning entities with a chained planning variable which form a
+      last part of a chain. The <literal>tailChainSwapMove</literal> selects a tail chain and swaps it with the tail
+      chain of another planning value (in a different or the same anchor chain). If the targeted planning value, doesn't
+      have a tail chain, it swaps with nothing (resulting in a change like move). If it occurs within the same anchor
+      chain, a partial chain reverse occurs. In academic papers, this is often called a 2-opt move.</para>
+
+      <para>Simplest configuration:</para>
+
+      <programlisting language="xml">    &lt;tailChainSwapMoveSelector/&gt;</programlisting>
+
+      <para>Advanced configuration:</para>
+
+      <programlisting language="xml">    &lt;subChainChangeMoveSelector&gt;
+      ... &lt;!-- Normal selector properties --&gt;
+      &lt;entitySelector&gt;
+        &lt;entityClass&gt;...Customer&lt;/entityClass&gt;
+        ...
+      &lt;/entitySelector&gt;
+      &lt;valueSelector&gt;
+        &lt;variableName&gt;previousStandstill&lt;/variableName&gt;
+        ...
+        &lt;nearbySelection&gt;...&lt;/nearbySelection&gt;
+      &lt;/valueSelector&gt;
+    &lt;/subChainChangeMoveSelector&gt;</programlisting>
+
+      <para>The <literal>entitySelector</literal> selects the start of the tail chain that is being moved. The
+      valueSelector selects to where that tail chain is moved. If it has a tail chain itself, that is moved to the
+      location of the original tail chain. It uses a <literal>valueSelector</literal> instead of a
+      <literal>secondaryEntitySelector</literal> to be able to include all possible 2opt moves (such as moving to the
+      end of a tail) and to work correctly with <link linkend="nearbySelection">nearby selection</link> (because of
+      asymmetric distances and also swapped entity distance gives an incorrect selection probability).</para>
+
+      <note>
+        <para>Although <literal>subChainChangeMoveSelector</literal> and <literal>subChainSwapMoveSelector</literal>
+        include almost every possible <literal>tailChainSwapMove</literal>, experiments have shown that focusing on
+        <literal>tailChainSwapMove</literal>s increases efficiency.</para>
+      </note>
+    </section>
+
     <section xml:id="subChainChangeMoveSelector">
-      <title>subChainChangeMoveSelector</title>
+      <title>subChainChangeMoveSelector (chained variables only)</title>
 
       <para>A <emphasis>subChain</emphasis> is a set of planning entities with a chained planning variable which form
-      part of a chain. The <literal>subChainChangeMove</literal> selects a subChain and moves it to another place in a
-      different or the same anchor chain.</para>
+      part of a chain. The <literal>subChainChangeMoveSelector</literal> selects a subChain and moves it to another
+      place (in a different or the same anchor chain).</para>
 
       <para>Simplest configuration:</para>
 
@@ -368,10 +413,10 @@
     </section>
 
     <section xml:id="subChainSwapMoveSelector">
-      <title>subChainSwapMoveSelector</title>
+      <title>subChainSwapMoveSelector (chained variables only)</title>
 
-      <para>The <literal>subChainSwapMoveSelector</literal> selects 2 different subChains and moves them to another place in a
-      different or the same anchor chain.</para>
+      <para>The <literal>subChainSwapMoveSelector</literal> selects 2 different subChains and moves them to another
+      place in a different or the same anchor chain.</para>
 
       <para>Simplest configuration:</para>
 
@@ -415,7 +460,7 @@
     <section xml:id="unionMoveSelector">
       <title>unionMoveSelector</title>
 
-      <para>A <literal>unionMoveSelector</literal> selects a <literal>Move</literal> by selecting 1 of its 
+      <para>A <literal>unionMoveSelector</literal> selects a <literal>Move</literal> by selecting 1 of its
       <literal>MoveSelector</literal> children to supply the next <literal>Move</literal>.</para>
 
       <para>Simplest configuration:</para>
@@ -448,8 +493,8 @@
     &lt;/unionMoveSelector&gt;</programlisting>
 
       <para>The <literal>selectorProbabilityWeightFactory</literal> determines in <literal>selectionOrder</literal>
-      <literal>RANDOM</literal> how often a <literal>MoveSelector</literal> child is selected to supply the next Move. By default, each
-      <literal>MoveSelector</literal> child has the same chance of being selected.</para>
+      <literal>RANDOM</literal> how often a <literal>MoveSelector</literal> child is selected to supply the next Move.
+      By default, each <literal>MoveSelector</literal> child has the same chance of being selected.</para>
 
       <mediaobject>
         <imageobject>
@@ -457,8 +502,8 @@
         </imageobject>
       </mediaobject>
 
-      <para>Change the <literal>fixedProbabilityWeight</literal> of such a child to select it more often. For example, the
-      <literal>unionMoveSelector</literal> can return a <literal>SwapMove</literal> twice as often as a
+      <para>Change the <literal>fixedProbabilityWeight</literal> of such a child to select it more often. For example,
+      the <literal>unionMoveSelector</literal> can return a <literal>SwapMove</literal> twice as often as a
       <literal>ChangeMove</literal>:</para>
 
       <programlisting language="xml">    &lt;unionMoveSelector&gt;
@@ -488,8 +533,8 @@
       <title>cartesianProductMoveSelector</title>
 
       <para>A <literal>cartesianProductMoveSelector</literal> selects a new <literal>CompositeMove</literal>. It builds
-      that <literal>CompositeMove</literal> by selecting 1 <literal>Move</literal> per
-      <literal>MoveSelector</literal> child and adding it to the <literal>CompositeMove</literal>.</para>
+      that <literal>CompositeMove</literal> by selecting 1 <literal>Move</literal> per <literal>MoveSelector</literal>
+      child and adding it to the <literal>CompositeMove</literal>.</para>
 
       <para>Simplest configuration:</para>
 
@@ -747,7 +792,8 @@
     &lt;/unionMoveSelector&gt;</programlisting>
 
         <para>Here's how it works. When <literal>Iterator&lt;Move&gt;.next()</literal> is called, a child
-        <literal>MoveSelector</literal> is randomly selected (1), which creates a random <literal>Move</literal> (2, 3, 4) and is then returned (5):</para>
+        <literal>MoveSelector</literal> is randomly selected (1), which creates a random <literal>Move</literal> (2, 3,
+        4) and is then returned (5):</para>
 
         <mediaobject>
           <imageobject>
@@ -1077,8 +1123,8 @@
         </imageobject>
       </mediaobject>
 
-      <para>Each selection has a <literal>probabilityWeight</literal>, which determines the chance that selection
-      will be selected:</para>
+      <para>Each selection has a <literal>probabilityWeight</literal>, which determines the chance that selection will
+      be selected:</para>
 
       <programlisting language="java">public interface SelectionProbabilityWeightFactory&lt;T&gt; {
 
@@ -1147,14 +1193,116 @@
     <section xml:id="nearbySelection">
       <title>Nearby selection</title>
 
-      <para>With nearby selection, it is possible to increase the probability of selecting an entity or value which is
-      nearby to the first entity being moved in that move.</para>
+      <para>In some use cases (such as TSP and VRP, but also in non-chained variable cases), changing entities to nearby
+      values or swapping nearby entities can <emphasis role="bold">heavily increase scalability</emphasis> and improve
+      solution quality.</para>
+
+      <para>Nearby selection increases the probability of selecting an entity or value which is nearby to the first
+      entity being moved in that move.</para>
 
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/nearbySelectionRandomDistribution.png"/>
         </imageobject>
       </mediaobject>
+
+      <para>The distance between 2 entities or values is domain specific. Therefore, implement the
+      <literal>NearbyDistanceMeter</literal> interface:</para>
+
+      <programlisting language="java">public interface NearbyDistanceMeter&lt;O, D&gt; {
+
+    double getNearbyDistance(O origin, D destination);
+
+}</programlisting>
+
+      <para>It returns a <literal>double</literal> which represents the distance:</para>
+
+      <programlisting language="java">public class CustomerNearbyDistanceMeter implements NearbyDistanceMeter&lt;Customer, Standstill&gt; {
+
+    public double getNearbyDistance(Customer origin, Standstill destination) {
+        return origin.getDistanceTo(destination);
+    }
+
+}</programlisting>
+
+      <para>To configure nearby selection, add a <literal>nearbySelection</literal> element in the
+      <literal>entitySelector</literal> or <literal>valueSelector</literal> and use <link linkend="???">mimic
+      selection</link> to specify which entity should be near by the selection.</para>
+
+      <programlisting language="xml">    &lt;unionMoveSelector&gt;
+      &lt;changeMoveSelector&gt;
+        &lt;entitySelector id="entitySelector1"/&gt;
+        &lt;valueSelector&gt;
+          &lt;nearbySelection&gt;
+            &lt;originEntitySelector mimicSelectorRef="entitySelector1"/&gt;
+            &lt;nearbyDistanceMeterClass&gt;...CustomerNearbyDistanceMeter&lt;/nearbyDistanceMeterClass&gt;
+            &lt;parabolicDistributionSizeMaximum&gt;40&lt;/parabolicDistributionSizeMaximum&gt;
+          &lt;/nearbySelection&gt;
+        &lt;/valueSelector&gt;
+      &lt;/changeMoveSelector&gt;
+      &lt;swapMoveSelector&gt;
+        &lt;entitySelector id="entitySelector2"/&gt;
+        &lt;secondaryEntitySelector&gt;
+          &lt;nearbySelection&gt;
+            &lt;originEntitySelector mimicSelectorRef="entitySelector2"/&gt;
+            &lt;nearbyDistanceMeterClass&gt;...CustomerNearbyDistanceMeter&lt;/nearbyDistanceMeterClass&gt;
+            &lt;parabolicDistributionSizeMaximum&gt;40&lt;/parabolicDistributionSizeMaximum&gt;
+          &lt;/nearbySelection&gt;
+        &lt;/secondaryEntitySelector&gt;
+      &lt;/swapMoveSelector&gt;
+      &lt;tailChainSwapMoveSelector&gt;
+        &lt;entitySelector id="entitySelector3"/&gt;
+        &lt;valueSelector&gt;
+          &lt;nearbySelection&gt;
+            &lt;originEntitySelector mimicSelectorRef="entitySelector3"/&gt;
+            &lt;nearbyDistanceMeterClass&gt;...CustomerNearbyDistanceMeter&lt;/nearbyDistanceMeterClass&gt;
+            &lt;parabolicDistributionSizeMaximum&gt;40&lt;/parabolicDistributionSizeMaximum&gt;
+          &lt;/nearbySelection&gt;
+        &lt;/valueSelector&gt;
+      &lt;/tailChainSwapMoveSelector&gt;
+    &lt;/unionMoveSelector&gt;</programlisting>
+
+      <para>The following distribution methods are supported:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Block distribution: Only the n nearest are selected, with an equal probability. For example, select the
+          20 nearest:</para>
+
+          <programlisting language="xml">  &lt;nearbySelection&gt;
+    &lt;blockDistributionSizeMaximum&gt;20&lt;/blockDistributionSizeMaximum&gt;
+  &lt;/nearbySelection&gt;</programlisting>
+        </listitem>
+
+        <listitem>
+          <para>Linear distribution: Nearest elements are selected with a higher probability. The probability decreases
+          linearly.</para>
+
+          <programlisting language="xml">  &lt;nearbySelection&gt;
+    &lt;linearDistributionSizeMaximum&gt;40&lt;/linearDistributionSizeMaximum&gt;
+  &lt;/nearbySelection&gt;</programlisting>
+        </listitem>
+
+        <listitem>
+          <para>Parabolic distribution (recommended): Nearest elements are selected with a higher probability.</para>
+
+          <programlisting language="xml">  &lt;nearbySelection&gt;
+    &lt;parabolicDistributionSizeMaximum&gt;80&lt;/parabolicDistributionSizeMaximum&gt;
+  &lt;/nearbySelection&gt;</programlisting>
+        </listitem>
+
+        <listitem>
+          <para>Beta distribution: Selection according to a beta distribution. Slows down the solver.</para>
+
+          <programlisting language="xml">  &lt;nearbySelection&gt;
+    &lt;betaDistributionAlpha&gt;5&lt;/betaDistributionAlpha&gt;
+    &lt;betaDistributionBeta&gt;1&lt;/betaDistributionBeta&gt;
+  &lt;/nearbySelection&gt;</programlisting>
+        </listitem>
+      </itemizedlist>
+
+      <para>As always, use the <link linkend="benchmarkingAndTweaking">Benchmarker</link> to tweak values if
+      desired.</para>
     </section>
   </section>
 
@@ -1239,8 +1387,8 @@
     }</programlisting>
 
       <para>You need to call the <literal>scoreDirector.beforeVariableChanged(Object, String)</literal> and
-      <literal>scoreDirector.afterVariableChanged(Object, String)</literal> methods directly before and after modifying the
-      entity.</para>
+      <literal>scoreDirector.afterVariableChanged(Object, String)</literal> methods directly before and after modifying
+      the entity.</para>
 
       <note>
         <para>You can alter multiple entities in a single move and effectively create a big move (also known as a
@@ -1399,17 +1547,17 @@
       &lt;moveListFactoryClass&gt;org.optaplanner.examples.nqueens.solver.move.factory.RowChangeMoveFactory&lt;/moveListFactoryClass&gt;
     &lt;/moveListFactory&gt;</programlisting>
 
-      <para>Because the <literal>MoveListFactory</literal> generates all moves at once in a <literal>List&lt;Move&gt;</literal>, it does
-      not support <literal>cacheType</literal> <literal>JUST_IN_TIME</literal>. Therefore,
-      <literal>moveListFactory</literal> uses <literal>cacheType</literal> <literal>STEP</literal> by default and it
-      scales badly in memory footprint.</para>
+      <para>Because the <literal>MoveListFactory</literal> generates all moves at once in a
+      <literal>List&lt;Move&gt;</literal>, it does not support <literal>cacheType</literal>
+      <literal>JUST_IN_TIME</literal>. Therefore, <literal>moveListFactory</literal> uses <literal>cacheType</literal>
+      <literal>STEP</literal> by default and it scales badly in memory footprint.</para>
     </section>
 
     <section xml:id="moveIteratorFactory">
       <title><literal>MoveIteratorFactory</literal>: generate custom moves just in time</title>
 
-      <para>Use this advanced form to generate custom moves by implementing the
-      <literal>MoveIteratorFactory</literal> interface:</para>
+      <para>Use this advanced form to generate custom moves by implementing the <literal>MoveIteratorFactory</literal>
+      interface:</para>
 
       <programlisting language="java">public interface MoveIteratorFactory {
 
