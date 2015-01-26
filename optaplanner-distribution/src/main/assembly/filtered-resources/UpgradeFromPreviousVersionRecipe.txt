@@ -2357,3 +2357,12 @@ After in *.java:
         public Vehicle getVehicle() {...}
 
     }
+
+
+From 6.2.0.CR4 to 6.2.0.Final
+-----------------------------
+
+[MINOR] The undocumented, experimental <twoOptMoveSelector> has been replaced by <tailChainSwapMoveSelector>,
+which is documented.
+
+[REAMDE] To scale VRP cases, Nearby Selection is critical. It is now finally completely supported and documented.

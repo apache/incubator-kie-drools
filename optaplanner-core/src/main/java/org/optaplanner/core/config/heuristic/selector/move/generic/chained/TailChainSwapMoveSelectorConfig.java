@@ -23,14 +23,14 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
-import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.TailChainSwapMoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.TwoOptMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
+/**
+ * Also known as a 2-opt move selector config.
+ */
 @XStreamAlias("tailChainSwapMoveSelector")
 public class TailChainSwapMoveSelectorConfig extends MoveSelectorConfig {
 

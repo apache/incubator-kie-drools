@@ -36,6 +36,9 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSele
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
+/**
+ * Also known as a 2-opt move selector.
+ */
 public class TailChainSwapMoveSelector extends GenericMoveSelector {
 
     protected final EntitySelector entitySelector;

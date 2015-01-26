@@ -32,6 +32,9 @@ import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
+/**
+ * Also known as a 2-opt move.
+ */
 public class TailChainSwapMove extends AbstractMove {
 
     protected final GenuineVariableDescriptor variableDescriptor;
