@@ -434,11 +434,25 @@
             outgoing connection.</para>
           </listitem>
           <listitem>
-            <para><emphasis>VariableName</emphasis>: The name of the variable
-            to contain the current element from the collection.  This
-            gives nodes within the composite node access to the selected
-            element.</para>
-          </listitem>
+        <para><emphasis>VariableName</emphasis>: The name of the variable to contain the current
+          element from the collection. This gives nodes within the composite node access to the
+          selected element.</para>
+      </listitem>
+      <listitem>
+        <para><emphasis role="italic">CollectionOutput</emphasis>: The name of a variable that
+          represents collection of elements that will gather all output of the multi instance sub
+          process</para>
+      </listitem>
+      <listitem>
+        <para><emphasis role="italic">OutputVariableName</emphasis>: The name of the variable to
+          contain the currentl output from the multi instance activitiy</para>
+      </listitem>
+      <listitem>
+        <para><emphasis role="italic">CompletionCondition</emphasis>: MVEL expression that will be
+          evaluated on each instance completion to check if given multi instance activity can
+          already be completed. In case it evaluates to true all other remaining instances within
+          multi instance activity will be canceled.</para>
+      </listitem>
         </itemizedlist>
     
     </section>

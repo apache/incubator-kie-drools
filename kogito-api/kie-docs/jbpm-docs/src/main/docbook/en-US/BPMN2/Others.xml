@@ -222,6 +222,38 @@ Person( name == ( processInstance.getVariable("name") ) )
       before triggering the timer (again).</para>
 
     </section>
+    <section>
+      <title>Configure timer with CRON like expression</title>
+      <para>Timer events can be configured with CRON like expression when timeCycle is used as timer
+        event definition. Important is that the language attribute of timeCycle definition must be
+        set to <emphasis role="italic">cron</emphasis>. With that such cycle of a timer is
+        controlled in the same way as CRON jobs. CRON like expression is supported for:</para>
+      <para>
+        <itemizedlist>
+          <listitem>
+            <para>start event timers</para>
+          </listitem>
+          <listitem>
+            <para>intermediate event timers</para>
+          </listitem>
+          <listitem>
+            <para>boundary event timers</para>
+          </listitem>
+        </itemizedlist>
+      </para>
+      <para>Following is an example of a definition of a boundary timer with CRON like
+        expression</para>
+      <programlisting>
+&lt;bpmn2:boundaryEvent id="1" name="Send Update Timer" attachedToRef="_77A94B54-8B7C-4F8A-84EE-C1D310A343A6" cancelActivity="false">
+   &lt;bpmn2:outgoing>2&lt;/bpmn2:outgoing>
+   &lt;bpmn2:timerEventDefinition id="_erIyiJZ7EeSDh8PHobjSSA">
+     &lt;bpmn2:timeCycle xsi:type="bpmn2:tFormalExpression" id="_erIyiZZ7EeSDh8PHobjSSA" language="cron">0/1 * * * * ?&lt;/bpmn2:timeCycle>
+   &lt;/bpmn2:timerEventDefinition>
+&lt;/bpmn2:boundaryEvent>
+</programlisting>
+      <para>This timer will fire every second and will continue until activity this boundary event
+        is attached to is active.</para>
+    </section>
 
     <section>
       <title>Configure timer ISO-8601 date format</title>

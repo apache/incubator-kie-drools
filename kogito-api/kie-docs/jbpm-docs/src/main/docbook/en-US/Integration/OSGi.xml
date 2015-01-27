@@ -30,7 +30,7 @@
   There are also other projects that help with this; Spring DM, iPOJO,
   Gravity.</para>
 
-  <para> The following jBPM JARs are OGSi-enabled:</para>
+  <para> The following jBPM JARs are OSGi-enabled:</para>
       <itemizedlist>
         <listitem>jbpm-flow</listitem>
         <listitem>jbpm-flow-builder</listitem>

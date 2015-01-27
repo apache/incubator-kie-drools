@@ -12,13 +12,11 @@
   <section>
     <title>Overview</title>
 
-    <para>jBPM 6 comes with out of the box integration with CDI (Contexts and
-    Dependency Injection). Although most of the API can be used in CDI world
-    there are some dedicated modules that are designed especially for CDI
-    containers. The most important one is jbpm-kie-services that provides high
-    level services that shall be used in most of the cases were CDI is
-    available for jBPM integration. It provides following set of
-    services:</para>
+    <para>jBPM 6 comes with out of the box integration with CDI (Contexts and Dependency Injection).
+      Although most of the API can be used in CDI world there are some dedicated modules that are
+      designed especially for CDI containers. The most important one is jbpm-services-cdi that
+      provides cdi wrappers on top of jbpm services, these shall be used in most of the cases were
+      CDI is available for jBPM integration. It provides following set of services:</para>
 
     <itemizedlist>
       <listitem>
@@ -26,7 +24,10 @@
       </listitem>
 
       <listitem>
-        <para>FormProviderService</para>
+        <para>ProcessService</para>
+      </listitem>
+      <listitem>
+        <para>UserTaskService</para>
       </listitem>
 
       <listitem>
@@ -34,7 +35,7 @@
       </listitem>
 
       <listitem>
-        <para>BPMN2DataService</para>
+        <para>DefinitionService</para>
       </listitem>
     </itemizedlist>
 
@@ -66,14 +67,13 @@
           </listitem>
         </itemizedlist>
 
-        <para>Deployment service stores the deployed units only in memory and
-        thus in case of a need to restore all previously deployed units,
-        component that uses deployment service needs to store that information
-        itself. Common places for such a store are database, file system,
-        repository of some sort, etc. Deployment service will fire CDI events
-        on deployment and undeployment to allow application components to
-        react real time to these events to be able to store deployments or
-        remove them from the store when they are undeployed.</para>
+        <para>Deployment service stores the deployed units by default in memory and thus in case of
+          a need to restore all previously deployed units, component that uses deployment service
+          needs to store that information itself. Common places for such a store are database, file
+          system, repository of some sort, etc. Deployment service will fire CDI events on
+          deployment and undeployment to allow application components to react real time to these
+          events to be able to store deployments or remove them from the store when they are
+          undeployed.</para>
 
         <itemizedlist>
           <listitem>
@@ -100,6 +100,11 @@
         <programlisting language="java">    public void removeDeployment(@Observes @Undeploy DeploymentEvent event) {
         // remove deployment with id event.getDeploymentId()
     }</programlisting>
+        <note>
+          <para>Deployment service comes with deployment synchronization mechanism that allows to
+            persist deployed units into data base (since version 6.2) that is by default enabled.
+            See jbpm services section for more details.</para>
+        </note>
 
         <para>Due to the fact that there might be several implementation of
         DeploymentService use of qualifiers is needed to instruct CDI
@@ -215,16 +220,16 @@
     </section>
 
     <section>
-      <title>BPMN2DataService</title>
+      <title>DefinitionService</title>
 
       <section>
         <para>Service that provides access to process details stored as part
         of BPMN2 XML. </para>
 
         <note>
-          <para>Before using any method that provides information, <emphasis
-          role="bold">findProcessId</emphasis> must be invoked to populate
-          repository with process information taken from BPMN2 content.</para>
+          <para>Before using any method that provides information, <emphasis role="bold"
+              >buildProcessDefinition</emphasis> must be invoked to populate repository with process
+            information taken from BPMN2 content.</para>
         </note>
       </section>
 
@@ -286,10 +291,9 @@
     <title>Configuring CDI integration</title>
 
     <section>
-      <para>To make use of jbpm-kie-services in your system you'll need to
-      provide some beans for the out of the box services to satisfy all
-      dependencies they have. There are several beans that depends on actual
-      scenario</para>
+      <para>To make use of jbpm-services-cdi in your system you'll need to provide some beans for
+        the out of the box services to satisfy all dependencies they have. There are several beans
+        that depends on actual scenario</para>
 
       <itemizedlist>
         <listitem>
@@ -306,9 +310,8 @@
         </listitem>
       </itemizedlist>
 
-      <para>When running in JEE environment like an JBoss Application Server
-      following producer bean should satisfy all requirements of the
-      jbpm-kie-services</para>
+      <para>When running in JEE environment like an JBoss Application Server following producer bean
+        should satisfy all requirements of the jbpm-services-cdi</para>
 
       <programlisting language="java">public class EnvironmentProducer { 
    
@@ -317,7 +320,11 @@
 
     @Inject
     @Selectable
-    private UserGroupCallback userGroupCallback;
+    private UserGroupInfoProducer userGroupInfoProducer;
+
+    @Inject
+    @Kjar
+    private DeploymentService deploymentService;
 
     @Produces
     public EntityManagerFactory getEntityManagerFactory() {
@@ -325,19 +332,24 @@
     }
 
     @Produces
-    @RequestScoped
-    public EntityManager getEntityManager() {
-        EntityManager em = emf.createEntityManager();
-        return em;
-    }
-
-    public void close(@Disposes EntityManager em) {
-        em.close();
+    public org.kie.api.task.UserGroupCallback produceSelectedUserGroupCalback() {
+        return userGroupInfoProducer.produceCallback();
     }
 
     @Produces
-    public UserGroupCallback produceSelectedUserGroupCalback() {
-        return userGroupCallback;
+    public UserInfo produceUserInfo() {
+        return userGroupInfoProducer.produceUserInfo();
+    }
+
+    @Produces
+    @Named("Logs")
+    public TaskLifeCycleEventListener produceTaskAuditListener() {
+        return new JPATaskLifeCycleEventListener(true);
+    }
+
+    @Produces
+    public DeploymentService getDeploymentService() {
+        return this.deploymentService;
     }
 
     @Produces
@@ -449,6 +461,9 @@ public interface EventListenerProducer&lt;T&gt; {
       <para>Beans implementing these two interfaces will be collected on
       runtime and consulted when building KieSession by RuntimeManager. See
       RuntimeManager section for more details on this.</para>
+      <para>A complete runnable example of application built with CDI can be found <link
+          xlink:href="https://github.com/jsvitak/jbpm-6-examples/tree/master/rewards-cdi-jsf"
+          >here</link>.</para>
     </section>
   </section>
 
@@ -456,6 +471,12 @@ public interface EventListenerProducer&lt;T&gt; {
     <title>RuntimeManager as CDI bean</title>
 
     <section>
+      <note>
+        <para>Even though RuntimeManager can be directly injected, it's recommended to utilize jbpm
+          services when frameworks like CDI, ejb or Spring is used. jBPM services bring in
+          significant amount of features that encapsulate best practices when using
+          RuntimeManager.</para>
+      </note>
       <para>RuntimeManager itself can be injected as CDI bean into any other
       CDI bean within the application. It has then requirement to get
       RungimeEnvironment properly produces to allow RuntimeManager to be
@@ -482,43 +503,7 @@ public interface EventListenerProducer&lt;T&gt; {
 
       <programlisting language="java">public class EnvironmentProducer { 
    
-    @PersistenceUnit(unitName = "org.jbpm.domain")
-    private EntityManagerFactory emf;
-
-    @Inject
-    @Selectable
-    private UserGroupCallback userGroupCallback;
-
-    @Inject
-    private BeanManager beanManager;
-
-    @Produces
-    public EntityManagerFactory getEntityManagerFactory() {
-        return this.emf;
-    }
-
-    @Produces
-    @RequestScoped
-    public EntityManager getEntityManager() {
-        EntityManager em = emf.createEntityManager();
-        return em;
-    }
-
-    public void close(@Disposes EntityManager em) {
-        em.close();
-    }
-
-    @Produces
-    public UserGroupCallback produceSelectedUserGroupCalback() {
-        return userGroupCallback;
-    }
-
-    @Produces
-    public IdentityProvider produceIdentityProvider {
-        return new IdentityProvider() {
-             // implement IdentityProvider
-        };
-    }
+    //add same producers as for services
 
     @Produces
     @Singleton
@@ -613,6 +598,4 @@ public interface EventListenerProducer&lt;T&gt; {
 }</programlisting>
     </section>
   </section>
-
-  <section/>
 </section>

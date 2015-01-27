@@ -10,6 +10,7 @@
   <xi:include href="KieBase.xml" />
   <xi:include href="KieSession.xml" />
   <xi:include href="RuntimeManager.xml" />
+  <xi:include href="Services.xml"/>
   <xi:include href="Configuration.xml" />
 
 </chapter>

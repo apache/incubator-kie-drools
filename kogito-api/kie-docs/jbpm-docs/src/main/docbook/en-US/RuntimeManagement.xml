@@ -93,9 +93,13 @@
                                                  session</para>
                                    </listitem>
                                    <listitem>
-                                          <para>additional environment entries for knowledge
-                                                 session</para>
-                                   </listitem>
+                        <para>additional environment entries for knowledge session</para>
+                    </listitem>
+                    <listitem>
+                        <para>list of fully qualified class names that shall be added to remote
+                            services support - JAXBContent for marshal and unmarshal operations for
+                            custom types</para>
+                    </listitem>
                             </itemizedlist>
                      </para>
                      <para>Deployment descriptor is an xml file that is placed inside META-INF
@@ -117,6 +121,7 @@
     &lt;environment-entries/>
     &lt;configurations/>
     &lt;required-roles/>
+    &lt;remoteable-classes/>
 &lt;/deployment-descriptor>
 </programlisting>
                      </para>
@@ -518,59 +523,122 @@ descriptor.getBuilder()
 ...
 &lt;/deployment-descriptor></programlisting>
                      </para>
-                     <para/>
+                     <para>In case fine grained control is required defined roles can be prefixed
+                with one of the following to control it on further level:</para>
+            <para>
+                <itemizedlist>
+                    <listitem>
+                        <para>view:</para>
+                        <para>to restrict access to be able to see given process
+                            definitions/instances on UI</para>
+                    </listitem>
+                    <listitem>
+                        <para>executre:</para>
+                        <para>to restrict access to be able to execute given process
+                            definitions</para>
+                    </listitem>
+                    <listitem>
+                        <para>all:</para>
+                        <para>applies to both view and execute restrictions and this is the default
+                            when no prefix is given.</para>
+                    </listitem>
+                </itemizedlist>
+            </para>
+            <para>For example to restrict access to show process from given kjar only to group
+                'management' but still allow them to be executed by anyone (sort of system
+                processes) one could define it as follows:</para>
+            <programlisting>
+&lt;deployment-descriptor>
+...
+   &lt;required-roles>
+      &lt;required-role>view:management&lt;/required-role>
+   &lt;/required-roles>
+...
+&lt;/deployment-descriptor>
+</programlisting>
+            <para><emphasis role="bold">Remote services support</emphasis></para>
+            <para>When processes make use of custom types (or in general non promitive types) and
+                there is a use case to include remote api invocations (REST, SOAP, JMS) such types
+                must be available to the remote services marshalling mechanism that is based on JAXB
+                for XML type. By default all types defined in kjar will be automatically included in
+                JAXB context and therefore will be avialble for remote interaction. Though there
+                might be more classes (like from dependent model) that shall be included there too. </para>
+            <para>Upon deployment, jbpm will scan classpath of given kjar to automatically register
+                classes that might be needed for remote interaction. This is done based on following
+                rules:</para>
+            <para>
+                <itemizedlist>
+                    <listitem>
+                        <para>all classes included in kjar project itself</para>
+                    </listitem>
+                    <listitem>
+                        <para>all classes included as dependency of projects type kjar</para>
+                    </listitem>
+                    <listitem>
+                        <para>classes that are annotated with @XmlRootElement (JAXB annotation) and
+                            included as regular dependency of the kjar</para>
+                    </listitem>
+                    <listitem>
+                        <para>classes that are annotated with @Remotable (kie annotation) and
+                            included as regular dependency of the kjar</para>
+                    </listitem>
+                </itemizedlist>
+            </para>
+            <para>If that is not enough deployment descriptor allows to manually specify classes
+                that shall be added to the JAXB context via remoteable-classes element:</para>
+            <programlisting>&lt;remoteable-classes>
+   ...
+   &lt;remotable-class>org.jbpm.test.CustomClass&lt;/remotable-class>
+   &lt;remotable-class>org.jbpm.test.AnotherCustomClass&lt;/remotable-class>
+   ...
+&lt;/remoteable-classes></programlisting>
+            <para>With this all classes can be added to the JAXB context to properly marshal and
+                unmarshal data types when interacting with jBPM remotely.</para>
               </section>
        </section>
-       <section>
-              <section>
-                     <title>Process Deployments</title>
-                     <para>You can access to the Process Deployments List under the Deploy top level menu of the KIE Workbench</para>
-                     <mediaobject>
-                            <imageobject>
-                                   <imagedata align="center" format="PNG" role=""
-                                          fileref="images/RuntimeManagement/process-deployments.png" 
-                                   />
-                            </imageobject>
-                     </mediaobject>
-                     <para>The Deployed Unit list shows all the Process Deployed Units into the
-                            platform that are already enabled to be used. Each deployment unit can
-                            contain multiple business processes and business rules. In order to have your 
-                         process and rules deployed and listed in this list, you need ot Build and Deploy 
-                         your KIE projects from the Authoring Perspective or via the Remote Endpoints. 
-                         If your processes and rules are in a KIE Project listed in this list and you have correspondent the 
-                        rights you should be able to see the process definitions in the Process Definitions Perspective. 
-                         
-                     </para>
-                     <mediaobject>
-                         <imageobject>
-                             <imagedata align="center" format="PNG" role=""
-                                              fileref="images/RuntimeManagement/deployed-unit-list.png"
-                                              width="700"/>
-                         </imageobject>
-                     </mediaobject>
-                     <para>From the Authoring Perspective (Build and Deploy), a default deployment will be performed, 
-                         for a more advanced deployments you can trigger a custom deployment with other
-                         options from this screen. </para>
-                     <mediaobject>
-                         <imageobject>
-                             <imagedata align="center" format="PNG" role=""
-                                              fileref="images/RuntimeManagement/build-and-deploy.png"
-                                              width="700"/>
-                         </imageobject>
-                     </mediaobject>
-                     <para>By clicking the New Deployment Unit (+) button you will be able to 
-                         select a different KIE Base, KIE Session, Strategy and Merge Mode for your deployment. 
-                         By default the "DEFAULT" KIE Base and KIE Sessions are used, the
-                         SINGLETON Strategy is selected and the Merge Mode is set to "Merge Collection". </para>
-                     <mediaobject>
-                         <imageobject>
-                             <imagedata align="center" format="PNG" role=""
-                                              fileref="images/RuntimeManagement/new-deployment.png"
-                                              />
-                         </imageobject>
-                     </mediaobject>
-              </section>
-       </section>
+    <section>
+        <title>Process Deployments</title>
+        <para>You can access to the Process Deployments List under the Deploy top level menu of the
+            KIE Workbench</para>
+        <mediaobject>
+            <imageobject>
+                <imagedata align="center" format="PNG" role=""
+                    fileref="images/RuntimeManagement/process-deployments.png"/>
+            </imageobject>
+        </mediaobject>
+        <para>The Deployed Unit list shows all the Process Deployed Units into the platform that are
+            already enabled to be used. Each deployment unit can contain multiple business processes
+            and business rules. In order to have your process and rules deployed and listed in this
+            list, you need ot Build and Deploy your KIE projects from the Authoring Perspective or
+            via the Remote Endpoints. If your processes and rules are in a KIE Project listed in
+            this list and you have correspondent the rights you should be able to see the process
+            definitions in the Process Definitions Perspective. </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata align="center" format="PNG" role=""
+                    fileref="images/RuntimeManagement/deployed-unit-list.png" width="700"/>
+            </imageobject>
+        </mediaobject>
+        <para>From the Authoring Perspective (Build and Deploy), a default deployment will be
+            performed, for a more advanced deployments you can trigger a custom deployment with
+            other options from this screen. </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata align="center" format="PNG" role=""
+                    fileref="images/RuntimeManagement/build-and-deploy.png" width="700"/>
+            </imageobject>
+        </mediaobject>
+        <para>By clicking the New Deployment Unit (+) button you will be able to select a different
+            KIE Base, KIE Session, Strategy and Merge Mode for your deployment. By default the
+            "DEFAULT" KIE Base and KIE Sessions are used, the SINGLETON Strategy is selected and the
+            Merge Mode is set to "Merge Collection". </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata align="center" format="PNG" role=""
+                    fileref="images/RuntimeManagement/new-deployment.png"/>
+            </imageobject>
+        </mediaobject>
+    </section>
        <section>
            <title>Jobs</title>
            <para>The Jobs perspective allows you to monitor and trigger Asynchronous Jobs schedulled to the jBPM Executor Service.

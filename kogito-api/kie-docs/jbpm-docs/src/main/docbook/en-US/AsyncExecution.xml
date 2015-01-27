@@ -477,11 +477,61 @@ public class ExecutionResults implements Serializable {
           </listitem>
 
           <listitem>
-            <para>org.kie.executor.interval = Integer - allows to specify
-            interval (in seconds) that executor will use while checking for
-            waiting jobs where default is 3 seconds</para>
+            <para>org.kie.executor.interval = Integer - allows to specify interval (in seconds) that
+              executor will use while checking for waiting jobs where default is 3 seconds</para>
+          </listitem>
+          <listitem>
+            <para>org.kie.executor.timeunit = String - allows to specify timer unit used for
+              calculating interval, value must be a valid constant of java.util.concurrent.TimeUnit,
+              by default it's SECONDS.</para>
           </listitem>
         </itemizedlist>
+      </section>
+      <section>
+        <title>Reoccurring jobs</title>
+        <para>jbpm executor introduced (in verion 6.2) extension to jobs (aka commands) that allow
+          single job to be executed multiple times. That feature is brought to the executor via
+          additional interface that command should implement.</para>
+        <programlisting>
+/**
+ * Marks given executor command it is reoccurring and shall be rescheduled after completion of single instance.
+ *
+ */
+public interface Reoccurring {
+
+	/**
+	 * Returns next time to be scheduled. Date must be in future as jobs cannot be scheduled in past.
+	 * Returns null in case it should not be scheduled any more.
+	 * @return
+	 */
+	Date getScheduleTime();
+}</programlisting>
+        <para>Reoccurring interface is very simple and enforces implementation to provide the next
+          schedule time that the command should be executed at. It must already be valid date that
+          is not in the past. In case no more invocation of given command should happen return value
+          of this method should be null.</para>
+        <para>An excellent example of such command is org.jbpm.executor.commands.LogCleanupCommand
+          that provides easy and convineint way to schedule periodic clean up of jBPM log tables on
+          defined time intervals. See <link
+            xlink:href="http://mswiderski.blogspot.com/2014/12/keep-your-jbpm-environment-healthy.html"
+            >this article</link> to see it in action and how to configure and run it.</para>
+      </section>
+      <section>
+        <title>Run jobs on same server node on which it was scheduled</title>
+        <para>By default jbpm executor is cluster ready and by that will distribute jobs across all
+          cluster members. That might result in execution of given job on different cluster member
+          than it was scheduled which is not always desired. To override this mechanism job can set
+          'Owner' as part of their data when being registered wher owner is the executor instance
+          that is scheduling the job.</para>
+        <programlisting>
+ CommandContext ctx = new CommandContext();
+ ctx.setData("some data", "data...");
+ ctx.setData("Retries", 0);
+ ctx.setData("Owner", ExecutorService.EXECUTOR_ID);
+</programlisting>
+        <para>That will ensure that only the isntance that scheduled the job will be the one which
+          will execute it. Note that it might impact the time when the job is executed especially in
+          cases where given cluster member will be unavailable.</para>
       </section>
     </section>
   </section>
