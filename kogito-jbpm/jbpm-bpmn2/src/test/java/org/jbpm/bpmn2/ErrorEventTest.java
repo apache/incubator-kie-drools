@@ -183,6 +183,62 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
         assertEquals(1, executednodes.size());
 
     }
+    
+    @Test
+    public void testEventSubprocessErrorWithErrorCode() throws Exception {
+        KieBase kbase = createKnowledgeBase("subprocess/EventSubprocessErrorHandlingWithErrorCode.bpmn2");
+        final List<Long> executednodes = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName()
+                        .equals("Script2")) {
+                    executednodes.add(event.getNodeInstance().getId());
+                }
+            }
+
+        };
+        ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(listener);
+
+        ProcessInstance processInstance = ksession.startProcess("order-fulfillment-bpm.ccc");
+
+        assertProcessInstanceFinished(processInstance, ksession);
+        assertNodeTriggered(processInstance.getId(), "start", "Script1",
+                "starterror", "Script2", "end2", "eventsubprocess");
+        assertProcessVarValue(processInstance, "CapturedException", "java.lang.RuntimeException: XXX");
+        assertEquals(1, executednodes.size());
+
+    }
+    
+    @Test
+    public void testEventSubprocessErrorWithOutErrorCode() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("subprocess/EventSubprocessErrorHandlingWithOutErrorCode.bpmn2");
+        final List<Long> executednodes = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName()
+                        .equals("Script2")) {
+                    executednodes.add(event.getNodeInstance().getId());
+                }
+            }
+
+        };
+        ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(listener);
+
+        ProcessInstance processInstance = ksession.startProcess("order-fulfillment-bpm.ccc");
+
+        assertProcessInstanceFinished(processInstance, ksession);
+        assertNodeTriggered(processInstance.getId(), "start", "Script1",
+                "starterror", "Script2", "end2", "eventsubprocess");
+        assertProcessVarValue(processInstance, "CapturedException", "java.lang.RuntimeException: XXX");
+        assertEquals(1, executednodes.size());
+
+    }
 
     @Test
     public void testErrorBoundaryEvent() throws Exception {

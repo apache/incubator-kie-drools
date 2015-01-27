@@ -780,6 +780,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 
                                         String type = ((EventTypeFilter) filter).getType();
                                         if (type.startsWith("Error-") || type.startsWith("Escalation")) {
+                                        	String faultCode = (String) subNode.getMetaData().get("FaultCode");
                                             String replaceRegExp = "Error-|Escalation-";
                                             final String signalType = type;
 
@@ -789,10 +790,21 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                                                 ((ContextContainer) eventSubProcessNode.getNodeContainer()).addContext(exceptionScope);
                                                 ((ContextContainer) eventSubProcessNode.getNodeContainer()).setDefaultContext(exceptionScope);
                                             }
+                                            String faultVariable = null;
+                                            if (trigger.getInAssociations() != null && !trigger.getInAssociations().isEmpty()) {
+                                            	faultVariable = trigger.getInAssociations().get(0).getTarget();
+                                            }
+                                            
                                             ActionExceptionHandler exceptionHandler = new ActionExceptionHandler();
-                                            DroolsConsequenceAction action = new DroolsConsequenceAction("java", PROCESS_INSTANCE_SIGNAL_EVENT + signalType+"\", null);");
+                                            DroolsConsequenceAction action = new DroolsConsequenceAction("java", PROCESS_INSTANCE_SIGNAL_EVENT + signalType+"\", "
+                                            																+(faultVariable==null?"null":"kcontext.getVariable(\""+faultVariable+"\")")+");");
                                             exceptionHandler.setAction(action);
-                                            exceptionScope.setExceptionHandler(type.replaceFirst(replaceRegExp, ""), exceptionHandler);
+                                            exceptionHandler.setFaultVariable(faultVariable);
+                                            if (faultCode != null) {
+                                            	exceptionScope.setExceptionHandler(type.replaceFirst(replaceRegExp, ""), exceptionHandler);
+                                            } else {
+                                            	exceptionScope.setExceptionHandler(faultCode, exceptionHandler);
+                                            }
                                         } else if( type.equals("Compensation") ) { 
                                             // 1. Find the parent sub-process to this event sub-process
                                             NodeContainer parentSubProcess;  
