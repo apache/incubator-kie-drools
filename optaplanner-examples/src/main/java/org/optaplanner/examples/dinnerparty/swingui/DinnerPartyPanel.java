@@ -228,8 +228,8 @@ public class DinnerPartyPanel extends SolutionPanel {
         public void actionPerformed(ActionEvent e) {
             List<SeatDesignation> seatDesignationList = getDinnerParty().getSeatDesignationList();
             // Add 1 to array size to add null, which makes the entity unassigned
-            JComboBox<SeatDesignation> seatDesignationListField = new JComboBox<SeatDesignation>(
-                    seatDesignationList.toArray(new SeatDesignation[seatDesignationList.size() + 1]));
+            JComboBox seatDesignationListField = new JComboBox(
+                    seatDesignationList.toArray(new Object[seatDesignationList.size() + 1]));
             seatDesignationListField.setRenderer(new LabeledComboBoxRenderer());
             seatDesignationListField.setSelectedItem(seatDesignation);
             int result = JOptionPane.showConfirmDialog(DinnerPartyPanel.this.getRootPane(), seatDesignationListField,

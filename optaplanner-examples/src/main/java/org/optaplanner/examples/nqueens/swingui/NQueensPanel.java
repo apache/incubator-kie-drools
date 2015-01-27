@@ -111,8 +111,8 @@ public class NQueensPanel extends SolutionPanel {
             messagePanel.add(new JLabel("Move to row: "), BorderLayout.WEST);
             List<Row> rowList = getNQueens().getRowList();
             // Add 1 to array size to add null, which makes the entity unassigned
-            JComboBox<Row> rowListField = new JComboBox<Row>(
-                    rowList.toArray(new Row[rowList.size() + 1]));
+            JComboBox rowListField = new JComboBox(
+                    rowList.toArray(new Object[rowList.size() + 1]));
             rowListField.setRenderer(new LabeledComboBoxRenderer());
             rowListField.setSelectedItem(queen.getRow());
             messagePanel.add(rowListField, BorderLayout.CENTER);

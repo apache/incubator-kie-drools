@@ -167,8 +167,8 @@ public class TravelingTournamentPanel extends SolutionPanel {
             // TODO this allows the user to put the TTP in an inconsistent state, from which the solver cannot start
             List<Day> dayList = getTravelingTournament().getDayList();
             // Add 1 to array size to add null, which makes the entity unassigned
-            JComboBox<Day> dayListField = new JComboBox<Day>(
-                    dayList.toArray(new Day[dayList.size() + 1]));
+            JComboBox dayListField = new JComboBox(
+                    dayList.toArray(new Object[dayList.size() + 1]));
             dayListField.setRenderer(new LabeledComboBoxRenderer());
             dayListField.setSelectedItem(match.getDay());
             int result = JOptionPane.showConfirmDialog(TravelingTournamentPanel.this.getRootPane(), dayListField,
