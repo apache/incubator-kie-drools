@@ -115,9 +115,9 @@
 
       <para>These various parts of a configuration are explained further in this manual.</para>
 
-      <para><emphasis role="bold">Planner makes it relatively easy to switch optimization algorithm(s) just by
-      changing the configuration.</emphasis> There's even a <literal>Benchmarker</literal> utility which allows you to
-      play out different configurations against each other and report the most appropriate configuration for your use
+      <para><emphasis role="bold">Planner makes it relatively easy to switch optimization algorithm(s) just by changing
+      the configuration.</emphasis> There's even a <literal>Benchmarker</literal> utility which allows you to play out
+      different configurations against each other and report the most appropriate configuration for your use
       case.</para>
     </section>
 
@@ -1047,8 +1047,9 @@ public class Customer {
           planning variables.</para>
         </note>
 
-        <para>For example, the <literal>VehicleUpdatingVariableListener</literal> assures that every <literal>Customer</literal> in a chain
-        has the same <literal>Vehicle</literal>, namely the chain's anchor.</para>
+        <para>For example, the <literal>VehicleUpdatingVariableListener</literal> assures that every
+        <literal>Customer</literal> in a chain has the same <literal>Vehicle</literal>, namely the chain's
+        anchor.</para>
 
         <programlisting language="java">public class VehicleUpdatingVariableListener implements VariableListener&lt;Customer&gt; {
 
@@ -1330,8 +1331,8 @@ public class SeatDesignationDependency {
         <section>
           <title>Custom cloning: Make <literal>Solution</literal> implement <literal>PlanningCloneable</literal></title>
 
-          <para>If your <literal>Solution</literal> implements <literal>PlanningCloneable</literal>, Planner will automatically choose to clone it by calling
-          the <literal>planningClone()</literal> method.</para>
+          <para>If your <literal>Solution</literal> implements <literal>PlanningCloneable</literal>, Planner will
+          automatically choose to clone it by calling the <literal>planningClone()</literal> method.</para>
 
           <programlisting language="java">public interface PlanningCloneable&lt;T&gt; {
 
@@ -1545,7 +1546,7 @@ public class SeatDesignationDependency {
       random numbers, while tabu search only depends on it to deal with score ties. The environment mode influences the
       seed of that <literal>Random</literal> instance.</para>
 
-      <para>There are 4 environment modes:</para>
+      <para>These are the environment modes:</para>
 
       <section>
         <title>FULL_ASSERT</title>

@@ -1197,6 +1197,12 @@
       values or swapping nearby entities can <emphasis role="bold">heavily increase scalability</emphasis> and improve
       solution quality.</para>
 
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/nearbySelectionMotivation.png"/>
+        </imageobject>
+      </mediaobject>
+
       <para>Nearby selection increases the probability of selecting an entity or value which is nearby to the first
       entity being moved in that move.</para>
 
