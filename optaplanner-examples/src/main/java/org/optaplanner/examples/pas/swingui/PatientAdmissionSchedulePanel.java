@@ -39,6 +39,7 @@ import javax.swing.SwingConstants;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.pas.domain.AdmissionPart;
 import org.optaplanner.examples.pas.domain.Bed;
@@ -145,7 +146,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
                         createHeaderPanel(roomLabel));
                 for (Bed bed : bedList) {
                     timeTablePanel.addRowHeader(HEADER_COLUMN, bed,
-                            createHeaderPanel(new JLabel(bed.getLabel(), SwingConstants.RIGHT)));
+                            createHeaderPanel(new JLabel(bed.getLabelInRoom(), SwingConstants.RIGHT)));
                 }
             }
         }
@@ -183,10 +184,10 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
         public void actionPerformed(ActionEvent e) {
             JPanel listFieldsPanel = new JPanel(new GridLayout(2, 1));
             List<Bed> bedList = getPatientAdmissionSchedule().getBedList();
-            List<Bed> bedListWithNull = new ArrayList<Bed>(bedList.size() + 1);
-            bedListWithNull.add(null);
-            bedListWithNull.addAll(bedList);
-            JComboBox bedListField = new JComboBox(bedListWithNull.toArray());
+            // Add 1 to array size to add null, which makes the entity unassigned
+            JComboBox<Bed> bedListField = new JComboBox<Bed>(
+                    bedList.toArray(new Bed[bedList.size() + 1]));
+            bedListField.setRenderer(new LabeledComboBoxRenderer());
             bedListField.setSelectedItem(bedDesignation.getBed());
             listFieldsPanel.add(bedListField);
             int result = JOptionPane.showConfirmDialog(PatientAdmissionSchedulePanel.this.getRootPane(),

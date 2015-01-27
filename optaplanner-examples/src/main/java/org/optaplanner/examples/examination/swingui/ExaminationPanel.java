@@ -41,6 +41,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;
@@ -236,12 +237,18 @@ public class ExaminationPanel extends SolutionPanel {
             JPanel listFieldsPanel = new JPanel(new GridLayout(2, 2));
             listFieldsPanel.add(new JLabel("Period:"));
             List<Period> periodList = getExamination().getPeriodList();
-            JComboBox periodListField = new JComboBox(periodList.toArray());
+            // Add 1 to array size to add null, which makes the entity unassigned
+            JComboBox<Period> periodListField = new JComboBox<Period>(
+                    periodList.toArray(new Period[periodList.size() + 1]));
+            periodListField.setRenderer(new LabeledComboBoxRenderer());
             periodListField.setSelectedItem(exam.getPeriod());
             listFieldsPanel.add(periodListField);
             listFieldsPanel.add(new JLabel("Room:"));
             List<Room> roomList = getExamination().getRoomList();
-            JComboBox roomListField = new JComboBox(roomList.toArray());
+            // Add 1 to array size to add null, which makes the entity unassigned
+            JComboBox<Room> roomListField = new JComboBox<Room>(
+                    roomList.toArray(new Room[roomList.size() + 1]));
+            roomListField.setRenderer(new LabeledComboBoxRenderer());
             roomListField.setSelectedItem(exam.getRoom());
             listFieldsPanel.add(roomListField);
             int result = JOptionPane.showConfirmDialog(ExaminationPanel.this.getRootPane(), listFieldsPanel,

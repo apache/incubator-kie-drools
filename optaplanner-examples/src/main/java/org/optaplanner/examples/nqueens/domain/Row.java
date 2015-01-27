@@ -18,9 +18,10 @@ package org.optaplanner.examples.nqueens.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 
 @XStreamAlias("Row")
-public class Row extends AbstractPersistable {
+public class Row extends AbstractPersistable implements Labeled {
 
     private int index;
 
@@ -30,6 +31,11 @@ public class Row extends AbstractPersistable {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    @Override
+    public String getLabel() {
+        return "Row " + index;
     }
 
     @Override

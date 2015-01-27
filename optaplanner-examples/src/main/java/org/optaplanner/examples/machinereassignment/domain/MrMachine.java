@@ -21,9 +21,10 @@ import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 
 @XStreamAlias("MrMachine")
-public class MrMachine extends AbstractPersistable {
+public class MrMachine extends AbstractPersistable implements Labeled {
 
     private MrNeighborhood neighborhood;
     private MrLocation location;

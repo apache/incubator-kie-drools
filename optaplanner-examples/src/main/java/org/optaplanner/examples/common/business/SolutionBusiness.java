@@ -18,6 +18,7 @@ package org.optaplanner.examples.common.business;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.SwingUtilities;
@@ -29,10 +30,14 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedChangeMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedSwapMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
@@ -302,8 +307,9 @@ public class SolutionBusiness {
     }
 
     public ChangeMove createChangeMove(Object entity, String variableName, Object toPlanningValue) {
-        GenuineVariableDescriptor variableDescriptor = ((InnerScoreDirector) guiScoreDirector).getSolutionDescriptor()
-                .findGenuineVariableDescriptorOrFail(entity, variableName);
+        SolutionDescriptor solutionDescriptor = ((InnerScoreDirector) guiScoreDirector).getSolutionDescriptor();
+        GenuineVariableDescriptor variableDescriptor = solutionDescriptor.findGenuineVariableDescriptorOrFail(
+                entity, variableName);
         if (variableDescriptor.isChained()) {
             return new ChainedChangeMove(entity, variableDescriptor, toPlanningValue);
         } else {
@@ -313,6 +319,22 @@ public class SolutionBusiness {
 
     public void doChangeMove(Object entity, String variableName, Object toPlanningValue) {
         ChangeMove move = createChangeMove(entity, variableName, toPlanningValue);
+        doMove(move);
+    }
+
+    public SwapMove createSwapMove(Object leftEntity, Object rightEntity) {
+        SolutionDescriptor solutionDescriptor = ((InnerScoreDirector) guiScoreDirector).getSolutionDescriptor();
+        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptor(leftEntity.getClass());
+        Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
+        if (entityDescriptor.hasAnyChainedGenuineVariables()) {
+            return new ChainedSwapMove(variableDescriptors, leftEntity, rightEntity);
+        } else {
+            return new SwapMove(variableDescriptors, leftEntity, rightEntity);
+        }
+    }
+
+    public void doSwapMove(Object leftEntity, Object rightEntity) {
+        SwapMove move = createSwapMove(leftEntity, rightEntity);
         doMove(move);
     }
 

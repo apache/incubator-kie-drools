@@ -18,9 +18,10 @@ package org.optaplanner.examples.pas.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 
 @XStreamAlias("Bed")
-public class Bed extends AbstractPersistable {
+public class Bed extends AbstractPersistable implements Labeled {
 
     private Room room;
     private int indexInRoom;
@@ -41,11 +42,16 @@ public class Bed extends AbstractPersistable {
         this.indexInRoom = indexInRoom;
     }
 
-    public String getLabel() {
+    public String getLabelInRoom() {
         if (indexInRoom > 'Z') {
             return Integer.toString(indexInRoom);
         }
         return Character.toString((char) ('A' + indexInRoom));
+    }
+
+    @Override
+    public String getLabel() {
+        return room.getDepartment().getName() + " " + room.getName() + " " + getLabelInRoom();
     }
 
     @Override

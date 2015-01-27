@@ -71,6 +71,10 @@ public class Guest extends AbstractPersistable {
         this.hobbyPracticianList = hobbyPracticianList;
     }
 
+    public String getLabel() {
+        return name;
+    }
+
     @Override
     public String toString() {
         return code + "(" + job + "," + gender.getCode() + ")";

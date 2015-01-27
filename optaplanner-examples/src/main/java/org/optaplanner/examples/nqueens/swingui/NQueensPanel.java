@@ -35,6 +35,7 @@ import javax.swing.JPanel;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;
@@ -106,10 +107,13 @@ public class NQueensPanel extends SolutionPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            List<Row> rowList = getNQueens().getRowList();
             JPanel messagePanel = new JPanel(new BorderLayout());
             messagePanel.add(new JLabel("Move to row: "), BorderLayout.WEST);
-            JComboBox rowListField = new JComboBox(rowList.toArray());
+            List<Row> rowList = getNQueens().getRowList();
+            // Add 1 to array size to add null, which makes the entity unassigned
+            JComboBox<Row> rowListField = new JComboBox<Row>(
+                    rowList.toArray(new Row[rowList.size() + 1]));
+            rowListField.setRenderer(new LabeledComboBoxRenderer());
             rowListField.setSelectedItem(queen.getRow());
             messagePanel.add(rowListField, BorderLayout.CENTER);
             int result = JOptionPane.showConfirmDialog(NQueensPanel.this.getRootPane(), messagePanel,

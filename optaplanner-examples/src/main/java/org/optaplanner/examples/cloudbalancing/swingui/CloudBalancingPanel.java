@@ -45,6 +45,7 @@ import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 
 public class CloudBalancingPanel extends SolutionPanel {
 
@@ -352,8 +353,11 @@ public class CloudBalancingPanel extends SolutionPanel {
         public void actionPerformed(ActionEvent e) {
             JPanel listFieldsPanel = new JPanel(new GridLayout(1, 2));
             listFieldsPanel.add(new JLabel("Computer:"));
-            List<CloudComputer> periodList = getCloudBalance().getComputerList();
-            JComboBox computerListField = new JComboBox(periodList.toArray());
+            List<CloudComputer> computerList = getCloudBalance().getComputerList();
+            // Add 1 to array size to add null, which makes the entity unassigned
+            JComboBox<CloudComputer> computerListField = new JComboBox<CloudComputer>(
+                    computerList.toArray(new CloudComputer[computerList.size() + 1]));
+            computerListField.setRenderer(new LabeledComboBoxRenderer());
             computerListField.setSelectedItem(process.getComputer());
             listFieldsPanel.add(computerListField);
             int result = JOptionPane.showConfirmDialog(CloudBalancingPanel.this.getRootPane(), listFieldsPanel,

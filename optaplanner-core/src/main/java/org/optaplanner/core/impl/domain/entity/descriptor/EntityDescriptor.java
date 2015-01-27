@@ -384,6 +384,15 @@ public class EntityDescriptor {
 
     }
 
+    public boolean hasAnyChainedGenuineVariables() {
+        for (GenuineVariableDescriptor variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
+            if (!variableDescriptor.isChained()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // ************************************************************************
     // Extraction methods
     // ************************************************************************

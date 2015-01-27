@@ -18,6 +18,7 @@ package org.optaplanner.examples.tennis.swingui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -32,16 +33,19 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import javax.swing.SwingConstants;
 
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.swingui.CommonIcons;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.tennis.domain.Day;
 import org.optaplanner.examples.tennis.domain.Team;
@@ -266,7 +270,10 @@ public class TennisPanel extends SolutionPanel {
             JPanel listFieldsPanel = new JPanel(new GridLayout(2, 2));
             listFieldsPanel.add(new JLabel("Team:"));
             List<Team> teamList = getTennisSolution().getTeamList();
-            JComboBox teamListField = new JComboBox(teamList.toArray());
+            // Add 1 to array size to add null, which makes the entity unassigned
+            JComboBox<Team> teamListField = new JComboBox<Team>(
+                    teamList.toArray(new Team[teamList.size() + 1]));
+            teamListField.setRenderer(new LabeledComboBoxRenderer());
             teamListField.setSelectedItem(teamAssignment.getTeam());
             listFieldsPanel.add(teamListField);
             listFieldsPanel.add(new JLabel("Locked:"));

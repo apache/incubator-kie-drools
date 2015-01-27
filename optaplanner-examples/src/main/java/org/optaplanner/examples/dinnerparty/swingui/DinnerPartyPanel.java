@@ -39,6 +39,7 @@ import javax.swing.JPanel;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 import org.optaplanner.examples.dinnerparty.domain.Gender;
 import org.optaplanner.examples.dinnerparty.domain.Guest;
@@ -226,16 +227,19 @@ public class DinnerPartyPanel extends SolutionPanel {
 
         public void actionPerformed(ActionEvent e) {
             List<SeatDesignation> seatDesignationList = getDinnerParty().getSeatDesignationList();
-            JComboBox seatDesignationListField = new JComboBox(seatDesignationList.toArray());
+            // Add 1 to array size to add null, which makes the entity unassigned
+            JComboBox<SeatDesignation> seatDesignationListField = new JComboBox<SeatDesignation>(
+                    seatDesignationList.toArray(new SeatDesignation[seatDesignationList.size() + 1]));
+            seatDesignationListField.setRenderer(new LabeledComboBoxRenderer());
             seatDesignationListField.setSelectedItem(seatDesignation);
             int result = JOptionPane.showConfirmDialog(DinnerPartyPanel.this.getRootPane(), seatDesignationListField,
                     "Select seat designation to switch with", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 SeatDesignation switchSeatDesignation = (SeatDesignation) seatDesignationListField.getSelectedItem();
-                // TODO FIXME
-                throw new UnsupportedOperationException();
-//                solutionBusiness.doMove(new SwapMove(seatDesignation, switchSeatDesignation));
-//                solverAndPersistenceFrame.resetScreen();
+                if (seatDesignation != switchSeatDesignation) {
+                    solutionBusiness.doSwapMove(seatDesignation, switchSeatDesignation);
+                }
+                solverAndPersistenceFrame.resetScreen();
             }
         }
 

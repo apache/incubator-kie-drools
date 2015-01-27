@@ -35,6 +35,7 @@ import javax.swing.SwingConstants;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.travelingtournament.domain.Day;
 import org.optaplanner.examples.travelingtournament.domain.Match;
@@ -165,7 +166,10 @@ public class TravelingTournamentPanel extends SolutionPanel {
         public void actionPerformed(ActionEvent e) {
             // TODO this allows the user to put the TTP in an inconsistent state, from which the solver cannot start
             List<Day> dayList = getTravelingTournament().getDayList();
-            JComboBox dayListField = new JComboBox(dayList.toArray());
+            // Add 1 to array size to add null, which makes the entity unassigned
+            JComboBox<Day> dayListField = new JComboBox<Day>(
+                    dayList.toArray(new Day[dayList.size() + 1]));
+            dayListField.setRenderer(new LabeledComboBoxRenderer());
             dayListField.setSelectedItem(match.getDay());
             int result = JOptionPane.showConfirmDialog(TravelingTournamentPanel.this.getRootPane(), dayListField,
                     "Select day", JOptionPane.OK_CANCEL_OPTION);

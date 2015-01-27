@@ -18,9 +18,10 @@ package org.optaplanner.examples.curriculumcourse.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 
 @XStreamAlias("Room")
-public class Room extends AbstractPersistable {
+public class Room extends AbstractPersistable implements Labeled {
 
     private String code;
     private int capacity;
@@ -47,7 +48,7 @@ public class Room extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return code + " {C" + capacity + "}";
+        return code;
     }
 
 }

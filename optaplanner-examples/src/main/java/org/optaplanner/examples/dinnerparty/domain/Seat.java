@@ -60,13 +60,18 @@ public class Seat extends AbstractPersistable {
         this.rightSeat = rightSeat;
     }
 
+    public Gender getRequiredGender() {
+        return (seatIndexInTable % 2 == 0) ? Gender.MALE : Gender.FEMALE;
+    }
+
+    public String getLabel() {
+        return "Table " + table.getTableIndex() + " seat " + seatIndexInTable;
+    }
+
     @Override
     public String toString() {
         return table + "." + seatIndexInTable;
     }
 
-    public Gender getRequiredGender() {
-        return (seatIndexInTable % 2 == 0) ? Gender.MALE : Gender.FEMALE;
-    }
 
 }

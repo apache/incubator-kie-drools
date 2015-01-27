@@ -20,10 +20,11 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 
 @PlanningEntity
 @XStreamAlias("SeatDesignation")
-public class SeatDesignation extends AbstractPersistable {
+public class SeatDesignation extends AbstractPersistable implements Labeled {
 
     private Guest guest;
     private Seat seat;
@@ -89,6 +90,10 @@ public class SeatDesignation extends AbstractPersistable {
             return false;
         }
         return seat.getLeftSeat() == otherSeatDesignation.seat || seat.getRightSeat() == otherSeatDesignation.seat;
+    }
+
+    public String getLabel() {
+        return guest.getLabel();
     }
 
     @Override

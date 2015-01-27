@@ -18,9 +18,10 @@ package org.optaplanner.examples.examination.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 
 @XStreamAlias("Room")
-public class Room extends AbstractPersistable {
+public class Room extends AbstractPersistable implements Labeled {
 
     private int capacity;
     private int penalty;

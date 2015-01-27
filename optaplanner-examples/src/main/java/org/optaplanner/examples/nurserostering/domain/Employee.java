@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 import org.optaplanner.examples.nurserostering.domain.request.DayOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.DayOnRequest;
@@ -27,7 +28,7 @@ import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
 
 @XStreamAlias("Employee")
-public class Employee extends AbstractPersistable {
+public class Employee extends AbstractPersistable implements Labeled {
 
     private String code;
     private String name;
@@ -100,11 +101,6 @@ public class Employee extends AbstractPersistable {
 
     public String getLabel() {
         return "Employee " + name;
-    }
-
-    @Override
-    public String toString() {
-        return code + "(" + name + ")";
     }
 
 }
