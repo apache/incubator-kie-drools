@@ -17,6 +17,7 @@
 package org.jbpm.services.cdi.producer;
 
 import java.util.HashSet;
+import java.util.List;
 
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.Any;
@@ -70,6 +71,10 @@ public class HumanTaskServiceProducer {
     @Inject
     @Any
     private Instance<TaskLifeCycleEventListener> taskListeners;
+    
+    @Inject
+    @Any
+    private Instance<List<TaskLifeCycleEventListener>> listOfListeners;
 
     @Inject
     @PersistenceUnit(unitName = "org.jbpm.domain")

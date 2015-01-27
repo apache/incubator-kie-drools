@@ -40,6 +40,7 @@ import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.manager.CacheManager;
 import org.kie.internal.runtime.manager.Disposable;
@@ -104,7 +105,8 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
 
 	public abstract void init();
     
-    protected void registerItems(RuntimeEngine runtime) {
+    @SuppressWarnings("unchecked")
+	protected void registerItems(RuntimeEngine runtime) {
         RegisterableItemsFactory factory = environment.getRegisterableItemsFactory();
         // process handlers
         Map<String, WorkItemHandler> handlers = factory.getWorkItemHandlers(runtime);
@@ -135,6 +137,11 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         for (RuleRuntimeEventListener listener : wmListeners) {
             runtime.getKieSession().addEventListener(listener);
         }
+        
+      	// register task listeners if any    	
+    	for (TaskLifeCycleEventListener taskListener : factory.getTaskListeners()) {
+    		((EventService<TaskLifeCycleEventListener>)runtime.getTaskService()).registerTaskEventListener(taskListener);
+    	}
     }
     
     protected void registerDisposeCallback(RuntimeEngine runtime, TransactionSynchronization sync) {

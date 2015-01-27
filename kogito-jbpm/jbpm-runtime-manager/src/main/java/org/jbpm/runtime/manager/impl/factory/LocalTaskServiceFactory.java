@@ -56,11 +56,6 @@ public class LocalTaskServiceFactory implements TaskServiceFactory {
             		.environment(runtimeEnvironment.getEnvironment())
             		.entityManagerFactory(emf)                     
                     .userGroupCallback(runtimeEnvironment.getUserGroupCallback());
-        	// register task listeners if any
-        	RegisterableItemsFactory itemsFactory = runtimeEnvironment.getRegisterableItemsFactory();
-        	for (TaskLifeCycleEventListener taskListener : itemsFactory.getTaskListeners()) {
-        		configurator.listener(taskListener);
-        	}
         	
             TaskService internalTaskService = configurator.getTaskService();
                                   

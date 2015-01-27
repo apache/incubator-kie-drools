@@ -246,4 +246,37 @@ public class NonManagedTaskEventListener implements TaskLifeCycleEventListener {
 
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((ksession == null) ? 0 : ksession.hashCode());
+		result = prime * result
+				+ ((taskService == null) ? 0 : taskService.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NonManagedTaskEventListener other = (NonManagedTaskEventListener) obj;
+		if (ksession == null) {
+			if (other.ksession != null)
+				return false;
+		} else if (!ksession.equals(other.ksession))
+			return false;
+		if (taskService == null) {
+			if (other.taskService != null)
+				return false;
+		} else if (!taskService.equals(other.taskService))
+			return false;
+		return true;
+	}
+
 }
