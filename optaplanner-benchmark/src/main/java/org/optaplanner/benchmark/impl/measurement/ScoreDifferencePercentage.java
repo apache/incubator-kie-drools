@@ -43,7 +43,7 @@ public class ScoreDifferencePercentage implements Serializable {
         return new ScoreDifferencePercentage(percentageLevels);
     }
 
-    private static double calculateScoreDifferencePercentageLevel(double baseLevel, double valueLevel) {
+    protected static double calculateScoreDifferencePercentageLevel(double baseLevel, double valueLevel) {
         double differenceLevel = valueLevel - baseLevel;
         if (baseLevel < 0.0) {
             return differenceLevel / - baseLevel;
