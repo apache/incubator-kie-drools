@@ -165,15 +165,15 @@
             <para><emphasis>Name</emphasis>: The display name of the node.</para>
           </listitem>
           <listitem>
-            <para><emphasis>Timer delay</emphasis>: The delay that the node should 
-            wait before triggering the first time. The expression should be of the form
-            <code>[#d][#h][#m][#s][#[ms]]</code>.  This allows you to specify the number of days,
-            hours, minutes, seconds and milliseconds (which is the default if you don't
-            specify anything).  For example, the expression "1h" will wait one hour
-            before triggering the timer.  The expression could also use #{expr} to
-            dynamically derive the delay based on some process variable.  Expr in this
-            case could be a process variable, or a more complex expression based on a
-            process variable (e.g. myVariable.getValue()).</para>
+            <para><emphasis>Timer delay</emphasis>: The delay that the node should wait before
+            triggering the first time. The expression should be of the form
+              <code>[#d][#h][#m][#s][#[ms]]</code>. This allows you to specify the number of days,
+            hours, minutes, seconds and milliseconds (which is the default if you don't specify
+            anything). For example, the expression "1h" will wait one hour before triggering the
+            timer. The expression could also use #{expr} to dynamically derive the delay based on
+            some process variable. Expr in this case could be a process variable, or a more complex
+            expression based on a process variable (e.g. myVariable.getValue()). It does support
+            CRON like expression as well.</para>
           </listitem>
           <listitem>
             <para><emphasis>Timer period</emphasis>: The period

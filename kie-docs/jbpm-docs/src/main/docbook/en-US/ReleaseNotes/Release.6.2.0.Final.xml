@@ -34,14 +34,20 @@
         </listitem>
         <listitem>
           <para>jbpm-services-ejb-client - ejb client implementation to interact with services over
-            remote ejb invocation - currently JBoss specific implementation available</para>          
+            remote ejb invocation - currently JBoss specific implementation available</para>
+        </listitem>
+        <listitem>
+          <para>jbpm-service-ejb-timer - ejb timer service backed by JEE timer service provided by
+            container</para>
         </listitem>
       </itemizedlist>
     </para>
     <para>jBPM services are intended to be base of execution server (regardless of what framework is
       used to build it up completely) so should be considered as first choice when enbedding jbpm in
       custom applications. With 6.2 capabilities it already provides support for most common
-      frameworks used - CDI, EJB, Spring (should simply rely on core implementation).</para>
+      frameworks used - CDI, EJB, Spring (should simply rely on core implementation). See <link
+        xlink:href="http://mswiderski.blogspot.com/2014/11/cross-framework-services-in-jbpm-62.html"
+        >this article</link> for details and example.</para>
   </section>
   <section>
     <title>Process engine extensions</title>
@@ -56,8 +62,8 @@
       <listitem>
         <para>Life cycle management for work item handlers and event listeners </para>
         <para>Handler and listeners can implement additional interface to be managed by runtime
-          engine, see <link linkend="sec.workitemhandler.overview">work item handler life cycle management</link> for more
-          details.</para>
+          engine, see <link linkend="sec.workitemhandler.overview">work item handler life cycle
+            management</link> for more details.</para>
       </listitem>
       <listitem>
         <para>Deployments are now by default stored in data base (as deployment descriptors) to
@@ -88,29 +94,46 @@
           deployment as soon as they are defined as project dependency. At the same time all classes
           included in project itself are also added to deployment's JAXB context.</para>
       </listitem>
+      <listitem>
+        <para>jbpm executor has been enhanced to provide support for: <itemizedlist>
+            <listitem>
+              <para>requeue failed jobs so they can be executed once the error that caused them to
+                is resolved. </para>
+            </listitem>
+            <listitem>
+              <para>reoccuring jobs that allows single definition to be repeatedly invoked based on
+                time intervals, e.g. daily jobs to clean up history log tables. See <link
+                  xlink:href="http://mswiderski.blogspot.com/2014/12/keep-your-jbpm-environment-healthy.html"
+                  >this article</link> for details and example.</para>
+            </listitem>
+          </itemizedlist></para>
+      </listitem>
+      <listitem>
+        <para>CRON support for intermediate and boundary timer events</para>
+      </listitem>
+      <listitem>
+        <para>Enhanced support for multi instance activities to support completion condition as MVEL
+          expression</para>
+      </listitem>
     </orderedlist>
-    <para>
-    </para>
+    <para> </para>
   </section>
   <section>
     <title>OSGi</title>
-    <para>While a number of core jars were OSGi-ready (in v5 already), a significant number
-    of additional jars were now added to this list, including for example the human task
-    service, the runtime managers, full persistence, etc.  As a result, full core engine
-    functionality is now available on top of OSGi.  Specific extensions and tests showing
-    it in action are available for Apache Karaf and Aries Blueprint (in the droolsjbpm-integration
-    repository).   
-    </para>
+    <para>While a number of core jars were OSGi-ready (in v5 already), a significant number of
+      additional jars were now added to this list, including for example the human task service, the
+      runtime managers, full persistence, etc. As a result, full core engine functionality is now
+      available on top of OSGi. Specific extensions and tests showing it in action are available for
+      Apache Karaf and Aries Blueprint (in the droolsjbpm-integration repository). </para>
   </section>
   <section>
     <title>Camel handler</title>
-    <para>A new out-of-the-box service task has been implemented for using Apache Camel
-    to connect a process to the outside world using some of the numerous Camel endpoint URIs.
-    The service task allows you to for example specify how to pass data to an FTP endpoint
-    by configuring properties such as hostname, port, username, payload, etc. for some
-    common endpoints like (S)FTP, File, JMS, XSLT, etc. but you can use virtually any of the
-    available endpoints by defining the URI yourself (http://camel.apache.org/uris.html).      
-    </para>
+    <para>A new out-of-the-box service task has been implemented for using Apache Camel to connect a
+      process to the outside world using some of the numerous Camel endpoint URIs. The service task
+      allows you to for example specify how to pass data to an FTP endpoint by configuring
+      properties such as hostname, port, username, payload, etc. for some common endpoints like
+      (S)FTP, File, JMS, XSLT, etc. but you can use virtually any of the available endpoints by
+      defining the URI yourself (http://camel.apache.org/uris.html). </para>
   </section>
   <section>
     <title>Form Modeler improvements</title>
@@ -118,12 +141,13 @@
       <para>Support for JavaScript code:</para>
       <itemizedlist>
         <listitem>
-          <para>Added field property on simple fields to allow the user to add JavaScript code on the onchange event.
-            This will allow the user to add richer functionallities on the forms.</para>
+          <para>Added field property on simple fields to allow the user to add JavaScript code on
+            the onchange event. This will allow the user to add richer functionallities on the
+            forms.</para>
         </listitem>
         <listitem>
-          <para>Simplified the autogenerated field id's in order to allow the user to access the inputs directly via
-            JavaScript.</para>
+          <para>Simplified the autogenerated field id's in order to allow the user to access the
+            inputs directly via JavaScript.</para>
         </listitem>
       </itemizedlist>
     </para>
@@ -131,13 +155,15 @@
       <para>New field types:</para>
       <itemizedlist>
         <listitem>
-          <para>Added configurable ComboBox and RadioGroup fields. This new fields types allow the user to add ComboBoxes
-            and Radio Button groups selecting their data source from the list of the Sources registered on the application.</para>
+          <para>Added configurable ComboBox and RadioGroup fields. This new fields types allow the
+            user to add ComboBoxes and Radio Button groups selecting their data source from the list
+            of the Sources registered on the application.</para>
         </listitem>
         <listitem>
-          <para>Added support to simple types Lists (java.util.List&lt;String&gt;, java.util.List&lt;Integer&gt;,
-            java.util.List&lt;Long&gt;...). This fields allow the user to upload multiple basic values (strings, numbers,
-            dates and booleans) storing them on java.util.List</para>
+          <para>Added support to simple types Lists (java.util.List&lt;String&gt;,
+            java.util.List&lt;Integer&gt;, java.util.List&lt;Long&gt;...). This fields allow the
+            user to upload multiple basic values (strings, numbers, dates and booleans) storing them
+            on java.util.List</para>
         </listitem>
       </itemizedlist>
     </para>
