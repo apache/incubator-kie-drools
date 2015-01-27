@@ -43,7 +43,7 @@ public class Period extends AbstractPersistable implements Labeled {
     }
 
     public String getLabel() {
-        return day.getLabel() + "-" + timeslot.getLabel();
+        return day.getLabel() + " " + timeslot.getLabel();
     }
 
     @Override

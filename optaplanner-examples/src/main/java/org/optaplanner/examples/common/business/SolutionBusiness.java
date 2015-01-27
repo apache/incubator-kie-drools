@@ -279,6 +279,7 @@ public class SolutionBusiness {
         }
         logger.info("Doing user move ({}).", move);
         move.doMove(guiScoreDirector);
+        guiScoreDirector.calculateScore();
     }
 
     public void doProblemFactChange(ProblemFactChange problemFactChange) {
