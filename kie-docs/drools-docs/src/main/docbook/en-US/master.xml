@@ -12,7 +12,7 @@
     <releaseinfo>Version &project.version;</releaseinfo>
     <authorgroup>
       <author>
-        <orgname><link xlink:href="http://www.jboss.org/drools/team.html">The JBoss Drools team</link></orgname>
+        <orgname><link xlink:href="http://www.drools.org/community/team.html">The JBoss Drools team</link></orgname>
       </author>
     </authorgroup>
     <cover>
