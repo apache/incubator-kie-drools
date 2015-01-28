@@ -618,3 +618,52 @@
         add constraint FK61F475A5F510CB46 
         foreign key (TaskData_Comments_Id) 
         references Task;
+
+        
+        create index IDX_Attachment_Id ON Attachment(TaskData_Attachments_Id);    
+    create index IDX_EventTypes_Id ON EventTypes(InstanceId);
+    create index IDX_I18NText_Subj on I18NText(Task_Subjects_Id);
+    create index IDX_I18NText_Name on I18NText(Task_Names_Id);
+    create index IDX_I18NText_Descr on I18NText(Task_Descriptions_Id);
+    create index IDX_I18NText_Notif on I18NText(Notification_Documentation_Id);
+    create index IDX_PA_PotOwners_TaskId on PeopleAssignments_PotOwners(task_id);
+    
+    create index IDX_Task_processInstanceId on Task(processInstanceId);
+    create index IDX_Task_processId on Task(processId);
+    create index IDX_Task_status on Task(status);
+    create index IDX_Task_archived on Task(archived);
+    create index IDX_Task_workItemId on Task(workItemId);
+    
+    create index IDX_EventTypes_element ON EventTypes(element);
+
+    create index IDX_CMI_Context ON ContextMappingInfo(CONTEXT_ID);    
+    create index IDX_CMI_KSession ON ContextMappingInfo(KSESSION_ID);    
+    create index IDX_CMI_Owner ON ContextMappingInfo(OWNER_ID);
+    
+    create index IND_RequestInfo_status ON RequestInfo(status);
+    create index IND_RequestInfo_timestamp ON RequestInfo(timestamp);
+    create index IND_RequestInfo_owner ON RequestInfo(owner);
+    
+    create index IDX_BAMTaskSumm_createdDate on BAMTaskSummary(createdDate);
+    create index IDX_BAMTaskSumm_duration on BAMTaskSummary(duration);
+    create index IDX_BAMTaskSumm_endDate on BAMTaskSummary(endDate);
+    create index IDX_BAMTaskSumm_pInstId on BAMTaskSummary(processInstanceId);
+    create index IDX_BAMTaskSumm_startDate on BAMTaskSummary(startDate);
+    create index IDX_BAMTaskSumm_status on BAMTaskSummary(status);
+    create index IDX_BAMTaskSumm_taskId on BAMTaskSummary(taskId);
+    create index IDX_BAMTaskSumm_taskName on BAMTaskSummary(taskName);
+    create index IDX_BAMTaskSumm_userId on BAMTaskSummary(userId);
+    
+    create index IDX_PInstLog_duration on ProcessInstanceLog(duration);
+    create index IDX_PInstLog_end_date on ProcessInstanceLog(end_date);
+    create index IDX_PInstLog_extId on ProcessInstanceLog(externalId);
+    create index IDX_PInstLog_user_identity on ProcessInstanceLog(user_identity);
+    create index IDX_PInstLog_outcome on ProcessInstanceLog(outcome);
+    create index IDX_PInstLog_parentPInstId on ProcessInstanceLog(parentProcessInstanceId);
+    create index IDX_PInstLog_pId on ProcessInstanceLog(processId);
+    create index IDX_PInstLog_pInsteDescr on ProcessInstanceLog(processInstanceDescription);
+    create index IDX_PInstLog_pInstId on ProcessInstanceLog(processInstanceId);
+    create index IDX_PInstLog_pName on ProcessInstanceLog(processName);
+    create index IDX_PInstLog_pVersion on ProcessInstanceLog(processVersion);
+    create index IDX_PInstLog_start_date on ProcessInstanceLog(start_date);
+    create index IDX_PInstLog_status on ProcessInstanceLog(status);
