@@ -1,9 +1,5 @@
 package org.drools.compiler.rule.builder.dialect.mvel;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -13,12 +9,16 @@ import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELEnabledExpression;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl.SafeEnabled;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.definitions.rule.impl.RuleImpl.SafeEnabled;
 import org.drools.core.spi.KnowledgeHelper;
 import org.kie.internal.security.KiePolicyHelper;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MVELEnabledBuilder
     implements
@@ -75,7 +75,7 @@ public class MVELEnabledBuilder
             data.addCompileable( context.getRule(),
                                  expr );
 
-            expr.compile( data );
+            expr.compile( data, context.getRule() );
         } catch ( final Exception e ) {
             DialectUtil.copyErrorLocation(e, context.getRuleDescr());
             context.addError( new DescrBuildError( context.getParentDescr(),

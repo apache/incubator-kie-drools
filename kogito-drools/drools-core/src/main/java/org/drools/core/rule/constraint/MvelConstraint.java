@@ -11,6 +11,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PropertySpecificUtil;
+import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexEvaluator;
@@ -29,8 +30,8 @@ import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
-import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.MemoryUtil;
+import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.IndexUtil;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
@@ -40,6 +41,7 @@ import org.mvel2.compiler.ExecutableStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -76,6 +78,8 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     private FieldValue fieldValue;
 
     protected MVELCompilationUnit compilationUnit;
+
+    private EvaluationContext evaluationContext = new EvaluationContext();
 
     protected transient volatile ConditionEvaluator conditionEvaluator;
     private transient volatile Condition analyzedCondition;
@@ -229,7 +233,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     protected void createMvelConditionEvaluator(InternalWorkingMemory workingMemory) {
         if (compilationUnit != null) {
             MVELDialectRuntimeData data = getMVELDialectRuntimeData(workingMemory);
-            ExecutableStatement statement = (ExecutableStatement)compilationUnit.getCompiledExpression(data);
+            ExecutableStatement statement = (ExecutableStatement)compilationUnit.getCompiledExpression(data, evaluationContext);
             ParserConfiguration configuration = statement instanceof CompiledExpression ?
                     ((CompiledExpression)statement).getParserConfiguration() :
                     data.getParserConfiguration();
@@ -472,6 +476,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         out.writeBoolean(isDynamic);
         out.writeObject(fieldValue);
         out.writeObject(compilationUnit);
+        out.writeObject(evaluationContext);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -486,6 +491,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         isDynamic = in.readBoolean();
         fieldValue = (FieldValue) in.readObject();
         compilationUnit = (MVELCompilationUnit) in.readObject();
+        evaluationContext = (EvaluationContext) in.readObject();
     }
 
     public boolean isTemporal() {
@@ -746,6 +752,34 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                 return value2 != null && value1.equals(value2.toString());
             }
             return value1.equals( value2 );
+        }
+    }
+
+    public void registerEvaluationContext(BuildContext buildContext) {
+        evaluationContext.addContext(buildContext);
+    }
+
+    public static class EvaluationContext implements Externalizable {
+
+        private Collection<String> evaluatedRules = new HashSet<String>();
+
+        public void addContext(BuildContext buildContext) {
+            evaluatedRules.add(buildContext.getRule().toRuleNameAndPathString());
+        }
+
+        @Override
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(evaluatedRules);
+        }
+
+        @Override
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            evaluatedRules = (Collection<String>)in.readObject();
+        }
+
+        @Override
+        public String toString() {
+            return evaluatedRules.toString();
         }
     }
 }

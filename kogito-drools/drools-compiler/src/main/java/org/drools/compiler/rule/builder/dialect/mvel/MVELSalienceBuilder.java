@@ -1,10 +1,5 @@
 package org.drools.compiler.rule.builder.dialect.mvel;
 
-import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
-
-import java.util.Arrays;
-import java.util.Map;
-
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.rule.builder.RuleBuildContext;
@@ -12,12 +7,17 @@ import org.drools.compiler.rule.builder.SalienceBuilder;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl.SafeSalience;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.definitions.rule.impl.RuleImpl.SafeSalience;
 import org.drools.core.spi.KnowledgeHelper;
 import org.kie.internal.security.KiePolicyHelper;
+
+import java.util.Arrays;
+import java.util.Map;
+
+import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
 
 public class MVELSalienceBuilder
     implements
@@ -67,7 +67,7 @@ public class MVELSalienceBuilder
             data.addCompileable( context.getRule(),
                                  expr );
             
-            expr.compile( data );
+            expr.compile( data, context.getRule() );
         } catch ( final Exception e ) {
             copyErrorLocation(e, context.getRuleDescr());
             context.addError( new DescrBuildError( context.getParentDescr(),

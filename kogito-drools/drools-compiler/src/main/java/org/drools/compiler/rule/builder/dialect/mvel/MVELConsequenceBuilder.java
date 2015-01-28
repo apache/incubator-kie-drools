@@ -168,7 +168,7 @@ public class MVELConsequenceBuilder
             data.addCompileable( context.getRule(),
                                  expr );
             
-            expr.compile( data );
+            expr.compile( data, context.getRule() );
         } catch ( final Exception e ) {
             copyErrorLocation(e, context.getRuleDescr());
             context.addError(new DescrBuildError(context.getParentDescr(),

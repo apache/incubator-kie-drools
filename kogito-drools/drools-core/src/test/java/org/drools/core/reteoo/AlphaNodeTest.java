@@ -21,13 +21,10 @@ import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.FieldFactory;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.test.model.Cheese;
-import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.AlphaNode.AlphaMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.MvelConstraintTestUtil;
@@ -35,10 +32,11 @@ import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.DroolsTestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.beans.IntrospectionException;
 
@@ -60,6 +58,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         BuildContext buildContext = new BuildContext( kBase,
                                                       kBase.getReteooBuilder().getIdGenerator() );
+        buildContext.setRule(new RuleImpl("test"));
+
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         final RuleImpl rule = new RuleImpl( "test-rule" );
@@ -134,6 +134,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         BuildContext buildContext = new BuildContext( kBase,
                                                       kBase.getReteooBuilder().getIdGenerator() );
+        buildContext.setRule(new RuleImpl("test"));
+
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         final RuleImpl rule = new RuleImpl( "test-rule" );
@@ -197,6 +199,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         BuildContext buildContext = new BuildContext( kBase,
                                                       kBase.getReteooBuilder().getIdGenerator() );
+        buildContext.setRule(new RuleImpl("test"));
+
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         final RuleImpl rule = new RuleImpl( "test-rule" );

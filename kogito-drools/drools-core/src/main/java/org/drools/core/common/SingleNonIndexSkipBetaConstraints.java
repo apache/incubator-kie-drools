@@ -159,4 +159,10 @@ public class SingleNonIndexSkipBetaConstraints
     public boolean isLeftUpdateOptimizationAllowed() {
         return true;
     }
+
+    public void registerEvaluationContext(BuildContext buildContext) {
+        if (this.constraint instanceof MvelConstraint) {
+            ((MvelConstraint) this.constraint).registerEvaluationContext(buildContext);
+        }
+    }
 }

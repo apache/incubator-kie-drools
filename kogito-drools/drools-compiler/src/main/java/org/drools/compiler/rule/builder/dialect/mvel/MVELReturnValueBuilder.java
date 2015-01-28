@@ -16,22 +16,22 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
-import java.util.Map;
-
-import org.drools.core.base.mvel.MVELCompilationUnit;
-import org.drools.core.base.mvel.MVELReturnValueExpression;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.compiler.rule.builder.ReturnValueBuilder;
+import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
+import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.mvel.MVELReturnValueExpression;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.ReturnValueRestriction;
-import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.spi.KnowledgeHelper;
+
+import java.util.Map;
 
 public class MVELReturnValueBuilder
     implements
@@ -71,7 +71,7 @@ public class MVELReturnValueBuilder
             data.addCompileable( returnValueRestriction,
                                   expr );
             
-            expr.compile( data );
+            expr.compile( data, context.getRule() );
         } catch ( final Exception e ) {
             DialectUtil.copyErrorLocation(e, context.getRuleDescr());
             context.addError( new DescrBuildError( context.getParentDescr(),

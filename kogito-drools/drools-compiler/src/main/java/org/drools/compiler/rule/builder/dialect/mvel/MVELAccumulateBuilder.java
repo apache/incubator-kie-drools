@@ -148,7 +148,7 @@ public class MVELAccumulateBuilder
                 for ( Accumulator accumulator : accumulators ) {
                     data.addCompileable( ((MultiAccumulate)accumulate).new Wirer( index++ ),
                                          (MVELCompileable) accumulator );
-                    ((MVELCompileable) accumulator).compile( data );
+                    ((MVELCompileable) accumulator).compile( data, context.getRule() );
                 }
             } else {
                 accumulate = new SingleAccumulate( source,
@@ -156,7 +156,7 @@ public class MVELAccumulateBuilder
                                                    accumulators[0] );
                     data.addCompileable( ((SingleAccumulate)accumulate).new Wirer( ),
                                          (MVELCompileable) accumulators[0] );
-                    ((MVELCompileable) accumulators[0]).compile( data );
+                    ((MVELCompileable) accumulators[0]).compile( data, context.getRule() );
             }
 
             return accumulate;

@@ -107,7 +107,7 @@ public class MVELEvalBuilder
             data.addCompileable( eval,
                                   expr );
 
-            expr.compile( data );
+            expr.compile( data, context.getRule() );
             return eval;
         } catch ( final Exception e ) {
             copyErrorLocation(e, evalDescr);

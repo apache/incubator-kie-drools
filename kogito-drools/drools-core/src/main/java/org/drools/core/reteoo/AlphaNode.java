@@ -27,7 +27,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.constraint.EvaluatorConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
-import org.drools.core.rule.constraint.NegConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
@@ -90,7 +89,11 @@ public class AlphaNode extends ObjectSource
                context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
                objectSource,
                context.getKnowledgeBase().getConfiguration().getAlphaNodeHashingThreshold() );
+
         this.constraint = constraint.cloneIfInUse();
+        if (this.constraint instanceof MvelConstraint) {
+            ((MvelConstraint) this.constraint).registerEvaluationContext(context);
+        }
 
         initDeclaredMask(context);
         hashcode = calculateHashCode();

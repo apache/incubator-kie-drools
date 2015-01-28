@@ -18,9 +18,9 @@ package org.drools.core.base.mvel;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.spi.Consequence;
@@ -79,6 +79,10 @@ public class MVELConsequence
 
     public void compile(MVELDialectRuntimeData runtimeData) {
         expr = unit.getCompiledExpression( runtimeData );
+    }
+
+    public void compile(MVELDialectRuntimeData runtimeData, RuleImpl rule) {
+        expr = unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() );
     }
 
     public void evaluate(final KnowledgeHelper knowledgeHelper,

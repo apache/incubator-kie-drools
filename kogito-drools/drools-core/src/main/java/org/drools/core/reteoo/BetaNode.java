@@ -134,6 +134,8 @@ public abstract class BetaNode extends LeftTupleSource
             throw new RuntimeException("cannot have null constraints, must at least be an instance of EmptyBetaConstraints");
         }
 
+        this.constraints.registerEvaluationContext(context);
+
         initMasks(context, leftInput);
 
         streamMode = context.isStreamMode() && getObjectTypeNode(context).getObjectType().isEvent();
@@ -489,7 +491,6 @@ public abstract class BetaNode extends LeftTupleSource
         this.constraints = constraints.cloneIfInUse();
     }
     
-
     public void networkUpdated(UpdateContext updateContext) {
         updateContext.startVisitNode( leftInput );
         rightInput.networkUpdated( updateContext );

@@ -16,7 +16,6 @@
 
 package org.drools.core.base.mvel;
 
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.base.ModifyInterceptor;
 import org.drools.core.common.InternalFactHandle;
@@ -201,9 +200,13 @@ public class MVELCompilationUnit
         readLocalsFromTuple = in.readBoolean();
     }    
 
-    public Serializable getCompiledExpression(MVELDialectRuntimeData runtimeData ) {        
+    public Serializable getCompiledExpression(MVELDialectRuntimeData runtimeData) {
+        return getCompiledExpression(runtimeData, null);
+    }
+
+    public Serializable getCompiledExpression(MVELDialectRuntimeData runtimeData, Object evaluationContext) {
         ParserConfiguration conf = runtimeData.getParserConfiguration();
-        final ParserContext parserContext = new ParserContext( conf );
+        final ParserContext parserContext = new ParserContext( conf, evaluationContext );
         if ( MVELDebugHandler.isDebugMode() ) {
             parserContext.setDebugSymbols( true );
         }

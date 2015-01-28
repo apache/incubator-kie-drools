@@ -4,15 +4,18 @@ import org.drools.core.base.ValueType;
 import org.mvel2.compiler.ExecutableStatement;
 
 public interface MVELClassFieldReader {
-    public String getClassName();
+    String getClassName();
     
-    public boolean isTypeSafe();
+    boolean isTypeSafe();
     
-    public String getExpression();
+    String getExpression();
     
-    public void setFieldType(Class< ? > fieldType);
+    void setFieldType(Class< ? > fieldType);
     
-    public void setValueType(ValueType valueType);
+    void setValueType(ValueType valueType);
     
-    public void setExecutableStatement(ExecutableStatement expression);
+    void setExecutableStatement(ExecutableStatement expression);
+
+    Object getEvaluationContext();
+    void setEvaluationContext(Object evaluationContext);
 }

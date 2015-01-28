@@ -16,19 +16,12 @@
 
 package org.drools.core.base.accumulators;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
@@ -36,6 +29,14 @@ import org.drools.core.spi.MvelAccumulator;
 import org.drools.core.spi.Tuple;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * An MVEL accumulator function executor implementation
@@ -77,6 +78,10 @@ public class MVELAccumulatorFunctionExecutor
 
     public void compile(MVELDialectRuntimeData runtimeData) {
         expression = unit.getCompiledExpression( runtimeData );
+    }
+
+    public void compile(MVELDialectRuntimeData runtimeData, RuleImpl rule) {
+        expression = unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() );
     }
 
     /* (non-Javadoc)

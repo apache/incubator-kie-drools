@@ -16,19 +16,20 @@
 
 package org.drools.core.base.extractors;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.core.base.ValueType;
 import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.util.MVELSafeHelper;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExecutableStatement;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /**
  * A class field extractor that uses MVEL engine to extract the actual value for a given
@@ -43,7 +44,7 @@ public class MVELObjectClassFieldReader extends BaseObjectClassFieldReader imple
     private String className;
     private String expr;
     private boolean typesafe;
-    
+    private Object evaluationContext;
 
     public MVELObjectClassFieldReader() {
     }    
@@ -64,6 +65,7 @@ public class MVELObjectClassFieldReader extends BaseObjectClassFieldReader imple
         this.className = ( String ) in.readObject();
         this.expr = ( String ) in.readObject();
         this.typesafe = in.readBoolean();
+        this.evaluationContext = in.readObject();
         setIndex( -1 );
         
         // field (returns) type and value type are set during compile        
@@ -72,7 +74,8 @@ public class MVELObjectClassFieldReader extends BaseObjectClassFieldReader imple
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( this.className );
         out.writeObject( this.expr );
-        out.writeBoolean( this.typesafe );
+        out.writeBoolean(this.typesafe);
+        out.writeObject(this.evaluationContext );
     }
     
     public void setExecutableStatement(ExecutableStatement expression) {
@@ -89,24 +92,35 @@ public class MVELObjectClassFieldReader extends BaseObjectClassFieldReader imple
 
     public String getExpression() {
         return this.expr;
-    }    
+    }
 
+    public Object getEvaluationContext() {
+        return evaluationContext;
+    }
+
+    public void setEvaluationContext(Object evaluationContext) {
+        this.evaluationContext = evaluationContext;
+    }
 
     public void compile(MVELDialectRuntimeData runtimeData) {
-        doCompile(this, runtimeData);
+        doCompile(this, runtimeData, getEvaluationContext());
     }    
-    
-    public static void doCompile(MVELClassFieldReader target, MVELDialectRuntimeData runtimeData) {
+
+    public void compile(MVELDialectRuntimeData runtimeData, RuleImpl rule) {
+        doCompile(this, runtimeData, rule.toRuleNameAndPathString());
+    }
+
+    public static void doCompile(MVELClassFieldReader target, MVELDialectRuntimeData runtimeData, Object evaluationContext) {
         Class cls = null;
         try {            
             cls = runtimeData.getRootClassLoader().loadClass( target.getClassName() );
         } catch ( ClassNotFoundException e ) {
             throw new IllegalStateException( "Unable to compile as Class could not be found '" + target.getClassName() + "'");
         }
-        ParserContext context = new ParserContext(runtimeData.getParserConfiguration());
+        ParserContext context = new ParserContext(runtimeData.getParserConfiguration(), evaluationContext);
         context.addInput( "this", cls );
-        context.setStrongTyping( target.isTypeSafe() );  
-        
+        context.setStrongTyping( target.isTypeSafe() );
+
         MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
         MVEL.COMPILER_OPT_ALLOW_OVERRIDE_ALL_PROPHANDLING = true;
         MVEL.COMPILER_OPT_ALLOW_RESOLVE_INNERCLASSES_WITH_DOTNOTATION = true;
@@ -117,6 +131,7 @@ public class MVELObjectClassFieldReader extends BaseObjectClassFieldReader imple
         target.setExecutableStatement( mvelExpression );
         target.setFieldType( returnType );
         target.setValueType( ValueType.determineValueType( returnType ) );
+        target.setEvaluationContext(evaluationContext);
     } 
 
     /* (non-Javadoc)

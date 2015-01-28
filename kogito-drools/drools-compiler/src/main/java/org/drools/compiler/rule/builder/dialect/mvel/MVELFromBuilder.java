@@ -16,11 +16,6 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import org.drools.core.base.dataproviders.MVELDataProvider;
-import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -28,15 +23,20 @@ import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.MVELExprDescr;
 import org.drools.compiler.rule.builder.FromBuilder;
+import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
+import org.drools.core.base.dataproviders.MVELDataProvider;
+import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.From;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
-import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.spi.KnowledgeHelper;
+
+import java.util.Arrays;
+import java.util.Map;
 
 /**
  * A builder for "from" conditional element
@@ -108,7 +108,7 @@ public class MVELFromBuilder
             data.addCompileable( from,
                                   dataProvider );
             
-            dataProvider.compile( data );
+            dataProvider.compile( data, context.getRule() );
         } catch ( final Exception e ) {
             DialectUtil.copyErrorLocation(e, fromDescr);
             context.addError( new DescrBuildError( context.getParentDescr(),
