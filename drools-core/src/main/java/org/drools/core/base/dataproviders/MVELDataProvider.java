@@ -16,20 +16,12 @@
 
 package org.drools.core.base.dataproviders;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
@@ -39,6 +31,15 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.util.ArrayIterator;
 import org.drools.core.util.MVELSafeHelper;
 import org.mvel2.integration.VariableResolverFactory;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 
 public class MVELDataProvider
     implements
@@ -85,6 +86,10 @@ public class MVELDataProvider
 //        @TODO URGENT DO NOT FORGET!!!!
 //        Map previousDeclarations = this.unit.getFactory().getPreviousDeclarations();
 //        this.requiredDeclarations = (Declaration[]) previousDeclarations.values().toArray( new Declaration[previousDeclarations.size()] );
+    }
+
+    public void compile(MVELDialectRuntimeData runtimeData, RuleImpl rule) {
+        expr = unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() );
     }
 
     public Declaration[] getRequiredDeclarations() {

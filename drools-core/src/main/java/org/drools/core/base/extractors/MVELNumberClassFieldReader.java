@@ -16,16 +16,17 @@
 
 package org.drools.core.base.extractors;
 
+import org.drools.core.base.mvel.MVELCompileable;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.rule.MVELDialectRuntimeData;
+import org.drools.core.util.MVELSafeHelper;
+import org.mvel2.compiler.ExecutableStatement;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-
-import org.drools.core.base.mvel.MVELCompileable;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.util.MVELSafeHelper;
-import org.mvel2.compiler.ExecutableStatement;
 
 /**
  * A class field extractor that uses MVEL engine to extract the actual value for a given
@@ -40,7 +41,7 @@ public class MVELNumberClassFieldReader extends BaseNumberClassFieldReader imple
     private String              className;
     private String              expr;
     private boolean             typesafe;
-    
+    private Object              evaluationContext;
 
     public MVELNumberClassFieldReader() {
     }    
@@ -60,7 +61,8 @@ public class MVELNumberClassFieldReader extends BaseNumberClassFieldReader imple
                                             ClassNotFoundException {
         this.className = ( String ) in.readObject();
         this.expr = ( String ) in.readObject();
-        this.typesafe = in.readBoolean();        
+        this.typesafe = in.readBoolean();
+        this.evaluationContext = in.readObject();
         setIndex( -1 );
         
         // field (returns) type and value type are set during compile        
@@ -68,8 +70,9 @@ public class MVELNumberClassFieldReader extends BaseNumberClassFieldReader imple
     
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( this.className );
-        out.writeObject( this.expr );
-        out.writeBoolean( this.typesafe );
+        out.writeObject(this.expr );
+        out.writeBoolean(this.typesafe);
+        out.writeObject(this.evaluationContext );
     }
     
     public void setExecutableStatement(ExecutableStatement expression) {
@@ -86,13 +89,23 @@ public class MVELNumberClassFieldReader extends BaseNumberClassFieldReader imple
 
     public String getExpression() {
         return this.expr;
-    }    
+    }
 
+    public Object getEvaluationContext() {
+        return evaluationContext;
+    }
+
+    public void setEvaluationContext(Object evaluationContext) {
+        this.evaluationContext = evaluationContext;
+    }
 
     public void compile(MVELDialectRuntimeData runtimeData) {
-        MVELObjectClassFieldReader.doCompile(this, runtimeData);
+        MVELObjectClassFieldReader.doCompile(this, runtimeData, getEvaluationContext());
     }
-   
+
+    public void compile( MVELDialectRuntimeData runtimeData, RuleImpl rule ) {
+        MVELObjectClassFieldReader.doCompile(this, runtimeData, rule.toRuleNameAndPathString());
+    }
 
     /* (non-Javadoc)
      * @see org.kie.base.extractors.BaseObjectClassFieldExtractor#getValue(java.lang.Object)

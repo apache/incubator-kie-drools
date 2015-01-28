@@ -18,6 +18,7 @@ package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
@@ -177,5 +178,17 @@ public class TripleBetaConstraints extends MultipleBetaConstraint {
                                                    .setAll(((MvelConstraint) constraints[2]).getListenedPropertyMask(settableProperties));
         }
         return allSetButTraitBitMask();
+    }
+
+    public void registerEvaluationContext(BuildContext buildContext) {
+        if (constraints[0] instanceof MvelConstraint) {
+            ((MvelConstraint) constraints[0]).registerEvaluationContext(buildContext);
+        }
+        if (constraints[1] instanceof MvelConstraint) {
+            ((MvelConstraint) constraints[1]).registerEvaluationContext(buildContext);
+        }
+        if (constraints[2] instanceof MvelConstraint) {
+            ((MvelConstraint) constraints[2]).registerEvaluationContext(buildContext);
+        }
     }
 }

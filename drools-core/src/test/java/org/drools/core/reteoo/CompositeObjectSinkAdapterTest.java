@@ -27,6 +27,7 @@ import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.MvelConstraintTestUtil;
@@ -62,6 +63,7 @@ public class CompositeObjectSinkAdapterTest {
 
         this.buildContext = new BuildContext( kBase,
                                               kBase.getReteooBuilder().getIdGenerator() );
+        this.buildContext.setRule(new RuleImpl("test"));
     }
 
     public int    la;

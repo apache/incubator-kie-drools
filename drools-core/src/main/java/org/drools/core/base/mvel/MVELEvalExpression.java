@@ -16,15 +16,10 @@
 
 package org.drools.core.base.mvel;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
@@ -32,6 +27,12 @@ import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.Tuple;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
 
 public class MVELEvalExpression
     implements
@@ -68,6 +69,10 @@ public class MVELEvalExpression
 
     public void compile(MVELDialectRuntimeData runtimeData) {
         expr = unit.getCompiledExpression( runtimeData );
+    }
+
+    public void compile( MVELDialectRuntimeData runtimeData, RuleImpl rule ) {
+        expr = unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() );
     }
 
     public Object createContext() {

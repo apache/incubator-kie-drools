@@ -1664,7 +1664,7 @@ public class PatternBuilder
                                                                                       ((MVELAnalysisResult)analysis).getReturnType() );
                 
                 MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
-                ((MVELCompileable) reader).compile( data );
+                ((MVELCompileable) reader).compile( data, context.getRule() );
                 data.addCompileable( (MVELCompileable) reader );
             } catch ( final Exception e ) {
                 int dotPos = fieldName.indexOf('.');

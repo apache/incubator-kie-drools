@@ -40,10 +40,6 @@ public final class MVELDebugHandler {
 
     public static final boolean verbose = false;
 
-    static {
-        MVELRuntime.setThreadDebugger(new MVELDebugger());
-    }
-
     /**
      * Notify remote debugger that runtime is ready to get latest breakpoint
      * information
@@ -117,9 +113,9 @@ public final class MVELDebugHandler {
      */
     public static boolean isDebugMode() {
         if (debugMode==null) {
-            debugMode = Boolean.valueOf(System.getProperty(DEBUG_LAUNCH_KEY));
+            setDebugMode( Boolean.valueOf(System.getProperty(DEBUG_LAUNCH_KEY)) );
         }
-        return debugMode.booleanValue();
+        return debugMode;
     }
 
     /**
@@ -132,6 +128,13 @@ public final class MVELDebugHandler {
      */
     public static void setDebugMode(boolean b) {
         debugMode = Boolean.valueOf( b );
+        if (debugMode) {
+            if (!MVELRuntime.hasDebuggerContext()) {
+                MVELRuntime.setThreadDebugger(new MVELDebugger());
+            }
+        } else {
+            MVELRuntime.resetDebugger();
+        }
         System.setProperty( DEBUG_LAUNCH_KEY, debugMode.toString());
     }
 

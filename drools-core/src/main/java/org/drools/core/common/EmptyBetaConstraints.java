@@ -164,4 +164,6 @@ public class EmptyBetaConstraints
     public boolean isLeftUpdateOptimizationAllowed() {
         return true;
     }
+
+    public void registerEvaluationContext(BuildContext buildContext) { }
 }

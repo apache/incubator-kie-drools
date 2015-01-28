@@ -289,4 +289,12 @@ public class DefaultBetaConstraints
         }
         return true;
     }
+
+    public void registerEvaluationContext(BuildContext buildContext) {
+        for (int i = 0; i < constraints.length; i++) {
+            if (constraints[i] instanceof MvelConstraint) {
+                ((MvelConstraint) constraints[i]).registerEvaluationContext(buildContext);
+            }
+        }
+    }
 }
