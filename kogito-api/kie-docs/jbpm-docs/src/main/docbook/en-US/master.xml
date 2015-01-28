@@ -13,7 +13,7 @@
     <releaseinfo>Version &project.version;</releaseinfo>
     <authorgroup>
       <author>
-        <orgname><link xlink:href="http://www.jboss.org/jbpm">The JBoss jBPM team</link></orgname>
+        <orgname><link xlink:href="http://www.jbpm.org/community/team.html">The JBoss jBPM team</link></orgname>
       </author>
     </authorgroup>
 
