@@ -313,10 +313,14 @@ public class KieBuilderImpl
     }
 
     private static boolean isFileInKieBase(KieBaseModel kieBase, String fileName) {
+        int lastSep = Math.max(0, fileName.lastIndexOf( "/" ));
+        if (lastSep+1 < fileName.length() && fileName.charAt(lastSep+1) == '.') {
+            // skip dot files
+            return false;
+        }
         if ( kieBase.getPackages().isEmpty() ) {
             return true;
         } else {
-            int lastSep = fileName.lastIndexOf( "/" );
             String pkgNameForFile = lastSep > 0 ? fileName.substring( 0, lastSep ) : fileName;
             pkgNameForFile = pkgNameForFile.replace( '/', '.' );
             for ( String pkgName : kieBase.getPackages() ) {
