@@ -38,13 +38,13 @@ public class SingleBetaConstraints
     implements
     BetaConstraints {
 
-    private static final long             serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
-    protected BetaNodeFieldConstraint     constraint;
+    protected BetaNodeFieldConstraint constraint;
 
-    private boolean                       indexed;
+    private boolean indexed;
 
-    private transient boolean             disableIndex;
+    private transient boolean disableIndex;
 
     public SingleBetaConstraints() {
 
@@ -52,16 +52,16 @@ public class SingleBetaConstraints
 
     public SingleBetaConstraints(final BetaNodeFieldConstraint[] constraint,
                                  final RuleBaseConfiguration conf) {
-        this( constraint[0],
-              conf,
-              false );
+        this(constraint[0],
+             conf,
+             false);
     }
 
     public SingleBetaConstraints(final BetaNodeFieldConstraint constraint,
                                  final RuleBaseConfiguration conf) {
-        this( constraint,
-              conf,
-              false );
+        this(constraint,
+             conf,
+             false);
     }
 
     public SingleBetaConstraints(final BetaNodeFieldConstraint constraint,
@@ -74,7 +74,7 @@ public class SingleBetaConstraints
     public void init(BuildContext context, short betaNodeType) {
         RuleBaseConfiguration config = context.getKnowledgeBase().getConfiguration();
 
-        if ( (disableIndex) || (!config.isIndexLeftBetaMemory() && !config.isIndexRightBetaMemory()) ) {
+        if ((disableIndex) || (!config.isIndexLeftBetaMemory() && !config.isIndexRightBetaMemory())) {
             this.indexed = false;
         } else {
             initIndexes(config.getCompositeKeyDepth(), betaNodeType);
@@ -86,8 +86,8 @@ public class SingleBetaConstraints
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        constraint  = (BetaNodeFieldConstraint)in.readObject();
-        indexed     = in.readBoolean();
+        constraint = (BetaNodeFieldConstraint) in.readObject();
+        indexed = in.readBoolean();
 
     }
 
@@ -97,7 +97,7 @@ public class SingleBetaConstraints
     }
 
     public SingleBetaConstraints cloneIfInUse() {
-        if (constraint instanceof MutableTypeConstraint && ((MutableTypeConstraint)constraint).setInUse()) {
+        if (constraint instanceof MutableTypeConstraint && ((MutableTypeConstraint) constraint).setInUse()) {
             SingleBetaConstraints clone = new SingleBetaConstraints(constraint.cloneIfInUse(), null, disableIndex);
             clone.indexed = indexed;
             return clone;
@@ -106,7 +106,7 @@ public class SingleBetaConstraints
     }
 
     public ContextEntry[] createContext() {
-        return new ContextEntry[] { this.constraint.createContextEntry() };
+        return new ContextEntry[]{this.constraint.createContextEntry()};
     }
 
     /* (non-Javadoc)
@@ -115,8 +115,8 @@ public class SingleBetaConstraints
     public void updateFromTuple(final ContextEntry[] context,
                                 final InternalWorkingMemory workingMemory,
                                 final LeftTuple tuple) {
-        context[0].updateFromTuple( workingMemory,
-                                 tuple );
+        context[0].updateFromTuple(workingMemory,
+                                   tuple);
     }
 
     /* (non-Javadoc)
@@ -125,8 +125,8 @@ public class SingleBetaConstraints
     public void updateFromFactHandle(final ContextEntry[] context,
                                      final InternalWorkingMemory workingMemory,
                                      final InternalFactHandle handle) {
-        context[0].updateFromFactHandle( workingMemory,
-                                           handle );
+        context[0].updateFromFactHandle(workingMemory,
+                                        handle);
     }
 
     /* (non-Javadoc)
@@ -134,8 +134,8 @@ public class SingleBetaConstraints
      */
     public boolean isAllowedCachedLeft(final ContextEntry[] context,
                                        final InternalFactHandle handle) {
-        return this.indexed || this.constraint.isAllowedCachedLeft( context[0],
-                                                                    handle );
+        return this.indexed || this.constraint.isAllowedCachedLeft(context[0],
+                                                                   handle);
     }
 
     /* (non-Javadoc)
@@ -143,8 +143,8 @@ public class SingleBetaConstraints
      */
     public boolean isAllowedCachedRight(final ContextEntry[] context,
                                         final LeftTuple tuple) {
-        return this.constraint.isAllowedCachedRight( tuple,
-                                                     context[0] );
+        return this.constraint.isAllowedCachedRight(tuple,
+                                                    context[0]);
     }
 
     public boolean isIndexed() {
@@ -159,7 +159,7 @@ public class SingleBetaConstraints
         return false;
     }
 
-    public BetaMemory createBetaMemory(final RuleBaseConfiguration config, 
+    public BetaMemory createBetaMemory(final RuleBaseConfiguration config,
                                        final short nodeType) {
         return IndexUtil.Factory.createBetaMemory(config, nodeType, constraint);
     }
@@ -167,7 +167,7 @@ public class SingleBetaConstraints
     public int hashCode() {
         return this.constraint.hashCode();
     }
-    
+
     public BetaNodeFieldConstraint getConstraint() {
         return this.constraint;
     }
@@ -176,30 +176,28 @@ public class SingleBetaConstraints
      * @see org.kie.common.BetaNodeConstraints#getConstraints()
      */
     public BetaNodeFieldConstraint[] getConstraints() {
-        return new BetaNodeFieldConstraint[] { this.constraint };
+        return new BetaNodeFieldConstraint[]{this.constraint};
     }
 
     /**
      * Determine if another object is equal to this.
      *
-     * @param object
-     *            The object to test.
-     *
+     * @param object The object to test.
      * @return <code>true</code> if <code>object</code> is equal to this,
-     *         otherwise <code>false</code>.
+     * otherwise <code>false</code>.
      */
     public boolean equals(final Object object) {
-        if ( this == object ) {
+        if (this == object) {
             return true;
         }
 
-        if ( object == null || getClass() != object.getClass() ) {
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
 
         final SingleBetaConstraints other = (SingleBetaConstraints) object;
 
-        return this.constraint == other.constraint || this.constraint.equals( other.constraint );
+        return this.constraint == other.constraint || this.constraint.equals(other.constraint);
     }
 
     public void resetFactHandle(ContextEntry[] context) {
@@ -209,18 +207,24 @@ public class SingleBetaConstraints
     public void resetTuple(ContextEntry[] context) {
         context[0].resetTuple();
     }
-    
+
     public BetaConstraints getOriginalConstraint() {
         throw new UnsupportedOperationException();
     }
 
     public BitMask getListenedPropertyMask(List<String> settableProperties) {
         return constraint instanceof MvelConstraint ?
-               ((MvelConstraint)constraint).getListenedPropertyMask(settableProperties) :
+               ((MvelConstraint) constraint).getListenedPropertyMask(settableProperties) :
                allSetButTraitBitMask();
     }
 
     public boolean isLeftUpdateOptimizationAllowed() {
         return true;
+    }
+
+    public void registerEvaluationContext(BuildContext buildContext) {
+        if (this.constraint instanceof MvelConstraint) {
+            ((MvelConstraint) this.constraint).registerEvaluationContext(buildContext);
+        }
     }
 }

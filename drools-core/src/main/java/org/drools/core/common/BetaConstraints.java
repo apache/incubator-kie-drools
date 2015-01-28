@@ -72,4 +72,6 @@ public interface BetaConstraints
     BetaConstraints cloneIfInUse();
 
     boolean isLeftUpdateOptimizationAllowed();
+
+    void registerEvaluationContext(BuildContext buildContext);
 }

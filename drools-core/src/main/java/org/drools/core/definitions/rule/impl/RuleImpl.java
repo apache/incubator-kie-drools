@@ -720,6 +720,11 @@ public class RuleImpl implements Externalizable,
         return "[Rule name=" + this.name + ", agendaGroup=" + this.agendaGroup + ", salience=" + this.salience + ", no-loop=" + isNoLoop() + "]";
     }
 
+    public String toRuleNameAndPathString() {
+        String path = getResource() != null ? getResource().getSourcePath() : null;
+        return "Rule \"" + getName() + "\"" + (path != null ? " in " + path : "");
+    }
+
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;

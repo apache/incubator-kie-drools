@@ -174,4 +174,19 @@ public class QuadroupleNonIndexSkipBetaConstraints
     public boolean isLeftUpdateOptimizationAllowed() {
         return true;
     }
+
+    public void registerEvaluationContext(BuildContext buildContext) {
+        if (constraint0 instanceof MvelConstraint) {
+            ((MvelConstraint) constraint0).registerEvaluationContext(buildContext);
+        }
+        if (constraint1 instanceof MvelConstraint) {
+            ((MvelConstraint) constraint1).registerEvaluationContext(buildContext);
+        }
+        if (constraint2 instanceof MvelConstraint) {
+            ((MvelConstraint) constraint2).registerEvaluationContext(buildContext);
+        }
+        if (constraint3 instanceof MvelConstraint) {
+            ((MvelConstraint) constraint3).registerEvaluationContext(buildContext);
+        }
+    }
 }

@@ -16,6 +16,20 @@
 
 package org.drools.core.base.mvel;
 
+import org.drools.core.WorkingMemory;
+import org.drools.core.base.mvel.MVELCompilationUnit.DroolsVarFactory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.MVELDialectRuntimeData;
+import org.drools.core.spi.MvelAccumulator;
+import org.drools.core.spi.Tuple;
+import org.drools.core.util.MVELSafeHelper;
+import org.mvel2.integration.VariableResolverFactory;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -26,19 +40,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.drools.core.WorkingMemory;
-import org.drools.core.base.mvel.MVELCompilationUnit.DroolsVarFactory;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.spi.MvelAccumulator;
-import org.drools.core.spi.Tuple;
-import org.drools.core.util.MVELSafeHelper;
-import org.mvel2.integration.VariableResolverFactory;
 
 /**
  * An MVEL accumulator implementation
@@ -88,12 +89,16 @@ public class MVELAccumulator
     }
 
     public void compile(MVELDialectRuntimeData runtimeData) {
+        compile(runtimeData, null);
+    }
+
+    public void compile(MVELDialectRuntimeData runtimeData, RuleImpl rule) {
         init = initUnit.getCompiledExpression( runtimeData );
         action = actionUnit.getCompiledExpression( runtimeData );
         result = resultUnit.getCompiledExpression( runtimeData );
                 
         if ( reverseUnit != null ) {
-            reverse = reverseUnit.getCompiledExpression( runtimeData );
+            reverse = reverseUnit.getCompiledExpression( runtimeData, rule != null ? rule.toRuleNameAndPathString() : null );
         }
     }
 
