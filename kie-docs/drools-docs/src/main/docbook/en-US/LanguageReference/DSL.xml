@@ -106,7 +106,7 @@
       <title>Example with quotes</title>
 
       <programlisting>[when]something is "{colour}"=Something(colour=="{colour}")
-[when]another {state} thing=OtherThing(state=="{state}"</programlisting>
+[when]another {state} thing=OtherThing(state=="{state})"</programlisting>
     </example>
 
     <para>It is a good idea to avoid punctuation (other than quotes or
