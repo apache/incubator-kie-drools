@@ -272,7 +272,7 @@ public class PatternBuilder
                                    objectType,
                                    null );
         }
-        pattern.setPassive(patternDescr.isQuery());
+        pattern.setPassive(patternDescr.isPassive());
 
         if ( ClassObjectType.Match_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
             PropertyHandler handler = PropertyHandlerFactory.getPropertyHandler( RuleTerminalNodeLeftTuple.class );
