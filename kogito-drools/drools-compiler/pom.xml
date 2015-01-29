@@ -254,10 +254,11 @@
               org.eclipse.jdt.*;resolution:=optional,
               org.osgi.*;resolution:=optional,
               =org.kie.spring;resolution:=optional,
+              =org.kie.scanner.*;resolution:=optional,
               *
             </Import-Package>
             <Export-Package>
-              *
+              org.drools.compiler.*
             </Export-Package>
             <Bundle-Activator>org.drools.compiler.osgi.Activator</Bundle-Activator>
             <_removeheaders>Private-Package</_removeheaders>
