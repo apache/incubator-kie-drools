@@ -15,7 +15,12 @@
  */
 package org.jbpm.services.task.lifecycle.listeners;
 
+import org.kie.api.task.TaskEvent;
+
 
 public interface TaskLifeCycleEventListener extends org.kie.api.task.TaskLifeCycleEventListener {
     
+	public void beforeTaskUpdatedEvent(TaskEvent event);
+    
+    public void afterTaskUpdatedEvent(TaskEvent event); 
 }

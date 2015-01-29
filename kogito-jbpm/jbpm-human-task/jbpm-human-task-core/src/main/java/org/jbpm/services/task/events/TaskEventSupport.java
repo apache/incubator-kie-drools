@@ -145,6 +145,18 @@ public class TaskEventSupport extends AbstractEventSupport<TaskLifeCycleEventLis
         }
     }
     
+    public void fireBeforeTaskUpdated(final Task task, TaskContext context) {
+        final Iterator<TaskLifeCycleEventListener> iter = getEventListenersIterator();
+        if (iter.hasNext()) {
+            do{
+            	TaskLifeCycleEventListener listener = iter.next();
+            	if (listener instanceof org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener) {
+            		((org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener)listener).beforeTaskUpdatedEvent(new TaskEventImpl(task, context));
+            	}
+            } while (iter.hasNext());
+        }
+    }
+    
     // after methods
     
     public void fireAfterTaskActivated(final Task task, TaskContext context) {
@@ -278,6 +290,18 @@ public class TaskEventSupport extends AbstractEventSupport<TaskLifeCycleEventLis
         if (iter.hasNext()) {
             do{
                 iter.next().afterTaskNominatedEvent(new TaskEventImpl(task, context));
+            } while (iter.hasNext());
+        }
+    }
+    
+    public void fireAfterTaskUpdated(final Task task, TaskContext context) {
+        final Iterator<TaskLifeCycleEventListener> iter = getEventListenersIterator();
+        if (iter.hasNext()) {
+            do{
+            	TaskLifeCycleEventListener listener = iter.next();
+            	if (listener instanceof org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener) {
+            		((org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener)listener).afterTaskUpdatedEvent(new TaskEventImpl(task, context));
+            	}
             } while (iter.hasNext());
         }
     }

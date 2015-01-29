@@ -545,6 +545,29 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         
         return result;
 	}
+
+	@Override
+	public void beforeTaskUpdatedEvent(TaskEvent event) {
+		
+		
+	}
+
+	@Override
+	public void afterTaskUpdatedEvent(TaskEvent event) {
+		Task ti = event.getTask();
+        TaskPersistenceContext persistenceContext = ((TaskContext)event.getTaskContext()).getPersistenceContext();
+		AuditTaskImpl auditTaskImpl = getAuditTask(event, persistenceContext, ti);
+        if (auditTaskImpl == null) {
+        	logger.warn("Unable find audit task entry for task id {} '{}', skipping audit task update", ti.getId(), ti.getName());
+        	return;
+        }
+        auditTaskImpl.setDescription(ti.getDescription());
+        auditTaskImpl.setName(ti.getName());
+        auditTaskImpl.setPriority(ti.getPriority());
+        auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
+            
+        persistenceContext.merge(auditTaskImpl);
+	}
     
     
 

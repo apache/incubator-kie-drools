@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
  *     <li>Obsolete - Error</li>
  * </ul>
  */
-public class BAMTaskEventListener implements TaskLifeCycleEventListener {
+public class BAMTaskEventListener implements org.kie.api.task.TaskLifeCycleEventListener {
 
     /** Class logger. */
     private static final Logger logger = LoggerFactory.getLogger(BAMTaskEventListener.class);

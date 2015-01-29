@@ -394,10 +394,10 @@ public class UserTaskServiceEJBIntegrationTest extends AbstractTestSupport {
     	    	
     	userTaskService.setPriority(taskId, 8);
     	
-    	Task taskInstance = userTaskService.getTask(taskId);
-    	assertNotNull(taskInstance);
-    	assertEquals(Status.Reserved, taskInstance.getTaskData().getStatus());
-    	assertEquals(8, (int)taskInstance.getPriority());
+    	task = runtimeDataService.getTaskById(taskId);
+    	assertNotNull(task);
+    	assertEquals(Status.Reserved.toString(), task.getStatus());
+    	assertEquals(8, (int)task.getPriority());
     }
     
     @Test
@@ -416,14 +416,14 @@ public class UserTaskServiceEJBIntegrationTest extends AbstractTestSupport {
     	Date origDueDate = task.getDueDate();
     	assertNull(origDueDate);
     	    	
-    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-dd-mm");
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     	
     	userTaskService.setExpirationDate(taskId, sdf.parse("2013-12-31"));
     	
-    	Task taskInstance = userTaskService.getTask(taskId);
-    	assertNotNull(taskInstance);
-    	assertEquals(Status.Reserved, taskInstance.getTaskData().getStatus());
-    	assertEquals("2013-12-31", sdf.format(taskInstance.getTaskData().getExpirationTime()));
+    	task = runtimeDataService.getTaskById(taskId);
+    	assertNotNull(task);
+    	assertEquals(Status.Reserved.toString(), task.getStatus());
+    	assertEquals("2013-12-31", sdf.format(task.getDueDate()));
     }
     
     @Test
@@ -465,10 +465,10 @@ public class UserTaskServiceEJBIntegrationTest extends AbstractTestSupport {
     	assertEquals("Write a Document", task.getName());   	
     	userTaskService.setName(taskId, "updated");
     	
-    	Task taskInstance = userTaskService.getTask(taskId);
-    	assertNotNull(taskInstance);
-    	assertEquals(Status.Reserved, taskInstance.getTaskData().getStatus());
-    	assertEquals("updated", taskInstance.getName());
+    	task = runtimeDataService.getTaskById(taskId);
+    	assertNotNull(task);
+    	assertEquals(Status.Reserved.toString(), task.getStatus());
+    	assertEquals("updated", task.getName());
     }
     
     @Test
@@ -487,10 +487,10 @@ public class UserTaskServiceEJBIntegrationTest extends AbstractTestSupport {
     	assertEquals("Write a Document", task.getDescription());   	
     	userTaskService.setDescription(taskId, "updated");
     	
-    	Task taskInstance = userTaskService.getTask(taskId);
-    	assertNotNull(taskInstance);
-    	assertEquals(Status.Reserved, taskInstance.getTaskData().getStatus());
-    	assertEquals("updated", taskInstance.getDescription());
+    	task = runtimeDataService.getTaskById(taskId);
+    	assertNotNull(task);
+    	assertEquals(Status.Reserved.toString(), task.getStatus());
+    	assertEquals("updated", task.getDescription());
     }
     
     @Test

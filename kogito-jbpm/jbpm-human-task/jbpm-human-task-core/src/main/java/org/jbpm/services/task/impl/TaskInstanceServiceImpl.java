@@ -216,7 +216,6 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
 		((InternalContent) content).setContent(fault.getContent());
 		persistenceContext.persistContent(content);
 		((InternalTaskData) task.getTaskData()).setFault(content.getId(), fault);
-		
     }
 
     public void setOutput(long taskId, String userId, Object outputContentData) {
@@ -231,13 +230,23 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
 
     public void setPriority(long taskId, int priority) {
         Task task = persistenceContext.findTask(taskId);
+        
+        taskEventSupport.fireBeforeTaskUpdated(task, context);
+        
         ((InternalTask) task).setPriority(priority);
+        
+        taskEventSupport.fireAfterTaskUpdated(task, context);
     }
 
     public void setTaskNames(long taskId, List<I18NText> taskNames) {
         Task task = persistenceContext.findTask(taskId);
+        
+        taskEventSupport.fireBeforeTaskUpdated(task, context);
+        
         ((InternalTask) task).setNames(taskNames);
         ((InternalTask) task).setName(taskNames.get(0).getText());
+        
+        taskEventSupport.fireAfterTaskUpdated(task, context);
     }
 
     public void skip(long taskId, String userId) {
@@ -268,13 +277,23 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
 
     public void setExpirationDate(long taskId, Date date) {
         Task task = persistenceContext.findTask(taskId);
+        
+        taskEventSupport.fireBeforeTaskUpdated(task, context);
+        
         ((InternalTaskData) task.getTaskData()).setExpirationTime(date);
+        
+        taskEventSupport.fireAfterTaskUpdated(task, context);
     }
 
     public void setDescriptions(long taskId, List<I18NText> descriptions) {
         Task task = persistenceContext.findTask(taskId);
+        
+        taskEventSupport.fireBeforeTaskUpdated(task, context);
+        
         ((InternalTask) task).setDescriptions(descriptions);
         ((InternalTask) task).setDescription(descriptions.get(0).getText());
+        
+        taskEventSupport.fireAfterTaskUpdated(task, context);
     }
 
     public void setSkipable(long taskId, boolean skipable) {
