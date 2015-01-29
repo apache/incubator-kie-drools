@@ -78,6 +78,7 @@
               org.kie.api.runtime.rule,
               org.kie.api.task,
               org.kie.api.task.model,
+              =org.kie.scanner.*;resolution:=optional,
               org.mvel2,
               org.slf4j
             </Import-Package>
