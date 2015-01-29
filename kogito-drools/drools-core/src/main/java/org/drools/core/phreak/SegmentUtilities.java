@@ -461,10 +461,9 @@ public class SegmentUtilities {
     }
 
     private static void checkEagerSegmentCreation(LeftTupleSource lt, InternalWorkingMemory wm, int nodeTypesInSegment) {
-        // A Not node has to be eagerly initialized unless in its segment there is at least a join or exists node
+        // A Not node has to be eagerly initialized unless in its segment there is at least a join node
         if ( isSet(nodeTypesInSegment, NOT_NODE_BIT) &&
-             !isSet(nodeTypesInSegment, JOIN_NODE_BIT) &&
-             !isSet(nodeTypesInSegment, EXISTS_NODE_BIT) ) {
+             !isSet(nodeTypesInSegment, JOIN_NODE_BIT) ) {
             createSegmentMemory(lt, wm);
         }
     }

@@ -7117,4 +7117,28 @@ public class Misc2Test extends CommonTestMethodBase {
             assertTrue(e.getMessage().contains("hello person"));
         }
     }
+
+    @Test
+    public void testNotExists() {
+        // DROOLS-699
+        String drl2 =
+                "import " + List.class.getCanonicalName() + ";\n"
+                + "\n\n"
+                + "rule \"NotExists\"\n"
+                + "when\n"
+                + "$l1: List() \n"
+                + "$l2: List() \n"
+                + "exists( String() from $l1 ) \n"
+                + "not( exists( String() ) )\n"
+                + "then end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl2, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        ksession.insert(asList("Mario", "Mark"));
+        ksession.insert(asList("Julie", "Leiti"));
+
+        assertEquals(4, ksession.fireAllRules());
+    }
 }
