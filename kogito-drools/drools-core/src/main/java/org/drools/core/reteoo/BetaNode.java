@@ -157,9 +157,10 @@ public abstract class BetaNode extends LeftTupleSource
             return;
         }
 
+        Pattern pattern = context.getLastBuiltPatterns()[0]; // right input pattern
+        rightInputIsPassive = pattern.isPassive();
+
         if (!isRightInputIsRiaNode()) {
-            Pattern pattern = context.getLastBuiltPatterns()[0]; // right input pattern
-            rightInputIsPassive = pattern.isPassive();
             ObjectType objectType = pattern.getObjectType();
 
             if (objectType instanceof ClassObjectType) {

@@ -7119,7 +7119,7 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
-    public void testNotExists() {
+    public void testPassiveExists() {
         // DROOLS-699
         String drl2 =
                 "import " + List.class.getCanonicalName() + ";\n"

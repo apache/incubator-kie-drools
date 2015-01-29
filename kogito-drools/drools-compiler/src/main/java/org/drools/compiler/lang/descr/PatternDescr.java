@@ -81,6 +81,10 @@ public class PatternDescr extends AnnotatedBaseDescr
         return query;
     }
 
+    public boolean isPassive() {
+        return query || source instanceof FromDescr;
+    }
+
     public List< ? extends BaseDescr> getDescrs() {
         return this.constraint.getDescrs();
     }

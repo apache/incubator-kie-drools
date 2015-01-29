@@ -19,6 +19,7 @@ import org.drools.core.reteoo.ConditionalBranchNode.ConditionalBranchMemory;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.EvalConditionNode.EvalMemory;
+import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -463,7 +464,8 @@ public class SegmentUtilities {
     private static void checkEagerSegmentCreation(LeftTupleSource lt, InternalWorkingMemory wm, int nodeTypesInSegment) {
         // A Not node has to be eagerly initialized unless in its segment there is at least a join node
         if ( isSet(nodeTypesInSegment, NOT_NODE_BIT) &&
-             !isSet(nodeTypesInSegment, JOIN_NODE_BIT) ) {
+             !isSet(nodeTypesInSegment, JOIN_NODE_BIT) &&
+             !isSet(nodeTypesInSegment, REACTIVE_EXISTS_NODE_BIT) ) {
             createSegmentMemory(lt, wm);
         }
     }
@@ -591,9 +593,10 @@ public class SegmentUtilities {
         throw new RuntimeException("Unable to find query '" + queryName + "'");
     }
 
-    private static final int NOT_NODE_BIT       = 1 << 0;
-    private static final int JOIN_NODE_BIT      = 1 << 1;
-    private static final int EXISTS_NODE_BIT    = 1 << 2;
+    private static final int NOT_NODE_BIT               = 1 << 0;
+    private static final int JOIN_NODE_BIT              = 1 << 1;
+    private static final int REACTIVE_EXISTS_NODE_BIT   = 1 << 2;
+    private static final int PASSIVE_EXISTS_NODE_BIT    = 1 << 3;
 
     private static int updateNodeTypesMask(NetworkNode node, int mask) {
         switch (node.getType()) {
@@ -601,7 +604,11 @@ public class SegmentUtilities {
                 mask |= JOIN_NODE_BIT;
                 break;
             case NodeTypeEnums.ExistsNode:
-                mask |= EXISTS_NODE_BIT;
+                if (((ExistsNode) node).isRightInputPassive()) {
+                    mask |= PASSIVE_EXISTS_NODE_BIT;
+                } else {
+                    mask |= REACTIVE_EXISTS_NODE_BIT;
+                }
                 break;
             case NodeTypeEnums.NotNode:
                 mask |= NOT_NODE_BIT;
