@@ -40,11 +40,11 @@
 
 
     <listitem>
-      <para>Open the Data Modeller tool by clicking on a Java File, or using the "New Item -> Java File" menu option.
+      <para>Open the Data Modeller tool by clicking on a Data Object file, or using the "New Item -> Data Object" menu option.
       </para>
 
       <figure>
-        <title>Click on a Java File</title>
+        <title>Click on a Data Object</title>
 
         <screenshot>
           <mediaobject>
@@ -105,11 +105,11 @@
 
     <listitem>
 
-      <para>The Entity's "field browser" section displays a list with the data object fields.
+      <para>The Data Object's "field browser" section displays a list with the data object fields.
       </para>
 
       <figure>
-        <title>The entity field browser</title>
+        <title>The Data Object's field browser</title>
 
         <screenshot>
           <mediaobject>
@@ -124,14 +124,14 @@
     </listitem>
 
     <listitem>
-      <para>The "entity / field property editor" section. This is the rightmost
+      <para>The "Data Object / field property editor" section. This is the rightmost
         section of the Data Modeller editor and visualizes a tabbed pane. The
         "Data object" tab allows the user to edit the class level properties of the data object, and the "Field" tab
         allows the edition of the properties for the currently selected field.
       </para>
 
       <figure>
-        <title>The entity/field property editor</title>
+        <title>The data object/field property editor</title>
 
         <screenshot>
           <mediaobject>

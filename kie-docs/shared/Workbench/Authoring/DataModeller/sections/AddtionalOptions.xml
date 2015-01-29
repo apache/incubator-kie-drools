@@ -9,18 +9,18 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Additional options</title>
 
-  <para>As stated before, both entities as well as entity fields require
+  <para>As stated before, both data objects as well as fields require
     some of their initial properties to be set upon creation. These are by no
-    means the only properties entities and fields have. Below we will give a
-    detailed description of the additional entity and field
+    means the only properties data objects and fields have. Below we will give a
+    detailed description of the additional data object and field
     properties.
   </para>
 
   <section>
-    <title>Additional entity properties ("Data object tab")</title>
+    <title>Additional data object properties ("Data object tab")</title>
 
     <figure>
-      <title>The entity's properties</title>
+      <title>The data object's properties</title>
 
       <screenshot>
         <mediaobject>
@@ -36,9 +36,9 @@
     <itemizedlist>
       <listitem>
         <para>Description: this field allows the user to introduce some kind
-          of description for the current entity, for documentation purposes
+          of description for the current data object, for documentation purposes
           only. As with the label property, this is conceptual information that
-          will not influence the use or treatment of this entity or its
+          will not influence the use or treatment of this data object or its
           instances in any way.
         </para>
       </listitem>
@@ -96,7 +96,7 @@
       </listitem>
 
       <listitem>
-        <para>Remotable: If checked this property makes the Entity available to be used with jBPM remote services as
+        <para>Remotable: If checked this property makes the data object available to be used with jBPM remote services as
           REST, JMS and WS. (See jBPM for more information on this matter).
         </para>
         <para/>
@@ -109,7 +109,7 @@
     <title>Additional field properties ("Field tab")</title>
 
     <figure>
-      <title>The entity's field properties</title>
+      <title>The data object's field properties</title>
 
       <screenshot>
         <mediaobject>
@@ -127,13 +127,13 @@
         <para>Description: this field allows the user to introduce some kind
           of description for the current field, for documentation purposes
           only. As with the label property, this is conceptual information that
-          will not influence the use or treatment of this entity or its
+          will not influence the use or treatment of this data object or its
           instances in any way.
         </para>
       </listitem>
 
       <listitem>
-        <para>Equals: checking this property for an entity field implies
+        <para>Equals: checking this property for a data object field implies
           that it will be taken into account, at the code generation level, for
           the creation of both the equals() and hashCode() methods in the
           generated Java class. We will explain this in more detail in the

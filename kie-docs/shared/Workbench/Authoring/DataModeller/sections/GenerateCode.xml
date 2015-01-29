@@ -41,25 +41,25 @@
 
   <itemizedlist>
     <listitem>
-      <para>The entity's identifier property will become the Java class's
+      <para>The data object's identifier property will become the Java class's
         name. It therefore needs to be a valid Java identifier.
       </para>
     </listitem>
 
     <listitem>
-      <para>The entity's package property becomes the Java class's package
+      <para>The data object's package property becomes the Java class's package
         declaration.
       </para>
     </listitem>
 
     <listitem>
-      <para>The entity's superclass property (if present) becomes the Java
+      <para>The data object's superclass property (if present) becomes the Java
         class's extension declaration.
       </para>
     </listitem>
 
     <listitem>
-      <para>The entity's label and description properties will translate into
+      <para>The data object's label and description properties will translate into
         the Java annotations
         "@org.kie.api.definition.type.Label" and
         "@org.kie.api.definition.type.Description",
@@ -69,7 +69,7 @@
     </listitem>
 
     <listitem>
-      <para>The entity's role property (if present) will be translated into
+      <para>The data object's role property (if present) will be translated into
         the "@org.kie.api.definition.type.Role" Java annotation, that
         <emphasis>IS</emphasis>
         interpreted by the application platform, in the
@@ -78,49 +78,49 @@
     </listitem>
 
     <listitem>
-      <para>The entity's type safe property (if present) will be translated into
+      <para>The data object's type safe property (if present) will be translated into
         the "@org.kie.api.definition.type.TypeSafe Java annotation.
         (see Drools)
       </para>
     </listitem>
 
     <listitem>
-      <para>The entity's class reactive property (if present) will be translated into
+      <para>The data object's class reactive property (if present) will be translated into
         the "@org.kie.api.definition.type.ClassReactive Java annotation.
         (see Drools)
       </para>
     </listitem>
 
     <listitem>
-      <para>The entity's property reactive property (if present) will be translated into
+      <para>The data object's property reactive property (if present) will be translated into
         the "@org.kie.api.definition.type.PropertyReactive Java annotation.
         (see Drools)
       </para>
     </listitem>
 
     <listitem>
-      <para>The entity's timestamp property (if present) will be translated into
+      <para>The data object's timestamp property (if present) will be translated into
         the "@org.kie.api.definition.type.Timestamp Java annotation.
         (see Drools)
       </para>
     </listitem>
 
     <listitem>
-      <para>The entity's duration property (if present) will be translated into
+      <para>The data object's duration property (if present) will be translated into
         the "@org.kie.api.definition.type.Duration Java annotation.
         (see Drools)
       </para>
     </listitem>
 
     <listitem>
-      <para>The entity's expires property (if present) will be translated into
+      <para>The data object's expires property (if present) will be translated into
         the "@org.kie.api.definition.type.Expires Java annotation.
         (see Drools)
       </para>
     </listitem>
 
     <listitem>
-      <para>The entity's remotable property (if present) will be translated into
+      <para>The data object's remotable property (if present) will be translated into
         the "@org.kie.api.remote.Remotable Java annotation.
         (see jBPM)
       </para>
@@ -133,25 +133,25 @@
 
   <para>A standard Java default (or no parameter) constructor is generated, as
     well as a full parameter constructor, i.e. a constructor that accepts as
-    parameters a value for each of the entity's user-defined fields.
+    parameters a value for each of the data object's user-defined fields.
   </para>
 
-  <para>The entity's user-defined fields are translated into Java class
+  <para>The data object's user-defined fields are translated into Java class
     fields, each one of them with its own getter and setter method, according to
     the following transformation rules:
   </para>
 
   <itemizedlist>
     <listitem>
-      <para>The entity field's identifier will become the Java field
+      <para>The data object field's identifier will become the Java field
         identifier. It therefore needs to be a valid Java identifier.
       </para>
     </listitem>
 
     <listitem>
-      <para>The entity field's type is directly translated into the Java
-        class's field type. In case the entity field was declared to be
-        multiple (i.e. '[0..N]'), then the generated field is of the
+      <para>The data object field's type is directly translated into the Java
+        class's field type. In case the field was declared to be
+        multiple (i.e. 'List'), then the generated field is of the
         "java.util.List" type.
       </para>
     </listitem>
@@ -167,14 +167,14 @@
         corresponding field in another instance of the class. If the
         field is a sub-entity or a collection type, then the equals method
         will make a method-call to the equals method of the corresponding
-        entity's Java class, or of the java.util.List standard Java class,
+        data object's Java class, or of the java.util.List standard Java class,
         respectively.
       </para>
 
       <para>If the equals property is checked for
         <emphasis>ANY</emphasis>
         of
-        the entity's user defined fields, then this also implies that in
+        the data object's user defined fields, then this also implies that in
         addition to the default generated constructors another constructor is
         generated, accepting as parameters all of the fields that were
         marked with Equals. Furthermore, generation of the equals() method also
@@ -203,9 +203,9 @@
   <para/>
 
   <para>As an example, the generated Java class code for the Purchase Order
-    entity, corresponding to its definition as shown in the following figure
+    data object, corresponding to its definition as shown in the following figure
     purchase_example.jpg is visualized in the figure at the bottom of this
-    chapter. Note that the two of the entity's fields, namely 'header' and
+    chapter. Note that the two of the data object's fields, namely 'header' and
     'lines' were marked with Equals, and have been assigned with the positions 2
     and 1, respectively).
   </para>
@@ -232,11 +232,10 @@
     * This class was automatically generated by the data modeler tool.
     */
     @org.kie.api.definition.type.Label("Purchase Order")
-    @org.kie.api.definition.type.Role(org.kie.api.definition.type.Role.Type.EVENT)
-    @org.kie.api.remote.Remotable
-    @org.kie.api.definition.type.ClassReactive
     @org.kie.api.definition.type.TypeSafe(true)
+    @org.kie.api.definition.type.Role(org.kie.api.definition.type.Role.Type.EVENT)
     @org.kie.api.definition.type.Expires("2d")
+    @org.kie.api.remote.Remotable
     public class PurchaseOrder implements java.io.Serializable
     {
 
@@ -262,6 +261,10 @@
 
     @org.kie.api.definition.type.Position(4)
     private java.lang.Boolean requiresCFOApproval;
+
+    public PurchaseOrder()
+    {
+    }
 
     public java.lang.Double getTotal()
     {
@@ -313,8 +316,16 @@
     this.requiresCFOApproval = requiresCFOApproval;
     }
 
-    public PurchaseOrder()
+    public PurchaseOrder(java.lang.Double total, java.lang.String description,
+    java.util.List&lt;org.jbpm.examples.purchases.PurchaseOrderLine&gt; lines,
+    org.jbpm.examples.purchases.PurchaseOrderHeader header,
+    java.lang.Boolean requiresCFOApproval)
     {
+    this.total = total;
+    this.description = description;
+    this.lines = lines;
+    this.header = header;
+    this.requiresCFOApproval = requiresCFOApproval;
     }
 
     public PurchaseOrder(java.lang.String description,
@@ -329,11 +340,12 @@
     this.requiresCFOApproval = requiresCFOApproval;
     }
 
-    public PurchaseOrder(org.jbpm.examples.purchases.PurchaseOrderHeader header,
-    java.util.List&lt;org.jbpm.examples.purchases.PurchaseOrderLine&gt; lines)
+    public PurchaseOrder(
+    java.util.List&lt;org.jbpm.examples.purchases.PurchaseOrderLine&gt; lines,
+    org.jbpm.examples.purchases.PurchaseOrderHeader header)
     {
-    this.header = header;
     this.lines = lines;
+    this.header = header;
     }
 
     @Override
@@ -344,9 +356,9 @@
     if (o == null || getClass() != o.getClass())
     return false;
     org.jbpm.examples.purchases.PurchaseOrder that = (org.jbpm.examples.purchases.PurchaseOrder) o;
-    if (header != null ? !header.equals(that.header) : that.header != null)
-    return false;
     if (lines != null ? !lines.equals(that.lines) : that.lines != null)
+    return false;
+    if (header != null ? !header.equals(that.header) : that.header != null)
     return false;
     return true;
     }
@@ -355,8 +367,8 @@
     public int hashCode()
     {
     int result = 17;
-    result = 31 * result + (header != null ? header.hashCode() : 0);
     result = 31 * result + (lines != null ? lines.hashCode() : 0);
+    result = 31 * result + (header != null ? header.hashCode() : 0);
     return result;
     }
 

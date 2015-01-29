@@ -8,23 +8,23 @@
          xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
 
-  <title>Entities</title>
+  <title>Data Objects</title>
 
-  <para>A data model consists of data entities which are a logical
-    representation of some real-world data. Such data entities have a fixed set
+  <para>A data model consists of data objects which are a logical
+    representation of some real-world data. Such data objects have a fixed set
     of modeller (or application-owned) properties, such as its internal
-    identifier, a label, description, package etc. Besides those, an entity also
+    identifier, a label, description, package etc. Besides those, a data object also
     has a variable set of user-defined fields, which are an abstraction of a
-    real-world property of the type of data that this logical entity
+    real-world property of the type of data that this logical data object
     represents.
   </para>
 
-  <para>Creating a data entity can be achieved using the workbench "New Item - Java File" menu option.
+  <para>Creating a data object can be achieved using the workbench "New Item - Data Object" menu option.
 
   </para>
 
   <figure>
-    <title>New Java File menu option</title>
+    <title>New Data Object menu option</title>
 
     <screenshot>
       <mediaobject>

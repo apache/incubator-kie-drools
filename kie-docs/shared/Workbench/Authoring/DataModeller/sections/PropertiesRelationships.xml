@@ -10,7 +10,7 @@
 
   <title>Properties &amp; relationships</title>
 
-  <para>Once the data entity has been created, it now has to be completed by
+  <para>Once the data object has been created, it now has to be completed by
     adding user-defined properties to its definition. This can be achieved by
     providing the required information in the "Create new field" section (see
     fig. "New field creation"), and clicking on the "Create" button when
@@ -20,24 +20,24 @@
   <itemizedlist>
     <listitem>
       <para>The field's internal identifier (mandatory). The value of this
-        field must be unique per data entity, i.e. if the proposed identifier
-        already exists within current entity, an error message will be
+        field must be unique per data object, i.e. if the proposed identifier
+        already exists within current data object, an error message will be
         displayed.
       </para>
     </listitem>
 
     <listitem>
-      <para>A label (optional): as with the entity definition, the user can
-        define a user-friendly label for the data entity field which is
+      <para>A label (optional): as with the data object definition, the user can
+        define a user-friendly label for the data object field which is
         about to be created. This has no further implications on how fields
-        from objects of this entity will be treated. If a label is defined, then
+        from objects of this data object will be treated. If a label is defined, then
         this is how the field will be displayed throughout the data modeller
         tool.
       </para>
     </listitem>
 
     <listitem>
-      <para>A field type (mandatory): each entity field needs to be
+      <para>A field type (mandatory): each data object field needs to be
         assigned with a type.
       </para>
 
@@ -71,22 +71,17 @@
         </listitem>
 
         <listitem>
-          <para>An 'entity' type: any user defined entity automatically
+          <para>A 'data object' type: any user defined data object automatically
             becomes a candidate to be defined as a field type of another
-            entity, thus enabling the creation of relationships between
-            entities. As can be observed in the above figure, our recently
-            defined 'Tutorial Example Entity' already appears in the types list
-            and can be used as a field type, even for a field of
-            itself. An entity type field can be created either in 'single'
+            data object, thus enabling the creation of relationships between
+            them. A data object field can be created either in 'single'
             or in 'multiple' form, the latter implying that the field will
             be defined as a collection of this type, which will be indicated by
-            the extension '[0..N]' in the type drop-down or in the entity
-            fields table (as can be seen for the 'Lines' field of the
-            'Purchase Order' entity, for example).
+            selecting "List" checkbox.
           </para>
 
           <figure>
-            <title>Entity field types</title>
+            <title>Data object field types</title>
 
             <screenshot>
               <mediaobject>
@@ -130,7 +125,7 @@
 
   <para>When finished introducing the initial information for a new field,
     clicking the 'Create' button will add the newly created field to the end
-    of the entity's fields table below:
+    of the data object's fields table below:
   </para>
 
   <figure>
@@ -147,15 +142,15 @@
 
   <para/>
 
-  <para>The new field will also automatically be selected in the entity's
+  <para>The new field will also automatically be selected in the data object's
     field list, and its properties will be shown in the Field tab of the
     Property editor. The latter facilitates completion of some additional
     properties of the new field by the user (see below).
   </para>
 
   <para>At any time, any field (without restrictions) can be deleted from
-    an entity definition by clicking on the corresponding 'x' icon in the
-    entity's fields table.
+    a data object definition by clicking on the corresponding 'x' icon in the
+    data object's fields table.
   </para>
 
   <para/>
