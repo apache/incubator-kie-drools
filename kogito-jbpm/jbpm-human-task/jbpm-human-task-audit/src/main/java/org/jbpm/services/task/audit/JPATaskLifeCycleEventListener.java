@@ -68,7 +68,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         }
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
         auditTaskImpl.setActualOwner(userId);
-            
+        auditTaskImpl.setDescription(ti.getDescription());    
         persistenceContext.merge(auditTaskImpl);
     }
 
@@ -92,7 +92,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         }
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
         auditTaskImpl.setActualOwner(userId);
-            
+        auditTaskImpl.setDescription(ti.getDescription());    
         persistenceContext.merge(auditTaskImpl);
     }
 
@@ -119,7 +119,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         }
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
         auditTaskImpl.setActualOwner(userId);
-            
+        auditTaskImpl.setDescription(ti.getDescription());    
         persistenceContext.merge(auditTaskImpl);
         //@TODO:        There is also the possibility that a GroupAuditTask exist in Lucene..
         //        make sure that you remove it as well        
@@ -142,6 +142,7 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         	logger.warn("Unable find audit task entry for task id {} '{}', skipping audit task update", ti.getId(), ti.getName());
         	return;
         }
+        auditTaskImpl.setDescription(ti.getDescription());
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
         auditTaskImpl.setActualOwner(userId);
             
@@ -238,6 +239,12 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         	logger.warn("Unable find audit task entry for task id {} '{}', skipping audit task update", ti.getId(), ti.getName());
         	return;
         }
+        
+        auditTaskImpl.setDescription(ti.getDescription());
+        auditTaskImpl.setName(ti.getName());  
+        auditTaskImpl.setActivationTime(ti.getTaskData().getActivationTime());
+        auditTaskImpl.setPriority(ti.getPriority());
+        auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
         auditTaskImpl.setActualOwner(userId);
             
@@ -256,8 +263,13 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         	logger.warn("Unable find audit task entry for task id {} '{}', skipping audit task update", ti.getId(), ti.getName());
         	return;
         }
+        auditTaskImpl.setDescription(ti.getDescription());
+        auditTaskImpl.setName(ti.getName());  
+        auditTaskImpl.setActivationTime(ti.getTaskData().getActivationTime());
+        auditTaskImpl.setPriority(ti.getPriority());
+        auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
-        
+        auditTaskImpl.setActualOwner("");
             
         persistenceContext.merge(auditTaskImpl);
 
@@ -280,6 +292,11 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         	logger.warn("Unable find audit task entry for task id {} '{}', skipping audit task update", ti.getId(), ti.getName());
         	return;
         }
+        auditTaskImpl.setDescription(ti.getDescription());
+        auditTaskImpl.setName(ti.getName());  
+        auditTaskImpl.setActivationTime(ti.getTaskData().getActivationTime());
+        auditTaskImpl.setPriority(ti.getPriority());
+        auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
         auditTaskImpl.setActualOwner(userId);
             
@@ -303,6 +320,11 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         	logger.warn("Unable find audit task entry for task id {} '{}', skipping audit task update", ti.getId(), ti.getName());
         	return;
         }
+          auditTaskImpl.setDescription(ti.getDescription());
+        auditTaskImpl.setName(ti.getName());  
+        auditTaskImpl.setActivationTime(ti.getTaskData().getActivationTime());
+        auditTaskImpl.setPriority(ti.getPriority());
+        auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
         auditTaskImpl.setActualOwner(userId);
             
@@ -325,6 +347,11 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         	logger.warn("Unable find audit task entry for task id {} '{}', skipping audit task update", ti.getId(), ti.getName());
         	return;
         }
+        auditTaskImpl.setDescription(ti.getDescription());
+        auditTaskImpl.setName(ti.getName());  
+        auditTaskImpl.setActivationTime(ti.getTaskData().getActivationTime());
+        auditTaskImpl.setPriority(ti.getPriority());
+        auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
         auditTaskImpl.setActualOwner(userId);
             
@@ -348,6 +375,11 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         	logger.warn("Unable find audit task entry for task id {} '{}', skipping audit task update", ti.getId(), ti.getName());
         	return;
         }
+        auditTaskImpl.setDescription(ti.getDescription());
+        auditTaskImpl.setName(ti.getName());  
+        auditTaskImpl.setActivationTime(ti.getTaskData().getActivationTime());
+        auditTaskImpl.setPriority(ti.getPriority());
+        auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
         auditTaskImpl.setActualOwner(userId);
             
@@ -370,6 +402,11 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         	logger.warn("Unable find audit task entry for task id {} '{}', skipping audit task update", ti.getId(), ti.getName());
         	return;
         }
+        auditTaskImpl.setDescription(ti.getDescription());
+        auditTaskImpl.setName(ti.getName());  
+        auditTaskImpl.setActivationTime(ti.getTaskData().getActivationTime());
+        auditTaskImpl.setPriority(ti.getPriority());
+        auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
         auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
         auditTaskImpl.setActualOwner(userId);
             
@@ -452,8 +489,13 @@ public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener
         	logger.warn("Unable find audit task entry for task id {} '{}', skipping audit task update", ti.getId(), ti.getName());
         	return;
         }
-        auditTaskImpl.setActualOwner(userId);
-            
+        auditTaskImpl.setDescription(ti.getDescription());
+        auditTaskImpl.setName(ti.getName());  
+        auditTaskImpl.setActivationTime(ti.getTaskData().getActivationTime());
+        auditTaskImpl.setPriority(ti.getPriority());
+        auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
+        auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
+        auditTaskImpl.setActualOwner(userId); 
         persistenceContext.merge(auditTaskImpl);
         
     }
