@@ -268,7 +268,7 @@ ksession.setGlobal("list", list);           </programlisting>
       <title>FileLogger</title>
 
       <programlisting language="java">KieRuntimeLogger logger =
-  KieServices.Factory.get().newFileLogger(ksession, "logdir/mylogfile");
+  KieServices.Factory.get().getLoggers().newFileLogger(ksession, "logdir/mylogfile");
 ...
 logger.close();</programlisting>
     </example>
