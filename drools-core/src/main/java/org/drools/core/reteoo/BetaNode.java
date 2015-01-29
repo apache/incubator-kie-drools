@@ -228,7 +228,7 @@ public abstract class BetaNode extends LeftTupleSource
         rightListenedProperties = (List) in.readObject();
         rightInputIsPassive = in.readBoolean();
         setUnificationJoin();
-        super.readExternal( in );
+        super.readExternal(in);
         rightInputIsRiaNode = NodeTypeEnums.RightInputAdaterNode == rightInput.getType();
     }
 
@@ -402,6 +402,10 @@ public abstract class BetaNode extends LeftTupleSource
 
     public boolean isRightInputIsRiaNode() {
         return rightInputIsRiaNode;
+    }
+
+    public boolean isRightInputPassive() {
+        return rightInputIsPassive;
     }
 
     public ObjectSource getRightInput() {
