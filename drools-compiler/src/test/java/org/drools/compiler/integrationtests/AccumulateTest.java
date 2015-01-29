@@ -2820,4 +2820,75 @@ public class AccumulateTest extends CommonTestMethodBase {
         ks.fireAllRules();
         assertEquals( Arrays.asList( 5.0, 7.0, 9.0 ), list );
     }
+
+    public static class ExpectedMessage {
+        String type;
+        public ExpectedMessage(String type) {
+            this.type = type;
+        }
+        public String getType() {
+            return type;
+        }
+    }
+
+    public static class ExpectedMessageToRegister {
+
+        String type;
+        boolean registered = false;
+        List<ExpectedMessage> msgs = new ArrayList<ExpectedMessage>();
+        public ExpectedMessageToRegister(String type) {
+            this.type = type;
+        }
+        public String getType() {
+            return type;
+        }
+        public List<ExpectedMessage> getExpectedMessages() {
+            return msgs;
+        }
+        public boolean isRegistered() {
+            return registered;
+        }
+        public void setRegistered(boolean registered) {
+            this.registered = registered;
+        }
+    }
+
+    @Test
+    public void testReaccumulateForLeftTuple() {
+
+        String drl1 =
+                "import " + ExpectedMessage.class.getCanonicalName() + ";\n"
+                + "import " + List.class.getCanonicalName() + ";\n"
+                + "import " + ExpectedMessageToRegister.class.getCanonicalName() + ";\n"
+                + "\n\n"
+
+                + "rule \"Modify\"\n"
+                + " when\n"
+                + " $etr: ExpectedMessageToRegister(registered == false)"
+                + " then\n"
+                + " modify( $etr ) { setRegistered( true ) }"
+                + " end\n"
+
+                + "rule \"Collect\"\n"
+                + " salience 200 \n"
+                + " when\n"
+                + " etr: ExpectedMessageToRegister($type: type)"
+                + " $l : List( ) from collect( ExpectedMessage( type == $type ) from etr.expectedMessages )"
+                + " then\n"
+                + " java.lang.System.out.println( $l.size() );"
+                + " end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl1, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        ExpectedMessage psExpMsg1 = new ExpectedMessage("Index");
+
+        ExpectedMessageToRegister etr1 = new ExpectedMessageToRegister("Index");
+        etr1.msgs.add(psExpMsg1);
+
+        ksession.insert(etr1);
+
+        ksession.fireAllRules();
+    }
 }

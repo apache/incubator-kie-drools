@@ -746,7 +746,6 @@ public class PhreakAccumulateNode {
         if (accNode.isUnwrapRightObject()) {
             // if there is a subnetwork, handle must be unwrapped
             tuple = (LeftTuple) handle.getObject();
-            //handle = tuple.getLastHandle();
         }
         accumulate.accumulate(am.workingMemoryContext,
                               accresult.context,
@@ -827,8 +826,8 @@ public class PhreakAccumulateNode {
             InternalFactHandle childHandle = childMatch.getRightParent().getFactHandle();
             LeftTuple tuple = leftTuple;
             if (accNode.isUnwrapRightObject()) {
+                // if there is a subnetwork, handle must be unwrapped
                 tuple = (LeftTuple) childHandle.getObject();
-                childHandle = tuple.getLastHandle();
             }
             accumulate.accumulate(am.workingMemoryContext,
                                   accctx.context,
