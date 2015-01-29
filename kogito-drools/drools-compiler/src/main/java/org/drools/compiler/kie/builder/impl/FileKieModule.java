@@ -67,7 +67,7 @@ public class FileKieModule extends AbstractKieModule implements InternalKieModul
     }
 
     public String toString() {
-        return "FileKieModule[ ReleaseId=" + getReleaseId() + "file=" + file + "]";
+        return "FileKieModule[releaseId=" + getReleaseId() + ",file=" + file + "]";
     }
 
 }

@@ -70,7 +70,7 @@ public class MemoryKieModule extends AbstractKieModule
     }
 
     public String toString() {
-        return "MemoryKieModule[ ReleaseId=" + getReleaseId() + "]";
+        return "MemoryKieModule[releaseId=" + getReleaseId() + "]";
     }
 
     MemoryKieModule cloneForIncrementalCompilation(ReleaseId releaseId, KieModuleModel kModuleModel, MemoryFileSystem newFs) {
