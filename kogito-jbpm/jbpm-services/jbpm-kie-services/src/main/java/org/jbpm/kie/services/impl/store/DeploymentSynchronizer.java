@@ -16,6 +16,7 @@
 
 package org.jbpm.kie.services.impl.store;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -44,6 +45,17 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 	private DeploymentService deploymentService;
 	
 	private Date lastSync = null;
+	
+	protected Class<?> targetExceptionClass;
+	
+	public DeploymentSynchronizer() {
+        String clazz = System.getProperty("org.kie.constviol.exclass", "org.hibernate.exception.ConstraintViolationException");
+        try {
+            targetExceptionClass = Class.forName(clazz);
+        } catch (ClassNotFoundException e) {
+            logger.error("Optimistic locking exception class not found {}", clazz, e);
+        }
+    }
 	
 	public boolean isActive() {
 		return true;
@@ -144,7 +156,7 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 				entries.put(unit.getIdentifier(), unit);
 				logger.info("Deployment unit {} stored successfully", unit.getIdentifier());
 			} catch (Exception e) {
-				if (e.getMessage() != null && e.getMessage().contains("ConstraintViolationException")) {
+				if (isCausedByConstraintViolation(e)) {
 					logger.info("Deployment {} already stored in deployment store", unit);
 				} else {
 					logger.error("Unable to store deployment {} in deployment store due to {}", e.getMessage());
@@ -185,5 +197,22 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 		}
 		
 	}
+	
+    protected boolean isCausedByConstraintViolation(Throwable throwable) {
+        if (targetExceptionClass == null) {
+            return false;
+        }
+
+        while (throwable != null) {
+            if (targetExceptionClass.isAssignableFrom(throwable.getClass())
+                    || SQLIntegrityConstraintViolationException.class.isAssignableFrom(throwable.getClass())) {
+                return true;
+            } else {
+                throwable = throwable.getCause();
+            }
+        }
+
+        return false;
+    }
 	
 }
