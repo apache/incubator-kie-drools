@@ -48,7 +48,7 @@ import javax.persistence.Version;
     @NamedQuery(name="FindKSessionToInit", 
                 query="select cmInfo.ksessionId from ContextMappingInfo cmInfo, "
                 		+ "ProcessInstanceInfo processInstanceInfo join processInstanceInfo.eventTypes eventTypes"
-                		+ " where eventTypes = 'timer' and cmInfo.contextId = concat(processInstanceInfo.processInstanceId, '')"
+                		+ " where eventTypes = 'timer' and cmInfo.contextId = cast(processInstanceInfo.processInstanceId as string)"
                 		+ " and cmInfo.ownerId = :ownerId")})
 public class ContextMappingInfo implements Serializable {
 
