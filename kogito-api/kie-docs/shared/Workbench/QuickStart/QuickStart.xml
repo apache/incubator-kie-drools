@@ -51,7 +51,7 @@
     <para>Enter the required information.</para>
 
     <figure>
-      <title>Entering repository information</title>
+      <title>Entering repository information step 1/2</title>
 
       <mediaobject>
         <imageobject>
@@ -61,6 +61,19 @@
         </imageobject>
       </mediaobject>
     </figure>
+
+    <figure>
+      <title>Entering repository information step 2/2 (only for managed repositories)</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Workbench/QuickStart/QuickStart3b.png"
+                     format="PNG"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
   </section>
 
   <section xml:id="wb.QuickStartAddProject">
