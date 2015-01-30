@@ -747,6 +747,9 @@ public class PhreakAccumulateNode {
             // if there is a subnetwork, handle must be unwrapped
             tuple = (LeftTuple) handle.getObject();
         }
+
+        tuple.setPropagationContext(rightTuple.getPropagationContext());
+
         accumulate.accumulate(am.workingMemoryContext,
                               accresult.context,
                               tuple,
