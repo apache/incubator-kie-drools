@@ -48,7 +48,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
     public StructureRefTest(boolean persistence) {
         super(persistence);
     }
-    
+
     @Test
     public void testStringStructureRef() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-StringStructureRef.bpmn2");
@@ -184,7 +184,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
     
-    @Test(expected=RuntimeException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void testNotExistingVarBooleanStructureRefOnStart() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BooleanStructureRef.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -198,7 +198,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 
     }
     
-    @Test(expected=RuntimeException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void testInvalidBooleanStructureRefOnStart() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BooleanStructureRef.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -212,7 +212,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
  
     }
     
-    @Test(expected=RuntimeException.class)
+    @Test
     public void testInvalidBooleanStructureRefOnWIComplete() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-IntegerStructureRef.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -225,7 +225,15 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 
         Map<String, Object> res = new HashMap<String, Object>();
         res.put("testHT", true);
-        ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getId(), res);
+
+        try {
+            ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getId(), res);
+            fail();
+        }  catch (IllegalArgumentException iae) {
+            System.out.println("Expected IllegalArgumentException catched: " + iae);
+        } catch (Exception e) {
+            fail();
+        }
 
     }
 }
