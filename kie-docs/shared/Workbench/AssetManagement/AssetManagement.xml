@@ -17,8 +17,33 @@
             All the Asset Management features are implemented using jBPM Business Processes, which means that the 
             logic can be reused for external applications as well as adapted for domain specific requirements when needed.
         </para>
+    </section>
 
+    <section xml:id="wb.assetMgmtManagedVsUnmanaged">
+      <title>Managed vs Unmanaged Repositories</title>
 
+      <para>
+        Since the creation of the assets management features repositories can be classified into Managed or Unmanaged.
+      </para>
+
+      <section xml:id="wb.assetMgmtManagedRepositories">
+        <title>Managed Repositories</title>
+        <para>All new assets management  features are available for this type of repositories. Additionally a managed
+          repository can be "Single Project" or "Multi Project".
+        </para>
+
+        <para>A "Single Project" managed repository will contain just one Project. And a "Multi Project" managed
+          repository can contain multiple Projects. All of them related through the same parent, and they will share the
+          same group and version information.
+        </para>
+
+      </section>
+
+      <section xml:id="wb.assetMgmtUnManagedRepositories">
+        <title>Unmanaged Repositories</title>
+        <para>Assets management features are not available for this type or repositories and they basically behaves the
+          same as the repositories created with previous workbench versions.</para>
+      </section>
     </section>
 
     <section xml:id="wb.assetMgmtProcesses">
@@ -118,11 +143,191 @@
                 <imagedata fileref="images/Workbench/AssetManagement/new-repo-2page-wizzard.png"/>
             </imageobject>
         </mediaobject>
-        <para>As you can see there are two types of Managed Repositories: Single and Multi Project repositories.</para>
-        <para>Single Project Repository: </para>
-        <para>Multi Project Repository: </para>
-        <para>As soon as the repository is created</para>
+
+        <para>When a managed repository is created the assets management configuration process is automatically launched
+          in order to create the repository branches, and the corresponding project structure is also created.</para>
+
     </section>
+
+    <section xml:id="wb.assetMgmtRepositoryStructure">
+      <title>Repository Structure</title>
+
+      <para>Once a repository has been created it can be managed through the Repository Structure Screen.</para>
+
+      <para>To open the Repository Structure Screen for a given repository open the Project Authoring Perspective,
+        browse to the given repository and select the "Repository -> Repository Structure" menu option.</para>
+
+      <figure>
+        <title>Repository Structure Menu</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Workbench/AssetManagement/repo-structure-screen-menu.png"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <section xml:id="wb.assetMgmtRepositoryStructureManagedSingle">
+        <title>Single Project Managed Repository</title>
+
+        <para>The following picture shows an example of a single project managed repository structure.</para>
+
+        <figure>
+          <title>Single Project Managed Repository</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/AssetManagement/repo-structure-screen-managed-single.png"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+      </section>
+
+      <section xml:id="wb.assetMgmtRepositoryStructureManagedMulti">
+        <title>Multi Project Managed Repository</title>
+
+        <para>The following picture shows an example of a multi project managed repository structure.</para>
+
+        <figure>
+          <title>Multi Project Managed Repository</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/AssetManagement/repo-structure-screen-managed-multi.png"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+      </section>
+
+      <section xml:id="wb.assetMgmtRepositoryStructureUnmanaged">
+        <title>Unmanaged Repository</title>
+        <para>The following picture shows an example of an unmanaged repository structure.</para>
+
+        <figure>
+          <title>Unmanaged Repository</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/AssetManagement/repo-structure-screen-unmanaged.png"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+      </section>
+
+    </section>
+
+    <section xml:id="wb.assetMgmtManagedRepositoryOperations">
+      <title>Managed Repositories Operations</title>
+      <para>The following picture shows the screen areas related to managed repositories operations.</para>
+
+      <figure>
+        <title>Managed Repositories Operations</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Workbench/AssetManagement/repo-structure-screen-operation-areas.png"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <section xml:id="wb.assetMgmtManagedRepositoryOperationsBranchSelector">
+        <title>Branch Selector</title>
+        <para>The branch selector lets to switch between the different branches created by the Configure Repository Process.</para>
+
+        <figure>
+          <title>Branch Selector</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/AssetManagement/repo-structure-screen-operation-branch-selector.png"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+
+      <section xml:id="wb.assetMgmtManagedRepositoryAddProjectEditDelete">
+        <title>Project Operations</title>
+        <para>From the repository structure screen it's also possible to create, edit or delete projects from current repository.</para>
+
+        <figure>
+          <title>Add Project to current structure</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/AssetManagement/repo-structure-screen-operation-add-project.png"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <figure>
+          <title>Edit/Delete projects from current structure</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/AssetManagement/repo-structure-screen-operation-edit-delete-project.png"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+    </section>
+
+    <section xml:id="wb.assetMgmtManagedRepositoryCallProcess">
+      <title>Launch Assets Management Processes</title>
+      <para>The assets management processes can also be launched from the Project Structure Screen.</para>
+
+      <figure>
+        <title>Launch Assets Management Processes</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Workbench/AssetManagement/repo-structure-screen-operation-lauch-processes.png"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <section xml:id="wb.assetMgmtManagedRepositoryCallConfigureProcess">
+        <title>Launch the Configure Repository Process</title>
+        <para>Filling the parameters bellow a new instance of the Configure Repository can be started. (see Configure Repository Process)</para>
+
+        <figure>
+        <title>Configure Repository Process Parameters</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Workbench/AssetManagement/repo-structure-screen-operation-launch-configure-process.png"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      </section>
+
+      <section xml:id="wb.assetMgmtManagedRepositoryCallPromoteProcess">
+        <title>Launch the Promote Changes Process</title>
+        <para>Filling the parameters bellow a new instance of the Promote Changes Process can be started. (see Promote Changes Process)</para>
+
+        <figure>
+          <title>Promote Changes Process Parameters</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/AssetManagement/repo-structure-screen-operation-launch-promote-changes-process.png"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+      </section>
+
+      <section xml:id="wb.assetMgmtManagedRepositoryCallReleaseProcess">
+        <title>Launch the Release Process</title>
+        <para>Filling the parameters bellow a new instance of the Release Process can be started. (see Release Process)</para>
+
+        <figure>
+          <title>Release Process Parameters</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/AssetManagement/repo-structure-screen-operation-launch-release-process.png"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+      </section>
+
+    </section>
+
+
+    </section>
+
     <section xml:id="wb.assetMgmtRemoteAPIs">
         <title>Remote APIs </title>
         <para>TBD</para>
