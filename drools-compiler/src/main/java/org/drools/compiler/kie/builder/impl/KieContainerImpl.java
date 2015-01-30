@@ -102,7 +102,9 @@ public class KieContainerImpl
 
     public Results updateToVersion(ReleaseId newReleaseId) {
         checkNotClasspathKieProject();
-        return update(((KieModuleKieProject) kProject).getInternalKieModule(), newReleaseId);
+        Results results = update(((KieModuleKieProject) kProject).getInternalKieModule(), newReleaseId);
+        containerReleaseId = newReleaseId;
+        return results;
     }
 
     public Results updateDependencyToVersion(ReleaseId currentReleaseId, ReleaseId newReleaseId) {
