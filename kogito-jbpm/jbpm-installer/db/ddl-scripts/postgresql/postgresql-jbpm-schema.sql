@@ -674,14 +674,51 @@
     create sequence WORKITEMINFO_ID_SEQ;
     
     
-    create index IDX_Attachment_Id ON Attachment(TaskData_Attachments_Id);    
+    create index IDX_Attachment_Id ON Attachment(attachedBy_id);
+    create index IDX_Attachment_DataId ON Attachment(TaskData_Attachments_Id);
+    create index IDX_BoolExpr_Id ON BooleanExpression(Escalation_Constraints_Id);
+    create index IDX_CorrPropInfo_Id ON CorrelationPropertyInfo(correlationKey_keyId);
+    create index IDX_Deadline_StartId ON Deadline(Deadlines_StartDeadLine_Id);
+    create index IDX_Deadline_EndId ON Deadline(Deadlines_EndDeadLine_Id);
+    create index IDX_Delegation_EntityId ON Delegation_delegates(entity_id);
+    create index IDX_Delegation_TaskId ON Delegation_delegates(task_id);
+    create index IDX_ErrorInfo_Id ON ErrorInfo(REQUEST_ID);
+    create index IDX_Escalation_Id ON Escalation(Deadline_Escalation_Id);
     create index IDX_EventTypes_Id ON EventTypes(InstanceId);
-    create index IDX_I18NText_Subj on I18NText(Task_Subjects_Id);
-    create index IDX_I18NText_Name on I18NText(Task_Names_Id);
-    create index IDX_I18NText_Descr on I18NText(Task_Descriptions_Id);
-    create index IDX_I18NText_Notif on I18NText(Notification_Documentation_Id);
-    create index IDX_PA_PotOwners_TaskId on PeopleAssignments_PotOwners(task_id);
-    
+    create index IDX_I18NText_SubjId ON I18NText(Task_Subjects_Id);
+    create index IDX_I18NText_NameId ON I18NText(Task_Names_Id);
+    create index IDX_I18NText_DescrId ON I18NText(Task_Descriptions_Id);
+    create index IDX_I18NText_ReassignId ON I18NText(Reassignment_Documentation_Id);
+    create index IDX_I18NText_NotSubjId ON I18NText(Notification_Subjects_Id);
+    create index IDX_I18NText_NotDocId ON I18NText(Notification_Documentation_Id);
+    create index IDX_I18NText_NotDescrId ON I18NText(Notification_Descriptions_Id);
+    create index IDX_I18NText_DeadDocId ON I18NText(Deadline_Documentation_Id);
+    create index IDX_Not_EscId ON Notification(Escalation_Notifications_Id);
+    create index IDX_NotBAs_Entity ON Notification_BAs(entity_id);
+    create index IDX_NotBAs_Task ON Notification_BAs(task_id);
+    create index IDX_NotRec_Entity ON Notification_Recipients(entity_id);
+    create index IDX_NotRec_Task ON Notification_Recipients(task_id);
+    create index IDX_NotEmail_Header ON Notification_email_header(emailHeaders_id);
+    create index IDX_NotEmail_Not ON Notification_email_header(Notification_id);
+    create index IDX_PAsBAs_Entity ON PeopleAssignments_BAs(entity_id);
+    create index IDX_PAsBAs_Task ON PeopleAssignments_BAs(task_id);
+    create index IDX_PAsExcl_Entity ON PeopleAssignments_ExclOwners(entity_id);
+    create index IDX_PAsExcl_Task ON PeopleAssignments_ExclOwners(task_id);
+    create index IDX_PAsPot_Entity ON PeopleAssignments_PotOwners(entity_id);
+    create index IDX_PAsPot_Task ON PeopleAssignments_PotOwners(task_id);
+    create index IDX_PAsRecip_Entity ON PeopleAssignments_Recipients(entity_id);
+    create index IDX_PAsRecip_Task ON PeopleAssignments_Recipients(task_id);
+    create index IDX_PAsStake_Entity ON PeopleAssignments_Stakeholders(entity_id);
+    create index IDX_PAsStake_Task ON PeopleAssignments_Stakeholders(task_id);
+    create index IDX_Reassign_Esc ON Reassignment(Escalation_Reassignments_Id);
+    create index IDX_ReassignPO_Entity ON Reassignment_potentialOwners(entity_id);
+    create index IDX_ReassignPO_Task ON Reassignment_potentialOwners(task_id);
+    create index IDX_Task_Initiator ON Task(taskInitiator_id);
+    create index IDX_Task_ActualOwner ON Task(actualOwner_id);
+    create index IDX_Task_CreatedBy ON Task(createdBy_id);
+    create index IDX_TaskComments_CreatedBy ON task_comment(addedBy_id);
+    create index IDX_TaskComments_Id ON task_comment(TaskData_Comments_Id);
+        
     create index IDX_Task_processInstanceId on Task(processInstanceId);
     create index IDX_Task_processId on Task(processId);
     create index IDX_Task_status on Task(status);
@@ -694,9 +731,9 @@
     create index IDX_CMI_KSession ON ContextMappingInfo(KSESSION_ID);    
     create index IDX_CMI_Owner ON ContextMappingInfo(OWNER_ID);
     
-    create index IND_RequestInfo_status ON RequestInfo(status);
-    create index IND_RequestInfo_timestamp ON RequestInfo(timestamp);
-    create index IND_RequestInfo_owner ON RequestInfo(owner);
+    create index IDX_RequestInfo_status ON RequestInfo(status);
+    create index IDX_RequestInfo_timestamp ON RequestInfo(timestamp);
+    create index IDX_RequestInfo_owner ON RequestInfo(owner);
     
     create index IDX_BAMTaskSumm_createdDate on BAMTaskSummary(createdDate);
     create index IDX_BAMTaskSumm_duration on BAMTaskSummary(duration);
