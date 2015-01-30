@@ -60,6 +60,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.mock;
@@ -2890,5 +2891,37 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.insert(etr1);
 
         ksession.fireAllRules();
+    }
+
+    @Test
+    public void testNoLoopAccumulate() {
+        // DROOLS-694
+        String drl1 =
+                "import " + AtomicInteger.class.getCanonicalName() + ";\n" +
+                "rule NoLoopAccumulate\n" +
+                "no-loop\n" +
+                "when\n" +
+                "    accumulate( $s : String() ; $val : count($s) )\n" +
+                "    $a : AtomicInteger( )\n" +
+                "then\n" +
+                "    modify($a) { set($val.intValue()) }\n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent(drl1, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        AtomicInteger counter = new AtomicInteger(0);
+        ksession.insert(counter);
+
+        ksession.insert("1");
+        ksession.fireAllRules();
+
+        assertEquals(1, counter.get());
+
+        ksession.insert("2");
+        ksession.fireAllRules();
+
+        assertEquals(2, counter.get());
     }
 }
