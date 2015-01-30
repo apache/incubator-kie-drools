@@ -33,21 +33,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DeploymentSynchronizer implements DeploymentEventListener {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(DeploymentSynchronizer.class);
-	
+
 	public static final String DEPLOY_SYNC_INTERVAL = System.getProperty("org.jbpm.deploy.sync.int", "3");
 	public static final boolean DEPLOY_SYNC_ENABLED = Boolean.parseBoolean(System.getProperty("org.jbpm.deploy.sync.enabled", "true"));
-	
+
 	private final Map<String, DeploymentUnit> entries = new ConcurrentHashMap<String, DeploymentUnit>();
-	
+
 	private DeploymentStore deploymentStore;
 	private DeploymentService deploymentService;
-	
+
 	private Date lastSync = null;
-	
+
 	protected Class<?> targetExceptionClass;
-	
+
 	public DeploymentSynchronizer() {
         String clazz = System.getProperty("org.kie.constviol.exclass", "org.hibernate.exception.ConstraintViolationException");
         try {
@@ -56,11 +56,11 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
             logger.error("Optimistic locking exception class not found {}", clazz, e);
         }
     }
-	
+
 	public boolean isActive() {
 		return true;
 	}
-	
+
 
 	public void setDeploymentStore(DeploymentStore deploymentStore) {
 		this.deploymentStore = deploymentStore;
@@ -84,7 +84,7 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 			} else {
 				deploymentStore.getDeploymentUnitsByDate(lastSync, enabledSet, disabledSet, activatedSet, deactivatedSet);
 			}
-			
+
 			logger.debug("About to synchronize deployment units, found new enabled {}, found new disabled {}", enabledSet, disabledSet);
 			if (enabledSet != null) {
 				for (DeploymentUnit unit : enabledSet) {
@@ -95,12 +95,12 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 							deploymentService.deploy(unit);
 						} catch (Exception e) {
 							entries.remove(unit.getIdentifier());
-							logger.warn("Deployment unit {} failed to deploy: {}", unit.getIdentifier(), e.getMessage());						
+							logger.warn("Deployment unit {} failed to deploy: {}", unit.getIdentifier(), e.getMessage());
 						}
 					}
 				}
 			}
-			
+
 			if (disabledSet != null) {
 				for (DeploymentUnit unit : disabledSet) {
 					if (entries.containsKey(unit.getIdentifier()) && deploymentService.getDeployedUnit(unit.getIdentifier()) != null) {
@@ -116,7 +116,7 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 					}
 				}
 			}
-			
+
 			logger.debug("About to synchronize deployment units, found new activated {}, found new deactivated {}", activatedSet, deactivatedSet);
 			if (activatedSet != null) {
 				for (DeploymentUnit unit : activatedSet) {
@@ -126,7 +126,7 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 					}
 				}
 			}
-			
+
 			if (deactivatedSet != null) {
 				for (DeploymentUnit unit : deactivatedSet) {
 					DeployedUnit deployed = deploymentService.getDeployedUnit(unit.getIdentifier());
@@ -141,7 +141,7 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 		// update last sync date
 		this.lastSync = new Date();
 	}
-	
+
 	@Override
 	public void onDeploy(DeploymentEvent event) {
 		if (event == null || event.getDeployedUnit() == null) {
@@ -149,7 +149,7 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 		}
 		DeploymentUnit unit = event.getDeployedUnit().getDeploymentUnit();
 		if (!entries.containsKey(unit.getIdentifier())) {
-			
+
 			try {
 				deploymentStore.enableDeploymentUnit(unit);
 				// when successfully stored add it to local store
@@ -159,11 +159,11 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 				if (isCausedByConstraintViolation(e)) {
 					logger.info("Deployment {} already stored in deployment store", unit);
 				} else {
-					logger.error("Unable to store deployment {} in deployment store due to {}", e.getMessage());
+					logger.error("Unable to store deployment {} in deployment store due to {}", unit, e.getMessage());
 				}
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -184,7 +184,7 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 			deploymentStore.activateDeploymentUnit(unit);
 			logger.info("Deployment unit {} activated successfully", unit.getIdentifier());
 		}
-		
+
 	}
 
 
@@ -195,9 +195,9 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 			deploymentStore.deactivateDeploymentUnit(unit);
 			logger.info("Deployment unit {} deactivated successfully", unit.getIdentifier());
 		}
-		
+
 	}
-	
+
     protected boolean isCausedByConstraintViolation(Throwable throwable) {
         if (targetExceptionClass == null) {
             return false;
@@ -214,5 +214,5 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 
         return false;
     }
-	
+
 }
