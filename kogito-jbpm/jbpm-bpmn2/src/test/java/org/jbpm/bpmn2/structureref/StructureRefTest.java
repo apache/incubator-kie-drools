@@ -236,4 +236,21 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         }
 
     }
+    
+    @Test
+    public void testInvalidBooleanStructureRefOnStartVerifyErrorMsg() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BooleanStructureRef.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        try {
+	        Map<String, Object> params = new HashMap<String, Object>();
+	        params.put("test", "invalid boolean");
+	        ksession.startProcess("StructureRef", params);
+        } catch (IllegalArgumentException e) {
+        	assertEquals("Variable 'test' has incorrect data type expected:Boolean actual:java.lang.String", e.getMessage());
+        }
+ 
+    }
 }

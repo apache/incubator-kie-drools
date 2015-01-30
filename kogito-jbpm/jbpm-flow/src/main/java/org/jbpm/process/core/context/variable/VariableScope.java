@@ -94,7 +94,7 @@ public class VariableScope extends AbstractContext {
 	    	boolean isValidType = var.getType().verifyDataType(value);
 	    	if (!isValidType) {
 	    		throw new IllegalArgumentException("Variable '" + name +"' has incorrect data type expected:" 
-	    						+ var.getType().getStringType() + " actual:" + value);
+	    						+ var.getType().getStringType() + " actual:" + value.getClass().getName());
 	    	}
     	}
 	}
