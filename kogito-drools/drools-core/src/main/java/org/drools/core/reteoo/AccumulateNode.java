@@ -271,18 +271,21 @@ public class AccumulateNode extends BetaNode {
         public  LeftTuple           resultLeftTuple;
         public  boolean             propagated;
         private WorkingMemoryAction action; // is transiant
+        private PropagationContext  propagationContext;
 
         public void readExternal(ObjectInput in) throws IOException,
                 ClassNotFoundException {
             context = in.readObject();
             result = (RightTuple) in.readObject();
             propagated = in.readBoolean();
+            propagationContext = (PropagationContext) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject(context);
             out.writeObject(result);
             out.writeBoolean(propagated);
+            out.writeObject(propagationContext);
         }
 
         public WorkingMemoryAction getAction() {
@@ -307,6 +310,14 @@ public class AccumulateNode extends BetaNode {
 
         public void setResultLeftTuple(LeftTuple resultLeftTuple) {
             this.resultLeftTuple = resultLeftTuple;
+        }
+
+        public PropagationContext getPropagationContext() {
+            return propagationContext;
+        }
+
+        public void setPropagationContext(PropagationContext propagationContext) {
+            this.propagationContext = propagationContext;
         }
     }
 
