@@ -703,7 +703,13 @@ public class PhreakAccumulateNode {
 
 
         LeftTuple childLeftTuple = accctx.getResultLeftTuple();
-        childLeftTuple.setPropagationContext(leftTuple.getPropagationContext());
+        if (accctx.getPropagationContext() != null) {
+            childLeftTuple.setPropagationContext(accctx.getPropagationContext());
+            accctx.setPropagationContext(null);
+        } else {
+            childLeftTuple.setPropagationContext(leftTuple.getPropagationContext());
+        }
+
         if (accctx.propagated) {
             switch (childLeftTuple.getStagedType()) {
                 // handle clash with already staged entries
@@ -739,7 +745,7 @@ public class PhreakAccumulateNode {
                                  final LeftTuple currentRightChild,
                                  final InternalWorkingMemory wm,
                                  final AccumulateMemory am,
-                                 final AccumulateContext accresult,
+                                 final AccumulateContext accctx,
                                  final boolean useLeftMemory) {
         LeftTuple tuple = leftTuple;
         InternalFactHandle handle = rightTuple.getFactHandle();
@@ -748,10 +754,10 @@ public class PhreakAccumulateNode {
             tuple = (LeftTuple) handle.getObject();
         }
 
-        tuple.setPropagationContext(rightTuple.getPropagationContext());
+        accctx.setPropagationContext(rightTuple.getPropagationContext());
 
         accumulate.accumulate(am.workingMemoryContext,
-                              accresult.context,
+                              accctx.context,
                               tuple,
                               handle,
                               wm);
