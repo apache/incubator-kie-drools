@@ -27,14 +27,15 @@ public class ProcessGetInformationHandler extends ProcessHandler {
     
     private ProcessDescriptionRepository repository;
     
-    private ProcessDescRepoHelper repositoryHelper;
+    private BPMN2DataServiceSemanticModule module;
 
     public ProcessGetInformationHandler() {
     }
     
-    public ProcessGetInformationHandler(ProcessDescRepoHelper repoHelper, ProcessDescriptionRepository repo) {
-		this.repository = repo;
-		this.repositoryHelper = repoHelper;
+    public ProcessGetInformationHandler(BPMN2DataServiceSemanticModule module) {
+    	this.module = module;
+    	this.repository = module.getRepo();
+		
 	}
 
     @Override
@@ -49,15 +50,11 @@ public class ProcessGetInformationHandler extends ProcessHandler {
         value.setProcess(definition);
         repository.addProcessDescription(definition.getId(), value);
         
-        repositoryHelper.setProcess(value.getProcess());
+        module.getRepoHelper().setProcess(value.getProcess());
         
         return process;
     }
 
-    
-    public void setRepositoryHelper(ProcessDescRepoHelper repositoryHelper) {
-        this.repositoryHelper = repositoryHelper;
-    }
 
     public void setRepository(ProcessDescriptionRepository repository) {
         this.repository = repository;
@@ -67,7 +64,7 @@ public class ProcessGetInformationHandler extends ProcessHandler {
     @Override
     public Object end(String uri, String localName, ExtensibleXmlParser parser)
             throws SAXException {
-        repositoryHelper.clear();
+    	module.getRepoHelper().clear();
         return super.end(uri, localName, parser);
     }
 }

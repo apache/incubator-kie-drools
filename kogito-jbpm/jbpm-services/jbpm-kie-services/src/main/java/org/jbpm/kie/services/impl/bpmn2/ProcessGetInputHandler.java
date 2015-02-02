@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
 
 public class ProcessGetInputHandler extends PropertyHandler implements Handler {
 
-    private ProcessDescRepoHelper repositoryHelper;
+    private BPMN2DataServiceSemanticModule module;
     private ProcessDescriptionRepository repository;
     
     public ProcessGetInputHandler() {
@@ -33,22 +33,22 @@ public class ProcessGetInputHandler extends PropertyHandler implements Handler {
             
     }
     
-    public ProcessGetInputHandler(ProcessDescRepoHelper repoHelper, ProcessDescriptionRepository repo) {
-		this.repository = repo;
-		this.repositoryHelper = repoHelper;
+    public ProcessGetInputHandler(BPMN2DataServiceSemanticModule module) {
+		this.module = module;
+    	this.repository = module.getRepo();	
 	}
 
     @Override
     public Object start(final String uri, final String localName,
                     final Attributes attrs, final ExtensibleXmlParser parser)
                     throws SAXException {
-        String mainProcessId = repositoryHelper.getProcess().getId();
+        String mainProcessId = module.getRepoHelper().getProcess().getId();
         
         Object result = super.start(uri, localName, attrs, parser);
         if(result instanceof Variable){
             String metaData = (String)((Variable)result).getMetaData("ItemSubjectRef");
             if(metaData != null){
-            String structureRef = repository.getGlobalItemDefinitions().get(metaData);
+            String structureRef = module.getRepoHelper().getGlobalItemDefinitions().get(metaData);
                 if(structureRef != null){
                     repository.getProcessDesc(mainProcessId).getInputs().put(((Variable)result).getName(), structureRef);
                 }else{
@@ -58,10 +58,6 @@ public class ProcessGetInputHandler extends PropertyHandler implements Handler {
         }
         
         return result;
-    }
-
-    public void setRepositoryHelper(ProcessDescRepoHelper repositoryHelper) {
-        this.repositoryHelper = repositoryHelper;
     }
 
     public void setRepository(ProcessDescriptionRepository repository) {

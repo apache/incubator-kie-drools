@@ -19,18 +19,26 @@ import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 
 public class BPMN2DataServiceSemanticModule extends BPMNSemanticModule {
 	
-	private ProcessDescRepoHelper repoHelper = new ProcessDescRepoHelper();
+	private static ThreadLocal<ProcessDescRepoHelper> helper = new ThreadLocal<ProcessDescRepoHelper>();
+
+//	private ProcessDescRepoHelper repoHelper = new ProcessDescRepoHelper();
 	private ProcessDescriptionRepository repo = new ProcessDescriptionRepository();
     
-    private HumanTaskGetInformationHandler taskHandler = new HumanTaskGetInformationHandler(repoHelper, repo);    
-    private ProcessGetInformationHandler processHandler = new ProcessGetInformationHandler(repoHelper, repo);    
-    private ProcessGetInputHandler processInputHandler = new ProcessGetInputHandler(repoHelper, repo);    
-    private GetReusableSubProcessesHandler reusableSubprocessHandler = new GetReusableSubProcessesHandler(repoHelper, repo);    
-    private DataServiceItemDefinitionHandler itemDefinitionHandler = new DataServiceItemDefinitionHandler(repoHelper, repo);    
-    private AbstractTaskGetInformationHandler abstractTaskHandler = new AbstractTaskGetInformationHandler(repoHelper, repo);
+    private HumanTaskGetInformationHandler taskHandler = null;    
+    private ProcessGetInformationHandler processHandler = null;    
+    private ProcessGetInputHandler processInputHandler = null;    
+    private GetReusableSubProcessesHandler reusableSubprocessHandler = null;    
+    private DataServiceItemDefinitionHandler itemDefinitionHandler = null;    
+    private AbstractTaskGetInformationHandler abstractTaskHandler = null;
     
     public BPMN2DataServiceSemanticModule() {
         super();
+        taskHandler = new HumanTaskGetInformationHandler(this);
+        processHandler = new ProcessGetInformationHandler(this);    
+        processInputHandler = new ProcessGetInputHandler(this);    
+        reusableSubprocessHandler = new GetReusableSubProcessesHandler(this);    
+        itemDefinitionHandler = new DataServiceItemDefinitionHandler(this);    
+        abstractTaskHandler = new AbstractTaskGetInformationHandler(this);
         init();
     }
 
@@ -68,11 +76,11 @@ public class BPMN2DataServiceSemanticModule extends BPMNSemanticModule {
     }
 
 	public ProcessDescRepoHelper getRepoHelper() {
-		return repoHelper;
+		return helper.get();
 	}
 
-	public void setRepoHelper(ProcessDescRepoHelper repoHelper) {
-		this.repoHelper = repoHelper;
+	public static void setRepoHelper(ProcessDescRepoHelper repoHelper) {
+		helper.set(repoHelper);
 	}
 
 	public ProcessDescriptionRepository getRepo() {
@@ -81,6 +89,10 @@ public class BPMN2DataServiceSemanticModule extends BPMNSemanticModule {
 
 	public void setRepo(ProcessDescriptionRepository repo) {
 		this.repo = repo;
-	}    
+	}  
+	
+	public static void dispose() {
+		helper.set(null);		
+	}
     
 }

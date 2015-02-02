@@ -28,25 +28,20 @@ public class GetReusableSubProcessesHandler extends CallActivityHandler {
     
     private ProcessDescriptionRepository repository;
     
-    private ProcessDescRepoHelper repositoryHelper;
+    private BPMN2DataServiceSemanticModule module;
     
-    public GetReusableSubProcessesHandler(ProcessDescRepoHelper repoHelper, ProcessDescriptionRepository repo) {
-		this.repository = repo;
-		this.repositoryHelper = repoHelper;
+    public GetReusableSubProcessesHandler(BPMN2DataServiceSemanticModule module) {
+		this.module = module;
+    	this.repository = module.getRepo();
 	}
     
     @Override
     protected void handleNode(Node node, Element element, String uri,
             String localName, ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
-        String mainProcessId = repositoryHelper.getProcess().getId();
+        String mainProcessId = module.getRepoHelper().getProcess().getId();
         SubProcessNode subProcess = (SubProcessNode) node;
         repository.getProcessDesc(mainProcessId).getReusableSubProcesses().add(subProcess.getProcessId());
-    }
-
-    
-    public void setRepositoryHelper(ProcessDescRepoHelper repositoryHelper) {
-        this.repositoryHelper = repositoryHelper;
     }
 
     public void setRepository(ProcessDescriptionRepository repository) {

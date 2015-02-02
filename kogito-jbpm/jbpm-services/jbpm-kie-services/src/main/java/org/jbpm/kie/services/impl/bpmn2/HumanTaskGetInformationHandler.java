@@ -32,8 +32,9 @@ import org.xml.sax.SAXException;
 
 public class HumanTaskGetInformationHandler extends UserTaskHandler {
 
-    private ProcessDescRepoHelper repositoryHelper;
     private ProcessDescriptionRepository repository;
+    
+    private BPMN2DataServiceSemanticModule module;
 
     /**
      * Creates a new {@link HumanTaskGetInformationHandler} instance.
@@ -43,9 +44,10 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
     public HumanTaskGetInformationHandler() {
     }
 
-    public HumanTaskGetInformationHandler(ProcessDescRepoHelper repoHelper, ProcessDescriptionRepository repo) {
-		this.repository = repo;
-		this.repositoryHelper = repoHelper;
+    public HumanTaskGetInformationHandler(BPMN2DataServiceSemanticModule module) {
+    	this.module = module;
+    	this.repository = module.getRepo();
+
 	}
 
 	/**
@@ -76,8 +78,8 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
         NamedNodeMap map = xmlNode.getParentNode().getAttributes();
         Node nodeName = map.getNamedItem("name");
         String name = nodeName.getNodeValue();
-        
-        String mainProcessId = repositoryHelper.getProcess().getId();
+
+        String mainProcessId = module.getRepoHelper().getProcess().getId();
         UserTaskDefinitionImpl task = (UserTaskDefinitionImpl)repository.getProcessDesc(mainProcessId).getTasks().get(name);
         if (task == null) {
         	task = new UserTaskDefinitionImpl();
@@ -112,7 +114,7 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
             super.handleNode(node, element, uri, localName, parser);
         WorkItemNode humanTaskNode = (WorkItemNode) node;
         Map<String, Object> parameters = humanTaskNode.getWork().getParameters();
-        String mainProcessId = repositoryHelper.getProcess().getId();
+        String mainProcessId = module.getRepoHelper().getProcess().getId();
         
         String name = humanTaskNode.getName();
         UserTaskDefinitionImpl task = (UserTaskDefinitionImpl)repository.getProcessDesc(mainProcessId).getTasks().get(name);
@@ -140,7 +142,7 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
     @Override
     protected String readPotentialOwner(org.w3c.dom.Node xmlNode, HumanTaskNode humanTaskNode) {
         String user = xmlNode.getFirstChild().getFirstChild().getFirstChild().getTextContent();
-        String mainProcessId = repositoryHelper.getProcess().getId();
+        String mainProcessId = module.getRepoHelper().getProcess().getId();
         
         String name = humanTaskNode.getName();
         UserTaskDefinitionImpl task = (UserTaskDefinitionImpl)repository.getProcessDesc(mainProcessId).getTasks().get(name);
@@ -159,11 +161,6 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
         return user;
     }
 
-
-    
-    public void setRepositoryHelper(ProcessDescRepoHelper repositoryHelper) {
-        this.repositoryHelper = repositoryHelper;
-    }
 
     public void setRepository(ProcessDescriptionRepository repository) {
         this.repository = repository;

@@ -23,13 +23,13 @@ import org.xml.sax.SAXException;
 
 public class AbstractTaskGetInformationHandler extends TaskHandler {
 
-    private ProcessDescRepoHelper repositoryHelper;
+    private BPMN2DataServiceSemanticModule module;
     private ProcessDescriptionRepository repository;
 
     
-    public AbstractTaskGetInformationHandler(ProcessDescRepoHelper repoHelper, ProcessDescriptionRepository repo) {
-		this.repository = repo;
-		this.repositoryHelper = repoHelper;
+    public AbstractTaskGetInformationHandler(BPMN2DataServiceSemanticModule module) {
+		this.module = module;
+    	this.repository = module.getRepo();
 	}
    
     @Override
@@ -37,17 +37,10 @@ public class AbstractTaskGetInformationHandler extends TaskHandler {
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
             super.handleNode(node, element, uri, localName, parser);
         String name = super.getTaskName(element);
-        String mainProcessId = repositoryHelper.getProcess().getId();
+        String mainProcessId = module.getRepoHelper().getProcess().getId();
         repository.getProcessDesc(mainProcessId).getServiceTasks().put(node.getName(), name);
        
-    }
-    
-   
-
-    
-    public void setRepositoryHelper(ProcessDescRepoHelper repositoryHelper) {
-        this.repositoryHelper = repositoryHelper;
-    }
+    }   
 
     public void setRepository(ProcessDescriptionRepository repository) {
         this.repository = repository;

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.services.api.model.UserTaskDefinition;
@@ -34,6 +35,7 @@ public class ProcessDescRepoHelper {
     private Collection<String> reusableSubProcesses = new ArrayList<String>();
     private Map<String, String> itemDefinitions = new HashMap<String, String>();
     private Map<String, String> serviceTasks = new HashMap<String, String>();
+    private Map<String, String> globalItemDefinitions = new HashMap<String, String>();
     
     public ProcessDescRepoHelper() {
     }
@@ -81,9 +83,19 @@ public class ProcessDescRepoHelper {
 
     public void setServiceTasks(Map<String, String> serviceTasks) {
         this.serviceTasks = serviceTasks;
+    }    
+
+    public Map<String, String> getGlobalItemDefinitions() {
+        return globalItemDefinitions;
     }
-    
-    
+
+    public Collection<String> getReusableSubProcesses() {
+        return reusableSubProcesses;
+    }
+
+    public void setReusableSubProcesses(Collection<String> reusableSubProcesses) {
+        this.reusableSubProcesses = reusableSubProcesses;
+    }
     
     public void clear(){
         process = null;
@@ -95,13 +107,7 @@ public class ProcessDescRepoHelper {
         reusableSubProcesses.clear();
         itemDefinitions.clear();
         serviceTasks.clear();
+        globalItemDefinitions.clear();
     }
 
-    public Collection<String> getReusableSubProcesses() {
-        return reusableSubProcesses;
-    }
-
-    public void setReusableSubProcesses(Collection<String> reusableSubProcesses) {
-        this.reusableSubProcesses = reusableSubProcesses;
-    }
 }
