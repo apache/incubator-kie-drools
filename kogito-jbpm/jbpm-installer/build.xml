@@ -413,7 +413,7 @@
       <arg value="-application" />
       <arg value="org.eclipse.equinox.p2.director" />
       <arg value="-repository" />
-      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/kepler/1.0.2,http://download.eclipse.org/releases/kepler,http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423" />
+      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/kepler/1.0.4,http://download.eclipse.org/releases/kepler,http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423" />
       <arg value="-destination" />
       <arg value="${eclipse.home}" />
       <arg value="-installIU" />
@@ -468,14 +468,14 @@
   <target name="start.h2" depends="start.h2.check" if="start.h2.db">
     <java classname="org.h2.tools.Server" fork="true" spawn="true">
       <arg value="-tcp" />
-      <classpath location="${install.home}/db/driver/h2.jar" />
+      <classpath location="${install.home}/db/driver/h2-${H2.version}.jar" />
     </java>
   </target>
 
   <!-- Stop H2 server -->
   <target name="stop.h2" depends="start.h2.check" if="start.h2.db">
     <java classname="org.h2.tools.Server" fork="true">
-      <classpath location="${install.home}/db/driver/h2.jar" />
+      <classpath location="${install.home}/db/driver/h2-${H2.version}.jar" />
       <arg value="-tcpShutdown" />
       <arg value="tcp://localhost:9092" />
     </java>
