@@ -88,6 +88,7 @@
               org.kie.scanner.*
             </Export-Package>
             <Import-Package>
+              javax.naming,
               javax.net.ssl,
               org.apache.commons.logging,
               org.drools.compiler.kie.builder.impl,
@@ -99,7 +100,9 @@
               org.kie.api.builder.model,
               org.kie.api.runtime,
               org.osgi.framework,
-              org.slf4j
+              org.slf4j,
+              org.slf4j.spi,
+              org.slf4j.helpers
             </Import-Package>
             <Bundle-Activator>org.kie.scanner.Activator</Bundle-Activator>
             <_removeheaders>Private-Package</_removeheaders>
