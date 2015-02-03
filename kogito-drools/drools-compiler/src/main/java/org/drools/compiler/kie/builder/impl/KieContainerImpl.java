@@ -47,13 +47,13 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
@@ -68,10 +68,10 @@ public class KieContainerImpl
 
     private KieProject           kProject;
 
-    private final Map<String, KieBase> kBases = new HashMap<String, KieBase>();
+    private final Map<String, KieBase> kBases = new ConcurrentHashMap<String, KieBase>();
 
-    private final Map<String, KieSession> kSessions = new HashMap<String, KieSession>();
-    private final Map<String, StatelessKieSession> statelessKSessions = new HashMap<String, StatelessKieSession>();
+    private final Map<String, KieSession> kSessions = new ConcurrentHashMap<String, KieSession>();
+    private final Map<String, StatelessKieSession> statelessKSessions = new ConcurrentHashMap<String, StatelessKieSession>();
 
     private final KieRepository        kr;
 
@@ -360,13 +360,19 @@ public class KieContainerImpl
     public KieBase getKieBase(String kBaseName) {
         KieBase kBase = kBases.get( kBaseName );
         if ( kBase == null ) {
-            ResultsImpl msgs = new ResultsImpl();
-            kBase = createKieBase(kBaseName, kProject, msgs, null);
-            if ( kBase == null ) {
-                // build error, throw runtime exception
-                throw new RuntimeException( "Error while creating KieBase" + msgs.filterMessages( Level.ERROR  ) );
+            KieBaseModelImpl kBaseModel = getKieBaseModelImpl(kBaseName);
+            synchronized (kBaseModel) {
+                kBase = kBases.get( kBaseName );
+                if ( kBase == null ) {
+                    ResultsImpl msgs = new ResultsImpl();
+                    kBase = createKieBase(kBaseModel, kProject, msgs, null);
+                    if (kBase == null) {
+                        // build error, throw runtime exception
+                        throw new RuntimeException("Error while creating KieBase" + msgs.filterMessages(Level.ERROR));
+                    }
+                    kBases.put(kBaseName, kBase);
+                }
             }
-            kBases.put( kBaseName, kBase );
         }
         return kBase;
     }
@@ -381,7 +387,7 @@ public class KieContainerImpl
 
     public KieBase newKieBase(String kBaseName, KieBaseConfiguration conf) {
         ResultsImpl msgs = new ResultsImpl();
-        KieBase kBase = createKieBase(kBaseName, kProject, msgs, conf);
+        KieBase kBase = createKieBase(getKieBaseModelImpl(kBaseName), kProject, msgs, conf);
         if ( kBase == null ) {
             // build error, throw runtime exception
             throw new RuntimeException( "Error while creating KieBase" + msgs.filterMessages( Level.ERROR  ) );
@@ -389,12 +395,7 @@ public class KieContainerImpl
         return kBase;
     }
 
-    private KieBase createKieBase(String kBaseName, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf) {
-        KieBaseModelImpl kBaseModel = (KieBaseModelImpl) kProject.getKieBaseModel(kBaseName);
-        if (kBaseModel == null) {
-            throw new RuntimeException( "The requested KieBase \"" + kBaseName + "\" does not exist" );
-        }
-
+    private KieBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf) {
         ClassLoader cl = kieProject.getClassLoader();
         InternalKieModule kModule = kieProject.getKieModuleForKBase( kBaseModel.getName() );
 
@@ -415,7 +416,7 @@ public class KieContainerImpl
             (conf == null || conf.getOption(EventProcessingOption.class) == EventProcessingOption.CLOUD ) ) {
             for (KnowledgePackage kpkg : pkgs) {
                 if ( ((KnowledgePackageImpl) kpkg).needsStreamMode() ) {
-                    throw new RuntimeException( "The requested KieBase \"" + kBaseName + "\" has been set to run in CLOUD mode but requires features only available in STREAM mode" );
+                    throw new RuntimeException( "The requested KieBase \"" + kBaseModel.getName() + "\" has been set to run in CLOUD mode but requires features only available in STREAM mode" );
                 }
             }
         }
@@ -429,6 +430,14 @@ public class KieContainerImpl
 
         kBase.addKnowledgePackages( pkgs );
         return kBase;
+    }
+
+    private KieBaseModelImpl getKieBaseModelImpl(String kBaseName) {
+        KieBaseModelImpl kBaseModel = (KieBaseModelImpl) kProject.getKieBaseModel(kBaseName);
+        if (kBaseModel == null) {
+            throw new RuntimeException( "The requested KieBase \"" + kBaseName + "\" does not exist" );
+        }
+        return kBaseModel;
     }
 
     private KieBaseConfiguration getKnowledgeBaseConfiguration(KieBaseModelImpl kBaseModel, ClassLoader cl) {
