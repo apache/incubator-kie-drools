@@ -221,14 +221,14 @@
     <echo message="Checking Dashboard download ..." />
     <condition property="dashboard.not.available">
       <not>
-        <available file="${install.home}/lib/dashboard-builder-${dashboard.version}.war" />
+        <available file="${install.home}/lib/dashboard-builder-${dashboard.version}-${jboss.war.type}.war" />
       </not>
     </condition>
   </target>  
   <target name="download.dashboard" depends="download.dashboard.check" if="dashboard.not.available">
     <echo message="Getting Dashboard ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${dashboard.url}" dest="${install.home}/lib/dashboard-builder-${dashboard.version}.war" />
+    <get src="${dashboard.url}" dest="${install.home}/lib/dashboard-builder-${dashboard.version}-${jboss.war.type}.war" />
   </target>
 
   <!-- Download jBPM and Drools Eclipse plugins -->
@@ -353,7 +353,7 @@
   <target name="install.dashboard.into.jboss" depends="download.dashboard">
     <mkdir dir="${install.home}/target"/>
     <mkdir dir="${install.home}/target/dashboard-builder-war"/>
-    <unzip src="${install.home}/lib/dashboard-builder-${dashboard.version}.war"
+    <unzip src="${install.home}/lib/dashboard-builder-${dashboard.version}-${jboss.war.type}.war"
            dest="${install.home}/target/dashboard-builder-war"/>
   	<copy tofile="${install.home}/target/dashboard-builder-war/WEB-INF/jboss-web.xml" overwrite="true" 
   		  file="${install.home}/dashboard-builder-jboss-web.xml" failonerror="false"/>
@@ -600,6 +600,7 @@
   <target name="clean.jboss.repository" if="clean.repository" depends="check.clean.repository">
   	<delete dir="${install.home}/.niogit"/>
     <delete dir="${install.home}/.index"/>
+    <delete dir="${install.home}/.security"/>
     <delete dir="${install.home}/repositories"/>
   </target>
 	
