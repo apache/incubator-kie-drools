@@ -28,7 +28,7 @@
   <itemDefinition id="_406504CA-672D-4D8D-A344-4817683B167F-approval_translatedDocumentItem" structureRef="String" />
   <itemDefinition id="_406504CA-672D-4D8D-A344-4817683B167F-approval_reviewCommentItem" structureRef="String" />
 
-  <process processType="Private" isExecutable="true" id="org.jbpm.writedocument" name="humanTaskSample" tns:packageName="defaultPackage" tns:version="1">
+  <process processType="Private" isExecutable="true" id="org.jbpm.writedocument" name="humanTaskSample" tns:packageName="defaultPackage" tns:version="3">
 
     <!-- process variables -->
     <property id="approval_document" itemSubjectRef="_approval_documentItem"/>

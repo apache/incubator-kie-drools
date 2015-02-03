@@ -108,7 +108,7 @@ public class BPMN2DataServicesTest extends AbstractBaseTest {
         assertEquals(procDef.getKnowledgeType(), "PROCESS");
         assertEquals(procDef.getPackageName(), "defaultPackage");
         assertEquals(procDef.getType(), "RuleFlow");
-        assertEquals(procDef.getVersion(), "1");
+        assertEquals(procDef.getVersion(), "3");
 
         Collection<UserTaskDefinition> processTasks = bpmn2Service.getTasksDefinitions(deploymentUnit.getIdentifier(), processId);
         
