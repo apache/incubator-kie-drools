@@ -15,7 +15,6 @@
  */
 package org.jbpm.executor;
 
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.jbpm.test.util.TestUtil;
@@ -28,7 +27,7 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
 public class NoCDISimpleExecutorTest extends BasicExecutorBaseTest{
     
 	private PoolingDataSource pds;
-	private EntityManagerFactory emf = null;
+	
     
     @Before
     public void setUp() {

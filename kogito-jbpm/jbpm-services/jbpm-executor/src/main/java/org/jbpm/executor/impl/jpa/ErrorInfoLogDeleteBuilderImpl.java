@@ -32,7 +32,8 @@ public class ErrorInfoLogDeleteBuilderImpl extends AbstractAuditDeleteBuilderImp
 		if (checkIfNotNull(date)) {
 			return this;
 		}
-		addObjectParameter(EXECUTOR_TIME_ID, "date", date);
+
+		addObjectParameter(EXECUTOR_TIME_ID, "date", ensureDateNotTimestamp(date));
 		return this;
 	}
 
@@ -41,7 +42,7 @@ public class ErrorInfoLogDeleteBuilderImpl extends AbstractAuditDeleteBuilderImp
 		if (checkIfNotNull(rangeStart)) {
 			return this;
 		}
-		addRangeParameter(EXECUTOR_TIME_ID, "date range end", rangeStart, true);
+		addRangeParameter(EXECUTOR_TIME_ID, "date range end", ensureDateNotTimestamp(rangeStart)[0], true);
 		return this;
 	}
 
@@ -50,7 +51,7 @@ public class ErrorInfoLogDeleteBuilderImpl extends AbstractAuditDeleteBuilderImp
 		if (checkIfNotNull(rangeStart)) {
 			return this;
 		}
-		addRangeParameter(EXECUTOR_TIME_ID, "date range end", rangeStart, false);
+		addRangeParameter(EXECUTOR_TIME_ID, "date range end", ensureDateNotTimestamp(rangeStart)[0], false);
         return this;
 	}
 

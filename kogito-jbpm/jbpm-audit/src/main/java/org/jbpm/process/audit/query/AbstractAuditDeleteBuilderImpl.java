@@ -4,6 +4,7 @@ import static org.kie.internal.query.QueryParameterIdentifiers.DATE_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_ID_LIST;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import org.jbpm.process.audit.JPAAuditLogService;
@@ -92,6 +93,19 @@ public class AbstractAuditDeleteBuilderImpl<T> extends AbstractQueryBuilderImpl<
         }
         
         return false;
+    }
+    
+    protected Date[] ensureDateNotTimestamp(Date...date) {
+		Date[] validated = new Date[date.length];
+		for (int i = 0; i < date.length; ++i) {
+			if (date[i] instanceof Timestamp) {
+				validated[i] = new Date(date[i].getTime());
+			} else {
+				validated[i] = date[i];
+			}
+		}
+		
+		return validated;
     }
   
 }

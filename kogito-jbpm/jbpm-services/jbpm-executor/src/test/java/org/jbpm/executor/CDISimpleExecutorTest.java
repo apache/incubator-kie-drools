@@ -16,6 +16,8 @@
 
 package org.jbpm.executor;
 
+import javax.persistence.Persistence;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -24,6 +26,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.test.util.TestUtil;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
@@ -69,5 +72,10 @@ public class CDISimpleExecutorTest extends BasicExecutorBaseTest {
     @AfterClass
     public static void afterClass() {
     	pds.close();
+    }
+    
+    @Before
+    public void setup() {
+    	emf = Persistence.createEntityManagerFactory("org.jbpm.executor");
     }
 }
