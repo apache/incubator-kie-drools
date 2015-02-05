@@ -155,6 +155,12 @@
     <table>
       <title>Optimization algorithms overview</title>
 
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Optimization_algorithms/scalabilityOfOptimizationAlgorithms.png"/>
+        </imageobject>
+      </mediaobject>
+
       <tgroup cols="6">
         <colspec align="left" colnum="1" colwidth="4*"/>
 
