@@ -247,9 +247,9 @@ public class ScoreDirectorFactoryConfig {
                 && scoreDefinitionType != ScoreDefinitionType.BENDABLE_LONG
                 && scoreDefinitionType != ScoreDefinitionType.BENDABLE_BIG_DECIMAL
                 && (bendableHardLevelsSize != null || bendableSoftLevelsSize != null)) {
-            throw new IllegalArgumentException("With scoreDefinitionType (" + scoreDefinitionType
-                    + ") there must be no bendableHardLevelsSize (" + bendableHardLevelsSize
-                    + ") or bendableSoftLevelsSize (" + bendableSoftLevelsSize + ").");
+            throw new IllegalArgumentException("A bendableHardLevelsSize (" + bendableHardLevelsSize
+                    + ") or bendableSoftLevelsSize (" + bendableSoftLevelsSize
+                    + ") needs a scoreDefinitionType (" + scoreDefinitionType + ") that is bendable.");
         }
         if ((scoreDefinitionType == ScoreDefinitionType.BENDABLE
                 || scoreDefinitionType == ScoreDefinitionType.BENDABLE_LONG
@@ -260,11 +260,9 @@ public class ScoreDirectorFactoryConfig {
                     + ") and a bendableSoftLevelsSize (" + bendableSoftLevelsSize + ").");
         }
         if (scoreDefinitionClass != null) {
-            if (scoreDefinitionType != null || bendableHardLevelsSize != null || bendableSoftLevelsSize != null) {
-                throw new IllegalStateException("With scoreDefinitionClass (" + scoreDefinitionClass
-                        + ") there must be no scoreDefinitionType (" + scoreDefinitionType
-                        + ") or bendableHardLevelsSize (" + bendableHardLevelsSize
-                        + ") or bendableSoftLevelsSize (" + bendableSoftLevelsSize + ").");
+            if (scoreDefinitionType != null) {
+                throw new IllegalArgumentException("With scoreDefinitionClass (" + scoreDefinitionClass
+                        + ") there must be no scoreDefinitionType (" + scoreDefinitionType + ").");
             }
             return ConfigUtils.newInstance(this, "scoreDefinitionClass", scoreDefinitionClass);
         }
