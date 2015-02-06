@@ -91,6 +91,14 @@
   </part>
 
   <part>
+    <title>KIE Server</title>
+    <partintro>
+      <para>The KIE Server is a standalone execution server for rules.</para>
+    </partintro>
+    <xi:include href="../../../../../shared/KieServer/KieServer.xml"/>
+  </part>
+  
+  <part>
     <title>Drools Examples</title>
     <partintro>
       <para>Examples to help you learn Drools</para>
