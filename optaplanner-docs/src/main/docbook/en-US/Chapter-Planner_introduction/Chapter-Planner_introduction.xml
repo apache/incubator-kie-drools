@@ -496,8 +496,8 @@ $ mvn exec:exec
 
       <note>
         <para>This documentation covers some impl classes too. Those documented impl classes are reliable and safe to
-        use (unless explicitly marked as experimental in this documentation), but we're just entirely comfortable yet to
-        write their signatures in stone.</para>
+        use (unless explicitly marked as experimental in this documentation), but we're just not entirely comfortable
+        yet to write their signatures in stone.</para>
       </note>
     </section>
 
