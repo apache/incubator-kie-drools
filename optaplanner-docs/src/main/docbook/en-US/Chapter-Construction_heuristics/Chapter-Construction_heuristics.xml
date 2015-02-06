@@ -78,8 +78,8 @@
       </mediaobject>
 
       <note>
-        <para>One would expect that this algorithm has better results than First Fit. That's not always the case, but
-        usually is.</para>
+        <para>One would expect that this algorithm has better results than First Fit. That's usually the case, but not
+        always.</para>
       </note>
     </section>
 
@@ -154,8 +154,8 @@
       comparison</link> and <link linkend="planningValueStrength">planning value strength comparison</link>.</para>
 
       <note>
-        <para>Do not presume that this algorithm has better results than First Fit, First Fit Decreasing and Weakest
-        Fit. That's often not the case.</para>
+        <para>Do not presume that this algorithm has better results than First Fit Decreasing. That's often not the
+        case. However, it is usually better than Weakest Fit.</para>
       </note>
     </section>
 
@@ -166,6 +166,82 @@
 
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;WEAKEST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
+  &lt;/constructionHeuristic&gt;</programlisting>
+
+      <note>
+        <para>If the <link linkend="initializingScoreTrend">InitializingScoreTrend</link> is
+        <literal>ONLY_DOWN</literal>, this algorithm is faster: for an entity, it picks the first move for which the
+        score does not deteriorate the last step score, ignoring all subsequent moves.</para>
+      </note>
+
+      <para>For advanced configuration, see <link linkend="allocateEntityFromQueue">Allocate Entity From
+      Queue</link>.</para>
+    </section>
+  </section>
+
+  <section xml:id="strongestFit">
+    <title>Strongest Fit</title>
+
+    <section>
+      <title>Algorithm description</title>
+
+      <para>Like First Fit, but uses the strong planning values first, because the strong planning values are more
+      likely to have a lower soft cost to use. So it sorts the planning values on decreasing strength.</para>
+
+      <para>Requires the model to support <link linkend="planningValueStrength">planning value strength
+      comparison</link>.</para>
+
+      <note>
+        <para>Do not presume that this algorithm has better results than First Fit or Weakest Fit. That's often not the
+        case.</para>
+      </note>
+    </section>
+
+    <section>
+      <title>Configuration</title>
+
+      <para>Configure this solver phase:</para>
+
+      <programlisting language="xml">  &lt;constructionHeuristic&gt;
+    &lt;constructionHeuristicType&gt;STRONGEST_FIT&lt;/constructionHeuristicType&gt;
+  &lt;/constructionHeuristic&gt;</programlisting>
+
+      <note>
+        <para>If the <link linkend="initializingScoreTrend">InitializingScoreTrend</link> is
+        <literal>ONLY_DOWN</literal>, this algorithm is faster: for an entity, it picks the first move for which the
+        score does not deteriorate the last step score, ignoring all subsequent moves.</para>
+      </note>
+
+      <para>For advanced configuration, see <link linkend="allocateEntityFromQueue">Allocate Entity From
+      Queue</link>.</para>
+    </section>
+  </section>
+
+  <section xml:id="strongestFitDecreasing">
+    <title>Strongest Fit Decreasing</title>
+
+    <section>
+      <title>Algorithm description</title>
+
+      <para>Combines First Fit Decreasing and Strongest Fit. So it sorts the planning entities on decreasing difficulty
+      and the planning values on decreasing strength.</para>
+
+      <para>Requires the model to support <link linkend="planningEntityDifficulty">planning entity difficulty
+      comparison</link> and <link linkend="planningValueStrength">planning value strength comparison</link>.</para>
+
+      <note>
+        <para>Do not presume that this algorithm has better results than First Fit Decreasing or Weakest Fit Decreasing.
+        That's often not the case. However, it is usually better than Strongest Fit.</para>
+      </note>
+    </section>
+
+    <section>
+      <title>Configuration</title>
+
+      <para>Configure this solver phase:</para>
+
+      <programlisting language="xml">  &lt;constructionHeuristic&gt;
+    &lt;constructionHeuristicType&gt;STRONGEST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
   &lt;/constructionHeuristic&gt;</programlisting>
 
       <note>
