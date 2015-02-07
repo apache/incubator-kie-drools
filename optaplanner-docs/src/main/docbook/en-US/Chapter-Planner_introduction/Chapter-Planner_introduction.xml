@@ -390,7 +390,7 @@ $ runExamples.bat</programlisting>
 
       <orderedlist>
         <listitem>
-          <para><link xlink:href="http://help.github.com/set-up-git-redirect">Set up Git</link> and clone
+          <para><link xlink:href="https://help.github.com/articles/set-up-git/">Set up Git</link> and clone
           <literal>optaplanner</literal> from GitHub (or alternatively, download <link
           xlink:href="https://github.com/droolsjbpm/optaplanner/zipball/master">the zipball</link>):</para>
 

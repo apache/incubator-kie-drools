@@ -945,7 +945,7 @@
       <literal>1000</literal> and <literal>2000</literal>), resulting in 12 solver configurations.</para>
 
       <para>To reduce the verbosity of such a benchmark configuration, you can use a <link
-      xlink:href="http://freemarker.sourceforge.net/">Freemarker</link> template for the benchmark configuration
+      xlink:href="http://freemarker.org//">Freemarker</link> template for the benchmark configuration
       instead:</para>
 
       <programlisting language="xml">&lt;plannerBenchmark&gt;

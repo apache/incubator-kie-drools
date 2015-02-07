@@ -160,11 +160,11 @@
       </orderedlist>
 
       <important>
-        <para>Because of <link xlink:href="WildFly's class loading">WildFly's class loading</link>, the method
+        <para>Because of WildFly's class loading, the method
         <literal>SolverFactory.createFromXmlResource()</literal> might not find the solver configuration and throw an
         <literal>IllegalArgumentException</literal>. Instead use:</para>
 
-        <programlisting>        SolverFactory solverFactory = SolverFactory.createFromXmlInputStream(
+        <programlisting language="java">        SolverFactory solverFactory = SolverFactory.createFromXmlInputStream(
                 getClass().getClassLoader().getResourceAsStream(
                         "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml"));</programlisting>
       </important>

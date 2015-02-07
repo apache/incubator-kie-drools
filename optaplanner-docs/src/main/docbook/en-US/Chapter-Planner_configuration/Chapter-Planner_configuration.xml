@@ -1807,13 +1807,13 @@ INFO  Solving ended: time spent (24), best score (0), average calculate count pe
 
         <listitem>
           <para><literal>MERSENNE_TWISTER</literal>: Implementation by <link
-          xlink:href="commons.apache.org/proper/commons-math/userguide/random.html">Commons Math</link>.</para>
+          xlink:href="http://commons.apache.org/proper/commons-math/userguide/random.html">Commons Math</link>.</para>
         </listitem>
 
         <listitem>
           <para><literal>WELL512A</literal>, <literal>WELL1024A</literal>, <literal>WELL19937A</literal>,
           <literal>WELL19937C</literal>, <literal>WELL44497A</literal> and <literal>WELL44497B</literal>: Implementation
-          by <link xlink:href="commons.apache.org/proper/commons-math/userguide/random.html">Commons Math</link>.</para>
+          by <link xlink:href="http://commons.apache.org/proper/commons-math/userguide/random.html">Commons Math</link>.</para>
         </listitem>
       </itemizedlist>
 
