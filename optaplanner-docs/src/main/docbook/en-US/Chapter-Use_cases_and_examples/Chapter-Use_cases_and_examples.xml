@@ -396,7 +396,7 @@
 
             <entry><itemizedlist>
                 <listitem>
-                  <para><link linkend="variableListener">VariableListener</link></para>
+                  <para><link linkend="customVariableListener">VariableListener</link></para>
                 </listitem>
 
                 <listitem>
@@ -440,7 +440,7 @@
 
             <entry><itemizedlist>
                 <listitem>
-                  <para><link linkend="variableListener">VariableListener</link></para>
+                  <para><link linkend="customVariableListener">VariableListener</link></para>
                 </listitem>
 
                 <listitem>
@@ -496,7 +496,7 @@
                 </listitem>
 
                 <listitem>
-                  <para><link linkend="variableListener">VariableListener</link></para>
+                  <para><link linkend="customVariableListener">VariableListener</link></para>
                 </listitem>
               </itemizedlist></entry>
           </row>
@@ -585,7 +585,7 @@
 
             <entry><itemizedlist>
                 <listitem>
-                  <para><link linkend="variableListener">VariableListener</link></para>
+                  <para><link linkend="customVariableListener">VariableListener</link></para>
                 </listitem>
               </itemizedlist></entry>
           </row>
@@ -1465,7 +1465,7 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
         </mediaobject>
 
         <para>The vehicle routing with timewindows domain model makes heavily use of <link
-        linkend="planningVariableListener">shadow variables</link>. This allows it to express its constraints more
+        linkend="shadowVariable">shadow variables</link>. This allows it to express its constraints more
         naturally, because properties such as <literal>arrivalTime</literal> and <literal>departureTime</literal>, are
         directly available on the domain model.</para>
       </section>
