@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.exhaustivesearch.node.comparator;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
@@ -23,7 +24,7 @@ import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 /**
  * Investigate the nodes with a better optimistic bound first, then deeper nodes.
  */
-public class OptimisticBoundFirstNodeComparator implements Comparator<ExhaustiveSearchNode> {
+public class OptimisticBoundFirstNodeComparator implements Comparator<ExhaustiveSearchNode>, Serializable {
 
     public OptimisticBoundFirstNodeComparator(boolean scoreBounderEnabled) {
         if (!scoreBounderEnabled) {

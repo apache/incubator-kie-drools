@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.exhaustivesearch.node.comparator;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.core.api.score.Score;
@@ -30,7 +31,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * A typical {@link ScoreBounder}'s {@link ScoreBounder#calculateOptimisticBound(ScoreDirector, Score)}
  * will be weak, which results in horrible performance scalability too.
  */
-public class BreadthFirstNodeComparator implements Comparator<ExhaustiveSearchNode> {
+public class BreadthFirstNodeComparator implements Comparator<ExhaustiveSearchNode>, Serializable {
 
     private final boolean scoreBounderEnabled;
 

@@ -1,11 +1,12 @@
 package org.optaplanner.examples.common.business;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  * Sorts data like this: "data-1", "data-2", "data-3", "data-10", "data-20", "data-100", ...
  */
-public class AlphaNumericStringComparator implements Comparator<String> {
+public class AlphaNumericStringComparator implements Comparator<String>, Serializable {
 
     public int compare(String a, String b) {
         char[] aChars = a.toCharArray();

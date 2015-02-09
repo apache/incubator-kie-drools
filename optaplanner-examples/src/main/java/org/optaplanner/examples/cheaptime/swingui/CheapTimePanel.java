@@ -18,6 +18,7 @@ package org.optaplanner.examples.cheaptime.swingui;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -143,7 +144,7 @@ public class CheapTimePanel extends SolutionPanel {
         return new XYPlot(seriesCollection, domainAxis, null, renderer);
     }
 
-    private static class PlotTaskAssignmentComparator implements Comparator<TaskAssignment> {
+    private static class PlotTaskAssignmentComparator implements Comparator<TaskAssignment>, Serializable {
 
         @Override
         public int compare(TaskAssignment a, TaskAssignment b) {

@@ -137,8 +137,6 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
         InnerScoreDirector scoreDirector = phaseScope.getScoreDirector();
         int uninitializedVariableCount = phaseScope.getSolutionDescriptor()
                 .countReinitializableVariables(scoreDirector, phaseScope.getWorkingSolution());
-        Collection<GenuineVariableDescriptor> genuineVariableDescriptors = entitySelector.getEntityDescriptor()
-                .getGenuineVariableDescriptors();
         for (Object entity : entitySelector) {
             ExhaustiveSearchLayer layer = new ExhaustiveSearchLayer(depth, entity, uninitializedVariableCount);
             // Keep in sync with ExhaustiveSearchPhaseConfig.buildMoveSelectorConfig()

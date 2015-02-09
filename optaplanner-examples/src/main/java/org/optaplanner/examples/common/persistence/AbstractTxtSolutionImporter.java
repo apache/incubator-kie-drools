@@ -219,17 +219,22 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
 
         public String readOptionalStringValue(String prefixRegex, String suffixRegex, String defaultValue) throws IOException {
             bufferedReader.mark(1024);
-            String value = bufferedReader.readLine().trim();
             boolean valid = true;
-            if (value.matches("^" + prefixRegex + ".*")) {
-                value = value.replaceAll("^" + prefixRegex + "(.*)", "$1");
-            } else {
+            String value = bufferedReader.readLine();
+            if (value == null) {
                 valid = false;
-            }
-            if (value.matches(".*" + suffixRegex + "$")) {
-                value = value.replaceAll("(.*)" + suffixRegex + "$", "$1");
             } else {
-                valid = false;
+                value = value.trim();
+                if (value.matches("^" + prefixRegex + ".*")) {
+                    value = value.replaceAll("^" + prefixRegex + "(.*)", "$1");
+                } else {
+                    valid = false;
+                }
+                if (value.matches(".*" + suffixRegex + "$")) {
+                    value = value.replaceAll("(.*)" + suffixRegex + "$", "$1");
+                } else {
+                    valid = false;
+                }
             }
             if (!valid) {
                 bufferedReader.reset();
