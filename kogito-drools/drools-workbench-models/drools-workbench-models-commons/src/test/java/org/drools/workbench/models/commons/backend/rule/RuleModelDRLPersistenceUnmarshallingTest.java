@@ -17,6 +17,7 @@ package org.drools.workbench.models.commons.backend.rule;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -6933,6 +6934,215 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                                                                  dmo );
 
         assertNotNull( m );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1189930
+    //Formatted as generated from a Guided Rule in the Workbench
+    public void testBigDecimal1() throws Exception {
+        String drl = "package org.test;\n" +
+                "import java.lang.Number;\n" +
+                "import java.math.BigDecimal;\n" +
+                "import java.util.Calendar;\n" +
+                "rule \"BigDecimalRule\"\n" +
+                "  dialect \"java\"\n" +
+                "when\n" +
+                "  $bd : BigDecimal( )\n" +
+                "then\n" +
+                "  LastRunInformation lastRun = new LastRunInformation();\n" +
+                "  lastRun.setLastNumber( $bd );\n" +
+                "  insert( lastRun );\n" +
+                "end";
+
+        addModelField( "org.test.LastRunInformation",
+                       "this",
+                       "org.test.LastRunInformation",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.LastRunInformation",
+                       "lastNumber",
+                       BigDecimal.class.getName(),
+                       DataType.TYPE_NUMERIC_BIGDECIMAL );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+        final FactPattern fp = (FactPattern) p;
+        assertEquals( "$bd",
+                      fp.getBoundName() );
+        assertEquals( "BigDecimal",
+                      fp.getFactType() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        final IAction a = m.rhs[ 0 ];
+        assertTrue( a instanceof ActionInsertFact );
+        final ActionInsertFact aif = (ActionInsertFact) a;
+        assertEquals( "lastRun",
+                      aif.getBoundName() );
+        assertEquals( "LastRunInformation",
+                      aif.getFactType() );
+
+        assertEquals( 1,
+                      aif.getFieldValues().length );
+        final ActionFieldValue afv0 = aif.getFieldValues()[ 0 ];
+        assertEquals( "lastNumber",
+                      afv0.getField() );
+        assertEquals( FieldNatureType.TYPE_VARIABLE,
+                      afv0.getNature() );
+        assertEquals( "=$bd",
+                      afv0.getValue() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1189930
+    public void testBigDecimal2() throws Exception {
+        String drl = "package org.test;\n" +
+                "import java.lang.Number;\n" +
+                "import java.math.BigDecimal;\n" +
+                "import java.util.Calendar;\n" +
+                "rule \"BigDecimalRule\"\n" +
+                "  dialect \"java\"\n" +
+                "when\n" +
+                "  $bd : BigDecimal( )\n" +
+                "then\n" +
+                "  LastRunInformation lastRun = new LastRunInformation();\n" +
+                "  lastRun.setLastNumber($bd);\n" +
+                "  insert(lastRun);\n" +
+                "end";
+
+        addModelField( "org.test.LastRunInformation",
+                       "this",
+                       "org.test.LastRunInformation",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.LastRunInformation",
+                       "lastNumber",
+                       BigDecimal.class.getName(),
+                       DataType.TYPE_NUMERIC_BIGDECIMAL );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+        final FactPattern fp = (FactPattern) p;
+        assertEquals( "$bd",
+                      fp.getBoundName() );
+        assertEquals( "BigDecimal",
+                      fp.getFactType() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        final IAction a = m.rhs[ 0 ];
+        assertTrue( a instanceof ActionInsertFact );
+        final ActionInsertFact aif = (ActionInsertFact) a;
+        assertEquals( "lastRun",
+                      aif.getBoundName() );
+        assertEquals( "LastRunInformation",
+                      aif.getFactType() );
+
+        assertEquals( 1,
+                      aif.getFieldValues().length );
+        final ActionFieldValue afv0 = aif.getFieldValues()[ 0 ];
+        assertEquals( "lastNumber",
+                      afv0.getField() );
+        assertEquals( FieldNatureType.TYPE_VARIABLE,
+                      afv0.getNature() );
+        assertEquals( "=$bd",
+                      afv0.getValue() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1189930
+    public void testBigDecimal3() throws Exception {
+        String drl = "package org.test;\n" +
+                "import java.lang.Number;\n" +
+                "import java.math.BigDecimal;\n" +
+                "import java.util.Calendar;\n" +
+                "rule \"BigDecimalRule\"\n" +
+                "  dialect \"java\"\n" +
+                "when\n" +
+                "  $bd : BigDecimal( )\n" +
+                "then\n" +
+                "  LastRunInformation lastRun = new LastRunInformation();\n" +
+                "  lastRun.setLastNumber($bd);\n" +
+                "\n" +
+                "  insert(lastRun);\n" +
+                "end";
+
+        addModelField( "org.test.LastRunInformation",
+                       "this",
+                       "org.test.LastRunInformation",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.LastRunInformation",
+                       "lastNumber",
+                       BigDecimal.class.getName(),
+                       DataType.TYPE_NUMERIC_BIGDECIMAL );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+        final FactPattern fp = (FactPattern) p;
+        assertEquals( "$bd",
+                      fp.getBoundName() );
+        assertEquals( "BigDecimal",
+                      fp.getFactType() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        final IAction a = m.rhs[ 0 ];
+        assertTrue( a instanceof ActionInsertFact );
+        final ActionInsertFact aif = (ActionInsertFact) a;
+        assertEquals( "lastRun",
+                      aif.getBoundName() );
+        assertEquals( "LastRunInformation",
+                      aif.getFactType() );
+
+        assertEquals( 1,
+                      aif.getFieldValues().length );
+        final ActionFieldValue afv0 = aif.getFieldValues()[ 0 ];
+        assertEquals( "lastNumber",
+                      afv0.getField() );
+        assertEquals( FieldNatureType.TYPE_VARIABLE,
+                      afv0.getNature() );
+        assertEquals( "=$bd",
+                      afv0.getValue() );
 
         //Check round-trip
         assertEqualsIgnoreWhitespace( drl,
