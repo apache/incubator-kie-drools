@@ -293,7 +293,7 @@ end</programlisting>
       <para>Each configured phase <literal>Termination</literal> resets, but each solver Termination (including
       <literal>terminateEarly</literal>) does not reset. Normally however, you won't configure any
       <literal>Termination</literal>, just call <literal>Solver.terminateEarly()</literal> when the results are needed.
-      Alternatively, use the daemon mode in combation with <literal><link
+      Alternatively, use the daemon mode in combination with <literal><link
       linkend="SolverEventListener">BestSolutionChangedEvent</link></literal> as described below.</para>
     </section>
 

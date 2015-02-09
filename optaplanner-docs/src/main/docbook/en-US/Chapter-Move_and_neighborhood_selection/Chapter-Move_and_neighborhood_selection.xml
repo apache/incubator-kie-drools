@@ -959,7 +959,7 @@
       <note>
         <para>If the chosen construction heuristic implies sorting, for example <literal>FIRST_FIT_DECREASING</literal>
         implies that the <literal>EntitySelector</literal> is sorted, there is no need to explicitly configure a
-        <literal>Selector</literal> with sorting. If you do explicitely configure the <literal>Selector</literal>, it
+        <literal>Selector</literal> with sorting. If you do explicitly configure the <literal>Selector</literal>, it
         overwrites the default settings of that construction heuristic.</para>
       </note>
 

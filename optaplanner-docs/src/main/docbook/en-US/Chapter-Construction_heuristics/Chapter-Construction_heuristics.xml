@@ -332,7 +332,7 @@
         </listitem>
 
         <listitem>
-          <para><literal>DECREASING_STRENGTH</literal>: Evaluate the planning values in descreasing strength. Requires
+          <para><literal>DECREASING_STRENGTH</literal>: Evaluate the planning values in decreasing strength. Requires
           the model to support <link linkend="planningValueStrength">planning value strength comparison</link>.</para>
         </listitem>
 

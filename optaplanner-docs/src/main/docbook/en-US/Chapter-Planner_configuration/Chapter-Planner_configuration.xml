@@ -184,7 +184,7 @@
       <note>
         <para>In <link linkend="realTimePlanning">real-time planning</link>, even thought the problem itself changes,
         problem facts don't really change during planning, instead they change between planning (because the Solver
-        temporarly stops to apply the problem fact changes).</para>
+        temporarily stops to apply the problem fact changes).</para>
       </note>
 
       <para>A good model can greatly improve the success of your planning implementation. Follow these guidelines to
@@ -1632,7 +1632,7 @@ public class SeatDesignationDependency {
         <para>The production mode is the fastest, but it is not reproducible. It is recommended for a production
         environment, unless reproducibility is required.</para>
 
-        <para>In pratice, this mode uses no fixed <link linkend="randomNumberGenerator">random seed</link> if no seed is
+        <para>In practice, this mode uses no fixed <link linkend="randomNumberGenerator">random seed</link> if no seed is
         specified.</para>
       </section>
     </section>

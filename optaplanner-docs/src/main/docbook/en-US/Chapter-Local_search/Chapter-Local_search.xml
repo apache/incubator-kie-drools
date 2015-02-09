@@ -683,6 +683,6 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
     </note>
 
     <para>If you build a better implementation that's not domain specific, consider contributing it back as a pull
-    request on github: we'll optimize it and take it along in future refactors.</para>
+    request on github: we'll optimize it and take it along in future refactorings.</para>
   </section>
 </chapter>
