@@ -28,7 +28,7 @@ import org.jbpm.process.core.context.AbstractContext;
  */
 public class VariableScope extends AbstractContext {
 	
-	private static final boolean VARIABLE_STRICT = Boolean.parseBoolean(System.getProperty("org.jbpm.variable.strict", "false"));
+	private static boolean variableStrictEnabled = Boolean.parseBoolean(System.getProperty("org.jbpm.variable.strict", "false"));
 
     public static final String VARIABLE_SCOPE = "VariableScope";
     
@@ -83,7 +83,7 @@ public class VariableScope extends AbstractContext {
     }
     
 	public void validateVariable(String processName, String name, Object value) {
-		if (!VARIABLE_STRICT) {
+		if (!variableStrictEnabled) {
 			return;
 		}
 		Variable var = findVariable(name);
@@ -97,6 +97,12 @@ public class VariableScope extends AbstractContext {
 	    						+ var.getType().getStringType() + " actual:" + value.getClass().getName());
 	    	}
     	}
+	}
+	/*
+	 * mainly for test coverage to easily switch between settings 
+	 */
+	public static void setVariableStrictOption(boolean turnedOn) {
+		variableStrictEnabled = turnedOn;
 	}
 
 }
