@@ -80,6 +80,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
     @BeforeClass
     public static void setup() throws Exception {
         setUpDataSource();
+        VariableScope.setVariableStrictOption(true);
     }
 
     @After

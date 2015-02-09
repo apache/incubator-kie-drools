@@ -274,6 +274,8 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                     VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
                     resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
                     if (variableScopeInstance != null) {
+                    	variableScopeInstance.getVariableScope().validateWorkItemResultVariable(getProcessInstance().getProcessName(), 
+                    																association.getSources().get(0), workItem);
                         Object value = workItem.getResult(association.getSources().get(0));
                         if (value == null) {
                             try {

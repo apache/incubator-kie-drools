@@ -272,4 +272,29 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         VariableScope.setVariableStrictOption(true);
  
     }
+    
+    @Test
+    public void testNotExistingBooleanStructureRefOnWIComplete() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-IntegerStructureRef.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        
+        ProcessInstance processInstance = ksession.startProcess("StructureRef");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+
+        Map<String, Object> res = new HashMap<String, Object>();
+        res.put("not existing", true);
+
+        try {
+            ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getId(), res);
+            fail();
+        }  catch (IllegalArgumentException iae) {
+            System.out.println("Expected IllegalArgumentException catched: " + iae);
+        } catch (Exception e) {
+            fail();
+        }
+
+    }
 }

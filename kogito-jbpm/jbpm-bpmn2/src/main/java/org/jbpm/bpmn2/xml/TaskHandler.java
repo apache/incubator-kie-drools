@@ -32,6 +32,7 @@ import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.Transformation;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.kie.api.definition.process.Connection;
 import org.kie.api.runtime.process.DataTransformer;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -216,8 +217,15 @@ public class TaskHandler extends AbstractNodeHandler {
 				forEachNode.addNode(node);
 				forEachNode.linkIncomingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE, node.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE);
 				forEachNode.linkOutgoingConnections(node.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE, NodeImpl.CONNECTION_DEFAULT_TYPE);
+				
+				Node orignalNode = node;				
 				node = forEachNode;
 				handleForEachNode(node, element, uri, localName, parser);
+				// remove output collection data output of for each to avoid problems when running in variable strict mode
+				if (orignalNode instanceof WorkItemNode) {
+					((WorkItemNode)orignalNode).adjustOutMapping(forEachNode.getOutputCollectionExpression());
+				}
+								
 				break;
 			}
 			xmlNode = xmlNode.getNextSibling();

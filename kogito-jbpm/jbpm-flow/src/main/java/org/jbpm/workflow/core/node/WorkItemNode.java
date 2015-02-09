@@ -18,6 +18,7 @@ package org.jbpm.workflow.core.node;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +93,16 @@ public class WorkItemNode extends StateBasedNode implements Mappable, ContextCon
     
     public void addOutMapping(String parameterName, String variableName) {
     	outMapping.add(new DataAssociation(parameterName, variableName, null, null));
+    }
+    
+    public void adjustOutMapping(String forEachOutVariable) {
+    	Iterator<DataAssociation> it = outMapping.iterator();
+    	while (it.hasNext()) {
+    		DataAssociation association = it.next();
+    		if (forEachOutVariable.equals(association.getTarget())) {
+    			it.remove();
+    		}
+    	}
     }
 
     public void setOutMappings(Map<String, String> outMapping) {
