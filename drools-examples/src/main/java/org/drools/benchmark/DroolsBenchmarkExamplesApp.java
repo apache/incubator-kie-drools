@@ -24,6 +24,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+/**
+ * Warning: Manners benchmark is working (producing the correct result), but it performs a
+ * breadth first search instead of a depth first one as it could be expected to do.
+ * At the moment it is not possible to specify the type of tree search in drools.
+ */
 public class DroolsBenchmarkExamplesApp extends JFrame {
 
     public static void main(String[] args) {
