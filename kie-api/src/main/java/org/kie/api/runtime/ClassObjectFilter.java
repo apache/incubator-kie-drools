@@ -41,4 +41,7 @@ public class ClassObjectFilter
         return this.clazz.isAssignableFrom( object.getClass() );
     }
 
+    public Class getFilteredClass() {
+        return clazz;
+    }
 }
