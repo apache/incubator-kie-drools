@@ -525,7 +525,13 @@ public class JPAAuditLogService implements AuditLogService {
             queryBase = NODE_INSTANCE_LOG_QUERY;
         } else { 
             throw new IllegalStateException("Unsupported result type: " + resultType.getName() );
-        }
+        }        
+        return doQuery(queryBase, queryData, resultType);
+    }
+    
+    public <T> List<T> doQuery(String queryBase, QueryData queryData, Class<T> resultType) { 
+        // create query
+       
         Map<String, Object> queryParams = new HashMap<String, Object>();
         // also does order by: @see #adaptOrderBy(String) 
         String queryString = createQuery(queryBase, queryData, queryParams);

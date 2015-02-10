@@ -1,7 +1,7 @@
 package org.jbpm.services.task.audit.service;
 
 import static org.kie.internal.query.QueryParameterIdentifiers.CREATED_ON_ID;
-import static org.kie.internal.query.QueryParameterIdentifiers.DEPLOYMENT_ID;
+import static org.kie.internal.query.QueryParameterIdentifiers.DEPLOYMENT_ID_LIST;
 
 import java.util.Date;
 
@@ -76,7 +76,7 @@ public class AuditTaskInstanceLogDeleteBuilderImpl extends AbstractAuditDeleteBu
 		if (checkIfNotNull(deploymentId)) {
 			return this;
 		}
-		addObjectParameter(DEPLOYMENT_ID, "deployment id", deploymentId);
+		addObjectParameter(DEPLOYMENT_ID_LIST, "deployment id", deploymentId);
         return this;
 	}
 

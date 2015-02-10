@@ -17,6 +17,30 @@ import org.kie.internal.executor.api.STATUS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Log clean up command that aims at doing house keeping of audit/log tables used in jBPM:
+ * <ul>
+ * 	<li>process related audit logs (process instance, node instance, variables)</li>
+ * 	<li>task related audit logs (audit task, task events)</li>
+ * 	<li>executor related data (requests and errors)</li>
+ * </ul>
+ * Command by default is auto configured to run once a day from the time it was initially scheduled though it can be reconfigured
+ * in terms of frequency when it is executed and if it shall run multiple times at all.<br/>
+ * Following is a complete list of accepted parameters:
+ * <ul>
+ * 	<li>SkipProcessLog - indicates if clean up of process logs should be omitted (true|false)</li>
+ * 	<li>SkipTaskLog - indicates if clean up of task logs should be omitted (true|false)</li>
+ * 	<li>SkipExecutorLog - indicates if clean up of executor logs should be omitted (true|false)</li>
+ * 	<li>DateFormat - date format for further date related params - if not given yyyy-MM-dd is used (pattern of SimpleDateFormat class)</li>
+ * 	<li>EmfName - name of entity manager factory to be used for queries (valid persistence unit name)</li>
+ * 	<li>SingleRun - indicates if execution should be single run only (true|false)</li>
+ * 	<li>NextRun - provides next execution time (valid time expression e.g. 1d, 5h, etc)</li>
+ * 	<li>OlderThan - indicates what logs should be deleted - older than given date</li>
+ * 	<li>OlderThanPeriod - indicated what logs should be deleted older than given time expression (valid time expression e.g. 1d, 5h, etc)</li>
+ * 	<li>ForProcess - indicates logs to be deleted only for given process definition</li>
+ * 	<li>ForDeployment - indicates logs to be deleted that are from given deployment id</li>
+ * </ul>
+ */
 public class LogCleanupCommand implements Command, Reoccurring {
 	
 	private static final Logger logger = LoggerFactory.getLogger(LogCleanupCommand.class);
@@ -43,6 +67,13 @@ public class LogCleanupCommand implements Command, Reoccurring {
 		boolean skipProcessLog = ctx.getData().containsKey("SkipProcessLog")?Boolean.parseBoolean((String)ctx.getData("SkipProcessLog")):false;
 		boolean skipTaskLog = ctx.getData().containsKey("SkipTaskLog")?Boolean.parseBoolean((String)ctx.getData("SkipTaskLog")):false;;
 		boolean skipExecutorLog = ctx.getData().containsKey("SkipExecutorLog")?Boolean.parseBoolean((String)ctx.getData("SkipExecutorLog")):false;;
+		
+		SimpleDateFormat formatToUse = DATE_FORMAT;
+		
+		String dataFormat = (String) ctx.getData("DateFormat");
+		if (dataFormat != null) {
+			formatToUse = new SimpleDateFormat(dataFormat);
+		}
 		
 		ExecutionResults executionResults = new ExecutionResults();
 		String emfName = (String)ctx.getData("EmfName");
@@ -71,9 +102,9 @@ public class LogCleanupCommand implements Command, Reoccurring {
 		
 		if (olderThanPeriod != null) {
 			long olderThanDuration = DateTimeUtils.parseDateAsDuration(olderThanPeriod);
-			Date oldetThanDate = new Date(System.currentTimeMillis() - olderThanDuration);
+			Date olderThanDate = new Date(System.currentTimeMillis() - olderThanDuration);
 			
-			olderThan = DATE_FORMAT.format(oldetThanDate);
+			olderThan = formatToUse.format(olderThanDate);
 		}
 		if (!skipProcessLog) {
 		// process tables
@@ -81,7 +112,7 @@ public class LogCleanupCommand implements Command, Reoccurring {
 			piLogsRemoved = auditLogService.processInstanceLogDelete()
 			.processId(forProcess)
 			.status(ProcessInstance.STATE_COMPLETED, ProcessInstance.STATE_ABORTED)
-			.endDateRangeEnd(olderThan==null?null:DATE_FORMAT.parse(olderThan))
+			.endDateRangeEnd(olderThan==null?null:formatToUse.parse(olderThan))
 			.externalId(forDeployment)
 			.build()
 			.execute();
@@ -91,7 +122,7 @@ public class LogCleanupCommand implements Command, Reoccurring {
 			long niLogsRemoved = 0l;
 			niLogsRemoved = auditLogService.nodeInstanceLogDelete()
 			.processId(forProcess)
-			.dateRangeEnd(olderThan==null?null:DATE_FORMAT.parse(olderThan))
+			.dateRangeEnd(olderThan==null?null:formatToUse.parse(olderThan))
 			.externalId(forDeployment)
 			.build()
 			.execute();
@@ -101,7 +132,7 @@ public class LogCleanupCommand implements Command, Reoccurring {
 			long viLogsRemoved = 0l;
 			viLogsRemoved = auditLogService.variableInstanceLogDelete()
 			.processId(forProcess)
-			.dateRangeEnd(olderThan==null?null:DATE_FORMAT.parse(olderThan))
+			.dateRangeEnd(olderThan==null?null:formatToUse.parse(olderThan))
 			.externalId(forDeployment)
 			.build()
 			.execute();
@@ -114,7 +145,7 @@ public class LogCleanupCommand implements Command, Reoccurring {
 			long taLogsRemoved = 0l;
 			taLogsRemoved = auditLogService.auditTaskInstanceLogDelete()
 			.processId(forProcess)		
-			.dateRangeEnd(olderThan==null?null:DATE_FORMAT.parse(olderThan))
+			.dateRangeEnd(olderThan==null?null:formatToUse.parse(olderThan))
 			.deploymentId(forDeployment)
 			.build()
 			.execute();
@@ -123,7 +154,7 @@ public class LogCleanupCommand implements Command, Reoccurring {
 			
 			long teLogsRemoved = 0l;
 			teLogsRemoved = auditLogService.taskEventInstanceLogDelete()
-			.dateRangeEnd(olderThan==null?null:DATE_FORMAT.parse(olderThan))		
+			.dateRangeEnd(olderThan==null?null:formatToUse.parse(olderThan))		
 			.build()
 			.execute();
 			logger.info("TaskEventLogRemoved {}", teLogsRemoved);
@@ -134,7 +165,7 @@ public class LogCleanupCommand implements Command, Reoccurring {
 			// executor tables	
 			long errorInfoLogsRemoved = 0l;
 			errorInfoLogsRemoved = auditLogService.errorInfoLogDeleteBuilder()		
-			.dateRangeEnd(olderThan==null?null:DATE_FORMAT.parse(olderThan))
+			.dateRangeEnd(olderThan==null?null:formatToUse.parse(olderThan))
 			.build()
 			.execute();
 			logger.info("ErrorInfoLogsRemoved {}", errorInfoLogsRemoved);
@@ -142,7 +173,7 @@ public class LogCleanupCommand implements Command, Reoccurring {
 			
 			long requestInfoLogsRemoved = 0l;
 			requestInfoLogsRemoved = auditLogService.requestInfoLogDeleteBuilder()
-			.dateRangeEnd(olderThan==null?null:DATE_FORMAT.parse(olderThan))
+			.dateRangeEnd(olderThan==null?null:formatToUse.parse(olderThan))
 			.status(STATUS.CANCELLED, STATUS.DONE, STATUS.ERROR)
 			.build()
 			.execute();
