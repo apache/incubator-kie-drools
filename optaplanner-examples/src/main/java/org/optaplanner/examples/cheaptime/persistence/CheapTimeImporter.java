@@ -43,6 +43,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
 
     public static void main(String[] args) {
         CheapTimeImporter importer = new CheapTimeImporter();
+        importer.convert("demo01", "demo01.xml");
         importer.convert("sample01", "sample01.xml");
 //        importer.convert("sample02", "sample02.xml");
 //        importer.convert("sample03", "sample03.xml");
