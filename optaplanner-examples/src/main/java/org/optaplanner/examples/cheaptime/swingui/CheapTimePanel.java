@@ -50,10 +50,13 @@ import org.jfree.util.ShapeUtilities;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
+import org.optaplanner.examples.cheaptime.domain.MachineCapacity;
 import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
+import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.common.swingui.TangoColorFactory;
 
 public class CheapTimePanel extends SolutionPanel {
 
@@ -94,20 +97,23 @@ public class CheapTimePanel extends SolutionPanel {
     }
 
     private JFreeChart createChart(CheapTimeSolution solution) {
+        TangoColorFactory tangoColorFactory = new TangoColorFactory();
         NumberAxis rangeAxis = new NumberAxis("Period");
         rangeAxis.setRange(-0.5, solution.getGlobalPeriodRangeTo() + 0.5);
-        XYPlot taskAssignmentPlot = createTaskAssignmentPlot(solution);
-        XYPlot periodCostPlot = createPeriodCostPlot(solution);
+        XYPlot taskAssignmentPlot = createTaskAssignmentPlot(tangoColorFactory, solution);
+        XYPlot periodCostPlot = createPeriodCostPlot(tangoColorFactory, solution);
+        XYPlot capacityPlot = createAvailableCapacityPlot(tangoColorFactory, solution);
         CombinedRangeXYPlot combinedPlot = new CombinedRangeXYPlot(rangeAxis);
         combinedPlot.add(taskAssignmentPlot, 5);
         combinedPlot.add(periodCostPlot, 1);
+        combinedPlot.add(capacityPlot, 1);
 
         combinedPlot.setOrientation(PlotOrientation.HORIZONTAL);
         return new JFreeChart("Cheap Power Time Scheduling", JFreeChart.DEFAULT_TITLE_FONT,
                 combinedPlot, true);
     }
 
-    private XYPlot createTaskAssignmentPlot(CheapTimeSolution solution) {
+    private XYPlot createTaskAssignmentPlot(TangoColorFactory tangoColorFactory, CheapTimeSolution solution) {
         OHLCSeriesCollection seriesCollection = new OHLCSeriesCollection();
         Map<Machine, OHLCSeries> machineSeriesMap = new LinkedHashMap<Machine, OHLCSeries>(
                 solution.getMachineList().size());
@@ -118,12 +124,14 @@ public class CheapTimePanel extends SolutionPanel {
         seriesCollection.addSeries(unassignedProjectSeries);
         machineSeriesMap.put(null, unassignedProjectSeries);
         renderer.setSeriesStroke(seriesIndex, new BasicStroke(3.0f));
+        renderer.setSeriesPaint(seriesIndex, TangoColorFactory.SCARLET_1);
         seriesIndex++;
         for (Machine machine : solution.getMachineList()) {
-            OHLCSeries projectSeries = new OHLCSeries(machine.getLabel());
-            seriesCollection.addSeries(projectSeries);
-            machineSeriesMap.put(machine, projectSeries);
+            OHLCSeries machineSeries = new OHLCSeries(machine.getLabel());
+            seriesCollection.addSeries(machineSeries);
+            machineSeriesMap.put(machine, machineSeries);
             renderer.setSeriesStroke(seriesIndex, new BasicStroke(3.0f));
+            renderer.setSeriesPaint(seriesIndex, tangoColorFactory.pickColor(machine));
             seriesIndex++;
         }
         List<TaskAssignment> taskAssignmentList = new ArrayList<TaskAssignment>(solution.getTaskAssignmentList());
@@ -151,7 +159,7 @@ public class CheapTimePanel extends SolutionPanel {
         return new XYPlot(seriesCollection, domainAxis, null, renderer);
     }
 
-    private XYPlot createPeriodCostPlot(CheapTimeSolution solution) {
+    private XYPlot createPeriodCostPlot(TangoColorFactory tangoColorFactory, CheapTimeSolution solution) {
         XYSeries series = new XYSeries("Power price");
         for (PeriodPowerPrice periodPowerPrice : solution.getPeriodPowerPriceList()) {
             series.add((double) periodPowerPrice.getPowerPriceMicros() / 1000000.0, periodPowerPrice.getPeriod());
@@ -159,8 +167,60 @@ public class CheapTimePanel extends SolutionPanel {
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         seriesCollection.addSeries(series);
         XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES);
+        renderer.setSeriesPaint(0, TangoColorFactory.ORANGE_1);
         renderer.setSeriesShape(0, ShapeUtilities.createDiamond(2.0F));
         NumberAxis domainAxis = new NumberAxis("Power price");
+        return new XYPlot(seriesCollection, domainAxis, null, renderer);
+    }
+
+    private XYPlot createAvailableCapacityPlot(TangoColorFactory tangoColorFactory, CheapTimeSolution solution) {
+        Map<MachineCapacity, List<Integer>> availableMap
+                = new LinkedHashMap<MachineCapacity, List<Integer>>(solution.getMachineCapacityList().size());
+        for (MachineCapacity machineCapacity : solution.getMachineCapacityList()) {
+            List<Integer> machineAvailableList = new ArrayList<Integer>(
+                    solution.getGlobalPeriodRangeTo());
+            for (int period = 0; period < solution.getGlobalPeriodRangeTo(); period++) {
+                machineAvailableList.add(machineCapacity.getCapacity());
+            }
+            availableMap.put(machineCapacity, machineAvailableList);
+        }
+        for (TaskAssignment taskAssignment : solution.getTaskAssignmentList()) {
+            Machine machine = taskAssignment.getMachine();
+            Integer startPeriod = taskAssignment.getStartPeriod();
+            if (machine != null && startPeriod != null) {
+                Task task = taskAssignment.getTask();
+                List<TaskRequirement> taskRequirementList = task.getTaskRequirementList();
+                for (int i = 0; i < taskRequirementList.size(); i++) {
+                    TaskRequirement taskRequirement = taskRequirementList.get(i);
+                    MachineCapacity machineCapacity = machine.getMachineCapacityList().get(i);
+                    List<Integer> machineAvailableList = availableMap.get(machineCapacity);
+                    for (int j = 0; j < task.getDuration(); j++) {
+                        int period = j + taskAssignment.getStartPeriod();
+                        int available = machineAvailableList.get(period);
+                        machineAvailableList.set(period, available - taskRequirement.getResourceUsage());
+                    }
+                }
+            }
+        }
+        XYSeriesCollection seriesCollection = new XYSeriesCollection();
+        XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES);
+        int seriesIndex = 0;
+        for (Machine machine : solution.getMachineList()) {
+            XYSeries machineSeries = new XYSeries(machine.getLabel());
+            for (MachineCapacity machineCapacity : machine.getMachineCapacityList()) {
+                List<Integer> machineAvailableList = availableMap.get(machineCapacity);
+                for (int period = 0; period < solution.getGlobalPeriodRangeTo(); period++) {
+                    int available = machineAvailableList.get(period);
+                    machineSeries.add(available, period);
+                }
+            }
+            seriesCollection.addSeries(machineSeries);
+            renderer.setSeriesPaint(seriesIndex, tangoColorFactory.pickColor(machine));
+            renderer.setSeriesShape(seriesIndex, ShapeUtilities.createDiamond(1.5F));
+            renderer.setSeriesVisibleInLegend(seriesIndex, false);
+            seriesIndex++;
+        }
+        NumberAxis domainAxis = new NumberAxis("Capacity");
         return new XYPlot(seriesCollection, domainAxis, null, renderer);
     }
 
