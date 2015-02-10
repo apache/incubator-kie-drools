@@ -25,6 +25,7 @@ import org.kie.api.builder.model.FileLoggerModel;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.io.Resource;
 import org.kie.api.logger.KieLoggers;
@@ -266,11 +267,14 @@ public class KieContainerImpl
 
             KieBase kBase = kBaseEntry.getValue();
             for ( ResourceChangeSet.RuleLoadOrder loadOrder : rcs.getLoadOrder() ) {
-                Rule rule = (Rule) ((KnowledgePackageImp)kBase.getKiePackage( loadOrder.getPkgName() )).getRule( loadOrder.getRuleName() );
-                if ( rule != null ) {
-                    // rule can be null, if it didn't exist before
-                    rule.setLoadOrder( loadOrder.getLoadOrder() );
-                }
+            	KnowledgePackageImp kiePackage = (KnowledgePackageImp) kBase.getKiePackage( loadOrder.getPkgName() );
+            	if ( kiePackage != null ){
+            		Rule rule = (Rule)  kiePackage.getRule( loadOrder.getRuleName() );
+            		if ( rule != null ) {
+            			// rule can be null, if it didn't exist before
+            			rule.setLoadOrder( loadOrder.getLoadOrder() );
+            		}
+            	}
             }
         }
         return fileCount;
