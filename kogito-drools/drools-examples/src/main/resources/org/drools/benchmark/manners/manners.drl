@@ -70,6 +70,16 @@ rule findSeating
        modify( context ) {setState( Context.MAKE_PATH )} 
 end
 
+rule makePath
+    when
+        Context( state == Context.MAKE_PATH )
+        Seating( seatingId:id, seatingPid:pid, pathDone == false )
+        Path( id == seatingPid, pathGuestName:guestName, pathSeat:seat )
+        not Path( id == seatingId, guestName == pathGuestName )
+    then
+        insert( new Path( seatingId, pathSeat, pathGuestName ) );
+end
+
 rule pathDone
     when
         context : Context( state == Context.MAKE_PATH ) 
@@ -79,16 +89,6 @@ rule pathDone
         
         modify( context ) {setState( Context.CHECK_DONE)}
 end
-
-rule makePath
-    when 
-        Context( state == Context.MAKE_PATH )
-        Seating( seatingId:id, seatingPid:pid, pathDone == false )
-        Path( id == seatingPid, pathGuestName:guestName, pathSeat:seat )
-        not Path( id == seatingId, guestName == pathGuestName )
-    then
-        insert( new Path( seatingId, pathSeat, pathGuestName ) );
-end 
 
 rule continue
     when
