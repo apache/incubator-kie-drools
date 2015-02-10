@@ -18,6 +18,8 @@ package org.optaplanner.examples.cheaptime.swingui;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +27,9 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.swing.JCheckBox;
+import javax.swing.SwingConstants;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.jfree.chart.ChartPanel;
@@ -52,12 +57,24 @@ import org.optaplanner.examples.common.swingui.SolutionPanel;
 
 public class CheapTimePanel extends SolutionPanel {
 
-    private PlotTaskAssignmentComparator plotTaskAssignmentComparator = new PlotTaskAssignmentComparator();
+    private StableTaskAssignmentComparator stableTaskAssignmentComparator = new StableTaskAssignmentComparator();
+    private GroupByMachineTaskAssignmentComparator groupByMachineTaskAssignmentComparator = new GroupByMachineTaskAssignmentComparator();
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/cheaptime/swingui/cheapTimeLogo.png";
 
+    private JCheckBox groupByMachineCheckBox;
+
     public CheapTimePanel() {
         setLayout(new BorderLayout());
+        groupByMachineCheckBox = new JCheckBox("Group by assigned machine", false);
+        groupByMachineCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
+        groupByMachineCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updatePanel(solutionBusiness.getSolution());
+                validate();
+            }
+        });
     }
 
     @Override
@@ -71,6 +88,7 @@ public class CheapTimePanel extends SolutionPanel {
 
     public void resetPanel(Solution solution) {
         removeAll();
+        add(groupByMachineCheckBox, BorderLayout.NORTH);
         ChartPanel chartPanel = new ChartPanel(createChart((CheapTimeSolution) solution));
         add(chartPanel, BorderLayout.CENTER);
     }
@@ -109,17 +127,19 @@ public class CheapTimePanel extends SolutionPanel {
             seriesIndex++;
         }
         List<TaskAssignment> taskAssignmentList = new ArrayList<TaskAssignment>(solution.getTaskAssignmentList());
-        Collections.sort(taskAssignmentList, plotTaskAssignmentComparator);
+        Collections.sort(taskAssignmentList,
+                groupByMachineCheckBox.isSelected() ? groupByMachineTaskAssignmentComparator
+                        : stableTaskAssignmentComparator);
         int pixelIndex = 0;
         for (TaskAssignment taskAssignment : taskAssignmentList) {
+            Task task = taskAssignment.getTask();
             Integer startPeriod = taskAssignment.getStartPeriod();
             Integer endPeriod = taskAssignment.getEndPeriod();
             if (startPeriod == null) {
-                startPeriod = 0;
-                endPeriod = 0;
+                startPeriod = task.getStartPeriodRangeFrom();
+                endPeriod = startPeriod + task.getDuration();
             }
             OHLCSeries machineSeries = machineSeriesMap.get(taskAssignment.getMachine());
-            Task task = taskAssignment.getTask();
             machineSeries.add(new FixedMillisecond(pixelIndex), task.getStartPeriodRangeFrom(),
                     startPeriod, endPeriod, task.getStartPeriodRangeTo() + task.getDuration());
             pixelIndex++;
@@ -144,7 +164,21 @@ public class CheapTimePanel extends SolutionPanel {
         return new XYPlot(seriesCollection, domainAxis, null, renderer);
     }
 
-    private static class PlotTaskAssignmentComparator implements Comparator<TaskAssignment>, Serializable {
+    private static class StableTaskAssignmentComparator implements Comparator<TaskAssignment>, Serializable {
+
+        @Override
+        public int compare(TaskAssignment a, TaskAssignment b) {
+            return new CompareToBuilder()
+                    .append(a.getTask().getStartPeriodRangeFrom(), b.getTask().getStartPeriodRangeFrom())
+                    .append(a.getTask().getStartPeriodRangeTo(), b.getTask().getStartPeriodRangeTo())
+                    .append(a.getTask().getDuration(), b.getTask().getDuration())
+                    .append(a.getId(), b.getId())
+                    .toComparison();
+        }
+
+    }
+
+    private static class GroupByMachineTaskAssignmentComparator implements Comparator<TaskAssignment>, Serializable {
 
         @Override
         public int compare(TaskAssignment a, TaskAssignment b) {
