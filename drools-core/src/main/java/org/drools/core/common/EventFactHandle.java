@@ -229,7 +229,11 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
 
     public void removeJob(JobHandle job) {
         synchronized (jobs) {
-            jobs.remove(job);
+            // the job could have been already removed if the event has been just retracted
+            // and then the unscheduleAllJobs method has been invoked concurrently
+            if (jobs.contains(job)) {
+                jobs.remove(job);
+            }
         }
     }
 
