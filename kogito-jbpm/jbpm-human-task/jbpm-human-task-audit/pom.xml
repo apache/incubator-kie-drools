@@ -16,8 +16,12 @@
  
     <dependencies>
         <dependency>
-            <groupId>org.jbpm</groupId>
-            <artifactId>jbpm-human-task-core</artifactId>
+          <groupId>org.jbpm</groupId>
+          <artifactId>jbpm-human-task-core</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.jbpm</groupId>
+          <artifactId>jbpm-human-task-jpa</artifactId>
         </dependency>
         <dependency>
           <groupId>org.kie</groupId>
@@ -110,11 +114,6 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-        	<groupId>org.jbpm</groupId>
-        	<artifactId>jbpm-human-task-jpa</artifactId>
-        	<scope>test</scope>
         </dependency>
 
         <dependency>

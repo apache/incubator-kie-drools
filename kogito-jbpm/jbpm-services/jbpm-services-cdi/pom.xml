@@ -32,6 +32,11 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-human-task-core</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-human-task-audit</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.jbpm</groupId>

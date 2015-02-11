@@ -19,6 +19,7 @@ package org.jbpm.services.task.audit.impl.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -63,6 +64,7 @@ public class AuditTaskImpl implements Serializable, AuditTask {
     private long processSessionId;
     private long parentId;
     private String deploymentId;
+    private Long workItemId;
 
     public AuditTaskImpl() {
     }
@@ -70,7 +72,7 @@ public class AuditTaskImpl implements Serializable, AuditTask {
     public AuditTaskImpl(long taskId, String name, String status, Date activationTime, 
             String actualOwner , String description, int priority, String createdBy, 
             Date createdOn, Date dueDate, long processInstanceId, String processId, 
-            long processSessionId, String deploymentId, long parentId) {
+            long processSessionId, String deploymentId, long parentId, long workItemId) {
         this.taskId = taskId;
         this.status = status;
         this.activationTime = activationTime;
@@ -86,6 +88,7 @@ public class AuditTaskImpl implements Serializable, AuditTask {
         this.processSessionId = processSessionId;
         this.deploymentId = deploymentId;
         this.parentId = parentId;
+        this.workItemId = workItemId;
     }
 
     public Long getId() {
@@ -242,8 +245,15 @@ public class AuditTaskImpl implements Serializable, AuditTask {
     public void setDeploymentId(String deploymentId) {
         this.deploymentId = deploymentId;
     }
-    
-    
 
+    @Override
+	public long getWorkItemId() {
+		return workItemId;
+	}
+
+    @Override
+	public void setWorkItemId(long workItemId) {
+		this.workItemId = workItemId;
+	}
 
 }

@@ -28,6 +28,7 @@
         processSessionId int not null,
         status varchar(255),
         taskId bigint,
+        workItemId bigint not null,
         primary key (id)
     );
 

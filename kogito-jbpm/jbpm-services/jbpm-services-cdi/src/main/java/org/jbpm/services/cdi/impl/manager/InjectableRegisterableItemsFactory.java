@@ -37,6 +37,7 @@ import org.drools.compiler.kie.util.CDIHelper;
 import org.drools.core.util.StringUtils;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
+import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 import org.jbpm.runtime.manager.api.qualifiers.Agenda;
@@ -45,6 +46,7 @@ import org.jbpm.runtime.manager.api.qualifiers.Task;
 import org.jbpm.runtime.manager.api.qualifiers.WorkingMemory;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.RuntimeEngineImpl;
+import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -401,7 +403,11 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
             }
             auditLogger.setBuilder(getAuditBuilder(engine));
         } else if (descriptor.getAuditMode() == AuditMode.JPA){        
-        	auditLogger = AuditLoggerFactory.newJPAInstance(engine.getKieSession().getEnvironment());
+        	if (descriptor.getPersistenceUnit().equals(descriptor.getAuditPersistenceUnit())) {
+        		auditLogger = AuditLoggerFactory.newJPAInstance(engine.getKieSession().getEnvironment());
+        	} else {
+        		auditLogger = new JPAWorkingMemoryDbLogger(EntityManagerFactoryManager.get().getOrCreate(descriptor.getAuditPersistenceUnit()));
+        	}
         	auditLogger.setBuilder(getAuditBuilder(engine));
         }        
         

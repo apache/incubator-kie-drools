@@ -14,39 +14,36 @@
  * limitations under the License.
  */
 
-package org.jbpm.services.cdi.producer;
+package org.jbpm.services.ejb.impl.tx;
 
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
 import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
-import org.jbpm.services.cdi.Audit;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 
-public class TransactionalCommandServiceProducer {
-
-    @Inject
-    @PersistenceUnit(unitName = "org.jbpm.domain")
-    private EntityManagerFactory emf;
-
-    @Produces
-    public TransactionalCommandService produceCommandService() {
-        return new TransactionalCommandService( emf );
-    }
-    
-    @Produces
-	@Audit
-    public TransactionalCommandService produceAuditCommandService() {
-    	DeploymentDescriptorManager manager = new DeploymentDescriptorManager("org.jbpm.domain");
+@Stateless
+public class AuditTransactionalCommandServiceEJBImpl extends TransactionalCommandService {
+	
+	@PersistenceUnit(name="org.jbpm.domain")
+	@Override
+	public void setEmf(EntityManagerFactory emf) {
+		DeploymentDescriptorManager manager = new DeploymentDescriptorManager("org.jbpm.domain");
     	DeploymentDescriptor descriptor = manager.getDefaultDescriptor();
     	if (!"org.jbpm.domain".equals(descriptor.getAuditPersistenceUnit())) {
-    		return new TransactionalCommandService( EntityManagerFactoryManager.get().getOrCreate(descriptor.getAuditPersistenceUnit()) );
+    		super.setEmf( EntityManagerFactoryManager.get().getOrCreate(descriptor.getAuditPersistenceUnit()) );
+    	} else {
+    		super.setEmf(emf);
     	}
-    	
-        return new TransactionalCommandService( emf );
-    }
+	}
+	
+	
+	public AuditTransactionalCommandServiceEJBImpl() {
+		super(null);
+		// entity manager will be set by setter method
+	}
+
 }

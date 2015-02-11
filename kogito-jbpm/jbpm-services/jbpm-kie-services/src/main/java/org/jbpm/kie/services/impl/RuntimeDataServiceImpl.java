@@ -53,6 +53,7 @@ import org.kie.internal.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.AuditTask;
 import org.kie.internal.task.api.InternalTaskService;
+import org.kie.internal.task.api.model.TaskEvent;
 
 
 
@@ -754,6 +755,16 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     				new QueryNameCommand<List<AuditTask>>("getAllAuditTasksByUser", params));
         return auditTasks;
     }    
+        
+    public List<TaskEvent> getTaskEvents(long taskId, QueryFilter filter) {
+    	Map<String, Object> params = new HashMap<String, Object>();
+        params.put("taskId", taskId);
+        applyQueryContext(params, filter);
+        applyQueryFilter(params, filter);
+        List<TaskEvent> taskEvents = commandService.execute(
+    				new QueryNameCommand<List<TaskEvent>>("getAllTasksEvents", params));
+        return taskEvents;
+    }
     
     /*
     * end
@@ -898,32 +909,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     		return CollectionUtils.containsAny(roles, pDesc.getRoles());
     	}
     }
-    
-//    private class SecureInstancePredicate implements Predicate {
-//    	private List<String> roles;
-//    	
-//    	private SecureInstancePredicate(List<String> roles) {
-//    		this.roles = roles;
-//    	}
-//    	
-//    	public boolean evaluate(Object object) {
-//    		ProcessInstanceDesc pInstDesc = (ProcessInstanceDesc) object;
-//    		ProcessDefinition pDesc = getProcessesByDeploymentIdProcessId(pInstDesc.getDeploymentId(), pInstDesc.getProcessId());
-//    		if (this.roles == null || this.roles.isEmpty()) {
-//    			return true;
-//    		}
-//    		if (pDesc == null) {
-//    			// if you can't see the process, you shouldn't see the instances either
-//    			return false;
-//    		}
-////          No need to check the list of roles, as if you can see the process, you already have the right role
-////    		if (pDesc.getRoles() == null || pDesc.getRoles().isEmpty()) {
-////   			return true;
-////	    	}
-////		    return CollectionUtils.containsAny(roles, pDesc.getRoles());
-//    		return true;
-//    	}
-//    }
+
     
     private class UnsecureByDeploymentIdPredicate implements Predicate {
         private String deploymentId;

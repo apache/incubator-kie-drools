@@ -41,6 +41,7 @@ import org.jbpm.runtime.manager.impl.PerProcessInstanceRuntimeManager;
 import org.jbpm.runtime.manager.impl.RuntimeEngineImpl;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
+import org.jbpm.services.task.lifecycle.listeners.BAMTaskEventListener;
 import org.jbpm.services.task.wih.ExternalTaskEventListener;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -228,18 +229,20 @@ public class SingleRuntimeManagerWithListenersTest extends AbstractBaseTest {
         
         List<?> listeners = ((EventService<?>) taskService).getTaskEventListeners();
         assertNotNull(listeners);
-        assertEquals(2, listeners.size());
+        assertEquals(3, listeners.size());
         // prepare listeners class names for assertion
         listenerCLassNames = new ArrayList<String>();
         for (Object o : listeners) {
         	System.out.println("###### " + o.getClass().getName());
         	listenerCLassNames.add(o.getClass().getName());
         }
-        assertEquals(2, listenerCLassNames.size());
+        assertEquals(3, listenerCLassNames.size());
         // JPATaskLifeCycleEventListener was added by custom producer
         assertTrue(listenerCLassNames.contains(JPATaskLifeCycleEventListener.class.getName()));
         // external one is always added to deal with user tasks
         assertTrue(listenerCLassNames.contains(ExternalTaskEventListener.class.getName()));
+        // BAMTaskEventListener was added by custom producer
+        assertTrue(listenerCLassNames.contains(BAMTaskEventListener.class.getName()));
         
         ProcessInstance processInstance = ksession.startProcess("UserTask");
         assertNotNull(processInstance);

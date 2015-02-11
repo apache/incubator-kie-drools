@@ -149,7 +149,6 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-human-task-jpa</artifactId>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>javax.enterprise</groupId>

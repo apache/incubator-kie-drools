@@ -27,11 +27,17 @@ import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
+import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
+import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.HumanTaskConfigurator;
 import org.jbpm.services.task.HumanTaskServiceFactory;
+import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
 import org.jbpm.services.task.impl.command.CommandBasedTaskService;
+import org.jbpm.services.task.lifecycle.listeners.BAMTaskEventListener;
 import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.UserGroupCallback;
+import org.kie.internal.runtime.conf.AuditMode;
+import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.UserInfo;
 import org.slf4j.Logger;
@@ -93,7 +99,24 @@ public class HumanTaskServiceProducer {
                     .entityManagerFactory( emf )
                     .userGroupCallback( safeGet( userGroupCallback ) )
                     .userInfo( safeGet( userInfo ) );
-
+            
+            DeploymentDescriptorManager manager = new DeploymentDescriptorManager("org.jbpm.domain");
+        	DeploymentDescriptor descriptor = manager.getDefaultDescriptor();
+        	// in case there is descriptor with enabled audit register then by default
+        	if (!descriptor.getAuditMode().equals(AuditMode.NONE)) {
+	        	JPATaskLifeCycleEventListener listener = new JPATaskLifeCycleEventListener(false);
+	        	BAMTaskEventListener bamListener = new BAMTaskEventListener(false);
+	        	// if the audit persistence unit is different than default for the engine perform proper init
+	        	if (!"org.jbpm.domain".equals(descriptor.getAuditPersistenceUnit())) {
+	        		 EntityManagerFactory emf = EntityManagerFactoryManager.get().getOrCreate(descriptor.getAuditPersistenceUnit());
+	        		 listener = new JPATaskLifeCycleEventListener(emf);
+	        		 
+	        		 bamListener = new BAMTaskEventListener(emf);
+	        	}
+	        	configurator.listener( listener );
+	        	configurator.listener( bamListener );
+        	}
+        	// next proceed with registration of further listeners as cdi injections
             try {
                 for ( TaskLifeCycleEventListener listener : taskListeners ) {
                     configurator.listener( listener );

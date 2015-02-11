@@ -1,8 +1,11 @@
 package org.jbpm.services.ejb.impl.store;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
+import javax.ejb.AccessTimeout;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.EJB;
@@ -26,6 +29,7 @@ import org.jbpm.shared.services.impl.TransactionalCommandService;
 @Startup
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
 @Lock(LockType.WRITE)
+@AccessTimeout(value=1, unit=TimeUnit.MINUTES)
 public class DeploymentSynchronizerEJBImpl extends DeploymentSynchronizer {
 
 	@Resource

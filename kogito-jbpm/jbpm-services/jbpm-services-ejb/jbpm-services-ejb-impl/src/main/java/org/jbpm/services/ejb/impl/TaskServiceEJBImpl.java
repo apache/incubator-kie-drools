@@ -25,10 +25,14 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
+import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
 import org.jbpm.runtime.manager.impl.identity.UserDataServiceProvider;
+import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.ejb.TaskServiceEJBLocal;
 import org.jbpm.services.task.HumanTaskConfigurator;
 import org.jbpm.services.task.HumanTaskServiceFactory;
+import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
+import org.jbpm.services.task.lifecycle.listeners.BAMTaskEventListener;
 import org.kie.api.command.Command;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.UserGroupCallback;
@@ -43,6 +47,8 @@ import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
 import org.kie.internal.query.QueryFilter;
+import org.kie.internal.runtime.conf.AuditMode;
+import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.UserInfo;
@@ -69,6 +75,23 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
 		HumanTaskConfigurator configurator = HumanTaskServiceFactory.newTaskServiceConfigurator()
                 .entityManagerFactory( emf )
                 .userGroupCallback( callback );
+		
+		DeploymentDescriptorManager manager = new DeploymentDescriptorManager("org.jbpm.domain");
+    	DeploymentDescriptor descriptor = manager.getDefaultDescriptor();
+    	// in case there is descriptor with enabled audit register then by default
+    	if (!descriptor.getAuditMode().equals(AuditMode.NONE)) {
+        	JPATaskLifeCycleEventListener listener = new JPATaskLifeCycleEventListener(false);
+        	BAMTaskEventListener bamListener = new BAMTaskEventListener(false);
+        	// if the audit persistence unit is different than default for the engine perform proper init
+        	if (!"org.jbpm.domain".equals(descriptor.getAuditPersistenceUnit())) {
+        		 EntityManagerFactory emf = EntityManagerFactoryManager.get().getOrCreate(descriptor.getAuditPersistenceUnit());
+        		 listener = new JPATaskLifeCycleEventListener(emf);
+        		 
+        		 bamListener = new BAMTaskEventListener(emf);
+        	}
+        	configurator.listener( listener );
+        	configurator.listener( bamListener );
+    	}
 		
 		delegate = (InternalTaskService) configurator.getTaskService();
 	}

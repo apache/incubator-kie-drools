@@ -66,6 +66,8 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
+import org.kie.internal.task.api.AuditTask;
+import org.kie.internal.task.api.model.TaskEvent;
 import org.kie.scanner.MavenRepository;
 
 @RunWith(Arquillian.class)
@@ -906,5 +908,68 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	for (ProcessInstanceDesc pi : activeProcesses) {
     		processService.abortProcessInstance(pi.getId());
     	}
+    }
+    
+    @Test
+    public void testGetTaskAudit() {
+    	processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+    	assertNotNull(processInstanceId);
+    	
+    	ProcessInstance instance = processService.getProcessInstance(processInstanceId);
+    	assertNotNull(instance);
+    	
+    	Collection<NodeInstance> activeNodes = ((WorkflowProcessInstanceImpl) instance).getNodeInstances();
+    	assertNotNull(activeNodes);
+    	assertEquals(1, activeNodes.size());
+    	
+    	NodeInstance node = activeNodes.iterator().next();
+    	assertNotNull(node);
+    	assertTrue(node instanceof WorkItemNodeInstance);
+    	
+    	Long workItemId = ((WorkItemNodeInstance) node).getWorkItemId();
+    	assertNotNull(workItemId);
+    	
+    	List<AuditTask> auditTasks = runtimeDataService.getAllAuditTask("salaboy", new QueryFilter(0, 10));
+    	assertNotNull(auditTasks);
+    	assertEquals(1, auditTasks.size());
+    	assertEquals("Write a Document", auditTasks.get(0).getName());
+    
+    }
+    
+    @Test
+    public void testGetTaskEvents() {
+    	processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+    	assertNotNull(processInstanceId);
+    	
+    	ProcessInstance instance = processService.getProcessInstance(processInstanceId);
+    	assertNotNull(instance);
+    	
+    	Collection<NodeInstance> activeNodes = ((WorkflowProcessInstanceImpl) instance).getNodeInstances();
+    	assertNotNull(activeNodes);
+    	assertEquals(1, activeNodes.size());
+    	
+    	NodeInstance node = activeNodes.iterator().next();
+    	assertNotNull(node);
+    	assertTrue(node instanceof WorkItemNodeInstance);
+    	
+    	Long workItemId = ((WorkItemNodeInstance) node).getWorkItemId();
+    	assertNotNull(workItemId);
+    	
+    	UserTaskInstanceDesc userTask = runtimeDataService.getTaskByWorkItemId(workItemId);
+    	assertNotNull(userTask);
+    	
+    	List<TaskEvent> auditTasks = runtimeDataService.getTaskEvents(userTask.getTaskId(), new QueryFilter());
+    	assertNotNull(auditTasks);
+    	assertEquals(1, auditTasks.size());
+    	assertEquals(TaskEvent.TaskEventType.ADDED, auditTasks.get(0).getType());
+    	
+    	userTaskService.start(userTask.getTaskId(), "salaboy");
+    	
+    	auditTasks = runtimeDataService.getTaskEvents(userTask.getTaskId(), new QueryFilter());
+    	assertNotNull(auditTasks);
+    	assertEquals(2, auditTasks.size());
+    	assertEquals(TaskEvent.TaskEventType.ADDED, auditTasks.get(0).getType());
+    	assertEquals(TaskEvent.TaskEventType.STARTED, auditTasks.get(1).getType());
+    
     }
 }

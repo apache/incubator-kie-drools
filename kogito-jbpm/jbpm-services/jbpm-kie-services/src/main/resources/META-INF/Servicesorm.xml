@@ -456,11 +456,9 @@
 	      a.dueDate
 	      )
         from 
-        	AuditTaskImpl a,
-        	TaskImpl t 
+        	AuditTaskImpl a
         where 
-        	a.taskId = t.id and
-        	t.taskData.workItemId = :workItemId 
+        	a.workItemId = :workItemId 
         	
     </query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
