@@ -584,7 +584,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
         }
 
         private JPanel createButtonPanel() {
-            final Desktop desktop = Desktop.getDesktop();
+            final Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
             JPanel buttonPanel = new JPanel(new GridLayout(1, 3, 10, 10));
 
             AbstractAction openBrowserAction = new AbstractAction("Show in browser") {
@@ -599,7 +599,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
                     finishDialog();
                 }
             };
-            openBrowserAction.setEnabled(desktop.isSupported(Desktop.Action.BROWSE));
+            openBrowserAction.setEnabled(desktop != null && desktop.isSupported(Desktop.Action.BROWSE));
             buttonPanel.add(new JButton(openBrowserAction));
 
             AbstractAction openFileAction = new AbstractAction("Show in files") {
@@ -614,7 +614,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
                     finishDialog();
                 }
             };
-            openBrowserAction.setEnabled(desktop.isSupported(Desktop.Action.OPEN));
+            openBrowserAction.setEnabled(desktop != null && desktop.isSupported(Desktop.Action.OPEN));
             buttonPanel.add(new JButton(openFileAction));
 
             AbstractAction closeAction = new AbstractAction("Ok") {
