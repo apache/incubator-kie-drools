@@ -173,6 +173,10 @@ public class LinkedList<T extends LinkedListNode<T>>
         }
     }
 
+    public boolean contains(T node) {
+        return this.firstNode == node || node.getPrevious() != null;
+    }
+
     /**
      * Return the first node in the list
      * @return
