@@ -79,5 +79,7 @@ public interface AuditTask {
 
     void setDeploymentId(String deploymentId);
     
-    
+	long getWorkItemId();
+
+	void setWorkItemId(long workItemId);
 }
