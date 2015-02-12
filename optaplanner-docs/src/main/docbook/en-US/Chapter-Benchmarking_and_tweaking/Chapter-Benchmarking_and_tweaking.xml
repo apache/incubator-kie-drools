@@ -10,14 +10,14 @@
   <section>
     <title>Finding the best <literal>Solver</literal> configuration</title>
 
-    <para>Planner supports several optimization algorithms, so you're probably wondering which is the best one?
-    Although some optimization algorithms generally perform better than others, it really depends on your problem
-    domain. Most solver phases have parameters which can be tweaked. Those parameters can influence the results a lot,
-    even though most solver phases work pretty well out-of-the-box.</para>
+    <para>Planner supports several optimization algorithms, so you're probably wondering which is the best one? Although
+    some optimization algorithms generally perform better than others, it really depends on your problem domain. Most
+    solver phases have parameters which can be tweaked. Those parameters can influence the results a lot, even though
+    most solver phases work pretty well out-of-the-box.</para>
 
-    <para>Luckily, Planner includes a benchmarker, which allows you to play out different solver phases with
-    different settings against each other in development, so you can use the best configuration for your planning
-    problem in production.</para>
+    <para>Luckily, Planner includes a benchmarker, which allows you to play out different solver phases with different
+    settings against each other in development, so you can use the best configuration for your planning problem in
+    production.</para>
 
     <mediaobject>
       <imageobject>
@@ -130,9 +130,9 @@
       </note>
 
       <para>If an <literal>Exception</literal> or <literal>Error</literal> occurs in a single benchmark, the entire
-      Benchmarker will not fail-fast (unlike everything else in Planner). Instead, the Benchmarker will continue to
-      run all other benchmarks, write the benchmark report and then fail (if there is at least 1 failing single
-      benchmark). The failing benchmarks will be clearly marked as such in the benchmark report.</para>
+      Benchmarker will not fail-fast (unlike everything else in Planner). Instead, the Benchmarker will continue to run
+      all other benchmarks, write the benchmark report and then fail (if there is at least 1 failing single benchmark).
+      The failing benchmarks will be clearly marked as such in the benchmark report.</para>
     </section>
 
     <section xml:id="solutionFileIO">
@@ -215,14 +215,14 @@
           <listitem>
             <para>Extract the datasets from the database and serialize them to a local file (for example as XML with
             <literal>XStreamSolutionFileIO</literal>). Then use those files an
-            <literal>&lt;inputSolutionFile&gt;</literal> elements. </para>
+            <literal>&lt;inputSolutionFile&gt;</literal> elements.</para>
           </listitem>
 
           <listitem>
             <para>For each dataset, create a txt file that holds the unique id of the dataset. Write <link
             linkend="customSolutionFileIO">a custom <literal>SolutionFileIO</literal></link> that reads that identifier,
             connects to the database and extract the problem identified by that id. Configure those txt files as
-            <literal>&lt;inputSolutionFile&gt;</literal> elements. </para>
+            <literal>&lt;inputSolutionFile&gt;</literal> elements.</para>
           </listitem>
         </itemizedlist>
 
@@ -296,8 +296,8 @@
     <section xml:id="writingTheOutputSolutionOfTheBenchmarkRuns">
       <title>Writing the output solution of the benchmark runs</title>
 
-      <para>The best solution of each benchmark run can be written in the <literal>benchmarkDirectory</literal>.
-      By default, this is disabled, because the files are rarely used and considered bloat. Also, on large datasets,
+      <para>The best solution of each benchmark run can be written in the <literal>benchmarkDirectory</literal>. By
+      default, this is disabled, because the files are rarely used and considered bloat. Also, on large datasets,
       writing the best solution of each single benchmark can take quite some time and memory (causing an
       <literal>OutOfMemoryError</literal>), especially in a verbose format like XStream.</para>
 
@@ -342,9 +342,9 @@
     <section>
       <title>HTML report</title>
 
-      <para>After running a benchmark, an HTML report will be written in the <literal>benchmarkDirectory</literal>
-      with the <filename>index.html</filename> filename. Open it in your browser. It has a nice overview of your
-      benchmark including:</para>
+      <para>After running a benchmark, an HTML report will be written in the <literal>benchmarkDirectory</literal> with
+      the <filename>index.html</filename> filename. Open it in your browser. It has a nice overview of your benchmark
+      including:</para>
 
       <itemizedlist>
         <listitem>
@@ -469,9 +469,9 @@
     <section xml:id="benchmarkReportWinningScoreDifferenceSummary">
       <title>Winning score difference summary (graph and table)</title>
 
-      <para>Shows the winning score difference per <literal>inputSolutionFile</literal> for each solver
-      configuration. The winning score difference is the score difference with the score of the winning solver
-      configuration for that particular <literal>inputSolutionFile</literal>.</para>
+      <para>Shows the winning score difference per <literal>inputSolutionFile</literal> for each solver configuration.
+      The winning score difference is the score difference with the score of the winning solver configuration for that
+      particular <literal>inputSolutionFile</literal>.</para>
 
       <para>Useful for zooming in on the results of the best score summary.</para>
     </section>
@@ -945,8 +945,7 @@
       <literal>1000</literal> and <literal>2000</literal>), resulting in 12 solver configurations.</para>
 
       <para>To reduce the verbosity of such a benchmark configuration, you can use a <link
-      xlink:href="http://freemarker.org//">Freemarker</link> template for the benchmark configuration
-      instead:</para>
+      xlink:href="http://freemarker.org//">Freemarker</link> template for the benchmark configuration instead:</para>
 
       <programlisting language="xml">&lt;plannerBenchmark&gt;
   ...
@@ -989,17 +988,25 @@
       <title>Benchmark report aggregation</title>
 
       <para>The <literal>BenchmarkAggregator</literal> takes 1 or more existing benchmarks and merges them into new
-      benchmark report, without actually running the benchmarks again. This is useful to generate a:</para>
+      benchmark report, without actually running the benchmarks again.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/benchmarkAggregator.png"/>
+        </imageobject>
+      </mediaobject>
+
+      <para>This is useful to:</para>
 
       <itemizedlist>
         <listitem>
-          <para><emphasis role="bold">Code changes impact report</emphasis>: Run the same benchmark configuration before
-          and after the code changes, then aggregate a report.</para>
+          <para><emphasis role="bold">Report on the impact of code changes</emphasis>: Run the same benchmark
+          configuration before and after the code changes, then aggregate a report.</para>
         </listitem>
 
         <listitem>
-          <para><emphasis role="bold">Dependency upgrade impact report</emphasis>: Run the same benchmark configuration
-          before and after upgrading the dependency, then aggregate a report.</para>
+          <para><emphasis role="bold">Report on the impact of dependency upgrades</emphasis>: Run the same benchmark
+          configuration before and after upgrading the dependency, then aggregate a report.</para>
         </listitem>
 
         <listitem>
@@ -1009,8 +1016,9 @@
         </listitem>
 
         <listitem>
-          <para><emphasis role="bold">Partial rerun</emphasis>: Rerun part of an existing report (for example only the
-          failed or invalid solvers), then recreate the original report with the new values.</para>
+          <para><emphasis role="bold">Partially rerun a benchmark</emphasis>: Rerun part of an existing report (for
+          example only the failed or invalid solvers), then recreate the original intended report with the new
+          values.</para>
         </listitem>
       </itemizedlist>
 
