@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.exception.CompensationScope;
+import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -242,6 +243,19 @@ public class CompensationTest extends JbpmBpmn2TestCase {
         // compensation activity (assoc. with script task) signaled *after* script task
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
         assertProcessVarValue(processInstance, "x", "1");
+    }
+    
+    @Test
+    public void compensationInvokingSubProcess() throws Exception {
+    	KieSession ksession = createKnowledgeSession("compensation/BPMN2-UserTaskCompensation.bpmn2");
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("compensation", "True");
+        ProcessInstance processInstance = ksession.startProcess("UserTaskCompensation", params);
+        
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertProcessVarValue(processInstance, "compensation", "compensation");
     }
     
 }

@@ -462,11 +462,12 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                    }
                    
                 } else {
-                	if( compositeNode.getIncomingConnections().size() == 0 ) { 
+                	Boolean isForCompensationObject = (Boolean) compositeNode.getMetaData("isForCompensation"); 
+                	if( compositeNode.getIncomingConnections().size() == 0 && !Boolean.TRUE.equals(isForCompensationObject)) { 
                         errors.add(new ProcessValidationErrorImpl(process, 
                                 "Embedded subprocess '" + node.getName() + "' [" + node.getId() + "] does not have incoming connection." ));
                     }
-                	if( compositeNode.getOutgoingConnections().size() == 0 ) { 
+                	if( compositeNode.getOutgoingConnections().size() == 0 && !Boolean.TRUE.equals(isForCompensationObject)) { 
                         errors.add(new ProcessValidationErrorImpl(process, 
                                 "Embedded subprocess '" + node.getName() + "' [" + node.getId() + "] does not have outgoing connection." ));
                     }
