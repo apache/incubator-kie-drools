@@ -134,8 +134,8 @@ KieContainer kContainer = kieServices.getKieClasspathContainer();</programlistin
     &lt;property key="drools.evaluator.supersetOf" value="org.mycompany.SupersetOfEvaluatorDefinition"/&gt;
   &lt;/configuration&gt;
   &lt;kbase name="KBase1" default="true" eventProcessingMode="cloud" equalsBehavior="equality" declarativeAgenda="enabled" packages="org.domain.pkg1"&gt;
-    &lt;ksession name="KSession2_1" type="stateful" default="true/"&gt;
-    &lt;ksession name="KSession2_2" type="stateless" default="false/" beliefSystem="jtms"&gt;
+    &lt;ksession name="KSession2_1" type="stateful" default="true"/&gt;
+    &lt;ksession name="KSession2_2" type="stateless" default="false" beliefSystem="jtms"/&gt;
   &lt;/kbase&gt;
   &lt;kbase name="KBase2" default="false" eventProcessingMode="stream" equalsBehavior="equality" declarativeAgenda="enabled" packages="org.domain.pkg2, org.domain.pkg3" includes="KBase1"&gt;
     &lt;ksession name="KSession3_1" type="stateful" default="false" clockType="realtime"&gt;
