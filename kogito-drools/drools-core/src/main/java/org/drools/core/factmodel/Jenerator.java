@@ -17,6 +17,10 @@
 package org.drools.core.factmodel;
 
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.drools.core.util.IoUtils;
+
 import java.beans.IntrospectionException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,16 +29,20 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-import org.drools.core.util.IoUtils;
-
 /**
  * This will generate a jar from a meta model.
  */
 public class Jenerator {
 
+    private final ClassLoader classLoader;
 
+    public Jenerator() {
+        this(Jenerator.class.getClassLoader());
+    }
+
+    public Jenerator(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
 
     public byte[] createJar(Fact[] facts, String packageName) throws SecurityException, IllegalArgumentException, IOException, IntrospectionException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchFieldException {
         ByteArrayOutputStream result = new ByteArrayOutputStream();
@@ -56,7 +64,7 @@ public class Jenerator {
             }
             JarEntry je = new JarEntry(packagePath + "/" + facts[i].name + ".class");
             jout.putNextEntry(je);
-            jout.write(cb.buildClass(classDef,null));
+            jout.write(cb.buildClass(classDef, classLoader));
             jout.closeEntry();
         }
         jout.flush();
