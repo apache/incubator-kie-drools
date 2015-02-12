@@ -7141,49 +7141,24 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertEquals(4, ksession.fireAllRules());
     }
-	
+
     @Test
-    public void testMVELWithOrNullPointer()
-    {
+    public void testFromAfterOr() {
         // DROOLS-707
+        String drl2 =
+                "rule \"Disaster Rule\"\n" +
+                "    when\n" +
+                "        eval(true) or ( eval(false) and Integer() )\n" +
+                "        $a : Integer()\n" +
+                "        Integer() from $a\n" +
+                "    then\n" +
+                "end\n";
 
-        // this first test fails
-        String thisDrlFails =
-                "rule \"MVELWithOrNullPointer\"\n"
-                        + "when\n"
-                        + "eval(true) or ( eval(false) and Integer() )\n"
-                        + "$a : Integer()\n"
-                        + "Integer() from $a\n"
-                        + "then\n"
-                        + "end\n";
+        KieSession ksession = new KieHelper().addContent(drl2, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
 
-        KieSession ksession1 = new KieHelper().addContent(thisDrlFails, ResourceType.DRL)
-                .build()
-                .newKieSession();
-
-        ksession1.insert(new Integer(1));
-
-        // this call to fireAllRules() throws a NPE
-        assertEquals(1, ksession1.fireAllRules());
-
-        // but if you move the rule lines around ("$a : Integer()" moved at the top) the test passes
-        String butThisDrlDoNotFails =
-                "rule \"MVELWithOrNullPointer\"\n"
-                        + "when\n"
-                        + "$a : Integer()\n"
-                        + "eval(true) or ( eval(false) and Integer() )\n"
-                        + "Integer() from $a\n"
-                        + "then\n"
-                        + "end\n";
-
-        KieSession ksession2 = new KieHelper().addContent(butThisDrlDoNotFails, ResourceType.DRL)
-                .build()
-                .newKieSession();
-
-        ksession2.insert(new Integer(1));
-
-        // this call to fireAllRules() does not throw a NPE, because we moved the rule lines around (see comment above)
-        assertEquals(1, ksession2.fireAllRules());
+        ksession.insert(1);
+        assertEquals(1, ksession.fireAllRules());
     }
-
 }

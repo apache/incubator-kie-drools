@@ -81,4 +81,9 @@ public class DefaultJobHandle extends AbstractJobHandle implements Serializable 
         } else if ( !getJob().equals( other.getJob() ) ) return false;
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "JobHandle #" + id;
+    }
 }
