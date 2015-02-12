@@ -7141,4 +7141,24 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertEquals(4, ksession.fireAllRules());
     }
+
+    @Test
+    public void testFromAfterOr() {
+        // DROOLS-707
+        String drl2 =
+                "rule \"Disaster Rule\"\n" +
+                "    when\n" +
+                "        eval(true) or ( eval(false) and Integer() )\n" +
+                "        $a : Integer()\n" +
+                "        Integer() from $a\n" +
+                "    then\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl2, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        ksession.insert(1);
+        assertEquals(1, ksession.fireAllRules());
+    }
 }
