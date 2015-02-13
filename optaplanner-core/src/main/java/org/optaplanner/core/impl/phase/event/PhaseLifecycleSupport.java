@@ -18,9 +18,9 @@ package org.optaplanner.core.impl.phase.event;
 
 import java.util.Iterator;
 
-import org.drools.core.event.AbstractEventSupport;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.solver.event.AbstractEventSupport;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
@@ -29,44 +29,38 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 public class PhaseLifecycleSupport extends AbstractEventSupport<PhaseLifecycleListener> {
 
     public void fireSolvingStarted(DefaultSolverScope solverScope) {
-        final Iterator<PhaseLifecycleListener> iter = getEventListenersIterator();
-        while (iter.hasNext()) {
-            iter.next().solvingStarted(solverScope);
+        for (PhaseLifecycleListener phaseLifecycleListener : eventListenerSet) {
+            phaseLifecycleListener.solvingStarted(solverScope);
         }
     }
 
     public void firePhaseStarted(AbstractPhaseScope phaseScope) {
-        final Iterator<PhaseLifecycleListener> iter = getEventListenersIterator();
-        while (iter.hasNext()) {
-            iter.next().phaseStarted(phaseScope);
+        for (PhaseLifecycleListener phaseLifecycleListener : eventListenerSet) {
+            phaseLifecycleListener.phaseStarted(phaseScope);
         }
     }
 
     public void fireStepStarted(AbstractStepScope stepScope) {
-        final Iterator<PhaseLifecycleListener> iter = getEventListenersIterator();
-        while (iter.hasNext()) {
-            iter.next().stepStarted(stepScope);
+        for (PhaseLifecycleListener phaseLifecycleListener : eventListenerSet) {
+            phaseLifecycleListener.stepStarted(stepScope);
         }
     }
 
     public void fireStepEnded(AbstractStepScope stepScope) {
-        final Iterator<PhaseLifecycleListener> iter = getEventListenersIterator();
-        while (iter.hasNext()) {
-            iter.next().stepEnded(stepScope);
+        for (PhaseLifecycleListener phaseLifecycleListener : eventListenerSet) {
+            phaseLifecycleListener.stepEnded(stepScope);
         }
     }
 
     public void firePhaseEnded(AbstractPhaseScope phaseScope) {
-        final Iterator<PhaseLifecycleListener> iter = getEventListenersIterator();
-        while (iter.hasNext()) {
-            iter.next().phaseEnded(phaseScope);
+        for (PhaseLifecycleListener phaseLifecycleListener : eventListenerSet) {
+            phaseLifecycleListener.phaseEnded(phaseScope);
         }
     }
 
     public void fireSolvingEnded(DefaultSolverScope solverScope) {
-        final Iterator<PhaseLifecycleListener> iter = getEventListenersIterator();
-        while (iter.hasNext()) {
-            iter.next().solvingEnded(solverScope);
+        for (PhaseLifecycleListener phaseLifecycleListener : eventListenerSet) {
+            phaseLifecycleListener.solvingEnded(solverScope);
         }
     }
 

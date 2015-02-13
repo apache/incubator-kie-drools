@@ -32,7 +32,7 @@ import java.util.TreeMap;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.drools.core.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
