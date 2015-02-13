@@ -142,7 +142,7 @@
         </properties>
     </persistence-unit>
     
-    <persistence-unit name="org.jbpm.persistence.patient.example">
+    <persistence-unit name="org.jbpm.persistence.patient.example" transaction-type="JTA">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <class>org.jbpm.test.persistence.objects.Patient</class>
         <class>org.jbpm.test.persistence.objects.MedicalRecord</class>
@@ -162,6 +162,8 @@
             <property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" />
             <property name="hibernate.connection.username" value="sa" />
             <property name="hibernate.connection.password" value="sasa" />
+            
+            <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" /> 
         </properties>        
     </persistence-unit>
     

@@ -8,10 +8,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.transaction.UserTransaction;
 
+import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
+import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
+import org.jbpm.marshalling.impl.ProcessInstanceResolverStrategy;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.test.JbpmJUnitBaseTestCase;
 import org.jbpm.test.persistence.objects.MedicalRecord;
@@ -19,6 +25,8 @@ import org.jbpm.test.persistence.objects.Patient;
 import org.jbpm.test.persistence.objects.RecordRow;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -46,11 +54,15 @@ public class PatientVariablePersistenceStrategyTest extends JbpmJUnitBaseTestCas
         MedicalRecord medicalRecord = new MedicalRecord("Last Three Years Medical Hisotry", salaboy);
         
         emfDomain = Persistence.createEntityManagerFactory("org.jbpm.persistence.patient.example");
-        EntityManager em = emfDomain.createEntityManager();
+        addEnvironmentEntry(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, 
+        		new ObjectMarshallingStrategy[] {
+                new ProcessInstanceResolverStrategy(),
+                new JPAPlaceholderResolverStrategy(emfDomain),
+                new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT) });
         
-        em.getTransaction().begin();
-        em.persist(medicalRecord);
-        em.getTransaction().commit();
+        
+        EntityManager em = emfDomain.createEntityManager();
+
         
         createRuntimeManager("patient-appointment.bpmn");
         RuntimeEngine runtimeEngine = getRuntimeEngine();
@@ -85,12 +97,10 @@ public class PatientVariablePersistenceStrategyTest extends JbpmJUnitBaseTestCas
         MedicalRecord taskMedicalRecord = getTaskContent(runtimeEngine, frontDeskTasks.get(0));
         Assert.assertNotNull(taskMedicalRecord.getId());
         taskMedicalRecord.setDescription("Initial Description of the Medical Record");
-        
-        em.getTransaction().begin();
-        em.merge(taskMedicalRecord);
-        em.getTransaction().commit();
-        
-        taskService.complete(frontDeskTasks.get(0).getId(), "frontDesk", null);
+                
+        Map<String, Object> output = new HashMap<String, Object>();
+        output.put("output1", taskMedicalRecord);
+        taskService.complete(frontDeskTasks.get(0).getId(), "frontDesk", output);
         
         //Now doctor has 1 task
         doctorTasks = taskService.getTasksAssignedAsPotentialOwner("doctor", "en-UK");
@@ -100,16 +110,26 @@ public class PatientVariablePersistenceStrategyTest extends JbpmJUnitBaseTestCas
         managerTasks = taskService.getTasksAssignedAsPotentialOwner("manager", "en-UK");
         Assert.assertTrue(managerTasks.isEmpty());
         
+        // modify the entity from outside
+        taskMedicalRecord.setDescription("Initial Description of the Medical Record - Updated");
+        
+        UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+        ut.begin();
+        em.merge(taskMedicalRecord);
+        ut.commit();
+        
         taskMedicalRecord = getTaskContent(runtimeEngine, doctorTasks.get(0));
+        
+        Assert.assertNotNull(taskMedicalRecord.getId());
+        taskMedicalRecord.setDescription("Initial Description of the Medical Record - Updated");
         
         taskService.start(doctorTasks.get(0).getId(), "doctor");
         //Check that we have the Modified Document
         taskMedicalRecord = em.find(MedicalRecord.class, taskMedicalRecord.getId());
         
-        Assert.assertEquals("Initial Description of the Medical Record", taskMedicalRecord.getDescription());
+        Assert.assertEquals("Initial Description of the Medical Record - Updated", taskMedicalRecord.getDescription());
         
         
-        em.getTransaction().begin();
         taskMedicalRecord.setDescription("Medical Record Validated by Doctor");
         List<RecordRow> rows = new ArrayList<RecordRow>();
         RecordRow recordRow = new RecordRow("CODE-999", "Just a regular Cold");
@@ -118,24 +138,26 @@ public class PatientVariablePersistenceStrategyTest extends JbpmJUnitBaseTestCas
         taskMedicalRecord.setRows(rows);
         taskMedicalRecord.setPriority(1);
         
-        em.getTransaction().commit();
+        output = new HashMap<String, Object>();
+        output.put("output2", taskMedicalRecord);
         
-        taskService.complete(doctorTasks.get(0).getId(), "doctor", null);
+        taskService.complete(doctorTasks.get(0).getId(), "doctor", output);
         
          // tasks for manager 
         managerTasks = taskService.getTasksAssignedAsPotentialOwner("manager", "en-UK");
         Assert.assertEquals(1, managerTasks.size());
         taskService.start(managerTasks.get(0).getId(), "manager");
         
-        em.getTransaction().begin();
         Patient patient = taskMedicalRecord.getPatient();
         patient.setNextAppointment(new Date());
+
         
-        em.getTransaction().commit();
+        output = new HashMap<String, Object>();
+        output.put("output3", taskMedicalRecord);
        
        // ksession.getWorkItemManager().registerWorkItemHandler("Human Task", htHandler);
         
-        taskService.complete(managerTasks.get(0).getId(), "manager", null);
+        taskService.complete(managerTasks.get(0).getId(), "manager", output);
         
         // since persisted process instance is completed it should be null
         process = ksession.getProcessInstance(process.getId());
