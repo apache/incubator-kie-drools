@@ -28,10 +28,10 @@
       </listitem>
       <listitem>
         <para>Test that you can access the execution engine by navigating to the endpoint in a
-          browser window: <code>http://SERVER:PORT/CONTEXT/rest/server/</code> with the web
+          browser window: <code>http://SERVER:PORT/CONTEXT/services/rest/server/</code> with the web
           container running. For example, if the web container is running on your local machine and
           you are using the default context, you can access it on the following URL:
-            <code>http://localhost:8080/kie-server-6.2.0.GA-redhat1/rest/server</code>.</para>
+            <code>http://localhost:8080/kie-server-6.2.0.GA-redhat1/services/rest/server</code>.</para>
       </listitem>
       <listitem>
         <para>When prompted for username/password, type in the username and password that you

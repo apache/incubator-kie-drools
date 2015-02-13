@@ -18,7 +18,7 @@
               identifiable name. </para>
        <para>The endpoint should be the same you used to verify that the server was running in the
               previous section and looks like this:
-                     <code>http://SERVER:PORT/CONTEXT/rest/server</code>. Also provide a unique
+                     <code>http://SERVER:PORT/CONTEXT/services/rest/server</code>. Also provide a unique
               identifiable name for this server. </para>
        <para>Although the username/password sections are not mandatory, unless you specifically take
               away the authentication required for your kie-server webapp, then you will need to

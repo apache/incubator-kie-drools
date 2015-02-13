@@ -16,7 +16,7 @@
                      <listitem>
                             <para>The base URL for these will remain as the endpoint defined earlier
                                    (for example:
-                                          <code>http://SERVER:PORT/CONTEXT/rest/server/</code>
+                                          <code>http://SERVER:PORT/CONTEXT/services/rest/server/</code>
                                    )</para>
                      </listitem>
                      <listitem>
@@ -71,7 +71,7 @@
               <title>⁠[GET] /containers/{id}</title>
               <para>Returns the status and information about a particular container. For example,
                      executing
-                            <code>http://SERVER:PORT/CONTEXT/rest/server/containers/MyProjectContainer</code>
+                            <code>http://SERVER:PORT/CONTEXT/services/rest/server/containers/MyProjectContainer</code>
                      could return the following example container info.</para>
               <example><title>Example Server Response</title>
                      <programlisting>⁠&lt;response type="SUCCESS" msg="Info for container MyProjectContainer">
@@ -96,7 +96,7 @@
               <para>Allows you to create a new Container in the Execution Server. For example, to
                      create a Container with the id of <emphasis role="bold"
                             >MyRESTContainer</emphasis> the complete endpoint will be:
-                            <code>http://SERVER:PORT/CONTEXT/rest/server/containers/MyRESTContainer</code>.
+                            <code>http://SERVER:PORT/CONTEXT/services/rest/server/containers/MyRESTContainer</code>.
                      An example of request is:⁠</para>
               <example><title>Example Request to create a container</title>
                      <programlisting>&lt;kie-container container-id="MyRESTContainer">
@@ -130,7 +130,7 @@
        <section>
               <title>[DELETE] /containers/{id}</title>
               <para>⁠Disposes the Container specified by the id. For example, executing
-                            <code>http://SERVER:PORT/CONTEXT/rest/server/containers/MyProjectContainer</code>
+                            <code>http://SERVER:PORT/CONTEXT/services/rest/server/containers/MyProjectContainer</code>
                      using the DELETE HTTP method will return the following server response:⁠</para>
               <example><title>Example Server Response disposing a container</title>
                      <programlisting>&lt;response type="SUCCESS" msg="Container MyProjectContainer successfully disposed."/></programlisting>
@@ -142,7 +142,7 @@
               <para>Executes operations and commands against the specified Container. You can send
                      commands to this Container in the body of the POST request. For example, to
                      fire all rules for Container with id MyRESTContainer
-                            (<code>http://SERVER:PORT/CONTEXT/rest/server/containers/MyRESTContainer</code>),
+                            (<code>http://SERVER:PORT/CONTEXT/services/rest/server/containers/MyRESTContainer</code>),
                      you would send the fire-all-rules command to it as shown below (in the body of
                      the POST request):</para>
               <example><title>Example Server Request to fire all rules</title>
@@ -206,7 +206,7 @@
               <title>[POST] /containers/{id}/scanner</title>
               <para>Allows you to start or stop a scanner that controls polling for updated
                      Container deployments. To start the scanner, send a request similar to:
-                            <code>http://SERVER:PORT/CONTEXT/rest/server/containers/{container-id}/scanner</code>
+                            <code>http://SERVER:PORT/CONTEXT/services/rest/server/containers/{container-id}/scanner</code>
                      with the following POST data.⁠</para>
               <example><title>Example Server Request to start the scanner</title>
                      <programlisting>&lt;kie-scanner status="STARTED" poll-interval="20"/></programlisting>
