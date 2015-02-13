@@ -15,6 +15,7 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.Timeout;
 import javax.ejb.Timer;
+import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
@@ -44,7 +45,7 @@ public class DeploymentSynchronizerCDInvoker {
 			schedule.hour("*");
 			schedule.minute("*");
 			schedule.second("*/" + DeploymentSynchronizer.DEPLOY_SYNC_INTERVAL);
-			timer = timerService.createCalendarTimer(schedule);
+			timer = timerService.createCalendarTimer(schedule, new TimerConfig(null, false));
 		
 		}
 	}

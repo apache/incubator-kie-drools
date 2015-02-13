@@ -16,6 +16,7 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.Timeout;
 import javax.ejb.Timer;
+import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 
 import org.jbpm.kie.services.impl.store.DeploymentStore;
@@ -46,7 +47,7 @@ public class DeploymentSynchronizerEJBImpl extends DeploymentSynchronizer {
 			schedule.hour("*");
 			schedule.minute("*");
 			schedule.second("*/" + DEPLOY_SYNC_INTERVAL);
-			timer = timerService.createCalendarTimer(schedule);
+			timer = timerService.createCalendarTimer(schedule, new TimerConfig(null, false));
 			DeploymentStore store = new DeploymentStore();
 			store.setCommandService(commandService);
 			
