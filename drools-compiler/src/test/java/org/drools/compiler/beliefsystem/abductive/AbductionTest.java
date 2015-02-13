@@ -890,7 +890,7 @@ public class AbductionTest extends CommonTestMethodBase {
 
         for ( Object o : session.getObjects() ) {
             System.out.println( ">>> " + o );
-            if ( o.getClass().equals( session.getKieBase().getFactType( "org.drools.tms.test", "CitizenUS" ) ) ) {
+            if ( o.getClass().equals( session.getKieBase().getFactType( "org.drools.tms.test", "CitizenUS" ).getFactClass() ) ) {
                 InternalFactHandle h = (InternalFactHandle) session.getFactHandle( o );
                 BeliefSet bs = h.getEqualityKey().getBeliefSet();
                 assertTrue( bs.isPositive() );
