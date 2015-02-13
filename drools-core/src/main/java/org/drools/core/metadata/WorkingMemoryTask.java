@@ -1,6 +1,8 @@
 package org.drools.core.metadata;
 
-public interface WorkingMemoryTask<T> extends MetaCallableTask<T>, Identifiable {
+import java.io.Serializable;
+
+public interface WorkingMemoryTask<T> extends MetaCallableTask<T>, Identifiable, Serializable {
 
     public Object getTargetId();
 
