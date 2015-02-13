@@ -539,7 +539,7 @@
       </listitem>
 
       <listitem>
-        <para><link linkend="lateAcceptance">Late Acceptance</link>. A late acceptance size of 400 usually works
+        <para><link linkend="lateAcceptance">Late Acceptance</link>. A Late Acceptance size of 400 usually works
         well.</para>
       </listitem>
     </orderedlist>
@@ -591,8 +591,8 @@
 
     <note>
       <para>Some <literal>Phase</literal> implementations can combine techniques from multiple optimization algorithms,
-      but they is still just 1 <literal>Phase</literal>. For example: a local search <literal>Phase</literal> can do
-      simulated annealing with entity tabu.</para>
+      but they is still just 1 <literal>Phase</literal>. For example: a Local Search <literal>Phase</literal> can do
+      Simulated Annealing with entity Tabu.</para>
     </note>
 
     <para>Here's a configuration that runs 3 phases in sequence:</para>
@@ -603,7 +603,7 @@
     ... &lt;!-- First phase: First Fit Decreasing --&gt;
   &lt;/constructionHeuristic&gt;
   &lt;localSearch&gt;
-    ... &lt;!-- Second phase: Late acceptance --&gt;
+    ... &lt;!-- Second phase: Late Acceptance --&gt;
   &lt;/localSearch&gt;
   &lt;localSearch&gt;
     ... &lt;!-- Third phase: Tabu Search --&gt;

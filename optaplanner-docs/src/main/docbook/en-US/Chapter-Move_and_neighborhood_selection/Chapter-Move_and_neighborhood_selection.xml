@@ -854,7 +854,7 @@
         <title>Cached random selection</title>
 
         <para>This combination is often a worthy competitor for medium use cases, especially with fast stepping
-        optimization algorithms (such as simulated annealing). Unlike cached shuffled selection, it doesn't waste time
+        optimization algorithms (such as Simulated Annealing). Unlike cached shuffled selection, it doesn't waste time
         shuffling the moves list at the beginning of every step.</para>
 
         <programlisting language="xml">    &lt;unionMoveSelector&gt;

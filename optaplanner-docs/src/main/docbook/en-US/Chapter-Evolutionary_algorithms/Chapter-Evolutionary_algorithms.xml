@@ -28,8 +28,8 @@
       <para>A good Genetic Algorithms prototype in Planner was written some time ago, but it wasn't practical to merge and
       support it at the time. The results of Genetic Algorithms were consistently and seriously inferior to all the <link
       linkend="localSearch">Local Search</link> variants (except Hill Climbing) on all use cases tried. Nevertheless, a
-      future version of Planner will add support for Genetic Algorithms, so you can easily benchmark genetic
-      algorithms on your use case too.</para>
+      future version of Planner will add support for Genetic Algorithms, so you can easily benchmark Genetic
+      Algorithms on your use case too.</para>
     </note>
   </section>
 </chapter>

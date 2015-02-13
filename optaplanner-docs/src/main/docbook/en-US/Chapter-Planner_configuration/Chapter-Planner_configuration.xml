@@ -1541,8 +1541,8 @@ public class SeatDesignationDependency {
 &lt;/solver&gt;</programlisting>
 
       <para>A solver has a single <literal>Random</literal> instance. Some solver configurations use the
-      <literal>Random</literal> instance a lot more than others. For example simulated annealing depends highly on
-      random numbers, while tabu search only depends on it to deal with score ties. The environment mode influences the
+      <literal>Random</literal> instance a lot more than others. For example Simulated Annealing depends highly on
+      random numbers, while Tabu Search only depends on it to deal with score ties. The environment mode influences the
       seed of that <literal>Random</literal> instance.</para>
 
       <para>These are the environment modes:</para>

@@ -46,7 +46,7 @@
       to B3</emphasis>. Note that <emphasis>C0 to C3</emphasis> (not shown) could also have been picked because it also
       has the score <literal>-3</literal>.</para>
 
-      <para>The step is applied on the solution. From that new solution, the local search solver tries every move again,
+      <para>The step is applied on the solution. From that new solution, Local Search tries every move again,
       to decide the next step after that. It continually does this in a loop, and we get something like this:</para>
 
       <figure>
