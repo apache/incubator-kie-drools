@@ -43,7 +43,6 @@ public class JPAWorkItemManager implements WorkItemManager {
         workItemInfo = context.persist( workItemInfo );
         
         ((WorkItemImpl) workItem).setId(workItemInfo.getId());
-        workItemInfo.transform();
         
         if (this.workItems == null) {
             this.workItems = new HashMap<Long, WorkItemInfo>();
