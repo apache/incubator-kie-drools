@@ -2380,6 +2380,10 @@ public class RuleModelDRLPersistenceImpl
                                              final boolean isJavaDialect,
                                              final Map<String, String> boundParams,
                                              final PackageDataModelOracle dmo ) {
+        if ( pattern.getIdentifier() != null ) {
+            boundParams.put( pattern.getIdentifier(),
+                             pattern.getObjectType() );
+        }
         if ( patternSource instanceof AccumulateDescr ) {
             AccumulateDescr accumulate = (AccumulateDescr) patternSource;
             FromAccumulateCompositeFactPattern fac = new FromAccumulateCompositeFactPattern();
@@ -2395,8 +2399,7 @@ public class RuleModelDRLPersistenceImpl
 
             FactPattern factPattern = new FactPattern( pattern.getObjectType() );
             factPattern.setBoundName( pattern.getIdentifier() );
-            boundParams.put( factPattern.getBoundName(),
-                             factPattern.getFactType() );
+
             parseConstraint( m,
                              factPattern,
                              pattern.getConstraint(),
