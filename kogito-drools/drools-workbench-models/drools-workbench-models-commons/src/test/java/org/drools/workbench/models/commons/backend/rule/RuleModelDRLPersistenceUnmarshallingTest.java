@@ -7149,6 +7149,92 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                       RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
     }
 
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1191737
+    public void testMultipleFromKeywords() throws Exception {
+        String drl = "package org.test;\n" +
+                "rule \"ToyWithoutName \"\n" +
+                "dialect \"java\"\n" +
+                "when\n" +
+                "  $father: Father()\n" +
+                "  $kid: Kid() from $father.kids\n" +
+                "  $toy: Toy(name == null) from $kid.toys\n" +
+                "then\n" +
+                "  System.out.println(\"blabla\");\n" +
+                "end";
+
+        addModelField( "org.test.Father",
+                       "this",
+                       "org.test.Father",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Father",
+                       "kids",
+                       "org.test.Kid",
+                       DataType.TYPE_COLLECTION );
+        addModelField( "org.test.Kid",
+                       "this",
+                       "org.test.Kid",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Kid",
+                       "toys",
+                       "org.test.Toy",
+                       DataType.TYPE_COLLECTION );
+        addModelField( "org.test.Toy",
+                       "this",
+                       "org.test.Toy",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Toy",
+                       "name",
+                       "java.lang.String",
+                       DataType.TYPE_STRING );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 3,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "$father",
+                      fp0.getBoundName() );
+        assertEquals( "Father",
+                      fp0.getFactType() );
+
+        final IPattern p1 = m.lhs[ 1 ];
+        assertTrue( p1 instanceof FromCompositeFactPattern );
+        final FromCompositeFactPattern fp1 = (FromCompositeFactPattern) p1;
+        assertEquals( "$kid",
+                      fp1.getFactPattern().getBoundName() );
+        assertEquals( "Kid",
+                      fp1.getFactType() );
+
+        final IPattern p2 = m.lhs[ 2 ];
+        assertTrue( p2 instanceof FromCompositeFactPattern );
+        final FromCompositeFactPattern fp2 = (FromCompositeFactPattern) p2;
+        assertEquals( "$toy",
+                      fp2.getFactPattern().getBoundName() );
+        assertEquals( "Toy",
+                      fp2.getFactType() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        final IAction a = m.rhs[ 0 ];
+        assertTrue( a instanceof FreeFormLine );
+        final FreeFormLine affl = (FreeFormLine) a;
+        assertEquals( "System.out.println(\"blabla\");",
+                      affl.getText() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",
