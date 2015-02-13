@@ -7,7 +7,7 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Construction heuristics</title>
 
-  <section>
+  <section xml:id="constructionHeuristicsOverview">
     <title>Overview</title>
 
     <para>A construction heuristic builds a pretty good initial solution in a finite length of time. Its solution isn't
@@ -20,7 +20,7 @@
   <section xml:id="firstFit">
     <title>First Fit</title>
 
-    <section>
+    <section xml:id="firstFitAlgorithm">
       <title>Algorithm description</title>
 
       <para>The First Fit algorithm cycles through all the planning entities (in default order), initializing 1 planning
@@ -39,7 +39,7 @@
       remedy that.</para>
     </section>
 
-    <section>
+    <section xml:id="firstFitConfiguration">
       <title>Configuration</title>
 
       <para>Configure this solver phase:</para>
@@ -62,7 +62,7 @@
   <section xml:id="firstFitDecreasing">
     <title>First Fit Decreasing</title>
 
-    <section>
+    <section xml:id="firstFitDecreasingAlgorithm">
       <title>Algorithm description</title>
 
       <para>Like First Fit, but assigns the more difficult planning entities first, because they are less likely to fit
@@ -83,7 +83,7 @@
       </note>
     </section>
 
-    <section>
+    <section xml:id="firstFitDecreasingConfiguration">
       <title>Configuration</title>
 
       <para>Configure this solver phase:</para>
@@ -106,7 +106,7 @@
   <section xml:id="weakestFit">
     <title>Weakest Fit</title>
 
-    <section>
+    <section xml:id="weakestFitAlgorithm">
       <title>Algorithm description</title>
 
       <para>Like First Fit, but uses the weaker planning values first, because the strong planning values are more
@@ -121,7 +121,7 @@
       </note>
     </section>
 
-    <section>
+    <section xml:id="weakestFitConfiguration">
       <title>Configuration</title>
 
       <para>Configure this solver phase:</para>
@@ -144,7 +144,7 @@
   <section xml:id="weakestFitDecreasing">
     <title>Weakest Fit Decreasing</title>
 
-    <section>
+    <section xml:id="weakestFitDecreasingAlgorithm">
       <title>Algorithm description</title>
 
       <para>Combines First Fit Decreasing and Weakest Fit. So it sorts the planning entities on decreasing difficulty
@@ -159,7 +159,7 @@
       </note>
     </section>
 
-    <section>
+    <section xml:id="weakestFitDecreasingConfiguration">
       <title>Configuration</title>
 
       <para>Configure this solver phase:</para>
@@ -182,7 +182,7 @@
   <section xml:id="strongestFit">
     <title>Strongest Fit</title>
 
-    <section>
+    <section xml:id="strongestFitAlgorithm">
       <title>Algorithm description</title>
 
       <para>Like First Fit, but uses the strong planning values first, because the strong planning values are more
@@ -197,7 +197,7 @@
       </note>
     </section>
 
-    <section>
+    <section xml:id="strongestFitConfiguration">
       <title>Configuration</title>
 
       <para>Configure this solver phase:</para>
@@ -220,7 +220,7 @@
   <section xml:id="strongestFitDecreasing">
     <title>Strongest Fit Decreasing</title>
 
-    <section>
+    <section xml:id="strongestFitDecreasingAlgorithm">
       <title>Algorithm description</title>
 
       <para>Combines First Fit Decreasing and Strongest Fit. So it sorts the planning entities on decreasing difficulty
@@ -235,7 +235,7 @@
       </note>
     </section>
 
-    <section>
+    <section xml:id="strongestFitDecreasingConfiguration">
       <title>Configuration</title>
 
       <para>Configure this solver phase:</para>
@@ -258,7 +258,7 @@
   <section xml:id="allocateEntityFromQueue">
     <title>Allocate Entity From Queue</title>
 
-    <section>
+    <section xml:id="allocateEntityFromQueueAlgorithm">
       <title>Algorithm description</title>
 
       <para>Allocate Entity From Queue is a versatile, generic form of <link linkend="firstFit">First Fit</link>, <link
@@ -280,7 +280,7 @@
       </orderedlist>
     </section>
 
-    <section>
+    <section xml:id="allocateEntityFromQueueConfiguration">
       <title>Configuration</title>
 
       <para>Simple configuration:</para>
@@ -378,7 +378,7 @@
       linkend="limitedSelection">limiting</link>) is supported too.</para>
     </section>
 
-    <section>
+    <section xml:id="allocateEntityFromQueueMultipleVariables">
       <title>Multiple variables</title>
 
       <para>There are 2 ways to deal with multiple variables, depending on how their <literal>ChangeMove</literal>s are
@@ -458,7 +458,7 @@
         <para>Especially for sequential <literal>ChangeMove</literal>s, the order of the variables is important. In the
         example above, it's better to select the period first (instead of the other way around), because there are more
         hard constraints that do not involve the room (for example: no teacher should teach 2 lectures at the same
-        time). Let the <link linkend="benchmarkingAndTweaking">Benchmarker</link> guide you.</para>
+        time). Let the <link linkend="benchmarker">Benchmarker</link> guide you.</para>
       </important>
 
       <para>With 3 or more variables, it's possible to combine the cartesian product and sequential techniques:</para>
@@ -476,7 +476,7 @@
   &lt;/constructionHeuristic&gt;</programlisting>
     </section>
 
-    <section>
+    <section xml:id="allocateEntityFromQueueMultipleEntityClasses">
       <title>Multiple entity classes</title>
 
       <para>The easiest way to deal with multiple entity classes is to run a separate construction heuristic for each
@@ -543,7 +543,7 @@
             <para>If there are only negative constraints, but the <link
             linkend="initializingScoreTrend">InitializingScoreTrend</link> is strictly not <literal>ONLY_DOWN</literal>,
             it can sometimes make sense to apply FIRST_NON_DETERIORATING_SCORE. Use the <link
-            linkend="benchmarkingAndTweaking">Benchmarker</link> to decide if the score quality loss is worth the time
+            linkend="benchmarker">Benchmarker</link> to decide if the score quality loss is worth the time
             gain.</para>
           </note>
         </listitem>
@@ -582,7 +582,7 @@
   <section xml:id="allocateToValueFromQueue">
     <title>Allocate To Value From Queue</title>
 
-    <section>
+    <section xml:id="allocateToValueFromQueueAlgorithm">
       <title>Algorithm description</title>
 
       <para>Allocate To Value From Queue is a versatile, generic form of Nearest Neighbour. It works like this:</para>
@@ -602,7 +602,7 @@
       </orderedlist>
     </section>
 
-    <section>
+    <section xml:id="allocateToValueFromQueueConfiguration">
       <title>Configuration</title>
 
       <para>Not yet implemented.</para>
@@ -612,7 +612,7 @@
   <section xml:id="cheapestInsertion">
     <title>Cheapest Insertion</title>
 
-    <section>
+    <section xml:id="cheapestInsertionAlgorithm">
       <title>Algorithm description</title>
 
       <para>The Cheapest Insertion algorithm cycles through all the planning values for all the planning entities,
@@ -632,7 +632,7 @@
       </note>
     </section>
 
-    <section>
+    <section xml:id="cheapestInsertionConfiguration">
       <title>Configuration</title>
 
       <para>Simplest configuration of Cheapest Insertion:</para>
@@ -654,13 +654,13 @@
   <section xml:id="regretInsertion">
     <title>Regret Insertion</title>
 
-    <section>
+    <section xml:id="regretInsertionAlgorithm">
       <title>Algorithm description</title>
 
       <para>TODO</para>
     </section>
 
-    <section>
+    <section xml:id="regretInsertionConfiguration">
       <title>Configuration</title>
 
       <para>TODO Not implemented yet.</para>
@@ -670,7 +670,7 @@
   <section xml:id="allocateFromPool">
     <title>Allocate From Pool</title>
 
-    <section>
+    <section xml:id="allocateFromPoolAlgorithm">
       <title>Algorithm description</title>
 
       <para>Allocate From Pool is a versatile, generic form of <link linkend="cheapestInsertion">Cheapest
@@ -691,7 +691,7 @@
       </orderedlist>
     </section>
 
-    <section>
+    <section xml:id="allocateFromPoolConfiguration">
       <title>Configuration</title>
 
       <para>TODO</para>

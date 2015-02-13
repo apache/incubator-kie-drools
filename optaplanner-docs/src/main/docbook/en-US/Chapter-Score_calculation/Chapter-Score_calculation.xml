@@ -1150,7 +1150,7 @@ end</programlisting>
   <section xml:id="scoreCalculationPerformanceTricks">
     <title>Score calculation performance tricks</title>
 
-    <section>
+    <section xml:id="scoreCalculationPerformanceTricksOverview">
       <title>Overview</title>
 
       <para>The <literal>Solver</literal> will normally spend most of its execution time running the score calculation
@@ -1207,7 +1207,7 @@ end</programlisting>
       making incremental score calculation far more scalable.</para>
     </section>
 
-    <section>
+    <section xml:id="avoidCallingRemoteServicesDuringScoreCalculation">
       <title>Avoid calling remote services during score calculation</title>
 
       <para>Do not call remote services in your score calculation (except if you're bridging
@@ -1253,8 +1253,8 @@ end</programlisting>
       </note>
     </section>
 
-    <section>
-      <title>Other performance tricks</title>
+    <section xml:id="otherScoreCalculationPerformanceTricks">
+      <title>Other score calculation performance tricks</title>
 
       <itemizedlist>
         <listitem>
@@ -1359,7 +1359,7 @@ end</programlisting>
       <title>stepLimit benchmark</title>
 
       <para>Not all score constraints have the same performance cost. Sometimes 1 score constraint can kill the score
-      calculation performance outright. Use the <link linkend="benchmarkingAndTweaking">Benchmarker</link> to do a 1
+      calculation performance outright. Use the <link linkend="benchmarker">Benchmarker</link> to do a 1
       minute run and check what happens to the average calculation count per second if you comment out all but 1 of the
       score constraints.</para>
     </section>

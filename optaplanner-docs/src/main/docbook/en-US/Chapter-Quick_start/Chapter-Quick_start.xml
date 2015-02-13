@@ -10,8 +10,8 @@
   <section xml:id="cloudBalancingTutorial">
     <title>Cloud balancing tutorial</title>
 
-    <section>
-      <title>Problem statement</title>
+    <section xml:id="cloudBalancingProblemDescription">
+      <title>Problem description</title>
 
       <para>Suppose your company owns a number of cloud computers and needs to run a number of processes on those
       computers. Assign each process to a computer under the following 4 constraints.</para>
@@ -76,7 +76,7 @@
       constraints). So let's take a look how we can use Planner for this.</para>
     </section>
 
-    <section>
+    <section xml:id="cloudBalancingProblemSize">
       <title>Problem size</title>
 
       <programlisting>2computers-6processes      has   2 computers and    6 processes with a search space of      64.
@@ -88,8 +88,8 @@
 800computers-2400processes has 800 computers and 2400 processes with a search space of 10^6967.</programlisting>
     </section>
 
-    <section>
-      <title>Domain model diagram</title>
+    <section xml:id="cloudBalancingDomainModelDesign">
+      <title>Domain model design</title>
 
       <para>Let's start by taking a look at the domain model. It's pretty simple:</para>
 
@@ -137,7 +137,7 @@
       </itemizedlist>
     </section>
 
-    <section>
+    <section xml:id="cloudBalancingMainMethod">
       <title>Main method</title>
 
       <para>Try it yourself. <link linkend="downloadAndRunTheExamples">Download and configure the examples in your
@@ -209,7 +209,7 @@
       <para>The only non-obvious part is building the <literal>Solver</literal>. Let's examine that.</para>
     </section>
 
-    <section>
+    <section xml:id="cloudBalancingSolverConfiguration">
       <title>Solver configuration</title>
 
       <para>Take a look at the solver configuration:</para>
@@ -303,13 +303,13 @@
       <para>Let's examine the domain model classes and the score configuration.</para>
     </section>
 
-    <section>
+    <section xml:id="cloudBalancingDomainModelImplementation">
       <title>Domain model implementation</title>
 
-      <section>
-        <title>The class <literal>Computer</literal></title>
+      <section xml:id="cloudBalancingClassComputer">
+        <title>The <literal>Computer</literal> class</title>
 
-        <para>The  <literal>Computer</literal> class is a POJO (Plain Old Java Object), nothing special. Usually, you'll
+        <para>The <literal>Computer</literal> class is a POJO (Plain Old Java Object), nothing special. Usually, you'll
         have more of this kind of classes.</para>
 
         <example>
@@ -327,7 +327,7 @@
         </example>
       </section>
 
-      <section>
+      <section xml:id="cloudBalancingClassProcess">
         <title>The <literal>Process</literal> class</title>
 
         <para>The <literal>Process</literal> class is a little bit special. We need to tell Planner that it can change
@@ -372,8 +372,8 @@ public class CloudProcess ... {
         <literal>valueRangeProviderRefs</literal> property.</para>
       </section>
 
-      <section>
-        <title>The class <literal>CloudBalance</literal></title>
+      <section xml:id="cloudBalancingClassCloudBalance">
+        <title>The <literal>CloudBalance</literal> class</title>
 
         <para>The <literal>CloudBalance</literal> class implements the <filename>Solution</filename> interface. It holds
         a list of all computers and processes. We need to tell Planner how to retrieve the collection of processes which
@@ -435,7 +435,7 @@ public class CloudProcess ... {
       </section>
     </section>
 
-    <section>
+    <section xml:id="cloudBalancingScoreConfiguration">
       <title>Score configuration</title>
 
       <para>Planner will search for the <literal>Solution</literal> with the highest <literal>Score</literal>. We're
@@ -468,7 +468,7 @@ public class CloudProcess ... {
 
       <para>Let's take a look at 2 different implementations:</para>
 
-      <section>
+      <section xml:id="cloudBalancingEasyJavaScoreConfiguration">
         <title>Easy Java score configuration</title>
 
         <para>One way to define a score function is to implement the interface <literal>EasyScoreCalculator</literal>
@@ -541,7 +541,7 @@ public class CloudProcess ... {
         function. Let's take a look at the latter.</para>
       </section>
 
-      <section>
+      <section xml:id="cloudBalancingDroolsScoreConfiguration">
         <title>Drools score configuration</title>
 
         <para>To use the Drools rule engine as a score function, simply add a <literal>scoreDrl</literal> resource in
@@ -616,7 +616,7 @@ end</programlisting>
       </section>
     </section>
 
-    <section>
+    <section xml:id="cloudBalancingBeyondThisTutorial">
       <title>Beyond this tutorial</title>
 
       <para>Now that this simple example works, try going further. Enrich the domain model and add extra constraints
@@ -624,12 +624,12 @@ end</programlisting>
 
       <itemizedlist>
         <listitem>
-          <para>Each <literal>Process</literal> belongs to a <literal>Service</literal>. A computer can crash, so
+          <para>Each <literal>Process</literal> belongs to a <literal>Service</literal>. A computer might crash, so
           processes running the same service should be assigned to different computers.</para>
         </listitem>
 
         <listitem>
-          <para>Each <literal>Computer</literal> is located in a <literal>Building</literal>. A building can burn down,
+          <para>Each <literal>Computer</literal> is located in a <literal>Building</literal>. A building might burn down,
           so processes of the same services should be assigned to computers in different buildings.</para>
         </listitem>
       </itemizedlist>

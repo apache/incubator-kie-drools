@@ -5,12 +5,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Evolutionary algorithms</title>
+  <title>Evolutionary Algorithms</title>
 
-  <section>
+  <section xml:id="evolutionaryAlgorithmsOverview">
     <title>Overview</title>
 
-    <para>Evolutionary algorithms work on a population of solutions and evolve that population.</para>
+    <para>Evolutionary Algorithms work on a population of solutions and evolve that population.</para>
   </section>
 
   <section xml:id="evolutionaryStrategies">

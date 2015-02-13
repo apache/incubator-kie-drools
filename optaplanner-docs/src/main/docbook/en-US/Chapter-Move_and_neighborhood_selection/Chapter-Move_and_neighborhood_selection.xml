@@ -1232,7 +1232,7 @@
 }</programlisting>
 
       <para>To configure nearby selection, add a <literal>nearbySelection</literal> element in the
-      <literal>entitySelector</literal> or <literal>valueSelector</literal> and use <link linkend="???">mimic
+      <literal>entitySelector</literal> or <literal>valueSelector</literal> and use <link linkend="mimicSelection">mimic
       selection</link> to specify which entity should be near by the selection.</para>
 
       <programlisting language="xml">    &lt;unionMoveSelector&gt;
@@ -1307,7 +1307,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>As always, use the <link linkend="benchmarkingAndTweaking">Benchmarker</link> to tweak values if
+      <para>As always, use the <link linkend="benchmarker">Benchmarker</link> to tweak values if
       desired.</para>
     </section>
   </section>
@@ -1315,12 +1315,12 @@
   <section xml:id="customMoves">
     <title>Custom moves</title>
 
-    <section>
+    <section xml:id="whichMoveTypesMightBeMissing">
       <title>Which move types might be missing in my implementation?</title>
 
       <para>To determine which move types might be missing in your implementation, run a <link
-      linkend="benchmarkingAndTweaking">Benchmarker</link> <emphasis>for a short amount of time</emphasis> and <link
-      linkend="writingTheOutputSolutionOfTheBenchmarkRuns">configure it to write the best solutions to disk</link>. Take
+      linkend="benchmarker">Benchmarker</link> <emphasis>for a short amount of time</emphasis> and <link
+      linkend="writeTheOutputSolutionOfBenchmarkRuns">configure it to write the best solutions to disk</link>. Take
       a look at such a best solution: it will likely be a local optima. Try to figure out if there's a move that could
       get out of that local optima faster.</para>
 
@@ -1328,7 +1328,7 @@
       the previous configurations to see if you want to keep it.</para>
     </section>
 
-    <section>
+    <section xml:id="customMovesIntroduction">
       <title>Custom moves introduction</title>
 
       <para>Instead of reusing the generic <literal>Move</literal>s (such as <literal>ChangeMove</literal>) you can also

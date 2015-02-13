@@ -312,7 +312,7 @@
     <section xml:id="planningEntity">
       <title>Planning entity</title>
 
-      <section>
+      <section xml:id="planningEntityAnnotation">
         <title>Planning entity annotation</title>
 
         <para>A planning entity is a JavaBean (POJO) that changes during solving, for example a <literal>Queen</literal>
@@ -440,7 +440,7 @@ public class Queen {
     <section xml:id="planningVariable">
       <title>Planning variable</title>
 
-      <section>
+      <section xml:id="planningVariableAnnotation">
         <title>Planning variable annotation</title>
 
         <para>A planning variable is a property (including getter and setter) on a planning entity. It points to a
@@ -514,7 +514,7 @@ public class Queen {
     }</programlisting>
       </section>
 
-      <section>
+      <section xml:id="whenIsAPlanningVariableInitialized">
         <title>When is a planning variable considered initialized?</title>
 
         <para>A planning variable is considered initialized if its value is not <literal>null</literal> or if the
@@ -531,7 +531,7 @@ public class Queen {
     <section xml:id="planningValueAndPlanningValueRange">
       <title>Planning value and planning value range</title>
 
-      <section>
+      <section xml:id="planningValue">
         <title>Planning value</title>
 
         <para>A planning value is a possible value for a planning variable. Usually, a planning value is a problem fact,
@@ -544,11 +544,11 @@ public class Queen {
         and <literal>1.0</literal>).</para>
       </section>
 
-      <section>
+      <section xml:id="planningValueRangeProvider">
         <title>Planning value range provider</title>
 
-        <section>
-          <title>Introduction</title>
+        <section xml:id="planningValueRangeProviderOverview">
+          <title>Overview</title>
 
           <para>The value range of a planning variable is defined with the <literal>@ValueRangeProvider</literal>
           annotation. A <literal>@ValueRangeProvider</literal> annotation always has a property <literal>id</literal>,
@@ -709,8 +709,8 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
           </itemizedlist>
         </section>
 
-        <section>
-          <title>Combining ValueRangeProviders</title>
+        <section xml:id="combineValueRangeProviders">
+          <title>Combine ValueRangeProviders</title>
 
           <para>Value range providers can be combined, for example:</para>
 
@@ -1295,11 +1295,10 @@ public class Customer {
         <para><emphasis role="bold">Implementing a planning clone method is hard, therefore you don't need to implement
         it.</emphasis></para>
 
-        <section>
+        <section xml:id="fieldAccessingSolutionCloner">
           <title><literal>FieldAccessingSolutionCloner</literal></title>
 
-          <para>This <literal>SolutionCloner</literal> is used by default. It works for the majority of use
-          cases.</para>
+          <para>This <literal>SolutionCloner</literal> is used by default. It works well for most use cases.</para>
 
           <warning>
             <para>When the <literal>FieldAccessingSolutionCloner</literal> clones your entity collection, it might not
@@ -1328,7 +1327,7 @@ public class SeatDesignationDependency {
           method.</para>
         </section>
 
-        <section>
+        <section xml:id="customCloning">
           <title>Custom cloning: Make <literal>Solution</literal> implement <literal>PlanningCloneable</literal></title>
 
           <para>If your <literal>Solution</literal> implements <literal>PlanningCloneable</literal>, Planner will
@@ -1383,10 +1382,10 @@ public class SeatDesignationDependency {
         </section>
       </section>
 
-      <section>
-        <title>Build an uninitialized solution</title>
+      <section xml:id="createAnUninitializedSolution">
+        <title>Create an uninitialized solution</title>
 
-        <para>Build a <literal>Solution</literal> instance to represent your planning problem, so you can set it on the
+        <para>Create a <literal>Solution</literal> instance to represent your planning problem's dataset, so it can be set on the
         <literal>Solver</literal> as the planning problem to solve. For example in n queens, an
         <literal>NQueens</literal> instance is created with the required <literal>Column</literal> and
         <literal>Row</literal> instances and every <literal>Queen</literal> set to a different <literal>column</literal>
@@ -1448,11 +1447,11 @@ public class SeatDesignationDependency {
     </section>
   </section>
 
-  <section>
+  <section xml:id="useTheSolver">
     <title>Use the <literal>Solver</literal></title>
 
-    <section>
-      <title>The Solver interface</title>
+    <section xml:id="theSolverInterface">
+      <title>The <literal>Solver</literal> interface</title>
 
       <para>A <literal>Solver</literal> implementation will solve your planning problem.</para>
 
@@ -1472,7 +1471,7 @@ public class SeatDesignationDependency {
       or build it yourself.</para>
     </section>
 
-    <section>
+    <section xml:id="solvingAProblem">
       <title>Solving a problem</title>
 
       <para>Solving a problem is quite easy once you have:</para>
@@ -1548,7 +1547,7 @@ public class SeatDesignationDependency {
 
       <para>These are the environment modes:</para>
 
-      <section>
+      <section xml:id="environmentModeFullAssert">
         <title>FULL_ASSERT</title>
 
         <para>The FULL_ASSERT mode turns on all assertions (such as assert that the incremental score calculation is
@@ -1558,10 +1557,10 @@ public class SeatDesignationDependency {
         <para>This mode is reproducible (see the reproducible mode). It is also intrusive because it calls the method
         <literal>calculateScore()</literal> more frequently than a non assert mode.</para>
 
-        <para>The FULL_ASSERT mode is horribly slow (because it doesn't rely on delta based score calculation).</para>
+        <para>The FULL_ASSERT mode is horribly slow (because it doesn't rely on incremental score calculation).</para>
       </section>
 
-      <section>
+      <section xml:id="environmentModeNonIntrusiveFullAssert">
         <title>NON_INTRUSIVE_FULL_ASSERT</title>
 
         <para>The NON_INTRUSIVE_FULL_ASSERT turns on several assertions to fail-fast on a bug in a Move implementation,
@@ -1570,14 +1569,14 @@ public class SeatDesignationDependency {
         <para>This mode is reproducible (see the reproducible mode). It is non-intrusive because it does not call the
         method <literal>calculateScore()</literal> more frequently than a non assert mode.</para>
 
-        <para>The NON_INTRUSIVE_FULL_ASSERT mode is horribly slow (because it doesn't rely on delta based score
+        <para>The NON_INTRUSIVE_FULL_ASSERT mode is horribly slow (because it doesn't rely on incremental score
         calculation).</para>
       </section>
 
-      <section>
+      <section xml:id="environmentModeFastAssert">
         <title>FAST_ASSERT</title>
 
-        <para>The FAST_ASSERT mode turns on most assertions (such as assert that an undo Move's score is the same as
+        <para>The FAST_ASSERT mode turns on most assertions (such as assert that an undoMove's score is the same as
         before the Move) to fail-fast on a bug in a Move implementation, a score rule, the rule engine itself,
         ...</para>
 
@@ -1590,7 +1589,7 @@ public class SeatDesignationDependency {
         mode on.</para>
       </section>
 
-      <section>
+      <section xml:id="environmentModeReproducible">
         <title>REPRODUCIBLE (default)</title>
 
         <para>The reproducible mode is the default mode because it is recommended during development. In this mode, 2
@@ -1626,7 +1625,7 @@ public class SeatDesignationDependency {
         no seed is specified, and it also disables certain concurrency optimizations (such as work stealing).</para>
       </section>
 
-      <section>
+      <section xml:id="environmentModeProduction">
         <title>PRODUCTION</title>
 
         <para>The production mode is the fastest, but it is not reproducible. It is recommended for a production
@@ -1819,7 +1818,7 @@ INFO  Solving ended: time spent (24), best score (0), average calculate count pe
 
       <para>For most use cases, the randomType has no significant impact on the average quality of the best solution on
       multiple datasets. If you want to confirm this on your use case, use the <link
-      linkend="benchmarkingAndTweaking">benchmarker</link>.</para>
+      linkend="benchmarker">benchmarker</link>.</para>
     </section>
   </section>
 </chapter>

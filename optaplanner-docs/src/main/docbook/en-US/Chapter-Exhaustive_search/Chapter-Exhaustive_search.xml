@@ -5,19 +5,19 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Exhaustive search</title>
+  <title>Exhaustive Search</title>
 
-  <section>
+  <section xml:id="exhaustiveSearchOverview">
     <title>Overview</title>
 
-    <para>Exact methods will always find the global optimum and recognize it too. That being said, they don't scale (not
-    even beyond toy data sets) and are therefore mostly useless.</para>
+    <para>Exhaustive Search will always find the global optimum and recognize it too. That being said, it doesn't scale (not
+    even beyond toy data sets) and is therefore mostly useless.</para>
   </section>
 
   <section xml:id="bruteForce">
     <title>Brute Force</title>
 
-    <section>
+    <section xml:id="bruteForceAlgorithm">
       <title>Algorithm description</title>
 
       <para>The Brute Force algorithm creates and evaluates every possible solution.</para>
@@ -38,7 +38,7 @@
       </important>
     </section>
 
-    <section>
+    <section xml:id="bruteForceConfiguration">
       <title>Configuration</title>
 
       <para>Simplest configuration of Brute Force:</para>
@@ -55,7 +55,7 @@
   <section xml:id="branchAndBound">
     <title>Branch And Bound</title>
 
-    <section>
+    <section xml:id="branchAndBoundAlgorithm">
       <title>Algorithm description</title>
 
       <para>Branch And Bound also explores nodes in an exponential search tree, but it investigates more promising nodes
@@ -94,7 +94,7 @@
       </important>
     </section>
 
-    <section>
+    <section xml:id="branchAndBoundConfiguration">
       <title>Configuration</title>
 
       <para>Simplest configuration of Branch And Bound:</para>
@@ -236,7 +236,7 @@
       </listitem>
     </itemizedlist>
 
-    <para>As shown in these time spent graphs from the <link linkend="benchmarkingAndTweaking">Benchmarker</link>, Brute
+    <para>As shown in these time spent graphs from the <link linkend="benchmarker">Benchmarker</link>, Brute
     Force and Branch And Bound both hit a performance scalability wall. For example, on N queens it hits wall at a few
     dozen queens:</para>
 

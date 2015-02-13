@@ -84,7 +84,7 @@
     problems given real-world time limitations.</para>
   </section>
 
-  <section>
+  <section xml:id="doesPlannerFindTheOptimalSolution">
     <title>Does Planner find the optimal solution?</title>
 
     <para>The business wants the optimal solution, but they also have other requirements:</para>
@@ -548,7 +548,7 @@
     probably already more than good enough.</para>
 
     <para>But you can do even better, at a lower return on invested time. Use the <link
-    linkend="benchmarkingAndTweaking">Benchmarker</link> and try a couple of different Tabu Search, Simulated Annealing
+    linkend="benchmarker">Benchmarker</link> and try a couple of different Tabu Search, Simulated Annealing
     and Late Acceptance configurations, for example:</para>
 
     <orderedlist>
@@ -561,7 +561,7 @@
       </listitem>
     </orderedlist>
 
-    <para>Use the <link linkend="benchmarkingAndTweaking">Benchmarker</link> to improve the values for those size
+    <para>Use the <link linkend="benchmarker">Benchmarker</link> to improve the values for those size
     parameters.</para>
 
     <para>If it's worth your time, continue experimenting further. For example, you can even combine multiple algorithms
@@ -943,7 +943,7 @@
 
     <note>
       <para>Most of the time, a custom construction heuristic is not worth the hassle. The supported constructions
-      heuristics are configurable (use the <link linkend="benchmarkingAndTweaking">Benchmarker</link> to tweak them),
+      heuristics are configurable (use the <link linkend="benchmarker">Benchmarker</link> to tweak them),
       <literal>Termination</literal> aware and support partially initialized solutions too.</para>
     </note>
 
