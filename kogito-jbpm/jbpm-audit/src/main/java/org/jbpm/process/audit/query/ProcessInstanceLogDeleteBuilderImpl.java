@@ -139,7 +139,7 @@ public class ProcessInstanceLogDeleteBuilderImpl extends
 		if (checkIfNotNull(rangeEnd)) {
 			return this;
 		}
-		addRangeParameter(START_DATE_LIST, "start date range, end", rangeEnd, true );
+		addRangeParameter(START_DATE_LIST, "start date range, end", rangeEnd, false );
         return this;
 	}
 

@@ -85,7 +85,7 @@ public class ProcInstLogQueryBuilderImpl extends AbstractAuditQueryBuilderImpl<P
 
     @Override
     public ProcessInstanceLogQueryBuilder startDateRangeEnd( Date rangeEnd ) {
-        addRangeParameter(START_DATE_LIST, "start date range, end", rangeEnd, true );
+        addRangeParameter(START_DATE_LIST, "start date range, end", rangeEnd, false );
         return this;
     }
 
@@ -103,7 +103,7 @@ public class ProcInstLogQueryBuilderImpl extends AbstractAuditQueryBuilderImpl<P
 
     @Override
     public ProcessInstanceLogQueryBuilder endDateRangeEnd( Date rangeEnd ) {
-        addRangeParameter(END_DATE_LIST, "end date range, end", rangeEnd, true);
+        addRangeParameter(END_DATE_LIST, "end date range, end", rangeEnd, false);
         return this;
     }
 
