@@ -172,8 +172,8 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
     private JComponent createTopButtonPanel() {
         JPanel buttonPanel = new JPanel(new GridLayout(1, 6));
-        buttonPanel.add(new JButton(new ExpandAllNodesAction()));
-        buttonPanel.add(new JButton(new CollapseAllNodesAction()));
+        buttonPanel.add(new JButton(new ExpandNodesAction()));
+        buttonPanel.add(new JButton(new CollapseNodesAction()));
         buttonPanel.add(new JButton(new MoveNodeAction(true)));
         buttonPanel.add(new JButton(new MoveNodeAction(false)));
         renameNodeButton = new JButton(new RenameNodeAction());
@@ -273,29 +273,29 @@ public class BenchmarkAggregatorFrame extends JFrame {
         }
     }
 
-    private class ExpandAllNodesAction extends AbstractAction {
+    private class ExpandNodesAction extends AbstractAction {
 
-        public ExpandAllNodesAction() {
-            super("Expand all", new ImageIcon(BenchmarkAggregatorFrame.class.getResource("expandAll.png")));
+        public ExpandNodesAction() {
+            super("Expand", new ImageIcon(BenchmarkAggregatorFrame.class.getResource("expand.png")));
             setEnabled(!plannerBenchmarkResultList.isEmpty());
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            checkBoxTree.expandAllNodes();
+            checkBoxTree.expandNodes();
         }
     }
 
-    private class CollapseAllNodesAction extends AbstractAction {
+    private class CollapseNodesAction extends AbstractAction {
 
-        public CollapseAllNodesAction() {
-            super("Collapse all", new ImageIcon(BenchmarkAggregatorFrame.class.getResource("collapseAll.png")));
+        public CollapseNodesAction() {
+            super("Collapse", new ImageIcon(BenchmarkAggregatorFrame.class.getResource("collapse.png")));
             setEnabled(!plannerBenchmarkResultList.isEmpty());
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            checkBoxTree.collapseAllNodes();
+            checkBoxTree.collapseNodes();
         }
     }
 

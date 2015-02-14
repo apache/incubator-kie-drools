@@ -56,16 +56,30 @@ public class CheckBoxTree extends JTree {
         this.selectedSingleBenchmarkNodes = selectedSingleBenchmarkNodes;
     }
 
-    public void expandAllNodes() {
-        for (int i = 0; i < getRowCount(); i++) {
-            expandRow(i);
-        }
+    public void expandNodes() {
+        expandSubtree(null, true);
     }
 
-    public void collapseAllNodes() {
-        // Collapse nodes from the bottom upwards to assure that all nodes are collapsed
-        for (int i = getRowCount() - 1; i > 0; i--) {
-            collapseRow(i);
+    public void collapseNodes() {
+        expandSubtree(null, false);
+    }
+
+    private void expandSubtree(TreePath path, boolean expand) {
+        if (path == null) {
+            TreePath selectionPath = getSelectionPath();
+            path = selectionPath == null ? new TreePath(treeModel.getRoot()) : selectionPath;
+        }
+        DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+        Enumeration children = currentNode.children();
+        while (children.hasMoreElements()) {
+            DefaultMutableTreeNode child = (DefaultMutableTreeNode) children.nextElement();
+            TreePath expandedPath = path.pathByAddingChild(child);
+            expandSubtree(expandedPath, expand);
+        }
+        if (expand) {
+            expandPath(path);
+        } else if (path.getParentPath() != null) {
+            collapsePath(path);
         }
     }
 
