@@ -12,7 +12,7 @@
   <artifactId>jbpm-distribution</artifactId>
   <packaging>pom</packaging>
 
-  <name>jBPM distribution</name>
+  <name>jBPM :: Distribution</name>
   <description>
     Builds the download zip of jBPM.
   </description>

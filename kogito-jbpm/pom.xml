@@ -24,7 +24,7 @@
   <!-- For example: 1.2.3.M2 corrupts the OSGi eclipse updatesite update order -->
   <version>6.3.0-SNAPSHOT</version>
 
-  <name>jBPM multiproject</name>
+  <name>jBPM :: Multiproject</name>
   <description>jBPM: a Business Process Management (BPM) Suite</description>
   <url>http://www.jboss.org/jbpm/</url>
 

@@ -10,7 +10,7 @@
 
   <artifactId>jbpm-examples</artifactId>
 
-  <name>jBPM examples</name>
+  <name>jBPM :: Examples</name>
   <description>Run JBPMExamplesApp to try the jBPM examples.</description>
 
   <repositories>
