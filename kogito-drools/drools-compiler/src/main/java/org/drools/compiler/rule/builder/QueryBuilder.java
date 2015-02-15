@@ -53,31 +53,20 @@ public class QueryBuilder implements EngineElementBuilder {
 
         Declaration[] declarations = new Declaration[ params.length ];
 
+        Class<?> abductionReturnKlass = null;
         if ( query.isAbductive() ) {
             AnnotationDescr ann = queryDescr.getAnnotation( Abductive.class );
             String returnName = ann.getValueAsString( "target" );
             try {
-                Class<?> returnKlass = context.getPkg().getTypeResolver().resolveType( returnName.replace( ".class", "" ) );
-                ClassObjectType objectType = new ClassObjectType( returnKlass, false );
-                objectType = context.getPkg().getClassFieldAccessorStore().getClassObjectType( objectType,
-                                                                                               (AbductiveQuery) query );
+                abductionReturnKlass = context.getPkg().getTypeResolver().resolveType( returnName.replace( ".class", "" ) );
                 params[ numParams ] = "";
-                types[ numParams ] = returnKlass.getName();
-
-                ((AbductiveQuery) query).setReturnType( objectType, params );
+                types[ numParams ] = abductionReturnKlass.getName();
 
             } catch ( ClassNotFoundException e ) {
                 context.addError( new DescrBuildError( context.getParentDescr(),
                                                        queryDescr,
                                                        e,
                                                        "Unable to resolve abducible type : " + returnName ) );
-            } catch ( NoSuchMethodException e ) {
-                context.addError( new DescrBuildError( context.getParentDescr(),
-                                                       queryDescr,
-                                                       e,
-                                                       "Unable to resolve abducible constructor for type : " + returnName +
-                                                       " with types " + Arrays.toString( types ) ) );
-
             }
         }
 
@@ -107,7 +96,34 @@ public class QueryBuilder implements EngineElementBuilder {
         }
         context.setPrefixPattern( pattern );
 
+        if ( query.isAbductive() ) {
+            String returnName = "";
+            try {
+                AnnotationDescr ann = queryDescr.getAnnotation( Abductive.class );
+                Object[] argsVal = ((Object[]) ann.getValue( "args" ));
+                String[] args = argsVal != null ? Arrays.copyOf( argsVal, argsVal.length, String[].class ) : null;
 
+                returnName = types[ numParams ];
+                ClassObjectType objectType = new ClassObjectType( abductionReturnKlass, false );
+                objectType = context.getPkg().getClassFieldAccessorStore().getClassObjectType( objectType,
+                                                                                               (AbductiveQuery) query );
+
+                ( (AbductiveQuery) query ).setReturnType( objectType, params, args, declarations );
+            } catch ( NoSuchMethodException e ) {
+                context.addError( new DescrBuildError( context.getParentDescr(),
+                                                       queryDescr,
+                                                       e,
+                                                       "Unable to resolve abducible constructor for type : " + returnName +
+                                                       " with types " + Arrays.toString( types ) ) );
+
+            } catch ( IllegalArgumentException e ) {
+                context.addError( new DescrBuildError( context.getParentDescr(),
+                                                       queryDescr,
+                                                       e,
+                                                       e.getMessage() ) );
+
+            }
+        }
 
         return pattern;
     }

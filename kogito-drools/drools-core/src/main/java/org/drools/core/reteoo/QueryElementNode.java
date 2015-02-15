@@ -379,19 +379,25 @@ public class QueryElementNode extends LeftTupleSource
 
             boolean pass = true;
             if ( query.isAbductive() ) {
-                int numArgs = dquery.getElements().length;
                 AbductiveQuery aq = (( AbductiveQuery) query );
+                int numArgs = aq.getAbducibleArgs().length;
+                Object[] constructorArgs = new Object[ aq.getAbducibleArgs().length ];
                 for ( int j = 0; j < numArgs; j++ ) {
-                    if ( dquery.getElements()[ j ] != null ) {
-                        objects[ j ] = dquery.getElements()[ j ];
+                    int k = aq.mapArgToParam( j );
+                    if ( objects[ k ] != null ) {
+                        constructorArgs[ j ] = objects[ k ];
+                    } else if ( dquery.getElements()[ k ] != null ) {
+                        constructorArgs[ j ] = dquery.getElements()[ k ];
                     }
                 }
-                Object abduced = aq.abduce( Arrays.copyOfRange( objects, 0, numArgs - 1 ) );
+                Object abduced = aq.abduce( constructorArgs );
                 if ( abduced != null ) {
+                    boolean firstAssertion = true;
                     ObjectStore store = workingMemory.getObjectStore();
                     InternalFactHandle handle = store.getHandleForObject( abduced );
                     if ( handle != null ) {
                         abduced = handle.getObject();
+                        firstAssertion = false;
                     } else {
                         handle = ((InternalWorkingMemoryActions) workingMemory).getTruthMaintenanceSystem().insert( abduced,
                                                                                                                     MODE.POSITIVE.getId(),
@@ -404,6 +410,13 @@ public class QueryElementNode extends LeftTupleSource
                     } else {
                         if ( ! bs.isPositive() ) {
                             pass = false;
+                        } else {
+                            if ( !firstAssertion ) {
+                                ( (InternalWorkingMemoryActions) workingMemory ).getTruthMaintenanceSystem().insert( abduced,
+                                                                                                                     MODE.POSITIVE.getId(),
+                                                                                                                     query,
+                                                                                                                     (RuleTerminalNodeLeftTuple) resultLeftTuple );
+                            }
                         }
                     }
                 } else {

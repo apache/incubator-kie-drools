@@ -9,6 +9,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class AbductiveQuery extends QueryImpl implements Externalizable, AcceptsClassObjectType {
@@ -17,6 +19,8 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
     private transient Constructor constructor;
 
     private String[] params;
+    private String[] abducibleArgs;
+    private int[] arg2param;
     private Object value;
     private boolean returnBound;
 
@@ -33,19 +37,48 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
         return true;
     }
 
-    public void setReturnType( ClassObjectType objectType, String[] params ) throws NoSuchMethodException {
+    public void setReturnType( ClassObjectType objectType, String[] params, String[] args, Declaration[] declarations ) throws NoSuchMethodException, IllegalArgumentException {
         this.returnType = objectType;
         this.params = params;
-        findConstructor();
+        if ( args != null ) {
+            this.abducibleArgs = Arrays.copyOf( args, args.length );
+            this.arg2param = new int[ abducibleArgs.length ];
+            for ( int j = 0; j < this.abducibleArgs.length; j++ ) {
+                boolean matched = false;
+                for ( int k = 0; k < params.length; k++ ) {
+                    if ( abducibleArgs[ j ].equals( params[ k ] ) ) {
+                        this.arg2param[ j ] = k;
+                        matched = true;
+                        break;
+                    }
+                    if ( matched ) {
+                        break;
+                    }
+                }
+                if ( ! matched ) {
+                    throw new IllegalArgumentException( "Constructor argument " + abducibleArgs[ j ] + " cannot be resolved " );
+                }
+            }
+        } else {
+            this.abducibleArgs = Arrays.copyOf( params, params.length - 1 );
+            this.arg2param = new int[ abducibleArgs.length ];
+            for ( int j = 0; j < this.abducibleArgs.length; j++ ) {
+                this.arg2param[ j ] = j;
+            }
+        }
+
+        findConstructor( declarations );
     }
 
-    protected void findConstructor() throws NoSuchMethodException {
-        int N = params.length - 1;
+    protected void findConstructor( Declaration[] declarations ) throws NoSuchMethodException {
+        int N = this.abducibleArgs.length;
 
         constructor = null;
-        List<Class> availableArgs = new ArrayList<Class>( N );
+        List<Class> availableArgs = N > 0 ? new ArrayList<Class>( N ) : Collections.<Class>emptyList();
         for ( int j = 0; j < N; j++ ) {
-            Declaration decl = getDeclaration( params[ j ] );
+            // during the initial build (KieBuilder), the declarations are provided on the fly and use for type checking
+            // when building the KieBase, the internal declarations are set and can be used
+            Declaration decl = declarations != null ? declarations[ mapArgToParam( j ) ] : getDeclaration( abducibleArgs[ j ] );
             if ( decl != null ) {
                 availableArgs.add( decl.getExtractor().getExtractToClass() );
             }
@@ -108,12 +141,16 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
         return value;
     }
 
+    public String[] getAbducibleArgs() {
+        return abducibleArgs;
+    }
+
     @Override
     public void setClassObjectType( ClassObjectType classObjectType ) {
         returnType = classObjectType;
         if ( params != null ) { // the first time, params may not have been initialized yet
             try {
-                findConstructor();
+                findConstructor( null );
             } catch ( NoSuchMethodException e ) {
                 e.printStackTrace();
                 constructor = null;
@@ -128,5 +165,9 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
 
     public boolean isReturnBound() {
         return returnBound;
+    }
+
+    public int mapArgToParam( int j ) {
+        return this.arg2param[ j ];
     }
 }
