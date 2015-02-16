@@ -7562,6 +7562,65 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                       RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
     }
 
+    @Test
+    //https://issues.jboss.org/browse/DROOLS-715
+    public void testLHSValidLiteralFieldName() throws Exception {
+        String drl = "package org.test;\n" +
+                "rule \"MyRule\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  MyClass( valid == true )\n" +
+                "then\n" +
+                "end";
+
+        addModelField( "org.test.MyClass",
+                       "this",
+                       "org.test.MyClass",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.MyClass",
+                       "valid",
+                       Boolean.class.getName(),
+                       DataType.TYPE_BOOLEAN );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "MyClass",
+                      fp0.getFactType() );
+
+        assertEquals( 1,
+                      fp0.getNumberOfConstraints() );
+        assertTrue( fp0.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        final SingleFieldConstraint sfc1 = (SingleFieldConstraint) fp0.getConstraint( 0 );
+        assertEquals( "MyClass",
+                      sfc1.getFactType() );
+        assertEquals( "valid",
+                      sfc1.getFieldName() );
+        assertEquals( DataType.TYPE_BOOLEAN,
+                      sfc1.getFieldType() );
+        assertEquals( "==",
+                      sfc1.getOperator() );
+        assertEquals( "true",
+                      sfc1.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_ENUM,
+                      sfc1.getConstraintValueType() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",
