@@ -13,8 +13,67 @@
   <title>What is New and Noteworthy in Drools 6.2.0</title>
       
   <section>
-    <title>TODO</title>
-    <para>Todo</para>
+    <title>Data driven rule evaluation</title>
+
+    <para>The introduction of PHREAK as default algorithm for the Drools engine made the rules' evaluation
+    lazy. This new Drools lazy behavior allowed a relevant performance boost but, in some very specific cases,
+    breaks the semantic of a few Drools features.</para>
+
+    <para>In particular Drools allows a query to be executed in pull only (or passive) mode by
+    prepending a '?' symbol to its invocation as in the following example:</para>
+
+    <example>
+      <title>A passive query</title>
+
+      <programlisting language="java">query Q (Integer i)
+    String( this == i.toString() )
+end
+rule R when
+    $i : Integer()
+    ?Q( $i; )
+then
+    System.out.println( $i );
+end</programlisting>
+    </example>
+
+    <para>In this case, since the query is passive, it shouldn't react to the insertion of a String
+    matching the join condition in the query itself. In other words this sequence of commands</para>
+
+    <programlisting language="java">KieSession ksession = ...
+ksession.insert(1);
+ksession.insert("1");
+ksession.fireAllRules();</programlisting>
+
+    <para>shouldn't cause the rule R to fire because the String satisfying the query condition has
+    been inserted after the Integer and the passive query shouldn't react to this insertion.
+    Conversely the rule should fire if the insertion sequence is inverted because the insertion
+    of the Integer, when the passive query can be satisfied by the presence of an already existing
+    String, will trigger it.</para>
+
+    <para>Unfortunately the lazy nature of PHREAK doesn't allow the engine to make any
+    distinction regarding the insertion sequence of the two facts, so the rule will fire
+    in both cases. In circumstances like this it is necessary to evaluate the rule eagerly as
+    done by the old RETEOO-based engine. To cover this use case, and in all other situations where
+    an eager rule evaluation is required, it is now possible to declaratively make the evaluation
+    of a specific rule data-driven (or eager as in RETEOO) by annotating it with
+    <emphasis role="bold">@DataDriven</emphasis>. This means that the following drl:</para>
+
+    <example>
+      <title>A data-driven rule using a passive query</title>
+
+      <programlisting language="java">query Q (Integer i)
+    String( this == i.toString() )
+end
+rule R @DataDriven when
+    $i : Integer()
+    ?Q( $i; )
+then
+    System.out.println( $i );
+end</programlisting>
+    </example>
+
+    <para>will make the rule R to fire if and only if the Integer is inserted after the String, thus
+    behaving in accordance with the semantic of the passive query.</para>
   </section>
   
 </section>
