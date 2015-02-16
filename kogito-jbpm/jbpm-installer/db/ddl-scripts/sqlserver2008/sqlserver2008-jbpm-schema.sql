@@ -13,13 +13,13 @@
 
     create table AuditTaskImpl (
         id bigint identity not null,
-        activationTime date,
+        activationTime datetime2,
         actualOwner varchar(255),
         createdBy varchar(255),
-        createdOn date,
+        createdOn datetime2,
         deploymentId varchar(255),
         description varchar(255),
-        dueDate date,
+        dueDate datetime2,
         name varchar(255),
         parentId bigint not null,
         priority int not null,

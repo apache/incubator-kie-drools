@@ -48,16 +48,16 @@ public class AuditTaskImpl implements Serializable, AuditTask {
     private Long taskId;
     
     private String status;
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date activationTime;
     private String name;
     private String description;
     private int priority;
     private String createdBy;
     private String actualOwner;
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdOn;
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dueDate;
     private long processInstanceId;
     private String processId;

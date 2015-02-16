@@ -74,6 +74,8 @@ public class AuditTaskDeleteTest extends TaskJPAAuditService {
         cal.roll(Calendar.DAY_OF_YEAR, -1*random.nextInt(10*365));
         cal.set(Calendar.MILLISECOND, 0);
         cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
         return cal;
     }
     
@@ -89,7 +91,7 @@ public class AuditTaskDeleteTest extends TaskJPAAuditService {
     	taskTestData = new Task[10];
     	
     	for (int i = 0; i < 10; i++) {
-    		cal.add(Calendar.DAY_OF_YEAR, 1);
+    		cal.add(Calendar.HOUR_OF_DAY, 1);
     		Task task = new TaskFluent().setName("This is my task name")
                  .addPotentialGroup("Knights Templer")
                  .setAdminUser("Administrator")
@@ -162,6 +164,16 @@ public class AuditTaskDeleteTest extends TaskJPAAuditService {
         AuditTaskInstanceLogDeleteBuilder updateBuilder = this.auditTaskInstanceLogDelete().dateRangeStart(endDate);
         int result = updateBuilder.build().execute();
         assertEquals(2, result);
+    }
+    
+    @Test
+    public void testDeleteAuditTaskInfoLogByDateRange() { 
+        
+    	Date startDate = taskTestData[4].getTaskData().getCreatedOn();
+        Date endDate = taskTestData[8].getTaskData().getCreatedOn();
+        AuditTaskInstanceLogDeleteBuilder updateBuilder = this.auditTaskInstanceLogDelete().dateRangeStart(startDate).dateRangeEnd(endDate);
+        int result = updateBuilder.build().execute();
+        assertEquals(5, result);
     }
     
     @Test

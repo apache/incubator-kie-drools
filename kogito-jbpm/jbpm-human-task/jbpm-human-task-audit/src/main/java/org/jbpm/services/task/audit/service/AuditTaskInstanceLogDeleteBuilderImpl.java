@@ -8,6 +8,7 @@ import java.util.Date;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.process.audit.query.AbstractAuditDeleteBuilderImpl;
+import org.jbpm.services.task.audit.impl.model.AuditTaskImpl;
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.internal.query.ParametrizedUpdate;
 import org.kie.internal.query.data.QueryData;
@@ -86,7 +87,7 @@ public class AuditTaskInstanceLogDeleteBuilderImpl extends AbstractAuditDeleteBu
 			private QueryData queryData = new QueryData(getQueryData());
 			@Override
 			public int execute() {
-				int result = getJpaAuditLogService().doDelete(AUDIT_TASK_LOG_DELETE, queryData, VariableInstanceLog.class);
+				int result = getJpaAuditLogService().doDelete(AUDIT_TASK_LOG_DELETE, queryData, AuditTaskImpl.class);
 				return result;
 			}
 		};
