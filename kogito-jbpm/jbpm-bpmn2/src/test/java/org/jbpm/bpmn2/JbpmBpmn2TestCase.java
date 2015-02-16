@@ -251,16 +251,7 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
     @AfterClass
     public static void tearDownClass() throws Exception {
         if (setupDataSource) {
-            if (ds != null) {
-                try {
-                    ds.close();
-                } catch (Exception ex) {
-                    // ignore
-                }
-                ds = null;
-            }
-            server.stop();
-            DeleteDbFiles.execute("~", "jbpm-db", true);
+            String runningTransactionStatus = null;
 
             // Clean up possible transactions
             Transaction tx = TransactionManagerServices.getTransactionManager()
@@ -275,12 +266,10 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
                     } catch (Throwable t) {
                         // do nothing..
                     }
-                    Assert.fail("Transaction had status "
-                            + txStateName[testTxState]
-                            + " at the end of the test.");
+                    runningTransactionStatus = txStateName[testTxState];
                 }
             }
-            
+
             if (emf != null) {
                 try {
                     emf.close();
@@ -288,6 +277,24 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
                     // ignore
                 }
                 emf = null;
+            }
+
+            // If everything is closed, close data source and stop server.
+            if (ds != null) {
+                try {
+                    ds.close();
+                } catch (Exception ex) {
+                    // ignore
+                }
+                ds = null;
+            }
+            server.stop();
+            DeleteDbFiles.execute("~", "jbpm-db", true);
+
+            if (runningTransactionStatus != null) {
+                Assert.fail("Transaction had status "
+                        + runningTransactionStatus
+                        + " at the end of the test.");
             }
         }
     }
