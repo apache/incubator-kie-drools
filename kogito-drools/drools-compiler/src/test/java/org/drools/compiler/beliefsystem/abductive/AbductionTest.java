@@ -34,6 +34,7 @@ import org.kie.internal.utils.KieHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -610,7 +611,6 @@ public class AbductionTest extends CommonTestMethodBase {
 
 
     @Test
-    @Ignore
     public void testAbductiveLogicSprinklerAndRainExample() {
         // Sprinkler & Rain, abductive version
         String droolsSource =
@@ -706,6 +706,14 @@ public class AbductionTest extends CommonTestMethodBase {
         assertTrue( list.contains( "no_rain_check" ) );
 
         assertEquals( 3, session.getObjects().size() );
+
+        int i = 0;
+        Iterator it = session.getObjects().iterator();
+        while (it.hasNext()) {
+            i++;
+            it.next();
+        }
+        assertEquals( 3, i );
     }
 
     @Test

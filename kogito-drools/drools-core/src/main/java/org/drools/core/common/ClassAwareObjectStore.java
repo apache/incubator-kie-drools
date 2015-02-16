@@ -203,7 +203,7 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         return storesMap.get(className);
     }
 
-    private Class getActualClass(Object object) {
+    public static Class<?> getActualClass(Object object) {
         return object instanceof CoreWrapper ? ((CoreWrapper)object).getCore().getClass() : object.getClass();
     }
 
@@ -421,8 +421,9 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
 
         @Override
         public boolean addHandle(InternalFactHandle handle, Object object) {
-            super.addHandle(handle, object);
-            return equalityMap.put(handle, handle, false) == null;
+            boolean isNew = super.addHandle(handle, object);
+            equalityMap.put(handle, handle, false);
+            return isNew;
         }
 
         @Override
@@ -528,7 +529,7 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         @Override
         protected void fetchNextIterator() {
             HashTableIterator iterator = assrt ?
-                                         new HashTableIterator( stores.next().getAssertMap() ) :
+                                         new HashTableIterator( stores.next().getIdentityMap() ) :
                                          new HashTableIterator( stores.next().getNegMap() );
             iterator.reset();
             currentIterator = new JavaIteratorAdapter<Object>( iterator, JavaIteratorAdapter.OBJECT );

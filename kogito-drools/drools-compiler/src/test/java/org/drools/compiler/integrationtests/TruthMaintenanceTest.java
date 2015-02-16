@@ -9,6 +9,7 @@ import org.drools.compiler.Sensor;
 import org.drools.compiler.YoungestFather;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
@@ -1325,6 +1326,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         session.insert( "go" );
         session.fireAllRules();
 
+        assertNotNull( ((DefaultFactHandle) handle).getEqualityKey() );
         session.dispose();
     }
 
