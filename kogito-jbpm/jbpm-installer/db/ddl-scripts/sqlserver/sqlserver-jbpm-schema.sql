@@ -25,10 +25,10 @@
         priority int not null,
         processId varchar(255),
         processInstanceId numeric(19,0) not null,
-        processSessionId int not null,
+        processSessionId numeric(19,0) not null,
         status varchar(255),
         taskId numeric(19,0),
-        workItemId numeric(19,0) not null,
+        workItemId numeric(19,0),
         primary key (id)
     );
 
@@ -64,7 +64,7 @@
     create table ContextMappingInfo (
         mappingId numeric(19,0) identity not null,
         CONTEXT_ID varchar(255) not null,
-        KSESSION_ID int not null,
+        KSESSION_ID numeric(19,0) not null,
         OWNER_ID varchar(255),
         OPTLOCK int,
         primary key (mappingId)
@@ -279,7 +279,7 @@
     );
 
     create table SessionInfo (
-        id int identity not null,
+        id numeric(19,0) identity not null,
         lastModificationDate datetime,
         rulesByteArray image,
         startDate datetime,
@@ -315,7 +315,7 @@
         previousStatus int,
         processId varchar(255),
         processInstanceId numeric(19,0) not null,
-        processSessionId int not null,
+        processSessionId numeric(19,0) not null,
         skipable bit not null,
         status varchar(255),
         workItemId numeric(19,0) not null,
