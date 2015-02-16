@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 import javax.persistence.EntityManagerFactory;
@@ -28,6 +29,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.task.model.Task;
 import org.kie.internal.runtime.manager.audit.query.AuditTaskInstanceLogDeleteBuilder;
+import org.kie.internal.task.api.AuditTask;
 import org.kie.internal.task.api.InternalTaskService;
 
 public class AuditTaskDeleteTest extends TaskJPAAuditService {
@@ -160,6 +162,18 @@ public class AuditTaskDeleteTest extends TaskJPAAuditService {
         AuditTaskInstanceLogDeleteBuilder updateBuilder = this.auditTaskInstanceLogDelete().dateRangeStart(endDate);
         int result = updateBuilder.build().execute();
         assertEquals(2, result);
+    }
+    
+    @Test
+    public void testTaskAuditServiceClear() { 
+               
+        List<AuditTask> data = this.auditTaskInstanceLogQuery().buildQuery().getResultList(); 
+        assertEquals(10, data.size());
+        
+        this.clear();
+        
+        data = this.auditTaskInstanceLogQuery().buildQuery().getResultList();       
+        assertEquals(0, data.size());
     }
       
 }

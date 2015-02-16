@@ -336,20 +336,22 @@ public class JPAAuditLogService implements AuditLogService {
     public void clear() {
         EntityManager em = getEntityManager();
         Object newTx = joinTransaction(em);
-        
-        List<ProcessInstanceLog> processInstances = em.createQuery("FROM ProcessInstanceLog").getResultList();
-        for (ProcessInstanceLog processInstance: processInstances) {
-            em.remove(processInstance);
+        try {
+	        List<ProcessInstanceLog> processInstances = em.createQuery("FROM ProcessInstanceLog").getResultList();
+	        for (ProcessInstanceLog processInstance: processInstances) {
+	            em.remove(processInstance);
+	        }
+	        List<NodeInstanceLog> nodeInstances = em.createQuery("FROM NodeInstanceLog").getResultList();
+	        for (NodeInstanceLog nodeInstance: nodeInstances) {
+	            em.remove(nodeInstance);
+	        }
+	        List<VariableInstanceLog> variableInstances = em.createQuery("FROM VariableInstanceLog").getResultList();
+	        for (VariableInstanceLog variableInstance: variableInstances) {
+	            em.remove(variableInstance);
+	        }
+        } finally {
+        	closeEntityManager(em, newTx);
         }
-        List<NodeInstanceLog> nodeInstances = em.createQuery("FROM NodeInstanceLog").getResultList();
-        for (NodeInstanceLog nodeInstance: nodeInstances) {
-            em.remove(nodeInstance);
-        }
-        List<VariableInstanceLog> variableInstances = em.createQuery("FROM VariableInstanceLog").getResultList();
-        for (VariableInstanceLog variableInstance: variableInstances) {
-            em.remove(variableInstance);
-        }           
-        closeEntityManager(em, newTx);
     }
 
     /* (non-Javadoc)

@@ -10,9 +10,12 @@ import org.jbpm.process.audit.JPAAuditLogService;
 import org.kie.internal.runtime.manager.audit.query.AuditTaskInstanceLogDeleteBuilder;
 import org.kie.internal.runtime.manager.audit.query.AuditTaskInstanceLogQueryBuilder;
 import org.kie.internal.runtime.manager.audit.query.TaskEventInstanceLogDeleteBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TaskJPAAuditService extends JPAAuditLogService {
 
+	private static final Logger logger = LoggerFactory.getLogger(TaskJPAAuditService.class);
 
 	static { 
 
@@ -42,5 +45,17 @@ public class TaskJPAAuditService extends JPAAuditLogService {
 	
 	public AuditTaskInstanceLogQueryBuilder auditTaskInstanceLogQuery() {
 		return new AuditTaskInstanceLogQueryBuilderImpl(this);
+	}
+
+	@Override
+	public void clear() {
+		try {
+			super.clear();
+		} catch (Exception e) {
+			logger.warn("Unable to clear using {} due to {}", super.getClass().getName(), e.getMessage());
+		}
+		auditTaskInstanceLogDelete().build().execute();
+		
+		taskEventInstanceLogDelete().build().execute();
 	}
 }
