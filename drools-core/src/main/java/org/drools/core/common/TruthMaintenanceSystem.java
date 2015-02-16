@@ -17,25 +17,21 @@
 package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
-import org.drools.core.base.ClassObjectType;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
-import org.drools.core.reteoo.Rete;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.ObjectHashMap;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.runtime.beliefs.Mode;
 
 import java.util.Iterator;
-import java.util.Map;
+
+import static org.drools.core.common.ClassAwareObjectStore.getActualClass;
 
 /**
  * The Truth Maintenance System is responsible for tracking two things. Firstly
@@ -264,30 +260,19 @@ public class TruthMaintenanceSystem {
      * @param conf the type's configuration.
      */
     private void enableTMS(Object object, ObjectTypeConf conf) {
+        Iterator<InternalFactHandle> it = ((ClassAwareObjectStore) ep.getObjectStore()).iterateFactHandles(getActualClass(object));
 
-        final Rete source = ep.getKnowledgeBase().getRete();
-        final ClassObjectType cot = new ClassObjectType( object.getClass() );
-
-        final Map<ObjectType, ObjectTypeNode> map = source.getObjectTypeNodes(ep.entryPoint);
-        final ObjectTypeNode node = map.get( cot );
-
-        if (node != null) {
-            // All objects of this type that are already there were certainly stated,
-            // since this method call happens at the first logical insert, for any given type.
-            Iterator<InternalFactHandle> it = ((ObjectTypeNodeMemory) ep.getInternalWorkingMemory().getNodeMemory(node)).iterator();
-            while (it.hasNext()) {
-                InternalFactHandle handle = it.next();
-                if (handle != null && handle.getEqualityKey() == null) {
-                    EqualityKey key = new EqualityKey(handle);
-                    handle.setEqualityKey(key);
-                    key.setStatus(EqualityKey.STATED);
-                    put(key);
-                }
+        while (it.hasNext()) {
+            InternalFactHandle handle = it.next();
+            if (handle != null && handle.getEqualityKey() == null) {
+                EqualityKey key = new EqualityKey(handle);
+                handle.setEqualityKey(key);
+                key.setStatus(EqualityKey.STATED);
+                put(key);
             }
         }
 
         // Enable TMS for this type.
         conf.enableTMS();
-
     }
 }
