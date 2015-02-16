@@ -43,6 +43,41 @@ public class ActionCallMethodBuilder {
         this.boundParams = boundParams;
     }
 
+    //ActionCallMethods do not support chained method invocations
+    public boolean supports( final String line ) {
+        final List<String> splits = new ArrayList<String>();
+        int depth = 0;
+        int textDepth = 0;
+        boolean escape = false;
+        StringBuffer split = new StringBuffer();
+        for ( char c : line.toCharArray() ) {
+            if ( depth == 0 && c == '.' ) {
+                splits.add( split.toString() );
+                split = new StringBuffer();
+                depth = 0;
+                textDepth = 0;
+                escape = false;
+                continue;
+            } else if ( c == '\\' ) {
+                escape = true;
+                split.append( c );
+                continue;
+            } else if ( textDepth == 0 && c == '"' ) {
+                textDepth++;
+            } else if ( !escape && textDepth > 0 && c == '"' ) {
+                textDepth--;
+            } else if ( textDepth == 0 && c == '(' ) {
+                depth++;
+            } else if ( textDepth == 0 && c == ')' ) {
+                depth--;
+            }
+            split.append( c );
+            escape = false;
+        }
+        splits.add( split.toString() );
+        return splits.size() == 2;
+    }
+
     public ActionCallMethod get( String variable,
                                  String methodName,
                                  String[] parameters ) {
