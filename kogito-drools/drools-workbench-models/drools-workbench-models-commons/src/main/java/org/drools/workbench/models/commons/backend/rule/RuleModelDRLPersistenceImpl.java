@@ -3894,8 +3894,10 @@ public class RuleModelDRLPersistenceImpl
                                                                  new ExpressionFormLine() ) );
                         con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE );
                         value = "";
-                    } else {
+                    } else if ( boundParams.containsKey( value ) ) {
                         con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
+                    } else {
+                        con.setConstraintValueType( SingleFieldConstraint.TYPE_RET_VALUE );
                     }
                 } else {
                     if ( value.endsWith( "I" ) ) {
