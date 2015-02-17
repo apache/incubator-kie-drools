@@ -6,13 +6,13 @@
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
   xmlns:ns="http://docbook.org/ns/docbook">
   <title>Installing the KIE Execution Server</title>
-  <para>The KIE Execution Server is distributed as a web application archive (WAR) file with the
-    name of kie-server.war. After deploying the WAR file into one of the supported containers, the web
-    application can be accessed using URL <code>http://SERVER:PORT/CONTEXT/</code>. </para>
-  <para>You can of course, copy this WAR file and deploy it in any other web container (Red Hat
-    JBoss Web Server or another EAP install, for example) and have this execution server available
-    from other web containers. Note that you must deploy the WAR file that is compatible for your
-    web container.</para>
+  <para>The KIE Execution Server is distributed as a web application archive (WAR) file. The WAR file
+    comes in three different flavors: <itemizedlist>
+      <listitem><emphasis>webc</emphasis> - WAR for ordinary Web (Servlet) containers like Tomcat</listitem>
+      <listitem><emphasis>ee6</emphasis> - WAR for JavaEE 6 containers like JBoss EAP 6.x</listitem>
+      <listitem><emphasis>ee7</emphasis> - WAR for JavaEE 7 containers like WildFly 8.x</listitem>
+    </itemizedlist>
+  </para>
   <para>To install the KIE Execution Server and verify it is running, complete the following
     steps:</para>
   <para>
@@ -21,14 +21,11 @@
         <para>Deploy the WAR file into your web container.</para>
       </listitem>
       <listitem>
-        <para>Create a user with the role of <code>kie-server</code> on the web container.</para>
+        <para>Create a user with the role of <code>kie-server</code> on the container.</para>
       </listitem>
       <listitem>
         <para>Test that you can access the execution engine by navigating to the endpoint in a
-          browser window: <code>http://SERVER:PORT/CONTEXT/services/rest/server/</code> with the web
-          container running. For example, if the web container is running on your local machine and
-          you are using the default context, you can access it on the following URL:
-            <code>http://localhost:8080/kie-server-6.2.0.Final/services/rest/server</code>.</para>
+          browser window: <code>http://SERVER:PORT/CONTEXT/services/rest/server/</code>.</para>
       </listitem>
       <listitem>
         <para>When prompted for username/password, type in the username and password that you
@@ -43,9 +40,87 @@
   &lt;kie-server-info>  
     &lt;version>6.2.0.Final&lt;/version>
   &lt;/kie-server-info>
-&lt;/response>            </programlisting>
+&lt;/response></programlisting>
           </example>
       </listitem>
     </orderedlist>
   </para>
+  <section>
+    <title>Installation details for different containers</title>
+    <section>
+      <title>Tomcat 7.x/8.x</title>
+      <para>
+        <orderedlist>
+          <listitem>
+            <para>Download and unzip the Tomcat distribution. Let's call the root of the distribution <code>TOMCAT_HOME</code>.
+              This directory is named after the Tomcat version, so for example <code>apache-tomcat-7.0.55</code>.</para>
+          </listitem>
+          <listitem>
+            <para>Download <emphasis>kie-server-6.2.0.Final-webc.war</emphasis> and place it into <code>TOMCAT_HOME/webapps</code>.</para>
+          </listitem>
+          <listitem>
+            <para>Configure user(s) and role(s). Make sure that file <code>TOMCAT_HOME/conf/tomcat-users.xml</code>
+              contains the following username and role definition. You can of course choose different username and password,
+              just make sure that the user has role <code>kie-server</code>:
+              <example>
+                <title>Username and role definition for Tomcat</title>
+                <programlisting language="XML">&lt;role rolename="kie-server"/>
+&lt;user username="serveruser" password="my.s3cr3t.pass" roles="kie-server"/></programlisting>
+              </example>
+            </para>
+          </listitem>
+          <listitem>
+            <para>Start the server by running <code>TOMCAT_HOME/bin/startup.[sh|bat]</code>. You can check out
+              the Tomcat logs in <code>TOMCAT_HOME/logs</code> to see if the application deployed successfully.</para>
+          </listitem>
+          <listitem>
+            <para>Verify the server is running. Go to <code>http://SERVER:PORT/CONTEXT/services/rest/server/</code> and
+              type the specified username and password. You should see simple XML message with basic information about
+              the server.</para>
+          </listitem>
+        </orderedlist>
+        <para>
+          <important>You can not leverage the JMS interface when running on Tomcat, or any other Web container.
+            The Web container version of the WAR contains only the REST interface. </important>
+        </para>
+      </para>
+    </section>
+
+    <section>
+      <title>WildFly 8.x</title>
+      <para>
+        <orderedlist>
+          <listitem>
+            <para>Download and unzip the WildFly distribution. Let's call the root of the distribution <code>WILDFLY_HOME</code>.
+              This directory is named after the WildFly version, so for example <code>wildfly-8.2.0.Final</code>.
+            </para>
+          </listitem>
+          <listitem>
+            <para>Download <emphasis>kie-server-6.2.0.Final-ee7.war</emphasis> and place it into <code>WILDFLY_HOME/standalone/deployments</code>.
+            </para>
+          </listitem>
+          <listitem>
+            <para>Configure user(s) and role(s). Execute the following command
+              <code> WILDFLY_HOME/bin/add-user.[sh|bat] -a -u 'serveruser' -p 'my.s3cr3t.pass' -ro 'kie-server'</code>.
+              You can of course choose different username and password, just make sure that the user has role <code>kie-server</code>.
+            </para>
+          </listitem>
+          <listitem>
+            <para>Start the server by running <code>WILDFLY_HOME/bin/standalone.[sh|bat] -c standalone-full</code>.
+              You can check out the standard output or WildFly logs in <code>WILDFLY_HOME/standalone/logs</code> to see if the application
+              deployed successfully.
+            </para>
+          </listitem>
+          <listitem>
+            <para>Verify the server is running. Go to <code>http://SERVER:PORT/CONTEXT/services/rest/server/</code> and
+              type the specified username and password. You should see simple XML message with basic information about
+              the server.
+            </para>
+          </listitem>
+        </orderedlist>
+      </para>
+    </section>
+  </section>
+
+
 </section>
