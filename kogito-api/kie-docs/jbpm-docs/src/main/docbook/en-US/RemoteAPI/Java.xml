@@ -409,7 +409,7 @@
       <formalpara>
         <title>Configuration using the server <code>URL</code></title>
         
-        <para>Configuration using only the URL of the server where the jBPM Console or Kie Workbench
+        <para>Configuration using only the URL of the server where the jBPM Console or KIE Workbench
         instance is running, is the most straightforward. However, this is only possible when the
         jBPM console or KIE Workbench instance is running on Wildfly or JBoss AS, or JBoss EAP. </para>
       </formalpara>

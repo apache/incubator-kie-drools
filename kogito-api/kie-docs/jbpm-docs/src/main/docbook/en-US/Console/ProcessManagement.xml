@@ -17,7 +17,7 @@
              Process Definitions List you will be able to inspect the Process Definition details and start as many Process Instances as needed.
                 The following sections describes the features provided by all the screens in charge of the manupulation of process definitions and 
              process instances.
-                You can find these screens under the <emphasis role="bold">Process Management</emphasis> Menu, in the jBPM Console NG or in Kie Workbench.
+                You can find these screens under the <emphasis role="bold">Process Management</emphasis> Menu, in the jBPM Console NG or in KIE Workbench.
          </para>
          
          <para>

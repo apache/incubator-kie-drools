@@ -29,7 +29,7 @@
               <title>[GET] /</title>
               <para>Returns the Execution Server information</para>
               <example><title>Example Server Response</title>
-                     <programlisting language="XML">&lt;response type="SUCCESS" msg="Kie Server info">
+                     <programlisting language="XML">&lt;response type="SUCCESS" msg="KIE Server info">
   &lt;kie-server-info> 
     &lt;version>6.2.0.redhat-1&lt;/version> 
   &lt;/kie-server-info> 
