@@ -63,42 +63,46 @@ public class ScenarioRunner4JUnit extends Runner {
     @Override
     public void run( RunNotifier notifier ) {
         for ( Scenario scenario : scenarios ) {
-            Description childDescription = Description.createTestDescription( getClass(),
-                                                                              scenario.getName() );
-            descr.addChild( childDescription );
-            EachTestNotifier eachNotifier = new EachTestNotifier( notifier,
-                                                                  childDescription );
-            try {
-                eachNotifier.fireTestStarted();
+            runScenario(notifier, scenario);
+        }
+    }
 
-                //If a KieSession is not available, fail fast
-                if ( ksession == null ) {
-                    throw new NullKieSessionException( "Unable to get a Session to run tests. Check the project for build errors." );
+    private void runScenario(RunNotifier notifier, Scenario scenario) {
+        Description childDescription = Description.createTestDescription( getClass(),
+                                                                          scenario.getName() );
+        descr.addChild( childDescription );
+        EachTestNotifier eachNotifier = new EachTestNotifier( notifier,
+                                                              childDescription );
+        try {
+            eachNotifier.fireTestStarted();
 
-                } else {
+            //If a KieSession is not available, fail fast
+            if ( ksession == null ) {
+                throw new NullKieSessionException( "Unable to get a Session to run tests. Check the project for build errors." );
 
-                    final ScenarioRunner runner = new ScenarioRunner( ksession,
-                                                                      maxRuleFirings );
-                    runner.run( scenario );
-                    if ( !scenario.wasSuccessful() ) {
-                        StringBuilder builder = new StringBuilder();
-                        for ( String message : scenario.getFailureMessages() ) {
-                            builder.append( message ).append( "\n" );
-                        }
-                        eachNotifier.addFailedAssumption( new AssumptionViolatedException( builder.toString() ) );
+            } else {
+
+                final ScenarioRunner runner = new ScenarioRunner( ksession,
+                                                                  maxRuleFirings );
+                runner.run( scenario );
+                if ( !scenario.wasSuccessful() ) {
+                    StringBuilder builder = new StringBuilder();
+                    for ( String message : scenario.getFailureMessages() ) {
+                        builder.append( message ).append( "\n" );
                     }
-
-                    // FLUSSSSSH!
-                    for (FactHandle factHandle : ksession.getFactHandles()) {
-                        ksession.delete(factHandle);
-                    }
+                    eachNotifier.addFailedAssumption( new AssumptionViolatedException( builder.toString() ) );
                 }
-            } catch ( Throwable t ) {
-                eachNotifier.addFailure( t );
-            } finally {
-                // has to always be called as per junit docs
-                eachNotifier.fireTestFinished();
+
+                // FLUSSSSSH!
+                for (FactHandle factHandle : ksession.getFactHandles()) {
+                    ksession.delete(factHandle);
+                }
             }
+        } catch ( Throwable t ) {
+            eachNotifier.addFailure( t );
+        } finally {
+            // has to always be called as per junit docs
+            eachNotifier.fireTestFinished();
         }
     }
 
