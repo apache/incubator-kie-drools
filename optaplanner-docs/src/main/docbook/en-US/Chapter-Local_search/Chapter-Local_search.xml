@@ -28,8 +28,8 @@
     <section xml:id="localSearchStepByStep">
       <title>Step by step</title>
 
-      <para>A step is the winning <literal>Move</literal>. Local Search tries a number of moves on the current
-      solution and picks the best accepted move as the step:</para>
+      <para>A step is the winning <literal>Move</literal>. Local Search tries a number of moves on the current solution
+      and picks the best accepted move as the step:</para>
 
       <figure>
         <title>Decide the next step at step 0 (4 queens example)</title>
@@ -46,8 +46,8 @@
       to B3</emphasis>. Note that <emphasis>C0 to C3</emphasis> (not shown) could also have been picked because it also
       has the score <literal>-3</literal>.</para>
 
-      <para>The step is applied on the solution. From that new solution, Local Search tries every move again,
-      to decide the next step after that. It continually does this in a loop, and we get something like this:</para>
+      <para>The step is applied on the solution. From that new solution, Local Search tries every move again, to decide
+      the next step after that. It continually does this in a loop, and we get something like this:</para>
 
       <figure>
         <title>All steps (4 queens example)</title>
@@ -59,9 +59,9 @@
         </mediaobject>
       </figure>
 
-      <para>Notice that Local Search doesn't use a search tree, but a search path. The search path is
-      highlighted by the green arrows. At each step it tries all selected moves, but unless it's the step, it doesn't
-      investigate that solution further. This is one of the reasons why Local Search is very scalable.</para>
+      <para>Notice that Local Search doesn't use a search tree, but a search path. The search path is highlighted by the
+      green arrows. At each step it tries all selected moves, but unless it's the step, it doesn't investigate that
+      solution further. This is one of the reasons why Local Search is very scalable.</para>
 
       <para>As you can see, Local Search solves the 4 queens problem by starting with the starting solution and make the
       following steps sequentially:</para>
@@ -162,7 +162,14 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
 
       <para>Because the last solution can degrade (for example in Tabu Search), the <literal>Solver</literal> remembers
       the best solution it has encountered through the entire search path. Each time the current solution is better than
-      the last best solution, the current solution is <link linkend="cloningASolution">cloned</link> and referenced as the new best solution.</para>
+      the last best solution, the current solution is <link linkend="cloningASolution">cloned</link> and referenced as
+      the new best solution.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Local_search/localSearchScoreOverTime.png"/>
+        </imageobject>
+      </mediaobject>
     </section>
 
     <section xml:id="localSearchAcceptor">
@@ -432,8 +439,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
 
       <para>If you pick a too small tabu size, your solver can still get stuck in a local optimum. On the other hand,
       with the exception of solution tabu, if you pick a too large tabu size, your solver can get stuck by bouncing of
-      the walls. Use the <link linkend="benchmarker">Benchmarker</link> to fine tweak your
-      configuration.</para>
+      the walls. Use the <link linkend="benchmarker">Benchmarker</link> to fine tweak your configuration.</para>
     </section>
   </section>
 
@@ -465,8 +471,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
       Climbing, only accepting improving moves.</para>
 
       <para>Start with a <literal>simulatedAnnealingStartingTemperature</literal> set to the maximum score delta a
-      single move can cause. Use the <link linkend="benchmarker">Benchmarker</link> to tweak the
-      value.</para>
+      single move can cause. Use the <link linkend="benchmarker">Benchmarker</link> to tweak the value.</para>
 
       <programlisting language="xml">  &lt;localSearch&gt;
     ...
@@ -505,8 +510,8 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
       <title>Algorithm description</title>
 
       <para>Late Acceptance (also known as Late Acceptance Hill Climbing) also evaluates only a few moves per step. A
-      move is accepted if it does not decrease the score, or if it leads to a score that is at least the late score (which
-      is the winning score of a fixed number of steps ago).</para>
+      move is accepted if it does not decrease the score, or if it leads to a score that is at least the late score
+      (which is the winning score of a fixed number of steps ago).</para>
 
       <mediaobject>
         <imageobject>
@@ -560,8 +565,8 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
       <title>Algorithm description</title>
 
       <para>Step Counting Hill Climbing also evaluates only a few moves per step. For a number of steps, it keeps the
-      step score as a threshold. A move is accepted if it does not decrease the score, or if it leads to a score that is at
-      least the threshold score.</para>
+      step score as a threshold. A move is accepted if it does not decrease the score, or if it leads to a score that is
+      at least the threshold score.</para>
 
       <para>Scientific paper: <link xlink:href="https://www.cs.nott.ac.uk/~yxb/SCHC/SCHC_mista2013_79.pdf"><emphasis>An
       initial study of a novel Step Counting Hill Climbing heuristic applied to timetabling problems</emphasis> by Yuri
