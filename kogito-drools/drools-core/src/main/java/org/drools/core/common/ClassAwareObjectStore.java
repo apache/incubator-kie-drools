@@ -553,7 +553,7 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         @Override
         protected void fetchNextIterator() {
             HashTableIterator iterator = assrt ?
-                                         new HashTableIterator( stores.next().getAssertMap() ) :
+                                         new HashTableIterator( stores.next().getIdentityMap() ) :
                                          new HashTableIterator( stores.next().getNegMap() );
             iterator.reset();
             currentIterator = new JavaIteratorAdapter<InternalFactHandle>( iterator, JavaIteratorAdapter.FACT_HANDLE );
