@@ -108,24 +108,23 @@
     </itemizedlist>
 
     <para>Given these requirements, and despite the promises of some salesmen, it's usually impossible for anyone or
-    anything to find the optimal solution. Therefore, Planner focuses on finding the best solution in available
-    time. In <link linkend="examplesOverview">realistic, independent competitions</link>, it often comes out as
-    the best <emphasis>reusable</emphasis> software.</para>
+    anything to find the optimal solution. Therefore, Planner focuses on finding the best solution in available time. In
+    <link linkend="examplesOverview">realistic, independent competitions</link>, it often comes out as the best
+    <emphasis>reusable</emphasis> software.</para>
 
     <para>The nature of NP-complete problems make scaling a prime concern. <emphasis role="bold">The result quality of a
     small dataset guarantees nothing about the result quality of a large dataset.</emphasis> Scaling issues cannot be
     mitigated by hardware purchases later on. Start testing with a production sized dataset as soon as possible. Don't
-    assess quality on small datasets (unless production encounters only such datasets). Instead, solve a production sized
-    dataset and compare the results of longer executions, different algorithms and - if available - the human
+    assess quality on small datasets (unless production encounters only such datasets). Instead, solve a production
+    sized dataset and compare the results of longer executions, different algorithms and - if available - the human
     planner.</para>
   </section>
 
   <section xml:id="architectureOverview">
     <title>Architecture overview</title>
 
-    <para>Planner is the first framework to combine optimization algorithms (metaheuristics, ...) with score
-    calculation by a rule engine (such as Drools Expert). This combination turns out to be a very efficient,
-    because:</para>
+    <para>Planner is the first framework to combine optimization algorithms (metaheuristics, ...) with score calculation
+    by a rule engine (such as Drools Expert). This combination turns out to be a very efficient, because:</para>
 
     <itemizedlist>
       <listitem>
@@ -152,14 +151,20 @@
   <section xml:id="optimizationAlgorithmsOverview">
     <title>Optimization algorithms overview</title>
 
+    <para>Planner supports 3 <emphasis>families</emphasis> of optimization algorithms: Exhaustive Search, Construction
+    Heuristics and Metaheuristics. In practice, Metaheuristics (in combination with Construction Heuristics to
+    initialize) are the recommended choice:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Optimization_algorithms/scalabilityOfOptimizationAlgorithms.png"/>
+      </imageobject>
+    </mediaobject>
+
+    <para>Each of these families of algorithms has multiple optimization algorithms:</para>
+
     <table>
       <title>Optimization algorithms overview</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Optimization_algorithms/scalabilityOfOptimizationAlgorithms.png"/>
-        </imageobject>
-      </mediaobject>
 
       <tgroup cols="6">
         <colspec align="left" colnum="1" colwidth="4*"/>
@@ -192,7 +197,7 @@
 
         <tbody>
           <row>
-            <entry><emphasis role="bold">Exhaustive Search</emphasis></entry>
+            <entry><emphasis role="bold">Exhaustive Search (ES)</emphasis></entry>
 
             <entry/>
 
@@ -548,8 +553,8 @@
     probably already more than good enough.</para>
 
     <para>But you can do even better, at a lower return on invested time. Use the <link
-    linkend="benchmarker">Benchmarker</link> and try a couple of different Tabu Search, Simulated Annealing
-    and Late Acceptance configurations, for example:</para>
+    linkend="benchmarker">Benchmarker</link> and try a couple of different Tabu Search, Simulated Annealing and Late
+    Acceptance configurations, for example:</para>
 
     <orderedlist>
       <listitem>
@@ -561,10 +566,9 @@
       </listitem>
     </orderedlist>
 
-    <para>Use the <link linkend="benchmarker">Benchmarker</link> to improve the values for those size
-    parameters.</para>
+    <para>Use the <link linkend="benchmarker">Benchmarker</link> to improve the values for those size parameters.</para>
 
-    <para>If it's worth your time, continue experimenting further. For example, you can even combine multiple algorithms
+    <para>If it's worth your time, continue experimenting further. For example, try combining multiple algorithms
     together:</para>
 
     <orderedlist>
@@ -670,8 +674,8 @@
     reasons: the time is up, the perfect score has been reached, ... The only thing you can't depend on, is on finding
     the optimal solution (unless you know the optimal score), because a metaheuristic algorithm generally doesn't know
     it when it finds the optimal solution. For real-life problems this doesn't turn out to be much of a problem, because
-    finding the optimal solution could take years, so you'll want to terminate sooner anyway. The only
-    thing that matters is finding the best solution in the available time.</para>
+    finding the optimal solution could take years, so you'll want to terminate sooner anyway. The only thing that
+    matters is finding the best solution in the available time.</para>
 
     <para>For synchronous termination, configure a <literal>Termination</literal> on a <literal>Solver</literal> or a
     <literal>Phase</literal> when it needs to stop. You can implement your own <literal>Termination</literal>, but the
