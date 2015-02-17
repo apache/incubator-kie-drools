@@ -20,7 +20,7 @@
     </listitem>
 
     <listitem>
-      <para>Dependency to a JAR file installed in current Kie Workbench/Drools Workbench "Guvnor M2 repository".
+      <para>Dependency to a JAR file installed in current KIE Workbench/Drools Workbench "Guvnor M2 repository".
         (internal to the application) </para>
     </listitem>
   </itemizedlist>

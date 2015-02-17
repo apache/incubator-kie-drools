@@ -6,8 +6,8 @@
   xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>New and Noteworthy in Integration 6.2.0</title>
   <section>
-    <title>Kie Server</title>
-    <para>A new Kie Execution Server was created with the goal of supporting the deployment of kjars
+    <title>KIE Execution Server</title>
+    <para>A new KIE Execution Server was created with the goal of supporting the deployment of kjars
       and the automatic creation of REST endpoints for remote rules execution.  This initial
       implementation supports provisioning and execution of kjars via REST without any glue
       code.</para>

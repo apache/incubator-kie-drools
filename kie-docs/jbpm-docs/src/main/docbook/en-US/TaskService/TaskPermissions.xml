@@ -13,7 +13,7 @@
     the task (for example, by trying to claim or complete the task), the
       <code>PermissionDeniedException</code> will be thrown if that user does not have the correct
     role for that operation. Furthermore, a user will not be able to view or retrieve tasks that the
-    user is not involved with, especially if this is via the jBPM Console or Kie Workbench
+    user is not involved with, especially if this is via the jBPM Console or KIE Workbench
     applications. </para>
       
       <section>
