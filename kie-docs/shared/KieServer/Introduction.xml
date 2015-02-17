@@ -9,7 +9,7 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Introduction</title>
 
-  <para>The BRMS Execution Server is a standalone, out-of-the-box component that can be used to
+  <para>The KIE Execution Server is a standalone, out-of-the-box component that can be used to
               instantiate and execute rules via interfaces available for REST, JMS or a Java client
               side application. Created as a web deployable WAR file, this engine can be deployed on
               any web container.</para>
@@ -17,8 +17,8 @@
               deployed easily on a cloud instance. Each instance of this server can open and
               instantiate multiple Kie Containers which allows you to execute multiple rule services
               in parallel.</para>
-  <para>You can provision execution server instances via Business Central. In this chapter, we will
+  <para>You can provision execution server instances via KIE Workbench. In this chapter, we will
               go through the steps required to setup an execution server, provision and connect to
-              this server via Business Central, control what rule artifacts go in each instance and
+              this server via KIE Workbench, control what rule artifacts go in each instance and
               go through its lifecycle.</para>
 </section>
