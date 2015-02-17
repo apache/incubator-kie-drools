@@ -700,14 +700,6 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 if (varDataType == null) {
                     errors.add(new ProcessValidationErrorImpl(process, "Variable '" + var.getName() + "' has no type."));
                 }
-                
-                String stringType = varDataType.getStringType();
-                if (varDataType instanceof ObjectDataType) {
-                     if (stringType.startsWith("java.lang")) {
-                        logger.warn("Process variable {} uses ObjectDataType for default type (java.lang) which could cause problems with setting variables, use dedicated type instead",
-                                var.getName());
-                    }
-                }
             }
         }
     }
