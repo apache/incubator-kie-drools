@@ -6,16 +6,13 @@
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
   xmlns:ns="http://docbook.org/ns/docbook">
   <title>Installing the Kie Execution Server</title>
-  <para>The BRMS Execution Server is distributed as a web application archive (WAR) file with the
-    name of kie-server.war. By default, when you install BRMS, this WAR file is installed and
-    deployed in your web container. Consequently this gives you automatic access to this web
-    application with the URL of <code>http://SERVER:PORT/CONTEXT/</code>. </para>
+  <para>The KIE Execution Server is distributed as a web application archive (WAR) file with the
+    name of kie-server.war. After deploying the WAR file into one of the supported containers, the web
+    application can be accessed using URL <code>http://SERVER:PORT/CONTEXT/</code>. </para>
   <para>You can of course, copy this WAR file and deploy it in any other web container (Red Hat
     JBoss Web Server or another EAP install, for example) and have this execution server available
     from other web containers. Note that you must deploy the WAR file that is compatible for your
-    web container. The BRMS Execution Server bundled with the EAP install is only suitable for
-    installation on another EAP install, while the one bundled with the Generic deployment is
-    suitable for installation on Red Hat JBoss Web Server only.</para>
+    web container.</para>
   <para>To install the Kie Execution Server and verify it is running, complete the following
     steps:</para>
   <para>
@@ -31,7 +28,7 @@
           browser window: <code>http://SERVER:PORT/CONTEXT/services/rest/server/</code> with the web
           container running. For example, if the web container is running on your local machine and
           you are using the default context, you can access it on the following URL:
-            <code>http://localhost:8080/kie-server-6.2.0.GA-redhat1/services/rest/server</code>.</para>
+            <code>http://localhost:8080/kie-server-6.2.0.Final/services/rest/server</code>.</para>
       </listitem>
       <listitem>
         <para>When prompted for username/password, type in the username and password that you
@@ -44,7 +41,7 @@
             <title>sample handshaking server response</title>
             <programlisting>&lt;response type="SUCCESS" msg="Kie Server info" >
   &lt;kie-server-info>  
-    &lt;version>6.2.0.GA-redhat-1&lt;/version>
+    &lt;version>6.2.0.Final&lt;/version>
   &lt;/kie-server-info>
 &lt;/response>            </programlisting>
           </example>

@@ -10,7 +10,7 @@
   <title>Managing Containers</title>
 
   <para>Containers within the Execution Server can be started, stopped and updated from within
-              Business Central.⁠ </para>
+              KIE Workbench.⁠ </para>
        <section>
               <title>Starting a Container</title>
               <para>Once registered, a Container is in the 'Stopped' mode. It can be started by

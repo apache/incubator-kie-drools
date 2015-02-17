@@ -28,7 +28,7 @@
                                    Container);</para>
                      </listitem>
                      <listitem>
-                            <para>If you don't know these values, you can search Business Central
+                            <para>If you don't know these values, you can search KIE Workbench
                                    for all packages that can be deployed. Click the <emphasis role="bold">Search</emphasis> button
                                    without entering any value in the search field (you can narrow
                                    your search by entering any term that you know exists in the

@@ -10,7 +10,7 @@
   <title>Registering a server</title>
 
   <para>To register a new <emphasis role="bold">Kie Execution Server</emphasis> instance, click on
-                     <emphasis role="bold">Deploy → Rule Deployments</emphasis> in Business Central.
+              <emphasis role="bold">Deploy → Rule Deployments</emphasis> in KIE Workbench.
               This will open up the screen to show you any existing servers that you have
               registered. Click on Register to bring up the screen for entering details for a new
               server.</para>
