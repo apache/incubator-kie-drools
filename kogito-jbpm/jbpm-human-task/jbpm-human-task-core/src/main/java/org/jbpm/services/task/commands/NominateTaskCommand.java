@@ -15,7 +15,7 @@
  */
 package org.jbpm.services.task.commands;
 
-import static org.jbpm.services.task.impl.model.xml.JaxbOrganizationalEntity.convertListFromInterfaceToJaxbImpl;
+import static org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.convertListFromInterfaceToJaxbImpl;
 import static org.jbpm.services.task.impl.model.xml.JaxbOrganizationalEntity.convertListFromJaxbImplToInterface;
 
 import java.util.List;
@@ -58,7 +58,7 @@ public class NominateTaskCommand extends UserGroupCallbackTaskCommand<Void> {
     }
 
     public void setPotentialOwners(List<OrganizationalEntity> potentialOwners) {
-		this.potentialOwners = convertListFromInterfaceToJaxbImpl(potentialOwners);
+		this.potentialOwners = convertListFromInterfaceToJaxbImpl(potentialOwners, OrganizationalEntity.class, JaxbOrganizationalEntity.class);
 	}
 
 	public Void execute(Context cntxt) {

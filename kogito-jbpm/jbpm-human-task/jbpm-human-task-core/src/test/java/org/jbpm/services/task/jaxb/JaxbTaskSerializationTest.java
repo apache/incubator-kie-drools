@@ -20,12 +20,14 @@ import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.transform.stream.StreamSource;
 
 import org.jbpm.services.task.admin.listener.internal.GetCurrentTxTasksCommand;
 import org.jbpm.services.task.commands.CompositeCommand;
@@ -58,6 +60,9 @@ public class JaxbTaskSerializationTest extends AbstractTaskSerializationTest {
     public Object testRoundTrip(Object input) throws Exception {
         String xmlStr = convertJaxbObjectToString(input);
         logger.debug(xmlStr);
+        if( input instanceof JAXBElement ) { 
+            return convertStringToJaxbElement(xmlStr, ((JAXBElement) input).getValue().getClass());
+        }
         return convertStringToJaxbObject(xmlStr);
     }
 
@@ -155,6 +160,14 @@ public class JaxbTaskSerializationTest extends AbstractTaskSerializationTest {
 
         Object jaxbObj = unmarshaller.unmarshal(xmlStrInputStream);
 
+        return jaxbObj;
+    }
+
+    public Object convertStringToJaxbElement(String xmlStr, Class actualClass) throws JAXBException {
+        Unmarshaller unmarshaller = JAXBContext.newInstance(jaxbClasses).createUnmarshaller();
+        ByteArrayInputStream xmlStrInputStream = new ByteArrayInputStream(xmlStr.getBytes());
+
+        Object jaxbObj = unmarshaller.unmarshal(new StreamSource(xmlStrInputStream), actualClass);
         return jaxbObj;
     }
 

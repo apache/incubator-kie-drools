@@ -1,15 +1,14 @@
 package org.jbpm.services.task.impl.model.xml;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.kie.api.task.model.Group;
 import org.kie.api.task.model.User;
 
 @JsonIgnoreProperties({"realClass"})
@@ -22,11 +21,11 @@ public class AbstractJaxbTaskObject<T> {
         throw new UnsupportedOperationException("No-arg constructor must be implemented by the concrete class.");
     }
     
-    public AbstractJaxbTaskObject(Class<?> realClass) { 
+    protected AbstractJaxbTaskObject(Class<?> realClass) { 
        this.realClass = realClass; 
     }
     
-    public AbstractJaxbTaskObject(T taskObject, Class<?> objectInterface) {
+    protected AbstractJaxbTaskObject(T taskObject, Class<?> objectInterface) {
         this(objectInterface);
         if (taskObject != null) {
 	        for (Method getIsMethod : objectInterface.getDeclaredMethods() ) { 
@@ -59,51 +58,46 @@ public class AbstractJaxbTaskObject<T> {
 	        }
         }
     }
-    
-    /**
-     * I was forced to do this because we put the interfaces to our *ENTITIES* in the *PUBLIC* API. 
-     */
-    static class GetterUser implements User {
-    
-        private final String id;
-        public GetterUser(String id) { 
-            this.id = id;
-        }
-        
-        @Override
-        public String getId() {
-            return this.id;
-        }
-    
-        public void writeExternal(ObjectOutput out) throws IOException { unsupported(User.class); }
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException { unsupported(User.class); } 
-    }
-    
-    static class GetterGroup implements Group { 
-        private final String id;
-        public GetterGroup(String id) { 
-            this.id = id;
-        }
-        
-        @Override
-        public String getId() {
-            return this.id;
-        }
-    
-        public void writeExternal(ObjectOutput out) throws IOException { unsupported(User.class); }
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException { unsupported(User.class); } 
-    }
 
-    public void readExternal(ObjectInput arg0) throws IOException, ClassNotFoundException {
-        unsupported(realClass);
-    }
 
-    public void writeExternal(ObjectOutput arg0) throws IOException {
-        unsupported(realClass);
-    }
-    
     static Object unsupported(Class<?> realClass) { 
         String methodName = (new Throwable()).getStackTrace()[1].getMethodName();
         throw new UnsupportedOperationException(methodName + " is not supported on the JAXB " + realClass.getSimpleName() + " implementation.");
+    }
+
+    public static <I,J extends I> List<J> convertListFromInterfaceToJaxbImpl(List<I> interfacelList, Class<I> interfaceClass, Class<J> jaxbClass) { 
+        List<J> jaxbList;
+        if( interfacelList != null ) { 
+            jaxbList = new ArrayList<J>(interfacelList.size());
+            for( I interfaze : interfacelList ) { 
+                if( jaxbClass.isAssignableFrom(interfaze.getClass()) ) { 
+                    jaxbList.add((J) interfaze);
+                } else { 
+                    jaxbList.add(jaxbConstructorWithInternalAsArgument(jaxbClass, interfaceClass, interfaze));
+                }
+            }
+        } else { 
+            jaxbList = new ArrayList<J>();
+        }
+        return jaxbList;
+    }
+   
+    private static <J,I> J jaxbConstructorWithInternalAsArgument(Class<J> jaxbClass, Class<I> interfaze, I argument) { 
+        Class [] cnstrArgs = { interfaze };
+        try {
+            Constructor<J> cnstr = jaxbClass.getConstructor(cnstrArgs);
+            return cnstr.newInstance(argument);
+        } catch( Exception e ) {
+            throw new RuntimeException("Unable to create " + jaxbClass.getName() + " using constructor with " + interfaze.getName() + " argument.", e);
+        } 
+    }
+
+    @SuppressWarnings("unchecked")
+    static <T> T whenNull(Object value, T defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+        
+        return (T) value;
     }
 }

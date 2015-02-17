@@ -4,6 +4,7 @@
  */
 package org.jbpm.services.task.audit.impl.model;
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -29,7 +30,7 @@ import org.kie.internal.task.api.model.TaskEvent;
 @Entity
 @Table(name = "TaskEvent")
 @SequenceGenerator(name = "taskEventIdSeq", sequenceName = "TASK_EVENT_ID_SEQ")
-public class TaskEventImpl implements TaskEvent {
+public class TaskEventImpl implements TaskEvent, Externalizable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "taskEventIdSeq")
@@ -137,7 +138,6 @@ public class TaskEventImpl implements TaskEvent {
 	  if (in.readBoolean()) {
           logTime = new Date(in.readLong());
       }
-
   }
 
   @Override

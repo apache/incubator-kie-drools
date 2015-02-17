@@ -10,12 +10,12 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.kie.internal.task.api.model.Deadline;
 import org.kie.internal.task.api.model.Deadlines;
 
-@XmlRootElement(name="task-deadlines")
+@XmlType(name="deadlines")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxbDeadlines implements Deadlines {
 
@@ -54,3 +54,4 @@ public class JaxbDeadlines implements Deadlines {
     }
 
 }
+

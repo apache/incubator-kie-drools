@@ -13,7 +13,7 @@
   <logger name="org.hibernate" level="warn"/>
   <logger name="org.hibernate.tool.hbm2ddl.SchemaExport" level="off"/>
   
-  <logger name="org.jbpm.services.task.jaxb" level="debug"/>
+  <logger name="org.jbpm.services.task.jaxb" level="info"/>
   <logger name="org.jbpm.services.task.impl" level="info"/>
   
   <!-- see queries -->

@@ -1,16 +1,26 @@
 package org.jbpm.services.task.jaxb;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import javax.xml.bind.annotation.XmlList;
 
 import org.jbpm.services.task.MvelFilePath;
 import org.jbpm.services.task.commands.CancelDeadlineCommand;
@@ -26,18 +36,25 @@ import org.jbpm.services.task.impl.model.xml.JaxbTask;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.junit.Assume;
 import org.junit.Test;
+import org.kie.api.task.model.Attachment;
+import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskData;
 import org.kie.api.task.model.User;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.InternalAttachment;
 import org.kie.internal.task.api.model.InternalComment;
 import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
+import org.kie.internal.task.api.model.SubTasksStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Enums;
 
 public abstract class AbstractTaskSerializationTest {
 
@@ -68,36 +85,49 @@ public abstract class AbstractTaskSerializationTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.FullTask));
-        Task task = (Task) TaskFactory.evalTask(reader, vars);
-        ((InternalTask) task).setFormName("Bruno's Form");
+        InternalTask task = (InternalTask) TaskFactory.evalTask(reader, vars);
+        
+        // fill task 
+        task.setFormName("Bruno's Form");
+        task.setId(23);
+        task.setSubTaskStrategy(SubTasksStrategy.EndParentOnAllSubTasksEnd);
+       
+        // fill task -> task data
         InternalTaskData taskData = (InternalTaskData) task.getTaskData();
+        taskData.setOutputAccessType(AccessType.Inline);
+        taskData.setFaultAccessType(AccessType.Unknown);
 
+        // fill task -> task data -> comment
         String payload = "brainwashArmitageRecruitCaseGetPasswordFromLady3JaneAscentToStraylightIcebreakerUniteWithNeuromancer";
-
         InternalComment comment = (InternalComment) TaskModelProvider.getFactory().newComment();
         comment.setId(42);
         comment.setText(payload);
         comment.setAddedAt(new Date());
         User user = TaskModelProvider.getFactory().newUser();
         ((InternalOrganizationalEntity) user).setId("Case");
-        ;
         comment.setAddedBy(user);
         taskData.addComment(comment);
 
+        // fill task -> task data -> attachment
         InternalAttachment attach = (InternalAttachment) TaskModelProvider.getFactory().newAttachment();
-        attach.setId(1);
+        attach.setId(10);
         attach.setName("virus");
         attach.setContentType("ROM");
         attach.setAttachedAt(new Date());
         user = TaskModelProvider.getFactory().newUser();
         ((InternalOrganizationalEntity) user).setId("Wintermute");
-        ;
         attach.setAttachedBy(user);
         attach.setSize(payload.getBytes().length);
         attach.setAttachmentContentId(comment.getId());
         taskData.addAttachment(attach);
 
         JaxbTask xmlTask = new JaxbTask(task);
+        
+        verifyThatAllFieldsAreFilledOrUnsupported(xmlTask, InternalTask.class);
+        verifyThatAllFieldsAreFilledOrUnsupported(xmlTask.getTaskData(), TaskData.class);
+        verifyThatAllFieldsAreFilledOrUnsupported(xmlTask.getTaskData().getAttachments().get(0), Attachment.class);
+        verifyThatAllFieldsAreFilledOrUnsupported(xmlTask.getTaskData().getComments().get(0), Comment.class);
+        
         assertNotNull(xmlTask.getNames());
         assertTrue(xmlTask.getNames().size() > 0);
         JaxbTask bornAgainTask = testRoundTrip(xmlTask);
@@ -109,8 +139,104 @@ public abstract class AbstractTaskSerializationTest {
 
         assertNotNull(((InternalTask) xmlTask).getFormName());
         assertEquals(((InternalTask) xmlTask).getFormName(), ((InternalTask) bornAgainTask).getFormName());
+        
+        Task realTask = xmlTask.getTask();
+        verifyThatXmlFieldsAreFilled(realTask, xmlTask, InternalTask.class, "deadlines");
+        verifyThatXmlFieldsAreFilled(realTask.getTaskData(), xmlTask.getTaskData(), TaskData.class);
     }
 
+    private void verifyThatXmlFieldsAreFilled(Object realInst, Object xmlInst, Class interfaze, String... ignoreFields ) { 
+        Set<String> ignoreFieldSet = new HashSet<String>(Arrays.asList(ignoreFields));
+        assertNotNull( interfaze.getSimpleName() + " (XML) instance is null", xmlInst);
+        assertNotNull( interfaze.getSimpleName() + " (XML) instance is null", realInst);
+        
+        String methodName = null;
+        try { 
+            for( Method getMethod : interfaze.getMethods() )  {
+                methodName = getMethod.getName();
+                if( ! methodName.startsWith("get") ) {
+                   continue; 
+                }
+                try { 
+                   String fieldName = methodName.substring(3, 4).toLowerCase() + methodName.substring(4);
+                   if( ignoreFieldSet.contains(fieldName) ) {
+                       continue;
+                   }
+                   
+                   // xml Inst
+                   Object xmlFieldValue = getMethod.invoke(xmlInst);
+                   
+                   // real Inst
+                   Object fieldValue = getMethod.invoke(realInst);
+                   if( Enum.class.isAssignableFrom(xmlFieldValue.getClass()) || xmlFieldValue.getClass().isEnum() ) { 
+                       assertEquals( interfaze.getSimpleName() + "." + fieldName + " value has not been copied", 
+                               xmlFieldValue, fieldValue);
+                   } else if( xmlFieldValue.getClass().getPackage().getName().contains("org.kie")
+                           || xmlFieldValue.getClass().getPackage().getName().contains("org.jbpm") ) { 
+                      assertNotNull(interfaze.getSimpleName() + "." + fieldName + " value is empty", fieldValue);
+                   } else if( xmlFieldValue.getClass().isArray() ) {
+                       List xmlList = Arrays.asList(xmlFieldValue);
+                       List realList = Arrays.asList(fieldValue);
+                   } else if( List.class.isAssignableFrom(xmlFieldValue.getClass()) ) { 
+                       List xmlList = (List) xmlFieldValue; 
+                       List realList = (List) fieldValue; 
+                       assertEquals( interfaze.getSimpleName() + "." + fieldName + " value has unequal list size",
+                               xmlList.size(), realList.size());
+                       for( int i = 0; i < xmlList.size(); ++i ) {
+                           Object xmlElem = xmlList.get(i);
+                           Object realElem = realList.get(i);
+                           verifyThatXmlFieldsAreFilled(realElem, xmlElem, xmlElem.getClass().getInterfaces()[0]);
+                       }
+                   } else {
+                       assertEquals( interfaze.getSimpleName() + "." + fieldName + " value has not been copied", 
+                               xmlFieldValue, fieldValue);
+                   }
+                } catch( InvocationTargetException ite ) { 
+                    Throwable cause = ite.getCause();
+                    if( cause instanceof UnsupportedOperationException 
+                            && cause.getMessage().contains("not supported on the JAXB") ) {
+                        continue;
+                    } 
+                    throw ite;
+                }
+            }
+        } catch( Exception e ) { 
+            logger.error("Test failed: " + e.getMessage(), e);
+            fail( "Unable to verify field via method "  + methodName + ": " + e.getMessage());
+        } 
+    }
+    
+    private void verifyThatAllFieldsAreFilledOrUnsupported(Object instance, Class interfaze ) { 
+        assertNotNull( interfaze.getSimpleName() + " instance is null", instance);
+        String methodName = null;
+        try { 
+            for( Method getMethod : interfaze.getMethods() )  {
+                methodName = getMethod.getName();
+                if( ! methodName.startsWith("get") ) {
+                   continue; 
+                }
+                try { 
+                   Object fieldValue = getMethod.invoke(instance);
+                   String fieldName = methodName.substring(3, 4).toLowerCase() + methodName.substring(4);
+                   assertNotNull(interfaze.getSimpleName() + "." + fieldName + " is null", fieldValue);
+                   if( fieldValue instanceof Number ) { 
+                       assertFalse(interfaze.getSimpleName() + "." + fieldName + " is -1", 
+                               ((Number) fieldValue).intValue() < 0 );
+                   }
+                } catch( InvocationTargetException ite ) { 
+                    Throwable cause = ite.getCause();
+                    if( cause instanceof UnsupportedOperationException 
+                            && cause.getMessage().contains("not supported on the JAXB") ) {
+                        continue;
+                    } 
+                    throw ite;
+                }
+            }
+        } catch( Exception e ) { 
+            logger.error("Test failed: " + e.getMessage(), e);
+            fail( "Unable to verify field via method "  + methodName + ": " + e.getMessage());
+        }
+    }
 
     @Test
     public void taskCompositeCommandCanBeSerialized() throws Exception {
@@ -169,22 +295,21 @@ public abstract class AbstractTaskSerializationTest {
         
         ComparePair.compareObjectsViaFields(cmd, copyCmd);
     }
-    
-    
+
     @Test
     public void jaxbContentTest() throws Exception { 
         Assume.assumeFalse(getType().equals(TestType.YAML));
-       ContentImpl content = new ContentImpl();
-       content.setId(23);
-       
-       Map<String, Object> map = new HashMap<String, Object>();
-       map.put("life", new Integer(23));
-       map.put("sick", new Long(45));
-       byte [] bytes = ContentMarshallerHelper.marshallContent(map, null);
-       content.setContent(bytes);
-        
-       JaxbContent jaxbContent = new JaxbContent(content); 
-       JaxbContent copyJaxbCnt = testRoundTrip(jaxbContent);
-       ComparePair.compareObjectsViaFields(jaxbContent, copyJaxbCnt);
+        ContentImpl content = new ContentImpl();
+        content.setId(23);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("life", new Integer(23));
+        map.put("sick", new Long(45));
+        byte [] bytes = ContentMarshallerHelper.marshallContent(map, null);
+        content.setContent(bytes);
+
+        JaxbContent jaxbContent = new JaxbContent(content); 
+        JaxbContent copyJaxbContent = testRoundTrip(jaxbContent);
+        ComparePair.compareObjectsViaFields(jaxbContent, copyJaxbContent);
     }
 }
