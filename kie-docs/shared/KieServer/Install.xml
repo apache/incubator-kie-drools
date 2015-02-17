@@ -38,8 +38,8 @@
         <para>Once authenticated, you will see an XML response in the form of engine status, similar
           to this:</para>
         <example>
-            <title>sample handshaking server response</title>
-            <programlisting>&lt;response type="SUCCESS" msg="Kie Server info" >
+            <title>Sample handshaking server response</title>
+            <programlisting language="XML">&lt;response type="SUCCESS" msg="Kie Server info">
   &lt;kie-server-info>  
     &lt;version>6.2.0.Final&lt;/version>
   &lt;/kie-server-info>

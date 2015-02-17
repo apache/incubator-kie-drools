@@ -24,7 +24,7 @@
                      possibly the Execution Server).⁠</para>
        </section>
        <section>
-              <title>Stoping and Deleting a Container</title>
+              <title>Stopping and Deleting a Container</title>
               <para>Similar to starting a Container, select the Container(s) that you want to
                      stop (or delete) and click the Stop button (which replaces the Start button for that
                      Container once it has entered the 'Running' mode) or the Delete button.⁠</para>
