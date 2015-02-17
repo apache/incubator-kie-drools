@@ -7319,8 +7319,8 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.9068313"
-     inkscape:cx="364.90497"
-     inkscape:cy="186.18043"
+     inkscape:cx="302.49777"
+     inkscape:cy="312.04369"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -7414,7 +7414,7 @@
            x="50"
            y="150.00014"
            style="font-size:14px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-         id="flowPara3157">In 1 Local Search run, do confuse starting initialized score, best score, step score and move score.</flowPara></flowRoot>    <g
+         id="flowPara3157">In 1 Local Search run, do not confuse starting initialized score, best score, step score and move score.</flowPara></flowRoot>    <g
        id="g3709"
        transform="translate(0,19.999997)" />
     <flowRoot
@@ -7509,7 +7509,7 @@
        xml:space="preserve"
        id="flowRoot6633"
        style="font-size:18.66666603px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="matrix(0.75,0,0,0.75,-5.0075953,295.86113)"><flowRegion
+       transform="matrix(0.75,0,0,0.75,-5.0075953,287.11113)"><flowRegion
          id="flowRegion6635"><rect
            id="rect6637"
            width="173.33333"
@@ -7517,7 +7517,8 @@
            x="-66.65625"
            y="395.11942"
            style="font-size:18.66666603px;text-align:end;text-anchor:end" /></flowRegion><flowPara
-         id="flowPara6641">optimal</flowPara></flowRoot>    <path
+         id="flowPara6641">global</flowPara><flowPara
+         id="flowPara4476">optimum</flowPara></flowRoot>    <path
        inkscape:connector-curvature="0"
        id="path5721"
        d="m 90.000352,992.57061 0,-430.14435"
@@ -7624,11 +7625,11 @@
        sodipodi:cy="235"
        sodipodi:rx="5"
        sodipodi:ry="5"
-       d="m 150,235 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+       d="m 150,235 c 0,2.76142 -2.23858,5 -5,5 -2.76142,0 -5,-2.23858 -5,-5 0,-2.76142 2.23858,-5 5,-5 2.76142,0 5,2.23858 5,5 z"
        transform="matrix(0.5,0,0,0.5,117.50029,844.86218)" />
     <path
        transform="matrix(0.5,0,0,0.5,297.50029,584.86218)"
-       d="m 150,235 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+       d="m 150,235 c 0,2.76142 -2.23858,5 -5,5 -2.76142,0 -5,-2.23858 -5,-5 0,-2.76142 2.23858,-5 5,-5 2.76142,0 5,2.23858 5,5 z"
        sodipodi:ry="5"
        sodipodi:rx="5"
        sodipodi:cy="235"
@@ -7644,7 +7645,7 @@
        sodipodi:cy="235"
        sodipodi:rx="5"
        sodipodi:ry="5"
-       d="m 150,235 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+       d="m 150,235 c 0,2.76142 -2.23858,5 -5,5 -2.76142,0 -5,-2.23858 -5,-5 0,-2.76142 2.23858,-5 5,-5 2.76142,0 5,2.23858 5,5 z"
        transform="matrix(0.5,0,0,0.5,597.50029,524.86218)" />
     <flowRoot
        style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"
@@ -7689,7 +7690,7 @@
        sodipodi:cy="235"
        sodipodi:rx="5"
        sodipodi:ry="5"
-       d="m 150,235 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+       d="m 150,235 c 0,2.76142 -2.23858,5 -5,5 -2.76142,0 -5,-2.23858 -5,-5 0,-2.76142 2.23858,-5 5,-5 2.76142,0 5,2.23858 5,5 z"
        transform="matrix(0.5,0,0,0.5,457.5,494.86218)" />
     <flowRoot
        style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#204a87;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"
