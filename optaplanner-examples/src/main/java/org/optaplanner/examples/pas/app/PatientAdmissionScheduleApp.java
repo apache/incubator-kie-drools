@@ -42,7 +42,7 @@ public class PatientAdmissionScheduleApp extends CommonApp {
         super("Hospital bed planning",
                 "Official competition name: PAS - Patient admission scheduling\n\n" +
                         "Assign patients to beds.",
-                null);
+                PatientAdmissionSchedulePanel.LOGO_PATH);
     }
 
     @Override

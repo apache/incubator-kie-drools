@@ -59,6 +59,8 @@ import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.H
 
 public class PatientAdmissionSchedulePanel extends SolutionPanel {
 
+    public static final String LOGO_PATH = "/org/optaplanner/examples/pas/swingui/pasLogo.png";
+
     private final ImageIcon anyGenderIcon;
     private final ImageIcon maleIcon;
     private final ImageIcon femaleIcon;
