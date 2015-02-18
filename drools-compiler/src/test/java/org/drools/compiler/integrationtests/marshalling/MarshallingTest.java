@@ -101,6 +101,7 @@ import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 
 public class MarshallingTest extends CommonTestMethodBase {
 
@@ -2726,4 +2727,33 @@ public class MarshallingTest extends CommonTestMethodBase {
         return SerializationHelper.serializeObject( ruleBase );
     }
 
+    @Test
+    public void testMarshallWithCollects() throws Exception {
+        // BZ-1193600
+        String str =
+                "import java.util.Collection\n" +
+                "rule R1 when\n" +
+                "    Collection(empty==false) from collect( Integer() )\n" +
+                "    Collection() from collect( String() )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when then end\n";
+
+        KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
+        KieSession ksession = kbase.newKieSession();
+
+        try {
+            Marshaller marshaller = MarshallerFactory.newMarshaller(kbase);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            marshaller.marshall(baos, ksession);
+            marshaller = MarshallerFactory.newMarshaller(kbase);
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            baos.close();
+            ksession = marshaller.unmarshall(bais);
+            bais.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("unexpected exception :" + e.getMessage());
+        }
+    }
 }

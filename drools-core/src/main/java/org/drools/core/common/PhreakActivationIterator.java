@@ -19,9 +19,6 @@ import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.spi.Activation;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
@@ -210,7 +207,10 @@ public class PhreakActivationIterator
         while (peer != null) {
             if ( peer.getLeftTupleSink().getType() == NodeTypeEnums.AccumulateNode ) {
                 AccumulateContext accctx = (AccumulateContext) peer.getObject();
-                collectFromLeftInput(accctx.getResultLeftTuple(), agendaItems, nodeSet, wm);
+                if (accctx != null) {
+                    // the accumulate context can be null if the lefttuple hasn't been evaluated yet
+                    collectFromLeftInput(accctx.getResultLeftTuple(), agendaItems, nodeSet, wm);
+                }
             } else if ( peer.getFirstChild() != null ) {
                 for (LeftTuple childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getLeftParentNext()) {
                     collectFromLeftInput(childLt, agendaItems, nodeSet, wm);
