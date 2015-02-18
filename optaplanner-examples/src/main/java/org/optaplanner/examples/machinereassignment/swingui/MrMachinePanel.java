@@ -20,7 +20,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -90,11 +92,15 @@ public class MrMachinePanel extends JPanel {
         machineLabel.setEnabled(false);
         labelAndDeletePanel.add(machineLabel, BorderLayout.CENTER);
         if (machine != null) {
-            deleteButton = new JButton(new AbstractAction("X") {
+            JButton deleteButton = new JButton("X");
+            deleteButton.setToolTipText("Delete");
+            deleteButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     machineReassignmentPanel.deleteMachine(machine);
                 }
             });
+            deleteButton.setToolTipText("Delete");
+            deleteButton.setMargin(new Insets(0, 0, 0, 0));
             labelAndDeletePanel.add(deleteButton, BorderLayout.EAST);
         }
         add(labelAndDeletePanel, BorderLayout.WEST);

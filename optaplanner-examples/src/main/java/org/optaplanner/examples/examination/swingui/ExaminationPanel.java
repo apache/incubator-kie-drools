@@ -173,7 +173,7 @@ public class ExaminationPanel extends SolutionPanel {
         for (Room room : examination.getRoomList()) {
             roomsPanel.addColumnHeader(room, HEADER_ROW,
                     createHeaderPanel(new JLabel(room.getLabel(), new RoomIcon(room), SwingConstants.CENTER),
-                            "Capacity: " + room.getCapacity()));
+                            "Capacity: " + room.getCapacity() + " (shown as rectangle)"));
         }
         roomsPanel.addColumnHeader(null, HEADER_ROW,
                 createHeaderPanel(new JLabel("Unassigned", SwingConstants.CENTER), null));
@@ -194,8 +194,7 @@ public class ExaminationPanel extends SolutionPanel {
         for (Exam exam : examination.getExamList()) {
             Color examColor = tangoColorFactory.pickColor(exam);
             roomsPanel.addCell(exam.getRoom(), exam.getPeriod(),
-                    createButton(exam, examColor,
-                            "Duration: " + exam.getTopicDuration() + " - Student size: " + exam.getTopicStudentSize()));
+                    createButton(exam, examColor));
         }
     }
 
@@ -211,11 +210,8 @@ public class ExaminationPanel extends SolutionPanel {
         return headerPanel;
     }
 
-    private JButton createButton(Exam exam, Color color, String toolTipText) {
+    private JButton createButton(Exam exam, Color color) {
         JButton button = new JButton(new ExamAction(exam));
-        if (toolTipText != null) {
-            button.setToolTipText(toolTipText);
-        }
         button.setMargin(new Insets(0, 0, 0, 0));
         button.setBackground(color);
         if (exam instanceof FollowingExam) {
@@ -231,6 +227,11 @@ public class ExaminationPanel extends SolutionPanel {
         public ExamAction(Exam exam) {
             super(exam.getLabel(), new ExamIcon(exam));
             this.exam = exam;
+            // Tooltip
+            putValue(SHORT_DESCRIPTION, "<html>Exam: " + exam.getLabel() + "<br/>"
+                    + "Duration: " + exam.getTopicDuration() + " (shown in circle)<br/>"
+                    + "Has " + exam.getTopicStudentSize() + " students (shown in rectangle)"
+                    + "</html>");
         }
 
         public void actionPerformed(ActionEvent e) {

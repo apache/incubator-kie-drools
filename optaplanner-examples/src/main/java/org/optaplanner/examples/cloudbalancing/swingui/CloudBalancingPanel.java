@@ -127,6 +127,7 @@ public class CloudBalancingPanel extends SolutionPanel {
         JPanel headerPanel = new JPanel(new GridLayout(0, 5));
         JPanel addPanel = new JPanel(new GridLayout());
         JButton addComputerButton = new JButton(addCloudComputerIcon);
+        addComputerButton.setToolTipText("Add computer");
         addComputerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 CloudComputer computer = new CloudComputer();
@@ -140,6 +141,7 @@ public class CloudBalancingPanel extends SolutionPanel {
         addComputerButton.setMargin(new Insets(0, 0, 0, 0));
         addPanel.add(addComputerButton);
         JButton addProcessButton = new JButton(addCloudProcessIcon);
+        addProcessButton.setToolTipText("Add process");
         addProcessButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 CloudProcess process = new CloudProcess();

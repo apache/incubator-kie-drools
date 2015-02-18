@@ -106,6 +106,7 @@ public class CloudComputerPanel extends JPanel {
         if (computer != null) {
             JPanel deletePanel = new JPanel(new BorderLayout());
             JButton deleteButton = new JButton(cloudBalancingPanel.getDeleteCloudComputerIcon());
+            deleteButton.setToolTipText("Delete");
             deleteButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     cloudBalancingPanel.deleteComputer(computer);
@@ -324,6 +325,7 @@ public class CloudComputerPanel extends JPanel {
                 labelAndDeletePanel.add(processLabel, BorderLayout.CENTER);
                 JPanel deletePanel = new JPanel(new BorderLayout());
                 JButton deleteButton = new JButton(cloudBalancingPanel.getDeleteCloudProcessIcon());
+                deleteButton.setToolTipText("Delete");
                 deleteButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         cloudBalancingPanel.deleteProcess(process);

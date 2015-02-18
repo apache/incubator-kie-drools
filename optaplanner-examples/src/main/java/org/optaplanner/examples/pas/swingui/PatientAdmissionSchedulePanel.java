@@ -181,6 +181,15 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
             super(bedDesignation.getAdmissionPart().getPatient().getName(),
                     new PatientOrRoomIcon(bedDesignation.getAdmissionPart().getPatient()));
             this.bedDesignation = bedDesignation;
+            Patient patient = bedDesignation.getPatient();
+            // Tooltip
+            putValue(SHORT_DESCRIPTION, "<html>Patient: " + patient.getName() + "<br/>"
+                    + "Gender: " + patient.getGender().getCode() + " (see icon)<br/>"
+                    + "Age: " + patient.getAge() + "<br/>"
+                    + "Preferred maximum room capacity: " + patient.getPreferredMaximumRoomCapacity() + "<br/>"
+                    + "Requires " + patient.getRequiredPatientEquipmentList().size() + " equipments (shown as rectangles)<br/>"
+                    + "Prefers " + patient.getPreferredPatientEquipmentList().size() + " equipments"
+                    + "</html>");
         }
 
         public void actionPerformed(ActionEvent e) {

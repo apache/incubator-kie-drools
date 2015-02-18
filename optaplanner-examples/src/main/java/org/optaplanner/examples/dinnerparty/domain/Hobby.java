@@ -43,7 +43,7 @@ public enum Hobby {
     }
 
     public String getLabel() {
-        return code;
+        return name();
     }
 
 }

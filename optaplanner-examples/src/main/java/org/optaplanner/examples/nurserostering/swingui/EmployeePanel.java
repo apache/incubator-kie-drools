@@ -42,6 +42,7 @@ import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.Shift;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 import org.optaplanner.examples.nurserostering.domain.ShiftDate;
+import org.optaplanner.examples.nurserostering.domain.ShiftType;
 import org.optaplanner.examples.nurserostering.domain.WeekendDefinition;
 
 public class EmployeePanel extends JPanel {
@@ -103,6 +104,7 @@ public class EmployeePanel extends JPanel {
         if (employee != null) {
             JPanel deletePanel = new JPanel(new BorderLayout());
             deleteButton = new JButton(nurseRosteringPanel.getDeleteEmployeeIcon());
+            deleteButton.setToolTipText("Delete");
             deleteButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     nurseRosteringPanel.deleteEmployee(employee);
@@ -176,8 +178,9 @@ public class EmployeePanel extends JPanel {
                 }
             }
             shiftPanel.setBackground(backgroundColor);
-            shiftPanel.setToolTipText((employee == null ? "Unassigned" : employee.getLabel())
-                    + " on " + shift.getLabel());
+            shiftPanel.setToolTipText("<html>Date: " + shift.getShiftDate().getLabel() + "<br/>"
+                    + "Employee: " + (employee == null ? "unassigned" : employee.getLabel())
+                    + "</html>");
             shiftPanelMap.put(shift, shiftPanel);
             shiftDatePanel.add(shiftPanel);
         }
@@ -198,8 +201,6 @@ public class EmployeePanel extends JPanel {
         }
         int colorIndex = shift.getShiftType().getIndex() % TangoColorFactory.SEQUENCE_1.length;
         shiftAssignmentButton.setBackground(TangoColorFactory.SEQUENCE_1[colorIndex]);
-        shiftAssignmentButton.setToolTipText(shift.getLabel() + " @ "
-                        + (employee == null ? "unassigned" : employee.getLabel()));
         shiftPanel.add(shiftAssignmentButton);
         shiftPanel.repaint();
         shiftAssignmentButtonMap.put(shiftAssignment, shiftAssignmentButton);
@@ -231,6 +232,14 @@ public class EmployeePanel extends JPanel {
         public ShiftAssignmentAction(ShiftAssignment shiftAssignment) {
             super(shiftAssignment.getShift().getShiftType().getCode());
             this.shiftAssignment = shiftAssignment;
+            Shift shift = shiftAssignment.getShift();
+            ShiftType shiftType = shift.getShiftType();
+            // Tooltip
+            putValue(SHORT_DESCRIPTION, "<html>Date: " + shift.getShiftDate().getLabel() + "<br/>"
+                    + "Shift type: " + shiftType.getLabel() + " (from " + shiftType.getStartTimeString()
+                    + " to " + shiftType.getEndTimeString() + ")<br/>"
+                    + "Employee: " + (employee == null ? "unassigned" : employee.getLabel())
+                    + "</html>");
         }
 
         public void actionPerformed(ActionEvent e) {

@@ -175,11 +175,6 @@ public class DinnerPartyPanel extends SolutionPanel {
             }
             JButton button = new JButton(new SeatDesignationAction(seatDesignation));
             button.setMargin(new Insets(0, 0, 0, 0));
-            Seat seat = seatDesignation.getSeat();
-            if (seat != null) {
-                button.setToolTipText("Guest " + guest.getCode()
-                        + " @ " + "Seat " + seat.getSeatIndexInTable());
-            }
             add(button, BorderLayout.WEST);
             JPanel infoPanel = new JPanel(new GridLayout(0, 1));
             infoPanel.setOpaque(false);
@@ -223,6 +218,14 @@ public class DinnerPartyPanel extends SolutionPanel {
         public SeatDesignationAction(SeatDesignation seatDesignation) {
             super(null, determineGuestIcon(seatDesignation));
             this.seatDesignation = seatDesignation;
+            Seat seat = seatDesignation.getSeat();
+            if (seat != null) {
+                // Tooltip
+                putValue(SHORT_DESCRIPTION, "<html>Guest: " + seatDesignation.getGuest().getName() + "<br/>"
+                        + "Table: " + seat.getTable().getTableIndex() + "<br/>"
+                        + "Seat: " + seat.getSeatIndexInTable()
+                        + "</html>");
+            }
         }
 
         public void actionPerformed(ActionEvent e) {
