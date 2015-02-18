@@ -19,6 +19,7 @@ package org.optaplanner.examples.machinereassignment.solver.solution.initializer
 import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
+import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +36,10 @@ public class ToOriginalMachineSolutionInitializer implements CustomPhaseCommand 
     private void initializeProcessAssignmentList(ScoreDirector scoreDirector,
             MachineReassignment machineReassignment) {
         for (MrProcessAssignment processAssignment : machineReassignment.getProcessAssignmentList()) {
+            MrMachine originalMachine = processAssignment.getOriginalMachine();
+            MrMachine machine = originalMachine == null ? machineReassignment.getMachineList().get(0) : originalMachine;
             scoreDirector.beforeVariableChanged(processAssignment, "machine");
-            processAssignment.setMachine(processAssignment.getOriginalMachine());
+            processAssignment.setMachine(machine);
             scoreDirector.afterVariableChanged(processAssignment, "machine");
         }
     }

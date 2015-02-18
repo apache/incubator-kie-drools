@@ -247,24 +247,21 @@ public class NurseRosteringPanel extends SolutionPanel {
 
     public void deleteEmployee(final Employee employee) {
         logger.info("Scheduling delete of employee ({}).", employee);
-        solutionBusiness.doProblemFactChange(new ProblemFactChange() {
+        doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
                 NurseRoster nurseRoster = (NurseRoster) scoreDirector.getWorkingSolution();
                 // First remove the planning fact from all planning entities that use it
                 for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
                     if (ObjectUtils.equals(shiftAssignment.getEmployee(), employee)) {
-                        // TODO HACK we are removing it because it becomes uninitialized,
-                        // which means it has to be retracted
-                        // This is nonsense from a ProblemFactChange point of view, FIXME!
-                        scoreDirector.beforeEntityRemoved(shiftAssignment);
+                        scoreDirector.beforeVariableChanged(shiftAssignment, "employee");
                         shiftAssignment.setEmployee(null);
-                        scoreDirector.afterEntityRemoved(shiftAssignment);
+                        scoreDirector.afterVariableChanged(shiftAssignment, "employee");
                     }
                 }
                 // A SolutionCloner does not clone problem fact lists (such as employeeList)
                 // Shallow clone the employeeList so only workingSolution is affected, not bestSolution or guiSolution
                 nurseRoster.setEmployeeList(new ArrayList<Employee>(nurseRoster.getEmployeeList()));
-                // Next remove it the planning fact itself
+                // Remove it the planning fact itself
                 for (Iterator<Employee> it = nurseRoster.getEmployeeList().iterator(); it.hasNext(); ) {
                     Employee workingEmployee = it.next();
                     if (ObjectUtils.equals(workingEmployee, employee)) {
@@ -276,7 +273,6 @@ public class NurseRosteringPanel extends SolutionPanel {
                 }
             }
         });
-        updatePanel(solutionBusiness.getSolution());
     }
 
     public void moveShiftAssignmentToEmployee(ShiftAssignment shiftAssignment, Employee toEmployee) {

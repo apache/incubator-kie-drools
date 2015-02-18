@@ -51,7 +51,6 @@ public class MrMachinePanel extends JPanel {
     private List<MrProcessAssignment> processAssignmentList = new ArrayList<MrProcessAssignment>();
 
     private JLabel machineLabel;
-    private JButton deleteButton;
     private JPanel resourceListPanel = null;
     private Map<MrResource, JTextField> resourceFieldMap;
     private JLabel numberOfProcessesLabel;

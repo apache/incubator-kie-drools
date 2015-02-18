@@ -74,7 +74,7 @@ public class MrProcessAssignment extends AbstractPersistable {
     }
 
     public int getMachineMoveCost() {
-        return machine == null ? 0 : originalMachine.getMoveCostTo(machine);
+        return (machine == null || originalMachine == null) ? 0 : originalMachine.getMoveCostTo(machine);
     }
 
     public MrNeighborhood getNeighborhood() {
