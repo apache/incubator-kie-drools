@@ -45,6 +45,7 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
@@ -64,6 +65,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -2697,5 +2699,35 @@ public class MarshallingTest extends CommonTestMethodBase {
         Marshaller marshaller = MarshallerFactory.newMarshaller( knowledgeBase,
                                                                  new ObjectMarshallingStrategy[]{strategy} );
         return marshaller;
+    }
+
+    @Test
+    public void testMarshallWithCollects() throws Exception {
+        // BZ-1193600
+        String str =
+                "import java.util.Collection\n" +
+                "rule R1 when\n" +
+                "    Collection(empty==false) from collect( Integer() )\n" +
+                "    Collection() from collect( String() )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when then end\n";
+
+        KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
+        KieSession ksession = kbase.newKieSession();
+
+        try {
+            Marshaller marshaller = MarshallerFactory.newMarshaller(kbase);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            marshaller.marshall(baos, ksession);
+            marshaller = MarshallerFactory.newMarshaller(kbase);
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            baos.close();
+            ksession = marshaller.unmarshall(bais);
+            bais.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("unexpected exception :" + e.getMessage());
+        }
     }
 }

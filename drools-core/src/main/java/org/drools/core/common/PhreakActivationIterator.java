@@ -204,7 +204,10 @@ public class PhreakActivationIterator
         while (peer != null) {
             if ( peer.getLeftTupleSink().getType() == NodeTypeEnums.AccumulateNode ) {
                 AccumulateContext accctx = (AccumulateContext) peer.getObject();
-                collectFromLeftInput(accctx.getResultLeftTuple(), agendaItems, nodeSet, wm);
+                if (accctx != null) {
+                    // the accumulate context can be null if the lefttuple hasn't been evaluated yet
+                    collectFromLeftInput(accctx.getResultLeftTuple(), agendaItems, nodeSet, wm);
+                }
             } else if ( peer.getFirstChild() != null ) {
                 for (LeftTuple childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getLeftParentNext()) {
                     collectFromLeftInput(childLt, agendaItems, nodeSet, wm);
