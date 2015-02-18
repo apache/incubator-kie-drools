@@ -47,6 +47,8 @@ import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.H
 
 public class TravelingTournamentPanel extends SolutionPanel {
 
+    public static final String LOGO_PATH = "/org/optaplanner/examples/travelingtournament/swingui/travelingTournamentLogo.png";
+
     private final TimeTablePanel<Team, Day> teamsPanel;
     private TangoColorFactory tangoColorFactory;
 

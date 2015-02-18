@@ -42,7 +42,7 @@ public class TravelingTournamentApp extends CommonApp {
         super("Traveling tournament",
                 "Official competition name: TTP - Traveling tournament problem\n\n" +
                         "Assign sport matches to days. Minimize the distance travelled.",
-                null);
+                TravelingTournamentPanel.LOGO_PATH);
     }
 
     @Override
