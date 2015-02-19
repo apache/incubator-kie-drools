@@ -1120,4 +1120,28 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         manager.disposeRuntimeEngine(runtime);     
         manager.close();
     }
+    
+    @Test
+    public void testReusableSubprocessWithWaitForCompletionFalse() throws Exception {
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("reusable-subprocess/parentprocess.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("reusable-subprocess/subprocess.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);        
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);  
+        
+        ksession.startProcess("Project01360830.parentprocess");
+        
+        Thread.sleep(3000);
+        
+        manager.disposeRuntimeEngine(runtime);     
+        manager.close();
+    }
 }

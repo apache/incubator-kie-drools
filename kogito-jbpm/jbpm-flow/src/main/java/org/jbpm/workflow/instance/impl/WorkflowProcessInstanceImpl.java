@@ -56,6 +56,7 @@ import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 /**
@@ -316,9 +317,13 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
             
             RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get("RuntimeManager");
             if (getParentProcessInstanceId() > 0 && manager != null) {
-                RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(getParentProcessInstanceId()));
-                KnowledgeRuntime managedkruntime = (KnowledgeRuntime) runtime.getKieSession();
-                managedkruntime.signalEvent("processInstanceCompleted:" + getId(), this);
+            	try {
+	                RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(getParentProcessInstanceId()));
+	                KnowledgeRuntime managedkruntime = (KnowledgeRuntime) runtime.getKieSession();
+	                managedkruntime.signalEvent("processInstanceCompleted:" + getId(), this);
+            	} catch (SessionNotFoundException e) {
+            		// in case no session is found for parent process let's skip signal for process instance completion
+            	}
             } else {
                 processRuntime.getSignalManager().signalEvent("processInstanceCompleted:" + getId(), this);    
             }
