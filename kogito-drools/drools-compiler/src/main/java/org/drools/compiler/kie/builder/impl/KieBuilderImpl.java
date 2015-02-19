@@ -180,11 +180,7 @@ public class KieBuilderImpl
 
             compileJavaClasses(kProject.getClassLoader());
 
-            buildKieProject(kModule, results, kProject, new Runnable() {
-                public void run() {
-                    new KieMetaInfoBuilder(trgMfs, kModule).writeKieModuleMetaInfo();
-                }
-            });
+            buildKieProject(kModule, results, kProject, trgMfs);
         }
         return this;
     }
@@ -211,13 +207,13 @@ public class KieBuilderImpl
         buildKieProject(kModule, messages, new KieModuleKieProject( kModule ), null);
     }
 
-    private static void buildKieProject(InternalKieModule kModule, ResultsImpl messages, KieModuleKieProject kProject, Runnable metaInfoWriter) {
+    private static void buildKieProject(InternalKieModule kModule, ResultsImpl messages, KieModuleKieProject kProject, MemoryFileSystem trgMfs) {
         kProject.init();
         kProject.verify(messages);
 
         if ( messages.filterMessages( Level.ERROR ).isEmpty() ) {
-            if (metaInfoWriter != null) {
-                metaInfoWriter.run();
+            if (trgMfs != null) {
+                new KieMetaInfoBuilder(trgMfs, kModule).writeKieModuleMetaInfo();
             }
             KieRepository kieRepository = KieServices.Factory.get().getRepository();
             kieRepository.addKieModule(kModule);
