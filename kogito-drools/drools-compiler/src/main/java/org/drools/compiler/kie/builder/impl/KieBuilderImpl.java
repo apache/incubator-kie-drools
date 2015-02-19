@@ -180,9 +180,11 @@ public class KieBuilderImpl
 
             compileJavaClasses(kProject.getClassLoader());
 
-            if ( buildKieProject( kModule, results, kProject ) ) {
-                new KieMetaInfoBuilder(trgMfs, kModule).writeKieModuleMetaInfo();
-            }
+            buildKieProject(kModule, results, kProject, new Runnable() {
+                public void run() {
+                    new KieMetaInfoBuilder(trgMfs, kModule).writeKieModuleMetaInfo();
+                }
+            });
         }
         return this;
     }
@@ -204,24 +206,25 @@ public class KieBuilderImpl
         return ((ReleaseIdImpl) releaseId).getCompilationCachePathPrefix() + kbaseName.replace( '.', '/' ) + "/kbase.cache";
     }
 
-    public static boolean buildKieModule(InternalKieModule kModule,
+    public static void buildKieModule(InternalKieModule kModule,
                                          ResultsImpl messages ) {
-        return buildKieProject(kModule, messages, new KieModuleKieProject( kModule ));
+        buildKieProject(kModule, messages, new KieModuleKieProject( kModule ), null);
     }
 
-    private static boolean buildKieProject(InternalKieModule kModule, ResultsImpl messages, KieModuleKieProject kProject) {
+    private static void buildKieProject(InternalKieModule kModule, ResultsImpl messages, KieModuleKieProject kProject, Runnable metaInfoWriter) {
         kProject.init();
         kProject.verify(messages);
 
         if ( messages.filterMessages( Level.ERROR ).isEmpty() ) {
+            if (metaInfoWriter != null) {
+                metaInfoWriter.run();
+            }
             KieRepository kieRepository = KieServices.Factory.get().getRepository();
             kieRepository.addKieModule(kModule);
             for (InternalKieModule kDep : kModule.getKieDependencies().values()) {
                 kieRepository.addKieModule(kDep);
             }
-            return true;
         }
-        return false;
     }
 
     private void addKBasesFilesToTrg() {
