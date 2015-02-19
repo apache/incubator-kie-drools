@@ -38,7 +38,7 @@
             <title>Sample handshaking server response</title>
             <programlisting language="XML">&lt;response type="SUCCESS" msg="KIE Server info">
   &lt;kie-server-info>  
-    &lt;version>6.2.0.Final&lt;/version>
+    &lt;version>&project.version;&lt;/version>
   &lt;/kie-server-info>
 &lt;/response></programlisting>
           </example>
@@ -56,7 +56,7 @@
               This directory is named after the Tomcat version, so for example <code>apache-tomcat-7.0.55</code>.</para>
           </listitem>
           <listitem>
-            <para>Download <emphasis>kie-server-6.2.0.Final-webc.war</emphasis> and place it into <code>TOMCAT_HOME/webapps</code>.</para>
+            <para>Download <emphasis>kie-server-&project.version;-webc.war</emphasis> and place it into <code>TOMCAT_HOME/webapps</code>.</para>
           </listitem>
           <listitem>
             <para>Configure user(s) and role(s). Make sure that file <code>TOMCAT_HOME/conf/tomcat-users.xml</code>
@@ -96,7 +96,7 @@
             </para>
           </listitem>
           <listitem>
-            <para>Download <emphasis>kie-server-6.2.0.Final-ee7.war</emphasis> and place it into <code>WILDFLY_HOME/standalone/deployments</code>.
+            <para>Download <emphasis>kie-server-&project.version;-ee7.war</emphasis> and place it into <code>WILDFLY_HOME/standalone/deployments</code>.
             </para>
           </listitem>
           <listitem>
