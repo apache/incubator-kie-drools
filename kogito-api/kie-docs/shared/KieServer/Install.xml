@@ -106,7 +106,7 @@
             </para>
           </listitem>
           <listitem>
-            <para>Start the server by running <code>WILDFLY_HOME/bin/standalone.[sh|bat] -c standalone-full</code>.
+            <para>Start the server by running <code>WILDFLY_HOME/bin/standalone.[sh|bat] -c standalone-full.xml</code>.
               You can check out the standard output or WildFly logs in <code>WILDFLY_HOME/standalone/logs</code> to see if the application
               deployed successfully.
             </para>
