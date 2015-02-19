@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.domain.variable.descriptor;
 
-import java.beans.PropertyDescriptor;
-
+import org.optaplanner.core.impl.domain.common.PropertyAccessor;
+import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
@@ -28,8 +28,8 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 public abstract class ShadowVariableDescriptor extends VariableDescriptor {
 
     public ShadowVariableDescriptor(EntityDescriptor entityDescriptor,
-            PropertyDescriptor propertyDescriptor) {
-        super(entityDescriptor, propertyDescriptor);
+            PropertyAccessor variablePropertyAccessor) {
+        super(entityDescriptor, variablePropertyAccessor);
     }
 
     public abstract void processAnnotations(DescriptorPolicy descriptorPolicy);

@@ -16,12 +16,11 @@
 
 package org.optaplanner.core.impl.domain.common;
 
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * Wraps {@link PropertyDescriptor} for faster and easier access.
+ * Wraps {@link Method} for faster and easier access.
  */
 public final class DefaultReadMethodAccessor implements ReadMethodAccessor {
 

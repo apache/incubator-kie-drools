@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.impl.domain.variable.anchor;
 
-import java.beans.PropertyDescriptor;
-
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
+import org.optaplanner.core.impl.domain.common.PropertyAccessor;
+import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -35,8 +35,8 @@ public class AnchorShadowVariableDescriptor extends ShadowVariableDescriptor {
     protected VariableDescriptor sourceVariableDescriptor;
 
     public AnchorShadowVariableDescriptor(EntityDescriptor entityDescriptor,
-            PropertyDescriptor propertyDescriptor) {
-        super(entityDescriptor, propertyDescriptor);
+            PropertyAccessor variablePropertyAccessor) {
+        super(entityDescriptor, variablePropertyAccessor);
     }
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {

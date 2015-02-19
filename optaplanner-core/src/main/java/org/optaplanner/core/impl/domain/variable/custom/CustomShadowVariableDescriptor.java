@@ -16,13 +16,14 @@
 
 package org.optaplanner.core.impl.domain.variable.custom;
 
-import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.common.PropertyAccessor;
+import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -38,8 +39,8 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
     protected List<VariableDescriptor> sourceVariableDescriptorList;
 
     public CustomShadowVariableDescriptor(EntityDescriptor entityDescriptor,
-            PropertyDescriptor propertyDescriptor) {
-        super(entityDescriptor, propertyDescriptor);
+            PropertyAccessor variablePropertyAccessor) {
+        super(entityDescriptor, variablePropertyAccessor);
     }
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {

@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
-import java.beans.PropertyDescriptor;
-
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
+import org.optaplanner.core.impl.domain.common.PropertyAccessor;
+import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -33,8 +33,8 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
     protected VariableDescriptor sourceVariableDescriptor;
 
     public InverseRelationShadowVariableDescriptor(EntityDescriptor entityDescriptor,
-            PropertyDescriptor propertyDescriptor) {
-        super(entityDescriptor, propertyDescriptor);
+            PropertyAccessor variablePropertyAccessor) {
+        super(entityDescriptor, variablePropertyAccessor);
     }
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {

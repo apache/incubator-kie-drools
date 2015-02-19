@@ -39,6 +39,8 @@ import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.common.PropertyAccessor;
+import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorShadowVariableDescriptor;
@@ -183,24 +185,25 @@ public class EntityDescriptor {
                                 + " annotated property (" + propertyDescriptor.getName()
                                 + ") that should have a setter.");
                     }
+                    PropertyAccessor propertyAccessor = new ReflectionPropertyAccessor(propertyDescriptor);
                     if (variableAnnotationClass.equals(PlanningVariable.class)) {
                         GenuineVariableDescriptor variableDescriptor = new GenuineVariableDescriptor(
-                                this, propertyDescriptor);
+                                this, propertyAccessor);
                         declaredGenuineVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
                         variableDescriptor.processAnnotations(descriptorPolicy);
                     } else if (variableAnnotationClass.equals(InverseRelationShadowVariable.class)) {
                         ShadowVariableDescriptor variableDescriptor = new InverseRelationShadowVariableDescriptor(
-                                this, propertyDescriptor);
+                                this, propertyAccessor);
                         declaredShadowVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
                         variableDescriptor.processAnnotations(descriptorPolicy);
                     } else if (variableAnnotationClass.equals(AnchorShadowVariable.class)) {
                         ShadowVariableDescriptor variableDescriptor = new AnchorShadowVariableDescriptor(
-                                this, propertyDescriptor);
+                                this, propertyAccessor);
                         declaredShadowVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
                         variableDescriptor.processAnnotations(descriptorPolicy);
                     } else if (variableAnnotationClass.equals(CustomShadowVariable.class)) {
                         ShadowVariableDescriptor variableDescriptor = new CustomShadowVariableDescriptor(
-                                this, propertyDescriptor);
+                                this, propertyAccessor);
                         declaredShadowVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
                         variableDescriptor.processAnnotations(descriptorPolicy);
                     } else {

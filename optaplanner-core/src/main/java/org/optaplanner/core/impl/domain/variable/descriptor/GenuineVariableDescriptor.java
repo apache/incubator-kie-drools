@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.domain.variable.descriptor;
 
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +31,8 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.common.PropertyAccessor;
+import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.CompositeValueRangeDescriptor;
@@ -57,8 +58,8 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
     private SelectionSorter decreasingStrengthSorter;
 
     public GenuineVariableDescriptor(EntityDescriptor entityDescriptor,
-            PropertyDescriptor propertyDescriptor) {
-        super(entityDescriptor, propertyDescriptor);
+            PropertyAccessor variablePropertyAccessor) {
+        super(entityDescriptor, variablePropertyAccessor);
     }
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
