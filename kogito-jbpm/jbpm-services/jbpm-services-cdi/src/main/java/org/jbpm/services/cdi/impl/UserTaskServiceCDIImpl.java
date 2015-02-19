@@ -17,6 +17,7 @@
 package org.jbpm.services.cdi.impl;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jbpm.kie.services.impl.UserTaskServiceImpl;
@@ -26,6 +27,9 @@ import org.kie.internal.task.api.InternalTaskService;
 
 @ApplicationScoped
 public class UserTaskServiceCDIImpl extends UserTaskServiceImpl {
+	
+	@Inject
+	private Instance<InternalTaskService> injectedTaskService;
 	
 	@Inject
 	@Override
@@ -43,5 +47,11 @@ public class UserTaskServiceCDIImpl extends UserTaskServiceImpl {
 	@Override
 	public void setNonProcessScopedTaskService(InternalTaskService nonProcessScopedTaskService) {
 		super.setNonProcessScopedTaskService(nonProcessScopedTaskService);
+	}
+
+	@Override
+	protected InternalTaskService getInternalTaskService() {
+		
+		return injectedTaskService.get();
 	}
 }

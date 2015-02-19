@@ -79,14 +79,20 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	public void setNonProcessScopedTaskService(InternalTaskService nonProcessScopedTaskService) {
 		this.nonProcessScopedTaskService = nonProcessScopedTaskService;
 	}
+	
+	protected InternalTaskService getInternalTaskService() {
+		return this.nonProcessScopedTaskService;
+	}
 
 	
 	// helper methods
 	protected RuntimeManager getRuntimeManager(UserTaskInstanceDesc task) {		
 		if (task != null && task.getDeploymentId() != null) {			
 			return deploymentService.getRuntimeManager(task.getDeploymentId());
-		} else if (nonProcessScopedTaskService != null) {
-			return new FalbackRuntimeManager(nonProcessScopedTaskService);
+		}
+		InternalTaskService internalTaskService = getInternalTaskService();
+		if (internalTaskService != null) {
+			return new FalbackRuntimeManager(internalTaskService);
 		}
 		
 		return null;
@@ -103,8 +109,9 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 		
 		RuntimeManager manager = deploymentService.getRuntimeManager(deploymentId);
 		if (manager == null) {
-			if (nonProcessScopedTaskService != null) {
-				manager = new FalbackRuntimeManager(nonProcessScopedTaskService);
+			InternalTaskService internalTaskService = getInternalTaskService();
+			if (internalTaskService != null) {
+				manager = new FalbackRuntimeManager(internalTaskService);
 			} else {
 				logger.warn("Cannot find runtime manager for deployment {}", deploymentId);
 				return null;
