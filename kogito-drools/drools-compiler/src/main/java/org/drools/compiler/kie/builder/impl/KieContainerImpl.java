@@ -26,6 +26,7 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieLoggers;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
@@ -126,7 +127,9 @@ public class KieContainerImpl
         InternalKieModule newKM = (InternalKieModule) kr.getKieModule( newReleaseId );
         ChangeSetBuilder csb = new ChangeSetBuilder();
         KieJarChangeSet cs = csb.build( currentKM, newKM );
+
         List<String> modifiedClasses = getModifiedClasses(cs);
+        List<String> dslFiles = getUnchangedDslFiles(newKM, cs);
 
         ((KieModuleKieProject) kProject).updateToModule( newKM );
 
@@ -146,24 +149,8 @@ public class KieContainerImpl
                 KnowledgeBuilderImpl pkgbuilder = (KnowledgeBuilderImpl)kbuilder;
                 CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
-                boolean modifyingUsedClass = false;
-                for (String modifiedClass : modifiedClasses) {
-                    if ( pkgbuilder.isClassInUse( convertResourceToClassName(modifiedClass) ) ) {
-                        modifyingUsedClass = true;
-                        break;
-                    }
-                }
-
-                boolean shouldRebuild = modifyingUsedClass;
-                if (modifyingUsedClass) {
-                    // there are modified classes used by this kbase, so it has to be completely updated
-                    updateAllResources(currentKM, newKM, kieBaseModel, pkgbuilder, ckbuilder);
-                } else {
-                    // there are no modified classes used by this kbase, so update it incrementally
-                    shouldRebuild = updateResourcesIncrementally(currentKM, newKM, cs, modifiedClasses, kBaseEntry,
-                                                                 kieBaseModel, pkgbuilder, ckbuilder) > 0;
-                }
-
+                boolean shouldRebuild = applyResourceChanges(currentKM, newKM, cs, modifiedClasses,
+                                                             kBaseEntry, kieBaseModel, pkgbuilder, ckbuilder);
                 pkgbuilder.startPackageUpdate();
                 try {
                     // remove resources first
@@ -177,6 +164,12 @@ public class KieContainerImpl
                     }
 
                     if ( shouldRebuild ) {
+                        // readd unchanged dsl files to the kbuilder
+                        for (String dslFile : dslFiles) {
+                            if (isFileInKBase(newKM, kieBaseModel, dslFile)) {
+                                newKM.addResourceToCompiler(ckbuilder, dslFile);
+                            }
+                        }
                         rebuildAll(newReleaseId, results, newKM, modifiedClasses, kieBaseModel, pkgbuilder, ckbuilder);
                     }
                 } finally {
@@ -206,6 +199,37 @@ public class KieContainerImpl
         }
 
         return results;
+    }
+
+    private List<String> getUnchangedDslFiles(InternalKieModule newKM, KieJarChangeSet cs) {
+        List<String> dslFiles = new ArrayList<String>();
+        for (String file : newKM.getFileNames()) {
+            if (ResourceType.DSL.matchesExtension(file) && !cs.contains(file)) {
+                dslFiles.add(file);
+            }
+        }
+        return dslFiles;
+    }
+
+    private boolean applyResourceChanges(InternalKieModule currentKM, InternalKieModule newKM, KieJarChangeSet cs, List<String> modifiedClasses, Entry<String, KieBase> kBaseEntry, KieBaseModel kieBaseModel, KnowledgeBuilderImpl pkgbuilder, CompositeKnowledgeBuilder ckbuilder) {
+        boolean modifyingUsedClass = false;
+        for (String modifiedClass : modifiedClasses) {
+            if ( pkgbuilder.isClassInUse( convertResourceToClassName(modifiedClass) ) ) {
+                modifyingUsedClass = true;
+                break;
+            }
+        }
+
+        boolean shouldRebuild = modifyingUsedClass;
+        if (modifyingUsedClass) {
+            // there are modified classes used by this kbase, so it has to be completely updated
+            updateAllResources(currentKM, newKM, kieBaseModel, pkgbuilder, ckbuilder);
+        } else {
+            // there are no modified classes used by this kbase, so update it incrementally
+            shouldRebuild = updateResourcesIncrementally(currentKM, newKM, cs, modifiedClasses, kBaseEntry,
+                                                         kieBaseModel, pkgbuilder, ckbuilder) > 0;
+        }
+        return shouldRebuild;
     }
 
     private boolean isFileInKBase(InternalKieModule kieModule, KieBaseModel kieBase, String fileName) {
