@@ -116,7 +116,6 @@ public class JaxbTask implements InternalTask {
         }
         this.id = task.getId();
         this.priority = task.getPriority();
-        this.version = ((InternalTask) task).getVersion();
         this.subTasksStrategy = ((InternalTask) task).getSubTaskStrategy();
         this.peopleAssignments = new JaxbPeopleAssignments(task.getPeopleAssignments());
 
