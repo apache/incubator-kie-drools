@@ -23,8 +23,6 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskData;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.model.AccessType;
-import org.kie.internal.task.api.model.ContentData;
-import org.kie.internal.task.api.model.FaultData;
 import org.kie.internal.task.api.model.InternalTaskData;
 
 @XmlType(name = "task-data")
@@ -152,13 +150,21 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
         this.workItemId = taskData.getWorkItemId();
         this.processInstanceId = taskData.getProcessInstanceId();
         this.documentType = taskData.getDocumentType();
-        this.documentAccessType = ((InternalTaskData) taskData).getDocumentAccessType(); 
+        if( taskData instanceof JaxbTaskData ) { 
+            JaxbTaskData jaxbTaskData = (JaxbTaskData) taskData;
+            this.documentAccessType = jaxbTaskData.getDocumentAccessType(); 
+            this.outputAccessType = jaxbTaskData.getOutputAccessType();
+            this.faultAccessType = jaxbTaskData.getFaultAccessType();
+        } else if( taskData instanceof InternalTaskData ) { 
+            InternalTaskData internalTaskData = (InternalTaskData) taskData;
+            this.documentAccessType = internalTaskData.getDocumentAccessType(); 
+            this.outputAccessType = internalTaskData.getOutputAccessType();
+            this.faultAccessType = internalTaskData.getFaultAccessType();
+        }
         this.documentContentId = taskData.getDocumentContentId();
         this.outputType = taskData.getOutputType();
-        this.outputAccessType = ((InternalTaskData) taskData).getOutputAccessType();
         this.outputContentId = taskData.getOutputContentId();
         this.faultName = taskData.getFaultName();
-        this.faultAccessType = ((InternalTaskData) taskData).getFaultAccessType();
         this.faultType = taskData.getFaultType();
         this.faultContentId = taskData.getFaultContentId();
         this.parentId = taskData.getParentId();
