@@ -32,7 +32,6 @@ public class JaxbContent implements Content {
     @XmlSchemaType(name="base64Binary")
     private byte[] content = null;
     
-    @XmlElement(name="content-map")
     @XmlJavaTypeAdapter(StringKeyObjectValueMapXmlAdapter.class)
     private Map<String, Object> contentMap = null;
     
