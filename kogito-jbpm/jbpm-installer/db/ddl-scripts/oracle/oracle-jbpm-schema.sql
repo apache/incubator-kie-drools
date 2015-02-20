@@ -699,7 +699,6 @@
     create index IDX_NotBAs_Task ON Notification_BAs(task_id);
     create index IDX_NotRec_Entity ON Notification_Recipients(entity_id);
     create index IDX_NotRec_Task ON Notification_Recipients(task_id);
-    create index IDX_NotEmail_Header ON Notification_email_header(emailHeaders_id);
     create index IDX_NotEmail_Not ON Notification_email_header(Notification_id);
     create index IDX_PAsBAs_Entity ON PeopleAssignments_BAs(entity_id);
     create index IDX_PAsBAs_Task ON PeopleAssignments_BAs(task_id);
