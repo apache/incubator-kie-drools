@@ -176,7 +176,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         ksession.getWorkItemManager().completeWorkItem(1, null);
         // since process is completed now session should not be there any more
         try {
-            manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
+            manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId())).getKieSession();
             fail("Session for this (" + pi1.getId() + ") process instance is no more accessible");
         } catch (RuntimeException e) {
             
@@ -189,7 +189,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         ksession2.getWorkItemManager().completeWorkItem(2, null);
         // since process is completed now session should not be there any more
         try {
-            manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId()));
+            manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId())).getKieSession();
             fail("Session for this (" + pi2.getId() + ") process instance is no more accessible");
         } catch (RuntimeException e) {
             
@@ -245,7 +245,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         ksession.getWorkItemManager().completeWorkItem(1, null);
         // since process is completed now session should not be there any more
         try {
-            manager.getRuntimeEngine(CorrelationKeyContext.get(key));
+            manager.getRuntimeEngine(CorrelationKeyContext.get(key)).getKieSession();
             fail("Session for this (" + pi1.getId() + ") process instance is no more accessible");
         } catch (RuntimeException e) {
             
@@ -258,7 +258,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         ksession2.getWorkItemManager().completeWorkItem(2, null);
         // since process is completed now session should not be there any more
         try {
-            manager.getRuntimeEngine(CorrelationKeyContext.get(key2));
+            manager.getRuntimeEngine(CorrelationKeyContext.get(key2)).getKieSession();
             fail("Session for this (" + pi2.getId() + ") process instance is no more accessible");
         } catch (RuntimeException e) {
             
@@ -310,7 +310,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         ksession.getWorkItemManager().completeWorkItem(1, null);
         // since process is completed now session should not be there any more
         try {
-            manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
+            manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId())).getKieSession();
             fail("Session for this (" + pi1.getId() + ") process instance is no more accessible");
         } catch (RuntimeException e) {
             
@@ -819,7 +819,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         ksession.getWorkItemManager().completeWorkItem(1, null);
         // since process is completed now session should not be there any more
         try {
-            manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
+            manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId())).getKieSession();
             fail("Session for this (" + pi1.getId() + ") process instance is no more accessible");
         } catch (RuntimeException e) {
             
@@ -832,7 +832,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         ksession2.getWorkItemManager().completeWorkItem(2, null);
         // since process is completed now session should not be there any more
         try {
-            manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId()));
+            manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId())).getKieSession();
             fail("Session for this (" + pi2.getId() + ") process instance is no more accessible");
         } catch (RuntimeException e) {
             
@@ -1011,7 +1011,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         
         // since process is completed now session should not be there any more
         try {
-            manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
+            manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId())).getKieSession();
             fail("Session for this (" + pi1.getId() + ") process instance is no more accessible");
         } catch (RuntimeException e) {
             
@@ -1019,7 +1019,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         
         // since process is completed now session should not be there any more
         try {
-            manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId()));
+            manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId())).getKieSession();
             fail("Session for this (" + pi2.getId() + ") process instance is no more accessible");
         } catch (RuntimeException e) {
             

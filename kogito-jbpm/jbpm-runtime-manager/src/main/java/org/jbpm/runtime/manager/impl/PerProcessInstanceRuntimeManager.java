@@ -137,12 +137,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
 				return localRuntime;
 			}
     		// lazy initialization of ksession and task service
-	    	if (contextId != null && !(context instanceof EmptyContext)) {
-	    		Long found = mapper.findMapping(context, this.identifier);
-			    if (found == null) {
-			        throw new SessionNotFoundException("No session found for context " + context.getContextId());
-			    }
-	    	}
+	    	
 	    	runtime = new RuntimeEngineImpl(context, new PerProcessInstanceInitializer());
 	        ((RuntimeEngineImpl) runtime).setManager(this);
     	}
@@ -439,6 +434,14 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     		
     		
     		Object contextId = context.getContextId();
+    		
+    		if (contextId != null && !(context instanceof EmptyContext)) {
+	    		Long found = mapper.findMapping(context, manager.getIdentifier());
+			    if (found == null) {
+			    	removeLocalRuntime(engine);
+			        throw new SessionNotFoundException("No session found for context " + context.getContextId());
+			    }
+	    	}
     		
     		KieSession ksession = null;
     		Long ksessionId = null;
