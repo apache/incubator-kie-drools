@@ -18,6 +18,7 @@ package org.jbpm.runtime.manager.impl;
 import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
 import org.jbpm.runtime.manager.impl.tx.DestroySessionTransactionSynchronization;
 import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
+import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -27,6 +28,7 @@ import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
+import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.InternalTaskService;
 
 /**
@@ -121,7 +123,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
         try {
             if (!(taskServiceFactory instanceof LocalTaskServiceFactory)) {
                 // if it's CDI based (meaning single application scoped bean) we need to unregister context
-                removeRuntimeFromTaskService((InternalTaskService) taskServiceFactory.newTaskService());
+                removeRuntimeFromTaskService();
             }
         } catch(Exception e) {
            // do nothing 
@@ -148,6 +150,8 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
 
     @Override
     public void init() {
+    	TaskContentRegistry.get().addMarshallerContext(getIdentifier(), 
+    			new ContentMarshallerContext(environment.getEnvironment(), environment.getClassLoader()));
         configureRuntimeOnTaskService((InternalTaskService) taskServiceFactory.newTaskService(), null);
     }
     

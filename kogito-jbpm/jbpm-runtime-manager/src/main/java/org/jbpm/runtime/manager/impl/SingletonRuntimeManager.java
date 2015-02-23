@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -29,6 +30,7 @@ import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
+import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.InternalTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +101,8 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
             persistSessionId(location, identifier, singleton.getKieSession().getIdentifier());
         }
         ((RuntimeEngineImpl) singleton).setManager(this);
+        TaskContentRegistry.get().addMarshallerContext(getIdentifier(), 
+    			new ContentMarshallerContext(environment.getEnvironment(), environment.getClassLoader()));
         configureRuntimeOnTaskService(internalTaskService, singleton);
         registerItems(this.singleton);
         attachManager(this.singleton);
@@ -140,7 +144,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
         super.close();
         // dispose singleton session only when manager is closing
         try {
-        	removeRuntimeFromTaskService((InternalTaskService) this.singleton.getTaskService());
+        	removeRuntimeFromTaskService();
         } catch (UnsupportedOperationException e) {
         	logger.debug("Exception while closing task service, was it initialized? {}", e.getMessage());
         }

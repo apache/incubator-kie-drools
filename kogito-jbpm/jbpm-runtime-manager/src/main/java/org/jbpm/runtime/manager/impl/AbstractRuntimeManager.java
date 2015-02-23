@@ -30,6 +30,7 @@ import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.runtime.manager.api.SchedulerProvider;
 import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
+import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.jbpm.services.task.wih.ExternalTaskEventListener;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -208,9 +209,9 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected void configureRuntimeOnTaskService(InternalTaskService internalTaskService, RuntimeEngine engine) {
+    	
         if (internalTaskService != null) {
-            internalTaskService.addMarshallerContext(getIdentifier(), 
-                new ContentMarshallerContext(environment.getEnvironment(), environment.getClassLoader()));
+            
             ExternalTaskEventListener listener = new ExternalTaskEventListener();
             if (internalTaskService instanceof EventService) {
                 ((EventService)internalTaskService).registerTaskEventListener(listener);
@@ -230,10 +231,8 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         }
     }
     
-    protected void removeRuntimeFromTaskService(InternalTaskService internalTaskService) {
-        if (internalTaskService != null) {
-            internalTaskService.removeMarshallerContext(getIdentifier());
-        }
+    protected void removeRuntimeFromTaskService() {
+    	TaskContentRegistry.get().removeMarshallerContext(getIdentifier());
     }
     
 

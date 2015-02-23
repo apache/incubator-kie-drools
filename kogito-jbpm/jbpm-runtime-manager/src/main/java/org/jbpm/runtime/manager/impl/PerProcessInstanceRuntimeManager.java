@@ -34,6 +34,7 @@ import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
 import org.jbpm.runtime.manager.impl.mapper.JPAMapper;
 import org.jbpm.runtime.manager.impl.tx.DestroySessionTransactionSynchronization;
 import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
+import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
@@ -51,6 +52,7 @@ import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
+import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.InternalTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -196,7 +198,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         try {
         	if (!(taskServiceFactory instanceof LocalTaskServiceFactory)) {
                 // if it's CDI based (meaning single application scoped bean) we need to unregister context
-                removeRuntimeFromTaskService((InternalTaskService) taskServiceFactory.newTaskService());
+                removeRuntimeFromTaskService();
             }
         } catch(Exception e) {
            // do nothing 
@@ -318,6 +320,10 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     
     @Override
     public void init() {
+    	
+    	TaskContentRegistry.get().addMarshallerContext(getIdentifier(), 
+    			new ContentMarshallerContext(environment.getEnvironment(), environment.getClassLoader()));
+    	
         // need to init one session to bootstrap all case - such as start timers
         KieSession initialKsession = factory.newKieSession();
         initialKsession.execute(new DestroyKSessionCommand(initialKsession, this));
