@@ -22,7 +22,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.jbpm.kie.services.api.AttributesAware;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.MergeObjectCommand;
@@ -64,9 +66,13 @@ public class DeploymentStore {
 				new QueryNameCommand<List<DeploymentStoreEntry>>("getDeploymentUnitsByState", params));
         
         for (DeploymentStoreEntry entry : deployments) {
-        	DeploymentUnit unit = (DeploymentUnit) xstream.fromXML(entry.getDeploymentUnit());
-        	
-        	activeDeployments.add(unit);
+        	String sync = getEntryAttributes(entry.getAttributes()).get("sync");
+        	// add to the deployable list only sync flag is set to true or does not exists (default)
+        	if (sync == null || sync.equalsIgnoreCase("true")) {
+	        	DeploymentUnit unit = (DeploymentUnit) xstream.fromXML(entry.getDeploymentUnit());
+	        	
+	        	activeDeployments.add(unit);
+        	}
         }
         
         return activeDeployments;
@@ -82,9 +88,13 @@ public class DeploymentStore {
 				new QueryNameCommand<List<DeploymentStoreEntry>>("getDeploymentUnitsByState", params));
         
         for (DeploymentStoreEntry entry : deployments) {
-        	DeploymentUnit unit = (DeploymentUnit) xstream.fromXML(entry.getDeploymentUnit());
-        	
-        	activeDeployments.add(unit);
+        	String sync = getEntryAttributes(entry.getAttributes()).get("sync");
+        	// add to the deployable list only sync flag is set to true or does not exists (default)
+        	if (sync == null || sync.equalsIgnoreCase("true")) {
+	        	DeploymentUnit unit = (DeploymentUnit) xstream.fromXML(entry.getDeploymentUnit());
+	        	
+	        	activeDeployments.add(unit);
+        	}
         }
         
         return activeDeployments;
@@ -99,17 +109,22 @@ public class DeploymentStore {
 				new QueryNameCommand<List<DeploymentStoreEntry>>("getDeploymentUnitsByDate", params));
         
         for (DeploymentStoreEntry entry : deployments) {
-        	DeploymentUnit unit = (DeploymentUnit) xstream.fromXML(entry.getDeploymentUnit());
-        	if (entry.getState() == STATE_ENABLED) {
-        		enabled.add(unit);
-        	} else if (entry.getState() == STATE_DISABLED) {
-        		disabled.add(unit);
-        	} else if (entry.getState() == STATE_ACTIVATED) {
-        		activated.add(unit);
-        	} else if (entry.getState() == STATE_DEACTIVATED) {
-        		deactivated.add(unit);
-        	} else {
-        		logger.warn("Unknown state of deployment store entry {} for {} will be ignored", entry.getId(), entry);
+        	String sync = getEntryAttributes(entry.getAttributes()).get("sync");
+        	// add to the deployable list only sync flag is set to true or does not exists (default)
+        	if (sync == null || sync.equalsIgnoreCase("true")) {
+	        
+	        	DeploymentUnit unit = (DeploymentUnit) xstream.fromXML(entry.getDeploymentUnit());
+	        	if (entry.getState() == STATE_ENABLED) {
+	        		enabled.add(unit);
+	        	} else if (entry.getState() == STATE_DISABLED) {
+	        		disabled.add(unit);
+	        	} else if (entry.getState() == STATE_ACTIVATED) {
+	        		activated.add(unit);
+	        	} else if (entry.getState() == STATE_DEACTIVATED) {
+	        		deactivated.add(unit);
+	        	} else {
+	        		logger.warn("Unknown state of deployment store entry {} for {} will be ignored", entry.getId(), entry);
+	        	}
         	}
         }
         
@@ -133,6 +148,11 @@ public class DeploymentStore {
 		entry.setState(STATE_ENABLED);// 0 - disabled, 1 - enabled, 2 - activated, 3 - deactivated
 		entry.setUpdateDate(new Date());		
 		entry.setDeploymentUnit(unitContent);
+		
+		if (unit instanceof AttributesAware) {
+			String attribtues = buildEntryAttributes(((AttributesAware) unit).getAttributes());
+			entry.setAttributes(attribtues);
+		}
 		
 		commandService.execute(new PersistObjectCommand(entry));
 		
@@ -203,5 +223,33 @@ public class DeploymentStore {
         return null;
 	}
 
+	protected Map<String, String> getEntryAttributes(String attributes) {
+		logger.debug("Reading attributes string {}", attributes);
+		Map<String, String> attributeMap = new HashMap<String, String>();
+		if (attributes != null && !attributes.isEmpty()) {
+			// expected format: key=value;key=value;...
+			String[] pairs = attributes.split(";");
+			
+			for (String pair : pairs) {
+				String[] keyValue = pair.split("=");
+				
+				attributeMap.put(keyValue[0], keyValue[1]);
+			}
+		}
+		
+		return attributeMap;
+	}
+	
+	protected String buildEntryAttributes(Map<String, String> attribtues) {
+		StringBuilder builder = new StringBuilder();
+		if (attribtues != null && !attribtues.isEmpty()) {
+			for (Entry<String, String> entry : attribtues.entrySet()) {
+				builder.append(entry.getKey() + "=" + entry.getValue() + ";");
+			}
+			builder.deleteCharAt(builder.length()-1);
+		}
+		logger.debug("Built attributes as string {}", builder);
+		return builder.toString();
+	}
 
 }

@@ -28,6 +28,7 @@
     <dependencySet>
       <includes>
         <include>org.jbpm:jbpm-kie-services:test-jar</include>
+        <include>org.jbpm:jbpm-workitems:jar</include>
       </includes>
       <unpack>true</unpack>
       <scope>test</scope>

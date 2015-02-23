@@ -136,7 +136,7 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 				}
 			}
 		} catch (Throwable e) {
-			logger.error("Error while synchronizing deployments: {}", e.getMessage());
+			logger.error("Error while synchronizing deployments: {}", e.getMessage(), e);
 		}
 		// update last sync date
 		this.lastSync = new Date();

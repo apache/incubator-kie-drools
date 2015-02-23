@@ -17,14 +17,18 @@
 package org.jbpm.kie.services.impl;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.core.util.StringUtils;
+import org.jbpm.kie.services.api.AttributesAware;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.MergeMode;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
 
-public class KModuleDeploymentUnit implements DeploymentUnit, Serializable {
+public class KModuleDeploymentUnit implements DeploymentUnit, AttributesAware, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -40,6 +44,8 @@ public class KModuleDeploymentUnit implements DeploymentUnit, Serializable {
     private DeploymentDescriptor deploymentDescriptor;
     private boolean deployed = false;
     private boolean strategyUnset = true;
+    
+    private Map<String, String> attributes = new HashMap<String, String>();
     
     public KModuleDeploymentUnit(String groupId, String artifactId, String version) {
         this.groupId = groupId;
@@ -163,6 +169,21 @@ public class KModuleDeploymentUnit implements DeploymentUnit, Serializable {
 	
 	public void resetStrategy() {
 		this.strategyUnset = true;
+	}
+
+	@Override
+	public void addAttribute(String name, String value) {
+		this.attributes.put(name, value);
+	}
+
+	@Override
+	public String removeAttribute(String name) {
+		return this.attributes.remove(name);
+	}
+
+	@Override
+	public Map<String, String> getAttributes() {
+		return Collections.unmodifiableMap(this.attributes);
 	}
 
 }

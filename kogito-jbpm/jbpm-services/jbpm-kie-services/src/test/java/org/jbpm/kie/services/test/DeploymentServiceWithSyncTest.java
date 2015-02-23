@@ -215,5 +215,26 @@ public class DeploymentServiceWithSyncTest extends AbstractBaseTest {
     	assertEquals(1, deployed.size());
     	assertTrue(deployed.iterator().next().isActive());
     }
+    
+    @Test
+    public void testDeploymentOfProcessesBySyncWithDisabledAttribute() throws Exception {
+
+    	Collection<DeployedUnit> deployed = deploymentService.getDeployedUnits();
+    	assertNotNull(deployed);
+    	assertEquals(0, deployed.size());
+    	
+    	KModuleDeploymentUnit unit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+    	unit.addAttribute("sync", "false");
+    	Thread.sleep(3000);
+    	store.enableDeploymentUnit(unit);
+		units.add(unit);
+		
+		Thread.sleep(3000);
+		
+		deployed = deploymentService.getDeployedUnits();
+    	assertNotNull(deployed);
+    	assertEquals(0, deployed.size());
+       
+    }
    
 }
