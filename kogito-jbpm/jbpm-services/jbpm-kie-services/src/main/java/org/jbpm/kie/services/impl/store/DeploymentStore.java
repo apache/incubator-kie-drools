@@ -240,10 +240,10 @@ public class DeploymentStore {
 		return attributeMap;
 	}
 	
-	protected String buildEntryAttributes(Map<String, String> attribtues) {
+	protected String buildEntryAttributes(Map<String, String> attributes) {
 		StringBuilder builder = new StringBuilder();
-		if (attribtues != null && !attribtues.isEmpty()) {
-			for (Entry<String, String> entry : attribtues.entrySet()) {
+		if (attributes != null && !attributes.isEmpty()) {
+			for (Entry<String, String> entry : attributes.entrySet()) {
 				builder.append(entry.getKey() + "=" + entry.getValue() + ";");
 			}
 			builder.deleteCharAt(builder.length()-1);
