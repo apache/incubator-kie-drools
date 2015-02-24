@@ -13,8 +13,12 @@ import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.kie.api.runtime.KieContainer;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
 
@@ -89,6 +93,28 @@ public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
         testEntry( new KProjectTestClassImpl( "fol4",
                                               kContainer ),
                    "fol4" );
+
+    }
+
+    @Test
+    public void createModuleAndFindResources() throws IOException,
+            ClassNotFoundException,
+            InterruptedException {
+
+        createKieModule( "fol4", false );
+
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId("fol4", "art1", "1.0-SNAPSHOT");
+
+
+        KieContainer kieContainer = KieServices.Factory.get().newKieContainer(releaseId);
+        assertNotNull(kieContainer);
+
+        Enumeration<URL> foundResources = kieContainer.getClassLoader().getResources("/META-INF/beans.xml");
+        assertNotNull(foundResources);
+
+        List<URL> resourcesAsList = Collections.list(foundResources);
+        assertNotNull(resourcesAsList);
+        assertEquals(1, resourcesAsList.size());
 
     }
 
