@@ -7180,4 +7180,23 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.insert(new org.drools.compiler.Person("Elizabeth2", 88));
         assertEquals(1, ksession.fireAllRules());
     }
+
+    @Test
+    public void testMalformedAccumulate() {
+        // DROOLS-725
+        String str =
+                "rule R when\n" +
+                "    Number() from accumulate(not Number(),\n" +
+                "        init( double total = 0; ),\n" +
+                "        action( ),\n" +
+                "        reverse( ),\n" +
+                "        result( new Double( total ) )\n" +
+                "    )\n" +
+                "then end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        assertEquals(1, results.getMessages().size());
+    }
 }
