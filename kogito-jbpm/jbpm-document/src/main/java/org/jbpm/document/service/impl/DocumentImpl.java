@@ -115,13 +115,11 @@ public class DocumentImpl implements Document {
 
     @Override
     public String toString() {
-        return "Document{" +
-                "identifier='" + identifier + '\'' +
-                ", link='" + link + '\'' +
-                ", name='" + name + '\'' +
-                ", size=" + size +
-                ", lastModified=" + lastModified +
-                ", attributes=" + attributes +
-                '}';
+        String appUrl = "";
+        if(attributes != null && attributes.containsKey("app.url")){
+            appUrl = attributes.get("app.url");
+        }
+        return  name + "," + size + "," + lastModified +","+ appUrl + link ;
+                
     }
 }
