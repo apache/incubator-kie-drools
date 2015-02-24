@@ -1673,7 +1673,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         // BZ-1073880
         String str = "package org.simple \n" +
                      "global java.util.List list \n" +
-                     "rule xxx @Eager(true)\n" +
+                     "rule xxx @Propagation(EAGER)\n" +
                      "  timer (int:30s 10s) "
                      + "when \n" +
                      "  $s: String()\n" +
