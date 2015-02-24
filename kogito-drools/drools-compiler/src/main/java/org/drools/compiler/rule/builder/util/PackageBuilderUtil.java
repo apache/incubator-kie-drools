@@ -1,8 +1,11 @@
 package org.drools.compiler.rule.builder.util;
 
+import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.EntryPointDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.WindowReferenceDescr;
+import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.rule.QueryElement;
 import org.drools.core.rule.RuleConditionElement;
 
@@ -16,14 +19,26 @@ public class PackageBuilderUtil {
      * @param source
      * @return
      */
-    public static boolean isReadLocalsFromTuple(final AccumulateDescr accumDescr,
+    public static boolean isReadLocalsFromTuple(final RuleBuildContext context,
+                                                final AccumulateDescr accumDescr,
                                                 final RuleConditionElement source) {
-        final boolean readLocalsFromTuple = accumDescr.isMultiPattern() || 
-                ( accumDescr.getInputPattern().getSource() != null && 
-                  !( accumDescr.getInputPattern().getSource() instanceof WindowReferenceDescr ) &&
-                  !( accumDescr.getInputPattern().getSource() instanceof EntryPointDescr ) ) ||
+        if (accumDescr.isMultiPattern()) {
+            return true;
+        }
+
+        PatternDescr inputPattern = accumDescr.getInputPattern();
+        if (inputPattern == null) {
+            context.addError(new DescrBuildError(context.getParentDescr(),
+                                                 accumDescr,
+                                                 null,
+                                                 "Invalid accumulate pattern in rule '" + context.getRule().getName() + "'."));
+            return true;
+        }
+
+        return ( inputPattern.getSource() != null &&
+                  !( inputPattern.getSource() instanceof WindowReferenceDescr ) &&
+                  !( inputPattern.getSource() instanceof EntryPointDescr ) ) ||
                   source instanceof QueryElement ||
                   ( source.getNestedElements().size() == 1 && source.getNestedElements().get( 0 ) instanceof QueryElement );
-        return readLocalsFromTuple;
     }
 }

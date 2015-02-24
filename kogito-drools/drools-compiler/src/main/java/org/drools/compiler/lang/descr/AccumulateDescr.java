@@ -184,7 +184,8 @@ public class AccumulateDescr extends PatternSourceDescr
             if( this.input instanceof PatternDescr ) {
                 return (PatternDescr) this.input;
             } else {
-                return (PatternDescr) ((AndDescr)this.input).getDescrs().get( 0 );
+                BaseDescr firstDescr = ((AndDescr)this.input).getDescrs().get( 0 );
+                return firstDescr instanceof PatternDescr ? (PatternDescr) firstDescr : null;
             }
         }
         return null;

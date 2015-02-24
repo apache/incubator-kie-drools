@@ -92,7 +92,7 @@ public class JavaAccumulateBuilder
             return null;
         }
 
-        final boolean readLocalsFromTuple = PackageBuilderUtil.isReadLocalsFromTuple(accumDescr, source);
+        final boolean readLocalsFromTuple = PackageBuilderUtil.isReadLocalsFromTuple(context, accumDescr, source);
         
         Map<String, Declaration> declsInScope = context.getDeclarationResolver().getDeclarations( context.getRule() );
         Map<String, Class< ? >> declCls = DeclarationScopeResolver.getDeclarationClasses( declsInScope );

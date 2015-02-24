@@ -106,7 +106,7 @@ public class MVELAccumulateBuilder
 
             Accumulator[] accumulators = null;
 
-            final boolean readLocalsFromTuple = PackageBuilderUtil.isReadLocalsFromTuple(accumDescr, source);
+            final boolean readLocalsFromTuple = PackageBuilderUtil.isReadLocalsFromTuple(context, accumDescr, source);
 
             if ( accumDescr.isExternalFunction() ) {
                 // uses accumulate functions
