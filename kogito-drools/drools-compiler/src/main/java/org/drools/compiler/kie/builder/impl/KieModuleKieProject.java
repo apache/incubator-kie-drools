@@ -1,21 +1,15 @@
 package org.drools.compiler.kie.builder.impl;
 
 import org.drools.core.common.ProjectClassLoader;
-import org.drools.core.common.ResourceProvider;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
-import org.kie.api.io.Resource;
 import org.kie.internal.utils.ClassLoaderResolver;
 import org.kie.internal.utils.NoDepsClassLoaderResolver;
 import org.kie.internal.utils.ServiceRegistryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +51,7 @@ public class KieModuleKieProject extends AbstractKieProject {
             }
             parent = resolver.getClassLoader( kieModule );
         }
-        this.cl = createProjectClassLoader( parent, createKieModuleResourceProvider(kieModule) );
+        this.cl = createProjectClassLoader( parent, kieModule.createResourceProvider() );
     }
 
     public void init() {
@@ -110,7 +104,7 @@ public class KieModuleKieProject extends AbstractKieProject {
     }
 
     public ClassLoader getClonedClassLoader() {
-        ProjectClassLoader clonedCL = createProjectClassLoader( cl.getParent(), createKieModuleResourceProvider(kieModule) );
+        ProjectClassLoader clonedCL = createProjectClassLoader( cl.getParent(), kieModule.createResourceProvider() );
         initClassLoader( clonedCL );
         return clonedCL;
     }
@@ -158,48 +152,5 @@ public class KieModuleKieProject extends AbstractKieProject {
     @Override
     public synchronized KieSessionModel getKieSessionModel(String kSessionName) {
         return super.getKieSessionModel(kSessionName);
-    }
-
-    private KieModuleResourceProvider createKieModuleResourceProvider(InternalKieModule kieModule) {
-        try {
-            URL url = kieModule.getFile().toURI().toURL();
-            return new KieModuleResourceProvider(kieModule, url);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private static class KieModuleResourceProvider implements ResourceProvider {
-
-        private final InternalKieModule kieModule;
-        private final URL kieModuleUrl;
-
-        private KieModuleResourceProvider(InternalKieModule kieModule, URL kieModuleUrl) {
-            this.kieModule = kieModule;
-            this.kieModuleUrl = kieModuleUrl;
-        }
-
-        @Override
-        public InputStream getResourceAsStream(String name) throws IOException {
-            Resource resource = kieModule.getResource(name);
-            return resource != null ? resource.getInputStream() : null;
-        }
-
-        @Override
-        public URL getResource(String name) {
-            return kieModule.hasResource(name) ? createURLForResource(name) : null;
-        }
-
-        private URL createURLForResource(String name) {
-            try {
-                if (kieModule instanceof ZipKieModule) {
-                    return new URL("jar", "", kieModuleUrl + "!/" + name);
-                } else {
-                    return new URL(kieModuleUrl, name);
-                }
-            } catch (MalformedURLException e) {
-                return null;
-            }
-        }
     }
 }

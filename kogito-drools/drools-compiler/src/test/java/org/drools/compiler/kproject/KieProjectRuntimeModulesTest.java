@@ -1,20 +1,29 @@
 package org.drools.compiler.kproject;
 
+import org.drools.compiler.kie.builder.impl.FileKieModule;
+import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
+import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
-import org.drools.compiler.kie.builder.impl.FileKieModule;
-import org.drools.compiler.kie.builder.impl.KieContainerImpl;
-import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
-import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.kie.api.runtime.KieContainer;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
 
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
 
@@ -92,4 +101,29 @@ public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
 
     }
 
+    @Test
+    public void createModuleAndFindResources() throws IOException,
+                                                      ClassNotFoundException,
+                                                      InterruptedException {
+        createKieModule( "fol4", false );
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId("fol4", "art1", "1.0-SNAPSHOT");
+
+        KieContainer kieContainer = KieServices.Factory.get().newKieContainer(releaseId);
+        assertNotNull(kieContainer);
+
+        InputStream is = kieContainer.getClassLoader().getResourceAsStream("/META-INF/beans.xml");
+        assertNotNull(is);
+        byte[] bytesFromStream = readBytesFromInputStream(is);
+
+        Enumeration<URL> foundResources = kieContainer.getClassLoader().getResources("/META-INF/beans.xml");
+        assertNotNull(foundResources);
+
+        List<URL> resourcesAsList = Collections.list(foundResources);
+        assertNotNull(resourcesAsList);
+        assertEquals(1, resourcesAsList.size());
+
+        URL resourceUrl = resourcesAsList.get(0);
+        byte[] bytesFromURL = readBytesFromInputStream(resourceUrl.openStream());
+        assertTrue(Arrays.equals(bytesFromStream, bytesFromURL));
+    }
 }

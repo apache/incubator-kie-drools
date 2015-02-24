@@ -1,5 +1,15 @@
 package org.drools.compiler.compiler.io.memory;
 
+import org.drools.compiler.commons.jci.readers.ResourceReader;
+import org.drools.compiler.commons.jci.stores.ResourceStore;
+import org.drools.compiler.compiler.io.File;
+import org.drools.compiler.compiler.io.FileSystem;
+import org.drools.compiler.compiler.io.Folder;
+import org.drools.compiler.compiler.io.Path;
+import org.drools.compiler.compiler.io.Resource;
+import org.drools.core.util.IoUtils;
+import org.drools.core.util.StringUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -21,16 +31,6 @@ import java.util.jar.JarInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
-
-import org.drools.compiler.commons.jci.readers.ResourceReader;
-import org.drools.compiler.commons.jci.stores.ResourceStore;
-import org.drools.compiler.compiler.io.File;
-import org.drools.compiler.compiler.io.FileSystem;
-import org.drools.compiler.compiler.io.Folder;
-import org.drools.compiler.compiler.io.Path;
-import org.drools.compiler.compiler.io.Resource;
-import org.drools.core.util.IoUtils;
-import org.drools.core.util.StringUtils;
 
 public class MemoryFileSystem
     implements
@@ -147,7 +147,7 @@ public class MemoryFileSystem
     }
 
     public boolean existsFile(String path) {
-        return fileContents.containsKey( path );
+        return fileContents.containsKey( MemoryFolder.trimLeadingAndTrailing( path ) );
     }
 
     public void createFolder(MemoryFolder folder) {                

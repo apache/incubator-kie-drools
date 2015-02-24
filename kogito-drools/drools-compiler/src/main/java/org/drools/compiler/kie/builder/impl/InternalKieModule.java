@@ -1,5 +1,6 @@
 package org.drools.compiler.kie.builder.impl;
 
+import org.drools.core.common.ResourceProvider;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
@@ -51,6 +52,8 @@ public interface InternalKieModule extends KieModule {
     Collection<String> getFileNames();  
     
     File getFile();
+
+    ResourceProvider createResourceProvider();
 
     Map<String, byte[]> getClassesMap(boolean includeTypeDeclarations);
 
