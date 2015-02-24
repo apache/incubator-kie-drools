@@ -115,7 +115,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         Object id = is.readObject();
 
         EntityManager em = getEntityManager();
-        return em.find(Class.forName(canonicalName), id);
+        return em.find(Class.forName(canonicalName, true, (classloader==null?this.getClass().getClassLoader():classloader)), id);
     }
     
     public Context createContext() {
