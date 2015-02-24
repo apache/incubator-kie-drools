@@ -7,7 +7,9 @@ import java.lang.annotation.Target;
 
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(value = ElementType.TYPE)
-public @interface Eager {
+public @interface Propagation {
 
-    boolean value() default true;
+    public enum Type { IMMEDIATE, EAGER, LAZY }
+
+    Type value();
 }

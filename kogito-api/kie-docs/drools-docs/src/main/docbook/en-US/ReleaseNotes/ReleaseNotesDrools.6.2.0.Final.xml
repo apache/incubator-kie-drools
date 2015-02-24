@@ -13,13 +13,14 @@
   <title>What is New and Noteworthy in Drools 6.2.0</title>
       
   <section>
-    <title>Data driven rule evaluation</title>
+    <title>Propagation modes</title>
 
     <para>The introduction of PHREAK as default algorithm for the Drools engine made the rules' evaluation
     lazy. This new Drools lazy behavior allowed a relevant performance boost but, in some very specific cases,
     breaks the semantic of a few Drools features.</para>
 
-    <para>In particular Drools allows a query to be executed in pull only (or passive) mode by
+    <para>More precisely in some circumstances it is necessary to propagate the insertion of new fact into th
+    session immediately. For instance Drools allows a query to be executed in pull only (or passive) mode by
     prepending a '?' symbol to its invocation as in the following example:</para>
 
     <example>
@@ -53,10 +54,33 @@ ksession.fireAllRules();</programlisting>
     <para>Unfortunately the lazy nature of PHREAK doesn't allow the engine to make any
     distinction regarding the insertion sequence of the two facts, so the rule will fire
     in both cases. In circumstances like this it is necessary to evaluate the rule eagerly as
-    done by the old RETEOO-based engine. To cover this use case, and in all other situations where
-    an eager rule evaluation is required, it is now possible to declaratively make the evaluation
-    of a specific rule data-driven (or eager as in RETEOO) by annotating it with
-    <emphasis role="bold">@DataDriven</emphasis>. This means that the following drl:</para>
+    done by the old RETEOO-based engine.</para>
+
+    <para>In other cases it is required that the propagation is eager, meaning that it is not immedate,
+    but anyway has to happen before the engine/agenda starts scheduled evaluations. For instance this
+    is necessary when a rule has the no-loop or the lock-on-active attribute and in fact when this
+    happens this propagation mode is automatically enforced by the engine.</para>
+
+    <para>To cover these use cases, and in all other situations where an immediate or eager rule
+    evaluation is required, it is possible to declaratively specify so by annotating the rule
+    itself with <emphasis role="bold">@Propagation(Propagation.Type)</emphasis>, where
+    Propagation.Type is an enumeration with 3 possible values:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><emphasis role="bold">IMMEDIATE</emphasis> means that the propagation is performed immediately.</para>
+      </listitem>
+      <listitem>
+        <para><emphasis role="bold">EAGER</emphasis> means that the propagation is performed lazily but
+        eagerly evaluated before scheduled evaluations.</para>
+      </listitem>
+      <listitem>
+        <para><emphasis role="bold">LAZY</emphasis> means that the propagation is totally lazy and this is
+        default PHREAK behaviour</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>This means that the following drl:</para>
 
     <example>
       <title>A data-driven rule using a passive query</title>
@@ -64,7 +88,7 @@ ksession.fireAllRules();</programlisting>
       <programlisting language="java">query Q (Integer i)
     String( this == i.toString() )
 end
-rule R @DataDriven when
+rule R @Propagation(IMMEDIATE) when
     $i : Integer()
     ?Q( $i; )
 then
