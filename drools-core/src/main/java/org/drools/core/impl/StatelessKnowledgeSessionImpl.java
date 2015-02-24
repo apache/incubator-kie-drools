@@ -16,15 +16,6 @@
 
 package org.drools.core.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.command.impl.ContextImpl;
@@ -68,6 +59,15 @@ import org.kie.internal.agent.KnowledgeAgent;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Set;
+
 public class StatelessKnowledgeSessionImpl extends AbstractRuntime
         implements
         StatelessKnowledgeSession,
@@ -87,12 +87,9 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
     private AgendaEventSupport        agendaEventSupport        = new AgendaEventSupport();
     private WorkingMemoryEventSupport workingMemoryEventSupport = new WorkingMemoryEventSupport();
     private ProcessEventSupport       processEventSupport       = new ProcessEventSupport();
-    private boolean initialized;
 
     private KieSessionConfiguration conf;
     private Environment             environment;
-
-    private transient StatefulKnowledgeSession ksession;
 
     private WorkingMemoryFactory wmFactory;
 
@@ -122,9 +119,6 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public StatefulKnowledgeSession newWorkingMemory() {
-        if (ksession != null && ((StatefulKnowledgeSessionImpl)ksession).isAlive()) {
-            return ksession;
-        }
         if (this.kagent != null) {
             // if we have an agent always get the rulebase from there
             this.ruleBase = (InternalRuleBase) ((KnowledgeBaseImpl) this.kagent.getKnowledgeBase()).ruleBase;
@@ -136,16 +130,14 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
 
             // we don't pass the mapped listener wrappers to the session constructor anymore,
             // because they would be ignored anyway, since the wm already contains those listeners
-            ksession = new StatefulKnowledgeSessionImpl(wm,
-                                                        new KnowledgeBaseImpl(this.ruleBase));
+            StatefulKnowledgeSession ksession = new StatefulKnowledgeSessionImpl(wm,
+                                                                                 new KnowledgeBaseImpl(this.ruleBase));
 
             ((Globals) wm.getGlobalResolver()).setDelegate(this.sessionGlobals);
-            if (!initialized) {
-                // copy over the default generated listeners that are used for internal stuff once
-                registerSystemListeners(wm);
-                registerCustomListeners();
-                initialized = true;
-            }
+
+            // copy over the default generated listeners that are used for internal stuff once
+            registerSystemListeners(wm);
+            registerCustomListeners();
 
             wm.setAgendaEventSupport( this.agendaEventSupport );
             wm.setWorkingMemoryEventSupport( this.workingMemoryEventSupport );
@@ -313,8 +305,8 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
 
     public void setGlobal(String identifier,
                           Object value) {
-        this.sessionGlobals.setGlobal( identifier,
-                                       value );
+        this.sessionGlobals.setGlobal(identifier,
+                                      value );
     }
 
     public Globals getGlobals() {
@@ -339,11 +331,11 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
 
     @Override
     public KieBase getKieBase() {
-        return newWorkingMemory().getKieBase();
+        return new KnowledgeBaseImpl(this.ruleBase);
     }
 
     public <T> T execute(Command<T> command) {
-        newWorkingMemory();
+        StatefulKnowledgeSession ksession = newWorkingMemory();
 
         FixedKnowledgeCommandContext context = new FixedKnowledgeCommandContext( new ContextImpl( "ksession",
                                                                                                   null ),
@@ -379,29 +371,29 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
             }
         } finally {
             ((StatefulKnowledgeSessionImpl) ksession).session.endBatchExecution();
-            dispose();
+            dispose(ksession);
         }
     }
 
     public void execute(Object object) {
-        newWorkingMemory();
+        StatefulKnowledgeSession ksession = newWorkingMemory();
         try {
             ksession.insert( object );
             ksession.fireAllRules();
         } finally {
-            dispose();
+            dispose(ksession);
         }
     }
 
     public void execute(Iterable objects) {
-        newWorkingMemory();
+        StatefulKnowledgeSession ksession = newWorkingMemory();
         try {
             for ( Object object : objects ) {
                 ksession.insert( object );
             }
             ksession.fireAllRules();
         } finally {
-            dispose();
+            dispose(ksession);
         }
     }
 
@@ -409,7 +401,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
         return environment;
     }
 
-    protected void dispose( ) {
+    protected void dispose( StatefulKnowledgeSession ksession ) {
         AbstractWorkingMemory wm = (AbstractWorkingMemory) ((StatefulKnowledgeSessionImpl) ksession).getInternalWorkingMemory();
 
         for ( org.drools.core.event.AgendaEventListener listener : wm.getAgendaEventSupport().getEventListeners() ) {
@@ -424,9 +416,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
                 this.processEventSupport.removeEventListener( listener );
             }
         }
-        initialized = false;
         ksession.dispose();
-        ksession = null;
     }
 
     private static class AgendaEventListenerPlaceholder implements AgendaEventListener {
