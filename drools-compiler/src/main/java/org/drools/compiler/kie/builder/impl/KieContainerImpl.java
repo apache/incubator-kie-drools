@@ -266,10 +266,13 @@ public class KieContainerImpl
 
             KieBase kBase = kBaseEntry.getValue();
             for ( ResourceChangeSet.RuleLoadOrder loadOrder : rcs.getLoadOrder() ) {
-                Rule rule = (Rule) ((KnowledgePackageImp)kBase.getKiePackage( loadOrder.getPkgName() )).getRule( loadOrder.getRuleName() );
-                if ( rule != null ) {
-                    // rule can be null, if it didn't exist before
-                    rule.setLoadOrder( loadOrder.getLoadOrder() );
+                KnowledgePackageImp pkg = ((KnowledgePackageImp)kBase.getKiePackage( loadOrder.getPkgName() ));
+                if (pkg != null) {
+                    Rule rule = (Rule) pkg.getRule(loadOrder.getRuleName());
+                    if (rule != null) {
+                        // rule can be null, if it didn't exist before
+                        rule.setLoadOrder(loadOrder.getLoadOrder());
+                    }
                 }
             }
         }
