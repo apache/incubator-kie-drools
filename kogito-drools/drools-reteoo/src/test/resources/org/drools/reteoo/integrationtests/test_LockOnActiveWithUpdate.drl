@@ -5,7 +5,7 @@ import org.drools.compiler.Cheese;
 
 global java.util.List list;
 
-rule "test lock with modify" @Eager(true)
+rule "test lock with modify" @Propagation(EAGER)
     agenda-group "group1"
     lock-on-active true
     when
@@ -15,7 +15,7 @@ rule "test lock with modify" @Eager(true)
         list.add( $person );
 end  
 
-rule "test group2" @Eager(true)
+rule "test group2" @Propagation(EAGER)
     agenda-group "group2"
     lock-on-active true
     when

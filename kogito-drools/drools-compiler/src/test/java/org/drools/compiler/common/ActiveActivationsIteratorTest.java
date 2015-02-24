@@ -1,23 +1,21 @@
 package org.drools.compiler.common;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.common.ActiveActivationIterator;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.util.Iterator;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.rule.Match;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
 
@@ -25,38 +23,38 @@ public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
     public void testActiveActivationsIteratorTest() {
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule0 @Eager(true) agenda-group 'a1' salience ( Integer.parseInt('1'+$s) ) when\n" +
+                     "rule rule0 @Propagation(EAGER) agenda-group 'a1' salience ( Integer.parseInt('1'+$s) ) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule1 @Eager(true) agenda-group 'a2' salience ( Integer.parseInt('1'+$s)) when\n" +
+                     "rule rule1 @Propagation(EAGER) agenda-group 'a2' salience ( Integer.parseInt('1'+$s)) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) <= 2 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule2 @Eager(true) agenda-group 'a3' salience ( Integer.parseInt('1'+$s)) when\n" +
+                     "rule rule2 @Propagation(EAGER) agenda-group 'a3' salience ( Integer.parseInt('1'+$s)) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) <= 2 ) \n" +
                      "then\n" +
                      "    kcontext.getKieRuntime().halt();\n" +
                      "end\n" +
-                     "rule rule3 @Eager(true) ruleflow-group 'r1' salience ( Integer.parseInt('1'+$s)) when\n" +
+                     "rule rule3 @Propagation(EAGER) ruleflow-group 'r1' salience ( Integer.parseInt('1'+$s)) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) > 2 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule4 @Eager(true) ruleflow-group 'r1' salience ( Integer.parseInt('1'+$s) ) when\n" +
+                     "rule rule4 @Propagation(EAGER) ruleflow-group 'r1' salience ( Integer.parseInt('1'+$s) ) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) > 2 ) \n" +
                      "    eval( Integer.parseInt( $s ) > 3 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule6 @Eager(true) when\n" +
+                     "rule rule6 @Propagation(EAGER) when\n" +
                      "     java.util.Map()\n" +
                      "then\n" +
                      "end\n" +
                      "\n" +
-                     "rule rule7 @Eager(true) when\n" +
+                     "rule rule7 @Propagation(EAGER) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "then\n" +
                      "end\n" +

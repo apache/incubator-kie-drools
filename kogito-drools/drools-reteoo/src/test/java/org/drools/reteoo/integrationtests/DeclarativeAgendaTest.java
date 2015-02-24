@@ -1,25 +1,25 @@
 package org.drools.reteoo.integrationtests;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.conf.DeclarativeAgendaOption;
-import org.kie.api.event.rule.MatchCancelledEvent;
-import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.AgendaGroupPoppedEvent;
 import org.kie.api.event.rule.AgendaGroupPushedEvent;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
@@ -405,7 +405,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
 
-        str += "rule rule0 @eager(true) @department(sales) \n";
+        str += "rule rule0 @Propagation(EAGER) @department(sales) \n";
         str += "when \n";
         str += "     $s : String( this == 'go0' ) \n";
         str += "then \n";

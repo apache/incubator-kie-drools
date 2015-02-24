@@ -77,12 +77,12 @@ public class StrictAnnotationTest extends CommonTestMethodBase {
     public void testEagerEvaluation() throws Exception {
         String str =
                 "package org.simple \n" +
-                "@Eager(true) rule xxx \n" +
+                "@Propagation(EAGER) rule xxx \n" +
                 "when \n" +
                 "  $s : String()\n" +
                 "then \n" +
                 "end  \n" +
-                "@Eager(true) rule yyy \n" +
+                "@Propagation(EAGER) rule yyy \n" +
                 "when \n" +
                 "  $s : String()\n" +
                 "then \n" +
