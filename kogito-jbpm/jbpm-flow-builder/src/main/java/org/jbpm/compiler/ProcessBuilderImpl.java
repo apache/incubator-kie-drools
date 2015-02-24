@@ -413,7 +413,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         	"rule \"RuleFlow-Split-" + process.getId() + "-" +
         		((org.jbpm.workflow.core.Node) connection.getFrom()).getUniqueId() + "-" + 
         		((org.jbpm.workflow.core.Node) connection.getTo()).getUniqueId() + "-" +
-        		connection.getToType() + "\"  @Eager(true) \n" +
+        		connection.getToType() + "\"  @Propagation(EAGER) \n" +
         	"      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
         	"    when \n" + 
         	"      " + constraint + "\n" + 
@@ -424,7 +424,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
     private String createMilestoneRule(Process process,
                                        MilestoneNode milestone) {
         return 
-        	"rule \"RuleFlow-Milestone-" + process.getId() + "-" + milestone.getUniqueId() + "\" @Eager(true) \n" +
+        	"rule \"RuleFlow-Milestone-" + process.getId() + "-" + milestone.getUniqueId() + "\" @Propagation(EAGER) \n" +
         	"      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
         	"    when \n" + 
         	"      " + milestone.getConstraint() + "\n" + 
@@ -439,7 +439,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
     	} else {
 	        return 
 	        	"rule \"RuleFlowStateNode-" + process.getId() + "-" + state.getUniqueId() + "-" + 
-	        		key.getNodeId() + "-" + key.getToType() + "\" @Eager(true) \n" +
+	        		key.getNodeId() + "-" + key.getToType() + "\" @Propagation(EAGER) \n" +
 	    		"      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
 	    		"    when \n" + 
 	    		"      " + state.getConstraints().get(key).getConstraint() + "\n" + 
@@ -457,7 +457,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         } else {
             return 
                 "rule \"RuleFlowStateEvent-" + process.getId() + "-" + event.getUniqueId() + "-" + 
-                    attachedTo + "\" @Eager(true) \n" +
+                    attachedTo + "\" @Propagation(EAGER) \n" +
                 "      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
                 "    when \n" + 
                 "      " + condition + "\n" + 
@@ -474,7 +474,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
             return "";
         } else {
             return 
-                "rule \"RuleFlowStateEventSubProcess-" + process.getId() + "-" + compositeNode.getUniqueId() + "\" @Eager(true) \n" +
+                "rule \"RuleFlowStateEventSubProcess-" + process.getId() + "-" + compositeNode.getUniqueId() + "\" @Propagation(EAGER) \n" +
                 "      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
                 "    when \n" + 
                 "      " + condition + "\n" + 
@@ -498,7 +498,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         }
         
         String result = 
-        	"rule \"RuleFlow-Start-" + process.getId() + "\" @Eager(true) \n" + 
+        	"rule \"RuleFlow-Start-" + process.getId() + "\" @Propagation(EAGER) \n" +
         	(trigger.getHeader() == null ? "" : "        " + trigger.getHeader() + " \n") + 
         	"    when\n" + 
         	"        " + trigger.getConstraint() + "\n" + 
