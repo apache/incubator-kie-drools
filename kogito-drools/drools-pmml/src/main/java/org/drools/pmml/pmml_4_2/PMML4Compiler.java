@@ -134,12 +134,12 @@ public class PMML4Compiler implements PMMLCompiler {
             "models/common/mining/miningFieldOutlierAsExtremeLow.drlt",
             "models/common/mining/miningFieldOutlierAsExtremeUpp.drlt",
 
-            "models/common/target/targetReshape.drlt",
-            "models/common/target/aliasedOutput.drlt",
-            "models/common/target/addOutputFeature.drlt",
-            "models/common/target/addRelOutputFeature.drlt",
-            "models/common/target/outputQuery.drlt",
-            "models/common/target/outputQueryPredicate.drlt"
+            "models/common/targets/targetReshape.drlt",
+            "models/common/targets/aliasedOutput.drlt",
+            "models/common/targets/addOutputFeature.drlt",
+            "models/common/targets/addRelOutputFeature.drlt",
+            "models/common/targets/outputQuery.drlt",
+            "models/common/targets/outputQueryPredicate.drlt"
     };
     
     protected static boolean neuralLoaded = false; 
