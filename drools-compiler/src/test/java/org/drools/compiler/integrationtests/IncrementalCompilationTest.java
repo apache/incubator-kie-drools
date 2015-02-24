@@ -2,6 +2,7 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -1236,5 +1237,80 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         // continue working with the session
         ksession.insert( new FooEvent( 1 ) );
         assertEquals( 2, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testKJarUpgradeWithDSL() throws Exception {
+        // DROOLS-718
+        String dsl = "[when][]There is a Message=Message()\n" +
+                      "[when][]-with message \"{factId}\"=message==\"{factId}\"\n" +
+                      "\n" +
+                      "[then][]Print \"{message}\"=System.out.println(\"{message}\");\n";
+
+        String drl2_1 = "package org.drools.compiler\n" +
+                        "rule \"bla\"\n" +
+                        "when\n" +
+                        "\tThere is a Message\t   \n" +
+                        "\t-with message \"Hi Universe\"\n" +
+                        "then\n" +
+                        "\tPrint \"Found a Message Hi Universe.\"\n" +
+                        "end\n";
+
+        String drl2_2 = "package org.drools.compiler\n" +
+                        "rule \"bla\"\n" +
+                        "when\n" +
+                        "\tThere is a Message\t   \n" +
+                        "\t-with message \"Hello World\"\n" +
+                        "then\n" +
+                        "\tPrint \"Found a Message Hello World.\"\n" +
+                        "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJarWithDSL(ks, releaseId1, dsl, drl2_1);
+
+        // Create a session and fire rules
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+        KieSession ksession = kc.newKieSession();
+        ksession.insert( new Message( "Hello World" ) );
+        assertEquals( 0, ksession.fireAllRules() );
+        ksession.dispose();
+
+        // Create a new jar for version 1.1.0
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        km = createAndDeployJarWithDSL(ks, releaseId2, dsl, drl2_2);
+
+        // try to update the container to version 1.1.0
+        kc.updateToVersion( releaseId2 );
+
+        // create and use a new session
+        ksession = kc.newKieSession();
+        ksession.insert( new Message( "Hello World" ) );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    public static KieModule createAndDeployJarWithDSL( KieServices ks, ReleaseId releaseId, String... drls ) {
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.generateAndWritePomXML(releaseId);
+
+        for (int i = 0; i < drls.length; i++) {
+            String extension = i == 0 ? "dsl" : "rdslr";
+            if (drls[i] != null) {
+                kfs.write("src/main/resources/r" + i + "." + extension, drls[i]);
+            }
+        }
+        KieBuilder kb = ks.newKieBuilder(kfs).buildAll();
+        if( kb.getResults().hasMessages( org.kie.api.builder.Message.Level.ERROR ) ) {
+            for( org.kie.api.builder.Message result : kb.getResults().getMessages() ) {
+                System.out.println(result.getText());
+            }
+            return null;
+        }
+        InternalKieModule kieModule = (InternalKieModule) ks.getRepository()
+                                                            .getKieModule(releaseId);
+        byte[] jar = kieModule.getBytes();
+        return deployJar( ks, jar );
     }
 }

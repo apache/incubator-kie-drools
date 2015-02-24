@@ -2380,6 +2380,10 @@ public class RuleModelDRLPersistenceImpl
                                              final boolean isJavaDialect,
                                              final Map<String, String> boundParams,
                                              final PackageDataModelOracle dmo ) {
+        if ( pattern.getIdentifier() != null ) {
+            boundParams.put( pattern.getIdentifier(),
+                             pattern.getObjectType() );
+        }
         if ( patternSource instanceof AccumulateDescr ) {
             AccumulateDescr accumulate = (AccumulateDescr) patternSource;
             FromAccumulateCompositeFactPattern fac = new FromAccumulateCompositeFactPattern();
@@ -2395,8 +2399,7 @@ public class RuleModelDRLPersistenceImpl
 
             FactPattern factPattern = new FactPattern( pattern.getObjectType() );
             factPattern.setBoundName( pattern.getIdentifier() );
-            boundParams.put( factPattern.getBoundName(),
-                             factPattern.getFactType() );
+
             parseConstraint( m,
                              factPattern,
                              pattern.getConstraint(),
@@ -2918,20 +2921,25 @@ public class RuleModelDRLPersistenceImpl
         }
     }
 
-    private ActionCallMethod getActionCallMethod( final RuleModel model,
-                                                  final boolean isJavaDialect,
-                                                  final Map<String, String> boundParams,
-                                                  final PackageDataModelOracle dmo,
-                                                  final String line,
-                                                  final String variable,
-                                                  final String methodName ) {
-
-        return new ActionCallMethodBuilder( model,
-                                            dmo,
-                                            isJavaDialect,
-                                            boundParams ).get( variable,
-                                                               methodName,
-                                                               unwrapParenthesis( line ).split( "," ) );
+    private IAction getActionCallMethod( final RuleModel model,
+                                         final boolean isJavaDialect,
+                                         final Map<String, String> boundParams,
+                                         final PackageDataModelOracle dmo,
+                                         final String line,
+                                         final String variable,
+                                         final String methodName ) {
+        final ActionCallMethodBuilder builder = new ActionCallMethodBuilder( model,
+                                                                             dmo,
+                                                                             isJavaDialect,
+                                                                             boundParams );
+        if ( !builder.supports( line ) ) {
+            final FreeFormLine ffl = new FreeFormLine();
+            ffl.setText( line );
+            return ffl;
+        }
+        return builder.get( variable,
+                            methodName,
+                            unwrapParenthesis( line ).split( "," ) );
     }
 
     private boolean isInsertedFact( final String[] lines,
@@ -3891,8 +3899,10 @@ public class RuleModelDRLPersistenceImpl
                                                                  new ExpressionFormLine() ) );
                         con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE );
                         value = "";
-                    } else {
+                    } else if ( boundParams.containsKey( value ) ) {
                         con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
+                    } else {
+                        con.setConstraintValueType( SingleFieldConstraint.TYPE_RET_VALUE );
                     }
                 } else {
                     if ( value.endsWith( "I" ) ) {

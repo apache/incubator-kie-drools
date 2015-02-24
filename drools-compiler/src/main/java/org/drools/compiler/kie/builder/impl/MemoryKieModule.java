@@ -1,14 +1,21 @@
 package org.drools.compiler.kie.builder.impl;
 
-import java.io.File;
-import java.util.Collection;
-
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.common.ResourceProvider;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
+import java.util.Collection;
 
 public class MemoryKieModule extends AbstractKieModule
         implements
@@ -82,5 +89,69 @@ public class MemoryKieModule extends AbstractKieModule
             clone.cacheKnowledgeBuilderForKieBase(kBaseModel.getName(), getKnowledgeBuilderForKieBase( kBaseModel.getName() ));
         }
         return clone;
+    }
+
+    @Override
+    public ResourceProvider createResourceProvider() {
+        return new MemoryKieModuleResourceProvider(mfs);
+    }
+
+    private static class MemoryKieModuleResourceProvider implements ResourceProvider {
+
+        private final MemoryFileSystem mfs;
+
+        private MemoryKieModuleResourceProvider(MemoryFileSystem mfs) {
+            this.mfs = mfs;
+        }
+
+        @Override
+        public URL getResource(String name) {
+            org.drools.compiler.compiler.io.File file = mfs.getFile(name);
+            try {
+                return mfs.existsFile(name) ? new URL(MemoryURLStreamHandler.MEMORY_URL_PROTOCOL, null, -1, name, new MemoryURLStreamHandler(mfs.getFile(name))) : null;
+            } catch (MalformedURLException e) {
+                return null;
+            }
+        }
+
+        @Override
+        public InputStream getResourceAsStream(String name) throws IOException {
+            return mfs.existsFile(name) ? mfs.getFile(name).getContents() : null;
+        }
+    }
+
+    private static class MemoryURLStreamHandler extends URLStreamHandler {
+
+        private static final String MEMORY_URL_PROTOCOL = "mfs";
+
+        private final org.drools.compiler.compiler.io.File file;
+
+        private MemoryURLStreamHandler(org.drools.compiler.compiler.io.File file) {
+            this.file = file;
+        }
+
+        @Override
+        protected URLConnection openConnection(URL url) throws IOException {
+            return MEMORY_URL_PROTOCOL.equals(url.getProtocol()) ? new MemoryURLConnection(url, file) : url.openConnection();
+        }
+    }
+
+    private static class MemoryURLConnection extends URLConnection {
+
+        private final org.drools.compiler.compiler.io.File file;
+
+        public MemoryURLConnection(URL url, org.drools.compiler.compiler.io.File file) {
+            super(url);
+            this.file = file;
+        }
+
+        public InputStream getInputStream() throws IOException {
+            return file.getContents();
+        }
+
+        @Override
+        public void connect() throws IOException {
+            throw new UnsupportedOperationException();
+        }
     }
 }

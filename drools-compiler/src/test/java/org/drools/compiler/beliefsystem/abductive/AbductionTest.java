@@ -34,6 +34,7 @@ import org.kie.internal.utils.KieHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +70,7 @@ public class AbductionTest extends CommonTestMethodBase {
     @Test
     public void testAbductiveLogicWithConstructorArgs() {
         String droolsSource =
-                "package org.drools.tms.test; \n" +
+                "package org.drools.abductive.test; \n" +
                 "" +
                 "import " + Abducible.class.getName() + "; \n" +
                 "global java.util.List list; \n" +
@@ -144,13 +145,120 @@ public class AbductionTest extends CommonTestMethodBase {
     }
 
 
+    @Test
+    public void testAbductiveLogicWithSelectiveConstructorArgs() {
+        String droolsSource =
+                "package org.drools.abductive.test; \n" +
+                "" +
+                "import " + Abducible.class.getName() + "; \n" +
+                "global java.util.List list; \n" +
+                "" +
+                "declare Foo \n" +
+                "   @Abducible \n" +
+                "   id : String @key \n" +
+                "   name : String @key \n" +
+                "   value : double \n" +
+                "   flag : boolean \n" +
+                "end \n" +
 
+                "query foo( String $name, double $val, String $x ) \n" +
+                "   @Abductive( target=Foo.class, args={ $x, $name } ) \n" +
+                "end \n" +
 
+                "rule R3 " +
+                "when " +
+                "   $f := foo( \"name_test\", 99.0, \"id_0\" ; ) " +
+                "then " +
+                "   list.add( $f ); " +
+                "end \n" +
+                "" +
+                "";
+        /////////////////////////////////////
+
+        KieSession session = getSessionFromString( droolsSource );
+        List list = new ArrayList();
+        session.setGlobal( "list", list );
+
+        session.fireAllRules();
+
+        FactType type = session.getKieBase().getFactType( "org.drools.abductive.test", "Foo" );
+        for ( Object o : session.getObjects() ) {
+            if ( type.getFactClass().isInstance( o ) ) {
+                assertEquals( "id_0", type.get( o, "id" ) );
+                assertEquals( "name_test", type.get( o, "name" ) );
+                assertEquals( 0.0, type.get( o, "value" ) );
+            }
+        }
+        System.err.println( list );
+    }
+
+    @Test
+    public void testAbductiveLogicWithNonExistingArgsMapping() {
+        String droolsSource =
+                "package org.drools.abductive.test; \n" +
+                "" +
+                "import " + Abducible.class.getName() + "; \n" +
+                "global java.util.List list; \n" +
+                "" +
+                "declare Foo \n" +
+                "   @Abducible \n" +
+                "   id : String @key \n" +
+                "   name : String @key \n" +
+                "end \n" +
+
+                "query foo( String $name ) \n" +
+                "   @Abductive( target=Foo.class, args={ $missing, $name } ) \n" +
+                "end \n" +
+
+                "";
+        /////////////////////////////////////
+
+        KieHelper kieHelper = new KieHelper();
+        kieHelper.addContent( droolsSource, ResourceType.DRL );
+
+        Results res = kieHelper.verify();
+        assertEquals( 1, res.getMessages( Message.Level.ERROR ).size() );
+    }
+
+    @Test
+    public void testAbductiveLogicWithWrongTypeArgsMapping() {
+        String droolsSource =
+                "package org.drools.abductive.test; \n" +
+                "" +
+                "import " + Abducible.class.getName() + "; \n" +
+                "global java.util.List list; \n" +
+                "" +
+                "declare Foo \n" +
+                "   @Abducible \n" +
+                "   id : String @key \n" +
+                "   name : String @key \n" +
+                "end \n" +
+
+                "query foo( String $name, int $x ) \n" +
+                "   @Abductive( target=Foo.class, args={ $x, $name } ) \n" +
+                "end \n" +
+
+                "rule R0 " +
+                "when " +
+                "   $f := foo( \"name_test\", 99 ; ) " +
+                "then " +
+                "   list.add( $f ); " +
+                "end \n" +
+
+                "";
+        /////////////////////////////////////
+
+        KieHelper kieHelper = new KieHelper();
+        kieHelper.addContent( droolsSource, ResourceType.DRL );
+
+        Results res = kieHelper.verify();
+        assertEquals( 1, res.getMessages( Message.Level.ERROR ).size() );
+    }
 
     @Test
     public void testBindNonAbductiveQueryError() {
         String droolsSource =
-                "package org.drools.tms.test; \n" +
+                "package org.drools.abductive.test; \n" +
                 "" +                "" +
                 "query foo() \n" +
                 "end \n" +
@@ -182,7 +290,7 @@ public class AbductionTest extends CommonTestMethodBase {
     @Test
     public void testAbducedReturnBinding() {
         String droolsSource =
-                "package org.drools.tms.test; \n" +
+                "package org.drools.abductive.test; \n" +
                 "" +
                 "import " + Abducible.class.getName() + "; \n" +
                 "global java.util.Map map; \n" +
@@ -203,8 +311,7 @@ public class AbductionTest extends CommonTestMethodBase {
                 "then " +
                 "   map.put( $v, $x ); " +
                 "end \n" +
-                "" +
-                "" +
+
                 "";
         /////////////////////////////////////
 
@@ -221,7 +328,7 @@ public class AbductionTest extends CommonTestMethodBase {
         System.out.println( map );
         assertTrue( map.keySet().containsAll( Arrays.asList( 3, 42, 11 ) ) );
 
-        FactType foo = session.getKieBase().getFactType( "org.drools.tms.test", "Foo" );
+        FactType foo = session.getKieBase().getFactType( "org.drools.abductive.test", "Foo" );
         for ( Object k : map.keySet() ) {
             Object val = map.get( k );
             assertSame( foo.getFactClass(), val.getClass() );
@@ -278,7 +385,7 @@ public class AbductionTest extends CommonTestMethodBase {
     @Test
     public void testAbducedKnownClass() {
         String droolsSource =
-                "package org.drools.tms.test; \n" +
+                "package org.drools.abductive.test; \n" +
                 "" +
                 "import " + Bean.class.getCanonicalName() + ";" +
                 "global java.util.Map map; \n" +
@@ -318,7 +425,7 @@ public class AbductionTest extends CommonTestMethodBase {
     @Test
     public void testAbducedWithStatus() {
         String droolsSource =
-                "package org.drools.tms.test; \n" +
+                "package org.drools.abductive.test; \n" +
                 "" +
                 "import " + Bean.class.getCanonicalName() + ";" +
                 "global java.util.Map map; \n" +
@@ -370,7 +477,7 @@ public class AbductionTest extends CommonTestMethodBase {
     @Test
     public void testAbductiveLogicUnlinking() {
         String droolsSource =
-                "package org.drools.tms.test; \n" +
+                "package org.drools.abductive.test; \n" +
                 "" +
                 "import " + Abducible.class.getName() + "; \n" +
                 "global java.util.List list; \n" +
@@ -423,7 +530,7 @@ public class AbductionTest extends CommonTestMethodBase {
     @Test
     public void testAbductiveLogicNoConstructorFoundError() {
         String droolsSource =
-                "package org.drools.tms.test; \n" +
+                "package org.drools.abductive.test; \n" +
                 "" +
                 "import " + Abducible.class.getName() + "; \n" +
                 "global java.util.List list; \n" +
@@ -448,24 +555,17 @@ public class AbductionTest extends CommonTestMethodBase {
                 "";
         /////////////////////////////////////
 
-        KieSession session = getSessionFromString( droolsSource );
-        List list = new ArrayList();
-        session.setGlobal( "list", list );
+        KieHelper kieHelper = new KieHelper();
+        kieHelper.addContent( droolsSource, ResourceType.DRL );
 
-        session.fireAllRules();
-
-        for ( Object o : session.getObjects() ) {
-            System.out.println( ">> " + o );
-        }
-        System.err.println( list );
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( null ) );
+        Results res = kieHelper.verify();
+        assertEquals( 1, res.getMessages( Message.Level.ERROR ).size() );
     }
 
     @Test
     public void testQueryTwice() {
         String droolsSource =
-                "package org.drools.tms.test; \n" +
+                "package org.drools.abductive.test; \n" +
                 "" +
                 "import " + Abducible.class.getName() + "; \n" +
                 "global java.util.List list; \n" +
@@ -511,11 +611,10 @@ public class AbductionTest extends CommonTestMethodBase {
 
 
     @Test
-    @Ignore
     public void testAbductiveLogicSprinklerAndRainExample() {
         // Sprinkler & Rain, abductive version
         String droolsSource =
-                "package org.drools.tms.test; \n" +
+                "package org.drools.abductive.test; \n" +
                 "" +
                 "import " + Abducible.class.getName() + "; \n" +
                 "import " + Defeasible.class.getName() + "; \n" +
@@ -607,12 +706,20 @@ public class AbductionTest extends CommonTestMethodBase {
         assertTrue( list.contains( "no_rain_check" ) );
 
         assertEquals( 3, session.getObjects().size() );
+
+        int i = 0;
+        Iterator it = session.getObjects().iterator();
+        while (it.hasNext()) {
+            i++;
+            it.next();
+        }
+        assertEquals( 3, i );
     }
 
     @Test
     public void testAbductiveFactory() {
         String droolsSource =
-                "package org.drools.tms.test; \n" +
+                "package org.drools.abductive.test; \n" +
                 "" +
                 "import " + Abducible.class.getName() + "; \n" +
                 "global java.util.List list; \n" +
@@ -671,7 +778,7 @@ public class AbductionTest extends CommonTestMethodBase {
     public void testNeeds() {
         // revisiting OPSJ's version of a fragment of the famous monkey&bananas AI problem
         String droolsSource =
-                "package org.drools.tms.test; \n" +
+                "package org.drools.abductive.test; \n" +
                 "" +
                 "import " + Thing.class.getPackage().getName() + ".*;" +
                 "import " + Abducible.class.getName() + "; \n" +
@@ -748,7 +855,7 @@ public class AbductionTest extends CommonTestMethodBase {
     @Test
     public void testQueryAPIs() {
         String droolsSource =
-                "package org.drools.tms.test; \n" +
+                "package org.drools.abductive.test; \n" +
                 "import " + Abducible.class.getName() + "; \n" +
 
                 "" +
@@ -790,8 +897,8 @@ public class AbductionTest extends CommonTestMethodBase {
         }
         assertEquals( 1, session.getObjects().size() );
 
-        Query q1 = session.getKieBase().getQuery( "org.drools.tms.test", "foo" );
-        Query q2 = session.getKieBase().getQuery( "org.drools.tms.test", "bar" );
+        Query q1 = session.getKieBase().getQuery( "org.drools.abductive.test", "foo" );
+        Query q2 = session.getKieBase().getQuery( "org.drools.abductive.test", "bar" );
 
         assertNotNull( q1 );
         assertNotNull( q2 );
@@ -826,11 +933,8 @@ public class AbductionTest extends CommonTestMethodBase {
     public void testCitizenshipExample() {
         // from wikipedia, abductive reasoning example
         String droolsSource =
-                "package org.drools.tms.test; \n" +
+                "package org.drools.abductive.test; \n" +
                 "" +
-
-                "declare entry-point \"neg\" end " +
-
                 "declare CitizenUS " +
                 "   name : String @key " +
                 "end " +
@@ -888,13 +992,20 @@ public class AbductionTest extends CommonTestMethodBase {
 
         session.fireAllRules();
 
+        FactType type = session.getKieBase().getFactType( "org.drools.abductive.test", "CitizenUS" );
+
         for ( Object o : session.getObjects() ) {
             System.out.println( ">>> " + o );
-            if ( o.getClass().equals( session.getKieBase().getFactType( "org.drools.tms.test", "CitizenUS" ) ) ) {
+            if ( o.getClass().equals( type.getFactClass() ) ) {
                 InternalFactHandle h = (InternalFactHandle) session.getFactHandle( o );
-                BeliefSet bs = h.getEqualityKey().getBeliefSet();
-                assertTrue( bs.isPositive() );
-                assertEquals( 2, bs.size() );
+                String name = (String) type.get( o, "name" );
+                if ( "Mary".equals( name ) ) {
+                    assertNull( h.getEqualityKey().getBeliefSet() );
+                } else if ( "John".equals( name ) ) {
+                    BeliefSet bs = h.getEqualityKey().getBeliefSet();
+                    assertTrue( bs.isPositive() );
+                    assertEquals( 2, bs.size() );
+                }
             }
         }
 
@@ -902,7 +1013,7 @@ public class AbductionTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
+    @Ignore( "Not implemented yet" )
     public void testGenesExplanationBackTracking() {
         // from wikipedia, abductive reasoning example
 
@@ -918,10 +1029,9 @@ public class AbductionTest extends CommonTestMethodBase {
          */
 
         String droolsSource =
-                "package org.drools.tms.test; \n" +
+                "package org.drools.abductive.test; \n" +
                 "import org.kie.api.runtime.rule.Match;\n" +
                 "" +
-                "declare entry-point \"neg\" end " +
 
                 "declare Amount " +
                 "   enz : String @key " +
@@ -989,13 +1099,12 @@ public class AbductionTest extends CommonTestMethodBase {
 
 
     @Test
-    @Ignore
+    @Ignore( "Not implemented yet" )
     public void testBacktracking() {
         String droolsSource =
-                "package org.drools.tms.test; \n" +
+                "package org.drools.abductive.test; \n" +
                 "import org.kie.api.runtime.rule.Match;\n" +
                 "" +
-                "declare entry-point \"neg\" end " +
 
                 "declare Foo " +
                 "@Abducible " +
@@ -1050,7 +1159,7 @@ public class AbductionTest extends CommonTestMethodBase {
     @Test
     public void testCheckForItemsExample() {
         String droolsSource =
-                "package org.drools.tms.test; " +
+                "package org.drools.abductive.test; " +
                 "import " + Abducible.class.getName() + "; " +
                 "global java.util.List list; " +
 

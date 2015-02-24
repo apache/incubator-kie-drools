@@ -413,7 +413,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
 
-        str += "rule rule0 @eager(true) @department(sales) \n";
+        str += "rule rule0 @Propagation(EAGER) @department(sales) \n";
         str += "when \n";
         str += "     $s : String( this == 'go0' ) \n";
         str += "then \n";

@@ -12,6 +12,7 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
+import org.drools.core.common.ResourceProvider;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
 import org.drools.core.util.Drools;
@@ -41,7 +42,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -446,5 +450,47 @@ public abstract class AbstractKieModule
             this.bytecode = bytecode;
         }
     }
-    
+
+    @Override
+    public ResourceProvider createResourceProvider() {
+        try {
+            return new KieModuleResourceProvider(this, getFile().toURI().toURL());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static class KieModuleResourceProvider implements ResourceProvider {
+
+        private final InternalKieModule kieModule;
+        private final URL kieModuleUrl;
+
+        private KieModuleResourceProvider(InternalKieModule kieModule, URL kieModuleUrl) {
+            this.kieModule = kieModule;
+            this.kieModuleUrl = kieModuleUrl;
+        }
+
+        @Override
+        public InputStream getResourceAsStream(String name) throws IOException {
+            Resource resource = kieModule.getResource(name);
+            return resource != null ? resource.getInputStream() : null;
+        }
+
+        @Override
+        public URL getResource(String name) {
+            return kieModule.hasResource(name) ? createURLForResource(name) : null;
+        }
+
+        private URL createURLForResource(String name) {
+            try {
+                if (kieModule instanceof ZipKieModule) {
+                    return new URL("jar", "", kieModuleUrl + "!/" + name);
+                } else {
+                    return new URL(kieModuleUrl, name);
+                }
+            } catch (MalformedURLException e) {
+                return null;
+            }
+        }
+    }
 }
