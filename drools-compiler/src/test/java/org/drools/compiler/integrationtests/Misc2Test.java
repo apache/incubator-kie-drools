@@ -3770,7 +3770,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "import org.drools.compiler.Person; \n" +
                      "" +
                      "rule \"Rule1\" \n" +
-                     "@Eager(true) \n" +
+                     "@Propagation(EAGER) \n" +
                      "salience 1 \n" +
                      "lock-on-active true\n" +
                      "when\n" +
@@ -3781,7 +3781,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "end;\n" +
                      "\n" +
                      "rule \"Rule2\"\n" +
-                     "@Eager(true) \n" +
+                     "@Propagation(EAGER) \n" +
                      "lock-on-active true\n" +
                      "when\n" +
                      "  $p: Person() \n" +

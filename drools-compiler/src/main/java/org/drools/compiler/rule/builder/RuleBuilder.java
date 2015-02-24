@@ -45,9 +45,8 @@ import org.drools.core.util.DateUtils;
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
 import org.kie.api.definition.rule.ActivationListener;
-import org.kie.api.definition.rule.DataDriven;
 import org.kie.api.definition.rule.Direct;
-import org.kie.api.definition.rule.Eager;
+import org.kie.api.definition.rule.Propagation;
 
 import java.text.ParseException;
 import java.util.Calendar;
@@ -264,9 +263,13 @@ public class RuleBuilder {
             if (enforceEager) {
                 rule.setEager(true);
             } else {
-                Eager eager = ruleDescr.getTypedAnnotation(Eager.class);
-                if (eager != null) {
-                    rule.setEager(eager.value());
+                Propagation propagation = ruleDescr.getTypedAnnotation(Propagation.class);
+                if (propagation != null) {
+                    if (propagation.value() == Propagation.Type.IMMEDIATE) {
+                        rule.setDataDriven(true);
+                    } else if (propagation.value() == Propagation.Type.EAGER) {
+                        rule.setEager(true);
+                    }
                 }
             }
 
@@ -274,8 +277,6 @@ public class RuleBuilder {
             if (direct != null && direct.value()) {
                 rule.setActivationListener("direct");
             }
-
-            rule.setDataDriven(ruleDescr.hasAnnotation(DataDriven.class));
         } catch (Exception e) {
             DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                   e.getMessage() );

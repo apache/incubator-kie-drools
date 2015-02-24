@@ -5649,7 +5649,7 @@ public class CepEspTest extends CommonTestMethodBase {
                      "  insert( 42 ); " +
                      "end " +
 
-                     "rule 'Viol' @Eager(true) when " +
+                     "rule 'Viol' @Propagation(EAGER) when " +
                      "    $trigger : Msg( 'Alice' ; )\n" +
                      "    not Msg( 'Bob' ; this after[0, 100ms] $trigger ) do[t1]" +
                      "    Integer( ) do[t2]\n" +
