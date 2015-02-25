@@ -75,6 +75,11 @@ public class AttributeDescr extends BaseDescr {
             // needs escaping
             return "\""+this.value+"\"";
         }
+
+        if(this.name.equals("timer") || this.name.equals("duration")) {
+            return "("+this.value+")";
+        }
+
         return this.value;
     }
 }
