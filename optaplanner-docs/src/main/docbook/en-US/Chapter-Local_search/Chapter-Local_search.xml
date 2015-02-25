@@ -367,8 +367,9 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
 
       <itemizedlist>
         <listitem>
-          <para><emphasis>Planning entity tabu</emphasis> makes the planning entities of recent steps tabu. For example,
-          for N queens it makes the recently moved queens tabu. It's recommended to start with this tabu type.</para>
+          <para><emphasis>Planning entity tabu</emphasis> (recommended) makes the planning entities of recent steps
+          tabu. For example, for N queens it makes the recently moved queens tabu. It's recommended to start with this
+          tabu type.</para>
 
           <programlisting language="xml">    &lt;acceptor&gt;
       &lt;entityTabuSize&gt;7&lt;/entityTabuSize&gt;
@@ -425,21 +426,22 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
       &lt;solutionTabuSize&gt;1000&lt;/solutionTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
 
-          <para>For non-trivial cases, it's usually useless because the <link linkend="searchSpaceSize">search space
-          size</link> makes it statistically almost impossible to reach the same solution twice.</para>
+          <para>For non-trivial cases, solution tabu is usually useless because the <link
+          linkend="searchSpaceSize">search space size</link> makes it statistically highly unlikely to reach the same
+          solution twice. Therefore its use is not recommended, except for small datasets.</para>
         </listitem>
       </itemizedlist>
 
-      <para>You can even combine tabu types:</para>
+      <para>Sometimes it's useful to combine tabu types:</para>
 
       <programlisting language="xml">    &lt;acceptor&gt;
       &lt;entityTabuSize&gt;7&lt;/entityTabuSize&gt;
       &lt;valueTabuSize&gt;3&lt;/valueTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
 
-      <para>If you pick a too small tabu size, your solver can still get stuck in a local optimum. On the other hand,
-      with the exception of solution tabu, if you pick a too large tabu size, your solver can get stuck by bouncing of
-      the walls. Use the <link linkend="benchmarker">Benchmarker</link> to fine tweak your configuration.</para>
+      <para>If the tabu size is too small, the solver can still get stuck in a local optimum. On the other hand, if the
+      tabu size is too large, the solver can get stuck by bouncing of the walls. Use the <link
+      linkend="benchmarker">Benchmarker</link> to fine tweak your configuration.</para>
     </section>
   </section>
 
