@@ -4147,6 +4147,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
     /**
      * accumulateFunctionBinding := label accumulateFunction
      * @param accumulate
+     * @param pattern
      * @throws org.antlr.runtime.RecognitionException
      */
     private void accumulateFunctionBinding( AccumulateDescrBuilder<?> accumulate ) throws RecognitionException {
