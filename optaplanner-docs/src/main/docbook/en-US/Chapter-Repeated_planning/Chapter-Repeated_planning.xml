@@ -346,14 +346,14 @@ end</programlisting>
       initialized and feasible. To ignore <literal>BestSolutionChangedEvent</literal>s with such invalid solutions, do
       this:</para>
 
-      <programlisting language="java">        public void bestSolutionChanged(BestSolutionChangedEvent&lt;CloudBalance&gt; event) {
-            // Ignore invalid solutions
-            if (event.isEveryProblemFactChangeProcessed()
-                    &amp;&amp; event.isNewBestSolutionInitialized()
-                    &amp;&amp; event.getNewBestSolution().getScore().isFeasible()) {
-                ...
-            }
-        }</programlisting>
+      <programlisting language="java">    public void bestSolutionChanged(BestSolutionChangedEvent&lt;CloudBalance&gt; event) {
+        // Ignore invalid solutions
+        if (event.isEveryProblemFactChangeProcessed()
+                &amp;&amp; event.isNewBestSolutionInitialized()
+                &amp;&amp; event.getNewBestSolution().getScore().isFeasible()) {
+            ...
+        }
+    }</programlisting>
     </section>
   </section>
 </chapter>
