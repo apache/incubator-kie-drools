@@ -212,7 +212,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         }
     }
 
-    private EntityManager getEntityManager() {
+    protected EntityManager getEntityManager() {
         EntityManager em = persister.get();
         if (em != null) {
             return em;
