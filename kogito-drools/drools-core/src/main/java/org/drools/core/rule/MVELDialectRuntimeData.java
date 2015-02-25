@@ -16,6 +16,14 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.base.mvel.MVELCompileable;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.spi.Wireable;
+import org.mvel2.ParserConfiguration;
+import org.mvel2.integration.VariableResolver;
+import org.mvel2.integration.impl.MapVariableResolverFactory;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -29,16 +37,8 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
-
-import org.drools.core.base.mvel.MVELCompileable;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.spi.Wireable;
-import org.mvel2.ParserConfiguration;
-import org.mvel2.integration.VariableResolver;
-import org.mvel2.integration.impl.MapVariableResolverFactory;
+import java.util.Set;
 
 public class MVELDialectRuntimeData
     implements
@@ -49,7 +49,7 @@ public class MVELDialectRuntimeData
 
     private final MapFunctionResolverFactory functionFactory;
 
-    private Map<Wireable, MVELCompileable>   invokerLookups;
+    private Map<Wireable, List<MVELCompileable>>   invokerLookups;
     private Set<MVELCompileable>             mvelReaders;
 
     private ClassLoader                      rootClassLoader;
@@ -65,7 +65,7 @@ public class MVELDialectRuntimeData
 
     public MVELDialectRuntimeData() {
         this.functionFactory = new MapFunctionResolverFactory();
-        this.invokerLookups = new IdentityHashMap<Wireable, MVELCompileable>();
+        this.invokerLookups = new IdentityHashMap<Wireable, List<MVELCompileable>>();
         this.mvelReaders = new HashSet<MVELCompileable> ();
         this.imports = new HashMap<String, Object>();
         this.packageImports = new HashSet<String>();
@@ -92,7 +92,7 @@ public class MVELDialectRuntimeData
         imports = (Map) in.readObject();
         packageImports = (HashSet<String>) in.readObject();
 
-        invokerLookups = (Map<Wireable, MVELCompileable>) in.readObject();
+        invokerLookups = (Map<Wireable, List<MVELCompileable>>) in.readObject();
         if ( !invokerLookups.isEmpty() ) {
             // we need a wireList for serialisation
             wireList = new ArrayList<Wireable>( invokerLookups.keySet() );
@@ -126,7 +126,7 @@ public class MVELDialectRuntimeData
         }
 
         this.packageImports.addAll( other.packageImports );
-        for ( Entry<Wireable, MVELCompileable> entry : other.invokerLookups.entrySet() ) {
+        for ( Entry<Wireable, List<MVELCompileable>> entry : other.invokerLookups.entrySet() ) {
             invokerLookups.put( entry.getKey(),
                                 entry.getValue() );
             if ( this.wireList == Collections.<Wireable> emptyList() ) {
@@ -169,11 +169,12 @@ public class MVELDialectRuntimeData
 
     public void onBeforeExecute() {
         for ( Wireable target : wireList ) {
-            MVELCompileable compileable = invokerLookups.get( target );
-            compileable.compile( this );
+            for (MVELCompileable compileable : invokerLookups.get( target )) {
+                compileable.compile(this);
 
-            // now wire up the target
-            target.wire( compileable );
+                // now wire up the target
+                target.wire(compileable);
+            }
         }
         wireList.clear();
 
@@ -351,17 +352,17 @@ public class MVELDialectRuntimeData
     }
 
     public void addCompileable(MVELCompileable compilable) {
-        this.mvelReaders.add( compilable );
+        this.mvelReaders.add(compilable);
     }
 
     public void addCompileable(Wireable wireable,
                                MVELCompileable compilable) {
-        invokerLookups.put( wireable,
-                            compilable );
-    }
-
-    public Map<Wireable, MVELCompileable> getLookup() {
-        return this.invokerLookups;
+        List<MVELCompileable> compilables = invokerLookups.get(wireable);
+        if (compilables == null) {
+            compilables = new ArrayList<MVELCompileable>();
+            invokerLookups.put(wireable, compilables);
+        }
+        compilables.add( compilable );
     }
 
     public ClassLoader getRootClassLoader() {

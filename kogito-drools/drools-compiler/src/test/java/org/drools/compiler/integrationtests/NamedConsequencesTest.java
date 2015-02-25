@@ -7,6 +7,7 @@ import org.drools.compiler.StockTick;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -17,6 +18,7 @@ import org.kie.internal.utils.KieHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 
@@ -814,5 +816,50 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
         assertEquals(2, list.size());
         assertEquals("t1", list.get(0));
         assertEquals("t0", list.get(1));
+    }
+
+    @Test
+    public void testMvelInsertWithNamedConsequence() {
+        // DROOLS-726
+        String drl2 =
+                "package org.drools.compiler\n" +
+                "global java.util.concurrent.atomic.AtomicInteger counter\n" +
+                "declare Output\n" +
+                "    feedback: String\n" +
+                "end\n" +
+                "rule \"Move to next\" dialect \"mvel\"\n" +
+                "   when\n" +
+                "          $i: Integer()\n" +
+                "          if ($i == 1) break[nextStep1]\n" +
+                "   then\n" +
+                "           insert(new Output(\"defualt\"));\n" +
+                "   then[nextStep1]\n" +
+                "           insert(new Output(\"step 1\"));\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Produce output\"\n" +
+                "    when\n" +
+                "        $output: Output()\n" +
+                "    then\n" +
+                "        System.out.println($output);\n" +
+                "        retract($output);" +
+                "        counter.incrementAndGet();\n" +
+                "end\n";
+
+        KieSession kSession = new KieHelper().addContent(drl2, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        AtomicInteger counter = new AtomicInteger(0);
+        kSession.setGlobal("counter", counter);
+
+        FactHandle messageHandle = kSession.insert(1);
+        kSession.fireAllRules();
+
+        kSession.delete(messageHandle);
+        kSession.insert(2);
+        kSession.fireAllRules();
+
+        assertEquals(2, counter.get());
     }
 }
