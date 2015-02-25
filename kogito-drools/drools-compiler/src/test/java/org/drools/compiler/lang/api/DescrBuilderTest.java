@@ -16,17 +16,6 @@
 
 package org.drools.compiler.lang.api;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.StockTick;
@@ -39,19 +28,25 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.junit.Test;
+import org.kie.api.definition.type.FactType;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.api.definition.type.FactType;
-import org.kie.api.event.rule.AfterMatchFiredEvent;
-import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.rule.EntryPoint;
 import org.mockito.ArgumentCaptor;
+
+import java.util.*;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * DescrBuilderTest
@@ -617,6 +612,48 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         assertEquals( Arrays.asList( 42.0, 84.0 ), list );
     }
 
+    @Test
+    public void testDumperPositional() {
+        PackageDescr pkg = DescrFactory.newPackage().name( "org.test" )
+                .newRule().name( "org.test" )
+                .lhs()
+                .pattern().type( "Integer" ).constraint( "this > 10", true ).constraint( "this > 11", true ).constraint( "this > 12", false).constraint( "this > 13", false).end()
+                .end()
+                .rhs( "" )
+                .end()
+                .end().getDescr();
+
+        String drl = new DrlDumper().dump( pkg );
+        assertTrue(drl.contains("Integer( this > 10, this > 11; this > 12, this > 13 )"));
+    }
+
+    @Test
+    public void testDumperDuration() {
+        PackageDescr pkg = DescrFactory.newPackage().name("org.test")
+                .newRule().name("org.test").attribute("duration").value("int: 0 3600000; repeat-limit = 6").end()
+                .lhs()
+                .end()
+                .rhs( "" )
+                .end()
+                .end().getDescr();
+
+        String drl = new DrlDumper().dump( pkg );
+        assertTrue( drl.contains("duration (int: 0 3600000; repeat-limit = 6)" ) );
+    }
+
+    @Test
+    public void testDumperTimer() {
+        PackageDescr pkg = DescrFactory.newPackage().name("org.test")
+                .newRule().name("org.test").attribute("timer").value("cron:0/5 * * * * ?").end()
+                .lhs()
+                .end()
+                .rhs( "" )
+                .end()
+                .end().getDescr();
+
+        String drl = new DrlDumper().dump( pkg );
+        assertTrue( drl.contains("timer (cron:0/5 * * * * ?)" ) );
+    }
 
     private KnowledgePackage compilePkgDescr( PackageDescr pkg ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

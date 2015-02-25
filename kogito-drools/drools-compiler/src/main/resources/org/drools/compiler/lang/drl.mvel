@@ -73,7 +73,7 @@ then
 }forall( @includeNamed{"cedchildren"; list=base.descrs; connect=""} )@elseif{ base instanceof EvalDescr }@comment{    
 }eval( @{base.content} )@elseif{ base instanceof NamedConsequenceDescr }@comment{
 }@if{base.breaking}break@else{}do@end{}[@{base.text}] @elseif{ base instanceof PatternDescr }@comment{
-}@if{base.identifier!=null}@{base.identifier} :@if{base.unification}=@end{} @end{}@code{topAcc=(base.source instanceof AccumulateDescr && "Object[]".equals(base.objectType))}@if{!topAcc}@{base.objectType}( @foreach{constr:base.descrs}@{constr}@end{", "} ) @foreach{b:base.behaviors}| @{b.type}:@{b.subType}(@foreach{p:b.params}@{p}@end{", "})@end{}@end{}@includeNamed{"psource";source=base.source;topLevelAcc=topAcc;constrs=base.descrs}@end{}@end{}
+}@if{base.identifier!=null}@{base.identifier} :@if{base.unification}=@end{} @end{}@code{topAcc=(base.source instanceof AccumulateDescr && "Object[]".equals(base.objectType))}@if{!topAcc}@{base.objectType}( @foreach{constr:base.positionalConstraints}@{constr}@end{", "}@if{base.positionalConstraints.size()>0}; @end{}@foreach{constr:base.slottedConstraints}@{constr}@end{", "} ) @foreach{b:base.behaviors}| @{b.type}:@{b.subType}(@foreach{p:b.params}@{p}@end{", "})@end{}@end{}@includeNamed{"psource";source=base.source;topLevelAcc=topAcc;constrs=base.descrs}@end{}@end{}
 
 @comment{***************************************************************
                        CONDITIONAL ELEMENT CHILD TEMPLATE
