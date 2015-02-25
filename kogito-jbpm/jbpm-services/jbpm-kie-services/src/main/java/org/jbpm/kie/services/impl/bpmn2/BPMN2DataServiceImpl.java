@@ -31,6 +31,8 @@ import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.services.api.DefinitionService;
+import org.jbpm.services.api.DeploymentEvent;
+import org.jbpm.services.api.DeploymentEventListener;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.UserTaskDefinition;
 import org.kie.api.io.ResourceType;
@@ -42,7 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class BPMN2DataServiceImpl implements DefinitionService {
+public class BPMN2DataServiceImpl implements DefinitionService, DeploymentEventListener {
     
     private static final Logger logger = LoggerFactory.getLogger(BPMN2DataServiceImpl.class);
     private static final BPMN2DataServiceSemanticModule MODULE = new BPMN2DataServiceSemanticModule();
@@ -298,5 +300,26 @@ public class BPMN2DataServiceImpl implements DefinitionService {
         }
         
         return Collections.emptyMap();
+	}
+
+	@Override
+	public void onDeploy(DeploymentEvent event) {
+		// no op
+	}
+
+	@Override
+	public void onUnDeploy(DeploymentEvent event) {
+		// remove process definitions from the cache
+		definitionCache.remove(event.getDeploymentId());
+	}
+
+	@Override
+	public void onActivate(DeploymentEvent event) {
+		// no op
+	}
+
+	@Override
+	public void onDeactivate(DeploymentEvent event) {
+		// no op
 	}
 }

@@ -24,6 +24,8 @@ import javax.ejb.Singleton;
 
 import org.jbpm.kie.services.impl.bpmn2.BPMN2DataServiceImpl;
 import org.jbpm.services.api.DefinitionService;
+import org.jbpm.services.api.DeploymentEvent;
+import org.jbpm.services.api.DeploymentEventListener;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.ejb.api.DefinitionServiceEJBLocal;
 import org.jbpm.services.ejb.api.DefinitionServiceEJBRemote;
@@ -31,12 +33,36 @@ import org.jbpm.services.ejb.api.DefinitionServiceEJBRemote;
 @Singleton
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
 @Lock(LockType.READ)
-public class DefinitionServiceEJBImpl extends BPMN2DataServiceImpl implements DefinitionService, DefinitionServiceEJBLocal, DefinitionServiceEJBRemote {
+public class DefinitionServiceEJBImpl extends BPMN2DataServiceImpl implements DeploymentEventListener, DefinitionService, DefinitionServiceEJBLocal, DefinitionServiceEJBRemote {
 
 	@Lock(LockType.WRITE)
 	@Override
 	public ProcessDefinition buildProcessDefinition(String deploymentId, String bpmn2Content, ClassLoader classLoader, boolean cache) throws IllegalArgumentException {
 		return super.buildProcessDefinition(deploymentId, bpmn2Content, classLoader, cache);
+	}
+	
+	@Lock(LockType.WRITE)
+	@Override
+	public void onDeploy(DeploymentEvent event) {
+		super.onDeploy(event);
+	}
+
+	@Lock(LockType.WRITE)
+	@Override
+	public void onUnDeploy(DeploymentEvent event) {
+		super.onUnDeploy(event);
+	}
+
+	@Lock(LockType.WRITE)
+	@Override
+	public void onActivate(DeploymentEvent event) {
+		super.onActivate(event);
+	}
+
+	@Lock(LockType.WRITE)
+	@Override
+	public void onDeactivate(DeploymentEvent event) {
+		super.onDeactivate(event);
 	}
 
 }

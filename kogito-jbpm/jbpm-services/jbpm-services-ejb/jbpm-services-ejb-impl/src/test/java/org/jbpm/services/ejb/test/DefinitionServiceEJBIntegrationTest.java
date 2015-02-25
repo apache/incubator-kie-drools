@@ -18,6 +18,7 @@ package org.jbpm.services.ejb.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 import java.io.File;
@@ -37,6 +38,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
+import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.UserTaskDefinition;
 import org.jbpm.services.ejb.api.DefinitionServiceEJBLocal;
 import org.jbpm.services.ejb.api.DeploymentServiceEJBLocal;
@@ -218,5 +220,34 @@ public class DefinitionServiceEJBIntegrationTest extends AbstractTestSupport {
         Map<String, String> processData = bpmn2Service.getProcessVariables(deploymentUnit.getIdentifier(), processId);
         assertNotNull(processData);
         
+    }
+    
+    @Test
+    public void testHumanTaskProcessBeforeAndAfterUndeploy() throws IOException {
+      
+        assertNotNull(deploymentService);
+        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+      
+        String processId = "org.jbpm.writedocument";
+        
+        ProcessDefinition procDef = bpmn2Service.getProcessDefinition(deploymentUnit.getIdentifier(), processId);
+        assertNotNull(procDef);
+        
+        assertEquals(procDef.getId(), "org.jbpm.writedocument");
+        assertEquals(procDef.getName(), "humanTaskSample");
+        assertEquals(procDef.getKnowledgeType(), "PROCESS");
+        assertEquals(procDef.getPackageName(), "defaultPackage");
+        assertEquals(procDef.getType(), "RuleFlow");
+        assertEquals(procDef.getVersion(), "1");
+        
+        // now let's undeploy the unit
+        deploymentService.undeploy(deploymentUnit);
+        
+        procDef = bpmn2Service.getProcessDefinition(deploymentUnit.getIdentifier(), processId);
+        assertNull(procDef);
     }
 }

@@ -17,10 +17,35 @@
 package org.jbpm.services.cdi.impl;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 
 import org.jbpm.kie.services.impl.bpmn2.BPMN2DataServiceImpl;
+import org.jbpm.services.api.DeploymentEvent;
+import org.jbpm.services.cdi.Activate;
+import org.jbpm.services.cdi.Deactivate;
+import org.jbpm.services.cdi.Deploy;
+import org.jbpm.services.cdi.Undeploy;
 
 @ApplicationScoped
 public class BPMN2DataServiceCDIImpl extends BPMN2DataServiceImpl {
 
+	@Override
+    public void onDeploy(@Observes@Deploy DeploymentEvent event) {
+        super.onDeploy(event);
+    }
+    
+	@Override
+    public void onUnDeploy(@Observes@Undeploy DeploymentEvent event) {
+        super.onUnDeploy(event);
+    }
+
+    @Override
+	public void onActivate(@Observes@Activate DeploymentEvent event) {
+		super.onActivate(event);
+	}
+
+	@Override
+	public void onDeactivate(@Observes@Deactivate DeploymentEvent event) {
+		super.onDeactivate(event);
+	}
 }

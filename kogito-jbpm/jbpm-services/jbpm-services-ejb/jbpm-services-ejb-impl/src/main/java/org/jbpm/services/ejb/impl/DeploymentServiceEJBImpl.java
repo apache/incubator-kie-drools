@@ -94,6 +94,7 @@ public class DeploymentServiceEJBImpl extends KModuleDeploymentService implement
 	public void setBpmn2Service(DefinitionService bpmn2Service) {
 		
 		super.setBpmn2Service(bpmn2Service);
+		super.addListener((DeploymentEventListener) bpmn2Service);
 	}
 
 	@EJB(beanInterface=RuntimeDataServiceEJBLocal.class)

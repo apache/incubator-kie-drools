@@ -121,6 +121,7 @@ public abstract class AbstractBaseTest {
 		
 		// set runtime data service as listener on deployment service
 		((KModuleDeploymentService)deploymentService).addListener(((RuntimeDataServiceImpl) runtimeDataService));
+		((KModuleDeploymentService)deploymentService).addListener(((BPMN2DataServiceImpl) bpmn2Service));
 		
 		// build process service
 		processService = new ProcessServiceImpl();

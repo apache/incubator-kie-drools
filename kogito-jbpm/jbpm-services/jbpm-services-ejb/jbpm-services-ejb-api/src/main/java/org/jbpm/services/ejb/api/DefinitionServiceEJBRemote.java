@@ -19,8 +19,9 @@ package org.jbpm.services.ejb.api;
 import javax.ejb.Remote;
 
 import org.jbpm.services.api.DefinitionService;
+import org.jbpm.services.api.DeploymentEventListener;
 
 @Remote
-public interface DefinitionServiceEJBRemote extends DefinitionService {
+public interface DefinitionServiceEJBRemote extends DefinitionService, DeploymentEventListener {
 
 }
