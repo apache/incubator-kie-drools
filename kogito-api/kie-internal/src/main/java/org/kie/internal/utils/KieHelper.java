@@ -28,6 +28,8 @@ import org.kie.api.conf.KieBaseOption;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
+import org.kie.internal.builder.conf.EvaluatorOption;
+import org.kie.internal.builder.conf.KnowledgeBuilderOption;
 
 import java.io.InputStream;
 
@@ -40,6 +42,20 @@ public class KieHelper {
     public final KieFileSystem kfs = ks.newKieFileSystem();
 
     private int counter = 0;
+
+    public KieHelper() {}
+
+    public KieHelper( KnowledgeBuilderOption... options ) {
+        if ( options.length > 0 ) {
+            KieModuleModel kmm = KieServices.Factory.get().newKieModuleModel();
+            for ( KnowledgeBuilderOption opt : options ) {
+                if ( opt instanceof EvaluatorOption) {
+                    kmm.setConfigurationProperty( EvaluatorOption.PROPERTY_NAME + opt.getPropertyName(), ( (EvaluatorOption) opt ).getEvaluatorDefinition().getClass().getName() );
+                }
+            }
+            this.setKieModuleModel( kmm );
+        }
+    }
 
     public KieBase build( KieBaseConfiguration kieBaseConf ) {
         KieContainer kieContainer = getKieContainer();
