@@ -106,12 +106,20 @@ public class MemoryKieModule extends AbstractKieModule
 
         @Override
         public URL getResource(String name) {
-            org.drools.compiler.compiler.io.File file = mfs.getFile(name);
+
             try {
-                return mfs.existsFile(name) ? new URL(MemoryURLStreamHandler.MEMORY_URL_PROTOCOL, null, -1, name, new MemoryURLStreamHandler(mfs.getFile(name))) : null;
+                return mfs.existsFile(name) ? new URL(MemoryURLStreamHandler.MEMORY_URL_PROTOCOL, null, -1, constructName(name), new MemoryURLStreamHandler(mfs.getFile(name))) : null;
             } catch (MalformedURLException e) {
                 return null;
             }
+        }
+
+        private String constructName(String name) {
+            if (name.startsWith("/")) {
+                return name;
+            }
+
+            return "/" + name;
         }
 
         @Override
