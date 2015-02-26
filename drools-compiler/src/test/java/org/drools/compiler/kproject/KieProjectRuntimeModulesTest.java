@@ -125,5 +125,47 @@ public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
         URL resourceUrl = resourcesAsList.get(0);
         byte[] bytesFromURL = readBytesFromInputStream(resourceUrl.openStream());
         assertTrue(Arrays.equals(bytesFromStream, bytesFromURL));
+
+        String url = resourceUrl.toString();
+        assertNotNull(url);
+        assertEquals("mfs:/META-INF/beans.xml", url);
+
+        String file = resourceUrl.getFile();
+        assertNotNull(file);
+        assertEquals("/META-INF/beans.xml", file);
+    }
+
+    @Test
+    public void createModuleAndFindResourcesVerifyURL() throws IOException,
+            ClassNotFoundException,
+            InterruptedException {
+        createKieModule( "fol4", false );
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId("fol4", "art1", "1.0-SNAPSHOT");
+
+        KieContainer kieContainer = KieServices.Factory.get().newKieContainer(releaseId);
+        assertNotNull(kieContainer);
+
+        InputStream is = kieContainer.getClassLoader().getResourceAsStream("META-INF/beans.xml");
+        assertNotNull(is);
+        byte[] bytesFromStream = readBytesFromInputStream(is);
+
+        Enumeration<URL> foundResources = kieContainer.getClassLoader().getResources("META-INF/beans.xml");
+        assertNotNull(foundResources);
+
+        List<URL> resourcesAsList = Collections.list(foundResources);
+        assertNotNull(resourcesAsList);
+        assertEquals(1, resourcesAsList.size());
+
+        URL resourceUrl = resourcesAsList.get(0);
+        byte[] bytesFromURL = readBytesFromInputStream(resourceUrl.openStream());
+        assertTrue(Arrays.equals(bytesFromStream, bytesFromURL));
+
+        String url = resourceUrl.toString();
+        assertNotNull(url);
+        assertEquals("mfs:/META-INF/beans.xml", url);
+
+        String file = resourceUrl.getFile();
+        assertNotNull(file);
+        assertEquals("/META-INF/beans.xml", file);
     }
 }
