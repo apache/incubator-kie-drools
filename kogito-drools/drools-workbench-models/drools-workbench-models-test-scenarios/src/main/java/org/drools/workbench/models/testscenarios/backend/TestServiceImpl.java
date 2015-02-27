@@ -25,13 +25,15 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 import org.kie.api.runtime.KieSession;
 
+import java.util.Map;
+
 public class TestServiceImpl
         implements
         TestService<Scenario> {
 
     @Override
     public void run( Scenario scenario,
-                     KieSession ksession,
+                     Map<String, KieSession> ksessions,
                      TypeResolver resolver,
                      RunListener listener ) {
         try {
@@ -40,7 +42,7 @@ public class TestServiceImpl
 
             // execute the test scenario
             ScenarioRunner4JUnit runner = new ScenarioRunner4JUnit( scenario,
-                                                                    ksession );
+                                                                    ksessions );
             JUnitCore junit = new JUnitCore();
             junit.addListener( listener );
             junit.run( runner );

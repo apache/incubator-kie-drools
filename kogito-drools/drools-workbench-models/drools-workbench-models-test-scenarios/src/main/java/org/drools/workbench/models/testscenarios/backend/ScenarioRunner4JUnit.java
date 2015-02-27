@@ -1,9 +1,5 @@
 package org.drools.workbench.models.testscenarios.backend;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.internal.runners.model.EachTestNotifier;
@@ -12,6 +8,11 @@ import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ScenarioRunner4JUnit extends Runner {
 
@@ -20,38 +21,38 @@ public class ScenarioRunner4JUnit extends Runner {
     private Description descr;
     // the actual scenario test to be executed
     private List<Scenario> scenarios;
-    private KieSession ksession;
+    private Map<String, KieSession> ksessions;
 
-    public ScenarioRunner4JUnit( final Scenario scenario,
-                                 final KieSession ksession,
-                                 final int maxRuleFirings ) throws InitializationError {
+    public ScenarioRunner4JUnit(final Scenario scenario,
+                                final Map<String, KieSession> ksessions,
+                                final int maxRuleFirings) throws InitializationError {
         this.scenarios = new ArrayList<Scenario>();
-        this.scenarios.add( scenario );
-        this.ksession = ksession;
-        this.descr = Description.createSuiteDescription( "Scenario test cases" );
+        this.scenarios.add(scenario);
+        this.ksessions = ksessions;
+        this.descr = Description.createSuiteDescription("Scenario test cases");
         this.maxRuleFirings = maxRuleFirings;
     }
 
-    public ScenarioRunner4JUnit( final Scenario scenario,
-                                 final KieSession ksession ) throws InitializationError {
-        this( scenario,
-              ksession,
-              0 );
+    public ScenarioRunner4JUnit(final Scenario scenario,
+                                final Map<String, KieSession> ksessions) throws InitializationError {
+        this(scenario,
+                ksessions,
+                0);
     }
 
-    public ScenarioRunner4JUnit( final List<Scenario> scenarios,
-                                 final KieSession ksession ) throws InitializationError {
-        this( scenarios,
-              ksession,
-              0 );
+    public ScenarioRunner4JUnit(final List<Scenario> scenarios,
+                                final Map<String, KieSession> ksessions) throws InitializationError {
+        this(scenarios,
+                ksessions,
+                0);
     }
 
-    public ScenarioRunner4JUnit( final List<Scenario> scenarios,
-                                 final KieSession ksession,
-                                 final int maxRuleFirings ) throws InitializationError {
+    public ScenarioRunner4JUnit(final List<Scenario> scenarios,
+                                final Map<String, KieSession> ksessions,
+                                final int maxRuleFirings) throws InitializationError {
         this.scenarios = scenarios;
-        this.ksession = ksession;
-        this.descr = Description.createSuiteDescription( "Scenario test cases" );
+        this.ksessions = ksessions;
+        this.descr = Description.createSuiteDescription("Scenario test cases");
         this.maxRuleFirings = maxRuleFirings;
     }
 
@@ -61,36 +62,38 @@ public class ScenarioRunner4JUnit extends Runner {
     }
 
     @Override
-    public void run( RunNotifier notifier ) {
-        for ( Scenario scenario : scenarios ) {
+    public void run(RunNotifier notifier) {
+        for (Scenario scenario : scenarios) {
             runScenario(notifier, scenario);
         }
     }
 
     private void runScenario(RunNotifier notifier, Scenario scenario) {
-        Description childDescription = Description.createTestDescription( getClass(),
-                                                                          scenario.getName() );
-        descr.addChild( childDescription );
-        EachTestNotifier eachNotifier = new EachTestNotifier( notifier,
-                                                              childDescription );
+        Description childDescription = Description.createTestDescription(getClass(),
+                scenario.getName());
+        descr.addChild(childDescription);
+        EachTestNotifier eachNotifier = new EachTestNotifier(notifier,
+                childDescription);
         try {
             eachNotifier.fireTestStarted();
 
             //If a KieSession is not available, fail fast
-            if ( ksession == null ) {
-                throw new NullKieSessionException( "Unable to get a Session to run tests. Check the project for build errors." );
+            if (ksessions == null || ksessions.values().isEmpty()) {
+                throw new NullKieSessionException("Unable to get a Session to run tests. Check the project for build errors.");
 
             } else {
 
-                final ScenarioRunner runner = new ScenarioRunner( ksession,
-                                                                  maxRuleFirings );
-                runner.run( scenario );
-                if ( !scenario.wasSuccessful() ) {
+                KieSession ksession = getKSession(scenario.getKSessions());
+
+                final ScenarioRunner runner = new ScenarioRunner(ksession,
+                        maxRuleFirings);
+                runner.run(scenario);
+                if (!scenario.wasSuccessful()) {
                     StringBuilder builder = new StringBuilder();
-                    for ( String message : scenario.getFailureMessages() ) {
-                        builder.append( message ).append( "\n" );
+                    for (String message : scenario.getFailureMessages()) {
+                        builder.append(message).append("\n");
                     }
-                    eachNotifier.addFailedAssumption( new AssumptionViolatedException( builder.toString() ) );
+                    eachNotifier.addFailedAssumption(new AssumptionViolatedException(builder.toString()));
                 }
 
                 // FLUSSSSSH!
@@ -98,12 +101,27 @@ public class ScenarioRunner4JUnit extends Runner {
                     ksession.delete(factHandle);
                 }
             }
-        } catch ( Throwable t ) {
-            eachNotifier.addFailure( t );
+        } catch (Throwable t) {
+            eachNotifier.addFailure(t);
         } finally {
             // has to always be called as per junit docs
             eachNotifier.fireTestFinished();
         }
+    }
+
+    private KieSession getKSession(List<String> kSessionNames) {
+        if (kSessionNames == null || kSessionNames.isEmpty()) {
+            return ksessions.values().iterator().next();
+        } else {
+            String ksessionName = kSessionNames.iterator().next();
+
+            if (ksessions.containsKey(ksessionName)) {
+                return ksessions.get(ksessionName);
+            } else {
+                return ksessions.values().iterator().next();
+            }
+        }
+
     }
 
 }
