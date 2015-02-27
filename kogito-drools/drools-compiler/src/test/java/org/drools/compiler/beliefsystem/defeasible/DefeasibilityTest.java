@@ -30,6 +30,8 @@ import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -68,7 +70,10 @@ public class DefeasibilityTest {
             System.setProperty("drools.negatable", "off");
         }
 
-        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase( );
+        KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kieBaseConfiguration.setOption( EqualityBehaviorOption.EQUALITY );
+
+        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase( kieBaseConfiguration );
         kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
 
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
@@ -668,15 +673,14 @@ public class DefeasibilityTest {
         assertTrue( negHandle.isNegated());
 
         assertTrue(  dbs.isDefeasiblyNegProveable() );
-        assertFalse( session.getObjects().contains( negBar ) );
+        assertTrue( session.getObjects().contains( negBar ) );
 
     }
 
 
 
 
-    @Test( timeout = 10000)
-    @Ignore( "This has infinite recursion. Because Defeater contradicts it's argument" )
+    @Test
     public void testSelfDefeatWithRebuttal() {
         String droolsSource =
                 "package org.drools.tms.test; " +
@@ -691,7 +695,7 @@ public class DefeasibilityTest {
                 "   $i : Integer() " +
                 "then " +
                 "   System.out.println( 'Create Bar ' + $i ); " +
-                "   insertLogical( new Bar( $i ) ); " +
+                "   bolster( new Bar( $i ) ); " +
                 "end " +
 
                 "rule Defeater " +
@@ -703,10 +707,11 @@ public class DefeasibilityTest {
                 "   $b2 : Bar( $val2 : value > $val1, value - $val1 < 15 ) " +
                 "then " +
                 "   System.out.println( $b2 + ' defeats ' + $b1 ); " +
-                "   insertLogical( new Bar( $val1 ), 'neg' ); " +
+                "   bolster( new Bar( $val1 ), 'neg' ); " +
                 "end " +
 
                 "rule ReactP " +
+                "salience 100 " +
                 "when " +
                 "   $b : Bar() " +
                 "then " +
@@ -715,6 +720,7 @@ public class DefeasibilityTest {
                 "end " +
 
                 "rule ReactN " +
+                "salience 100 " +
                 "when " +
                 "   $b : Bar( _.neg )  " +
                 "then " +
@@ -740,7 +746,7 @@ public class DefeasibilityTest {
     }
 
 
-    @Test(timeout = 10000 )
+    @Test
     public void testDefeatersAndDefeasibles() {
         String droolsSource =
                 "package org.drools.tms.test; " +

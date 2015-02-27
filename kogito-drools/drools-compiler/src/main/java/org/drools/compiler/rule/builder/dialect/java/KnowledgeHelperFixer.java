@@ -42,6 +42,13 @@ public class KnowledgeHelperFixer {
                         }
                     } );
         
+        macros.put( "bolster",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.bolster";
+                        }
+                    } );
+
         macros.put( "modifyRetract",
                     new Macro() {
                         public String doMacro() {

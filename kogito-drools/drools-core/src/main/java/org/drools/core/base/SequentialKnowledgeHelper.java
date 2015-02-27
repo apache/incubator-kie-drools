@@ -219,6 +219,16 @@ public class SequentialKnowledgeHelper
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    @Override
+    public InternalFactHandle bolster( Object object, Object value ) {
+        return null;
+    }
+
+    @Override
+    public InternalFactHandle bolster( Object object ) {
+        return null;
+    }
+
     public void cancelRemainingPreviousLogicalDependencies() {
     }
 

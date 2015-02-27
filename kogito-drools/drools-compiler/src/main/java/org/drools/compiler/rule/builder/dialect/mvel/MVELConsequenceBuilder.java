@@ -43,6 +43,13 @@ public class MVELConsequenceBuilder
                         }
                     } );
 
+        macros.put( "bolster",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.bolster";
+                        }
+                    } );
+
         macros.put( "modify",
                     new Macro() {
                         public String doMacro() {

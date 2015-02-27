@@ -16,17 +16,14 @@
 
 package org.drools.core.base;
 
+import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
-import org.drools.core.factmodel.traits.TraitRegistry;
-import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.rule.EntryPointId;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
-import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalAgenda;
@@ -36,32 +33,19 @@ import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
-import org.drools.core.common.ObjectStore;
-import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.TruthMaintenanceSystemHelper;
-import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.traits.CoreWrapper;
-import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitFactory;
-import org.drools.core.factmodel.traits.TraitFieldTMS;
-import org.drools.core.factmodel.traits.TraitProxy;
-import org.drools.core.factmodel.traits.TraitRegistry;
-import org.drools.core.factmodel.traits.TraitType;
-import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
-import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.bitmask.BitMask;
@@ -82,14 +66,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
@@ -326,7 +305,58 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
             return handle;
         }
     }
-    
+
+    public InternalFactHandle bolster( final Object object ) {
+        return bolster( object, null );
+    }
+
+    public InternalFactHandle bolster( final Object object,
+                                     final Object value ) {
+
+        if ( object == null || ! activation.isMatched() ) {
+            return null;
+        }
+
+        InternalFactHandle handle = getFactHandleFromWM( object );
+        NamedEntryPoint ep = (NamedEntryPoint) workingMemory.getEntryPoint( EntryPointId.DEFAULT.getEntryPointId() );
+        ObjectTypeConf otc = ep.getObjectTypeConfigurationRegistry().getObjectTypeConf( ep.getEntryPoint(), object );
+
+        Object mode = value;
+        BeliefSystem beliefSystem;
+        if ( value == null ) {
+            beliefSystem = workingMemory.getTruthMaintenanceSystem().getBeliefSystem();
+        } else {
+            if ( value instanceof Mode ) {
+                Mode m = (Mode) value;
+                beliefSystem = (BeliefSystem) m.getBeliefSystem();
+            } else {
+                beliefSystem = workingMemory.getTruthMaintenanceSystem().getBeliefSystem();
+                mode = value;
+            }
+        }
+
+        BeliefSet beliefSet = null;
+        if ( handle == null ) {
+            handle = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getFactHandleFactoryService().newFactHandle( object,
+                                                                                                                                            otc,
+                                                                                                                                            workingMemory, ep );
+        }
+        if ( handle.getEqualityKey() == null ) {
+            handle.setEqualityKey( new EqualityKey( handle, EqualityKey.STATED ) );
+        } else {
+            beliefSet = handle.getEqualityKey().getBeliefSet();
+        }
+        if ( beliefSet == null ) {
+            beliefSet = beliefSystem.newBeliefSet( handle );
+            handle.getEqualityKey().setBeliefSet( beliefSet );
+        }
+
+        return beliefSystem.insert( beliefSystem.newLogicalDependency( activation, beliefSet, object, mode ),
+                             beliefSet,
+                             activation.getPropagationContext(),
+                             otc ).getFactHandle();
+    }
+
     public void cancelRemainingPreviousLogicalDependencies() {
         if ( this.previousJustified != null ) {
             for ( LogicalDependency dep = (LogicalDependency) this.previousJustified.getFirst(); dep != null; dep = (LogicalDependency) dep.getNext() ) {
