@@ -229,6 +229,13 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         return getOrCreateConcreteClassStore(getActualClass(object));
     }
 
+    private ConcreteClassStore getConcreteClassStore(Class<?> clazz) {
+        SingleClassStore store = getClassStore(clazz.getName());
+        return store != null
+               ? ( store.isConcrete() ? ( (ConcreteClassStore) store ) : null )
+               : null;
+    }
+
     private ConcreteClassStore getOrCreateConcreteClassStore(Class<?> clazz) {
         SingleClassStore existingStore = storesMap.get(clazz.getName());
         if (existingStore == null) {
