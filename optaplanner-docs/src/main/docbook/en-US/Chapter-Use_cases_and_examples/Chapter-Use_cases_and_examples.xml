@@ -10,8 +10,8 @@
   <section xml:id="examplesOverview">
     <title>Examples overview</title>
 
-    <para>Planner has several examples. In this manual we explain mainly using the n queens example and
-    cloud balancing example. So it's advisable to read at least those sections.</para>
+    <para>Planner has several examples. In this manual we explain mainly using the n queens example and cloud balancing
+    example. So it's advisable to read at least those sections.</para>
 
     <para>The source code of all these examples is available in the distribution zip under
     <filename>examples/sources</filename> and also in git under
@@ -747,8 +747,8 @@
       </listitem>
     </itemizedlist>
 
-    <para>These realistic competitions provide an objective comparison of Planner with competitive software and
-    academic research.</para>
+    <para>These realistic competitions provide an objective comparison of Planner with competitive software and academic
+    research.</para>
   </section>
 
   <section xml:id="basicExamples">
@@ -1054,8 +1054,8 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
         </itemizedlist>
 
         <para>Drools Expert also has the normal Miss Manners example (which is much smaller) and employs an exhaustive
-        heuristic to solve it. Planner's implementation is far more scalable because it uses heuristics to find the
-        best solution and Drools Expert to calculate the score of each solution.</para>
+        heuristic to solve it. Planner's implementation is far more scalable because it uses heuristics to find the best
+        solution and Drools Expert to calculate the score of each solution.</para>
       </section>
 
       <section xml:id="dinnerPartyProblemSize">
@@ -1465,9 +1465,9 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
         </mediaobject>
 
         <para>The vehicle routing with timewindows domain model makes heavily use of <link
-        linkend="shadowVariable">shadow variables</link>. This allows it to express its constraints more
-        naturally, because properties such as <literal>arrivalTime</literal> and <literal>departureTime</literal>, are
-        directly available on the domain model.</para>
+        linkend="shadowVariable">shadow variables</link>. This allows it to express its constraints more naturally,
+        because properties such as <literal>arrivalTime</literal> and <literal>departureTime</literal>, are directly
+        available on the domain model.</para>
       </section>
 
       <section xml:id="roadDistancesInsteadOfAirDistances">
@@ -1484,16 +1484,19 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
 
         <para>For the optimization algorithm, this doesn't matter much, as long as the distance between 2 points can be
         looked up (and are preferably precalculated). The road cost doesn't even need to be a distance, it can also be
-        travel time, fuel cost, or a weighted function of those. There are several Google Maps like technologies
-        available to precalculate road costs, such as <link xlink:href="https://graphhopper.com/">GraphHopper</link>
-        (embeddable, offline Java engine) and <link xlink:href="http://open.mapquestapi.com/directions/#matrix">Open
-        MapQuest</link> (web service). There are also several technologies to render it, such as <link
-        xlink:href="http://leafletjs.com">Leaflet</link>.</para>
+        travel time, fuel cost, or a weighted function of those. There are several technologies available to
+        precalculate road costs, such as <link xlink:href="https://graphhopper.com/">GraphHopper</link> (embeddable,
+        offline Java engine), <link xlink:href="http://open.mapquestapi.com/directions/#matrix">Open MapQuest</link>
+        (web service) and <link
+        xlink:href="https://developers.google.com/maps/documentation/webservices/client-library">Google Maps Client
+        API</link> (web service). There are also several technologies to render it, such as <link
+        xlink:href="http://leafletjs.com">Leaflet</link> and <link
+        xlink:href="https://developers.google.com/maps/">Google Maps for developers</link>.</para>
 
         <para>Take special care that the road costs between 2 points use the same optimization criteria as the one used
-        in Planner. For example, GraphHopper etc will by default return the fastest route, not the shortest route.
-        Don't use the km (or miles) distances of the fastest GPS routes to optimize the shortest trip in Planner:
-        this leads to a suboptimal solution as shown below:</para>
+        in Planner. For example, GraphHopper etc will by default return the fastest route, not the shortest route. Don't
+        use the km (or miles) distances of the fastest GPS routes to optimize the shortest trip in Planner: this leads
+        to a suboptimal solution as shown below:</para>
 
         <mediaobject>
           <imageobject>
