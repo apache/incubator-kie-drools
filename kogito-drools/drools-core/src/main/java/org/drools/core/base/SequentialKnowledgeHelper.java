@@ -53,8 +53,6 @@ public class SequentialKnowledgeHelper
     private Activation                         activation;
     private Tuple                              tuple;
     private final InternalWorkingMemoryActions workingMemory;
-    private IdentityHashMap<Object,InternalFactHandle>
-                                               identityMap;
 
     public SequentialKnowledgeHelper(final WorkingMemory workingMemory) {
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
@@ -65,7 +63,6 @@ public class SequentialKnowledgeHelper
         this.subrule = agendaItem.getSubRule();
         this.activation = agendaItem;
         this.tuple = agendaItem.getTuple();
-        this.identityMap = new IdentityHashMap<Object,InternalFactHandle>();
     }
     
     public void reset() {
@@ -156,14 +153,6 @@ public class SequentialKnowledgeHelper
 
     public Map<String, Channel> getChannels() {
         return Collections.unmodifiableMap( this.workingMemory.getChannels() );
-    }
-
-    public IdentityHashMap<Object, InternalFactHandle> getIdentityMap() {
-        return this.identityMap;
-    }
-
-    public void setIdentityMap(IdentityHashMap<Object, InternalFactHandle> identityMap) {
-        this.identityMap = identityMap;
     }
 
     public <T> T getContext(Class<T> contextClass) {

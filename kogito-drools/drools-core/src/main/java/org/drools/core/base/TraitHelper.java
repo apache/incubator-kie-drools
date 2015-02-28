@@ -53,7 +53,6 @@ public class TraitHelper implements Externalizable {
 
     private InternalWorkingMemoryActions              workingMemory;
     private NamedEntryPoint                           entryPoint;
-    private IdentityHashMap<Object, FactHandle>       identityMap;
 
 
     public TraitHelper( InternalWorkingMemoryActions workingMemory, NamedEntryPoint nep ) {
@@ -257,10 +256,6 @@ public class TraitHelper implements Externalizable {
     }
 
     protected <T, K> T applyTrait( Activation activation, K core, Class<T> trait, Object value, boolean logical, Mode... modes ) throws LogicalTypeInconsistencyException {
-        if ( identityMap == null ) {
-            // traits and proxies can benefit from a cached lookup
-            identityMap = new IdentityHashMap<Object, FactHandle>(  );
-        }
         TraitFactory builder = TraitFactory.getTraitBuilderForKnowledgeBase( entryPoint.getKnowledgeBase() );
 
         TraitableBean inner = makeTraitable( core, builder, logical, activation );
@@ -320,10 +315,6 @@ public class TraitHelper implements Externalizable {
                                                 logical,
                                                 activation.getRule(),
                                                 activation );
-            if ( this.identityMap != null ) {
-                this.identityMap.put( inner,
-                                      handle );
-            }
         }
 
     }
@@ -421,10 +412,6 @@ public class TraitHelper implements Externalizable {
                                                                     logical,
                                                                     activation.getRule(),
                                                                     activation );
-                if ( this.identityMap != null ) {
-                    this.identityMap.put( core,
-                                          h );
-                }
             }
             if ( ! h.isTraitOrTraitable() ) {
                 throw new IllegalStateException( "A traited working memory element is being used with a default fact handle. " +
@@ -466,10 +453,6 @@ public class TraitHelper implements Externalizable {
                                                         logical,
                                                         activation.getRule(),
                                                         activation );
-                    if ( this.identityMap != null ) {
-                        this.identityMap.put( inner,
-                                              handle );
-                    }
                 }
                 if ( ftms.needsInit() ) {
                     ftms.init( workingMemory );
@@ -506,9 +489,6 @@ public class TraitHelper implements Externalizable {
 
     public FactHandle lookupFactHandle(Object object) {
         FactHandle handle = null;
-        if ( identityMap != null ) {
-            handle = identityMap.get( object );
-        }
 
         if ( handle != null ) {
             return handle;
@@ -532,19 +512,12 @@ public class TraitHelper implements Externalizable {
         // NOTE: it would probably be a good idea to create a specific attribute for that
             handle = (FactHandle) entryPoint.getFactHandle( object );
         if ( handle != null ) {
-            if ( identityMap != null ) {
-                identityMap.put( object,
-                                 handle );
-            }
         }
         return handle;
     }
 
     public FactHandle getFactHandle(Object object) {
         FactHandle handle = null;
-        if ( identityMap != null ) {
-            handle = identityMap.get( object );
-        }
 
         if ( handle != null ) {
             return handle;
@@ -566,12 +539,10 @@ public class TraitHelper implements Externalizable {
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         workingMemory = (InternalWorkingMemoryActions) in.readObject();
-        identityMap = (IdentityHashMap<Object, FactHandle>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( workingMemory );
-        out.writeObject( identityMap );
     }
 
 
@@ -584,10 +555,6 @@ public class TraitHelper implements Externalizable {
                                                                       onlyTraitBitSetMask(),
                                                                       newObject.getClass(),
                                                                       activation );
-        if ( identityMap != null ) {
-            identityMap.put( newObject,
-                             handle );
-        }
     }
 
     public void update( final FactHandle handle,
@@ -610,9 +577,6 @@ public class TraitHelper implements Externalizable {
         ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).delete( handle,
                                                                                                   activation.getRule(),
                                                                                                   activation );
-        if ( this.identityMap != null ) {
-            this.identityMap.remove( o );
-        }
     }
 
     public FactHandle insert(final Object object,
@@ -623,11 +587,6 @@ public class TraitHelper implements Externalizable {
                                                        false,
                                                        activation.getRule(),
                                                        activation );
-        if ( this.identityMap != null ) {
-            this.identityMap.put( object,
-                                  handle );
-        }
-
         return handle;
     }
 
@@ -644,11 +603,6 @@ public class TraitHelper implements Externalizable {
                                                                               modes,
                                                                               activation.getRule(),
                                                                               activation );
-
-        if ( this.identityMap != null ) {
-            this.identityMap.put( object,
-                                  handle );
-        }
 
     }
 

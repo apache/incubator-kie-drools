@@ -138,10 +138,6 @@ public interface KnowledgeHelper
     
     void halt();
 
-    IdentityHashMap<Object, InternalFactHandle> getIdentityMap();
-
-    void setIdentityMap(IdentityHashMap<Object, InternalFactHandle> identityMap);
-    
     <T> T getContext(Class<T> contextClass);
 
     <T, K> T don( K core, Class<T> trait, boolean logical );
