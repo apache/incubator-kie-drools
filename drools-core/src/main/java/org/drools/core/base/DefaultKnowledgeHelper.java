@@ -57,7 +57,6 @@ import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.beliefs.Mode;
@@ -68,7 +67,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.Map;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
@@ -85,9 +83,6 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     private Tuple                                     tuple;
     private InternalWorkingMemoryActions              workingMemory;
 
-    private IdentityHashMap<Object, InternalFactHandle>
-                                                      identityMap;
-
     private LinkedList<LogicalDependency<T>>          previousJustified;
 
     private LinkedList<LogicalDependency<SimpleMode>> previousBlocked;
@@ -98,16 +93,11 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     public DefaultKnowledgeHelper(final WorkingMemory workingMemory) {
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
-
-        this.identityMap = null;
-
     }
 
     public DefaultKnowledgeHelper(Activation activation, final WorkingMemory workingMemory) {
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
         this.activation = activation;
-        this.identityMap = null;
-
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -115,14 +105,12 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         activation = (Activation) in.readObject();
         tuple = (Tuple) in.readObject();
         workingMemory = (InternalWorkingMemoryActions) in.readObject();
-        identityMap = (IdentityHashMap<Object, InternalFactHandle>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( activation );
         out.writeObject( tuple );
         out.writeObject( workingMemory );
-        out.writeObject( identityMap );
     }
 
     public void setActivation(final Activation agendaItem) {
@@ -139,7 +127,6 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     public void reset() {
         this.activation = null;
         this.tuple = null;
-        this.identityMap = null;
         this.previousJustified = null;
         this.previousBlocked = null;
     }
@@ -218,11 +205,6 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
                                                                                     false,
                                                                                     this.activation.getRule(),
                                                                                     this.activation );
-        if ( this.identityMap != null ) {
-            this.getIdentityMap().put( object,
-                                       handle );
-        }
-
         return handle;
     }
 
@@ -298,10 +280,6 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 //                                                           this.activation.getRule(),
 //                                                           this.activation );
 
-            if ( this.identityMap != null ) {
-                this.getIdentityMap().put( object,
-                                           handle );
-            }
             return handle;
         }
     }
@@ -387,10 +365,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     public InternalFactHandle getFactHandle(Object object) {
         InternalFactHandle handle = null;
-        if ( identityMap != null ) {
-            handle = identityMap.get( object );
-        }
-        
+
         if ( handle != null ) {
             return handle;
         }
@@ -425,10 +400,6 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
                                                                       onlyTraitBitSetMask(),
                                                                       newObject.getClass(),
                                                                       this.activation );
-        if ( getIdentityMap() != null ) {
-            this.getIdentityMap().put( newObject,
-                                       h );
-        }
     }
 
     public void update(final FactHandle handle) {
@@ -483,9 +454,6 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
             ((InternalWorkingMemoryEntryPoint) ifh.getEntryPoint()).getTruthMaintenanceSystem().delete( ifh );
         }
 
-        if ( this.identityMap != null ) {
-            this.getIdentityMap().remove( o );
-        }
     }
 
     public RuleImpl getRule() {
@@ -519,10 +487,6 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
             Object object = declaration.getValue( wmTmp.getInternalWorkingMemory(),
                                                   this.tuple.get( declaration ).getObject() );
             
-            if ( identityMap != null ) {
-                getIdentityMap().put( object,
-                                      (InternalFactHandle) wmTmp.getFactHandleByIdentity( object ) );
-            }
             return object;
         }
         return null;
@@ -548,30 +512,12 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         return Collections.unmodifiableMap( this.workingMemory.getChannels() );
     }
 
-    /**
-     * @return the identityMap
-     */
-    public IdentityHashMap<Object, InternalFactHandle> getIdentityMap() {
-        return identityMap;
-    }
-
-    /**
-     * @param identityMap the identityMap to set
-     */
-    public void setIdentityMap(IdentityHashMap<Object, InternalFactHandle> identityMap) {
-        this.identityMap = identityMap;
-    }
-
     private InternalFactHandle getFactHandleFromWM(final Object object) {
         InternalFactHandle handle = null;
         // entry point null means it is a generated fact, not a regular inserted fact
         // NOTE: it would probably be a good idea to create a specific attribute for that
             for ( EntryPoint ep : workingMemory.getEntryPoints() ) {
                 handle = (InternalFactHandle) ep.getFactHandle( object );
-                if ( identityMap != null ) {
-                    identityMap.put( object,
-                                     handle );
-                }
                 if( handle != null ) {
                     break;
                 }
