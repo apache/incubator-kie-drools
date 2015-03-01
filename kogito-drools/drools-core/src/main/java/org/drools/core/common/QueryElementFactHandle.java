@@ -246,5 +246,10 @@ public class QueryElementFactHandle
     public void removeRightTuple( RightTuple rightTuple ) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
-    
+
+    @Override
+    public <K> K as( Class<K> klass ) throws ClassCastException {
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not yet support this method" );
+    }
+
 }

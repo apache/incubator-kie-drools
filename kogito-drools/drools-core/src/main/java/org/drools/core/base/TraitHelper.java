@@ -626,4 +626,25 @@ public class TraitHelper implements Externalizable {
             }
         }
     }
+
+    public static <K> K extractTrait( InternalFactHandle handle, Class<K> klass ) {
+        TraitableBean tb;
+        if ( handle.isTraitable() ) {
+            tb = (TraitableBean) handle.getObject();
+        } else if ( handle.isTraiting() ) {
+            tb = ((TraitProxy) handle.getObject()).getObject();
+        } else {
+            return null;
+        }
+        K k = (K) tb.getTrait( klass.getCanonicalName() );
+        if ( k != null ) {
+            return k;
+        }
+        for ( Object t : tb.getMostSpecificTraits() ) {
+            if ( klass.isAssignableFrom( t.getClass() ) ) {
+                return (K) t;
+            }
+        }
+        return null;
+    }
 }

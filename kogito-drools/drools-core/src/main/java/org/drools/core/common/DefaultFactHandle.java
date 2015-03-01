@@ -16,7 +16,10 @@
 
 package org.drools.core.common;
 
+import org.drools.core.base.TraitHelper;
 import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.TraitableBean;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.util.AbstractBaseLinkedListNode;
@@ -31,6 +34,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Arrays;
+import java.util.BitSet;
 
 /**
  * Implementation of <code>FactHandle</code>.
@@ -181,6 +185,19 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     public void setNegated(boolean negated) {
         this.negated = negated;
+    }
+
+    @Override
+    public <K> K as( Class<K> klass ) throws ClassCastException {
+        if ( klass.isAssignableFrom( object.getClass() ) ) {
+            return (K) object;
+        } else if ( this.isTraitOrTraitable() ) {
+            K k = TraitHelper.extractTrait( this, klass );
+            if ( k != null ) {
+                return  k;
+            }
+        }
+        throw new ClassCastException( "The Handle's Object can't be cast to " + klass );
     }
 
     public boolean isDisconnected() {
