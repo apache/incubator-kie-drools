@@ -129,6 +129,11 @@ public class DisconnectedFactHandle
         this.negated = negated;
     }
 
+    @Override
+    public <K> K as( Class<K> klass ) throws ClassCastException {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
     public int getId() {
         return this.id;
     }

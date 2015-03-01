@@ -117,4 +117,6 @@ public interface InternalFactHandle
     public boolean isNegated();
 
     public void setNegated(boolean negated);
+
+    public <K> K as( Class<K> klass ) throws ClassCastException;
 }

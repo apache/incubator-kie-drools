@@ -5204,4 +5204,57 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
+    @Test
+    public void testCastOnTheFly() throws InterruptedException {
+        final String s1 = "package test; " +
+
+                          "import org.drools.core.factmodel.traits.*; " +
+
+                          "global java.util.List list; " +
+
+                          "declare Foo " +
+                          " @Traitable " +
+                          " @propertyReactive " +
+                          " id : int " +
+                          "end " +
+
+                          "declare trait Upper " +
+                          " @propertyReactive " +
+                          " id : int " +
+                          "end " +
+
+                          "declare trait Lower extends Upper " +
+                          " @propertyReactive " +
+                          "end " +
+
+                          "rule Init " +
+                          " dialect 'mvel' " +
+                          "	when " +
+                          "	then " +
+                          "     Foo o = insert( new Foo( 42 ) ).as( Foo.class ); " +
+                          "     list.add( o.getId() ); " +
+                          "end " +
+
+                          "rule Don " +
+                          " when " +
+                          "     $f : Foo() " +
+                          " then " +
+                          "     Lower l = don( $f, Lower.class ); " +
+                          "     Upper u = bolster( $f ).as( Upper.class ); " +
+                          "     list.add( u.getId() + 1 ); " +
+                          " end ";
+
+        final KnowledgeBase kbase = getKieBaseFromString(s1);
+
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.fireAllRules();
+
+        assertEquals( Arrays.asList( 42, 43 ), list );
+    }
+
 }
