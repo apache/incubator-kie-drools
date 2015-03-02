@@ -5,10 +5,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Benchmarking and tweaking</title>
+  <title>Benchmarking And Tweaking</title>
 
   <section xml:id="findTheBestSolverConfiguration">
-    <title>Find the best <literal>Solver</literal> configuration</title>
+    <title>Find The Best <literal>Solver</literal> Configuration</title>
 
     <para>Planner supports several optimization algorithms, so you're probably wondering which is the best one? Although
     some optimization algorithms generally perform better than others, it really depends on your problem domain. Most
@@ -27,10 +27,10 @@
   </section>
 
   <section xml:id="benchmarkConfiguration">
-    <title>Benchmark configuration</title>
+    <title>Benchmark Configuration</title>
 
     <section xml:id="benchmarker.addDependency">
-      <title>Add dependency on <literal>optaplanner-benchmark</literal></title>
+      <title>Add Dependency On <literal>optaplanner-benchmark</literal></title>
 
       <para>The benchmarker is in a separate artifact called <literal>optaplanner-benchmark</literal>.</para>
 
@@ -50,7 +50,7 @@
     </section>
 
     <section xml:id="buildAndRunAPlannerBenchmark">
-      <title>Build and run a <literal>PlannerBenchmark</literal></title>
+      <title>Build And Run A <literal>PlannerBenchmark</literal></title>
 
       <para>Build a <literal>PlannerBenchmark</literal> instance with a <literal>PlannerBenchmarkFactory</literal>.
       Configure it with a benchmark configuration XML file, provided as a classpath resource:</para>
@@ -136,10 +136,10 @@
     </section>
 
     <section xml:id="solutionFileIO">
-      <title>SolutionFileIO: input and output of Solution files</title>
+      <title>SolutionFileIO: Input And Output Of Solution Files</title>
 
       <section xml:id="solutionFileIOInterface">
-        <title><literal>SolutionFileIO</literal> interface</title>
+        <title><literal>SolutionFileIO</literal> Interface</title>
 
         <para>The benchmarker needs to be able to read the input files to load a <literal>Solution</literal>. Also, it
         might need to write the best <literal>Solution</literal> of each benchmark to an output file. For that it uses a
@@ -159,7 +159,7 @@
       </section>
 
       <section xml:id="xStreamSolutionFileIO">
-        <title><literal>XStreamSolutionFileIO</literal>: the default <literal>SolutionFileIO</literal></title>
+        <title><literal>XStreamSolutionFileIO</literal>: The Default <literal>SolutionFileIO</literal></title>
 
         <para>By default, a benchmarker uses a <literal>XStreamSolutionFileIO</literal> instance to read and write
         solutions.</para>
@@ -205,7 +205,7 @@
       </section>
 
       <section xml:id="readingAnInputSolutionFromADatabase">
-        <title>Reading an input solution from a database (or other repository)</title>
+        <title>Reading An Input Solution From A Database (Or Other Repository)</title>
 
         <para>The benchmark configuration currently expects an <literal>&lt;inputSolutionFile&gt;</literal> element for
         each dataset. There are 2 ways to deal with this if your dataset is in a database or another type of
@@ -233,7 +233,7 @@
     </section>
 
     <section xml:id="warmingUpTheHotSpotCompiler">
-      <title>Warming up the HotSpot compiler</title>
+      <title>Warming Up The HotSpot Compiler</title>
 
       <para><emphasis role="bold">Without a warm up, the results of the first (or first few) benchmarks are not
       reliable</emphasis>, because they will have lost CPU time on HotSpot JIT compilation (and possibly DRL compilation
@@ -250,7 +250,7 @@
     </section>
 
     <section xml:id="benchmarkBlueprint">
-      <title>Benchmark blueprint: a predefined configuration</title>
+      <title>Benchmark Blueprint: A Predefined Configuration</title>
 
       <para>To quickly configure and run a benchmark for typical solver configs, use a
       <literal>solverBenchmarkBluePrint</literal> instead of <literal>solverBenchmark</literal>s:</para>
@@ -294,7 +294,7 @@
     </section>
 
     <section xml:id="writeTheOutputSolutionOfBenchmarkRuns">
-      <title>Write the output solution of benchmark runs</title>
+      <title>Write The Output Solution Of Benchmark Runs</title>
 
       <para>The best solution of each benchmark run can be written in the <literal>benchmarkDirectory</literal>. By
       default, this is disabled, because the files are rarely used and considered bloat. Also, on large datasets,
@@ -312,7 +312,7 @@
     </section>
 
     <section xml:id="benchmarkLogging">
-      <title>Benchmark logging</title>
+      <title>Benchmark Logging</title>
 
       <para>Benchmark logging is configured like <link linkend="logging">the <literal>Solver</literal>
       logging</link>.</para>
@@ -337,10 +337,10 @@
   </section>
 
   <section xml:id="benchmarkReport">
-    <title>Benchmark report</title>
+    <title>Benchmark Report</title>
 
     <section xml:id="benchmarkHtmlReport">
-      <title>HTML report</title>
+      <title>HTML Report</title>
 
       <para>After running a benchmark, an HTML report will be written in the <literal>benchmarkDirectory</literal> with
       the <filename>index.html</filename> filename. Open it in your browser. It has a nice overview of your benchmark
@@ -382,7 +382,7 @@
     </section>
 
     <section xml:id="rankingTheSolvers">
-      <title>Ranking the <literal>Solver</literal>s</title>
+      <title>Ranking The <literal>Solver</literal>s</title>
 
       <para>The benchmark report automatically ranks the solvers. The <literal>Solver</literal> with rank
       <literal>0</literal> is called the favorite <literal>Solver</literal>: it performs best overall, but it might not
@@ -432,17 +432,17 @@
   </section>
 
   <section xml:id="benchmarkReportSummaryStatistics">
-    <title>Summary statistics</title>
+    <title>Summary Statistics</title>
 
     <section xml:id="benchmarkReportBestScoreSummary">
-      <title>Best score summary (graph and table)</title>
+      <title>Best Score Summary (Graph And Table)</title>
 
       <para>Shows the best score per <literal>inputSolutionFile</literal> for each solver configuration.</para>
 
       <para>Useful for visualizing the best solver configuration.</para>
 
       <figure>
-        <title>Best score summary statistic</title>
+        <title>Best Score Summary Statistic</title>
 
         <mediaobject>
           <imageobject>
@@ -453,7 +453,7 @@
     </section>
 
     <section xml:id="benchmarkReportBestScoreScalabilitySummary">
-      <title>Best score scalability summary (graph)</title>
+      <title>Best Score Scalability Summary (Graph)</title>
 
       <para>Shows the best score per problem scale for each solver configuration.</para>
 
@@ -467,7 +467,7 @@
     </section>
 
     <section xml:id="benchmarkReportWinningScoreDifferenceSummary">
-      <title>Winning score difference summary (graph and table)</title>
+      <title>Winning Score Difference Summary (Graph And Table)</title>
 
       <para>Shows the winning score difference per <literal>inputSolutionFile</literal> for each solver configuration.
       The winning score difference is the score difference with the score of the winning solver configuration for that
@@ -477,8 +477,8 @@
     </section>
 
     <section xml:id="benchmarkReportWorstScoreDifferencePercentageSummary">
-      <title>Worst score difference percentage (ROI) summary (graph and table)</title>
-
+      <title>Worst Score Difference Percentage (ROI) Summary (Graph and Table)</title>
+      
       <para>Shows the return on investment (ROI) per <literal>inputSolutionFile</literal> for each solver configuration
       if you'd upgrade from the worst solver configuration for that particular
       <literal>inputSolutionFile</literal>.</para>
@@ -487,7 +487,7 @@
     </section>
 
     <section xml:id="benchmarkReportAverageCalculationCountSummary">
-      <title>Average calculation count summary (graph and table)</title>
+      <title>Average Calculation Count Summary (Graph and Table)</title>
 
       <para>Shows the score calculation speed: the average calculation count per second per problem scale for each
       solver configuration.</para>
@@ -498,7 +498,7 @@
     </section>
 
     <section xml:id="benchmarkReportTimeSpentSummary">
-      <title>Time spent summary (graph and table)</title>
+      <title>Time Spent Summary (Graph And Table)</title>
 
       <para>Shows the time spent per <literal>inputSolutionFile</literal> for each solver configuration. This is
       pointless if it's benchmarking against a fixed time limit.</para>
@@ -508,7 +508,7 @@
     </section>
 
     <section xml:id="benchmarkReportTimeSpentScalabilitySummary">
-      <title>Time spent scalability summary (graph)</title>
+      <title>Time Spent Scalability Summary (Graph)</title>
 
       <para>Shows the time spent per problem scale for each solver configuration. This is pointless if it's benchmarking
       against a fixed time limit.</para>
@@ -518,7 +518,7 @@
     </section>
 
     <section xml:id="benchmarkReportBestScorePerTimeSpentSummary">
-      <title>Best score per time spent summary (graph)</title>
+      <title>Best Score Per Time Spent Summary (Graph)</title>
 
       <para>Shows the best score per time spent for each solver configuration. This is pointless if it's benchmarking
       against a fixed time limit.</para>
@@ -529,10 +529,10 @@
   </section>
 
   <section xml:id="benchmarkReportStatisticPerDataset">
-    <title>Statistic per dataset (graph and CSV)</title>
+    <title>Statistic Per Dataset (Graph And CSV)</title>
 
     <section xml:id="enableAProblemStatistic">
-      <title>Enable a problem statistic</title>
+      <title>Enable A Problem Statistic</title>
 
       <para>The benchmarker supports outputting problem statistics as graphs and CSV (comma separated values) files to
       the <literal>benchmarkDirectory</literal>. To configure one, add a <literal>problemStatisticType</literal>
@@ -564,7 +564,7 @@
     </section>
 
     <section xml:id="benchmarkReportBestScoreOverTimeStatistic">
-      <title>Best score over time statistic (graph and CSV)</title>
+      <title>Best Score Over Time Statistic (Graph And CSV)</title>
 
       <para>To see how the best score evolves over time, add:</para>
 
@@ -574,7 +574,7 @@
     &lt;/problemBenchmarks&gt;</programlisting>
 
       <figure>
-        <title>Best score over time statistic</title>
+        <title>Best Score Over Time Statistic</title>
 
         <mediaobject>
           <imageobject>
@@ -595,7 +595,7 @@
     </section>
 
     <section xml:id="benchmarkReportStepScoreOverTimeStatistic">
-      <title>Step score over time statistic (graph and CSV)</title>
+      <title>Step Score Over Time Statistic (Graph And CSV)</title>
 
       <para>To see how the step score evolves over time, add:</para>
 
@@ -605,7 +605,7 @@
     &lt;/problemBenchmarks&gt;</programlisting>
 
       <figure>
-        <title>Step score over time statistic</title>
+        <title>Step Score Over Time Statistic</title>
 
         <mediaobject>
           <imageobject>
@@ -625,7 +625,7 @@
     </section>
 
     <section xml:id="benchmarkReportCalculateCountPerSecondStatistic">
-      <title>Calculate count per second statistic (graph and CSV)</title>
+      <title>Calculate Count Per Second Statistic (Graph And CSV)</title>
 
       <para>To see how fast the scores are calculated, add:</para>
 
@@ -635,7 +635,7 @@
     &lt;/problemBenchmarks&gt;</programlisting>
 
       <figure>
-        <title>Calculate count per second statistic</title>
+        <title>Calculate Count Per Second Statistic</title>
 
         <mediaobject>
           <imageobject>
@@ -655,7 +655,7 @@
     </section>
 
     <section xml:id="benchmarkReportBestSolutionMutationOverTimeStatistic">
-      <title>Best solution mutation over time statistic (graph and CSV)</title>
+      <title>Best Solution Mutation Over Time Statistic (Graph And CSV)</title>
 
       <para>To see how much each new best solution differs from the <emphasis>previous best solution</emphasis>, by
       counting the number of planning variables which have a different value (not including the variables that have
@@ -667,7 +667,7 @@
     &lt;/problemBenchmarks&gt;</programlisting>
 
       <figure>
-        <title>Best solution mutation over time statistic</title>
+        <title>Best Solution Mutation Over Time Statistic</title>
 
         <mediaobject>
           <imageobject>
@@ -681,7 +681,7 @@
     </section>
 
     <section xml:id="benchmarkReportMoveCountPerStepStatistic">
-      <title>Move count per step statistic (graph and CSV)</title>
+      <title>Move Count Per Step Statistic (Graph And CSV)</title>
 
       <para>To see how the selected and accepted move count per step evolves over time, add:</para>
 
@@ -691,7 +691,7 @@
     &lt;/problemBenchmarks&gt;</programlisting>
 
       <figure>
-        <title>Move count per step statistic</title>
+        <title>Move Count Per Step Statistic</title>
 
         <mediaobject>
           <imageobject>
@@ -707,7 +707,7 @@
     </section>
 
     <section xml:id="benchmarkReportMemoryUseStatistic">
-      <title>Memory use statistic (graph and CSV)</title>
+      <title>Memory Use Statistic (Graph And CSV)</title>
 
       <para>To see how much memory is used, add:</para>
 
@@ -717,7 +717,7 @@
     &lt;/problemBenchmarks&gt;</programlisting>
 
       <figure>
-        <title>Memory use statistic</title>
+        <title>Memory Use Statistic</title>
 
         <mediaobject>
           <imageobject>
@@ -733,10 +733,10 @@
   </section>
 
   <section xml:id="benchmarkReportStatisticPerSingleBenchmark">
-    <title>Statistic per single benchmark (graph and CSV)</title>
+    <title>Statistic Per Single Benchmark (Graph And CSV)</title>
 
     <section xml:id="enableASingleStatistic">
-      <title>Enable a single statistic</title>
+      <title>Enable A Single Statistic</title>
 
       <para>A single statistic is a statics for 1 dataset for 1 solver configuration. Unlike a problem statistic, it
       does not aggregate over solver configurations.</para>
@@ -769,7 +769,7 @@
     </section>
 
     <section xml:id="benchmarkReportConstraintMatchTotalBestScoreOverTimeStatistic">
-      <title>Constraint match total best score over time statistic (graph and CSV)</title>
+      <title>Constraint Match Total Best Score Over Time Statistic (Graph And CSV)</title>
 
       <para>To see which constraints are matched in the best score (and how much) over time, add:</para>
 
@@ -779,7 +779,7 @@
     &lt;/problemBenchmarks&gt;</programlisting>
 
       <figure>
-        <title>Constraint match total best score diff over time statistic</title>
+        <title>Constraint Match Total Best Score Diff Over Time Statistic</title>
 
         <mediaobject>
           <imageobject>
@@ -799,7 +799,7 @@
     </section>
 
     <section xml:id="benchmarkReportConstraintMatchTotalStepScoreOverTimeStatistic">
-      <title>Constraint match total step score over time statistic (graph and CSV)</title>
+      <title>Constraint Match Total Step Score Over Time Statistic (Graph And CSV)</title>
 
       <para>To see which constraints are matched in the step score (and how much) over time, add:</para>
 
@@ -809,7 +809,7 @@
     &lt;/problemBenchmarks&gt;</programlisting>
 
       <figure>
-        <title>Constraint match total step score diff over time statistic</title>
+        <title>Constraint Match Total Step Score Diff Over Time Statistic</title>
 
         <mediaobject>
           <imageobject>
@@ -829,7 +829,7 @@
     </section>
 
     <section xml:id="benchmarkReportPickedMoveTypeBestScoreDiffOverTimeStatistic">
-      <title>Picked move type best score diff over time statistic (graph and CSV)</title>
+      <title>Picked Move Type Best Score Diff Over Time Statistic (Graph And CSV)</title>
 
       <para>To see which move types improve the best score (and how much) over time, add:</para>
 
@@ -839,7 +839,7 @@
     &lt;/problemBenchmarks&gt;</programlisting>
 
       <figure>
-        <title>Picked move type best score diff over time statistic</title>
+        <title>Picked Move Type Best Score Diff Over Time Statistic</title>
 
         <mediaobject>
           <imageobject>
@@ -850,7 +850,7 @@
     </section>
 
     <section xml:id="benchmarkReportPickedMoveTypeStepScoreDiffOverTimeStatistic">
-      <title>Picked move type step score diff over time statistic (graph and CSV)</title>
+      <title>Picked Move Type Step Score Diff Over Time Statistic (Graph And CSV)</title>
 
       <para>To see how much each winning step affects the step score over time, add:</para>
 
@@ -860,7 +860,7 @@
     &lt;/problemBenchmarks&gt;</programlisting>
 
       <figure>
-        <title>Picked move type step score diff over time statistic</title>
+       <title>Picked Move Type Step Score Diff Over Time Statistic</title>
 
         <mediaobject>
           <imageobject>
@@ -872,13 +872,13 @@
   </section>
 
   <section xml:id="advancedBenchmarking">
-    <title>Advanced benchmarking</title>
+    <title>Advanced Benchmarking</title>
 
     <section xml:id="benchmarkingPerformanceTricks">
-      <title>Benchmarking performance tricks</title>
+      <title>Benchmarking Performance Tricks</title>
 
       <section xml:id="parallelBenchmarkingOnMultipleThreads">
-        <title>Parallel benchmarking on multiple threads</title>
+        <title>Parallel Benchmarking On Multiple Threads</title>
 
         <para>If you have multiple processors available on your computer, you can run multiple benchmarks in parallel on
         multiple threads to get your benchmarks results faster:</para>
@@ -937,7 +937,7 @@
     </section>
 
     <section xml:id="templateBasedBenchmarking">
-      <title>Template based benchmarking and matrix benchmarking</title>
+      <title>Template Based Benchmarking And Matrix Benchmarking</title>
 
       <para>Matrix benchmarking is benchmarking a combination of value sets. For example: benchmark 4
       <literal>entityTabuSize</literal> values (<literal>5</literal>, <literal>7</literal>, <literal>11</literal> and
@@ -985,7 +985,7 @@
     </section>
 
     <section xml:id="benchmarkReportAggregation">
-      <title>Benchmark report aggregation</title>
+      <title>Benchmark Report Aggregation</title>
 
       <para>The <literal>BenchmarkAggregator</literal> takes 1 or more existing benchmarks and merges them into new
       benchmark report, without actually running the benchmarks again.</para>
