@@ -41,6 +41,8 @@ public class NearbySelectionConfig extends SelectorConfig {
     protected EntitySelectorConfig originEntitySelectorConfig = null;
     protected Class<? extends NearbyDistanceMeter> nearbyDistanceMeterClass = null;
 
+    protected NearbySelectionDistributionType nearbySelectionDistributionType = null;
+
     protected Integer blockDistributionSizeMinimum = null;
     protected Integer blockDistributionSizeMaximum = null;
     protected Double blockDistributionSizeRatio = null;
@@ -67,6 +69,14 @@ public class NearbySelectionConfig extends SelectorConfig {
 
     public void setNearbyDistanceMeterClass(Class<? extends NearbyDistanceMeter> nearbyDistanceMeterClass) {
         this.nearbyDistanceMeterClass = nearbyDistanceMeterClass;
+    }
+
+    public NearbySelectionDistributionType getNearbySelectionDistributionType() {
+        return nearbySelectionDistributionType;
+    }
+
+    public void setNearbySelectionDistributionType(NearbySelectionDistributionType nearbySelectionDistributionType) {
+        this.nearbySelectionDistributionType = nearbySelectionDistributionType;
     }
 
     public Integer getBlockDistributionSizeMinimum() {
@@ -190,13 +200,17 @@ public class NearbySelectionConfig extends SelectorConfig {
     }
 
     protected NearbyRandom buildNearbyRandom() {
-        boolean blockDistributionEnabled = blockDistributionSizeMinimum != null
+        boolean blockDistributionEnabled = nearbySelectionDistributionType == NearbySelectionDistributionType.BLOCK_DISTRIBUTION
+                || blockDistributionSizeMinimum != null
                 || blockDistributionSizeMaximum != null
                 || blockDistributionSizeRatio != null
                 || blockDistributionUniformDistributionProbability != null;
-        boolean linearDistributionEnabled = linearDistributionSizeMaximum != null;
-        boolean parabolicDistributionEnabled = parabolicDistributionSizeMaximum != null;
-        boolean betaDistributionEnabled = betaDistributionAlpha != null
+        boolean linearDistributionEnabled = nearbySelectionDistributionType == NearbySelectionDistributionType.LINEAR_DISTRIBUTION
+                || linearDistributionSizeMaximum != null;
+        boolean parabolicDistributionEnabled = nearbySelectionDistributionType == NearbySelectionDistributionType.PARABOLIC_DISTRIBUTION
+                || parabolicDistributionSizeMaximum != null;
+        boolean betaDistributionEnabled = nearbySelectionDistributionType == NearbySelectionDistributionType.BETA_DISTRIBUTION
+                || betaDistributionAlpha != null
                 || betaDistributionBeta != null;
         if (blockDistributionEnabled && linearDistributionEnabled) {
             throw new IllegalArgumentException("The nearbySelectorConfig (" + this
@@ -252,6 +266,8 @@ public class NearbySelectionConfig extends SelectorConfig {
         }
         nearbyDistanceMeterClass = ConfigUtils.inheritOverwritableProperty(nearbyDistanceMeterClass,
                 inheritedConfig.getNearbyDistanceMeterClass());
+        nearbySelectionDistributionType = ConfigUtils.inheritOverwritableProperty(nearbySelectionDistributionType,
+                inheritedConfig.getNearbySelectionDistributionType());
         blockDistributionSizeMinimum = ConfigUtils.inheritOverwritableProperty(blockDistributionSizeMinimum,
                 inheritedConfig.getBlockDistributionSizeMinimum());
         blockDistributionSizeMaximum = ConfigUtils.inheritOverwritableProperty(blockDistributionSizeMaximum,

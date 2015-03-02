@@ -1268,12 +1268,19 @@
       &lt;/tailChainSwapMoveSelector&gt;
     &lt;/unionMoveSelector&gt;</programlisting>
 
-      <para>The following distribution methods are supported:</para>
+      <para>To allow every element to be selected, regardless of the number of entities, only set the distribution type
+      without the size maximum parameter:</para>
+
+      <programlisting language="xml">  &lt;nearbySelection&gt;
+    &lt;nearbySelectionDistributionType&gt;PARABOLIC_DISTRIBUTION&lt;/nearbySelectionDistributionType&gt;
+  &lt;/nearbySelection&gt;</programlisting>
+
+      <para>The following <literal>NearbySelectionDistributionType</literal>s are supported:</para>
 
       <itemizedlist>
         <listitem>
-          <para>Block distribution: Only the n nearest are selected, with an equal probability. For example, select the
-          20 nearest:</para>
+          <para><literal>BLOCK_DISTRIBUTION</literal>: Only the n nearest are selected, with an equal probability. For
+          example, select the 20 nearest:</para>
 
           <programlisting language="xml">  &lt;nearbySelection&gt;
     &lt;blockDistributionSizeMaximum&gt;20&lt;/blockDistributionSizeMaximum&gt;
@@ -1281,8 +1288,8 @@
         </listitem>
 
         <listitem>
-          <para>Linear distribution: Nearest elements are selected with a higher probability. The probability decreases
-          linearly.</para>
+          <para><literal>LINEAR_DISTRIBUTION</literal>: Nearest elements are selected with a higher probability. The
+          probability decreases linearly.</para>
 
           <programlisting language="xml">  &lt;nearbySelection&gt;
     &lt;linearDistributionSizeMaximum&gt;40&lt;/linearDistributionSizeMaximum&gt;
@@ -1290,7 +1297,8 @@
         </listitem>
 
         <listitem>
-          <para>Parabolic distribution (recommended): Nearest elements are selected with a higher probability.</para>
+          <para><literal>PARABOLIC_DISTRIBUTION</literal> (recommended): Nearest elements are selected with a higher
+          probability.</para>
 
           <programlisting language="xml">  &lt;nearbySelection&gt;
     &lt;parabolicDistributionSizeMaximum&gt;80&lt;/parabolicDistributionSizeMaximum&gt;
@@ -1298,7 +1306,8 @@
         </listitem>
 
         <listitem>
-          <para>Beta distribution: Selection according to a beta distribution. Slows down the solver.</para>
+          <para><literal>BETA_DISTRIBUTION</literal>: Selection according to a beta distribution. Slows down the solver
+          significantly.</para>
 
           <programlisting language="xml">  &lt;nearbySelection&gt;
     &lt;betaDistributionAlpha&gt;5&lt;/betaDistributionAlpha&gt;
@@ -1307,8 +1316,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>As always, use the <link linkend="benchmarker">Benchmarker</link> to tweak values if
-      desired.</para>
+      <para>As always, use the <link linkend="benchmarker">Benchmarker</link> to tweak values if desired.</para>
     </section>
   </section>
 
@@ -1320,9 +1328,9 @@
 
       <para>To determine which move types might be missing in your implementation, run a <link
       linkend="benchmarker">Benchmarker</link> <emphasis>for a short amount of time</emphasis> and <link
-      linkend="writeTheOutputSolutionOfBenchmarkRuns">configure it to write the best solutions to disk</link>. Take
-      a look at such a best solution: it will likely be a local optima. Try to figure out if there's a move that could
-      get out of that local optima faster.</para>
+      linkend="writeTheOutputSolutionOfBenchmarkRuns">configure it to write the best solutions to disk</link>. Take a
+      look at such a best solution: it will likely be a local optima. Try to figure out if there's a move that could get
+      out of that local optima faster.</para>
 
       <para>If you find one, implement that coarse-grained move, mix it with the existing moves and benchmark it against
       the previous configurations to see if you want to keep it.</para>
