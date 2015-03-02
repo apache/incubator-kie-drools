@@ -207,10 +207,6 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         return object instanceof CoreWrapper ? ((CoreWrapper)object).getCore().getClass() : object.getClass();
     }
 
-    private SingleClassStore getOrCreateClassStore(Object object) {
-        return getOrCreateConcreteClassStore(getActualClass(object));
-    }
-
     public SingleClassStore getOrCreateClassStore(Class<?> clazz) {
         SingleClassStore store = storesMap.get(clazz.getName());
         if (store == null) {
@@ -227,13 +223,6 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
 
     private ConcreteClassStore getOrCreateConcreteClassStore(Object object) {
         return getOrCreateConcreteClassStore(getActualClass(object));
-    }
-
-    private ConcreteClassStore getConcreteClassStore(Class<?> clazz) {
-        SingleClassStore store = getClassStore(clazz.getName());
-        return store != null
-               ? ( store.isConcrete() ? ( (ConcreteClassStore) store ) : null )
-               : null;
     }
 
     private ConcreteClassStore getOrCreateConcreteClassStore(Class<?> clazz) {
@@ -269,8 +258,6 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         Class<?> getStoredClass();
 
         void addConcreteStore(ConcreteClassStore store);
-        void addConcreteStores(List<ConcreteClassStore> concreteStores);
-        List<ConcreteClassStore> getConcreteStores();
 
         Iterator<Object> objectsIterator(boolean assrt);
         Iterator<InternalFactHandle> factHandlesIterator(boolean assrt);
@@ -291,14 +278,6 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
 
         public void addConcreteStore(ConcreteClassStore store) {
             concreteStores.add(store);
-        }
-
-        public void addConcreteStores(List<ConcreteClassStore> concreteStores) {
-            this.concreteStores.addAll(concreteStores);
-        }
-
-        public List<ConcreteClassStore> getConcreteStores() {
-            return concreteStores;
         }
 
         public Iterator<Object> objectsIterator(boolean assrt) {
