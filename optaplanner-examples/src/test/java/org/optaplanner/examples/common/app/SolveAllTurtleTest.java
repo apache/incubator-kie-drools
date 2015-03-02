@@ -16,7 +16,6 @@
 
 package org.optaplanner.examples.common.app;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -38,7 +37,7 @@ import static org.junit.Assume.*;
 public abstract class SolveAllTurtleTest extends LoggingTest {
 
     protected static void checkRunTurtleTests() {
-        assumeTrue(ObjectUtils.equals("true", System.getProperty("runTurtleTests")));
+        assumeTrue("true".equals(System.getProperty("runTurtleTests")));
     }
 
     protected abstract String createSolverConfigResource();
