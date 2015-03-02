@@ -87,10 +87,8 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
     public Object getObjectForHandle(InternalFactHandle handle) {
         try {
             this.lock.lock();
-            InternalFactHandle internalHandle = isEqualityBehaviour ?
-                                                (InternalFactHandle) equalityMap.get(handle) :
-                                                (InternalFactHandle) getOrCreateConcreteClassStore(handle.getObject()).getAssertMap().get(handle);
-            return internalHandle != null ? internalHandle.getObject() : null;
+            InternalFactHandle reconnectedHandle = reconnect(handle);
+            return reconnectedHandle != null ? reconnectedHandle.getObject() : null;
         } finally {
             this.lock.unlock();
         }
@@ -98,14 +96,33 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
 
     @Override
     public InternalFactHandle reconnect(InternalFactHandle handle) {
-        SingleClassStore store = getClassStore(handle.getObjectClassName());
-        if (!store.isConcrete()) {
+        if (handle == null) {
             return null;
         }
+        String handleClass = handle.getObjectClassName();
+        if (handleClass != null) {
+            SingleClassStore store = getClassStore(handleClass);
+            if (store == null || !store.isConcrete()) {
+                return null;
+            }
 
-        return handle.isNegated() ?
-               (InternalFactHandle) ((ConcreteClassStore) store).getNegMap().get(handle) :
-               (InternalFactHandle) ((ConcreteClassStore) store).getIdentityMap().get(handle);
+            return handle.isNegated() ?
+                   (InternalFactHandle) ((ConcreteClassStore) store).getNegMap().get(handle) :
+                   (InternalFactHandle) ((ConcreteClassStore) store).getIdentityMap().get(handle);
+        }
+
+        if (isEqualityBehaviour) {
+            return (InternalFactHandle) equalityMap.get(handle);
+        }
+
+        for (ConcreteClassStore stores : concreteStores) {
+            Object reconnectedHandle = stores.getAssertMap().get(handle);
+            if (reconnectedHandle != null) {
+                return (InternalFactHandle) reconnectedHandle;
+            }
+        }
+
+        return null;
     }
 
     @Override
