@@ -77,13 +77,16 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 			Collection<DeploymentUnit> disabledSet = new HashSet<DeploymentUnit>();
 			Collection<DeploymentUnit> activatedSet = new HashSet<DeploymentUnit>();
 			Collection<DeploymentUnit> deactivatedSet = new HashSet<DeploymentUnit>();
+			Date timeOfSync = new Date();
 			if (lastSync == null) {
 				// initial load
 				enabledSet = deploymentStore.getEnabledDeploymentUnits();
-				deactivatedSet = deploymentStore.getDeactivatedDeploymentUnits();
-			} else {
+				deactivatedSet = deploymentStore.getDeactivatedDeploymentUnits();				
+			} else {				
 				deploymentStore.getDeploymentUnitsByDate(lastSync, enabledSet, disabledSet, activatedSet, deactivatedSet);
 			}
+			// update last sync date with time taken just before the query time
+			this.lastSync = timeOfSync;
 
 			logger.debug("About to synchronize deployment units, found new enabled {}, found new disabled {}", enabledSet, disabledSet);
 			if (enabledSet != null) {
@@ -137,9 +140,7 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 			}
 		} catch (Throwable e) {
 			logger.error("Error while synchronizing deployments: {}", e.getMessage(), e);
-		}
-		// update last sync date
-		this.lastSync = new Date();
+		}		
 	}
 
 	@Override
