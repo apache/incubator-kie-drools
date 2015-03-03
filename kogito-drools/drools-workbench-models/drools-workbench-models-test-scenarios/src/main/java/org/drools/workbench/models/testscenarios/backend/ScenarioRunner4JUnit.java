@@ -1,3 +1,19 @@
+/*
+ * Copyright 2014 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.workbench.models.testscenarios.backend;
 
 import org.drools.workbench.models.testscenarios.shared.Scenario;
@@ -79,26 +95,34 @@ public class ScenarioRunner4JUnit extends Runner {
 
             //If a KieSession is not available, fail fast
             if (ksessions == null || ksessions.values().isEmpty()) {
-                throw new NullKieSessionException("Unable to get a Session to run tests. Check the project for build errors.");
-
+                eachNotifier.addFailure(new NullKieSessionException("Unable to get a Session to run tests. Check the project for build errors."));
             } else {
 
                 KieSession ksession = getKSession(scenario.getKSessions());
 
-                final ScenarioRunner runner = new ScenarioRunner(ksession,
-                        maxRuleFirings);
-                runner.run(scenario);
-                if (!scenario.wasSuccessful()) {
-                    StringBuilder builder = new StringBuilder();
-                    for (String message : scenario.getFailureMessages()) {
-                        builder.append(message).append("\n");
+                if (ksession == null) {
+                    String ksessionName = getKSessionName(scenario.getKSessions());
+                    if (ksessionName == null) {
+                        eachNotifier.addFailure(new NullPointerException("Test scenario runner could not find the default knowledge session."));
+                    } else {
+                        eachNotifier.addFailure(new NullPointerException("Test scenario runner could not find a stateless knowledge session with the name \'" + ksessionName + "\'."));
                     }
-                    eachNotifier.addFailedAssumption(new AssumptionViolatedException(builder.toString()));
-                }
+                } else {
+                    final ScenarioRunner runner = new ScenarioRunner(ksession,
+                        maxRuleFirings);
+                    runner.run(scenario);
+                    if (!scenario.wasSuccessful()) {
+                        StringBuilder builder = new StringBuilder();
+                        for (String message : scenario.getFailureMessages()) {
+                            builder.append(message).append("\n");
+                        }
+                        eachNotifier.addFailedAssumption(new AssumptionViolatedException(builder.toString()));
+                    }
 
-                // FLUSSSSSH!
-                for (FactHandle factHandle : ksession.getFactHandles()) {
-                    ksession.delete(factHandle);
+                    // FLUSSSSSH!
+                    for (FactHandle factHandle : ksession.getFactHandles()) {
+                        ksession.delete(factHandle);
+                    }
                 }
             }
         } catch (Throwable t) {
@@ -109,17 +133,20 @@ public class ScenarioRunner4JUnit extends Runner {
         }
     }
 
-    private KieSession getKSession(List<String> kSessionNames) {
-        if (kSessionNames == null || kSessionNames.isEmpty()) {
-            return ksessions.values().iterator().next();
-        } else {
-            String ksessionName = kSessionNames.iterator().next();
-
+    private KieSession getKSession(List<String> ksessionNames) {
+        String ksessionName = getKSessionName(ksessionNames);
             if (ksessions.containsKey(ksessionName)) {
                 return ksessions.get(ksessionName);
             } else {
-                return ksessions.values().iterator().next();
+                return null;
             }
+    }
+
+    private String getKSessionName(List<String> ksessionNames) {
+        if (ksessionNames != null && !ksessionNames.isEmpty()) {
+            return ksessionNames.iterator().next();
+        } else {
+            return null;
         }
 
     }
