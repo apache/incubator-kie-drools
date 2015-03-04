@@ -11,9 +11,13 @@ import javax.xml.bind.Marshaller;
 import org.junit.Test;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.ObjectModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JaxbMarshalingTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(JaxbMarshalingTest.class);    
+    
 	private Class<?>[] jaxbClasses = { DeploymentDescriptorImpl.class};
 	
 	@Test
@@ -23,7 +27,7 @@ public class JaxbMarshalingTest {
 		.addTaskEventListener(new ObjectModel("org.jbpm.task.Listener", new Object[]{"test", "another"}));
 		
 		String output = convertJaxbObjectToString(descriptor);
-		System.out.println(output);
+		logger.debug(output);
 		assertNotNull(output);
 	}
 	

@@ -156,7 +156,7 @@ public class DeploymentDescriptorTest {
 	}
 	
 	@Test
-	public void testPringDescriptor() {
+	public void testPrintDescriptor() {
 		DeploymentDescriptor descriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
 		
 		descriptor.getBuilder()
@@ -165,7 +165,7 @@ public class DeploymentDescriptorTest {
 		.addWorkItemHandler(new NamedObjectModel("mvel", "Rest", "new org.jbpm.process.workitem.rest.RESTWorkItemHandler()"))
 		.addWorkItemHandler(new NamedObjectModel("mvel", "Service Task", "new org.jbpm.process.workitem.bpmn2.ServiceTaskHandler(ksession)"));
 		
-		System.out.println(descriptor.toXml());
+		logger.debug(descriptor.toXml());
 	}
 	
 	@Test

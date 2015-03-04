@@ -95,11 +95,6 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-persistence-jpa</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-persistence-jpa</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
@@ -205,6 +200,7 @@
               javax.xml.validation,
               org.drools.compiler.kie.builder.impl,
               org.drools.compiler.kie.util,
+              org.drools.core.builder.conf.impl,
               org.drools.core.command,
               org.drools.core.command.impl,
               org.drools.core.common,
@@ -250,6 +246,7 @@
               org.kie.api.task,
               org.kie.api.task.model,
               org.kie.internal,
+              org.kie.internal.io,
               org.kie.internal.query,
               org.kie.internal.builder,
               org.kie.internal.command,

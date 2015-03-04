@@ -15,16 +15,7 @@
  */
 package org.jbpm.runtime.manager.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-
-import javax.persistence.EntityManagerFactory;
-
+import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.marshalling.impl.ProcessInstanceResolverStrategy;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
@@ -33,6 +24,7 @@ import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
@@ -40,12 +32,23 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.task.UserGroupCallback;
+import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.io.ResourceTypeImpl;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.runtime.manager.Mapper;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
+
+import javax.persistence.EntityManagerFactory;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 /**
  * The most basic implementation of the <code>RuntimeEnvironment</code> that, at the same time, serves as base 
@@ -106,8 +109,30 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
      * @param type type of the asset
      */
     public void addAsset(Resource resource, ResourceType type) {
-        this.kbuilder.add(resource, type);
-        if (this.kbuilder.hasErrors()) {            
+        if (resource.getSourcePath() != null && resource.getConfiguration() == null ) { 
+            String path = resource.getSourcePath();
+          
+            String typeStr = null;
+            if( path.toLowerCase().endsWith(".csv") ) { 
+                typeStr = DecisionTableInputType.CSV.toString();
+            } else if( path.toLowerCase().endsWith(".xls") ) { 
+                typeStr = DecisionTableInputType.XLS.toString();
+            } 
+            
+            if( typeStr != null ) { 
+                Properties prop = new Properties();
+                prop.setProperty(ResourceTypeImpl.KIE_RESOURCE_CONF_CLASS, DecisionTableConfigurationImpl.class.getName());
+                prop.setProperty(DecisionTableConfigurationImpl.DROOLS_DT_TYPE, typeStr);
+                ResourceConfiguration conf = ResourceTypeImpl.fromProperties(prop);
+                this.kbuilder.add(resource, type, conf);
+            } else {
+                this.kbuilder.add(resource, type);
+            }
+        } else { 
+            this.kbuilder.add(resource, type);
+        }
+
+        if (this.kbuilder.hasErrors()) {
             StringBuffer errorMessage = new StringBuffer();
             for( KnowledgeBuilderError error : kbuilder.getErrors()) {
                 errorMessage.append(error.getMessage() + ",");
