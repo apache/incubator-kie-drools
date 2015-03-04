@@ -5,13 +5,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Score calculation</title>
+  <title>Score Calculation</title>
 
   <section xml:id="scoreTerminology">
-    <title>Score terminology</title>
+    <title>Score Terminology</title>
 
     <section xml:id="whatIsAScore">
-      <title>What is a score?</title>
+      <title>What is a Score?</title>
 
       <para>Every initialized <literal>Solution</literal> has a score. That score is an objective way to compare 2
       solutions: the solution with the higher score is better. The <literal>Solver</literal> aims to find the
@@ -53,7 +53,7 @@
     </section>
 
     <section xml:id="scoreConstraintSignum">
-      <title>Score constraint signum (positive or negative)</title>
+      <title>Score Constraint Signum (Positive or Negative)</title>
 
       <para>All score techniques are based on constraints. Such a constraint can be a simple pattern (such as
       <emphasis>Maximize the apple harvest in the solution</emphasis>) or a more complex pattern. A positive constraint
@@ -85,7 +85,7 @@
     </section>
 
     <section xml:id="scoreConstraintWeight">
-      <title>Score constraint weight</title>
+      <title>Score Constraint Weight</title>
 
       <para>Not all score constraints are equally important. If breaking one constraint is equally bad as breaking
       another constraint x times, then those 2 constraints have a different weight (but they are in the same score
@@ -122,7 +122,7 @@
     </section>
 
     <section xml:id="scoreLevel">
-      <title>Score level</title>
+      <title>Score Level</title>
 
       <para>Sometimes a score constraint outranks another score constraint, no matter how many times the other is
       broken. In that case, those score constraints are in different levels. For example: a nurse cannot do 2 shifts at
@@ -165,7 +165,7 @@
     </section>
 
     <section xml:id="paretoScoring">
-      <title>Pareto scoring (AKA multi-objective optimization scoring)</title>
+      <title>Pareto Scoring (AKA Multi-objective Optimization Scoring)</title>
 
       <para>Far less common is the use case of pareto optimization, which is also known under the more confusing term
       multi-objective optimization. In pareto scoring, score constraints are in the same score level, yet they are not
@@ -205,7 +205,7 @@
     </section>
 
     <section xml:id="combiningScoreTechniques">
-      <title>Combining score techniques</title>
+      <title>Combining Score Techniques</title>
 
       <para>All the score techniques mentioned above, can be combined seamlessly:</para>
 
@@ -248,7 +248,7 @@
     </section>
 
     <section xml:id="avoidFloatingPointNumbersInScoreCalculation">
-      <title>Avoid floating point numbers in score calculation</title>
+      <title>Avoid Floating Point Numbers in Score Calculation</title>
 
       <para>Avoid the use of <literal>float</literal> and <literal>double</literal> for score calculation. Use
       <literal>BigDecimal</literal> instead.</para>
@@ -285,7 +285,7 @@
   </section>
 
   <section xml:id="scoreDefinition">
-    <title>Choose a Score definition</title>
+    <title>Choose a Score Definition</title>
 
     <para>Each <literal>Score</literal> implementation also has a <literal>ScoreDefinition</literal> implementation. For
     example: <literal>SimpleScore</literal> is defined by <literal>SimpleScoreDefinition</literal>.</para>
@@ -323,7 +323,7 @@
     </section>
 
     <section xml:id="hardSoftScore">
-      <title>HardSoftScore (recommended)</title>
+      <title>HardSoftScore (Recommended)</title>
 
       <para>A <literal>HardSoftScore</literal> has a hard <literal>int</literal> value and a soft <literal>int</literal>
       value, for example <literal>-123hard/-456soft</literal>. It has 2 score levels (hard and soft).</para>
@@ -409,7 +409,7 @@
     </section>
 
     <section xml:id="customScore">
-      <title>Implementing a custom Score</title>
+      <title>Implementing a Custom Score</title>
 
       <para>The <literal>ScoreDefinition</literal> interface defines the score representation.</para>
 
@@ -431,7 +431,7 @@
     <title>Calculate the <literal>Score</literal></title>
 
     <section xml:id="scoreCalculationTypes">
-      <title>Score calculation types</title>
+      <title>Score Calculation Types</title>
 
       <para>There are several ways to calculate the <literal>Score</literal> of a <literal>Solution</literal>:</para>
 
@@ -469,7 +469,7 @@
     </section>
 
     <section xml:id="easyJavaScoreCalculation">
-      <title>Easy Java score calculation</title>
+      <title>Easy Java Score Calculation</title>
 
       <para>An easy way to implement your score calculation in Java.</para>
 
@@ -559,7 +559,7 @@
     </section>
 
     <section xml:id="incrementalJavaScoreCalculation">
-      <title>Incremental Java score calculation</title>
+      <title>Incremental Java Score Calculation</title>
 
       <para>A way to implement your score calculation incrementally in Java.</para>
 
@@ -754,7 +754,7 @@
     </section>
 
     <section xml:id="droolsScoreCalculation">
-      <title>Drools score calculation</title>
+      <title>Drools Score Calculation</title>
 
       <section xml:id="droolsScoreCalculationOverview">
         <title>Overview</title>
@@ -851,12 +851,12 @@
       </section>
 
       <section xml:id="droolsScoreRulesConfiguration">
-        <title>Drools score rules configuration</title>
+        <title>Drools Score Rules Configuration</title>
 
         <para>There are several ways to define where your score rules live.</para>
 
         <section xml:id="droolsScoreCalculationScoreDrl">
-          <title>A scoreDrl resource on the classpath</title>
+          <title>A scoreDrl Resource on the Classpath</title>
 
           <para>This is the easy way: the score rule live in a DRL file which is provided as a classpath resource. Just
           add the score rules DRL file in the solver configuration as a <literal>&lt;scoreDrl&gt;</literal>
@@ -914,7 +914,7 @@
         </section>
 
         <section xml:id="droolsScoreCalculationKieBase">
-          <title>A KieBase (possibly defined by Drools Workbench)</title>
+          <title>A KieBase (Possibly Defined by Drools Workbench)</title>
 
           <para>To build the <literal>KieBase</literal> yourself or to combine Planner with
           KIE Workbench (formerly known as Guvnor), set the <literal>KieBase</literal> on the
@@ -939,7 +939,7 @@
       </section>
 
       <section xml:id="implementingAScoreRule">
-        <title>Implementing a score rule</title>
+        <title>Implementing a Score Rule</title>
 
         <para>Here's an example of a score constraint implemented as a score rule in a DRL file:</para>
 
@@ -983,7 +983,7 @@ end</programlisting>
       </section>
 
       <section xml:id="weighingScoreRules">
-        <title>Weighing score rules</title>
+        <title>Weighing Score Rules</title>
 
         <para>A <literal>ScoreHolder</literal> instance is asserted into the <literal>KieSession</literal> as a global
         called <literal>scoreHolder</literal>. Your score rules need to (directly or indirectly) update that
@@ -1119,7 +1119,7 @@ end</programlisting>
     </section>
 
     <section xml:id="invalidScoreDetection">
-      <title>Invalid score detection</title>
+      <title>Invalid Score Detection</title>
 
       <para>Put the <literal>environmentMode</literal> in <literal>FULL_ASSERT</literal> (or
       <literal>FAST_ASSERT</literal>) to detect corruption in the <link
@@ -1148,7 +1148,7 @@ end</programlisting>
   </section>
 
   <section xml:id="scoreCalculationPerformanceTricks">
-    <title>Score calculation performance tricks</title>
+    <title>Score Calculation Performance Tricks</title>
 
     <section xml:id="scoreCalculationPerformanceTricksOverview">
       <title>Overview</title>
@@ -1159,7 +1159,7 @@ end</programlisting>
     </section>
 
     <section xml:id="averageCalculationCountPerSecond">
-      <title>Average calculation count per second</title>
+      <title>Average Calculation Count Per Second</title>
 
       <para>After solving a problem, the <literal>Solver</literal> will log the <emphasis>average calculation count per
       second</emphasis>. This is a good measurement of Score calculation performance, despite that it is affected by non
@@ -1180,7 +1180,7 @@ end</programlisting>
     </section>
 
     <section xml:id="incrementalScoreCalculation">
-      <title>Incremental score calculation (with delta's)</title>
+      <title>Incremental Score Calculation (with Delta's)</title>
 
       <para>When a <literal>Solution</literal> changes, incremental score calculation (AKA delta based score
       calculation), will calculate the delta with the previous state to find the new <literal>Score</literal>, instead
@@ -1190,7 +1190,7 @@ end</programlisting>
       bother to check if queen B and C can attack each other, since neither of them changed.</para>
 
       <figure>
-        <title>Incremental score calculation for the 4 queens puzzle</title>
+        <title>Incremental Score Calculation for the 4 Queens Puzzle</title>
 
         <mediaobject>
           <imageobject>
@@ -1208,7 +1208,7 @@ end</programlisting>
     </section>
 
     <section xml:id="avoidCallingRemoteServicesDuringScoreCalculation">
-      <title>Avoid calling remote services during score calculation</title>
+      <title>Avoid Calling Remote Services During Score Calculation</title>
 
       <para>Do not call remote services in your score calculation (except if you're bridging
       <literal>EasyScoreCalculator</literal> to a legacy system). The network latency will kill your score calculation
@@ -1219,7 +1219,7 @@ end</programlisting>
     </section>
 
     <section xml:id="pointlessConstraints">
-      <title>Pointless constraints</title>
+      <title>Pointless Constraints</title>
 
       <para>If you know a certain constraint can never be broken (or it is always broken), don't bother writing a score
       constraint for it. For example in n queens, the score calculation doesn't check if multiple queens occupy the same
@@ -1235,7 +1235,7 @@ end</programlisting>
     </section>
 
     <section xml:id="buildInHardConstraint">
-      <title>Built-in hard constraint</title>
+      <title>Built-in Hard Constraint</title>
 
       <para>Instead of implementing a hard constraint, you can sometimes make it built-in too. For example: If
       <literal>Lecture</literal> A should never be assigned to <literal>Room</literal> X, but it uses ValueRangeProvider
@@ -1254,7 +1254,7 @@ end</programlisting>
     </section>
 
     <section xml:id="otherScoreCalculationPerformanceTricks">
-      <title>Other score calculation performance tricks</title>
+      <title>Other Score Calculation Performance Tricks</title>
 
       <itemizedlist>
         <listitem>
@@ -1281,7 +1281,7 @@ end</programlisting>
     </section>
 
     <section xml:id="scoreTrap">
-      <title>Score trap</title>
+      <title>Score Trap</title>
 
       <para>Make sure that none of your score constraints cause a score trap. A trapped score constraint uses the same
       weight for different constraint matches, when it could just as easily use a different weight. It effectively lumps
@@ -1356,7 +1356,7 @@ end</programlisting>
     </section>
 
     <section xml:id="stepLimitBenchmark">
-      <title>stepLimit benchmark</title>
+      <title>stepLimit Benchmark</title>
 
       <para>Not all score constraints have the same performance cost. Sometimes 1 score constraint can kill the score
       calculation performance outright. Use the <link linkend="benchmarker">Benchmarker</link> to do a 1
@@ -1365,7 +1365,7 @@ end</programlisting>
     </section>
 
     <section xml:id="fairnessScoreConstraints">
-      <title>Fairness score constraints</title>
+      <title>Fairness Score Constraints</title>
 
       <para>Some use cases have a business requirement to provide a fair schedule (usually as a soft score constraint),
       for example:</para>
@@ -1398,7 +1398,7 @@ end</programlisting>
   </section>
 
   <section xml:id="explainingTheScore">
-    <title>Explaining the score: using score calculation outside the <literal>Solver</literal></title>
+    <title>Explaining the Score: Using Score Calculation Outside the <literal>Solver</literal></title>
 
     <para>Other parts of your application, for example your webUI, might need to calculate the score too. Do that by
     reusing the <literal>ScoreDirectorFactory</literal> of the <literal>Solver</literal> to build a separate

@@ -5,10 +5,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Optimization algorithms</title>
+  <title>Optimization Algorithms</title>
 
   <section xml:id="searchSpaceSize">
-    <title>Search space size in the real world</title>
+    <title>Search Space Size in the Real World</title>
 
     <para>The number of possible solutions for a planning problem can be mind blowing. For example:</para>
 
@@ -85,7 +85,7 @@
   </section>
 
   <section xml:id="doesPlannerFindTheOptimalSolution">
-    <title>Does Planner find the optimal solution?</title>
+    <title>Does Planner Find the Optimal Solution?</title>
 
     <para>The business wants the optimal solution, but they also have other requirements:</para>
 
@@ -121,7 +121,7 @@
   </section>
 
   <section xml:id="architectureOverview">
-    <title>Architecture overview</title>
+    <title>Architecture Overview</title>
 
     <para>Planner is the first framework to combine optimization algorithms (metaheuristics, ...) with score calculation
     by a rule engine (such as Drools Expert). This combination turns out to be a very efficient, because:</para>
@@ -149,7 +149,7 @@
   </section>
 
   <section xml:id="optimizationAlgorithmsOverview">
-    <title>Optimization algorithms overview</title>
+    <title>Optimization Algorithms Overview</title>
 
     <para>Planner supports 3 <emphasis>families</emphasis> of optimization algorithms: Exhaustive Search, Construction
     Heuristics and Metaheuristics. In practice, Metaheuristics (in combination with Construction Heuristics to
@@ -164,7 +164,7 @@
     <para>Each of these families of algorithms has multiple optimization algorithms:</para>
 
     <table>
-      <title>Optimization algorithms overview</title>
+      <title>Optimization Algorithms Overview</title>
 
       <tgroup cols="6">
         <colspec align="left" colnum="1" colwidth="4*"/>
@@ -513,7 +513,7 @@
   </section>
 
   <section xml:id="whichOptimizationAlgorithmsShouldIUse">
-    <title>Which optimization algorithms should I use?</title>
+    <title>Which Optimization Algorithms Should I Use?</title>
 
     <para>The <emphasis>best</emphasis> optimization algorithms configuration for your use case depends heavily on your
     use case. Nevertheless, this vanilla recipe will get you into the game with a pretty good configuration, probably
@@ -587,7 +587,7 @@
   </section>
 
   <section xml:id="solverPhase">
-    <title>Solver phase</title>
+    <title>Solver Phase</title>
 
     <para>A <literal>Solver</literal> can use multiple optimization algorithms in sequence. <emphasis role="bold">Each
     optimization algorithm is represented by a solver <literal>Phase</literal>.</emphasis> There is never more than 1
@@ -649,7 +649,7 @@
   </section>
 
   <section xml:id="scopeOverview">
-    <title>Scope overview</title>
+    <title>Scope Overview</title>
 
     <para>A solver will iteratively run phases. Each phase will usually iteratively run steps. Each step, in turn,
     usually iteratively runs moves. These form 4 nested scopes: solver, phase, step and move.</para>
@@ -854,7 +854,7 @@
     </section>
 
     <section xml:id="combiningMultipleTerminations">
-      <title>Combining multiple Terminations</title>
+      <title>Combining Multiple Terminations</title>
 
       <para>Terminations can be combined, for example: terminate after <literal>100</literal> steps or if a score of
       <literal>0</literal> has been reached:</para>
@@ -879,7 +879,7 @@
     </section>
 
     <section xml:id="asynchronousTermination">
-      <title>Asynchronous termination from another thread</title>
+      <title>Asynchronous Termination from Another Thread</title>
 
       <para>Sometimes you'll want to terminate a Solver early from another thread, for example because a user action or
       a server restart. This cannot be configured by a <literal>Termination</literal> as it's impossible to predict when
@@ -938,7 +938,7 @@
   </section>
 
   <section xml:id="customSolverPhase">
-    <title>Custom solver phase</title>
+    <title>Custom Solver Phase</title>
 
     <para>Between phases or before the first phase, you might want to execute a custom action on the
     <literal>Solution</literal> to get a better score. Yet you'll still want to reuse the score calculation. For

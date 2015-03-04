@@ -5,10 +5,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title><literal>Move</literal> and neighborhood selection</title>
+  <title><literal>Move</literal> and Neighborhood Selection</title>
 
   <section xml:id="moveAndNeighborhoodSelectionIntroduction">
-    <title><literal>Move</literal> and neighborhood introduction</title>
+    <title><literal>Move</literal> and Neighborhood Introduction</title>
 
     <section xml:id="whatIsAMove">
       <title>What is a <literal>Move</literal>?</title>
@@ -83,7 +83,7 @@
     </section>
 
     <section xml:id="subselectingOfEntitiesValuesAndOtherMoves">
-      <title>Subselecting of entities, values and other moves</title>
+      <title>Subselecting of Entities, Values and Other Moves</title>
 
       <para>To create a <literal>Move</literal>, a <literal>MoveSelector</literal> needs to select 1 or more planning
       entities and/or planning values to move. Just like <literal>MoveSelector</literal>s,
@@ -455,7 +455,7 @@
   </section>
 
   <section xml:id="combiningMultipleMoveSelectors">
-    <title>Combining multiple <literal>MoveSelector</literal>s</title>
+    <title>Combining Multiple <literal>MoveSelector</literal>s</title>
 
     <section xml:id="unionMoveSelector">
       <title>unionMoveSelector</title>
@@ -619,10 +619,10 @@
   </section>
 
   <section xml:id="generalSelectorFeatures">
-    <title>General <literal>Selector</literal> features</title>
+    <title>General <literal>Selector</literal> Features</title>
 
     <section xml:id="cacheType">
-      <title><literal>CacheType</literal>: Create moves ahead of time or Just In Time</title>
+      <title><literal>CacheType</literal>: Create Moves Ahead of Time or Just In Time</title>
 
       <para>A <literal>Selector</literal>'s <literal>cacheType</literal> determines when a selection (such as a
       <literal>Move</literal>, an entity, a value, ...) is created and how long it lives.</para>
@@ -679,7 +679,7 @@
     </section>
 
     <section xml:id="selectionOrder">
-      <title>SelectionOrder: original, sorted, random, shuffled or probabilistic</title>
+      <title>SelectionOrder: Original, Sorted, Random, Shuffled or Probabilistic</title>
 
       <para>A <literal>Selector</literal>'s <literal>selectionOrder</literal> determines the order in which the
       selections (such as <literal>Move</literal>s, entities, values, ...) are iterated. An optimization algorithm will
@@ -773,10 +773,10 @@
     </section>
 
     <section xml:id="recommendedCombinationsOfCacheTypeAndSelectionOrder">
-      <title>Recommended combinations of <literal>CacheType</literal> and <literal>SelectionOrder</literal></title>
+      <title>Recommended Combinations of <literal>CacheType</literal> and <literal>SelectionOrder</literal></title>
 
       <section xml:id="justInTimeRandomSelection">
-        <title>Just in time random selection (default)</title>
+        <title>Just in Time Random Selection (default)</title>
 
         <para>This combination is great for big use cases (10 000 entities or more), as it scales up well in memory
         footprint and performance. Other combinations are often not even viable on such sizes. It works for smaller use
@@ -806,7 +806,7 @@
       </section>
 
       <section xml:id="cachedShuffledSelection">
-        <title>Cached shuffled selection</title>
+        <title>Cached Shuffled Selection</title>
 
         <para>This combination often wins for small and medium use cases (5000 entities or less). Beyond that size, it
         scales up badly in memory footprint and performance.</para>
@@ -851,7 +851,7 @@
       </section>
 
       <section xml:id="cachedRandomSelection">
-        <title>Cached random selection</title>
+        <title>Cached Random Selection</title>
 
         <para>This combination is often a worthy competitor for medium use cases, especially with fast stepping
         optimization algorithms (such as Simulated Annealing). Unlike cached shuffled selection, it doesn't waste time
@@ -868,7 +868,7 @@
     </section>
 
     <section xml:id="filteredSelection">
-      <title>Filtered selection</title>
+      <title>Filtered Selection</title>
 
       <para>There can be certain moves that you don't want to select, because:</para>
 
@@ -947,7 +947,7 @@
     </section>
 
     <section xml:id="sortedSelection">
-      <title>Sorted selection</title>
+      <title>Sorted Selection</title>
 
       <para>Sorted selection can happen on any Selector in the selector tree, including any
       <literal>MoveSelector</literal>, <literal>EntitySelector</literal> or <literal>ValueSelector</literal>. It does
@@ -964,7 +964,7 @@
       </note>
 
       <section xml:id="sortedSelectionBySorterManner">
-        <title>Sorted selection by <literal>SorterManner</literal></title>
+        <title>Sorted Selection by <literal>SorterManner</literal></title>
 
         <para>Some <literal>Selector</literal> types implement a <literal>SorterManner</literal> out of the box:</para>
 
@@ -1008,7 +1008,7 @@
       </section>
 
       <section xml:id="sortedSelectionByComparator">
-        <title>Sorted selection by <literal>Comparator</literal></title>
+        <title>Sorted Selection by <literal>Comparator</literal></title>
 
         <para>An easy way to sort a <literal>Selector</literal> is with a plain old
         <literal>Comparator</literal>:</para>
@@ -1036,7 +1036,7 @@
       </section>
 
       <section xml:id="sortedSelectionBySelectionSorterWeightFactory">
-        <title>Sorted selection by <literal>SelectionSorterWeightFactory</literal></title>
+        <title>Sorted Selection by <literal>SelectionSorterWeightFactory</literal></title>
 
         <para>If you need the entire <literal>Solution</literal> to sort a <literal>Selector</literal>, use a
         <literal>SelectionSorterWeightFactory</literal> instead:</para>
@@ -1091,7 +1091,7 @@
       </section>
 
       <section xml:id="sortedSelectionBySelectionSorter">
-        <title>Sorted selection by <literal>SelectionSorter</literal></title>
+        <title>Sorted Selection by <literal>SelectionSorter</literal></title>
 
         <para>Alternatively, you can also use the interface <literal>SelectionSorter</literal> directly:</para>
 
@@ -1110,7 +1110,7 @@
     </section>
 
     <section xml:id="probabilisticSelection">
-      <title>Probabilistic selection</title>
+      <title>Probabilistic Selection</title>
 
       <para>Probabilistic selection can happen on any Selector in the selector tree, including any
       <literal>MoveSelector</literal>, <literal>EntitySelector</literal> or <literal>ValueSelector</literal>. It does
@@ -1143,7 +1143,7 @@
     </section>
 
     <section xml:id="limitedSelection">
-      <title>Limited selection</title>
+      <title>Limited Selection</title>
 
       <para>Selecting all possible moves sometimes does not scale well enough, especially for construction heuristics
       (which don't support <link linkend="acceptedCountLimit">acceptedCountLimit</link>).</para>
@@ -1162,7 +1162,7 @@
     </section>
 
     <section xml:id="mimicSelection">
-      <title>Mimic selection (record/replay)</title>
+      <title>Mimic Selection (Record/Replay)</title>
 
       <para>During mimic selection, 1 normal selector records its selection and 1 or multiple other special selectors
       replay that selection. The recording selector acts as a normal selector and supports all other configuration
@@ -1191,7 +1191,7 @@
     </section>
 
     <section xml:id="nearbySelection">
-      <title>Nearby selection</title>
+      <title>Nearby Selection</title>
 
       <para>In some use cases (such as TSP and VRP, but also in non-chained variable cases), changing entities to nearby
       values or swapping nearby entities can <emphasis role="bold">heavily increase scalability</emphasis> and improve
@@ -1321,10 +1321,10 @@
   </section>
 
   <section xml:id="customMoves">
-    <title>Custom moves</title>
+    <title>Custom Moves</title>
 
     <section xml:id="whichMoveTypesMightBeMissing">
-      <title>Which move types might be missing in my implementation?</title>
+      <title>Which Move Types Might be Missing in my Implementation?</title>
 
       <para>To determine which move types might be missing in your implementation, run a <link
       linkend="benchmarker">Benchmarker</link> <emphasis>for a short amount of time</emphasis> and <link
@@ -1337,7 +1337,7 @@
     </section>
 
     <section xml:id="customMovesIntroduction">
-      <title>Custom moves introduction</title>
+      <title>Custom Moves Introduction</title>
 
       <para>Instead of reusing the generic <literal>Move</literal>s (such as <literal>ChangeMove</literal>) you can also
       implement your own <literal>Move</literal>s. Generic and custom <literal>MoveSelector</literal>s can be combined
@@ -1354,7 +1354,7 @@
     </section>
 
     <section xml:id="theInterfaceMove">
-      <title>The interface <literal>Move</literal></title>
+      <title>The Interface <literal>Move</literal></title>
 
       <para>Your custom moves must implement the <literal>Move</literal> interface:</para>
 
@@ -1520,7 +1520,7 @@
     </section>
 
     <section xml:id="moveListFactory">
-      <title><literal>MoveListFactory</literal>: the easy way to generate custom moves</title>
+      <title><literal>MoveListFactory</literal>: the Easy Way to Generate Custom Moves</title>
 
       <para>The easiest way to generate custom moves is by implementing the interface
       <literal>MoveListFactory</literal>:</para>
@@ -1568,7 +1568,7 @@
     </section>
 
     <section xml:id="moveIteratorFactory">
-      <title><literal>MoveIteratorFactory</literal>: generate custom moves just in time</title>
+      <title><literal>MoveIteratorFactory</literal>: Generate Custom Moves Just in Time</title>
 
       <para>Use this advanced form to generate custom moves by implementing the <literal>MoveIteratorFactory</literal>
       interface:</para>

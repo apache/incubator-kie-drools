@@ -5,10 +5,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Use cases and examples</title>
+  <title>Use Cases and Examples</title>
 
   <section xml:id="examplesOverview">
-    <title>Examples overview</title>
+    <title>Examples Overview</title>
 
     <para>Planner has several examples. In this manual we explain mainly using the n queens example and cloud balancing
     example. So it's advisable to read at least those sections.</para>
@@ -18,7 +18,7 @@
     <filename>optaplanner/optaplanner-examples</filename>.</para>
 
     <table>
-      <title>Examples overview</title>
+      <title>Examples Overview</title>
 
       <tgroup cols="5">
         <colspec align="left" colnum="1" colwidth="2*"/>
@@ -752,13 +752,13 @@
   </section>
 
   <section xml:id="basicExamples">
-    <title>Basic examples</title>
+    <title>Basic Examples</title>
 
     <section xml:id="nQueens">
-      <title>N queens</title>
+      <title>N Queens</title>
 
       <section xml:id="nQueensProblemDescription">
-        <title>Problem description</title>
+        <title>Problem Description</title>
 
         <para>Place n queens on a n sized chessboard so no 2 queens can attack each other. The most common n queens
         puzzle is the 8 queens puzzle, with <emphasis>n = 8</emphasis>:</para>
@@ -791,7 +791,7 @@
         <para>A proposed solution could be:</para>
 
         <figure>
-          <title>A wrong solution for the 4 queens puzzle</title>
+          <title>A Wrong Solution for the 4 Queens Puzzle</title>
 
           <mediaobject>
             <imageobject>
@@ -809,7 +809,7 @@
         <para>Below is a correct solution:</para>
 
         <figure>
-          <title>A correct solution for the 4 queens puzzle</title>
+          <title>A Correct Solution for the 4 Queens Puzzle</title>
 
           <mediaobject>
             <imageobject>
@@ -824,7 +824,7 @@
       </section>
 
       <section xml:id="nQueensProblemSize">
-        <title>Problem size</title>
+        <title>Problem Size</title>
 
         <programlisting>4queens   has   4 queens with a search space of    256.
 8queens   has   8 queens with a search space of   10^7.
@@ -839,7 +839,7 @@
       </section>
 
       <section xml:id="nQueensDomainModel">
-        <title>Domain model</title>
+        <title>Domain Model</title>
 
         <para>Use a good domain model: it will be easier to understand and solve your planning problem. This is the
         domain model for the n queens example:</para>
@@ -893,7 +893,7 @@
         4.</para>
 
         <table>
-          <title>A solution for 4 queens shown in the domain model</title>
+          <title>A Solution for 4 Queens Shown in the Domain Model</title>
 
           <tgroup cols="6">
             <thead>
@@ -976,16 +976,16 @@
     </section>
 
     <section xml:id="cloudBalancing">
-      <title>Cloud balancing</title>
+      <title>Cloud Balancing</title>
 
       <para>This example is explained in <link linkend="cloudBalancingTutorial">a tutorial</link>.</para>
     </section>
 
     <section xml:id="tsp">
-      <title>Traveling salesman (TSP - Traveling salesman problem)</title>
+      <title>Traveling Salesman (TSP - Traveling Salesman Problem)</title>
 
       <section xml:id="tspProblemDescription">
-        <title>Problem description</title>
+        <title>Problem Description</title>
 
         <para>Given a list of cities, find the shortest tour for a salesman that visits each city exactly once.</para>
 
@@ -997,7 +997,7 @@
       </section>
 
       <section xml:id="tspProblemSize">
-        <title>Problem size</title>
+        <title>Problem Size</title>
 
         <programlisting>dj38     has  38 cities with a search space of   10^58.
 europe40 has  40 cities with a search space of   10^62.
@@ -1007,7 +1007,7 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
       </section>
 
       <section xml:id="tspProblemDifficulty">
-        <title>Problem difficulty</title>
+        <title>Problem Difficulty</title>
 
         <para>Despite TSP's simple definition, the problem is surprisingly hard to solve. Because it's an NP-hard
         problem (like most planning problems), the optimal solution for a specific problem dataset can change a lot when
@@ -1022,10 +1022,10 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
     </section>
 
     <section xml:id="dinnerParty">
-      <title>Dinner party</title>
+      <title>Dinner Party</title>
 
       <section xml:id="dinnerPartyProblemDescription">
-        <title>Problem description</title>
+        <title>Problem Description</title>
 
         <para>Miss Manners is throwing another dinner party.</para>
 
@@ -1059,17 +1059,17 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
       </section>
 
       <section xml:id="dinnerPartyProblemSize">
-        <title>Problem size</title>
+        <title>Problem Size</title>
 
         <programlisting>wedding01 has 18 jobs, 144 guests, 288 hobby practicians, 12 tables and 144 seats with a search space of 10^310.</programlisting>
       </section>
     </section>
 
     <section xml:id="tennis">
-      <title>Tennis club scheduling</title>
+      <title>Tennis Club Scheduling</title>
 
       <section xml:id="tennisProblemDescription">
-        <title>Problem description</title>
+        <title>Problem Description</title>
 
         <para>Every week the tennis club has 4 teams playing round robin against each other. Assign those 4 spots to the
         teams fairly.</para>
@@ -1104,13 +1104,13 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
       </section>
 
       <section xml:id="tennisProblemSize">
-        <title>Problem size</title>
+        <title>Problem Size</title>
 
         <programlisting>munich-7teams has 7 teams, 18 days, 12 unavailabilityPenalties and 72 teamAssignments with a search space of 10^60.</programlisting>
       </section>
 
       <section xml:id="tennisDomainModel">
-        <title>Domain model</title>
+        <title>Domain Model</title>
 
         <mediaobject>
           <imageobject>
@@ -1122,13 +1122,13 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
   </section>
 
   <section xml:id="realExamples">
-    <title>Real examples</title>
+    <title>Real Examples</title>
 
     <section xml:id="curriculumCourse">
-      <title>Course timetabling (ITC 2007 track 3 - Curriculum course scheduling)</title>
+      <title>Course Timetabling (ITC 2007 Track 3 - Curriculum Course Scheduling)</title>
 
       <section xml:id="curriculumCourseProblemDescription">
-        <title>Problem description</title>
+        <title>Problem Description</title>
 
         <para>Schedule each lecture into a timeslot and into a room.</para>
 
@@ -1181,7 +1181,7 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
       </section>
 
       <section xml:id="curriculumCourseProblemSize">
-        <title>Problem size</title>
+        <title>Problem Size</title>
 
         <programlisting>comp01 has 24 teachers,  14 curricula,  30 courses, 160 lectures, 30 periods,  6 rooms and   53 unavailable period constraints with a search space of  10^360.
 comp02 has 71 teachers,  70 curricula,  82 courses, 283 lectures, 25 periods, 16 rooms and  513 unavailable period constraints with a search space of  10^736.
@@ -1200,7 +1200,7 @@ comp14 has 68 teachers,  60 curricula,  85 courses, 275 lectures, 25 periods, 17
       </section>
 
       <section xml:id="curriculumCourseDomainModel">
-        <title>Domain model</title>
+        <title>Domain Model</title>
 
         <mediaobject>
           <imageobject>
@@ -1211,10 +1211,10 @@ comp14 has 68 teachers,  60 curricula,  85 courses, 275 lectures, 25 periods, 17
     </section>
 
     <section xml:id="machineReassignment">
-      <title>Machine reassignment (Google ROADEF 2012)</title>
+      <title>Machine Reassignment (Google ROADEF 2012)</title>
 
       <section xml:id="machineReassignmentProblemDescription">
-        <title>Problem description</title>
+        <title>Problem Description</title>
 
         <para>Assign each process to a machine. All processes already have an original (unoptimized) assignment. Each
         process requires an amount of each resource (such as CPU, RAM, ...). This is a more complex version of the Cloud
@@ -1277,7 +1277,7 @@ comp14 has 68 teachers,  60 curricula,  85 courses, 275 lectures, 25 periods, 17
       </section>
 
       <section xml:id="machineReassignmentProblemSize">
-        <title>Problem size</title>
+        <title>Problem Size</title>
 
         <programlisting>model_a1_1 has  2 resources,  1 neighborhoods,   4 locations,    4 machines,    79 services,   100 processes and 1 balancePenalties with a search space of     10^60.
 model_a1_2 has  4 resources,  2 neighborhoods,   4 locations,  100 machines,   980 services,  1000 processes and 0 balancePenalties with a search space of   10^2000.
@@ -1302,7 +1302,7 @@ model_b_10 has  3 resources,  5 neighborhoods, 100 locations, 5000 machines,  48
       </section>
 
       <section xml:id="machineReassignmentDomainModel">
-        <title>Domain model</title>
+        <title>Domain Model</title>
 
         <mediaobject>
           <imageobject>
@@ -1313,10 +1313,10 @@ model_b_10 has  3 resources,  5 neighborhoods, 100 locations, 5000 machines,  48
     </section>
 
     <section xml:id="vehicleRouting">
-      <title>Vehicle routing</title>
+      <title>Vehicle Routing</title>
 
       <section xml:id="vehicleRoutingProblemDescription">
-        <title>Problem description</title>
+        <title>Problem Description</title>
 
         <para>Using a fleet of vehicles, pick up the objects of each customer and bring them to the depot. Each vehicle
         can service multiple customers, but it has a limited capacity.</para>
@@ -1374,7 +1374,7 @@ model_b_10 has  3 resources,  5 neighborhoods, 100 locations, 5000 machines,  48
       </section>
 
       <section xml:id="vehicleRoutingProblemSize">
-        <title>Problem size</title>
+        <title>Problem Size</title>
 
         <para>CVRP instances (without time windows):</para>
 
@@ -1456,7 +1456,7 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
       </section>
 
       <section xml:id="vehicleRoutingDomainModel">
-        <title>Domain model</title>
+        <title>Domain Model</title>
 
         <mediaobject>
           <imageobject>
@@ -1471,7 +1471,7 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
       </section>
 
       <section xml:id="roadDistancesInsteadOfAirDistances">
-        <title>Road distances instead of air distances</title>
+        <title>Road Distances Instead of Air Distances</title>
 
         <para>In the real world, vehicles can't follow a straight line from location to location: they have to use roads
         and highways. From a business point of view, this matters a lot:</para>
@@ -1511,10 +1511,10 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
     </section>
 
     <section xml:id="projectJobScheduling">
-      <title>Project job scheduling</title>
+      <title>Project Job Scheduling</title>
 
       <section xml:id="projectJobSchedulingProblemDescription">
-        <title>Problem description</title>
+        <title>Problem Description</title>
 
         <para>Schedule all jobs in time and execution mode to minimize project delays. Each job is part of a project. A
         job can be executed in different ways: each way is an execution mode that implies a different duration but also
@@ -1571,7 +1571,7 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
       </section>
 
       <section xml:id="projectJobSchedulingProblemSize">
-        <title>Problem size</title>
+        <title>Problem Size</title>
 
         <programlisting>Schedule A-1  has  2 projects,  24 jobs,   64 execution modes,  7 resources and  150 resource requirements.
 Schedule A-2  has  2 projects,  44 jobs,  124 execution modes,  7 resources and  420 resource requirements.
@@ -1597,10 +1597,10 @@ Schedule B-10 has 20 projects, 460 jobs, 1300 execution modes, 42 resources and 
     </section>
 
     <section xml:id="bedAllocation">
-      <title>Hospital bed planning (PAS - Patient admission scheduling)</title>
+      <title>Hospital Bed Planning (PAS - Patient Admission Scheduling)</title>
 
       <section xml:id="bedAllocationProblemDescription">
-        <title>Problem description</title>
+        <title>Problem Description</title>
 
         <para>Assign each patient (that will come to the hospital) into a bed for each night that the patient will stay
         in the hospital. Each bed belongs to a room and each room belongs to a department. The arrival and departure
@@ -1683,7 +1683,7 @@ Schedule B-10 has 20 projects, 460 jobs, 1300 execution modes, 42 resources and 
       </section>
 
       <section xml:id="bedAllocationProblemSize">
-        <title>Problem size</title>
+        <title>Problem Size</title>
 
         <programlisting>testdata01 has 4 specialisms, 2 equipments, 4 departments,  98 rooms, 286 beds, 14 nights,  652 patients and  652 admissions with a search space of 10^1601.
 testdata02 has 6 specialisms, 2 equipments, 6 departments, 151 rooms, 465 beds, 14 nights,  755 patients and  755 admissions with a search space of 10^2013.
@@ -1703,13 +1703,13 @@ testdata13 has 5 specialisms, 4 equipments, 5 departments, 125 rooms, 368 beds, 
   </section>
 
   <section xml:id="difficultExamples">
-    <title>Difficult examples</title>
+    <title>Difficult Examples</title>
 
     <section xml:id="examination">
-      <title>Exam timetabling (ITC 2007 track 1 - Examination)</title>
+      <title>Exam Timetabling (ITC 2007 track 1 - Examination)</title>
 
       <section xml:id="examinationProblemDescription">
-        <title>Problem description</title>
+        <title>Problem Description</title>
 
         <para>Schedule each exam into a period and into a room. Multiple exams can share the same room during the same
         period.</para>
@@ -1805,7 +1805,7 @@ testdata13 has 5 specialisms, 4 equipments, 5 departments, 125 rooms, 368 beds, 
       </section>
 
       <section xml:id="examinationProblemSize">
-        <title>Problem size</title>
+        <title>Problem Size</title>
 
         <programlisting>exam_comp_set1 has  7883 students,  607 exams, 54 periods,  7 rooms,  12 period constraints and  0 room constraints with a search space of 10^1564.
 exam_comp_set2 has 12484 students,  870 exams, 40 periods, 49 rooms,  12 period constraints and  2 room constraints with a search space of 10^2864.
@@ -1818,12 +1818,12 @@ exam_comp_set8 has  7718 students,  598 exams, 80 periods,  8 rooms,  20 period 
       </section>
 
       <section xml:id="examinationDomainModel">
-        <title>Domain model</title>
+        <title>Domain Model</title>
 
         <para>Below you can see the main examination domain classes:</para>
 
         <figure>
-          <title>Examination domain class diagram</title>
+          <title>Examination Domain Class Diagram</title>
 
           <mediaobject>
             <imageobject>
@@ -1841,10 +1841,10 @@ exam_comp_set8 has  7718 students,  598 exams, 80 periods,  8 rooms,  20 period 
     </section>
 
     <section xml:id="employeeRostering">
-      <title>Employee rostering (INRC 2010 - Nurse rostering)</title>
+      <title>Employee Rostering (INRC 2010 - Nurse Rostering)</title>
 
       <section xml:id="employeeRosteringProblemDescription">
-        <title>Problem description</title>
+        <title>Problem Description</title>
 
         <para>For each shift, assign a nurse to work that shift.</para>
 
@@ -1871,7 +1871,7 @@ exam_comp_set8 has  7718 students,  598 exams, 80 periods,  8 rooms,  20 period 
       </section>
 
       <section xml:id="employeeRosteringProblemSize">
-        <title>Problem size</title>
+        <title>Problem Size</title>
 
         <para>There are 3 dataset types:</para>
 
@@ -1947,10 +1947,10 @@ long_late05   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees,
     </section>
 
     <section xml:id="travelingTournament">
-      <title>Traveling tournament problem (TTP)</title>
+      <title>Traveling Tournament Problem (TTP)</title>
 
       <section xml:id="travelingTournamentProblemDescription">
-        <title>Problem description</title>
+        <title>Problem Description</title>
 
         <para>Schedule matches between <emphasis>n</emphasis> teams.</para>
 
@@ -1993,7 +1993,7 @@ long_late05   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees,
       </section>
 
       <section xml:id="travelingTournamentProblemSize">
-        <title>Problem size</title>
+        <title>Problem Size</title>
 
         <programlisting>1-nl04     has  6 days,  4 teams and   12 matches with a search space of    10^9.
 1-nl06     has 10 days,  6 teams and   30 matches with a search space of   10^30.
@@ -2041,10 +2041,10 @@ long_late05   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees,
     </section>
 
     <section xml:id="cheapTimeScheduling">
-      <title>Cheap time scheduling</title>
+      <title>Cheap Time Scheduling</title>
 
       <section xml:id="cheapTimeSchedulingProblemDescription">
-        <title>Problem description</title>
+        <title>Problem Description</title>
 
         <para>Schedule all tasks in time and on a machine to minimize power cost. Power prices differs in time. This is
         a form of <emphasis>job shop scheduling</emphasis>.</para>
@@ -2104,7 +2104,7 @@ long_late05   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees,
       </section>
 
       <section xml:id="cheapTimeSchedulingProblemSize">
-        <title>Problem size</title>
+        <title>Problem Size</title>
 
         <programlisting>sample01   has 3 resources,   2 machines, 288 periods and   25 tasks with a search space of    10^53.
 sample02   has 3 resources,   2 machines, 288 periods and   50 tasks with a search space of   10^114.
