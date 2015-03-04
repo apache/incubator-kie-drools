@@ -261,6 +261,9 @@
               org.drools.compiler.*
             </Export-Package>
             <Bundle-Activator>org.drools.compiler.osgi.Activator</Bundle-Activator>
+            <Provide-Capability>
+              org.ops4j.pax.cdi.extension; extension=kie-cdi
+            </Provide-Capability>
             <_removeheaders>Private-Package</_removeheaders>
           </instructions>
         </configuration>
