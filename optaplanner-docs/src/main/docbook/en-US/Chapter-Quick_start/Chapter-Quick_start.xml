@@ -5,13 +5,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Quick start</title>
+  <title>Quick Start</title>
 
   <section xml:id="cloudBalancingTutorial">
-    <title>Cloud balancing tutorial</title>
+    <title>Cloud Balancing Tutorial</title>
 
     <section xml:id="cloudBalancingProblemDescription">
-      <title>Problem description</title>
+      <title>Problem Description</title>
 
       <para>Suppose your company owns a number of cloud computers and needs to run a number of processes on those
       computers. Assign each process to a computer under the following 4 constraints.</para>
@@ -77,7 +77,7 @@
     </section>
 
     <section xml:id="cloudBalancingProblemSize">
-      <title>Problem size</title>
+      <title>Problem Size</title>
 
       <programlisting>2computers-6processes      has   2 computers and    6 processes with a search space of      64.
 3computers-9processes      has   3 computers and    9 processes with a search space of    10^4.
@@ -89,7 +89,7 @@
     </section>
 
     <section xml:id="cloudBalancingDomainModelDesign">
-      <title>Domain model design</title>
+      <title>Domain Model Design</title>
 
       <para>Let's start by taking a look at the domain model. It's pretty simple:</para>
 
@@ -138,7 +138,7 @@
     </section>
 
     <section xml:id="cloudBalancingMainMethod">
-      <title>Main method</title>
+      <title>Main Method</title>
 
       <para>Try it yourself. <link linkend="downloadAndRunTheExamples">Download and configure the examples in your
       favorite IDE.</link> Run <literal>org.optaplanner.examples.cloudbalancing.app.CloudBalancingHelloWorld</literal>.
@@ -210,7 +210,7 @@
     </section>
 
     <section xml:id="cloudBalancingSolverConfiguration">
-      <title>Solver configuration</title>
+      <title>Solver Configuration</title>
 
       <para>Take a look at the solver configuration:</para>
 
@@ -304,10 +304,10 @@
     </section>
 
     <section xml:id="cloudBalancingDomainModelImplementation">
-      <title>Domain model implementation</title>
+      <title>Domain Model Implementation</title>
 
       <section xml:id="cloudBalancingClassComputer">
-        <title>The <literal>Computer</literal> class</title>
+        <title>The <literal>Computer</literal> Class</title>
 
         <para>The <literal>Computer</literal> class is a POJO (Plain Old Java Object), nothing special. Usually, you'll
         have more of this kind of classes.</para>
@@ -328,7 +328,7 @@
       </section>
 
       <section xml:id="cloudBalancingClassProcess">
-        <title>The <literal>Process</literal> class</title>
+        <title>The <literal>Process</literal> Class</title>
 
         <para>The <literal>Process</literal> class is a little bit special. We need to tell Planner that it can change
         the field <literal>computer</literal>, so we annotate the class with <literal>@PlanningEntity</literal> and the
@@ -373,7 +373,7 @@ public class CloudProcess ... {
       </section>
 
       <section xml:id="cloudBalancingClassCloudBalance">
-        <title>The <literal>CloudBalance</literal> class</title>
+        <title>The <literal>CloudBalance</literal> Class</title>
 
         <para>The <literal>CloudBalance</literal> class implements the <filename>Solution</filename> interface. It holds
         a list of all computers and processes. We need to tell Planner how to retrieve the collection of processes which
@@ -436,7 +436,7 @@ public class CloudProcess ... {
     </section>
 
     <section xml:id="cloudBalancingScoreConfiguration">
-      <title>Score configuration</title>
+      <title>Score Configuration</title>
 
       <para>Planner will search for the <literal>Solution</literal> with the highest <literal>Score</literal>. We're
       using a <literal>HardSoftScore</literal>, which means Planner will look for the solution with no hard constraints
@@ -469,7 +469,7 @@ public class CloudProcess ... {
       <para>Let's take a look at 2 different implementations:</para>
 
       <section xml:id="cloudBalancingEasyJavaScoreConfiguration">
-        <title>Easy Java score configuration</title>
+        <title>Easy Java Score Configuration</title>
 
         <para>One way to define a score function is to implement the interface <literal>EasyScoreCalculator</literal>
         in plain Java.</para>
@@ -542,7 +542,7 @@ public class CloudProcess ... {
       </section>
 
       <section xml:id="cloudBalancingDroolsScoreConfiguration">
-        <title>Drools score configuration</title>
+        <title>Drools Score Configuration</title>
 
         <para>To use the Drools rule engine as a score function, simply add a <literal>scoreDrl</literal> resource in
         the classpath:</para>
@@ -556,7 +556,7 @@ public class CloudProcess ... {
         their processes, so we make these hard constraints:</para>
 
         <example>
-          <title>cloudBalancingScoreRules.drl - hard constraints</title>
+          <title>cloudBalancingScoreRules.drl - Hard Constraints</title>
 
           <programlisting>...
 
@@ -596,7 +596,7 @@ end</programlisting>
         constraint:</para>
 
         <example>
-          <title>cloudBalancingScoreRules.drl - soft constraints</title>
+          <title>cloudBalancingScoreRules.drl - Soft Constraints</title>
 
           <programlisting>// ############################################################################
 // Soft constraints
@@ -617,7 +617,7 @@ end</programlisting>
     </section>
 
     <section xml:id="cloudBalancingBeyondThisTutorial">
-      <title>Beyond this tutorial</title>
+      <title>Beyond this Tutorial</title>
 
       <para>Now that this simple example works, try going further. Enrich the domain model and add extra constraints
       such as these:</para>

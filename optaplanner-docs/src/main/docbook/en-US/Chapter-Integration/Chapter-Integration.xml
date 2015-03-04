@@ -39,7 +39,7 @@
   </section>
 
   <section xml:id="integrationWithPersistentStorage">
-    <title>Persistent storage</title>
+    <title>Persistent Storage</title>
 
     <section xml:id="integrationWithJpaAndHibernate">
       <title>Database: JPA and Hibernate</title>
@@ -84,10 +84,10 @@
   </section>
 
   <section xml:id="integrationWithOtherEnvironments">
-    <title>Other environments</title>
+    <title>Other Environments</title>
 
     <section xml:id="integrationWithJBossModules">
-      <title>JBoss modules, WildFly and JBoss EAP</title>
+      <title>JBoss Modules, WildFly and JBoss EAP</title>
 
       <para>To deploy an Planner web application on WildFly, simply include the optaplanner dependency jars in the
       <literal>war</literal> file's <literal>WEB-INF/lib</literal> directory (just like any other dependency) as shown
@@ -192,7 +192,7 @@
   </section>
 
   <section xml:id="integrationWithHumanPlanners">
-    <title>Integration with human planners (politics)</title>
+    <title>Integration with Human Planners (Politics)</title>
 
     <para>A good Planner implementation beats any good human planner for non-trivial datasets. Many human planners
     fail to accept this, often because they feel threatened by an automated system.</para>

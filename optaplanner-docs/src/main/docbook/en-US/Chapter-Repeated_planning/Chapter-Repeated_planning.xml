@@ -5,10 +5,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Repeated planning</title>
+  <title>Repeated Planning</title>
 
   <section xml:id="introductionToRepeatedPlanning">
-    <title>Introduction to repeated planning</title>
+    <title>Introduction to Repeated Planning</title>
 
     <para>The world constantly changes. The planning facts used to create a solution, might change before or during the
     execution of that solution. There are 3 types of situations:</para>
@@ -40,7 +40,7 @@
   </section>
 
   <section xml:id="backupPlanning">
-    <title>Backup planning</title>
+    <title>Backup Planning</title>
 
     <para>Backup planning is the technique of adding extra score constraints to create space in the planning for when
     things go wrong. That creates a backup plan in the plan. For example: try to assign an employee as the spare
@@ -53,7 +53,7 @@
   </section>
 
   <section xml:id="continuousPlanning">
-    <title>Continuous planning (windowed planning)</title>
+    <title>Continuous Planning (Windowed Planning)</title>
 
     <para>Continuous planning is the technique of planning one or more upcoming planning windows at the same time and
     repeating that process monthly, weekly, daily or hourly. Because time is infinite, there are infinite future
@@ -85,7 +85,7 @@
     planning facts (F, H, I, J, K) changed, which results in unrelated planning entities (G) changing too.</para>
 
     <section xml:id="immovablePlanningEntities">
-      <title>Immovable planning entities</title>
+      <title>Immovable Planning Entities</title>
 
       <para>To make some planning entities immovable, simply add an entity <literal>SelectionFilter</literal> that
       returns <literal>true</literal> if an entity is movable and <literal>false</literal> if it is immovable.</para>
@@ -114,7 +114,7 @@ public class ShiftAssignment {
     </section>
 
     <section xml:id="nonvolatileReplanning">
-      <title>Nonvolatile replanning (semi movable planning entities) </title>
+      <title>Nonvolatile Replanning (Semi-movable Planning Entities) </title>
 
       <para>Replanning an existing plan can be very disruptive on the plan. If the plan affects humans (such as
       employees, drivers, ...), very disruptive changes are often undesirable. In such cases, nonvolatile replanning
@@ -165,7 +165,7 @@ end</programlisting>
   </section>
 
   <section xml:id="realTimePlanning">
-    <title>Real-time planning</title>
+    <title>Real-time Planning</title>
 
     <para>To do real-time planning, first combine <link linkend="backupPlanning">backup planning</link> and <link
     linkend="continuousPlanning">continuous planning</link> with short planning windows to lower the burden of real-time
@@ -298,7 +298,7 @@ end</programlisting>
     </section>
 
     <section xml:id="daemon">
-      <title>Daemon: <literal>solve()</literal> does not return</title>
+      <title>Daemon: <literal>solve()</literal> Does Not Return</title>
 
       <para>In real-time planning, it's often useful to have a solver thread wait when it runs out of work, and
       immediately solve a problem once problem fact changes are added. Putting the Solver in daemon mode has these

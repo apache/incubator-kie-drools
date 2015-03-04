@@ -18,7 +18,7 @@
     <title>Brute Force</title>
 
     <section xml:id="bruteForceAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>The Brute Force algorithm creates and evaluates every possible solution.</para>
 
@@ -56,7 +56,7 @@
     <title>Branch And Bound</title>
 
     <section xml:id="branchAndBoundAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>Branch And Bound also explores nodes in an exponential search tree, but it investigates more promising nodes
       first and prunes away worthless nodes.</para>

@@ -5,7 +5,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Planner configuration</title>
+  <title>Planner Configuration</title>
 
   <section xml:id="plannerConfigurationOverview">
     <title>Overview</title>
@@ -46,10 +46,10 @@
   </section>
 
   <section xml:id="solverConfiguration">
-    <title>Solver configuration</title>
+    <title>Solver Configuration</title>
 
     <section xml:id="solverConfigurationByXML">
-      <title>Solver configuration by XML</title>
+      <title>Solver Configuration by XML</title>
 
       <para>Build a <literal>Solver</literal> instance with the <literal>SolverFactory</literal>. Configure it with a
       solver configuration XML file, provided as a classpath resource (as definied by
@@ -122,7 +122,7 @@
     </section>
 
     <section xml:id="solverConfigurationByJavaAPI">
-      <title>Solver configuration by Java API</title>
+      <title>Solver Configuration by Java API</title>
 
       <para>A solver configuration can also be configured with the <literal>SolverConfig</literal> API. This especially
       useful to change some values dynamically at runtime, for example to change the running time based on user input,
@@ -147,10 +147,10 @@
   </section>
 
   <section xml:id="modelAPlanningProblem">
-    <title>Model a planning problem</title>
+    <title>Model a Planning Problem</title>
 
     <section xml:id="isThisClassAProblemFactOrPlanningEntity">
-      <title>Is this class a problem fact or planning entity?</title>
+      <title>Is This Class a Problem Fact or Planning Entity?</title>
 
       <para>Look at a dataset of your planning problem. You'll recognize domain classes in there, each of which can be
       categorized as one of these:</para>
@@ -258,7 +258,7 @@
     </section>
 
     <section xml:id="problemFact">
-      <title>Problem fact</title>
+      <title>Problem Fact</title>
 
       <para>A problem fact is any JavaBean (POJO) with getters that does not change during planning. Implementing the
       interface <literal>Serializable</literal> is recommended (but not required). For example in n queens, the columns
@@ -310,10 +310,10 @@
     </section>
 
     <section xml:id="planningEntity">
-      <title>Planning entity</title>
+      <title>Planning Entity</title>
 
       <section xml:id="planningEntityAnnotation">
-        <title>Planning entity annotation</title>
+        <title>Planning Entity Annotation</title>
 
         <para>A planning entity is a JavaBean (POJO) that changes during solving, for example a <literal>Queen</literal>
         that changes to another row. A planning problem has multiple planning entities, for example for a single n
@@ -386,7 +386,7 @@ public class Lecture {
       </section>
 
       <section xml:id="planningEntityDifficulty">
-        <title>Planning entity difficulty</title>
+        <title>Planning Entity Difficulty</title>
 
         <para>Some optimization algorithms work more efficiently if they have an estimation of which planning entities
         are more difficult to plan. For example: in bin packing bigger items are harder to fit, in course scheduling
@@ -438,10 +438,10 @@ public class Queen {
     </section>
 
     <section xml:id="planningVariable">
-      <title>Planning variable</title>
+      <title>Planning Variable</title>
 
       <section xml:id="planningVariableAnnotation">
-        <title>Planning variable annotation</title>
+        <title>Planning Variable Annotation</title>
 
         <para>A planning variable is a property (including getter and setter) on a planning entity. It points to a
         planning value, which changes during planning. For example, a <literal>Queen</literal>'s <literal>row</literal>
@@ -476,7 +476,7 @@ public class Queen {
       </section>
 
       <section xml:id="nullablePlanningVariable">
-        <title>Nullable planning variable</title>
+        <title>Nullable Planning Variable</title>
 
         <para>By default, an initialized planning variable cannot be <literal>null</literal>, so an initialized solution
         will never use <literal>null</literal> for any of its planning variables. In an over-constrained use case, this
@@ -515,7 +515,7 @@ public class Queen {
       </section>
 
       <section xml:id="whenIsAPlanningVariableInitialized">
-        <title>When is a planning variable considered initialized?</title>
+        <title>When is a Planning Variable Considered Initialized?</title>
 
         <para>A planning variable is considered initialized if its value is not <literal>null</literal> or if the
         variable is <literal>nullable</literal>. So a nullable variable is always considered initialized, even when a
@@ -529,10 +529,10 @@ public class Queen {
     </section>
 
     <section xml:id="planningValueAndPlanningValueRange">
-      <title>Planning value and planning value range</title>
+      <title>Planning Value and Planning Value Range</title>
 
       <section xml:id="planningValue">
-        <title>Planning value</title>
+        <title>Planning Value</title>
 
         <para>A planning value is a possible value for a planning variable. Usually, a planning value is a problem fact,
         but it can also be any object, for example a <literal>double</literal>. It can even be another planning entity
@@ -545,7 +545,7 @@ public class Queen {
       </section>
 
       <section xml:id="planningValueRangeProvider">
-        <title>Planning value range provider</title>
+        <title>Planning Value Range Provider</title>
 
         <section xml:id="planningValueRangeProviderOverview">
           <title>Overview</title>
@@ -616,7 +616,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
         </section>
 
         <section xml:id="valueRangeProviderOnPlanningEntity">
-          <title><literal>ValueRangeProvider</literal> on the planning entity</title>
+          <title><literal>ValueRangeProvider</literal> on the Planning Entity</title>
 
           <para>Each planning entity has its own value range (a set of possible planning values) for the planning
           variable. For example, if a teacher can <emphasis role="bold">never</emphasis> teach in a room that does not
@@ -732,7 +732,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
       </section>
 
       <section xml:id="planningValueStrength">
-        <title>Planning value strength</title>
+        <title>Planning Value Strength</title>
 
         <para>Some optimization algorithms work more efficiently if they have an estimation of which planning values are
         stronger, which means they are more likely to satisfy a planning entity. For example: in bin packing bigger
@@ -789,7 +789,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
       </section>
 
       <section xml:id="chainedPlanningVariable">
-        <title>Chained planning variable (TSP, VRP, ...)</title>
+        <title>Chained Planning Variable (TSP, VRP, ...)</title>
 
         <para>Some use cases, such as TSP and Vehicle Routing, require <emphasis>chaining</emphasis>. This means the
         planning entities point to each other and form a chain. By modeling the problem as a set of chains (instead of a
@@ -921,7 +921,7 @@ public class Visit ... implements Standstill {
     </section>
 
     <section xml:id="shadowVariable">
-      <title>Shadow variable</title>
+      <title>Shadow Variable</title>
 
       <section xml:id="shadowVariableIntroduction">
         <title>Introduction</title>
@@ -951,7 +951,7 @@ public class Visit ... implements Standstill {
       </section>
 
       <section xml:id="bidirectionalVariable">
-        <title>Bi-directional variable (inverse relation shadow variable)</title>
+        <title>Bi-directional Variable (Inverse Relation Shadow Variable)</title>
 
         <para>2 variables are bi-directional if their instances always point to each other (unless they point to null).
         So if A references B, then B references A.</para>
@@ -996,7 +996,7 @@ public interface Standstill {
       </section>
 
       <section xml:id="anchorShadowVariable">
-        <title>Anchor shadow variable</title>
+        <title>Anchor Shadow Variable</title>
 
         <para>An anchor shadow variable is the anchor of <link linkend="chainedPlanningVariable">a chained
         variable</link>.</para>
@@ -1089,10 +1089,10 @@ public class Customer {
     </section>
 
     <section xml:id="planningProblemAndPlanningSolution">
-      <title>Planning problem and planning solution</title>
+      <title>Planning Problem and Planning Solution</title>
 
       <section xml:id="planningProblemInstance">
-        <title>Planning problem instance</title>
+        <title>Planning Problem Instance</title>
 
         <para>A dataset for a planning problem needs to be wrapped in a class for the <literal>Solver</literal> to
         solve. You must implement this class. For example in n queens, this in the <literal>NQueens</literal> class
@@ -1108,7 +1108,7 @@ public class Customer {
       </section>
 
       <section xml:id="solutionInterface">
-        <title><literal>Solution</literal> interface</title>
+        <title><literal>Solution</literal> Interface</title>
 
         <para>You need to present the problem as a <literal>Solution</literal> instance to the
         <literal>Solver</literal>. So you need to have a class that implements the <literal>Solution</literal>
@@ -1142,7 +1142,7 @@ public class Customer {
       </section>
 
       <section xml:id="getScoreAndSetScoreMethods">
-        <title>The <literal>getScore()</literal> and <literal>setScore()</literal> methods</title>
+        <title>The <literal>getScore()</literal> and <literal>setScore()</literal> Methods</title>
 
         <para>A <literal>Solution</literal> requires a score property. The score property is <literal>null</literal> if
         the <literal>Solution</literal> is uninitialized or if the score has not yet been (re)calculated. The
@@ -1186,7 +1186,7 @@ public class Customer {
       </section>
 
       <section xml:id="getProblemFacts">
-        <title>The <literal>getProblemFacts()</literal> method</title>
+        <title>The <literal>getProblemFacts()</literal> Method</title>
 
         <para>The method is only used if Drools is used for score calculation. Other score directors do not use
         it.</para>
@@ -1217,7 +1217,7 @@ public class Customer {
       </section>
 
       <section xml:id="cachedProblemFact">
-        <title>Cached problem fact</title>
+        <title>Cached Problem Fact</title>
 
         <para>A cached problem fact is a problem fact that doesn't exist in the real domain model, but is calculated
         before the <literal>Solver</literal> really starts solving. The <literal>getProblemFacts()</literal> method has
@@ -1328,7 +1328,7 @@ public class SeatDesignationDependency {
         </section>
 
         <section xml:id="customCloning">
-          <title>Custom cloning: Make <literal>Solution</literal> implement <literal>PlanningCloneable</literal></title>
+          <title>Custom Cloning: Make <literal>Solution</literal> Implement <literal>PlanningCloneable</literal></title>
 
           <para>If your <literal>Solution</literal> implements <literal>PlanningCloneable</literal>, Planner will
           automatically choose to clone it by calling the <literal>planningClone()</literal> method.</para>
@@ -1383,7 +1383,7 @@ public class SeatDesignationDependency {
       </section>
 
       <section xml:id="createAnUninitializedSolution">
-        <title>Create an uninitialized solution</title>
+        <title>Create an Uninitialized Solution</title>
 
         <para>Create a <literal>Solution</literal> instance to represent your planning problem's dataset, so it can be set on the
         <literal>Solver</literal> as the planning problem to solve. For example in n queens, an
@@ -1417,7 +1417,7 @@ public class SeatDesignationDependency {
     }</programlisting>
 
         <figure>
-          <title>Uninitialized solution for the 4 queens puzzle</title>
+          <title>Uninitialized Solution for the 4 Queens Puzzle</title>
 
           <mediaobject>
             <imageobject>
@@ -1451,7 +1451,7 @@ public class SeatDesignationDependency {
     <title>Use the <literal>Solver</literal></title>
 
     <section xml:id="theSolverInterface">
-      <title>The <literal>Solver</literal> interface</title>
+      <title>The <literal>Solver</literal> Interface</title>
 
       <para>A <literal>Solver</literal> implementation will solve your planning problem.</para>
 
@@ -1472,7 +1472,7 @@ public class SeatDesignationDependency {
     </section>
 
     <section xml:id="solvingAProblem">
-      <title>Solving a problem</title>
+      <title>Solving a Problem</title>
 
       <para>Solving a problem is quite easy once you have:</para>
 
@@ -1496,7 +1496,7 @@ public class SeatDesignationDependency {
       <literal>Row</literal>.</para>
 
       <figure>
-        <title>Best solution for the 4 queens puzzle in 8 ms (also an optimal solution)</title>
+        <title>Best Solution for the 4 Queens Puzzle in 8ms (Also an Optimal Solution)</title>
 
         <mediaobject>
           <imageobject>
@@ -1528,7 +1528,7 @@ public class SeatDesignationDependency {
     </section>
 
     <section xml:id="environmentMode">
-      <title>Environment mode: Are there bugs in my code?</title>
+      <title>Environment Mode: Are There Bugs in my Code?</title>
 
       <para>The environment mode allows you to detect common bugs in your implementation. It does not affect the logging
       level.</para>
@@ -1637,7 +1637,7 @@ public class SeatDesignationDependency {
     </section>
 
     <section xml:id="logging">
-      <title>Logging level: What is the <literal>Solver</literal> doing?</title>
+      <title>Logging Level: What is the <literal>Solver</literal> Doing?</title>
 
       <para>The best way to illuminate the black box that is a <literal>Solver</literal>, is to play with the logging
       level:</para>
@@ -1776,7 +1776,7 @@ INFO  Solving ended: time spent (24), best score (0), average calculate count pe
     </section>
 
     <section xml:id="randomNumberGenerator">
-      <title>Random number generator</title>
+      <title>Random Number Generator</title>
 
       <para>Many heuristics and metaheuristics depend on a pseudorandom number generator for move selection, to resolve
       score ties, probability based move acceptance, ... During solving, the same <literal>Random</literal> instance is

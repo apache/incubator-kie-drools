@@ -5,7 +5,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>OptaPlanner introduction</title>
+  <title>OptaPlanner Introduction</title>
 
   <section xml:id="whatIsOptaPlanner">
     <title>What is OptaPlanner?</title>
@@ -102,10 +102,10 @@
   </section>
 
   <section xml:id="whatIsAPlanningProblem">
-    <title>What is a planning problem?</title>
+    <title>What is a Planning Problem?</title>
 
     <section xml:id="aPlanningProblemIsNPCompleteOrNPHard">
-      <title>A planning problem is NP-complete or NP-hard</title>
+      <title>A Planning Problem is NP-complete or NP-hard</title>
 
       <para>All the use cases above are <emphasis>probably</emphasis> <link
       xlink:href="http://en.wikipedia.org/wiki/NP-complete">NP-complete</link> or harder. In layman's terms, NP-complete
@@ -149,7 +149,7 @@
     </section>
 
     <section xml:id="aPlanningProblemHasConstraints">
-      <title>A planning problem has (hard and soft) constraints</title>
+      <title>A Planning Problem Has (Hard and Soft) Constraints</title>
 
       <para>Usually, a planning problem has at least 2 levels of constraints:</para>
 
@@ -184,7 +184,7 @@
     </section>
 
     <section xml:id="aPlanningProblemHasAHugeSearchSpace">
-      <title>A planning problem has a huge search space</title>
+      <title>A Planning Problem Has a Huge Search Space</title>
 
       <para>A planning problem has a number of <emphasis>solutions</emphasis>. There are several categories of
       solutions:</para>
@@ -228,10 +228,10 @@
   </section>
 
   <section xml:id="downloadAndRunTheExamples">
-    <title>Download and run the examples</title>
+    <title>Download and Run the Examples</title>
 
     <section xml:id="getTheReleaseZipAndRunTheExamples">
-      <title>Get the release zip and run the examples</title>
+      <title>Get the Release .zip and Run the Examples</title>
 
       <para>To try it now:</para>
 
@@ -281,7 +281,7 @@ $ runExamples.bat</programlisting>
     </section>
 
     <section xml:id="runTheExamplesInAnIDE">
-      <title>Run the examples in an IDE (IntelliJ, Eclipse, NetBeans)</title>
+      <title>Run the Examples in an IDE (IntelliJ, Eclipse, NetBeans)</title>
 
       <para>To run the examples in your favorite IDE:</para>
 
@@ -384,7 +384,7 @@ $ runExamples.bat</programlisting>
     </section>
 
     <section xml:id="buildFromSource">
-      <title>Build OptaPlanner from source</title>
+      <title>Build OptaPlanner from Source</title>
 
       <para>It's easy to build OptaPlanner from source:</para>
 
@@ -467,7 +467,7 @@ $ mvn exec:exec
     </section>
 
     <section xml:id="backwardsCompatibility">
-      <title>Backwards compatibility</title>
+      <title>Backwards Compatibility</title>
 
       <para>OptaPlanner separates its API and implementation:</para>
 
@@ -502,7 +502,7 @@ $ mvn exec:exec
     </section>
 
     <section xml:id="communityAndSupport">
-      <title>Community and support</title>
+      <title>Community and Support</title>
 
       <para>For news and articles, check <link xlink:href="http://www.optaplanner.org/blog/">our blog</link>, Google+
       (<link xlink:href="https://plus.google.com/+OptaPlannerOrg">OptaPlanner</link>, <link

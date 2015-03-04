@@ -23,10 +23,10 @@
   </section>
 
   <section xml:id="localSearchConcepts">
-    <title>Local Search concepts</title>
+    <title>Local Search Concepts</title>
 
     <section xml:id="localSearchStepByStep">
-      <title>Step by step</title>
+      <title>Step by Step</title>
 
       <para>A step is the winning <literal>Move</literal>. Local Search tries a number of moves on the current solution
       and picks the best accepted move as the step:</para>
@@ -100,7 +100,7 @@ INFO  Solving ended: time spent (41), best score (0), average calculate count pe
     </section>
 
     <section xml:id="localSearchConceptsDecideTheNextStep">
-      <title>Decide the next step</title>
+      <title>Decide the Next Step</title>
 
       <para>Local Search decides the next step with the aid of 3 configurable components:</para>
 
@@ -196,7 +196,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
       needs.</para>
 
       <section xml:id="acceptedCountLimit">
-        <title>Accepted count limit</title>
+        <title>Accepted Count Limit</title>
 
         <para>When there are many possible moves, it becomes inefficient to evaluate all of them at every step. To
         evaluate only a random subset of all the moves, use:</para>
@@ -225,7 +225,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
       </section>
 
       <section xml:id="localSearchPickEarlyType">
-        <title>Pick early type</title>
+        <title>Pick Early Type</title>
 
         <para>A forager can pick a move early during a step, ignoring subsequent selected moves. There are 3 pick early
         types for Local Search:</para>
@@ -267,7 +267,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
     <title>Hill Climbing (Simple Local Search)</title>
 
     <section xml:id="hillClimbingAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>Hill Climbing tries all selected moves and then takes the best move, which is the move which leads to the
       solution with the highest score. That best move is called the step move. From that new solution, it again tries
@@ -286,7 +286,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
     </section>
 
     <section xml:id="hillClimbingStuckInLocalOptima">
-      <title>Stuck in local optima</title>
+      <title>Stuck in Local Optima</title>
 
       <para>Hill Climbing always takes improving moves. This may seem like a good thing, but it's not: <emphasis
       role="bold">Hill Climbing can easily get stuck in a local optimum.</emphasis> This happens when it reaches a
@@ -325,7 +325,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
     <title>Tabu Search</title>
 
     <section xml:id="tabuSearchAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>Tabu Search works like Hill Climbing, but it maintains a tabu list to avoid getting stuck in local optima.
       The tabu list holds recently used objects that are <emphasis>taboo</emphasis> to use for now. Moves that involve
@@ -449,7 +449,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
     <title>Simulated Annealing</title>
 
     <section xml:id="simulatedAnnealingAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>Simulated Annealing evaluates only a few moves per step, so it steps quickly. In the classic implementation,
       the first accepted move is the winning step. A move is accepted if it doesn't decrease the score or - in case it
@@ -509,7 +509,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
     <title>Late Acceptance</title>
 
     <section xml:id="lateAcceptanceAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>Late Acceptance (also known as Late Acceptance Hill Climbing) also evaluates only a few moves per step. A
       move is accepted if it does not decrease the score, or if it leads to a score that is at least the late score
@@ -564,7 +564,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
     <title>Step Counting Hill Climbing</title>
 
     <section xml:id="stepCountingHillClimbingAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>Step Counting Hill Climbing also evaluates only a few moves per step. For a number of steps, it keeps the
       step score as a threshold. A move is accepted if it does not decrease the score, or if it leads to a score that is
@@ -603,7 +603,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
     <title>Strategic Oscillation</title>
 
     <section xml:id="strategicOscillationAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>Strategic Oscillation is an add-on, which works especially well with <link linkend="tabuSearch">Tabu
       Search</link>. Instead of picking the accepted move with the highest score, it employs a different mechanism: If
@@ -655,7 +655,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
   </section>
 
   <section xml:id="customTerminationSelectorOrAcceptor">
-    <title>Using a custom Termination, MoveSelector, EntitySelector, ValueSelector or Acceptor</title>
+    <title>Using a Custom Termination, MoveSelector, EntitySelector, ValueSelector or Acceptor</title>
 
     <para>You can plug in a custom <literal>Termination</literal>, <literal>MoveSelector</literal>,
     <literal>EntitySelector</literal>, <literal>ValueSelector</literal> or <literal>Acceptor</literal> by extending the

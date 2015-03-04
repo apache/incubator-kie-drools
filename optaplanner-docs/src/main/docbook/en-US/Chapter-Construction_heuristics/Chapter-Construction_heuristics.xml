@@ -5,7 +5,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Construction heuristics</title>
+  <title>Construction Heuristics</title>
 
   <section xml:id="constructionHeuristicsOverview">
     <title>Overview</title>
@@ -21,7 +21,7 @@
     <title>First Fit</title>
 
     <section xml:id="firstFitAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>The First Fit algorithm cycles through all the planning entities (in default order), initializing 1 planning
       entity at a time. It assigns the planning entity to the best available planning value, taking the already
@@ -63,7 +63,7 @@
     <title>First Fit Decreasing</title>
 
     <section xml:id="firstFitDecreasingAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>Like First Fit, but assigns the more difficult planning entities first, because they are less likely to fit
       in the leftovers. So it sorts the planning entities on decreasing difficulty.</para>
@@ -107,7 +107,7 @@
     <title>Weakest Fit</title>
 
     <section xml:id="weakestFitAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>Like First Fit, but uses the weaker planning values first, because the strong planning values are more
       likely to be able to accommodate later planning entities. So it sorts the planning values on increasing
@@ -145,7 +145,7 @@
     <title>Weakest Fit Decreasing</title>
 
     <section xml:id="weakestFitDecreasingAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>Combines First Fit Decreasing and Weakest Fit. So it sorts the planning entities on decreasing difficulty
       and the planning values on increasing strength.</para>
@@ -183,7 +183,7 @@
     <title>Strongest Fit</title>
 
     <section xml:id="strongestFitAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>Like First Fit, but uses the strong planning values first, because the strong planning values are more
       likely to have a lower soft cost to use. So it sorts the planning values on decreasing strength.</para>
@@ -221,7 +221,7 @@
     <title>Strongest Fit Decreasing</title>
 
     <section xml:id="strongestFitDecreasingAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>Combines First Fit Decreasing and Strongest Fit. So it sorts the planning entities on decreasing difficulty
       and the planning values on decreasing strength.</para>
@@ -259,7 +259,7 @@
     <title>Allocate Entity From Queue</title>
 
     <section xml:id="allocateEntityFromQueueAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>Allocate Entity From Queue is a versatile, generic form of <link linkend="firstFit">First Fit</link>, <link
       linkend="firstFitDecreasing">First Fit Decreasing</link>, <link linkend="weakestFit">Weakest Fit</link> and <link
@@ -379,7 +379,7 @@
     </section>
 
     <section xml:id="allocateEntityFromQueueMultipleVariables">
-      <title>Multiple variables</title>
+      <title>Multiple Variables</title>
 
       <para>There are 2 ways to deal with multiple variables, depending on how their <literal>ChangeMove</literal>s are
       combined:</para>
@@ -477,7 +477,7 @@
     </section>
 
     <section xml:id="allocateEntityFromQueueMultipleEntityClasses">
-      <title>Multiple entity classes</title>
+      <title>Multiple Entity Classes</title>
 
       <para>The easiest way to deal with multiple entity classes is to run a separate construction heuristic for each
       entity class:</para>
@@ -509,7 +509,7 @@
     </section>
 
     <section xml:id="constructionHeuristicsPickEarlyType">
-      <title>Pick early type</title>
+      <title>Pick Early Type</title>
 
       <para>There are several pick early types for Construction Heuristics:</para>
 
@@ -582,7 +582,7 @@
     <title>Allocate To Value From Queue</title>
 
     <section xml:id="allocateToValueFromQueueAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>Allocate To Value From Queue is a versatile, generic form of Nearest Neighbour. It works like this:</para>
 
@@ -612,7 +612,7 @@
     <title>Cheapest Insertion</title>
 
     <section xml:id="cheapestInsertionAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>The Cheapest Insertion algorithm cycles through all the planning values for all the planning entities,
       initializing 1 planning entity at a time. It assigns a planning entity to the best available planning value (out
@@ -654,7 +654,7 @@
     <title>Regret Insertion</title>
 
     <section xml:id="regretInsertionAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>The Regret Insertion algorithm behaves like the Cheapest Insertion algorithm. It also cycles through all the
       planning values for all the planning entities, initializing 1 planning entity at a time. But instead of picking
@@ -674,7 +674,7 @@
     <title>Allocate From Pool</title>
 
     <section xml:id="allocateFromPoolAlgorithm">
-      <title>Algorithm description</title>
+      <title>Algorithm Description</title>
 
       <para>Allocate From Pool is a versatile, generic form of <link linkend="cheapestInsertion">Cheapest
       Insertion</link> and <link linkend="regretInsertion">Regret Insertion</link>. It works like this:</para>
