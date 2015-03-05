@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
+/* TODO Fix menu to top - Regression after upgrade from bootstrap 2 to 3. */
+/*.logo-nav {*/
+    /*padding-top: 10px;*/
+    /*position: fixed;*/
+    /*z-index: 1030;*/
+    /*width: inherit;*/
+/*}*/
 
-.logo-nav {
-    padding-top: 10px;
-    position: fixed;
-    z-index: 1030;
-    width: inherit;
+.logo-nav img {
+    max-width: 100%;
 }
 
 .main-page-header h1 {
