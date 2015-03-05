@@ -11,10 +11,10 @@ import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.LinkedListEntry;
 
 /**
  * Default implementation emulates classical Drools TMS behaviour.
@@ -37,26 +37,38 @@ public class ReteSimpleBeliefSystem
         return this.tms;
     }
 
+    @Override
+    public SimpleMode asMode( Object value ) {
+        return new SimpleMode();
+    }
+
     public BeliefSet<SimpleMode> insert(LogicalDependency<SimpleMode> node,
                                         BeliefSet<SimpleMode> beliefSet,
                                         PropagationContext context,
                                         ObjectTypeConf typeConf) {
+        return insert( node.getMode(), node.getJustifier().getRule(), node.getJustifier(), node.getObject(), beliefSet, context, typeConf );
+    }
+
+    @Override
+    public BeliefSet<SimpleMode> insert( SimpleMode mode, RuleImpl rule, Activation activation, Object payload, BeliefSet<SimpleMode> beliefSet, PropagationContext context, ObjectTypeConf typeConf ) {
+
         boolean empty = beliefSet.isEmpty();
 
-        beliefSet.add( node.getMode() );
+        beliefSet.add( mode );
 
         if ( empty ) {
             InternalFactHandle handle = beliefSet.getFactHandle();
 
             ep.insert( handle,
                        handle.getObject(),
-                       node.getJustifier().getRule(),
-                       node.getJustifier(),
+                       rule,
+                       activation,
                        typeConf,
                        null );
         }
         return beliefSet;
     }
+
 
     public void read(LogicalDependency<SimpleMode> node,
                      BeliefSet<SimpleMode> beliefSet,
@@ -76,11 +88,18 @@ public class ReteSimpleBeliefSystem
 
     }
 
+    @Override
     public void delete(LogicalDependency<SimpleMode> node,
                        BeliefSet<SimpleMode> beliefSet,
                        PropagationContext context) {
+        delete( node.getMode(), node.getJustifier().getRule(), node.getJustifier(), node.getObject(), beliefSet, context );
+    }
+
+    @Override
+    public void delete( SimpleMode mode, RuleImpl rule, Activation activation, Object payload, BeliefSet<SimpleMode> beliefSet, PropagationContext context ) {
+
         SimpleBeliefSet sBeliefSet = (SimpleBeliefSet) beliefSet;
-        beliefSet.remove( node.getMode() );
+        beliefSet.remove( mode );
 
         InternalFactHandle bfh = beliefSet.getFactHandle();
         
@@ -92,7 +111,7 @@ public class ReteSimpleBeliefSystem
             if ( sBeliefSet.getWorkingMemoryAction() == null ) {
                 WorkingMemoryAction action = new BeliefSystemLogicalCallback( bfh,
                                                                               context,
-                                                                              node.getJustifier(),
+                                                                              activation,
                                                                               false,
                                                                               true );
                 ep.enQueueWorkingMemoryAction( action );
@@ -104,7 +123,7 @@ public class ReteSimpleBeliefSystem
                 callback.setFullyRetract( true );
             }
             
-        } else if ( !beliefSet.isEmpty() && beliefSet.getFactHandle().getObject() == node.getObject() ) {
+        } else if ( !beliefSet.isEmpty() && beliefSet.getFactHandle().getObject() == payload ) {
             // prime has changed, to update new object                      
            // Equality might have changed on the object, so remove (which uses the handle id) and add back in
            ((NamedEntryPoint)bfh.getEntryPoint()).getObjectStore().updateHandle( bfh,  ((SimpleMode) beliefSet.getFirst()).getObject().getObject() );
@@ -113,7 +132,7 @@ public class ReteSimpleBeliefSystem
                 // Only schedule if we don't already have one scheduled
                 WorkingMemoryAction action = new BeliefSystemLogicalCallback( bfh,
                                                                               context,
-                                                                              node.getJustifier(),
+                                                                              activation,
                                                                               true,
                                                                               false );
                 ep.enQueueWorkingMemoryAction( action );
