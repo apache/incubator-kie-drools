@@ -37,12 +37,12 @@ public class BetaDistributionNearbyRandom implements NearbyRandom {
     }
 
     @Override
-    public int nextInt(Random random, int n) {
+    public int nextInt(Random random, int nearbySize) {
         double d = betaDistribution.inverseCumulativeProbability(random.nextDouble());
-        int next = (int) (d * (double) n);
+        int next = (int) (d * (double) nearbySize);
         // The method inverseCumulativeProbability() might return 1.0
-        if (next >= n) {
-            next = n - 1;
+        if (next >= nearbySize) {
+            next = nearbySize - 1;
         }
         return next;
     }

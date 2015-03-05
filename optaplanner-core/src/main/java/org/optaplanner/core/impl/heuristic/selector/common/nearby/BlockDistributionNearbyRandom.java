@@ -52,23 +52,23 @@ public class BlockDistributionNearbyRandom implements NearbyRandom {
     }
 
     @Override
-    public int nextInt(Random random, int n) {
+    public int nextInt(Random random, int nearbySize) {
         if (uniformDistributionProbability > 0.0) {
             if (random.nextDouble() < uniformDistributionProbability) {
-                return random.nextInt(n);
+                return random.nextInt(nearbySize);
             }
         }
         int size;
         if (sizeRatio < 1.0) {
-            size = (int) (n * sizeRatio);
+            size = (int) (nearbySize * sizeRatio);
             if (size < sizeMinimum) {
                 size = sizeMinimum;
-                if (size > n) {
-                    size = n;
+                if (size > nearbySize) {
+                    size = nearbySize;
                 }
             }
         } else {
-            size = n;
+            size = nearbySize;
         }
         if (size > sizeMaximum) {
             size = sizeMaximum;

@@ -36,8 +36,8 @@ public class LinearDistributionNearbyRandom implements NearbyRandom {
     }
 
     @Override
-    public int nextInt(Random random, int n) {
-        int m = sizeMaximum <= n ? sizeMaximum : n;
+    public int nextInt(Random random, int nearbySize) {
+        int m = sizeMaximum <= nearbySize ? sizeMaximum : nearbySize;
         double p = random.nextDouble();
         double x = m * (1.0 - Math.sqrt(1.0 - p));
         int next = (int) x;
