@@ -329,10 +329,13 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
             handle.getEqualityKey().setBeliefSet( beliefSet );
         }
 
-        return beliefSystem.insert( beliefSystem.newLogicalDependency( activation, beliefSet, object, mode ),
-                             beliefSet,
-                             activation.getPropagationContext(),
-                             otc ).getFactHandle();
+        return beliefSystem.insert( beliefSystem.asMode( value ),
+                                    activation.getRule(),
+                                    activation,
+                                    object,
+                                    beliefSet,
+                                    activation.getPropagationContext(),
+                                    otc ).getFactHandle();
     }
 
     public void cancelRemainingPreviousLogicalDependencies() {

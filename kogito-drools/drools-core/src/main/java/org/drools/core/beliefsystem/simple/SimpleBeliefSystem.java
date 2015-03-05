@@ -36,6 +36,11 @@ public class SimpleBeliefSystem
         return this.tms;
     }
 
+    @Override
+    public SimpleMode asMode( Object value ) {
+        return new SimpleMode();
+    }
+
     public BeliefSet<SimpleMode> insert(LogicalDependency<SimpleMode> node,
                                         BeliefSet<SimpleMode> beliefSet,
                                         PropagationContext context,
@@ -56,6 +61,29 @@ public class SimpleBeliefSystem
         return beliefSet;
     }
 
+    public BeliefSet<SimpleMode> insert( SimpleMode mode,
+                                         RuleImpl rule,
+                                         Activation activation,
+                                         Object payload,
+                                         BeliefSet<SimpleMode> beliefSet,
+                                         PropagationContext context,
+                                         ObjectTypeConf typeConf) {
+        boolean empty = beliefSet.isEmpty();
+
+        beliefSet.add( mode );
+
+        InternalFactHandle bfh = beliefSet.getFactHandle();
+        if ( empty && bfh.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) {
+            ep.insert( bfh,
+                       bfh.getObject(),
+                       rule,
+                       activation,
+                       typeConf,
+                       null );
+        }
+        return beliefSet;
+    }
+
     public void read(LogicalDependency<SimpleMode> node,
                      BeliefSet<SimpleMode> beliefSet,
                      PropagationContext context,
@@ -67,14 +95,20 @@ public class SimpleBeliefSystem
     public void delete(LogicalDependency<SimpleMode> node,
                        BeliefSet<SimpleMode> beliefSet,
                        PropagationContext context) {
+        delete( node.getMode(), node.getJustifier().getRule(), node.getJustifier(), node.getObject(), beliefSet, context );
+    }
+
+    @Override
+    public void delete( SimpleMode mode, RuleImpl rule, Activation activation, Object payload, BeliefSet<SimpleMode> beliefSet, PropagationContext context ) {
+
         SimpleBeliefSet sBeliefSet = (SimpleBeliefSet) beliefSet;
-        beliefSet.remove( node.getMode() );
+        beliefSet.remove( mode );
 
         InternalFactHandle bfh = beliefSet.getFactHandle();
 
         if ( beliefSet.isEmpty() && bfh.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) {
             ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet), (RuleImpl) context.getRule(), (Activation) context.getLeftTupleOrigin() );
-        } else if ( !beliefSet.isEmpty() && bfh.getObject() == node.getObject() && node.getObject() != bfh.getObject() ) {
+        } else if ( !beliefSet.isEmpty() && bfh.getObject() == payload && payload != bfh.getObject() ) {
             // prime has changed, to update new object
             // Equality might have changed on the object, so remove (which uses the handle id) and add back in
             ((NamedEntryPoint)bfh.getEntryPoint()).getObjectStore().updateHandle(bfh, ((SimpleMode) beliefSet.getFirst()).getObject().getObject());

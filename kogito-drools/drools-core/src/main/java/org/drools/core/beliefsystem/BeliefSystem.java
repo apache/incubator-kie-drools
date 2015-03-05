@@ -23,7 +23,25 @@ public interface BeliefSystem<M extends ModedAssertion<M>> {
                                BeliefSet<M> beliefSet,
                                PropagationContext context,
                                ObjectTypeConf typeConf);
-    
+
+    /**
+     *
+     * @param mode
+     * @param rule
+     * @param activation
+     * @param beliefSet
+     * @param context
+     * @param typeConf
+     * @return
+     */
+    public BeliefSet<M> insert( M mode,
+                                RuleImpl rule,
+                                Activation activation,
+                                Object payload,
+                                BeliefSet<M> beliefSet,
+                                PropagationContext context,
+                                ObjectTypeConf typeConf);
+
     /**
      * The typeConf has not yet been looked up, so we leave it to the implementation to decide if it needs it or not.
      * @param node
@@ -34,6 +52,13 @@ public interface BeliefSystem<M extends ModedAssertion<M>> {
                        BeliefSet<M> beliefSet,
                        PropagationContext context);
     
+    public void delete(M mode,
+                       RuleImpl rule,
+                       Activation activation,
+                       Object payload,
+                       BeliefSet<M> beliefSet,
+                       PropagationContext context);
+
     public BeliefSet newBeliefSet(InternalFactHandle fh);
     
     public LogicalDependency newLogicalDependency(final Activation<M> activation,
@@ -53,4 +78,6 @@ public interface BeliefSystem<M extends ModedAssertion<M>> {
                         BeliefSet<M> beliefSet);
     
     public TruthMaintenanceSystem getTruthMaintenanceSystem();
+
+    public M asMode( Object value );
 }
