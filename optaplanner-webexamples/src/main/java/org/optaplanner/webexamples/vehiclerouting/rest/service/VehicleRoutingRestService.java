@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -46,6 +47,7 @@ import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
+import org.optaplanner.webexamples.vehiclerouting.rest.cdi.VehicleRoutingSolverManager;
 import org.optaplanner.webexamples.vehiclerouting.rest.domain.JsonCustomer;
 import org.optaplanner.webexamples.vehiclerouting.rest.domain.JsonMessage;
 import org.optaplanner.webexamples.vehiclerouting.rest.domain.JsonVehicleRoute;
@@ -54,58 +56,18 @@ import org.optaplanner.webexamples.vehiclerouting.rest.domain.JsonVehicleRouting
 @Path("/vehiclerouting")
 public class VehicleRoutingRestService {
 
-    public static final String SOLVER_CONFIG = "org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingSolverConfig.xml";
-    private static final String IMPORT_DATASET = "/org/optaplanner/webexamples/vehiclerouting/belgium-road-time-n50-k10.vrp";
-
-    private SolverFactory solverFactory;
-    // TODO After upgrading to JEE 7, replace ExecutorService by ManagedExecutorService:
-    // @Resource(name = "DefaultManagedExecutorService")
-    // private ManagedExecutorService executor;
-    private ExecutorService executor;
-
-    private Map<String, VehicleRoutingSolution> sessionSolutionMap;
-    private Map<String, Solver> sessionSolverMap;
+    @Inject
+    private VehicleRoutingSolverManager solverManager;
 
     @Context
     private HttpServletRequest request;
-
-    @PostConstruct
-    public void init() {
-        solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
-        // Always terminate a solver after 2 minutes
-        TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setMinutesSpentLimit(2L);
-        solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);
-        executor = Executors.newFixedThreadPool(4);
-        sessionSolutionMap = new ConcurrentHashMap<String, VehicleRoutingSolution>();
-        sessionSolverMap = new ConcurrentHashMap<String, Solver>();
-    }
-
-    @PreDestroy
-    public void destroy() {
-        for (Solver solver : sessionSolverMap.values()) {
-            solver.terminateEarly();
-        }
-        executor.shutdown();
-    }
 
     @GET
     @Path("/solution")
     @Produces("application/json")
     public JsonVehicleRoutingSolution getSolution() {
-        VehicleRoutingSolution solution = retrieveOrCreateSolution();
+        VehicleRoutingSolution solution = solverManager.retrieveOrCreateSolution(request.getSession().getId());
         return convertToJsonVehicleRoutingSolution(solution);
-    }
-
-    protected VehicleRoutingSolution retrieveOrCreateSolution() {
-        VehicleRoutingSolution solution = sessionSolutionMap.get(request.getSession().getId());
-        if (solution == null) {
-            URL unsolvedSolutionURL = getClass().getResource(IMPORT_DATASET);
-            solution = (VehicleRoutingSolution) new VehicleRoutingImporter(true)
-                    .readSolution(unsolvedSolutionURL);
-            sessionSolutionMap.put(request.getSession().getId(), solution);
-        }
-        return solution;
     }
 
     protected JsonVehicleRoutingSolution convertToJsonVehicleRoutingSolution(VehicleRoutingSolution solution) {
@@ -156,38 +118,16 @@ public class VehicleRoutingRestService {
     @Path("/solution/solve")
     @Produces("application/json")
     public JsonMessage solve() {
-        final Solver solver = solverFactory.buildSolver();
-        final VehicleRoutingSolution solution = retrieveOrCreateSolution();
-        executor.submit(new Runnable() {
-            @Override
-            public void run() {
-                sessionSolverMap.put(request.getSession().getId(), solver);
-                solver.addEventListener(new SolverEventListener() {
-                    @Override
-                    public void bestSolutionChanged(BestSolutionChangedEvent event) {
-                        VehicleRoutingSolution bestSolution = (VehicleRoutingSolution) event.getNewBestSolution();
-                        sessionSolutionMap.put(request.getSession().getId(), bestSolution);
-                    }
-                });
-                solver.solve(solution);
-                VehicleRoutingSolution bestSolution = (VehicleRoutingSolution) solver.getBestSolution();
-                sessionSolutionMap.put(request.getSession().getId(), bestSolution);
-                sessionSolverMap.remove(request.getSession().getId());
-            }
-        });
-        return new JsonMessage("Solving started");
+        boolean success = solverManager.solve(request.getSession().getId());
+        return new JsonMessage(success ? "Solving started." : "Solver was already running.");
     }
 
     @POST
     @Path("/solution/terminateEarly")
     @Produces("application/json")
     public JsonMessage terminateEarly() {
-        Solver solver = sessionSolverMap.remove(request.getSession().getId());
-        if (solver != null) {
-            solver.terminateEarly();
-            return new JsonMessage("Solver terminating early.");
-        }
-        return new JsonMessage("Solver was already terminated.");
+        boolean success = solverManager.terminateEarly(request.getSession().getId());
+        return new JsonMessage(success ? "Solver terminating early." : "Solver was already terminated.");
     }
 
 }

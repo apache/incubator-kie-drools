@@ -71,8 +71,9 @@
         $.each(solution.vehicleRouteList, function(index, vehicleRoute) {
           var locations = [[vehicleRoute.depotLatitude, vehicleRoute.depotLongitude]];
           $.each(vehicleRoute.customerList, function(index, customer) {
-            locations.push([customer.latitude, customer.longitude])
+            locations.push([customer.latitude, customer.longitude]);
           });
+          locations.push([vehicleRoute.depotLatitude, vehicleRoute.depotLongitude]);
           var vehicleRouteLine = L.polyline(locations, {color: vehicleRoute.hexColor}).addTo(map);
         });
       }, error : function(jqXHR, textStatus, errorThrown) {ajaxError(jqXHR, textStatus, errorThrown)}
