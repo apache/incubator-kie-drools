@@ -1,6 +1,7 @@
 package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.FactA;
 import org.drools.compiler.Message;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
@@ -16,11 +17,13 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 
@@ -1312,5 +1315,71 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                                                             .getKieModule(releaseId);
         byte[] jar = kieModule.getBytes();
         return deployJar( ks, jar );
+    }
+
+    @Test
+    public void testRemoveRuleAndThenFactInStreamMode() throws Exception {
+        // DROOLS-731
+        String header = "package org.some.test\n" +
+                        "import org.drools.compiler.FactA\n";
+
+        String declaration = "declare FactA\n" +
+                             "@role(event)" +
+                             "end\n";
+
+        String rule2 = "rule R when\n" +
+                       "  $FactA : FactA ($FactA_field2 : field2 == 105742)\n" +
+                       "  not FactA($FactA_field2 == 105742)\n" +
+                       "then\n" +
+                       "end\n";
+
+        String file2 = header + declaration + rule2;
+
+        KieServices ks = KieServices.Factory.get();
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        KieModule km = createAndDeployJarInStreamMode(ks, releaseId1, file2);
+
+        // Create a session and fire rules
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieSession ksession = kc.newKieSession();
+
+        FactA factA = new FactA(105742);
+        factA.setField1("entry:" + 105742);
+        FactHandle fh = ksession.insert(factA);
+
+        // Create a new jar for version 1.1.0
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
+        km = createAndDeployJarInStreamMode(ks, releaseId2);
+
+        // try to update the container to version 1.1.0
+        Results results = kc.updateToVersion(releaseId2);
+
+        ksession.delete(fh);
+    }
+
+    public static KieModule createAndDeployJarInStreamMode(KieServices ks,
+                                                           ReleaseId releaseId,
+                                                           String... drls) {
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.generateAndWritePomXML(releaseId);
+        KieModuleModel module = ks.newKieModuleModel();
+
+        KieBaseModel defaultBase = module.newKieBaseModel("kBase1");
+        defaultBase.setEventProcessingMode(EventProcessingOption.STREAM).setDefault(true);
+        defaultBase.newKieSessionModel("defaultKSession").setDefault(true);
+        kfs.writeKModuleXML(module.toXML());
+
+        for (int i = 0; i < drls.length; i++) {
+            kfs.write("src/main/resources/rules" + i + ".drl", drls[i]);
+        }
+
+        KieBuilder kb = ks.newKieBuilder(kfs);
+        kb.buildAll();
+        if (kb.getResults().hasMessages(org.kie.api.builder.Message.Level.ERROR)) {
+            System.out.println(kb.getResults().toString());
+        }
+        return kb.getKieModule();
     }
 }
