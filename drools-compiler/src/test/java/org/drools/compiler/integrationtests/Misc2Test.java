@@ -7059,9 +7059,9 @@ public class Misc2Test extends CommonTestMethodBase {
 
         KieHelper helper = new KieHelper();
         helper.addContent( drl, ResourceType.DRL );
-        assertTrue( helper.verify().getMessages( org.kie.api.builder.Message.Level.ERROR ).isEmpty() );
+        assertTrue(helper.verify().getMessages(org.kie.api.builder.Message.Level.ERROR).isEmpty());
         KieSession ks = helper.build(  ).newKieSession();
-        assertEquals( 1, ks.fireAllRules() );
+        assertEquals(1, ks.fireAllRules());
     }
 
     @Test
@@ -7194,9 +7194,28 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    )\n" +
                 "then end\n";
 
+        assertDrlHasCompilationError(str, 1);
+    }
+
+
+    private void assertDrlHasCompilationError(String str, int errorNr) {
         KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str);
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertEquals(1, results.getMessages().size());
+        assertEquals(errorNr, results.getMessages().size());
+    }
+
+    @Test
+    public void testCompilationFailureOnNonExistingVariable() {
+        // DROOLS-734
+        String drl1 =
+                "import java.util.*\n" +
+                "rule R\n" +
+                "when\n" +
+                "  String(this after $event)\n" +
+                "then\n" +
+                "end;\n";
+
+        assertDrlHasCompilationError(drl1, 1);
     }
 }

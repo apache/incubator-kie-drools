@@ -371,9 +371,9 @@ public class PatternBuilder
                 } else {
                     // This declaration already exists, so throw an Exception
                     context.addError(new DescrBuildError(context.getParentDescr(),
-                            patternDescr,
-                            null,
-                            "Duplicate declaration for variable '" + rightIdentifier + "' in the rule '" + context.getRule().getName() + "'"));
+                                                         patternDescr,
+                                                         null,
+                                                         "Duplicate declaration for variable '" + rightIdentifier + "' in the rule '" + context.getRule().getName() + "'"));
                 }
 
     }
@@ -422,10 +422,10 @@ public class PatternBuilder
             Watch watch = patternDescr.getTypedAnnotation(Watch.class);
             watchedValues = watch == null ? null : watch.value();
         } catch (Exception e) {
-            context.addError( new DescrBuildError( context.getParentDescr(),
-                                                   patternDescr,
-                                                   null,
-                                                   e.getMessage() ) );
+            context.addError(new DescrBuildError(context.getParentDescr(),
+                                                 patternDescr,
+                                                 null,
+                                                 e.getMessage()));
         }
 
         if (watchedValues == null) {
@@ -596,12 +596,12 @@ public class PatternBuilder
         String expression = expressionBuilder.toString();
         MVELCompilationUnit compilationUnit = getConstraintBuilder( context ).buildCompilationUnit(context, pattern, expression, mvelCtx.getAliases());
 
-        Constraint combinedConstraint = getConstraintBuilder( context ).buildMvelConstraint( packageNames,
-                                                                                             expression,
-                                                                                             declarations.toArray(new Declaration[declarations.size()]),
-                                                                                             compilationUnit,
-                                                                                             IndexUtil.ConstraintType.UNKNOWN,
-                                                                                             null, null, false );
+        Constraint combinedConstraint = getConstraintBuilder( context ).buildMvelConstraint(packageNames,
+                                                                                            expression,
+                                                                                            declarations.toArray(new Declaration[declarations.size()]),
+                                                                                            compilationUnit,
+                                                                                            IndexUtil.ConstraintType.UNKNOWN,
+                                                                                            null, null, false);
         pattern.addConstraint(combinedConstraint);
     }
 
@@ -965,7 +965,15 @@ public class PatternBuilder
             }
         }
 
-        pattern.addConstraint( getConstraintBuilder( context ).buildVariableConstraint(context, pattern, expr, declarations, value1, relDescr.getOperatorDescr(), value2, extractor, declr, relDescr) );
+        Constraint constraint = getConstraintBuilder( context ).buildVariableConstraint(context, pattern, expr, declarations, value1, relDescr.getOperatorDescr(), value2, extractor, declr, relDescr);
+        if ( constraint == null ) {
+            context.addError(new DescrBuildError(context.getParentDescr(),
+                                                 relDescr,
+                                                 null,
+                                                 "Cannot find declaration for variable " + value2 + "\n"));
+        } else {
+            pattern.addConstraint( constraint );
+        }
         return true;
     }
 
@@ -1025,11 +1033,11 @@ public class PatternBuilder
         final String[] requiredGlobals = usedIdentifiers.getGlobals().keySet().toArray( new String[usedIdentifiers.getGlobals().size()] );
 
         Declaration[] requiredDeclarations = new Declaration[previousDeclarations.length + localDeclarations.length];
-        System.arraycopy( previousDeclarations,
-                0,
-                requiredDeclarations,
-                0,
-                previousDeclarations.length );
+        System.arraycopy(previousDeclarations,
+                         0,
+                         requiredDeclarations,
+                         0,
+                         previousDeclarations.length );
         System.arraycopy( localDeclarations,
                 0,
                 requiredDeclarations,
