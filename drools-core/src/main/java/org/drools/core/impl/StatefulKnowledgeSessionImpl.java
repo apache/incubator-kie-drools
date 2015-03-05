@@ -496,7 +496,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 logger.close();
             } catch (Exception e) { /* the logger was already closed, swallow */ }
         }
-        this.kBase.disposeStatefulSession(this);
 
         for (WorkingMemoryEntryPoint ep : this.entryPoints.values()) {
             ep.dispose();
