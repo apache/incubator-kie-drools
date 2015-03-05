@@ -1,0 +1,6 @@
+Javascript libraries
+====================
+
+Leaflet.js version: 0.7.3
+Downloaded from: http://leafletjs.com
+License: BSD (which can be used by Apache License v2.0 projects)

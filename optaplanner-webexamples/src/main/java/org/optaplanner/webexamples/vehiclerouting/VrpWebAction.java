@@ -30,6 +30,8 @@ import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporte
 
 public class VrpWebAction {
 
+    private static final String IMPORT_DATASET = "/org/optaplanner/webexamples/vehiclerouting/belgium-road-time-n50-k10.vrp";
+
     private static ExecutorService solvingExecutor = Executors.newFixedThreadPool(4);
 
     public void setup(HttpSession session) {
@@ -40,7 +42,7 @@ public class VrpWebAction {
         Solver solver = solverFactory.buildSolver();
         session.setAttribute(VrpSessionAttributeName.SOLVER, solver);
 
-        URL unsolvedSolutionURL = getClass().getResource("/org/optaplanner/webexamples/vehiclerouting/A-n33-k6.vrp");
+        URL unsolvedSolutionURL = getClass().getResource(IMPORT_DATASET);
         VehicleRoutingSolution unsolvedSolution = (VehicleRoutingSolution) new VehicleRoutingImporter(true)
                 .readSolution(unsolvedSolutionURL);
         session.setAttribute(VrpSessionAttributeName.SHOWN_SOLUTION, unsolvedSolution);

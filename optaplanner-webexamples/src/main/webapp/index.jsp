@@ -26,7 +26,7 @@
   </header>
   <p>Which example do you want to see?</p>
   <ul>
-    <li><a href="vehiclerouting/loaded.jsp">Vehicle routing</a></li>
+    <li><a href="vehiclerouting/index.jsp">Vehicle routing</a></li>
     <li><a href="cloudbalancing/loaded.jsp">Cloud balancing</a></li>
   </ul>
   <p>For more information, visit <a href="http://www.optaplanner.org">the OptaPlanner project homepage</a>.</p>
