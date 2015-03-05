@@ -2,11 +2,14 @@ package org.drools.beliefs.bayes;
 
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
+import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
@@ -25,14 +28,25 @@ public class BayesBeliefSystem<M extends BayesHardEvidence<M>> implements Belief
 
     @Override
     public BeliefSet<M> insert(LogicalDependency<M> node, BeliefSet<M> beliefSet, PropagationContext context, ObjectTypeConf typeConf) {
+        return insert( node.getMode(),
+                       node.getJustifier().getRule(),
+                       node.getJustifier(),
+                       node.getObject(),
+                       beliefSet,
+                       context,
+                       typeConf );
+    }
+
+    @Override
+    public BeliefSet<M> insert( M mode, RuleImpl rule, Activation activation, Object ldPayload, BeliefSet<M> beliefSet, PropagationContext context, ObjectTypeConf typeConf ) {
         boolean wasEmpty = beliefSet.isEmpty();
         boolean wasDecided = beliefSet.isDecided();
 
-        beliefSet.add( node.getMode() );
+        beliefSet.add( mode );
 
         BayesHardEvidence<M> evidence = beliefSet.getFirst();
 
-        PropertyReference propRef = (PropertyReference) node.getObject();
+        PropertyReference propRef = (PropertyReference) ldPayload;
 
         BayesFact bayesFact = (BayesFact) propRef.getInstance();
         BayesInstance bayesInstance = bayesFact.getBayesInstance();
@@ -53,17 +67,24 @@ public class BayesBeliefSystem<M extends BayesHardEvidence<M>> implements Belief
     }
 
     @Override
-    public void delete(LogicalDependency<M> node, BeliefSet<M> beliefSet, PropagationContext context) {
+    public void delete(LogicalDependency<M> node,
+                       BeliefSet<M> beliefSet,
+                       PropagationContext context) {
+        delete( node.getMode(), node.getJustifier().getRule(), node.getJustifier(), node.getObject(), beliefSet, context );
+    }
+
+    @Override
+    public void delete( M mode, RuleImpl rule, Activation activation, Object payload, BeliefSet<M> beliefSet, PropagationContext context ) {
         boolean wasDecided = beliefSet.isDecided();
 
-        beliefSet.remove( node.getMode() );
+        beliefSet.remove( mode );
 
 //        if ( !wasUndecided && !beliefSet.isDecided() ) {
 //            // was decided before, still decided, so do nothing.
 //            return;
 //        }
 
-        PropertyReference propRef = (PropertyReference)node.getObject();
+        PropertyReference propRef = (PropertyReference) payload;
         BayesFact bayesFact = (BayesFact) propRef.getInstance();
         BayesInstance bayesInstance = bayesFact.getBayesInstance();
         BayesVariable var = ( BayesVariable ) bayesInstance.getFieldNames().get( propRef.getName() );
@@ -121,6 +142,11 @@ public class BayesBeliefSystem<M extends BayesHardEvidence<M>> implements Belief
     @Override
     public TruthMaintenanceSystem getTruthMaintenanceSystem() {
         return null;
+    }
+
+    @Override
+    public M asMode( Object value ) {
+        return (M) value;
     }
 
 }

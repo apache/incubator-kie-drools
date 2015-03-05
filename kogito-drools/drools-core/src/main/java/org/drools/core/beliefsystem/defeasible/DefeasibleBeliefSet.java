@@ -79,7 +79,7 @@ public class DefeasibleBeliefSet<M extends DefeasibleMode<M>> implements JTMSBel
         return tailUndefeated;
     }
 
-    public void add( M node) {
+    public void add( M node ) {
         M newDep = node;
         newDep.setStatus( resolveStatus( newDep ) );
 
