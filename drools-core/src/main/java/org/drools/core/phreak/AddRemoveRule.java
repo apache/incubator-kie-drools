@@ -10,6 +10,7 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.RightTupleSets;
 import org.drools.core.common.SynchronizedLeftTupleSets;
+import org.drools.core.common.TupleEntryQueue;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AbstractTerminalNode;
@@ -541,6 +542,16 @@ public class AddRemoveRule {
                         rtm.remove(rightTuple);
                         rightTuple.unlinkFromRightParent();
                         rightTuple = next;
+                    }
+
+                    if (bn.isStreamMode()) {
+                        TupleEntryQueue queue = bm.getSegmentMemory().getStreamQueue().takeAllForFlushing();
+                        while (!queue.isEmpty()) {
+                            RightTuple rightTuple = queue.remove().getRightTuple();
+                            if (rightTuple != null) {
+                                rightTuple.unlinkFromRightParent();
+                            }
+                        }
                     }
 
                     RightTupleSets srcRightTuples = bm.getStagedRightTuples().takeAll();
