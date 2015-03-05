@@ -7207,4 +7207,18 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertDrlHasCompilationError(drl1, 1);
     }
+
+    @Test
+    public void testCompilationFailureOnNonExistingVariable() {
+        // DROOLS-734
+        String drl1 =
+                "import java.util.*\n" +
+                "rule R\n" +
+                "when\n" +
+                "  String(this after $event)\n" +
+                "then\n" +
+                "end;\n";
+
+        assertDrlHasCompilationError(drl1, 1);
+    }
 }

@@ -95,8 +95,16 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                               Declaration requiredDeclaration,
                                               RelationalExprDescr relDescr) {
         if (!isMvelOperator(operatorDescr.getOperator())) {
+            if (requiredDeclaration == null) {
+                return null;
+            }
+
             EvaluatorDefinition.Target right = getRightTarget( extractor );
-            EvaluatorDefinition.Target left = (requiredDeclaration.isPatternDeclaration() && !(Date.class.isAssignableFrom( requiredDeclaration.getExtractor().getExtractToClass() ) || Number.class.isAssignableFrom( requiredDeclaration.getExtractor().getExtractToClass() ))) ? EvaluatorDefinition.Target.HANDLE : EvaluatorDefinition.Target.FACT;
+            EvaluatorDefinition.Target left = (requiredDeclaration.isPatternDeclaration() &&
+                                               !(Date.class.isAssignableFrom( requiredDeclaration.getExtractor().getExtractToClass() )
+                                                 || Number.class.isAssignableFrom( requiredDeclaration.getExtractor().getExtractToClass() ))) ?
+                                              EvaluatorDefinition.Target.HANDLE :
+                                              EvaluatorDefinition.Target.FACT;
             final Evaluator evaluator = getEvaluator( context,
                                                       relDescr,
                                                       extractor.getValueType(),
@@ -108,7 +116,9 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             return new EvaluatorConstraint(new Declaration[] { requiredDeclaration }, evaluator, extractor);
         }
 
-        boolean isUnification = requiredDeclaration != null && requiredDeclaration.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) && Operator.EQUAL.getOperatorString().equals( operatorDescr.getOperator() );
+        boolean isUnification = requiredDeclaration != null &&
+                                requiredDeclaration.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) &&
+                                Operator.EQUAL.getOperatorString().equals( operatorDescr.getOperator() );
         if (isUnification) {
             expression = resolveUnificationAmbiguity(expression, declarations, leftValue, rightValue);
         }

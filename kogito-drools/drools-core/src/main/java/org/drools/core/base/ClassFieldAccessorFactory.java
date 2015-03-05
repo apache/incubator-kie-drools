@@ -16,13 +16,6 @@
 
 package org.drools.core.base;
 
-import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.ProtectionDomain;
-import java.util.Date;
-import java.util.Map;
-
 import org.drools.core.base.ClassFieldAccessorCache.ByteArrayClassLoader;
 import org.drools.core.base.ClassFieldAccessorCache.CacheEntry;
 import org.drools.core.base.extractors.BaseBooleanClassFieldReader;
@@ -47,13 +40,19 @@ import org.drools.core.base.extractors.BaseShortClassFieldReader;
 import org.drools.core.base.extractors.BaseShortClassFieldWriter;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
+
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.ProtectionDomain;
+import java.util.Date;
+import java.util.Map;
 
 import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
 
@@ -140,11 +139,9 @@ public class ClassFieldAccessorFactory {
                     final ValueType valueType = ValueType.determineValueType( fieldType );
                     final Object[] params = {index, fieldType, valueType};
                     return (BaseClassFieldReader) newClass.getConstructors()[0].newInstance( params );
-                } else if ( fieldType != null ) {
+                } else {
                     // must be a public field
                     return null;
-                } else {
-                    throw new RuntimeException( "Field/method '" + fieldName + "' not found for class '" + clazz.getName() + "'\n" );
                 }
             }
         } catch ( final RuntimeException e ) {

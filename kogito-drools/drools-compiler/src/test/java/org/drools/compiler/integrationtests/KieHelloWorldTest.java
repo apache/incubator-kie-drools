@@ -97,7 +97,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         
         KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
 
-        assertEquals( 2, kb.getResults().getMessages().size() );
+        assertEquals( 1, kb.getResults().getMessages().size() );
     }
 
     @Test
