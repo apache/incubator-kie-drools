@@ -2197,6 +2197,10 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <solutionFileIOClass>...MachineReassignmentFileIO</solutionFileIOClass>
       ...
     </problemBenchmarks>
+Before in *.java:
+    import org.optaplanner.persistence.xstream.XStreamProblemIO;
+After in *.java:
+    import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 [MAJOR] The method SolutionFileIO.getFileExtension() has been split up in getInputFileExtension() and getOutputFileExtension();
 It's still highly recommended to use the same input and output file extension.
