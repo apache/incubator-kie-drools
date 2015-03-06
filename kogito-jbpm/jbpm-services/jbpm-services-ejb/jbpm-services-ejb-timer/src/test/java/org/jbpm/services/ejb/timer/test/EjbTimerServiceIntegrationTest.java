@@ -82,7 +82,7 @@ public class EjbTimerServiceIntegrationTest {
     	cleanupSingletonSessionId();
 	}
 	
-	@PersistenceUnit(name="org.jbpm.domain")
+	@PersistenceUnit(unitName="org.jbpm.domain")
 	private EntityManagerFactory emf;
 	
 	

@@ -81,7 +81,7 @@ public class DeploymentServiceEJBImpl extends KModuleDeploymentService implement
 		this.context = context;
 	}
 	
-	@PersistenceUnit(name="org.jbpm.domain")
+	@PersistenceUnit(unitName="org.jbpm.domain")
 	@Override
 	public void setEmf(EntityManagerFactory emf) {
 		

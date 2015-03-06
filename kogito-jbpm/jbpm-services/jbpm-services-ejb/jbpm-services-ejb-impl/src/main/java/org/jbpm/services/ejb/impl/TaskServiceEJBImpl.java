@@ -65,7 +65,7 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
 	
 	private InternalTaskService delegate;
 	
-	@PersistenceUnit(name="org.jbpm.domain")
+	@PersistenceUnit(unitName="org.jbpm.domain")
 	private EntityManagerFactory emf;
 	
 	@PostConstruct

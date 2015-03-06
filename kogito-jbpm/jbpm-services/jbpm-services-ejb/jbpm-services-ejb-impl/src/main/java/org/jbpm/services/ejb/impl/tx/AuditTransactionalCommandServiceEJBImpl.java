@@ -28,7 +28,7 @@ import org.kie.internal.runtime.conf.DeploymentDescriptor;
 @Stateless
 public class AuditTransactionalCommandServiceEJBImpl extends TransactionalCommandService {
 	
-	@PersistenceUnit(name="org.jbpm.domain")
+	@PersistenceUnit(unitName="org.jbpm.domain")
 	@Override
 	public void setEmf(EntityManagerFactory emf) {
 		DeploymentDescriptorManager manager = new DeploymentDescriptorManager("org.jbpm.domain");

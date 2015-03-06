@@ -25,7 +25,7 @@ import org.jbpm.shared.services.impl.TransactionalCommandService;
 @Stateless
 public class TransactionalCommandServiceEJBImpl extends TransactionalCommandService {
 	
-	@PersistenceUnit(name="org.jbpm.domain")
+	@PersistenceUnit(unitName="org.jbpm.domain")
 	@Override
 	public void setEmf(EntityManagerFactory emf) {
 		
