@@ -105,7 +105,7 @@ public class ScenarioRunner4JUnit extends Runner {
                     if (ksessionName == null) {
                         eachNotifier.addFailure(new NullPointerException("Test scenario runner could not find the default knowledge session."));
                     } else {
-                        eachNotifier.addFailure(new NullPointerException("Test scenario runner could not find a stateless knowledge session with the name \'" + ksessionName + "\'."));
+                        eachNotifier.addFailure(new NullPointerException("Test scenario runner could not find a stateful knowledge session with the name \'" + ksessionName + "\'."));
                     }
                 } else {
                     final ScenarioRunner runner = new ScenarioRunner(ksession,

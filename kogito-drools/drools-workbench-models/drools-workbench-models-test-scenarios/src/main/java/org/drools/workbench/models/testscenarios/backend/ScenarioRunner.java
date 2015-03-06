@@ -81,7 +81,13 @@ public class ScenarioRunner {
         this.maximumAmountOfRuleFirings = maximumAmountOfRuleFirings;
     }
 
-    public void run( final Scenario scenario ) throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+    public void run( final Scenario scenario )
+            throws ClassNotFoundException,
+            IllegalAccessException,
+            InstantiationException,
+            InvocationTargetException,
+            NoSuchMethodException,
+            InvalidClockTypeException {
 
         final Map<String, Object> populatedData = new HashMap<String, Object>();
         final Map<String, Object> globalData = new HashMap<String, Object>();
@@ -96,7 +102,8 @@ public class ScenarioRunner {
         this.workingMemoryWrapper = new TestScenarioKSessionWrapper( ksession,
                                                                      resolver,
                                                                      populatedData,
-                                                                     globalData );
+                                                                     globalData,
+                                                                     scenarioUsesTimeWalk(scenario));
         this.factPopulatorFactory = new FactPopulatorFactory( populatedData,
                                                               globalData,
                                                               resolver );
@@ -110,6 +117,17 @@ public class ScenarioRunner {
 
         applyFixtures( scenario.getFixtures(),
                        createScenarioSettings( scenario ) );
+    }
+
+    private boolean scenarioUsesTimeWalk(Scenario scenario) {
+        for (Fixture fixture : scenario.getFixtures()) {
+            if (fixture instanceof ExecutionTrace) {
+                if (((ExecutionTrace) fixture).getScenarioSimulatedDate() != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private Set<String> getImports( final Scenario scenario ) {
@@ -137,8 +155,13 @@ public class ScenarioRunner {
         }
     }
 
-    private void applyFixtures( final List<Fixture> fixtures,
-                                final ScenarioSettings scenarioSettings ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    private void applyFixtures(final List<Fixture> fixtures,
+                               final ScenarioSettings scenarioSettings)
+            throws ClassNotFoundException,
+            InstantiationException,
+            IllegalAccessException,
+            InvocationTargetException,
+            NoSuchMethodException, InvalidClockTypeException {
 
         for ( Iterator<Fixture> iterator = fixtures.iterator(); iterator.hasNext(); ) {
             Fixture fixture = iterator.next();
