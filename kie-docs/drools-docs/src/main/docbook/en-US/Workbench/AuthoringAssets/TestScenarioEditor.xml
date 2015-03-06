@@ -28,6 +28,20 @@
       </imageobject>
     </mediaobject>
   </figure>
+  <section xml:id="drools.KSessionSelector">
+    <title>Knowledge Session Selector</title>
+    <figure>
+      <title>Knowledge Session Selector</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/KSessionSelector.png" format="PNG"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+    <para>
+      Knowledge session selector is used to select the session that the rules are ran against. The knowledge session needs to be stateful and use the pseudo clock when simulated time is used. Knowledge sessions are defined in the Project Editor, in the Knowledge bases and Sessions section.
+    </para>
+  </section>
   <section xml:id="drools.TestScenarioEditorGivenSection">
     <title>Given Section</title>
     <figure>
