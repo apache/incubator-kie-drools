@@ -4,6 +4,7 @@
 <head>
   <title>OptaPlanner webexamples: vehicle routing</title>
   <link href="<%=application.getContextPath()%>/website/leaflet/leaflet.css" rel="stylesheet">
+  <link href="<%=application.getContextPath()%>/vehiclerouting/vehicleRouting.css" rel="stylesheet">
   <jsp:include page="/common/head.jsp"/>
 </head>
 <body>
@@ -56,7 +57,13 @@
       dataType : "json",
       success: function(solution) {
         $.each(solution.customerList, function(index, customer) {
-          L.marker([customer.latitude, customer.longitude]).addTo(map);
+          var customerIcon = L.divIcon({
+            iconSize: new L.Point(20, 20),
+            className: "vehicleRoutingCustomerMarker",
+            html: "<span>" + customer.demand + "</span>"
+          });
+          L.marker([customer.latitude, customer.longitude], {icon: customerIcon}).addTo(map)
+              .bindPopup(customer.locationName + "</br>Deliver " + customer.demand + " items.");
         });
       }, error : function(jqXHR, textStatus, errorThrown) {ajaxError(jqXHR, textStatus, errorThrown)}
     });
