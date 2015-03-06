@@ -183,11 +183,12 @@ public abstract class SubTasksBaseTest extends HumanTaskServicesBaseTest{
             String seqName = (String) query.getSingleResult();
             query = em.createNativeQuery("alter sequence " + seqName + " increment by 1000");
             query.executeUpdate();
+            
+            TransactionManagerServices.getTransactionManager().commit();
         } catch( Throwable t ) { 
+        	TransactionManagerServices.getTransactionManager().rollback();
             // underlying database is NOT h2, skip test
             Assume.assumeFalse(true);
-        } finally { 
-            TransactionManagerServices.getTransactionManager().commit();
         }
     	
          // One potential owner, should go straight to state Reserved
