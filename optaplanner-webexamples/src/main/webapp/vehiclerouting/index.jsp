@@ -18,7 +18,6 @@
         <h1>Vehicle routing</h1>
       </header>
       <p>Pick up all items of all customers with a few vehicles in the shortest route possible.</p>
-      <p>A dataset has been loaded.</p>
       <div style="margin-bottom: 20px">
         <button id="solveButton" class="btn btn-default" type="submit" onclick="solve()">Solve this planning problem</button>
         <button id="terminateEarlyButton" class="btn" type="submit" onclick="terminateEarly()" disabled>Terminate early</button>
@@ -32,6 +31,7 @@
 <script src="<%=application.getContextPath()%>/website/leaflet/leaflet.js"></script>
 <script type="text/javascript">
   var map;
+  var vehicleRouteLayerGroup;
   var intervalTimer;
 
   initMap = function() {
@@ -68,14 +68,19 @@
       type: "GET",
       dataType : "json",
       success: function(solution) {
+        if (vehicleRouteLayerGroup != undefined) {
+          map.removeLayer(vehicleRouteLayerGroup);
+        }
+        var vehicleRouteLines = [];
         $.each(solution.vehicleRouteList, function(index, vehicleRoute) {
           var locations = [[vehicleRoute.depotLatitude, vehicleRoute.depotLongitude]];
           $.each(vehicleRoute.customerList, function(index, customer) {
             locations.push([customer.latitude, customer.longitude]);
           });
           locations.push([vehicleRoute.depotLatitude, vehicleRoute.depotLongitude]);
-          var vehicleRouteLine = L.polyline(locations, {color: vehicleRoute.hexColor}).addTo(map);
+          vehicleRouteLines.push(L.polyline(locations, {color: vehicleRoute.hexColor}));
         });
+        vehicleRouteLayerGroup = L.layerGroup(vehicleRouteLines).addTo(map);
       }, error : function(jqXHR, textStatus, errorThrown) {ajaxError(jqXHR, textStatus, errorThrown)}
     });
   };
