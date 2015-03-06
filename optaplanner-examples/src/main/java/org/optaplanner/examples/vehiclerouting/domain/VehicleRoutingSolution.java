@@ -16,6 +16,7 @@
 
 package org.optaplanner.examples.vehiclerouting.domain;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -132,6 +133,29 @@ public class VehicleRoutingSolution extends AbstractPersistable implements Solut
         facts.addAll(depotList);
         // Do not add the planning entities (vehicleList, customerList) because that will be done automatically
         return facts;
+    }
+
+    public String getDistanceString(NumberFormat numberFormat) {
+        if (score == null) {
+            return null;
+        }
+        int distance = - score.getSoftScore();
+        if (distanceUnitOfMeasurement == null) {
+            return numberFormat.format(((double) distance) / 1000.0);
+        }
+        if (distanceUnitOfMeasurement.equals("sec")) {
+            int hours = distance / 3600000;
+            int minutes = distance % 3600000 / 60000;
+            int seconds = distance % 60000 / 1000;
+            int milliseconds = distance % 1000;
+            return hours + "h " + minutes + "m " + seconds + "s " + milliseconds + "ms";
+        } else if (distanceUnitOfMeasurement.equals("km")) {
+            int km = distance / 1000;
+            int meter = distance % 1000;
+            return km + "km " + meter + "m";
+        } else {
+            return numberFormat.format(((double) distance) / 1000.0) + " " + distanceUnitOfMeasurement;
+        }
     }
 
 }

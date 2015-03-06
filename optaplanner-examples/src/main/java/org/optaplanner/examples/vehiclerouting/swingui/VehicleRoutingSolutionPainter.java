@@ -225,8 +225,7 @@ public class VehicleRoutingSolutionPainter {
             if (!score.isFeasible()) {
                 distanceString = "Not feasible";
             } else {
-                double distance = ((double) - score.getSoftScore()) / 1000.0;
-                distanceString = NUMBER_FORMAT.format(distance) + " " + solution.getDistanceUnitOfMeasurement();
+                distanceString = solution.getDistanceString(NUMBER_FORMAT);
             }
             g.setFont(g.getFont().deriveFont(Font.BOLD, (float) TEXT_SIZE * 2));
             g.drawString(distanceString,

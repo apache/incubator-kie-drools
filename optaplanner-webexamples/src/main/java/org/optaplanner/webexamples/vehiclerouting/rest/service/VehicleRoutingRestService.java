@@ -18,6 +18,8 @@ package org.optaplanner.webexamples.vehiclerouting.rest.service;
 
 import java.awt.Color;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +57,8 @@ import org.optaplanner.webexamples.vehiclerouting.rest.domain.JsonVehicleRouting
 
 @Path("/vehiclerouting")
 public class VehicleRoutingRestService {
+
+    private static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#,##0.00");
 
     @Inject
     private VehicleRoutingSolverManager solverManager;
@@ -109,8 +113,7 @@ public class VehicleRoutingRestService {
         jsonSolution.setVehicleRouteList(jsonVehicleRouteList);
         HardSoftScore score = solution.getScore();
         jsonSolution.setFeasible(score == null ? false : score.isFeasible());
-        jsonSolution.setDistance(score == null ? null
-                : (-score.getSoftScore()) + " " + solution.getDistanceUnitOfMeasurement());
+        jsonSolution.setDistance(solution.getDistanceString(NUMBER_FORMAT));
         return jsonSolution;
     }
 

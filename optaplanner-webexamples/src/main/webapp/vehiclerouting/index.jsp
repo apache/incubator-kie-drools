@@ -19,11 +19,13 @@
         <h1>Vehicle routing</h1>
       </header>
       <p>Pick up all items of all customers with a few vehicles in the shortest route possible.</p>
-      <div style="margin-bottom: 20px">
+      <p>Each location shows the number of items to pick up. Each vehicle has a limited capacity.</p>
+      <p class="pull-right" style="border: solid thin black; border-radius: 5px; padding: 2px;">Total travel distance of vehicles: <b><span id="scoreValue">Not solved</span></b></p>
+      <div>
         <button id="solveButton" class="btn btn-default" type="submit" onclick="solve()">Solve this planning problem</button>
         <button id="terminateEarlyButton" class="btn" type="submit" onclick="terminateEarly()" disabled>Terminate early</button>
       </div>
-      <div id="map" style="height: 600px"></div>
+      <div id="map" style="height: 600px; margin-top: 10px"></div>
     </div>
   </div>
 </div>
@@ -88,6 +90,7 @@
           vehicleRouteLines.push(L.polyline(locations, {color: vehicleRoute.hexColor}));
         });
         vehicleRouteLayerGroup = L.layerGroup(vehicleRouteLines).addTo(map);
+        $('#scoreValue').text(solution.feasible ? solution.distance : "Not solved");
       }, error : function(jqXHR, textStatus, errorThrown) {ajaxError(jqXHR, textStatus, errorThrown)}
     });
   };
