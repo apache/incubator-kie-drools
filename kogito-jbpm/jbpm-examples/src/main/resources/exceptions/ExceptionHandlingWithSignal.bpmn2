@@ -1,102 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
-             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
-             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
-             xmlns:di="http://www.omg.org/spec/DD/20100524/DI" 
-             xmlns:tns="http://www.jboss.org/drools" 
-             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.omg.org/spec/BPMN/20100524/DI http://www.omg.org/spec/BPMN/20100524/DI-XMI http://www.omg.org/spec/DD/20100524/DC http://www.omg.org/spec/DD/20100524/DC-XMI http://www.omg.org/spec/DD/20100524/DI http://www.omg.org/spec/DD/20100524/DI-XMI" 
-             id="Definition" 
-             expressionLanguage="http://www.mvel.org/2.0" 
-             targetNamespace="http://www.example.org/MinimalExample" 
-             typeLanguage="http://www.java.com/javaTypes">
-
-  <itemDefinition id="_stringItem" structureRef="java.lang.String"/>
-  <message id="_message" itemRef="_stringItem"/>
-
-  <interface id="_serviceInterface" name="org.jbpm.examples.exceptions.service.ExceptionService">
-    <operation id="_serviceOperation" name="throwException">
-      <inMessageRef>_message</inMessageRef>
-    </operation>
-  </interface>
-
-  <signal id="exception-signal" structureRef="_exceptionItem"/>
-
-  <itemDefinition id="_exceptionItem" structureRef="org.kie.api.runtime.process.WorkItem"/>
-  <message id="_exceptionMessage" itemRef="_exceptionItem"/>
-
-  <interface id="_handlingServiceInterface" name="org.jbpm.examples.exceptions.service.ExceptionService">
-    <operation id="_handlingServiceOperation" name="handleException">
-      <inMessageRef>_exceptionMessage</inMessageRef>
-    </operation>
-  </interface>
-
-  <process id="ProcessWithExceptionHandlingSignal" name="Service Process" isExecutable="true" processType="Private">
-    <!-- properties -->
-    <property id="serviceInputItem" itemSubjectRef="_stringItem"/>
-    <property id="exceptionInputItem" itemSubjectRef="_exceptionItem"/>
-
-    <!-- main process -->
-    <startEvent id="_1" name="Start" />
-    <serviceTask id="_2" name="Throw Exception" implementation="Other" operationRef="_serviceOperation">
-      <ioSpecification>
-        <dataInput id="_2_input" name="Parameter"/>
-        <dataOutput id="_2_result" name="Result"/>
-        <inputSet>
-          <dataInputRefs>_2_input</dataInputRefs>
-        </inputSet>
-        <outputSet>
-          <dataOutputRefs>_2_result</dataOutputRefs>
-        </outputSet>
-      </ioSpecification>
-      <dataInputAssociation id="DataInputAssociation_1">
-        <sourceRef>serviceInputItem</sourceRef>
-        <targetRef>_2_input</targetRef>
-      </dataInputAssociation>
-      <dataOutputAssociation id="DataOutputAssociation_1">
-        <sourceRef>_2_result</sourceRef>
-        <targetRef>serviceInputItem</targetRef>
-      </dataOutputAssociation>
-    </serviceTask>
-    <endEvent id="_3" name="End">
-      <terminateEventDefinition id="TerminateEventDefinition_1"/>
-    </endEvent>
-    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>
-    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3"/>
-    <subProcess id="_X" name="Exception Handler" triggeredByEvent="true">
-      <startEvent id="_X-1" name="subStart" isInterrupting="false">
-        <dataOutput id="_X-1_Output" name="event"/>
-        <dataOutputAssociation>
-          <sourceRef>_X-1_Output</sourceRef>
-          <targetRef>exceptionInputItem</targetRef>
-        </dataOutputAssociation>
-        <outputSet>
-          <dataOutputRefs>_X-1_Output</dataOutputRefs>
-        </outputSet>
-        <signalEventDefinition id="_X-1_ED_1" signalRef="exception-signal"/>
-      </startEvent>
-      <serviceTask id="_X-2" name="Handle Exception" implementation="Other" operationRef="_handlingServiceOperation">
-        <ioSpecification>
-          <dataInput id="_X-2_input" name="Parameter"/>
-          <inputSet>
-            <dataInputRefs>_X-2_input</dataInputRefs>
-          </inputSet>
-          <outputSet/>
-        </ioSpecification>
-        <dataInputAssociation>
-          <sourceRef>exceptionInputItem</sourceRef>
-          <targetRef>_X-2_input</targetRef>
-        </dataInputAssociation>
-      </serviceTask>
-      <endEvent id="_X-3" name="subEnd" />
-
-      <sequenceFlow id="_X-1-_X_2" sourceRef="_X-1" targetRef="_X-2"/>
-      <sequenceFlow id="_X-2-_X_3" sourceRef="_X-2" targetRef="_X-3"/>
-    </subProcess>
-  </process>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.example.org/MinimalExample" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_stringItem" isCollection="false" structureRef="java.lang.String"/>
+  <bpmn2:itemDefinition id="_exceptionItem" isCollection="false" structureRef="org.kie.api.runtime.process.WorkItem"/>
+  <bpmn2:signal id="exception-signal" structureRef="_exceptionItem"/>
+  <bpmn2:message id="_message" itemRef="_stringItem"/>
+  <bpmn2:message id="_exceptionMessage" itemRef="_exceptionItem"/>
+  <bpmn2:interface id="_serviceInterface" name="org.jbpm.examples.exceptions.service.ExceptionService">
+    <bpmn2:operation id="_serviceOperation" name="throwException">
+      <bpmn2:inMessageRef>_message</bpmn2:inMessageRef>
+    </bpmn2:operation>
+  </bpmn2:interface>
+  <bpmn2:interface id="_handlingServiceInterface" name="org.jbpm.examples.exceptions.service.ExceptionService">
+    <bpmn2:operation id="_handlingServiceOperation" name="handleException">
+      <bpmn2:inMessageRef>_exceptionMessage</bpmn2:inMessageRef>
+    </bpmn2:operation>
+  </bpmn2:interface>
+  <bpmn2:process id="ProcessWithExceptionHandlingSignal" tns:version="1" tns:packageName="defaultPackage" tns:adHoc="false" name="Service Process" isExecutable="true" processType="Private">
+    <bpmn2:property id="serviceInputItem" itemSubjectRef="_stringItem"/>
+    <bpmn2:property id="exceptionInputItem" itemSubjectRef="_exceptionItem"/>
+    <bpmn2:startEvent id="_1" name="Start">
+      <bpmn2:outgoing>_1-_2</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:serviceTask id="_2" name="Throw Exception" implementation="Other" operationRef="_serviceOperation">
+      <bpmn2:incoming>_1-_2</bpmn2:incoming>
+      <bpmn2:outgoing>_2-_3</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_1">
+        <bpmn2:dataInput id="_2_input" name="Parameter"/>
+        <bpmn2:dataOutput id="_2_result" name="Result"/>
+        <bpmn2:inputSet id="InputSet_1">
+          <bpmn2:dataInputRefs>_2_input</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_1">
+          <bpmn2:dataOutputRefs>_2_result</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_1">
+        <bpmn2:sourceRef>serviceInputItem</bpmn2:sourceRef>
+        <bpmn2:targetRef>_2_input</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_1">
+        <bpmn2:sourceRef>_2_result</bpmn2:sourceRef>
+        <bpmn2:targetRef>serviceInputItem</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+    </bpmn2:serviceTask>
+    <bpmn2:endEvent id="_3" name="End">
+      <bpmn2:incoming>_2-_3</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_1-_2" tns:priority="1" name="" sourceRef="_1" targetRef="_2"/>
+    <bpmn2:sequenceFlow id="_2-_3" tns:priority="1" name="" sourceRef="_2" targetRef="_3"/>
+    <bpmn2:subProcess id="_X" name="Exception Handler" triggeredByEvent="true">
+      <bpmn2:startEvent id="_X-1" name="subStart" isInterrupting="false">
+        <bpmn2:outgoing>_X-1-_X_2</bpmn2:outgoing>
+        <bpmn2:dataOutput id="_X-1_Output" name="event"/>
+        <bpmn2:dataOutputAssociation id="DataOutputAssociation_2">
+          <bpmn2:sourceRef>_X-1_Output</bpmn2:sourceRef>
+          <bpmn2:targetRef>exceptionInputItem</bpmn2:targetRef>
+        </bpmn2:dataOutputAssociation>
+        <bpmn2:outputSet id="OutputSet_2">
+          <bpmn2:dataOutputRefs>_X-1_Output</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+        <bpmn2:signalEventDefinition id="_X-1_ED_1" signalRef="exception-signal"/>
+      </bpmn2:startEvent>
+      <bpmn2:serviceTask id="_X-2" name="Handle Exception" implementation="Other" operationRef="_handlingServiceOperation">
+        <bpmn2:incoming>_X-1-_X_2</bpmn2:incoming>
+        <bpmn2:outgoing>_X-2-_X_3</bpmn2:outgoing>
+        <bpmn2:ioSpecification id="InputOutputSpecification_2">
+          <bpmn2:dataInput id="_X-2_input" name="Parameter"/>
+          <bpmn2:inputSet id="InputSet_2">
+            <bpmn2:dataInputRefs>_X-2_input</bpmn2:dataInputRefs>
+          </bpmn2:inputSet>
+          <bpmn2:outputSet id="OutputSet_3"/>
+        </bpmn2:ioSpecification>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_2">
+          <bpmn2:sourceRef>exceptionInputItem</bpmn2:sourceRef>
+          <bpmn2:targetRef>_X-2_input</bpmn2:targetRef>
+        </bpmn2:dataInputAssociation>
+      </bpmn2:serviceTask>
+      <bpmn2:sequenceFlow id="_X-1-_X_2" tns:priority="1" name="" sourceRef="_X-1" targetRef="_X-2"/>
+      <bpmn2:sequenceFlow id="_X-2-_X_3" tns:priority="1" name="" sourceRef="_X-2" targetRef="_X-3"/>
+      <bpmn2:endEvent id="_X-3" name="subEnd">
+        <bpmn2:incoming>_X-2-_X_3</bpmn2:incoming>
+      </bpmn2:endEvent>
+    </bpmn2:subProcess>
+  </bpmn2:process>
   <bpmndi:BPMNDiagram documentation="background=#FFFFFF;count=1;horizontalcount=1;orientation=0;width=597.6;height=842.4;imageableWidth=587.6;imageableHeight=832.4;imageableX=5.0;imageableY=5.0" id="Diagram-_1" name="New Diagram">
-    <bpmndi:BPMNPlane id="BPMNPlane_BaseElement_1" bpmnElement="ServiceProcess">
+    <bpmndi:BPMNPlane id="BPMNPlane_BaseElement_1" bpmnElement="ProcessWithExceptionHandlingSignal">
       <bpmndi:BPMNShape id="di-_X" bpmnElement="_X" isExpanded="true">
         <dc:Bounds height="115.0" width="280.0" x="18.0" y="125.0"/>
         <bpmndi:BPMNLabel id="BPMNLabel_1">
@@ -141,6 +130,8 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="di-_X-2-_X_3" bpmnElement="_X-2-_X_3" sourceElement="di-_X-2" targetElement="di-_X-3">
         <di:waypoint xsi:type="dc:Point" x="195.0" y="186.0"/>
+        <di:waypoint xsi:type="dc:Point" x="228.0" y="186.0"/>
+        <di:waypoint xsi:type="dc:Point" x="228.0" y="186.0"/>
         <di:waypoint xsi:type="dc:Point" x="238.0" y="186.0"/>
         <bpmndi:BPMNLabel id="BPMNLabel_8">
           <dc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
@@ -169,4 +160,4 @@
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-</definitions>
+</bpmn2:definitions>

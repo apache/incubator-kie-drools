@@ -21,7 +21,7 @@
         <bpmn2:flowNodeRef>UserTask_5</bpmn2:flowNodeRef>
       </bpmn2:lane>
     </bpmn2:laneSet>
-    <bpmn2:callActivity id="CallActivity_1" tns:waitForCompletion="true" tns:independent="false" name="Expenses">
+    <bpmn2:callActivity id="CallActivity_1" tns:waitForCompletion="true" tns:independent="false" name="Expenses" calledElement="com.sample.bpmn">
       <bpmn2:documentation id="Documentation_1">OrderingNb=96+;</bpmn2:documentation>
       <bpmn2:extensionElements>
         <tns:onEntry-script scriptFormat="http://www.java.com/java">
@@ -89,6 +89,11 @@
       <bpmn2:dataInputAssociation id="_DataInputAssociation_36">
         <bpmn2:targetRef>_DataInput_36</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
+      <bpmn2:potentialOwner id="PotentialOwner_100">
+        <bpmn2:resourceAssignmentExpression id="ResourceAssignmentExpression_100">
+          <bpmn2:formalExpression id="FormalExpression_100">#{startUser}</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
     </bpmn2:userTask>
     <bpmn2:userTask id="UserTask_6" name="Book Car  ">
       <bpmn2:extensionElements>
@@ -147,6 +152,11 @@
       <bpmn2:dataInputAssociation id="_DataInputAssociation_57">
         <bpmn2:targetRef>_DataInput_57</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
+      <bpmn2:potentialOwner id="PotentialOwner_101">
+        <bpmn2:resourceAssignmentExpression id="ResourceAssignmentExpression_101">
+          <bpmn2:formalExpression id="FormalExpression_101">#{startUser}</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
     </bpmn2:userTask>
     <bpmn2:startEvent id="_1" name="">
       <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
@@ -211,9 +221,9 @@
       <bpmn2:dataInputAssociation id="_DataInputAssociation_64">
         <bpmn2:targetRef>_DataInput_64</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
-      <bpmn2:potentialOwner id="PotentialOwner_6">
-        <bpmn2:resourceAssignmentExpression id="ResourceAssignmentExpression_6">
-          <bpmn2:formalExpression id="FormalExpression_25">#{startUser}</bpmn2:formalExpression>
+      <bpmn2:potentialOwner id="PotentialOwner_102">
+        <bpmn2:resourceAssignmentExpression id="ResourceAssignmentExpression_102">
+          <bpmn2:formalExpression id="FormalExpression_102">#{startUser}</bpmn2:formalExpression>
         </bpmn2:resourceAssignmentExpression>
       </bpmn2:potentialOwner>
     </bpmn2:userTask>
@@ -284,6 +294,11 @@
       <bpmn2:dataInputAssociation id="_DataInputAssociation_15">
         <bpmn2:targetRef>_DataInput_15</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
+      <bpmn2:potentialOwner id="PotentialOwner_103">
+        <bpmn2:resourceAssignmentExpression id="ResourceAssignmentExpression_103">
+          <bpmn2:formalExpression id="FormalExpression_103">#{startUser}</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
     </bpmn2:userTask>
     <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" sourceRef="UserTask_1" targetRef="UserTask_2"/>
     <bpmn2:userTask id="UserTask_2" name="Book Hotel  ">
@@ -345,6 +360,11 @@
       <bpmn2:dataInputAssociation id="_DataInputAssociation_22">
         <bpmn2:targetRef>_DataInput_22</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
+      <bpmn2:potentialOwner id="PotentialOwner_104">
+        <bpmn2:resourceAssignmentExpression id="ResourceAssignmentExpression_104">
+          <bpmn2:formalExpression id="FormalExpression_104">#{startUser}</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
     </bpmn2:userTask>
     <bpmn2:sequenceFlow id="SequenceFlow_5" tns:priority="1" sourceRef="UserTask_2" targetRef="EndEvent_1"/>
     <bpmn2:userTask id="UserTask_3" name="Book Conference  ">
@@ -406,6 +426,11 @@
       <bpmn2:dataInputAssociation id="_DataInputAssociation_29">
         <bpmn2:targetRef>_DataInput_29</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
+      <bpmn2:potentialOwner id="PotentialOwner_105">
+        <bpmn2:resourceAssignmentExpression id="ResourceAssignmentExpression_105">
+          <bpmn2:formalExpression id="FormalExpression_105">#{startUser}</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
     </bpmn2:userTask>
     <bpmn2:userTask id="UserTask_5" name="Manager   Approval  ">
       <bpmn2:extensionElements>

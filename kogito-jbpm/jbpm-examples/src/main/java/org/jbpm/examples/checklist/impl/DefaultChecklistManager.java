@@ -16,18 +16,17 @@ import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
+import org.kie.api.runtime.manager.audit.NodeInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
+import org.kie.api.task.model.Group;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
-import org.kie.api.task.model.PeopleAssignments;
-import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.User;
-import org.kie.api.task.model.Group;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.TaskModelProvider;
@@ -79,6 +78,7 @@ public class DefaultChecklistManager implements ChecklistManager {
 		return results;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<ChecklistItem> getTasks(long processInstanceId) {
 		RuntimeEngine runtime = getRuntime();
 		KieSession ksession = runtime.getKieSession();
@@ -88,7 +88,7 @@ public class DefaultChecklistManager implements ChecklistManager {
 			WorkflowProcess process = (WorkflowProcess)
 				ksession.getKieBase().getProcess(processInstance.getProcessId());
 			Collection<ChecklistItem> result = ChecklistItemFactory.getPendingChecklistItems(process);
-			result.addAll(ChecklistItemFactory.getLoggedChecklistItems(processInstance.getId(), process));
+			result.addAll(ChecklistItemFactory.getLoggedChecklistItems(process, (List<NodeInstanceLog>) runtime.getAuditService().findNodeInstances(processInstance.getId())));
 			for (ChecklistItem item: result) {
 				if (item.getOrderingNb() != null && item.getOrderingNb().trim().length() > 0) { 
 					orderingIds.put(item.getOrderingNb(), item);
@@ -138,6 +138,7 @@ public class DefaultChecklistManager implements ChecklistManager {
         taskData.setProcessInstanceId(processInstanceId);
         // taskData.setProcessSessionId(sessionId);
         taskData.setSkipable(false);
+        taskData.setDeploymentId("default-singleton");
         User cuser = TaskModelProvider.getFactory().newUser();
     	((InternalOrganizationalEntity) cuser).setId(userId); 
         taskData.setCreatedBy(cuser);

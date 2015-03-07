@@ -6,20 +6,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Persistence;
-
 import org.drools.core.process.core.Work;
 import org.jbpm.examples.checklist.ChecklistItem;
 import org.jbpm.examples.checklist.ChecklistItem.Status;
-import org.jbpm.process.audit.AuditLogService;
-import org.jbpm.process.audit.JPAAuditLogService;
-import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.api.runtime.manager.audit.NodeInstanceLog;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
@@ -164,12 +160,11 @@ public final class ChecklistItemFactory {
 		}
 	}
 	
-	public static Collection<ChecklistItem> getLoggedChecklistItems(long processInstanceId, WorkflowProcess process) {
+	public static Collection<ChecklistItem> getLoggedChecklistItems(WorkflowProcess process, List<NodeInstanceLog> nodeInstances) {
 		Map<String, ChecklistItem> result = new HashMap<String, ChecklistItem>();
 		Map<String, String> relevantNodes = new HashMap<String, String>();
 		getRelevantNodes(process, relevantNodes);
-		AuditLogService auditLogService = new JPAAuditLogService(Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa"));
-		for (NodeInstanceLog log: auditLogService.findNodeInstances(processInstanceId)) {
+		for (NodeInstanceLog log: nodeInstances) {
 			String orderingNb = relevantNodes.get(log.getNodeId());
 			if (orderingNb != null) {
 				if (log.getType() == NodeInstanceLog.TYPE_EXIT) {

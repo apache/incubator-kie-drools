@@ -7,18 +7,16 @@ import java.util.Properties;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.JBPMHelper;
+import org.kie.api.KieServices;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.task.TaskService;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
-import org.kie.internal.runtime.manager.context.EmptyContext;
-import org.kie.internal.task.api.UserGroupCallback;
-
 
 /**
  * This is a sample file to launch a process.
@@ -28,7 +26,7 @@ public class EvaluationExample2 {
     public static final void main(String[] args) {
         try {
             RuntimeManager manager = getRuntimeManager("evaluation/Evaluation2.bpmn");        
-            RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+            RuntimeEngine runtime = manager.getRuntimeEngine(null);
             KieSession ksession = runtime.getKieSession();
 
             // start a new process instance
@@ -88,7 +86,7 @@ public class EvaluationExample2 {
         UserGroupCallback userGroupCallback = new JBossUserGroupCallbackImpl(properties);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
             .userGroupCallback(userGroupCallback)
-            .addAsset(ResourceFactory.newClassPathResource(process), ResourceType.BPMN2)
+            .addAsset(KieServices.Factory.get().getResources().newClassPathResource(process), ResourceType.BPMN2)
             .get();
         return RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
     }

@@ -29,7 +29,17 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -39,7 +49,6 @@ import org.jbpm.examples.checklist.ChecklistContextConstraint;
 import org.jbpm.examples.checklist.ChecklistItem;
 import org.jbpm.examples.checklist.ChecklistItem.Status;
 import org.jbpm.examples.checklist.ChecklistManager;
-import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.test.JBPMHelper;
@@ -73,7 +82,7 @@ public class ChecklistUI extends JFrame {
     private ChecklistManager checklistManager;
 	List<ChecklistItem> items = null;
     
-    private JComboBox contexts;
+    private JComboBox<String> contexts;
     private JTable itemTable;
     private JTextField userNameTextField;
     private boolean ctrl = false;
@@ -109,9 +118,10 @@ public class ChecklistUI extends JFrame {
             .addAsset(ResourceFactory.newClassPathResource("checklist/SampleChecklistProcess.bpmn"), ResourceType.BPMN2)
             .addAsset(ResourceFactory.newClassPathResource("checklist/AdHocProcess.bpmn"), ResourceType.BPMN2)
             .addAsset(ResourceFactory.newClassPathResource("checklist/travel.bpmn"), ResourceType.BPMN2)
+            .addAsset(ResourceFactory.newClassPathResource("checklist/expenses.bpmn"), ResourceType.BPMN2)
             .get();
 		checklistManager = new DefaultChecklistManager(environment);
-		AuditLogService auditLogService = new JPAAuditLogService(environment.getEnvironment());
+		new JPAAuditLogService(environment.getEnvironment());
     }
     
     private void initializeComponent() {
@@ -131,7 +141,7 @@ public class ChecklistUI extends JFrame {
         c.anchor = GridBagConstraints.WEST;
         panel.add(createButton, c);
         
-        contexts = new JComboBox(new DefaultComboBoxModel());
+        contexts = new JComboBox<String>(new DefaultComboBoxModel<String>());
         contexts.setPreferredSize(new Dimension(80, 24));
         contexts.setSize(new Dimension(80, 24));
         c = new GridBagConstraints();
