@@ -4,20 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
-import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.JBPMHelper;
 import org.kie.api.KieServices;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.task.TaskService;
-import org.kie.api.task.UserGroupCallback;
 import org.kie.api.task.model.TaskSummary;
 
 public class MultipleInstanceExample {
@@ -56,11 +53,7 @@ public class MultipleInstanceExample {
         // load up the knowledge base
     	JBPMHelper.startH2Server();
     	JBPMHelper.setupDataSource();
-    	Properties properties= new Properties();
-        properties.setProperty("sales-rep", "");
-        UserGroupCallback userGroupCallback = new JBossUserGroupCallbackImpl(properties);
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
-            .userGroupCallback(userGroupCallback)
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
             .addAsset(KieServices.Factory.get().getResources().newClassPathResource(process), ResourceType.BPMN2)
             .get();
         return RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);

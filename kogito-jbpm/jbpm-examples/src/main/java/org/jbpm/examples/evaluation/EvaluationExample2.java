@@ -1,17 +1,17 @@
 package org.jbpm.examples.evaluation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
-import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.JBPMHelper;
 import org.kie.api.KieServices;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.task.TaskService;
@@ -79,13 +79,24 @@ public class EvaluationExample2 {
         // load up the knowledge base
     	JBPMHelper.startH2Server();
     	JBPMHelper.setupDataSource();
-    	Properties properties= new Properties();
-        properties.setProperty("krisv", "");
-        properties.setProperty("mary", "HR");
-        properties.setProperty("john", "PM");
-        UserGroupCallback userGroupCallback = new JBossUserGroupCallbackImpl(properties);
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
-            .userGroupCallback(userGroupCallback)
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+            .userGroupCallback(new UserGroupCallback() {
+    			public List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds) {
+    				List<String> result = new ArrayList<String>();
+    				if ("mary".equals(userId)) {
+    					result.add("HR");
+    				} else if ("john".equals(userId)) {
+    					result.add("PM");
+    				}
+    				return result;
+    			}
+    			public boolean existsUser(String arg0) {
+    				return true;
+    			}
+    			public boolean existsGroup(String arg0) {
+    				return true;
+    			}
+    		})
             .addAsset(KieServices.Factory.get().getResources().newClassPathResource(process), ResourceType.BPMN2)
             .get();
         return RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);

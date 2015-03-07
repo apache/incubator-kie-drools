@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.jbpm.examples.checklist.ChecklistItem;
 import org.jbpm.examples.checklist.ChecklistManager;
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.test.JBPMHelper;
+import org.kie.api.KieServices;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.task.api.UserGroupCallback;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
+import org.kie.api.task.UserGroupCallback;
 
 public class ChecklistExample {
 	
@@ -19,7 +19,7 @@ public class ChecklistExample {
 			
 			JBPMHelper.startH2Server();
 			JBPMHelper.setupDataSource();
-			RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+			RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
 	            .userGroupCallback(new UserGroupCallback() {
 	    			public List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds) {
 	    				List<String> result = new ArrayList<String>();
@@ -35,7 +35,7 @@ public class ChecklistExample {
 	    				return true;
 	    			}
 	    		})
-	            .addAsset(ResourceFactory.newClassPathResource("checklist/SampleChecklistProcess.bpmn"), ResourceType.BPMN2)
+	            .addAsset(KieServices.Factory.get().getResources().newClassPathResource("checklist/SampleChecklistProcess.bpmn"), ResourceType.BPMN2)
 	            .get();
 			ChecklistManager checklistManager = new DefaultChecklistManager(environment);
 	

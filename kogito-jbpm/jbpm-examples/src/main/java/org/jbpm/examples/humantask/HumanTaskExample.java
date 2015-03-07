@@ -1,24 +1,21 @@
 package org.jbpm.examples.humantask;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
-import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.test.JBPMHelper;
 import org.kie.api.KieServices;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.UserGroupCallback;
-import org.kie.api.task.model.Content;
-import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 
 public class HumanTaskExample {
@@ -67,11 +64,8 @@ public class HumanTaskExample {
             TaskSummary task4 = taskService.getTasksAssignedAsPotentialOwner("sales-rep", "en-UK").get(0);
             System.out.println("sales-rep executing task " + task4.getName() + "(" + task4.getId() + ": " + task4.getDescription() + ")");
             taskService.start(task4.getId(), "sales-rep");
-            Task task = taskService.getTaskById(task4.getId());
-            Content content = taskService.getContentById(task.getTaskData().getDocumentContentId());
-            Object result = ContentMarshallerHelper.unmarshall(content.getContent(), null);
-            Map<?, ?> map = (Map<?, ?>) result;
-            for (Map.Entry<?, ?> entry : map.entrySet()) {
+            Map<String, Object> content = taskService.getTaskContent(task4.getId());
+            for (Map.Entry<?, ?> entry : content.entrySet()) {
                 System.out.println(entry.getKey() + " = " + entry.getValue());
             }
             taskService.complete(task4.getId(), "sales-rep", null);
@@ -89,13 +83,24 @@ public class HumanTaskExample {
         // load up the knowledge base
     	JBPMHelper.startH2Server();
     	JBPMHelper.setupDataSource();
-    	Properties properties= new Properties();
-        properties.setProperty("krisv", "");
-        properties.setProperty("sales-rep", "sales");
-        properties.setProperty("john", "PM");
-        UserGroupCallback userGroupCallback = new JBossUserGroupCallbackImpl(properties);
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
-            .userGroupCallback(userGroupCallback)
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+            .userGroupCallback(new UserGroupCallback() {
+    			public List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds) {
+    				List<String> result = new ArrayList<String>();
+    				if ("sales-rep".equals(userId)) {
+    					result.add("sales");
+    				} else if ("john".equals(userId)) {
+    					result.add("PM");
+    				}
+    				return result;
+    			}
+    			public boolean existsUser(String arg0) {
+    				return true;
+    			}
+    			public boolean existsGroup(String arg0) {
+    				return true;
+    			}
+    		})
             .addAsset(KieServices.Factory.get().getResources().newClassPathResource(process), ResourceType.BPMN2)
             .get();
         return RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);

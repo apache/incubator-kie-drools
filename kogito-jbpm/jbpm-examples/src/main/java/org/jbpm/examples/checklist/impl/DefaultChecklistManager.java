@@ -12,11 +12,11 @@ import org.jbpm.examples.checklist.ChecklistContext;
 import org.jbpm.examples.checklist.ChecklistContextConstraint;
 import org.jbpm.examples.checklist.ChecklistItem;
 import org.jbpm.examples.checklist.ChecklistManager;
-import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.manager.audit.NodeInstanceLog;
@@ -275,7 +275,7 @@ public class DefaultChecklistManager implements ChecklistManager {
 	protected RuntimeEngine getRuntime() {
 		if (manager == null) {
 			if (environment == null) {
-				environment = new SimpleRuntimeEnvironment();
+				environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder().get();
 			}
 			manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
 		}
