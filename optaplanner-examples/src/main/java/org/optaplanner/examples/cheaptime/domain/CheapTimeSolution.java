@@ -154,6 +154,7 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
         facts.addAll(taskList);
         facts.addAll(taskRequirementList);
         facts.addAll(periodPowerPriceList);
+        facts.add(this);
         // Do not add the planning entity's (taskAssignmentList) because that will be done automatically
         return facts;
     }
