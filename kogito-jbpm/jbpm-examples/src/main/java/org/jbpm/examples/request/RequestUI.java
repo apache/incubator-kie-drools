@@ -35,15 +35,14 @@ import javax.swing.WindowConstants;
 
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.api.KieServices;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -62,7 +61,7 @@ public class RequestUI extends JFrame {
     private JTextField amountField;
     private JTextField signalField;
     private JTextField processField;
-    private StatefulKnowledgeSession ksession;
+    private KieSession ksession;
     private WorkflowProcessInstance processInstance;
     
     public static void main(String[] args) {
@@ -175,20 +174,7 @@ public class RequestUI extends JFrame {
         c.insets = new Insets(5, 5, 5, 5);
         panel.add(addButton, c);
 
-        JButton addButton2 = new JButton("Dynamically add ad-hoc rules");
-        addButton2.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                addRules();
-            }
-        });
-        c = new GridBagConstraints();
-        c.gridy = 7;
-        c.gridwidth = 2;
-        c.anchor = GridBagConstraints.WEST;
-        c.insets = new Insets(5, 5, 5, 5);
-        panel.add(addButton2, c);
-        
-        ksession = createKnowledgeSession();
+        ksession = createKieSession();
     }
     
     private void select() {
@@ -197,11 +183,11 @@ public class RequestUI extends JFrame {
 		request.setPersonId(nameField.getText());
 		request.setAmount(Long.parseLong(amountField.getText()));
 		if (ksession == null) {
-			ksession = createKnowledgeSession();
+			ksession = createKieSession();
 		}
 		ksession.insert(request);
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("request", request.getId());
+		params.put("request", request);
 		processInstance = (WorkflowProcessInstance) ksession.startProcess("com.sample.requestHandling", params);
 		ksession.insert(processInstance);
 		// rule validation
@@ -218,18 +204,10 @@ public class RequestUI extends JFrame {
     	DynamicUtils.addDynamicSubProcess(dynamicNodeInstance, ksession, "com.sample.contactCustomer", null);
     }
     
-    private void addRules() {
-    	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		kbuilder.add(ResourceFactory.newClassPathResource("request/adhoc.drl"), ResourceType.DRL);
-		ksession.getKieBase().addKnowledgePackages(kbuilder.getKnowledgePackages());
-		ksession.fireAllRules();
-    }
-    
-    private StatefulKnowledgeSession createKnowledgeSession() {
+    private KieSession createKieSession() {
     	try {
-    		KnowledgeBase kbase = readKnowledgeBase();
-    		final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-    		KnowledgeRuntimeLoggerFactory.newThreadedFileLogger(ksession, "test", 1000);
+			final KieSession ksession = getKieSession();
+			KieServices.Factory.get().getLoggers().newThreadedFileLogger(ksession, "test", 1000);
     		UIWorkItemHandler handler = new UIWorkItemHandler();
     		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
     		handler.setVisible(true);
@@ -242,8 +220,13 @@ public class RequestUI extends JFrame {
     			}
     		});
 			Person person = new Person("john", "John Doe");
+			person.setAge(40);
 			ksession.insert(person);
 			person = new Person("krisv", "Kris Verlaenen");
+			person.setAge(30);
+			ksession.insert(person);
+			person = new Person("baby", "Baby");
+			person.setAge(1);
 			ksession.insert(person);
 			ksession.addEventListener(new DefaultProcessEventListener() {
 				public void beforeProcessStarted(ProcessStartedEvent event) {
@@ -256,14 +239,16 @@ public class RequestUI extends JFrame {
     	}
     }
     
-	private KnowledgeBase readKnowledgeBase() throws Exception {
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		kbuilder.add(ResourceFactory.newClassPathResource("request/requestHandling.bpmn"), ResourceType.BPMN2);
-		kbuilder.add(ResourceFactory.newClassPathResource("request/contactCustomer.bpmn"), ResourceType.BPMN2);
-		kbuilder.add(ResourceFactory.newClassPathResource("request/validation.drl"), ResourceType.DRL);
-		kbuilder.add(ResourceFactory.newClassPathResource("request/eventProcessing.drl"), ResourceType.DRL);
-		kbuilder.add(ResourceFactory.newClassPathResource("request/exceptions.drl"), ResourceType.DRL);
-		return kbuilder.newKnowledgeBase();
+	private static KieSession getKieSession() throws Exception {
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newEmptyBuilder()
+            .addAsset(KieServices.Factory.get().getResources().newClassPathResource("request/requestHandling.bpmn"), ResourceType.BPMN2)
+            .addAsset(KieServices.Factory.get().getResources().newClassPathResource("request/contactCustomer.bpmn"), ResourceType.BPMN2)
+            .addAsset(KieServices.Factory.get().getResources().newClassPathResource("request/validation.drl"), ResourceType.DRL)
+            .addAsset(KieServices.Factory.get().getResources().newClassPathResource("request/eventProcessing.drl"), ResourceType.DRL)
+            .addAsset(KieServices.Factory.get().getResources().newClassPathResource("request/exceptions.drl"), ResourceType.DRL)
+            .addAsset(KieServices.Factory.get().getResources().newClassPathResource("request/adhoc.drl"), ResourceType.DRL)
+            .get();
+        return RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment).getRuntimeEngine(null).getKieSession();
 	}
 	
 }

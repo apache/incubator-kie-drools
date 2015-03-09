@@ -1,6 +1,10 @@
 package org.jbpm.examples.request;
 
-public class Person {
+import java.io.Serializable;
+
+public class Person implements Serializable {
+	
+	private static final long serialVersionUID = 6L;
 	
 	private String id;
 	private String name;

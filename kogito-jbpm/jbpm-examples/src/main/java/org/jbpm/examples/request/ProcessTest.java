@@ -5,16 +5,15 @@ import java.util.Map;
 
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.api.KieServices;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.logger.KnowledgeRuntimeLogger;
-import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
+import org.kie.api.logger.KieRuntimeLogger;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -29,9 +28,7 @@ public class ProcessTest {
 	public static final void main(String[] args) {
 		try {
 			// load up the knowledge base
-			KnowledgeBase kbase = readKnowledgeBase();
-			final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-			KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newThreadedFileLogger(ksession, "test", 1000);
+			final KieSession ksession = getKieSession();
 			UIWorkItemHandler handler = new UIWorkItemHandler();
 			ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 			handler.setVisible(true);
@@ -43,64 +40,89 @@ public class ProcessTest {
 				public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
 				}
 			});
+			KieRuntimeLogger logger = KieServices.Factory.get().getLoggers().newFileLogger(ksession, "test");
 			// start a new process instance
 			Person person = new Person("john", "John Doe");
+			person.setAge(20);
 			Request request = new Request("12345");
 			request.setPersonId("john");
 			request.setAmount(1000L);
 			ksession.insert(person);
-			FactHandle handle = ksession.insert(request);
+			ksession.insert(request);
 			Map<String, Object> params = new HashMap<String, Object>();
-			params.put("request", request.getId());
+			params.put("request", request);
 			WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("com.sample.requestHandling", params);
 			ksession.insert(processInstance);
-			// rule validation
 			ksession.fireAllRules();
 			// signaling to select tasks in the ad-hoc sub-process
 			ksession.signalEvent("Investigate", null, processInstance.getId());
-			// dynamically adding a new rule that automatically signals the ad-hoc sub-process
-			KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-			kbuilder.add(ResourceFactory.newClassPathResource("request/adhoc.drl"), ResourceType.DRL);
-			kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-			ksession.fireAllRules();
 			// dynamically adding a new sub-process
 			DynamicNodeInstance dynamicNodeInstance = (DynamicNodeInstance)
 				processInstance.getNodeInstances().iterator().next();
 			DynamicUtils.addDynamicSubProcess(dynamicNodeInstance, ksession, "com.sample.contactCustomer", null);
-			logger.close();
 			// event processing to detect too much processes being started
 			ksession.addEventListener(new DefaultProcessEventListener() {
 				public void beforeProcessStarted(ProcessStartedEvent event) {
 					ksession.insert(event);
 				}
 			});
-			ksession.startProcess("com.sample.requestHandling");
+			Request request2 = new Request("12346");
+			request2.setPersonId("john");
+			request2.setAmount(1000L);
+			params = new HashMap<String, Object>();
+			params.put("request", request2);
+			ksession.startProcess("com.sample.requestHandling", params);
 			ksession.fireAllRules();
-			ksession.startProcess("com.sample.requestHandling");
+			Request request3 = new Request("12347");
+			request3.setPersonId("john");
+			request3.setAmount(1000L);
+			params = new HashMap<String, Object>();
+			params.put("request", request);
+			ksession.startProcess("com.sample.requestHandling", params);
 			ksession.fireAllRules();
-			ksession.startProcess("com.sample.requestHandling");
+			Request request4 = new Request("12348");
+			request4.setPersonId("john");
+			request4.setAmount(1000L);
+			params = new HashMap<String, Object>();
+			params.put("request", request4);
+			ksession.startProcess("com.sample.requestHandling", params);
 			ksession.fireAllRules();
-			ksession.startProcess("com.sample.requestHandling");
+			Request request5 = new Request("12349");
+			request5.setPersonId("john");
+			request5.setAmount(1000L);
+			params = new HashMap<String, Object>();
+			params.put("request", request5);
+			ksession.startProcess("com.sample.requestHandling", params);
 			ksession.fireAllRules();
-			ksession.startProcess("com.sample.requestHandling");
+			Request request6 = new Request("12350");
+			request6.setPersonId("john");
+			request6.setAmount(1000L);
+			params = new HashMap<String, Object>();
+			params.put("request", request6);
+			processInstance = (WorkflowProcessInstance) ksession.startProcess("com.sample.requestHandling", params);
+			FactHandle handle = ksession.insert(request6);
+			ksession.insert(processInstance);
 			ksession.fireAllRules();
 			// exception handling when canceling request
-			request.setCanceled(true);
-			ksession.update(handle, request);
+			request6.setCanceled(true);
+			ksession.update(handle, request6);
 			ksession.fireAllRules();
+			logger.close();
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
 	}
 
-	private static KnowledgeBase readKnowledgeBase() throws Exception {
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		kbuilder.add(ResourceFactory.newClassPathResource("request/requestHandling.bpmn"), ResourceType.BPMN2);
-		kbuilder.add(ResourceFactory.newClassPathResource("request/contactCustomer.bpmn"), ResourceType.BPMN2);
-		kbuilder.add(ResourceFactory.newClassPathResource("request/validation.drl"), ResourceType.DRL);
-		kbuilder.add(ResourceFactory.newClassPathResource("request/eventProcessing.drl"), ResourceType.DRL);
-		kbuilder.add(ResourceFactory.newClassPathResource("request/exceptions.drl"), ResourceType.DRL);
-		return kbuilder.newKnowledgeBase();
+	private static KieSession getKieSession() throws Exception {
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newEmptyBuilder()
+            .addAsset(KieServices.Factory.get().getResources().newClassPathResource("request/requestHandling.bpmn"), ResourceType.BPMN2)
+            .addAsset(KieServices.Factory.get().getResources().newClassPathResource("request/contactCustomer.bpmn"), ResourceType.BPMN2)
+            .addAsset(KieServices.Factory.get().getResources().newClassPathResource("request/validation.drl"), ResourceType.DRL)
+            .addAsset(KieServices.Factory.get().getResources().newClassPathResource("request/eventProcessing.drl"), ResourceType.DRL)
+            .addAsset(KieServices.Factory.get().getResources().newClassPathResource("request/exceptions.drl"), ResourceType.DRL)
+            .addAsset(KieServices.Factory.get().getResources().newClassPathResource("request/adhoc.drl"), ResourceType.DRL)
+            .get();
+        return RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment).getRuntimeEngine(null).getKieSession();
 	}
 	
 }

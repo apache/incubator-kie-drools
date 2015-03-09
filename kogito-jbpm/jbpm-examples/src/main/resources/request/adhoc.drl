@@ -2,11 +2,11 @@ package org.jbpm.examples.request
 
 import org.kie.api.runtime.process.WorkflowProcessInstance
 
-rule "Automatically review large requests"
+rule "Automatically review large requests" ruleflow-group "Ad-Hoc Sub-Process"
     when
-        r: Request( $id: id, amount > 500 )
+        r: Request( $id: id, amount > 500, canceled == false )
         p: WorkflowProcessInstance()
-        String( this == $id ) from p.getVariable("request")
+        Request( id == $id ) from p.getVariable("request")
     then
         System.out.println("Automatically triggering the review process due to large amount");
         kcontext.getKnowledgeRuntime().signalEvent("Review", null, p.getId());

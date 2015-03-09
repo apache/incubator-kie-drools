@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:g="http://www.jboss.org/drools/flow/gpd" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_String" isCollection="false" structureRef="String"/>
+  <bpmn2:itemDefinition id="ItemDefinition_2" isCollection="false" structureRef="org.jbpm.examples.request.Request"/>
   <bpmn2:signal id="Failure" name="Failure"/>
   <bpmn2:process id="com.sample.requestHandling" tns:version="1" tns:packageName="com.sample" tns:adHoc="false" name="Request Handling" isExecutable="true" processType="Private">
+    <bpmn2:property id="request" itemSubjectRef="ItemDefinition_2" name="request"/>
     <bpmn2:startEvent id="_1" name="StartProcess">
       <bpmn2:outgoing>_1-_2</bpmn2:outgoing>
     </bpmn2:startEvent>
@@ -14,7 +17,7 @@
       <bpmn2:outgoing>_9-_10</bpmn2:outgoing>
       <bpmn2:outgoing>_9-_14</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
-    <bpmn2:task id="_10" tns:taskName="Email" name="Email">
+    <bpmn2:task id="_10" tns:taskName="Email" name="Email Invalid">
       <bpmn2:incoming>_9-_10</bpmn2:incoming>
       <bpmn2:outgoing>_10-_11</bpmn2:outgoing>
       <bpmn2:ioSpecification id="InputOutputSpecification_2">
@@ -159,12 +162,12 @@
     <bpmn2:sequenceFlow id="_1-_2" tns:priority="1" name="" sourceRef="_1" targetRef="_2"/>
     <bpmn2:sequenceFlow id="_14-_7" tns:priority="1" name="" sourceRef="_14" targetRef="_7"/>
     <bpmn2:sequenceFlow id="_2-_9" tns:priority="1" name="" sourceRef="_2" targetRef="_9"/>
-    <bpmn2:sequenceFlow id="_9-_10" tns:priority="1" name="invalid" sourceRef="_9" targetRef="_10">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_35" language="http://www.jboss.org/drools/rule">eval(false)</bpmn2:conditionExpression>
+    <bpmn2:sequenceFlow id="_9-_10" tns:priority="2" name="invalid" sourceRef="_9" targetRef="_10">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_35" language="http://www.java.com/java">return !request.isValid();</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:sequenceFlow id="_10-_11" tns:priority="1" name="" sourceRef="_10" targetRef="_11"/>
     <bpmn2:sequenceFlow id="_9-_14" tns:priority="1" name="valid" sourceRef="_9" targetRef="_14">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_36" language="http://www.jboss.org/drools/rule">eval(true)</bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_36" language="http://www.java.com/java">return request.isValid();</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:scriptTask id="_7" name="Log">
       <bpmn2:incoming>_14-_7</bpmn2:incoming>
@@ -200,11 +203,11 @@
         <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
         <bpmn2:signalEventDefinition id="SignalEventDefinition_2" signalRef="Failure"/>
       </bpmn2:startEvent>
-      <bpmn2:sequenceFlow id="SequenceFlow_1" tns:priority="1" sourceRef="StartEvent_1" targetRef="_5"/>
+      <bpmn2:sequenceFlow id="SequenceFlow_1" tns:priority="1" name="" sourceRef="StartEvent_1" targetRef="_5"/>
       <bpmn2:endEvent id="EndEvent_1" name="">
         <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
       </bpmn2:endEvent>
-      <bpmn2:task id="_5" tns:taskName="Email" name="Email">
+      <bpmn2:task id="_5" tns:taskName="Email" name="Email Canceled">
         <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
         <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
         <bpmn2:ioSpecification id="InputOutputSpecification_1">
@@ -212,7 +215,7 @@
           <bpmn2:outputSet id="OutputSet_1"/>
         </bpmn2:ioSpecification>
       </bpmn2:task>
-      <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" sourceRef="_5" targetRef="EndEvent_1"/>
+      <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" name="" sourceRef="_5" targetRef="EndEvent_1"/>
     </bpmn2:subProcess>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
