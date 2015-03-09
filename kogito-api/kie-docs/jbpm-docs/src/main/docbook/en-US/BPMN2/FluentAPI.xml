@@ -36,12 +36,18 @@ factory
     .connection(1, 2)
     .connection(2, 3);
 RuleFlowProcess process = factory.validate().getProcess();
-KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-kbuilder.add(ResourceFactory.newByteArrayResource(
-    XmlBPMNProcessDumper.INSTANCE.dump(process).getBytes()), ResourceType.BPMN2);
-KnowledgeBase kbase = kbuilder.newKnowledgeBase();
-StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-ksession.startProcess("org.jbpm.HelloWorld");</programlisting>
+
+KieServices ks = KieServices.Factory.get();
+KieFileSystem kfs = ks.newKieFileSystem();
+Resource resource = ks.getResources().newByteArrayResource(
+    XmlBPMNProcessDumper.INSTANCE.dump(process).getBytes());
+resource.setSourcePath("helloworld.bpmn2");
+kfs.write(resource);
+ReleaseId releaseId = ks.newReleaseId("org.jbpm", "helloworld", "1.0");
+kfs.generateAndWritePomXML(releaseId);
+ks.newKieBuilder(kfs).buildAll();
+ks.newKieContainer(releaseId).newKieSession().startProcess("org.jbpm.HelloWorld");
+</programlisting>
         
       <para>You can see that we start by calling the static <code>createProcess()</code>
       method from the <code>RuleFlowProcessFactory</code> class.  This method creates
