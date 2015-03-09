@@ -135,7 +135,8 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     public void cancel() {
         nodeInstanceContainer.removeNodeInstance(this);
         boolean hidden = false;
-    	if (getNode().getMetaData().get("hidden") != null) {
+        Node node = getNode();
+    	if (node != null && node.getMetaData().get("hidden") != null) {
     		hidden = true;
     	}
     	if (!hidden) {
