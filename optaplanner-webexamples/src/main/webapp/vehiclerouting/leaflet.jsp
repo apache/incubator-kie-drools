@@ -29,7 +29,7 @@
         <button id="terminateEarlyButton" class="btn btn-default" type="submit" onclick="terminateEarly()" disabled="disabled">Terminate early</button>
       </div>
       <div id="map" style="height: 600px; margin-top: 10px; margin-bottom: 10px;"></div>
-      <p>This visualization works offline and uses open source software.</p>
+      <p>This visualization can work offline (requires setting up an OpenStreetMap data server) and uses open source software.</p>
     </div>
   </div>
 </div>
