@@ -150,6 +150,11 @@
       <artifactId>cdi-api</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-decisiontables</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <testResources>
