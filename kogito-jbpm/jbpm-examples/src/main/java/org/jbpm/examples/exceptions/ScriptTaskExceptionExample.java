@@ -22,6 +22,7 @@ import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.kie.api.KieServices;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
@@ -33,7 +34,8 @@ public class ScriptTaskExceptionExample {
     }
 
     public static void runExample() {
-        KieSession ksession = createKieSession();
+    	RuntimeManager manager = createManager();
+        KieSession ksession = manager.getRuntimeEngine(null).getKieSession();
         Map<String, Object> params = new HashMap<String, Object>();
         String varName = "var1";
         params.put( varName , "valueOne" );
@@ -49,14 +51,16 @@ public class ScriptTaskExceptionExample {
                     + "]";
             System.out.println(msg);
         }
+        
+        manager.close();
     }
     
-    private static KieSession createKieSession() {
+    private static RuntimeManager createManager() {
     	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newEmptyBuilder()
             .addAsset(KieServices.Factory.get().getResources()
         		.newClassPathResource("exceptions/ScriptTaskException.bpmn2"), ResourceType.BPMN2)
             .get();
-        return RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment).getRuntimeEngine(null).getKieSession();
+        return RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
     }
  
 }
