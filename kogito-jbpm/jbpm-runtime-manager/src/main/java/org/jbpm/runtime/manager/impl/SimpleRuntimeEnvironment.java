@@ -32,6 +32,7 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.task.UserGroupCallback;
+import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
@@ -42,6 +43,8 @@ import org.kie.internal.runtime.manager.Mapper;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 
 import javax.persistence.EntityManagerFactory;
+import javax.swing.RepaintManager;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -109,7 +112,16 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
      * @param type type of the asset
      */
     public void addAsset(Resource resource, ResourceType type) {
-        if (resource.getSourcePath() != null && resource.getConfiguration() == null ) { 
+        /**
+         * The code below (CSV/XLS) was added because of timelines related to switchyard/fuse.
+         *  
+         * However, it is an ugly hack: As soon as is possible, the code below should be removed or refactored. 
+         * - an "addAsset(Resource, ResourceType, ResourceConfiguration)" method should be added to this implementation
+         * - or the kbuilder code should be refactored so that there are two ResourceTypes: CSV and XLS
+         * 
+         * (refactoring the kbuilder code is probably a better idea.)
+         */
+        if (resource.getSourcePath() != null ) { 
             String path = resource.getSourcePath();
           
             String typeStr = null;
@@ -120,11 +132,28 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
             } 
             
             if( typeStr != null ) { 
-                Properties prop = new Properties();
-                prop.setProperty(ResourceTypeImpl.KIE_RESOURCE_CONF_CLASS, DecisionTableConfigurationImpl.class.getName());
-                prop.setProperty(DecisionTableConfigurationImpl.DROOLS_DT_TYPE, typeStr);
-                ResourceConfiguration conf = ResourceTypeImpl.fromProperties(prop);
-                this.kbuilder.add(resource, type, conf);
+                String worksheetName = null;
+                boolean replaceConfig = true;
+                ResourceConfiguration config = resource.getConfiguration();
+                if( config != null && config instanceof DecisionTableConfiguration ) { 
+                    DecisionTableInputType realType = DecisionTableInputType.valueOf(typeStr);
+                    if( ((DecisionTableConfiguration) config).getInputType().equals(realType) ) { 
+                       replaceConfig = false;
+                    } else { 
+                        worksheetName = ((DecisionTableConfiguration) config).getWorksheetName();
+                    }
+                }
+
+                if( replaceConfig ) { 
+                    Properties prop = new Properties();
+                    prop.setProperty(ResourceTypeImpl.KIE_RESOURCE_CONF_CLASS, DecisionTableConfigurationImpl.class.getName());
+                    prop.setProperty(DecisionTableConfigurationImpl.DROOLS_DT_TYPE, typeStr);
+                    if( worksheetName != null ) { 
+                        prop.setProperty(DecisionTableConfigurationImpl.DROOLS_DT_WORKSHEET, worksheetName);
+                    }
+                    ResourceConfiguration conf = ResourceTypeImpl.fromProperties(prop);
+                    this.kbuilder.add(resource, type, conf);
+                }
             } else {
                 this.kbuilder.add(resource, type);
             }
