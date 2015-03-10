@@ -363,6 +363,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                 	taskEventSupport.fireAfterTaskDelegated(task, context);
                     // This is a really bad hack to execut the correct behavior
                     ((InternalTaskData) task.getTaskData()).setStatus(Status.Reserved);
+                    break;
                 }
                 case Exit: {
                 	taskEventSupport.fireAfterTaskExited(task, context);
