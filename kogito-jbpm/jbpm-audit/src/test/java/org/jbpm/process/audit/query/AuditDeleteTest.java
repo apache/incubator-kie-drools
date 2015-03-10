@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -315,6 +316,19 @@ public class AuditDeleteTest extends JPAAuditLogService {
     }
     
     @Test
+    public void testDeleteProcessInstanceInfoLogByTimestamp() { 
+        int p = 0;        
+        Date endDate = pilTestData[p++].getEnd();
+        
+        List<org.kie.api.runtime.manager.audit.ProcessInstanceLog> logs = this.processInstanceLogQuery().endDate(endDate).buildQuery().getResultList();
+        assertEquals(1, logs.size());
+        
+        ProcessInstanceLogDeleteBuilder updateBuilder = this.processInstanceLogDelete().endDate(logs.get(0).getEnd());
+        int result = updateBuilder.build().execute();
+        assertEquals(1, result);
+    }
+    
+    @Test
     public void testDeleteProcessInstanceInfoLogByProcessIdAndDate() { 
         int p = 0;     
         String processId = pilTestData[p].getProcessId();
@@ -394,6 +408,20 @@ public class AuditDeleteTest extends JPAAuditLogService {
     }
     
     @Test
+    public void testDeleteNodeInstanceInfoLogByTimestamp() { 
+        int p = 0;
+        Date date = nilTestData[p++].getDate();   
+        
+        List<org.kie.api.runtime.manager.audit.NodeInstanceLog> logs = this.nodeInstanceLogQuery().date(date).buildQuery().getResultList();
+        assertEquals(2, logs.size());
+        
+        
+        NodeInstanceLogDeleteBuilder updateBuilder = this.nodeInstanceLogDelete().date(logs.get(0).getDate());
+        int result = updateBuilder.build().execute();
+        assertEquals(2, result);
+    }
+    
+    @Test
     public void testDeleteVarInstanceInfoLogByProcessId() { 
         int p = 0;
         String processId = vilTestData[p++].getProcessId();     
@@ -421,5 +449,18 @@ public class AuditDeleteTest extends JPAAuditLogService {
         VariableInstanceLogDeleteBuilder updateBuilder = this.variableInstanceLogDelete().dateRangeEnd(endDate);
         int result = updateBuilder.build().execute();
         assertEquals(5, result);
+    }
+    
+    @Test
+    public void testDeleteVarInstanceInfoLogByTimestamp() { 
+        int p = 0;
+        Date date = vilTestData[p++].getDate();     
+        
+        List<org.kie.api.runtime.manager.audit.VariableInstanceLog> vars = this.variableInstanceLogQuery().date(date).buildQuery().getResultList();
+        assertEquals(2, vars.size());
+        
+        VariableInstanceLogDeleteBuilder updateBuilder = this.variableInstanceLogDelete().date(vars.get(0).getDate());
+        int result = updateBuilder.build().execute();
+        assertEquals(2, result);
     }
 }

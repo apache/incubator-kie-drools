@@ -187,5 +187,16 @@ public class AuditTaskDeleteTest extends TaskJPAAuditService {
         data = this.auditTaskInstanceLogQuery().buildQuery().getResultList();       
         assertEquals(0, data.size());
     }
+    
+    @Test
+    public void testDeleteAuditTaskInfoLogByTimestamp() { 
+
+        List<AuditTask> tasks = this.auditTaskInstanceLogQuery().taskId(taskTestData[4].getId()).buildQuery().getResultList();
+        assertEquals(1, tasks.size());
+        
+        AuditTaskInstanceLogDeleteBuilder updateBuilder = this.auditTaskInstanceLogDelete().date(tasks.get(0).getCreatedOn());
+        int result = updateBuilder.build().execute();
+        assertEquals(1, result);
+    }
       
 }

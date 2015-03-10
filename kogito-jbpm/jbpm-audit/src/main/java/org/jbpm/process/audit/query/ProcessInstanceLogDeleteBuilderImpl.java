@@ -52,7 +52,7 @@ public class ProcessInstanceLogDeleteBuilderImpl extends
 		if (checkIfNotNull(date)) {
 			return this;
 		}
-		return super.date(date);
+		return super.date(ensureDateNotTimestamp(date));
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class ProcessInstanceLogDeleteBuilderImpl extends
 		if (checkIfNotNull(rangeStart)) {
 			return this;
 		}
-		return super.dateRangeStart(rangeStart);
+		return super.dateRangeStart(ensureDateNotTimestamp(rangeStart)[0]);
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class ProcessInstanceLogDeleteBuilderImpl extends
 		if (checkIfNotNull(rangeStart)) {
 			return this;
 		}
-		return super.dateRangeEnd(rangeStart);
+		return super.dateRangeEnd(ensureDateNotTimestamp(rangeStart)[0]);
 	}
 
 	@Override
@@ -121,7 +121,7 @@ public class ProcessInstanceLogDeleteBuilderImpl extends
 		if (checkIfNotNull(date)) {
 			return this;
 		}
-		addObjectParameter(START_DATE_LIST, "start date", date);
+		addObjectParameter(START_DATE_LIST, "start date", ensureDateNotTimestamp(date));
         return this;
 	}
 
@@ -130,7 +130,7 @@ public class ProcessInstanceLogDeleteBuilderImpl extends
 		if (checkIfNotNull(rangeStart)) {
 			return this;
 		}
-		addRangeParameter(START_DATE_LIST, "start date range, start", rangeStart, true );
+		addRangeParameter(START_DATE_LIST, "start date range, start", ensureDateNotTimestamp(rangeStart)[0], true );
         return this;
 	}
 
@@ -139,7 +139,7 @@ public class ProcessInstanceLogDeleteBuilderImpl extends
 		if (checkIfNotNull(rangeEnd)) {
 			return this;
 		}
-		addRangeParameter(START_DATE_LIST, "start date range, end", rangeEnd, false );
+		addRangeParameter(START_DATE_LIST, "start date range, end", ensureDateNotTimestamp(rangeEnd)[0], false );
         return this;
 	}
 
@@ -148,7 +148,7 @@ public class ProcessInstanceLogDeleteBuilderImpl extends
 		if (checkIfNotNull(date)) {
 			return this;
 		}
-		addObjectParameter(END_DATE_LIST, "end date", date );
+		addObjectParameter(END_DATE_LIST, "end date", ensureDateNotTimestamp(date) );
         return this;
 	}
 
@@ -157,7 +157,7 @@ public class ProcessInstanceLogDeleteBuilderImpl extends
 		if (checkIfNotNull(rangeStart)) {
 			return this;
 		}
-		addRangeParameter(END_DATE_LIST, "end date range, start", rangeStart, true);
+		addRangeParameter(END_DATE_LIST, "end date range, start", ensureDateNotTimestamp(rangeStart)[0], true);
         return this;
 	}
 
@@ -166,7 +166,7 @@ public class ProcessInstanceLogDeleteBuilderImpl extends
 		if (checkIfNotNull(rangeEnd)) {
 			return this;
 		}
-		addRangeParameter(END_DATE_LIST, "end date range, end", rangeEnd, false);
+		addRangeParameter(END_DATE_LIST, "end date range, end", ensureDateNotTimestamp(rangeEnd)[0], false);
         return this;
 	}
 	

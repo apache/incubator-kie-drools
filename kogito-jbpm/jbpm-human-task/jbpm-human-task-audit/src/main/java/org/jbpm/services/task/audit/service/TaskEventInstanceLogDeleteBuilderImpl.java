@@ -49,7 +49,7 @@ public class TaskEventInstanceLogDeleteBuilderImpl extends AbstractAuditDeleteBu
 		if (checkIfNotNull(date)) {
 			return this;
 		}
-		addObjectParameter(TASK_EVENT_DATE_ID, "created on date", date);
+		addObjectParameter(TASK_EVENT_DATE_ID, "created on date", ensureDateNotTimestamp(date));
 		return this;
 	}
 
@@ -58,7 +58,7 @@ public class TaskEventInstanceLogDeleteBuilderImpl extends AbstractAuditDeleteBu
 		if (checkIfNotNull(rangeStart)) {
 			return this;
 		}
-		addRangeParameter(TASK_EVENT_DATE_ID, "created on date range end", rangeStart, true);
+		addRangeParameter(TASK_EVENT_DATE_ID, "created on date range end", ensureDateNotTimestamp(rangeStart)[0], true);
 		return this;
 	}
 
@@ -67,7 +67,7 @@ public class TaskEventInstanceLogDeleteBuilderImpl extends AbstractAuditDeleteBu
 		if (checkIfNotNull(rangeStart)) {
 			return this;
 		}
-		addRangeParameter(TASK_EVENT_DATE_ID, "created on date range end", rangeStart, false);
+		addRangeParameter(TASK_EVENT_DATE_ID, "created on date range end", ensureDateNotTimestamp(rangeStart)[0], false);
         return this;
 	}
 

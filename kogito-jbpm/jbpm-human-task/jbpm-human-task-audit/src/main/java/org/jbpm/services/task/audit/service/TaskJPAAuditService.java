@@ -22,6 +22,7 @@ public class TaskJPAAuditService extends JPAAuditLogService {
         addCriteria(CREATED_ON_ID, "l.createdOn", Date.class);
         addCriteria(DEPLOYMENT_ID_LIST, "l.deploymentId", String.class);
         addCriteria(TASK_EVENT_DATE_ID, "l.logTime", Date.class);
+        addCriteria(TASK_ID_LIST, "l.taskId", Long.class);
         addCriteria(TASK_NAME_LIST, "l.name", String.class);
         addCriteria(TASK_DESCRIPTION_LIST, "l.description", String.class);
         addCriteria(TASK_AUDIT_STATUS_LIST, "l.status", String.class);

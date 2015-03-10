@@ -50,7 +50,7 @@ public class NodeInstanceLogDeleteBuilderImpl extends
 		if (checkIfNotNull(date)) {
 			return this;
 		}
-		return super.date(date);
+		return super.date(ensureDateNotTimestamp(date));
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class NodeInstanceLogDeleteBuilderImpl extends
 		if (checkIfNotNull(rangeStart)) {
 			return this;
 		}
-		return super.dateRangeStart(rangeStart);
+		return super.dateRangeStart(ensureDateNotTimestamp(rangeStart)[0]);
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class NodeInstanceLogDeleteBuilderImpl extends
 		if (checkIfNotNull(rangeStart)) {
 			return this;
 		}
-		return super.dateRangeEnd(rangeStart);
+		return super.dateRangeEnd(ensureDateNotTimestamp(rangeStart)[0]);
 	}
 
 	@Override

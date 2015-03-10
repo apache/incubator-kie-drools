@@ -50,7 +50,7 @@ public class AuditTaskInstanceLogDeleteBuilderImpl extends AbstractAuditDeleteBu
 		if (checkIfNotNull(date)) {
 			return this;
 		}
-		addObjectParameter(CREATED_ON_ID, "created on date", date);
+		addObjectParameter(CREATED_ON_ID, "created on date", ensureDateNotTimestamp(date));
 		return this;
 	}
 
@@ -59,7 +59,7 @@ public class AuditTaskInstanceLogDeleteBuilderImpl extends AbstractAuditDeleteBu
 		if (checkIfNotNull(rangeStart)) {
 			return this;
 		}
-		addRangeParameter(CREATED_ON_ID, "created on date range end", rangeStart, true);
+		addRangeParameter(CREATED_ON_ID, "created on date range end", ensureDateNotTimestamp(rangeStart)[0], true);
 		return this;
 	}
 
@@ -68,7 +68,7 @@ public class AuditTaskInstanceLogDeleteBuilderImpl extends AbstractAuditDeleteBu
 		if (checkIfNotNull(rangeStart)) {
 			return this;
 		}
-		addRangeParameter(CREATED_ON_ID, "created on date range end", rangeStart, false);
+		addRangeParameter(CREATED_ON_ID, "created on date range end", ensureDateNotTimestamp(rangeStart)[0], false);
         return this;
 	}
 
