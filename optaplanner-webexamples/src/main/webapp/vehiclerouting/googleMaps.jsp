@@ -1,9 +1,24 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%--
+  ~ Copyright 2015 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  --%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>OptaPlanner webexamples: vehicle routing with leaflet.js</title>
-  <link href="<%=application.getContextPath()%>/website/leaflet/leaflet.css" rel="stylesheet">
+  <title>OptaPlanner webexamples: vehicle routing with google maps</title>
   <link href="<%=application.getContextPath()%>/vehiclerouting/vehicleRouting.css" rel="stylesheet">
   <jsp:include page="/common/head.jsp"/>
 </head>
@@ -25,25 +40,30 @@
         <button id="solveButton" class="btn btn-default" type="submit" onclick="solve()">Solve this planning problem</button>
         <button id="terminateEarlyButton" class="btn" type="submit" onclick="terminateEarly()" disabled>Terminate early</button>
       </div>
-      <div id="map" style="height: 600px; margin-top: 10px"></div>
+      <div id="map-canvas" style="height: 600px; width: 100%; margin-top: 10px"></div>
     </div>
   </div>
 </div>
 
 <jsp:include page="/common/foot.jsp"/>
-<script src="<%=application.getContextPath()%>/website/leaflet/leaflet.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js"></script>
 <script type="text/javascript">
   var map;
-  var vehicleRouteLayerGroup;
+  var vehicleRouteLines;
   var intervalTimer;
 
-  initMap = function() {
-    // TODO Hardcoded to show Belgium entirely
-    map = L.map('map').setView([50.5, 4.3515499], 8);
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-  };
+  function initMap() {
+    var mapCanvas = document.getElementById('map-canvas');
+    var mapOptions = {
+      // TODO Hardcoded to show Belgium entirely
+      center: new google.maps.LatLng(50.5, 4.3515499),
+      zoom: 8,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    map = new google.maps.Map(mapCanvas, mapOptions);
+    loadSolution();
+    updateSolution();
+  }
 
   ajaxError = function(jqXHR, textStatus, errorThrown) {
     console.log("Error: " + errorThrown);
@@ -59,13 +79,16 @@
       dataType : "json",
       success: function(solution) {
         $.each(solution.customerList, function(index, customer) {
-          var customerIcon = L.divIcon({
-            iconSize: new L.Point(20, 20),
-            className: "vehicleRoutingCustomerMarker",
-            html: "<span>" + customer.demand + "</span>"
+          var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(customer.latitude, customer.longitude),
+            title: customer.locationName + ": Deliver " + customer.demand + " items.",
+            map: map
           });
-          L.marker([customer.latitude, customer.longitude], {icon: customerIcon}).addTo(map)
-              .bindPopup(customer.locationName + "</br>Deliver " + customer.demand + " items.");
+          google.maps.event.addListener(marker, 'click', function() {
+            new google.maps.InfoWindow({
+              content: customer.locationName + "</br>Deliver " + customer.demand + " items."
+            }).open(map,marker);
+          })
         });
       }, error : function(jqXHR, textStatus, errorThrown) {ajaxError(jqXHR, textStatus, errorThrown)}
     });
@@ -77,19 +100,28 @@
       type: "GET",
       dataType : "json",
       success: function(solution) {
-        if (vehicleRouteLayerGroup != undefined) {
-          map.removeLayer(vehicleRouteLayerGroup);
+        if (vehicleRouteLines != undefined) {
+          for (var i = 0; i < vehicleRouteLines.length; i++) {
+            vehicleRouteLines[i].setMap(null);
+          }
         }
-        var vehicleRouteLines = [];
+        vehicleRouteLines = [];
         $.each(solution.vehicleRouteList, function(index, vehicleRoute) {
-          var locations = [[vehicleRoute.depotLatitude, vehicleRoute.depotLongitude]];
+          var locations = [new google.maps.LatLng(vehicleRoute.depotLatitude, vehicleRoute.depotLongitude)];
           $.each(vehicleRoute.customerList, function(index, customer) {
-            locations.push([customer.latitude, customer.longitude]);
+            locations.push(new google.maps.LatLng(customer.latitude, customer.longitude));
           });
-          locations.push([vehicleRoute.depotLatitude, vehicleRoute.depotLongitude]);
-          vehicleRouteLines.push(L.polyline(locations, {color: vehicleRoute.hexColor}));
+          locations.push(new google.maps.LatLng(vehicleRoute.depotLatitude, vehicleRoute.depotLongitude));
+          var line = new google.maps.Polyline({
+            path: locations,
+            geodesic: true,
+            strokeColor: vehicleRoute.hexColor,
+            strokeOpacity: 0.8,
+            strokeWeight: 4
+          });
+          line.setMap(map);
+          vehicleRouteLines.push(line);
         });
-        vehicleRouteLayerGroup = L.layerGroup(vehicleRouteLines).addTo(map);
         $('#scoreValue').text(solution.feasible ? solution.distance : "Not solved");
       }, error : function(jqXHR, textStatus, errorThrown) {ajaxError(jqXHR, textStatus, errorThrown)}
     });
@@ -128,9 +160,7 @@
     });
   };
 
-  initMap();
-  loadSolution();
-  updateSolution();
+  google.maps.event.addDomListener(window, 'load', initMap);
 </script>
 </body>
 </html>
