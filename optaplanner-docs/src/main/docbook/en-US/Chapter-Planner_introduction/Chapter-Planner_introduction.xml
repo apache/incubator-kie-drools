@@ -179,8 +179,8 @@
 
       <para>These constraints define the <emphasis>score calculation</emphasis> (AKA <emphasis>fitness
       function</emphasis>) of a planning problem. Each solution of a planning problem can be graded with a score.
-      <emphasis role="bold">With OptaPlanner, score constraints are written in an Object Oriented language, such as
-      Java code or Drools rules</emphasis>. Such code is easy, flexible and scalable.</para>
+      <emphasis role="bold">With OptaPlanner, score constraints are written in an Object Oriented language, such as Java
+      code or Drools rules</emphasis>. Such code is easy, flexible and scalable.</para>
     </section>
 
     <section xml:id="aPlanningProblemHasAHugeSearchSpace">
@@ -235,14 +235,10 @@
 
       <para>To try it now:</para>
 
-      <itemizedlist>
+      <orderedlist>
         <listitem>
           <para>Download a release zip of OptaPlanner from <link xlink:href="http://www.optaplanner.org">the OptaPlanner
-          website</link>.</para>
-        </listitem>
-
-        <listitem>
-          <para>Unzip it.</para>
+          website</link> and unzip it.</para>
         </listitem>
 
         <listitem>
@@ -258,7 +254,7 @@ $ ./runExamples.sh</programlisting>
           <programlisting>$ cd examples
 $ runExamples.bat</programlisting>
         </listitem>
-      </itemizedlist>
+      </orderedlist>
 
       <mediaobject>
         <imageobject>
@@ -266,7 +262,7 @@ $ runExamples.bat</programlisting>
         </imageobject>
       </mediaobject>
 
-      <para>The Examples GUI application will open. Just pick an example:</para>
+      <para>The Examples GUI application will open. Pick an example to try it out:</para>
 
       <mediaobject>
         <imageobject>
@@ -278,6 +274,46 @@ $ runExamples.bat</programlisting>
         <para>OptaPlanner itself has no GUI dependencies. It runs just as well on a server or a mobile JVM as it does on
         the desktop.</para>
       </note>
+
+      <para>Besides the GUI examples, there are also a set of webexamples to try out:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Download a JEE application server, such as JBoss EAP or <link
+          xlink:href="http://www.wildfly.org/">WildFly</link> and unzip it.</para>
+        </listitem>
+
+        <listitem>
+          <para>Download a release zip of OptaPlanner from <link xlink:href="http://www.optaplanner.org">the OptaPlanner
+          website</link> and unzip it.</para>
+        </listitem>
+
+        <listitem>
+          <para>Open the directory <filename>webexamples</filename> and deploy the
+          <literal>optaplanner-webexamples-*.war</literal> file on the JEE application server.</para>
+        </listitem>
+
+        <listitem>
+          <para>Surf to <link
+          xlink:href="http://localhost:8080/optaplanner-webexamples-*/">http://localhost:8080/optaplanner-webexamples-*/</link>
+          (replace the <literal>*</literal> with the actual version).</para>
+        </listitem>
+      </orderedlist>
+
+      <note>
+        <para>The webexamples (but not OptaPlanner itself) require several JEE API's (such as Servlet, JAX-RS and CDI)
+        to run. To successfully deploy <literal>optaplanner-webexamples-*.war</literal> on a servlet container (such as
+        Jetty or Tomcat), instead of on a real JEE application server (such as WildFly), add the missing implementation
+        libraries (for example RestEasy and Weld) in the war manually.</para>
+      </note>
+
+      <para>Pick an example to try it out, such as the Vehicle Routing example:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Planner_introduction/plannerWebexamplesScreenshot.png"/>
+        </imageobject>
+      </mediaobject>
     </section>
 
     <section xml:id="runTheExamplesInAnIDE">

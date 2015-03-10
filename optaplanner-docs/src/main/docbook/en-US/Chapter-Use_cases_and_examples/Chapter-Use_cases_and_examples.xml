@@ -1492,7 +1492,13 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
         API</link> (web service). There are also several technologies to render it, such as <link
         xlink:href="http://leafletjs.com">Leaflet</link> and <link
         xlink:href="https://developers.google.com/maps/">Google Maps for developers</link>: the
-        <literal>optaplanner-webexamples-*.war</literal> has an example which demonstrates such rendering.</para>
+        <literal>optaplanner-webexamples-*.war</literal> has an example which demonstrates such rendering:</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/vehicleRoutingLeafletAndGoogleMaps.png"/>
+          </imageobject>
+        </mediaobject>
 
         <para>Take special care that the road costs between 2 points use the same optimization criteria as the one used
         in Planner. For example, GraphHopper etc will by default return the fastest route, not the shortest route. Don't
