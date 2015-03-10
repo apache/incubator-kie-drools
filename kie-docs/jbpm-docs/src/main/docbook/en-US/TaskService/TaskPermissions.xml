@@ -15,7 +15,10 @@
     role for that operation. Furthermore, a user will not be able to view or retrieve tasks that the
     user is not involved with, especially if this is via the jBPM Console or KIE Workbench
     applications. </para>
-      
+     
+       <para>User 'Administrator' and group 'Administrators' are automatically added to each 
+       Human Task.</para>
+
       <section>
         <title>Task Permissions Matrix</title>
         
