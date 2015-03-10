@@ -19,6 +19,6 @@ public class InvalidClockTypeException
         extends Exception {
 
     public InvalidClockTypeException() {
-        super("KSession does not use pseudo clock. Pseudo clock is required giwhen the test scenario edits time.");
+        super("KSession does not use pseudo clock. Pseudo clock is required when the test scenario edits time.");
     }
 }
