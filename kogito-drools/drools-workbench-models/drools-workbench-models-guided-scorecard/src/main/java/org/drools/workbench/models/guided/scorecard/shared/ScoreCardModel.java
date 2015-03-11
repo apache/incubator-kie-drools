@@ -213,20 +213,33 @@ public class ScoreCardModel implements HasImports,
         int result;
         long temp;
         result = name != null ? name.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( reasonCodesAlgorithm != null ? reasonCodesAlgorithm.hashCode() : 0 );
+        result = ~~result;
         temp = Double.doubleToLongBits( baselineScore );
         result = 31 * result + (int) ( temp ^ ( temp >>> 32 ) );
+        result = ~~result;
         temp = Double.doubleToLongBits( initialScore );
         result = 31 * result + (int) ( temp ^ ( temp >>> 32 ) );
+        result = ~~result;
         result = 31 * result + ( useReasonCodes ? 1 : 0 );
+        result = ~~result;
         result = 31 * result + ( factName != null ? factName.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( fieldName != null ? fieldName.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( reasonCodeField != null ? reasonCodeField.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( characteristics != null ? characteristics.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( packageName != null ? packageName.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( imports != null ? imports.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( agendaGroup != null ? agendaGroup.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( ruleFlowGroup != null ? ruleFlowGroup.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 

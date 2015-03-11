@@ -45,7 +45,9 @@ public class FromEntryPointFactPattern extends FromCompositeFactPattern {
     @Override
     public int hashCode() {
         int result = super.hashCode();
+        result = ~~result;
         result = 31 * result + (entryPointName != null ? entryPointName.hashCode() : 0);
+        result = ~~result;
         return result;
     }
 }

@@ -64,34 +64,27 @@ public class ActionUpdateNodeImpl extends BaseNodeImpl implements ActionUpdateNo
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
-            return true;
-        }
-        if ( !( o instanceof ActionUpdateNodeImpl ) ) {
-            return false;
-        }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ActionUpdateNodeImpl)) return false;
 
         ActionUpdateNodeImpl nodes = (ActionUpdateNodeImpl) o;
 
-        if ( isModify != nodes.isModify ) {
-            return false;
-        }
-        if ( !boundNode.equals( nodes.boundNode ) ) {
-            return false;
-        }
-        if ( !fieldValues.equals( nodes.fieldValues ) ) {
-            return false;
-        }
+        if (isModify != nodes.isModify) return false;
+        if (boundNode != null ? !boundNode.equals(nodes.boundNode) : nodes.boundNode != null) return false;
+        if (fieldValues != null ? !fieldValues.equals(nodes.fieldValues) : nodes.fieldValues != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = boundNode.hashCode();
-        result = 31 * result + ( isModify ? 1 : 0 );
-        result = 31 * result + fieldValues.hashCode();
+        int result = boundNode != null ? boundNode.hashCode() : 0;
+        result = ~~result;
+        result = 31 * result + (isModify ? 1 : 0);
+        result = ~~result;
+        result = 31 * result + (fieldValues != null ? fieldValues.hashCode() : 0);
+        result = ~~result;
         return result;
     }
 }

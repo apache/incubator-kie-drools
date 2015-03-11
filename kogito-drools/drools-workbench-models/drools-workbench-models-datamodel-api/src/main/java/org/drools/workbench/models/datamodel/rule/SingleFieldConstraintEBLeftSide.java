@@ -118,7 +118,9 @@ public class SingleFieldConstraintEBLeftSide extends SingleFieldConstraint {
     @Override
     public int hashCode() {
         int result = super.hashCode();
+        result = ~~result;
         result = 31 * result + (expLeftSide != null ? expLeftSide.hashCode() : 0);
+        result = ~~result;
         return result;
     }
 }

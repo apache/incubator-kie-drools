@@ -114,7 +114,9 @@ public class RuleAttribute {
     @Override
     public int hashCode() {
         int result = attributeName != null ? attributeName.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + (value != null ? value.hashCode() : 0);
+        result = ~~result;
         return result;
     }
 }

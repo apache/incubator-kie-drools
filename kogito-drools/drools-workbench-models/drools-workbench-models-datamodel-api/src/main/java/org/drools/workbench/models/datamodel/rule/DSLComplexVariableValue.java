@@ -54,6 +54,10 @@ public class DSLComplexVariableValue extends DSLVariableValue {
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        int result = super.hashCode();
+        result = ~~result;
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = ~~result;
+        return result;
     }
 }

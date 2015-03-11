@@ -115,10 +115,15 @@ public abstract class ExpressionPart
     @Override
     public int hashCode() {
         int result = prev != null ? prev.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (classType != null ? classType.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (genericType != null ? genericType.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (parametricType != null ? parametricType.hashCode() : 0);
+        result = ~~result;
         return result;
     }
 }

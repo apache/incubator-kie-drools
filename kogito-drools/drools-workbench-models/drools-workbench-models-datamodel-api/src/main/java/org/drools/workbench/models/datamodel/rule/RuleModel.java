@@ -873,15 +873,25 @@ public class RuleModel implements HasImports,
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + (parentName != null ? parentName.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (modelVersion != null ? modelVersion.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (attributes != null ? Arrays.hashCode(attributes) : 0);
+        result = ~~result;
         result = 31 * result + (metadataList != null ? Arrays.hashCode(metadataList) : 0);
+        result = ~~result;
         result = 31 * result + (lhs != null ? Arrays.hashCode(lhs) : 0);
+        result = ~~result;
         result = 31 * result + (rhs != null ? Arrays.hashCode(rhs) : 0);
+        result = ~~result;
         result = 31 * result + (imports != null ? imports.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (packageName != null ? packageName.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (isNegated ? 1 : 0);
+        result = ~~result;
         return result;
     }
 }

@@ -129,7 +129,9 @@ public class CompositeFactPattern
     @Override
     public int hashCode() {
         int result = type != null ? type.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + (patterns != null ? Arrays.hashCode(patterns) : 0);
+        result = ~~result;
         return result;
     }
 }

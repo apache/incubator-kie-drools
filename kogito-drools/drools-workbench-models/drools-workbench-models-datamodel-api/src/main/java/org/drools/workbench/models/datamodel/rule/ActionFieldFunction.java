@@ -44,7 +44,8 @@ public class ActionFieldFunction extends ActionFieldValue {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof ActionFieldFunction)) return false;
+        if (!super.equals(o)) return false;
 
         ActionFieldFunction that = (ActionFieldFunction) o;
 
@@ -55,6 +56,10 @@ public class ActionFieldFunction extends ActionFieldValue {
 
     @Override
     public int hashCode() {
-        return method != null ? method.hashCode() : 0;
+        int result = super.hashCode();
+        result = ~~result;
+        result = 31 * result + (method != null ? method.hashCode() : 0);
+        result = ~~result;
+        return result;
     }
 }

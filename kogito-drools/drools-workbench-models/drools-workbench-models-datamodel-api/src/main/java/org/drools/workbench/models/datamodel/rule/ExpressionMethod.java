@@ -104,6 +104,10 @@ public class ExpressionMethod extends ExpressionPart {
 
     @Override
     public int hashCode() {
-        return params != null ? params.hashCode() : 0;
+        int result = super.hashCode();
+        result = ~~result;
+        result = 31 * result + (params != null ? params.hashCode() : 0);
+        result = ~~result;
+        return result;
     }
 }
