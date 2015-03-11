@@ -75,8 +75,11 @@ public class ActionWorkItemFieldValue extends ActionFieldValue {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (workItemName != null ? workItemName.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (workItemParameterName != null ? workItemParameterName.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (workItemParameterClassName != null ? workItemParameterClassName.hashCode() : 0);
+        result = ~~result;
         return result;
     }
 }

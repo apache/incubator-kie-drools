@@ -72,8 +72,11 @@ public class ActionInsertFact extends ActionFieldList {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (factType != null ? factType.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (boundName != null ? boundName.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (isBound ? 1 : 0);
+        result = ~~result;
         return result;
     }
 }

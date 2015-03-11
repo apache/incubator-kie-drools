@@ -64,7 +64,9 @@ public class FromCompositeFactPattern implements IFactPattern {
     @Override
     public int hashCode() {
         int result = factPattern != null ? factPattern.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + (expression != null ? expression.hashCode() : 0);
+        result = ~~result;
         return result;
     }
 }

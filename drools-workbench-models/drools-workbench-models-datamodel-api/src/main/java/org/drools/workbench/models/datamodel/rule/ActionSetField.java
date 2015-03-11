@@ -56,7 +56,9 @@ public class ActionSetField extends ActionFieldList {
     @Override
     public int hashCode() {
         int result = super.hashCode();
+        result = ~~result;
         result = 31 * result + (variable != null ? variable.hashCode() : 0);
+        result = ~~result;
         return result;
     }
 }

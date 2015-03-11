@@ -289,8 +289,11 @@ public class DSLSentence
     @Override
     public int hashCode() {
         int result = sentence != null ? sentence.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( definition != null ? definition.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( values != null ? values.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }
