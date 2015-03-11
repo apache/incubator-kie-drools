@@ -76,6 +76,12 @@
     to do more business with less resources. This is known as <emphasis>Constraint Satisfaction Programming</emphasis>
     (which is part of the <emphasis>Operations Research</emphasis> discipline).</para>
 
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Planner_introduction/whatIsAPlanningProblem.png"/>
+      </imageobject>
+    </mediaobject>
+
     <para>OptaPlanner helps normal Java<superscript>TM</superscript> programmers solve constraint satisfaction problems
     efficiently. Under the hood, it combines optimization heuristics and metaheuristics with very efficient score
     calculation.</para>
