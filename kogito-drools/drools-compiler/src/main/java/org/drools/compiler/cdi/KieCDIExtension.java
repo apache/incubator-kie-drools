@@ -358,7 +358,7 @@ public class KieCDIExtension
             kBaseModel = kProject.getKieBaseModel( kBaseQName );   
         }        
         if ( kBaseModel == null ) {
-            log.error( "Annotation @KBase({}) found, but no KieBaseModel exist.\nEither the required kproject.xml does not exist, was corrupted, or missing the KieBase entry",
+            log.error( "Annotation @KBase({}) found, but no KieBaseModel exists.\nEither the required kmodule.xml does not exist, is corrupted, or is missing the KieBase entry",
                        kBaseQName );
             return;
         }
@@ -412,7 +412,7 @@ public class KieCDIExtension
             kSessionModel =  kProject.getKieSessionModel(kSessionName);
         }         
         if ( kSessionModel == null ) {
-            log.error( "Annotation @KSession({}) found, but no KieSessionModel exist.\nEither the required kproject.xml does not exist, was corrupted, or missing the KieBase entry",
+            log.error( "Annotation @KSession({}) found, but no KieSessionModel exists.\nEither the required kmodule.xml does not exist, is corrupted, or is missing the KieBase entry",
                        kSessionName );
             return;
         }
