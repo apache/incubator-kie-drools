@@ -17,6 +17,7 @@ import org.kie.internal.jaxb.StringKeyObjectValueMapXmlAdapter;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
+@Deprecated // see org.jbpm.query.jpa.data.QueryWhere and org.jbpm.query.jpa.data.QueryCriteria
 public class QueryParameters {
 
     @XmlTransient
