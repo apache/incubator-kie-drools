@@ -32,13 +32,10 @@ public class TimerServiceRegistry {
     public static final String TIMER_SERVICE_SUFFIX = "-timerServiceId";
     private ConcurrentHashMap<String, TimerService> registeredServices = new ConcurrentHashMap<String, TimerService>();
     
-    private static TimerServiceRegistry instance;
+    private static TimerServiceRegistry instance = new TimerServiceRegistry();
     
     public static TimerServiceRegistry getInstance() {
-        if (instance == null) {
-            instance = new TimerServiceRegistry();
-        }
-        
+
         return instance;
     }
     
