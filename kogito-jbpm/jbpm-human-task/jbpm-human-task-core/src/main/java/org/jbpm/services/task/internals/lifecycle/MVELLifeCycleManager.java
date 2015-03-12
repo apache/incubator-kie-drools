@@ -359,10 +359,10 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                     taskEventSupport.fireAfterTaskCompleted(task, context);
                     break;
                 }
-                case Delegate: {
-                	taskEventSupport.fireAfterTaskDelegated(task, context);
+                case Delegate: {                	
                     // This is a really bad hack to execut the correct behavior
                     ((InternalTaskData) task.getTaskData()).setStatus(Status.Reserved);
+                    taskEventSupport.fireAfterTaskDelegated(task, context);
                     break;
                 }
                 case Exit: {
