@@ -38,6 +38,7 @@
               com.thoughtworks.xstream;resolution:=optional,
               javax.enterprise.*;resolution:=optional,
               javax.inject.*;resolution:=optional,
+              javax.xml.datatype;resolution:=optional,
               javax.xml.bind;resolution:=optional,
               javax.xml.bind.annotation;resolution:=optional,
               javax.xml.bind.annotation.adapters;resolution:=optional,
@@ -123,6 +124,14 @@
       <dependency>
           <groupId>org.mvel</groupId>
           <artifactId>mvel2</artifactId>
+      </dependency>
+     
+      <!-- test --> 
+
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <scope>test</scope>
       </dependency>
   </dependencies>
 </project>
