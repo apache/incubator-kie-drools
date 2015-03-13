@@ -25,13 +25,13 @@ public class BetaDistributionNearbyRandom implements NearbyRandom {
     protected final BetaDistribution betaDistribution;
 
     public BetaDistributionNearbyRandom(double betaDistributionAlpha, double betaDistributionBeta) {
-        if (betaDistributionAlpha < 0) {
+        if (betaDistributionAlpha <= 0) {
             throw new IllegalArgumentException("The betaDistributionAlpha (" + betaDistributionAlpha
-                    + ") must be at least 0.");
+                    + ") must be positive.");
         }
-        if (betaDistributionBeta < 0) {
+        if (betaDistributionBeta <= 0) {
             throw new IllegalArgumentException("The betaDistributionBeta (" + betaDistributionBeta
-                    + ") must be at least 0.");
+                    + ") must be positive.");
         }
         betaDistribution = new BetaDistribution(betaDistributionAlpha, betaDistributionBeta);
     }
