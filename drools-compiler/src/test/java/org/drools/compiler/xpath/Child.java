@@ -1,11 +1,12 @@
 package org.drools.compiler.xpath;
 
-import java.util.ArrayList;
+import org.drools.core.phreak.ReactiveList;
+
 import java.util.List;
 
 public class Child extends Person {
 
-    private final List<Toy> toys = new ArrayList<Toy>();
+    private final List<Toy> toys = new ReactiveList<Toy>();
 
     public Child(String name, int age) {
         super(name, age);

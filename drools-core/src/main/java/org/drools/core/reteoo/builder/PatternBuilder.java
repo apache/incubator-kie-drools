@@ -25,11 +25,11 @@ import org.drools.core.common.InstanceNotEqualsConstraint;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.From;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.IntervalProviderConstraint;
 import org.drools.core.rule.InvalidPatternException;
@@ -160,7 +160,7 @@ public class PatternBuilder
             constraints.alphaConstraints.clear();
         }
     }
-
+/*
     private void buildXpathConstraints(BuildContext context, BuildUtils utils, Pattern pattern, Constraints constraints) {
         if (!constraints.xpathConstraints.isEmpty()) {
             buildTupleSource(context, utils);
@@ -185,6 +185,40 @@ public class PatternBuilder
                 declaration.setPattern( clonedPattern );
                 builder.build(context, utils, xpathConstraint.asFrom());
             }
+        }
+    }
+*/
+    private void buildXpathConstraints(BuildContext context, BuildUtils utils, Pattern pattern, Constraints constraints) {
+        if (!constraints.xpathConstraints.isEmpty()) {
+            buildTupleSource(context, utils);
+
+            List<BetaNodeFieldConstraint> xpathConstraints = context.getBetaconstraints();
+            context.setBetaconstraints(Collections.<BetaNodeFieldConstraint>emptyList());
+            buildJoinNode(context, utils);
+            context.setBetaconstraints(xpathConstraints);
+
+            context.setAlphaConstraints(null);
+            ReteooComponentBuilder builder = utils.getBuilderFor(ReactiveFromNode.class);
+            for (XpathConstraint xpathConstraint : constraints.xpathConstraints) {
+                for (XpathConstraint.XpathChunk chunk : xpathConstraint.getChunks()) {
+                    builder.build(context, utils, chunk.asFrom());
+                    context.incrementCurrentPatternOffset();
+                }
+
+                Declaration declaration = xpathConstraint.getDeclaration();
+
+                Pattern clonedPattern = new Pattern( pattern.getIndex(),
+                                                     context.getCurrentPatternOffset(),
+                                                     new ClassObjectType( xpathConstraint.getResultClass() ),
+                                                     declaration.getIdentifier(),
+                                                     declaration.isInternalFact() );
+
+                declaration.setPattern( clonedPattern );
+            }
+
+            context.setAlphaConstraints( null );
+            context.setBetaconstraints( null );
+            context.popRuleComponent();
         }
     }
 
