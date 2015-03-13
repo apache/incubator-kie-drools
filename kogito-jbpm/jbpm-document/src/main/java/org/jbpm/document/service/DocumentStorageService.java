@@ -18,11 +18,23 @@ package org.jbpm.document.service;
 import org.jbpm.document.Document;
 
 import java.io.File;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * Simple storage service definition
  */
 public interface DocumentStorageService {
+
+    /**
+     * Generates a Document instance.
+     * @param name          The document name
+     * @param size          The document size
+     * @param lastModified  The lastModified date of the document
+     * @param params    A Map<String, String> containing the params to create the document.
+     * @return
+     */
+    Document buildDocument( String name, long size, Date lastModified, Map<String, String> params );
 
     /**
      * Method to store the uploaded file on the system

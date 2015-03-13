@@ -18,12 +18,15 @@ package org.jbpm.document.marshalling;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.jbpm.document.Document;
 import org.jbpm.document.service.DocumentStorageService;
+import org.jbpm.document.service.impl.DocumentImpl;
 import org.jbpm.document.service.impl.DocumentStorageServiceImpl;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 
 import java.io.*;
+import java.util.Date;
+import java.util.Map;
 
-public class DocumentMarshallingStrategy implements ObjectMarshallingStrategy {
+public class DocumentMarshallingStrategy extends AbstractDocumentMarshallingStrategy {
 
     private DocumentStorageService documentStorageService;
 
@@ -32,8 +35,8 @@ public class DocumentMarshallingStrategy implements ObjectMarshallingStrategy {
     }
 
     @Override
-    public boolean accept(Object o) {
-        return o instanceof Document;
+    public Document buildDocument( String name, long size, Date lastModified, Map<String, String> params ) {
+        return documentStorageService.buildDocument( name, size, lastModified, params );
     }
 
     @Override
@@ -93,11 +96,11 @@ public class DocumentMarshallingStrategy implements ObjectMarshallingStrategy {
             document = (Document) Class.forName(canonicalName).newInstance();
             Document storedDoc = documentStorageService.getDocument(objectId);
             document.setIdentifier(storedDoc.getIdentifier());
-            document.setName(storedDoc.getName());
-            document.setLink(link);
-            document.setLastModified(storedDoc.getLastModified());
-            document.setSize(storedDoc.getSize());
-            document.setAttributes(storedDoc.getAttributes());
+            document.setName( storedDoc.getName() );
+            document.setLink( link );
+            document.setLastModified( storedDoc.getLastModified() );
+            document.setSize( storedDoc.getSize() );
+            document.setAttributes( storedDoc.getAttributes() );
             document.setContent(storedDoc.getContent());
         } catch (Exception e) {
             throw new RuntimeException("Cannot read document from storage service", e);

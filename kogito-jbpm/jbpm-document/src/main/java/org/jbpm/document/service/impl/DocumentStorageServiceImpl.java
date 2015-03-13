@@ -15,8 +15,8 @@
  */
 package org.jbpm.document.service.impl;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jbpm.document.Document;
 import org.jbpm.document.service.DocumentStorageService;
@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -44,26 +45,29 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
     private String storagePath = ".docs";
 
     @Override
+    public Document buildDocument( String name, long size, Date lastModified, Map<String, String> params ) {
+        String identifier = generateUniquePath();
+
+        String appURL = params.get("app.url");
+
+        if (appURL == null) appURL = "";
+
+        if (!appURL.isEmpty() && !appURL.endsWith("/")) appURL += "/";
+
+        // Generating a default download link, don't use this donwloader in real environments use it as an example
+        String link = appURL + "Controller?_fb=fdch&_fp=download&content=" + identifier;
+
+        return new DocumentImpl( identifier, name, size, lastModified, link );
+    }
+
+    @Override
     public Document saveDocument(Document document, byte[] content) {
-        if (document == null || !StringUtils.isEmpty(document.getIdentifier())) return document;
-        String destinationPath = generateUniquePath(document.getName());
-        File destination = new File(destinationPath);
+        if (document == null || StringUtils.isEmpty(document.getIdentifier())) return null;
+
+        File destination = getFileByPath( document.getIdentifier() + "/" + document.getName() );
 
         try {
             FileUtils.writeByteArrayToFile(destination, content);
-
-            document.setIdentifier(Base64.encodeBase64String(destinationPath.getBytes()));
-
-            String appURL = document.getAttribute("app.url");
-
-            if (appURL == null) appURL = "";
-
-            if (!appURL.isEmpty() && !appURL.endsWith("/")) appURL += "/";
-
-            // Generating a default download link, don't use this donwloader in real environments use it as an example
-            String link = appURL + "Controller?_fb=fdch&_fp=download&content=" + document.getIdentifier();
-            document.setLink(link);
-
         } catch (IOException e) {
             log.error("Error writing file {}: {}", document.getName(), e);
         }
@@ -73,12 +77,13 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
 
     @Override
     public Document getDocument(String id) {
-        File file = new File(new String(Base64.decodeBase64(id)));
+        File file = getFileByPath( id );
 
-        if (file.exists()) {
+        if (file.exists() && !file.isFile() && !ArrayUtils.isEmpty(file.listFiles())) {
             try {
-                Document doc = new DocumentImpl(id, file.getName(), file.length(), new Date(file.lastModified()));
-                doc.setContent(FileUtils.readFileToByteArray(file));
+                File destination = file.listFiles()[0];
+                Document doc = new DocumentImpl(id, destination.getName(), destination.length(), new Date(destination.lastModified()));
+                doc.setContent(FileUtils.readFileToByteArray(destination));
                 return doc;
             } catch (IOException e) {
                 log.error("Error loading document '{}': {}", id, e);
@@ -97,14 +102,16 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
     @Override
     public boolean deleteDocument(Document doc) {
         if (doc != null) {
-            return deleteFile(getDocumentContent(doc));
+            File rootDoc = getDocumentContent(doc);
+            if (!ArrayUtils.isEmpty( rootDoc.listFiles() )) return deleteFile( rootDoc.listFiles()[0] );
+            return deleteFile(rootDoc);
         }
         return true;
     }
 
     public File getDocumentContent(Document doc) {
         if (doc != null) {
-            return new File(doc.getIdentifier());
+            return getFileByPath( doc.getIdentifier() );
         }
         return null;
     }
@@ -134,15 +141,22 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
 
     /**
      * Generates a random path to store the file to avoid overwritting files with the same name
-     * @param fileName The fileName that is going to be stored
-     * @return A String
+     * @return A String containging the path where the document is going to be stored.
      */
-    protected String generateUniquePath(String fileName) {
-        String destinationPath = storagePath + "/";
+    protected String generateUniquePath() {
+        File parent;
+        String destinationPath;
+        do {
+            destinationPath = UUID.randomUUID().toString();
 
-        destinationPath += UUID.randomUUID().toString();
-        if (!destinationPath.endsWith("/")) destinationPath += "/";
+            parent = getFileByPath( destinationPath );
 
-        return destinationPath + fileName;
+        } while ( parent.exists() );
+
+        return destinationPath;
+    }
+
+    protected File getFileByPath( String path ) {
+        return new File( storagePath + "/" + path );
     }
 }

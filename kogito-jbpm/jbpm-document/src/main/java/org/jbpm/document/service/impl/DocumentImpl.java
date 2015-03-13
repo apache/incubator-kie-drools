@@ -1,15 +1,17 @@
 package org.jbpm.document.service.impl;
 
 import org.jbpm.document.Document;
+
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DocumentImpl implements Document {
-	
-    private String identifier;
+
+    private String identifier = "";
     private String name;
-    private String link;
+    private String link = "";
     private long size;
     private Date lastModified;
     private byte[] content;
@@ -30,6 +32,15 @@ public class DocumentImpl implements Document {
         this.name = name;
         this.size = size;
         this.lastModified = lastModified;
+        attributes = new HashMap<String, String>();
+    }
+
+    public DocumentImpl( String identifier, String name, long size, Date lastModified, String link ) {
+        this.identifier = identifier;
+        this.name = name;
+        this.size = size;
+        this.lastModified = lastModified;
+        this.link = link;
         attributes = new HashMap<String, String>();
     }
 
@@ -115,11 +126,6 @@ public class DocumentImpl implements Document {
 
     @Override
     public String toString() {
-        String appUrl = "";
-        if(attributes != null && attributes.containsKey("app.url")){
-            appUrl = attributes.get("app.url");
-        }
-        return  name + "," + size + "," + lastModified +","+ appUrl + link ;
-                
+        return  name + "," + size + "," + DateFormat.getDateInstance().format( lastModified ) +","+ link ;
     }
 }
