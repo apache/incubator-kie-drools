@@ -79,9 +79,7 @@ public class ActionFieldValueImpl implements ActionFieldValue {
     @Override
     public int hashCode() {
         int result = fieldName.hashCode();
-        result = ~~result;
         result = 31 * result + value.hashCode();
-        result = ~~result;
         return result;
     }
 }

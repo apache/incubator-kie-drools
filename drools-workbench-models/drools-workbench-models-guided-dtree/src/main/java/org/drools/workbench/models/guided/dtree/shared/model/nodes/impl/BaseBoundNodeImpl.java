@@ -41,24 +41,25 @@ public abstract class BaseBoundNodeImpl extends BaseNodeImpl implements BoundNod
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BaseBoundNodeImpl)) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof BaseBoundNodeImpl ) ) {
+            return false;
+        }
 
         BaseBoundNodeImpl nodes = (BaseBoundNodeImpl) o;
 
-        if (binding != null ? !binding.equals(nodes.binding) : nodes.binding != null) return false;
+        if ( binding != null ? !binding.equals( nodes.binding ) : nodes.binding != null ) {
+            return false;
+        }
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = ~~result;
-        result = 31 * result + (binding != null ? binding.hashCode() : 0);
-        result = ~~result;
-        return result;
+        return binding != null ? binding.hashCode() : 0;
     }
 }

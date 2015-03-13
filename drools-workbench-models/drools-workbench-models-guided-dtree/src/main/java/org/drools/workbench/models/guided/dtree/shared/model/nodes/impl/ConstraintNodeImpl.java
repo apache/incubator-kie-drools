@@ -121,15 +121,10 @@ public class ConstraintNodeImpl extends BaseBoundNodeImpl implements ConstraintN
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = ~~result;
         result = 31 * result + className.hashCode();
-        result = ~~result;
         result = 31 * result + fieldName.hashCode();
-        result = ~~result;
         result = 31 * result + ( operator != null ? operator.hashCode() : 0 );
-        result = ~~result;
         result = 31 * result + ( value != null ? value.hashCode() : 0 );
-        result = ~~result;
         return result;
     }
 }
