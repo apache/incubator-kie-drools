@@ -35,12 +35,12 @@ public class ParabolicDistributionNearbyRandomTest {
         Random random = mock(Random.class);
         NearbyRandom nearbyRandom = new ParabolicDistributionNearbyRandom(100);
 
-        double roundingConstant = 0.000001; // normalizes calculation against over-rounding error
-        // over all values from 0 to 1 that suits ParabolicDistributionNearbyRandom(100)
-        for (int i = 0; i < 100; i++) {
-            when(random.nextDouble()).thenReturn(1.0 - Math.pow(1 - i / 100.0, 3.0) + roundingConstant);
-            assertEquals(i, nearbyRandom.nextInt(random, 500));
-        }
+        when(random.nextDouble()).thenReturn(0.0);
+        assertEquals(0, nearbyRandom.nextInt(random, 500));
+        when(random.nextDouble()).thenReturn(1.0 - Math.pow(1 - 1.0 / 100.0, 3.0));
+        assertEquals(1, nearbyRandom.nextInt(random, 500));
+        when(random.nextDouble()).thenReturn(1.0 - Math.pow(1 - 2.0 / 100.0, 3.0));
+        assertEquals(2, nearbyRandom.nextInt(random, 500));
     }
 
     @Test

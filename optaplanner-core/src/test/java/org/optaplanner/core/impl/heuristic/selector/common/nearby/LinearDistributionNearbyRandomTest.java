@@ -60,6 +60,6 @@ public class LinearDistributionNearbyRandomTest {
 
         when(random.nextDouble()).thenReturn(Math.nextAfter(1.0, Double.NEGATIVE_INFINITY));
         assertEquals(99, nearbyRandom.nextInt(random, 500));
-
     }
+
 }
