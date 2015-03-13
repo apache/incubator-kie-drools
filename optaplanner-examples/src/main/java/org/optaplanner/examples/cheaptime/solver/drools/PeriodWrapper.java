@@ -4,11 +4,11 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-public class Period {
+public class PeriodWrapper {
 
     private int period;
 
-    public Period(int period) {
+    public PeriodWrapper(int period) {
         this.period = period;
     }
 
@@ -23,8 +23,8 @@ public class Period {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof Period) {
-            Period other = (Period) o;
+        } else if (o instanceof PeriodWrapper) {
+            PeriodWrapper other = (PeriodWrapper) o;
             return new EqualsBuilder()
                     .append(period, other.period)
                     .isEquals();
@@ -39,7 +39,7 @@ public class Period {
                 .toHashCode();
     }
 
-    public int compareTo(Period other) {
+    public int compareTo(PeriodWrapper other) {
         return new CompareToBuilder()
                 .append(period, other.period)
                 .toComparison();
@@ -49,4 +49,5 @@ public class Period {
     public String toString() {
         return String.valueOf(period);
     }
+
 }

@@ -64,4 +64,5 @@ public class IdleCost {
     public String toString() {
         return "machine = " + machine + ", activePeriodAfterIdle = " + activePeriodAfterIdle + ", cost = " + cost;
     }
+
 }

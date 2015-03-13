@@ -1,6 +1,5 @@
 package org.optaplanner.examples.cheaptime.solver.drools;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
@@ -12,6 +11,7 @@ import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 
 public class MachinePeriodPart {
+
     private final Machine machine;
     private final int period;
 
@@ -34,12 +34,12 @@ public class MachinePeriodPart {
             addTaskAssignment(taskAssignment);
         }
 
-	    resourceInShortTotal = 0;
-	    for (int resourceAvailable : resourceAvailableList) {
-	        if (resourceAvailable < 0) {
-	            resourceInShortTotal += resourceAvailable;
-	        }
-	    }
+        resourceInShortTotal = 0;
+        for (int resourceAvailable : resourceAvailableList) {
+            if (resourceAvailable < 0) {
+                resourceInShortTotal += resourceAvailable;
+            }
+        }
     }
 
     private void addTaskAssignment(TaskAssignment taskAssignment) {
@@ -47,19 +47,19 @@ public class MachinePeriodPart {
         Task task = taskAssignment.getTask();
         for (int i = 0; i < resourceAvailableList.length; i++) {
             TaskRequirement taskRequirement = task.getTaskRequirementList().get(i);
-            resourceAvailableList[i] -=  taskRequirement.getResourceUsage();
+            resourceAvailableList[i] -= taskRequirement.getResourceUsage();
         }
     }
 
-	public boolean isActive() {
-		return active;
-	}
+    public boolean isActive() {
+        return active;
+    }
 
-	public void setActive(boolean active) {
-		this.active = active;
-	}
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
-	public int[] getResourceAvailableList() {
+    public int[] getResourceAvailableList() {
         return resourceAvailableList;
     }
 
@@ -68,8 +68,8 @@ public class MachinePeriodPart {
     }
 
     public int getResourceInShortTotal() {
-		return resourceInShortTotal;
-	}
+        return resourceInShortTotal;
+    }
 
     public Machine getMachine() {
         return machine;

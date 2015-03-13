@@ -31,7 +31,7 @@ import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
 import org.optaplanner.examples.cheaptime.solver.drools.IdleCost;
-import org.optaplanner.examples.cheaptime.solver.drools.Period;
+import org.optaplanner.examples.cheaptime.solver.drools.PeriodWrapper;
 import org.optaplanner.examples.cheaptime.solver.drools.MachinePeriodPart;
 
 global HardMediumSoftLongScoreHolder scoreHolder;
@@ -43,7 +43,7 @@ rule "period"
         CheapTimeSolution($globalPeriodRangeFrom : globalPeriodRangeFrom, $globalPeriodRangeTo : globalPeriodRangeTo)
     then
         for (int i = $globalPeriodRangeFrom; i < $globalPeriodRangeTo; i++) {
-            insert(new Period(i));
+            insert(new PeriodWrapper(i));
         }
 end
 
@@ -52,7 +52,7 @@ rule "machinePeriodPart"
     salience 2
     when
         CheapTimeSolution($resourceList : resourceList)
-        Period($period : period);
+        PeriodWrapper($period : period);
         $machine : Machine()
         $taskAssignmentList : ArrayList() from collect (
             TaskAssignment(
@@ -165,7 +165,7 @@ end
 // Task power cost: Each task consumes power too, which infers a power cost (depending on the power price during its time).
 rule "taskPowerCost"
     when
-        Period($period : period)
+        PeriodWrapper($period : period)
         TaskAssignment(startPeriod <= $period, endPeriod > $period, $task : task)
         $periodPowerPrice : PeriodPowerPrice(period == $period)
     then
