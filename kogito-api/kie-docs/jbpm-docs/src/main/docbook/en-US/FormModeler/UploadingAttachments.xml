@@ -71,20 +71,20 @@
 &lt;/dependency&gt;
     </programlisting>
     <para>
-      Once you did that is time to create your <emphasis>Marshalling Strategy</emphasis>, to do so you just have to create
-      a class implementing:
+      Once you did that is time to create your <emphasis>Document Marshalling Strategy</emphasis>, to do so you just have to create
+      a class that extends:
     </para>
     <programlisting language="java">
-package org.kie.api.marshalling;
+package org.jbpm.document.marshalling;
 
-public interface ObjectMarshallingStrategy {
+public abstract class AbstractDocumentMarshallingStrategy implements ObjectMarshallingStrategy {
 
-  public boolean accept(Object object);
+  public abstract Document buildDocument( String name, long size, Date lastModified, Map&lt;String, String&gt; params );
 
-  public void write(ObjectOutputStream os, Object object)
+  public void write( ObjectOutputStream os, Object object )
         throws IOException;
 
-  public Object read(ObjectInputStream os)
+  public Object read( ObjectInputStream os )
         throws IOException, ClassNotFoundException;
 
   public byte[] marshal( Context context, ObjectOutputStream os, Object object )
@@ -94,13 +94,16 @@ public interface ObjectMarshallingStrategy {
         ClassLoader classloader ) throws IOException, ClassNotFoundException;
 
   public Context createContext();
+}
     </programlisting>
     <para>
       The methods to implement are:
       <itemizedlist>
         <listitem>
-          <para><command>public boolean accept(Object object):</command>
-            Determines if the given object can be marshalled by the strategy</para>
+          <para><command>Document buildDocument( String name, long size, Date lastModified, Map&lt;String, String&gt; params ):</command>
+            Creates a valid Document instance with the data received.
+            This method is called when a document is uploaded to create the Document instance <command>before</command>
+            marshalling the document content.</para>
         </listitem>
         <listitem>
           <para><command>byte[] marshal( Context context, ObjectOutputStream os, Object object ):</command>
@@ -126,11 +129,11 @@ public interface ObjectMarshallingStrategy {
       <link xlink:href="https://github.com/droolsjbpm/jbpm/blob/master/jbpm-document/src/main/java/org/jbpm/document/marshalling/DocumentMarshallingStrategy.java">this link</link>.
     </para>
     <para>
-      After creating your <emphasis>Marshalling Strategy</emphasis> and add it to your server classpath the only thing
+      After creating your <emphasis>Document Marshalling Strategy</emphasis> and add it to your server classpath the only thing
       remaining is to configure your project deployment descriptor add it to the marshalling strategies list.
       To do it you just have to open the Kie-Workbench on your browser, open your project on the Authoring view and
       edit the <emphasis>kie-deployment-descriptor.xml</emphasis> file located on <code>&lt;yourproject&gt;/src/main/resources/META-INF</code>
-      and add your <emphasis>Marshalling Strategy</emphasis> to the <code>&lt;marshalling-strategies&gt;</code> list
+      and add your <emphasis>Document Marshalling Strategy</emphasis> to the <code>&lt;marshalling-strategies&gt;</code> list
       like this:
     </para>
     <programlisting language="xml">
