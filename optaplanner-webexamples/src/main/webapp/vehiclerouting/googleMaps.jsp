@@ -35,13 +35,16 @@
 </div>
 
 <jsp:include page="/common/foot.jsp"/>
-<script src="https://maps.googleapis.com/maps/api/js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyARbEBUNSIVYgKaVXJcD3-s7Un2YYY0JTk"></script>
 <script type="text/javascript">
   var map;
   var directionsService;
   var vehicleRouteLines;
-  var vehicleRouteDirections;
   var intervalTimer;
+
+  var vehicleRouteDirections;
+  var directionsTaskQueue;
+  var directionsTaskTimer;
 
   function initMap() {
     var mapCanvas = document.getElementById('map-canvas');
@@ -128,6 +131,10 @@
   solve = function() {
     $('#solveButton').attr("disabled", "disabled");
     $('#resolveDirectionsButton').attr("disabled", "disabled");
+    if (directionsTaskTimer != undefined) {
+      window.clearInterval(directionsTaskTimer);
+      directionsTaskTimer = undefined;
+    }
     $.ajax({
       url: "<%=application.getContextPath()%>/rest/vehiclerouting/solution/solve",
       type: "POST",
@@ -146,6 +153,10 @@
   terminateEarly = function () {
     $('#terminateEarlyButton').attr("disabled", "disabled");
     window.clearInterval(intervalTimer);
+    if (directionsTaskTimer != undefined) {
+      window.clearInterval(directionsTaskTimer);
+      directionsTaskTimer = undefined;
+    }
     $.ajax({
       url: "<%=application.getContextPath()%>/rest/vehiclerouting/solution/terminateEarly",
       type: "POST",
@@ -178,20 +189,63 @@
         }
         vehicleRouteLines = undefined;
         vehicleRouteDirections = [];
+        directionsTaskQueue = [];
         $.each(solution.vehicleRouteList, function(index, vehicleRoute) {
           var depotLocation = new google.maps.LatLng(vehicleRoute.depotLatitude, vehicleRoute.depotLongitude);
           var previousLocation = depotLocation;
           $.each(vehicleRoute.customerList, function(index, customer) {
             var location = new google.maps.LatLng(customer.latitude, customer.longitude);
-            renderDirections(previousLocation, location, vehicleRoute.hexColor);
+            directionsTaskQueue.push([previousLocation, location, vehicleRoute.hexColor]);
             previousLocation = location;
           });
-          renderDirections(previousLocation, depotLocation, vehicleRoute.hexColor);
+          directionsTaskQueue.push([previousLocation, depotLocation, vehicleRoute.hexColor]);
         });
         $('#scoreValue').text(solution.feasible ? solution.distance : "Not solved");
+        directionsTaskTimer = setInterval(function () {
+          sendDirectionsRequest()
+        }, 1000); // 1 per second to avoid limit set by Google API for freeloaders
       }, error : function(jqXHR, textStatus, errorThrown) {ajaxError(jqXHR, textStatus, errorThrown)}
     });
   };
+  sendDirectionsRequest = function () {
+    var task = directionsTaskQueue.shift();
+    if (task == undefined) {
+      window.clearInterval(directionsTaskTimer);
+      directionsTaskTimer = undefined;
+      return;
+    }
+    var request = {
+      origin: task[0],
+      destination: task[1],
+      travelMode: google.maps.TravelMode.DRIVING
+    };
+    var hexColor = task[2];
+    directionsService.route(request, function(response, status) {
+      if (status == google.maps.DirectionsStatus.OK) {
+        var directionsRenderer = new google.maps.DirectionsRenderer({
+          map: map,
+          polylineOptions: {
+            geodesic: true,
+            strokeColor: hexColor,
+            strokeOpacity: 0.8,
+            strokeWeight: 4
+          },
+          markerOptions: {
+            visible: false
+          },
+          preserveViewport: true
+        });
+        directionsRenderer.setDirections(response);
+        vehicleRouteDirections.push(directionsRenderer);
+      } else if (status == google.maps.DirectionsStatus.OVER_QUERY_LIMIT) {
+        console.log("Google directions API request failed wtih status (" + status + "), but retrying...");
+        directionsTaskQueue.push(task);
+      } else {
+        console.log("Google directions API request failed with status (" + status + ").");
+      }
+    });
+  };
+
   renderDirections = function (origin, destination, hexColor) {
     var request = {
       origin: origin,
@@ -207,6 +261,9 @@
             strokeColor: hexColor,
             strokeOpacity: 0.8,
             strokeWeight: 4
+          },
+          markerOptions: {
+            visible: false
           }
         });
         directionsRenderer.setDirections(response);
@@ -216,6 +273,16 @@
       }
     });
   };
+  function sleep(milliseconds) {
+    console.log("Sleeping " + milliseconds + " ms");
+    // TODO Don't hang the browser page like this
+    var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+      if ((new Date().getTime() - start) > milliseconds) {
+        break;
+      }
+    }
+  }
 
   google.maps.event.addDomListener(window, 'load', initMap);
 </script>
