@@ -26,6 +26,7 @@
       <div>
         <button id="solveButton" class="btn btn-default" type="submit" onclick="solve()">Solve this planning problem</button>
         <button id="terminateEarlyButton" class="btn btn-default" type="submit" onclick="terminateEarly()" disabled="disabled">Terminate early</button>
+        <button id="resolveDirectionsButton" class="btn btn-default" type="submit" onclick="resolveDirections()" disabled="disabled">Directions</button>
       </div>
       <div id="map-canvas" style="height: 600px; width: 100%; margin-top: 10px; margin-bottom: 10px;"></div>
       <p>This visualization does not work offline and uses proprietary Google software.</p>
@@ -37,7 +38,9 @@
 <script src="https://maps.googleapis.com/maps/api/js"></script>
 <script type="text/javascript">
   var map;
+  var directionsService;
   var vehicleRouteLines;
+  var vehicleRouteDirections;
   var intervalTimer;
 
   function initMap() {
@@ -49,6 +52,7 @@
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     map = new google.maps.Map(mapCanvas, mapOptions);
+    directionsService = new google.maps.DirectionsService();
     loadSolution();
     updateSolution();
   }
@@ -93,7 +97,13 @@
             vehicleRouteLines[i].setMap(null);
           }
         }
+        if (vehicleRouteDirections != undefined) {
+          for (var i = 0; i < vehicleRouteDirections.length; i++) {
+            vehicleRouteDirections[i].setMap(null);
+          }
+        }
         vehicleRouteLines = [];
+        vehicleRouteDirections = undefined;
         $.each(solution.vehicleRouteList, function(index, vehicleRoute) {
           var locations = [new google.maps.LatLng(vehicleRoute.depotLatitude, vehicleRoute.depotLongitude)];
           $.each(vehicleRoute.customerList, function(index, customer) {
@@ -117,6 +127,7 @@
 
   solve = function() {
     $('#solveButton').attr("disabled", "disabled");
+    $('#resolveDirectionsButton').attr("disabled", "disabled");
     $.ajax({
       url: "<%=application.getContextPath()%>/rest/vehiclerouting/solution/solve",
       type: "POST",
@@ -144,7 +155,65 @@
         console.log(message.text);
         updateSolution();
         $('#solveButton').removeAttr("disabled");
+        $('#resolveDirectionsButton').removeAttr("disabled");
       }, error : function(jqXHR, textStatus, errorThrown) {ajaxError(jqXHR, textStatus, errorThrown)}
+    });
+  };
+
+  resolveDirections = function () {
+    $.ajax({
+      url: "<%=application.getContextPath()%>/rest/vehiclerouting/solution",
+      type: "GET",
+      dataType : "json",
+      success: function(solution) {
+        if (vehicleRouteLines != undefined) {
+          for (var i = 0; i < vehicleRouteLines.length; i++) {
+            vehicleRouteLines[i].setMap(null);
+          }
+        }
+        if (vehicleRouteDirections != undefined) {
+          for (var i = 0; i < vehicleRouteDirections.length; i++) {
+            vehicleRouteDirections[i].setMap(null);
+          }
+        }
+        vehicleRouteLines = undefined;
+        vehicleRouteDirections = [];
+        $.each(solution.vehicleRouteList, function(index, vehicleRoute) {
+          var depotLocation = new google.maps.LatLng(vehicleRoute.depotLatitude, vehicleRoute.depotLongitude);
+          var previousLocation = depotLocation;
+          $.each(vehicleRoute.customerList, function(index, customer) {
+            var location = new google.maps.LatLng(customer.latitude, customer.longitude);
+            renderDirections(previousLocation, location, vehicleRoute.hexColor);
+            previousLocation = location;
+          });
+          renderDirections(previousLocation, depotLocation, vehicleRoute.hexColor);
+        });
+        $('#scoreValue').text(solution.feasible ? solution.distance : "Not solved");
+      }, error : function(jqXHR, textStatus, errorThrown) {ajaxError(jqXHR, textStatus, errorThrown)}
+    });
+  };
+  renderDirections = function (origin, destination, hexColor) {
+    var request = {
+      origin: origin,
+      destination: destination,
+      travelMode: google.maps.TravelMode.DRIVING
+    };
+    directionsService.route(request, function(response, status) {
+      if (status == google.maps.DirectionsStatus.OK) {
+        var directionsRenderer = new google.maps.DirectionsRenderer({
+          map: map,
+          polylineOptions: {
+            geodesic: true,
+            strokeColor: hexColor,
+            strokeOpacity: 0.8,
+            strokeWeight: 4
+          }
+        });
+        directionsRenderer.setDirections(response);
+        vehicleRouteDirections.push(directionsRenderer);
+      } else {
+        console.log("Google directions error status: " + status);
+      }
     });
   };
 
