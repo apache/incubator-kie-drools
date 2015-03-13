@@ -42,24 +42,28 @@ public class TypeNodeImpl extends BaseBoundNodeImpl implements TypeNode {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TypeNodeImpl)) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof TypeNodeImpl ) ) {
+            return false;
+        }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
 
         TypeNodeImpl nodes = (TypeNodeImpl) o;
 
-        if (className != null ? !className.equals(nodes.className) : nodes.className != null) return false;
+        if ( !className.equals( nodes.className ) ) {
+            return false;
+        }
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = ~~result;
-        result = 31 * result + (className != null ? className.hashCode() : 0);
-        result = ~~result;
-        return result;
+        return className.hashCode();
     }
 }

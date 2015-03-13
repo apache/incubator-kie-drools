@@ -43,13 +43,19 @@ public class ActionRetractNodeImpl extends BaseNodeImpl implements ActionRetract
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ActionRetractNodeImpl)) return false;
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof ActionRetractNodeImpl ) ) {
+            return false;
+        }
 
         ActionRetractNodeImpl nodes = (ActionRetractNodeImpl) o;
 
-        if (boundNode != null ? !boundNode.equals(nodes.boundNode) : nodes.boundNode != null) return false;
+        if ( boundNode != null ? !boundNode.equals( nodes.boundNode ) : nodes.boundNode != null ) {
+            return false;
+        }
 
         return true;
     }
