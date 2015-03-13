@@ -21,7 +21,6 @@ import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.FromNode;
-import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.reteoo.LeftTupleSink;
@@ -121,7 +120,10 @@ public class SegmentUtilities {
                             updateNodeBit = processBranchNode((ConditionalBranchNode) tupleSource, wm, smem);
                             break;
                         case NodeTypeEnums.FromNode:
-                            processFromNode((FromNode) tupleSource, wm, smem);
+                            processFromNode((MemoryFactory) tupleSource, wm, smem);
+                            break;
+                        case NodeTypeEnums.ReactiveFromNode:
+                            processReactiveFromNode((MemoryFactory) tupleSource, wm, smem, nodePosMask);
                             break;
                         case NodeTypeEnums.TimerConditionNode:
                             processTimerNode((TimerNode) tupleSource, wm, smem, nodePosMask);
@@ -229,9 +231,14 @@ public class SegmentUtilities {
         return querySmem;
     }
 
-    private static void processFromNode(FromNode tupleSource, InternalWorkingMemory wm, SegmentMemory smem) {
-        FromMemory fromMemory = (FromMemory) smem.createNodeMemory(tupleSource, wm);
-        fromMemory.getBetaMemory().setSegmentMemory(smem);
+    private static void processFromNode(MemoryFactory tupleSource, InternalWorkingMemory wm, SegmentMemory smem) {
+        ((FromNode.FromMemory) smem.createNodeMemory(tupleSource, wm)).getBetaMemory().setSegmentMemory(smem);
+    }
+
+    private static void processReactiveFromNode(MemoryFactory tupleSource, InternalWorkingMemory wm, SegmentMemory smem, long nodePosMask) {
+        BetaMemory bm = ((FromNode.FromMemory) smem.createNodeMemory(tupleSource, wm)).getBetaMemory();
+        bm.setSegmentMemory(smem);
+        bm.setNodePosMaskBit(nodePosMask);
     }
 
     private static boolean processBranchNode(ConditionalBranchNode tupleSource, InternalWorkingMemory wm, SegmentMemory smem) {

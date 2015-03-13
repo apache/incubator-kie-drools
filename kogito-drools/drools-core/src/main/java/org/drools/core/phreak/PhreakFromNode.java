@@ -256,18 +256,18 @@ public class PhreakFromNode {
         }
     }
 
-    protected void checkConstraintsAndPropagate(final LeftTupleSink sink,
-                                                final LeftTuple leftTuple,
-                                                final RightTuple rightTuple,
-                                                final AlphaNodeFieldConstraint[] alphaConstraints,
-                                                final BetaConstraints betaConstraints,
-                                                final PropagationContext propagationContext,
-                                                final InternalWorkingMemory wm,
-                                                final FromMemory fm,
-                                                final ContextEntry[] context,
-                                                final boolean useLeftMemory,
-                                                LeftTupleSets trgLeftTuples,
-                                                LeftTupleSets stagedLeftTuples) {
+    public static void checkConstraintsAndPropagate(final LeftTupleSink sink,
+                                                    final LeftTuple leftTuple,
+                                                    final RightTuple rightTuple,
+                                                    final AlphaNodeFieldConstraint[] alphaConstraints,
+                                                    final BetaConstraints betaConstraints,
+                                                    final PropagationContext propagationContext,
+                                                    final InternalWorkingMemory wm,
+                                                    final FromMemory fm,
+                                                    final ContextEntry[] context,
+                                                    final boolean useLeftMemory,
+                                                    LeftTupleSets trgLeftTuples,
+                                                    LeftTupleSets stagedLeftTuples) {
         boolean isAllowed = true;
         if (alphaConstraints != null) {
             // First alpha node filters
@@ -305,7 +305,7 @@ public class PhreakFromNode {
         }
     }
 
-    private void deleteChildLeftTuple(PropagationContext propagationContext, LeftTupleSets trgLeftTuples, LeftTupleSets stagedLeftTuples, LeftTuple childLeftTuple) {
+    private static void deleteChildLeftTuple(PropagationContext propagationContext, LeftTupleSets trgLeftTuples, LeftTupleSets stagedLeftTuples, LeftTuple childLeftTuple) {
         if (childLeftTuple != null) {
             childLeftTuple.unlinkFromLeftParent();
             childLeftTuple.unlinkFromRightParent();

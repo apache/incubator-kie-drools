@@ -5,9 +5,9 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.phreak.ReactiveList;
 import org.drools.core.phreak.ReactiveObject;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.From;
@@ -109,8 +109,12 @@ public class XpathConstraint extends MutableTypeConstraint {
         throw new UnsupportedOperationException("org.drools.core.rule.constraint.XpathConstraint.writeExternal -> TODO");
     }
 
+    public LinkedList<XpathChunk> getChunks() {
+        return chunks;
+    }
+
     public From asFrom() {
-        From from = new From( new XpathDataProvider(new XpathEvaluator(chunks)) );
+        From from = new From( new XpathDataProvider(new MultiChunkXpathEvaluator(chunks)) );
         from.setResultClass(getResultClass());
         return from;
     }
@@ -132,36 +136,21 @@ public class XpathConstraint extends MutableTypeConstraint {
         return new PatternExtractor( new ClassObjectType( getResultClass() ) );
     }
 
-    private static class XpathEvaluator {
-        private final LinkedList<XpathChunk> chunks;
+    private interface XpathEvaluator {
+        Iterable<?> evaluate(InternalWorkingMemory workingMemory, LeftTuple leftTuple, Object object);
+    }
 
-        private XpathEvaluator(LinkedList<XpathChunk> chunks) {
-            this.chunks = chunks;
-        }
-
-        private Iterable<?> evaluate(InternalWorkingMemory workingMemory, LeftTuple leftTuple, Object object) {
-            Iterator<XpathChunk> xpathChunkIterator = chunks.iterator();
-            List<Object> list = evaluateObject(workingMemory, leftTuple, xpathChunkIterator.next(), new ArrayList<Object>(), object);
-            while (xpathChunkIterator.hasNext()) {
-                list = evaluate(workingMemory, leftTuple, xpathChunkIterator.next(), list);
-            }
-            return list;
-        }
-
-        private List<Object> evaluate(InternalWorkingMemory workingMemory, LeftTuple leftTuple, XpathChunk chunk, Iterable<?> objects) {
-            List<Object> list = new ArrayList<Object>();
-            for (Object object : objects) {
-                evaluateObject(workingMemory, leftTuple, chunk, list, object);
-            }
-            return list;
-        }
-
-        private List<Object> evaluateObject(InternalWorkingMemory workingMemory, LeftTuple leftTuple, XpathChunk chunk, List<Object> list, Object object) {
+    private static abstract class AbstractXpathEvaluator implements XpathEvaluator {
+        protected List<Object> evaluateObject(InternalWorkingMemory workingMemory, LeftTuple leftTuple, XpathChunk chunk, List<Object> list, Object object) {
             Object result = chunk.evaluate(object);
             if (chunk.iterate && result instanceof Iterable) {
+                if (result instanceof ReactiveList) {
+                    ((ReactiveList) result).addLeftTuple(leftTuple);
+                }
+
                 for (Object value : (Iterable<?>) result) {
                     if (value instanceof ReactiveObject) {
-                        ((ReactiveObject) value).addParent(object);
+                        ((ReactiveObject) value).addLeftTuple(leftTuple);
                     }
                     if (value != null && (chunk.constraints == null || match(workingMemory, leftTuple, chunk.constraints, value))) {
                         list.add(value);
@@ -169,7 +158,7 @@ public class XpathConstraint extends MutableTypeConstraint {
                 }
             } else {
                 if (result instanceof ReactiveObject) {
-                    ((ReactiveObject) result).addParent(object);
+                    ((ReactiveObject) result).addLeftTuple(leftTuple);
                 }
                 if (result != null && (chunk.constraints == null || match(workingMemory, leftTuple, chunk.constraints, result))) {
                     list.add(result);
@@ -178,7 +167,7 @@ public class XpathConstraint extends MutableTypeConstraint {
             return list;
         }
 
-        private boolean match(InternalWorkingMemory workingMemory, LeftTuple leftTuple, List<Constraint> constraints, Object object) {
+        protected boolean match(InternalWorkingMemory workingMemory, LeftTuple leftTuple, List<Constraint> constraints, Object object) {
             InternalFactHandle handle = new DefaultFactHandle(-1, object);
             for (Constraint constraint : constraints) {
                 BetaNodeFieldConstraint betaConstraint = (BetaNodeFieldConstraint) constraint;
@@ -195,6 +184,44 @@ public class XpathConstraint extends MutableTypeConstraint {
                 }
             }
             return true;
+        }
+    }
+
+    private static class SingleChunkXpathEvaluator extends AbstractXpathEvaluator {
+        private final XpathChunk chunk;
+
+        private SingleChunkXpathEvaluator(XpathChunk chunk) {
+            this.chunk = chunk;
+        }
+
+        public Iterable<?> evaluate(InternalWorkingMemory workingMemory, LeftTuple leftTuple, Object object) {
+            return evaluateObject(workingMemory, leftTuple, chunk, new ArrayList<Object>(), object);
+        }
+
+    }
+
+    private static class MultiChunkXpathEvaluator extends AbstractXpathEvaluator {
+        private final LinkedList<XpathChunk> chunks;
+
+        private MultiChunkXpathEvaluator(LinkedList<XpathChunk> chunks) {
+            this.chunks = chunks;
+        }
+
+        public Iterable<?> evaluate(InternalWorkingMemory workingMemory, LeftTuple leftTuple, Object object) {
+            Iterator<XpathChunk> xpathChunkIterator = chunks.iterator();
+            List<Object> list = evaluateObject(workingMemory, leftTuple, xpathChunkIterator.next(), new ArrayList<Object>(), object);
+            while (xpathChunkIterator.hasNext()) {
+                list = evaluate(workingMemory, leftTuple, xpathChunkIterator.next(), list);
+            }
+            return list;
+        }
+
+        private List<Object> evaluate(InternalWorkingMemory workingMemory, LeftTuple leftTuple, XpathChunk chunk, Iterable<?> objects) {
+            List<Object> list = new ArrayList<Object>();
+            for (Object object : objects) {
+                evaluateObject(workingMemory, leftTuple, chunk, list, object);
+            }
+            return list;
         }
     }
 
@@ -255,6 +282,12 @@ public class XpathConstraint extends MutableTypeConstraint {
             return Object.class;
         }
 
+        public From asFrom() {
+            From from = new From( new XpathDataProvider(new SingleChunkXpathEvaluator(this)) );
+            from.setResultClass(getReturnedClass());
+            return from;
+        }
+
         @Override
         public String toString() {
             return clazz.getSimpleName() + (iterate ? " / " : " . ") + field + (constraints != null ? " " + constraints : "");
@@ -284,13 +317,6 @@ public class XpathConstraint extends MutableTypeConstraint {
             LeftTuple leftTuple = (LeftTuple) tuple;
             InternalFactHandle fh = leftTuple.getHandle();
             Object obj = fh.getObject();
-
-            if (obj instanceof ReactiveObject) {
-                ((ReactiveObject) obj).setFactHandle(fh);
-                ObjectSink sink = (ObjectSink)leftTuple.getSink().getLeftTupleSource();
-                ((ReactiveObject) obj).addSink(sink);
-            }
-
             return xpathEvaluator.evaluate((InternalWorkingMemory)wm, leftTuple, obj).iterator();
         }
 

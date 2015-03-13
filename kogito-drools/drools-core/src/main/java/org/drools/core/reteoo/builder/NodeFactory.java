@@ -35,9 +35,7 @@ import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.PropagationQueuingNode;
 import org.drools.core.reteoo.QueryElementNode;
-import org.drools.core.reteoo.QueryRiaFixerNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Accumulate;
@@ -137,6 +135,15 @@ public interface NodeFactory {
                                    boolean tupleMemoryEnabled,
                                    BuildContext context,
                                    From from );
+
+    public BaseNode buildReactiveFromNode( int id,
+                                           DataProvider dataProvider,
+                                           LeftTupleSource tupleSource,
+                                           AlphaNodeFieldConstraint[] alphaNodeFieldConstraints,
+                                           BetaConstraints betaConstraints,
+                                           boolean tupleMemoryEnabled,
+                                           BuildContext context,
+                                           From from );
 
     public BaseNode buildTimerNode( int id,
                                     Timer timer,

@@ -1,6 +1,8 @@
 package org.drools.compiler.xpath;
 
-public class Toy {
+import org.drools.core.phreak.ReactiveObject;
+
+public class Toy extends ReactiveObject {
 
     private final String name;
 

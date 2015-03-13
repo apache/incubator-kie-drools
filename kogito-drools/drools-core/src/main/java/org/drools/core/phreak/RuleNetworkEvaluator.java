@@ -34,6 +34,7 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
+import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.RiaPathMemory;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightTuple;
@@ -61,6 +62,7 @@ public class RuleNetworkEvaluator {
     private static final PhreakJoinNode         pJoinNode   = new PhreakJoinNode();
     private static final PhreakEvalNode         pEvalNode   = new PhreakEvalNode();
     private static final PhreakFromNode         pFromNode   = new PhreakFromNode();
+    private static final PhreakReactiveFromNode pReactiveFromNode = new PhreakReactiveFromNode();
     private static final PhreakNotNode          pNotNode    = new PhreakNotNode();
     private static final PhreakExistsNode       pExistsNode = new PhreakExistsNode();
     private static final PhreakAccumulateNode   pAccNode    = new PhreakAccumulateNode();
@@ -346,6 +348,11 @@ public class RuleNetworkEvaluator {
                     }
                     case NodeTypeEnums.FromNode: {
                         pFromNode.doNode((FromNode) node, (FromMemory) nodeMem, sink,
+                                         wm, srcTuples, trgTuples, stagedLeftTuples);
+                        break;
+                    }
+                    case NodeTypeEnums.ReactiveFromNode: {
+                        pReactiveFromNode.doNode((ReactiveFromNode) node, (ReactiveFromNode.ReactiveFromMemory) nodeMem, sink,
                                          wm, srcTuples, trgTuples, stagedLeftTuples);
                         break;
                     }

@@ -40,21 +40,10 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PropagationQueuingNode;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryRiaFixerNode;
-import org.drools.core.reteoo.TraitProxyObjectTypeNode;
-import org.drools.reteoo.nodes.ReteAccumulateNode;
-import org.drools.reteoo.nodes.ReteConditionalBranchNode;
-import org.drools.reteoo.nodes.ReteEntryPointNode;
-import org.drools.reteoo.nodes.ReteEvalConditionNode;
-import org.drools.reteoo.nodes.ReteExistsNode;
-import org.drools.reteoo.nodes.ReteFromNode;
-import org.drools.reteoo.nodes.ReteJoinNode;
-import org.drools.reteoo.nodes.ReteLeftInputAdapterNode;
-import org.drools.reteoo.nodes.ReteNotNode;
-import org.drools.core.reteoo.ReteObjectTypeNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TraitObjectTypeNode;
-import org.drools.reteoo.nodes.ReteAlphaNode;
+import org.drools.core.reteoo.TraitProxyObjectTypeNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.rule.Accumulate;
@@ -68,6 +57,16 @@ import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.Timer;
+import org.drools.reteoo.nodes.ReteAccumulateNode;
+import org.drools.reteoo.nodes.ReteAlphaNode;
+import org.drools.reteoo.nodes.ReteConditionalBranchNode;
+import org.drools.reteoo.nodes.ReteEntryPointNode;
+import org.drools.reteoo.nodes.ReteEvalConditionNode;
+import org.drools.reteoo.nodes.ReteExistsNode;
+import org.drools.reteoo.nodes.ReteFromNode;
+import org.drools.reteoo.nodes.ReteJoinNode;
+import org.drools.reteoo.nodes.ReteLeftInputAdapterNode;
+import org.drools.reteoo.nodes.ReteNotNode;
 import org.drools.reteoo.nodes.ReteQueryElementNode;
 import org.drools.reteoo.nodes.ReteQueryTerminalNode;
 import org.drools.reteoo.nodes.ReteRightInputAdapterNode;
@@ -160,6 +159,10 @@ public class ReteNodeFactory implements NodeFactory, Serializable {
 
     public BaseNode buildFromNode(int id, DataProvider dataProvider, LeftTupleSource tupleSource, AlphaNodeFieldConstraint[] alphaNodeFieldConstraints, BetaConstraints betaConstraints, boolean tupleMemoryEnabled, BuildContext context, From from) {
         return new ReteFromNode( id, dataProvider, tupleSource, alphaNodeFieldConstraints, betaConstraints, tupleMemoryEnabled, context, from );
+    }
+
+    public BaseNode buildReactiveFromNode(int id, DataProvider dataProvider, LeftTupleSource tupleSource, AlphaNodeFieldConstraint[] alphaNodeFieldConstraints, BetaConstraints betaConstraints, boolean tupleMemoryEnabled, BuildContext context, From from) {
+        throw new UnsupportedOperationException("Cannot create a ReactiveFromNode with RETE engine");
     }
 
     public BaseNode buildTimerNode( int id,

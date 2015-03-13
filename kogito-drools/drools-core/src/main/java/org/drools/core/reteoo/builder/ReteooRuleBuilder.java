@@ -23,6 +23,7 @@ import org.drools.core.common.UpdateContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.AddRemoveRule;
+import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuleBuilder;
 import org.drools.core.reteoo.TerminalNode;
@@ -84,6 +85,8 @@ public class ReteooRuleBuilder implements RuleBuilder {
                                new NamedConsequenceBuilder() );
         this.utils.addBuilder( ConditionalBranch.class,
                                new ConditionalBranchBuilder() );
+        this.utils.addBuilder( ReactiveFromNode.class,
+                               new ReactiveFromBuilder() );
     }
 
     /**

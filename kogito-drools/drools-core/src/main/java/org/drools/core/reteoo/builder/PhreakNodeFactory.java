@@ -39,11 +39,12 @@ import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PropagationQueuingNode;
+import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryRiaFixerNode;
+import org.drools.core.reteoo.QueryTerminalNode;
+import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.reteoo.QueryElementNode;
-import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TraitObjectTypeNode;
@@ -146,6 +147,10 @@ public class PhreakNodeFactory implements NodeFactory, Serializable {
 
     public BaseNode buildFromNode(int id, DataProvider dataProvider, LeftTupleSource tupleSource, AlphaNodeFieldConstraint[] alphaNodeFieldConstraints, BetaConstraints betaConstraints, boolean tupleMemoryEnabled, BuildContext context, From from) {
         return new FromNode( id, dataProvider, tupleSource, alphaNodeFieldConstraints, betaConstraints, tupleMemoryEnabled, context, from );
+    }
+
+    public BaseNode buildReactiveFromNode(int id, DataProvider dataProvider, LeftTupleSource tupleSource, AlphaNodeFieldConstraint[] alphaNodeFieldConstraints, BetaConstraints betaConstraints, boolean tupleMemoryEnabled, BuildContext context, From from) {
+        return new ReactiveFromNode( id, dataProvider, tupleSource, alphaNodeFieldConstraints, betaConstraints, tupleMemoryEnabled, context, from );
     }
 
     public BaseNode buildTimerNode( int id,

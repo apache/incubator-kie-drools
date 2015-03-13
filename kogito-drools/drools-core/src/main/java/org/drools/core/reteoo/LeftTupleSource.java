@@ -252,8 +252,8 @@ public abstract class LeftTupleSource extends BaseNode
     }
 
     private LeftTupleSource unwrapLeftInput(LeftTupleSource leftInput) {
-        if (leftInput.getType() == NodeTypeEnums.FromNode) {
-            return ((FromNode)leftInput).getLeftTupleSource();
+        if (leftInput.getType() == NodeTypeEnums.FromNode || leftInput.getType() == NodeTypeEnums.ReactiveFromNode) {
+            return ((LeftTupleSink)leftInput).getLeftTupleSource();
         }
         return leftInput;
     }
