@@ -40,14 +40,12 @@ public class BetaDistributionNearbyRandomTest {
         Random random = mock(Random.class);
         NearbyRandom nearbyRandom = new BetaDistributionNearbyRandom(1.0, 1.0);
 
-        when(random.nextDouble()).thenReturn(0.0);
-        assertEquals(0, nearbyRandom.nextInt(random, 500));
-        when(random.nextDouble()).thenReturn(1.0 / 500.0);
-        assertEquals(1, nearbyRandom.nextInt(random, 500));
-        when(random.nextDouble()).thenReturn(2.0 / 500.0);
-        assertEquals(2, nearbyRandom.nextInt(random, 500));
-        when(random.nextDouble()).thenReturn(3.0 / 500.0);
-        assertEquals(3, nearbyRandom.nextInt(random, 500));
+        double roundingConstant = 0.000001; // normalizes calculation against over-rounding error
+        for (int i = 0; i < 500; i++) {
+            when(random.nextDouble()).thenReturn(i / 500.0 + roundingConstant);
+            assertEquals(i, nearbyRandom.nextInt(random, 500));
+        }
     }
+
 
 }

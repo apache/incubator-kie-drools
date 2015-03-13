@@ -89,4 +89,50 @@ public class BlockDistributionNearbyRandomTest {
         verify(random).nextInt(350);
     }
 
+    @Test
+    public void cornerCase() {
+        Random random = mock(Random.class);
+        double threshold = 0.5;
+        NearbyRandom nearbyRandom = new BlockDistributionNearbyRandom(10, 100, 0.5, threshold);
+
+        when(random.nextInt(anyInt())).thenReturn(-2);
+        when(random.nextInt(1)).thenReturn(-1);
+        when(random.nextDouble()).thenReturn(Math.nextAfter(threshold, Double.NEGATIVE_INFINITY));
+
+        assertEquals(-1, nearbyRandom.nextInt(random, 1));
+
+
+        when(random.nextDouble()).thenReturn(threshold);
+        when(random.nextInt(anyInt())).thenReturn(-2);
+        when(random.nextInt(10)).thenReturn(-1);
+
+        assertEquals(-1, nearbyRandom.nextInt(random, 10));
+        assertEquals(-1, nearbyRandom.nextInt(random, 11));
+        assertEquals(-1, nearbyRandom.nextInt(random, 20));
+        assertEquals(-1, nearbyRandom.nextInt(random, 19));
+        assertEquals(-1, nearbyRandom.nextInt(random, 21));  // rounding
+
+        assertEquals(-2, nearbyRandom.nextInt(random, 22));
+
+
+        when(random.nextInt(anyInt())).thenReturn(-2);
+        when(random.nextInt(100)).thenReturn(-1);
+        when(random.nextInt(99)).thenReturn(-3);
+
+        assertEquals(-1, nearbyRandom.nextInt(random, 200));
+        assertEquals(-1, nearbyRandom.nextInt(random, 300));
+        assertEquals(-1, nearbyRandom.nextInt(random, 1000));
+        assertEquals(-3, nearbyRandom.nextInt(random, 199)); // rounding
+        assertEquals(-3, nearbyRandom.nextInt(random, 198));
+        assertEquals(-2, nearbyRandom.nextInt(random, 197));
+
+
+        when(random.nextInt(anyInt())).thenReturn(-2);
+        when(random.nextInt(5)).thenReturn(-1);
+
+        assertEquals(-1, nearbyRandom.nextInt(random, 5));
+        assertEquals(-2, nearbyRandom.nextInt(random, 6));
+        assertEquals(-2, nearbyRandom.nextInt(random, 4));
+    }
+
 }

@@ -43,15 +43,23 @@ public class LinearDistributionNearbyRandomTest {
         assertEquals(2, nearbyRandom.nextInt(random, 500));
         when(random.nextDouble()).thenReturn(2.0 / 100.0 + 2.0 / 100.0 + 2.0 / 10000.0 + 2.0 / 100.0 + 4.0 / 10000.0);
         assertEquals(3, nearbyRandom.nextInt(random, 500));
-        when(random.nextDouble()).thenReturn(Math.nextAfter(1.0, Double.NEGATIVE_INFINITY));
-        assertEquals(99, nearbyRandom.nextInt(random, 500));
 
         when(random.nextDouble()).thenReturn(0.0);
         assertEquals(0, nearbyRandom.nextInt(random, 10));
         when(random.nextDouble()).thenReturn(2.0 / 10.0);
         assertEquals(1, nearbyRandom.nextInt(random, 10));
-        when(random.nextDouble()).thenReturn(Math.nextAfter(1.0, Double.NEGATIVE_INFINITY));
-        assertEquals(9, nearbyRandom.nextInt(random, 10));
     }
 
+    @Test
+    public void cornerCase() {
+        Random random = mock(Random.class);
+        NearbyRandom nearbyRandom = new LinearDistributionNearbyRandom(100);
+
+        when(random.nextDouble()).thenReturn(Math.nextAfter(1.0, Double.NEGATIVE_INFINITY));
+        assertEquals(9, nearbyRandom.nextInt(random, 10));
+
+        when(random.nextDouble()).thenReturn(Math.nextAfter(1.0, Double.NEGATIVE_INFINITY));
+        assertEquals(99, nearbyRandom.nextInt(random, 500));
+
+    }
 }
