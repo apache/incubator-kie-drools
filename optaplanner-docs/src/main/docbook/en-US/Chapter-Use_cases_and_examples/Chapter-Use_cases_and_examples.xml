@@ -1489,7 +1489,9 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
         offline Java engine), <link xlink:href="http://open.mapquestapi.com/directions/#matrix">Open MapQuest</link>
         (web service) and <link
         xlink:href="https://developers.google.com/maps/documentation/webservices/client-library">Google Maps Client
-        API</link> (web service). There are also several technologies to render it, such as <link
+        API</link> (web service).</para>
+
+        <para>There are also several technologies to render it, such as <link
         xlink:href="http://leafletjs.com">Leaflet</link> and <link
         xlink:href="https://developers.google.com/maps/">Google Maps for developers</link>: the
         <literal>optaplanner-webexamples-*.war</literal> has an example which demonstrates such rendering:</para>
@@ -1497,6 +1499,15 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-Use_cases_and_examples/vehicleRoutingLeafletAndGoogleMaps.png"/>
+          </imageobject>
+        </mediaobject>
+
+        <para>It's even possible to render the actual road routes with GraphHopper or Google Map Directions, but because
+        of route overlaps on highways, it can become harder to see the standstill order:</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/vehicleRoutingGoogleMapsDirections.png"/>
           </imageobject>
         </mediaobject>
 
