@@ -114,21 +114,43 @@
 
 <#list [7, 9] as entityTabuSize>
   <solverBenchmark>
-    <name>entityTabu ${entityTabuSize}</name>
+    <name>Tabu Search ${entityTabuSize} Nearby</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
-          <changeMoveSelector/>
-          <swapMoveSelector/>
-          <subChainChangeMoveSelector>
-            <selectReversingMoveToo>true</selectReversingMoveToo>
-          </subChainChangeMoveSelector>
-          <subChainSwapMoveSelector>
-            <selectReversingMoveToo>true</selectReversingMoveToo>
-          </subChainSwapMoveSelector>
+          <changeMoveSelector>
+            <entitySelector id="entitySelector1"/>
+            <valueSelector>
+              <nearbySelection>
+                <originEntitySelector mimicSelectorRef="entitySelector1"/>
+                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </valueSelector>
+          </changeMoveSelector>
+          <swapMoveSelector>
+            <entitySelector id="entitySelector2"/>
+            <secondaryEntitySelector>
+              <nearbySelection>
+                <originEntitySelector mimicSelectorRef="entitySelector2"/>
+                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </secondaryEntitySelector>
+          </swapMoveSelector>
+          <tailChainSwapMoveSelector>
+            <entitySelector id="entitySelector3"/>
+            <valueSelector>
+              <nearbySelection>
+                <originEntitySelector mimicSelectorRef="entitySelector3"/>
+                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </valueSelector>
+          </tailChainSwapMoveSelector>
         </unionMoveSelector>
         <acceptor>
           <entityTabuSize>${entityTabuSize}</entityTabuSize>
@@ -142,21 +164,43 @@
 </#list>
 <#list [100, 200, 400] as lateAcceptanceSize>
   <solverBenchmark>
-    <name>lateAcceptance ${lateAcceptanceSize}</name>
+    <name>Late Acceptance ${lateAcceptanceSize} Nearby</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
-          <changeMoveSelector/>
-          <swapMoveSelector/>
-          <subChainChangeMoveSelector>
-            <selectReversingMoveToo>true</selectReversingMoveToo>
-          </subChainChangeMoveSelector>
-          <subChainSwapMoveSelector>
-            <selectReversingMoveToo>true</selectReversingMoveToo>
-          </subChainSwapMoveSelector>
+          <changeMoveSelector>
+            <entitySelector id="entitySelector1"/>
+            <valueSelector>
+              <nearbySelection>
+                <originEntitySelector mimicSelectorRef="entitySelector1"/>
+                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </valueSelector>
+          </changeMoveSelector>
+          <swapMoveSelector>
+            <entitySelector id="entitySelector2"/>
+            <secondaryEntitySelector>
+              <nearbySelection>
+                <originEntitySelector mimicSelectorRef="entitySelector2"/>
+                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </secondaryEntitySelector>
+          </swapMoveSelector>
+          <tailChainSwapMoveSelector>
+            <entitySelector id="entitySelector3"/>
+            <valueSelector>
+              <nearbySelection>
+                <originEntitySelector mimicSelectorRef="entitySelector3"/>
+                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </valueSelector>
+          </tailChainSwapMoveSelector>
         </unionMoveSelector>
         <acceptor>
           <lateAcceptanceSize>${lateAcceptanceSize}</lateAcceptanceSize>
@@ -167,33 +211,5 @@
       </localSearch>
     </solver>
   </solverBenchmark>
-</#list>
-<#list [50, 300] as stepCountingHillClimbingSize>
-    <solverBenchmark>
-        <name>Step Counting Hill Climbing ${stepCountingHillClimbingSize}</name>
-        <solver>
-            <constructionHeuristic>
-                <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-            </constructionHeuristic>
-            <localSearch>
-                <unionMoveSelector>
-                    <changeMoveSelector/>
-                    <swapMoveSelector/>
-                    <subChainChangeMoveSelector>
-                        <selectReversingMoveToo>true</selectReversingMoveToo>
-                    </subChainChangeMoveSelector>
-                    <subChainSwapMoveSelector>
-                        <selectReversingMoveToo>true</selectReversingMoveToo>
-                    </subChainSwapMoveSelector>
-                </unionMoveSelector>
-                <acceptor>
-                    <stepCountingHillClimbingSize>${stepCountingHillClimbingSize}</stepCountingHillClimbingSize>
-                </acceptor>
-                <forager>
-                    <acceptedCountLimit>1</acceptedCountLimit>
-                </forager>
-            </localSearch>
-        </solver>
-    </solverBenchmark>
 </#list>
 </plannerBenchmark>
