@@ -1,7 +1,7 @@
 package org.jbpm.services.task.impl.model.xml;
 
 import static org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.convertListFromInterfaceToJaxbImpl;
-import static org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.unsupported;
+import static org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.*;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -149,7 +149,9 @@ public class JaxbTask implements InternalTask {
         if( this.getId() != null ) { 
             taskImpl.setId(this.getId());
         }
-        taskImpl.setPriority(this.getPriority());
+        if( this.priority != null ) { 
+            taskImpl.setPriority(this.getPriority());
+        }
         
         JaxbPeopleAssignments jaxbPeopleAssignments = this.peopleAssignments;
         InternalPeopleAssignments peopleAssignments = (InternalPeopleAssignments) TaskModelProvider.getFactory().newPeopleAssignments();
@@ -329,7 +331,7 @@ public class JaxbTask implements InternalTask {
 
     @Override
     public int getPriority() {
-        return priority;
+        return whenNull(priority, 0);
     }
 
     @Override
