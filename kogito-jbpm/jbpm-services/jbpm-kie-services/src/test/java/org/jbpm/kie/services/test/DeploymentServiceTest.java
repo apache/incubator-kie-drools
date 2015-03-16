@@ -21,6 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 import java.io.File;
@@ -48,6 +49,7 @@ import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryContext;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.scanner.MavenRepository;
 
@@ -98,6 +100,7 @@ public class DeploymentServiceTest extends AbstractBaseTest {
         repository.deployArtifact(releaseIdSupport, kJar2, pom2);
         
         ReleaseId releaseId3 = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, "1.1.0-SNAPSHOT");
+        processes.add("repo/rules/RuleWIthDeclaredType.drl");
         
         InternalKieModule kJar3 = createKieJar(ks, releaseId3, processes);
         File pom3 = new File("target/kmodule3", "pom.xml");
@@ -270,7 +273,7 @@ public class DeploymentServiceTest extends AbstractBaseTest {
         assertNotNull(deployed3.getDeploymentUnit());
         assertNotNull(deployed3.getRuntimeManager());
         
-        assertEquals(0, ((DeployedUnitImpl) deployed3).getDeployedClasses().size());
+        assertEquals(1, ((DeployedUnitImpl) deployed3).getDeployedClasses().size());
         
         assertNotNull(runtimeDataService);
         Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContext());
@@ -336,5 +339,30 @@ public class DeploymentServiceTest extends AbstractBaseTest {
         processes = runtimeDataService.getProcesses(new QueryContext());
         assertNotNull(processes);
         assertEquals(5, processes.size());
+    }
+    
+    @Test
+    public void testDeploymentWithDeclaredTypeInDRL() {
+        
+        assertNotNull(deploymentService);
+        
+        
+        DeploymentUnit deploymentUnit3 = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, "1.1.0-SNAPSHOT");
+        
+        deploymentService.deploy(deploymentUnit3);
+        units.add(deploymentUnit3);
+        
+        DeployedUnit deployed3 = deploymentService.getDeployedUnit(deploymentUnit3.getIdentifier());
+        assertNotNull(deployed3);
+        assertNotNull(deployed3.getDeploymentUnit());
+        assertNotNull(deployed3.getRuntimeManager());
+        
+        assertEquals(1, ((DeployedUnitImpl) deployed3).getDeployedClasses().size());
+        try {
+			assertNotNull(Class.forName("org.pkg1.Message", true, ((InternalRuntimeManager)deployed3.getRuntimeManager()).getEnvironment().getClassLoader()));
+		} catch (ClassNotFoundException e) {
+			fail("Class org.pkg1.Message should be found in deployment");
+		}
+
     }
 }

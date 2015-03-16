@@ -118,6 +118,8 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             if (module == null) {
                 throw new IllegalStateException("Cannot find kbase, either it does not exist or there are multiple default kbases in kmodule.xml");
             }
+            
+            KieBase kbase = kieContainer.getKieBase(kbaseName); 
 
             Map<String, String> formsData = new HashMap<String, String>();
             Collection<String> files = module.getFileNames();
@@ -137,9 +139,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             if (module.getJarDependencies() != null && !module.getJarDependencies().isEmpty()) {
             	processClassloader(kieContainer, deployedUnit);
             }
-
-            KieBase kbase = kieContainer.getKieBase(kbaseName);        
-
+                   
             AuditEventBuilder auditLoggerBuilder = setupAuditLogger(identityProvider, unit.getIdentifier());
 
             RuntimeEnvironmentBuilder builder = boostrapRuntimeEnvironmentBuilder(

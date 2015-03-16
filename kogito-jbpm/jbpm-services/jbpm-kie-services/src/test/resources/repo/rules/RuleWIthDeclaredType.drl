@@ -1,0 +1,11 @@
+package org.pkg1
+global java.util.List list;
+declare Message
+    text : String
+end
+rule echo dialect "mvel"
+when
+    $m : Message()
+then
+    $m.text = "echo:" + $m.text;
+end
