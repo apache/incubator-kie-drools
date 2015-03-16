@@ -146,6 +146,15 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		}
 		return null;
 	}
+	
+	public NodeInstance getNodeInstance(long nodeInstanceId, boolean recursive) {
+		for (NodeInstance nodeInstance: getNodeInstances(recursive)) {
+			if (nodeInstance.getId() == nodeInstanceId) {
+				return nodeInstance;
+			}
+		}
+		return null;
+	}
 
 	public List<String> getActiveNodeIds() {
 		List<String> result = new ArrayList<String>();

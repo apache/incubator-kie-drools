@@ -211,6 +211,15 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 		}
 		return null;
 	}
+	
+	public NodeInstance getNodeInstance(long nodeInstanceId, boolean recursive) {
+		for (NodeInstance nodeInstance: getNodeInstances(recursive)) {
+			if (nodeInstance.getId() == nodeInstanceId) {
+				return nodeInstance;
+			}
+		}
+		return null;
+	}
 
     public NodeInstance getFirstNodeInstance(final long nodeId) {
         for ( final Iterator<NodeInstance> iterator = this.nodeInstances.iterator(); iterator.hasNext(); ) {

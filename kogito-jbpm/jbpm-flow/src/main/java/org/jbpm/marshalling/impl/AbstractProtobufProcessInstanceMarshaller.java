@@ -504,7 +504,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             ExclusiveGroupInstance exclusiveGroupInstance = new ExclusiveGroupInstance();
             processInstance.addContextInstance( ExclusiveGroup.EXCLUSIVE_GROUP, exclusiveGroupInstance );
             for ( Long nodeInstanceId : _excl.getGroupNodeInstanceIdList() ) {
-                NodeInstance nodeInstance = processInstance.getNodeInstance( nodeInstanceId );
+                NodeInstance nodeInstance = ((org.jbpm.workflow.instance.NodeInstanceContainer)processInstance).getNodeInstance( nodeInstanceId, true );
                 if ( nodeInstance == null ) {
                     throw new IllegalArgumentException( "Could not find node instance when deserializing exclusive group instance: " + nodeInstanceId );
                 }
@@ -558,6 +558,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
 
         switch ( _node.getContent().getType() ) {
             case COMPOSITE_CONTEXT_NODE :
+            	
             case DYNAMIC_NODE :
                 if ( _node.getContent().getComposite().getVariableCount() > 0 ) {
                     Context variableScope = ((org.jbpm.process.core.Process) ((org.jbpm.process.instance.ProcessInstance)
@@ -587,9 +588,9 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
 
                 for ( JBPMMessages.ProcessInstance.ExclusiveGroupInstance _excl : _node.getContent().getComposite().getExclusiveGroupList() ) {
                     ExclusiveGroupInstance exclusiveGroupInstance = new ExclusiveGroupInstance();
-                    ((org.jbpm.process.instance.ProcessInstance) processInstance).addContextInstance( ExclusiveGroup.EXCLUSIVE_GROUP, exclusiveGroupInstance );
+                    ((CompositeContextNodeInstance) nodeInstance).addContextInstance( ExclusiveGroup.EXCLUSIVE_GROUP, exclusiveGroupInstance );
                     for ( Long nodeInstanceId : _excl.getGroupNodeInstanceIdList() ) {
-                        NodeInstance groupNodeInstance = processInstance.getNodeInstance( nodeInstanceId );
+                        NodeInstance groupNodeInstance = ((org.jbpm.workflow.instance.NodeInstanceContainer)processInstance).getNodeInstance( nodeInstanceId, true );
                         if ( groupNodeInstance == null ) {
                             throw new IllegalArgumentException( "Could not find node instance when deserializing exclusive group instance: " + nodeInstanceId );
                         }
@@ -744,7 +745,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                         timerInstances.add( _timerId );
                     }
                     ((CompositeContextNodeInstance) nodeInstance).internalSetTimerInstances( timerInstances );
-                }
+                }                
                 break;
             case DYNAMIC_NODE :
                 nodeInstance = new DynamicNodeInstance();

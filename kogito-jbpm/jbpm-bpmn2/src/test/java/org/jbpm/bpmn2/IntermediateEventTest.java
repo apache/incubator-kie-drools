@@ -510,6 +510,34 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         receiveTaskHandler.messageReceived("YesMessage", "YesValue");
 
     }
+    
+    @Test
+    public void testEventBasedSplitWithSubprocess() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveEventBasedGatewayInSubprocess.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+
+        // Stop
+        ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.testEBGInSubprocess");
+        assertProcessInstanceActive(processInstance);
+        ksession = restoreSession(ksession, true);
+        
+        ksession.signalEvent("StopSignal", "", processInstance.getId());
+        assertProcessInstanceFinished(processInstance, ksession);
+
+
+        // Continue and Stop
+        processInstance = ksession.startProcess("com.sample.bpmn.testEBGInSubprocess");
+        assertProcessInstanceActive(processInstance);
+        ksession = restoreSession(ksession, true);
+        
+        ksession.signalEvent("ContinueSignal", "", processInstance.getId());
+        
+        assertProcessInstanceActive(processInstance);
+        ksession = restoreSession(ksession, true);
+        
+        ksession.signalEvent("StopSignal", "", processInstance.getId());
+        assertProcessInstanceFinished(processInstance, ksession);
+    }
 
     @Test
     public void testEventSubprocessSignal() throws Exception {
