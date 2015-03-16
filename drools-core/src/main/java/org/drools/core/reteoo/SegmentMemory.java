@@ -444,6 +444,9 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
             if (memory instanceof AccumulateNode.AccumulateMemory) {
                 return new AccumulateMemoryPrototype((AccumulateNode.AccumulateMemory)memory);
             }
+            if (memory instanceof ReactiveFromNode.ReactiveFromMemory) {
+                return new ReactiveFromMemoryPrototype((ReactiveFromNode.ReactiveFromMemory)memory);
+            }
             return null;
         }
 
@@ -484,6 +487,20 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         @Override
         public void populateMemory(InternalWorkingMemory wm, Memory liaMemory) {
             ((LeftInputAdapterNode.LiaNodeMemory)liaMemory).setNodePosMaskBit(nodePosMaskBit);
+        }
+    }
+
+    public static class ReactiveFromMemoryPrototype extends MemoryPrototype {
+
+        private final long nodePosMaskBit;
+
+        private ReactiveFromMemoryPrototype(ReactiveFromNode.ReactiveFromMemory memory) {
+            this.nodePosMaskBit = memory.getBetaMemory().getNodePosMaskBit();
+        }
+
+        @Override
+        public void populateMemory(InternalWorkingMemory wm, Memory memory) {
+            ((ReactiveFromNode.ReactiveFromMemory)memory).getBetaMemory().setNodePosMaskBit(nodePosMaskBit);
         }
     }
 
