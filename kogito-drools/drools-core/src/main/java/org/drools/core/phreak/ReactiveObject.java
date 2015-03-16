@@ -8,12 +8,14 @@ import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.index.LeftTupleList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.drools.core.phreak.PhreakFromNode.checkConstraintsAndPropagate;
 
 public abstract class ReactiveObject {
-    private final LeftTupleList lts = new LeftTupleList();
+    private final List<LeftTuple> lts = new ArrayList<LeftTuple>();
 
     public void addLeftTuple(LeftTuple leftTuple) {
         lts.add(leftTuple);
@@ -24,7 +26,7 @@ public abstract class ReactiveObject {
     }
 
     protected void notifyModification(Object object) {
-        for (LeftTuple leftTuple = lts.getFirst(); leftTuple != null; leftTuple = (LeftTuple)leftTuple.getNext()) {
+        for (LeftTuple leftTuple : lts) {
             PropagationContext propagationContext = leftTuple.getPropagationContext();
             ReactiveFromNode node = (ReactiveFromNode)leftTuple.getSink();
 

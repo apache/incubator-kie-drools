@@ -6,6 +6,8 @@ import java.util.List;
 
 public class Child extends Person {
 
+    private String mother;
+
     private final List<Toy> toys = new ReactiveList<Toy>();
 
     public Child(String name, int age) {
@@ -18,5 +20,13 @@ public class Child extends Person {
 
     public void addToy(Toy toy) {
         toys.add(toy);
+    }
+
+    public String getMother() {
+        return mother;
+    }
+
+    public void setMother(String mother) {
+        this.mother = mother;
     }
 }

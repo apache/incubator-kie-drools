@@ -56,7 +56,7 @@ public class ReactiveFromNode extends FromNode {
         return NodeTypeEnums.ReactiveFromNode;
     } 
 
-    public static class ReactiveFromMemory extends FromNode.FromMemory{
+    public static class ReactiveFromMemory extends FromNode.FromMemory {
 
         private static final long serialVersionUID = 510l;
 

@@ -2,17 +2,17 @@ package org.drools.compiler.xpath;
 
 public class Woman extends Adult {
 
-    private Man husband;
+    private String husband;
 
     public Woman(String name, int age) {
         super(name, age);
     }
 
-    public Man getHusband() {
+    public String getHusband() {
         return husband;
     }
 
-    public void setHusband(Man husband) {
+    public void setHusband(String husband) {
         this.husband = husband;
     }
 }
