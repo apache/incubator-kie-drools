@@ -7221,4 +7221,37 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertDrlHasCompilationError(drl1, 1);
     }
+
+    @Test
+    public void testJittedConstraintStringAndLong() {
+        // DROOLS-740
+        String drl =
+                " import org.drools.compiler.Person; " +
+                " rule 'hello person' " +
+                " when " +
+                " Person( name == \"Elizabeth\" + new Long(2L) ) " +
+                " then " +
+                " end " +
+                "\n" ;
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                .build()
+                .newKieSession();
+
+        for (int i = 0; i < 20; i++) { // MvelConstraint.JIT_THRESOLD
+            org.drools.compiler.Person p = new org.drools.compiler.Person("Elizabeth2", 88);
+            ksession.insert(p);
+        }
+
+        try {
+			Thread.sleep(1000); // Wait for JIT compile
+		} catch (InterruptedException e) {
+			// ignore
+		}
+
+        org.drools.compiler.Person p = new org.drools.compiler.Person("Elizabeth2", 88);
+        ksession.insert(p);
+
+        assertTrue(true); // no Exception
+    }
 }
