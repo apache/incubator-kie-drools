@@ -7221,4 +7221,23 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertDrlHasCompilationError(drl1, 1);
     }
+
+    @Test
+    public void testJittedConstraintStringAndLong() {
+        // DROOLS-740
+        String drl =
+                " import org.drools.compiler.Person; " +
+                " rule 'hello person' " +
+                " when " +
+                " Person( name == \"Elizabeth\" + new Long(2L) ) " +
+                " then " +
+                " end " +
+                "\n";
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        ksession.insert(new org.drools.compiler.Person("Elizabeth2", 88));
+        assertEquals(1, ksession.fireAllRules());
+    }
 }
