@@ -884,13 +884,13 @@
           the solution would be infeasible but the score function doesn't check built-in hard constraints (for
           performance gain). For example, don't change a gym lecture to a room which is not a gym room.</para>
 
-          <itemizedlist>
-            <listitem>
-              <para>Note that any built-in hard constraint must usually be filtered on every move type. For example,
-              also don't swap the room of a gym lecture with another lecture if the other lecture's original room isn't
-              a gym room.</para>
-            </listitem>
-          </itemizedlist>
+          <note>
+            <para>Any built-in hard constraint must probably be filtered on every move type of every solver phase. For
+            example if it's filters the change move of Local Search, it must also filter the swap move that swaps the
+            room of a gym lecture with another lecture for which the other lecture's original room isn't a gym room.
+            Furthermore, it must also filter the change moves of the Construction Heuristics (which requires an advanced
+            configuration).</para>
+          </note>
         </listitem>
       </itemizedlist>
 

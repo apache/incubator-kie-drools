@@ -21,8 +21,8 @@
       solution</emphasis>.</para>
 
       <para>Planner cannot automatically know which <literal>Solution</literal> is best for your business, so you need
-      to tell it how to calculate the score of a given <literal>Solution</literal> according to your business needs.
-      If you forget or unable to implement an important constraint, the solution is probably useless:</para>
+      to tell it how to calculate the score of a given <literal>Solution</literal> according to your business needs. If
+      you forget or unable to implement an important constraint, the solution is probably useless:</para>
 
       <mediaobject>
         <imageobject>
@@ -30,12 +30,13 @@
         </imageobject>
       </mediaobject>
 
-      <para>Luckily, Planner is very flexible to define constraints, thanks to these score techniques, which can be
-      used and combined as much as needed:</para>
+      <para>Luckily, Planner is very flexible to define constraints, thanks to these score techniques, which can be used
+      and combined as much as needed:</para>
 
       <itemizedlist>
         <listitem>
-          <para><emphasis role="bold">Score signum (positive or negative)</emphasis>: maximize or minimize a constraint type.</para>
+          <para><emphasis role="bold">Score signum (positive or negative)</emphasis>: maximize or minimize a constraint
+          type.</para>
         </listitem>
 
         <listitem>
@@ -187,9 +188,9 @@
 
       <para>Scores are considered equal far more often. It's left up to a human to choose the better out of a set of
       best solutions (with equal scores) found by Planner. In the example above, the user must choose between solution A
-      (3 apples and 1 orange) and solution B (1 apple and 6 oranges). It's guaranteed that Planner has not found
-      another solution which has more apples or more oranges or even a better combination of both (such as 2 apples and
-      3 oranges).</para>
+      (3 apples and 1 orange) and solution B (1 apple and 6 oranges). It's guaranteed that Planner has not found another
+      solution which has more apples or more oranges or even a better combination of both (such as 2 apples and 3
+      oranges).</para>
 
       <para>To implement pareto scoring in Planner, <link linkend="customScore">implement a custom
       <literal>ScoreDefinition</literal> and <literal>Score</literal></link> (and replace the
@@ -197,10 +198,11 @@
 
       <note>
         <para>A pareto <literal>Score</literal>'s <literal>compareTo</literal> method is not transitive because it does
-        a pareto comparison. For example: having 2 apples is greater than 1 apple. 1 apple is equal to 1 orange. Yet, 2 apples
-        are not greater than 1 orange (but actually equal). Pareto comparison violates the contract of the interface
-        <literal>java.lang.Comparable</literal>'s <literal>compareTo</literal> method, but Planner's systems are
-        <emphasis>pareto comparison safe</emphasis>, unless explicitly stated otherwise in this documentation.</para>
+        a pareto comparison. For example: having 2 apples is greater than 1 apple. 1 apple is equal to 1 orange. Yet, 2
+        apples are not greater than 1 orange (but actually equal). Pareto comparison violates the contract of the
+        interface <literal>java.lang.Comparable</literal>'s <literal>compareTo</literal> method, but Planner's systems
+        are <emphasis>pareto comparison safe</emphasis>, unless explicitly stated otherwise in this
+        documentation.</para>
       </note>
     </section>
 
@@ -398,9 +400,9 @@
       <itemizedlist>
         <listitem>
           <para><literal>BENDABLE_Long</literal>: Uses <literal>BendableLongScore</literal> which has
-            <literal>long</literal> values instead of <literal>int</literal> values.
-          </para>
+          <literal>long</literal> values instead of <literal>int</literal> values.</para>
         </listitem>
+
         <listitem>
           <para><literal>BENDABLE_BIG_DECIMAL</literal>: Uses <literal>BendableBigDecimalScore</literal> which has
           <literal>BigDecimal</literal> values instead of <literal>int</literal> values.</para>
@@ -413,8 +415,8 @@
 
       <para>The <literal>ScoreDefinition</literal> interface defines the score representation.</para>
 
-      <para>To implement a custom <literal>Score</literal>, you'll also need to implement a custom <literal>ScoreDefinition</literal>.
-      Extend <literal>AbstractScoreDefinition</literal> (preferably by copy pasting
+      <para>To implement a custom <literal>Score</literal>, you'll also need to implement a custom
+      <literal>ScoreDefinition</literal>. Extend <literal>AbstractScoreDefinition</literal> (preferably by copy pasting
       <literal>HardSoftScoreDefinition</literal>) and start from there.</para>
 
       <para>Then hook your custom <literal>ScoreDefinition</literal> in your
@@ -461,10 +463,10 @@
         This does not apply to <emphasis>logically inserted</emphasis> objects, which can be changed by the score rules
         that logically inserted them in the first place.</para>
 
-        <para>Planner will not recalculate the score of a <literal>Solution</literal> if it can predict it (unless
-        an <link linkend="environmentMode">environmentMode assertion</link> is enabled). For example, after a winning
-        step is done, there is no need to calculate the score because that move was done and undone earlier. As a
-        result, there's no guarantee that such changes applied during score calculation are actually done.</para>
+        <para>Planner will not recalculate the score of a <literal>Solution</literal> if it can predict it (unless an
+        <link linkend="environmentMode">environmentMode assertion</link> is enabled). For example, after a winning step
+        is done, there is no need to calculate the score because that move was done and undone earlier. As a result,
+        there's no guarantee that such changes applied during score calculation are actually done.</para>
       </important>
     </section>
 
@@ -916,9 +918,9 @@
         <section xml:id="droolsScoreCalculationKieBase">
           <title>A KieBase (Possibly Defined by Drools Workbench)</title>
 
-          <para>To build the <literal>KieBase</literal> yourself or to combine Planner with
-          KIE Workbench (formerly known as Guvnor), set the <literal>KieBase</literal> on the
-          <literal>SolverFactory</literal> before building the <literal>Solver</literal>:</para>
+          <para>To build the <literal>KieBase</literal> yourself or to combine Planner with KIE Workbench (formerly
+          known as Guvnor), set the <literal>KieBase</literal> on the <literal>SolverFactory</literal> before building
+          the <literal>Solver</literal>:</para>
 
           <programlisting language="java">    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig.setKieBase(kieBase);</programlisting>
 
@@ -976,9 +978,9 @@ end</programlisting>
         </note>
 
         <note>
-          <para>The <literal>kcontext</literal> variable is a magic variable in Drools Expert. The <literal>scoreHolder</literal>'s method
-          uses it to do incremental score calculation correctly and to create a <literal>ConstraintMatch</literal>
-          instance.</para>
+          <para>The <literal>kcontext</literal> variable is a magic variable in Drools Expert. The
+          <literal>scoreHolder</literal>'s method uses it to do incremental score calculation correctly and to create a
+          <literal>ConstraintMatch</literal> instance.</para>
         </note>
       </section>
 
@@ -1237,20 +1239,30 @@ end</programlisting>
     <section xml:id="buildInHardConstraint">
       <title>Built-in Hard Constraint</title>
 
-      <para>Instead of implementing a hard constraint, you can sometimes make it built-in too. For example: If
-      <literal>Lecture</literal> A should never be assigned to <literal>Room</literal> X, but it uses ValueRangeProvider
-      on Solution, the <literal>Solver</literal> will often try to assign it to <literal>Room</literal> X too (only to
-      find out that it breaks a hard constraint). Use <link linkend="filteredSelection">filtered selection</link> to
-      define that Course A should only be assigned a <literal>Room</literal> other than X.</para>
+      <para>Instead of implementing a hard constraint, it can sometimes be built in. For example: If
+      <literal>Lecture</literal> A should never be assigned to <literal>Room</literal> X, but it uses
+      <literal>ValueRangeProvider</literal> on Solution, so the <literal>Solver</literal> will often try to assign it to
+      <literal>Room</literal> X too (only to find out that it breaks a hard constraint). Use <link
+      linkend="valueRangeProviderOnPlanningEntity">a ValueRangeProvider on the planning entity</link> or <link
+      linkend="filteredSelection">filtered selection</link> to define that Course A should only be assigned a
+      <literal>Room</literal> different than X.</para>
 
-      <para>This tends to give a good performance gain, not just because the score calculation is faster, but mainly
-      because most optimization algorithms will spend less time evaluating unfeasible solutions.</para>
+      <para>This can give a good performance gain in some use cases, not just because the score calculation is faster,
+      but mainly because most optimization algorithms will spend less time evaluating unfeasible solutions. However,
+      usually this not a good idea because there is a real risk of trading short term benefits for long term
+      harm:</para>
 
-      <note>
-        <para>Don't go overboard with this. Many optimization algorithms rely on the freedom to break hard constraints
-        when changing planning entities, to get out of local optima. There is a real risk of trading short term benefits
-        for long term harm.</para>
-      </note>
+      <itemizedlist>
+        <listitem>
+          <para>Many optimization algorithms rely on the freedom to break hard constraints when changing planning
+          entities, to get out of local optima.</para>
+        </listitem>
+
+        <listitem>
+          <para>Both implementation approaches have limitations (feature compatiblity, disabling automatic performance
+          optimizations, ...), as explained in their documentation.</para>
+        </listitem>
+      </itemizedlist>
     </section>
 
     <section xml:id="otherScoreCalculationPerformanceTricks">
@@ -1297,8 +1309,8 @@ end</programlisting>
         </listitem>
 
         <listitem>
-          <para>2 exams need to be conducted at the same time, but you're only moving 1 exam at a time. So the solver has
-          to move one of those exams to another timeslot without moving the other in the same move. Add a
+          <para>2 exams need to be conducted at the same time, but you're only moving 1 exam at a time. So the solver
+          has to move one of those exams to another timeslot without moving the other in the same move. Add a
           coarse-grained move that moves both exams at the same time.</para>
         </listitem>
       </itemizedlist>
@@ -1359,9 +1371,9 @@ end</programlisting>
       <title>stepLimit Benchmark</title>
 
       <para>Not all score constraints have the same performance cost. Sometimes 1 score constraint can kill the score
-      calculation performance outright. Use the <link linkend="benchmarker">Benchmarker</link> to do a 1
-      minute run and check what happens to the average calculation count per second if you comment out all but 1 of the
-      score constraints.</para>
+      calculation performance outright. Use the <link linkend="benchmarker">Benchmarker</link> to do a 1 minute run and
+      check what happens to the average calculation count per second if you comment out all but 1 of the score
+      constraints.</para>
     </section>
 
     <section xml:id="fairnessScoreConstraints">

@@ -655,8 +655,14 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
           the same set of planning value instances. For example, if department A and B can both use room X, then their
           <literal>List&lt;Room&gt;</literal> instances contain the same <literal>Room</literal> instance.</para>
 
+          <note>
+            <para>A <literal>ValueRangeProvider</literal> on the planning entity consumes more memory than
+            <literal>ValueRangeProvider</literal> on the Solution and disables certain automatic performance
+            optimizations.</para>
+          </note>
+
           <warning>
-            <para>A value range on planning entity is not (yet) compatible with a <link
+            <para>A <literal>ValueRangeProvider</literal> on the planning entity is not (yet) compatible with a <link
             linkend="chainedPlanningVariable">chained</link> variable.</para>
           </warning>
         </section>
@@ -1385,8 +1391,8 @@ public class SeatDesignationDependency {
       <section xml:id="createAnUninitializedSolution">
         <title>Create an Uninitialized Solution</title>
 
-        <para>Create a <literal>Solution</literal> instance to represent your planning problem's dataset, so it can be set on the
-        <literal>Solver</literal> as the planning problem to solve. For example in n queens, an
+        <para>Create a <literal>Solution</literal> instance to represent your planning problem's dataset, so it can be
+        set on the <literal>Solver</literal> as the planning problem to solve. For example in n queens, an
         <literal>NQueens</literal> instance is created with the required <literal>Column</literal> and
         <literal>Row</literal> instances and every <literal>Queen</literal> set to a different <literal>column</literal>
         and every <literal>row</literal> set to <literal>null</literal>.</para>
@@ -1631,8 +1637,8 @@ public class SeatDesignationDependency {
         <para>The production mode is the fastest, but it is not reproducible. It is recommended for a production
         environment, unless reproducibility is required.</para>
 
-        <para>In practice, this mode uses no fixed <link linkend="randomNumberGenerator">random seed</link> if no seed is
-        specified.</para>
+        <para>In practice, this mode uses no fixed <link linkend="randomNumberGenerator">random seed</link> if no seed
+        is specified.</para>
       </section>
     </section>
 
@@ -1812,7 +1818,8 @@ INFO  Solving ended: time spent (24), best score (0), average calculate count pe
         <listitem>
           <para><literal>WELL512A</literal>, <literal>WELL1024A</literal>, <literal>WELL19937A</literal>,
           <literal>WELL19937C</literal>, <literal>WELL44497A</literal> and <literal>WELL44497B</literal>: Implementation
-          by <link xlink:href="http://commons.apache.org/proper/commons-math/userguide/random.html">Commons Math</link>.</para>
+          by <link xlink:href="http://commons.apache.org/proper/commons-math/userguide/random.html">Commons
+          Math</link>.</para>
         </listitem>
       </itemizedlist>
 
