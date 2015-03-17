@@ -36,6 +36,8 @@ public class ReactiveFromBuilder implements ReteooComponentBuilder {
                                                       from);
 
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context, node ) );
+        context.setAlphaConstraints(null);
+        context.setBetaconstraints( null );
     }
 
     public boolean requiresLeftActivation(final BuildUtils utils,
