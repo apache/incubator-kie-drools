@@ -50,7 +50,7 @@ public class XpathBenchmarkTest {
 
 
     public static void main(String[] args) {
-        int n = 50000;
+        int n = 100000;
         System.out.println("Relational version");
         runTest(new RelationalTest(), n);
         System.out.println("-------------------------------------");
@@ -152,6 +152,7 @@ public class XpathBenchmarkTest {
         result[1] = System.nanoTime() - start;
 
         assertEquals(n, list.size());
+        ksession.dispose();
 
         return result;
     }
@@ -184,6 +185,7 @@ public class XpathBenchmarkTest {
         result[1] = System.nanoTime() - start;
 
         assertEquals(n * 3, list.size());
+        ksession.dispose();
 
         return result;
     }
@@ -213,6 +215,7 @@ public class XpathBenchmarkTest {
         result[1] = System.nanoTime() - start;
 
         assertEquals(n, list.size());
+        ksession.dispose();
 
         return result;
     }
