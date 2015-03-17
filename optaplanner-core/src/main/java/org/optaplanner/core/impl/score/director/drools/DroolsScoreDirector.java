@@ -95,6 +95,10 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     }
 
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
+        if (workingSolution == null) {
+            throw new IllegalStateException(
+                    "The method setWorkingSolution() must be called before the method getConstraintMatchTotals().");
+        }
         kieSession.fireAllRules();
         return workingScoreHolder.getConstraintMatchTotals();
     }
