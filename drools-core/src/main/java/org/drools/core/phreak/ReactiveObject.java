@@ -1,5 +1,6 @@
 package org.drools.core.phreak;
 
+import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -7,6 +8,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
 
 import java.util.ArrayList;
@@ -36,15 +38,21 @@ public abstract class ReactiveObject {
 
             RightTuple rightTuple = node.createRightTuple(leftTuple, propagationContext, wm, object);
 
+            ContextEntry[] context = mem.getBetaMemory().getContext();
+            BetaConstraints betaConstraints = node.getBetaConstraints();
+            betaConstraints.updateFromTuple(context,
+                                            wm,
+                                            leftTuple);
+
             checkConstraintsAndPropagate(sink,
                                          leftTuple,
                                          rightTuple,
                                          node.getAlphaConstraints(),
-                                         node.getBetaConstraints(),
+                                         betaConstraints,
                                          propagationContext,
                                          wm,
                                          mem,
-                                         mem.getBetaMemory().getContext(),
+                                         context,
                                          RuleNetworkEvaluator.useLeftMemory(node, leftTuple),
                                          mem.getStagedLeftTuples(),
                                          null);

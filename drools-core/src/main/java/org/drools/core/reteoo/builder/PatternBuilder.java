@@ -25,7 +25,6 @@ import org.drools.core.common.InstanceNotEqualsConstraint;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Declaration;
@@ -50,7 +49,6 @@ import org.kie.api.conf.EventProcessingOption;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -160,47 +158,20 @@ public class PatternBuilder
             constraints.alphaConstraints.clear();
         }
     }
-/*
+
     private void buildXpathConstraints(BuildContext context, BuildUtils utils, Pattern pattern, Constraints constraints) {
         if (!constraints.xpathConstraints.isEmpty()) {
             buildTupleSource(context, utils);
 
             List<BetaNodeFieldConstraint> xpathConstraints = context.getBetaconstraints();
-            context.setBetaconstraints(Collections.<BetaNodeFieldConstraint>emptyList());
             buildJoinNode(context, utils);
             context.setBetaconstraints(xpathConstraints);
 
-            context.setAlphaConstraints(null);
-            ReteooComponentBuilder builder = utils.getBuilderFor(From.class);
-            for (XpathConstraint xpathConstraint : constraints.xpathConstraints) {
-                context.incrementCurrentPatternOffset();
-                Declaration declaration = xpathConstraint.getDeclaration();
-
-                Pattern clonedPattern = new Pattern( pattern.getIndex(),
-                                                     context.getCurrentPatternOffset(),
-                                                     new ClassObjectType( xpathConstraint.getResultClass() ),
-                                                     declaration.getIdentifier(),
-                                                     declaration.isInternalFact() );
-
-                declaration.setPattern( clonedPattern );
-                builder.build(context, utils, xpathConstraint.asFrom());
-            }
-        }
-    }
-*/
-    private void buildXpathConstraints(BuildContext context, BuildUtils utils, Pattern pattern, Constraints constraints) {
-        if (!constraints.xpathConstraints.isEmpty()) {
-            buildTupleSource(context, utils);
-
-            List<BetaNodeFieldConstraint> xpathConstraints = context.getBetaconstraints();
-            context.setBetaconstraints(Collections.<BetaNodeFieldConstraint>emptyList());
-            buildJoinNode(context, utils);
-            context.setBetaconstraints(xpathConstraints);
-
-            context.setAlphaConstraints(null);
-            ReteooComponentBuilder builder = utils.getBuilderFor(ReactiveFromNode.class);
+            ReteooComponentBuilder builder = utils.getBuilderFor(XpathConstraint.class);
             for (XpathConstraint xpathConstraint : constraints.xpathConstraints) {
                 for (XpathConstraint.XpathChunk chunk : xpathConstraint.getChunks()) {
+                    context.setAlphaConstraints(chunk.getAlphaConstraints());
+                    context.setBetaconstraints(chunk.getBetaaConstraints());
                     builder.build(context, utils, chunk.asFrom());
                     context.incrementCurrentPatternOffset();
                 }
@@ -216,8 +187,6 @@ public class PatternBuilder
                 declaration.setPattern( clonedPattern );
             }
 
-            context.setAlphaConstraints( null );
-            context.setBetaconstraints( null );
             context.popRuleComponent();
         }
     }

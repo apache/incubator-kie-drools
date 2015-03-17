@@ -23,7 +23,6 @@ import org.drools.core.common.UpdateContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.AddRemoveRule;
-import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuleBuilder;
 import org.drools.core.reteoo.TerminalNode;
@@ -43,6 +42,7 @@ import org.drools.core.rule.QueryElement;
 import org.drools.core.rule.SingleAccumulate;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.rule.WindowReference;
+import org.drools.core.rule.constraint.XpathConstraint;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.drools.core.time.impl.Timer;
 import org.kie.api.conf.EventProcessingOption;
@@ -85,7 +85,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
                                new NamedConsequenceBuilder() );
         this.utils.addBuilder( ConditionalBranch.class,
                                new ConditionalBranchBuilder() );
-        this.utils.addBuilder( ReactiveFromNode.class,
+        this.utils.addBuilder( XpathConstraint.class,
                                new ReactiveFromBuilder() );
     }
 
