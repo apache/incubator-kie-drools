@@ -61,6 +61,11 @@ public class AsyncWorkItemHandler implements WorkItemHandler {
         this(executorService);
         this.commandClass = commandClass;
     }
+    
+    public AsyncWorkItemHandler(Object executorService, String commandClass) {
+        this((ExecutorService) executorService);
+        this.commandClass = commandClass;
+    }
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {

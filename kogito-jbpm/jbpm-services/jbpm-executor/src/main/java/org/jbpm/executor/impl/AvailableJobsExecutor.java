@@ -26,12 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.Asynchronous;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
-import javax.inject.Inject;
-
 import org.apache.commons.io.input.ClassLoaderObjectInputStream;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jbpm.executor.entities.ErrorInfo;
@@ -55,20 +49,17 @@ import org.slf4j.LoggerFactory;
  * defined callbacks about the execution results.
  *
  */
-@Stateless
-@TransactionManagement(TransactionManagementType.BEAN)
 public class AvailableJobsExecutor {
 
     private static final Logger logger = LoggerFactory.getLogger(AvailableJobsExecutor.class);
     private int retries = Integer.parseInt(System.getProperty("org.kie.executor.retry.count", "3"));
 
     private Map<String, Object> contextData = new HashMap<String, Object>();
-   
-    @Inject
+       
     private ExecutorQueryService queryService;
-    @Inject
+   
     private ClassCacheManager classCacheManager;
-    @Inject
+   
     private ExecutorStoreService executorStoreService;
 
     public void setQueryService(ExecutorQueryService queryService) {
@@ -85,7 +76,7 @@ public class AvailableJobsExecutor {
 
 
     @SuppressWarnings("unchecked")
-    @Asynchronous    
+     
     public void executeJob() {
         logger.debug("Executor Thread {} Waking Up!!!", this.toString());
         try {

@@ -28,6 +28,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
+import org.jbpm.executor.ExecutorNotStartedException;
 import org.jbpm.executor.entities.RequestInfo;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.Executor;
@@ -138,6 +139,8 @@ public class ExecutorImpl implements Executor {
             for (int i = 0; i < threadPoolSize; i++) {
             	handle.add(scheduler.scheduleAtFixedRate(executorStoreService.buildExecutorRunnable(), 2, interval, timeunit));
             }
+        } else {
+        	throw new ExecutorNotStartedException();
         }
     }
     
@@ -151,6 +154,8 @@ public class ExecutorImpl implements Executor {
             for (int i = 0; i < threadPoolSize; i++) {
             	handle.add(scheduler.scheduleAtFixedRate(executorStoreService.buildExecutorRunnable(), 2, interval, timeunit));
             }
+        } else {
+        	throw new ExecutorNotStartedException();
         }
     }
     

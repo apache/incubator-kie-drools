@@ -16,8 +16,6 @@
 
 package org.jbpm.executor;
 
-import javax.inject.Named;
-
 import org.kie.internal.executor.api.Command;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ExecutionResults;
@@ -25,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-@Named(value="ThrowExceptionCmd")
 public class ThrowExceptionCommand implements Command{
     
     private static final Logger logger = LoggerFactory.getLogger(ThrowExceptionCommand.class);

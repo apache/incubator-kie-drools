@@ -18,8 +18,6 @@ package org.jbpm.executor;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.inject.Named;
-
 import org.kie.internal.executor.api.CommandCallback;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ExecutionResults;
@@ -27,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-@Named(value = "SimpleIncrementCallback")
 public class SimpleIncrementCallback implements CommandCallback {
     
     private static final Logger logger = LoggerFactory.getLogger(SimpleIncrementCallback.class);

@@ -16,8 +16,6 @@
 
 package org.jbpm.executor.commands;
 
-import javax.inject.Named;
-
 import org.kie.internal.executor.api.Command;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ExecutionResults;
@@ -29,7 +27,6 @@ import org.slf4j.LoggerFactory;
  * Just for demo purpose.
  * 
  */
-@Named(value="PrintOutCmd")
 public class PrintOutCommand implements Command{
     
     private static final Logger logger = LoggerFactory.getLogger(PrintOutCommand.class);

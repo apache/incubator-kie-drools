@@ -16,10 +16,8 @@
 
 package org.jbpm.executor.commands;
 
-import javax.enterprise.inject.spi.BeanManager;
-
+import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.executor.RequeueAware;
-import org.jbpm.executor.cdi.CDIUtils;
 import org.kie.internal.executor.api.Command;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ExecutionResults;
@@ -38,12 +36,12 @@ public class RequeueRunningJobsCommand implements Command{
     private static final Logger logger = LoggerFactory.getLogger(RequeueRunningJobsCommand.class);
 
     public ExecutionResults execute(CommandContext ctx) {
-    	BeanManager manager = CDIUtils.lookUpBeanManager(ctx);
+    	
     
     	Long olderThan = (Long) ctx.getData("MaxRunningTime");
     	Long requestId = (Long) ctx.getData("RequestId");
     	try {
-    		ExecutorService executorService = CDIUtils.createBean(ExecutorService.class, manager);
+    		ExecutorService executorService = ExecutorServiceFactory.newExecutorService(null);
     		if (executorService instanceof RequeueAware) {
     			
     			if (requestId != null) {

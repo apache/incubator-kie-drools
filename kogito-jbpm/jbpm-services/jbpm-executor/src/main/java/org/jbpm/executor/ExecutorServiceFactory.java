@@ -48,7 +48,6 @@ import org.slf4j.LoggerFactory;
 public class ExecutorServiceFactory {
 
 	private final static String mode = System.getProperty( "org.jbpm.cdi.executor.mode", "singleton" );
-    private final static String ejb_mode = System.getProperty("org.jbpm.ejb.executor.mode", "enabled");
 
 	private static final Logger logger = LoggerFactory.getLogger(ExecutorServiceFactory.class);
    
@@ -144,15 +143,10 @@ public class ExecutorServiceFactory {
         ExecutorRunnable runnable = new ExecutorRunnable();
         AvailableJobsExecutor jobExecutor = null;
 
-
-        if (!"enabled".equals(ejb_mode)) {
+        try {
+            jobExecutor = InitialContext.doLookup("java:module/AvailableJobsExecutor");
+        } catch (Exception e) {
             jobExecutor = buildJobExecutor(emf);
-        } else {
-            try {
-                jobExecutor = InitialContext.doLookup("java:module/AvailableJobsExecutor");
-            } catch (Exception e) {
-                jobExecutor = buildJobExecutor(emf);
-            }
         }
         runnable.setAvailableJobsExecutor(jobExecutor);
         return runnable;
@@ -180,7 +174,7 @@ public class ExecutorServiceFactory {
             Object beanManager = InitialContext.doLookup("java:comp/BeanManager");
             jobExecutor.addContextData("BeanManager", beanManager);
         } catch (NamingException ex) {
-            logger.warn("CDI beans cannot be used in executor commands, because no CDI manager has been found in JNDI.");
+            logger.debug("CDI beans cannot be used in executor commands, because no CDI manager has been found in JNDI.");
         }
         return jobExecutor;
     }
@@ -207,10 +201,9 @@ public class ExecutorServiceFactory {
 				Object beanManager = InitialContext.doLookup("java:comp/BeanManager");
 				jobExecutor.addContextData("BeanManager", beanManager);
 			} catch (NamingException ex) {
-				logger.warn("CDI beans cannot be used in executor commands, because no CDI manager has been found in JNDI.");
+				logger.debug("CDI beans cannot be used in executor commands, because no CDI manager has been found in JNDI.");
 			}
     	}
-
         runnable.setAvailableJobsExecutor(jobExecutor);
         return runnable;
     }

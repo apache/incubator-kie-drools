@@ -19,6 +19,7 @@
         <module>jbpm-services-cdi</module>
         <module>jbpm-services-ejb</module>
         <module>jbpm-executor</module>
+        <module>jbpm-executor-cdi</module>
     </modules>
 
     <properties>

@@ -1,2 +1,3 @@
 org.jbpm.runtime.manager.impl.deploy.ReflectionObjectModelResolver
 org.jbpm.runtime.manager.impl.deploy.MVELObjectModelResolver
+org.jbpm.runtime.manager.impl.deploy.EjbObjectModelResolver

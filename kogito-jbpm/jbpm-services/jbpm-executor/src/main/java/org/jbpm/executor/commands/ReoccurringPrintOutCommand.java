@@ -18,8 +18,6 @@ package org.jbpm.executor.commands;
 
 import java.util.Date;
 
-import javax.inject.Named;
-
 import org.kie.internal.executor.api.Command;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ExecutionResults;
@@ -32,7 +30,6 @@ import org.slf4j.LoggerFactory;
  * Just for demo purpose.
  * 
  */
-@Named(value="ReoccurringPrintOutCommand")
 public class ReoccurringPrintOutCommand implements Command, Reoccurring {
     
     private static final Logger logger = LoggerFactory.getLogger(ReoccurringPrintOutCommand.class);

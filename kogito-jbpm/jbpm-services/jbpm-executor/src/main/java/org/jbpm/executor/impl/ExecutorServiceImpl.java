@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.jbpm.executor.ExecutorNotStartedException;
 import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.executor.RequeueAware;
 import org.kie.internal.executor.api.CommandContext;
@@ -48,6 +49,9 @@ public class ExecutorServiceImpl implements ExecutorService, RequeueAware {
     
     private ExecutorAdminService adminService;
     
+    public ExecutorServiceImpl(){
+    	
+    }
 
     public ExecutorServiceImpl(Executor executor) {
     }
@@ -130,8 +134,12 @@ public class ExecutorServiceImpl implements ExecutorService, RequeueAware {
     		if (maxRunningTime > -1) {
     			requeue(maxRunningTime);
     		}
-	        executor.init();
-	        this.executorStarted = true;
+    		try {
+		        executor.init();
+		        this.executorStarted = true;
+    		} catch (ExecutorNotStartedException e) {
+    			this.executorStarted = false;
+    		}
     	}
     }
     

@@ -22,9 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.internal.executor.api.Command;
 import org.kie.internal.executor.api.CommandCallback;
 import org.kie.internal.executor.api.CommandContext;
@@ -37,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * Simple cache to keep classes of commands and callback to not attempt to load them every time.
  *
  */
-@ApplicationScoped
+
 public class ClassCacheManager {
     
     private static final Logger logger = LoggerFactory.getLogger(ClassCacheManager.class);
@@ -146,8 +143,7 @@ public class ClassCacheManager {
     		((Cacheable) instance).close();
     	}
     }
-    
-    @PreDestroy
+        
     public void dispose() {
     	if (commandCache != null) {
     		for (Object command : commandCache.values()) {
