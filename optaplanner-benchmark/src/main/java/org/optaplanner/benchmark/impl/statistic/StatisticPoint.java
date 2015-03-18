@@ -71,7 +71,7 @@ public abstract class StatisticPoint {
                 if (i >= tokens.length) {
                     throw new IllegalArgumentException("The CSV line (" + line + ") is not a valid CSV line.");
                 }
-                token += tokens[i];
+                token += "," + tokens[i];
             }
             token = token.trim();
             if (token.startsWith("\"") && token.endsWith("\"")) {
