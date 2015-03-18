@@ -34,6 +34,7 @@ import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import org.apache.commons.lang.StringUtils;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
@@ -107,7 +108,7 @@ public class TspWorldPanel extends JPanel {
             int y = translator.translateLatitudeToY(location.getLatitude());
             g.fillRect(x - 1, y - 1, 3, 3);
             if (location.getName() != null && visitList.size() <= 500) {
-                g.drawString(location.getName(), x + 3, y - 3);
+                g.drawString(StringUtils.abbreviate(location.getName(), 20), x + 3, y - 3);
             }
         }
         g.setColor(TangoColorFactory.ALUMINIUM_4);

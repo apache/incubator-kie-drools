@@ -125,7 +125,7 @@ public class TspImporter extends AbstractTxtSolutionImporter {
             List<Location> locationList = new ArrayList<Location>(locationListSize);
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
-                String[] lineTokens = splitBySpace(line, 3, 4);
+                String[] lineTokens = splitBySpace(line, 3, 4, false, true);
                 Location location;
                 switch (distanceType) {
                     case AIR_DISTANCE:
