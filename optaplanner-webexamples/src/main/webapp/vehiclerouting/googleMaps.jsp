@@ -35,6 +35,7 @@
 </div>
 
 <jsp:include page="/common/foot.jsp"/>
+<!-- Use your own Google Maps API key -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyARbEBUNSIVYgKaVXJcD3-s7Un2YYY0JTk"></script>
 <script type="text/javascript">
   var map;
