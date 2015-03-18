@@ -20,7 +20,7 @@ public class MVELSafeHelper {
     private MVELSafeHelper() {
     }
 
-    public static synchronized MVELEvaluator getEvaluator() {
+    public static MVELEvaluator getEvaluator() {
         return evaluator;
     }
 
