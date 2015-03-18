@@ -257,7 +257,9 @@ public class JaxbTask implements InternalTask {
             List<Comment> comments = new ArrayList<Comment>(jaxbComments.size());
             for( Comment jaxbComment : jaxbComments ) { 
                 InternalComment comment = (InternalComment) TaskModelProvider.getFactory().newComment();
-                comment.setId(jaxbComment.getId());
+                if( jaxbComment.getId() != null ) {
+                    comment.setId(jaxbComment.getId());
+                }
                 comment.setAddedAt(jaxbComment.getAddedAt());
                 comment.setAddedBy(createUser(((JaxbComment) jaxbComment).getAddedById()));
                 comment.setText(jaxbComment.getText());
@@ -270,7 +272,9 @@ public class JaxbTask implements InternalTask {
             List<Attachment> attachments = new ArrayList<Attachment>(jaxbAttachments.size());
             for( Attachment jaxbAttach : jaxbAttachments ) { 
                 InternalAttachment attach = (InternalAttachment) TaskModelProvider.getFactory().newAttachment();
-                attach.setId(jaxbAttach.getId());
+                if( jaxbAttach.getId() != null ) { 
+                    attach.setId(jaxbAttach.getId());
+                }
                 attach.setName(jaxbAttach.getName());
                 attach.setContentType(jaxbAttach.getContentType());
                 attach.setAttachedAt(jaxbAttach.getAttachedAt());
