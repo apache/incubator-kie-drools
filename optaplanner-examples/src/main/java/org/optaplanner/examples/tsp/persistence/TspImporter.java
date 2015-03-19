@@ -49,6 +49,10 @@ public class TspImporter extends AbstractTxtSolutionImporter {
         super(new TspDao());
     }
 
+    public TspImporter(boolean withoutDao) {
+        super(withoutDao);
+    }
+
     @Override
     public String getInputFileSuffix() {
         return INPUT_FILE_SUFFIX;
