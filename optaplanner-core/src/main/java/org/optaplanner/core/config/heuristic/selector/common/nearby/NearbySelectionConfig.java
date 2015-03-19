@@ -237,7 +237,7 @@ public class NearbySelectionConfig extends SelectorConfig {
                     + ") has both parabolicDistribution and betaDistribution parameters.");
         }
         if (blockDistributionEnabled) {
-            int sizeMinimum = blockDistributionSizeMinimum == null ? 0 : blockDistributionSizeMinimum;
+            int sizeMinimum = blockDistributionSizeMinimum == null ? 1 : blockDistributionSizeMinimum;
             int sizeMaximum = blockDistributionSizeMaximum == null ? Integer.MAX_VALUE : blockDistributionSizeMaximum;
             double sizeRatio = blockDistributionSizeRatio == null ? 1.0 : blockDistributionSizeRatio;
             double uniformDistributionProbability = blockDistributionUniformDistributionProbability == null ? 0.0 : blockDistributionUniformDistributionProbability;
