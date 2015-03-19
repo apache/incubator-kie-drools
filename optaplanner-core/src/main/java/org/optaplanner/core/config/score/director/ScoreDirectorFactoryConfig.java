@@ -201,14 +201,31 @@ public class ScoreDirectorFactoryConfig {
 
     protected InnerScoreDirectorFactory buildScoreDirectorFactory(EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition) {
+        AbstractScoreDirectorFactory easyScoreDirectorFactory = buildEasyScoreDirectorFactory();
+        AbstractScoreDirectorFactory incrementalScoreDirectorFactory = buildIncrementalScoreDirectorFactory();
+        AbstractScoreDirectorFactory droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory();
         AbstractScoreDirectorFactory scoreDirectorFactory;
-        // TODO this should fail-fast if multiple scoreDirectorFactory's are configured or if none are configured
-        scoreDirectorFactory = buildEasyScoreDirectorFactory();
-        if (scoreDirectorFactory == null) {
-            scoreDirectorFactory = buildIncrementalScoreDirectorFactory();
-        }
-        if (scoreDirectorFactory == null) {
-            scoreDirectorFactory = buildDroolsScoreDirectorFactory();
+        if (easyScoreDirectorFactory != null) {
+            if (incrementalScoreDirectorFactory != null) {
+                throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
+                        + "both an easyScoreDirectorFactory and an incrementalScoreDirectorFactory.");
+            }
+            if (droolsScoreDirectorFactory != null) {
+                throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
+                        + "both an easyScoreDirectorFactory and an droolsScoreDirectorFactory.");
+            }
+            scoreDirectorFactory = easyScoreDirectorFactory;
+        } else if (incrementalScoreDirectorFactory != null) {
+            if (droolsScoreDirectorFactory != null) {
+                throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
+                        + "both an incrementalScoreDirectorFactory and an droolsScoreDirectorFactory.");
+            }
+            scoreDirectorFactory = incrementalScoreDirectorFactory;
+        } else if (droolsScoreDirectorFactory != null) {
+            scoreDirectorFactory = droolsScoreDirectorFactory;
+        } else {
+            throw new IllegalArgumentException("The scoreDirectorFactory lacks a configuration for an "
+                    + "easyScoreDirectorFactory, an incrementalScoreDirectorFactory or a droolsScoreDirectorFactory.");
         }
         scoreDirectorFactory.setSolutionDescriptor(solutionDescriptor);
         scoreDirectorFactory.setScoreDefinition(scoreDefinition);
@@ -327,11 +344,6 @@ public class ScoreDirectorFactoryConfig {
     }
 
     private AbstractScoreDirectorFactory buildDroolsScoreDirectorFactory() {
-        DroolsScoreDirectorFactory scoreDirectorFactory = new DroolsScoreDirectorFactory(buildKieBase());
-        return scoreDirectorFactory;
-    }
-
-    private KieBase buildKieBase() {
         if (kieBase != null) {
             if (!ConfigUtils.isEmptyCollection(scoreDrlList) || !ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
                 throw new IllegalArgumentException("If kieBase is not null, the scoreDrlList (" + scoreDrlList
@@ -341,12 +353,8 @@ public class ScoreDirectorFactoryConfig {
                 throw new IllegalArgumentException("If kieBase is not null, the kieBaseConfigurationProperties ("
                         + kieBaseConfigurationProperties + ") must be null.");
             }
-            return kieBase;
-        } else {
-            if (ConfigUtils.isEmptyCollection(scoreDrlList) && ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
-                throw new IllegalArgumentException("The scoreDrlList (" + scoreDrlList
-                        + ") and the scoreDrlFileList (" + scoreDrlFileList + ") cannot both be empty.");
-            }
+            return new DroolsScoreDirectorFactory(kieBase);
+        } else if (!ConfigUtils.isEmptyCollection(scoreDrlList) || !ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
             KieServices kieServices = KieServices.Factory.get();
             KieResources kieResources = kieServices.getResources();
             KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
@@ -398,7 +406,16 @@ public class ScoreDirectorFactoryConfig {
                     kieBaseConfiguration.setProperty(entry.getKey(), entry.getValue());
                 }
             }
-            return kieContainer.newKieBase(kieBaseConfiguration);
+            KieBase kieBase = kieContainer.newKieBase(kieBaseConfiguration);
+            return new DroolsScoreDirectorFactory(kieBase);
+        } else {
+            if (kieBaseConfigurationProperties != null) {
+                throw new IllegalArgumentException(
+                        "If kieBaseConfigurationProperties (" + kieBaseConfigurationProperties
+                        + ") is not null, the scoreDrlList (" + scoreDrlList
+                        + ") and the scoreDrlFileList (" + scoreDrlFileList + ") must not be empty.");
+            }
+            return null;
         }
     }
 
