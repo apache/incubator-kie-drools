@@ -2352,38 +2352,37 @@ public class PackageBuilder
      */
     List<TypeDefinition> processTypeDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr, List<TypeDefinition> unresolvedTypes) {
         for (AbstractClassTypeDeclarationDescr typeDescr : packageDescr.getClassAndEnumDeclarationDescrs()) {
-            if (filterAccepts(typeDescr.getNamespace(), typeDescr.getTypeName()) ) {
-
-                String qName = typeDescr.getType().getFullName();
-                Class<?> typeClass = getClassForType(qName);
-                if (typeClass == null) {
-                    typeClass = getClassForType(typeDescr.getTypeName());
-                }
-                if (typeClass == null) {
-                    for (ImportDescr id : packageDescr.getImports()) {
-                        String imp = id.getTarget();
-                        int separator = imp.lastIndexOf('.');
-                        String tail = imp.substring(separator + 1);
-                        if (tail.equals(typeDescr.getTypeName())) {
+            String qName = typeDescr.getType().getFullName();
+            Class<?> typeClass = getClassForType(qName);
+            if (typeClass == null) {
+                typeClass = getClassForType(typeDescr.getTypeName());
+            }
+            if (typeClass == null) {
+                for (ImportDescr id : packageDescr.getImports()) {
+                    String imp = id.getTarget();
+                    int separator = imp.lastIndexOf('.');
+                    String tail = imp.substring(separator + 1);
+                    if (tail.equals(typeDescr.getTypeName())) {
+                        typeDescr.setNamespace(imp.substring(0, separator));
+                        typeClass = getClassForType(typeDescr.getType().getFullName());
+                        break;
+                    } else if (tail.equals("*")) {
+                        typeClass = getClassForType(imp.substring(0, imp.length() - 1) + typeDescr.getType().getName());
+                        if (typeClass != null) {
                             typeDescr.setNamespace(imp.substring(0, separator));
-                            typeClass = getClassForType(typeDescr.getType().getFullName());
                             break;
-                        } else if (tail.equals("*")) {
-                            typeClass = getClassForType(imp.substring(0, imp.length() - 1) + typeDescr.getType().getName());
-                            if (typeClass != null) {
-                                typeDescr.setNamespace(imp.substring(0, separator));
-                                break;
-                            }
                         }
                     }
                 }
-                String className = typeClass != null ? typeClass.getName() : qName;
-                int dotPos = className.lastIndexOf('.');
-                if (dotPos >= 0) {
-                    typeDescr.setNamespace(className.substring(0, dotPos));
-                    typeDescr.setTypeName(className.substring(dotPos + 1));
-                }
+            }
+            String className = typeClass != null ? typeClass.getName() : qName;
+            int dotPos = className.lastIndexOf('.');
+            if (dotPos >= 0) {
+                typeDescr.setNamespace(className.substring(0, dotPos));
+                typeDescr.setTypeName(className.substring(dotPos + 1));
+            }
 
+            if (filterAccepts(typeDescr.getNamespace(), typeDescr.getTypeName()) ) {
                 if (isEmpty(typeDescr.getNamespace()) && typeDescr.getFields().isEmpty()) {
                     // might be referencing a class imported with a package import (.*)
                     PackageRegistry pkgReg = this.pkgRegistryMap.get(packageDescr.getName());
