@@ -34,6 +34,7 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.io.KieResources;
 import org.kie.api.runtime.KieContainer;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -196,6 +197,13 @@ public class ScoreDirectorFactoryConfig {
     public InnerScoreDirectorFactory buildScoreDirectorFactory(EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor) {
         ScoreDefinition scoreDefinition = buildScoreDefinition();
+        Class<? extends Score> solutionScoreClass = solutionDescriptor.extractScoreClass();
+        if (!solutionScoreClass.isAssignableFrom(scoreDefinition.getScoreClass())) {
+            throw new IllegalArgumentException("The solutionScoreClass (" + solutionScoreClass
+                    + ") of solutionClass (" + solutionDescriptor.getSolutionClass()
+                    + ") is the same or a superclass as the scoreDefinition's scoreClass ("
+                    + scoreDefinition.getScoreClass() + ").");
+        }
         return buildScoreDirectorFactory(environmentMode, solutionDescriptor, scoreDefinition);
     }
 

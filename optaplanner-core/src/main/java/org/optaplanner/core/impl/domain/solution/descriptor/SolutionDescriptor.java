@@ -36,6 +36,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.PlanningCloneable;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
@@ -188,6 +189,18 @@ public class SolutionDescriptor {
 
     public Class<? extends Solution> getSolutionClass() {
         return solutionClass;
+    }
+
+    /**
+     * @return the {@link Class} of {@link Solution#getScore()}
+     */
+    public Class<? extends Score> extractScoreClass() {
+        try {
+            return (Class<? extends Score>) solutionClass.getMethod("getScore").getReturnType();
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException("Impossible situation: a solutionClass (" + solutionClass
+                    + ") which implements the interface Solution, lacks its getScore() method.", e);
+        }
     }
 
     public SolutionCloner getSolutionCloner() {
