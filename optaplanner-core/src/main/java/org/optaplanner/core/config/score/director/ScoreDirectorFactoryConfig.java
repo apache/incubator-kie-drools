@@ -199,66 +199,6 @@ public class ScoreDirectorFactoryConfig {
         return buildScoreDirectorFactory(environmentMode, solutionDescriptor, scoreDefinition);
     }
 
-    protected InnerScoreDirectorFactory buildScoreDirectorFactory(EnvironmentMode environmentMode,
-            SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition) {
-        AbstractScoreDirectorFactory easyScoreDirectorFactory = buildEasyScoreDirectorFactory();
-        AbstractScoreDirectorFactory incrementalScoreDirectorFactory = buildIncrementalScoreDirectorFactory();
-        AbstractScoreDirectorFactory droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory();
-        AbstractScoreDirectorFactory scoreDirectorFactory;
-        if (easyScoreDirectorFactory != null) {
-            if (incrementalScoreDirectorFactory != null) {
-                throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
-                        + "both an easyScoreDirectorFactory and an incrementalScoreDirectorFactory.");
-            }
-            if (droolsScoreDirectorFactory != null) {
-                throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
-                        + "both an easyScoreDirectorFactory and an droolsScoreDirectorFactory.");
-            }
-            scoreDirectorFactory = easyScoreDirectorFactory;
-        } else if (incrementalScoreDirectorFactory != null) {
-            if (droolsScoreDirectorFactory != null) {
-                throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
-                        + "both an incrementalScoreDirectorFactory and an droolsScoreDirectorFactory.");
-            }
-            scoreDirectorFactory = incrementalScoreDirectorFactory;
-        } else if (droolsScoreDirectorFactory != null) {
-            scoreDirectorFactory = droolsScoreDirectorFactory;
-        } else {
-            throw new IllegalArgumentException("The scoreDirectorFactory lacks a configuration for an "
-                    + "easyScoreDirectorFactory, an incrementalScoreDirectorFactory or a droolsScoreDirectorFactory.");
-        }
-        scoreDirectorFactory.setSolutionDescriptor(solutionDescriptor);
-        scoreDirectorFactory.setScoreDefinition(scoreDefinition);
-        if (assertionScoreDirectorFactory != null) {
-            if (assertionScoreDirectorFactory.getAssertionScoreDirectorFactory() != null) {
-                throw new IllegalArgumentException("A assertionScoreDirectorFactory ("
-                        + assertionScoreDirectorFactory + ") cannot have a non-null assertionScoreDirectorFactory ("
-                        + assertionScoreDirectorFactory.getAssertionScoreDirectorFactory() + ").");
-            }
-            if (assertionScoreDirectorFactory.getScoreDefinitionClass() != null
-                    || assertionScoreDirectorFactory.getScoreDefinitionType() != null) {
-                throw new IllegalArgumentException("A assertionScoreDirectorFactory ("
-                        + assertionScoreDirectorFactory + ") must reuse the scoreDefinition of its parent." +
-                        " It cannot have a non-null scoreDefinition* property.");
-            }
-            if (environmentMode.compareTo(EnvironmentMode.FAST_ASSERT) > 0) {
-                throw new IllegalArgumentException("A non-null assertionScoreDirectorFactory ("
-                        + assertionScoreDirectorFactory + ") requires an environmentMode ("
-                        + environmentMode + ") of " + EnvironmentMode.FAST_ASSERT + " or lower.");
-            }
-            scoreDirectorFactory.setAssertionScoreDirectorFactory(
-                    assertionScoreDirectorFactory.buildScoreDirectorFactory(
-                            EnvironmentMode.PRODUCTION, solutionDescriptor, scoreDefinition));
-        }
-        scoreDirectorFactory.setInitializingScoreTrend(InitializingScoreTrend.parseTrend(
-                initializingScoreTrend == null ? InitializingScoreTrendLevel.ANY.name() : initializingScoreTrend,
-                scoreDefinition.getLevelsSize()));
-        if (environmentMode.isNonIntrusiveFullAsserted()) {
-            scoreDirectorFactory.setAssertClonedSolution(true);
-        }
-        return scoreDirectorFactory;
-    }
-
     public ScoreDefinition buildScoreDefinition() {
         if (scoreDefinitionType != ScoreDefinitionType.BENDABLE
                 && scoreDefinitionType != ScoreDefinitionType.BENDABLE_LONG
@@ -318,6 +258,66 @@ public class ScoreDirectorFactoryConfig {
         } else {
             return new SimpleScoreDefinition();
         }
+    }
+
+    protected InnerScoreDirectorFactory buildScoreDirectorFactory(EnvironmentMode environmentMode,
+            SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition) {
+        AbstractScoreDirectorFactory easyScoreDirectorFactory = buildEasyScoreDirectorFactory();
+        AbstractScoreDirectorFactory incrementalScoreDirectorFactory = buildIncrementalScoreDirectorFactory();
+        AbstractScoreDirectorFactory droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory();
+        AbstractScoreDirectorFactory scoreDirectorFactory;
+        if (easyScoreDirectorFactory != null) {
+            if (incrementalScoreDirectorFactory != null) {
+                throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
+                        + "both an easyScoreDirectorFactory and an incrementalScoreDirectorFactory.");
+            }
+            if (droolsScoreDirectorFactory != null) {
+                throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
+                        + "both an easyScoreDirectorFactory and an droolsScoreDirectorFactory.");
+            }
+            scoreDirectorFactory = easyScoreDirectorFactory;
+        } else if (incrementalScoreDirectorFactory != null) {
+            if (droolsScoreDirectorFactory != null) {
+                throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
+                        + "both an incrementalScoreDirectorFactory and an droolsScoreDirectorFactory.");
+            }
+            scoreDirectorFactory = incrementalScoreDirectorFactory;
+        } else if (droolsScoreDirectorFactory != null) {
+            scoreDirectorFactory = droolsScoreDirectorFactory;
+        } else {
+            throw new IllegalArgumentException("The scoreDirectorFactory lacks a configuration for an "
+                    + "easyScoreDirectorFactory, an incrementalScoreDirectorFactory or a droolsScoreDirectorFactory.");
+        }
+        scoreDirectorFactory.setSolutionDescriptor(solutionDescriptor);
+        scoreDirectorFactory.setScoreDefinition(scoreDefinition);
+        if (assertionScoreDirectorFactory != null) {
+            if (assertionScoreDirectorFactory.getAssertionScoreDirectorFactory() != null) {
+                throw new IllegalArgumentException("A assertionScoreDirectorFactory ("
+                        + assertionScoreDirectorFactory + ") cannot have a non-null assertionScoreDirectorFactory ("
+                        + assertionScoreDirectorFactory.getAssertionScoreDirectorFactory() + ").");
+            }
+            if (assertionScoreDirectorFactory.getScoreDefinitionClass() != null
+                    || assertionScoreDirectorFactory.getScoreDefinitionType() != null) {
+                throw new IllegalArgumentException("A assertionScoreDirectorFactory ("
+                        + assertionScoreDirectorFactory + ") must reuse the scoreDefinition of its parent." +
+                        " It cannot have a non-null scoreDefinition* property.");
+            }
+            if (environmentMode.compareTo(EnvironmentMode.FAST_ASSERT) > 0) {
+                throw new IllegalArgumentException("A non-null assertionScoreDirectorFactory ("
+                        + assertionScoreDirectorFactory + ") requires an environmentMode ("
+                        + environmentMode + ") of " + EnvironmentMode.FAST_ASSERT + " or lower.");
+            }
+            scoreDirectorFactory.setAssertionScoreDirectorFactory(
+                    assertionScoreDirectorFactory.buildScoreDirectorFactory(
+                            EnvironmentMode.PRODUCTION, solutionDescriptor, scoreDefinition));
+        }
+        scoreDirectorFactory.setInitializingScoreTrend(InitializingScoreTrend.parseTrend(
+                initializingScoreTrend == null ? InitializingScoreTrendLevel.ANY.name() : initializingScoreTrend,
+                scoreDefinition.getLevelsSize()));
+        if (environmentMode.isNonIntrusiveFullAsserted()) {
+            scoreDirectorFactory.setAssertClonedSolution(true);
+        }
+        return scoreDirectorFactory;
     }
 
     private AbstractScoreDirectorFactory buildEasyScoreDirectorFactory() {
