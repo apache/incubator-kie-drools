@@ -32,9 +32,9 @@ public class BlockDistributionNearbyRandom implements NearbyRandom {
         this.sizeMaximum = sizeMaximum;
         this.sizeRatio = sizeRatio;
         this.uniformDistributionProbability = uniformDistributionProbability;
-        if (sizeMinimum < 0) {
+        if (sizeMinimum < 1) {
             throw new IllegalArgumentException("The sizeMinimum (" + sizeMinimum
-                    + ") must be at least 0.");
+                    + ") must be at least 1.");
         }
         if (sizeMaximum < sizeMinimum) {
             throw new IllegalArgumentException("The sizeMaximum (" + sizeMaximum
