@@ -16,6 +16,7 @@
 
 package org.optaplanner.examples.tsp.domain;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -122,6 +123,33 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         facts.add(domicile);
         // Do not add the planning entity's (visitList) because that will be done automatically
         return facts;
+    }
+
+    public String getDistanceString(NumberFormat numberFormat) {
+        if (score == null) {
+            return null;
+        }
+        long distance = - score.getScore();
+        if (distanceUnitOfMeasurement == null) {
+            return numberFormat.format(((double) distance) / 1000.0);
+        }
+        if (distanceUnitOfMeasurement.equals("sec")) { // TODO why are the values 1000 larger?
+            long hours = distance / 3600000;
+            long minutes = distance % 3600000 / 60000;
+            long seconds = distance % 60000 / 1000;
+            long milliseconds = distance % 1000;
+            return hours + "h " + minutes + "m " + seconds + "s " + milliseconds + "ms";
+        } else if (distanceUnitOfMeasurement.equals("km")) { // TODO why are the values 1000 larger?
+            long km = distance / 1000;
+            long meter = distance % 1000;
+            return km + "km " + meter + "m";
+        } else if (distanceUnitOfMeasurement.equals("meter")) {
+            long km = distance / 1000;
+            long meter = distance % 1000;
+            return km + "km " + meter + "m";
+        } else {
+            return numberFormat.format(((double) distance) / 1000.0) + " " + distanceUnitOfMeasurement;
+        }
     }
 
 }

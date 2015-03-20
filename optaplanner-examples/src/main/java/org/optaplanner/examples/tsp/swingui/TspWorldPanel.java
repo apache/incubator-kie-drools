@@ -161,11 +161,10 @@ public class TspWorldPanel extends JPanel {
         g.setColor(TangoColorFactory.ORANGE_3);
         SimpleLongScore score = travelingSalesmanTour.getScore();
         if (score != null) {
-            double fuel = ((double) - score.getScore()) / 1000.0;
-            String fuelString = NUMBER_FORMAT.format(fuel) + " fuel";
+            String distanceString = travelingSalesmanTour.getDistanceString(NUMBER_FORMAT);
             g.setFont(g.getFont().deriveFont(Font.BOLD, (float) TEXT_SIZE * 2));
-            g.drawString(fuelString,
-                    (int) width - g.getFontMetrics().stringWidth(fuelString) - 10, (int) height - 10 - TEXT_SIZE);
+            g.drawString(distanceString,
+                    (int) width - g.getFontMetrics().stringWidth(distanceString) - 10, (int) height - 10 - TEXT_SIZE);
         }
         repaint();
     }

@@ -143,13 +143,17 @@ public class VehicleRoutingSolution extends AbstractPersistable implements Solut
         if (distanceUnitOfMeasurement == null) {
             return numberFormat.format(((double) distance) / 1000.0);
         }
-        if (distanceUnitOfMeasurement.equals("sec")) {
+        if (distanceUnitOfMeasurement.equals("sec")) { // TODO why are the values 1000 larger?
             int hours = distance / 3600000;
             int minutes = distance % 3600000 / 60000;
             int seconds = distance % 60000 / 1000;
             int milliseconds = distance % 1000;
             return hours + "h " + minutes + "m " + seconds + "s " + milliseconds + "ms";
-        } else if (distanceUnitOfMeasurement.equals("km")) {
+        } else if (distanceUnitOfMeasurement.equals("km")) { // TODO why are the values 1000 larger?
+            int km = distance / 1000;
+            int meter = distance % 1000;
+            return km + "km " + meter + "m";
+        } else if (distanceUnitOfMeasurement.equals("meter")) {
             int km = distance / 1000;
             int meter = distance % 1000;
             return km + "km " + meter + "m";
