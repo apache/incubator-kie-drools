@@ -21,14 +21,29 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.io.IOUtils;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.examples.common.app.LoggingMain;
+import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
-import org.optaplanner.examples.tsp.domain.location.Location;
+import org.optaplanner.examples.tsp.domain.Visit;
 import org.optaplanner.examples.tsp.persistence.TspImporter;
+import org.optaplanner.examples.vehiclerouting.domain.Customer;
+import org.optaplanner.examples.vehiclerouting.domain.Depot;
+import org.optaplanner.examples.vehiclerouting.domain.Standstill;
+import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.domain.location.AirLocation;
+import org.optaplanner.examples.vehiclerouting.domain.location.DistanceType;
+import org.optaplanner.examples.vehiclerouting.domain.location.Location;
+import org.optaplanner.examples.vehiclerouting.domain.location.RoadLocation;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingDao;
 
 public class VehicleRoutingTspBasedGenerator extends LoggingMain {
@@ -74,14 +89,14 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
             vrpWriter.write("EDGE_WEIGHT_TYPE: EUC_2D\n");
             vrpWriter.write("CAPACITY: " + capacity + "\n");
             vrpWriter.write("NODE_COORD_SECTION\n");
-            List<Location> locationList = tour.getLocationList();
-            double selectionDecrement = (double) locationListSize / (double) locationList.size();
+            List<org.optaplanner.examples.tsp.domain.location.Location> tspLocationList = tour.getLocationList();
+            double selectionDecrement = (double) locationListSize / (double) tspLocationList.size();
             double selection = (double) locationListSize;
             int index = 1;
-            for (Location location : locationList) {
+            for (org.optaplanner.examples.tsp.domain.location.Location tspLocation : tspLocationList) {
                 double newSelection = selection - selectionDecrement;
                 if ((int) newSelection < (int) selection) {
-                    vrpWriter.write(index + " " + location.getLatitude() + " " + location.getLongitude() + "\n");
+                    vrpWriter.write(index + " " + tspLocation.getLatitude() + " " + tspLocation.getLongitude() + "\n");
                     index++;
                 }
                 selection = newSelection;
@@ -105,6 +120,88 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
             IOUtils.closeQuietly(vrpWriter);
         }
         logger.info("Generated: {}", vrpOutputFile);
+    }
+
+    public static VehicleRoutingSolution convert(TravelingSalesmanTour tour) {
+        VehicleRoutingSolution vehicleRoutingSolution = new VehicleRoutingSolution();
+        vehicleRoutingSolution.setName(tour.getName());
+        vehicleRoutingSolution.setDistanceType(convert(tour.getDistanceType()));
+        vehicleRoutingSolution.setDistanceUnitOfMeasurement(tour.getDistanceUnitOfMeasurement());
+        List<org.optaplanner.examples.vehiclerouting.domain.location.Location> locationList = convert(tour.getLocationList());
+        vehicleRoutingSolution.setLocationList(locationList);
+        org.optaplanner.examples.vehiclerouting.domain.location.Location firstLocation = locationList.get(0);
+        Depot depot = new Depot();
+        depot.setId(firstLocation.getId());
+        depot.setLocation(firstLocation);
+        vehicleRoutingSolution.setDepotList(Collections.singletonList(depot));
+        Vehicle vehicle = new Vehicle();
+        vehicle.setId(firstLocation.getId());
+        vehicle.setDepot(depot);
+        vehicle.setCapacity(locationList.size() * 10);
+        vehicleRoutingSolution.setVehicleList(Collections.singletonList(vehicle));
+        List<Customer> customerList = new ArrayList<Customer>(locationList.size());
+        for (org.optaplanner.examples.vehiclerouting.domain.location.Location location : locationList.subList(1, locationList.size())) {
+            Customer customer = new Customer();
+            customer.setId(location.getId());
+            customer.setLocation(location);
+            customerList.add(customer);
+        }
+        for (Visit visit : tour.getVisitList()) {
+            Customer customer = customerList.get(tour.getVisitList().indexOf(visit));
+            Standstill previousStandstill;
+            if (visit.getPreviousStandstill() instanceof Domicile) {
+                previousStandstill = vehicle;
+            } else {
+                previousStandstill = customerList.get(tour.getVisitList().indexOf(visit.getPreviousStandstill()));
+            }
+            customer.setPreviousStandstill(previousStandstill);
+            previousStandstill.setNextCustomer(customer);
+        }
+        vehicleRoutingSolution.setCustomerList(customerList);
+        vehicleRoutingSolution.setScore(HardSoftScore.valueOf(0, (int) tour.getScore().getScore()));
+        return vehicleRoutingSolution;
+    }
+
+    private static List<Location> convert(List<org.optaplanner.examples.tsp.domain.location.Location> tspLocationList) {
+        List<Location> locationList = new ArrayList<Location>(tspLocationList.size());
+        for (org.optaplanner.examples.tsp.domain.location.Location tspLocation : tspLocationList) {
+            Location location;
+            if (tspLocation instanceof org.optaplanner.examples.tsp.domain.location.AirLocation) {
+                location = new AirLocation();
+            } else if (tspLocation instanceof org.optaplanner.examples.tsp.domain.location.RoadLocation) {
+                location = new RoadLocation();
+            } else {
+                throw new IllegalStateException("The tspLocation class (" + tspLocation.getClass() + ") is not implemented.");
+            }
+            location.setName(tspLocation.getName());
+            location.setLatitude(tspLocation.getLatitude());
+            location.setLongitude(tspLocation.getLongitude());
+            locationList.add(location);
+        }
+        for (org.optaplanner.examples.tsp.domain.location.Location tspLocation : tspLocationList) {
+            if (tspLocation instanceof org.optaplanner.examples.tsp.domain.location.RoadLocation) {
+                RoadLocation location = (RoadLocation) locationList.get(tspLocationList.indexOf(tspLocation));
+                Map<RoadLocation, Double> travelDistanceMap = new LinkedHashMap<RoadLocation, Double>(tspLocationList.size());
+                Map<org.optaplanner.examples.tsp.domain.location.RoadLocation, Double> tspTravelDistanceMap
+                        = ((org.optaplanner.examples.tsp.domain.location.RoadLocation) tspLocation).getTravelDistanceMap();
+                for (Map.Entry<org.optaplanner.examples.tsp.domain.location.RoadLocation, Double> entry : tspTravelDistanceMap.entrySet()) {
+                    travelDistanceMap.put((RoadLocation) locationList.get(tspLocationList.indexOf(entry.getKey())), entry.getValue());
+                }
+                location.setTravelDistanceMap(travelDistanceMap);
+            }
+        }
+        return locationList;
+    }
+
+    private static DistanceType convert(org.optaplanner.examples.tsp.domain.location.DistanceType distanceType) {
+        switch (distanceType) {
+            case AIR_DISTANCE:
+                return DistanceType.AIR_DISTANCE;
+            case ROAD_DISTANCE:
+                return DistanceType.ROAD_DISTANCE;
+            default:
+                throw new IllegalStateException("The distanceType (" + distanceType + ") is not implemented.");
+        }
     }
 
 }
