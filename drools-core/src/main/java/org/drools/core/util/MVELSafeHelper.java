@@ -1,27 +1,27 @@
 package org.drools.core.util;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.Map;
-
 import org.kie.internal.security.KiePolicyHelper;
 import org.mvel2.MVEL;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.integration.VariableResolverFactory;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.Map;
+
 public class MVELSafeHelper {
 
-    private static final MVELEvaluator evaluator;
-
-    static {
-        evaluator = KiePolicyHelper.isPolicyEnabled() ? new SafeMVELEvaluator() : new RawMVELEvaluator();
+    private static class MVELEvaluatorHolder {
+        private static final MVELEvaluator evaluator = KiePolicyHelper.isPolicyEnabled() ?
+                                                       new SafeMVELEvaluator() :
+                                                       new RawMVELEvaluator();
     }
 
     private MVELSafeHelper() {
     }
 
-    public static synchronized MVELEvaluator getEvaluator() {
-        return evaluator;
+    public static MVELEvaluator getEvaluator() {
+        return MVELEvaluatorHolder.evaluator;
     }
 
     public static interface MVELEvaluator {
