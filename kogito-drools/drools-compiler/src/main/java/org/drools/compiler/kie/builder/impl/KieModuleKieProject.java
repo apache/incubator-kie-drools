@@ -10,6 +10,7 @@ import org.kie.internal.utils.ServiceRegistryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,6 +82,10 @@ public class KieModuleKieProject extends AbstractKieProject {
             classes.putAll( kModule.getClassesMap( kModule != this.kieModule ) );
         }
         return classes;
+    }
+
+    public InputStream getPomAsStream() {
+        return kieModule.getPomAsStream();
     }
 
     public ReleaseId getGAV() {

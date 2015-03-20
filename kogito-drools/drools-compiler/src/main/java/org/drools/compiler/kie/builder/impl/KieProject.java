@@ -4,6 +4,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Set;
 
@@ -39,4 +40,6 @@ public interface KieProject {
 
     Set<String> getTransitiveIncludes(String kBaseName);
     Set<String> getTransitiveIncludes(KieBaseModel kBaseModel);
+
+    InputStream getPomAsStream();
 }

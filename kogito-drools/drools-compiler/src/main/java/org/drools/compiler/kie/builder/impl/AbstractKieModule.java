@@ -390,7 +390,12 @@ public abstract class AbstractKieModule
         return getBytes(((ReleaseIdImpl)releaseId).getPomXmlPath());
     }
 
-    public static boolean updateResource(CompositeKnowledgeBuilder ckbuilder, 
+    public InputStream getPomAsStream() {
+        byte[] pom = getBytes(((ReleaseIdImpl)releaseId).getPomXmlPath());
+        return pom != null ? new ByteArrayInputStream(pom) : null;
+    }
+
+    public static boolean updateResource(CompositeKnowledgeBuilder ckbuilder,
                                          InternalKieModule kieModule,
                                          String resourceName,
                                          ResourceChangeSet changes) {

@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
@@ -412,5 +413,9 @@ public class ClasspathKieProject extends AbstractKieProject {
 
     public ClassLoader getClonedClassLoader() {
         return createProjectClassLoader(classLoader.getParent());
+    }
+
+    public InputStream getPomAsStream() {
+        return classLoader.getResourceAsStream("pom.xml");
     }
 }
