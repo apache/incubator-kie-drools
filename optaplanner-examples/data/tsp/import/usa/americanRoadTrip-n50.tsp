@@ -1,5 +1,5 @@
-NAME : americanRoadTrip50
-COMMENT : Based on Staedter's list.
+NAME : americanRoadTrip-n50
+COMMENT : Based on Staedter's list and Randy Olson's blog. Generated for OptaPlanner Examples with Google Maps by Geoffrey De Smet.
 TYPE : TSP
 DIMENSION : 50
 EDGE_WEIGHT_TYPE : EUC_2D
@@ -15,7 +15,7 @@ NODE_COORD_SECTION
 8 38.897676 -77.036530 "White House, Pennsylvania Avenue Northwest, Washington, DC"
 9 28.388333 -80.603611 "Cape Canaveral, FL"
 10 31.056794 -82.272327 "Okefenokee Swamp Park, Okefenokee Swamp Park Road, Waycross, GA"
-11 43.416650 -113.516650 "Craters of the Moon National Monument & Preserve, Arco, ID"
+11 43.461858 -113.563131 "Craters of the Moon National Monument & Preserve, Arco, ID"
 12 39.797519 -89.646184 "Lincoln Home National Historic Site Visitor Center, 426 South 7th Street, Springfield, IL"
 13 38.566697 -86.617524 "West Baden Springs Hotel, West Baden Avenue, West Baden Springs, IN"
 14 41.583218 -93.648542 "Terrace Hill, Grand Avenue, Des Moines, IA"
