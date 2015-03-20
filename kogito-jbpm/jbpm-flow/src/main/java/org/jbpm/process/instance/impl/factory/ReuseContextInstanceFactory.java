@@ -25,7 +25,7 @@ import org.jbpm.process.instance.impl.ContextInstanceFactory;
 
 public class ReuseContextInstanceFactory implements ContextInstanceFactory {
     
-    public final Class<? extends ContextInstance> cls;
+    private final Class<? extends ContextInstance> cls;
     
     public ReuseContextInstanceFactory(Class<? extends ContextInstance> cls){
         this.cls = cls;
@@ -46,7 +46,7 @@ public class ReuseContextInstanceFactory implements ContextInstanceFactory {
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Unable to instantiate context '"
-                + this.cls.getName() + "': " + e.getMessage());
+                + this.cls.getName() + "': " + e.getMessage(), e);
         }
 	}
 

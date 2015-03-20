@@ -83,7 +83,7 @@ public class XPATHReturnValueEvaluator
     						return new GetVariableData();
     					}
     					else {
-    						throw new RuntimeException("Unknown BPMN function: " + functionName);
+                            throw new IllegalArgumentException("Unknown BPMN function: " + functionName);
     					}
     				}
 

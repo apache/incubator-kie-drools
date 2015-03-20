@@ -104,8 +104,7 @@ public class RuleConstraintEvaluator implements Constraint,
         	((Node) instance.getNode()).getUniqueId() + "-" + 
         	((Node) connection.getTo()).getUniqueId() + "-" + connection.getToType();
 
-        boolean isActive = agenda.isRuleActiveInRuleFlowGroup( "DROOLS_SYSTEM", rule, processInstance.getId() );
-        return isActive;
+        return agenda.isRuleActiveInRuleFlowGroup( "DROOLS_SYSTEM", rule, processInstance.getId() );
     }
 
 	public Object getMetaData(String name) {

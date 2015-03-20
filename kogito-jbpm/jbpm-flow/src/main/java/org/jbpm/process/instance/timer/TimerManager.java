@@ -243,16 +243,16 @@ public class TimerManager {
 
     public static class ProcessTimerInputMarshaller implements TimersInputMarshaller {
 
-        public void deserialize(MarshallerReaderContext inCtx, Timer _timer) throws ClassNotFoundException {
-            JBPMMessages.ProcessTimer _ptimer = _timer.getExtension(JBPMMessages.procTimer);
+        public void deserialize(MarshallerReaderContext inCtx, Timer timer) throws ClassNotFoundException {
+            JBPMMessages.ProcessTimer ptimer = timer.getExtension(JBPMMessages.procTimer);
 
             TimerService ts = inCtx.wm.getTimerService();
 
-            long processInstanceId = _ptimer.getTimer().getProcessInstanceId();
+            long processInstanceId = ptimer.getTimer().getProcessInstanceId();
 
-            Trigger trigger = ProtobufInputMarshaller.readTrigger(inCtx, _ptimer.getTrigger());
+            Trigger trigger = ProtobufInputMarshaller.readTrigger(inCtx, ptimer.getTrigger());
 
-            TimerInstance timerInstance = ProtobufProcessMarshaller.readTimer(inCtx, _ptimer.getTimer());
+            TimerInstance timerInstance = ProtobufProcessMarshaller.readTimer(inCtx, ptimer.getTimer());
 
             TimerManager tm = ((InternalProcessRuntime) inCtx.wm.getProcessRuntime()).getTimerManager();
 

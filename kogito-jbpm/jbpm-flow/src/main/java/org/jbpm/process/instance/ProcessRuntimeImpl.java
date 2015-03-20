@@ -425,9 +425,9 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
                     // signal process instances of that state node
                     String ruleName = event.getMatch().getRule().getName();
                     if ( ruleName.startsWith( "RuleFlowStateNode-" )) {
-                        int index = ruleName.indexOf( "-",
+                        int index = ruleName.indexOf( '-',
                                                       18 );
-                        index = ruleName.indexOf( "-",
+                        index = ruleName.indexOf( '-',
                                                   index + 1 );
                         String eventType = ruleName.substring( 0,
                                                                index );
@@ -608,7 +608,6 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         }
         
         private void configureTimerInstance(Timer timer, TimerInstance timerInstance) {
-            String s = null;
             long duration = -1;
             switch (timer.getTimeType()) {
             case Timer.TIME_CYCLE:

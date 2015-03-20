@@ -97,7 +97,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
         if (this.process == null) {
         	if (processXml == null) {
         		if (kruntime == null) {
-        			throw new RuntimeException("Process instance " + id + "[" + processId + "] is disconnected."); 
+                    throw new IllegalStateException("Process instance " + id + "[" + processId + "] is disconnected.");
         		}
         		this.process = kruntime.getKieBase().getProcess(processId);
         	} else {

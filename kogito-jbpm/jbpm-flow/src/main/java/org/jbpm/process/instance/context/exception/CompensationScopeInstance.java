@@ -19,7 +19,6 @@ package org.jbpm.process.instance.context.exception;
 import static org.jbpm.process.core.context.exception.CompensationScope.IMPLICIT_COMPENSATION_PREFIX;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -28,10 +27,7 @@ import java.util.Stack;
 import org.jbpm.process.core.context.exception.CompensationHandler;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.exception.ExceptionHandler;
-import org.jbpm.process.core.context.exception.ExceptionScope;
-import org.jbpm.process.instance.ContextInstanceContainer;
 import org.jbpm.process.instance.ProcessInstance;
-import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
@@ -39,7 +35,6 @@ import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
 import org.jbpm.workflow.instance.node.EventNodeInstance;
 import org.jbpm.workflow.instance.node.EventSubProcessNodeInstance;
 import org.kie.api.definition.process.Node;
@@ -47,8 +42,7 @@ import org.kie.api.definition.process.Node;
 public class CompensationScopeInstance extends ExceptionScopeInstance  {
 
     private static final long serialVersionUID = 510l;
-    
-    private Map<String, VariableScopeInstance> dataSnapshotMap = new HashMap<String, VariableScopeInstance>();
+
     private Stack<NodeInstance> compensationInstances = new Stack<NodeInstance>();
     
     public String getContextType() {

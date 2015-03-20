@@ -122,7 +122,7 @@ public final class StartProcessHelper {
                         return -1;
                     }
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Could not parse version: " + o1.getVersion() + " " + o2.getVersion());
+                    throw new IllegalArgumentException("Could not parse version: " + o1.getVersion() + " " + o2.getVersion(), e);
                 }
             } else if (o1.getName().equals(processName)) {
                 return 1;

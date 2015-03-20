@@ -89,10 +89,7 @@ public class LoggingPrintStream extends PrintStream {
     }
     
     public void print(String s) {
-        if (s == null) {
-            s = "null";
-        }
-        write(s);
+        write(s == null ? "null" : s);
     }
     
     public void print(Object obj) {
