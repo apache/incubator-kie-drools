@@ -12,6 +12,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.definition.KnowledgePackage;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
@@ -60,4 +61,6 @@ public interface InternalKieModule extends KieModule {
     boolean addResourceToCompiler(CompositeKnowledgeBuilder ckbuilder, String fileName);
 
     long getCreationTimestamp();
+
+    InputStream getPomAsStream();
 }

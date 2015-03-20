@@ -8,6 +8,8 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 
+import java.io.InputStream;
+
 public interface InternalKieContainer extends KieContainer {
 
     /**
@@ -48,4 +50,6 @@ public interface InternalKieContainer extends KieContainer {
     long getCreationTimestamp();
 
     Results updateDependencyToVersion(ReleaseId currentReleaseId, ReleaseId newReleaseId);
+
+    InputStream getPomAsStream();
 }

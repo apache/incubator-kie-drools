@@ -69,7 +69,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         kieProjectDescr = new DependencyDescriptor(this.kieContainer.getReleaseId(),
                                                    this.kieContainer.getCreationTimestamp());
 
-        artifactResolver = getResolverFor(kieContainer.getReleaseId(), true);
+        artifactResolver = getResolverFor(this.kieContainer, true);
         usedDependencies = indexAtifacts(artifactResolver);
 
         KieScannersRegistry.register(this);
@@ -294,7 +294,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     }
 
     private Map<DependencyDescriptor, Artifact> scanForUpdates() {
-        artifactResolver = getResolverFor(kieContainer.getReleaseId(), true);
+        artifactResolver = getResolverFor(kieContainer, true);
         Map<DependencyDescriptor, Artifact> newArtifacts = new HashMap<DependencyDescriptor, Artifact>();
 
         Artifact newArtifact = artifactResolver.resolveArtifact(this.kieContainer.getContainerReleaseId());

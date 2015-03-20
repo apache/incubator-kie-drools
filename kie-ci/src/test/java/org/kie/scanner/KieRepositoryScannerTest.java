@@ -86,6 +86,28 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
     }
 
     @Test
+    public void testKScannerStartNotDeployed() throws Exception {
+        // BZ-1200784
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-start-not-deployed-test", "1.0-SNAPSHOT");
+        InternalKieModule kJar1 = createKieJar(ks, releaseId, "rule1", "rule2");
+        KieContainer kieContainer = ks.newKieContainer(releaseId);
+
+        // starting KieScanner
+        KieScanner scanner = ks.newKieScanner(kieContainer);
+
+        // scan the maven repo to get the new kjar version before it is deployed into Maven repo
+        // should not throw NPE because of uninitialized dependencies due to parsing parent pom failure
+        scanner.scanNow();
+        MavenRepository repository = getMavenRepository();
+        repository.deployArtifact(releaseId, kJar1, kPom);
+
+        // create a ksesion and check it works as expected
+        KieSession ksession = kieContainer.newKieSession("KSession1");
+        checkKSession(ksession, "rule1", "rule2");
+    }
+
+    @Test
     public void testKScannerWithRange() throws Exception {
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "scanner-range-test", "1.0.1");

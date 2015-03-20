@@ -1,6 +1,7 @@
 package org.kie.scanner;
 
 import org.apache.maven.project.MavenProject;
+import org.drools.compiler.kie.builder.impl.InternalKieContainer;
 import org.drools.compiler.kproject.xml.MinimalPomParser;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.kie.api.builder.KieScanner;
@@ -66,6 +67,17 @@ class ArtifactResolver {
             dependencies.addAll(getArtifactDependecies(dep.toString()));
         }
         return dependencies;
+    }
+
+    public static ArtifactResolver getResolverFor(InternalKieContainer kieContainer, boolean allowDefaultPom) {
+        InputStream pomStream = kieContainer.getPomAsStream();
+        if (pomStream != null) {
+            ArtifactResolver artifactResolver = getResolverFor(pomStream);
+            if (artifactResolver != null) {
+                return artifactResolver;
+            }
+        }
+        return getResolverFor(kieContainer.getReleaseId(), allowDefaultPom);
     }
 
     public static ArtifactResolver getResolverFor(ReleaseId releaseId, boolean allowDefaultPom) {

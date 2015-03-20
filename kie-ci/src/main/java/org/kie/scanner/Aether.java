@@ -48,7 +48,7 @@ public class Aether {
     }
 
     Aether(MavenProject mavenProject) {
-        this(mavenProject, getAether().localRepoDir, getAether().offline);
+        this(mavenProject, MavenSettings.getSettings().getLocalRepository(), MavenSettings.getSettings().isOffline());
     }
 
     public static synchronized Aether getAether() {

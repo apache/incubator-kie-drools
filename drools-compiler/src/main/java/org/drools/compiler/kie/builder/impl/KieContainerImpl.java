@@ -45,6 +45,7 @@ import org.kie.internal.definition.KnowledgePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -91,6 +92,10 @@ public class KieContainerImpl
 
     public ReleaseId getReleaseId() {
         return kProject.getGAV();
+    }
+
+    public InputStream getPomAsStream() {
+        return kProject.getPomAsStream();
     }
 
     public long getCreationTimestamp() {
