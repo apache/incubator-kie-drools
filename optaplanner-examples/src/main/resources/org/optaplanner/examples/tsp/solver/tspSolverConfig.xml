@@ -19,7 +19,7 @@
     <minutesSpentLimit>2</minutesSpentLimit>
   </termination>
   <constructionHeuristic>
-    <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
   </constructionHeuristic>
   <localSearch>
     <unionMoveSelector>
@@ -31,21 +31,23 @@
         <!--<cacheType>PHASE</cacheType>-->
         <!--<selectionOrder>SHUFFLED</selectionOrder>-->
       <!--</swapMoveSelector>-->
+      <tailChainSwapMoveSelector/>
       <subChainChangeMoveSelector>
         <subChainSelector>
-          <maximumSubChainSize>20</maximumSubChainSize>
+          <maximumSubChainSize>50</maximumSubChainSize>
         </subChainSelector>
         <selectReversingMoveToo>true</selectReversingMoveToo>
       </subChainChangeMoveSelector>
       <!--<subChainSwapMoveSelector>-->
         <!--<selectReversingMoveToo>false</selectReversingMoveToo>-->
       <!--</subChainSwapMoveSelector>-->
+      <!-- TODO use nearby selection to scale out -->
     </unionMoveSelector>
     <acceptor>
-      <entityTabuSize>5</entityTabuSize>
+      <lateAcceptanceSize>400</lateAcceptanceSize>
     </acceptor>
     <forager>
-      <acceptedCountLimit>5000</acceptedCountLimit>
+      <acceptedCountLimit>1</acceptedCountLimit>
     </forager>
   </localSearch>
 </solver>
