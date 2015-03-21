@@ -19,6 +19,8 @@ package org.optaplanner.examples.common.swingui.latitudelongitude;
 import java.awt.Graphics2D;
 import java.awt.geom.CubicCurve2D;
 
+import org.optaplanner.examples.common.swingui.TangoColorFactory;
+
 public class LatitudeLongitudeTranslator {
 
     public static final double MARGIN_RATIO = 0.04;
@@ -93,11 +95,14 @@ public class LatitudeLongitudeTranslator {
         return imageHeight;
     }
 
-    public void drawRoute(Graphics2D g, double lon1, double lat1, double lon2, double lat2, boolean straight) {
+    public void drawRoute(Graphics2D g, double lon1, double lat1, double lon2, double lat2, boolean straight, boolean dashed) {
         int x1 = translateLongitudeToX(lon1);
         int y1 = translateLatitudeToY(lat1);
         int x2 = translateLongitudeToX(lon2);
         int y2 = translateLatitudeToY(lat2);
+        if (dashed) {
+            g.setStroke(TangoColorFactory.FAT_DASHED_STROKE);
+        }
         if (straight) {
             g.drawLine(x1, y1, x2, y2);
         } else {
@@ -108,6 +113,9 @@ public class LatitudeLongitudeTranslator {
             double ctrlx2 = x2 - xDistPart - yDistPart;
             double ctrly2 = y2 + xDistPart - yDistPart;
             g.draw(new CubicCurve2D.Double(x1, y1, ctrlx1, ctrly1, ctrlx2, ctrly2, x2, y2));
+        }
+        if (dashed) {
+            g.setStroke(TangoColorFactory.NORMAL_STROKE);
         }
     }
 

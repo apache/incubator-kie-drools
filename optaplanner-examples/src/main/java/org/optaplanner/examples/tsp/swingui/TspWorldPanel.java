@@ -133,12 +133,12 @@ public class TspWorldPanel extends JPanel {
                 Location location = visit.getLocation();
                 translator.drawRoute(g, previousLocation.getLongitude(), previousLocation.getLatitude(),
                         location.getLongitude(), location.getLatitude(),
-                        location instanceof AirLocation);
+                        location instanceof AirLocation, false);
                 // Back to domicile line
                 if (needsBackToDomicileLineSet.contains(visit)) {
                     translator.drawRoute(g, location.getLongitude(), location.getLatitude(),
                             domicileLocation.getLongitude(), domicileLocation.getLatitude(),
-                            location instanceof AirLocation);
+                            location instanceof AirLocation, true);
                 }
             }
         }

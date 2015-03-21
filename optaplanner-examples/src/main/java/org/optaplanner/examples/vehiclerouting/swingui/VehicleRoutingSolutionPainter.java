@@ -152,7 +152,7 @@ public class VehicleRoutingSolutionPainter {
                     Location location = customer.getLocation();
                     translator.drawRoute(g, previousLocation.getLongitude(), previousLocation.getLatitude(),
                             location.getLongitude(), location.getLatitude(),
-                            location instanceof AirLocation);
+                            location instanceof AirLocation, false);
                     // Determine where to draw the vehicle info
                     int distance = customer.getDistanceFromPreviousStandstill();
                     if (customer.getPreviousStandstill() instanceof Customer) {
@@ -167,11 +167,9 @@ public class VehicleRoutingSolutionPainter {
                     // Line back to the vehicle depot
                     if (customer.getNextCustomer() == null) {
                         Location vehicleLocation = vehicle.getLocation();
-                        g.setStroke(TangoColorFactory.FAT_DASHED_STROKE);
                         translator.drawRoute(g, location.getLongitude(), location.getLatitude(),
                                 vehicleLocation.getLongitude(), vehicleLocation.getLatitude(),
-                                location instanceof AirLocation);
-                        g.setStroke(TangoColorFactory.NORMAL_STROKE);
+                                location instanceof AirLocation, true);
                     }
                 }
             }
