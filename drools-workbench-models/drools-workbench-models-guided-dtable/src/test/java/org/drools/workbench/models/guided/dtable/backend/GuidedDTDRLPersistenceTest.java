@@ -76,6 +76,80 @@ import static org.junit.Assert.*;
 public class GuidedDTDRLPersistenceTest {
 
     @Test
+    public void testInWithSimpleSingleLiteralValue() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableName( "in_operator" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setFactType( "Person" );
+
+        ConditionCol52 con = new ConditionCol52();
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        con.setFieldType( DataType.TYPE_STRING );
+        con.setFactField( "field1" );
+        con.setHeader( "Person field1" );
+        con.setOperator( "in" );
+        p1.getChildColumns().add( con );
+
+        dt.getConditions().add( p1 );
+
+        dt.setData( DataUtilities.makeDataLists( new String[][]{
+                new String[]{ "1", "desc1", "ak1,mk1" },
+                new String[]{ "2", "desc2", "(ak2,mk2)" },
+                new String[]{ "3", "desc3", "( ak3, mk3 )" },
+                new String[]{ "4", "desc4", "( \"ak4\", \"mk4\" )" },
+                new String[]{ "5", "desc5", "( \"ak5 \", \" mk5\" )" },
+        } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        String expected = "//from row number: 1\n" +
+                "//desc1\n" +
+                "rule \"Row 1 in_operator\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  Person( field1 in ( \"ak1\", \"mk1\" ) )\n" +
+                "then\n" +
+                "end\n" +
+                "//from row number: 2\n" +
+                "//desc2\n" +
+                "rule \"Row 2 in_operator\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  Person( field1 in ( \"ak2\", \"mk2\" ) )\n" +
+                "then\n" +
+                "end\n" +
+                "//from row number: 3\n" +
+                "//desc3\n" +
+                "rule \"Row 3 in_operator\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  Person( field1 in ( \"ak3\", \"mk3\" ) )\n" +
+                "then\n" +
+                "end\n" +
+                "//from row number: 4\n" +
+                "//desc4\n" +
+                "rule \"Row 4 in_operator\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  Person( field1 in ( \"ak4\", \"mk4\" ) )\n" +
+                "then\n" +
+                "end\n" +
+                "//from row number: 5\n" +
+                "//desc5\n" +
+                "rule \"Row 5 in_operator\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  Person( field1 in ( \"ak5 \", \" mk5\" ) )\n" +
+                "then\n" +
+                "end";
+
+        assertEqualsIgnoreWhitespace( expected,
+                                      drl );
+    }
+
+    @Test
     public void test2Rules() throws Exception {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
 
