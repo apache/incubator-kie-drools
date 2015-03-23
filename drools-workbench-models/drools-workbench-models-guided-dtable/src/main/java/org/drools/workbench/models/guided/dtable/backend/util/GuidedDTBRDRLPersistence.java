@@ -35,6 +35,7 @@ import org.drools.workbench.models.datamodel.rule.FromCollectCompositeFactPatter
 import org.drools.workbench.models.datamodel.rule.IFactPattern;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.builder.DRLConstraintValueBuilder;
+import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
 
 /**
  * A specialised implementation of BRDELPersistence that can expand Template
@@ -152,16 +153,24 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
         }
 
         @Override
-        protected void buildTemplateFieldValue( final int type,
+        protected void buildTemplateFieldValue( final String operator,
+        										final int type,
                                                 final String fieldType,
                                                 final String value,
                                                 final StringBuilder buf ) {
-            buf.append( " " );
-            constraintValueBuilder.buildLHSFieldValue( buf,
-                                                       type,
-                                                       fieldType,
-                                                       rowDataProvider.getTemplateKeyValue( value ) );
-            buf.append( " " );
+        	if ( OperatorsOracle.operatorRequiresList( operator ) ) {
+            populateValueList( buf,
+                               type,
+                               fieldType,
+                               rowDataProvider.getTemplateKeyValue( value ) );
+        	}  else {
+        		buf.append( " " );
+        		constraintValueBuilder.buildLHSFieldValue( buf,
+                                                       	type,
+                                                       	fieldType,
+                                                       	rowDataProvider.getTemplateKeyValue( value ) );
+        		buf.append( " " );
+        	}
         }
 
         @Override
