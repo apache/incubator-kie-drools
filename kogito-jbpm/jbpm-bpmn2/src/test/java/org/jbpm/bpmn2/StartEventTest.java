@@ -54,6 +54,13 @@ import org.slf4j.LoggerFactory;
 @RunWith(Parameterized.class)
 public class StartEventTest extends JbpmBpmn2TestCase {
 
+    // Defines extra sleep time required in tests. This time is added to the standard sleep time used in some tests
+    // to make sure that tested events passed or tested threads finished.
+    // I.e. test uses timer that generates some event each second and checks if 5 events were generated in 5 seconds time.
+    // Because of JVM nature, one second takes not exactly 1000ms so for waiting Thread.sleep(5000 + EXTRA_SLEEP_TIME)
+    // call is used in the test.
+    private static final Integer EXTRA_SLEEP_TIME = 250;
+
     @Parameters
     public static Collection<Object[]> persistence() {
         Object[][] data = new Object[][] { { false }, { true } };
@@ -63,7 +70,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     private static final Logger logger = LoggerFactory.getLogger(StartEventTest.class);
 
     private KieSession ksession;
-    
+
     public StartEventTest(boolean persistence) {
         super(persistence);
     }
@@ -72,7 +79,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     public static void setup() throws Exception {
         setUpDataSource();
     }
-    
+
     @Before
     public void prepare() {
         clearHistory();
@@ -93,14 +100,14 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         Person person = new Person();
         person.setName("jack");
         ksession.insert(person);
-        
+
         person = new Person();
         person.setName("john");
         ksession.insert(person);
-        
+
 
     }
-    
+
     @Test
     public void testTimerStartCycleLegacy() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-TimerStartCycleLegacy.bpmn2");
@@ -114,7 +121,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         System.out.println("About to start ###### " + new Date());
         // first wait two seconds as that is the initial delay configured on the process
         Thread.sleep(1800);
-        
+
         assertEquals(0, list.size());
         // then wait 5 times 5oo ms as that is period configured on the process
         Thread.sleep(2500);
@@ -134,28 +141,27 @@ public class StartEventTest extends JbpmBpmn2TestCase {
             }
         });
         assertEquals(0, list.size());
-        for (int i = 0; i < 5; i++) {
-            Thread.sleep(500);
-        }
+        // Timer in the process takes 500ms, so after 2.5 seconds, there should be 5 process IDs in the list.
+        Thread.sleep(2500 + EXTRA_SLEEP_TIME);
         assertEquals(5, getNumberOfProcessInstances("Minimal"));
 
     }
-    
+
     @Test
     public void testTimerStartDateISO() throws Exception {
-    	        
+
         byte[] content = IoUtils.readBytesFromInputStream(this.getClass().getResourceAsStream("/BPMN2-TimerStartDate.bpmn2"));
         String processContent = new String(content, "UTF-8");
-        
+
         DateTime now = new DateTime(System.currentTimeMillis());
-        now = now.plus(2000);       
-        
+        now = now.plus(2000);
+
         processContent = processContent.replaceFirst("#\\{date\\}", now.toString());
         Resource resource = ResourceFactory.newReaderResource(new StringReader(processContent));
         resource.setSourcePath("/BPMN2-TimerStartDate.bpmn2");
         resource.setTargetPath("/BPMN2-TimerStartDate.bpmn2");
         KieBase kbase = createKnowledgeBaseFromResources(resource);
-    	
+
         ksession = createKnowledgeSession(kbase);
         final List<Long> list = new ArrayList<Long>();
         ksession.addEventListener(new DefaultProcessEventListener() {
@@ -180,9 +186,8 @@ public class StartEventTest extends JbpmBpmn2TestCase {
             }
         });
         assertEquals(0, list.size());
-        for (int i = 0; i < 6; i++) {
-            Thread.sleep(1000);
-        }
+        // Timer in the process takes 1s, so after 6 seconds, there should be 6 process IDs in the list.
+        Thread.sleep(6000 + EXTRA_SLEEP_TIME);
         assertEquals(6, getNumberOfProcessInstances("Minimal"));
 
     }
@@ -216,9 +221,9 @@ public class StartEventTest extends JbpmBpmn2TestCase {
                 list.add(event.getProcessInstance().getId());
             }
         });
-        for (int i = 0; i < 5; i++) {
-            Thread.sleep(1000);
-        }
+
+        // Timer in the process takes 1s, so after 5 seconds, there should be 5 process IDs in the list.
+        Thread.sleep(5000);
         assertEquals(5, getNumberOfProcessInstances("Minimal"));
 
     }
@@ -265,16 +270,16 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testSignalStartDynamic() throws Exception {
-        
+
         KieBase kbase = createKnowledgeBase("BPMN2-SignalStart.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        // create KieContainer after session was created to make sure no runtime data 
+        // create KieContainer after session was created to make sure no runtime data
         // will be used during serialization (deep clone)
         KieServices ks = KieServices.Factory.get();
         KieRepository kr = ks.getRepository();
-        KieContainer kContainer = ks.newKieContainer(kr.getDefaultReleaseId());        
+        KieContainer kContainer = ks.newKieContainer(kr.getDefaultReleaseId());
         kContainer.getKieBase();
-        
+
         final List<Long> list = new ArrayList<Long>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void afterProcessStarted(ProcessStartedEvent event) {
@@ -335,9 +340,8 @@ public class StartEventTest extends JbpmBpmn2TestCase {
             }
         });
         assertEquals(0, list.size());
-        for (int i = 0; i < 5; i++) {
-            Thread.sleep(500);
-        }
+        // Timer in the process takes 500ms, so after 2.5 seconds, there should be 5 process IDs in the list.
+        Thread.sleep(2500 + EXTRA_SLEEP_TIME);
         assertEquals(5, getNumberOfProcessInstances("MultipleStartEvents"));
 
     }
@@ -407,7 +411,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, ksession);
         assertNodeTriggered(processInstanceId, "Start", "Script 1", "User task", "End");
     }
-    
+
     @Test
     public void testMultipleEventBasedStartEventsTimerDifferentPaths() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleStartEventProcessDifferentPaths.bpmn2");
@@ -424,28 +428,27 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         });
 
         assertEquals(0, list.size());
-        for (int i = 0; i < 2; i++) {
-            Thread.sleep(1200);
-        }
+        // Timer in the process takes 1000ms, so after 2 seconds, there should be 2 process IDs in the list.
+        Thread.sleep(2000 + EXTRA_SLEEP_TIME);
 
         assertEquals(2, list.size());
         List<WorkItem> workItems = workItemHandler.getWorkItems();
-        
-        for (WorkItem workItem : workItems) {
-        	long processInstanceId = ((WorkItemImpl) workItem).getProcessInstanceId();
 
-	        ProcessInstance processInstance = ksession
-	                .getProcessInstance(processInstanceId);
-	        ksession = restoreSession(ksession, true);
-	
-	        assertNotNull(workItem);
-	        assertEquals("john", workItem.getParameter("ActorId"));
-	        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-	        assertProcessInstanceFinished(processInstance, ksession);
-	        assertNodeTriggered(processInstanceId, "StartTimer", "Script 2", "User task", "End");
+        for (WorkItem workItem : workItems) {
+            long processInstanceId = ((WorkItemImpl) workItem).getProcessInstanceId();
+
+            ProcessInstance processInstance = ksession
+                    .getProcessInstance(processInstanceId);
+            ksession = restoreSession(ksession, true);
+
+            assertNotNull(workItem);
+            assertEquals("john", workItem.getParameter("ActorId"));
+            ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+            assertProcessInstanceFinished(processInstance, ksession);
+            assertNodeTriggered(processInstanceId, "StartTimer", "Script 2", "User task", "End");
         }
     }
-    
+
     @Test
     public void testMultipleEventBasedStartEventsSignalDifferentPaths() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleStartEventProcessDifferentPaths.bpmn2");
@@ -478,7 +481,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, ksession);
         assertNodeTriggered(processInstanceId, "StartSignal", "Script 3", "User task", "End");
     }
-    
+
     @Test
     public void testMultipleEventBasedStartEventsStartOnTimer()
             throws Exception {
@@ -494,28 +497,27 @@ public class StartEventTest extends JbpmBpmn2TestCase {
             }
         });
         assertEquals(0, list.size());
-        for (int i = 0; i < 5; i++) {
-            Thread.sleep(500);
-        }
+        // Timer in the process takes 500ms, so after 2.5 seconds, there should be 5 process IDs in the list.
+        Thread.sleep(2500 + EXTRA_SLEEP_TIME);
         assertEquals(5, getNumberOfProcessInstances("MultipleStartEvents"));
 
     }
-    
+
     @Test
     public void testTimerCycle() throws Exception {
         KieBase kbase = createKnowledgeBase("timer/BPMN2-StartTimerCycle.bpmn2");
-        
+
         ksession = createKnowledgeSession(kbase);
         StartCountingListener listener = new StartCountingListener();
         ksession.addEventListener(listener);
-        
+
         for (int i = 1; i < 10; i++) {
             Thread.sleep(1100);
             assertEquals(i, listener.getCount("start.cycle"));
         }
     }
-    
-    
+
+
     @Test
     public void testSignalStartWithTransformation() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-SignalStartWithTransformation.bpmn2");
@@ -541,16 +543,16 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     @Test
     public void testTimerDelay() throws Exception {
         KieBase kbase = createKnowledgeBase("timer/BPMN2-StartTimerDuration.bpmn2");
-        
+
         ksession = createKnowledgeSession(kbase);
         StartCountingListener listener = new StartCountingListener();
         ksession.addEventListener(listener);
-        
+
         Thread.sleep(1100);
-        
+
         assertEquals(1, listener.getCount("start.delaying"));
     }
-    
+
     @Test
     public void testSignalStartWithCustomEvent() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-SingalStartWithCustomEvent.bpmn2");
@@ -570,21 +572,21 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
     }
 
-    
+
     private static class StartCountingListener extends DefaultProcessEventListener {
         private Map<String, Integer> map = new HashMap<String, Integer>();
-        
+
         public void beforeProcessStarted(ProcessStartedEvent event) {
             String processId = event.getProcessInstance().getProcessId();
             Integer count = map.get(processId);
-            
+
             if (count == null) {
                 map.put(processId, 1);
             } else {
                 map.put(processId, count + 1);
             }
         }
-        
+
         public int getCount(String processId) {
             Integer count = map.get(processId);
             return (count == null) ? 0 : count;
