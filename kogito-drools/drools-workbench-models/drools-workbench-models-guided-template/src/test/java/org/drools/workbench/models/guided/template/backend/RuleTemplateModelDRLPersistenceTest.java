@@ -57,6 +57,63 @@ public class RuleTemplateModelDRLPersistenceTest {
     }
 
     @Test
+    public void testInWithSimpleSingleLiteralValue() {
+        TemplateModel m = new TemplateModel();
+        m.name = "t1";
+
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( DataType.TYPE_STRING );
+        con.setFieldName( "field1" );
+        con.setOperator( "in" );
+        con.setValue( "$f1" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        m.addRow( new String[]{ "ak1,mk1" } );
+        m.addRow( new String[]{ "(ak2,mk2)" } );
+        m.addRow( new String[]{ "( ak3, mk3 )" } );
+        m.addRow( new String[]{ "( \"ak4\", \"mk4\" )" } );
+        m.addRow( new String[]{ "( \"ak5 \", \" mk5\" )" } );
+
+        String expected = "rule \"t1_4\"" +
+                "dialect \"mvel\"\n" +
+                "when \n" +
+                "  Person( field1 in (\"ak5 \",\" mk5\") )" +
+                "then \n" +
+                "end" +
+                "rule \"t1_3\"" +
+                "dialect \"mvel\"\n" +
+                "when \n" +
+                "  Person( field1 in (\"ak4\",\"mk4\") )" +
+                "then \n" +
+                "end" +
+                "rule \"t1_2\"" +
+                "dialect \"mvel\"\n" +
+                "when \n" +
+                "  Person( field1 in (\"ak3\",\"mk3\") )" +
+                "then \n" +
+                "end" +
+                "rule \"t1_1\"" +
+                "dialect \"mvel\"\n" +
+                "when \n" +
+                "  Person( field1 in (\"ak2\",\"mk2\") )" +
+                "then \n" +
+                "end" +
+                "rule \"t1_0\"" +
+                "dialect \"mvel\"\n" +
+                "when \n" +
+                "  Person( field1 in (\"ak1\",\"mk1\") )" +
+                "then \n" +
+                "end";
+
+        checkMarshall( expected,
+                       m );
+    }
+
+    @Test
     public void testSimpleSingleValue() {
         TemplateModel m = new TemplateModel();
         m.name = "t1";
@@ -76,10 +133,10 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         String expected = "rule \"t1_0\"" +
                 "dialect \"mvel\"\n" +
-                "when \n"
-                + "Person( field1 == \"foo\" )"
-                + "then \n"
-                + "end";
+                "when \n" +
+                "Person( field1 == \"foo\" )" +
+                "then \n" +
+                "end";
 
         checkMarshall( expected,
                        m );
@@ -112,13 +169,13 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         String expected = "rule \"t1_0\"" +
                 "dialect \"mvel\"\n" +
-                "when \n"
-                + "Person( field1 == \"foo\" )\n"
-                + "then \n"
-                + "  Applicant fact0 = new Applicant(); \n"
-                + "  fact0.setAge(123); \n"
-                + "  insert(fact0); \n"
-                + "end";
+                "when \n" +
+                "Person( field1 == \"foo\" )\n" +
+                "then \n" +
+                "  Applicant fact0 = new Applicant(); \n" +
+                "  fact0.setAge(123); \n" +
+                "  insert(fact0); \n" +
+                "end";
 
         checkMarshall( expected,
                        m );
@@ -152,10 +209,10 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         String expected = "rule \"t1_0\"" +
                 "dialect \"mvel\"\n" +
-                "when \n"
-                + "Person( field1 == \"foo\", field2 == \"bar\" )"
-                + "then \n"
-                + "end";
+                "when \n" +
+                "Person( field1 == \"foo\", field2 == \"bar\" )" +
+                "then \n" +
+                "end";
 
         checkMarshall( expected,
                        m );
@@ -189,10 +246,10 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         String expected = "rule \"t1_0\"" +
                 "dialect \"mvel\"\n" +
-                "when \n"
-                + "Person( field1 == \"foo\", field2 == \"bar\" )"
-                + "then \n"
-                + "end";
+                "when \n" +
+                "Person( field1 == \"foo\", field2 == \"bar\" )" +
+                "then \n" +
+                "end";
 
         checkMarshall( expected,
                        m );
@@ -226,10 +283,10 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         String expected = "rule \"t1_0\"" +
                 "dialect \"mvel\"\n" +
-                "when \n"
-                + "Person( field1 == \"foo\" )"
-                + "then \n"
-                + "end";
+                "when \n" +
+                "Person( field1 == \"foo\" )" +
+                "then \n" +
+                "end";
 
         checkMarshall( expected,
                        m );
@@ -263,10 +320,10 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         String expected = "rule \"t1_0\"" +
                 "dialect \"mvel\"\n" +
-                "when \n"
-                + "Person( field2 == \"bar\" )"
-                + "then \n"
-                + "end";
+                "when \n" +
+                "Person( field2 == \"bar\" )" +
+                "then \n" +
+                "end";
 
         checkMarshall( expected,
                        m );
@@ -300,10 +357,10 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         String expected = "rule \"t1_0\"" +
                 "dialect \"mvel\"\n" +
-                "when \n"
-                + "Person( field1 == \"foo\", field2 == \"bar\" )"
-                + "then \n"
-                + "end";
+                "when \n" +
+                "Person( field1 == \"foo\", field2 == \"bar\" )" +
+                "then \n" +
+                "end";
 
         checkMarshall( expected,
                        m );
@@ -2478,12 +2535,12 @@ public class RuleTemplateModelDRLPersistenceTest {
         fac.setFactPattern( new FactPattern( "java.util.List" ) );
         m.addLhsItem( fac );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "java.util.List( ) from collect ( Person( field1 == \"foo\" ) ) \n"
-                + "then\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "java.util.List( ) from collect ( Person( field1 == \"foo\" ) ) \n" +
+                "then\n" +
+                "end";
 
         m.addRow( new String[]{ "foo" } );
 
@@ -2517,12 +2574,12 @@ public class RuleTemplateModelDRLPersistenceTest {
         fac.setFactPattern( fp2 );
         m.addLhsItem( fac );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "java.util.List( size > 1 ) from collect ( Person( field1 == \"foo\" ) ) \n"
-                + "then\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "java.util.List( size > 1 ) from collect ( Person( field1 == \"foo\" ) ) \n" +
+                "then\n" +
+                "end";
 
         m.addRow( new String[]{ "1", "foo" } );
 
@@ -2556,12 +2613,12 @@ public class RuleTemplateModelDRLPersistenceTest {
         fac.setFactPattern( fp2 );
         m.addLhsItem( fac );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "java.util.List( size > 1 ) from collect ( Person( ) )\n"
-                + "then\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "java.util.List( size > 1 ) from collect ( Person( ) )\n" +
+                "then\n" +
+                "end";
 
         m.addRow( new String[]{ "1", null } );
 
@@ -2595,12 +2652,12 @@ public class RuleTemplateModelDRLPersistenceTest {
         fac.setFactPattern( fp2 );
         m.addLhsItem( fac );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "java.util.List() from collect ( Person( field1 == \"foo\" ) )"
-                + "then\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "java.util.List() from collect ( Person( field1 == \"foo\" ) )" +
+                "then\n" +
+                "end";
 
         m.addRow( new String[]{ null, "foo" } );
 
@@ -2623,12 +2680,12 @@ public class RuleTemplateModelDRLPersistenceTest {
         fac.setFactPattern( fp );
         m.addLhsItem( fac );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "java.util.List() from collect ( Person( field1 == \"foo\", field2 == \"bar\" ) ) \n"
-                + "then\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "java.util.List() from collect ( Person( field1 == \"foo\", field2 == \"bar\" ) ) \n" +
+                "then\n" +
+                "end";
 
         m.addRow( new String[]{ "foo", "bar" } );
 
@@ -2651,11 +2708,11 @@ public class RuleTemplateModelDRLPersistenceTest {
         fac.setFactPattern( fp );
         m.addLhsItem( fac );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "then\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "then\n" +
+                "end";
 
         m.addRow( new String[]{ "foo", null } );
 
@@ -2678,11 +2735,11 @@ public class RuleTemplateModelDRLPersistenceTest {
         fac.setFactPattern( fp );
         m.addLhsItem( fac );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "then\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "then\n" +
+                "end";
 
         m.addRow( new String[]{ null, "foo" } );
 
@@ -2723,12 +2780,12 @@ public class RuleTemplateModelDRLPersistenceTest {
         fac.setFactPattern( fp2 );
         m.addLhsItem( fac );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "java.util.List( size > 1 ) from collect ( Person( field1 == \"foo\", field2 == \"bar\" ) ) \n"
-                + "then\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "java.util.List( size > 1 ) from collect ( Person( field1 == \"foo\", field2 == \"bar\" ) ) \n" +
+                "then\n" +
+                "end";
 
         m.addRow( new String[]{ "1", "foo", "bar" } );
 
@@ -2769,12 +2826,12 @@ public class RuleTemplateModelDRLPersistenceTest {
         fac.setFactPattern( fp2 );
         m.addLhsItem( fac );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "java.util.List( size > 1 ) from collect ( Person( field1 == \"foo\" ) ) \n"
-                + "then\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "java.util.List( size > 1 ) from collect ( Person( field1 == \"foo\" ) ) \n" +
+                "then\n" +
+                "end";
 
         m.addRow( new String[]{ "1", "foo", null } );
 
@@ -2815,12 +2872,12 @@ public class RuleTemplateModelDRLPersistenceTest {
         fac.setFactPattern( fp2 );
         m.addLhsItem( fac );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "java.util.List( size > 1 ) from collect ( Person( field2 == \"bar\" ) ) \n"
-                + "then\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "java.util.List( size > 1 ) from collect ( Person( field2 == \"bar\" ) ) \n" +
+                "then\n" +
+                "end";
 
         m.addRow( new String[]{ "1", null, "bar" } );
 
@@ -2837,12 +2894,12 @@ public class RuleTemplateModelDRLPersistenceTest {
         ffl.setText( "Person( field1 == \"@{f1}\", field2 == \"@{f2}\" )" );
         m.addLhsItem( ffl );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "Person( field1 == \"foo\", field2 == \"bar\" ) \n"
-                + "then\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "Person( field1 == \"foo\", field2 == \"bar\" ) \n" +
+                "then\n" +
+                "end";
 
         m.addRow( new String[]{ "foo", "bar" } );
 
@@ -2859,11 +2916,11 @@ public class RuleTemplateModelDRLPersistenceTest {
         ffl.setText( "Person( field1 == \"@{f1}\", field2 == \"@{f2}\" )" );
         m.addLhsItem( ffl );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "then\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "then\n" +
+                "end";
 
         m.addRow( new String[]{ "foo", null } );
 
@@ -2880,11 +2937,11 @@ public class RuleTemplateModelDRLPersistenceTest {
         ffl.setText( "Person( field1 == \"@{f1}\", field2 == \"@{f2}\" )" );
         m.addLhsItem( ffl );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "then\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "then\n" +
+                "end";
 
         m.addRow( new String[]{ null, "bar" } );
 
@@ -2901,12 +2958,12 @@ public class RuleTemplateModelDRLPersistenceTest {
         ffl.setText( "System.println( \"@{f1}\" + \"@{f2}\" );" );
         m.addRhsItem( ffl );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "then\n"
-                + "System.println( \"foo\" + \"bar\" );"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "then\n" +
+                "System.println( \"foo\" + \"bar\" );" +
+                "end";
 
         m.addRow( new String[]{ "foo", "bar" } );
 
@@ -2923,11 +2980,11 @@ public class RuleTemplateModelDRLPersistenceTest {
         ffl.setText( "System.println( \"@{f1}\" + \"@{f2}\" );" );
         m.addRhsItem( ffl );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "then\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "then\n" +
+                "end";
 
         m.addRow( new String[]{ "foo", null } );
 
@@ -2944,11 +3001,11 @@ public class RuleTemplateModelDRLPersistenceTest {
         ffl.setText( "System.println( \"@{f1}\" + \"@{f2}\" );" );
         m.addRhsItem( ffl );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "then\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "then\n" +
+                "end";
 
         m.addRow( new String[]{ null, "bar" } );
 
@@ -2980,16 +3037,16 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         m.addRhsItem( aif );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "$p : Person()\n"
-                + "then\n"
-                + "Present f0 = new Present();\n"
-                + "f0.setField1(\"foo\");\n"
-                + "f0.setField2(\"bar\");\n"
-                + "insert(f0);\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "$p : Person()\n" +
+                "then\n" +
+                "Present f0 = new Present();\n" +
+                "f0.setField1(\"foo\");\n" +
+                "f0.setField2(\"bar\");\n" +
+                "insert(f0);\n" +
+                "end";
 
         m.addRow( new String[]{ "foo", "bar" } );
 
@@ -3021,14 +3078,14 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         m.addRhsItem( aif );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "$p : Person()\n"
-                + "then\n"
-                + "Present f0 = new Present();\n"
-                + "insert(f0);\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "$p : Person()\n" +
+                "then\n" +
+                "Present f0 = new Present();\n" +
+                "insert(f0);\n" +
+                "end";
 
         m.addRow( new String[]{ null, null } );
 
@@ -3060,15 +3117,15 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         m.addRhsItem( aif );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "$p : Person()\n"
-                + "then\n"
-                + "Present f0 = new Present();\n"
-                + "f0.setField1(\"foo\");\n"
-                + "insert(f0);\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "$p : Person()\n" +
+                "then\n" +
+                "Present f0 = new Present();\n" +
+                "f0.setField1(\"foo\");\n" +
+                "insert(f0);\n" +
+                "end";
 
         m.addRow( new String[]{ "foo", null } );
 
@@ -3100,15 +3157,15 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         m.addRhsItem( aif );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "$p : Person()\n"
-                + "then\n"
-                + "Present f0 = new Present();\n"
-                + "f0.setField2(\"bar\");\n"
-                + "insert(f0);\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "$p : Person()\n" +
+                "then\n" +
+                "Present f0 = new Present();\n" +
+                "f0.setField2(\"bar\");\n" +
+                "insert(f0);\n" +
+                "end";
 
         m.addRow( new String[]{ null, "bar" } );
 
@@ -3139,14 +3196,14 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         m.addRhsItem( asf );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "$p : Person()\n"
-                + "then\n"
-                + "$p.setField1(\"foo\");\n"
-                + "$p.setField2(\"bar\");\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "$p : Person()\n" +
+                "then\n" +
+                "$p.setField1(\"foo\");\n" +
+                "$p.setField2(\"bar\");\n" +
+                "end";
 
         m.addRow( new String[]{ "foo", "bar" } );
 
@@ -3177,12 +3234,12 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         m.addRhsItem( asf );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "$p : Person()\n"
-                + "then\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "$p : Person()\n" +
+                "then\n" +
+                "end";
 
         m.addRow( new String[]{ null, null } );
 
@@ -3213,13 +3270,13 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         m.addRhsItem( asf );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "$p : Person()\n"
-                + "then\n"
-                + "$p.setField1(\"foo\");\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "$p : Person()\n" +
+                "then\n" +
+                "$p.setField1(\"foo\");\n" +
+                "end";
 
         m.addRow( new String[]{ "foo", null } );
 
@@ -3250,13 +3307,13 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         m.addRhsItem( asf );
 
-        String expected = "rule \"r1_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "$p : Person()\n"
-                + "then\n"
-                + "$p.setField2(\"bar\");\n"
-                + "end";
+        String expected = "rule \"r1_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "$p : Person()\n" +
+                "then\n" +
+                "$p.setField2(\"bar\");\n" +
+                "end";
 
         m.addRow( new String[]{ null, "bar" } );
 
@@ -3296,13 +3353,13 @@ public class RuleTemplateModelDRLPersistenceTest {
         asf.addFieldValue( afv0 );
         m.addRhsItem( asf );
 
-        String expected = "rule \"Empty FreeFormLine_0\"\n"
-                + "dialect \"mvel\"\n"
-                + "when\n"
-                + "$p : Person( field1 == \"foo\" )\n"
-                + "then\n"
-                + "$p.setField1(\"bar\");\n"
-                + "end";
+        String expected = "rule \"Empty FreeFormLine_0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "$p : Person( field1 == \"foo\" )\n" +
+                "then\n" +
+                "$p.setField1(\"bar\");\n" +
+                "end";
 
         m.addRow( new String[]{ "foo", "bar" } );
 

@@ -603,6 +603,35 @@ public class RuleTemplateModelDRLPersistenceImpl
                                "def capitals(value) {\n" +
                                "  value.toUpperCase();\n" +
                                "}}" );
+        header.append( "@code{\n" +
+                               " def makeValueList(value) {\n" +
+                               "    if(value.startsWith('\"') && value.endsWith('\"')) {\n" +
+                               "      value = value.substring(1, value.length() - 1);\n" +
+                               "    }\n" +
+                               "	workingValue = value.trim();\n" +
+                               "	if ( workingValue.startsWith('(') ) {\n" +
+                               "		workingValue = workingValue.substring( 1 );\n" +
+                               "	}\n" +
+                               "	if ( workingValue.endsWith(')') ) {\n" +
+                               "		workingValue = workingValue.substring( 0," +
+                               "				workingValue.length() - 1 );\n" +
+                               "	}\n" +
+                               "	values = workingValue.split( ',' );\n" +
+                               "	output = ' (';\n" +
+                               "	for (v : values ) {\n" +
+                               "		v = v.trim();\n" +
+                               "		if ( v.startsWith( '\"' ) ) {\n" +
+                               "			v = v.substring( 1 );\n" +
+                               "		}\n" +
+                               "		if ( v.endsWith( '\"' ) ) {\n" +
+                               "   		v = v.substring( 0,v.length() - 1 );\n" +
+                               "		}\n" +
+                               "		output+='\"'+v+'\", ';\n" +
+                               "	}" +
+                               "	output=output.substring(0,output.length()-2)+')';\n" +
+                               "	output;\n" +
+                               "	}\n" +
+                               "}" );
 
         return header.append( buf ).toString();
     }
