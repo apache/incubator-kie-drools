@@ -1935,10 +1935,9 @@
   <section xml:id="remote.rest.execute">
     <title xml:id="remote.rest.execute.title">Execute calls</title>
 
-    <para>While there is a <code>/runtime/{id}/execute</code> and a <code>task/execute</code> method, both will take all types
-      of commands. This is possible because execute takes a JaxbCommandsRequest object, which contains a list of 
-      <code>(org.kie.api.command.)Command</code> objects. The <code>JaxbCommandsRequest</code> has fields to store the proper 
-      <code>deploymentId</code> and <code>processInstanceId</code> information.
+    <para>There is a <code>/execute</code> method that takes a JaxbCommandsRequest object, which contains
+     a list of <code>(org.kie.api.command.)Command</code> objects. The <code>JaxbCommandsRequest</code> has
+     fields to store the proper <code>deploymentId</code> and <code>processInstanceId</code> information.
     </para>
 
     <para>
@@ -1951,57 +1950,24 @@
 
       <variablelist>
         <varlistentry>
-          <term>[POST] <command>/task/execute</command>
+          <term>[POST] <command>/execute</command>
           </term>
           <listitem>
             <itemizedlist>
               <listitem>
                 <para>
-                  Executes a
-                  <code>Command</code>
-                  , assumed to be related to tasks.
+                  Executes a <code>JaxbCommandsRequest</code>
                 </para>
               </listitem>
               <listitem>
                 <para>
-                  Returns a
-                  <code>JaxbCommandResponse</code>
-                  implementation with the result of the operation
-                </para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term>
-            [POST]
-            <command>
-              /runtime/
-              <emphasis>{deploymentId}</emphasis>
-              /execute
-            </command>
-          </term>
-          <listitem>
-            <itemizedlist>
-              <listitem>
-                <para>
-                  Executes a
-                  <code>Command</code>
-                  , assumed to be related to business processes or the knowledge session.
-                </para>
-              </listitem>
-              <listitem>
-                <para>
-                  Returns a
-                  <code>JaxbCommandResponse</code>
-                  implementation with the result of the operation
+                  Returns a <code>JaxbCommandResponse</code> with the result of the request
                 </para>
               </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
       </variablelist>
-
     </section>
     <section>
       <title>Commands accepted</title>
@@ -2723,7 +2689,7 @@
 		<itemizedlist>
 			<listitem>
 				<para>
-					<code>http://server:port/business-central/rest</code>
+					<code>http://server:port/jbpm-console/rest</code>
 				</para>
 			</listitem>
 		</itemizedlist>

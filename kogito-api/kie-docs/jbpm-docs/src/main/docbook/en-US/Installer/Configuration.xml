@@ -132,10 +132,18 @@
   </section>
   
   <section>
-    <title>Using your own database</title>
+    <title>Using your own database with the jBPM installer</title>
 
     <section>
       <title>Introduction</title>
+  
+      <para>jBPM uses the Java Persistence API specification (v2) to allow users to configure whatever
+      datasource they want to use to persist runtime data.  As a result, the instructions below describe
+      how you should configure a datasource when using JPA on JBoss application server (e.g. AS7, EAP6
+      or Wildfly8) using a <filename>persistence.xml</filename> file and configuring your datasource and
+      driver in your application server's <filename>standalone.xml</filename>, similar to how you would
+      configure any other application using JPA on JBoss application server.  The installer automates some
+      of this (like copying the right files to the right location after installation).</para>
   
       <para>By default, the jbpm-installer uses an H2 database for persisting runtime data.  In this
       section we will:  
@@ -147,16 +155,6 @@
   
       <para>You will need a local instance of a database, in this case we will use MySQL.</para>
   
-      <para>First though, let's look at the persistence setup that jBPM uses. In the demo, and 
-      in general, there are following types of persistent entities used by jBPM:
-        <itemizedlist> 
-          <listitem>entities used for saving the actual session and process instance information - aka runtime data.</listitem>
-          <listitem>entities used for logging and generating reports - aka audit log.</listitem>
-          <listitem>entities used by the task service.</listitem>
-        </itemizedlist>
-      </para>
-  
-      <para><quote>persistent entities</quote> in this context, are Java classes that represent information in the database.</para>
     </section>
   
     <section>
@@ -191,10 +189,11 @@
       </para>
       
       <tip><para>There are multiple standalone.xml files available (depending on whether you are using JBoss
-      AS 7.1.1 or JBoss EAP 6.1.1 and whether you are running the normal or full profile).  The full profile
-      is required to use the JMS component for remote integration. Best practice is to update all standalone.xml
-      files to have consistent setup but most important is to have standalone-full-as-7.1.1.Final.xml
-      properly configured as this is used by default by the installer.</para></tip>
+      AS7, JBoss EAP6 or Wildfly8 and whether you are running the normal or full profile).  The full profile
+      is required to use the JMS component for remote integration, so will be used by default by the installer.
+      Best practice is to update all standalone.xml files to have consistent setup but most important is to
+      have standalone-full-wildfly-8.1.0.Final.xml properly configured as this is used by default by the
+      installer.</para></tip>
       
       <para>Do the following:
         <itemizedlist>
@@ -207,9 +206,11 @@
 #mysql
 db.name=mysql
 db.driver.module.prefix=com/mysql
-db.driver.jar.name=${db.name}-connector-java.jar
+db.driver.jar.name=mysql-connector-java-5.1.18.jar
 db.driver.download.url=https://repository.jboss.org/nexus/service/local/repositories/central/content/mysql/mysql-connector-java/5.1.18/mysql-connector-java-5.1.18.jar
         </programlisting>
+        You might want to update the db driver jar name and download url to whatever version of the jar matches
+        your installation.   
         </listitem>
         <listitem>
           <para><filename>db/jbpm-persistence-JPA2.xml</filename>:</para>
@@ -226,47 +227,52 @@ db.driver.download.url=https://repository.jboss.org/nexus/service/local/reposito
           here</link>.</para>
         </listitem>
         <listitem>
-          <para><filename>standalone.xml</filename>:</para>
-          <para>This file is the configuration for the standalone JBoss application server. When the 
-          installer installs the demo, it copies these files to the <code>standalone/configuration</code>
-          directory in the JBoss server directory.</para>
-          <para>We need to change the datasource configuration in <code>standalone.xml</code>
-          so that the jBPM process engine can use our MySQL database</para>
-          <para>The original file contains the following lines:</para>
-          <programlisting>
-&lt;datasource jndi-name="java:jboss/datasources/jbpmDS" enabled="true" use-java-context="true" pool-name="H2DS"&gt;
-    &lt;connection-url&gt;jdbc:h2:tcp://localhost/runtime/jbpm-demo&lt;/connection-url&gt;
+          <para><filename>standalone-full-wildfly-8.1.0.Final.xml</filename>:</para>
+          <para><filename>Standalone.xml</filename> and <filename>standalone-full.xml</filename> are the 
+          configuration for the standalone JBoss application server. When the installer installs the demo, it
+          copies these files to the <code>standalone/configuration</code> directory in the JBoss server 
+          directory.  Since the installer uses Wildfly8 by default as application server, you probably need to
+          change <filename>standalone-full-wildfly-8.1.0.Final.xml</filename>.</para>
+          <para>We need to change the datasource configuration in <code>standalone-full.xml</code>
+          so that the jBPM process engine can use our MySQL database. The original file contains
+          (something very similar to) the following lines:</para>
+          <programlisting>&lt;datasource jta="true" jndi-name="java:jboss/datasources/jbpmDS" pool-name="H2DS" enabled="true" use-java-context="true" use-ccm="true"&gt;
+    &lt;connection-url&gt;jdbc:h2:tcp://localhost/~/jbpm-db;MVCC=TRUE&lt;/connection-url&gt;
     &lt;driver&gt;h2&lt;/driver&gt;
-    &lt;pool&gt;&lt;/pool&gt;
     &lt;security&gt;
        &lt;user-name&gt;sa&lt;/user-name&gt;
-       &lt;password&gt;&lt;/password&gt;
     &lt;/security&gt;
 &lt;/datasource&gt;
 &lt;drivers&gt;
     &lt;driver name="h2" module="com.h2database.h2"&gt;
         &lt;xa-datasource-class&gt;org.h2.jdbcx.JdbcDataSource&lt;/xa-datasource-class&gt;
     &lt;/driver&gt;
-&lt;/drivers&gt;
-            </programlisting>
+&lt;/drivers&gt;</programlisting>
           <para>Change the lines to the following:</para>
-          <programlisting>
-&lt;datasource jndi-name="java:jboss/datasources/jbpmDS" pool-name="MySQLDS" enabled="true" use-java-context="true"&gt;
+          <programlisting>&lt;datasource jta="true" jndi-name="java:jboss/datasources/jbpmDS" pool-name="<emphasis role="bold">MySQLDS</emphasis>" enabled="true" use-java-context="true" use-ccm="true"&gt;
     &lt;connection-url&gt;<emphasis role="bold">jdbc:mysql://localhost:3306/jbpm</emphasis>&lt;/connection-url&gt;
     &lt;driver&gt;<emphasis role="bold">mysql</emphasis>&lt;/driver&gt;
-    &lt;pool&gt;&lt;/pool&gt;
     &lt;security&gt;
        &lt;user-name&gt;<emphasis role="bold">jbpm</emphasis>&lt;/user-name&gt;
        &lt;password&gt;<emphasis role="bold">jbpm</emphasis>&lt;/password&gt;
     &lt;/security&gt;
-&lt;/datasource&gt;
-&lt;drivers&gt;
-    &lt;driver name="<emphasis role="bold">mysql</emphasis>" module="<emphasis role="bold">com.mysql</emphasis>"&gt;
-        &lt;xa-datasource-class&gt;<emphasis role="bold">com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</emphasis>&lt;/xa-datasource-class&gt;
-    &lt;/driver&gt;
-&lt;/drivers&gt;
-           </programlisting>
-        </listitem><listitem>
+&lt;/datasource&gt;</programlisting>
+          <para>and add an additional driver configuration:</para>
+          <programlisting>&lt;driver name="<emphasis role="bold">mysql</emphasis>" module="<emphasis role="bold">com.mysql</emphasis>"&gt;
+    &lt;xa-datasource-class&gt;<emphasis role="bold">com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</emphasis>&lt;/xa-datasource-class&gt;
+&lt;/driver&gt;</programlisting>
+        </listitem>
+        <listitem>
+          <para>To install driver jars in JBoss application server (Wildfly8, EAP6, etc.), it is recommended
+          to install the driver jar as a module.  The installer already takes care of this mostly: it will 
+          copy the driver jar (you specified in the <filename>build.properties</filename>) to the right folder
+          inside the modules directory of your server and put a matching module.xml next to it.  For MySQL,
+          this file is called <filename>db/mysql_module.xml</filename>.  Open this file and make sure that the
+          file name of the driver jar listed there is identical the driver jar name you specified in the
+          <filename>build.properties</filename> (including the version).  Note that, even if you simply
+          uncommented the default MySQL configuration, you will still need to add the right version here.</para>
+        </listitem>
+        <listitem>
           <para><filename>Starting the demo</filename></para>
           <para>We've modified all the necessary files at this point. Now would be a good time to make sure
           your database is started up as well!</para>
@@ -276,7 +282,7 @@ db.driver.download.url=https://repository.jboss.org/nexus/service/local/reposito
           before continuing.</para>
           <para>Run <programlisting>ant install.demo</programlisting> to (re)install the wars and copy the
           necessary configuration files.  Once you've done that, (re)start the demo using 
-          <programlisting>ant start.demo</programlisting>.</para>
+          <programlisting>ant start.demo</programlisting></para>
         </listitem>
         <listitem>
           <para><filename>Problems?</filename></para>
@@ -297,10 +303,55 @@ db.driver.download.url=https://repository.jboss.org/nexus/service/local/reposito
       <para>If you decide to use a different database with this demo, you need to remember 
       the following when going through the steps above:
         <itemizedlist>
-          <listitem>Change the JDBC URLs, usernames and passwords, and Hibernate dialect lines 
-          to match your database information in the configuration files mentioned above.</listitem>
+          <listitem>Configuring the jBPM datasource in <code>standalone.xml</code>: 
+          <itemizedlist>
+            <listitem>After locating the <code>java:jboss/datasources/jbpmDS</code> datasource, you need to
+            provide the following properties specific to your database:
+              <itemizedlist>
+                <listitem>Change url of your database</listitem> 
+                <listitem>Change the user-name and password</listitem>
+                <listitem>Change the name of the driver (which you'll create next)</listitem>
+              </itemizedlist>
+            For example:
+            <programlisting>&lt;datasource jta="true" jndi-name="java:jboss/datasources/jbpmDS" pool-name="PostgreSQLDS" enabled="true" use-java-context="true" use-ccm="true"&gt;
+    &lt;connection-url&gt;jdbc:postgresql://localhost:5432/jbpm&lt;/connection-url&gt;
+    &lt;driver&gt;postgresql&lt;/driver&gt;
+    &lt;security&gt;
+        &lt;user-name&gt;jbpm&lt;/user-name&gt;
+        &lt;password&gt;jbpm&lt;/password&gt;
+    &lt;/security&gt;
+&lt;/datasource&gt;</programlisting>
+            </listitem>
+            <listitem>Add an additional driver configuration:
+              <itemizedlist>
+                <listitem>Change the name of the driver to match the name you specified when
+                configuring the datasource in the previous step</listitem> 
+                <listitem>Change the module of the driver: the database driver jar should
+                be installed as a module (see below) and here you should reference the unique
+                name of the module.  Since the installer can take care of automatically generating
+                this module for you (see below), this should match the <code>db.driver.module.prefix</code>
+                property in <code>build.properties</code> (where forward slashes are replaced by a point).
+                In the example below, I used <quote><code>org/postgresql</code></quote> as 
+                <code>db.driver.module.prefix</code> which means that I should then use 
+                <code>org.postgresql</code> as module name for the driver.
+                </listitem>
+                <listitem>Fill in the correct name of the XA datasource class to use</listitem>
+              </itemizedlist>
+            For example:
+            <programlisting>&lt;driver name="<emphasis role="bold">postgresql</emphasis>" module="<emphasis role="bold">org.postgresql</emphasis>"&gt;
+    &lt;xa-datasource-class&gt;<emphasis role="bold">org.postgresql.xa.PGXADataSource</emphasis>&lt;/xa-datasource-class&gt;
+&lt;/driver&gt;</programlisting>
+            </listitem>
+          </itemizedlist>
+          </listitem>
+          <listitem>You need to change the dialect in <filename>persistence.xml</filename> to the dialect for
+          your database, for example:
+          <programlisting>&lt;property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/&gt;</programlisting>
+          </listitem>
           <listitem>In order to make sure your driver will be correctly installed in
-          the JBoss AS 7 server, you can do one of two things. Both ways are explained 
+          the JBoss application server, there are typically multiple options, like install as a module or
+          as a deployment. It is recommended to install the driver as a module for AS7, EAP6 and Wildfly8.
+          For example, for AS7 both ways are explained 
           <link
   xlink:href="https://community.jboss.org/wiki/DataSourceConfigurationinAS7">here</link>.
             <itemizedlist>
@@ -317,71 +368,51 @@ db.driver.download.url=https://repository.jboss.org/nexus/service/local/reposito
                 directory.
               </listitem>
             </itemizedlist>
-          If you choose to install driver as JBoss module, please do the following:
+          If you choose to install driver as JBoss module (recommended), please do the following:
             <itemizedlist>
-              <listitem>Disable default H2 driver properties
-                <programlisting>
-# default is H2
+              <listitem>In <code>build.properties</code>, disable the default H2 driver properties
+                <programlisting># default is H2
 # H2.version=1.3.168
 # db.name=h2
-# db.driver.jar.name=${db.name}.jar
-# db.driver.download.url=http://repo1.maven.org/maven2/com/h2database/h2/${H2.version}/h2-${H2.version}.jar
-                </programlisting>
+# db.driver.jar.name=h2-${H2.version}.jar
+# db.driver.download.url=http://repo1.maven.org/maven2/com/h2database/h2/${H2.version}/h2-${H2.version}.jar</programlisting>
               </listitem>
-              <listitem>Copy one of the example configs (mysql or postgresql)
-              <programlisting>
-#postgresql
+              <listitem>Uncomment one of the other example configs (mysql or postgresql) or create your own:
+                <programlisting>#postgresql
 db.name=postgresql
 db.driver.module.prefix=org/postgresql
-db.driver.jar.name=${db.name}-jdbc.jar
-db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads/postgresql/postgresql/9.1-902.jdbc4/postgresql-9.1-902.jdbc4.jar
-              </programlisting>
-              </listitem>
-              <listitem>Change the <code>db.name</code> property in <code>build.properties</code>
-              to the name of the downloaded jdbc driver JAR you placed in <code>db/drivers</code>.
-              </listitem>
-              <listitem>Change the <code>&lt;driver&gt;</code> information in
-              the <code>&lt;datasource&gt;</code> section of <code>standalone.xml</code> so 
-              that it refers to the name of your driver module (see next step). For example:
-              <programlisting>&lt;driver&gt;<emphasis role="bold">postgresql</emphasis>&lt;/driver&gt;</programlisting>
-              </listitem>
-              <listitem>Further on in <code>standalone.xml</code> is the
-              <code>&lt;drivers&gt;</code> section of the 
-              <code>&lt;datasources&gt;</code> (note the plural: driver<emphasis>s</emphasis>, 
-              datasource<emphasis>s</emphasis>). We need to do the following with this file:
-              <itemizedlist>
-                <listitem>Change the name of the driver to match the name in the last step,</listitem> 
-                <listitem>Give an appropriate name to the module,</listitem>
-                <listitem>And fill in the correct name of the XA datasource class to use.</listitem>
-              </itemizedlist>
-              For example:
-              <programlisting>
-&lt;drivers&gt;
-  &lt;driver name="<emphasis role="bold">postgresql</emphasis>" module="<emphasis role="bold">org.postgresql</emphasis>"&gt;
-      &lt;xa-datasource-class&gt;<emphasis role="bold">org.postgresql.xa.PGXADataSource</emphasis>&lt;/xa-datasource-class&gt;
-  &lt;/driver&gt;
-&lt;/drivers&gt;
-              </programlisting>
-              </listitem><listitem>Change the <code>db.driver.module.prefix</code> property 
-              in <code>build.properties</code> to the same <quote>value</quote> you used for the module name
-              in <code>standalone.xml</code>. In the example above, I used 
-              <quote><code>org.postgresql</code></quote> which means that I should then use
-              <code>org/postgresql</code> for the <code>db.driver.module.prefix</code> property.
+db.driver.jar.name=postgresql-9.1-902.jdbc4.jar
+db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads/postgresql/postgresql/9.1-902.jdbc4/postgresql-9.1-902.jdbc4.jar</programlisting>
+                <itemizedlist>
+                  <listitem>Change the <code>db.name</code> property in <code>build.properties</code>
+                  to a name for your database.
+                  </listitem>
+                  <listitem>Change the <code>db.driver.module.prefix</code> property to a name for the module
+                  of your driver.  Note that this should match the module property when configuring the driver
+                  in <filename>standalone.xml</filename> (where forward slashes in the prefix here are 
+                  replaced by a point).  In the example above, I used <quote><code>org/postgresql</code></quote> as 
+                  <code>db.driver.module.prefix</code> which means that I should then use 
+                  <code>org.postgresql</code> as module name for the driver.
+                  </listitem>
+                  <listitem>Change the <code>db.driver.jar.name</code> property to the name of the jar that
+                  contains your database driver.
+                  </listitem>
+                  <listitem>Change the <code>db.driver.download.url</code> property to where the driver jar
+                  can be downloaded. Alternatively, you could manually download the jar yourself, and place it
+                  in the <code>db/drivers</code> folder, using the same name as you specified in the
+                  <code>db.driver.jar.name</code> property.
+                  </listitem>
+                </itemizedlist>
               </listitem>
               <listitem>Lastly, you'll have to create the <code>db/${db.name}_module.xml</code>
               file. As an example you can use db/mysql_module.xml, so just make a copy of it and:
               <itemizedlist>
                 <listitem>Change the name of the <emphasis>module</emphasis> to match the 
-                          <code>db.driver.module.prefix</code> property above</listitem>
-                <listitem>Change the name of the module resource to the name of the JDBC driver 
-                          JAR that was downloaded.</listitem>
+                          driver module name above</listitem>
+                <listitem>Change the name of the module resource path to the name of the 
+                <code>db.driver.jar.name</code> property.</listitem>
               </itemizedlist>
-              The top of the original file looks like this: 
-              <programlisting>&lt;module xmlns="urn:jboss:module:1.0" name="com.mysql"&gt;
-   &lt;resources&gt;
-     &lt;resource-root path="mysql-connector-java.jar"/&gt;
-   &lt;/resources&gt;</programlisting>
-              Change those lines to look like this, for example: 
+              For example, the top of the file would look like: 
               <programlisting>&lt;module xmlns="urn:jboss:module:1.0" name="<emphasis role="bold">org.postgresql</emphasis>"&gt;
    &lt;resources&gt;
      &lt;resource-root path="<emphasis role="bold">postgresql-9.1-902.jdbc4.jar</emphasis>"/&gt;
