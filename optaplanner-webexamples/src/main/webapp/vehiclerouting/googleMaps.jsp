@@ -51,9 +51,6 @@
   function initMap() {
     var mapCanvas = document.getElementById('map-canvas');
     var mapOptions = {
-      // TODO Hardcoded to show Belgium entirely
-      center: new google.maps.LatLng(50.5, 4.3515499),
-      zoom: 8,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     map = new google.maps.Map(mapCanvas, mapOptions);
@@ -75,9 +72,12 @@
       type: "GET",
       dataType : "json",
       success: function(solution) {
+        var zoomBounds = new google.maps.LatLngBounds ();
         $.each(solution.customerList, function(index, customer) {
+          var latLng = new google.maps.LatLng(customer.latitude, customer.longitude);
+          zoomBounds.extend(latLng);
           var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(customer.latitude, customer.longitude),
+            position: latLng,
             title: customer.locationName + ": Deliver " + customer.demand + " items.",
             map: map
           });
@@ -87,6 +87,7 @@
             }).open(map,marker);
           })
         });
+        map.fitBounds(zoomBounds);
       }, error : function(jqXHR, textStatus, errorThrown) {ajaxError(jqXHR, textStatus, errorThrown)}
     });
   };

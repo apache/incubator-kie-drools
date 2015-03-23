@@ -42,8 +42,7 @@
   var intervalTimer;
 
   initMap = function() {
-    // TODO Hardcoded to show Belgium entirely
-    map = L.map('map').setView([50.5, 4.3515499], 8);
+    map = L.map('map');
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
@@ -64,15 +63,18 @@
       type: "GET",
       dataType : "json",
       success: function(solution) {
+        var markers = [];
         $.each(solution.customerList, function(index, customer) {
           var customerIcon = L.divIcon({
             iconSize: new L.Point(20, 20),
             className: "vehicleRoutingCustomerMarker",
             html: "<span>" + customer.demand + "</span>"
           });
-          L.marker([customer.latitude, customer.longitude], {icon: customerIcon}).addTo(map)
-              .bindPopup(customer.locationName + "</br>Deliver " + customer.demand + " items.");
+          var marker = L.marker([customer.latitude, customer.longitude], {icon: customerIcon});
+          marker.addTo(map).bindPopup(customer.locationName + "</br>Deliver " + customer.demand + " items.");
+          markers.push(marker);
         });
+        map.fitBounds(L.featureGroup(markers).getBounds());
       }, error : function(jqXHR, textStatus, errorThrown) {ajaxError(jqXHR, textStatus, errorThrown)}
     });
   };
