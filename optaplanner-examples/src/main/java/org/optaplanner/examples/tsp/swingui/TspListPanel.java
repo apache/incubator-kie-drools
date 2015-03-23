@@ -21,6 +21,10 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -30,6 +34,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 import javax.swing.Scrollable;
+import javax.swing.SwingConstants;
 
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.tsp.domain.Domicile;
@@ -50,36 +55,59 @@ public class TspListPanel extends JPanel implements Scrollable {
         setLayout(new GridLayout(0, 1));
     }
 
-    public void resetPanel(TravelingSalesmanTour travelingSalesmanTour) {
+    public void resetPanel(TravelingSalesmanTour tour) {
         removeAll();
-        JLabel headerLabel = new JLabel("Tour of " + travelingSalesmanTour.getName());
-        headerLabel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.DARK_GRAY),
-                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-        headerLabel.setBackground(HEADER_COLOR);
-        headerLabel.setOpaque(true);
-        add(headerLabel);
-        Domicile domicile = travelingSalesmanTour.getDomicile();
-        add(new JLabel(domicile.getLocation().toString()));
-        if (travelingSalesmanTour.getVisitList().size() > 1000) {
+        if (tour.getVisitList().size() > 1000) {
             JLabel tooBigLabel = new JLabel("The dataset is too big to show.");
             add(tooBigLabel);
             return;
         }
-        for (Visit visit : travelingSalesmanTour.getVisitList()) {
-            JPanel visitPanel = new JPanel(new GridLayout(1, 2));
-            JButton button = new JButton(new VisitAction(visit));
-            visitPanel.add(button);
-            String distanceLabelString;
-            if (visit.getPreviousStandstill() == null) {
-                distanceLabelString = "Unassigned";
+        Domicile domicile = tour.getDomicile();
+        add(new JLabel(domicile.getLocation().toString()));
+        // TODO If the model contains the nextVisit like in vehicle routing, use that instead
+        Map<Standstill, Visit> nextVisitMap = new LinkedHashMap<Standstill, Visit>();
+        List<Visit> unassignedVisitList = new ArrayList<Visit>();
+        for (Visit visit : tour.getVisitList()) {
+            if (visit.getPreviousStandstill() != null) {
+                nextVisitMap.put(visit.getPreviousStandstill(), visit);
             } else {
-                distanceLabelString = "After " + visit.getPreviousStandstill().getLocation()
-                        + " with distance " + visit.getDistanceFromPreviousStandstill();
+                unassignedVisitList.add(visit);
             }
-            visitPanel.add(new JLabel(distanceLabelString));
-            add(visitPanel);
         }
+        Visit lastVisit = null;
+        for (Visit visit = nextVisitMap.get(domicile); visit != null; visit = nextVisitMap.get(visit)) {
+            addVisitButton(tour, visit);
+            lastVisit = visit;
+        }
+        if (lastVisit != null) {
+            JPanel backToDomicilePanel = new JPanel(new GridLayout(1, 2));
+            backToDomicilePanel.add(new JLabel("Back to " + domicile.getLocation()));
+            JLabel distanceLabel = new JLabel(
+                    lastVisit.getDistanceTo(domicile) + " " + tour.getDistanceUnitOfMeasurement());
+            distanceLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+            backToDomicilePanel.add(distanceLabel);
+            add(backToDomicilePanel);
+        }
+        add(new JLabel("Unassigned"));
+        for (Visit visit : unassignedVisitList) {
+            addVisitButton(tour, visit);
+        }
+    }
+
+    protected void addVisitButton(TravelingSalesmanTour tour, Visit visit) {
+        JPanel visitPanel = new JPanel(new GridLayout(1, 2));
+        JButton button = new JButton(new VisitAction(visit));
+        visitPanel.add(button);
+        String distanceLabelString;
+        if (visit.getPreviousStandstill() == null) {
+            distanceLabelString = "Unassigned";
+        } else {
+            distanceLabelString = visit.getDistanceFromPreviousStandstill() + " " + tour.getDistanceUnitOfMeasurement();
+        }
+        JLabel distanceLabel = new JLabel(distanceLabelString);
+        distanceLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        visitPanel.add(distanceLabel);
+        add(visitPanel);
     }
 
     public void updatePanel(TravelingSalesmanTour travelingSalesmanTour) {
