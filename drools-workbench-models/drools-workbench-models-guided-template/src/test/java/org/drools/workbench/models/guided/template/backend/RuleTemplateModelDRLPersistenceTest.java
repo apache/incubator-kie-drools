@@ -55,7 +55,45 @@ public class RuleTemplateModelDRLPersistenceTest {
             assertEqualsIgnoreWhitespace( expected, drl );
         }
     }
+    
+    @Test
+    public void testInWithSImpleSingleLiteralValue() {
+    	TemplateModel m = new TemplateModel();
+        m.name = "t1";
 
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( DataType.TYPE_STRING );
+        con.setFieldName( "field1" );
+        con.setOperator( "in" );
+        con.setValue( "$f1" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        m.addRow( new String[]{ "ak,mk" } );
+        m.addRow(new String[]{"(ak,mk)"});
+
+        String expected = "rule \"t1_1\"" +
+                "dialect \"mvel\"\n" +
+                "when \n"
+                + "Person( field1 in (\"ak\",\"mk\") )"
+                + "then \n"
+                + "end"
+        +"rule \"t1_0\"" +
+        "dialect \"mvel\"\n" +
+        "when \n"
+        + "Person( field1 in (\"ak\",\"mk\") )"
+        + "then \n"
+        + "end";
+
+        checkMarshall( expected,
+                       m );
+
+    }
+    
+    
     @Test
     public void testSimpleSingleValue() {
         TemplateModel m = new TemplateModel();
