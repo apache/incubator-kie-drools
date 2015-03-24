@@ -51,7 +51,11 @@
                 <para>The <emphasis>prodessDefId</emphasis>component of the URL must conform to the following regex: <code>[_a-zA-Z0-9-:\.]+</code></para>
               </listitem>
               <listitem>
-                <para>This operation takes <emphasis>map query parameters</emphasis> (see above), which will be used as parameters for the process instance.</para>
+                <para>This operation takes <emphasis>map query parameters</emphasis> (see below), which will be used as parameters for the process instance.</para>
+              </listitem>
+              <listitem>
+                <para>You can only pass basic types (as map query parameters) using this URL.  If you want to
+                pass complex and/or custom classes, you should use the /execute REST call instead.</para>
               </listitem>
             </itemizedlist>
           </listitem>
@@ -243,6 +247,10 @@
                   This operation takes <emphasis>map query parameters</emphasis>, which are used as input to signify the 
                   results for completion of the work item.
                 </para>
+              </listitem>
+              <listitem>
+                <para>You can only pass basic types (as map query parameters) using this URL.  If you want to
+                pass complex and/or custom classes, you should use the /execute REST call instead.</para>
               </listitem>
             </itemizedlist>
           </listitem>
@@ -1176,6 +1184,10 @@
               <listitem>
                 <para>Takes map query parameters, which are the "results" input for the complete operation</para>
               </listitem>
+              <listitem>
+                <para>You can only pass basic types (as map query parameters) using this URL.  If you want to
+                pass complex and/or custom classes, you should use the /execute REST call instead.</para>
+              </listitem>
             </itemizedlist>
           </listitem>
         </varlistentry>
@@ -1969,6 +1981,7 @@
         </varlistentry>
       </variablelist>
     </section>
+    
     <section>
       <title>Commands accepted</title>
 
@@ -2052,37 +2065,125 @@
         </simplelist>
       </formalpara>
     </section>
+    
+    <section>
+      <title>Basic example</title>
+      
+      <para>For example, the following <code>/execute</code> call can be used to start a process (with
+      id '<code>evaluation</code>' in the project with deployment id '<code>org.jbpm:Evaluation:1.0</code>')
+      and two parameters (<code>employee</code> equal to <code>'krisv'</code> and <code>reason</code> equal
+      to <code>'Yearly performance evaluation'</code>).
+      </para> 
+       
+      <programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;command-request&gt;
+  &lt;deployment-id&gt;org.jbpm:Evaluation:1.0&lt;/deployment-id&gt;
+  &lt;ver&gt;6.2.0.1&lt;/ver&gt;
+  &lt;user&gt;krisv&lt;/user&gt;
+  &lt;start-process processId="evaluation"&gt;
+    &lt;parameter&gt;
+      &lt;item key="reason"&gt;
+        &lt;value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;Yearly performance evaluation&lt;/value&gt;
+      &lt;/item&gt;
+      &lt;item key="employee"&gt;
+        &lt;value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;krisv&lt;/value&gt;
+      &lt;/item&gt;
+    &lt;/parameter&gt;
+  &lt;/start-process&gt;
+&lt;/command-request&gt;</programlisting>
 
+      <para>Note that in the header should also set "Content-Type" to <code>application/xml</code> and add
+      basic authentication information using "Authorization".</para> 
+
+      <para>The response will contain information about the process instance that was just started:</para>
+      
+      <programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+  &lt;command-response&gt;
+    &lt;deployment-id&gt;org.jbpm:Evaluation:1.0&lt;/deployment-id&gt;
+    &lt;ver&gt;6.2.0.1&lt;/ver&gt;
+    &lt;process-instance index="0"&gt;
+    &lt;process-id&gt;evaluation&lt;/process-id&gt;
+    &lt;id&gt;15&lt;/id&gt;
+    &lt;state&gt;1&lt;/state&gt;
+    &lt;parentProcessInstanceId&gt;0&lt;/parentProcessInstanceId&gt;
+    &lt;command-name&gt;StartProcessCommand&lt;/command-name&gt;
+  &lt;/process-instance&gt;
+&lt;/command-response&gt;</programlisting>
+
+    </section>
+
+    <section>
+      <title>More complex example using custom data type</title>
+      
+      <para>The <code>/execute</code> operation also supports custom data types to be sent as part of the
+      command.  We rely on JAXB for serialization and deserialization.  To be able to deserialize the custom
+      class at the server side, you also need to set the "Kie-Deployment-Id" header property to the 
+      deployment id of the project.</para>
+      
+      <para>For example, when starting a process or completing a task, a user typically passes additional
+      data as well.  When using custom data types (for example created using the data modeler in the 
+      workbench or any custom Java classes added to the project or as a dependency).  For example, the 
+      following request starts a process which contains a custom <code>TestObject</code> class (with two
+      fields) as the parameter.</para>
+       
+      <programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+  &lt;command-request&gt;
+    &lt;deployment-id&gt;demo:testproject:1.0&lt;/deployment-id&gt;
+    &lt;ver&gt;6.2.0.1&lt;/ver&gt;
+    &lt;user&gt;krisv&lt;/user&gt;
+    &lt;start-process processId="testproject.testprocess"&gt;
+      &lt;parameter&gt;
+        &lt;item key="testobject"&gt;
+          &lt;value xsi:type="testObject" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+            &lt;field1&gt;1&lt;/field1&gt;
+            &lt;field2&gt;2&lt;/field2&gt;
+          &lt;/value&gt;
+        &lt;/item&gt;
+      &lt;/parameter&gt;
+    &lt;/start-process&gt;
+  &lt;/command-request&gt;</programlisting>
+
+      <para>To be able to deserialize the custom class at the server side, you also need to set the
+      "Kie-Deployment-Id" header property to <code>demo:testproject:1.0</code>. You should also set
+      "Content-Type" to <code>application/xml</code> and add basic authentication information using
+      "Authorization".</para>
+      
+    </section>
+      
   </section>
   
   <section>
     <title>Additional Information</title>
 
     <section>
-      <title>Serialization: JAXB or JSON</title>
-      <para>Except for the <link linkend='remote.rest.execute'>Execute calls</link>, all other REST calls described 
-      below can use either JAXB or JSON.</para>
+      <title>Results as XML or JSON</title>
+      <para>Except for the <link linkend='remote.rest.execute'>Execute calls</link>, all other REST calls
+      described above can use either XML or JSON as return type. All REST calls, unless otherwise specified,
+      will return XML by default.</para>
 
-      <para>All REST calls, unless otherwise specified, will use JAXB serialization.</para>
-
-      <para>When using JSON, make sure to add the JSON media type (<code>"application/json"</code>) to the 
-      <code>ACCEPT</code> header of your REST call.</para>
+      <para>If you want to use JSON instead, make sure to add the JSON media type 
+      (<code>"application/json"</code>) to the <code>ACCEPT</code> header of your REST call.</para>
     </section>
 
     <section xml:id="remote.serialization.user.classes">
       <title>Sending and receiving user class instances</title>
       
       <para>Sometimes, users may wish to pass instances of their own classes as parameters to
-        commands sent in a REST request or JMS message. In order to do this, there are a number of requirements. </para>
+      commands sent in a REST request or JMS message. In order to do this, there are a number of 
+      requirements. </para>
       
       <para>
         <orderedlist>
           <listitem>
             <para>The user-defined class satisfy the following in order to be property serialized
-              and deserialized by the JMS API: <itemizedlist>
+              and deserialized: <itemizedlist>
                 <listitem>
-                  <para>The user-defined class must be correctly annotated with JAXB annotations,
-                    including the following: <itemizedlist>
+                  <para>It should be possible to serialize and deserialize the user-defined class using
+                  JAXB.  For simple custom classes, this might be available out-of-the-box, but for more
+                  complex types, this might mean the classes need to be correctly annotated with JAXB
+                  annotations, including the following: <itemizedlist>
                       <listitem>
                         <para>The user-defined class must be annotated with a
                           <code>javax.xml.bind.annotation.XmlRootElement</code> annotation with a
@@ -2126,27 +2227,28 @@
                 <listitem>
                   <para>Any fields in the user-defined class must either be object primitives (such
                     as a <code>Long</code> or <code>String</code>) or otherwise be objects that
-                    satisfy the first 2 requiremends in this list (correct usage of JAXB annotations
+                    satisfy same requirements in this list (correct usage of JAXB annotations
                     and a no-arg constructor).</para>
                 </listitem>
               </itemizedlist></para>
           </listitem>
           <listitem>
-            <para>The class definition must be included in the deployment jar of the deployment that
-              the JMS message content is meant for.</para>
+            <para>The class definition must be included in the deployment jar (kjar) of the deployment
+            that the command is sent to.</para>
           </listitem>
           <listitem>
-            <para>The sender must set a <quote>deploymentId</quote> string property on the JMS bytes
-              message to the name of the deploymentId. This property is necessary in order to be
-              able to load the proper classes from the deployment itself before deserializing the
-              message on the server side.</para>
+            <para>The sender must pass the deployment id in the header of the request.  This property is
+            necessary to able to load the proper classes from the deployment itself before deserializing
+            the message on the server side. For REST requests, this means that the "Kie-Deployment-Id"
+            header property must be set.  For JMS messages, the <quote>deploymentId</quote> string property
+            on the JMS bytes message must be set. </para>
           </listitem>
         </orderedlist>
       </para>
       
       <note>
         <title>Retrieving process variables</title>
-        <para>While <emphasis>submitting</emphasis> an instance of a user-defined class is possible via both the JMS and REST API's, 
+        <para>While <emphasis>submitting</emphasis> an instance of a user-defined class is possible via both the JMS and REST API, 
           <emphasis>retrieving</emphasis> an instance of the process variable is only possible via the REST API.</para>
       </note>
     </section>
