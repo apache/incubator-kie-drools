@@ -36,14 +36,10 @@ import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.UserGroupCallback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class ConcurrentOperationsTest extends AbstractBaseTest {
-   
-    private static final Logger logger = LoggerFactory.getLogger(ConcurrentOperationsTest.class);    
     
     private PoolingDataSource pds;
     private UserGroupCallback userGroupCallback;  
@@ -184,7 +180,7 @@ public class ConcurrentOperationsTest extends AbstractBaseTest {
         manager.close();
     }
     
-    private static class AsyncWorkItemHandler implements WorkItemHandler {
+    private class AsyncWorkItemHandler implements WorkItemHandler {
     	
     	private KieSession ksession;
     	

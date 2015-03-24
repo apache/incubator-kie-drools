@@ -22,12 +22,8 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.scanner.MavenRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDeploymentDescriptorTest extends AbstractBaseTest {
-	
-	private static final Logger logger = LoggerFactory.getLogger(AbstractDeploymentDescriptorTest.class);
 
 	@After
 	public void cleanup() {

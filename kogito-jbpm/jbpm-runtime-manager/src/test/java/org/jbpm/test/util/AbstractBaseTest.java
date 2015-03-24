@@ -1,7 +1,6 @@
 package org.jbpm.test.util;
 
 import org.jbpm.process.instance.impl.util.LoggingPrintStream;
-import org.jbpm.runtime.manager.concurrent.SessionTest;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -15,17 +14,17 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractBaseTest {
     
-    protected static final Logger logger = LoggerFactory.getLogger(SessionTest.class);
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
     
     @Rule
     public TestRule watcher = new TestWatcher() {
         protected void starting(Description description) {
             logger.info("Starting {}", description.getMethodName());
-        };
+        }
 
         protected void finished(Description description) {
             logger.info("Finished {}", description);
-        };
+        }
     };
     
     @After

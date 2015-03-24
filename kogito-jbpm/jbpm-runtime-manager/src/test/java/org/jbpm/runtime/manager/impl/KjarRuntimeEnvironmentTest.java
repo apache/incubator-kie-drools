@@ -48,6 +48,7 @@ import org.kie.scanner.MavenRepository;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
+
     private PoolingDataSource pds;
     private UserGroupCallback userGroupCallback;
     private RuntimeManager manager; 
