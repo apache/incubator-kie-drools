@@ -94,7 +94,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
                 return new AbstractOriginalChangeIterator<Move>(entitySelector, valueSelector) {
                     @Override
                     protected Move newChangeSelection(Object entity, Object toValue) {
-                            return new ChainedChangeMove(entity, variableDescriptor, toValue);
+                        return new ChainedChangeMove(entity, variableDescriptor, toValue);
                     }
                 };
             } else {
