@@ -2585,7 +2585,40 @@ public class AccumulateTest extends CommonTestMethodBase {
         
         assertThat( (Integer) ac.getValue().getMatch().getDeclarationValue("$v"), is(Integer.valueOf(1)) );
     }
-    
+
+    @Test
+    public void testImportAccumulateFunctionWithDeclaration() throws Exception {
+        // DROOLS-750
+        String drl = "package org.foo.bar\n"
+                + "import accumulate "+TestFunction.class.getCanonicalName()+" f;\n"
+                + "import "+Person.class.getCanonicalName()+";\n"
+                + "declare Person \n"
+                + "  @propertyReactive\n"
+                + "end\n"
+                + "rule X when\n"
+                + "    accumulate( $s : String(),\n"
+                + "                $v : f( $s ) )\n"
+                + "then\n"
+                + "end\n";
+        ReleaseId releaseId = new ReleaseIdImpl("foo", "bar", "1.0");
+        KieServices ks = KieServices.Factory.get();
+        createAndDeployJar( ks, releaseId, drl );
+
+        KieContainer kc = ks.newKieContainer( releaseId );
+        KieSession ksession = kc.newKieSession();
+
+        AgendaEventListener ael = mock(AgendaEventListener.class);
+        ksession.addEventListener(ael);
+
+        ksession.insert("x");
+        ksession.fireAllRules();
+
+        ArgumentCaptor<AfterMatchFiredEvent> ac = ArgumentCaptor.forClass(AfterMatchFiredEvent.class);
+        verify( ael ).afterMatchFired(ac.capture());
+
+        assertThat( (Integer) ac.getValue().getMatch().getDeclarationValue("$v"), is(Integer.valueOf(1)) );
+    }
+
     public static class TestFunction implements AccumulateFunction {
         @Override
         public void writeExternal(ObjectOutput out) throws IOException {

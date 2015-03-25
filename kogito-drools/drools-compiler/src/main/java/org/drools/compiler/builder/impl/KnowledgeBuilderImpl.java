@@ -1520,7 +1520,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         InternalKnowledgePackage current = getPackage();
         this.pkgRegistryMap.remove(packageDescr.getName());
         this.pkgRegistryMap.put(packageDescr.getName(), pkgRegistry);
-        if (!current.getName().equals(packageDescr.getName())) {
+        if (current.getName().equals(packageDescr.getName())) {
             currentRulePackage = pkgRegistryMap.size() - 1;
         }
     }
