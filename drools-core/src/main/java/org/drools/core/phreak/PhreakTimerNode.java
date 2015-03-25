@@ -240,6 +240,7 @@ public class PhreakTimerNode {
                 @Override
                 public void schedule( Trigger t ) {
                     scheduleTimer( timerNode, tm, pmem, smem, sink, wm, timerService, timestamp, leftTuple, trgLeftTuples, stagedLeftTuples, t );
+                    evaluate( pmem, wm, sink, tm, trgLeftTuples );
                 }
                 @Override
                 public Trigger getTrigger() {
@@ -449,41 +450,50 @@ public class PhreakTimerNode {
 
         @Override
         public void evauateAndFireRule() {
-            SegmentMemory[] smems = pmem.getSegmentMemories();
-            LeftInputAdapterNode lian = ( LeftInputAdapterNode ) smems[0].getRootNode();
-
-            SegmentMemory sm = tm.getSegmentMemory();
-            int smemIndex = 0;
-            for (SegmentMemory smem : smems) {
-                if (smem == sm) {
-                    break;
-                }
-                smemIndex++;
-            }
-
-            long bit = 1;
-            for (NetworkNode node = sm.getRootNode(); node != sink; node = ((LeftTupleSource)node).getSinkPropagator().getFirstLeftTupleSink() ) {
-                //update the bit to the correct node position.
-                bit = bit << 1;
-            }
-
             LeftTupleSets trgLeftTuples = new LeftTupleSetsImpl();
             doPropagateChildLeftTuples(null, tm, sink, wm,
-                                       null, trgLeftTuples, sm.getStagedLeftTuples());
+                                       null, trgLeftTuples, tm.getSegmentMemory().getStagedLeftTuples());
 
-            RuleNetworkEvaluator rne = new RuleNetworkEvaluator();
-            LinkedList<StackEntry> outerStack = new LinkedList<StackEntry>();
-
-            rne.outerEval(lian, pmem, sink, bit, tm,
-                          smems, smemIndex, trgLeftTuples,
-                          wm, new LinkedList<StackEntry>(), outerStack,
-                          new HashSet<String>(), true,
-                          pmem.getRuleAgendaItem().getRuleExecutor());
+            LinkedList<StackEntry> outerStack = evaluate(pmem, wm, sink, tm, trgLeftTuples);
 
             RuleExecutor ruleExecutor = pmem.getRuleAgendaItem().getRuleExecutor();
             ruleExecutor.reEvaluateNetwork(wm, outerStack);
             ruleExecutor.fire(wm, outerStack);
         }
+    }
+
+    private static LinkedList<StackEntry> evaluate(PathMemory pmem,
+                                                   InternalWorkingMemory wm,
+                                                   LeftTupleSink sink,
+                                                   TimerNodeMemory tm,
+                                                   LeftTupleSets trgLeftTuples) {
+        SegmentMemory[] smems = pmem.getSegmentMemories();
+        LeftInputAdapterNode lian = ( LeftInputAdapterNode ) smems[0].getRootNode();
+
+        SegmentMemory sm = tm.getSegmentMemory();
+        int smemIndex = 0;
+        for (SegmentMemory smem : smems) {
+            if (smem == sm) {
+                break;
+            }
+            smemIndex++;
+        }
+
+        long bit = 1;
+        for (NetworkNode node = sm.getRootNode(); node != sink; node = ((LeftTupleSource)node).getSinkPropagator().getFirstLeftTupleSink() ) {
+            //update the bit to the correct node position.
+            bit = bit << 1;
+        }
+
+        RuleNetworkEvaluator rne = new RuleNetworkEvaluator();
+        LinkedList<StackEntry> outerStack = new LinkedList<StackEntry>();
+
+        rne.outerEval(lian, pmem, sink, bit, tm,
+                      smems, smemIndex, trgLeftTuples,
+                      wm, new LinkedList<StackEntry>(), outerStack,
+                      new HashSet<String>(), true,
+                      pmem.getRuleAgendaItem().getRuleExecutor());
+        return outerStack;
     }
 
     public static class TimerNodeJobContext
