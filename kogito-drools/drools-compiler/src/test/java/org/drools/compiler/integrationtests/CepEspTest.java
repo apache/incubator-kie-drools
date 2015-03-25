@@ -5717,4 +5717,70 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals( 0, ( (NamedEntryPoint) ksession.getEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem().getEqualityKeyMap().size() );
     }
 
+    @Test
+    public void testSerializationWithEventInPast() {
+        // DROOLS-749
+        String drl =
+                "import " + Event1.class.getCanonicalName() + "\n" +
+                "declare Event1\n" +
+                "    @role( event )\n" +
+                "    @timestamp( timestamp )\n" +
+                "    @expires( 3h )\n" +
+                "end\n" +
+                "\n" +
+                "rule R\n" +
+                "    when\n" +
+                "       $evt: Event1()\n" +
+                "       not Event1(this != $evt, this after[0, 1h] $evt)\n" +
+                "    then\n" +
+                "       System.out.println($evt.getCode());\n" +
+                "end";
+
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
+
+        KieHelper helper = new KieHelper();
+        helper.addContent(drl, ResourceType.DRL);
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession(sessionConfig, null);
+
+        ksession.insert(new Event1("id1", 0));
+
+        PseudoClockScheduler clock = ksession.getSessionClock();
+        clock.advanceTime(2, TimeUnit.HOURS);
+        ksession.fireAllRules();
+
+        ksession = marshallAndUnmarshall(KieServices.Factory.get(), kbase, ksession, sessionConfig);
+
+        ksession.insert(new Event1("id2", 0));
+        ksession.fireAllRules();
+    }
+
+    public static class Event1 implements Serializable {
+
+        private final String code;
+        private final long timestamp;
+
+        public Event1(String code, long timestamp) {
+            this.code = code;
+            this.timestamp = timestamp;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public long getTimestamp() {
+            return timestamp;
+        }
+
+        @Override
+        public String toString() {
+            return "Event1{" +
+                   "code='" + code + '\'' +
+                   ", timestamp=" + timestamp +
+                   '}';
+        }
+    }
 }
