@@ -217,7 +217,11 @@ public class MavenRepository {
             return artifactResult.getArtifact();
         } catch (ArtifactResolutionException e) {
             if (logUnresolvedArtifact) {
-                log.warn("Unable to resolve artifact: " + artifactName, e);
+                if (log.isDebugEnabled()) {
+                    log.debug("Unable to resolve artifact: " + artifactName, e);
+                } else {
+                    log.warn("Unable to resolve artifact: " + artifactName);
+                }
             }
             return null;
         }
@@ -234,7 +238,11 @@ public class MavenRepository {
             VersionRangeResult versionRangeResult = aether.getSystem().resolveVersionRange(aether.getSession(), versionRequest);
             return versionRangeResult.getHighestVersion();
         } catch (VersionRangeResolutionException e) {
-            log.warn("Unable to resolve version range for artifact: " + artifactName, e);
+            if (log.isDebugEnabled()) {
+                log.debug("Unable to resolve version range for artifact: " + artifactName, e);
+            } else {
+                log.warn("Unable to resolve version range for artifact: " + artifactName);
+            }
             return null;
         }
     }
