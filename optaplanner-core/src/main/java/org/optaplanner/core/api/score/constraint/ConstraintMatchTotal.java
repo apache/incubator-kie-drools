@@ -23,7 +23,11 @@ import java.util.Set;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.kie.api.runtime.rule.RuleContext;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
+/**
+ * Retrievable from {@link ScoreDirector#getConstraintMatchTotals()}.
+ */
 public abstract class ConstraintMatchTotal implements Serializable, Comparable<ConstraintMatchTotal> {
 
     protected final String constraintPackage;

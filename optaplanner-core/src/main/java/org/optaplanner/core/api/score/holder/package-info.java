@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.score.comparator;
-
-import java.io.Serializable;
-import java.util.Comparator;
-
-import org.optaplanner.core.api.score.Score;
-
 /**
- * Compares by the natural order of {@link Score}s.
+ * In Drools DRL, a {@link org.optaplanner.core.api.score.holder.ScoreHolder} keeps track of the {@link org.optaplanner.core.api.score.Score}.
+ * <p/>
+ * Only used by Drools {@link org.optaplanner.core.api.score.Score} calculation.
  */
-public class NaturalScoreComparator implements Comparator<Score>, Serializable {
-
-    public int compare(Score score1, Score score2) {
-        return score1.compareTo(score2);
-    }
-
-}
+package org.optaplanner.core.api.score.holder;

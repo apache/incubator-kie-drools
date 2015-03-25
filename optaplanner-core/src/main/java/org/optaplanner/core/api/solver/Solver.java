@@ -118,6 +118,8 @@ public interface Solver {
     void removeEventListener(SolverEventListener eventListener);
 
     /**
+     * Useful to reuse the {@link Score} calculation in a UI (or even to explain the @link Score} in a UI).
+     *
      * @return never null
      */
     ScoreDirectorFactory getScoreDirectorFactory();

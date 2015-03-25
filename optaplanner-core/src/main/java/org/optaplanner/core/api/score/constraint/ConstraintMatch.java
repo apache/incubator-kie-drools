@@ -21,6 +21,9 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 
+/**
+ * Retrievable from {@link ConstraintMatchTotal#getConstraintMatchSet()}.
+ */
 public abstract class ConstraintMatch implements Serializable, Comparable<ConstraintMatch> {
 
     protected final String constraintPackage;

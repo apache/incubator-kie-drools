@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.score.comparator;
-
-import java.io.Serializable;
-import java.util.Comparator;
-
-import org.optaplanner.core.api.score.Score;
-
 /**
- * Compares by the natural order of {@link Score}s.
+ * Support for a {@link org.optaplanner.core.api.score.Score} with 1 score level and {@code double} score weights.
  */
-public class NaturalScoreComparator implements Comparator<Score>, Serializable {
-
-    public int compare(Score score1, Score score2) {
-        return score1.compareTo(score2);
-    }
-
-}
+package org.optaplanner.core.api.score.buildin.simpledouble;
