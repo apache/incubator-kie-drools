@@ -15,9 +15,10 @@
  */
 
 /**
- * Classes which represent the XML Solver configuration of OptaPlanner.
+ * The public API of OptaPlanner Benchmark.
  * <p/>
- * The XML Solver configuration is backwards compatible for all elements,
- * except for elements that require the use of non public API classes.
+ * All classes in this namespace are backwards compatible in future releases (especially minor and hotfix releases).
+ * If a major version number changes, a few specific classes might not be backwards compatible,
+ * in which case the upgrade recipe will clearly document those cases.
  */
-package org.optaplanner.core.config;
+package org.optaplanner.benchmark.api;
