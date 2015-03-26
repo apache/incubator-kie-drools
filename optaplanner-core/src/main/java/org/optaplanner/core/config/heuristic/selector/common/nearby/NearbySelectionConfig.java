@@ -180,7 +180,7 @@ public class NearbySelectionConfig extends SelectorConfig {
         NearbyDistanceMeter nearbyDistanceMeter = ConfigUtils.newInstance(this,
                 "nearbyDistanceMeterClass", nearbyDistanceMeterClass);
         // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
-        NearbyRandom nearbyRandom = buildNearbyRandom();
+        NearbyRandom nearbyRandom = buildNearbyRandom(randomSelection);
         return new NearEntityNearbyEntitySelector(entitySelector, originEntitySelector,
                 nearbyDistanceMeter, nearbyRandom, randomSelection);
     }
@@ -194,12 +194,12 @@ public class NearbySelectionConfig extends SelectorConfig {
         NearbyDistanceMeter nearbyDistanceMeter = ConfigUtils.newInstance(this,
                 "nearbyDistanceMeterClass", nearbyDistanceMeterClass);
         // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
-        NearbyRandom nearbyRandom = buildNearbyRandom();
+        NearbyRandom nearbyRandom = buildNearbyRandom(randomSelection);
         return new NearEntityNearbyValueSelector(valueSelector, originEntitySelector,
                 nearbyDistanceMeter, nearbyRandom, randomSelection);
     }
 
-    protected NearbyRandom buildNearbyRandom() {
+    protected NearbyRandom buildNearbyRandom(boolean randomSelection) {
         boolean blockDistributionEnabled = nearbySelectionDistributionType == NearbySelectionDistributionType.BLOCK_DISTRIBUTION
                 || blockDistributionSizeMinimum != null
                 || blockDistributionSizeMaximum != null
@@ -212,6 +212,15 @@ public class NearbySelectionConfig extends SelectorConfig {
         boolean betaDistributionEnabled = nearbySelectionDistributionType == NearbySelectionDistributionType.BETA_DISTRIBUTION
                 || betaDistributionAlpha != null
                 || betaDistributionBeta != null;
+        if (!randomSelection) {
+            if (blockDistributionEnabled || linearDistributionEnabled || parabolicDistributionEnabled
+                    || betaDistributionEnabled) {
+                throw new IllegalArgumentException("The nearbySelectorConfig (" + this
+                        + ") with randomSelection (" + randomSelection
+                        + ") has distribution parameters.");
+            }
+            return null;
+        }
         if (blockDistributionEnabled && linearDistributionEnabled) {
             throw new IllegalArgumentException("The nearbySelectorConfig (" + this
                     + ") has both blockDistribution and linearDistribution parameters.");
@@ -253,7 +262,7 @@ public class NearbySelectionConfig extends SelectorConfig {
             double beta = betaDistributionBeta == null ? 5.0 : betaDistributionBeta;
             return new BetaDistributionNearbyRandom(alpha, beta);
         } else {
-            return new BetaDistributionNearbyRandom(1.0, 5.0);
+            return new LinearDistributionNearbyRandom(Integer.MAX_VALUE);
         }
     }
 

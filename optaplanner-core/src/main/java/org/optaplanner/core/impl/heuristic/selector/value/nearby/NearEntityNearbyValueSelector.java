@@ -49,6 +49,10 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
         this.nearbyDistanceMeter = nearbyDistanceMeter;
         this.nearbyRandom = nearbyRandom;
         this.randomSelection = randomSelection;
+        if (randomSelection && nearbyRandom == null) {
+            throw new IllegalArgumentException("The valueSelector (" + this
+                    + ") with randomSelection (" + randomSelection + ") has no nearbyRandom (" + nearbyRandom + ").");
+        }
         // TODO Remove this limitation
         if (!childValueSelector.getVariableDescriptor().getVariablePropertyType().isAssignableFrom(
                 originEntitySelector.getEntityDescriptor().getEntityClass())) {

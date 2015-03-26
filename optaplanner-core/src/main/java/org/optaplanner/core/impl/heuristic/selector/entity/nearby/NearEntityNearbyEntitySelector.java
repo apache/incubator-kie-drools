@@ -49,6 +49,10 @@ public class NearEntityNearbyEntitySelector extends AbstractEntitySelector {
         this.nearbyDistanceMeter = nearbyDistanceMeter;
         this.nearbyRandom = nearbyRandom;
         this.randomSelection = randomSelection;
+        if (randomSelection && nearbyRandom == null) {
+            throw new IllegalArgumentException("The entitySelector (" + this
+                    + ") with randomSelection (" + randomSelection + ") has no nearbyRandom (" + nearbyRandom + ").");
+        }
         // TODO Remove this limitation
         if (!childEntitySelector.getEntityDescriptor().getEntityClass().isAssignableFrom(
                 originEntitySelector.getEntityDescriptor().getEntityClass())) {
