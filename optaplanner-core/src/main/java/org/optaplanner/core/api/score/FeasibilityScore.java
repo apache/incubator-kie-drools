@@ -22,7 +22,7 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
 /**
  * A {@link Score} that supports {@link #isFeasible()}.
- * Most {@link Score} implementations implement this interface (including {@link HardSoftScore},
+ * Most {@link Score} implementations implement this interface (including {@link HardSoftScore}),
  * except for {@link SimpleScore} variants.
  * @see Score
  */
@@ -30,7 +30,7 @@ public interface FeasibilityScore<S extends FeasibilityScore> extends Score<S> {
 
     /**
      * A {@link Solution} is feasible if it has no broken hard constraints.
-     * @return true if the hard score(s) is 0 or higher
+     * @return true if the hard score is 0 or higher
      */
     boolean isFeasible();
 

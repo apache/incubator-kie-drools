@@ -12,6 +12,7 @@ import org.optaplanner.core.impl.domain.valuerange.buildin.primint.IntValueRange
 public class ValueRangeFactory {
 
     /**
+     * Build a {@link CountableValueRange} of all {@code int} values between 2 bounds.
      * @param from inclusive minimum
      * @param to exclusive maximum, >= {@code from}
      * @return never null
@@ -21,6 +22,7 @@ public class ValueRangeFactory {
     }
 
     /**
+     * Build a {@link CountableValueRange} of a subset of {@code int} values between 2 bounds.
      * @param from inclusive minimum
      * @param to exclusive maximum, >= {@code from}
      * @param incrementUnit > 0
@@ -31,6 +33,7 @@ public class ValueRangeFactory {
     }
 
     /**
+     * Build a {@link CountableValueRange} of all {@link BigDecimal} values (of a specific scale) between 2 bounds.
      * All parameters must have the same {@link BigDecimal#scale()}.
      * @param from inclusive minimum
      * @param to exclusive maximum, >= {@code from}
@@ -40,6 +43,7 @@ public class ValueRangeFactory {
     }
 
     /**
+     * Build a {@link CountableValueRange} of a subset of {@code BigDecimal} values (of a specific scale) between 2 bounds.
      * All parameters must have the same {@link BigDecimal#scale()}.
      * @param from inclusive minimum
      * @param to exclusive maximum, >= {@code from}
@@ -50,6 +54,7 @@ public class ValueRangeFactory {
     }
 
     /**
+     * Build an uncountable {@link ValueRange} of all {@code double} values between 2 bounds.
      * @param from inclusive minimum
      * @param to exclusive maximum, >= {@code from}
      */

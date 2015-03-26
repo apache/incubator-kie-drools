@@ -22,7 +22,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
 
 /**
- * {@inheritDoc}
+ * A {@link ValueRange} that is ending. Therefore, it has a discrete (as in non-continuous) range.
  * <p/>
  * An implementation must extend {@link AbstractCountableValueRange}
  * to ensure backwards compatibility in future versions.

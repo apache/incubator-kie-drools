@@ -20,9 +20,9 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
  * <p/>
  * Prefer using {@link CountableValueRange} (which extends this interface) whenever possible.
  * <p/>
- * A ValueRange is stateful (unlike a {@link ValueSelector} which is stateless
+ * A ValueRange is stateful (unlike a {@link ValueSelector} which is stateless).
  * <p/>
- * Implementations must be immutable..
+ * Implementations must be immutable.
  * <p/>
  * An implementation must extend {@link AbstractCountableValueRange} or {@link AbstractUncountableValueRange}
  * to ensure backwards compatibility in future versions.
@@ -40,7 +40,7 @@ public interface ValueRange<T> {
     boolean contains(T value);
 
     /**
-     * Select in random order, without shuffling the elements.
+     * Select in random order, but without shuffling the elements.
      * Each element might be selected multiple times.
      * Scales well because it does not require caching.
      * @param workingRandom never null, the {@link Random} to use when any random number is needed,

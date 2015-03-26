@@ -17,12 +17,13 @@
 package org.optaplanner.core.impl.localsearch.decider.forager;
 
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.localsearch.decider.LocalSearchDecider;
 import org.optaplanner.core.impl.localsearch.event.LocalSearchPhaseLifecycleListener;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 /**
- * A Forager collects the accepted moves and picks the next step from those for the Decider.
+ * A Forager collects the accepted moves and picks the next step from those for the {@link LocalSearchDecider}.
  * @see AbstractForager
  */
 public interface Forager extends LocalSearchPhaseLifecycleListener {

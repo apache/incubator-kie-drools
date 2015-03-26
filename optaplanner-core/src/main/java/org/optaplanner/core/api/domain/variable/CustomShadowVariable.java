@@ -63,6 +63,7 @@ public @interface CustomShadowVariable {
          */
         Class<?> entityClass() default NullEntityClass.class;
 
+        /** Workaround for annotation limitation in {@link #entityClass()}. */
         interface NullEntityClass {}
 
         /**

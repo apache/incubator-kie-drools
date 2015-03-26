@@ -20,6 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Comparator;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
@@ -32,7 +33,8 @@ import static java.lang.annotation.RetentionPolicy.*;
  * Specifies that the class is a planning entity.
  * Each planning entity must have at least 1 {@link PlanningVariable} property.
  * <p/>
- * The class should have a public no-arg constructor, so it can be instantiated.
+ * The class should have a public no-arg constructor, so it can be cloned
+ * (unless the {@link PlanningSolution#solutionCloner()} is specified).
  */
 @Target({TYPE})
 @Retention(RUNTIME)
@@ -52,6 +54,7 @@ public @interface PlanningEntity {
     Class<? extends SelectionFilter> movableEntitySelectionFilter()
             default NullMovableEntitySelectionFilter.class;
 
+    /** Workaround for annotation limitation in {@link #movableEntitySelectionFilter()}. */
     interface NullMovableEntitySelectionFilter extends SelectionFilter {}
 
     /**
@@ -69,6 +72,8 @@ public @interface PlanningEntity {
      * @see #difficultyWeightFactoryClass()
      */
     Class<? extends Comparator> difficultyComparatorClass() default NullDifficultyComparator.class;
+
+    /** Workaround for annotation limitation in {@link #difficultyComparatorClass()}. */
     interface NullDifficultyComparator extends Comparator {}
 
     /**
@@ -80,6 +85,8 @@ public @interface PlanningEntity {
      */
     Class<? extends SelectionSorterWeightFactory> difficultyWeightFactoryClass()
             default NullDifficultyWeightFactory.class;
+
+    /** Workaround for annotation limitation in {@link #difficultyWeightFactoryClass()}. */
     interface NullDifficultyWeightFactory extends SelectionSorterWeightFactory {}
 
 }

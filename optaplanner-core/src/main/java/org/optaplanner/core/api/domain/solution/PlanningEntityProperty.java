@@ -29,7 +29,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  * Specifies that a property on a {@link Solution} is a planning entity.
  * <p/>
  * The planning entity should have the {@link PlanningEntity} annotation.
- * An initialized planning entity will be added to the {@link ScoreDirector}.
+ * An planning entity will be added to the {@link ScoreDirector}.
  */
 @Target({METHOD})
 @Retention(RUNTIME)

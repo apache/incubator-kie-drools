@@ -79,6 +79,7 @@ public @interface PlanningVariable {
     Class<? extends SelectionFilter> reinitializeVariableEntityFilter()
             default NullReinitializeVariableEntityFilter.class;
 
+    /** Workaround for annotation limitation in {@link #reinitializeVariableEntityFilter()}. */
     interface NullReinitializeVariableEntityFilter extends SelectionFilter {}
 
     /**
@@ -104,6 +105,7 @@ public @interface PlanningVariable {
     Class<? extends Comparator> strengthComparatorClass()
             default NullStrengthComparator.class;
 
+    /** Workaround for annotation limitation in {@link #strengthComparatorClass()}. */
     interface NullStrengthComparator extends Comparator {}
 
     /**
@@ -116,6 +118,7 @@ public @interface PlanningVariable {
     Class<? extends SelectionSorterWeightFactory> strengthWeightFactoryClass()
             default NullStrengthWeightFactory.class;
 
+    /** Workaround for annotation limitation in {@link #strengthWeightFactoryClass()}. */
     interface NullStrengthWeightFactory extends SelectionSorterWeightFactory {}
 
 }

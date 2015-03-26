@@ -51,6 +51,7 @@ public @interface PlanningSolution {
     Class<? extends SolutionCloner> solutionCloner()
             default NullSolutionCloner.class;
 
+    /** Workaround for annotation limitation in {@link #solutionCloner()}. */
     interface NullSolutionCloner extends SolutionCloner {}
 
 }
