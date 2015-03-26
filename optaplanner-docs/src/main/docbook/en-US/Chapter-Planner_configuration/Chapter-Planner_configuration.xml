@@ -696,16 +696,20 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
             possible (so Planner knows it's countable).</para>
           </note>
 
-          <para>The <literal>ValueRangeFactory</literal> supports several value class types:</para>
+          <para>The <literal>ValueRangeFactory</literal> has creation methods for several value class types:</para>
 
           <itemizedlist>
             <listitem>
-              <para><literal>int</literal>: An integer range.</para>
+              <para><literal>int</literal>: A 32bit integer range.</para>
             </listitem>
 
             <listitem>
-              <para><literal>double</literal>: A floating point range which only supports random selection (because it
-              does not implement <literal>CountableValueRange</literal>).</para>
+              <para><literal>long</literal>: A 64bit integer range.</para>
+            </listitem>
+
+            <listitem>
+              <para><literal>double</literal>: A 64bit floating point range which only supports random selection
+              (because it does not implement <literal>CountableValueRange</literal>).</para>
             </listitem>
 
             <listitem>
