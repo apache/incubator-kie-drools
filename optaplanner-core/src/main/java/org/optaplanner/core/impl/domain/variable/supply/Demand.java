@@ -22,7 +22,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * A subsystem submits a demand for a {@link Supply}.
- * Implementations must overwrite {@link #equals(Object)} and {@link #hashCode()}.
+ * Implementations must overwrite {@link Object#equals(Object)} and {@link Object#hashCode()}.
  * @param <S>
  * @see Supply
  * @see SupplyManager

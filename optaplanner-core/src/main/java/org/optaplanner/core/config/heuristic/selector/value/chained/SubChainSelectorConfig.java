@@ -60,8 +60,6 @@ public class SubChainSelectorConfig extends SelectorConfig {
     }
 
     /**
-     * Defaults to {@value #DEFAULT_MINIMUM_SUB_CHAIN_SIZE} because other {@link MoveSelector}s
-     * s(uch as {@link ChangeMoveSelector} and {@link SwapMoveSelector}) already handle 1-sized chains.
      * @return sometimes null
      */
     public Integer getMinimumSubChainSize() {

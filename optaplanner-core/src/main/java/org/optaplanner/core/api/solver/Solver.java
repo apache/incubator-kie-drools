@@ -80,7 +80,7 @@ public interface Solver {
 
     /**
      * This method is thread-safe.
-     * @return true if terminateEarly has been called since the {@Solver} started.
+     * @return true if terminateEarly has been called since the {@link Solver} started.
      * @see Future#isCancelled()
      */
     boolean isTerminateEarly();

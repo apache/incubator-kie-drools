@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
 import org.optaplanner.core.impl.heuristic.selector.Selector;
 
 /**
- * Selects values from the {@link ValueRangeProvider) for a {@link PlanningVariable} annotated property.
+ * Selects values from the {@link ValueRangeProvider} for a {@link PlanningVariable} annotated property.
  * @see AbstractValueSelector
  */
 public interface ValueSelector extends Selector {
