@@ -133,7 +133,9 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
             if ( next != null ) {
                 next.setStagePrevious( previous );
             }
-            previous.setStagedNext( next );
+            if ( previous != null ) {
+                previous.setStagedNext( next );
+            }
         }
         insertSize--;
         leftTuple.clearStaged();
@@ -153,8 +155,9 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
             if ( next != null ) {
                 next.setStagePrevious( previous );
             }
-            previous.setStagedNext( next );
-
+            if ( previous != null ) {
+                previous.setStagedNext( next );
+            }
         }
         deleteSize--;
         leftTuple.clearStaged();
@@ -174,7 +177,9 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
             if ( next != null ) {
                 next.setStagePrevious( previous );
             }
-            previous.setStagedNext( next );
+            if ( previous != null ) {
+                previous.setStagedNext( next );
+            }
         }
         leftTuple.clearStaged();
         updateSize--;
