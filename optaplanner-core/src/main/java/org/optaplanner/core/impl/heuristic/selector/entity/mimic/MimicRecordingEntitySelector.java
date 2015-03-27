@@ -7,6 +7,7 @@ import java.util.ListIterator;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
+import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionListIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
@@ -83,13 +84,63 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
     }
 
     public ListIterator<Object> listIterator() {
-        // TODO Not yet implemented
-        throw new UnsupportedOperationException();
+        return new RecordingEntityListIterator(childEntitySelector.listIterator());
     }
 
     public ListIterator<Object> listIterator(int index) {
-        // TODO Not yet implemented
-        throw new UnsupportedOperationException();
+        return new RecordingEntityListIterator(childEntitySelector.listIterator(index));
+    }
+
+    private class RecordingEntityListIterator extends SelectionListIterator<Object> {
+
+        private final ListIterator<Object> childEntityIterator;
+
+        public RecordingEntityListIterator(ListIterator<Object> childEntityIterator) {
+            this.childEntityIterator = childEntityIterator;
+        }
+
+        public boolean hasNext() {
+            boolean hasNext = childEntityIterator.hasNext();
+            for (MimicReplayingEntitySelector replayingEntitySelector : replayingEntitySelectorList) {
+                replayingEntitySelector.recordedHasNext(hasNext);
+            }
+            return hasNext;
+        }
+
+        public Object next() {
+            Object next = childEntityIterator.next();
+            for (MimicReplayingEntitySelector replayingEntitySelector : replayingEntitySelectorList) {
+                replayingEntitySelector.recordedNext(next);
+            }
+            return next;
+        }
+
+        public boolean hasPrevious() {
+            boolean hasPrevious = childEntityIterator.hasPrevious();
+            for (MimicReplayingEntitySelector replayingEntitySelector : replayingEntitySelectorList) {
+                // The replay only cares that the recording changed, not in which direction
+                replayingEntitySelector.recordedHasNext(hasPrevious);
+            }
+            return hasPrevious;
+        }
+
+        public Object previous() {
+            Object previous = childEntityIterator.previous();
+            for (MimicReplayingEntitySelector replayingEntitySelector : replayingEntitySelectorList) {
+                // The replay only cares that the recording changed, not in which direction
+                replayingEntitySelector.recordedNext(previous);
+            }
+            return previous;
+        }
+
+        public int nextIndex() {
+            return childEntityIterator.nextIndex();
+        }
+
+        public int previousIndex() {
+            return childEntityIterator.previousIndex();
+        }
+
     }
 
     @Override
