@@ -2,7 +2,7 @@ package org.jbpm.document.service.impl;
 
 import org.jbpm.document.Document;
 
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -126,6 +126,7 @@ public class DocumentImpl implements Document {
 
     @Override
     public String toString() {
-        return  name + "," + size + "," + DateFormat.getDateInstance().format( lastModified ) +","+ link ;
+        SimpleDateFormat sdf = new SimpleDateFormat( DOCUMENT_DATE_PATTERN );
+        return  name + "," + size + "," + sdf.format( lastModified ) +","+ link ;
     }
 }

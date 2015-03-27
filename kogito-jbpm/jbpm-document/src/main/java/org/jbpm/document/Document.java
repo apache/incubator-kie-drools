@@ -21,6 +21,8 @@ import java.util.Map;
 
 public interface Document extends Serializable {
 
+    public static final String DOCUMENT_DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
+
     void setIdentifier(String identifier);
 
     String getIdentifier();
