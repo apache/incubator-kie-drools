@@ -176,15 +176,15 @@
     <echo message="Checking Eclipse download ..." />
     <condition property="eclipse.not.available">
       <not>
-        <available file="${install.home}/lib/eclipse-java-kepler-SR2-${download.type}.${download.extension}" />
+        <available file="${install.home}/lib/eclipse-java-luna-SR2-${download.type}.${download.extension}" />
       </not>
     </condition>
   </target>
   <target name="download.eclipse" depends="download.eclipse.check" if="eclipse.not.available">
     <echo message="Getting Eclipse ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="http://download.eclipse.org/technology/epp/downloads/release/kepler/SR2/eclipse-java-kepler-SR2-${download.type}.${download.extension}"
-         dest="${install.home}/lib/eclipse-java-kepler-SR2-${download.type}.${download.extension}"  />
+    <get src="http://download.eclipse.org/technology/epp/downloads/release/luna/SR2/eclipse-java-luna-SR2-${download.type}.${download.extension}"
+         dest="${install.home}/lib/eclipse-java-luna-SR2-${download.type}.${download.extension}"  />
   </target>
   <target name="download.eclipse.gef.check">
     <echo message="Checking Eclipse GEF download ..." />
@@ -375,12 +375,12 @@
   
   <target name="unzipEclipse" if="expandTypeZip">
     <unzip dest="${install.home}" overwrite="true" 
-           src="${install.home}/lib/eclipse-java-kepler-SR2-${download.type}.zip" />  
+           src="${install.home}/lib/eclipse-java-luna-SR2-${download.type}.zip" />  
   </target>
 
   <target name="untarEclipse" if="expandTypeTarGz">
-    <gunzip src="${install.home}/lib/eclipse-java-kepler-SR2-${download.type}.tar.gz"/>
-    <untar dest="${install.home}" src="${install.home}/lib/eclipse-java-kepler-SR2-${download.type}.tar" />
+    <gunzip src="${install.home}/lib/eclipse-java-luna-SR2-${download.type}.tar.gz"/>
+    <untar dest="${install.home}" src="${install.home}/lib/eclipse-java-luna-SR2-${download.type}.tar" />
     <chmod perm="a+x" file="${install.home}/eclipse/eclipse" os="Linux"/>
     <chmod perm="a+x" file="${install.home}/eclipse/Eclipse.app/Contents/MacOS/eclipse" os="Mac OS X"/>
   </target>
@@ -413,37 +413,37 @@
       <arg value="-application" />
       <arg value="org.eclipse.equinox.p2.director" />
       <arg value="-repository" />
-      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/kepler/1.0.4,http://download.eclipse.org/releases/kepler,http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423" />
+      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/luna/1.1.2,http://download.eclipse.org/releases/luna,http://download.eclipse.org/modeling/mdt/bpmn2/updates/luna/1.1.0" />
       <arg value="-destination" />
       <arg value="${eclipse.home}" />
       <arg value="-installIU" />
-      <arg value="org.eclipse.bpmn2.modeler.feature.feature.group" />
+      <arg value="org.eclipse.bpmn2.modeler.feature.group" />
       <arg value="-installIU" />
-      <arg value="org.eclipse.bpmn2.modeler.jboss.runtime.feature.feature.group" />
+      <arg value="org.eclipse.bpmn2.modeler.runtime.jboss.feature.group" />
     </exec>
     <exec executable="${eclipse.home}/eclipse" os="Linux">
       <arg value="-nosplash" />
       <arg value="-application" />
       <arg value="org.eclipse.equinox.p2.director" />
       <arg value="-repository" />
-      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/kepler/1.0.4,http://download.eclipse.org/releases/kepler,http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423" />
+      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/luna/1.1.2,http://download.eclipse.org/releases/luna,http://download.eclipse.org/modeling/mdt/bpmn2/updates/luna/1.1.0" />
       <arg value="-destination" />
       <arg value="${eclipse.home}" />
       <arg value="-installIU" />
-      <arg value="org.eclipse.bpmn2.modeler.feature.feature.group" />
+      <arg value="org.eclipse.bpmn2.modeler.feature.group" />
       <arg value="-installIU" />
-      <arg value="org.eclipse.bpmn2.modeler.jboss.runtime.feature.feature.group" />
+      <arg value="org.eclipse.bpmn2.modeler.runtime.jboss.feature.group" />
     </exec>
     <exec executable="${eclipse.home}/Eclipse.app/Contents/MacOS/eclipse" osfamily="mac">
       <arg value="-nosplash" />
       <arg value="-application" />
       <arg value="org.eclipse.equinox.p2.director" />
       <arg value="-repository" />
-      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/kepler/1.0.4,http://download.eclipse.org/releases/kepler,http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423" />
+      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/luna/1.1.2,http://download.eclipse.org/releases/luna,http://download.eclipse.org/modeling/mdt/bpmn2/updates/luna/1.1.0" />
       <arg value="-installIU" />
-      <arg value="org.eclipse.bpmn2.modeler.feature.feature.group" />
+      <arg value="org.eclipse.bpmn2.modeler.feature.group" />
       <arg value="-installIU" />
-      <arg value="org.eclipse.bpmn2.modeler.jboss.runtime.feature.feature.group" />
+      <arg value="org.eclipse.bpmn2.modeler.runtime.jboss.feature.group" />
     </exec>
   </target>
 
