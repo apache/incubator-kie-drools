@@ -16,6 +16,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.time.SessionPseudoClock;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -71,8 +72,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test  (timeout = 10000)
     public void testAccumulateModify() throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateModify.drl" );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources("test_AccumulateModify.drl");
 
         final List<?> results = new ArrayList<Object>();
         wm.setGlobal( "results",
@@ -126,7 +126,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                              ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
 
         // ---------------- 4th scenario
-        wm.retract( cheeseHandles[3] );
+        wm.delete( cheeseHandles[3] );
         wm.fireAllRules();
 
         // should not have fired as per constraint
@@ -139,8 +139,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testAccumulate() throws Exception {
 
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( "test_Accumulate.drl" );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources("test_Accumulate.drl");
 
         final List<?> results = new ArrayList<Object>();
         wm.setGlobal( "results",
@@ -176,8 +175,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testMVELAccumulate() throws Exception {
 
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateMVEL.drl"  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources("test_AccumulateMVEL.drl");
         final List<?> results = new ArrayList<Object>();
         wm.setGlobal( "results",
                       results );
@@ -206,8 +204,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test (timeout = 10000)
     public void testAccumulateModifyMVEL() throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateModifyMVEL.drl"  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources("test_AccumulateModifyMVEL.drl");
         final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
@@ -261,7 +258,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                              ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
 
         // ---------------- 4th scenario
-        wm.retract( cheeseHandles[3] );
+        wm.delete(cheeseHandles[3]);
         wm.fireAllRules();
 
         // should not have fired as per constraint
@@ -273,8 +270,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test (timeout = 10000)
     public void testAccumulateReverseModify() throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateReverseModify.drl"  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources("test_AccumulateReverseModify.drl");
         final List<?> results = new ArrayList<Object>();
         wm.setGlobal( "results",
                       results );
@@ -330,7 +326,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                              ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
 
         // ---------------- 4th scenario
-        wm.retract( cheeseHandles[3] );
+        wm.delete(cheeseHandles[3]);
         wm.fireAllRules();
 
         // should not have fired as per constraint
@@ -342,8 +338,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test (timeout = 10000)
     public void testAccumulateReverseModify2() throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateReverseModify2.drl"  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources("test_AccumulateReverseModify2.drl");
         final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
@@ -400,7 +395,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                              ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 4th scenario
-        wm.retract( cheeseHandles[3] );
+        wm.delete(cheeseHandles[3]);
         wm.fireAllRules();
 
         // should not have fired as per constraint
@@ -412,8 +407,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test  (timeout = 10000)
     public void testAccumulateReverseModifyInsertLogical2() throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateReverseModifyInsertLogical2.drl"  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources("test_AccumulateReverseModifyInsertLogical2.drl");
         final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
@@ -446,8 +440,8 @@ public class AccumulateTest extends CommonTestMethodBase {
         wm.fireAllRules();
         assertEquals( 31, ((Number) results.get( results.size() - 1 )).intValue() );
 
-        // retract stilton=2 ==> bob = 15, doug = 15, !alice = 30, !carol = 61
-        wm.retract(cheeseHandles[1]);
+        // delete stilton=2 ==> bob = 15, doug = 15, !alice = 30, !carol = 61
+        wm.delete(cheeseHandles[1]);
         wm.fireAllRules();
         assertEquals( 30, ((Number) results.get( results.size() - 1 )).intValue() );
     }    
@@ -455,8 +449,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test (timeout = 10000)
     public void testAccumulateReverseModifyMVEL() throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateReverseModifyMVEL.drl"  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources("test_AccumulateReverseModifyMVEL.drl");
         final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
@@ -510,7 +503,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                              ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
 
         // ---------------- 4th scenario
-        wm.retract( cheeseHandles[3] );
+        wm.delete(cheeseHandles[3]);
         wm.fireAllRules();
 
         // should not have fired as per constraint
@@ -522,8 +515,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test (timeout = 10000)
     public void testAccumulateReverseModifyMVEL2() throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateReverseModifyMVEL2.drl"  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources("test_AccumulateReverseModifyMVEL2.drl");
         final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
@@ -577,7 +569,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                       ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 4th scenario
-        wm.retract( cheeseHandles[3] );
+        wm.delete(cheeseHandles[3]);
         wm.fireAllRules();
 
         // should not have fired as per constraint
@@ -589,8 +581,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test  (timeout = 10000)
     public void testAccumulateWithFromChaining() throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateWithFromChaining.drl"  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources("test_AccumulateWithFromChaining.drl");
         final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
@@ -665,14 +656,14 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testMVELAccumulate2WM() throws Exception {
 
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateMVEL.drl"  );
-        StatefulKnowledgeSession wm1 = createKnowledgeSession( kbase );
+        KieBase kbase = loadKnowledgeBase( "test_AccumulateMVEL.drl" );
+        KieSession wm1 = createKieSession( kbase );
         final List<?> results1 = new ArrayList<Object>();
 
         wm1.setGlobal( "results",
                        results1 );
 
-        StatefulKnowledgeSession  wm2 = createKnowledgeSession( kbase );
+        KieSession wm2 = createKieSession( kbase );
         final List<?> results2 = new ArrayList<Object>();
 
         wm2.setGlobal( "results",
@@ -723,8 +714,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testAccumulateInnerClass() throws Exception {
 
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateInnerClass.drl"  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources("test_AccumulateInnerClass.drl");
         final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
@@ -742,8 +732,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testAccumulateReturningNull() throws Exception {
 
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateReturningNull.drl"  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources("test_AccumulateReturningNull.drl");
         final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
@@ -941,8 +930,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     public void execTestAccumulateSum( String fileName ) throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( fileName  );
-        StatefulKnowledgeSession session = createKnowledgeSession( kbase );
+        KieSession session = getKieSessionFromResources(fileName);
 
         DataSet data = new DataSet();
         data.results = new ArrayList<Object>();
@@ -1009,7 +997,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                              ((Number) data.results.get( data.results.size() - 1 )).intValue() );
 
         // ---------------- 4th scenario
-        session.retract( data.cheeseHandles[3] );
+        session.delete( data.cheeseHandles[3] );
         session.fireAllRules();
 
         // should not have fired as per constraint
@@ -1018,7 +1006,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     }
 
-    private void updateReferences( final StatefulKnowledgeSession session,
+    private void updateReferences( final KieSession session,
                                    final DataSet data ) {
         data.results = (List< ? >) session.getGlobal( "results" );
         for ( Iterator< ? > it = session.getObjects().iterator(); it.hasNext(); ) {
@@ -1037,8 +1025,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     public void execTestAccumulateCount( String fileName ) throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( fileName  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources(fileName);
         final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
@@ -1094,7 +1081,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                              ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 4th scenario
-        wm.retract( cheeseHandles[3] );
+        wm.delete(cheeseHandles[3]);
         wm.fireAllRules();
 
         // should not have fired as per constraint
@@ -1105,8 +1092,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     public void execTestAccumulateAverage( String fileName ) throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( fileName  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources(fileName);
         final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
@@ -1160,8 +1146,8 @@ public class AccumulateTest extends CommonTestMethodBase {
                              ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 4th scenario
-        wm.retract( cheeseHandles[3] );
-        wm.retract( cheeseHandles[4] );
+        wm.delete(cheeseHandles[3]);
+        wm.delete(cheeseHandles[4]);
         wm.fireAllRules();
 
         // should not have fired as per constraint
@@ -1172,8 +1158,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     public void execTestAccumulateMin( String fileName ) throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( fileName  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources(fileName);
         final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
@@ -1227,8 +1212,8 @@ public class AccumulateTest extends CommonTestMethodBase {
                              ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 4th scenario
-        wm.retract( cheeseHandles[3] );
-        wm.retract( cheeseHandles[4] );
+        wm.delete(cheeseHandles[3]);
+        wm.delete(cheeseHandles[4]);
         wm.fireAllRules();
 
         // should not have fired as per constraint
@@ -1239,8 +1224,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     public void execTestAccumulateMax( String fileName ) throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( fileName  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources(fileName);
         final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
@@ -1294,8 +1278,8 @@ public class AccumulateTest extends CommonTestMethodBase {
                              ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 4th scenario
-        wm.retract( cheeseHandles[3] );
-        wm.retract( cheeseHandles[4] );
+        wm.delete(cheeseHandles[3]);
+        wm.delete(cheeseHandles[4]);
         wm.fireAllRules();
 
         // should not have fired as per constraint
@@ -1306,8 +1290,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     public void execTestAccumulateCollectList( String fileName ) throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( fileName  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources(fileName);
         final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
@@ -1346,8 +1329,8 @@ public class AccumulateTest extends CommonTestMethodBase {
                              ((List) results.get( results.size() - 1 )).size() );
 
         // ---------------- 3rd scenario
-        wm.retract( cheeseHandles[3] );
-        wm.retract( cheeseHandles[4] );
+        wm.delete(cheeseHandles[3]);
+        wm.delete(cheeseHandles[4]);
         wm.fireAllRules();
 
         // should not have fired as per constraint
@@ -1358,8 +1341,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     public void execTestAccumulateCollectSet( String fileName ) throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( fileName  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources(fileName);
         final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
@@ -1398,7 +1380,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                              ((Set) results.get( results.size() - 1 )).size() );
 
         // ---------------- 3rd scenario
-        wm.retract( cheeseHandles[3] );
+        wm.delete(cheeseHandles[3]);
         wm.fireAllRules();
         // fire again
         assertEquals( 3,
@@ -1407,7 +1389,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                              ((Set) results.get( results.size() - 1 )).size() );
 
         // ---------------- 4rd scenario
-        wm.retract( cheeseHandles[4] );
+        wm.delete(cheeseHandles[4]);
         wm.fireAllRules();
 
         // should not have fired as per constraint
@@ -1418,8 +1400,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     public void execTestAccumulateReverseModifyMultiPattern( String fileName ) throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( fileName  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources(fileName);
         final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
@@ -1476,7 +1457,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                              ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
 
         // ---------------- 4th scenario
-        wm.retract( cheeseHandles[3] );
+        wm.delete(cheeseHandles[3]);
         wm.fireAllRules();
 
         // should not have fired as per constraint
@@ -1489,8 +1470,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testAccumulateWithPreviouslyBoundVariables() throws Exception {
 
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulatePreviousBinds.drl"  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources("test_AccumulatePreviousBinds.drl");
         final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
@@ -1516,8 +1496,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test (timeout = 10000)
     public void testAccumulateMVELWithModify() throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateMVELwithModify.drl"  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources("test_AccumulateMVELwithModify.drl");
         final List<Number> results = new ArrayList<Number>();
         wm.setGlobal( "results",
                       results );
@@ -1555,8 +1534,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testAccumulateGlobals() throws Exception {
 
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase( "test_AccumulateGlobals.drl"  );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieSession wm = getKieSessionFromResources("test_AccumulateGlobals.drl");
         final List<?> results = new ArrayList<Object>();
 
         wm.setGlobal( "results",
@@ -1625,8 +1603,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     }
 
     public void execTestAccumulateMultipleFunctions( String fileName ) throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase( fileName );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = getKieSessionFromResources(fileName);
 
         AgendaEventListener ael = mock( AgendaEventListener.class );
         ksession.addEventListener( ael );
@@ -1703,7 +1680,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         Mockito.reset( ael );
         // ---------------- 4th scenario
-        ksession.retract( cheeseHandles[3] );
+        ksession.delete(cheeseHandles[3]);
         ksession.fireAllRules();
 
         Mockito.verify( ael ).afterMatchFired(cap.capture());
@@ -1718,8 +1695,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     }
 
     public void execTestAccumulateMultipleFunctionsConstraint( String fileName ) throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase( fileName );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = getKieSessionFromResources(fileName);
 
         AgendaEventListener ael = mock( AgendaEventListener.class );
         ksession.addEventListener( ael );
@@ -1929,9 +1905,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                      "end" +
                      "\n";
 
-        KnowledgeBase kb = loadKnowledgeBaseFromString(drl);
-
-        StatefulKnowledgeSession ks = createKnowledgeSession(kb);
+        KieSession ks = getKieSessionFromContentStrings(drl);
 
         ArrayList resList = new ArrayList();
         ks.setGlobal("list",resList);
@@ -1958,8 +1932,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = getKieSessionFromContentStrings(drl);
         ksession.fireAllRules();
         ksession.dispose();
     }
@@ -2005,8 +1978,8 @@ public class AccumulateTest extends CommonTestMethodBase {
                 "       results.add($n);\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( drl );
+        KieSession ksession = kbase.newKieSession();
 
         final List<Number> results = new ArrayList<Number>();
         ksession.setGlobal( "results",
@@ -2144,8 +2117,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                 "    System.out.println( \"We have a sum \" + $a );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = getKieSessionFromContentStrings(str);
 
         Map res = new HashMap();
         ksession.setGlobal( "map", res );
@@ -2176,8 +2148,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                 "    System.out.println( \"We have a sum \" + $a );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = getKieSessionFromContentStrings(str);
 
         Map res = new HashMap();
         ksession.setGlobal( "map", res );
@@ -2212,8 +2183,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                 "    System.out.println( \"We have a sum \" + $a );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = getKieSessionFromContentStrings(str);
 
         Map res = new HashMap();
         ksession.setGlobal( "map", res );
@@ -2262,8 +2232,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                 "        map.put('count', ((Integer)map.get('count')) + 1 );\n " +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieSession ksession = getKieSessionFromContentStrings(str);
         List list = new ArrayList();
         Map map = new HashMap();
         ksession.setGlobal( "map", map);
@@ -2405,8 +2374,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                 "       list.add( $dayCount );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = getKieSessionFromContentStrings(str);
         List list = new ArrayList();
         ksession.setGlobal("list", list);
 
@@ -2974,5 +2942,25 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals(2, counter.get());
+    }
+
+    private KieSession createKieSession(KieBase kbase) {
+        return kbase.newKieSession();
+    }
+
+    private KieSession getKieSessionFromResources(String... classPathResources){
+        KieBase kbase = loadKnowledgeBase(null, null, classPathResources);
+        return kbase.newKieSession();
+    }
+
+    private KieBase loadKieBaseFromString(String... drlContentStrings) {
+        return loadKnowledgeBaseFromString(null, null, phreak,
+                drlContentStrings);
+    }
+
+    private KieSession getKieSessionFromContentStrings(String... drlContentStrings) {
+        KieBase kbase = loadKnowledgeBaseFromString(null, null, phreak,
+                drlContentStrings);
+        return kbase.newKieSession();
     }
 }
