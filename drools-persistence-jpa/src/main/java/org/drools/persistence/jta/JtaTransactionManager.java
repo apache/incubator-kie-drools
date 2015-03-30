@@ -22,6 +22,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
+import javax.transaction.TransactionSynchronizationRegistry;
 import javax.transaction.UserTransaction;
 
 import org.drools.persistence.TransactionManager;
@@ -255,7 +256,13 @@ public class JtaTransactionManager
     public int getStatus() {
         int s;
         try {
-            s = this.ut.getStatus();
+            // use transaction sync registry if available as it is safe way for both BMT and CMT
+            if (this.tsr != null) {
+                s = ((TransactionSynchronizationRegistry) this.tsr).getTransactionStatus();
+            } else {
+                // if no transaction sync registry available fallback to user transaction
+                s = this.ut.getStatus();
+            }
         } catch ( SystemException e ) {
             throw new RuntimeException( "Unable to get status for transaction",
                                         e );
