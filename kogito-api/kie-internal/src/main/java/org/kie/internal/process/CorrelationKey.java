@@ -22,4 +22,6 @@ public interface CorrelationKey {
     String getName();
 
     List<CorrelationProperty<?>> getProperties();
+    
+    String toExternalForm();
 }

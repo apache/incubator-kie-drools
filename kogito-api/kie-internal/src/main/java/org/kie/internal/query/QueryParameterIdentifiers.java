@@ -39,6 +39,7 @@ public interface QueryParameterIdentifiers {
     public static final String PROCESS_VERSION_LIST = String.valueOf(idGen.getAndIncrement());
     public static final String PROCESS_INSTANCE_STATUS_LIST = String.valueOf(idGen.getAndIncrement());
     public static final String OUTCOME_LIST = String.valueOf(idGen.getAndIncrement());
+    public static final String CORRELATION_KEY_LIST = String.valueOf(idGen.getAndIncrement());
     
     // - (node instance log) 
     public static final String NODE_ID_LIST = String.valueOf(idGen.getAndIncrement());
