@@ -30,6 +30,7 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.AuditTask;
@@ -122,6 +123,15 @@ public interface RuntimeDataService {
      * @return Process instance information, in the form of a {@link ProcessInstanceDesc} instance.
      */
     ProcessInstanceDesc getProcessInstanceById(long processInstanceId);
+    
+    /**
+     * Returns process instance descriptions found for given correlation key if found otherwise null. At the same time it will
+     * fetch all active tasks (in status: Ready, Reserved, InProgress) to provide information what user task is keeping instance
+     * and who owns them (if were already claimed). 
+     * @param correlationKey correlation key assigned to process instance
+     * @return Process instance information, in the form of a {@link ProcessInstanceDesc} instance.
+     */
+    ProcessInstanceDesc getProcessInstanceByCorrelationKey(CorrelationKey correlationKey);
     
     /**
      * Returns list of process instance descriptions found for given process definition id

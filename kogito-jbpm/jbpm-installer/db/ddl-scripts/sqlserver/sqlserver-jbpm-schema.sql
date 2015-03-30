@@ -243,6 +243,7 @@
         parentProcessInstanceId numeric(19,0),
         processId varchar(255),
         processInstanceDescription varchar(255),
+        correlationKey varchar(255),
         processInstanceId numeric(19,0) not null,
         processName varchar(255),
         processVersion varchar(255),

@@ -17,7 +17,8 @@
       log.externalId,
       log.start,
       log.identity,
-      log.processInstanceDescription
+      log.processInstanceDescription,
+      log.correlationKey
       )
       from
         ProcessInstanceLog log
@@ -39,7 +40,8 @@
       log.externalId,
       log.start,
       log.identity,
-      log.processInstanceDescription
+      log.processInstanceDescription,
+      log.correlationKey
       )
       from
         ProcessInstanceLog log
@@ -61,7 +63,8 @@
       log.externalId,
       log.start,
       log.identity,
-      log.processInstanceDescription
+      log.processInstanceDescription,
+      log.correlationKey
       )
       from
         ProcessInstanceLog log
@@ -83,7 +86,8 @@
       log.externalId,
       log.start,
       log.identity,
-      log.processInstanceDescription
+      log.processInstanceDescription,
+      log.correlationKey
       )
       from
         ProcessInstanceLog log
@@ -106,7 +110,8 @@
       log.externalId,
       log.start,
       log.identity,
-      log.processInstanceDescription
+      log.processInstanceDescription,
+      log.correlationKey
       )
       from
         ProcessInstanceLog log
@@ -128,12 +133,36 @@
       log.externalId,
       log.start,
       log.identity,
-      log.processInstanceDescription
+      log.processInstanceDescription,
+      log.correlationKey
       )
       from
         ProcessInstanceLog log
       where
         log.processInstanceId =:processId
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+  
+  <named-query name="getProcessInstanceByCorrelationKey">
+    <query>
+     select
+      new org.jbpm.kie.services.impl.model.ProcessInstanceDesc(
+      log.processInstanceId,
+      log.processId,
+      log.processName,
+      log.processVersion,
+      log.status,
+      log.externalId,
+      log.start,
+      log.identity,
+      log.processInstanceDescription,
+      log.correlationKey
+      )
+      from
+        ProcessInstanceLog log
+      where
+        log.correlationKey =:correlationKey
     </query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
@@ -151,7 +180,8 @@
       log.externalId,
       log.start,
       log.identity,
-      log.processInstanceDescription
+      log.processInstanceDescription,
+      log.correlationKey
       )
       from
         ProcessInstanceLog log
@@ -173,7 +203,8 @@
       log.externalId,
       log.start,
       log.identity,
-      log.processInstanceDescription
+      log.processInstanceDescription,
+      log.correlationKey
       )
       from
         ProcessInstanceLog log
@@ -195,7 +226,8 @@
       log.externalId,
       log.start,
       log.identity,
-      log.processInstanceDescription
+      log.processInstanceDescription,
+      log.correlationKey
       )
       from
         ProcessInstanceLog log
@@ -217,7 +249,8 @@
       log.externalId,
       log.start,
       log.identity,
-      log.processInstanceDescription
+      log.processInstanceDescription,
+      log.correlationKey
       )
       from
         ProcessInstanceLog log

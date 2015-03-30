@@ -36,6 +36,8 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
 
     private String processInstanceDescription;
     
+    private String correlationKey;
+    
     private List<org.jbpm.services.api.model.UserTaskInstanceDesc> activeTasks;
 
     public ProcessInstanceDesc() {
@@ -43,7 +45,8 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
     }
     
     public ProcessInstanceDesc(long id, String processId, String processName, String processVersion, 
-                                int state, String deploymentId, Date dataTimeStamp, String initiator,String processInstanceDescription) {
+                                int state, String deploymentId, Date dataTimeStamp, String initiator,
+                                String processInstanceDescription, String correlationKey) {
         this.id = id;
         this.processId = processId;
         this.processName = processName;
@@ -53,10 +56,11 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
         this.dataTimeStamp = dataTimeStamp;
         this.initiator = initiator;
         this.processInstanceDescription = processInstanceDescription;
+        this.correlationKey = correlationKey==null?"":correlationKey;
     }
     
     public ProcessInstanceDesc(long id, String processId, String processName, String processVersion, 
-                               int state, String deploymentId, Date dataTimeStamp, String initiator) {
+                               int state, String deploymentId, Date dataTimeStamp, String initiator, String correlationKey) {
        this.id = id;
        this.processId = processId;
        this.processName = processName;
@@ -65,6 +69,7 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
        this.deploymentId = deploymentId;
        this.dataTimeStamp = dataTimeStamp;
        this.initiator = initiator;
+       this.correlationKey = correlationKey==null?"":correlationKey;
    }
     
     public String getProcessId() {
@@ -93,7 +98,7 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
 
     @Override
     public String toString() {
-        return "ProcessInstanceDesc{" + "id=" + id + ", processId=" + processId + ", processName=" + processName + ", processVersion=" + processVersion + ", state=" + state + ", deploymentId=" + deploymentId + ", initiator=" + initiator + ", dataTimeStamp=" + dataTimeStamp + '}';
+        return "ProcessInstanceDesc{" + "id=" + id + ", processId=" + processId + ", processName=" + processName + ", processVersion=" + processVersion + "correlationKey=" + correlationKey + ", state=" + state + ", deploymentId=" + deploymentId + ", initiator=" + initiator + ", dataTimeStamp=" + dataTimeStamp + '}';
     }
 
     public String getProcessVersion() {
@@ -130,6 +135,14 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
 
 	public void setActiveTasks(List<org.jbpm.services.api.model.UserTaskInstanceDesc> activeTasks) {
 		this.activeTasks = activeTasks;
+	}
+
+	public String getCorrelationKey() {
+		return correlationKey;
+	}
+
+	public void setCorrelationKey(String correlationKey) {
+		this.correlationKey = correlationKey;
 	}
 
 }

@@ -49,6 +49,7 @@ import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.identity.IdentityProvider;
+import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.AuditTask;
@@ -425,6 +426,34 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         }
         return null;
    }
+    
+	@Override
+	public ProcessInstanceDesc getProcessInstanceByCorrelationKey(CorrelationKey correlationKey) {
+	   	Map<String, Object> params = new HashMap<String, Object>();
+        params.put("correlationKey", correlationKey.toExternalForm());
+        params.put("maxResults", 1);
+
+        List<ProcessInstanceDesc> processInstances = commandService.execute(
+				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstanceByCorrelationKey", 
+                params));
+
+        if (!processInstances.isEmpty()) {
+        	ProcessInstanceDesc desc = processInstances.iterator().next();
+        	List<String> statuses = new ArrayList<String>();
+        	statuses.add(Status.Ready.name());
+        	statuses.add(Status.Reserved.name());
+        	statuses.add(Status.InProgress.name());
+        	
+        	params = new HashMap<String, Object>();
+            params.put("processInstanceId", desc.getId());
+            params.put("statuses", statuses);
+            List<UserTaskInstanceDesc> tasks = commandService.execute(
+    				new QueryNameCommand<List<UserTaskInstanceDesc>>("getTaskInstancesByProcessInstanceId", params));
+        	((org.jbpm.kie.services.impl.model.ProcessInstanceDesc)desc).setActiveTasks(tasks);
+        	return desc;
+        }
+        return null;
+	}
 
     
     @Override

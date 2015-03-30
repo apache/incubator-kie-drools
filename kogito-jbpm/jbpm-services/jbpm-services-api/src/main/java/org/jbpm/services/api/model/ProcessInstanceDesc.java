@@ -39,5 +39,7 @@ public interface ProcessInstanceDesc {
     
     String getProcessInstanceDescription();
     
+    String getCorrelationKey();
+    
     List<UserTaskInstanceDesc> getActiveTasks();
 }

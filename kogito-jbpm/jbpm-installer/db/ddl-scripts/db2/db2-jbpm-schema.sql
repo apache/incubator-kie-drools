@@ -243,6 +243,7 @@
         parentProcessInstanceId bigint,
         processId varchar(255),
         processInstanceDescription varchar(255),
+        correlationKey varchar(255),
         processInstanceId bigint not null,
         processName varchar(255),
         processVersion varchar(255),

@@ -24,6 +24,7 @@ import org.kie.api.command.Command;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.internal.process.CorrelationKey;
 
 public interface ProcessService {
 	
@@ -49,6 +50,31 @@ public interface ProcessService {
 	 * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist or is not active
 	 */
     Long startProcess(String deploymentId, String processId, Map<String, Object> params);
+    
+	/**
+	 * Starts a process with no variables
+	 * 
+	 * @param deploymentId deployment information for the process's kjar
+	 * @param processId The process's identifier 
+	 * @param correlationKey correlation key to be assigned to process instance - must be unique
+	 * @return process instance identifier
+	 * @throws RuntimeException in case of encountered errors
+	 * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist or is not active
+	 */
+	Long startProcess(String deploymentId, String processId, CorrelationKey correlationKey);
+
+	/**
+	 * Starts a process with no variables
+	 * 
+	 * @param deploymentId deployment information for the process's kjar
+	 * @param processId The process's identifier
+	 * @param correlationKey correlation key to be assigned to process instance - must be unique 
+	 * @param params process variables
+	 * @return process instance identifier
+	 * @throws RuntimeException in case of encountered errors
+	 * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist or is not active
+	 */
+    Long startProcess(String deploymentId, String processId, CorrelationKey correlationKey, Map<String, Object> params);
 
     /**
 	 * Aborts the specified process
@@ -99,6 +125,16 @@ public interface ProcessService {
 	 * @throws DeploymentNotFoundException in case deployment unit was not found
 	 */
     ProcessInstance getProcessInstance(Long processInstanceId);
+    
+    /**
+	 * Returns process instance information. Will return null if no
+	 * active process with that correlation key is found
+	 * 
+	 * @param correlationKey correlation key assigned to process instance
+	 * @return Process instance information
+	 * @throws DeploymentNotFoundException in case deployment unit was not found
+	 */
+    ProcessInstance getProcessInstance(CorrelationKey correlationKey);
 
     /**
 	 * Sets a process variable.
