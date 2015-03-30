@@ -3,6 +3,7 @@ package org.kie.internal.runtime.manager.audit.query;
 import java.util.Date;
 
 import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
+import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.query.ParametrizedQuery;
 
 public interface ProcessInstanceLogQueryBuilder extends AuditQueryBuilder<ProcessInstanceLogQueryBuilder> {
@@ -112,6 +113,13 @@ public interface ProcessInstanceLogQueryBuilder extends AuditQueryBuilder<Proces
      * @return The current query builder instance
      */
     public ProcessInstanceLogQueryBuilder endDateRangeEnd(Date rangeEnd);
+    
+    /**
+     * Specify one or more process correlation keys as a criteria
+     * @param correlationKeys one or more correlation keys
+     * @return The current instance of this query builder
+     */
+    public ProcessInstanceLogQueryBuilder correlationKey(CorrelationKey... correlationKeys);
     
     /**
      * Specify how the results of the query should be ordered. 
