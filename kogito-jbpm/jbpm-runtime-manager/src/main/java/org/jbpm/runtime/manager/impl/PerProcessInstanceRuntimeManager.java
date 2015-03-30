@@ -278,7 +278,14 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         if (map == null) {
             return null;
         } else {
-            return map.get(processInstanceId);
+        	RuntimeEngine engine = map.get(processInstanceId);
+        	// check if engine is not already disposed as afterCompletion might be issued from another thread
+        	if (engine != null && ((RuntimeEngineImpl) engine).isDisposed()) {
+        		map.remove(processInstanceId);
+        		return null;
+        	}
+        	
+        	return engine;
         }
     }
     

@@ -64,7 +64,13 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     	checkPermission();
     	RuntimeEngine runtime = null;
         if (local.get() != null) {
-            return local.get();
+        	RuntimeEngine engine = local.get();
+        	// check if engine is not already disposed as afterCompletion might be issued from another thread
+        	if (engine != null && ((RuntimeEngineImpl) engine).isDisposed()) {
+        		return null;
+        	}
+        	
+        	return engine;
         }
     	if (engineInitEager) {
 	        InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();	        
