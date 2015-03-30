@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collection;
+
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
@@ -31,6 +35,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescriptor {
 
     protected VariableDescriptor sourceVariableDescriptor;
+    protected boolean singleton;
 
     public InverseRelationShadowVariableDescriptor(EntityDescriptor entityDescriptor,
             PropertyAccessor variablePropertyAccessor) {
@@ -48,7 +53,42 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
     public void linkShadowSources(DescriptorPolicy descriptorPolicy) {
         InverseRelationShadowVariable shadowVariableAnnotation = variablePropertyAccessor.getReadMethod()
                 .getAnnotation(InverseRelationShadowVariable.class);
-        Class<?> masterClass = getVariablePropertyType();
+        Class<?> variablePropertyType = getVariablePropertyType();
+        Class<?> masterClass;
+        if (Collection.class.isAssignableFrom(variablePropertyType)) {
+            Type genericType = variablePropertyAccessor.getReadMethod().getGenericReturnType();
+            if (!(genericType instanceof ParameterizedType)) {
+                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                        + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
+                        + " annotated property (" + variablePropertyAccessor.getName()
+                        + ") with a property type (" + variablePropertyType
+                        + ") which is non parameterized collection.");
+            }
+            ParameterizedType parameterizedType = (ParameterizedType) genericType;
+            Type[] typeArguments = parameterizedType.getActualTypeArguments();
+            if (typeArguments.length != 1) {
+                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                        + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
+                        + " annotated property (" + variablePropertyAccessor.getName()
+                        + ") with a property type (" + variablePropertyType
+                        + ") which is parameterized collection with an unsupported number of type arguments ("
+                        + typeArguments.length + ").");
+            }
+            Type typeArgument = typeArguments[0];
+            if (!(typeArgument instanceof Class)) {
+                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                        + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
+                        + " annotated property (" + variablePropertyAccessor.getName()
+                        + ") with a property type (" + variablePropertyType
+                        + ") which is parameterized collection with an unsupported type arguments ("
+                        + typeArgument + ").");
+            }
+            masterClass = ((Class) typeArgument);
+            singleton = false;
+        } else {
+            masterClass = variablePropertyType;
+            singleton = true;
+        }
         EntityDescriptor sourceEntityDescriptor = getEntityDescriptor().getSolutionDescriptor()
                 .findEntityDescriptor(masterClass);
         if (sourceEntityDescriptor == null) {
@@ -69,14 +109,16 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
                     + sourceEntityDescriptor.getEntityClass() + ").\n"
                     + entityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
         }
-        if (!(sourceVariableDescriptor instanceof GenuineVariableDescriptor) ||
-                !((GenuineVariableDescriptor) sourceVariableDescriptor).isChained()) {
-            // TODO support for non-chained variables too, including shadow variables
-            throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
-                    + " annotated property (" + variablePropertyAccessor.getName()
-                    + ") with sourceVariableName (" + sourceVariableName
-                    + ") which is not chained.");
+        if (singleton) {
+            if (!(sourceVariableDescriptor instanceof GenuineVariableDescriptor) ||
+                    !((GenuineVariableDescriptor) sourceVariableDescriptor).isChained()) {
+                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                        + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
+                        + " annotated property (" + variablePropertyAccessor.getName()
+                        + ") which does not return a " + Collection.class.getSimpleName()
+                        + " with sourceVariableName (" + sourceVariableName
+                        + ") which is not chained. Only a chained variable supports a singleton inverse.");
+            }
         }
         sourceVariableDescriptor.registerShadowVariableDescriptor(this);
     }
@@ -87,12 +129,20 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
 
     @Override
     public Demand getProvidedDemand() {
-        return new SingletonInverseVariableDemand(sourceVariableDescriptor);
+        if (singleton) {
+            return new SingletonInverseVariableDemand(sourceVariableDescriptor);
+        } else {
+            return new CollectionInverseVariableDemand(sourceVariableDescriptor);
+        }
     }
 
     @Override
     public VariableListener buildVariableListener(InnerScoreDirector scoreDirector) {
-        return new SingletonInverseVariableListener(this, sourceVariableDescriptor);
+        if (singleton) {
+            return new SingletonInverseVariableListener(this, sourceVariableDescriptor);
+        } else {
+            return new CollectionInverseVariableListener(this, sourceVariableDescriptor);
+        }
     }
 
 }

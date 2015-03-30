@@ -2369,4 +2369,30 @@ From 6.2.0.CR4 to 6.2.0.Final
 [MINOR] The undocumented, experimental <twoOptMoveSelector> has been replaced by <tailChainSwapMoveSelector>,
 which is documented.
 
-[REAMDE] To scale VRP cases, Nearby Selection is critical. It is now finally completely supported and documented.
+[README] To scale VRP cases, Nearby Selection is critical. It is now finally completely supported and documented.
+
+
+From 6.2.0.Final to 6.3.0.Beta1
+-------------------------------
+
+[MINOR] @InverseRelationShadowVariable is now also supported for non-chained planning variables,
+in which case it the inverse property must be Collection (Set or List).
+So it's no longer needed to use a CustomShadowVariable to implement the bi-directional relationship behaviour.
+Before in *.java:
+    public class CloudComputer {
+        ...
+        @CustomShadowVariable(variableListenerClass = MyCustomInverseVariableListener.class,
+                sources = {@CustomShadowVariable.Source(entityClass = CloudProcess.class, variableName = "computer")})
+        public List<CloudProcess> getProcessList() {
+            return processList;
+        }
+    }
+After in *.java:
+    @PlanningEntity // Shadow variable only
+    public class CloudComputer {
+        ...
+        @InverseRelationShadowVariable(sourceVariableName = "computer")
+        public List<CloudProcess> getProcessList() {
+            return processList;
+        }
+    }
