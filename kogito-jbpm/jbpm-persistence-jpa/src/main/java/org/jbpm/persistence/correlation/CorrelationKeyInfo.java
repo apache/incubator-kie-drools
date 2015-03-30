@@ -15,6 +15,7 @@
  */
 package org.jbpm.persistence.correlation;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,9 +34,11 @@ import org.kie.internal.process.CorrelationProperty;
 
 @Entity
 @SequenceGenerator(name="correlationKeyInfoIdSeq", sequenceName="CORRELATION_KEY_ID_SEQ")
-public class CorrelationKeyInfo implements CorrelationKey {
+public class CorrelationKeyInfo implements CorrelationKey, Serializable {
 
-    @Id
+	private static final long serialVersionUID = 4469298702447675428L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="correlationKeyInfoIdSeq")
     @Column(name = "keyId")
     private long id;
@@ -132,5 +135,17 @@ public class CorrelationKeyInfo implements CorrelationKey {
     public long getId() {
         return id;
     }
+
+	@Override
+	public String toExternalForm() {
+		StringBuilder builder = new StringBuilder();
+		for (CorrelationPropertyInfo property : properties) {
+			builder.append(property.getValue());
+			builder.append(":");
+		}
+		builder.deleteCharAt(builder.length() - 1);
+		
+		return builder.toString();
+	}
 
 }

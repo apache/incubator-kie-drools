@@ -48,6 +48,7 @@ import static org.kie.internal.query.QueryParameterIdentifiers.VARIABLE_INSTANCE
 import static org.kie.internal.query.QueryParameterIdentifiers.VAR_VALUE_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.VAR_VAL_SEPARATOR;
 import static org.kie.internal.query.QueryParameterIdentifiers.WORK_ITEM_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.CORRELATION_KEY_LIST;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -489,6 +490,7 @@ public class JPAAuditLogService implements AuditLogService {
         addCriteria(PROCESS_VERSION_LIST, "l.processVersion", String.class);
         addCriteria(PROCESS_INSTANCE_STATUS_LIST, "l.status", Integer.class);
         addCriteria(OUTCOME_LIST, "l.outcome", String.class);
+        addCriteria(CORRELATION_KEY_LIST, "l.correlationKey", String.class);
         
         // node instance log
         addCriteria(NODE_ID_LIST, "l.nodeId", String.class);

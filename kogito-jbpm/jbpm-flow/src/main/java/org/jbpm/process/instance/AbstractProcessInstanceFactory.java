@@ -34,6 +34,10 @@ public abstract class AbstractProcessInstanceFactory implements ProcessInstanceF
 		processInstance.setKnowledgeRuntime( kruntime );
         processInstance.setProcess( process );
         
+        if (correlationKey != null) {
+        	processInstance.getMetaData().put("CorrelationKey", correlationKey);
+        }
+        
         ((InternalProcessRuntime) kruntime.getProcessRuntime()).getProcessInstanceManager()
     		.addProcessInstance( processInstance, correlationKey );
 

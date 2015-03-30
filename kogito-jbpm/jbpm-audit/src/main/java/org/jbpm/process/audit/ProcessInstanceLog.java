@@ -71,6 +71,8 @@ public class ProcessInstanceLog implements Serializable, AuditEvent, org.kie.api
     private String processVersion;
     
     private String processName;
+    
+    private String correlationKey;
    
     /**
      * Dependening on the {@link AuditEventBuilder} implementation, 
@@ -313,5 +315,13 @@ public class ProcessInstanceLog implements Serializable, AuditEvent, org.kie.api
     public void setProcessInstanceDescription(String processInstanceDescription) {
         this.processInstanceDescription = processInstanceDescription;
     }
+
+	public String getCorrelationKey() {
+		return correlationKey;
+	}
+
+	public void setCorrelationKey(String correlationKey) {
+		this.correlationKey = correlationKey;
+	}
 
 }

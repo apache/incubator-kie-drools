@@ -15,6 +15,8 @@
  */
 package org.jbpm.persistence.correlation;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,9 +30,11 @@ import org.kie.internal.process.CorrelationProperty;
 
 @Entity
 @SequenceGenerator(name="correlationPropertyInfoIdSeq", sequenceName="CORRELATION_PROP_ID_SEQ")
-public class CorrelationPropertyInfo implements CorrelationProperty<String> {
+public class CorrelationPropertyInfo implements CorrelationProperty<String>, Serializable {
 
-    public CorrelationPropertyInfo() {
+	private static final long serialVersionUID = -4469224502447675428L;
+
+	public CorrelationPropertyInfo() {
         
     }
     

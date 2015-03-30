@@ -3,7 +3,9 @@ package org.jbpm.process.audit.query;
 import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
 import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
 import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.util.Calendar;
@@ -30,11 +32,13 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.internal.KieInternalServices;
+import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.query.ParametrizedQuery;
 import org.kie.internal.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
 import org.kie.internal.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
-import org.kie.internal.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
 import org.kie.internal.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder.OrderBy;
+import org.kie.internal.runtime.manager.audit.query.VariableInstanceLogQueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,6 +120,7 @@ public class AuditQueryTest extends JPAAuditLogService {
             pil.setProcessName(randomString());
             pil.setProcessVersion(randomString());
             pil.setStatus(random.nextInt());
+            pil.setCorrelationKey(randomString());
             
             cal.add(Calendar.MINUTE, 1);
             pil.setStart(cal.getTime());
@@ -238,6 +243,16 @@ public class AuditQueryTest extends JPAAuditLogService {
         builder = this.processInstanceLogQuery().outcome(outcome);
         resultList = builder.buildQuery().getResultList();
         assertEquals( "outcome query result", 2, resultList.size());
+        }
+        
+        {
+        String correlationKey = pilTestData[p++].getCorrelationKey();
+        CorrelationKey ck = KieInternalServices.Factory.get().newCorrelationKeyFactory().newCorrelationKey(correlationKey);	
+        	
+        
+        builder = this.processInstanceLogQuery().correlationKey(ck);
+        resultList = builder.buildQuery().getResultList();
+        assertEquals( "identity query result", 1, resultList.size());
         }
     }
     

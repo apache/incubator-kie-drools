@@ -16,6 +16,7 @@ import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.process.CorrelationKey;
 
 public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
 
@@ -28,6 +29,11 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
         log.setProcessVersion(pi.getProcess().getVersion());
         log.setStatus(ProcessInstance.STATE_ACTIVE);
         log.setProcessInstanceDescription( pi.getDescription() );
+        // store correlation key in its external form
+        CorrelationKey correlationKey = (CorrelationKey) pi.getMetaData().get("CorrelationKey");
+        if (correlationKey != null) {
+        	log.setCorrelationKey(correlationKey.toExternalForm());
+        }
         try {
             long parentProcessInstanceId = (Long) pi.getMetaData().get("ParentProcessInstanceId");
             log.setParentProcessInstanceId(parentProcessInstanceId);

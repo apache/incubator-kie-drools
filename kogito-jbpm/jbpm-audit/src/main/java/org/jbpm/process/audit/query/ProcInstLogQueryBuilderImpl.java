@@ -8,6 +8,7 @@ import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_NAME_LIST
 import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_VERSION_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.START_DATE_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_STATUS_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.CORRELATION_KEY_LIST;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
+import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.query.ParametrizedQuery;
 import org.kie.internal.query.data.QueryData;
 import org.kie.internal.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
@@ -112,6 +114,18 @@ public class ProcInstLogQueryBuilderImpl extends AbstractAuditQueryBuilderImpl<P
         addObjectParameter(OUTCOME_LIST, "outcome", outcome);
         return this;
     }
+    
+	@Override
+	public ProcessInstanceLogQueryBuilder correlationKey(CorrelationKey... correlationKeys) {
+		String[] correlationKeysExternal = new String[correlationKeys.length];
+		
+		for (int i = 0; i < correlationKeys.length; i++) {
+			correlationKeysExternal[i] = correlationKeys[i].toExternalForm();
+		}
+		
+		addObjectParameter(CORRELATION_KEY_LIST, "correlation key", correlationKeysExternal);
+		return this;
+	}
 
     @Override
     public ProcessInstanceLogQueryBuilder orderBy( OrderBy field ) {
@@ -129,5 +143,7 @@ public class ProcInstLogQueryBuilderImpl extends AbstractAuditQueryBuilderImpl<P
             }
         };
     }
+
+
 
 }
