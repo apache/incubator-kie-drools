@@ -127,6 +127,6 @@ public class DocumentImpl implements Document {
     @Override
     public String toString() {
         SimpleDateFormat sdf = new SimpleDateFormat( DOCUMENT_DATE_PATTERN );
-        return  name + "," + size + "," + sdf.format( lastModified ) +","+ link ;
+        return  name + PROPERTIES_SEPARATOR + size + PROPERTIES_SEPARATOR + sdf.format( lastModified ) + PROPERTIES_SEPARATOR + link ;
     }
 }
