@@ -23,6 +23,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -74,10 +75,10 @@ public class EntryPointNode extends ObjectSource
     /**
      * The object type nodes under this node
      */
-    private Map<ObjectType, ObjectTypeNode> objectTypeNodes;
-    
-    private ObjectTypeNode queryNode;
-    
+    protected Map<ObjectType, ObjectTypeNode> objectTypeNodes;
+
+    protected ObjectTypeNode queryNode;
+
     private ObjectTypeNode activationNode;
 
     // ------------------------------------------------------------
@@ -124,7 +125,7 @@ public class EntryPointNode extends ObjectSource
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
+        super.writeExternal(out);
         out.writeObject( entryPoint );
         out.writeObject( objectTypeNodes );
     }
@@ -146,47 +147,21 @@ public class EntryPointNode extends ObjectSource
     public void assertQuery(final InternalFactHandle factHandle,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
-        if ( queryNode == null ) {
-            this.queryNode = objectTypeNodes.get( ClassObjectType.DroolsQuery_ObjectType );
-        }
-        
-        if ( queryNode != null ) {
-            // There may be no queries defined
-            this.queryNode.assertObject( factHandle, context, workingMemory );
-        }       
+        throw new UnsupportedOperationException("rete only");
     }
     
     public void retractQuery(final InternalFactHandle factHandle,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
-        if ( queryNode == null ) {
-            this.queryNode = objectTypeNodes.get( ClassObjectType.DroolsQuery_ObjectType );
-        }
-        
-        if ( queryNode != null ) {
-            // There may be no queries defined
-            this.queryNode.retractObject( factHandle, context, workingMemory );
-        }       
-    }    
-    
+        throw new UnsupportedOperationException("rete only");
+    }
+
     public void modifyQuery(final InternalFactHandle factHandle,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
-         if ( queryNode == null ) {
-             this.queryNode = objectTypeNodes.get( ClassObjectType.DroolsQuery_ObjectType );
-         }
-         
-         if ( queryNode != null ) {
-             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple(), this );
-             factHandle.clearLeftTuples();
-             factHandle.clearRightTuples();
-             
-             // There may be no queries defined
-             this.queryNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
-             modifyPreviousTuples.retractTuples( context, workingMemory );
-         }       
-     } 
-    
+        throw new UnsupportedOperationException("rete only");
+     }
+
     public ObjectTypeNode getQueryNode() {
         if ( queryNode == null ) {
             this.queryNode = objectTypeNodes.get( ClassObjectType.DroolsQuery_ObjectType );
@@ -203,8 +178,8 @@ public class EntryPointNode extends ObjectSource
         
         if ( activationNode != null ) {
             // There may be no queries defined
-            this.activationNode.assertObject( factHandle, context, workingMemory );
-        }       
+            this.activationNode.propagateAssert(factHandle, context, workingMemory);
+        }
     }
     
     public void retractActivation(final InternalFactHandle factHandle,
@@ -234,10 +209,10 @@ public class EntryPointNode extends ObjectSource
              
              // There may be no queries defined
              this.activationNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
-             modifyPreviousTuples.retractTuples( context, workingMemory );
-         }       
-         
-     }      
+             modifyPreviousTuples.retractTuples(context, workingMemory);
+         }
+
+     }
 
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
@@ -254,16 +229,24 @@ public class EntryPointNode extends ObjectSource
                                          context,
                                          workingMemory );
         }
+
+        if (cachedNodes.length > 0) {
+            workingMemory.addPropagation(new PropagationEntry.Insert(cachedNodes, handle, context));
+        }
     }
     
     public void modifyObject(final InternalFactHandle handle,
                              final PropagationContext pctx,
                              final ObjectTypeConf objectTypeConf,
-                             final InternalWorkingMemory wm) {
+                             final InternalWorkingMemory workingMemory) {
         if ( log.isTraceEnabled() ) {
             log.trace( "Update {}", handle.toString()  );
         }
 
+        workingMemory.addPropagation(new PropagationEntry.Update(this, handle, pctx, objectTypeConf));
+    }
+
+    public void propagateModify(InternalFactHandle handle, PropagationContext pctx, ObjectTypeConf objectTypeConf, InternalWorkingMemory wm) {
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
         
         // make a reference to the previous tuples, then null then on the handle
@@ -280,7 +263,7 @@ public class EntryPointNode extends ObjectSource
             if (i < cachedNodes.length - 1) {
                 RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
                 while ( rightTuple != null &&
-                        (( BetaNode ) rightTuple.getRightTupleSink()).getObjectTypeNode() == cachedNodes[i] ) {
+                        ((BetaNode) rightTuple.getRightTupleSink()).getObjectTypeNode() == cachedNodes[i] ) {
                     modifyPreviousTuples.removeRightTuple();
 
                     doRightDelete(pctx, wm, rightTuple);
@@ -303,20 +286,20 @@ public class EntryPointNode extends ObjectSource
                         }
                     }
 
-                    if ( otn == null || otn == cachedNodes[i+1] ) break;
+                    if ( otn == null || cachedNodes[i] != otn ) break;
 
                     modifyPreviousTuples.removeLeftTuple();
                     doDeleteObject(pctx, wm, leftTuple);
                 }
             }
         }
-        modifyPreviousTuples.retractTuples( pctx, wm );
+        modifyPreviousTuples.retractTuples(pctx, wm);
     }
 
     public void doDeleteObject(PropagationContext pctx, InternalWorkingMemory wm, LeftTuple leftTuple) {
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource();
         LiaNodeMemory lm = ( LiaNodeMemory )  wm.getNodeMemory( liaNode );
-        LeftInputAdapterNode.doDeleteObject( leftTuple, pctx, lm.getSegmentMemory(), wm, liaNode, true, lm );
+        LeftInputAdapterNode.doDeleteObject(leftTuple, pctx, lm.getSegmentMemory(), wm, liaNode, true, lm);
     }
 
     public void doRightDelete(PropagationContext pctx, InternalWorkingMemory wm, RightTuple rightTuple) {
@@ -370,6 +353,10 @@ public class EntryPointNode extends ObjectSource
             log.trace( "Delete {}", handle.toString()  );
         }
 
+        workingMemory.addPropagation(new PropagationEntry.Delete(this, handle, context, objectTypeConf));
+    }
+
+    public void propagateRetract(InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf, InternalWorkingMemory workingMemory) {
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
         if ( cachedNodes == null ) {

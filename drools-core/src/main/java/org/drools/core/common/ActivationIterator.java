@@ -1,13 +1,12 @@
 package org.drools.core.common;
 
-import org.drools.core.util.Iterator;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
+import org.drools.core.util.Iterator;
 import org.kie.api.KieBase;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.KieSession;
 
 public class ActivationIterator
     implements
@@ -52,13 +51,17 @@ public class ActivationIterator
 
     }
 
-    public static Iterator iterator(StatefulKnowledgeSession ksession) {
-        InternalWorkingMemory wm = ((InternalWorkingMemoryEntryPoint) ksession).getInternalWorkingMemory();
+    public static Iterator iterator(KieSession ksession) {
+        return iterator((InternalWorkingMemoryEntryPoint) ksession);
+    }
+
+    public static Iterator iterator(InternalWorkingMemoryEntryPoint ksession) {
+        InternalWorkingMemory wm = ksession.getInternalWorkingMemory();
         if (wm.getKnowledgeBase().getConfiguration().isPhreakEnabled()) {
             return PhreakActivationIterator.iterator(wm);
         } else {
-            return new ActivationIterator( ((InternalWorkingMemoryEntryPoint) ksession).getInternalWorkingMemory(),
-                                           ksession.getKieBase() );
+            return new ActivationIterator( ksession.getInternalWorkingMemory(),
+                                           ((KieSession)ksession).getKieBase() );
         }
     }
 

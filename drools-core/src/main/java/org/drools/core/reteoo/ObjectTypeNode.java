@@ -253,8 +253,15 @@ public class ObjectTypeNode extends ObjectSource
 
     public void setCompiledNetwork(CompiledNetwork compiledNetwork) {
         this.compiledNetwork = compiledNetwork;
+        this.compiledNetwork.setObjectTypeNode(this);
+    }
 
-        this.compiledNetwork.setObjectTypeNode( this );
+    private void checkDirty() {
+        if (dirty) {
+            resetIdGenerator();
+            updateTupleSinkId(this, this);
+            dirty = false;
+        }
     }
 
     /**
@@ -269,47 +276,46 @@ public class ObjectTypeNode extends ObjectSource
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        if ( dirty ) {
-            resetIdGenerator();
-            updateTupleSinkId( this, this );
-            dirty = false;
-        }
+        checkDirty();
 
         if ( objectMemoryEnabled && !(queryNode && !((DroolsQuery) factHandle.getObject()).isOpen()) ) {
             final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory( this );
-            memory.memory.add( factHandle,
-                               false );
+            memory.memory.add( factHandle, false );
         }
 
-        if ( compiledNetwork != null ) {
-            compiledNetwork.assertObject( factHandle,
-                                          context,
-                                          workingMemory );
-        } else {
+        if ( context.getReaderContext() == null && this.objectType.isEvent() && this.expirationOffset >= 0 && this.expirationOffset != Long.MAX_VALUE ) {
+            scheduleExpiration(context, workingMemory, factHandle, expirationOffset, new WorkingMemoryReteExpireAction((EventFactHandle) factHandle, this));
+        }
+    }
 
+    public void propagateAssert(InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory) {
+        if (compiledNetwork != null) {
+            compiledNetwork.assertObject(factHandle,
+                                         context,
+                                         workingMemory);
+        } else {
             this.sink.propagateAssertObject( factHandle,
                                              context,
                                              workingMemory );
         }
+    }
 
-        if ( context.getReaderContext() == null && this.objectType.isEvent() && this.expirationOffset >= 0 && this.expirationOffset != Long.MAX_VALUE ) {
-            // schedule expiration
-            WorkingMemoryReteExpireAction expire = new WorkingMemoryReteExpireAction( factHandle, this );
-            TimerService clock = workingMemory.getTimerService();
+    public static void scheduleExpiration(PropagationContext context, InternalWorkingMemory workingMemory, InternalFactHandle handle, long expirationOffset, WorkingMemoryReteExpireAction expireAction) {
+        // schedule expiration
+        TimerService clock = workingMemory.getTimerService();
 
-            // DROOLS-455 the calculation of the effectiveEnd may overflow and become negative
-            EventFactHandle eventFactHandle = (EventFactHandle) factHandle;
-            long effectiveEnd = eventFactHandle.getEndTimestamp() + this.expirationOffset;
-            long nextTimestamp = Math.max( clock.getCurrentTime(),
-                                           effectiveEnd >= 0 ? effectiveEnd : Long.MAX_VALUE );
-            JobContext jobctx = new ExpireJobContext( expire,
-                                                      workingMemory );
-            JobHandle jobHandle = clock.scheduleJob( job,
-                                                     jobctx,
-                                                     new PointInTimeTrigger( nextTimestamp, null, null ) );
-            jobctx.setJobHandle( jobHandle );
-            eventFactHandle.addJob( jobHandle );
-        }
+        // DROOLS-455 the calculation of the effectiveEnd may overflow and become negative
+        EventFactHandle eventFactHandle = (EventFactHandle) handle;
+        long effectiveEnd = eventFactHandle.getEndTimestamp() + expirationOffset;
+        long nextTimestamp = Math.max( clock.getCurrentTime(),
+                                       effectiveEnd >= 0 ? effectiveEnd : Long.MAX_VALUE );
+        JobContext jobctx = new ExpireJobContext( expireAction,
+                                                  workingMemory );
+        JobHandle jobHandle = clock.scheduleJob( job,
+                                                 jobctx,
+                                                 new PointInTimeTrigger( nextTimestamp, null, null ) );
+        jobctx.setJobHandle( jobHandle );
+        eventFactHandle.addJob(jobHandle);
     }
 
     /**
@@ -323,11 +329,7 @@ public class ObjectTypeNode extends ObjectSource
     public void retractObject(final InternalFactHandle factHandle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
-        if ( dirty ) {
-            resetIdGenerator();
-            updateTupleSinkId( this, this );
-            dirty = false;
-        }
+        checkDirty();
 
         if ( objectMemoryEnabled && !(queryNode && !((DroolsQuery) factHandle.getObject()).isOpen()) ) {
             final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory( this );
@@ -366,11 +368,7 @@ public class ObjectTypeNode extends ObjectSource
                              ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
-        if ( dirty ) {
-            resetIdGenerator();
-            updateTupleSinkId( this, this );
-            dirty = false;
-        }
+        checkDirty();
 
         context.setObjectType( objectType );
         if ( compiledNetwork != null ) {
@@ -389,11 +387,7 @@ public class ObjectTypeNode extends ObjectSource
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        if ( dirty ) {
-            resetIdGenerator();
-            updateTupleSinkId( this, this );
-            dirty = false;
-        }
+        checkDirty();
 
         // Regular updateSink
         final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory( this );
@@ -697,7 +691,7 @@ public class ObjectTypeNode extends ObjectSource
 
             TimerService clock = inCtx.wm.getTimerService();
 
-            JobContext jobctx = new ExpireJobContext( new WorkingMemoryReteExpireAction( factHandle, otn ),
+            JobContext jobctx = new ExpireJobContext( new WorkingMemoryReteExpireAction( (EventFactHandle) factHandle, otn ),
                                                       inCtx.wm );
             JobHandle handle = clock.scheduleJob( job,
                                                   jobctx,
@@ -717,8 +711,8 @@ public class ObjectTypeNode extends ObjectSource
             ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( cls ) );
             
             TimerService clock = inCtx.wm.getTimerService();
-            
-            JobContext jobctx = new ExpireJobContext( new WorkingMemoryReteExpireAction(factHandle, otn),
+
+            JobContext jobctx = new ExpireJobContext( new WorkingMemoryReteExpireAction((EventFactHandle)factHandle, otn),
                                                       inCtx.wm );
             JobHandle jobHandle = clock.scheduleJob( job,
                                                      jobctx,

@@ -144,14 +144,13 @@ public class PatternBuilder
         
         if( ! behaviors.isEmpty() ) {
             // build the window node:
-            WindowNode wn = new WindowNode( context.getNextId(),
-                                            alphaConstraints,
-                                            behaviors,
-                                            context.getObjectSource(),
-                                            context );
-            context.setObjectSource( (WindowNode) utils.attachNode( context, 
-                                                                    wn ) );
-            
+            WindowNode wn = context.getComponentFactory().getNodeFactoryService().buildWindowNode( context.getNextId(),
+                                                                                                   alphaConstraints,
+                                                                                                   behaviors,
+                                                                                                   context.getObjectSource(),
+                                                                                                   context );
+            context.setObjectSource( (WindowNode) utils.attachNode( context, wn ) );
+
             // alpha constraints added to the window node already
             alphaConstraints.clear();
         }

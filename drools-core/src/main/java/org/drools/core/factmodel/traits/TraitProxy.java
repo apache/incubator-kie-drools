@@ -26,15 +26,19 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.BitSet;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class TraitProxy implements Externalizable, TraitType, Comparable<TraitProxy> {
 
     protected TripleFactory tripleFactory;
 
     private BitSet typeCode;
+    private BitSet propagationTypeCode = new BitSet();
 
-    private BitSet typeFilter;
+    private Set<BitSet> otns;
 
     public TraitProxy() {
 
@@ -61,6 +65,8 @@ public abstract class TraitProxy implements Externalizable, TraitType, Comparabl
         out.writeObject( fields );
         out.writeObject( tripleFactory );
         out.writeObject( typeCode );
+        out.writeObject( otns );
+        out.writeObject( propagationTypeCode );
     }
 
 
@@ -68,6 +74,8 @@ public abstract class TraitProxy implements Externalizable, TraitType, Comparabl
         fields = (Map<String,Object>) in.readObject();
         tripleFactory = (TripleFactory) in.readObject();
         typeCode = (BitSet) in.readObject();
+        otns = (Set<BitSet>) in.readObject();
+        propagationTypeCode = (BitSet) in.readObject();
     }
 
 
@@ -139,14 +147,6 @@ public abstract class TraitProxy implements Externalizable, TraitType, Comparabl
         this.typeCode = typeCode;
     }
 
-    public BitSet getTypeFilter() {
-        return typeFilter;
-    }
-
-    public void setTypeFilter(BitSet typeFilter) {
-        this.typeFilter = typeFilter;
-    }
-
     public void shed() {
 
     }
@@ -157,6 +157,46 @@ public abstract class TraitProxy implements Externalizable, TraitType, Comparabl
         } else {
             return 1;
         }
+    }
+
+    public BitSet computeInsertionVetoMask() {
+
+        BitSet typeMask = new BitSet();
+
+        for ( Object o : getObject()._getTraitMap().values() ) {
+            if ( o != this ) {
+                typeMask.or(((TraitProxy) o).propagationTypeCode);
+            }
+        }
+
+        return typeMask;
+    }
+
+    public void assignOtn( BitSet typeCode ) {
+        if ( otns == null ) {
+            otns = new HashSet<BitSet>();
+        }
+        otns.add( typeCode );
+        propagationTypeCode.or( typeCode );
+    }
+
+    public void clearOtns() {
+        if ( otns != null ) {
+            otns.clear();
+        }
+        propagationTypeCode.clear();
+    }
+
+    public Set<BitSet> listAssignedOtnTypeCodes() {
+        return otns != null ? Collections.unmodifiableSet( otns ) : Collections.EMPTY_SET;
+    }
+
+    @Override
+    public boolean hasTypeCode( BitSet typeCode ) {
+        if ( otns == null ) {
+            return false;
+        }
+        return otns.contains( typeCode );
     }
 }
 

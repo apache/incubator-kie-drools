@@ -15,6 +15,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
+import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
@@ -387,8 +388,8 @@ public class ReteQueryElementNode extends QueryElementNode {
     }
 
     public static class QueryInsertAction
-            implements
-            WorkingMemoryAction {
+            extends PropagationEntry.AbstractPropagationEntry
+            implements WorkingMemoryAction {
         private PropagationContext context;
 
         private InternalFactHandle factHandle;
@@ -414,10 +415,6 @@ public class ReteQueryElementNode extends QueryElementNode {
             throw new UnsupportedOperationException("Should not be present in network on serialisation");
         }
 
-        public void write(MarshallerWriteContext context) throws IOException {
-            throw new UnsupportedOperationException("Should not be present in network on serialisation");
-        }
-
         public Action serialize(MarshallerWriteContext context) throws IOException {
             throw new UnsupportedOperationException("Should not be present in network on serialisation");
         }
@@ -430,25 +427,14 @@ public class ReteQueryElementNode extends QueryElementNode {
                                                           workingMemory);
         }
 
-        public void execute(InternalKnowledgeRuntime kruntime) {
-            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
-        }
-
         public String toString() {
             return "[QueryInsertAction facthandle=" + factHandle + ",\n        leftTuple=" + leftTuple + "]\n";
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-        }
-
-        public void readExternal(ObjectInput in) throws IOException,
-                ClassNotFoundException {
         }
     }
 
     public static class QueryUpdateAction
-            implements
-            WorkingMemoryAction {
+            extends PropagationEntry.AbstractPropagationEntry
+            implements WorkingMemoryAction {
         private PropagationContext context;
 
         private InternalFactHandle factHandle;
@@ -505,8 +491,8 @@ public class ReteQueryElementNode extends QueryElementNode {
     }
 
     public static class QueryRetractAction
-            implements
-            WorkingMemoryAction {
+            extends PropagationEntry.AbstractPropagationEntry
+            implements WorkingMemoryAction {
         private PropagationContext context;
         private LeftTuple          leftTuple;
         private QueryElementNode   node;
@@ -524,10 +510,6 @@ public class ReteQueryElementNode extends QueryElementNode {
         }
 
         public QueryRetractAction(MarshallerReaderContext context) throws IOException {
-            throw new UnsupportedOperationException("Should not be present in network on serialisation");
-        }
-
-        public void write(MarshallerWriteContext context) throws IOException {
             throw new UnsupportedOperationException("Should not be present in network on serialisation");
         }
 
@@ -555,25 +537,14 @@ public class ReteQueryElementNode extends QueryElementNode {
             }
         }
 
-        public void execute(InternalKnowledgeRuntime kruntime) {
-            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
-        }
-
         public String toString() {
             return "[QueryRetractAction leftTuple=" + leftTuple + "]\n";
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-        }
-
-        public void readExternal(ObjectInput in) throws IOException,
-                ClassNotFoundException {
         }
     }
 
     public static class QueryResultInsertAction
-            implements
-            WorkingMemoryAction {
+            extends PropagationEntry.AbstractPropagationEntry
+            implements WorkingMemoryAction {
 
         private PropagationContext context;
 
@@ -598,10 +569,6 @@ public class ReteQueryElementNode extends QueryElementNode {
         }
 
         public QueryResultInsertAction(MarshallerReaderContext context) throws IOException {
-            throw new UnsupportedOperationException("Should not be present in network on serialisation");
-        }
-
-        public void write(MarshallerWriteContext context) throws IOException {
             throw new UnsupportedOperationException("Should not be present in network on serialisation");
         }
 
@@ -633,10 +600,6 @@ public class ReteQueryElementNode extends QueryElementNode {
             //            }
         }
 
-        public void execute(InternalKnowledgeRuntime kruntime) {
-            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
-        }
-
         public LeftTuple getLeftTuple() {
             return this.leftTuple;
         }
@@ -644,18 +607,11 @@ public class ReteQueryElementNode extends QueryElementNode {
         public String toString() {
             return "[QueryEvaluationAction leftTuple=" + leftTuple + "]\n";
         }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-        }
-
-        public void readExternal(ObjectInput in) throws IOException,
-                ClassNotFoundException {
-        }
     }
 
     public static class QueryResultRetractAction
-            implements
-            WorkingMemoryAction {
+            extends PropagationEntry.AbstractPropagationEntry
+            implements WorkingMemoryAction {
         private PropagationContext context;
         private LeftTuple          leftTuple;
         private InternalFactHandle factHandle;
@@ -719,8 +675,8 @@ public class ReteQueryElementNode extends QueryElementNode {
     }
 
     public static class QueryResultUpdateAction
-            implements
-            WorkingMemoryAction {
+            extends PropagationEntry.AbstractPropagationEntry
+            implements WorkingMemoryAction {
         private PropagationContext context;
         private LeftTuple          leftTuple;
         InternalFactHandle factHandle;

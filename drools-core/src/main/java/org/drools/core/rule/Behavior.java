@@ -18,7 +18,6 @@ package org.drools.core.rule;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.WindowNode.WindowMemory;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
 
@@ -62,7 +61,6 @@ public interface Behavior extends RuleComponent, Cloneable {
     /**
      * Makes the behavior aware of the new fact entering behavior's scope
      * 
-     * @param memory The window node memory
      * @param context The behavior context object
      * @param fact The new fact entering behavior's scope
      * @param workingMemory The working memory session reference
@@ -71,8 +69,7 @@ public interface Behavior extends RuleComponent, Cloneable {
      *         the behaviour has veto power over the fact propagation, and prevents
      *         the propagation to continue if returns false on this method. 
      */
-    public boolean assertFact(WindowMemory memory,
-                              Object context,
+    public boolean assertFact(Object context,
                               InternalFactHandle fact,
                               PropagationContext pctx,
                               InternalWorkingMemory workingMemory);
@@ -80,26 +77,19 @@ public interface Behavior extends RuleComponent, Cloneable {
     /**
      * Removes a right tuple from the behavior's scope
      * 
-     * @param memory The window node memory
      * @param context The behavior context object
      * @param fact The fact leaving the behavior's scope
      * @param workingMemory The working memory session reference
      */
-    public void retractFact(WindowMemory memory,
-                            Object context,
+    public void retractFact(Object context,
                             InternalFactHandle fact,
                             PropagationContext pctx,
                             InternalWorkingMemory workingMemory);
 
     /**
      * A callback method that allows behaviors to expire facts
-     * 
-     * @param memory The window node memory
-     * @param context The behavior context object
-     * @param workingMemory The working memory session reference
      */
-    public void expireFacts(WindowMemory memory,
-                            Object context,
+    public void expireFacts(Object context,
                             PropagationContext pctx,
                             InternalWorkingMemory workingMemory);
 

@@ -18,6 +18,7 @@ package org.drools.compiler.factmodel.traits;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
+import org.drools.core.ObjectFilter;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -57,6 +58,7 @@ import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ClassObjectFilter;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
@@ -1240,7 +1242,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    @Test
+    @Test(timeout=10000) @Ignore
     public void testTraitLegacy() {
         String source = "org/drools/compiler/factmodel/traits/testTraitLegacyTrait.drl";
 
@@ -2114,7 +2116,19 @@ public class TraitTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.fireAllRules();
 
-
+        for ( Object o : ksession.getObjects() ) {
+            if ( o instanceof TraitableBean ) {
+                TraitableBean tb = (TraitableBean) o;
+                assertEquals( 1, tb._getTraitMap().size() );
+                BitSet bs = new BitSet();
+                bs.set( 0 );
+                assertEquals( bs, tb.getCurrentTypeCode() );
+            }
+            if ( o instanceof TraitProxy ) {
+                TraitProxy tp = (TraitProxy) o;
+                assertEquals( 0, tp.listAssignedOtnTypeCodes().size() );
+            }
+        }
     }
 
 
@@ -2256,74 +2270,80 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    @Test
+    @Test(timeout=10000) @Ignore
     public void testTraitModifyCore() {
-        String s1 = "package test;\n" +
-                    "import org.drools.core.factmodel.traits.*;\n" +
+        String s1 = "package test; " +
+                    "import org.drools.core.factmodel.traits.*; " +
                     "" +
-                    "declare trait Student name : String end\n" +
-                    "declare trait Worker name : String end\n" +
-                    "declare trait StudentWorker extends Student, Worker name : String end\n" +
-                    "declare trait Assistant extends Student, Worker name : String end\n" +
-                    "declare Person @Traitable name : String end\n" +
+                    "global java.util.List list; " +
                     "" +
-                    "rule \"Init\" \n" +
-                    "when \n" +
-                    "then \n" +
-                    "  Person p = new Person( \"john\" ); \n" +
-                    "  insert( p ); \n" +
-                    "end \n" +
+                    "declare trait Student @PropertyReactive name : String end " +
+                    "declare trait Worker @PropertyReactive name : String end " +
+                    "declare trait StudentWorker extends Student, Worker @PropertyReactive name : String end " +
+                    "declare trait Assistant extends Student, Worker @PropertyReactive name : String end " +
+                    "declare Person @Traitable name : String end " +
                     "" +
-                    "rule \"Don\" \n" +
-                    "no-loop\n " +
-                    "when \n" +
-                    "  $p : Person( name == \"john\" ) \n" +
-                    "then \n" +
-                    "  System.out.println( $p ); \n" +
+                    "rule \"Init\"  " +
+                    "when  " +
+                    "then  " +
+                    "  Person p = new Person( \"john\" );  " +
+                    "  insert( p );  " +
+                    "end  " +
                     "" +
-                    "  System.out.println( \" ----------------------------------------------------------------------------------- Don student\" ); \n" +
-                    "  don( $p, Student.class ); \n" +
-                    "  System.out.println( \" ----------------------------------------------------------------------------------- Don worker\" ); \n" +
-                    "  don( $p, Worker.class ); \n" +
-                    "  System.out.println( \" ----------------------------------------------------------------------------------- Don studentworker\" ); \n" +
-                    "  don( $p, StudentWorker.class ); \n" +
-                    "  System.out.println( \" ----------------------------------------------------------------------------------- Don assistant\" ); \n" +
-                    "  don( $p, Assistant.class ); \n" +
-                    "end \n" +
+                    "rule \"Don\"  " +
+                    "no-loop  " +
+                    "when  " +
+                    "  $p : Person( name == \"john\" )  " +
+                    "then  " +
+                    "  System.out.println( $p );  " +
                     "" +
-                    "rule \"Log S\" \n" +
-                    "when \n" +
-                    "  $t : Student() \n" +
-                    "then \n" +
-                    "  System.out.println( \"Student >> \" +  $t ); \n" +
-                    "end \n" +
-                    "rule \"Log W\" \n" +
-                    "when \n" +
-                    "  $t : Worker() \n" +
-                    "then \n" +
-                    "  System.out.println( \"Worker >> \" + $t ); \n" +
-                    "end \n" +
-                    "rule \"Log SW\" \n" +
-                    "when \n" +
-                    "  $t : StudentWorker() \n" +
-                    "then \n" +
-                    "  System.out.println( \"StudentWorker >> \" + $t ); \n" +
-                    "end \n" +
-                    "rule \"Log RA\" \n" +
-                    "when \n" +
-                    "  $t : Assistant() \n" +
-                    "then \n" +
-                    "  System.out.println( \"Assistant >> \" + $t ); \n" +
-                    "end \n" +
+                    "  System.out.println( \" ----------------------------------------------------------------------------------- Don student\" );  " +
+                    "  don( $p, Student.class );  " +
+                    "  System.out.println( \" ----------------------------------------------------------------------------------- Don worker\" );  " +
+                    "  don( $p, Worker.class );  " +
+                    "  System.out.println( \" ----------------------------------------------------------------------------------- Don studentworker\" );  " +
+                    "  don( $p, StudentWorker.class );  " +
+                    "  System.out.println( \" ----------------------------------------------------------------------------------- Don assistant\" );  " +
+                    "  don( $p, Assistant.class );  " +
+                    "end  " +
                     "" +
-                    "rule \"Mod\" \n" +
-                    "salience -10 \n" +
-                    "when \n" +
-                    "  $p : Person( name == \"john\" ) \n" +
-                    "then \n" +
-                    "   System.out.println( \"-----------------------------\" );\n" +
+                    "rule \"Log S\"  " +
+                    "when  " +
+                    "  $t : Student() @Watch( name ) " +
+                    "then  " +
+                    "  System.out.println( \"Student >> \" +  $t ); " +
+                    "  list.add( $t.getName() );  " +
+                    "end  " +
+                    "rule \"Log W\"  " +
+                    "when  " +
+                    "  $t : Worker() @Watch( name ) " +
+                    "then  " +
+                    "  System.out.println( \"Worker >> \" + $t );  " +
+                    "  list.add( $t.getName() );  " +
+                    "end  " +
+                    "rule \"Log SW\"  " +
+                    "when  " +
+                    "  $t : StudentWorker() @Watch( name ) " +
+                    "then  " +
+                    "  System.out.println( \"StudentWorker >> \" + $t );  " +
+                    "  list.add( $t.getName() );  " +
+                    "end  " +
+                    "rule \"Log RA\"  " +
+                    "when  " +
+                    "  $t : Assistant() @Watch( name ) " +
+                    "then  " +
+                    "  System.out.println( \"Assistant >> \" + $t );  " +
+                    "  list.add( $t.getName() );  " +
+                    "end  " +
+                    "" +
+                    "rule \"Mod\"  " +
+                    "salience -10  " +
+                    "when  " +
+                    "  $p : Person( name == \"john\" ) " +
+                    "then  " +
+                    "   System.out.println( \"-----------------------------\" ); " +
                     "   modify ( $p ) { setName( \"alan\" ); } " +
-                    "end \n" +
+                    "end  " +
                     "";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -2337,10 +2357,14 @@ public class TraitTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
 
         int k = ksession.fireAllRules();
 
-        assertEquals( 13, k );
+        assertEquals( Arrays.asList( "john", "john", "john", "john", "alan", "alan", "alan", "alan" ), list );
+        assertEquals( 11, k );
 
     }
 
@@ -2349,76 +2373,76 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testTraitModifyCore2() {
-        String s1 = "package test;\n" +
-                    "import org.drools.core.factmodel.traits.*;\n" +
+        String s1 = "package test; " +
+                    "import org.drools.core.factmodel.traits.*; " +
                     "" +
-                    "declare trait Student @propertyReactive name : String end\n" +
-                    "declare trait Worker @propertyReactive name : String end\n" +
-                    "declare trait StudentWorker extends Student, Worker @propertyReactive name : String end\n" +
-                    "declare trait StudentWorker2 extends StudentWorker @propertyReactive name : String end\n" +
-                    "declare trait Assistant extends Student, Worker @propertyReactive name : String end\n" +
-                    "declare Person @Traitable @propertyReactive name : String end\n" +
+                    "declare trait Student @propertyReactive name : String end " +
+                    "declare trait Worker @propertyReactive name : String end " +
+                    "declare trait StudentWorker extends Student, Worker @propertyReactive name : String end " +
+                    "declare trait StudentWorker2 extends StudentWorker @propertyReactive name : String end " +
+                    "declare trait Assistant extends Student, Worker @propertyReactive name : String end " +
+                    "declare Person @Traitable @propertyReactive name : String end " +
                     "" +
-                    "rule \"Init\" \n" +
-                    "when \n" +
-                    "then \n" +
-                    "  Person p = new Person( \"john\" ); \n" +
-                    "  insert( p ); \n" +
-                    "end \n" +
+                    "rule \"Init\"  " +
+                    "when  " +
+                    "then  " +
+                    "  Person p = new Person( \"john\" );  " +
+                    "  insert( p );  " +
+                    "end  " +
                     "" +
-                    "rule \"Don\" \n" +
-                    "when \n" +
-                    "  $p : Person( name == \"john\" ) \n" +
-                    "then \n" +
-                    "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON WORKER \" + $p  ); \n" +
-                    "  don( $p, Worker.class ); \n" +
-                    "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON STUDWORKER \" + $p ); \n" +
-                    "  don( $p, StudentWorker2.class ); \n" +
-                    "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON ASSISTANT \" + $p ); \n" +
-                    "  don( $p, Assistant.class ); \n" +
-                    "end \n" +
+                    "rule \"Don\"  " +
+                    "when  " +
+                    "  $p : Person( name == \"john\" )  " +
+                    "then  " +
+                    "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON WORKER \" + $p  );  " +
+                    "  don( $p, Worker.class );  " +
+                    "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON STUDWORKER-2 \" + $p );  " +
+                    "  don( $p, StudentWorker2.class );  " +
+                    "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON ASSISTANT \" + $p );  " +
+                    "  don( $p, Assistant.class );  " +
+                    "end  " +
                     "" +
-                    "rule \"Log S\" \n" +
-                    "when \n" +
-                    "  $t : Student() @watch( name ) \n" +
-                    "then \n" +
-                    "  System.out.println( \"@@Student >> \" +  $t ); \n" +
-                    "end \n" +
-                    "rule \"Log W\" \n" +
-                    "when \n" +
-                    "  $t : Worker() @watch( name ) \n" +
-                    "then \n" +
-                    "  System.out.println( \"@@Worker >> \" + $t ); \n" +
-                    "end \n" +
-                    "rule \"Log SW\" \n" +
-                    "when \n" +
-                    "  $t : StudentWorker() @watch( name ) \n" +
-                    "then \n" +
-                    "  System.out.println( \"@@StudentWorker >> \" + $t ); \n" +
-                    "end \n" +
-                    "rule \"Log RA\" \n" +
-                    "when \n" +
-                    "  $t : Assistant() @watch( name ) \n" +
-                    "then \n" +
-                    "  System.out.println( \"@@Assistant >> \" + $t ); \n" +
-                    "end \n" +
-                    "rule \"Log Px\" \n" +
-                    "salience -1 \n" +
-                    "when \n" +
-                    "  $p : Person() @watch( name ) \n" +
-                    "then \n" +
-                    "  System.out.println( \"Poor Core Person >> \" + $p ); \n" +
-                    "end \n" +
+                    "rule \"Log S\"  " +
+                    "when  " +
+                    "  $t : Student() @watch( name )  " +
+                    "then  " +
+                    "  System.err.println( \"@@Student >> \" +  $t );  " +
+                    "end  " +
+                    "rule \"Log W\"  " +
+                    "when  " +
+                    "  $t : Worker() @watch( name )  " +
+                    "then  " +
+                    "  System.err.println( \"@@Worker >> \" + $t );  " +
+                    "end  " +
+                    "rule \"Log SW\"  " +
+                    "when  " +
+                    "  $t : StudentWorker() @watch( name )  " +
+                    "then  " +
+                    "  System.err.println( \"@@StudentWorker >> \" + $t );  " +
+                    "end  " +
+                    "rule \"Log RA\"  " +
+                    "when  " +
+                    "  $t : Assistant() @watch( name )  " +
+                    "then  " +
+                    "  System.err.println( \"@@Assistant >> \" + $t );  " +
+                    "end  " +
+                    "rule \"Log Px\"  " +
+                    "salience -1  " +
+                    "when  " +
+                    "  $p : Person() @watch( name )  " +
+                    "then  " +
+                    "  System.err.println( \"Poor Core Person >> \" + $p );  " +
+                    "end  " +
                     "" +
-                    "rule \"Mod\" \n" +
-                    "salience -10 \n" +
-                    "when \n" +
-                    "  String( this == \"go\" ) \n" +
-                    "  $p : Student( name == \"john\" ) \n" +
-                    "then \n" +
-                    "  System.out.println( \" ------------------------------------------------------------------------------ \" + $p ); \n" +
+                    "rule \"Mod\"  " +
+                    "salience -10  " +
+                    "when  " +
+                    "  String( this == \"go\" )  " +
+                    "  $p : Student( name == \"john\" )  " +
+                    "then  " +
+                    "  System.out.println( \" ------------------------------------------------------------------------------ \" + $p );  " +
                     "  modify ( $p ) { setName( \"alan\" ); } " +
-                    "end \n" +
+                    "end  " +
                     "";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -3227,7 +3251,6 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
     @Test
     public void testTypeRefractionOnQuery2(  ) {
         String source = "package t.x \n" +
@@ -3286,6 +3309,154 @@ public class TraitTest extends CommonTestMethodBase {
         QueryResults res;
         res = ks.getQueryResults( "queryA1" );
         assertEquals( 1, res.size() );
+
+    }
+
+    @Test
+    public void testNodePartitioningByProxies(  ) {
+        String source = "package t.x  " +
+                        "import java.util.*;  " +
+                        "import org.drools.core.factmodel.traits.Thing  " +
+                        "import org.drools.core.factmodel.traits.Traitable  " +
+                        " " +
+                        "global java.util.List list;  " +
+                        " " +
+                        "" +
+                        "declare trait A @PropertyReactive end " +
+                        "declare trait B extends A @PropertyReactive end " +
+                        "declare trait C extends B @PropertyReactive end " +
+                        "declare trait D extends A @PropertyReactive end " +
+                        "declare trait E extends C, D @PropertyReactive end " +
+                        "declare trait F extends E @PropertyReactive end " +
+                        "declare trait G extends A @PropertyReactive end " +
+                        "" +
+                        "declare Kore " +
+                        "   @Traitable " +
+                        "end " +
+                        "" +
+                        "rule Init when " +
+
+                        "then " +
+                        "   Kore k = new Kore(); " +
+                        "   don( k, C.class );  " +
+                        "   don( k, D.class );  " +
+                        "   don( k, B.class );  " +
+                        "   don( k, A.class );  " +
+                        "   don( k, F.class );  " +
+                        "   don( k, E.class );  " +
+                        "   don( k, G.class );  " +
+                        "end ";
+
+        for ( char c = 'A'; c <= 'G'; c++ ) {
+            String C = "" + c;
+            source += "rule Rule" + C +
+                      " when " + C + "() then list.add( '"+ C + "' ); end ";
+        }
+
+            source += "rule RuleAll " +
+                        "when  " +
+                        "   A() B() C() D() E() F() G() " +
+                        "then  " +
+                        "   list.add( 'Z' ); " +
+                        "end " +
+                        "";
+
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+        TraitFactory.setMode( mode, ks.getKieBase() );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+
+        System.out.println( list );
+        assertEquals( Arrays.asList( 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'Z' ), list );
+
+
+        for ( Object o : ks.getObjects( new ObjectFilter() {
+            @Override
+            public boolean accept( Object object ) {
+                return object instanceof TraitableBean;
+            }
+        } ) ) {
+            Set<BitSet> otns = checkOTNPartitioning( (TraitableBean) o, ks );
+            assertEquals( 7, otns.size() );
+        }
+
+    }
+
+    @Test
+    public void testNodePartitioningByProxiesAfterShed(  ) {
+        String source = "package t.x  " +
+                        "import java.util.*;  " +
+                        "import org.drools.core.factmodel.traits.Thing  " +
+                        "import org.drools.core.factmodel.traits.Traitable  " +
+                        " " +
+                        "global java.util.List list;  " +
+                        " " +
+                        "" +
+                        "declare trait A end " +
+                        "declare trait B extends A end " +
+                        "declare trait C extends B end " +
+                        "declare trait D extends A end " +
+                        "declare trait E extends C, D end " +
+                        "declare trait F extends E end " +
+                        "declare trait G extends A end " +
+                        "" +
+                        "declare Kore " +
+                        "   @Traitable " +
+                        "end " +
+                        "" +
+                        "rule Init when " +
+
+                        "then " +
+                        "   Kore k = new Kore(); " +
+                        "   don( k, C.class );  " +
+                        "   don( k, D.class );  " +
+                        "   don( k, B.class );  " +
+                        "   don( k, A.class );  " +
+                        "   don( k, F.class );  " +
+                        "   don( k, E.class );  " +
+                        "   don( k, G.class );  " +
+                        "   shed( k, B.class );  " +
+                        "end ";
+
+        for ( char c = 'A'; c <= 'G'; c++ ) {
+            String C = "" + c;
+            source += "rule Rule" + C +
+                      " when " + C + "() then list.add( '"+ C + "' ); end ";
+        }
+
+            source += "rule RuleAll " +
+                        "when  " +
+                        "   A() D() G() " +
+                        "then  " +
+                        "   list.add( 'Z' ); " +
+                        "end " +
+                        "";
+
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+        TraitFactory.setMode( mode, ks.getKieBase() );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+
+        System.out.println( list );
+        assertEquals( Arrays.asList( 'A', 'D', 'G', 'Z' ), list );
+
+
+        for ( Object o : ks.getObjects( new ObjectFilter() {
+            @Override
+            public boolean accept( Object object ) {
+                return object instanceof TraitableBean;
+            }
+        } ) ) {
+            Set<BitSet> otns = checkOTNPartitioning( (TraitableBean) o, ks );
+            assertEquals( 3, otns.size() );
+        }
+
     }
 
 
@@ -4200,6 +4371,7 @@ public class TraitTest extends CommonTestMethodBase {
         assertTrue( list.contains( "HF" ) );
         assertTrue( list.contains( "HG" ) );
         assertTrue( list.contains( "HH" ) );
+        System.out.println( list );
         assertEquals( 9, list.size() );
         list.clear();
 
@@ -4778,7 +4950,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    @Test
+    @Test(timeout=10000)
     public void testShedThingCompletelyThenDonAgain() throws InterruptedException {
         final String s1 = "package test;\n" +
                           "import org.drools.core.factmodel.traits.*; \n" +
@@ -5204,4 +5376,19 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
+    protected Set<BitSet> checkOTNPartitioning( TraitableBean core, KieSession wm ) {
+        Set<BitSet> otns = new HashSet<BitSet>();
+
+        for ( Object o : core._getTraitMap().values() ) {
+            TraitProxy tp = (TraitProxy) o;
+            Set<BitSet> localNodes = tp.listAssignedOtnTypeCodes();
+
+            for ( BitSet code : localNodes ) {
+                assertFalse( otns.contains( code ) );
+                otns.add( code );
+            }
+        }
+
+        return otns;
+    }
 }

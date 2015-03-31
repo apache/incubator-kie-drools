@@ -20,8 +20,8 @@ public class ReteWorkingMemoryFactory implements WorkingMemoryFactory, Serializa
         return new ReteWorkingMemory(id, kBase, false, config, environment);
     }
 
-    public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
-        return new ReteWorkingMemory(id, kBase, handleFactory, initialFactHandle, propagationContext, config, agenda, environment);
+    public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
+        return new ReteWorkingMemory(id, kBase, handleFactory, propagationContext, config, agenda, environment);
     }
 
     public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, Environment environment, RuleRuntimeEventSupport workingMemoryEventSupport, AgendaEventSupport agendaEventSupport, RuleEventListenerSupport ruleEventListenerSupport, InternalAgenda agenda) {

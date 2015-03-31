@@ -18,15 +18,14 @@ package org.drools.core.reteoo;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages;
+import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
@@ -545,7 +544,8 @@ public class PropagationQueuingNode extends ObjectSource
      * this node propagation can be triggered at a safe point
      */
     public static class PropagateAction
-        implements
+            extends PropagationEntry.AbstractPropagationEntry
+            implements
         WorkingMemoryAction {
 
         private static final long      serialVersionUID = 6765029029501617115L;
@@ -569,11 +569,6 @@ public class PropagationQueuingNode extends ObjectSource
             this.node = (PropagationQueuingNode) context.sinks.get( _action.getPropagate().getNodeId() );
         }
 
-        public void write( MarshallerWriteContext context ) throws IOException {
-            context.writeShort( WorkingMemoryAction.PropagateAction );
-            context.write( node.getId() );
-        }
-        
         public ProtobufMessages.ActionQueue.Action serialize( MarshallerWriteContext context ) {
             return ProtobufMessages.ActionQueue.Action.newBuilder()
                     .setType( ProtobufMessages.ActionQueue.ActionType.PROPAGATE )
@@ -583,21 +578,8 @@ public class PropagationQueuingNode extends ObjectSource
                     .build();
         }
 
-        public void readExternal( ObjectInput in ) throws IOException,
-                                                  ClassNotFoundException {
-            node = (PropagationQueuingNode) in.readObject();
-        }
-
-        public void writeExternal( ObjectOutput out ) throws IOException {
-            out.writeObject( node );
-        }
-
         public void execute( InternalWorkingMemory workingMemory ) {
             this.node.propagateActions( workingMemory );
-        }
-
-        public void execute( InternalKnowledgeRuntime kruntime ) {
-            execute( ((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory() );
         }
     }
 

@@ -162,6 +162,11 @@ public class ReteooRuleBuilder implements RuleBuilder {
                        this.utils,
                        subrule );
 
+        if (context.isTerminated()) {
+            context.setTerminated(false);
+            return ((TerminalNode) context.getLastNode());
+        }
+
         if  ( context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && rule.getTimer() != null ) {
             builder = this.utils.getBuilderFor( Timer.class );
             builder.build( context, this.utils, rule.getTimer() );

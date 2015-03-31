@@ -55,6 +55,7 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.TripleStore;
 import org.kie.api.conf.EventProcessingOption;
@@ -560,8 +561,8 @@ public class KnowledgeBaseImpl
     private Map<String, String> buildGlobalMapForSerialization() {
         Map<String, String> gl = new HashMap<String, String>();
         for (Map.Entry<String, Class<?>> entry : this.globals.entrySet()) {
-            gl.put( entry.getKey(),
-                    entry.getValue().getName() );
+            gl.put(entry.getKey(),
+                   entry.getValue().getName());
         }
         return gl;
     }
@@ -730,6 +731,13 @@ public class KnowledgeBaseImpl
 
         lock();
         try {
+
+            Iterator sessionsIterator = statefulSessions.iterator();
+            for ( Object obj = sessionsIterator.next(); obj != null; obj = sessionsIterator.next() ) {
+                ObjectHashSet.ObjectEntry holder = (ObjectHashSet.ObjectEntry) obj;
+                ((InternalWorkingMemory)holder.getValue()).flushPropagations();
+            }
+
             // we need to merge all byte[] first, so that the root classloader can resolve classes
             for (InternalKnowledgePackage newPkg : clonedPkgs) {
                 newPkg.checkValidity();
