@@ -45,6 +45,7 @@ import org.kie.internal.runtime.conf.RuntimeStrategy;
 import org.kie.internal.runtime.manager.InternalRegisterableItemsFactory;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.UserGroupCallback;
 
 import java.io.IOException;
@@ -253,7 +254,7 @@ public class RuntimeManagerWithDescriptorTest extends AbstractDeploymentDescript
                 .userGroupCallback(userGroupCallback)
                 .get();
 
-        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
+        manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);
         assertNotNull(manager);
 
         InternalRuntimeManager internalManager = (InternalRuntimeManager) manager;
@@ -280,7 +281,7 @@ public class RuntimeManagerWithDescriptorTest extends AbstractDeploymentDescript
         assertEquals(1, descriptor.getWorkItemHandlers().size());
         assertEquals(0, descriptor.getRequiredRoles().size());
 
-        RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
+        RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         assertNotNull(engine);
         KieSession kieSession = engine.getKieSession();
 
@@ -303,26 +304,43 @@ public class RuntimeManagerWithDescriptorTest extends AbstractDeploymentDescript
         assertNotNull(kieSession.getProcessInstance(processInstanceId));
         kieSession.getWorkItemManager().completeWorkItem(TestWorkItemHandler.getWorkItem().getId(), null);
         assertNull(kieSession.getProcessInstance(processInstanceId));
+        
+        manager.disposeRuntimeEngine(engine);
+        engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        kieSession = engine.getKieSession();
 
         // process event listener
         assertArrayEquals(new String[] { "beforeProcessStarted", "afterProcessStarted", "beforeProcessCompleted",
         "afterProcessCompleted" }, processEvents.toArray());
         processEvents.clear();
+        
+        manager.disposeRuntimeEngine(engine);
+        engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        kieSession = engine.getKieSession();
 
         // task event listener
         processInstance = kieSession.startProcess("UserTask");
         processInstanceId = processInstance.getId();
         assertNotNull(kieSession.getProcessInstance(processInstanceId));
+        
+        manager.disposeRuntimeEngine(engine);
+        engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
+        
         TaskService taskService = engine.getTaskService();
         List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
         long taskId = tasks.get(0).getId();
         taskService.start(taskId, "john");
         taskService.complete(taskId, "john", null);
-        assertNull(kieSession.getProcessInstance(processInstanceId));
+
         assertArrayEquals(new String[]{ "beforeTaskAddedEvent", "afterTaskAddedEvent", "beforeTaskStartedEvent",
                         "afterTaskStartedEvent", "beforeTaskCompletedEvent", "afterTaskCompletedEvent"},
                 taskEvents.toArray());
-
+        
+        
+        manager.disposeRuntimeEngine(engine);
+        engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        kieSession = engine.getKieSession();
+        
         // marshalling strategy
         Map<String,Object> params = new HashMap<String, Object>();
         params.put("x", "marshal");
@@ -334,6 +352,8 @@ public class RuntimeManagerWithDescriptorTest extends AbstractDeploymentDescript
         
         String varX = (String) ((WorkflowProcessInstance)pi).getVariable("x");
         assertEquals(TestMarshallingStrategy.ALWAYS_RESPOND_WITH, varX);
+        
+        manager.disposeRuntimeEngine(engine);
     }
 
 

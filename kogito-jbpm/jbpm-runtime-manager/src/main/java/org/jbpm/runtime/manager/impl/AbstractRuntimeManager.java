@@ -137,12 +137,7 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         List<RuleRuntimeEventListener> wmListeners = factory.getRuleRuntimeEventListeners(runtime);
         for (RuleRuntimeEventListener listener : wmListeners) {
             runtime.getKieSession().addEventListener(listener);
-        }
-        
-      	// register task listeners if any    	
-    	for (TaskLifeCycleEventListener taskListener : factory.getTaskListeners()) {
-    		((EventService<TaskLifeCycleEventListener>)runtime.getTaskService()).registerTaskEventListener(taskListener);
-    	}
+        }       
     }
     
     protected void registerDisposeCallback(RuntimeEngine runtime, TransactionSynchronization sync) {
@@ -216,6 +211,12 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
             if (internalTaskService instanceof EventService) {
                 ((EventService)internalTaskService).registerTaskEventListener(listener);
             }
+            
+          	// register task listeners if any  
+            RegisterableItemsFactory factory = environment.getRegisterableItemsFactory();
+        	for (TaskLifeCycleEventListener taskListener : factory.getTaskListeners()) {
+        		((EventService<TaskLifeCycleEventListener>)internalTaskService).registerTaskEventListener(taskListener);
+        	}
             
             if (engine != null && engine instanceof Disposable) {
                 ((Disposable)engine).addDisposeListener(new DisposeListener() {
