@@ -109,15 +109,25 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
                     + sourceEntityDescriptor.getEntityClass() + ").\n"
                     + entityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
         }
+        boolean chained = (sourceVariableDescriptor instanceof GenuineVariableDescriptor) &&
+                ((GenuineVariableDescriptor) sourceVariableDescriptor).isChained();
         if (singleton) {
-            if (!(sourceVariableDescriptor instanceof GenuineVariableDescriptor) ||
-                    !((GenuineVariableDescriptor) sourceVariableDescriptor).isChained()) {
+            if (!chained) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
                         + " annotated property (" + variablePropertyAccessor.getName()
                         + ") which does not return a " + Collection.class.getSimpleName()
                         + " with sourceVariableName (" + sourceVariableName
                         + ") which is not chained. Only a chained variable supports a singleton inverse.");
+            }
+        } else {
+            if (chained) {
+                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                        + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
+                        + " annotated property (" + variablePropertyAccessor.getName()
+                        + ") which does returns a " + Collection.class.getSimpleName()
+                        + " with sourceVariableName (" + sourceVariableName
+                        + ") which is chained. A chained variable supports only a singleton inverse.");
             }
         }
         sourceVariableDescriptor.registerShadowVariableDescriptor(this);

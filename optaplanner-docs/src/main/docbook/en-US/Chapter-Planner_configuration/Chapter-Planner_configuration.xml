@@ -963,8 +963,8 @@ public class Visit ... implements Standstill {
       <section xml:id="bidirectionalVariable">
         <title>Bi-directional Variable (Inverse Relation Shadow Variable)</title>
 
-        <para>2 variables are bi-directional if their instances always point to each other (unless they point to null).
-        So if A references B, then B references A.</para>
+        <para>2 variables are bi-directional if their instances always point to each other (unless one side points to
+        <literal>null</literal> and the other side doesn't exist). So if A references B, then B references A.</para>
 
         <mediaobject>
           <imageobject>
@@ -972,8 +972,49 @@ public class Visit ... implements Standstill {
           </imageobject>
         </mediaobject>
 
-        <para>To map a bi-directional relationship between 2 planning variables, annotate the master side as a normal (=
-        genuine) planning variable:</para>
+        <para>For a non-chained planning variable, the bi-directional relationship must be a many to one relationship.
+        To map a bi-directional relationship between 2 planning variables, annotate the master side (which is the
+        genuine side) as a normal planning variable:</para>
+
+        <programlisting language="java">@PlanningEntity
+public class CloudProcess {
+
+    @PlanningVariable(...)
+    public CloudComputer getComputer() {
+        return computer;
+    }
+    public void setComputer(CloudComputer computer) {...}
+
+}</programlisting>
+
+        <para>And then annotate the other side (which is the shadow side) with a
+        <literal>@InverseRelationShadowVariable</literal> annotation on a <literal>Collection</literal> (usually a
+        <literal>Set</literal> or <literal>List</literal>) property:</para>
+
+        <programlisting language="java">@PlanningEntity
+public class CloudComputer {
+
+    @InverseRelationShadowVariable(sourceVariableName = "computer")
+    public List&lt;CloudProcess&gt; getProcessList() {
+        return processList;
+    }
+
+}</programlisting>
+
+        <para>The <literal>sourceVariableName</literal> property is the name of the genuine planning variable on the
+        return type of the getter (so the name of the genuine planning variable on the <emphasis>other</emphasis>
+        side).</para>
+
+        <note>
+          <para>The shadow property, which is a <literal>Collection</literal>, can never be <literal>null</literal>. If
+          no genuine variable is referencing that shadow entity, then it's an empty <literal>Collection</literal>.
+          Furthermore it must be a mutable <literal>Collection</literal> because once the Solver starts initializing or
+          changing genuine planning variables, it will add and remove to the <literal>Collection</literal>s of those
+          shadow variables accordingly.</para>
+        </note>
+
+        <para>For a chained planning variable, the bi-directional relationship must be a one to one relationship. In
+        that case, the genuine side looks like this:</para>
 
         <programlisting language="java">@PlanningEntity
 public class Customer ... {
@@ -982,27 +1023,28 @@ public class Customer ... {
     public Standstill getPreviousStandstill() {
         return previousStandstill;
     }
-
     public void setPreviousStandstill(Standstill previousStandstill) {...}
 
 }</programlisting>
 
-        <para>And then annotate the other side as a <literal>@InverseRelationShadowVariable</literal> annotation.</para>
+        <para>And the shadow side looks like this:</para>
 
         <programlisting language="java">@PlanningEntity
-public interface Standstill {
+public class Standstill {
 
     @InverseRelationShadowVariable(sourceVariableName = "previousStandstill")
-    Customer getNextCustomer();
-    void setNextCustomer(Customer nextCustomer);
+    public Customer getNextCustomer() {
+         return nextCustomer;
+    }
+    public void setNextCustomer(Customer nextCustomer) {...}
 
 }</programlisting>
 
-        <para>The <literal>sourceVariableName</literal> property is the name of the planning variable on the return type
-        of the getter.</para>
-
-        <para>Currently, only chained variables support a <literal>@InverseRelationShadowVariable</literal>
-        annotation.</para>
+        <warning>
+          <para>The input planning problem of a <literal>Solver</literal> must not violate bi-directional relationships.
+          If A points to B, then B must point to A. Planner will not violate that principle during planning, but the
+          input must not violate it.</para>
+        </warning>
       </section>
 
       <section xml:id="anchorShadowVariable">

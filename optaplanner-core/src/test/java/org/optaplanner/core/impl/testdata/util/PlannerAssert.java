@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.testdata.util;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -50,6 +51,10 @@ public class PlannerAssert extends Assert {
 
     public static final long DO_NOT_ASSERT_SIZE = Long.MIN_VALUE;
 
+    // ************************************************************************
+    // Missing JUnit methods
+    // ************************************************************************
+
     public static void assertInstanceOf(Class expectedClass, Object actualInstance) {
         assertInstanceOf(null, expectedClass, actualInstance);
     }
@@ -71,6 +76,20 @@ public class PlannerAssert extends Assert {
             String cleanMessage = message == null ? "" : message;
             throw new ComparisonFailure(cleanMessage, "not " + expectedClass.getName(),
                     actualInstance == null ? "null" : actualInstance.getClass().getName());
+        }
+    }
+
+    public static <E> void assertCollectionContainsExactly(Collection<E> collection, E... elements) {
+        assertEquals(elements.length, collection.size());
+        assertCollectionContains(collection, elements);
+    }
+
+    public static <E> void assertCollectionContains(Collection<E> collection, E... elements) {
+        for (int i = 0; i < elements.length; i++) {
+            if (!collection.contains(elements[i])) {
+                fail("The asserted collection (" + collection
+                        + ") does not contain expected element (" + elements[i] + ")");
+            }
         }
     }
 

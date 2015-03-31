@@ -36,7 +36,7 @@ import static org.mockito.Mockito.*;
 public class SingletonInverseVariableListenerTest {
 
     @Test
-    public void chained() {
+    public void chainedEntity() {
         SolutionDescriptor solutionDescriptor = TestdataRichChainedSolution.buildSolutionDescriptor();
         EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataRichChainedEntity.class);
         ShadowVariableDescriptor nextEntityVariableDescriptor = entityDescriptor.getShadowVariableDescriptor("nextEntity");
