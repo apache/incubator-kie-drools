@@ -1,20 +1,13 @@
 package org.drools.compiler.phreak;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.RightTupleSets;
-import org.drools.core.common.SynchronizedRightTupleSets;
-import org.drools.core.util.FastIterator;
+import org.drools.core.common.RightTupleSetsImpl;
+import org.drools.core.phreak.PhreakExistsNode;
 import org.drools.core.phreak.PhreakJoinNode;
 import org.drools.core.phreak.PhreakNotNode;
-import org.drools.core.phreak.PhreakExistsNode;
 import org.drools.core.phreak.SegmentPropagator;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
@@ -27,7 +20,14 @@ import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleMemory;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.util.FastIterator;
 import org.junit.Assert;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 public class Scenario {
     /**
@@ -68,7 +68,7 @@ public class Scenario {
         this.bm = bm;
         this.wm = wm;
         this.leftTuples = new LeftTupleSetsImpl();
-        this.rightRuples = new SynchronizedRightTupleSets(bm);
+        this.rightRuples = new RightTupleSetsImpl(bm);
         this.preStagedBuilders = new ArrayList<StagedBuilder>();
         this.postStagedBuilders = new ArrayList<StagedBuilder>();
 

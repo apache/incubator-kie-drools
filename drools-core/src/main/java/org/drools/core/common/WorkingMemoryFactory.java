@@ -17,7 +17,6 @@ public interface WorkingMemoryFactory {
     InternalWorkingMemory createWorkingMemory(final long id,
                                               final InternalKnowledgeBase kBase,
                                               final FactHandleFactory handleFactory,
-                                              final InternalFactHandle initialFactHandle,
                                               final long propagationContext,
                                               final SessionConfiguration config,
                                               final InternalAgenda agenda,

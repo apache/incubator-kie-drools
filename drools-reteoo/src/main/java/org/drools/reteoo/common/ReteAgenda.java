@@ -27,7 +27,6 @@ import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.EventSupport;
-import org.drools.core.common.GarbageCollector;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
@@ -39,7 +38,6 @@ import org.drools.core.common.Scheduler;
 import org.drools.core.common.TruthMaintenanceSystemHelper;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -1434,7 +1432,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         }
         while ( continueFiring( -1 ) ) {
             boolean fired = fireNextItem( agendaFilter, 0, -1 ) >= 0 ||
-                            !((StatefulKnowledgeSessionImpl) this.workingMemory).getActionQueue().isEmpty();
+                            !((ReteWorkingMemory) this.workingMemory).getActionQueue().isEmpty();
             this.workingMemory.executeQueuedActions();
             if ( !fired ) {
                 try {
@@ -1500,31 +1498,5 @@ public class ReteAgenda<M extends ModedAssertion<M>>
 
     public ActivationsFilter getActivationsFilter() {
         return this.activationsFilter;
-    }
-
-    public GarbageCollector getGarbageCollector() {
-        return DUMMY_GARBAGE_COLLECTOR;
-    }
-
-    private static final GarbageCollector DUMMY_GARBAGE_COLLECTOR = new DummyGarbageCollector();
-
-    public static class DummyGarbageCollector implements GarbageCollector {
-        @Override
-        public void increaseDeleteCounter() { }
-
-        @Override
-        public void gcUnlinkedRules() { }
-
-        @Override
-        public void forceGcUnlinkedRules() { }
-
-        @Override
-        public void remove(RuleAgendaItem item) { }
-
-        @Override
-        public void add(RuleAgendaItem item) { }
-
-        @Override
-        public int getDeleteCounter() { return 0; }
     }
 }

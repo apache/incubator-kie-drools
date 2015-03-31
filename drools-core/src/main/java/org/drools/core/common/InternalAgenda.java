@@ -331,6 +331,4 @@ public interface InternalAgenda
     boolean createPostponedActivation(LeftTuple postponedTuple, PropagationContext propagationContext, InternalWorkingMemory workingMemory, TerminalNode terminalNode);
 
     boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, long processInstanceId);
-
-    GarbageCollector getGarbageCollector();
 }

@@ -48,6 +48,11 @@ public class NullTraitType implements TraitType, Thing, Externalizable {
         return "";
     }
 
+    @Override
+    public boolean hasTypeCode( BitSet typeCode ) {
+        return false;
+    }
+
     public void setTypeCode(BitSet typeCode) {
         this.typeCode = typeCode;
     }

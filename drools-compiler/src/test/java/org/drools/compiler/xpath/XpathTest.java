@@ -12,7 +12,6 @@ import org.kie.internal.utils.KieHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.drools.core.reteoo.ReteDumper.dumpRete;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -575,8 +574,6 @@ public class XpathTest {
         KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
                                              .build()
                                              .newKieSession();
-
-        dumpRete(ksession);
 
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);

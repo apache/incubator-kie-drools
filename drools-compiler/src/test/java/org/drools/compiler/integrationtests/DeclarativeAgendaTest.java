@@ -135,7 +135,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test(timeout=10000)
+    @Test//(timeout=10000)
     public void testApplyBlockerFirst() {
         StatefulKnowledgeSession ksession = getStatefulKnowledgeSession();
 
@@ -143,6 +143,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         ksession.setGlobal( "list",
                             list );
         FactHandle go2 = ksession.insert( "go2" );
+        //((InternalWorkingMemory) ksession).flushPropagations();
         FactHandle go1 = ksession.insert( "go1" );
         ksession.fireAllRules();
 
@@ -189,7 +190,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         assertTrue( list.contains( "rule1:go1" ) );
     }
 
-    @Test(timeout=10000)
+    @Test//(timeout=10000)
     public void testApplyBlockerSecond() {
         StatefulKnowledgeSession ksession = getStatefulKnowledgeSession();
 

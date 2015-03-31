@@ -17,6 +17,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LIANodePropagation;
@@ -104,6 +105,11 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     public void executeQueuedActions() {
         // TODO Auto-generated method stub
         
+    }
+
+    public void executeQueuedActions(boolean flushPropagations) {
+        // TODO Auto-generated method stub
+
     }
 
     public FactHandle getFactHandleByIdentity(Object object) {
@@ -371,6 +377,32 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     @Override
     public void closeLiveQuery(InternalFactHandle factHandle) {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void addPropagation(PropagationEntry propagationEntry) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void flushPropagations() {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void flushNonMarshallablePropagations() {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public boolean hasPendingPropagations() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public Iterator<? extends PropagationEntry> getActionsIterator() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     public void addEventListener(RuleRuntimeEventListener listener) {

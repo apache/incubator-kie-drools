@@ -21,6 +21,7 @@ import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
@@ -177,6 +178,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         final Person bob = new Person( "bob" );
         session.insert( bob );
+        ((InternalWorkingMemory)session).flushPropagations();
 
         org.kie.api.definition.rule.Rule[] rules = (org.kie.api.definition.rule.Rule[]) kBase.getKnowledgePackage("org.drools.compiler.test").getRules().toArray(new org.kie.api.definition.rule.Rule[0] );
 
@@ -241,6 +243,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         final Person bob = new Person( "bob" );
         session.insert( bob );
+        ((InternalWorkingMemory)session).flushPropagations();
 
         org.kie.api.definition.rule.Rule[] rules = (org.kie.api.definition.rule.Rule[]) kBase.getKnowledgePackage("org.drools.compiler.test").getRules().toArray(new org.kie.api.definition.rule.Rule[0] );
 
@@ -1703,6 +1706,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
+
         ksession.fireAllRules();
         assertEquals( 2,
                       list.size() );
@@ -2040,6 +2044,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession.insert( new Message() );
         ksession.insert( new Message() );
         ksession.insert( new Message() );
+        ((InternalWorkingMemory)ksession).flushPropagations();
 
         assertEquals( 1,
                       ((InternalAgenda) ksession.getAgenda()).agendaSize()  );

@@ -44,9 +44,11 @@ import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TraitObjectTypeNode;
 import org.drools.core.reteoo.TraitProxyObjectTypeNode;
+import org.drools.core.reteoo.WindowNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.rule.Accumulate;
+import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.EvalCondition;
@@ -71,8 +73,10 @@ import org.drools.reteoo.nodes.ReteQueryElementNode;
 import org.drools.reteoo.nodes.ReteQueryTerminalNode;
 import org.drools.reteoo.nodes.ReteRightInputAdapterNode;
 import org.drools.reteoo.nodes.ReteRuleTerminalNode;
+import org.drools.reteoo.nodes.ReteWindowNode;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ReteNodeFactory implements NodeFactory, Serializable {
 
@@ -180,5 +184,13 @@ public class ReteNodeFactory implements NodeFactory, Serializable {
                                                             BuildContext context) {
         return new ReteConditionalBranchNode( id, tupleSource, branchEvaluator, context );
 
+    }
+
+    public WindowNode buildWindowNode(int id,
+                                      List<AlphaNodeFieldConstraint> constraints,
+                                      List<Behavior> behaviors,
+                                      ObjectSource objectSource,
+                                      BuildContext context) {
+        return new ReteWindowNode(id, constraints, behaviors, objectSource, context);
     }
 }

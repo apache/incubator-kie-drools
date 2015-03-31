@@ -49,7 +49,9 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TraitObjectTypeNode;
 import org.drools.core.reteoo.TraitProxyObjectTypeNode;
+import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Accumulate;
+import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.EvalCondition;
@@ -62,6 +64,7 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.Timer;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class PhreakNodeFactory implements NodeFactory, Serializable {
 
@@ -168,5 +171,13 @@ public class PhreakNodeFactory implements NodeFactory, Serializable {
                                                             BuildContext context) {
         return new ConditionalBranchNode( id, tupleSource, branchEvaluator, context );
 
+    }
+
+    public WindowNode buildWindowNode(int id,
+                                      List<AlphaNodeFieldConstraint> constraints,
+                                      List<Behavior> behaviors,
+                                      ObjectSource objectSource,
+                                      BuildContext context) {
+        return new WindowNode(id, constraints, behaviors, objectSource, context);
     }
 }

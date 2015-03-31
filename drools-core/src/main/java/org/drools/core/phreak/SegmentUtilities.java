@@ -4,8 +4,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
-import org.drools.core.common.StreamTupleEntryQueue;
-import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.AccumulateNode;
@@ -35,11 +33,9 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
-import org.drools.core.reteoo.RiaPathMemory;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.rule.constraint.QueryNameConstraint;
@@ -100,12 +96,6 @@ public class SegmentUtilities {
 
             while (true) {
                 nodeTypesInSegment = updateNodeTypesMask(tupleSource, nodeTypesInSegment);
-                if ( tupleSource.isStreamMode() && smem.getStreamQueue() == null ) {
-                    // need to make sure there is one Queue, for the rule, when a stream mode node is found.
-
-                    StreamTupleEntryQueue queue = initAndGetTupleQueue(tupleSource, wm);
-                    smem.setStreamQueue( queue );
-                }
                 if (NodeTypeEnums.isBetaNode(tupleSource)) {
                     allLinkedTestMask = processBetaNode(tupleSource, wm, smem, nodePosMask, allLinkedTestMask, updateNodeBit);
                 } else {
@@ -185,12 +175,6 @@ public class SegmentUtilities {
             smem.setSegmentPosMaskBit(ruleSegmentPosMask);
             smem.setPos(counter);
 
-            if (smem.getRootNode().getType() != NodeTypeEnums.LeftInputAdapterNode &&
-                ((LeftTupleSource)smem.getRootNode()).getLeftTupleSource().getType() == NodeTypeEnums.LeftInputAdapterNode ) {
-                    // If LiaNode is in it's own segment, then the segment first after that must use SynchronizedLeftTupleSets
-                    smem.setStagedTuples( new SynchronizedLeftTupleSets() );
-            }
-
             nodeTypesInSegment = updateRiaAndTerminalMemory(tupleSource, tupleSource, smem, wm, false, nodeTypesInSegment);
 
             ((KnowledgeBaseImpl)wm.getKnowledgeBase()).registerSegmentPrototype(segmentRoot, smem);
@@ -261,7 +245,6 @@ public class SegmentUtilities {
 
     private static long processLiaNode(LeftInputAdapterNode tupleSource, InternalWorkingMemory wm, SegmentMemory smem, long nodePosMask, long allLinkedTestMask) {
         LiaNodeMemory liaMemory = (LiaNodeMemory) smem.createNodeMemory(tupleSource, wm);
-        smem.setStagedTuples( new SynchronizedLeftTupleSets() ); // LiaNode SegmentMemory must have Synchronized LeftTupleSets
         liaMemory.setSegmentMemory(smem);
         liaMemory.setNodePosMaskBit(nodePosMask);
         allLinkedTestMask = allLinkedTestMask | nodePosMask;
@@ -348,10 +331,6 @@ public class SegmentUtilities {
             // RTNS and RiaNode's have their own segment, if they are the child of a split.
             if (memory.getSegmentMemory() == null) {
                 SegmentMemory childSmem = new SegmentMemory(sink); // rtns or riatns don't need a queue
-                if ( sink.getLeftTupleSource().getType() == NodeTypeEnums.LeftInputAdapterNode ) {
-                    // If LiaNode is in it's own segment, then the segment first after that must use SynchronizedLeftTupleSets
-                    childSmem.setStagedTuples( new SynchronizedLeftTupleSets() );
-                }
 
                 PathMemory pmem;
                 if (NodeTypeEnums.isTerminalNode(sink)) {
@@ -448,7 +427,6 @@ public class SegmentUtilities {
                 PathMemory pmem = (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
                 smem.getPathMemories().add(pmem);
                 pmem.getSegmentMemories()[smem.getPos()] = smem;
-                smem.setStreamQueue( pmem.getStreamQueue() );
                 if (smem.isSegmentLinked()) {
                     // not's can cause segments to be linked, and the rules need to be notified for evaluation
                     smem.notifyRuleLinkSegment(wm);
@@ -475,49 +453,6 @@ public class SegmentUtilities {
              !isSet(nodeTypesInSegment, REACTIVE_EXISTS_NODE_BIT) ) {
             createSegmentMemory(lt, wm);
         }
-    }
-
-    public static StreamTupleEntryQueue initAndGetTupleQueue(NetworkNode node, InternalWorkingMemory wm) {
-        // get's or initializes the queue, if it does not exist. It recurse to the outer most PathMemory
-        // and then trickle the Queue back up to the inner PathMememories
-        LeftTupleSink sink;
-        if ( !(NodeTypeEnums.isTerminalNode(node) || NodeTypeEnums.RightInputAdaterNode == node.getType()) ) {
-            // iterate to the terminal of this segment - either rian or rtn
-            sink = ((LeftTupleSource)node).getSinkPropagator().getLastLeftTupleSink();
-            while ( sink.getType() != NodeTypeEnums.RightInputAdaterNode && !NodeTypeEnums.isTerminalNode( sink) ) {
-                sink = ((LeftTupleSource)sink).getSinkPropagator().getLastLeftTupleSink();
-            }
-        }  else {
-            sink = (LeftTupleSink)node;
-        }
-
-        StreamTupleEntryQueue queue = null;
-        if (NodeTypeEnums.RightInputAdaterNode == sink.getType()) {
-            RightInputAdapterNode rian = (RightInputAdapterNode) sink;
-            RiaNodeMemory riaMem =  (RiaNodeMemory) wm.getNodeMemory((MemoryFactory)sink);
-            RiaPathMemory pmem = riaMem.getRiaPathMemory();
-
-            queue = pmem.getStreamQueue();
-            if ( queue == null ) {
-                ObjectSink[] nodes = rian.getSinkPropagator().getSinks();
-                // iterate the first child sink, we only need the first, as all reach the same outer rtn
-                queue = initAndGetTupleQueue(nodes[0], wm);
-            }
-        } else if (NodeTypeEnums.isTerminalNode(sink)) {
-            PathMemory pmem =  (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
-            queue =  pmem.getStreamQueue();
-            if ( queue == null ) {
-                pmem.initQueue();
-                queue = pmem.getStreamQueue();
-            }
-            for ( TerminalNode rtn = (TerminalNode) ( (TerminalNode) sink ).getPreviousLeftTupleSinkNode();
-                  rtn != null;
-                  rtn = (TerminalNode) rtn.getPreviousLeftTupleSinkNode() ) {
-                ((PathMemory) wm.getNodeMemory( (MemoryFactory) rtn )).setStreamQueue( queue );
-            }
-        }
-        return queue;
-
     }
 
     public static boolean parentInSameSegment(LeftTupleSource lt, RuleImpl removingRule) {

@@ -1,40 +1,44 @@
 package org.drools.compiler.integrationtests;
 
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.common.*;
-import org.drools.core.reteoo.*;
+import org.drools.core.common.DoubleNonIndexSkipBetaConstraints;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.SingleBetaConstraints;
+import org.drools.core.common.TripleNonIndexSkipBetaConstraints;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.CompositeObjectSinkAdapter;
+import org.drools.core.reteoo.JoinNode;
+import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.NotNode;
+import org.drools.core.reteoo.ObjectSinkNodeList;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.index.LeftTupleIndexHashTable;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.util.index.RightTupleIndexHashTable;
 import org.drools.core.util.index.RightTupleList;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.rule.IndexableConstraint;
 import org.junit.Test;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderErrors;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.api.definition.type.FactType;
-import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class IndexingTest extends CommonTestMethodBase {
@@ -54,7 +58,7 @@ public class IndexingTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, Person.class );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
         AlphaNode alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
         CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter)alphaNode1.getSinkPropagator();
@@ -95,7 +99,7 @@ public class IndexingTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
         
         ObjectTypeNode node = getObjectTypeNode(kbase, Person.class );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
         JoinNode j2 = ( JoinNode ) liaNode.getSinkPropagator().getSinks()[0]; // $p2
@@ -199,9 +203,9 @@ public class IndexingTest extends CommonTestMethodBase {
                 node = n;
                 break;
             }
-        }    
-        
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        }
+
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         
         AlphaNode alphanode = ( AlphaNode ) node.getSinkPropagator().getSinks()[0];
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getSinkPropagator().getSinks()[0];
@@ -235,7 +239,7 @@ public class IndexingTest extends CommonTestMethodBase {
             }
         }
 
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        StatefulKnowledgeSessionImpl wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
         AlphaNode alphanode = ( AlphaNode ) node.getSinkPropagator().getSinks()[0];
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getSinkPropagator().getSinks()[0];
@@ -377,7 +381,7 @@ public class IndexingTest extends CommonTestMethodBase {
             }
         }
 
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        StatefulKnowledgeSessionImpl wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
         AlphaNode alphanode = ( AlphaNode ) node.getSinkPropagator().getSinks()[0];
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getSinkPropagator().getSinks()[0];

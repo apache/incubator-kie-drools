@@ -9,8 +9,6 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.RightTupleSets;
-import org.drools.core.common.SynchronizedLeftTupleSets;
-import org.drools.core.common.TupleEntryQueue;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AbstractTerminalNode;
@@ -281,7 +279,7 @@ public class AddRemoveRule {
         LeftTupleSink sink;
         Memory mem;
         long bit = 1;
-        if ( smems.length == 1 ) {
+        if ( sm.getRootNode() instanceof LeftInputAdapterNode ) {
             sink = ((LeftInputAdapterNode)sm.getRootNode()).getSinkPropagator().getFirstLeftTupleSink();
             mem = sm.getNodeMemories().get(1);
             bit = 2; // adjust bit to point to next node
@@ -378,21 +376,11 @@ public class AddRemoveRule {
              Memory memory = wm.getNodeMemory((MemoryFactory) subNetworkLts);
              SegmentMemory newSmem = SegmentUtilities.createChildSegment(wm, peerLts, memory);
              sm.add(newSmem);
-
-             if ( sm.getTipNode().getType() == NodeTypeEnums.LeftInputAdapterNode ) {
-                 // If LiaNode is in it's own segment, then the segment first after that must use SynchronizedLeftTupleSets
-                 newSmem.setStagedTuples( new SynchronizedLeftTupleSets() );
-             }
          }
 
          Memory memory = wm.getNodeMemory((MemoryFactory) peerLts);
          SegmentMemory newSmem = SegmentUtilities.createChildSegment(wm, peerLts, memory);
          sm.add(newSmem);
-
-         if ( sm.getTipNode().getType() == NodeTypeEnums.LeftInputAdapterNode ) {
-             // If LiaNode is in it's own segment, then the segment first after that must use SynchronizedLeftTupleSets
-             newSmem.setStagedTuples( new SynchronizedLeftTupleSets() );
-         }
 
          LeftTupleSource lts;
          if ( NodeTypeEnums.isTerminalNode(sm.getTipNode() ) ) {
@@ -544,16 +532,6 @@ public class AddRemoveRule {
                         rightTuple = next;
                     }
 
-                    if (bn.isStreamMode()) {
-                        TupleEntryQueue queue = bm.getSegmentMemory().getStreamQueue().takeAllForFlushing();
-                        while (!queue.isEmpty()) {
-                            RightTuple rightTuple = queue.remove().getRightTuple();
-                            if (rightTuple != null) {
-                                rightTuple.unlinkFromRightParent();
-                            }
-                        }
-                    }
-
                     RightTupleSets srcRightTuples = bm.getStagedRightTuples().takeAll();
                     unlinkRightTuples(srcRightTuples.getInsertFirst());
                     unlinkRightTuples(srcRightTuples.getUpdateFirst());
@@ -571,7 +549,7 @@ public class AddRemoveRule {
 
     private static void unlinkRightTuples(RightTuple rightTuple) {
         for (RightTuple rt = rightTuple; rt != null; ) {
-            RightTuple next = (RightTuple) rt.getStagedNext();
+            RightTuple next = rt.getStagedNext();
             // this RightTuple could have been already unlinked by the former cycle
             if (rt.getFactHandle() != null) {
                 rt.unlinkFromRightParent();
@@ -593,11 +571,6 @@ public class AddRemoveRule {
      * Populates the SegmentMemory with staged LeftTuples. If the parent is not a Beta or From node, it iterates up to find the first node with memory. If necessary
      * It traverses to the LiaNode's ObjectTypeNode. It then iterates the LeftTuple chain, on a specific path to navigate down to where an existing LeftTuple is staged
      * as delete. Or a new LeftTuple is created and staged as an insert.
-     * @param node
-     * @param peerNode
-     * @param smem
-     * @param wm
-     * @param insert
      */
     public static void processLeftTuples(LeftTupleSource node, LeftTupleSink peerNode, SegmentMemory smem, InternalWorkingMemory wm, boolean insert) {
         // *** if you make a fix here, it most likely needs to be in PhreakActivationIteratorToo ***
@@ -623,7 +596,7 @@ public class AddRemoveRule {
                     LeftTuple lt = BetaNode.getFirstLeftTuple(bm.getLeftTupleMemory(), it);
                     for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                         AccumulateContext accctx = (AccumulateContext) lt.getObject();
-                        followPeer(accctx.getResultLeftTuple(), smem, sinks,  sinks.size()-1, insert, wm);
+                        followPeer(accctx.getResultLeftTuple(), smem, sinks,  sinks.size()-1, insert);
                     }
                 } else if ( NodeTypeEnums.ExistsNode == node.getType() ) {
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
@@ -632,7 +605,7 @@ public class AddRemoveRule {
                     for (; rt != null; rt = (RightTuple) it.next(rt)) {
                         for ( LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext() ) {
                             if ( lt.getFirstChild() != null ) {
-                                followPeer(lt.getFirstChild(), smem, sinks,  sinks.size()-1, insert, wm);
+                                followPeer(lt.getFirstChild(), smem, sinks,  sinks.size()-1, insert);
                             }
                         }
                     }
@@ -642,7 +615,7 @@ public class AddRemoveRule {
                     LeftTuple lt = BetaNode.getFirstLeftTuple(bm.getLeftTupleMemory(), it);
                     for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                         if ( lt.getFirstChild() != null ) {
-                            followPeerFromLeftInput(lt.getFirstChild(), smem, sinks, insert, wm);
+                            followPeerFromLeftInput(lt.getFirstChild(), smem, sinks, insert);
                         }
                     }
                 }
@@ -653,7 +626,7 @@ public class AddRemoveRule {
                 FastIterator it = ltm.fullFastIterator();
                 for (LeftTuple lt = ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
                     if ( lt.getFirstChild() != null ) {
-                        followPeerFromLeftInput(lt.getFirstChild(), smem, sinks, insert, wm);
+                        followPeerFromLeftInput(lt.getFirstChild(), smem, sinks, insert);
                     }
                 }
                 return;
@@ -685,21 +658,21 @@ public class AddRemoveRule {
             if (fh.getFirstLeftTuple() != null ) {
                 for (LeftTuple childLt = fh.getFirstLeftTuple(); childLt != null; childLt = childLt.getLeftParentNext()) {
                     if ( childLt.getSink() == firstLiaSink ) {
-                        followPeer(childLt, smem, sinks,  sinks.size()-1, insert, wm);
+                        followPeer(childLt, smem, sinks,  sinks.size()-1, insert);
                     }
                 }
             }
         }
     }
 
-    private static void followPeerFromLeftInput(LeftTuple lt, SegmentMemory smem, List<LeftTupleSink> sinks, boolean insert, InternalWorkingMemory wm) {
+    private static void followPeerFromLeftInput(LeftTuple lt, SegmentMemory smem, List<LeftTupleSink> sinks, boolean insert) {
         // *** if you make a fix here, it most likely needs to be in PhreakActivationIteratorToo ***
         for (; lt != null; lt = lt.getLeftParentNext()) {
-            followPeer(lt, smem, sinks, sinks.size() -1, insert, wm);
+            followPeer(lt, smem, sinks, sinks.size() -1, insert);
         }
     }
 
-    private static void followPeer(LeftTuple lt, SegmentMemory smem, List<LeftTupleSink> sinks, int i, boolean insert, InternalWorkingMemory wm) {
+    private static void followPeer(LeftTuple lt, SegmentMemory smem, List<LeftTupleSink> sinks, int i, boolean insert) {
         // *** if you make a fix here, it most likely needs to be in PhreakActivationIteratorToo ***
 
         LeftTupleSink sink = sinks.get(i);
@@ -721,10 +694,10 @@ public class AddRemoveRule {
                     if ( bn.isRightInputIsRiaNode() ) {
                         // must also create and stage the LeftTuple for the subnetwork
                         SegmentMemory subSmem = smem.getPrevious(); // Subnetwork segment will be before this one
-                        deletePeerLeftTuple(lt, (LeftTupleSink)subSmem.getRootNode(), subSmem, wm);
+                        deletePeerLeftTuple(lt, (LeftTupleSink)subSmem.getRootNode(), subSmem);
                     }
                 }
-                deletePeerLeftTuple(lt, sink, smem, wm);
+                deletePeerLeftTuple(lt, sink, smem);
             }
         } else {
             LeftTuple peer = lt;
@@ -734,10 +707,10 @@ public class AddRemoveRule {
 
             if (NodeTypeEnums.AccumulateNode == peer.getLeftTupleSink().getType()) {
                 AccumulateContext accctx = (AccumulateContext) peer.getObject();
-                followPeer(accctx.getResultLeftTuple(), smem, sinks,  i-1, insert, wm);
+                followPeer(accctx.getResultLeftTuple(), smem, sinks,  i-1, insert);
             } else if ( peer.getFirstChild() != null ) {
                 for (LeftTuple childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getLeftParentNext()) {
-                    followPeer(childLt, smem, sinks, i-1, insert, wm);
+                    followPeer(childLt, smem, sinks, i-1, insert);
                 }
             }
 
@@ -746,7 +719,7 @@ public class AddRemoveRule {
 
     }
 
-    private static void deletePeerLeftTuple(LeftTuple lt, LeftTupleSink newNode, SegmentMemory smem, InternalWorkingMemory wm) {
+    private static void deletePeerLeftTuple(LeftTuple lt, LeftTupleSink newNode, SegmentMemory smem) {
         LeftTuple peer = lt;
         LeftTuple previousPeer = null;
         while (peer.getSink() != newNode) {
@@ -904,8 +877,7 @@ public class AddRemoveRule {
                 }
             } else if (NodeTypeEnums.isTerminalNode(sink)) {
                 // getting will cause an initialization of rtn, which will recursively initialise rians too.
-                PathMemory pmem = (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
-                return pmem;
+                return (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
             } else if (NodeTypeEnums.RightInputAdaterNode == sink.getType()) {
                 RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemory((MemoryFactory) sink);
                 return riaMem.getRiaPathMemory();
@@ -929,7 +901,7 @@ public class AddRemoveRule {
 
      public static SegmentMemory splitSegment(SegmentMemory sm1, LeftTupleSource splitNode) {
          // create new segment, starting after split
-         SegmentMemory sm2 = new SegmentMemory(splitNode.getSinkPropagator().getFirstLeftTupleSink(), sm1.getStreamQueue() ); // we know there is only one sink
+         SegmentMemory sm2 = new SegmentMemory(splitNode.getSinkPropagator().getFirstLeftTupleSink()); // we know there is only one sink
 
          if ( sm1.getFirst() != null ) {
              for ( SegmentMemory sm = sm1.getFirst(); sm != null;) {
@@ -953,7 +925,6 @@ public class AddRemoveRule {
          sm1.setTipNode( splitNode ); // splitNode is now tip of original segment
 
          if ( sm1.getTipNode().getType() == NodeTypeEnums.LeftInputAdapterNode ) {
-             sm2.setStagedTuples( new SynchronizedLeftTupleSets() ); // and the LeftTuples must be Synchronized, for thread safety
              if (  !sm1.getStagedLeftTuples().isEmpty() ) {
                  // Segments with only LiaNode's cannot have staged LeftTuples, so move them down to the new Segment
                 sm2.getStagedLeftTuples().addAll(sm1.getStagedLeftTuples());

@@ -25,7 +25,6 @@ import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.DeclarationScopeResolver;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -76,7 +75,7 @@ public class LogicTransformer {
         //moved cloned to up
         //final GroupElement cloned = (GroupElement) and.clone();
 
-        processTree( cloned );
+        boolean hasNamedConsequenceAndIsStream = processTree( cloned );
         cloned.pack();
 
         GroupElement[] ands;
@@ -100,7 +99,31 @@ public class LogicTransformer {
             ands[i].setRoot( true );
         }
 
-        return ands;
+        return hasNamedConsequenceAndIsStream ? processNamedConsequences(ands) : ands;
+    }
+
+    private GroupElement[] processNamedConsequences(GroupElement[] ands) {
+        List<GroupElement> result = new ArrayList<GroupElement>();
+
+        for (GroupElement and : ands) {
+            List<RuleConditionElement> children = and.getChildren();
+            for (int i = 0; i < children.size(); i++) {
+                RuleConditionElement child = children.get(i);
+                if (child instanceof NamedConsequence) {
+                    GroupElement clonedAnd = GroupElementFactory.newAndInstance();
+                    for (int j = 0; j < i; j++) {
+                        clonedAnd.getChildren().add(children.get(j).clone());
+                    }
+                    ((NamedConsequence) child).setTerminal(true);
+                    clonedAnd.getChildren().add(child);
+                    children.remove(i--);
+                    result.add(clonedAnd);
+                }
+            }
+            result.add(and);
+        }
+
+        return result.toArray(new GroupElement[result.size()]);
     }
 
     protected GroupElement[] splitOr( final GroupElement cloned ) {
@@ -305,6 +328,12 @@ public class LogicTransformer {
     }
 
 
+    protected boolean processTree(final GroupElement ce) throws InvalidPatternException {
+        boolean[] hasNamedConsequenceAndIsStream = new boolean[2];
+        processTree(ce, hasNamedConsequenceAndIsStream);
+        return hasNamedConsequenceAndIsStream[0] && hasNamedConsequenceAndIsStream[1];
+    }
+
     /**
      * Traverses a Tree, during the process it transforms Or nodes moving the
      * upwards and it removes duplicate logic statement, this does not include
@@ -315,27 +344,28 @@ public class LogicTransformer {
      * what we are interested in are the children of the current node (called
      * the parent nodes) and the children of those parents (call the child
      * nodes).
-     * 
-     * @param ce
      */
-    protected void processTree(final GroupElement ce) throws InvalidPatternException {
-
+    private void processTree(final GroupElement ce, boolean[] result) throws InvalidPatternException {
         boolean hasChildOr = false;
 
         // first we elimininate any redundancy
         ce.pack();
 
         Object[] children = (Object[]) ce.getChildren().toArray();
-        for (Object aChildren : children) {
-            if (aChildren instanceof GroupElement) {
-                final GroupElement child = (GroupElement) aChildren;
+        for (Object child : children) {
+            if (child instanceof GroupElement) {
+                final GroupElement group = (GroupElement) child;
 
-                processTree(child);
-                if ((child.isOr() || child.isAnd()) && child.getType() == ce.getType()) {
-                    child.pack(ce);
-                } else if (child.isOr()) {
+                processTree(group, result);
+                if ((group.isOr() || group.isAnd()) && group.getType() == ce.getType()) {
+                    group.pack(ce);
+                } else if (group.isOr()) {
                     hasChildOr = true;
                 }
+            } else if (child instanceof NamedConsequence) {
+                result[0] = true;
+            } else if (child instanceof Pattern && ((Pattern) child).getObjectType().isEvent()) {
+                result[1] = true;
             }
         }
 

@@ -35,9 +35,6 @@ public class ConsequenceGenerator {
     public static void generate(final ConsequenceStub stub, KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
         RuleTerminalNode rtn = (RuleTerminalNode) knowledgeHelper.getMatch().getTuple().getLeftTupleSink();
         final Declaration[] declarations = rtn.getDeclarations();
-        final boolean isOrRule = rtn.getRule().getTransformedLhs(
-                workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getLogicTransformerFactory().getLogicTransformer(),
-                workingMemory.getKnowledgeBase().getGlobals() ).length > 1;
         final LeftTuple tuple = (LeftTuple)knowledgeHelper.getTuple();
 
         // Sort declarations based on their offset, so it can ascend the tuple's parents stack only once
@@ -78,12 +75,7 @@ public class ConsequenceGenerator {
                     int objPos = ++objAstorePos;
                     paramsPos[i] = handlePos;
 
-                    if (isOrRule) {
-                        // We do not generate an invoker per 'or' branch, so use runtime traversal for that
-                        traverseTuplesUntilDeclarationWithOr(i, 4, 3, 5);                        
-                    } else {
-                        currentLeftTuple = traverseTuplesUntilDeclaration(currentLeftTuple, matcher.getRootDistance(), 3);
-                    }
+                    currentLeftTuple = traverseTuplesUntilDeclaration(currentLeftTuple, matcher.getRootDistance(), 3);
 
                     // handle = tuple.getHandle()
                     mv.visitVarInsn(ALOAD, 3);

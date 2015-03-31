@@ -6,11 +6,14 @@ import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.LIANodePropagation;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
@@ -18,12 +21,17 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.rule.AgendaFilter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
 
     private List<LIANodePropagation> liaPropagations;
+
+    private Queue<WorkingMemoryAction> actionQueue;
 
     public ReteWorkingMemory() {
     }
@@ -36,22 +44,38 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
         super(id, kBase, initInitFactHandle, config, environment);
     }
 
-    public ReteWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
-        super(id, kBase, handleFactory, initialFactHandle, propagationContext, config, agenda, environment);
+    public ReteWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
+        super(id, kBase, handleFactory, propagationContext, config, agenda, environment);
     }
 
     public ReteWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, Environment environment, RuleRuntimeEventSupport workingMemoryEventSupport, AgendaEventSupport agendaEventSupport, RuleEventListenerSupport ruleEventListenerSupport, InternalAgenda agenda) {
         super(id, kBase, handleFactory, false, propagationContext, config, environment, workingMemoryEventSupport, agendaEventSupport, ruleEventListenerSupport, agenda);
     }
 
+    @Override
+    protected void init() {
+        super.init();
 
+        actionQueue = new ConcurrentLinkedQueue<WorkingMemoryAction>();
+        config.setThreadSafe(false);
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        actionQueue.clear();
+    }
+
+    @Override
     public void reset(int handleId,
                       long handleCounter,
                       long propagationCounter) {
         super.reset(handleId, handleCounter, propagationCounter );
         if (liaPropagations != null) liaPropagations.clear();
+        actionQueue.clear();
     }
 
+    @Override
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
         WorkingMemoryEntryPoint ep = this.entryPoints.get(name);
         return ep != null ? new ReteWorkingMemoryEntryPoint( this, ep ) : null;
@@ -74,11 +98,13 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
         }
     }
 
+    @Override
     public void fireUntilHalt(final AgendaFilter agendaFilter) {
         initInitialFact();
         super.fireUntilHalt( agendaFilter );
     }
 
+    @Override
     public int fireAllRules(final AgendaFilter agendaFilter,
                             int fireLimit) {
         checkAlive();
@@ -125,6 +151,7 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
         return fireCount;
     }
 
+    @Override
     public void closeLiveQuery(final InternalFactHandle factHandle) {
 
         try {
@@ -139,7 +166,7 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
                                               pCtx,
                                               this );
 
-            pCtx.evaluateActionQueue( this );
+            pCtx.evaluateActionQueue(this);
 
             getFactHandleFactory().destroyFactHandle( factHandle );
 
@@ -150,6 +177,7 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
         }
     }
 
+    @Override
     protected BaseNode[] evalQuery(String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx) {
         initInitialFact();
 
@@ -163,4 +191,56 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
         return tnodes;
     }
 
+    public Collection<WorkingMemoryAction> getActionQueue() {
+        return actionQueue;
+    }
+
+    @Override
+    public void queueWorkingMemoryAction(final WorkingMemoryAction action) {
+        try {
+            startOperation();
+            actionQueue.add(action);
+            this.agenda.notifyHalt();
+        } finally {
+            endOperation();
+        }
+    }
+
+    public void addPropagation(PropagationEntry propagationEntry) {
+        actionQueue.add((WorkingMemoryAction) propagationEntry);
+    }
+
+    @Override
+    public void executeQueuedActions() {
+        try {
+            startOperation();
+            if ( evaluatingActionQueue.compareAndSet( false,
+                                                      true ) ) {
+                try {
+                    if ( actionQueue!= null && !actionQueue.isEmpty() ) {
+                        WorkingMemoryAction action = null;
+
+                        while ( (action = actionQueue.poll()) != null ) {
+                            try {
+                                action.execute( (InternalWorkingMemory) this );
+                            } catch ( Exception e ) {
+                                throw new RuntimeException( "Unexpected exception executing action " + action.toString(),
+                                                            e );
+                            }
+                        }
+                    }
+                } finally {
+                    evaluatingActionQueue.compareAndSet( true,
+                                                         false );
+                }
+            }
+        } finally {
+            endOperation();
+        }
+    }
+
+    @Override
+    public Iterator<? extends PropagationEntry> getActionsIterator() {
+        return actionQueue.iterator();
+    }
 }

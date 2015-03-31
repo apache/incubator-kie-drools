@@ -27,6 +27,7 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.HierarchyEncoder;
+import org.drools.core.util.HierarchyEncoderImpl;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
@@ -40,9 +41,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
@@ -93,33 +96,27 @@ public class TraitHelper implements Externalizable {
         }
     }
 
-    protected <T> T doInsertTrait( Activation activation, T thing, Object core, boolean logical, BitSet boundary, Mode... modes ) {
+    protected <T> T doInsertTrait( Activation activation, T thing, Object core, boolean logical, Mode... modes ) {
         if ( thing == core ) {
             return thing;
         }
 
-        ((TraitProxy) thing).setTypeFilter( boundary );
         if ( logical ) {
             insertLogical( activation, thing, modes );
         } else {
             insert( thing, activation );
         }
-        ((TraitProxy) thing).setTypeFilter( null );
         return thing;
     }
 
-    private void updateTraits( Object object, BitMask mask, Thing originator, Class<?> modifiedClass, BitSet veto, Collection<Thing> mostSpecificTraits, Activation activation ) {
-        updateManyTraits( object, mask, Arrays.asList( originator ), modifiedClass, veto, mostSpecificTraits, activation );
+    private void updateTraits( Object object, BitMask mask, Thing originator, Class<?> modifiedClass, Collection<Thing> traits, Activation activation ) {
+        updateManyTraits( object, mask, Arrays.asList( originator ), modifiedClass, traits, activation );
     }
 
-    private void updateManyTraits( Object object, BitMask mask, Collection<Thing> originators, Class<?> modifiedClass, BitSet veto, Collection<Thing> mostSpecificTraits, Activation activation ) {
-        veto = veto != null ? (BitSet) veto.clone() : null;
+    private void updateManyTraits( Object object, BitMask mask, Collection<Thing> originators, Class<?> modifiedClass, Collection<Thing> traits, Activation activation ) {
 
-        for ( Thing t : mostSpecificTraits ) {
+        for ( Thing t : traits ) {
             if ( ! originators.contains( t ) ) {
-                TraitProxy proxy = (TraitProxy) t;
-
-                proxy.setTypeFilter( veto );
                 InternalFactHandle h = (InternalFactHandle) lookupFactHandle( t );
                 if ( h != null ) {
                     NamedEntryPoint nep = (NamedEntryPoint) h.getEntryPoint();
@@ -139,14 +136,6 @@ public class TraitHelper implements Externalizable {
                                 activation.getRule(),
                                 propagationContext );
                 }
-                proxy.setTypeFilter( null );
-
-                BitSet tc = proxy.getTypeCode();
-                if ( veto == null ) {
-                    veto = (BitSet) tc.clone();
-                } else {
-                    veto.or( tc );
-                }
             }
         }
     }
@@ -156,7 +145,7 @@ public class TraitHelper implements Externalizable {
         if (  handle.isTraitable() ) {
             // this is a traitable core object, so its traits must be updated as well
             if ( ((TraitableBean) handle.getObject()).hasTraits() ) {
-                updateTraits( handle.getObject(), mask, null, modifiedClass, null, ((TraitableBean) handle.getObject()).getMostSpecificTraits(), activation );
+                updateTraits( handle.getObject(), mask, null, modifiedClass, ((TraitableBean) handle.getObject())._getTraitMap().values(), activation );
             }
         } else if ( handle.isTraiting() ) {
             Thing x = (Thing) handle.getObject();
@@ -170,8 +159,7 @@ public class TraitHelper implements Externalizable {
                         mask,
                         modifiedClass,
                         activation );
-                BitSet veto = ((TraitProxy) x).getTypeCode();
-                updateTraits( core, mask, x, modifiedClass, veto, ((TraitableBean) core).getMostSpecificTraits(), activation );
+                updateTraits( core, mask, x, modifiedClass, ((TraitableBean) core)._getTraitMap().values(), activation );
             }
         }
     }
@@ -181,7 +169,7 @@ public class TraitHelper implements Externalizable {
         if ( mostSpecificTraits != null ) {
             updateCore( inner, core, trait, logical, activation );
             if ( ! mostSpecificTraits.isEmpty() ) {
-                updateTraits( inner, onlyTraitBitSetMask(), (Thing) thing, trait, null, mostSpecificTraits, activation );
+                updateTraits( inner, onlyTraitBitSetMask(), (Thing) thing, trait, mostSpecificTraits, activation );
             }
         } else if ( Thing.class == trait ) {
             updateCore( inner, core, trait, logical,activation );
@@ -198,7 +186,7 @@ public class TraitHelper implements Externalizable {
         Collection<Thing> mostSpecificTraits = inner.getMostSpecificTraits();
         boolean newTraitsAdded = false;
         T firstThing = null;
-        Map<Thing, BitSet> things = new HashMap<Thing, BitSet>( traits.size() );
+        List<Thing> things = new ArrayList<Thing>( traits.size() );
 
         checkStaticTypeCode( inner );
 
@@ -208,13 +196,11 @@ public class TraitHelper implements Externalizable {
             boolean needsUpdate = needsProxy || core != inner;
 
             if ( ! hasTrait ) {
-                BitSet boundary = inner.getCurrentTypeCode() != null ? (BitSet) inner.getCurrentTypeCode().clone() : null;
-
                 T thing = (T) asTrait( core, inner, trait, needsProxy, hasTrait, needsUpdate, builder, logical, activation );
 
                 configureTrait( thing, value );
 
-                things.put( (Thing) thing, boundary );
+                things.add( (Thing) thing );
 
                 if ( ! newTraitsAdded && trait != Thing.class ) {
                     firstThing = thing;
@@ -223,15 +209,15 @@ public class TraitHelper implements Externalizable {
             }
         }
 
-        for ( Thing t : things.keySet() ) {
-            doInsertTrait( activation, t, core, logical, things.get( t ), modes );
+        for ( Thing t : things ) {
+            doInsertTrait( activation, t, core, logical, modes );
         }
 
         if ( newTraitsAdded ) {
             if ( mostSpecificTraits != null ) {
                 updateCore( inner, core, null, logical, activation );
                 if ( ! mostSpecificTraits.isEmpty() ) {
-                    updateManyTraits( inner, onlyTraitBitSetMask(), things.keySet(), core.getClass(), null, mostSpecificTraits, activation );
+                    updateManyTraits( inner, onlyTraitBitSetMask(), things, core.getClass(), mostSpecificTraits, activation );
                 }
             }
         }
@@ -274,7 +260,7 @@ public class TraitHelper implements Externalizable {
 
         configureTrait( thing, value );
 
-        thing = doInsertTrait( activation, thing, core, logical, boundary, modes );
+        thing = doInsertTrait( activation, thing, core, logical, modes );
 
         refresh( thing, core, inner, trait, mostSpecificTraits, logical, activation );
 
@@ -321,8 +307,9 @@ public class TraitHelper implements Externalizable {
 
     public <T,K,X extends TraitableBean> Thing<K> shed( TraitableBean<K,X> core, Class<T> trait, Activation activation ) {
         if ( trait.isAssignableFrom( core.getClass() ) ) {
-            Collection removedTraits = core.removeTrait( trait.getName() );
-            if ( ! removedTraits.isEmpty() ) {
+            Collection<Thing<K>> removedTypes = core.removeTrait( trait.getName() );
+            if ( ! removedTypes.isEmpty() ) {
+                reassignNodes( core, removedTypes );
                 update( getFactHandle( core ), onlyTraitBitSetMask(), core.getClass(), activation );
                 //updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null, ((TraitableBean) core).getMostSpecificTraits()  );
             }
@@ -355,6 +342,7 @@ public class TraitHelper implements Externalizable {
             }
 
             removedTypes = new ArrayList<Thing<K>>( removedTypes );
+            reassignNodes( core, removedTypes );
             for ( Thing t : removedTypes ) {
                 if ( ! ((TraitType) t).isVirtual() ) {
                     InternalFactHandle handle = (InternalFactHandle) getFactHandle( t );
@@ -376,8 +364,28 @@ public class TraitHelper implements Externalizable {
         }
     }
 
-
-
+    private <K, X extends TraitableBean> void reassignNodes( TraitableBean<K, X> core, Collection<Thing<K>> removedTraits ) {
+        if ( ! core.hasTraits() ) {
+            return;
+        }
+        Collection<Thing<K>> mst = ( (TraitTypeMap) core._getTraitMap() ).getMostSpecificTraits();
+        for ( Thing<K> shedded : removedTraits ) {
+            for ( BitSet bs : ( (TraitProxy) shedded ).listAssignedOtnTypeCodes() ) {
+                boolean found = false;
+                for ( Thing<K> tp : mst ) {
+                    TraitProxy candidate = (TraitProxy) tp;
+                    if ( HierarchyEncoderImpl.supersetOrEqualset( candidate.getTypeCode(), bs ) ) {
+                        candidate.assignOtn( bs );
+                        found = true;
+                        break;
+                    }
+                }
+                if ( found ) {
+                    continue;
+                }
+            }
+        }
+    }
 
 
     protected Collection<Thing> getTraitBoundary( TraitableBean inner, boolean needsProxy, boolean hasTrait, Class trait ) {

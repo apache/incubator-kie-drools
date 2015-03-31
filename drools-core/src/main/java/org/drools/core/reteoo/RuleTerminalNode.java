@@ -21,7 +21,6 @@ import org.drools.core.base.mvel.MVELEnabledExpression;
 import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EventSupport;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
@@ -38,7 +37,6 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.impl.BaseTimer;
-import org.drools.core.time.impl.ExpressionIntervalTimer;
 import org.kie.api.event.rule.MatchCancelledCause;
 
 import java.io.IOException;
@@ -219,7 +217,13 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
 
     public String toString() {
-        return "[RuleTerminalNode(" + this.getId() + "): rule=" + this.rule.getName() + "]";
+        StringBuilder sb = new StringBuilder();
+        sb.append("[RuleTerminalNode(").append(this.getId()).append("): rule=").append(this.rule.getName());
+        if (consequenceName != null) {
+            sb.append(", consequence=").append(consequenceName);
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     public void attach( BuildContext context ) {
