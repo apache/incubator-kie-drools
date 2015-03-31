@@ -16,6 +16,7 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
     private BitSet currentTypeCode = new BitSet();
     private transient Collection<K> mostSpecificTraits = new LinkedList<K>();
 
+
     private static final BitSet NO_STATIC = new BitSet();
     private BitSet staticTypeCode;
     private Map<String,BitSet> staticTypes;
@@ -259,6 +260,5 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         }
         staticTypes.put( name, code );
     }
-
 
 }

@@ -50,7 +50,7 @@ public class PhreakQueryNode {
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            PropagationContext pCtx = (PropagationContext) leftTuple.getPropagationContext();
+            PropagationContext pCtx = leftTuple.getPropagationContext();
 
             InternalFactHandle handle = queryNode.createFactHandle(pCtx,
                                                                    wm,
@@ -65,8 +65,6 @@ public class PhreakQueryNode {
             LeftInputAdapterNode lian = (LeftInputAdapterNode) qmem.getQuerySegmentMemory().getRootNode();
             LiaNodeMemory lm = (LiaNodeMemory) qmem.getQuerySegmentMemory().getNodeMemories().get(0);
             LeftInputAdapterNode.doInsertObject(handle, pCtx, lian, wm, lm, false, dquery.isOpen());
-
-            flushTupleQuery( lm, wm );
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -137,14 +135,12 @@ public class PhreakQueryNode {
             if (dquery.isOpen()) {
                 LeftTuple childLeftTuple = fh.getFirstLeftTuple(); // there is only one, all other LTs are peers
                 LeftInputAdapterNode.doUpdateObject(childLeftTuple, childLeftTuple.getPropagationContext(), wm, lian, false, lmem, qmem.getQuerySegmentMemory());
-                flushTupleQuery( lmem, wm );
             } else {
                 if (fh.getFirstLeftTuple() != null) {
                     throw new RuntimeException("defensive programming while testing"); // @TODO remove later (mdp)
                 }
                 LiaNodeMemory lm = (LiaNodeMemory) qmem.getQuerySegmentMemory().getNodeMemories().get(0);
                 LeftInputAdapterNode.doInsertObject(fh, leftTuple.getPropagationContext(), lian, wm, lm, false, dquery.isOpen());
-                flushTupleQuery( lm, wm );
             }
 
 
@@ -168,13 +164,11 @@ public class PhreakQueryNode {
                 LiaNodeMemory lm = (LiaNodeMemory) qmem.getQuerySegmentMemory().getNodeMemories().get(0);
                 LeftTuple childLeftTuple = fh.getFirstLeftTuple(); // there is only one, all other LTs are peers
                 LeftInputAdapterNode.doDeleteObject(childLeftTuple, childLeftTuple.getPropagationContext(), qmem.getQuerySegmentMemory(), wm, lian, false, lm);
-                flushTupleQuery( lm, wm );
             } else {
                 LeftTuple childLeftTuple = leftTuple.getFirstChild();
                 while (childLeftTuple != null) {
                     childLeftTuple = RuleNetworkEvaluator.deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
                     LiaNodeMemory lm = (LiaNodeMemory) qmem.getQuerySegmentMemory().getNodeMemories().get(0);
-                    flushTupleQuery( lm, wm );
                 }
             }
 
@@ -182,9 +176,4 @@ public class PhreakQueryNode {
             leftTuple = next;
         }
     }
-
-    public void flushTupleQuery( LiaNodeMemory lm, InternalWorkingMemory wm ) {
-        RuleExecutor.flushTupleQueue( lm.getSegmentMemory().getStreamQueue() );
-    }
-
 }

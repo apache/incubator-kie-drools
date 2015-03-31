@@ -16,16 +16,15 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.spi.PropagationContext;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
-
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.WindowNode.WindowMemory;
-import org.drools.core.spi.PropagationContext;
 
 /**
  * A class to encapsulate behavior management for a given beta node
@@ -82,19 +81,14 @@ public class BehaviorManager
 
     /**
      * Register a newly asserted right tuple into the behaviors' context
-     *  
-     * @param context
-     * @param factHandle
-     * @return
      */
-    public boolean assertFact(final WindowMemory memory,
+    public boolean assertFact(final Object behaviorContext,
                               final InternalFactHandle factHandle,
                               final PropagationContext pctx,
                               final InternalWorkingMemory workingMemory) {
         boolean result = true;
         for ( int i = 0; i < behaviors.length; i++ ) {
-            result = result && behaviors[i].assertFact( memory,
-                                                        ((Object[]) memory.behaviorContext)[i],
+            result = result && behaviors[i].assertFact( ((Object[]) behaviorContext)[i],
                                                         factHandle,
                                                         pctx,
                                                         workingMemory );
@@ -104,17 +98,13 @@ public class BehaviorManager
 
     /**
      * Removes a newly asserted fact handle from the behaviors' context
-     * @param behaviorContext
-     * @param factHandle
-     * @param workingMemory
      */
-    public void retractFact(final WindowMemory memory,
+    public void retractFact(final Object behaviorContext,
                             final InternalFactHandle factHandle,
                             final PropagationContext pctx,
                             final InternalWorkingMemory workingMemory) {
         for ( int i = 0; i < behaviors.length; i++ ) {
-            behaviors[i].retractFact( memory,
-                                      ((Object[]) memory.behaviorContext)[i],
+            behaviors[i].retractFact( ((Object[]) behaviorContext)[i],
                                       factHandle,
                                       pctx,
                                       workingMemory );

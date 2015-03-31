@@ -16,6 +16,8 @@
 
 package org.drools.core.factmodel.traits;
 
+import org.kie.api.definition.type.PropertyReactive;
+
 import java.io.Serializable;
 import java.util.BitSet;
 import java.util.Collection;
@@ -24,6 +26,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Traitable
+@PropertyReactive
 public class Entity implements TraitableBean<Entity,Entity>, Serializable {
 
 

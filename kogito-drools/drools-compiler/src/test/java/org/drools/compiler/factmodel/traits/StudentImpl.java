@@ -176,4 +176,9 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
     public String getTraitName() {
         return IStudent.class.getName();
     }
+
+    @Override
+    public boolean hasTypeCode( BitSet typeCode ) {
+        return false;
+    }
 }

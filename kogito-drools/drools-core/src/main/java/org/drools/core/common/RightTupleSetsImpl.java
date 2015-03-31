@@ -1,5 +1,6 @@
 package org.drools.core.common;
 
+import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 
@@ -7,16 +8,18 @@ public class RightTupleSetsImpl implements RightTupleSets {
 
 
     protected RightTuple        insertFirst;
-    protected volatile int              insertSize;
+    protected volatile int      insertSize;
 
     protected RightTuple        deleteFirst;
-    protected volatile int              deleteSize;
+    protected volatile int      deleteSize;
 
     protected RightTuple        updateFirst;
-    protected volatile int              updateSize;
+    protected volatile int      updateSize;
 
-    public RightTupleSetsImpl() {
+    private final BetaMemory bm;
 
+    public RightTupleSetsImpl(BetaMemory bm) {
+        this.bm = bm;
     }
 
     public RightTuple getInsertFirst() {
@@ -65,6 +68,10 @@ public class RightTupleSetsImpl implements RightTupleSets {
     }
 
     public boolean addInsert(RightTuple rightTuple) {
+        if ( isEmpty() ) {
+            bm.setNodeDirtyWithoutNotify();
+        }
+
         rightTuple.setStagedType( LeftTuple.INSERT );
         if ( insertFirst == null ) {
             insertFirst = rightTuple;
@@ -77,6 +84,10 @@ public class RightTupleSetsImpl implements RightTupleSets {
     }
 
     public boolean addDelete(RightTuple rightTuple) {
+        if ( isEmpty() ) {
+            bm.setNodeDirtyWithoutNotify();
+        }
+
         switch ( rightTuple.getStagedType() ) {
             // handle clash with already staged entries
             case LeftTuple.INSERT:
@@ -100,6 +111,10 @@ public class RightTupleSetsImpl implements RightTupleSets {
 
 
     public boolean addUpdate(RightTuple rightTuple) {
+        if ( isEmpty() ) {
+            bm.setNodeDirtyWithoutNotify();
+        }
+
         if (rightTuple.getStagedType() != LeftTuple.NONE) {
             // do nothing, it's already staged as insert or an update, which means it's already scheduled for eval too.
             return false;
@@ -284,7 +299,11 @@ public class RightTupleSetsImpl implements RightTupleSets {
     }
 
     public RightTupleSets takeAll() {
-        RightTupleSetsImpl clone = new RightTupleSetsImpl();
+        if ( !isEmpty() ) {
+            bm.setNodeDirtyWithoutNotify();
+        }
+
+        RightTupleSetsImpl clone = new RightTupleSetsImpl(bm);
         clone.insertSize = this.insertSize;
         clone.deleteSize = this.deleteSize;
         clone.updateSize = this.updateSize;

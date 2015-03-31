@@ -2,7 +2,6 @@ package org.drools.compiler.trait.test;
 
 
 // Individual is an empty traitable, based solely on a property map.
-import org.drools.core.factmodel.traits.Entity;
 import org.drools.core.factmodel.traits.Traitable;
 
 import org.drools.compiler.factmodel.traits.Imp;
@@ -20,6 +19,7 @@ end
 
 declare Imp
     @Traitable
+    @PropertyReactive
 end
 
 
@@ -47,16 +47,17 @@ when
     $core: Imp()
     not Person( age == 30 )
 then
-    Person p = don( $core, Person.class );
+    System.out.println( " Rule trait is firing " );
 
-    System.out.println( " Person trait : " + p);
+    Person p = don( $core, Person.class );
 
     modify( p ) {
         setName( "john" ),
         setAge( 30 );
     }
-end
 
+    System.out.println( " Done firing Rule trait " );
+end
 
 rule "Cloak"
 no-loop
@@ -71,6 +72,7 @@ then
     modify( role ) {
         setRoleName("myRole");
     }
+
     System.out.println( "John the Role is here >>> " + role.getRoleName() );
 end
 

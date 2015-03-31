@@ -50,6 +50,7 @@ import org.drools.core.marshalling.impl.ProtobufMessages.ProcessData.Builder;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.core.marshalling.impl.ProtobufMessages.Tuple;
+import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
@@ -339,6 +340,7 @@ public class ProtobufOutputMarshaller {
                 dormant.add( item );
             }
         }
+
         Collections.sort( dormant, ActivationsSorter.INSTANCE );
         for ( org.drools.core.spi.Activation activation : dormant ) {
             _ab.addMatch( writeActivation( context, (AgendaItem) activation ) );
@@ -574,13 +576,15 @@ public class ProtobufOutputMarshaller {
     public static void writeActionQueue(MarshallerWriteContext context,
                                         ProtobufMessages.RuleData.Builder _session) throws IOException {
 
-        StatefulKnowledgeSessionImpl wm = (StatefulKnowledgeSessionImpl) context.wm;
-        if ( !wm.getActionQueue().isEmpty() ) {
+        if ( context.wm.hasPendingPropagations() ) {
             ProtobufMessages.ActionQueue.Builder _queue = ProtobufMessages.ActionQueue.newBuilder();
 
-            WorkingMemoryAction[] queue = wm.getActionQueue().toArray( new WorkingMemoryAction[wm.getActionQueue().size()] );
-            for ( int i = queue.length - 1; i >= 0; i-- ) {
-                _queue.addAction( queue[i].serialize( context ) );
+            Iterator<? extends PropagationEntry> i = context.wm.getActionsIterator();
+            while ( i.hasNext() ) {
+                PropagationEntry entry = i.next();
+                if (entry instanceof WorkingMemoryAction) {
+                    _queue.addAction(((WorkingMemoryAction) entry).serialize(context));
+                }
             }
             _session.setActionQueue( _queue.build() );
         }

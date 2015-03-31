@@ -96,6 +96,8 @@ public class BuildContext {
     private KieComponentFactory              componentFactory;
     private boolean                          attachPQN;
 
+    private boolean                          terminated;
+
     public BuildContext(final InternalKnowledgeBase kBase,
                         final ReteooBuilder.IdGenerator idGenerator) {
         this.kBase = kBase;
@@ -372,6 +374,10 @@ public class BuildContext {
         return nodes;
     }
 
+    public BaseNode getLastNode() {
+        return nodes.get(nodes.size()-1);
+    }
+
     /**
      * @param nodes the nodes to set
      */
@@ -502,4 +508,11 @@ public class BuildContext {
         this.componentFactory = componentFactory;
     }
 
+    public boolean isTerminated() {
+        return terminated;
+    }
+
+    public void setTerminated(boolean terminated) {
+        this.terminated = terminated;
+    }
 }

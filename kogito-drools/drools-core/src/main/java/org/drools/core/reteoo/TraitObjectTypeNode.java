@@ -21,8 +21,8 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.factmodel.traits.TraitTypeMap;
-import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
@@ -60,20 +60,30 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
 
 
     @Override
-    public void assertObject( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory ) {
-        if ( factHandle.getObject() instanceof TraitProxy )  {
-            BitSet vetoMask = ((TraitProxy) factHandle.getObject()).getTypeFilter();
-            boolean isVetoed = vetoMask != null && ! typeMask.isEmpty() && HierarchyEncoderImpl.supersetOrEqualset( vetoMask, this.typeMask );
-            if ( ! isVetoed || sameAndNotCoveredByDescendants( (TraitProxy) factHandle.getObject(), typeMask ) ) {
-//                System.out.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : Assert PASS " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
-                super.assertObject( factHandle, context, workingMemory );
-            } else {
-//                System.out.println( ( (ClassObjectType) this.getObjectType() ).getClassName() + " : Assert BLOCK " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " >> " + vetoMask + " checks in " + typeMask );
-            }
-        } else {
-            super.assertObject( factHandle, context, workingMemory );
+    public void propagateAssert( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory ) {
+        if ( isAssertAllowed( factHandle ) ) {
+            super.propagateAssert( factHandle, context, workingMemory );
         }
+    }
 
+    private boolean isAssertAllowed( InternalFactHandle factHandle ) {
+        if ( factHandle.isTraiting() )  {
+            TraitProxy proxy = (TraitProxy) factHandle.getObject();
+            BitSet vetoMask = proxy.computeInsertionVetoMask();
+            boolean vetoed = ( vetoMask != null
+                               && ! typeMask.isEmpty()
+                               && HierarchyEncoderImpl.supersetOrEqualset( vetoMask, this.typeMask ) );
+
+            boolean allowed = ! vetoed || sameAndNotCoveredByDescendants( (TraitProxy) factHandle.getObject(), typeMask );
+            if ( allowed ) {
+                //System.err.println(" INSERT PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+                proxy.assignOtn( this.typeMask );
+            } else {
+                //System.err.println(" INSERT BLOCK !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+            }
+            return allowed;
+        }
+        return true;
     }
 
     /**
@@ -87,18 +97,43 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
     private boolean sameAndNotCoveredByDescendants( TraitProxy proxy, BitSet typeMask ) {
         boolean isSameType = typeMask.equals( proxy.getTypeCode() );
         if ( isSameType ) {
-            Collection descs = ((TraitTypeMap) proxy.getObject()._getTraitMap()).immediateChildren( typeMask );
+            TraitTypeMap<String,Thing<?>,?> ttm = (TraitTypeMap<String,Thing<?>,?>) proxy.getObject()._getTraitMap();
+            Collection<Thing<?>> descs = ttm.lowerDescendants( typeMask );
             // we have to exclude the "mock" bottom proxy
-            return descs.size() <= 1;
+            if ( descs == null || descs.isEmpty() ) {
+                return true;
+            } else {
+                for ( Thing sub : descs ) {
+                    TraitType tt = (TraitType) sub;
+                    if ( tt != proxy && tt.hasTypeCode( typeMask ) ) {
+                        return false;
+                    }
+                }
+                return true;
+            }
         } else {
             return false;
         }
     }
 
+    private boolean isModifyAllowed( InternalFactHandle factHandle ) {
+        if ( factHandle.isTraiting() ) {
+            TraitProxy proxy = ( (TraitProxy) factHandle.getObject() );
+            return proxy.listAssignedOtnTypeCodes().contains( this.typeMask );
+        }
+        return true;
+    }
+
+
     public void modifyObject( InternalFactHandle factHandle,
                               ModifyPreviousTuples modifyPreviousTuples,
                               PropagationContext context,
                               InternalWorkingMemory workingMemory ) {
+
+        if (!isModifyAllowed( factHandle )) {
+            return;
+        }
+
         if ( dirty ) {
             resetIdGenerator();
             updateTupleSinkId( this, this );
@@ -112,39 +147,28 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                     context.adaptModificationMaskForObjectType( objectType, workingMemory ),
                     workingMemory );
         } else {
-            if ( factHandle.getObject() instanceof TraitProxy )  {
-                TraitProxy proxy = ((TraitProxy) factHandle.getObject());
-                BitSet vetoMask = proxy.getTypeFilter();
-
-                if ( vetoMask == null                                                               // no vetos
-                     || typeMask.isEmpty()                                                          // Thing is permissive
-                     || ! HierarchyEncoderImpl.supersetOrEqualset( vetoMask, this.typeMask ) ) {    // this node is not vetoed
+            if ( factHandle.isTraiting() )  {
+                if ( isModifyAllowed( factHandle )  ) {
 
                     // "don" update :
-                    if ( context.getModificationMask().isSet(PropertySpecificUtil.TRAITABLE_BIT) ) {
+                    if ( context.getModificationMask().isSet( PropertySpecificUtil.TRAITABLE_BIT )
+                            && modifyPreviousTuples.peekLeftTuple() != null
+                            && modifyPreviousTuples.peekLeftTuple().getPropagationContext().getType() == PropagationContext.INSERTION ) {
                         // property reactivity may block trait proxies which have been asserted and then immediately updated because of another "don"
-                        // however, PR must be disabled only once for each OTN: that is, a proxy will not pass an OTN if one of its ancestors can also pass it
-
-                        // Example: given classes A <- B <-C, at OTN A, a proxy c can only pass if no proxy b exists
-
-                        TraitableBean txBean = (TraitableBean) proxy.getObject();
-                        TraitTypeMap tMap = (TraitTypeMap) txBean._getTraitMap();
-                        Collection<Thing> x = tMap.immediateParents( this.typeMask );
-                        Thing k = x.iterator().next();
 
                         BitMask originalMask = context.getModificationMask();
-                        if ( ! k.isTop() ) {
-                            context.setModificationMask( AllSetBitMask.get() );
-                        }
-                        //System.out.println(" MODIFY PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+                        context.setModificationMask( AllSetBitMask.get() );
+
+                        //System.err.println(" MODIFY DON PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + " checks in " + typeMask );
+
                         this.sink.propagateModifyObject( factHandle,
-                                modifyPreviousTuples,
-                                context.adaptModificationMaskForObjectType( objectType, workingMemory ),
-                                workingMemory );
+                                                         modifyPreviousTuples,
+                                                         context.adaptModificationMaskForObjectType( objectType, workingMemory ),
+                                                         workingMemory );
                         context.setModificationMask( originalMask );
 
                     } else {
-                        //System.out.println(" MODIFY PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+                        // System.err.println(" MODIFY PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> "  + " checks in " + typeMask );
                         this.sink.propagateModifyObject( factHandle,
                                 modifyPreviousTuples,
                                 context.adaptModificationMaskForObjectType( objectType, workingMemory ),
@@ -152,7 +176,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                     }
 
                 } else {
-                    //System.out.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : MODIFY BLOCK !! " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+                    //System.err.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : MODIFY BLOCK !! " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + " checks in " + typeMask );
                 }
             } else {
                 this.sink.propagateModifyObject( factHandle,
@@ -165,10 +189,6 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
         }
     }
 
-    public boolean needsMaskUpdate() {
-        return true;
-    }
-
     @Override
     public BitMask updateMask(BitMask mask) {
         BitMask returnMask;
@@ -177,4 +197,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
         return returnMask;
     }
 
+    public BitSet getLocalTypeCode() {
+        return typeMask;
+    }
 }

@@ -25,7 +25,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.common.QuadroupleBetaConstraints;
 import org.drools.core.common.QuadroupleNonIndexSkipBetaConstraints;
 import org.drools.core.common.RightTupleSets;
@@ -35,7 +34,6 @@ import org.drools.core.common.TripleBetaConstraints;
 import org.drools.core.common.TripleNonIndexSkipBetaConstraints;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.phreak.RightTupleEntry;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -44,9 +42,9 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.util.FastIterator;
 import org.drools.core.util.bitmask.EmptyBitMask;
 import org.drools.core.util.index.IndexUtil;
 import org.slf4j.Logger;
@@ -138,7 +136,7 @@ public abstract class BetaNode extends LeftTupleSource
 
         initMasks(context, leftInput);
 
-        streamMode = context.isStreamMode() && getObjectTypeNode(context).getObjectType().isEvent();
+        setStreamMode( context.isStreamMode() && getObjectTypeNode(context).getObjectType().isEvent() );
     }
 
     private ObjectTypeNode getObjectTypeNode(BuildContext context) {
@@ -283,16 +281,7 @@ public abstract class BetaNode extends LeftTupleSource
 
         RightTuple rightTuple = createRightTuple( factHandle, this, pctx );
 
-        boolean stagedInsertWasEmpty = false;
-        if ( streamMode ) {
-            int propagationType = pctx.getType() == PropagationContext.MODIFICATION ? PropagationContext.INSERTION : pctx.getType();
-            stagedInsertWasEmpty = memory.getSegmentMemory().getStreamQueue().addInsert(new RightTupleEntry(rightTuple, pctx, memory, propagationType));
-            if ( isLogTraceEnabled ) {
-                log.trace( "JoinNode insert queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getStreamQueue() ), memory.getSegmentMemory().getStreamQueue().size(), PhreakPropagationContext.intEnumToString(pctx), rightTuple );
-            }
-        }  else {
-            stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert(rightTuple);
-        }
+        boolean stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert(rightTuple);
         if ( isLogTraceEnabled ) {
             log.trace("BetaNode insert={} stagedInsertWasEmpty={}",  memory.getStagedRightTuples().insertSize(), stagedInsertWasEmpty );
         }
@@ -302,11 +291,7 @@ public abstract class BetaNode extends LeftTupleSource
             memory.setNodeDirty( wm, !rightInputIsPassive );
         }
 
-        PathMemory pmem = memory.getSegmentMemory().getFirstDataDrivenPathMemory();
-        if (pmem != null) {
-            forceFlushLeftTuple(pmem, memory.getSegmentMemory(), wm, null);
-            return;
-        }
+        if (flushLeftTupleIfNecessary(wm, memory.getSegmentMemory())) return;
 
         if( pctx.getReaderContext() != null ) {
             // we are deserializing a session, so we might need to evaluate
@@ -314,6 +299,17 @@ public abstract class BetaNode extends LeftTupleSource
             MarshallerReaderContext mrc = pctx.getReaderContext();
             mrc.filter.fireRNEAs( wm );
         }
+    }
+
+    protected boolean flushLeftTupleIfNecessary(InternalWorkingMemory wm, SegmentMemory smem) {
+        PathMemory pmem = isStreamMode() ?
+                          smem.getPathMemories().get(0) :
+                          smem.getFirstDataDrivenPathMemory();
+        if (pmem != null) {
+            forceFlushLeftTuple(pmem, smem, wm, null);
+            return true;
+        }
+        return false;
     }
 
     public void modifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory wm) {
@@ -359,19 +355,7 @@ public abstract class BetaNode extends LeftTupleSource
                                    final BetaMemory memory) {
         RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
 
-        boolean stagedDeleteWasEmpty = false;
-        if ( isStreamMode() ) {
-            PropagationContext pctx = rightTuple.getPropagationContext();
-            int propagationType = pctx.getType() == PropagationContext.MODIFICATION ? PropagationContext.DELETION : pctx.getType();
-            stagedDeleteWasEmpty = memory.getSegmentMemory().getStreamQueue().addDelete(new RightTupleEntry(rightTuple, pctx, memory, propagationType));
-            if ( isLogTraceEnabled ) {
-                log.trace( "{} delete queue={} size={} pctx={} lt={}", getClass().getSimpleName(), System.identityHashCode( memory.getSegmentMemory().getStreamQueue() ), memory.getSegmentMemory().getStreamQueue().size(), PhreakPropagationContext.intEnumToString(rightTuple.getPropagationContext()), rightTuple );
-            }
-
-            registerUnlinkedPaths(wm, memory.getSegmentMemory(), stagedDeleteWasEmpty);
-        } else {
-            stagedDeleteWasEmpty = stagedRightTuples.addDelete(rightTuple);
-        }
+        boolean stagedDeleteWasEmpty = stagedRightTuples.addDelete(rightTuple);
 
         if ( memory.getAndDecCounter() == 1 ) {
             memory.unlinkNode(wm);
@@ -387,13 +371,7 @@ public abstract class BetaNode extends LeftTupleSource
         RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
 
 
-        boolean stagedUpdateWasEmpty = false;
-        if ( streamMode ) {
-            PropagationContext pctx = rightTuple.getPropagationContext();
-            stagedUpdateWasEmpty = memory.getSegmentMemory().getStreamQueue().addUpdate(new RightTupleEntry(rightTuple, pctx, memory, pctx.getType()));
-        } else {
-            stagedUpdateWasEmpty = stagedRightTuples.addUpdate( rightTuple );
-        }
+        boolean stagedUpdateWasEmpty = stagedRightTuples.addUpdate( rightTuple );
 
         if ( stagedUpdateWasEmpty  ) {
             memory.setNodeDirty( wm );

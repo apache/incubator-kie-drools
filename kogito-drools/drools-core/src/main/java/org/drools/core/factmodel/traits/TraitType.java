@@ -28,4 +28,6 @@ public interface TraitType {
     public static final String traitNameField = "__$$trait_Name";
 
     public String getTraitName();
+
+    public boolean hasTypeCode( BitSet typeCode );
 }

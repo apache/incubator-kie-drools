@@ -6,13 +6,12 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.List;
 
@@ -63,9 +62,8 @@ public class AlphaNetworkModifyTest extends CommonTestMethodBase {
         str += "end  \n";         
         
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
-        
+
+        StatefulKnowledgeSession wm = kbase.newStatefulKnowledgeSession();
         
         ObjectTypeNode otnPerson = getObjectTypeNode(kbase, "Person" );
         ObjectTypeNode otnCheese = getObjectTypeNode(kbase, "Cheese" );
@@ -117,11 +115,10 @@ public class AlphaNetworkModifyTest extends CommonTestMethodBase {
         str += "end  \n";         
         
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+
+        StatefulKnowledgeSession wm = kbase.newStatefulKnowledgeSession();
         wm.fireAllRules();
-        
-        
+
         ObjectTypeNode otnInit = getObjectTypeNode(kbase, "InitialFactImpl" );
         
         LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otnInit.getSinkPropagator().getSinks()[0];
@@ -171,8 +168,8 @@ public class AlphaNetworkModifyTest extends CommonTestMethodBase {
         str += "end  \n";         
         
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+
+        StatefulKnowledgeSession wm = kbase.newStatefulKnowledgeSession();
         wm.fireAllRules();
         
         

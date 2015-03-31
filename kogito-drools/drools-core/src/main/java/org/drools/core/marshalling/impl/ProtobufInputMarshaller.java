@@ -32,7 +32,6 @@ import org.drools.core.common.ObjectStore;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.common.WorkingMemoryFactory;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -189,7 +188,6 @@ public class ProtobufInputMarshaller {
         StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) wmFactory.createWorkingMemory( id,
                                                                                                  context.kBase,
                                                                                                  handleFactory,
-                                                                                                 null,
                                                                                                  1, // pCTx starts at 1, as InitialFact is 0
                                                                                                  config,
                                                                                                  agenda,
@@ -436,10 +434,8 @@ public class ProtobufInputMarshaller {
                                        RuleData _session) throws IOException,
                                                          ClassNotFoundException {
         StatefulKnowledgeSessionImpl wm = (StatefulKnowledgeSessionImpl) context.wm;
-        Queue<WorkingMemoryAction> actionQueue = wm.getActionQueue();
         for ( ProtobufMessages.ActionQueue.Action _action : _session.getActionQueue().getActionList() ) {
-            actionQueue.offer( PersisterHelper.deserializeWorkingMemoryAction( context,
-                                                                               _action ) );
+            wm.addPropagation(PersisterHelper.deserializeWorkingMemoryAction(context, _action));
         }
     }
 
@@ -498,7 +494,7 @@ public class ProtobufInputMarshaller {
                                              wm );
 
         propagationContext.evaluateActionQueue( wm );
-        wm.executeQueuedActions();
+        wm.flushPropagations();
     }
 
     private static void cleanReaderContexts(List<PropagationContext> pctxs) {

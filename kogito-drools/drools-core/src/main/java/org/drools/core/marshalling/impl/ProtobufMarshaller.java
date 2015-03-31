@@ -26,7 +26,6 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.PhreakTimerNode.TimerNodeTimerInputMarshaller;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJobContextTimerInputMarshaller;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
-import org.drools.core.spi.GlobalResolver;
 import org.kie.api.KieBase;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.MarshallingConfiguration;
@@ -129,10 +128,9 @@ public class ProtobufMarshaller
                                                                        marshallingConfig.isMarshallWorkItems(),
                                                                        ksession.getEnvironment() );
 
-        ProtobufInputMarshaller.readSession( (StatefulKnowledgeSessionImpl) ksession,
-                                             context );
+        ProtobufInputMarshaller.readSession((StatefulKnowledgeSessionImpl) ksession,
+                                            context);
         context.close();
-
     }
 
     public void marshall(final OutputStream stream,
@@ -143,6 +141,7 @@ public class ProtobufMarshaller
     public void marshall(final OutputStream stream,
                          final KieSession ksession,
                          final long clockTime) throws IOException {
+        ((InternalWorkingMemory) ksession).flushNonMarshallablePropagations();
         MarshallerWriteContext context = new MarshallerWriteContext( stream,
                                                                      (InternalKnowledgeBase) kbase,
                                                                      (InternalWorkingMemory) ksession,

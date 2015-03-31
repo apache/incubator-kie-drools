@@ -19,7 +19,7 @@ package org.drools.core.reteoo;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.RightTupleSets;
-import org.drools.core.common.SynchronizedRightTupleSets;
+import org.drools.core.common.RightTupleSetsImpl;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 
@@ -48,7 +48,7 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
                       final short nodeType) {
         this.leftTupleMemory = tupleMemory;
         this.rightTupleMemory = objectMemory;
-        this.stagedRightTuples = new SynchronizedRightTupleSets(this);
+        this.stagedRightTuples = new RightTupleSetsImpl(this);
         this.context = context;
         this.nodeType = nodeType;
     }

@@ -20,7 +20,6 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RightTupleSets;
-import org.drools.core.phreak.RightTupleEntry;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 
@@ -31,9 +30,6 @@ import java.io.ObjectOutput;
 public class NotNode extends BetaNode {
     private static final long serialVersionUID = 510l;
 
-    static int                notAssertObject  = 0;
-    static int                notAssertTuple   = 0;
-    
     // The reason why this is here is because forall can inject a
     //  "this == " + BASE_IDENTIFIER $__forallBaseIdentifier
     // Which we don't want to actually count in the case of forall node linking
@@ -48,11 +44,11 @@ public class NotNode extends BetaNode {
                    final ObjectSource rightInput,
                    final BetaConstraints joinNodeBinder,
                    final BuildContext context) {
-        super( id,
-               leftInput,
-               rightInput,
-               joinNodeBinder,
-               context );
+        super(id,
+              leftInput,
+              rightInput,
+              joinNodeBinder,
+              context);
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         
         // The reason why this is here is because forall can inject a
@@ -125,7 +121,7 @@ public class NotNode extends BetaNode {
 
     public String toString() {
         ObjectTypeNode source = getObjectTypeNode();
-        return "[NotNode(" + this.getId() + ") - " + ((source != null) ? ((ObjectTypeNode) source).getObjectType() : "<source from a subnetwork>") + "]";
+        return "[NotNode(" + this.getId() + ") - " + ((source != null) ? source.getObjectType() : "<source from a subnetwork>") + "]";
     }
 
     @Override
@@ -147,13 +143,7 @@ public class NotNode extends BetaNode {
         // strangely we link here, this is actually just to force a network evaluation
         // The assert is then processed and the rule unlinks then.
         // This is because we need the first RightTuple to link with it's blocked
-        boolean stagedInsertWasEmpty = false;
-        if ( streamMode ) {
-            stagedInsertWasEmpty = memory.getSegmentMemory().getStreamQueue().addInsert(new RightTupleEntry(rightTuple, pctx, memory, pctx.getType()));
-            //log.trace( "NotNode insert queue={} size={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), rightTuple );
-        }  else {
-            stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert( rightTuple );
-        }
+        boolean stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert( rightTuple );
 
         if (  memory.getAndIncCounter() == 0 && isEmptyBetaConstraints()  ) {
             // NotNodes can only be unlinked, if they have no variable constraints
@@ -162,6 +152,8 @@ public class NotNode extends BetaNode {
             // nothing staged before, notify rule, so it can evaluate network
             memory.setNodeDirty(wm);
         }
+
+        flushLeftTupleIfNecessary(wm, memory.getSegmentMemory());
     }
 
     public void retractRightTuple(final RightTuple rightTuple,
@@ -178,15 +170,7 @@ public class NotNode extends BetaNode {
                                    final InternalWorkingMemory wm,
                                    final BetaMemory memory) {
         RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
-        boolean  stagedDeleteWasEmpty = false;
-        if ( streamMode ) {
-            PropagationContext pctx = rightTuple.getPropagationContext();
-            stagedDeleteWasEmpty = memory.getSegmentMemory().getStreamQueue().addDelete(new RightTupleEntry(rightTuple, pctx, memory, pctx.getType()));
-            //log.trace( "NotNode delete queue={} size={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), rightTuple );
-            registerUnlinkedPaths(wm, memory.getSegmentMemory(), stagedDeleteWasEmpty);
-        } else {
-            stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );
-        }
+        boolean stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );
 
         if (  memory.getAndDecCounter() == 1 && isEmptyBetaConstraints()  ) {
             // NotNodes can only be unlinked, if they have no variable constraints

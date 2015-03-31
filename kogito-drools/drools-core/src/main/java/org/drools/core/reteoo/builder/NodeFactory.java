@@ -38,7 +38,9 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Accumulate;
+import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.EvalCondition;
@@ -49,6 +51,8 @@ import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.Timer;
+
+import java.util.List;
 
 public interface NodeFactory {
 
@@ -154,4 +158,10 @@ public interface NodeFactory {
 
     ConditionalBranchNode buildConditionalBranchNode(int id, LeftTupleSource tupleSource,
                                                      ConditionalBranchEvaluator branchEvaluator, BuildContext context);
+
+    WindowNode buildWindowNode(int id,
+                               List<AlphaNodeFieldConstraint> constraints,
+                               List<Behavior> behaviors,
+                               ObjectSource objectSource,
+                               BuildContext context);
 }

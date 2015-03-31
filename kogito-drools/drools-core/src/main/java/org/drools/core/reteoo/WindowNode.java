@@ -40,7 +40,6 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * <code>WindowNodes</code> are nodes in the <code>Rete</code> network used
@@ -59,11 +58,11 @@ public class WindowNode extends ObjectSource
 
     private static final long serialVersionUID = 540l;
     private List<AlphaNodeFieldConstraint> constraints;
-    private BehaviorManager                behavior;
-    private EntryPointId                     entryPoint;
+    protected BehaviorManager              behavior;
+    private EntryPointId                   entryPoint;
     private ObjectSinkNode                 previousRightTupleSinkNode;
     private ObjectSinkNode                 nextRightTupleSinkNode;
-    private EntryPointNode                 epNode;
+    protected EntryPointNode               epNode;
     private transient ObjectTypeNode.Id rightInputOtnId = ObjectTypeNode.DEFAULT_ID;
 
     public WindowNode() {
@@ -166,43 +165,32 @@ public class WindowNode extends ObjectSource
         final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory(this);
 
         EventFactHandle evFh = ( EventFactHandle ) factHandle;
-        // must guarantee single thread from now on
-        memory.gate.lock();
-        try {
-            int index = 0;
-            for (AlphaNodeFieldConstraint constraint : constraints) {
-                if (!constraint.isAllowed(evFh, workingMemory, memory.context[index++])) {
-                    return;
-                }
-            }
-
-            RightTuple rightTuple = new RightTuple( evFh, this );
-            rightTuple.setPropagationContext( pctx );
-
-            InternalFactHandle clonedFh = evFh.cloneAndLink();  // this is cloned, as we need to separate the child RightTuple references
-            rightTuple.setObject( clonedFh );
-
-            // process the behavior
-            if (!behavior.assertFact(memory, clonedFh, pctx, workingMemory)) {
+        int index = 0;
+        for (AlphaNodeFieldConstraint constraint : constraints) {
+            if (!constraint.isAllowed(evFh, workingMemory, memory.context[index++])) {
                 return;
             }
-
-            this.sink.propagateAssertObject(clonedFh, pctx, workingMemory);
-        } finally {
-            memory.gate.unlock();
         }
+
+        RightTuple rightTuple = new RightTuple( evFh, this );
+        rightTuple.setPropagationContext( pctx );
+
+        InternalFactHandle clonedFh = evFh.cloneAndLink();  // this is cloned, as we need to separate the child RightTuple references
+        rightTuple.setObject( clonedFh );
+
+        // process the behavior
+        if (!behavior.assertFact(memory.behaviorContext, clonedFh, pctx, workingMemory)) {
+            return;
+        }
+
+        this.sink.propagateAssertObject(clonedFh, pctx, workingMemory);
     }
 
     @Override
     public void retractRightTuple(RightTuple rightTuple, PropagationContext pctx, InternalWorkingMemory wm) {
         final WindowMemory memory = (WindowMemory) wm.getNodeMemory(this);
 
-        memory.gate.lock();
-        try {
-            behavior.retractFact(memory, rightTuple.getFactHandle(), pctx, wm);
-        } finally {
-            memory.gate.unlock();
-        }
+        behavior.retractFact(memory.behaviorContext, rightTuple.getFactHandle(), pctx, wm);
 
         InternalFactHandle clonedFh = ( InternalFactHandle ) rightTuple.getObject();
         ObjectTypeNode.doRetractObject(clonedFh, pctx, wm);
@@ -212,44 +200,36 @@ public class WindowNode extends ObjectSource
     public void modifyRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
         final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory(this);
 
-        // must guarantee single thread from now on
-        memory.gate.lock();
-
         EventFactHandle originalFactHandle = ( EventFactHandle ) rightTuple.getFactHandle();
         EventFactHandle cloneFactHandle  = ( EventFactHandle ) rightTuple.getObject();
         originalFactHandle.quickCloneUpdate( cloneFactHandle ); // make sure all fields are updated
 
         // behavior modify
-        try {
-            int index = 0;
-            boolean isAllowed = true;
-            for (AlphaNodeFieldConstraint constraint : constraints) {
-                if (!constraint.isAllowed(cloneFactHandle,
-                                          workingMemory,
-                                          memory.context[index++])) {
-                    isAllowed = false;
-                    break;
-                }
+        int index = 0;
+        boolean isAllowed = true;
+        for (AlphaNodeFieldConstraint constraint : constraints) {
+            if (!constraint.isAllowed(cloneFactHandle,
+                                      workingMemory,
+                                      memory.context[index++])) {
+                isAllowed = false;
+                break;
             }
+        }
 
-            if  ( isAllowed ) {
-                ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(cloneFactHandle.getFirstLeftTuple(), cloneFactHandle.getFirstRightTuple(), epNode );
-                cloneFactHandle.clearLeftTuples();
-                cloneFactHandle.clearRightTuples();
+        if  ( isAllowed ) {
+            ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(cloneFactHandle.getFirstLeftTuple(), cloneFactHandle.getFirstRightTuple(), epNode );
+            cloneFactHandle.clearLeftTuples();
+            cloneFactHandle.clearRightTuples();
 
-                this.sink.propagateModifyObject(cloneFactHandle,
-                                                modifyPreviousTuples,
-                                                context,
-                                                workingMemory);
-                modifyPreviousTuples.retractTuples(context, workingMemory);
-            } else {
-                ObjectTypeNode.doRetractObject(cloneFactHandle, context, workingMemory);
-            }
-        } finally {
-            memory.gate.unlock();
+            this.sink.propagateModifyObject(cloneFactHandle,
+                                            modifyPreviousTuples,
+                                            context,
+                                            workingMemory);
+            modifyPreviousTuples.retractTuples(context, workingMemory);
+        } else {
+            ObjectTypeNode.doRetractObject(cloneFactHandle, context, workingMemory);
         }
     }
-
 
     public void modifyObject(InternalFactHandle factHandle,
                              ModifyPreviousTuples modifyPreviousTuples,
@@ -283,15 +263,7 @@ public class WindowNode extends ObjectSource
                                        PropagationContext context,
                                        InternalWorkingMemory workingMemory) {
         final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory(this);
-
-        // must guarantee single thread from now on
-        memory.gate.lock();
-
-        try {
-            sink.byPassModifyToBetaNode(factHandle, modifyPreviousTuples, context, workingMemory);
-        } finally {
-            memory.gate.unlock();
-        }
+        sink.byPassModifyToBetaNode(factHandle, modifyPreviousTuples, context, workingMemory);
     }
 
     public void updateSink(final ObjectSink sink,
@@ -299,21 +271,13 @@ public class WindowNode extends ObjectSource
                            final InternalWorkingMemory wm) {
         final WindowMemory memory = (WindowMemory) wm.getNodeMemory(this);
 
-        // even if the update Sink guarantees the kbase/ksession lock is acquired, we can't
-        // have triggers being executed concurrently
-        memory.gate.lock();
+        final ObjectTypeNodeMemory omem = (ObjectTypeNodeMemory) wm.getNodeMemory( getObjectTypeNode());
+        Iterator<InternalFactHandle> it = omem.iterator();
 
-        try {
-            final ObjectTypeNodeMemory omem = (ObjectTypeNodeMemory) wm.getNodeMemory( getObjectTypeNode());
-            Iterator<InternalFactHandle> it = omem.iterator();
-
-            while (it.hasNext()) {
-                sink.assertObject(it.next(),
-                                  context,
-                                  wm);
-            }
-        } finally {
-            memory.gate.unlock();
+        while (it.hasNext()) {
+            sink.assertObject(it.next(),
+                              context,
+                              wm);
         }
     }
 
@@ -328,7 +292,6 @@ public class WindowNode extends ObjectSource
             memory.context[index++] = alpha.createContextEntry();
         }
         memory.behaviorContext = this.behavior.createBehaviorContext();
-        memory.gate = new ReentrantLock();
         return memory;
     }
 
@@ -415,7 +378,6 @@ public class WindowNode extends ObjectSource
     public static class WindowMemory implements Memory {
         public           ContextEntry[] context;
         public           Object         behaviorContext;
-        public transient ReentrantLock  gate;
 
         public short getNodeType() {
             return NodeTypeEnums.WindowNode;

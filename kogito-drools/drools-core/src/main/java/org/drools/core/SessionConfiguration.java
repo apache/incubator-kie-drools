@@ -33,6 +33,7 @@ import org.kie.api.runtime.conf.KieSessionOption;
 import org.kie.api.runtime.conf.MultiValueKieSessionOption;
 import org.kie.api.runtime.conf.QueryListenerOption;
 import org.kie.api.runtime.conf.SingleValueKieSessionOption;
+import org.kie.api.runtime.conf.ThreadSafeOption;
 import org.kie.api.runtime.conf.TimedRuleExectionOption;
 import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
@@ -79,6 +80,7 @@ public class SessionConfiguration
 
     private volatile boolean               immutable;
 
+    private boolean                        threadSafe;
     private boolean                        keepReference;
 
     private ForceEagerActivationFilter     forceEagerActivationFilter;
@@ -169,6 +171,9 @@ public class SessionConfiguration
         setKeepReference( Boolean.valueOf( this.chainedProperties.getProperty( KeepReferenceOption.PROPERTY_NAME,
                                                                                "true" ) ).booleanValue() );
 
+        setThreadSafe(Boolean.valueOf(this.chainedProperties.getProperty(ThreadSafeOption.PROPERTY_NAME,
+                                                                         "true")).booleanValue());
+
         setForceEagerActivationFilter(ForceEagerActivationOption.resolve(this.chainedProperties.getProperty(ForceEagerActivationOption.PROPERTY_NAME,
                                                                                                             "false")).getFilter());
 
@@ -208,16 +213,18 @@ public class SessionConfiguration
 
         if ( name.equals( KeepReferenceOption.PROPERTY_NAME ) ) {
             setKeepReference( StringUtils.isEmpty(value) || Boolean.parseBoolean(value) );
+        } else if ( name.equals( ThreadSafeOption.PROPERTY_NAME ) ) {
+            setThreadSafe(StringUtils.isEmpty(value) || Boolean.parseBoolean(value));
         } else if ( name.equals( ForceEagerActivationOption.PROPERTY_NAME ) ) {
             setForceEagerActivationFilter(ForceEagerActivationOption.resolve(StringUtils.isEmpty(value) ? "false" : value).getFilter());
         } else if ( name.equals( TimedRuleExectionOption.PROPERTY_NAME ) ) {
             setTimedRuleExecutionFilter(TimedRuleExectionOption.resolve(StringUtils.isEmpty(value) ? "false" : value).getFilter());
         } else if ( name.equals( ClockTypeOption.PROPERTY_NAME ) ) {
-            setClockType( ClockType.resolveClockType( StringUtils.isEmpty( value ) ? "realtime" : value ) );
+            setClockType(ClockType.resolveClockType(StringUtils.isEmpty(value) ? "realtime" : value));
         } else if ( name.equals( TimerJobFactoryOption.PROPERTY_NAME ) ) {
             setTimerJobFactoryType(TimerJobFactoryType.resolveTimerJobFactoryType(StringUtils.isEmpty(value) ? "default" : value));
         } else if ( name.equals( QueryListenerOption.PROPERTY_NAME ) ) {
-            setQueryListenerClass( StringUtils.isEmpty( value ) ? QueryListenerOption.STANDARD.getAsString() : value );
+            setQueryListenerClass(StringUtils.isEmpty(value) ? QueryListenerOption.STANDARD.getAsString() : value);
         } else if ( name.equals( BeliefSystemTypeOption.PROPERTY_NAME ) ) {
             setBeliefSystemType( StringUtils.isEmpty( value ) ? BeliefSystemType.SIMPLE : BeliefSystemType.resolveBeliefSystemType( value ) );
         }
@@ -230,7 +237,9 @@ public class SessionConfiguration
         }
 
         if ( name.equals( KeepReferenceOption.PROPERTY_NAME ) ) {
-            return Boolean.toString( this.keepReference );
+            return Boolean.toString(this.keepReference);
+        } else if ( name.equals( ThreadSafeOption.PROPERTY_NAME ) ) {
+            return Boolean.toString(this.threadSafe);
         } else if ( name.equals( ClockTypeOption.PROPERTY_NAME ) ) {
             return this.clockType.toExternalForm();
         } else if ( name.equals( TimerJobFactoryOption.PROPERTY_NAME ) ) {
@@ -264,6 +273,15 @@ public class SessionConfiguration
         if ( this.immutable ) {
             throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
         }
+    }
+
+    public void setThreadSafe(boolean threadSafe) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.threadSafe = threadSafe;
+    }
+
+    public boolean isThreadSafe() {
+        return this.threadSafe;
     }
 
     public void setKeepReference(boolean keepReference) {
@@ -510,6 +528,8 @@ public class SessionConfiguration
             return (T) ClockTypeOption.get( getClockType().toExternalForm() );
         } else if ( KeepReferenceOption.class.equals( option ) ) {
             return (T) (this.keepReference ? KeepReferenceOption.YES : KeepReferenceOption.NO);
+        } else if ( ThreadSafeOption.class.equals( option ) ) {
+            return (T) (this.threadSafe ? ThreadSafeOption.YES : ThreadSafeOption.NO);
         } else if ( TimerJobFactoryOption.class.equals( option ) ) {
             return (T) TimerJobFactoryOption.get( getTimerJobFactoryType().toExternalForm() );
         } else if ( QueryListenerOption.class.equals( option ) ) {
@@ -537,6 +557,8 @@ public class SessionConfiguration
             setTimerJobFactoryType(TimerJobFactoryType.resolveTimerJobFactoryType(((TimerJobFactoryOption) option).getTimerJobType()));
         } else if ( option instanceof KeepReferenceOption ) {
             setKeepReference(((KeepReferenceOption) option).isKeepReference());
+        } else if ( option instanceof ThreadSafeOption ) {
+            setThreadSafe(((ThreadSafeOption) option).isThreadSafe());
         } else if ( option instanceof ForceEagerActivationOption ) {
             setForceEagerActivationFilter(((ForceEagerActivationOption) option).getFilter());
         } else if ( option instanceof TimedRuleExectionOption ) {

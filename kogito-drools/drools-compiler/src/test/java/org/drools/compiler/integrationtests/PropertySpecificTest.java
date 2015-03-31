@@ -4,13 +4,12 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
@@ -45,7 +44,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                         "then\n" +
                         "end\n";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "InitialFactImpl" );
         assertNotNull( otn );
@@ -67,7 +66,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                       "then\n" +
                       "end\n";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "Person" );
         assertNotNull( otn );
@@ -89,7 +88,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                       "then\n" +
                       "end\n";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "Person" );
         assertNotNull( otn );
@@ -118,7 +117,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                       "then\n" +
                       "end\n";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "Cheese" );
         assertNotNull( otn );
@@ -141,7 +140,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                       "then\n" +
                       "end\n";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "Cheese" );
         assertNotNull( otn );
@@ -167,7 +166,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                       "then\n" +
                       "end\n";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "InitialFactImpl" );
         assertNotNull( otn );
@@ -193,7 +192,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                       "then\n" +
                       "end\n";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "Person" );
         assertNotNull( otn );
@@ -225,7 +224,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                       "then\n" +
                       "end\n";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "Cheese" );
         assertNotNull( otn );
@@ -304,7 +303,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testRtnNoConstraintsNoWatches() {
         String rule1 = "A()";
         KnowledgeBase kbase = getKnowledgeBase(rule1);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -320,7 +319,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testRtnNoConstraintsWithWatches() {
         String rule1 = "A() @watch(a)";
         KnowledgeBase kbase = getKnowledgeBase(rule1);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -338,7 +337,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testRtnWithConstraintsNoWatches() {
         String rule1 = "A( a == 10 )";
         KnowledgeBase kbase = getKnowledgeBase(rule1);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -360,7 +359,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testRtnWithConstraintsWithWatches() {
         String rule1 = "A( a == 10 ) @watch(b)";
         KnowledgeBase kbase = getKnowledgeBase(rule1);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -383,7 +382,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         String rule1 = "A( a == 10, b == 15 )";
         String rule2 = "A( a == 10, i == 20 )";
         KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -453,7 +452,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         String rule1 = "A( a == 10, b == 15 ) @watch(c, !a)";
         String rule2 = "A( a == 10, i == 20 ) @watch(s, !i)";
         KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -526,7 +525,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testBetaNoConstraintsNoWatches() {
         String rule1 = "B() A()";
         KnowledgeBase kbase = getKnowledgeBase(rule1);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -543,7 +542,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testBetaNoConstraintsWithWatches() {
         String rule1 = "B() @watch(a) A() @watch(a)";
         KnowledgeBase kbase = getKnowledgeBase(rule1);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -561,7 +560,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testBetaWithConstraintsNoWatches() {
         String rule1 = "$b : B(a == 15) A( a == 10, b == $b.b )";
         KnowledgeBase kbase = getKnowledgeBase(rule1);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -589,7 +588,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testBetaWithConstraintsWithWatches() {
         String rule1 = "$b : B( a == 15) @watch(c) A( a == 10, b == $b.b ) @watch(s)";
         KnowledgeBase kbase = getKnowledgeBase(rule1);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -619,7 +618,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testBetaWithConstraintsWithNegativeWatches() {
         String rule1 = "$b : B( a == 15) @watch(c, !a) A( a == 10, b == $b.b ) @watch(s, !a, !b)";
         KnowledgeBase kbase = getKnowledgeBase(rule1);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -650,7 +649,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         String rule1 = "$b : B( a == 15) @watch(c, !a) A( a == 10, s == 15, b == $b.b  )";
         String rule2 = "$b : B( a == 15) @watch(j, !i) A( a == 10, i == 20, b == $b.b  )";
         KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -730,7 +729,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         String rule1 = "$b : B( a == 15) @watch(c, !a) A( a == 10, b == 15, b == $b.b  ) @watch(c, !b)";
         String rule2 = "$b : B( a == 15) @watch(j) A( a == 10, i == 20, b == $b.b ) @watch(s, !a)";
         KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -817,7 +816,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         String rule2 = "$b : B( b == 15) @watch(j) A( a == 10, i == 20 ) @watch(s)";
         String rule3 = "$b : B( c == 15) @watch(k) A( a == 10, i == 20, b == 10 ) @watch(j)";
         KnowledgeBase kbase = getKnowledgeBase(rule1, rule2, rule3);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -873,7 +872,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         String rule2 = "$b : B( b == 15) @watch(j) A( a == 10, i == 20 ) @watch(s)";
         String rule3 = "$b : B( c == 15) @watch(k) A( a == 10, i == 20, b == 10 ) @watch(j)";
         KnowledgeBase kbase = getKnowledgeBase(rule1, rule2, rule3);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         kbase.removeRule( "org.drools.compiler.integrationtests", "r0" );
         
@@ -917,7 +916,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         String rule2 = "$b : B( b == 15) @watch(j) A( a == 10, i == 20 ) @watch(s)";
         String rule3 = "$b : B( c == 15) @watch(k) A( a == 10, i == 20, b == 10 ) @watch(j)";
         KnowledgeBase kbase = getKnowledgeBase(rule1, rule2, rule3);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         kbase.removeRule( "org.drools.compiler.integrationtests", "r1" );
         
@@ -967,7 +966,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         String rule2 = "$b : B( b == 15) @watch(j) A( a == 10, i == 20 ) @watch(s)";
         String rule3 = "$b : B( c == 15) @watch(k) A( a == 10, i == 20, b == 10 ) @watch(j)";
         KnowledgeBase kbase = getKnowledgeBase(rule1, rule2, rule3);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
         
         kbase.removeRule( "org.drools.compiler.integrationtests", "r2" );
         
@@ -2006,7 +2005,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testBetaWithWatchAfterBeta() {
         String rule1 = "$b : B(a == 15) @watch(k) C() A(i == $b.j) @watch(b, c)";
         KnowledgeBase kbase = getKnowledgeBase(rule1);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
 
         ObjectTypeNode otnA = getObjectTypeNode(kbase, "A" );
         ObjectTypeNode otnC = getObjectTypeNode(kbase, "C" );
@@ -2029,7 +2028,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testBetaAfterBetaWithWatch() {
         String rule1 = "$b : B(a == 15) @watch(k) A(i == $b.j) @watch(b, c) C()";
         KnowledgeBase kbase = getKnowledgeBase(rule1);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
 
         ObjectTypeNode otnA = getObjectTypeNode(kbase, "A" );
         ObjectTypeNode otnC = getObjectTypeNode(kbase, "C" );
@@ -2053,7 +2052,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         String rule1 = "B(a == 15) @watch(b) C()";
         String rule2 = "B(a == 15) @watch(c) C()";
         KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
 
         ObjectTypeNode otnB = getObjectTypeNode(kbase, "B" );
         List<String> sp = getSettableProperties(wm, otnB);
@@ -2099,7 +2098,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         String rule1 = "B(a == 15) C() A()";
         String rule2 = "B(a == 15) C() A() @watch(b, c)";
         KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
 
         ObjectTypeNode otnA = getObjectTypeNode(kbase, "A" );
         ObjectTypeNode otnC = getObjectTypeNode(kbase, "C");
@@ -2137,7 +2136,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         String rule1 = "B(a == 15) @watch(b) A() @watch(i) C()";
         String rule2 = "B(a == 15) @watch(c) A() @watch(j) D()";
         KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
 
         ObjectTypeNode otnB = getObjectTypeNode(kbase, "B" );
         List<String> sp = getSettableProperties(wm, otnB);

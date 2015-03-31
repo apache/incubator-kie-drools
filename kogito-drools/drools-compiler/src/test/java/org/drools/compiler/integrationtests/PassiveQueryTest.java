@@ -312,6 +312,7 @@ public class PassiveQueryTest {
         QueryElementNode q2 = (QueryElementNode)sinks[1];
 
         InternalWorkingMemory wm = (InternalWorkingMemory)ksession;
+        wm.flushPropagations();
 
         Memory memory1 = wm.getNodeMemory(q1);
         assertTrue(memory1.getSegmentMemory().getStagedLeftTuples().isEmpty());

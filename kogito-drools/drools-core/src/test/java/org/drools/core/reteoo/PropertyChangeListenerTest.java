@@ -58,6 +58,7 @@ public class PropertyChangeListenerTest {
 
         final State a = new State( "go" );
         ksession.insert( a, true );
+        ksession.fireAllRules();
 
         assertEquals( 1,
                       sink.getAsserted().size() );

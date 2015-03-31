@@ -14,6 +14,8 @@ public class NamedConsequence extends ConditionalElement implements NamedConsequ
 
     private boolean breaking;
 
+    private boolean terminal;
+
     public NamedConsequence() {
     }
 
@@ -25,18 +27,20 @@ public class NamedConsequence extends ConditionalElement implements NamedConsequ
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         name = (String)in.readObject();
         breaking = in.readBoolean();
+        terminal = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( name );
         out.writeBoolean( breaking );
+        out.writeBoolean( terminal );
     }
 
     /**
      * There is not reason to clone this object since it is stateless.
      * So a clone() call will return the instance itself.
      *
-     * @see org.kie.rule.ConditionalElement#clone()
+     * @see org.drools.core.rule.ConditionalElement#clone()
      */
     @Override
     public NamedConsequence clone() {
@@ -47,7 +51,7 @@ public class NamedConsequence extends ConditionalElement implements NamedConsequ
      * It is not possible to declare any new variables, so always
      * return an Empty Map
      *
-     * @see org.kie.rule.RuleConditionElement#getInnerDeclarations()
+     * @see org.drools.core.rule.RuleConditionElement#getInnerDeclarations()
      */
     public Map<String,Declaration> getInnerDeclarations() {
         return Collections.emptyMap();
@@ -57,7 +61,7 @@ public class NamedConsequence extends ConditionalElement implements NamedConsequ
      * It is not possible to nest elements inside an entry point, so
      * always return an empty list.
      *
-     * @see org.kie.rule.RuleConditionElement#getNestedElements()
+     * @see org.drools.core.rule.RuleConditionElement#getNestedElements()
      */
     public List<RuleConditionElement> getNestedElements() {
         return Collections.emptyList();
@@ -67,7 +71,7 @@ public class NamedConsequence extends ConditionalElement implements NamedConsequ
      * It is not possible to declare and export any variables,
      * so always return an empty map
      *
-     * @see org.kie.rule.RuleConditionElement#getOuterDeclarations()
+     * @see org.drools.core.rule.RuleConditionElement#getOuterDeclarations()
      */
     public Map<String,Declaration> getOuterDeclarations() {
         return Collections.emptyMap();
@@ -76,7 +80,7 @@ public class NamedConsequence extends ConditionalElement implements NamedConsequ
     /**
      * Not possible to resolve any declaration, so always return null.
      *
-     * @see org.kie.rule.RuleConditionElement#resolveDeclaration(java.lang.String)
+     * @see org.drools.core.rule.RuleConditionElement#resolveDeclaration(java.lang.String)
      */
     public Declaration resolveDeclaration(String identifier) {
         return null;
@@ -94,9 +98,17 @@ public class NamedConsequence extends ConditionalElement implements NamedConsequ
         return breaking;
     }
 
+    public boolean isTerminal() {
+        return terminal;
+    }
+
+    public void setTerminal(boolean terminal) {
+        this.terminal = terminal;
+    }
+
     /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
+             * @see java.lang.Object#hashCode()
+             */
     @Override
     public int hashCode() {
         return ( breaking ? 1 : 0 ) + ( name == null ? 0 : name.hashCode() );

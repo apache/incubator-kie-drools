@@ -2,6 +2,7 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -111,6 +112,7 @@ public class StrictAnnotationTest extends CommonTestMethodBase {
         ksession.addEventListener(agendaEventListener);
 
         ksession.insert("test");
+        ((InternalWorkingMemory) ksession).flushPropagations();
         assertEquals(2, list.size());
     }
 

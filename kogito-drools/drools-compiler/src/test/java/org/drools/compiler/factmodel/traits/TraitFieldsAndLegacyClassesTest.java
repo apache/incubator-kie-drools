@@ -4,6 +4,7 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -1096,7 +1097,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
         assertEquals( 1, list.size() );
     }
 
-    @Test
+    @Test(timeout = 10000L) @Ignore
     public void testTraitWithPositionArgs(){
 
         String drl = "" +

@@ -24,7 +24,7 @@ import org.drools.core.spi.PropagationContext;
  * Receiver of propagated <code>FactHandleImpl</code>s from a
  * <code>ObjectSource</code>.
  * 
- * @see ObectSource
+ * @see ObjectSource
  */
 public interface ObjectSink
     extends

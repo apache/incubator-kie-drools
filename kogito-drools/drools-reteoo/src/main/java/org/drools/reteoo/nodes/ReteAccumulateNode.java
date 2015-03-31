@@ -3,16 +3,14 @@ package org.drools.reteoo.nodes;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.reteoo.common.RetePropagationContext;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
+import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
@@ -32,10 +30,9 @@ import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
+import org.drools.reteoo.common.RetePropagationContext;
 
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 public class ReteAccumulateNode extends AccumulateNode {
 
@@ -932,8 +929,8 @@ public class ReteAccumulateNode extends AccumulateNode {
     }
 
     public static class EvaluateResultConstraints
-            implements
-            WorkingMemoryAction {
+            extends PropagationEntry.AbstractPropagationEntry
+            implements WorkingMemoryAction {
 
         private ActivitySource        source;
         private LeftTuple             leftTuple;
@@ -970,10 +967,6 @@ public class ReteAccumulateNode extends AccumulateNode {
             throw new UnsupportedOperationException("Should not be present in network on serialisation");
         }
 
-        public void write(MarshallerWriteContext context) throws IOException {
-            throw new UnsupportedOperationException("Should not be present in network on serialisation");
-        }
-
         public Action serialize(MarshallerWriteContext context) {
             throw new UnsupportedOperationException("Should not be present in network on serialisation");
         }
@@ -990,10 +983,6 @@ public class ReteAccumulateNode extends AccumulateNode {
                                            useLeftMemory);
         }
 
-        public void execute(InternalKnowledgeRuntime kruntime) {
-            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
-        }
-
         public ActivitySource getSource() {
             return source;
         }
@@ -1004,13 +993,6 @@ public class ReteAccumulateNode extends AccumulateNode {
 
         public String toString() {
             return "[ResumeInsertAction leftTuple=" + leftTuple + "]\n";
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-        }
-
-        public void readExternal(ObjectInput in) throws IOException,
-                ClassNotFoundException {
         }
     }
 }

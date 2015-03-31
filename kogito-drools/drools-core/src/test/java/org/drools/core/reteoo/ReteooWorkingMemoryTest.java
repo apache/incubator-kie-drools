@@ -16,12 +16,8 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.test.model.MockActivation;
-import org.junit.Ignore;
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.common.EqualityKey;
-import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.RuleBasePartitionId;
@@ -31,20 +27,21 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages;
+import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.MockActivation;
 import org.drools.core.test.model.Person;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -167,7 +164,7 @@ public class ReteooWorkingMemoryTest {
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
         final ReentrantAction action = new ReentrantAction();
         ksession.queueWorkingMemoryAction( action );
-        ksession.executeQueuedActions();
+        ksession.flushPropagations();
         assertEquals( 2, action.counter.get() );
     }
     
@@ -213,13 +210,11 @@ public class ReteooWorkingMemoryTest {
         assertNull( ksession.getObject( f1 ) );
     }
 
-    private static class ReentrantAction implements WorkingMemoryAction {
+    private static class ReentrantAction
+            extends PropagationEntry.AbstractPropagationEntry
+            implements WorkingMemoryAction {
         // I am using AtomicInteger just as an int wrapper... nothing to do with concurrency here
         public AtomicInteger counter = new AtomicInteger(0);
-        public void writeExternal(ObjectOutput out) throws IOException {}
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {}
-        public void write(MarshallerWriteContext context) { throw new IllegalStateException("this method should never be called"); }
         public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) { throw new IllegalStateException("this method should never be called"); }
         public void execute(InternalWorkingMemory workingMemory) {
             // the reentrant action must be executed completely
@@ -229,13 +224,10 @@ public class ReteooWorkingMemoryTest {
             assertEquals( 0, counter.get() );
             workingMemory.queueWorkingMemoryAction( new FinalAction( counter ) );
             assertEquals( 0, counter.get() );
-            workingMemory.executeQueuedActions();
+            workingMemory.flushPropagations();
             assertEquals( 0, counter.get() );
-            workingMemory.executeQueuedActions();
+            workingMemory.flushPropagations();
             assertEquals( 0, counter.get() );
-        }
-        public void execute(InternalKnowledgeRuntime kruntime) {
-            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
         }
     }
     
@@ -246,8 +238,8 @@ public class ReteooWorkingMemoryTest {
         }
         public void execute(InternalWorkingMemory workingMemory) {
             counter.incrementAndGet();
-            workingMemory.executeQueuedActions();
-            workingMemory.executeQueuedActions();
+            workingMemory.flushPropagations();
+            workingMemory.flushPropagations();
         }
     }
 

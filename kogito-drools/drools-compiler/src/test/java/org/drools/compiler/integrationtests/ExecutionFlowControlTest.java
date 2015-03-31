@@ -1,11 +1,5 @@
 package org.drools.compiler.integrationtests;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.junit.Assert;
-
 import org.drools.compiler.Cell;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
@@ -20,9 +14,9 @@ import org.drools.compiler.Pet;
 import org.drools.compiler.TotalHolder;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.spi.AgendaGroup;
+import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
@@ -324,6 +318,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         // AgendaGroup "group1" is not active, so should receive activation
         final Cheese brie12 = new Cheese( "brie", 12 );
         ksession.insert( brie12 );
+        ((InternalWorkingMemory)ksession).flushPropagations();
         InternalAgenda agenda = ((InternalAgenda) ksession.getAgenda());
         final AgendaGroup group1 = agenda.getAgendaGroup( "group1" );
         assertEquals( 1, group1.size() );
@@ -438,7 +433,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         ksession.insert( mic );
         ksession.insert( mark );
 
-        InternalWorkingMemory wm = ( InternalWorkingMemory )((StatefulKnowledgeSessionImpl) ksession).getInternalWorkingMemory();
+        InternalWorkingMemory wm = ( InternalWorkingMemory )ksession;
+        wm.flushPropagations();
 
         final InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
         final AgendaGroup group1 = agenda.getAgendaGroup( "group1" );
