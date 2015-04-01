@@ -7,7 +7,7 @@
   </parent>
   <artifactId>jbpm-human-task-jpa</artifactId>
   <packaging>bundle</packaging>
-  
+
   <name>jBPM :: JPA Human Task Persistence</name>
   <description>jBPM JPA Human Task Persistence</description>
 
@@ -48,7 +48,7 @@
       <artifactId>org.osgi.compendium</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-core-asl</artifactId>
@@ -62,7 +62,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.jbpm.services.task.jpa;singleton:=true</Bundle-SymbolicName>
+            <Bundle-SymbolicName>org.jbpm.services.task.jpa</Bundle-SymbolicName>
             <Import-Package>
               javassist.util.proxy;resolution:=optional,
               javax.transaction.*;resolution:=optional,
