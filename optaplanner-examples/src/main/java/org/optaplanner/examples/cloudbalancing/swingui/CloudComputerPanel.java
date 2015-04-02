@@ -19,6 +19,7 @@ package org.optaplanner.examples.cloudbalancing.swingui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -27,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -283,21 +285,23 @@ public class CloudComputerPanel extends JPanel {
             setModal(true);
             setTitle(getComputerLabel());
             JPanel contentPanel = new JPanel();
-            GroupLayout layout = new GroupLayout(contentPanel);
-            contentPanel.setLayout(layout);
-            JPanel headerPanel = createHeaderPanel();
+            contentPanel.setLayout(new BorderLayout());
+            contentPanel.add(createHeaderPanel(), BorderLayout.NORTH);
             JPanel assignmentsPanel = createAssignmentsPanel();
-            layout.setHorizontalGroup(layout.createParallelGroup()
-                    .addComponent(headerPanel).addComponent(assignmentsPanel));
-            layout.setVerticalGroup(layout.createSequentialGroup()
-                    .addComponent(headerPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
-                            GroupLayout.PREFERRED_SIZE)
-                    .addComponent(assignmentsPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
-                            GroupLayout.PREFERRED_SIZE));
-            JScrollPane contentScrollPane = new JScrollPane(contentPanel);
-            contentScrollPane.setPreferredSize(new Dimension(800, 400));
-            contentScrollPane.getVerticalScrollBar().setUnitIncrement(20);
-            setContentPane(contentScrollPane);
+            JScrollPane assignmentsScrollPane = new JScrollPane(assignmentsPanel);
+            assignmentsScrollPane.setPreferredSize(new Dimension(800, 400));
+            assignmentsScrollPane.getVerticalScrollBar().setUnitIncrement(20);
+            contentPanel.add(assignmentsScrollPane, BorderLayout.CENTER);
+            JPanel buttonPanel = new JPanel(new FlowLayout());
+            Action okAction = new AbstractAction("Ok") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    dispose();
+                }
+            };
+            buttonPanel.add(new JButton(okAction));
+            contentPanel.add(buttonPanel, BorderLayout.SOUTH);
+            setContentPane(contentPanel);
             pack();
         }
 
@@ -350,7 +354,9 @@ public class CloudComputerPanel extends JPanel {
 
                 colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_1.length;
             }
-            return assignmentsPanel;
+            JPanel fillerAssignmentsPanel = new JPanel(new BorderLayout());
+            fillerAssignmentsPanel.add(assignmentsPanel, BorderLayout.NORTH);
+            return fillerAssignmentsPanel;
         }
 
     }
