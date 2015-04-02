@@ -62,6 +62,7 @@ public class HumanTaskConfigurator {
 	
 	private static final String DEFAULT_INTERCEPTOR = "org.jbpm.services.task.persistence.TaskTransactionInterceptor";
 	private static final String TX_LOCK_INTERCEPTOR = "org.drools.persistence.jta.TransactionLockInterceptor";
+	private static final String OPTIMISTIC_LOCK_INTERCEPTOR = "org.drools.persistence.jpa.OptimisticLockRetryInterceptor";
 
     private TaskService service;
     private TaskCommandExecutorImpl commandExecutor;
@@ -141,6 +142,7 @@ public class HumanTaskConfigurator {
         	environment.set(EnvironmentName.TASK_USER_INFO, userInfo);
         	addDefaultInterceptor();
         	addTransactionLockInterceptor();
+        	addOptimisticLockInterceptor();
         	for (PriorityInterceptor pInterceptor : interceptors) {
         		this.commandExecutor.addInterceptor(pInterceptor.getInterceptor());
         	}        	
@@ -184,7 +186,22 @@ public class HumanTaskConfigurator {
     		interceptor(6, defaultInterceptor);
     	} catch (Exception e) {
     		logger.warn("No tx lock interceptor found of type {} might be mssing drools-persistence-jpa module on classpath (error {}",
-    				DEFAULT_INTERCEPTOR, e.getMessage(), e);
+    				TX_LOCK_INTERCEPTOR, e.getMessage(), e);
+    	}
+    }
+    
+    @SuppressWarnings("unchecked")
+	protected void addOptimisticLockInterceptor() {
+    	// add default interceptor if present
+    	try {
+    		Class<Interceptor> defaultInterceptorClass = (Class<Interceptor>) Class.forName(OPTIMISTIC_LOCK_INTERCEPTOR);
+    		Constructor<Interceptor> constructor = defaultInterceptorClass.getConstructor(new Class[] {});
+    		
+    		Interceptor defaultInterceptor = constructor.newInstance();
+    		interceptor(7, defaultInterceptor);
+    	} catch (Exception e) {
+    		logger.warn("No optimistic lock interceptor found of type {} might be mssing drools-persistence-jpa module on classpath (error {}",
+    				OPTIMISTIC_LOCK_INTERCEPTOR, e.getMessage(), e);
     	}
     }
    
@@ -208,6 +225,12 @@ public class HumanTaskConfigurator {
 		@Override
 		public int compareTo(PriorityInterceptor other) {
 			return this.getPriority().compareTo(other.getPriority());
+		}
+
+		@Override
+		public String toString() {
+			return "PriorityInterceptor [priority=" + priority
+					+ ", interceptor=" + interceptor + "]";
 		}
     }
 }
