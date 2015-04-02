@@ -49,12 +49,21 @@ public class OptimisticLockRetryInterceptor extends AbstractInterceptor {
 
     protected Class<?> targetExceptionClass;
 
+    protected Class<?> targetConstraintViolationExceptionClass;
+
     public OptimisticLockRetryInterceptor() {
         String clazz = System.getProperty("org.kie.optlock.exclass", "org.hibernate.StaleObjectStateException");
         try {
             targetExceptionClass = Class.forName(clazz);
         } catch (ClassNotFoundException e) {
             logger.error("Optimistic locking exception class not found {}", clazz, e);
+        }
+
+        clazz = System.getProperty("org.kie.constraint.exclass", "org.hibernate.exception.ConstraintViolationException");
+        try {
+            targetConstraintViolationExceptionClass = Class.forName(clazz);
+        } catch (ClassNotFoundException e) {
+            logger.warn("Constraint violation exception class not found {}", clazz, e);
         }
     }
 
@@ -73,8 +82,14 @@ public class OptimisticLockRetryInterceptor extends AbstractInterceptor {
                 return executeNext(command);
 
             } catch (RuntimeException ex) {
+                // in case there is another interceptor of this type in the stack don't handle it here
+                if (hasInterceptorInStack()) {
+                    System.out.print("###################");
+                    throw ex;
+                }
+
                 logger.trace(ex.getClass().getSimpleName() + " caught in " + this.getClass().getSimpleName() + ": " + ex.getMessage());
-                if (!isCausedByOptimisticLockingFailure(ex)) {
+                if (!isCausedByOptimisticLockingFailure(ex) && !isCausedByConstraintViolationFailure(ex)) {
                     throw ex;
                 }
                 attempt++;
@@ -115,6 +130,22 @@ public class OptimisticLockRetryInterceptor extends AbstractInterceptor {
         return false;
     }
 
+    protected boolean isCausedByConstraintViolationFailure(Throwable throwable) {
+        if (targetConstraintViolationExceptionClass == null) {
+            return false;
+        }
+
+        while (throwable != null) {
+            if (targetConstraintViolationExceptionClass.isAssignableFrom(throwable.getClass())) {
+                return true;
+            } else {
+                throwable = throwable.getCause();
+            }
+        }
+
+        return false;
+    }
+
     public int getRetries() {
         return retries;
     }
@@ -145,6 +176,22 @@ public class OptimisticLockRetryInterceptor extends AbstractInterceptor {
 
     public void setTargetExceptionClass(Class<?> targetExceptionClass) {
         this.targetExceptionClass = targetExceptionClass;
+    }
+
+    protected boolean hasInterceptorInStack() {
+        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+        int counter = -1;
+        for (StackTraceElement element : elements) {
+            if (element.getClassName().equals(this.getClass().getName()) && element.getMethodName().equals("execute")) {
+                counter++;
+            }
+            // avoid iterating entire stack if possible
+            if (counter > 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
