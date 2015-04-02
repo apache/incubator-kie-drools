@@ -15,7 +15,7 @@
   <section>
     <title>JMX support for KieScanner</title>
     <para>Added support for JMX monitoring and management on KieScanner and KieContainer. To enable, set the
-      property:</para>
+      property <code>kie.scanner.mbeans</code> to <code>enabled</code>, for example via Java command line: <code> -Dkie.scanner.mbeans=enabled </code>.</para>
     <para>KieScannerMBean will register under the name:</para>
     <para>It exposes the following properties:</para>
     <para>
