@@ -147,7 +147,13 @@ public class NearbySelectionConfig extends SelectorConfig {
         if (originEntitySelectorConfig == null) {
             throw new IllegalArgumentException("The nearbySelectorConfig (" + this
                     + ") is nearby selection"
-                    + " but lacks a nearbyOriginEntitySelector (" + originEntitySelectorConfig + ").");
+                    + " but lacks an originEntitySelectorConfig (" + originEntitySelectorConfig + ").");
+        }
+        if (originEntitySelectorConfig.getMimicSelectorRef() == null) {
+            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
+                    + ") has an originEntitySelectorConfig (" + originEntitySelectorConfig
+                    + ") which has no MimicSelectorRef (" + originEntitySelectorConfig.getMimicSelectorRef() + "). "
+                    + "A nearby's original entity should always be the same as an entity selected earlier in the move.");
         }
         if (nearbyDistanceMeterClass == null) {
             throw new IllegalArgumentException("The nearbySelectorConfig (" + this
