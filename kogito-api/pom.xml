@@ -50,18 +50,4 @@
     <module>kie-archetypes</module>
   </modules>
 
-  <profiles>
-    <profile>
-      <id>fullProfile</id>
-      <activation>
-        <property>
-          <name>full</name>
-        </property>
-      </activation>
-      <modules>
-        <module>kie-docs</module>
-      </modules>
-    </profile>
-  </profiles>
-
 </project>
