@@ -40,10 +40,11 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
     protected List<RoadLocation> locationList;
     protected List<Coach> coachList;
     protected List<Shuttle> shuttleList;
-    protected BusHub busHub;
+    protected BusHub hub;
     protected List<BusStop> busStopList;
 
-//    protected List<Customer> customerList;
+    protected List<BusStartPoint> startPointList;
+    protected List<BusVisit> visitList;
 
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
     protected HardSoftScore score;
@@ -80,12 +81,12 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
         this.shuttleList = shuttleList;
     }
 
-    public BusHub getBusHub() {
-        return busHub;
+    public BusHub getHub() {
+        return hub;
     }
 
-    public void setBusHub(BusHub busHub) {
-        this.busHub = busHub;
+    public void setHub(BusHub hub) {
+        this.hub = hub;
     }
 
     public List<BusStop> getBusStopList() {
@@ -96,15 +97,25 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
         this.busStopList = busStopList;
     }
 
-//    @PlanningEntityCollectionProperty
-//    @ValueRangeProvider(id = "customerRange")
-//    public List<Customer> getCustomerList() {
-//        return customerList;
-//    }
-//
-//    public void setCustomerList(List<Customer> customerList) {
-//        this.customerList = customerList;
-//    }
+    @PlanningEntityCollectionProperty
+    @ValueRangeProvider(id = "startPointRange")
+    public List<BusStartPoint> getStartPointList() {
+        return startPointList;
+    }
+
+    public void setStartPointList(List<BusStartPoint> startPointList) {
+        this.startPointList = startPointList;
+    }
+
+    @PlanningEntityCollectionProperty
+    @ValueRangeProvider(id = "visitRange")
+    public List<BusVisit> getVisitList() {
+        return visitList;
+    }
+
+    public void setVisitList(List<BusVisit> visitList) {
+        this.visitList = visitList;
+    }
 
     public HardSoftScore getScore() {
         return score;
@@ -123,9 +134,9 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
         facts.addAll(locationList);
         facts.addAll(coachList);
         facts.addAll(shuttleList);
-        facts.add(busHub);
+        facts.add(hub);
         facts.addAll(busStopList);
-        // Do not add the planning entities (vehicleList, customerList) because that will be done automatically
+        // Do not add the planning entities (startPointList, visitList) because that will be done automatically
         return facts;
     }
 

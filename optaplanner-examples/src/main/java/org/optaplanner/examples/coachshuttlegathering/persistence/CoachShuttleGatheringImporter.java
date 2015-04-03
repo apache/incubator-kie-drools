@@ -33,7 +33,9 @@ import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusHub;
+import org.optaplanner.examples.coachshuttlegathering.domain.BusStartPoint;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
+import org.optaplanner.examples.coachshuttlegathering.domain.BusVisit;
 import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.domain.Shuttle;
@@ -90,6 +92,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
             readLocationList();
             readBusList();
             readBusStopList();
+            createStartPointListAndVisitList();
 
             int busListSize = solution.getCoachList().size() + solution.getShuttleList().size();
             int base = solution.getBusStopList().size() + solution.getShuttleList().size();
@@ -221,9 +224,9 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
                 String busStopType = lineTokens[0];
                 String name = lineTokens[1];
                 if (busStopType.equalsIgnoreCase("HUB")) {
-                    if (solution.getBusHub() != null) {
+                    if (solution.getHub() != null) {
                         throw new IllegalArgumentException("The hub with name (" +  name
-                                + ") is not the only hub (" + solution.getBusHub().getName() + ").");
+                                + ") is not the only hub (" + solution.getHub().getName() + ").");
                     }
                     BusHub hub = new BusHub();
                     hub.setId(busStopId);
@@ -249,7 +252,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
                         throw new IllegalArgumentException("The hub with name (" + name
                                 + ") has an unsupported transportTimeLimit (" + transportTimeLimit + ").");
                     }
-                    solution.setBusHub(hub);
+                    solution.setHub(hub);
                 } else if (busStopType.equalsIgnoreCase("BUSSTOP")) {
                     BusStop busStop = new BusStop();
                     busStop.setId(busStopId);
@@ -274,6 +277,38 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
                 }
             }
             solution.setBusStopList(busStopList);
+        }
+
+        private void createStartPointListAndVisitList() {
+            List<Coach> coachList = solution.getCoachList();
+            List<Shuttle> shuttleList = solution.getShuttleList();
+            List<BusStartPoint> startPointList = new ArrayList<BusStartPoint>(coachList.size() + shuttleList.size());
+            long entityId = 0L;
+            for (Coach coach : coachList) {
+                BusStartPoint startPoint = new BusStartPoint();
+                startPoint.setId(entityId);
+                entityId++;
+                startPoint.setBus(coach);
+                startPointList.add(startPoint);
+            }
+            for (Shuttle shuttle : shuttleList) {
+                BusStartPoint startPoint = new BusStartPoint();
+                startPoint.setId(entityId);
+                entityId++;
+                startPoint.setBus(shuttle);
+                startPointList.add(startPoint);
+            }
+            solution.setStartPointList(startPointList);
+            List<BusStop> busStopList = solution.getBusStopList();
+            List<BusVisit> visitList = new ArrayList<BusVisit>(busStopList.size());
+            for (BusStop busStop : busStopList) {
+                BusVisit visit = new BusVisit();
+                visit.setId(entityId);
+                entityId++;
+                visit.setBusStop(busStop);
+                visitList.add(visit);
+            }
+            solution.setVisitList(visitList);
         }
 
     }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+  <solutionClass>org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution</solutionClass>
+  <entityClass>org.optaplanner.examples.coachshuttlegathering.domain.BusStandstill</entityClass>
+  <entityClass>org.optaplanner.examples.coachshuttlegathering.domain.BusVisit</entityClass>
+
+  <scoreDirectorFactory>
+    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+    <!--<easyScoreCalculatorClass>org.optaplanner.examples.coachshuttlegathering.solver.score.CoachShuttleGatheringEasyScoreCalculator</easyScoreCalculatorClass>-->
+    <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.coachshuttlegathering.solver.score.CoachShuttleGatheringIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
+    <scoreDrl>org/optaplanner/examples/coachshuttlegathering/solver/coachShuttleGatheringScoreRules.drl</scoreDrl>
+    <!--<assertionScoreDirectorFactory>-->
+    <!--<easyScoreCalculatorClass>org.optaplanner.examples.coachshuttlegathering.solver.score.CoachShuttleGatheringEasyScoreCalculator</easyScoreCalculatorClass>-->
+    <!--</assertionScoreDirectorFactory>-->
+    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+  </scoreDirectorFactory>
+
+  <termination>
+    <minutesSpentLimit>5</minutesSpentLimit>
+  </termination>
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+  </constructionHeuristic>
+  <localSearch>
+    <unionMoveSelector>
+      <changeMoveSelector/>
+      <swapMoveSelector/>
+      <subChainChangeMoveSelector>
+        <selectReversingMoveToo>true</selectReversingMoveToo>
+      </subChainChangeMoveSelector>
+      <subChainSwapMoveSelector>
+        <selectReversingMoveToo>true</selectReversingMoveToo>
+      </subChainSwapMoveSelector>
+    </unionMoveSelector>
+    <acceptor>
+      <lateAcceptanceSize>200</lateAcceptanceSize>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>1</acceptedCountLimit>
+    </forager>
+  </localSearch>
+</solver>

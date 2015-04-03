@@ -20,6 +20,8 @@ import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.domain.location.DistanceType;
 
 @XStreamAlias("CsgRoadLocation")
 public class RoadLocation extends AbstractPersistable {
@@ -56,32 +58,32 @@ public class RoadLocation extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
-//    /**
-//     * The distance's unit of measurement depends on the {@link VehicleRoutingSolution}'s {@link DistanceType}.
-//     * It can be in miles or km, but for most cases it's in the TSPLIB's unit of measurement.
-//     * @param roadLocation never null
-//     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
-//     */
-//    public abstract int getDistance(RoadLocation roadLocation);
+    /**
+     * @param location never null
+     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
+     */
+    public int getDistanceTo(RoadLocation location) {
+        throw new IllegalStateException(); // TODO
+    }
 
-    public double getAirDistanceDouble(RoadLocation roadLocation) {
+    public double getAirDistanceDouble(RoadLocation location) {
         // Implementation specified by TSPLIB http://www2.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
         // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
-        double latitudeDifference = roadLocation.latitude - latitude;
-        double longitudeDifference = roadLocation.longitude - longitude;
+        double latitudeDifference = location.latitude - latitude;
+        double longitudeDifference = location.longitude - longitude;
         return Math.sqrt(
                 (latitudeDifference * latitudeDifference) + (longitudeDifference * longitudeDifference));
     }
 
     /**
      * The angle relative to the direction EAST.
-     * @param roadLocation never null
+     * @param location never null
      * @return in Cartesian coordinates
      */
-    public double getAngle(RoadLocation roadLocation) {
+    public double getAngle(RoadLocation location) {
         // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
-        double latitudeDifference = roadLocation.latitude - latitude;
-        double longitudeDifference = roadLocation.longitude - longitude;
+        double latitudeDifference = location.latitude - latitude;
+        double longitudeDifference = location.longitude - longitude;
         return Math.atan2(latitudeDifference, longitudeDifference);
     }
 
