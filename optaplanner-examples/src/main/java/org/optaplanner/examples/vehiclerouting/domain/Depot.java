@@ -47,7 +47,7 @@ public class Depot extends AbstractPersistable {
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
     public int getDistanceTo(Standstill standstill) {
-        return location.getDistance(standstill.getLocation());
+        return location.getDistanceTo(standstill.getLocation());
     }
 
 }

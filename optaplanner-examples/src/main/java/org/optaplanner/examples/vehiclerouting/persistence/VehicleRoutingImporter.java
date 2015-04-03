@@ -468,7 +468,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                     customer.setReadyTime(readyTime);
                     // Score constraint arrivalAfterDueTimeAtDepot is a build-in hard constraint in VehicleRoutingImporter
                     int maximumDueTime = depot.getDueTime()
-                            - serviceDuration - location.getDistance(depot.getLocation());
+                            - serviceDuration - location.getDistanceTo(depot.getLocation());
                     if (dueTime > maximumDueTime) {
                         logger.warn("The customer ({})'s dueTime ({}) was automatically reduced" +
                                 " to maximumDueTime ({}) because of the depot's dueTime ({}).",

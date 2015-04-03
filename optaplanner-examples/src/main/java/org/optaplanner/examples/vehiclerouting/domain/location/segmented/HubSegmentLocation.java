@@ -57,7 +57,7 @@ public class HubSegmentLocation extends Location {
     }
 
     @Override
-    public int getDistance(Location location) {
+    public int getDistanceTo(Location location) {
         double distance;
         if (location instanceof RoadSegmentLocation) {
             distance = getDistanceDouble((RoadSegmentLocation) location);

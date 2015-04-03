@@ -33,8 +33,8 @@ public class AirLocation extends Location {
     }
 
     @Override
-    public int getDistance(Location location) {
-        double distance = getAirDistanceDouble(location);
+    public int getDistanceTo(Location location) {
+        double distance = getAirDistanceDoubleTo(location);
         // Multiplied by 1000 to avoid floating point arithmetic rounding errors
         return (int) (distance * 1000.0 + 0.5);
     }

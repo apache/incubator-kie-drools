@@ -32,8 +32,8 @@ public class DepotAngleCustomerDifficultyWeightFactory
         Depot depot = vehicleRoutingSolution.getDepotList().get(0);
         return new DepotAngleCustomerDifficultyWeight(customer,
                 customer.getLocation().getAngle(depot.getLocation()),
-                customer.getLocation().getDistance(depot.getLocation())
-                        + depot.getLocation().getDistance(customer.getLocation()));
+                customer.getLocation().getDistanceTo(depot.getLocation())
+                        + depot.getLocation().getDistanceTo(customer.getLocation()));
     }
 
     public static class DepotAngleCustomerDifficultyWeight

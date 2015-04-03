@@ -42,7 +42,7 @@ public class Domicile extends AbstractPersistable implements Standstill {
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
     public long getDistanceTo(Standstill standstill) {
-        return location.getDistance(standstill.getLocation());
+        return location.getDistanceTo(standstill.getLocation());
     }
 
     @Override

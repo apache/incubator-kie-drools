@@ -32,8 +32,8 @@ public class DomicileAngleVisitDifficultyWeightFactory
         Domicile domicile = vehicleRoutingSolution.getDomicile();
         return new DomicileAngleVisitDifficultyWeight(visit,
                 visit.getLocation().getAngle(domicile.getLocation()),
-                visit.getLocation().getDistance(domicile.getLocation())
-                        + domicile.getLocation().getDistance(visit.getLocation()));
+                visit.getLocation().getDistanceTo(domicile.getLocation())
+                        + domicile.getLocation().getDistanceTo(visit.getLocation()));
     }
 
     public static class DomicileAngleVisitDifficultyWeight

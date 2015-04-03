@@ -31,8 +31,8 @@ public class DepotDistanceCustomerDifficultyWeightFactory
     public Comparable createSorterWeight(VehicleRoutingSolution vehicleRoutingSolution, Customer customer) {
         Depot depot = vehicleRoutingSolution.getDepotList().get(0);
         return new DepotDistanceCustomerDifficultyWeight(customer,
-                customer.getLocation().getDistance(depot.getLocation())
-                        + depot.getLocation().getDistance(customer.getLocation()));
+                customer.getLocation().getDistanceTo(depot.getLocation())
+                        + depot.getLocation().getDistanceTo(customer.getLocation()));
     }
 
     public static class DepotDistanceCustomerDifficultyWeight

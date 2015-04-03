@@ -59,7 +59,7 @@ public class RoadSegmentLocation extends Location {
     }
 
     @Override
-    public int getDistance(Location location) {
+    public int getDistanceTo(Location location) {
         Double distance = getDistanceDouble((RoadSegmentLocation) location);
         // Multiplied by 1000 to avoid floating point arithmetic rounding errors
         return (int) (distance * 1000.0 + 0.5);

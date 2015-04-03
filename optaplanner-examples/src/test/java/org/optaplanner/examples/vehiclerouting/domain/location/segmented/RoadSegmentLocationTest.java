@@ -51,25 +51,25 @@ public class RoadSegmentLocationTest {
         z.setNearbyTravelDistanceMap(createNearbyTravelDistanceMap(z, d));
         z.setHubTravelDistanceMap(createHubTravelDistanceMap(z, x, y));
 
-        assertEquals(sumOfArcs(a, b), a.getDistance(b));
-        assertEquals(sumOfArcs(a, c), a.getDistance(c));
-        assertEquals(sumOfArcs(a, x, z, d), a.getDistance(d));
-        assertEquals(sumOfArcs(b, a), b.getDistance(a));
-        assertEquals(sumOfArcs(b, y, c), b.getDistance(c));
-        assertEquals(sumOfArcs(b, y, z, d), b.getDistance(d));
-        assertEquals(sumOfArcs(c, a), c.getDistance(a));
-        assertEquals(sumOfArcs(c, y, b), c.getDistance(b));
-        assertEquals(sumOfArcs(c, x, z, d), c.getDistance(d));
-        assertEquals(sumOfArcs(d, z, x, a), d.getDistance(a));
-        assertEquals(sumOfArcs(d, z, y, b), d.getDistance(b));
-        assertEquals(sumOfArcs(d, z, x, c), d.getDistance(c));
+        assertEquals(sumOfArcs(a, b), a.getDistanceTo(b));
+        assertEquals(sumOfArcs(a, c), a.getDistanceTo(c));
+        assertEquals(sumOfArcs(a, x, z, d), a.getDistanceTo(d));
+        assertEquals(sumOfArcs(b, a), b.getDistanceTo(a));
+        assertEquals(sumOfArcs(b, y, c), b.getDistanceTo(c));
+        assertEquals(sumOfArcs(b, y, z, d), b.getDistanceTo(d));
+        assertEquals(sumOfArcs(c, a), c.getDistanceTo(a));
+        assertEquals(sumOfArcs(c, y, b), c.getDistanceTo(b));
+        assertEquals(sumOfArcs(c, x, z, d), c.getDistanceTo(d));
+        assertEquals(sumOfArcs(d, z, x, a), d.getDistanceTo(a));
+        assertEquals(sumOfArcs(d, z, y, b), d.getDistanceTo(b));
+        assertEquals(sumOfArcs(d, z, x, c), d.getDistanceTo(c));
     }
 
     protected int sumOfArcs(Location fromLocation, Location... stopLocations) {
         Location previousLocation = fromLocation;
         int distance = 0;
         for (Location stopLocation : stopLocations) {
-            distance += (int) (previousLocation.getAirDistanceDouble(stopLocation) * 1000.0 + 0.5);
+            distance += (int) (previousLocation.getAirDistanceDoubleTo(stopLocation) * 1000.0 + 0.5);
             previousLocation = stopLocation;
         }
         return distance;
@@ -78,7 +78,7 @@ public class RoadSegmentLocationTest {
     private Map<HubSegmentLocation, Double> createHubTravelDistanceMap(Location fromLocation, HubSegmentLocation... toLocations) {
         Map<HubSegmentLocation, Double> map = new LinkedHashMap<HubSegmentLocation, Double>(toLocations.length);
         for (HubSegmentLocation toLocation : toLocations) {
-            map.put(toLocation, fromLocation.getAirDistanceDouble(toLocation));
+            map.put(toLocation, fromLocation.getAirDistanceDoubleTo(toLocation));
         }
         return map;
     }
@@ -87,7 +87,7 @@ public class RoadSegmentLocationTest {
             RoadSegmentLocation... toLocations) {
         Map<RoadSegmentLocation, Double> map = new LinkedHashMap<RoadSegmentLocation, Double>(toLocations.length);
         for (RoadSegmentLocation toLocation : toLocations) {
-            map.put(toLocation, fromLocation.getAirDistanceDouble(toLocation));
+            map.put(toLocation, fromLocation.getAirDistanceDoubleTo(toLocation));
         }
         return map;
     }
