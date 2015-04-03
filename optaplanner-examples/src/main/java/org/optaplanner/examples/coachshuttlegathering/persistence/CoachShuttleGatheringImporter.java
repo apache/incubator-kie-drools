@@ -25,6 +25,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,7 @@ import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.domain.Shuttle;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
+import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocationArc;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 
 public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
@@ -141,6 +143,75 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
                 IOUtils.closeQuietly(subBufferedReader);
             }
             solution.setLocationList(locationList);
+            for (RoadLocation sourceLocation : locationList) {
+                LinkedHashMap<RoadLocation, RoadLocationArc> travelDistanceMap = new LinkedHashMap<RoadLocation, RoadLocationArc>(locationList.size());
+                for (RoadLocation targetLocation : locationList) {
+                    travelDistanceMap.put(targetLocation, new RoadLocationArc());
+                }
+                sourceLocation.setTravelDistanceMap(travelDistanceMap);
+            }
+            readLocationDistancesCoaches();
+            readLocationDistancesShuttles();
+        }
+
+        private void readLocationDistancesCoaches() throws IOException {
+            List<RoadLocation> locationList = solution.getLocationList();
+            int locationListSize = locationList.size();
+            File file = new File(inputFile.getParentFile(), "DistanceTimesData_COACHES.csv");
+            BufferedReader subBufferedReader = null;
+            int locationListIndex = 0;
+            try {
+                subBufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+                subBufferedReader.readLine(); // Ignore first line (comment)
+                for (String line = subBufferedReader.readLine(); line != null; line = subBufferedReader.readLine()) {
+                    if (line.isEmpty()) {
+                        continue;
+                    }
+                    RoadLocation sourceLocation = locationList.get(locationListIndex);
+                    locationListIndex++;
+                    String[] lineTokens = splitBySemicolonSeparatedValue(line, locationListSize * 2);
+                    for (int i = 0; i < locationListSize; i++) {
+                        RoadLocation targetLocation = locationList.get(i);
+                        RoadLocationArc locationArc = sourceLocation.getTravelDistanceMap().get(targetLocation);
+                        locationArc.setCoachDistance(Integer.parseInt(lineTokens[i * 2]));
+                        locationArc.setCoachDuration(Integer.parseInt(lineTokens[i * 2 + 1]));
+                    }
+                }
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Could not read the file (" + file.getName() + ").", e);
+            } finally {
+                IOUtils.closeQuietly(subBufferedReader);
+            }
+        }
+
+        private void readLocationDistancesShuttles() throws IOException {
+            List<RoadLocation> locationList = solution.getLocationList();
+            int locationListSize = locationList.size();
+            File file = new File(inputFile.getParentFile(), "DistanceTimesData_SHUTTLES.csv");
+            BufferedReader subBufferedReader = null;
+            int locationListIndex = 0;
+            try {
+                subBufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+                subBufferedReader.readLine(); // Ignore first line (comment)
+                for (String line = subBufferedReader.readLine(); line != null; line = subBufferedReader.readLine()) {
+                    if (line.isEmpty()) {
+                        continue;
+                    }
+                    RoadLocation sourceLocation = locationList.get(locationListIndex);
+                    locationListIndex++;
+                    String[] lineTokens = splitBySemicolonSeparatedValue(line, locationListSize * 2);
+                    for (int i = 0; i < locationListSize; i++) {
+                        RoadLocation targetLocation = locationList.get(i);
+                        RoadLocationArc locationArc = sourceLocation.getTravelDistanceMap().get(targetLocation);
+                        locationArc.setShuttleDistance(Integer.parseInt(lineTokens[i * 2]));
+                        locationArc.setShuttleDuration(Integer.parseInt(lineTokens[i * 2 + 1]));
+                    }
+                }
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Could not read the file (" + file.getName() + ").", e);
+            } finally {
+                IOUtils.closeQuietly(subBufferedReader);
+            }
         }
 
         private void readBusList() throws IOException {

@@ -81,31 +81,20 @@ public class BusVisit extends AbstractPersistable implements BusStandstill {
         return busStop.getLocation();
     }
 
-    /**
-     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
-     */
-    public int getDistanceFromPreviousStandstill() {
-        if (previousStandstill == null) {
-            return 0;
-        }
-        return getDistanceFrom(previousStandstill);
-    }
-
-    /**
-     * @param standstill never null
-     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
-     */
-    public int getDistanceFrom(BusStandstill standstill) {
-        return standstill.getLocation().getDistanceTo(getLocation());
-    }
-
-    /**
-     * @param standstill never null
-     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
-     */
-    public int getDistanceTo(BusStandstill standstill) {
-        return getLocation().getDistanceTo(standstill.getLocation());
-    }
+//    public int getDistanceFromPreviousStandstill() {
+//        if (previousStandstill == null) {
+//            return 0;
+//        }
+//        return getDistanceFrom(previousStandstill);
+//    }
+//
+//    public int getDistanceFrom(BusStandstill standstill) {
+//        return standstill.getLocation().getDistanceTo(getLocation());
+//    }
+//
+//    public int getDistanceTo(BusStandstill standstill) {
+//        return getLocation().getDistanceTo(standstill.getLocation());
+//    }
 
     @Override
     public String toString() {

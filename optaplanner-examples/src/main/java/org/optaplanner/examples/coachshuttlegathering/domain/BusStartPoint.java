@@ -56,13 +56,9 @@ public class BusStartPoint extends AbstractPersistable implements BusStandstill 
         return bus.getDepartureLocation();
     }
 
-    /**
-     * @param standstill never null
-     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
-     */
-    public int getDistanceTo(BusStandstill standstill) {
-        return getLocation().getDistanceTo(standstill.getLocation());
-    }
+//    public int getDistanceTo(BusStandstill standstill) {
+//        return getLocation().getDistanceTo(standstill.getLocation());
+//    }
 
     @Override
     public String toString() {

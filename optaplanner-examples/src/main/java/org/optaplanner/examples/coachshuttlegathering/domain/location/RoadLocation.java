@@ -20,14 +20,14 @@ import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
-import org.optaplanner.examples.vehiclerouting.domain.location.DistanceType;
 
 @XStreamAlias("CsgRoadLocation")
 public class RoadLocation extends AbstractPersistable {
 
     protected double latitude;
     protected double longitude;
+
+    protected Map<RoadLocation, RoadLocationArc> travelDistanceMap;
 
     public RoadLocation() {
     }
@@ -54,16 +54,37 @@ public class RoadLocation extends AbstractPersistable {
         this.longitude = longitude;
     }
 
+    public Map<RoadLocation, RoadLocationArc> getTravelDistanceMap() {
+        return travelDistanceMap;
+    }
+
+    public void setTravelDistanceMap(Map<RoadLocation, RoadLocationArc> travelDistanceMap) {
+        this.travelDistanceMap = travelDistanceMap;
+    }
+
     // ************************************************************************
     // Complex methods
     // ************************************************************************
 
-    /**
-     * @param location never null
-     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
-     */
-    public int getDistanceTo(RoadLocation location) {
-        throw new IllegalStateException(); // TODO
+    public int getCoachDistanceTo(RoadLocation location) {
+        return travelDistanceMap.get(location).getCoachDistance();
+    }
+
+    public int getCoachDurationTo(RoadLocation location) {
+        return travelDistanceMap.get(location).getCoachDuration();
+    }
+
+    public int getShuttleDistanceTo(RoadLocation location) {
+        return travelDistanceMap.get(location).getShuttleDistance();
+    }
+
+    public int getShuttleDurationTo(RoadLocation location) {
+        return travelDistanceMap.get(location).getShuttleDuration();
+    }
+
+    public int getMaximumDistanceTo(RoadLocation location) {
+        RoadLocationArc locationArc = travelDistanceMap.get(location);
+        return Math.max(locationArc.getCoachDistance(), locationArc.getShuttleDistance());
     }
 
     public double getAirDistanceDouble(RoadLocation location) {

@@ -32,8 +32,8 @@ public class DepotAngleBusVisitDifficultyWeightFactory
         BusHub hub = solution.getHub();
         return new DepotAngleCustomerDifficultyWeight(visit,
                 visit.getLocation().getAngle(hub.getLocation()),
-                visit.getLocation().getDistanceTo(hub.getLocation())
-                        + hub.getLocation().getDistanceTo(visit.getLocation()));
+                visit.getLocation().getMaximumDistanceTo(hub.getLocation())
+                        + hub.getLocation().getMaximumDistanceTo(visit.getLocation()));
     }
 
     public static class DepotAngleCustomerDifficultyWeight
