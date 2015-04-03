@@ -81,20 +81,19 @@ public class BusVisit extends AbstractPersistable implements BusStandstill {
         return busStop.getLocation();
     }
 
-//    public int getDistanceFromPreviousStandstill() {
-//        if (previousStandstill == null) {
-//            return 0;
-//        }
-//        return getDistanceFrom(previousStandstill);
-//    }
-//
-//    public int getDistanceFrom(BusStandstill standstill) {
-//        return standstill.getLocation().getDistanceTo(getLocation());
-//    }
-//
-//    public int getDistanceTo(BusStandstill standstill) {
-//        return getLocation().getDistanceTo(standstill.getLocation());
-//    }
+    public int getDistanceFromPreviousStandstillCost() {
+        if (previousStandstill == null) {
+            return 0;
+        }
+        return getDistanceFrom(previousStandstill) * startPoint.getBus().getMileageCost();
+    }
+
+    public int getDistanceFrom(BusStandstill standstill) {
+        RoadLocation sourceLocation = standstill.getLocation();
+        RoadLocation targetLocation = getLocation();
+        return startPoint.isCoach() ? sourceLocation.getCoachDistanceTo(targetLocation)
+                : sourceLocation.getShuttleDistanceTo(targetLocation);
+    }
 
     @Override
     public String toString() {

@@ -47,18 +47,25 @@ global HardSoftScoreHolder scoreHolder;
 //    then
 //        scoreHolder.addHardConstraintMatch(kcontext, $capacity - $demandTotal.intValue());
 //end
-//
-//// ############################################################################
-//// Soft constraints
-//// ############################################################################
-//
-//rule "distanceToPreviousStandstill"
-//    when
-//        $customer : Customer(previousStandstill != null, $distanceFromPreviousStandstill : distanceFromPreviousStandstill)
-//    then
-//        scoreHolder.addSoftConstraintMatch(kcontext, - $distanceFromPreviousStandstill);
-//end
-//
+
+// ############################################################################
+// Soft constraints
+// ############################################################################
+
+rule "shuttleSetupCost"
+    when
+        BusStartPoint(nextVisit != null, $cost : setupCost)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $cost);
+end
+
+rule "distanceToPreviousStandstill"
+    when
+        BusVisit(previousStandstill != null, $cost : distanceFromPreviousStandstillCost)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $cost);
+end
+
 //rule "distanceFromLastCustomerToDepot"
 //    when
 //        $customer : Customer(previousStandstill != null)
@@ -67,17 +74,3 @@ global HardSoftScoreHolder scoreHolder;
 //        Vehicle vehicle = $customer.getVehicle();
 //        scoreHolder.addSoftConstraintMatch(kcontext, - $customer.getDistanceTo(vehicle));
 //end
-//
-//
-//// ############################################################################
-//// TimeWindowed: extra hard constraints
-//// ############################################################################
-//
-//rule "arrivalAfterDueTime"
-//    when
-//        TimeWindowedCustomer(dueTime < arrivalTime, $dueTime : dueTime, $arrivalTime : arrivalTime)
-//    then
-//        scoreHolder.addHardConstraintMatch(kcontext, $dueTime - $arrivalTime.intValue());
-//end
-
-// Score constraint arrivalAfterDueTimeAtDepot is a build-in hard constraint in VehicleRoutingImporter

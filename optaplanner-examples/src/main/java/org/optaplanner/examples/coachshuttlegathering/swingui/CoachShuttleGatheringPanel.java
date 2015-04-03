@@ -36,6 +36,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
@@ -51,7 +52,20 @@ public class CoachShuttleGatheringPanel extends SolutionPanel {
     public static final String LOGO_PATH = null;
 //    public static final String LOGO_PATH = "/org/optaplanner/examples/coachshuttlegathering/swingui/coachShuttleGatheringLogo.png";
 
+    private CoachShuttleGatheringWorldPanel coachShuttleGatheringWorldPanel;
+
     public CoachShuttleGatheringPanel() {
+        setLayout(new BorderLayout());
+        JTabbedPane tabbedPane = new JTabbedPane();
+        coachShuttleGatheringWorldPanel = new CoachShuttleGatheringWorldPanel(this);
+        coachShuttleGatheringWorldPanel.setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);
+        tabbedPane.add("World", coachShuttleGatheringWorldPanel);
+        add(tabbedPane, BorderLayout.CENTER);
+    }
+
+    @Override
+    public boolean isWrapInScrollPane() {
+        return false;
     }
 
     @Override
@@ -59,12 +73,19 @@ public class CoachShuttleGatheringPanel extends SolutionPanel {
         return true;
     }
 
-    private CoachShuttleGatheringSolution getCoachShuttleGatheringSolution() {
+    public CoachShuttleGatheringSolution getCoachShuttleGatheringSolution() {
         return (CoachShuttleGatheringSolution) solutionBusiness.getSolution();
     }
 
     public void resetPanel(Solution s) {
         CoachShuttleGatheringSolution solution = (CoachShuttleGatheringSolution) s;
+        coachShuttleGatheringWorldPanel.resetPanel(solution);
+    }
+
+    @Override
+    public void updatePanel(Solution s) {
+        CoachShuttleGatheringSolution solution = (CoachShuttleGatheringSolution) s;
+        coachShuttleGatheringWorldPanel.updatePanel(solution);
     }
 
 }

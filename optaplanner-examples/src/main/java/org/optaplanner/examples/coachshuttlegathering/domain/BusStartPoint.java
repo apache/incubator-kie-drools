@@ -56,9 +56,13 @@ public class BusStartPoint extends AbstractPersistable implements BusStandstill 
         return bus.getDepartureLocation();
     }
 
-//    public int getDistanceTo(BusStandstill standstill) {
-//        return getLocation().getDistanceTo(standstill.getLocation());
-//    }
+    public boolean isCoach() {
+        return bus instanceof Coach;
+    }
+
+    public int getSetupCost() {
+        return isCoach() ? 0 : ((Shuttle) bus).getSetupCost();
+    }
 
     @Override
     public String toString() {

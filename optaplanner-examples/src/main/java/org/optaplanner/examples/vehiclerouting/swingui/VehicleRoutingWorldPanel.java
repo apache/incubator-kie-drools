@@ -28,6 +28,7 @@ import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitu
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
 public class VehicleRoutingWorldPanel extends JPanel {
+
     private final VehicleRoutingPanel vehicleRoutingPanel;
 
     private VehicleRoutingSolutionPainter solutionPainter = new VehicleRoutingSolutionPainter();
