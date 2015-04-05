@@ -58,9 +58,24 @@ rule "shuttleSetupCost"
         scoreHolder.addSoftConstraintMatch(kcontext, - $cost);
 end
 
-rule "distanceToPrevious"
+rule "distanceFromPrevious"
     when
         BusStop(previousBusOrStop != null, $cost : distanceFromPreviousCost)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $cost);
+end
+
+rule "distanceBusStopToBusDestination"
+    when
+        $bus : Bus(destination != null, nextStop != null, $destination : destination)
+        $stop : BusStop(bus == $bus, nextStop == null)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $stop.getDistanceToDestinationCost($destination));
+end
+
+rule "distanceCoachDirectlyToDestination"
+    when
+        Coach(destination != null, nextStop == null, $cost : distanceToDestinationCost)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $cost);
 end

@@ -56,4 +56,8 @@ public class Coach extends Bus {
         return destination;
     }
 
+    public int getDistanceToDestinationCost() {
+        return getDistanceFromTo(departureLocation, destination.getLocation()) * getMileageCost();
+    }
+
 }

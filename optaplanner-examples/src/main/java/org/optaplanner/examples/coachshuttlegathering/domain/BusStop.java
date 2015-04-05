@@ -119,6 +119,10 @@ public class BusStop extends AbstractPersistable implements BusOrStop, StopOrHub
         return bus.getDistanceFromTo(busOrStop.getLocation(), location);
     }
 
+    public int getDistanceToDestinationCost(StopOrHub destination) {
+        return bus.getDistanceFromTo(location, destination.getLocation()) * bus.getMileageCost();
+    }
+
     @Override
     public String toString() {
         return name;
