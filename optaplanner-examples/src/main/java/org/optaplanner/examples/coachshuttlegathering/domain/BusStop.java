@@ -41,6 +41,7 @@ public class BusStop extends AbstractPersistable implements BusOrStop, StopOrHub
     protected BusStop nextStop;
     protected Bus bus;
 
+    @Override
     public String getName() {
         return name;
     }

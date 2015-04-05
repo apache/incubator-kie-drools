@@ -26,6 +26,7 @@ public class BusHub extends AbstractPersistable implements StopOrHub {
     protected String name;
     protected RoadLocation location;
 
+    @Override
     public String getName() {
         return name;
     }
@@ -34,6 +35,7 @@ public class BusHub extends AbstractPersistable implements StopOrHub {
         this.name = name;
     }
 
+    @Override
     public RoadLocation getLocation() {
         return location;
     }

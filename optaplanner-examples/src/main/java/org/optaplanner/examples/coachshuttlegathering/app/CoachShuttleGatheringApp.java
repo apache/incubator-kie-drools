@@ -19,9 +19,11 @@ package org.optaplanner.examples.coachshuttlegathering.app;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.coachshuttlegathering.persistence.CoachShuttleGatheringDao;
+import org.optaplanner.examples.coachshuttlegathering.persistence.CoachShuttleGatheringExporter;
 import org.optaplanner.examples.coachshuttlegathering.persistence.CoachShuttleGatheringImporter;
 import org.optaplanner.examples.coachshuttlegathering.swingui.CoachShuttleGatheringPanel;
 import org.optaplanner.examples.common.app.CommonApp;
+import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
@@ -61,6 +63,11 @@ public class CoachShuttleGatheringApp extends CommonApp {
     @Override
     protected AbstractSolutionImporter createSolutionImporter() {
         return new CoachShuttleGatheringImporter();
+    }
+
+    @Override
+    protected AbstractSolutionExporter createSolutionExporter() {
+        return new CoachShuttleGatheringExporter();
     }
 
 }

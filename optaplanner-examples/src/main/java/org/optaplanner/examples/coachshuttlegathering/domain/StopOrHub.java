@@ -22,6 +22,8 @@ import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocati
 
 public interface StopOrHub {
 
+    String getName();
+
     /**
      * @return never null
      */
