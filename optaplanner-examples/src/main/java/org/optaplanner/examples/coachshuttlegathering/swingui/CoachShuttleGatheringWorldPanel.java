@@ -26,15 +26,20 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import javax.swing.JPanel;
 
+import org.apache.commons.lang.StringUtils;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusHub;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
+import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
+import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 
 public class CoachShuttleGatheringWorldPanel extends JPanel {
+
+    private static final int LOCATION_NAME_TEXT_SIZE = 12;
 
     private final CoachShuttleGatheringPanel coachShuttleGatheringPanel;
 
@@ -77,9 +82,10 @@ public class CoachShuttleGatheringWorldPanel extends JPanel {
         }
         List<Bus> busList = solution.getBusList();
         g.setColor(TangoColorFactory.ALUMINIUM_2);
+        g.setFont(g.getFont().deriveFont((float) LOCATION_NAME_TEXT_SIZE));
         for (Bus bus : busList) {
             RoadLocation location = bus.getLocation();
-            translator.drawSquare(g, location.getLongitude(), location.getLatitude(), 3);
+            translator.drawSquare(g, location.getLongitude(), location.getLatitude(), 3, StringUtils.abbreviate(bus.getName(), 20));
         }
         int colorIndex = 0;
         for (Bus bus : busList) {
@@ -92,7 +98,17 @@ public class CoachShuttleGatheringWorldPanel extends JPanel {
                         false, false);
             }
             colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_2.length;
-            // TODO draw to endpoint
+            BusStop lastStop = bus.getLastStop();
+            if (lastStop != null || bus instanceof Coach) {
+                RoadLocation lastStopLocation = lastStop == null ? bus.getLocation() : lastStop.getLocation();
+                StopOrHub destination = bus.getDestination();
+                if (destination != null) {
+                    RoadLocation destinationLocation = destination.getLocation();
+                    translator.drawRoute(g, lastStopLocation.getLongitude(), lastStopLocation.getLatitude(),
+                            destinationLocation.getLongitude(), destinationLocation.getLatitude(),
+                            false, true);
+                }
+            }
         }
         repaint();
     }
