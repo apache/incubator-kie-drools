@@ -19,32 +19,32 @@ package org.optaplanner.examples.coachshuttlegathering.domain.solver;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusHub;
-import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
+import org.optaplanner.examples.coachshuttlegathering.domain.BusOrStop;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 
 /**
  * On large datasets, the constructed solution looks like pizza slices.
  */
 public class DepotAngleBusStopDifficultyWeightFactory
-        implements SelectionSorterWeightFactory<CoachShuttleGatheringSolution, BusStop> {
+        implements SelectionSorterWeightFactory<CoachShuttleGatheringSolution, BusOrStop> {
 
-    public Comparable createSorterWeight(CoachShuttleGatheringSolution solution, BusStop stop) {
+    public Comparable createSorterWeight(CoachShuttleGatheringSolution solution, BusOrStop busOrStop) {
         BusHub hub = solution.getHub();
-        return new DepotAngleCustomerDifficultyWeight(stop,
-                stop.getLocation().getAngle(hub.getLocation()),
-                stop.getLocation().getMaximumDistanceTo(hub.getLocation())
-                        + hub.getLocation().getMaximumDistanceTo(stop.getLocation()));
+        return new DepotAngleCustomerDifficultyWeight(busOrStop,
+                busOrStop.getLocation().getAngle(hub.getLocation()),
+                busOrStop.getLocation().getMaximumDistanceTo(hub.getLocation())
+                        + hub.getLocation().getMaximumDistanceTo(busOrStop.getLocation()));
     }
 
     public static class DepotAngleCustomerDifficultyWeight
             implements Comparable<DepotAngleCustomerDifficultyWeight> {
 
-        private final BusStop stop;
+        private final BusOrStop busOrStop;
         private final double hubAngle;
         private final int hubRoundTripDistance;
 
-        public DepotAngleCustomerDifficultyWeight(BusStop stop, double hubAngle, int hubRoundTripDistance) {
-            this.stop = stop;
+        public DepotAngleCustomerDifficultyWeight(BusOrStop busOrStop, double hubAngle, int hubRoundTripDistance) {
+            this.busOrStop = busOrStop;
             this.hubAngle = hubAngle;
             this.hubRoundTripDistance = hubRoundTripDistance;
         }
@@ -53,7 +53,7 @@ public class DepotAngleBusStopDifficultyWeightFactory
             return new CompareToBuilder()
                     .append(hubAngle, other.hubAngle)
                     .append(hubRoundTripDistance, other.hubRoundTripDistance) // Ascending (further from the depot are more difficult)
-                    .append(stop.getId(), other.stop.getId())
+                    .append(busOrStop.getId(), other.busOrStop.getId())
                     .toComparison();
         }
 

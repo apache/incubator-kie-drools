@@ -23,6 +23,8 @@ import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocati
 @PlanningEntity
 public interface BusOrStop {
 
+    Long getId();
+
     /**
      * @return never null
      */

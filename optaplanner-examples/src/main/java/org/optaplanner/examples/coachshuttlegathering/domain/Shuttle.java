@@ -17,13 +17,20 @@
 package org.optaplanner.examples.coachshuttlegathering.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
+import org.optaplanner.examples.coachshuttlegathering.domain.solver.DepotAngleBusStopDifficultyWeightFactory;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
+@PlanningEntity(difficultyWeightFactoryClass = DepotAngleBusStopDifficultyWeightFactory.class)
 @XStreamAlias("CsgShuttle")
 public class Shuttle extends Bus {
 
     protected int setupCost;
+
+    // Planning variables: changes during planning, between score calculations.
+    protected StopOrHub destination;
 
     @Override
     public int getSetupCost() {
@@ -32,6 +39,15 @@ public class Shuttle extends Bus {
 
     public void setSetupCost(int setupCost) {
         this.setupCost = setupCost;
+    }
+
+    @PlanningVariable(valueRangeProviderRefs = {"stopRange", "hubRange"})
+    public StopOrHub getDestination() {
+        return destination;
+    }
+
+    public void setDestination(StopOrHub destination) {
+        this.destination = destination;
     }
 
     // ************************************************************************

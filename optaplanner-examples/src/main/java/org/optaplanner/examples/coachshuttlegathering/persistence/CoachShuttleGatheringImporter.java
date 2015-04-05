@@ -320,6 +320,9 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
                         throw new IllegalArgumentException("The hub with name (" + name
                                 + ") has an unsupported transportTimeLimit (" + transportTimeLimit + ").");
                     }
+                    for (Coach coach : solution.getCoachList()) {
+                        coach.setDestination(hub);
+                    }
                     solution.setHub(hub);
                 } else if (busStopType.equalsIgnoreCase("BUSSTOP")) {
                     BusStop busStop = new BusStop();

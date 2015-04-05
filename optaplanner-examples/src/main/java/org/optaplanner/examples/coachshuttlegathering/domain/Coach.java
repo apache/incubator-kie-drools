@@ -24,6 +24,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 public class Coach extends Bus {
 
     protected int stopLimit;
+    protected BusHub destination;
 
     public int getStopLimit() {
         return stopLimit;
@@ -33,6 +34,9 @@ public class Coach extends Bus {
         this.stopLimit = stopLimit;
     }
 
+    public void setDestination(BusHub destination) {
+        this.destination = destination;
+    }
     // ************************************************************************
     // Complex methods
     // ************************************************************************
@@ -45,6 +49,11 @@ public class Coach extends Bus {
     @Override
     public int getDistanceFromTo(RoadLocation sourceLocation, RoadLocation targetLocation) {
         return sourceLocation.getCoachDistanceTo(targetLocation);
+    }
+
+    @Override
+    public StopOrHub getDestination() {
+        return destination;
     }
 
 }

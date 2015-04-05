@@ -96,6 +96,8 @@ public abstract class Bus extends AbstractPersistable implements BusOrStop {
 
     public abstract int getDistanceFromTo(RoadLocation sourceLocation, RoadLocation targetLocation);
 
+    public abstract StopOrHub getDestination();
+
     @Override
     public String toString() {
         return name;

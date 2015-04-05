@@ -18,6 +18,7 @@ package org.optaplanner.examples.coachshuttlegathering.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -111,6 +112,11 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
     // ************************************************************************
     // Complex methods
     // ************************************************************************
+
+    @ValueRangeProvider(id = "hubRange")
+    public List<BusHub> getHubRange() {
+        return Collections.singletonList(hub);
+    }
 
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
