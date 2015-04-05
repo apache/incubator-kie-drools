@@ -34,9 +34,7 @@ import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusHub;
-import org.optaplanner.examples.coachshuttlegathering.domain.BusStartPoint;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
-import org.optaplanner.examples.coachshuttlegathering.domain.BusVisit;
 import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.domain.Shuttle;
@@ -87,17 +85,18 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
         private CoachShuttleGatheringSolution solution;
 
         private Map<List<Double>, RoadLocation> latLongToLocationMap;
+        private long busOrStopOrHubId;
 
         public Solution readSolution() throws IOException {
             solution = new CoachShuttleGatheringSolution();
             solution.setId(0L);
             readLocationList();
+            busOrStopOrHubId = 0L;
             readBusList();
             readBusStopList();
-            createStartPointListAndVisitList();
 
             int busListSize = solution.getCoachList().size() + solution.getShuttleList().size();
-            int base = solution.getBusStopList().size() + solution.getShuttleList().size();
+            int base = solution.getStopList().size() + solution.getShuttleList().size();
             BigInteger possibleSolutionSize = factorial(base + busListSize - 1).divide(factorial(busListSize - 1));
             logger.info("CoachShuttleGathering {} has {} road locations, {} coaches, {} shuttles and {} bus stops"
                          + " with a search space of {}.",
@@ -105,7 +104,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
                     solution.getLocationList().size(),
                     solution.getCoachList().size(),
                     solution.getShuttleList().size(),
-                    solution.getBusStopList().size(),
+                    solution.getStopList().size(),
                     getFlooredPossibleSolutionSize(possibleSolutionSize));
             return solution;
         }
@@ -218,7 +217,6 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
             File file = new File(inputFile.getParentFile(), "Fleet.csv");
             List<Coach> coachList = new ArrayList<Coach>();
             List<Shuttle> shuttleList = new ArrayList<Shuttle>();
-            long busId = 0L;
             BufferedReader subBufferedReader = null;
             try {
                 subBufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
@@ -241,8 +239,8 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
                         throw new IllegalArgumentException("The fleet vehicle with name (" +  name
                                 + ") has an unsupported type (" + busType + ").");
                     }
-                    bus.setId(busId);
-                    busId++;
+                    bus.setId(busOrStopOrHubId);
+                    busOrStopOrHubId++;
                     bus.setName(name);
                     bus.setCapacity(Integer.parseInt(lineTokens[2]));
                     int stopLimit = Integer.parseInt(lineTokens[3]);
@@ -285,7 +283,6 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
 
         private void readBusStopList() throws IOException {
             List<BusStop> busStopList = new ArrayList<BusStop>();
-            long busStopId = 0L;
             bufferedReader.readLine(); // Ignore first line (comment)
             for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
                 if (line.isEmpty()) {
@@ -300,8 +297,8 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
                                 + ") is not the only hub (" + solution.getHub().getName() + ").");
                     }
                     BusHub hub = new BusHub();
-                    hub.setId(busStopId);
-                    busStopId++;
+                    hub.setId(busOrStopOrHubId);
+                    busOrStopOrHubId++;
                     hub.setName(name);
                     // Ignore lineTokens[2] and lineTokens[3]
                     double latitude = Double.parseDouble(lineTokens[4]);
@@ -326,8 +323,8 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
                     solution.setHub(hub);
                 } else if (busStopType.equalsIgnoreCase("BUSSTOP")) {
                     BusStop busStop = new BusStop();
-                    busStop.setId(busStopId);
-                    busStopId++;
+                    busStop.setId(busOrStopOrHubId);
+                    busOrStopOrHubId++;
                     busStop.setName(name);
                     // Ignore lineTokens[2] and lineTokens[3]
                     double latitude = Double.parseDouble(lineTokens[4]);
@@ -347,39 +344,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
                             + ") has an unsupported type (" + busStopType + ").");
                 }
             }
-            solution.setBusStopList(busStopList);
-        }
-
-        private void createStartPointListAndVisitList() {
-            List<Coach> coachList = solution.getCoachList();
-            List<Shuttle> shuttleList = solution.getShuttleList();
-            List<BusStartPoint> startPointList = new ArrayList<BusStartPoint>(coachList.size() + shuttleList.size());
-            long entityId = 0L;
-            for (Coach coach : coachList) {
-                BusStartPoint startPoint = new BusStartPoint();
-                startPoint.setId(entityId);
-                entityId++;
-                startPoint.setBus(coach);
-                startPointList.add(startPoint);
-            }
-            for (Shuttle shuttle : shuttleList) {
-                BusStartPoint startPoint = new BusStartPoint();
-                startPoint.setId(entityId);
-                entityId++;
-                startPoint.setBus(shuttle);
-                startPointList.add(startPoint);
-            }
-            solution.setStartPointList(startPointList);
-            List<BusStop> busStopList = solution.getBusStopList();
-            List<BusVisit> visitList = new ArrayList<BusVisit>(busStopList.size());
-            for (BusStop busStop : busStopList) {
-                BusVisit visit = new BusVisit();
-                visit.setId(entityId);
-                entityId++;
-                visit.setBusStop(busStop);
-                visitList.add(visit);
-            }
-            solution.setVisitList(visitList);
+            solution.setStopList(busStopList);
         }
 
     }

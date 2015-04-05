@@ -21,7 +21,7 @@ import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocati
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("CsgBusHub")
-public class BusHub extends AbstractPersistable {
+public class BusHub extends AbstractPersistable implements StopOrHub {
 
     protected String name;
     protected RoadLocation location;

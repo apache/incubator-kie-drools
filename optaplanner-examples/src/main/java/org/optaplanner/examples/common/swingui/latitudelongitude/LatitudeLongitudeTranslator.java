@@ -95,6 +95,12 @@ public class LatitudeLongitudeTranslator {
         return imageHeight;
     }
 
+    public void drawSquare(Graphics2D g, double lon, double lat, int diameter) {
+        int x = translateLongitudeToX(lon);
+        int y = translateLatitudeToY(lat);
+        g.fillRect(x - (diameter / 2), y - (diameter / 2), diameter, diameter);
+    }
+
     public void drawRoute(Graphics2D g, double lon1, double lat1, double lon2, double lat2, boolean straight, boolean dashed) {
         int x1 = translateLongitudeToX(lon1);
         int y1 = translateLatitudeToY(lat1);

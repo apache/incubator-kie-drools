@@ -18,31 +18,21 @@ package org.optaplanner.examples.coachshuttlegathering.swingui;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.List;
 import javax.swing.JPanel;
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
+import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusHub;
-import org.optaplanner.examples.coachshuttlegathering.domain.BusStartPoint;
-import org.optaplanner.examples.coachshuttlegathering.domain.BusVisit;
+import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
-import org.optaplanner.examples.tsp.domain.Domicile;
-import org.optaplanner.examples.tsp.domain.location.AirLocation;
-import org.optaplanner.examples.tsp.domain.location.Location;
-import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
-import org.optaplanner.examples.vehiclerouting.swingui.VehicleRoutingPanel;
-import org.optaplanner.examples.vehiclerouting.swingui.VehicleRoutingSolutionPainter;
 
 public class CoachShuttleGatheringWorldPanel extends JPanel {
 
@@ -78,30 +68,25 @@ public class CoachShuttleGatheringWorldPanel extends JPanel {
 
         Graphics2D g = createCanvas(width, height);
         g.setColor(TangoColorFactory.ALUMINIUM_6);
-        BusHub hub = solution.getHub();
-        int hubX = translator.translateLongitudeToX(hub.getLocation().getLongitude());
-        int hubY = translator.translateLatitudeToY(hub.getLocation().getLatitude());
-        g.fillRect(hubX - 2, hubY - 2, 5, 5);
-        for (BusVisit visit : solution.getVisitList()) {
-            RoadLocation location = visit.getLocation();
-            int x = translator.translateLongitudeToX(location.getLongitude());
-            int y = translator.translateLatitudeToY(location.getLatitude());
-            g.setColor(TangoColorFactory.ALUMINIUM_4);
-            g.fillRect(x - 1, y - 1, 3, 3);
+        RoadLocation hubLocation = solution.getHub().getLocation();
+        translator.drawSquare(g, hubLocation.getLongitude(), hubLocation.getLatitude(), 5);
+        g.setColor(TangoColorFactory.ALUMINIUM_4);
+        for (BusStop stop : solution.getStopList()) {
+            RoadLocation location = stop.getLocation();
+            translator.drawSquare(g, location.getLongitude(), location.getLatitude(), 3);
         }
-        for (BusStartPoint startPoint : solution.getStartPointList()) {
-            RoadLocation location = startPoint.getLocation();
-            int x = translator.translateLongitudeToX(location.getLongitude());
-            int y = translator.translateLatitudeToY(location.getLatitude());
-            g.setColor(TangoColorFactory.ALUMINIUM_2);
-            g.fillRect(x - 1, y - 1, 3, 3);
+        List<Bus> busList = solution.getBusList();
+        g.setColor(TangoColorFactory.ALUMINIUM_2);
+        for (Bus bus : busList) {
+            RoadLocation location = bus.getLocation();
+            translator.drawSquare(g, location.getLongitude(), location.getLatitude(), 3);
         }
         int colorIndex = 0;
-        for (BusStartPoint startPoint : solution.getStartPointList()) {
+        for (Bus bus : busList) {
             g.setColor(TangoColorFactory.SEQUENCE_2[colorIndex]);
-            for (BusVisit visit = startPoint.getNextVisit(); visit != null; visit = visit.getNextVisit()) {
-                RoadLocation previousLocation = visit.getPreviousStandstill().getLocation();
-                RoadLocation location = visit.getLocation();
+            for (BusStop stop = bus.getNextStop(); stop != null; stop = stop.getNextStop()) {
+                RoadLocation previousLocation = stop.getPreviousBusOrStop().getLocation();
+                RoadLocation location = stop.getLocation();
                 translator.drawRoute(g, previousLocation.getLongitude(), previousLocation.getLatitude(),
                         location.getLongitude(), location.getLatitude(),
                         false, false);

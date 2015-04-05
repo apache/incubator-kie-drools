@@ -17,16 +17,29 @@
 package org.optaplanner.examples.coachshuttlegathering.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
+import org.optaplanner.examples.coachshuttlegathering.domain.solver.DepotAngleBusStopDifficultyWeightFactory;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
+@PlanningEntity(difficultyWeightFactoryClass = DepotAngleBusStopDifficultyWeightFactory.class)
 @XStreamAlias("CsgBusStop")
-public class BusStop extends AbstractPersistable {
+public class BusStop extends AbstractPersistable implements BusOrStop, StopOrHub {
 
     protected String name;
     protected RoadLocation location;
     protected int passengerQuantity;
     protected int transportTimeLimit;
+
+    // Planning variables: changes during planning, between score calculations.
+    protected BusOrStop previousBusOrStop;
+
+    // Shadow variables
+    protected BusStop nextStop;
+    protected Bus bus;
 
     public String getName() {
         return name;
@@ -36,6 +49,7 @@ public class BusStop extends AbstractPersistable {
         this.name = name;
     }
 
+    @Override
     public RoadLocation getLocation() {
         return location;
     }
@@ -59,9 +73,51 @@ public class BusStop extends AbstractPersistable {
     public void setTransportTimeLimit(int transportTimeLimit) {
         this.transportTimeLimit = transportTimeLimit;
     }
+
+    @PlanningVariable(valueRangeProviderRefs = {"coachRange", "shuttleRange", "stopRange"},
+            graphType = PlanningVariableGraphType.CHAINED)
+    public BusOrStop getPreviousBusOrStop() {
+        return previousBusOrStop;
+    }
+
+    public void setPreviousBusOrStop(BusOrStop previousBusOrStop) {
+        this.previousBusOrStop = previousBusOrStop;
+    }
+
+    @Override
+    public BusStop getNextStop() {
+        return nextStop;
+    }
+
+    @Override
+    public void setNextStop(BusStop nextStop) {
+        this.nextStop = nextStop;
+    }
+
+    @AnchorShadowVariable(sourceVariableName = "previousBusOrStop")
+    @Override
+    public Bus getBus() {
+        return bus;
+    }
+
+    public void setBus(Bus bus) {
+        this.bus = bus;
+    }
+
     // ************************************************************************
     // Complex methods
     // ************************************************************************
+
+    public int getDistanceFromPreviousCost() {
+        if (previousBusOrStop == null) {
+            return 0;
+        }
+        return getDistanceFrom(previousBusOrStop) * bus.getMileageCost();
+    }
+
+    public int getDistanceFrom(BusOrStop busOrStop) {
+        return bus.getDistanceFromTo(busOrStop.getLocation(), location);
+    }
 
     @Override
     public String toString() {

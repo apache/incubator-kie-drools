@@ -40,11 +40,8 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
     protected List<RoadLocation> locationList;
     protected List<Coach> coachList;
     protected List<Shuttle> shuttleList;
+    protected List<BusStop> stopList;
     protected BusHub hub;
-    protected List<BusStop> busStopList;
-
-    protected List<BusStartPoint> startPointList;
-    protected List<BusVisit> visitList;
 
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
     protected HardSoftScore score;
@@ -65,6 +62,8 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
         this.locationList = locationList;
     }
 
+    @PlanningEntityCollectionProperty
+    @ValueRangeProvider(id = "coachRange")
     public List<Coach> getCoachList() {
         return coachList;
     }
@@ -73,6 +72,8 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
         this.coachList = coachList;
     }
 
+    @PlanningEntityCollectionProperty
+    @ValueRangeProvider(id = "shuttleRange")
     public List<Shuttle> getShuttleList() {
         return shuttleList;
     }
@@ -81,40 +82,22 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
         this.shuttleList = shuttleList;
     }
 
+    @PlanningEntityCollectionProperty
+    @ValueRangeProvider(id = "stopRange")
+    public List<BusStop> getStopList() {
+        return stopList;
+    }
+
+    public void setStopList(List<BusStop> stopList) {
+        this.stopList = stopList;
+    }
+
     public BusHub getHub() {
         return hub;
     }
 
     public void setHub(BusHub hub) {
         this.hub = hub;
-    }
-
-    public List<BusStop> getBusStopList() {
-        return busStopList;
-    }
-
-    public void setBusStopList(List<BusStop> busStopList) {
-        this.busStopList = busStopList;
-    }
-
-    @PlanningEntityCollectionProperty
-    @ValueRangeProvider(id = "startPointRange")
-    public List<BusStartPoint> getStartPointList() {
-        return startPointList;
-    }
-
-    public void setStartPointList(List<BusStartPoint> startPointList) {
-        this.startPointList = startPointList;
-    }
-
-    @PlanningEntityCollectionProperty
-    @ValueRangeProvider(id = "visitRange")
-    public List<BusVisit> getVisitList() {
-        return visitList;
-    }
-
-    public void setVisitList(List<BusVisit> visitList) {
-        this.visitList = visitList;
     }
 
     public HardSoftScore getScore() {
@@ -132,12 +115,16 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(locationList);
-        facts.addAll(coachList);
-        facts.addAll(shuttleList);
         facts.add(hub);
-        facts.addAll(busStopList);
-        // Do not add the planning entities (startPointList, visitList) because that will be done automatically
+        // Do not add the planning entities (coachList, shuttleList, busStopList) because that will be done automatically
         return facts;
+    }
+
+    public List<Bus> getBusList() {
+        List<Bus> busList = new ArrayList<Bus>(coachList.size() + shuttleList.size());
+        busList.addAll(coachList);
+        busList.addAll(shuttleList);
+        return busList;
     }
 
 }

@@ -21,13 +21,12 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
 
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusHub;
-import org.optaplanner.examples.coachshuttlegathering.domain.BusStartPoint;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
-import org.optaplanner.examples.coachshuttlegathering.domain.BusVisit;
 import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.domain.Shuttle;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
+import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocationArc;
 
 global HardSoftScoreHolder scoreHolder;
 
@@ -54,14 +53,14 @@ global HardSoftScoreHolder scoreHolder;
 
 rule "shuttleSetupCost"
     when
-        BusStartPoint(nextVisit != null, $cost : setupCost)
+        Bus(nextStop != null, $cost : setupCost)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $cost);
 end
 
-rule "distanceToPreviousStandstill"
+rule "distanceToPrevious"
     when
-        BusVisit(previousStandstill != null, $cost : distanceFromPreviousStandstillCost)
+        BusStop(previousBusOrStop != null, $cost : distanceFromPreviousCost)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $cost);
 end

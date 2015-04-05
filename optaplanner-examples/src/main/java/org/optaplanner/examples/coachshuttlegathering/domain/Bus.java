@@ -26,12 +26,15 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
         Coach.class,
         Shuttle.class
 })
-public abstract class Bus extends AbstractPersistable {
+public abstract class Bus extends AbstractPersistable implements BusOrStop {
 
     protected String name;
     protected RoadLocation departureLocation;
     protected int capacity;
     protected int mileageCost;
+
+    // Shadow variables
+    protected BusStop nextStop;
 
     public String getName() {
         return name;
@@ -65,9 +68,33 @@ public abstract class Bus extends AbstractPersistable {
         this.mileageCost = mileageCost;
     }
 
+    @Override
+    public BusStop getNextStop() {
+        return nextStop;
+    }
+
+    @Override
+    public void setNextStop(BusStop nextStop) {
+        this.nextStop = nextStop;
+    }
+
     // ************************************************************************
     // Complex methods
     // ************************************************************************
+
+    public abstract int getSetupCost();
+
+    @Override
+    public RoadLocation getLocation() {
+        return departureLocation;
+    }
+
+    @Override
+    public Bus getBus() {
+        return this;
+    }
+
+    public abstract int getDistanceFromTo(RoadLocation sourceLocation, RoadLocation targetLocation);
 
     @Override
     public String toString() {

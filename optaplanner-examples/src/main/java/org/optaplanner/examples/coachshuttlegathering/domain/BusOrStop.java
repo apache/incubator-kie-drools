@@ -21,7 +21,7 @@ import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 
 @PlanningEntity
-public interface BusStandstill {
+public interface BusOrStop {
 
     /**
      * @return never null
@@ -31,13 +31,13 @@ public interface BusStandstill {
     /**
      * @return sometimes null
      */
-    BusStartPoint getStartPoint();
+    Bus getBus();
 
     /**
      * @return sometimes null
      */
-    @InverseRelationShadowVariable(sourceVariableName = "previousStandstill")
-    BusVisit getNextVisit();
-    void setNextVisit(BusVisit nextVisit);
+    @InverseRelationShadowVariable(sourceVariableName = "previousBusOrStop")
+    BusStop getNextStop();
+    void setNextStop(BusStop nextStop);
 
 }

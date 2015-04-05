@@ -17,6 +17,7 @@
 package org.optaplanner.examples.coachshuttlegathering.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("CsgShuttle")
@@ -24,6 +25,7 @@ public class Shuttle extends Bus {
 
     protected int setupCost;
 
+    @Override
     public int getSetupCost() {
         return setupCost;
     }
@@ -35,5 +37,10 @@ public class Shuttle extends Bus {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
+
+    @Override
+    public int getDistanceFromTo(RoadLocation sourceLocation, RoadLocation targetLocation) {
+        return sourceLocation.getShuttleDistanceTo(targetLocation);
+    }
 
 }
