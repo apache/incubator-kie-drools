@@ -103,13 +103,4 @@ public abstract class Bus extends AbstractPersistable implements BusOrStop {
         return name;
     }
 
-    public BusStop getLastStop() {
-        // TODO refactor to shadow variable
-        BusStop lastStop = null;
-        for (BusStop stop = nextStop; stop != null; stop = stop.getNextStop()) {
-            lastStop = stop;
-        }
-        return lastStop;
-    }
-
 }

@@ -21,10 +21,12 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
 
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusHub;
+import org.optaplanner.examples.coachshuttlegathering.domain.BusOrStop;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
 import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.domain.Shuttle;
+import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocationArc;
 
@@ -46,6 +48,14 @@ global HardSoftScoreHolder scoreHolder;
 //    then
 //        scoreHolder.addHardConstraintMatch(kcontext, $capacity - $demandTotal.intValue());
 //end
+
+rule "shuttleDestinationIsCoachOrHub"
+    when
+        Shuttle(destination != null, $destination : destination)
+        StopOrHub(this == $destination, visitedByCoach == false)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, - 1000000);
+end
 
 // ############################################################################
 // Soft constraints
@@ -79,12 +89,3 @@ rule "distanceCoachDirectlyToDestination"
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $cost);
 end
-
-//rule "distanceFromLastCustomerToDepot"
-//    when
-//        $customer : Customer(previousStandstill != null)
-//        not Customer(previousStandstill == $customer)
-//    then
-//        Vehicle vehicle = $customer.getVehicle();
-//        scoreHolder.addSoftConstraintMatch(kcontext, - $customer.getDistanceTo(vehicle));
-//end

@@ -124,6 +124,11 @@ public class BusStop extends AbstractPersistable implements BusOrStop, StopOrHub
     }
 
     @Override
+    public boolean isVisitedByCoach() {
+        return bus != null && bus instanceof Coach;
+    }
+
+    @Override
     public String toString() {
         return name;
     }

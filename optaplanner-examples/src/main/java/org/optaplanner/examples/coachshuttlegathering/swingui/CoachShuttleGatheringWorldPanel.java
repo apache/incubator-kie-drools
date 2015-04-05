@@ -72,12 +72,12 @@ public class CoachShuttleGatheringWorldPanel extends JPanel {
         translator.prepareFor(width, height);
 
         Graphics2D g = createCanvas(width, height);
-        g.setColor(TangoColorFactory.ALUMINIUM_6);
+        g.setColor(TangoColorFactory.ORANGE_3);
         RoadLocation hubLocation = solution.getHub().getLocation();
         translator.drawSquare(g, hubLocation.getLongitude(), hubLocation.getLatitude(), 5);
-        g.setColor(TangoColorFactory.ALUMINIUM_4);
         for (BusStop stop : solution.getStopList()) {
             RoadLocation location = stop.getLocation();
+            g.setColor((stop.getPassengerQuantity() > 0) ? TangoColorFactory.ORANGE_2 : TangoColorFactory.ALUMINIUM_4);
             translator.drawSquare(g, location.getLongitude(), location.getLatitude(), 3);
         }
         List<Bus> busList = solution.getBusList();
@@ -85,20 +85,21 @@ public class CoachShuttleGatheringWorldPanel extends JPanel {
         g.setFont(g.getFont().deriveFont((float) LOCATION_NAME_TEXT_SIZE));
         for (Bus bus : busList) {
             RoadLocation location = bus.getLocation();
+            g.setColor(bus instanceof Coach ? TangoColorFactory.ORANGE_1 : TangoColorFactory.ALUMINIUM_2);
             translator.drawSquare(g, location.getLongitude(), location.getLatitude(), 3, StringUtils.abbreviate(bus.getName(), 20));
         }
         int colorIndex = 0;
         for (Bus bus : busList) {
             g.setColor(TangoColorFactory.SEQUENCE_2[colorIndex]);
+            BusStop lastStop = null;
             for (BusStop stop = bus.getNextStop(); stop != null; stop = stop.getNextStop()) {
                 RoadLocation previousLocation = stop.getPreviousBusOrStop().getLocation();
                 RoadLocation location = stop.getLocation();
                 translator.drawRoute(g, previousLocation.getLongitude(), previousLocation.getLatitude(),
                         location.getLongitude(), location.getLatitude(),
                         false, false);
+                lastStop = stop;
             }
-            colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_2.length;
-            BusStop lastStop = bus.getLastStop();
             if (lastStop != null || bus instanceof Coach) {
                 RoadLocation lastStopLocation = lastStop == null ? bus.getLocation() : lastStop.getLocation();
                 StopOrHub destination = bus.getDestination();
@@ -109,6 +110,7 @@ public class CoachShuttleGatheringWorldPanel extends JPanel {
                             false, true);
                 }
             }
+            colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_2.length;
         }
         repaint();
     }

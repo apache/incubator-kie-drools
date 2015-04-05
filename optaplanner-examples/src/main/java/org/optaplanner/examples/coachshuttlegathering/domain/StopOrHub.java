@@ -27,4 +27,6 @@ public interface StopOrHub {
      */
     RoadLocation getLocation();
 
+    boolean isVisitedByCoach();
+
 }

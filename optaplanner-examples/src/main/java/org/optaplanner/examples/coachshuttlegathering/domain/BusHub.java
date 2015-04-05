@@ -47,6 +47,11 @@ public class BusHub extends AbstractPersistable implements StopOrHub {
     // ************************************************************************
 
     @Override
+    public boolean isVisitedByCoach() {
+        return true;
+    }
+
+    @Override
     public String toString() {
         return name;
     }
