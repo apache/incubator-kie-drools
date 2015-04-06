@@ -44,7 +44,7 @@ rule "coachStopLimit"
             count($stop)
         )
     then
-        scoreHolder.addHardConstraintMatch(kcontext, ($stopLimit - $stopTotal.intValue()) * 10000L);
+        scoreHolder.addHardConstraintMatch(kcontext, ($stopLimit - $stopTotal.intValue()) * 1000000L);
 end
 
 rule "shuttleCapacity"
@@ -55,7 +55,7 @@ rule "shuttleCapacity"
             sum($passengerQuantity)
         )
     then
-        scoreHolder.addHardConstraintMatch(kcontext, ($capacity - $passengerQuantityTotal.intValue()) * 100L);
+        scoreHolder.addHardConstraintMatch(kcontext, ($capacity - $passengerQuantityTotal.intValue()) * 1000L);
 end
 
 rule "coachCapacity"
@@ -72,7 +72,7 @@ rule "coachCapacity"
         )
         eval($coachPassengerQuantityTotal.intValue() + $shuttlePassengerQuantityTotal.intValue() > $capacity)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, ($capacity - $coachPassengerQuantityTotal.intValue() - $shuttlePassengerQuantityTotal.intValue()) * 100L);
+        scoreHolder.addHardConstraintMatch(kcontext, ($capacity - $coachPassengerQuantityTotal.intValue() - $shuttlePassengerQuantityTotal.intValue()) * 1000L);
 end
 
 rule "transportTime"
@@ -87,7 +87,7 @@ rule "shuttleDestinationIsCoachOrHub"
         Shuttle(destination != null, $destination : destination)
         StopOrHub(this == $destination, visitedByCoach == false)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - 1000000L);
+        scoreHolder.addHardConstraintMatch(kcontext, - 1000000000L);
 end
 
 // ############################################################################
