@@ -53,12 +53,14 @@ public class CoachShuttleGatheringEasyScoreCalculator implements EasyScoreCalcul
                     StopOrHub destination = shuttle.getDestination();
                     if (destination instanceof BusStop) {
                         Bus destinationBus = ((BusStop) destination).getBus();
-                        Integer destinationPassengerTotal = busToPassengerTotalMap.get(bus);
-                        if (destinationPassengerTotal == null) {
-                            destinationPassengerTotal = 0;
+                        if (destinationBus != null && destinationBus instanceof Coach) {
+                            Integer destinationPassengerTotal = busToPassengerTotalMap.get(destinationBus);
+                            if (destinationPassengerTotal == null) {
+                                destinationPassengerTotal = 0;
+                            }
+                            destinationPassengerTotal += stop.getPassengerQuantity();
+                            busToPassengerTotalMap.put(destinationBus, destinationPassengerTotal);
                         }
-                        destinationPassengerTotal += stop.getPassengerQuantity();
-                        busToPassengerTotalMap.put(bus, destinationPassengerTotal);
                     }
                 }
                 // Constraint coachStopLimit
@@ -87,7 +89,7 @@ public class CoachShuttleGatheringEasyScoreCalculator implements EasyScoreCalcul
             // Constraint shuttleCapacity and coachCapacity
             Integer passengerTotal = busToPassengerTotalMap.get(bus);
             if (passengerTotal != null && passengerTotal > bus.getCapacity()) {
-                hardScore -= passengerTotal * 1000L;
+                hardScore += (bus.getCapacity() - passengerTotal) * 1000L;
             }
             if (bus instanceof Coach) {
                 // Constraint coachStopLimit
@@ -117,7 +119,6 @@ public class CoachShuttleGatheringEasyScoreCalculator implements EasyScoreCalcul
                 }
             }
         }
-        // TODO
         return HardSoftLongScore.valueOf(hardScore, softScore);
     }
 
