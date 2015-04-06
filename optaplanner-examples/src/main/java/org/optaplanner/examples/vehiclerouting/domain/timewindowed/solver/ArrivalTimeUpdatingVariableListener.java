@@ -16,7 +16,7 @@ public class ArrivalTimeUpdatingVariableListener implements VariableListener<Cus
 
     public void afterEntityAdded(ScoreDirector scoreDirector, Customer customer) {
         if (customer instanceof TimeWindowedCustomer) {
-            updateVehicle(scoreDirector, (TimeWindowedCustomer) customer);
+            updateArrivalTime(scoreDirector, (TimeWindowedCustomer) customer);
         }
     }
 
@@ -26,7 +26,7 @@ public class ArrivalTimeUpdatingVariableListener implements VariableListener<Cus
 
     public void afterVariableChanged(ScoreDirector scoreDirector, Customer customer) {
         if (customer instanceof TimeWindowedCustomer) {
-            updateVehicle(scoreDirector, (TimeWindowedCustomer) customer);
+            updateArrivalTime(scoreDirector, (TimeWindowedCustomer) customer);
         }
     }
 
@@ -38,7 +38,7 @@ public class ArrivalTimeUpdatingVariableListener implements VariableListener<Cus
         // Do nothing
     }
 
-    protected void updateVehicle(ScoreDirector scoreDirector, TimeWindowedCustomer sourceCustomer) {
+    protected void updateArrivalTime(ScoreDirector scoreDirector, TimeWindowedCustomer sourceCustomer) {
         Standstill previousStandstill = sourceCustomer.getPreviousStandstill();
         Integer departureTime = (previousStandstill instanceof TimeWindowedCustomer)
                 ? ((TimeWindowedCustomer) previousStandstill).getDepartureTime() : null;
