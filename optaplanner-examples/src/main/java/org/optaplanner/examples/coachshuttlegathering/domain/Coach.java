@@ -52,6 +52,11 @@ public class Coach extends Bus {
     }
 
     @Override
+    public int getDurationFromTo(RoadLocation sourceLocation, RoadLocation targetLocation) {
+        return sourceLocation.getCoachDurationTo(targetLocation);
+    }
+
+    @Override
     public StopOrHub getDestination() {
         return destination;
     }

@@ -57,6 +57,11 @@ public class BusHub extends AbstractPersistable implements StopOrHub {
         this.transferShuttleList = transferShuttleList;
     }
 
+    @Override
+    public Integer getTransportTimeToHub() {
+        return 0;
+    }
+
     // ************************************************************************
     // Complex methods
     // ************************************************************************

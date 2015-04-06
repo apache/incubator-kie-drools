@@ -59,4 +59,9 @@ public class Shuttle extends Bus {
         return sourceLocation.getShuttleDistanceTo(targetLocation);
     }
 
+    @Override
+    public int getDurationFromTo(RoadLocation sourceLocation, RoadLocation targetLocation) {
+        return sourceLocation.getShuttleDurationTo(targetLocation);
+    }
+
 }

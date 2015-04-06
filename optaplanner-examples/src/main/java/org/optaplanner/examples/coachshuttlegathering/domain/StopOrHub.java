@@ -38,4 +38,6 @@ public interface StopOrHub {
     List<Shuttle> getTransferShuttleList();
     void setTransferShuttleList(List<Shuttle> transferShuttleList);
 
+    Integer getTransportTimeToHub();
+
 }

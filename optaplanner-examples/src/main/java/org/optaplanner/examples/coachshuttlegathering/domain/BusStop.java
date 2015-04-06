@@ -21,10 +21,12 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
+import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.coachshuttlegathering.domain.solver.DepotAngleBusStopDifficultyWeightFactory;
+import org.optaplanner.examples.coachshuttlegathering.domain.solver.TransportTimeToHubUpdatingVariableListener;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity(difficultyWeightFactoryClass = DepotAngleBusStopDifficultyWeightFactory.class)
@@ -43,6 +45,7 @@ public class BusStop extends AbstractPersistable implements BusOrStop, StopOrHub
     protected BusStop nextStop;
     protected Bus bus;
     protected List<Shuttle> transferShuttleList;
+    protected Integer transportTimeToHub;
 
     @Override
     public String getName() {
@@ -114,6 +117,18 @@ public class BusStop extends AbstractPersistable implements BusOrStop, StopOrHub
 
     public void setTransferShuttleList(List<Shuttle> transferShuttleList) {
         this.transferShuttleList = transferShuttleList;
+    }
+
+    @CustomShadowVariable(variableListenerClass = TransportTimeToHubUpdatingVariableListener.class,
+            sources = {@CustomShadowVariable.Source(variableName = "nextStop"),
+                    @CustomShadowVariable.Source(variableName = "bus")})
+    @Override
+    public Integer getTransportTimeToHub() {
+        return transportTimeToHub;
+    }
+
+    public void setTransportTimeToHub(Integer transportTimeToHub) {
+        this.transportTimeToHub = transportTimeToHub;
     }
 
     // ************************************************************************
