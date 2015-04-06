@@ -70,8 +70,15 @@ public class TransportTimeToHubUpdatingVariableListener implements VariableListe
             StopOrHub next = sourceStop.getNextStop();
             if (next == null) {
                 next = bus.getDestination();
+                if (next instanceof BusStop && ((BusStop) next).getBus() instanceof Shuttle) {
+                    // A shuttle that follows a shuttle should have only transportTimeToHub null
+                    transportTimeToHub = null;
+                } else {
+                    transportTimeToHub = (next == null) ? null : next.getTransportTimeToHub();
+                }
+            } else {
+                transportTimeToHub = next.getTransportTimeToHub();
             }
-            transportTimeToHub = (next == null) ? null : next.getTransportTimeToHub();
             if (transportTimeToHub != null) {
                 transportTimeToHub += bus.getDurationFromTo(sourceStop.getLocation(), next.getLocation());
             }
@@ -121,7 +128,16 @@ public class TransportTimeToHubUpdatingVariableListener implements VariableListe
 
     private void updateTransportTimeToHubOfShuttle(ScoreDirector scoreDirector, Shuttle shuttle) {
         StopOrHub destination = shuttle.getDestination();
-        Integer destinationTransportTimeToHub = (destination == null) ? null : destination.getTransportTimeToHub();
+        Integer destinationTransportTimeToHub;
+        if (destination != null) {
+            if (destination instanceof BusStop && ((BusStop) destination).getBus() instanceof Shuttle) {
+                destinationTransportTimeToHub = null;
+            } else {
+                destinationTransportTimeToHub = (destination == null) ? null : destination.getTransportTimeToHub();
+            }
+        } else {
+            destinationTransportTimeToHub = null;
+        }
         updateTransportTimeToHubOfShuttle(scoreDirector, destination, destinationTransportTimeToHub, shuttle);
     }
 
