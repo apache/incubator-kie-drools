@@ -121,7 +121,8 @@ public class BusStop extends AbstractPersistable implements BusOrStop, StopOrHub
 
     @CustomShadowVariable(variableListenerClass = TransportTimeToHubUpdatingVariableListener.class,
             sources = {@CustomShadowVariable.Source(variableName = "nextStop"),
-                    @CustomShadowVariable.Source(variableName = "bus")})
+                    @CustomShadowVariable.Source(variableName = "bus"),
+                    @CustomShadowVariable.Source(entityClass = Shuttle.class, variableName = "destination")})
     @Override
     public Integer getTransportTimeToHub() {
         return transportTimeToHub;
