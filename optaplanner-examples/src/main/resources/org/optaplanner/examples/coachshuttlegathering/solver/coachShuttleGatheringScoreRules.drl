@@ -49,6 +49,13 @@ global HardSoftScoreHolder scoreHolder;
 //        scoreHolder.addHardConstraintMatch(kcontext, $capacity - $demandTotal.intValue());
 //end
 
+rule "transportTime"
+    when
+        BusStop(transportTimeToHub != null, $cost : transportTimeRemainder < 0)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, $cost);
+end
+
 rule "shuttleDestinationIsCoachOrHub"
     when
         Shuttle(destination != null, $destination : destination)

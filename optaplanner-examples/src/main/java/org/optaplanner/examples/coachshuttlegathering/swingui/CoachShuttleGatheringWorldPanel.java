@@ -77,8 +77,11 @@ public class CoachShuttleGatheringWorldPanel extends JPanel {
         translator.drawSquare(g, hubLocation.getLongitude(), hubLocation.getLatitude(), 5);
         for (BusStop stop : solution.getStopList()) {
             RoadLocation location = stop.getLocation();
-            g.setColor((stop.getPassengerQuantity() > 0) ? TangoColorFactory.ORANGE_2 : TangoColorFactory.ALUMINIUM_4);
-            translator.drawSquare(g, location.getLongitude(), location.getLatitude(), 3);
+            g.setColor((stop.getPassengerQuantity() <= 0) ? TangoColorFactory.ALUMINIUM_4
+                    : (stop.getTransportTimeToHub() == null) ? TangoColorFactory.ORANGE_2
+                    : (stop.getTransportTimeRemainder() < 0) ? TangoColorFactory.SCARLET_2 : TangoColorFactory.ORANGE_2);
+            translator.drawSquare(g, location.getLongitude(), location.getLatitude(), 3,
+                    stop.getTransportLabel());
         }
         List<Bus> busList = solution.getBusList();
         g.setColor(TangoColorFactory.ALUMINIUM_2);
