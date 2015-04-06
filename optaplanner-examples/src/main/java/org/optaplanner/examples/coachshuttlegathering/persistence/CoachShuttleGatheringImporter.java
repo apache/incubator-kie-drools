@@ -323,7 +323,13 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
                     for (Coach coach : solution.getCoachList()) {
                         coach.setDestination(hub);
                     }
-                    hub.setTransferShuttleList(new ArrayList<Shuttle>(solution.getShuttleList().size()));
+                    ArrayList<Shuttle> transferShuttleList = new ArrayList<Shuttle>(solution.getShuttleList().size());
+                    for (Shuttle shuttle : solution.getShuttleList()) {
+                        // TODO Use a fixed value Construction Heuristic to initialize the destination variable
+                        shuttle.setDestination(hub);
+                        transferShuttleList.add(shuttle);
+                    }
+                    hub.setTransferShuttleList(transferShuttleList);
                     solution.setHub(hub);
                 } else if (busStopType.equalsIgnoreCase("BUSSTOP")) {
                     BusStop busStop = new BusStop();
