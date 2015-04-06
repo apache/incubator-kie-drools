@@ -64,4 +64,14 @@ public class Shuttle extends Bus {
         return sourceLocation.getShuttleDurationTo(targetLocation);
     }
 
+    public Bus getDestinationBus() {
+        if (destination == null) {
+            return null;
+        }
+        if (!(destination instanceof BusStop)) {
+            return null;
+        }
+        return ((BusStop) destination).getBus();
+    }
+
 }

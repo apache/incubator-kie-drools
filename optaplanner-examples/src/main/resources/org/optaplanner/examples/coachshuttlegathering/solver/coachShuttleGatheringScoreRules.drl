@@ -47,6 +47,34 @@ rule "coachStopLimit"
         scoreHolder.addHardConstraintMatch(kcontext, ($stopLimit - $stopTotal.intValue()) * 10000);
 end
 
+rule "shuttleCapacity"
+    when
+        $shuttle : Shuttle($capacity : capacity)
+        $passengerQuantityTotal : Number(intValue > $capacity) from accumulate(
+            BusStop(bus == $shuttle, $passengerQuantity : passengerQuantity),
+            sum($passengerQuantity)
+        )
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, ($capacity - $passengerQuantityTotal.intValue()) * 100);
+end
+
+rule "coachCapacity"
+    when
+        $coach : Coach($capacity : capacity)
+        $coachPassengerQuantityTotal : Number() from accumulate(
+            BusStop(bus == $coach, $coachPassengerQuantity : passengerQuantity),
+            sum($coachPassengerQuantity)
+        )
+        $shuttlePassengerQuantityTotal : Number() from accumulate(
+            $shuttle : Shuttle(destinationBus == $coach)
+            and BusStop(bus == $shuttle, $shuttlePassengerQuantity : passengerQuantity),
+            sum($shuttlePassengerQuantity)
+        )
+        eval($coachPassengerQuantityTotal.intValue() + $shuttlePassengerQuantityTotal.intValue() > $capacity)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, ($capacity - $coachPassengerQuantityTotal.intValue() - $shuttlePassengerQuantityTotal.intValue()) * 100);
+end
+
 rule "transportTime"
     when
         BusStop(transportTimeToHub != null, $cost : transportTimeRemainder < 0)
