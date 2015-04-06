@@ -36,18 +36,16 @@ global HardSoftScoreHolder scoreHolder;
 // Hard constraints
 // ############################################################################
 
-//rule "vehicleCapacity"
-//    when
-//        $vehicle : Vehicle($capacity : capacity)
-//        $demandTotal : Number(intValue > $capacity) from accumulate(
-//            Customer(
-//                vehicle == $vehicle,
-//                $demand : demand),
-//            sum($demand)
-//        )
-//    then
-//        scoreHolder.addHardConstraintMatch(kcontext, $capacity - $demandTotal.intValue());
-//end
+rule "coachStopLimit"
+    when
+        $coach : Coach($stopLimit : stopLimit)
+        $stopTotal : Number(intValue > $stopLimit) from accumulate(
+            $stop : BusStop(bus == $coach),
+            count($stop)
+        )
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, ($stopLimit - $stopTotal.intValue()) * 10000);
+end
 
 rule "transportTime"
     when
