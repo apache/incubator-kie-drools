@@ -23,6 +23,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusHub;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
+import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
@@ -71,11 +72,13 @@ public class CoachShuttleGatheringExporter extends AbstractTxtSolutionExporter {
                             .append("BUSSTOP").append("\n");
                     i++;
                 }
-                StopOrHub destination = bus.getDestination();
-                bufferedWriter.append(bus.getName()).append(";")
-                        .append(Integer.toString(i)).append(";")
-                        .append(destination.getName()).append(";")
-                        .append(destination instanceof BusHub ? "HUB" : "BUSSTOP").append("\n").append("\n");
+                if (i > 1 || bus instanceof Coach) {
+                    StopOrHub destination = bus.getDestination();
+                    bufferedWriter.append(bus.getName()).append(";")
+                            .append(Integer.toString(i)).append(";")
+                            .append(destination.getName()).append(";")
+                            .append(destination instanceof BusHub ? "HUB" : "BUSSTOP").append("\n").append("\n");
+                }
             }
         }
 
