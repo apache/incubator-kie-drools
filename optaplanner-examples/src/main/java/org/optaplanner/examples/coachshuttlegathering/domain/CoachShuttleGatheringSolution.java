@@ -27,15 +27,15 @@ import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("CsgCoachShuttleGatheringSolution")
-public class CoachShuttleGatheringSolution extends AbstractPersistable implements Solution<HardSoftScore> {
+public class CoachShuttleGatheringSolution extends AbstractPersistable implements Solution<HardSoftLongScore> {
 
     protected String name;
     protected List<RoadLocation> locationList;
@@ -44,8 +44,8 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
     protected List<BusStop> stopList;
     protected BusHub hub;
 
-    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
-    protected HardSoftScore score;
+    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftLongScoreDefinition.class})
+    protected HardSoftLongScore score;
 
     public String getName() {
         return name;
@@ -101,11 +101,11 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
         this.hub = hub;
     }
 
-    public HardSoftScore getScore() {
+    public HardSoftLongScore getScore() {
         return score;
     }
 
-    public void setScore(HardSoftScore score) {
+    public void setScore(HardSoftLongScore score) {
         this.score = score;
     }
 
