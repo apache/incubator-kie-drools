@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.coachshuttlegathering.domain;
 
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -25,6 +27,9 @@ public class BusHub extends AbstractPersistable implements StopOrHub {
 
     protected String name;
     protected RoadLocation location;
+
+    // Shadow variables
+    protected List<Shuttle> transferShuttleList;
 
     @Override
     public String getName() {
@@ -42,6 +47,14 @@ public class BusHub extends AbstractPersistable implements StopOrHub {
 
     public void setLocation(RoadLocation location) {
         this.location = location;
+    }
+
+    public List<Shuttle> getTransferShuttleList() {
+        return transferShuttleList;
+    }
+
+    public void setTransferShuttleList(List<Shuttle> transferShuttleList) {
+        this.transferShuttleList = transferShuttleList;
     }
 
     // ************************************************************************

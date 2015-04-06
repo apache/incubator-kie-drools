@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.coachshuttlegathering.domain;
 
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
@@ -40,6 +42,7 @@ public class BusStop extends AbstractPersistable implements BusOrStop, StopOrHub
     // Shadow variables
     protected BusStop nextStop;
     protected Bus bus;
+    protected List<Shuttle> transferShuttleList;
 
     @Override
     public String getName() {
@@ -103,6 +106,14 @@ public class BusStop extends AbstractPersistable implements BusOrStop, StopOrHub
 
     public void setBus(Bus bus) {
         this.bus = bus;
+    }
+
+    public List<Shuttle> getTransferShuttleList() {
+        return transferShuttleList;
+    }
+
+    public void setTransferShuttleList(List<Shuttle> transferShuttleList) {
+        this.transferShuttleList = transferShuttleList;
     }
 
     // ************************************************************************

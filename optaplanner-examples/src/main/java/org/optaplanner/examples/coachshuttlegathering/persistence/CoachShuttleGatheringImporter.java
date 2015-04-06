@@ -323,6 +323,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
                     for (Coach coach : solution.getCoachList()) {
                         coach.setDestination(hub);
                     }
+                    hub.setTransferShuttleList(new ArrayList<Shuttle>(solution.getShuttleList().size()));
                     solution.setHub(hub);
                 } else if (busStopType.equalsIgnoreCase("BUSSTOP")) {
                     BusStop busStop = new BusStop();
@@ -341,6 +342,8 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
                     busStop.setLocation(location);
                     busStop.setPassengerQuantity(Integer.parseInt(lineTokens[6]));
                     busStop.setTransportTimeLimit(Integer.parseInt(lineTokens[7]));
+                    // Trade memory for performance (might not be desired if it is too memory hungry)
+                    busStop.setTransferShuttleList(new ArrayList<Shuttle>(solution.getShuttleList().size()));
                     busStopList.add(busStop);
                 } else {
                     throw new IllegalArgumentException("The bus stop with name (" +  name
