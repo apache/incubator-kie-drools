@@ -328,7 +328,7 @@ public class ScoreDirectorFactoryConfig {
         return scoreDirectorFactory;
     }
 
-    private AbstractScoreDirectorFactory buildEasyScoreDirectorFactory() {
+    protected AbstractScoreDirectorFactory buildEasyScoreDirectorFactory() {
         if (easyScoreCalculatorClass != null) {
             EasyScoreCalculator easyScoreCalculator = ConfigUtils.newInstance(this,
                     "easyScoreCalculatorClass", easyScoreCalculatorClass);
@@ -338,7 +338,7 @@ public class ScoreDirectorFactoryConfig {
         }
     }
 
-    private AbstractScoreDirectorFactory buildIncrementalScoreDirectorFactory() {
+    protected AbstractScoreDirectorFactory buildIncrementalScoreDirectorFactory() {
         if (incrementalScoreCalculatorClass != null) {
             if (!IncrementalScoreCalculator.class.isAssignableFrom(incrementalScoreCalculatorClass)) {
                 throw new IllegalArgumentException(
@@ -351,7 +351,7 @@ public class ScoreDirectorFactoryConfig {
         }
     }
 
-    private AbstractScoreDirectorFactory buildDroolsScoreDirectorFactory() {
+    protected AbstractScoreDirectorFactory buildDroolsScoreDirectorFactory() {
         if (kieBase != null) {
             if (!ConfigUtils.isEmptyCollection(scoreDrlList) || !ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
                 throw new IllegalArgumentException("If kieBase is not null, the scoreDrlList (" + scoreDrlList
