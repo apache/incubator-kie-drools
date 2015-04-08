@@ -3418,4 +3418,130 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                       _action.getChildren().size() );
     }
 
+    @Test
+    public void testOneLineEmpty() throws Exception {
+        final String drl = "";
+
+        addModelField( "Person",
+                       "this",
+                       "Person",
+                       DataType.TYPE_THIS );
+        addModelField( "Person",
+                       "integerField",
+                       Integer.class.getName(),
+                       DataType.TYPE_NUMERIC_INTEGER );
+
+        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
+                                                                                                   "test",
+                                                                                                   dmo );
+
+        assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
+    }
+
+    @Test
+    public void testOneLinePackage() throws Exception {
+        final String drl = "package a.b";
+
+        addModelField( "Person",
+                       "this",
+                       "Person",
+                       DataType.TYPE_THIS );
+        addModelField( "Person",
+                       "integerField",
+                       Integer.class.getName(),
+                       DataType.TYPE_NUMERIC_INTEGER );
+
+        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
+                                                                                                   "test",
+                                                                                                   dmo );
+
+        assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
+    }
+
+    @Test
+    public void testOneLineEmptyRule() throws Exception {
+        final String drl = "rule \"test\" " +
+                "when " +
+                "then " +
+                "end";
+
+        addModelField( "Person",
+                       "this",
+                       "Person",
+                       DataType.TYPE_THIS );
+        addModelField( "Person",
+                       "integerField",
+                       Integer.class.getName(),
+                       DataType.TYPE_NUMERIC_INTEGER );
+
+        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
+                                                                                                   "test",
+                                                                                                   dmo );
+
+        assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
+    }
+
+    @Test
+    public void testOneLineRule() throws Exception {
+        final String drl = "rule \"test\" " +
+                "when " +
+                "  Person( integerField == \"someText\" ) " +
+                "then " +
+                "end";
+
+        addModelField( "Person",
+                       "this",
+                       "Person",
+                       DataType.TYPE_THIS );
+        addModelField( "Person",
+                       "integerField",
+                       Integer.class.getName(),
+                       DataType.TYPE_NUMERIC_INTEGER );
+
+        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
+                                                                                                   "test",
+                                                                                                   dmo );
+
+        assertNotNull( model );
+        assertEquals( 1,
+                      model.getParserErrors().size() );
+    }
+
+    @Test
+    public void testOneLineRules() throws Exception {
+        final String drl = "rule \"test1\" " +
+                "when " +
+                "  Person( integerField == \"someText\" ) " +
+                "then " +
+                "end " +
+                "rule \"test2\" " +
+                "when " +
+                "  Person( integerField == 10 ) " +
+                "then " +
+                "end";
+
+        addModelField( "Person",
+                       "this",
+                       "Person",
+                       DataType.TYPE_THIS );
+        addModelField( "Person",
+                       "integerField",
+                       Integer.class.getName(),
+                       DataType.TYPE_NUMERIC_INTEGER );
+
+        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
+                                                                                                   "test",
+                                                                                                   dmo );
+
+        assertNotNull( model );
+        assertEquals( 1,
+                      model.getParserErrors().size() );
+    }
+
 }

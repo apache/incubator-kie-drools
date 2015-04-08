@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.drools.core.util.DateUtils;
 import org.drools.workbench.models.commons.backend.imports.ImportsParser;
@@ -132,20 +134,11 @@ public class GuidedDecisionTreeModelUnmarshallingVisitor {
 
         //Split DRL into separate rules
         final List<String> rules = new ArrayList<String>();
-        final String[] lines = drl.split( System.getProperty( "line.separator" ) );
-
-        StringBuilder sb = null;
-        for ( String line : lines ) {
-            if ( line.toLowerCase().startsWith( "rule" ) ) {
-                sb = new StringBuilder();
-            }
-            if ( sb != null ) {
-                sb.append( line ).append( "\n" );
-            }
-            if ( line.toLowerCase().startsWith( "end" ) ) {
-                rules.add( sb.toString() );
-                sb = null;
-            }
+        final Pattern pattern = Pattern.compile( "\\s?rule\\s(.+?)\\send\\s?",
+                                                 Pattern.DOTALL );
+        final Matcher matcher = pattern.matcher( drl );
+        while ( matcher.find() ) {
+            rules.add( matcher.group() );
         }
 
         //Build a linear Path of Nodes for each rule
