@@ -1491,6 +1491,12 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
         xlink:href="https://developers.google.com/maps/documentation/webservices/client-library">Google Maps Client
         API</link> (web service).</para>
 
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/integrationWithRealMaps.png"/>
+          </imageobject>
+        </mediaobject>
+
         <para>There are also several technologies to render it, such as <link
         xlink:href="http://leafletjs.com">Leaflet</link> and <link
         xlink:href="https://developers.google.com/maps/">Google Maps for developers</link>: the
