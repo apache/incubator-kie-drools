@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Runtime counterpart of a fault node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class FaultNodeInstance extends NodeInstanceImpl {
 

@@ -19,7 +19,6 @@ package org.jbpm.workflow.core;
 /**
  * Represents a connection between two nodes in a workflow. 
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface Connection extends org.kie.api.definition.process.Connection {
 

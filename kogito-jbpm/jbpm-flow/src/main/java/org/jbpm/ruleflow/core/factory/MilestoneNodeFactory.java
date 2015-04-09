@@ -29,7 +29,6 @@ import org.jbpm.workflow.core.node.MilestoneNode;
 
 /**
  *
- * @author salaboy
  */
 public class MilestoneNodeFactory extends NodeFactory {
 

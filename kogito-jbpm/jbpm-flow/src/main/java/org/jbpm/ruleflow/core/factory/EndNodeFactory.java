@@ -23,7 +23,6 @@ import org.jbpm.workflow.core.node.EndNode;
 
 /**
  *
- * @author salaboy
  */
 public class EndNodeFactory extends NodeFactory {
 

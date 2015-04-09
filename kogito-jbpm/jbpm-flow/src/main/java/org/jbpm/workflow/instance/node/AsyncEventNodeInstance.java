@@ -33,8 +33,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Runtime counterpart of an event node.
- * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
+ *
  */
 public class AsyncEventNodeInstance extends EventNodeInstance {
     

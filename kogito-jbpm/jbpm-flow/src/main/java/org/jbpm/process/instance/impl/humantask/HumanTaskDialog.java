@@ -46,7 +46,6 @@ import org.kie.api.runtime.process.WorkItem;
 
 /**
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class HumanTaskDialog extends JDialog {
     

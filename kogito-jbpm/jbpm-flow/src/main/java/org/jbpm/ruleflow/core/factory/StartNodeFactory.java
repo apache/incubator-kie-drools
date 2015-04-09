@@ -23,7 +23,6 @@ import org.jbpm.workflow.core.node.StartNode;
 
 /**
  *
- * @author salaboy
  */
 public class StartNodeFactory extends NodeFactory {
 

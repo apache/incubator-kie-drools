@@ -32,7 +32,6 @@ import org.jbpm.workflow.instance.NodeInstance;
 /**
  * Default implementation of a constraint.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ReturnValueConstraintEvaluator
     implements

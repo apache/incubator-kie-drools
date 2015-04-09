@@ -24,7 +24,6 @@ import org.kie.internal.process.CorrelationKey;
 
 /**
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface ProcessInstanceFactory {
     

@@ -64,8 +64,7 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 /**
  * Default implementation of a RuleFlow process instance.
- *
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
+ * 
  */
 public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		implements WorkflowProcessInstance,

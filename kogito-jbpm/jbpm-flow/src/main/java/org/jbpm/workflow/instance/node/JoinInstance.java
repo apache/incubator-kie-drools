@@ -39,7 +39,6 @@ import org.kie.api.runtime.process.NodeInstanceContainer;
 /**
  * Runtime counterpart of a join node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class JoinInstance extends NodeInstanceImpl {
 

@@ -27,7 +27,6 @@ import org.kie.api.runtime.process.NodeInstance;
 /**
  * Runtime counterpart of an end node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class EndNodeInstance extends ExtendedNodeInstanceImpl {
 

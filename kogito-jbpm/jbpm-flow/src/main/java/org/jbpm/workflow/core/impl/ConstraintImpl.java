@@ -25,7 +25,6 @@ import org.jbpm.workflow.core.Constraint;
 /**
  * Default implementation of a constraint.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ConstraintImpl implements Constraint, Serializable {
 

@@ -20,7 +20,6 @@ import org.jbpm.process.core.Context;
 
 /**
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface ContextInstance {
     

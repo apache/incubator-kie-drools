@@ -24,7 +24,6 @@ import org.jbpm.workflow.core.WorkflowProcess;
 /**
  * Default implementation of a RuleFlow process.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess, org.jbpm.workflow.core.NodeContainer {
 

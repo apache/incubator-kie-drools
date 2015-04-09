@@ -34,7 +34,6 @@ import org.jbpm.process.core.impl.ContextContainerImpl;
 /**
  * Default implementation of a sub-flow node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class SubProcessNode extends StateBasedNode implements Mappable, ContextContainer {
 

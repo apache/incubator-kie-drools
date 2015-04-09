@@ -22,7 +22,6 @@ import org.kie.api.runtime.process.WorkItemManager;
 
 /**
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class SystemOutWorkItemHandler implements WorkItemHandler {
 

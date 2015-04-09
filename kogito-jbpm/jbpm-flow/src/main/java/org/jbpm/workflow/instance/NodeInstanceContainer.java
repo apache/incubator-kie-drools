@@ -23,7 +23,6 @@ import org.kie.api.definition.process.NodeContainer;
 
 /**
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface NodeInstanceContainer extends org.kie.api.runtime.process.NodeInstanceContainer {
 

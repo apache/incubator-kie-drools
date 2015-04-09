@@ -81,7 +81,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Default implementation of a RuleFlow validator.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class RuleFlowProcessValidator implements ProcessValidator {
     

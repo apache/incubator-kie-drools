@@ -47,8 +47,7 @@ import org.kie.api.definition.process.NodeContainer;
 
 /**
  * Runtime counterpart of a composite node.
- *
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
+ * 
  */
 public class CompositeNodeInstance extends StateBasedNodeInstance implements NodeInstanceContainer, EventNodeInstanceInterface, EventBasedNodeInstanceInterface {
 

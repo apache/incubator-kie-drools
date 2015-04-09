@@ -24,7 +24,6 @@ import org.jbpm.workflow.core.node.TimerNode;
 
 /**
  *
- * @author salaboy
  */
 public class TimerNodeFactory extends NodeFactory {
 

@@ -36,7 +36,6 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
  * @see InputMarshaller
  * @see ProcessMarshallerRegistry
  * 
- * @author mfossati, salaboy
  */
 
 public interface ProcessInstanceMarshaller {

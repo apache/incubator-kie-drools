@@ -26,7 +26,6 @@ import org.kie.api.definition.process.Process;
  * It contains all the runtime status information about the running process.
  * A process can have multiple instances.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInstance, ContextInstanceContainer, ContextableInstance {
 

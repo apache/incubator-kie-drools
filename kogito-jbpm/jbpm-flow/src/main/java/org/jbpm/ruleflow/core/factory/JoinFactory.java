@@ -23,7 +23,6 @@ import org.jbpm.workflow.core.node.Join;
 
 /**
  *
- * @author salaboy
  */
 public class JoinFactory extends NodeFactory {
 

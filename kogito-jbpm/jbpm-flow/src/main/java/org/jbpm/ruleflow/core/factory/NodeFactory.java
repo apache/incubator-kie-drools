@@ -22,7 +22,6 @@ import org.jbpm.workflow.core.NodeContainer;
 
 /**
  *
- * @author salaboy
  */
 public abstract class NodeFactory {
 

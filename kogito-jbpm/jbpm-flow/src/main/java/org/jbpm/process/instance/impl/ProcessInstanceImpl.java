@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Default implementation of a process instance.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public abstract class ProcessInstanceImpl implements ProcessInstance, Serializable {
 	

@@ -30,7 +30,6 @@ import org.jbpm.workflow.core.node.CompositeContextNode;
 
 /**
  *
- * @author salaboy
  */
 public class CompositeNodeFactory extends RuleFlowNodeContainerFactory {
 

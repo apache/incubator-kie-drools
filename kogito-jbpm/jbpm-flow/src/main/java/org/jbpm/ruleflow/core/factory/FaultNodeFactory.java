@@ -23,7 +23,6 @@ import org.jbpm.workflow.core.node.FaultNode;
 
 /**
  *
- * @author salaboy
  */
 public class FaultNodeFactory extends NodeFactory {
 

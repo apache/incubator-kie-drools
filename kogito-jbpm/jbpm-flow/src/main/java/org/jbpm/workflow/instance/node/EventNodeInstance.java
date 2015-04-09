@@ -34,8 +34,7 @@ import org.kie.api.runtime.process.NodeInstance;
 
 /**
  * Runtime counterpart of an event node.
- *
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
+ * 
  */
 public class EventNodeInstance extends ExtendedNodeInstanceImpl implements EventNodeInstanceInterface, EventBasedNodeInstanceInterface {
 

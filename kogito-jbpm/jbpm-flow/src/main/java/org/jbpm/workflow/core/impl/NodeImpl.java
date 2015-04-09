@@ -35,7 +35,6 @@ import org.kie.api.definition.process.NodeContainer;
 /**
  * Default implementation of a node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public abstract class NodeImpl implements Node, Serializable, ContextResolver {
 

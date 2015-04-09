@@ -22,7 +22,6 @@ import org.jbpm.workflow.core.impl.NodeImpl;
 /**
  * Default implementation of a join.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class Join extends NodeImpl {
 

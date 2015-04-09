@@ -35,7 +35,6 @@ import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
  * The node continues if all activated the subflow has been completed for each
  * of the elements in the collection.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ForEachNode extends CompositeContextNode {
     

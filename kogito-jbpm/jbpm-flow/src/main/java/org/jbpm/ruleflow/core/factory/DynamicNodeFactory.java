@@ -31,7 +31,6 @@ import org.jbpm.workflow.core.node.DynamicNode;
 
 /**
  *
- * @author salaboy
  */
 public class DynamicNodeFactory extends RuleFlowNodeContainerFactory {
 

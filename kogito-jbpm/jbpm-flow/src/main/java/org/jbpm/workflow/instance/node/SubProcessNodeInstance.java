@@ -64,8 +64,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Runtime counterpart of a SubFlow node.
- *
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
+ * 
  */
 public class SubProcessNodeInstance extends StateBasedNodeInstance implements EventListener, ContextInstanceContainer {
 

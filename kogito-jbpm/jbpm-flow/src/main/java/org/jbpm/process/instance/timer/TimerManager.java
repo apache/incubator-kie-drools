@@ -55,7 +55,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class TimerManager {
 

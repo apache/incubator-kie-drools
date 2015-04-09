@@ -35,7 +35,6 @@ import org.kie.api.io.Resource;
 /**
  * Default implementation of a Process
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ProcessImpl implements Process, Serializable, ContextResolver {
     

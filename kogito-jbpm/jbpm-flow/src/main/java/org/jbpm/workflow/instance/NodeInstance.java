@@ -25,7 +25,6 @@ import org.jbpm.process.instance.ContextInstance;
  * contain the logic on what to do when it is being triggered (start
  * executing) or completed (end of execution).
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface NodeInstance extends org.kie.api.runtime.process.NodeInstance {
 

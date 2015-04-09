@@ -28,7 +28,6 @@ import org.jbpm.process.core.ValueObject;
 /**
  * Default implementation of a variable.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class Variable implements TypeObject, ValueObject, Serializable {
 

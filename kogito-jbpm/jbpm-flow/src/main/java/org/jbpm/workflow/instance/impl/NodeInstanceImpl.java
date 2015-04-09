@@ -55,7 +55,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Default implementation of a RuleFlow node instance.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.NodeInstance, Serializable {
 

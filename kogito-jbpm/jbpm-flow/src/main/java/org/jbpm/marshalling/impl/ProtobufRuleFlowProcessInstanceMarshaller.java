@@ -22,8 +22,6 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 /**
  * Marshaller class for RuleFlowProcessInstances
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
- * @author mfossati
  */
 
 public class ProtobufRuleFlowProcessInstanceMarshaller extends

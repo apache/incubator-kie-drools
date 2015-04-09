@@ -20,7 +20,6 @@ import java.io.Serializable;
 
 /**
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class Timer implements Serializable {
 

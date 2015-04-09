@@ -25,7 +25,6 @@ import org.jbpm.workflow.core.node.Split;
 
 /**
  *
- * @author salaboy
  */
 public class SplitFactory extends NodeFactory {
 

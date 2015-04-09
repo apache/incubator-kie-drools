@@ -27,7 +27,6 @@ import org.jbpm.process.core.ContextContainer;
 
 /**
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ContextContainerImpl implements Serializable, ContextContainer {
 

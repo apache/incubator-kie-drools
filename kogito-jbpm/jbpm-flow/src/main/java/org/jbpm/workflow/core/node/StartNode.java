@@ -32,7 +32,6 @@ import org.kie.api.definition.process.Connection;
 /**
  * Default implementation of a start node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class StartNode extends ExtendedNodeImpl implements Mappable {
 

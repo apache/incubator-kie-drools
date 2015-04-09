@@ -35,7 +35,6 @@ import org.kie.api.runtime.process.NodeInstance;
 /**
  * Runtime counterpart of a milestone node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class MilestoneNodeInstance extends StateBasedNodeInstance implements AgendaEventListener {
 

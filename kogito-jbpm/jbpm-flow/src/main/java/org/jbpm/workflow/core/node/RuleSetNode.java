@@ -27,7 +27,6 @@ import org.kie.api.definition.process.Connection;
 /**
  * Default implementation of a RuleSet node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class RuleSetNode extends StateBasedNode {
 

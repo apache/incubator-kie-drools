@@ -48,7 +48,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Runtime counterpart of a ruleset node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class RuleSetNodeInstance extends StateBasedNodeInstance implements EventListener {
 

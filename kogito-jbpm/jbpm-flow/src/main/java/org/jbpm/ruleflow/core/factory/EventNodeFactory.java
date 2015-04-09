@@ -26,7 +26,6 @@ import org.jbpm.workflow.core.node.EventNode;
 
 /**
  *
- * @author salaboy
  */
 public class EventNodeFactory extends NodeFactory {
 

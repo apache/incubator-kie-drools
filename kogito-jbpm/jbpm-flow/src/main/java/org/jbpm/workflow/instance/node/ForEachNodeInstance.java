@@ -43,7 +43,6 @@ import org.mvel2.integration.impl.SimpleValueResolver;
 /**
  * Runtime counterpart of a for each node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ForEachNodeInstance extends CompositeContextNodeInstance {
 

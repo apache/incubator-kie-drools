@@ -25,7 +25,6 @@ import org.jbpm.process.core.impl.ContextContainerImpl;
 
 /**
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class CompositeContextNode extends CompositeNode implements ContextContainer {
 

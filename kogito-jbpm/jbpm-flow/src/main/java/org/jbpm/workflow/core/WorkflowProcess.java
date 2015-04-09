@@ -25,7 +25,6 @@ import org.jbpm.process.core.Process;
 /**
  * Represents a RuleFlow process. 
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface WorkflowProcess extends org.kie.api.definition.process.WorkflowProcess, Process, NodeContainer {
 

@@ -25,7 +25,6 @@ import org.jbpm.workflow.core.node.RuleSetNode;
 
 /**
  *
- * @author salaboy
  */
 public class RuleSetNodeFactory extends NodeFactory {
 

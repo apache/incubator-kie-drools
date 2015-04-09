@@ -30,7 +30,6 @@ import org.jbpm.workflow.core.node.SubProcessNode;
 
 /**
  *
- * @author salaboy
  */
 public class SubProcessNodeFactory extends NodeFactory {
 

@@ -36,7 +36,6 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 
 /**
  *
- * @author salaboy
  */
 public class WorkItemNodeFactory extends NodeFactory {
 

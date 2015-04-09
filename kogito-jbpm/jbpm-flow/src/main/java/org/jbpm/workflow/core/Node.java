@@ -25,7 +25,6 @@ import org.jbpm.process.core.Contextable;
 /**
  * Represents a node in a RuleFlow. 
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface Node extends org.kie.api.definition.process.Node, Contextable, Serializable {
 

@@ -26,7 +26,6 @@ import org.jbpm.workflow.core.node.ActionNode;
 
 /**
  *
- * @author salaboy
  */
 public class ActionNodeFactory extends NodeFactory {
 

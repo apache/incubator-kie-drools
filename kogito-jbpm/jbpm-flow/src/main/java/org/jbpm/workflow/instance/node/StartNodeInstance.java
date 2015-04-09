@@ -26,7 +26,6 @@ import org.kie.api.runtime.process.NodeInstance;
 /**
  * Runtime counterpart of a start node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class StartNodeInstance extends NodeInstanceImpl {
 

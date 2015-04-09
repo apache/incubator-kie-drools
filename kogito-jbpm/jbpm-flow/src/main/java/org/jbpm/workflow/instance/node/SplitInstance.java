@@ -42,7 +42,6 @@ import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 /**
  * Runtime counterpart of a split node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class SplitInstance extends NodeInstanceImpl {
 

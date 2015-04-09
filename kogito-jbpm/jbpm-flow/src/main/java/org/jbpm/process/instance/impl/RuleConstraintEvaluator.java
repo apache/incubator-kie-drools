@@ -29,7 +29,6 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 /**
  * Default implementation of a constraint.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class RuleConstraintEvaluator implements Constraint,
         ConstraintEvaluator, Serializable {

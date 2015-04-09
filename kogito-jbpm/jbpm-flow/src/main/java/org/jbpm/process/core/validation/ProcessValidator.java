@@ -22,7 +22,6 @@ import org.kie.api.io.Resource;
 /**
  * A validator for validating a RuleFlow process. 
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface ProcessValidator {
 

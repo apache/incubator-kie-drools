@@ -20,7 +20,6 @@ package org.jbpm.workflow.core;
  * Represents a constraint in a RuleFlow.
  * Can be used to specify conditions in (X)OR-splits. 
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface Constraint {
     /**

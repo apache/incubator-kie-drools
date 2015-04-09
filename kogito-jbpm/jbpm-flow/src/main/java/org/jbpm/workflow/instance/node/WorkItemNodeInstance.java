@@ -63,8 +63,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Runtime counterpart of a work item node.
- *
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
+ * 
  */
 public class WorkItemNodeInstance extends StateBasedNodeInstance implements EventListener, ContextInstanceContainer {
 

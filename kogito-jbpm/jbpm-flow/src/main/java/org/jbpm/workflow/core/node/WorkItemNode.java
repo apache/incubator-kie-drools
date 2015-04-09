@@ -34,7 +34,6 @@ import org.jbpm.process.core.impl.ContextContainerImpl;
 /**
  * Default implementation of a task node.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class WorkItemNode extends StateBasedNode implements Mappable, ContextContainer {
 

@@ -21,7 +21,6 @@ import org.kie.api.definition.process.Process;
 /**
  * Represents a RuleFlow validation error. 
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface ProcessValidationError {
 
