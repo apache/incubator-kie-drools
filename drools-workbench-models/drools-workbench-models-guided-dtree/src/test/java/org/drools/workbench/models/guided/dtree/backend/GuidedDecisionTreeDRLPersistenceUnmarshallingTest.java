@@ -3322,12 +3322,12 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
     private GuidedDecisionTree getAndTestUnmarshalledModel( final String drl, final String baseFileName,
             final int expectedParseErrorsSize ) {
         final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                baseFileName,
-                dmo );
+                                                                                                   baseFileName,
+                                                                                                   dmo );
 
-        assertNotNull(model);
+        assertNotNull( model );
         assertEquals( expectedParseErrorsSize,
-                model.getParserErrors().size() );
+                      model.getParserErrors().size() );
         return model;
     }
 
