@@ -131,13 +131,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        "Person",
                        DataType.TYPE_THIS );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -179,13 +174,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        String.class.getName(),
                        DataType.TYPE_STRING );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -241,13 +231,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        String.class.getName(),
                        DataType.TYPE_STRING );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -301,13 +286,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        String.class.getName(),
                        DataType.TYPE_STRING );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -359,13 +339,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        String.class.getName(),
                        DataType.TYPE_STRING );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -426,13 +401,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -521,13 +491,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -630,13 +595,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        String.class.getName(),
                        DataType.TYPE_STRING );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -746,13 +706,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -860,13 +815,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        String.class.getName(),
                        DataType.TYPE_STRING );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -989,13 +939,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        String.class.getName(),
                        DataType.TYPE_STRING );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1111,13 +1056,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        BigDecimal.class.getName(),
                        DataType.TYPE_NUMERIC_BIGDECIMAL );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1171,13 +1111,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        BigInteger.class.getName(),
                        DataType.TYPE_NUMERIC_BIGINTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1231,13 +1166,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Boolean.class.getName(),
                        DataType.TYPE_BOOLEAN );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1291,13 +1221,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Byte.class.getName(),
                        DataType.TYPE_NUMERIC_BYTE );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1351,13 +1276,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Date.class.getName(),
                        DataType.TYPE_DATE );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1411,13 +1331,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Double.class.getName(),
                        DataType.TYPE_NUMERIC_DOUBLE );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1471,13 +1386,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Float.class.getName(),
                        DataType.TYPE_NUMERIC_FLOAT );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1531,13 +1441,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1591,13 +1496,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Long.class.getName(),
                        DataType.TYPE_NUMERIC_LONG );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1651,13 +1551,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Short.class.getName(),
                        DataType.TYPE_NUMERIC_SHORT );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1711,13 +1606,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        String.class.getName(),
                        DataType.TYPE_STRING );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1763,13 +1653,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        "Person",
                        DataType.TYPE_THIS );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1811,13 +1696,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        String.class.getName(),
                        DataType.TYPE_STRING );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1876,13 +1756,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                                "name",
                                new String[]{ "Names.FRED=Names.FRED" } );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1938,13 +1813,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        String.class.getName(),
                        DataType.TYPE_STRING );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -1997,13 +1867,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        String.class.getName(),
                        DataType.TYPE_STRING );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2056,13 +1921,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        String.class.getName(),
                        DataType.TYPE_STRING );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2116,13 +1976,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        String.class.getName(),
                        DataType.TYPE_STRING );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2192,13 +2047,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2274,13 +2124,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2369,13 +2214,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2457,13 +2297,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2526,13 +2361,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        "Person",
                        DataType.TYPE_THIS );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2594,13 +2424,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Date.class.getName(),
                        DataType.TYPE_DATE );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2666,13 +2491,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2746,13 +2566,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2839,13 +2654,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2925,13 +2735,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -2994,13 +2799,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        "Person",
                        DataType.TYPE_THIS );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -3061,13 +2861,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Date.class.getName(),
                        DataType.TYPE_DATE );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -3134,13 +2929,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -3207,13 +2997,9 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
+
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -3294,13 +3080,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Date.class.getName(),
                        DataType.TYPE_DATE );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -3379,13 +3160,8 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Date.class.getName(),
                        DataType.TYPE_DATE );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 0 );
 
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
         assertEquals( expected.getTreeName(),
                       model.getTreeName() );
 
@@ -3431,13 +3207,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
-
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
+        getAndTestUnmarshalledModel( drl, "test", 0 );
     }
 
     @Test
@@ -3453,13 +3223,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
-
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
+        getAndTestUnmarshalledModel( drl, "test", 0 );
     }
 
     @Test
@@ -3478,13 +3242,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
-
-        assertNotNull( model );
-        assertEquals( 0,
-                      model.getParserErrors().size() );
+        getAndTestUnmarshalledModel( drl, "test", 0 );
     }
 
     @Test
@@ -3504,13 +3262,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
-
-        assertNotNull( model );
-        assertEquals( 1,
-                      model.getParserErrors().size() );
+        getAndTestUnmarshalledModel( drl, "test", 1 );
     }
 
     @Test
@@ -3535,13 +3287,48 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                        Integer.class.getName(),
                        DataType.TYPE_NUMERIC_INTEGER );
 
+        getAndTestUnmarshalledModel( drl, "test", 1 );
+    }
+
+    @Test
+    public void testRuleDifferentLineSeparators() {
+        addModelField( "Person",
+                       "this",
+                       "Person",
+                       DataType.TYPE_THIS );
+        addModelField( "Person",
+                       "integerField",
+                       Integer.class.getName(),
+                       DataType.TYPE_NUMERIC_INTEGER );
+
+        final String valueValid = "10";
+        final String valueInvalid = "\"something\"";
+
+        final String drl = "rule \"test\" {separator}" +
+                "when {separator}" +
+                "  Person( integerField == {value} ) {separator}" +
+                "then {separator}" +
+                "end";
+
+        // *nix line separator
+        getAndTestUnmarshalledModel( drl.replace( "{separator}", "\n" ).replace( "{value}", valueValid ), "test", 0 );
+        getAndTestUnmarshalledModel( drl.replace( "{separator}", "\n" ).replace( "{value}", valueInvalid ), "test", 1 );
+
+        // Windows line separator.
+        getAndTestUnmarshalledModel( drl.replace( "{separator}", "\r\n" ).replace( "{value}", valueValid ), "test", 0 );
+        getAndTestUnmarshalledModel( drl.replace( "{separator}", "\r\n" ).replace( "{value}", valueInvalid ), "test", 1 );
+    }
+
+    private GuidedDecisionTree getAndTestUnmarshalledModel( final String drl, final String baseFileName,
+            final int expectedParseErrorsSize ) {
         final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
+                                                                                                   baseFileName,
                                                                                                    dmo );
 
         assertNotNull( model );
-        assertEquals( 1,
+        assertEquals( expectedParseErrorsSize,
                       model.getParserErrors().size() );
+        return model;
     }
 
     @Test
