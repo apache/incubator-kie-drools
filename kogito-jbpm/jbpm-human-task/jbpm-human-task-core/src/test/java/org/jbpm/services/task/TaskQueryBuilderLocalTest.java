@@ -621,7 +621,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
 
         String whereClause = captureWhereClause(spyPrintStream);
         int parensCount = count(whereClause, "(");
-        assertEquals( "Expected parentheses in where clause", 3, parensCount ); 
+        assertEquals( "Expected parentheses in where clause", 2, parensCount ); 
         
         // 2. stake holder 
         queryBuilder.clear().intersect().stakeHolder(stakeHolder);
@@ -630,7 +630,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
 
         whereClause = captureWhereClause(spyPrintStream);
         parensCount = count(whereClause, "(");
-        assertEquals( "Expected parentheses in where clause", 4, parensCount ); 
+        assertEquals( "Expected parentheses in where clause", 3, parensCount ); 
         
         // 3. potential owner
         queryBuilder.clear().intersect().potentialOwner(stakeHolder);
@@ -639,7 +639,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
 
         whereClause = captureWhereClause(spyPrintStream);
         parensCount = count(whereClause, "(");
-        assertEquals( "Expected parentheses in where clause", 4, parensCount ); 
+        assertEquals( "Expected parentheses in where clause", 3, parensCount ); 
         
         // 4. actual owner
         queryBuilder.clear().intersect().taskOwner(stakeHolder);
@@ -648,7 +648,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
 
         whereClause = captureWhereClause(spyPrintStream);
         parensCount = count(whereClause, "(");
-        assertEquals( "Expected parentheses in where clause", 3, parensCount ); 
+        assertEquals( "Expected parentheses in where clause", 2, parensCount ); 
         
         // 5. business admin
         queryBuilder.clear().intersect().businessAdmin(stakeHolder);
@@ -657,7 +657,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
 
         whereClause = captureWhereClause(spyPrintStream);
         parensCount = count(whereClause, "(");
-        assertEquals( "Expected parentheses in where clause", 4, parensCount ); 
+        assertEquals( "Expected parentheses in where clause", 3, parensCount ); 
         
         // union with full query
         queryBuilder.clear().union().businessAdmin(stakeHolder).workItemId(workItemId);
@@ -676,7 +676,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
 
         whereClause = captureWhereClause(spyPrintStream);
         parensCount = count(whereClause, "(");
-        assertTrue( "Expected parentheses in where clause", parensCount > 10); 
+        assertTrue( "Expected parentheses in where clause: " + parensCount, parensCount >= 10); 
       
         // 2. stake holder 
         queryBuilder.clear().intersect().stakeHolder(groupId);
@@ -685,7 +685,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
 
         whereClause = captureWhereClause(spyPrintStream);
         parensCount = count(whereClause, "(");
-        assertEquals( "Expected parentheses in where clause", 4, parensCount ); 
+        assertEquals( "Expected parentheses in where clause", 3, parensCount ); 
         
         // 3. potential owner
         queryBuilder.clear().intersect().potentialOwner(groupId);
@@ -694,7 +694,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
 
         whereClause = captureWhereClause(spyPrintStream);
         parensCount = count(whereClause, "(");
-        assertEquals( "Expected parentheses in where clause", 4, parensCount ); 
+        assertEquals( "Expected parentheses in where clause", 3, parensCount ); 
         
         // 5. business admin
         queryBuilder.clear().intersect().businessAdmin(groupId);
@@ -703,7 +703,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
 
         whereClause = captureWhereClause(spyPrintStream);
         parensCount = count(whereClause, "(");
-        assertEquals( "Expected parentheses in where clause", 4, parensCount ); 
+        assertEquals( "Expected parentheses in where clause", 3, parensCount ); 
         
         System.setOut(originalOut);
         ((Logger) JPATaskPersistenceContext.logger).setLevel(origLevel);

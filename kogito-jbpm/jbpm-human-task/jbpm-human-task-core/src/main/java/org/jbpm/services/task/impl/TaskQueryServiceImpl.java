@@ -651,11 +651,13 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         addCriteria(TASK_STATUS_LIST, "t.taskData.status", Status.class);
         
         addCriteria(CREATED_BY_LIST, "t.taskData.createdBy.id", String.class);
+        addCriteria(ACTUAL_OWNER_ID_LIST, "t.taskData.actualOwner.id", String.class);
+        
+        // require the  OrganizationalEntityImpl table (where "stakeHolders" is the table alias)
         addCriteria(STAKEHOLDER_ID_LIST, "stakeHolders.id", String.class, 
                 "stakeHolders in elements ( t.peopleAssignments.taskStakeholders )");
         addCriteria(POTENTIAL_OWNER_ID_LIST, "potentialOwners.id", String.class, 
                 "potentialOwners in elements ( t.peopleAssignments.potentialOwners )");
-        addCriteria(ACTUAL_OWNER_ID_LIST, "t.taskData.actualOwner.id", String.class);
         addCriteria(BUSINESS_ADMIN_ID_LIST, "businessAdministrators.id", String.class, 
                 "businessAdministrators in elements ( t.peopleAssignments.businessAdministrators )");
     }
@@ -727,7 +729,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         
         // 3a. add extended criteria 
         for( QueryModificationService queryModService : queryModServiceLdr ) { 
-           queryModService.addCriteriaToQuery(queryBuilder, queryData, queryAppender);
+           queryModService.addCriteriaToQuery(queryData, queryAppender);
         }
         
         // 3a. apply normal query parameters
@@ -797,13 +799,13 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         }
        
         // 4. close query clause, if parameters have been applied
-        if( queryAppender.hasBeenUsed() ) { 
-            queryBuilder.append(")"); 
+        while( queryAppender.getParenthesesNesting() > 0 ) { 
+            queryAppender.closeParentheses();
         }
      
         // 5. add "limit tasks to viewable tasks" query if step 2 didn't succeed
         if( ! existingParametersUsedToLimitToAllowedResults ) { 
-            addPossibleUserRolesQueryClause( userId, queryBuilder, groupIds, params, queryAppender );
+            addPossibleUserRolesQueryClause( userId, groupIds, params, queryAppender );
         }
       
         // 6. apply meta info: max results, offset, order by, etc 
@@ -968,7 +970,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
      * @param params The params that will be set in the query
      * @param queryAppender The {@link QueryAndParameterAppender} instance being used
      */
-    private void addPossibleUserRolesQueryClause(String userId, StringBuilder queryBuilder, GroupIdsCache groupIdsCache, Map<String, Object> params, 
+    private void addPossibleUserRolesQueryClause(String userId, GroupIdsCache groupIdsCache, Map<String, Object> params, 
             QueryAndParameterAppender queryAppender) { 
        
         // start phrase
@@ -995,7 +997,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
             .append(" )\n");
         
         rolesQueryPhraseBuilder.append(") ");
-            
-        queryBuilder.append("\nAND ").append(rolesQueryPhraseBuilder);
+       
+        queryAppender.addToQueryBuilder(rolesQueryPhraseBuilder.toString(), false);
     }
 }

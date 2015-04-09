@@ -51,6 +51,7 @@ import static org.kie.internal.query.QueryParameterIdentifiers.WORK_ITEM_ID_LIST
 import static org.kie.internal.query.QueryParameterIdentifiers.CORRELATION_KEY_LIST;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -619,7 +620,7 @@ public class JPAAuditLogService implements AuditLogService {
     private static String createQuery(String queryBase, QueryData queryData, Map<String, Object> queryParams, boolean skipMetaParams) { 
         // setup
         StringBuilder queryBuilder = new StringBuilder(queryBase);
-        QueryAndParameterAppender queryAppender = new QueryAndParameterAppender(queryBuilder, queryParams, true);
+        QueryAndParameterAppender queryAppender = new QueryAndParameterAppender(queryBuilder, queryParams);
 
         // 1. add other tables (used in kie-remote-services to cross-query on variables, etc.. )
         ServiceLoader<QueryModificationService> queryModServiceLdr = ServiceLoader.load(QueryModificationService.class);
@@ -629,7 +630,7 @@ public class JPAAuditLogService implements AuditLogService {
       
         // 2. add extended criteria 
         for( QueryModificationService queryModService : queryModServiceLdr ) { 
-           queryModService.addCriteriaToQuery(queryBuilder, queryData, queryAppender);
+           queryModService.addCriteriaToQuery(queryData, queryAppender);
         }
         
         boolean addLastCriteria = false;
@@ -703,18 +704,18 @@ public class JPAAuditLogService implements AuditLogService {
             }
         }
         
-        if( queryAppender.hasBeenUsed() ) { 
-            queryBuilder.append(")"); 
+        while( queryAppender.getParenthesesNesting() > 0 ) { 
+            queryAppender.closeParentheses();
         }
         
         // 6. Add special criteria 
         boolean addWhereClause = ! queryAppender.hasBeenUsed();
         if( ! varValCriteriaList.isEmpty() ) { 
-            addVarValCriteria(addWhereClause, queryBuilder, queryAppender, "l", varValCriteriaList);
+            addVarValCriteria(addWhereClause, queryAppender, "l", varValCriteriaList);
             addWhereClause = false;
         }
         if( addLastCriteria ) { 
-            addLastInstanceCriteria(addWhereClause, queryBuilder);
+            addLastInstanceCriteria(queryAppender);
         }
        if (!skipMetaParams) {
 	        // 7. apply filter, ordering, etc.. 
@@ -740,58 +741,45 @@ public class JPAAuditLogService implements AuditLogService {
     
     public static void addVarValCriteria(
             boolean addWhereClause, 
-            StringBuilder queryBuilder, 
             QueryAndParameterAppender queryAppender, 
             String tableId,
             List<Object []> varValCriteriaList) { 
-        if( ! addWhereClause ) { 
-            queryBuilder.append("\n");
-        }
-      
+        
        // for each var/val criteria
        for( Object [] varValCriteria : varValCriteriaList ) { 
 
-           // Start with WHERE, OR, or AND?
-           String andOr = null;
-           if( addWhereClause ) { 
-               queryBuilder.append( "WHERE" );
-               addWhereClause = false;
-           } else { 
-               if( ((Integer) varValCriteria[0]) % 2 == 1 ) { 
-                   andOr = "AND"; 
-               } else { 
-                   andOr = "OR";
-               }
-               queryBuilder.append( andOr );
-           } 
-          
+           boolean union = (((Integer) varValCriteria[0]) % 2 == 0);
+         
            // var id: add query parameter
            String varIdQueryParamName = queryAppender.generateParamName();
            queryAppender.addNamedQueryParam(varIdQueryParamName, varValCriteria[1]);
            // var id: append to the query
-           queryBuilder.append(" ( ").append(tableId).append(".variableId = :").append(varIdQueryParamName).append(" ");
+           StringBuilder queryPhraseBuilder = new StringBuilder(" ( ")
+               .append(tableId).append(".variableId = :").append(varIdQueryParamName).append(" ");
            
            // val: append to the query
-           queryBuilder.append("AND ").append(tableId).append(".value ");
+           queryPhraseBuilder.append("AND ").append(tableId).append(".value ");
            String valQueryParamName = queryAppender.generateParamName();
            String val;
            if( ((Integer) varValCriteria[0]) >= 2 ) { 
                val = ((String) varValCriteria[2]).replace('*', '%').replace('.', '_');
-               queryBuilder.append("like :").append(valQueryParamName);
+               queryPhraseBuilder.append("like :").append(valQueryParamName);
            } else { 
                val = (String) varValCriteria[2];
-              queryBuilder.append("= :").append(valQueryParamName);
+              queryPhraseBuilder.append("= :").append(valQueryParamName);
            }
-           queryBuilder.append(" ) ");
-           // val: add query parameter
-           queryAppender.addNamedQueryParam(valQueryParamName, val);
+           queryPhraseBuilder.append(" ) ");
+      
+           String [] valArr = { val };
+           queryAppender.addToQueryBuilder(queryPhraseBuilder.toString(), union, valQueryParamName, Arrays.asList(valArr) );
        }
     }
     
-    private static void addLastInstanceCriteria(boolean whereAnd, StringBuilder queryBuilder) { 
-       queryBuilder.append("\n").append( (whereAnd ? "WHERE" : "AND" ) )
-           .append(" (l.id IN (SELECT MAX(ll.id) FROM VariableInstanceLog ll ")
-           .append("GROUP BY ll.variableId, ll.processInstanceId))");
+    private static void addLastInstanceCriteria(QueryAndParameterAppender queryAppender) { 
+       String lastQueryPhrase = new StringBuilder("(l.id IN ")
+           .append("(SELECT MAX(ll.id) FROM VariableInstanceLog ll GROUP BY ll.variableId, ll.processInstanceId)")
+           .append(") ").toString();
+      queryAppender.addToQueryBuilder(lastQueryPhrase, false); 
     }
     
     private static void applyMetaCriteria(StringBuilder queryBuilder, QueryData queryData) { 
