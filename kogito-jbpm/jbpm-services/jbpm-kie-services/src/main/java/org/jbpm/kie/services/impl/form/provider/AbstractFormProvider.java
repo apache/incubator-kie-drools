@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss by Red Hat.
+ * Copyright 2015 JBoss by Red Hat.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jbpm.kie.services.impl.form.provider;
 
-package org.jbpm.kie.services.impl.form;
-
-import java.util.Map;
 import org.jbpm.kie.services.impl.FormManagerService;
+import org.jbpm.kie.services.impl.form.FormProvider;
 
-import org.jbpm.services.api.model.ProcessDefinition;
-import org.kie.api.task.model.Task;
-
-public interface FormProvider {
-
-    int getPriority();
-
-    String render(String name, ProcessDefinition process, Map<String, Object> renderContext);
-
-    String render(String name, Task task, ProcessDefinition process, Map<String, Object> renderContext);
-    
-    void setFormManagerService(FormManagerService formManagerService);
+/**
+ *
+ * @author salaboy
+ */
+public abstract class AbstractFormProvider implements FormProvider{
+    protected FormManagerService formManagerService;
+    public void setFormManagerService(FormManagerService formManagerService){
+        this.formManagerService = formManagerService;
+    }
 }

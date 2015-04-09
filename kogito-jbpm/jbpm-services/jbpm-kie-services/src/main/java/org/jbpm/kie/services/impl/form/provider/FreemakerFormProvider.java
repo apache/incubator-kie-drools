@@ -22,13 +22,15 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.Map;
 
-import org.jbpm.kie.services.impl.form.FormProvider;
 
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Template;
 
-public abstract class FreemakerFormProvider implements FormProvider {
 
+public abstract class FreemakerFormProvider extends AbstractFormProvider {
+
+    
+    
     protected String render(String name, InputStream src, Map<String, Object> renderContext) {
         
         String str = null;

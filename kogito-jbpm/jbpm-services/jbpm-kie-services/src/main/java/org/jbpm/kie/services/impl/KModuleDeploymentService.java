@@ -82,7 +82,10 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     private DefinitionService bpmn2Service;
     
     private DeploymentDescriptorMerger merger = new DeploymentDescriptorMerger();
+    
+    private FormManagerService formManagerService;
  
+    
     
     public void onInit() {
     	EntityManagerFactoryManager.get().addEntityManagerFactory("org.jbpm.domain", getEmf());
@@ -121,10 +124,10 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             
             KieBase kbase = kieContainer.getKieBase(kbaseName); 
 
-            Map<String, String> formsData = new HashMap<String, String>();
+            //Map<String, String> formsData = new HashMap<String, String>();
             Collection<String> files = module.getFileNames();
             
-            processResources(module, formsData, files, kieContainer, kmoduleUnit, deployedUnit, releaseId);
+            processResources(module, files, kieContainer, kmoduleUnit, deployedUnit, releaseId);
             
             if (module.getKieDependencies() != null) {
     	        Collection<InternalKieModule> dependencies = module.getKieDependencies().values();
@@ -133,7 +136,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     	        	logger.debug("Processing dependency module " + depModule.getReleaseId());
     	        	files = depModule.getFileNames();
 
-    	        	processResources(depModule, formsData, files, kieContainer, kmoduleUnit, deployedUnit, depModule.getReleaseId());
+    	        	processResources(depModule, files, kieContainer, kmoduleUnit, deployedUnit, depModule.getReleaseId());
     	        }
             }
             if (module.getJarDependencies() != null && !module.getJarDependencies().isEmpty()) {
@@ -275,7 +278,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 		return resolver.getInstance(model, kieContainer.getClassLoader(), contaxtParams);
     }
 
-	protected void processResources(InternalKieModule module, Map<String, String> formsData, Collection<String> files,
+	protected void processResources(InternalKieModule module, Collection<String> files,
     		KieContainer kieContainer, DeploymentUnit unit, DeployedUnitImpl deployedUnit, ReleaseId releaseId) {
         for (String fileName : files) {
             if(fileName.matches(".+bpmn[2]?$")) {
@@ -288,7 +291,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                     }
                     process.setEncodedProcessSource(Base64.encodeBase64String(processString.getBytes()));
                     process.setDeploymentId(unit.getIdentifier());
-                    process.setForms(formsData);
+                   // process.setForms(formsData);
                     deployedUnit.addAssetLocation(process.getId(), process);
                 } catch (UnsupportedEncodingException e) {
                 	throw new IllegalArgumentException("Unsupported encoding while processing process " + fileName);
@@ -302,7 +305,8 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                     while (m.find()) {
                         key = m.group(2);
                     }
-                    formsData.put(key, formContent);
+                  //  formsData.put(key, formContent);
+                  formManagerService.registerForm(unit.getIdentifier(), key, formContent);
                 } catch (UnsupportedEncodingException e) {
                 	throw new IllegalArgumentException("Unsupported encoding while processing form " + fileName);
                 }
@@ -315,7 +319,8 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                     while (m.find()) {
                         key = m.group(2);
                     }
-                    formsData.put(key+".form", formContent);
+                 //   formsData.put(key+".form", formContent);
+                 formManagerService.registerForm(unit.getIdentifier(), key+".form", formContent);
                 } catch (UnsupportedEncodingException e) {
                 	throw new IllegalArgumentException("Unsupported encoding while processing form " + fileName);
                 }
