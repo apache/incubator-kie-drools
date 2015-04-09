@@ -18,19 +18,10 @@ package org.drools.workbench.models.guided.dtree.backend;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
-import org.drools.workbench.models.datamodel.oracle.MethodInfo;
-import org.drools.workbench.models.datamodel.oracle.ModelField;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionInsertNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionRetractNode;
@@ -55,62 +46,11 @@ import org.drools.workbench.models.guided.dtree.shared.model.values.impl.Integer
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.LongValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.ShortValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.StringValue;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
-public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
-
-    private PackageDataModelOracle dmo;
-    private Map<String, ModelField[]> packageModelFields = new HashMap<String, ModelField[]>();
-    private Map<String, String[]> projectJavaEnumDefinitions = new HashMap<String, String[]>();
-    private Map<String, List<MethodInfo>> projectMethodInformation = new HashMap<String, List<MethodInfo>>();
-
-    @Before
-    public void setUp() throws Exception {
-        dmo = mock( PackageDataModelOracle.class );
-        when( dmo.getProjectModelFields() ).thenReturn( packageModelFields );
-        when( dmo.getProjectJavaEnumDefinitions() ).thenReturn( projectJavaEnumDefinitions );
-        when( dmo.getProjectMethodInformation() ).thenReturn( projectMethodInformation );
-    }
-
-    @After
-    public void cleanUp() throws Exception {
-        packageModelFields.clear();
-        projectJavaEnumDefinitions.clear();
-        projectMethodInformation.clear();
-    }
-
-    private void addModelField( final String factName,
-                                final String fieldName,
-                                final String clazz,
-                                final String type ) {
-        ModelField[] modelFields = new ModelField[ 1 ];
-        modelFields[ 0 ] = new ModelField( fieldName,
-                                           clazz,
-                                           ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
-                                           ModelField.FIELD_ORIGIN.DECLARED,
-                                           FieldAccessorsAndMutators.BOTH,
-                                           type );
-        if ( packageModelFields.containsKey( factName ) ) {
-            final List<ModelField> existingModelFields = new ArrayList<ModelField>( Arrays.asList( packageModelFields.get( factName ) ) );
-            existingModelFields.add( modelFields[ 0 ] );
-            modelFields = existingModelFields.toArray( modelFields );
-        }
-        packageModelFields.put( factName,
-                                modelFields );
-    }
-
-    private void addJavaEnumDefinition( final String factName,
-                                        final String fieldName,
-                                        final String[] values ) {
-        final String key = factName + "#" + fieldName;
-        projectJavaEnumDefinitions.put( key,
-                                        values );
-    }
+public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest extends AbstractGuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ZeroConstraints() throws Exception {
@@ -3289,46 +3229,4 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
         getAndTestUnmarshalledModel( drl, "test", 1 );
     }
-
-    @Test
-    public void testRuleDifferentLineSeparators() {
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "integerField",
-                       Integer.class.getName(),
-                       DataType.TYPE_NUMERIC_INTEGER );
-
-        final String valueValid = "10";
-        final String valueInvalid = "\"something\"";
-
-        final String drl = "rule \"test\" {separator}" +
-                "when {separator}" +
-                "  Person( integerField == {value} ) {separator}" +
-                "then {separator}" +
-                "end";
-
-        // *nix line separator
-        getAndTestUnmarshalledModel( drl.replace( "{separator}", "\n" ).replace( "{value}", valueValid ), "test", 0 );
-        getAndTestUnmarshalledModel( drl.replace( "{separator}", "\n" ).replace( "{value}", valueInvalid ), "test", 1 );
-
-        // Windows line separator.
-        getAndTestUnmarshalledModel( drl.replace( "{separator}", "\r\n" ).replace( "{value}", valueValid ), "test", 0 );
-        getAndTestUnmarshalledModel( drl.replace( "{separator}", "\r\n" ).replace( "{value}", valueInvalid ), "test", 1 );
-    }
-
-    private GuidedDecisionTree getAndTestUnmarshalledModel( final String drl, final String baseFileName,
-            final int expectedParseErrorsSize ) {
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   baseFileName,
-                                                                                                   dmo );
-
-        assertNotNull( model );
-        assertEquals( expectedParseErrorsSize,
-                      model.getParserErrors().size() );
-        return model;
-    }
-
 }
