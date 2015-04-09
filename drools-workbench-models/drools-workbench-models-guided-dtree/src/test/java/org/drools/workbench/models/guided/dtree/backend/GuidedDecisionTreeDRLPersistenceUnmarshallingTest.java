@@ -3544,4 +3544,31 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
                       model.getParserErrors().size() );
     }
 
+    @Test
+    public void testRuleWithLinesWithSpaces() throws Exception {
+        final String drl = "rule \"test1\" \n" +
+                "when \n" +
+                " \n" +
+                " \n" +
+                " Person( integerField == 10 ) \n" +
+                "then \n" +
+                "end \n";
+
+        addModelField( "Person",
+                       "this",
+                       "Person",
+                       DataType.TYPE_THIS );
+        addModelField( "Person",
+                       "integerField",
+                       Integer.class.getName(),
+                       DataType.TYPE_NUMERIC_INTEGER );
+
+        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
+                                                                                                   "test",
+                                                                                                   dmo );
+
+        assertNotNull( model );
+        assertEquals( 0,
+                      model.getParserErrors().size() );
+    }
 }
