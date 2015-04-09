@@ -1951,7 +1951,7 @@ public class RuleModelDRLPersistenceImpl
         int lhsParenthesisBalance = 0;
 
         for ( String line : lines ) {
-            if (line.trim().length() == 0) {
+            if ( line.trim().length() == 0 ) {
                 continue;
             }
             if ( ruleSection == RuleSection.HEADER ) {
