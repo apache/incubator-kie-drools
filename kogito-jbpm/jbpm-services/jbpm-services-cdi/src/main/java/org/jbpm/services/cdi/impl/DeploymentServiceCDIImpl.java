@@ -25,6 +25,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
+import org.jbpm.kie.services.impl.FormManagerService;
 
 import org.jbpm.kie.services.impl.KModuleDeploymentService;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
@@ -142,6 +143,12 @@ public class DeploymentServiceCDIImpl extends KModuleDeploymentService {
 	public void setIdentityProvider(IdentityProvider identityProvider) {
 
 		super.setIdentityProvider(new IdentityProviderCDIWrapper(identityProvider, backupProviders));
+	}
+        
+        @Inject
+	@Override
+	public void setFormManagerService(FormManagerService formManagerService) {
+		super.setFormManagerService(formManagerService);
 	}
 	
 	@Override

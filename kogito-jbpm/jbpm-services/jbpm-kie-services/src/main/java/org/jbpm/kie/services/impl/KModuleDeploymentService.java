@@ -384,6 +384,12 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 		this.merger = merger;
 	}
 
+        public void setFormManagerService(FormManagerService formManagerService) {
+            this.formManagerService = formManagerService;
+        }
+        
+        
+
 	@Override
 	public void activate(String deploymentId) {
 		DeployedUnit deployed = getDeployedUnit(deploymentId);
