@@ -3291,7 +3291,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    public void testRuleDifferentLineEndings() {
+    public void testRuleDifferentLineSeparators() {
         addModelField( "Person",
                        "this",
                        "Person",
