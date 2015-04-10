@@ -15,7 +15,6 @@
  */
 package org.kie.api.runtime.manager;
 
-import org.kie.api.runtime.manager.RuntimeManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,27 +90,38 @@ public interface RuntimeManagerFactory {
      * A Factory for this RuntimeManagerFactory
      */
     public static class Factory {
+        private static boolean initialized = false;
         private static RuntimeManagerFactory INSTANCE;
         private static Logger logger = LoggerFactory.getLogger(Factory.class);
-        
-        static {
-            try {                
-                INSTANCE = ( RuntimeManagerFactory ) 
-                		Class.forName( System.getProperty("org.jbpm.runtime.manager.class", 
-                				"org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl") ).newInstance();
-            } catch (Exception e) {
-                logger.error("Unable to instance RuntimeManagerFactory due to " + e.getMessage());
-            }
-        }
 
         /**
          * Returns a reference to the RuntimeManagerFactory singleton
          */
         public static RuntimeManagerFactory get() {
-            if (INSTANCE == null) {
+            return get(null);
+        }
+
+        public synchronized static RuntimeManagerFactory get(ClassLoader classLoader) {
+            if (!initialized) {
+                INSTANCE = create(classLoader);
+            } else if (INSTANCE == null) {
                 throw new RuntimeException("RuntimeManagerFactory was not initialized, see previous errors");
             }
             return INSTANCE;
+        }
+
+        private static RuntimeManagerFactory create(ClassLoader classLoader) {
+            initialized = true;
+            try {
+                String className = System.getProperty("org.jbpm.runtime.manager.class",
+                                                      "org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl" );
+                return classLoader != null ?
+                       ( RuntimeManagerFactory ) Class.forName( className, true, classLoader ).newInstance() :
+                       ( RuntimeManagerFactory ) Class.forName( className ).newInstance();
+            } catch (Exception e) {
+                logger.error("Unable to instance RuntimeManagerFactory due to " + e.getMessage());
+            }
+            return null;
         }
     }
 }
