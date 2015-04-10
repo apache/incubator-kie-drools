@@ -182,9 +182,14 @@ public class TaskFluent {
         return this;
     }
      
-     public TaskFluent setFormName(String formName){
-         task.setFormName(formName);
-         return this;
-     }
+    public TaskFluent setFormName(String formName){
+        task.setFormName(formName);
+        return this;
+    }
+    
+    public TaskFluent setDeploymentID(String deploymentId){
+        ((TaskDataImpl)task.getTaskData()).setDeploymentId(deploymentId);
+        return this;
+    }
 
 }
