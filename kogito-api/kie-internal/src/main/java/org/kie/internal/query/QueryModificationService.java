@@ -6,7 +6,6 @@ public interface QueryModificationService {
 
     public void addTablesToQuery(StringBuilder queryBuilder, QueryData queryData);
     
-    public void addCriteriaToQuery(StringBuilder queryBuilder, QueryData queryData, 
-            QueryAndParameterAppender existingQueryClauseAppender);
+    public void addCriteriaToQuery(QueryData queryData, QueryAndParameterAppender existingQueryClauseAppender);
 
 }

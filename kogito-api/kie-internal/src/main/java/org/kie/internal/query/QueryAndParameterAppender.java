@@ -17,8 +17,9 @@ import java.util.Set;
  */
 public class QueryAndParameterAppender {
 
-    private boolean startWithWhere = false;
+    private boolean noWhereClauseYet = true;
     private boolean noClauseAddedYet = true;
+    private int nestedParentheses = 0;
     private boolean alreadyUsed = false;
     private final StringBuilder queryBuilder;
     private final Map<String, Object> queryParams;
@@ -28,12 +29,7 @@ public class QueryAndParameterAppender {
     public QueryAndParameterAppender(StringBuilder queryBuilder, Map<String, Object> params) {
         this.queryBuilder = queryBuilder;
         this.queryParams = params;
-    }
-
-    public QueryAndParameterAppender(StringBuilder queryBuilder, Map<String, Object> params, boolean useWhere) {
-        this.queryBuilder = queryBuilder;
-        this.queryParams = params;
-        this.startWithWhere = useWhere;
+        this.noWhereClauseYet = ! queryBuilder.toString().contains("WHERE");
     }
 
     public boolean hasBeenUsed() {
@@ -46,6 +42,20 @@ public class QueryAndParameterAppender {
 
     public void addNamedQueryParam(String name, Object value) { 
         queryParams.put(name, value);
+    }
+   
+    public void openParentheses() { 
+        ++nestedParentheses;
+        queryBuilder.append(" ( "); 
+    }
+    
+    public void closeParentheses() { 
+        queryBuilder.append(" ) "); 
+        --nestedParentheses;
+    }
+   
+    public int getParenthesesNesting() { 
+        return nestedParentheses;
     }
     
     // "Normal" query parameters --------------------------------------------------------------------------------------------------
@@ -65,7 +75,7 @@ public class QueryAndParameterAppender {
             queryClause.append(" AND " + joinClause);
         }
         queryClause.append(" )");
-        addToQueryBuilder(queryClause.toString(), union, listIdParams, paramName);
+        addToQueryBuilder(queryClause.toString(), union, paramName, listIdParams );
     }
 
     public <T> void addQueryParameters( Map<String, List<? extends Object>> inputParamsMap, String listId, Class<T> type,
@@ -214,7 +224,14 @@ public class QueryAndParameterAppender {
         queryBuilderModificationCleanup();
     }
 
-    private <T> void addToQueryBuilder( String query, boolean union, List<T> paramValList, String paramName ) {
+    public void addToQueryBuilder( String query, boolean union ) { 
+        // modify query builder
+        internalAddToQueryBuilder(query, union);
+        // cleanup
+        queryBuilderModificationCleanup();
+    }
+    
+    public <T> void addToQueryBuilder( String query, boolean union, String paramName, List<T> paramValList  ) {
         // modify query builder
         internalAddToQueryBuilder(query, union);
         // add query parameters
@@ -226,12 +243,11 @@ public class QueryAndParameterAppender {
 
     private void internalAddToQueryBuilder( String query, boolean union ) {
         if( this.noClauseAddedYet ) {
-            if( startWithWhere ) {
-                queryBuilder.append(" WHERE");
+            if( noWhereClauseYet ) {
+                queryBuilder.append(" WHERE ");
             } else {
-                queryBuilder.append(" AND");
+                queryBuilder.append(" AND ");
             }
-            queryBuilder.append(" (");
             this.noClauseAddedYet = false;
         } else if( this.alreadyUsed ) {
             queryBuilder.append(union ? "\nOR " : "\nAND ");
@@ -241,6 +257,10 @@ public class QueryAndParameterAppender {
 
     public void queryBuilderModificationCleanup() {
         this.alreadyUsed = true;
+    }
+    
+    public boolean whereClausePresent() { 
+        return ! noWhereClauseYet;
     }
 
     @SuppressWarnings("unchecked")
@@ -260,4 +280,9 @@ public class QueryAndParameterAppender {
         char first = (char) ('A' + id);
         return new String(first + String.valueOf(((id + 1) / 26) + 1));
     }
+    
+    public StringBuilder getQueryBuilder() { 
+        return queryBuilder;
+    }
+
 }
