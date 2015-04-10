@@ -181,5 +181,10 @@ public class TaskFluent {
         
         return this;
     }
+     
+     public TaskFluent setFormName(String formName){
+         task.setFormName(formName);
+         return this;
+     }
 
 }
