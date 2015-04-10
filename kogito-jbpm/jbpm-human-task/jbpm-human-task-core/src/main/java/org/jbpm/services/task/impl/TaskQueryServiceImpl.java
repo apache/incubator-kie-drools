@@ -48,16 +48,16 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.jbpm.query.jpa.impl.QueryAndParameterAppender;
+import org.jbpm.query.jpa.service.QueryModificationService;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.kie.api.task.UserGroupCallback;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.query.QueryAndParameterAppender;
 import org.kie.internal.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
-import org.kie.internal.query.QueryModificationService;
 import org.kie.internal.query.data.QueryData;
 import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.TaskQueryService;
@@ -748,6 +748,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
             for( Entry<String, List<? extends Object>> paramsEntry : queryData.getIntersectParameters().entrySet() ) { 
                 String listId = paramsEntry.getKey();
                 Class<?> criteriaFieldClass = criteriaFieldClasses.get(listId);
+                QueryAndParameterAppender.debugQueryParametersIdentifiers();
                 assert criteriaFieldClass != null : listId + ": criteria field class not found";
                 String jpqlField = criteriaFields.get(listId);
                 assert jpqlField != null : listId + ": criteria field not found";

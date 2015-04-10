@@ -79,6 +79,7 @@
     <module>jbpm-flow</module>
     <module>jbpm-flow-builder</module>
     <module>jbpm-persistence-jpa</module>
+    <module>jbpm-query-jpa</module>
     <module>jbpm-audit</module>
     <module>jbpm-bpmn2</module>
     <module>jbpm-bpmn2-emfextmodel</module>

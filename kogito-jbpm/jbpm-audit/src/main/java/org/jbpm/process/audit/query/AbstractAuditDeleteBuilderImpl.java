@@ -9,9 +9,9 @@ import java.util.Date;
 
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.command.AuditCommand;
+import org.jbpm.query.jpa.builder.impl.AbstractQueryBuilderImpl;
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.internal.command.Context;
-import org.kie.internal.query.AbstractQueryBuilderImpl;
 import org.kie.internal.runtime.manager.audit.query.AuditQueryBuilder;
 
 public class AbstractAuditDeleteBuilderImpl<T> extends AbstractQueryBuilderImpl<T> implements AuditQueryBuilder<T> {

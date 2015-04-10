@@ -1,0 +1,16 @@
+/target
+/local
+/data
+/bin
+
+# Eclipse, Netbeans and IntelliJ files
+/.*
+!.gitignore
+/nbproject
+/*.ipr
+/*.iws
+/*.iml
+
+# test database
+/JPADroolsFlow.*.db
+/btm.*

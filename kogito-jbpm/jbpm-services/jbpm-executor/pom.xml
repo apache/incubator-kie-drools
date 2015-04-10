@@ -44,6 +44,11 @@
       <artifactId>jbpm-runtime-manager</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-query-jpa</artifactId>
+      <optional>true</optional>
+    </dependency>
 
     <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>

@@ -5,10 +5,10 @@ import static org.kie.internal.query.QueryParameterIdentifiers.*;
 import java.util.List;
 
 import org.drools.core.command.CommandService;
+import org.jbpm.query.jpa.builder.impl.AbstractQueryBuilderImpl;
 import org.jbpm.services.task.commands.TaskQueryDataCommand;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.query.AbstractQueryBuilderImpl;
 import org.kie.internal.query.ParametrizedQuery;
 import org.kie.internal.query.QueryContext;
 import org.kie.internal.query.data.QueryData;

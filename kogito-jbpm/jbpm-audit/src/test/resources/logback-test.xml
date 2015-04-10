@@ -17,6 +17,7 @@
 
   <!-- set to debug to see queries --> 
   <logger name="org.jbpm.process.audit" level="info"/>
+  <logger name="org.jbpm.query.jpa" level="info"/>
   
   <root level="warn">
     <appender-ref ref="consoleAppender" />

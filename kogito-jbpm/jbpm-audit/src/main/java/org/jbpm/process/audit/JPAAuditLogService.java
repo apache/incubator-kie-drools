@@ -17,6 +17,7 @@
 package org.jbpm.process.audit;
 
 import static org.kie.internal.query.QueryParameterIdentifiers.ASCENDING_VALUE;
+import static org.kie.internal.query.QueryParameterIdentifiers.CORRELATION_KEY_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.DATE_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.DESCENDING_VALUE;
 import static org.kie.internal.query.QueryParameterIdentifiers.DURATION_LIST;
@@ -48,7 +49,6 @@ import static org.kie.internal.query.QueryParameterIdentifiers.VARIABLE_INSTANCE
 import static org.kie.internal.query.QueryParameterIdentifiers.VAR_VALUE_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.VAR_VAL_SEPARATOR;
 import static org.kie.internal.query.QueryParameterIdentifiers.WORK_ITEM_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.CORRELATION_KEY_LIST;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,11 +78,10 @@ import org.jbpm.process.audit.query.VarInstanceLogDeleteBuilderImpl;
 import org.jbpm.process.audit.strategy.PersistenceStrategy;
 import org.jbpm.process.audit.strategy.PersistenceStrategyType;
 import org.jbpm.process.audit.strategy.StandaloneJtaStrategy;
+import org.jbpm.query.jpa.impl.QueryAndParameterAppender;
+import org.jbpm.query.jpa.service.QueryModificationService;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
-import org.kie.internal.query.QueryAndParameterAppender;
-import org.kie.internal.query.QueryContext;
-import org.kie.internal.query.QueryModificationService;
 import org.kie.internal.query.data.QueryData;
 import org.kie.internal.runtime.manager.audit.query.NodeInstanceLogDeleteBuilder;
 import org.kie.internal.runtime.manager.audit.query.NodeInstanceLogQueryBuilder;
