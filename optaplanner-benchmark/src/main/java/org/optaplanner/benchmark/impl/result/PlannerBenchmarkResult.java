@@ -418,10 +418,10 @@ public class PlannerBenchmarkResult {
                 } else {
                     newResult.availableProcessors = ConfigUtils.mergeProperty(
                             newResult.availableProcessors, oldResult.availableProcessors);
-                    newResult.maxMemory = ConfigUtils.mergeProperty(
-                            newResult.maxMemory, oldResult.maxMemory);
                     newResult.loggingLevel = ConfigUtils.mergeProperty(
                             newResult.loggingLevel, oldResult.loggingLevel);
+                    newResult.maxMemory = ConfigUtils.mergeProperty(
+                            newResult.maxMemory, oldResult.maxMemory);
                     newResult.optaPlannerVersion = ConfigUtils.mergeProperty(
                             newResult.optaPlannerVersion, oldResult.optaPlannerVersion);
                     newResult.javaVersion = ConfigUtils.mergeProperty(
