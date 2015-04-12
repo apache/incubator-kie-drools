@@ -614,6 +614,10 @@
                         <td>${benchmarkReport.plannerBenchmarkResult.benchmarkTimeMillisSpent!"Differs"} ms</td>
                     </tr>
                     <tr>
+                        <th>Logging level</th>
+                        <td>${benchmarkReport.plannerBenchmarkResult.loggingLevel!"Differs"}</td>
+                    </tr>
+                    <tr>
                         <th>VM max memory (as in -Xmx but lower)</th>
                         <td>${(benchmarkReport.plannerBenchmarkResult.maxMemory?string.number)!"Differs"} bytes</td>
                     </tr>
