@@ -18,18 +18,9 @@ package org.drools.workbench.models.guided.dtree.backend;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
-import org.drools.workbench.models.datamodel.oracle.MethodInfo;
-import org.drools.workbench.models.datamodel.oracle.ModelField;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.TypeNodeImpl;
@@ -41,54 +32,12 @@ import org.drools.workbench.models.guided.dtree.shared.model.parser.messages.Uns
 import org.drools.workbench.models.guided.dtree.shared.model.parser.messages.UnsupportedFieldConstraintTypeParserMessage;
 import org.drools.workbench.models.guided.dtree.shared.model.parser.messages.UnsupportedFieldNatureTypeParserMessage;
 import org.drools.workbench.models.guided.dtree.shared.model.parser.messages.UnsupportedIActionParserMessage;
-import org.junit.After;
-import org.junit.Before;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
-public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
-
-    private PackageDataModelOracle dmo;
-    private Map<String, ModelField[]> packageModelFields = new HashMap<String, ModelField[]>();
-    private Map<String, String[]> projectJavaEnumDefinitions = new HashMap<String, String[]>();
-    private Map<String, List<MethodInfo>> projectMethodInformation = new HashMap<String, List<MethodInfo>>();
-
-    @Before
-    public void setUp() throws Exception {
-        dmo = mock( PackageDataModelOracle.class );
-        when( dmo.getProjectModelFields() ).thenReturn( packageModelFields );
-        when( dmo.getProjectJavaEnumDefinitions() ).thenReturn( projectJavaEnumDefinitions );
-        when( dmo.getProjectMethodInformation() ).thenReturn( projectMethodInformation );
-    }
-
-    @After
-    public void cleanUp() throws Exception {
-        packageModelFields.clear();
-        projectJavaEnumDefinitions.clear();
-        projectMethodInformation.clear();
-    }
-
-    private void addModelField( final String factName,
-                                final String fieldName,
-                                final String clazz,
-                                final String type ) {
-        ModelField[] modelFields = new ModelField[ 1 ];
-        modelFields[ 0 ] = new ModelField( fieldName,
-                                           clazz,
-                                           ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
-                                           ModelField.FIELD_ORIGIN.DECLARED,
-                                           FieldAccessorsAndMutators.BOTH,
-                                           type );
-        if ( packageModelFields.containsKey( factName ) ) {
-            final List<ModelField> existingModelFields = new ArrayList<ModelField>( Arrays.asList( packageModelFields.get( factName ) ) );
-            existingModelFields.add( modelFields[ 0 ] );
-            modelFields = existingModelFields.toArray( modelFields );
-        }
-        packageModelFields.put( factName,
-                                modelFields );
-    }
+public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest extends AbstractGuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_UnsupportedFieldConstraintExpression() throws Exception {
@@ -99,32 +48,27 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
                 "end";
 
         final GuidedDecisionTree expected = new GuidedDecisionTree();
-        expected.setTreeName( "test" );
+        expected.setTreeName("test");
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        expected.setRoot( type );
+        expected.setRoot(type);
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "name",
-                       String.class.getName(),
-                       DataType.TYPE_STRING );
+        addModelField("Person",
+                "this",
+                "Person",
+                DataType.TYPE_THIS);
+        addModelField("Person",
+                "name",
+                String.class.getName(),
+                DataType.TYPE_STRING);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
 
-        assertNotNull( model );
-        assertEquals( expected.getTreeName(),
-                      model.getTreeName() );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel(drl, "test", 1);
 
-        assertNull( model.getRoot() );
+        assertEquals(expected.getTreeName(),
+                model.getTreeName());
+        assertNull(model.getRoot());
 
-        assertEquals( 1,
-                      model.getParserErrors().size() );
         assertEquals( "test_0",
                       model.getParserErrors().get( 0 ).getOriginalRuleName() );
         assertEqualsIgnoreWhitespace( drl,
@@ -148,32 +92,27 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
                 "end";
 
         final GuidedDecisionTree expected = new GuidedDecisionTree();
-        expected.setTreeName( "test" );
+        expected.setTreeName("test");
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        expected.setRoot( type );
+        expected.setRoot(type);
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "name",
-                       String.class.getName(),
-                       DataType.TYPE_STRING );
+        addModelField("Person",
+                "this",
+                "Person",
+                DataType.TYPE_THIS);
+        addModelField("Person",
+                "name",
+                String.class.getName(),
+                DataType.TYPE_STRING);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 1 );
 
-        assertNotNull( model );
-        assertEquals( expected.getTreeName(),
-                      model.getTreeName() );
+        assertEquals(expected.getTreeName(),
+                model.getTreeName());
 
-        assertNull( model.getRoot() );
+        assertNull(model.getRoot());
 
-        assertEquals( 1,
-                      model.getParserErrors().size() );
         assertEquals( "test_0",
                       model.getParserErrors().get( 0 ).getOriginalRuleName() );
         assertEqualsIgnoreWhitespace( drl,
@@ -197,32 +136,26 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
                 "end";
 
         final GuidedDecisionTree expected = new GuidedDecisionTree();
-        expected.setTreeName( "test" );
+        expected.setTreeName("test");
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        expected.setRoot( type );
+        expected.setRoot(type);
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "age",
-                       Integer.class.getName(),
-                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField("Person",
+                "this",
+                "Person",
+                DataType.TYPE_THIS);
+        addModelField("Person",
+                "age",
+                Integer.class.getName(),
+                DataType.TYPE_NUMERIC_INTEGER);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 1 );
 
-        assertNotNull( model );
-        assertEquals( expected.getTreeName(),
-                      model.getTreeName() );
+        assertEquals(expected.getTreeName(),
+                model.getTreeName());
+        assertNull(model.getRoot());
 
-        assertNull( model.getRoot() );
-
-        assertEquals( 1,
-                      model.getParserErrors().size() );
         assertEquals( "test_0",
                       model.getParserErrors().get( 0 ).getOriginalRuleName() );
         assertEqualsIgnoreWhitespace( drl,
@@ -249,32 +182,27 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
                 "end";
 
         final GuidedDecisionTree expected = new GuidedDecisionTree();
-        expected.setTreeName( "test" );
+        expected.setTreeName("test");
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        expected.setRoot( type );
+        expected.setRoot(type);
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "age",
-                       Integer.class.getName(),
-                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField("Person",
+                "this",
+                "Person",
+                DataType.TYPE_THIS);
+        addModelField("Person",
+                "age",
+                Integer.class.getName(),
+                DataType.TYPE_NUMERIC_INTEGER);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 1 );
 
-        assertNotNull( model );
-        assertEquals( expected.getTreeName(),
-                      model.getTreeName() );
+        assertEquals(expected.getTreeName(),
+                model.getTreeName());
 
-        assertNull( model.getRoot() );
+        assertNull(model.getRoot());
 
-        assertEquals( 1,
-                      model.getParserErrors().size() );
         assertEquals( "test_0",
                       model.getParserErrors().get( 0 ).getOriginalRuleName() );
         assertEqualsIgnoreWhitespace( drl,
@@ -301,32 +229,27 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
                 "end";
 
         final GuidedDecisionTree expected = new GuidedDecisionTree();
-        expected.setTreeName( "test" );
+        expected.setTreeName("test");
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        expected.setRoot( type );
+        expected.setRoot(type);
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "age",
-                       Integer.class.getName(),
-                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField("Person",
+                "this",
+                "Person",
+                DataType.TYPE_THIS);
+        addModelField("Person",
+                "age",
+                Integer.class.getName(),
+                DataType.TYPE_NUMERIC_INTEGER);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 1 );
 
-        assertNotNull( model );
-        assertEquals( expected.getTreeName(),
-                      model.getTreeName() );
+        assertEquals(expected.getTreeName(),
+                model.getTreeName());
 
-        assertNull( model.getRoot() );
+        assertNull(model.getRoot());
 
-        assertEquals( 1,
-                      model.getParserErrors().size() );
         assertEquals( "test_0",
                       model.getParserErrors().get( 0 ).getOriginalRuleName() );
         assertEqualsIgnoreWhitespace( drl,
@@ -351,32 +274,27 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
                 "end";
 
         final GuidedDecisionTree expected = new GuidedDecisionTree();
-        expected.setTreeName( "test" );
+        expected.setTreeName("test");
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        expected.setRoot( type );
+        expected.setRoot(type);
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "age",
-                       Integer.class.getName(),
-                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField("Person",
+                "this",
+                "Person",
+                DataType.TYPE_THIS);
+        addModelField("Person",
+                "age",
+                Integer.class.getName(),
+                DataType.TYPE_NUMERIC_INTEGER);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 1 );
 
-        assertNotNull( model );
-        assertEquals( expected.getTreeName(),
-                      model.getTreeName() );
+        assertEquals(expected.getTreeName(),
+                model.getTreeName());
 
-        assertNull( model.getRoot() );
+        assertNull(model.getRoot());
 
-        assertEquals( 1,
-                      model.getParserErrors().size() );
         assertEquals( "test_0",
                       model.getParserErrors().get( 0 ).getOriginalRuleName() );
         assertEqualsIgnoreWhitespace( drl,
@@ -400,28 +318,23 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
                 "end";
 
         final GuidedDecisionTree expected = new GuidedDecisionTree();
-        expected.setTreeName( "test" );
+        expected.setTreeName("test");
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        expected.setRoot( type );
+        expected.setRoot(type);
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
+        addModelField("Person",
+                "this",
+                "Person",
+                DataType.TYPE_THIS);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 1 );
 
-        assertNotNull( model );
-        assertEquals( expected.getTreeName(),
-                      model.getTreeName() );
+        assertEquals(expected.getTreeName(),
+                model.getTreeName());
 
-        assertNull( model.getRoot() );
+        assertNull(model.getRoot());
 
-        assertEquals( 1,
-                      model.getParserErrors().size() );
         assertEquals( "test_0",
                       model.getParserErrors().get( 0 ).getOriginalRuleName() );
         assertEqualsIgnoreWhitespace( drl,
@@ -445,32 +358,27 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
                 "end";
 
         final GuidedDecisionTree expected = new GuidedDecisionTree();
-        expected.setTreeName( "test" );
+        expected.setTreeName("test");
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        expected.setRoot( type );
+        expected.setRoot(type);
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "bigDecimalField",
-                       BigDecimal.class.getName(),
-                       DataType.TYPE_NUMERIC_BIGDECIMAL );
+        addModelField("Person",
+                "this",
+                "Person",
+                DataType.TYPE_THIS);
+        addModelField("Person",
+                "bigDecimalField",
+                BigDecimal.class.getName(),
+                DataType.TYPE_NUMERIC_BIGDECIMAL);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl, "test", 1 );
 
-        assertNotNull( model );
-        assertEquals( expected.getTreeName(),
-                      model.getTreeName() );
+        assertEquals(expected.getTreeName(),
+                model.getTreeName());
 
-        assertNull( model.getRoot() );
+        assertNull(model.getRoot());
 
-        assertEquals( 1,
-                      model.getParserErrors().size() );
         assertEquals( "test_0",
                       model.getParserErrors().get( 0 ).getOriginalRuleName() );
         assertEqualsIgnoreWhitespace( drl,
@@ -494,32 +402,26 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
                 "end";
 
         final GuidedDecisionTree expected = new GuidedDecisionTree();
-        expected.setTreeName( "test" );
+        expected.setTreeName("test");
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        expected.setRoot( type );
+        expected.setRoot(type);
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "bigIntegerField",
-                       BigInteger.class.getName(),
-                       DataType.TYPE_NUMERIC_BIGINTEGER );
+        addModelField("Person",
+                "this",
+                "Person",
+                DataType.TYPE_THIS);
+        addModelField("Person",
+                "bigIntegerField",
+                BigInteger.class.getName(),
+                DataType.TYPE_NUMERIC_BIGINTEGER);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel(drl, "test", 1);
+        assertEquals(expected.getTreeName(),
+                model.getTreeName());
 
-        assertNotNull( model );
-        assertEquals( expected.getTreeName(),
-                      model.getTreeName() );
+        assertNull(model.getRoot());
 
-        assertNull( model.getRoot() );
-
-        assertEquals( 1,
-                      model.getParserErrors().size() );
         assertEquals( "test_0",
                       model.getParserErrors().get( 0 ).getOriginalRuleName() );
         assertEqualsIgnoreWhitespace( drl,
@@ -543,32 +445,26 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
                 "end";
 
         final GuidedDecisionTree expected = new GuidedDecisionTree();
-        expected.setTreeName( "test" );
+        expected.setTreeName("test");
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        expected.setRoot( type );
+        expected.setRoot(type);
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "booleanField",
-                       Boolean.class.getName(),
-                       DataType.TYPE_BOOLEAN );
+        addModelField("Person",
+                "this",
+                "Person",
+                DataType.TYPE_THIS);
+        addModelField("Person",
+                "booleanField",
+                Boolean.class.getName(),
+                DataType.TYPE_BOOLEAN);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel(drl, "test", 1);
+        assertEquals(expected.getTreeName(),
+                model.getTreeName());
 
-        assertNotNull( model );
-        assertEquals( expected.getTreeName(),
-                      model.getTreeName() );
+        assertNull(model.getRoot());
 
-        assertNull( model.getRoot() );
-
-        assertEquals( 1,
-                      model.getParserErrors().size() );
         assertEquals( "test_0",
                       model.getParserErrors().get( 0 ).getOriginalRuleName() );
         assertEqualsIgnoreWhitespace( drl,
@@ -592,32 +488,26 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
                 "end";
 
         final GuidedDecisionTree expected = new GuidedDecisionTree();
-        expected.setTreeName( "test" );
+        expected.setTreeName("test");
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        expected.setRoot( type );
+        expected.setRoot(type);
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "byteField",
-                       Byte.class.getName(),
-                       DataType.TYPE_NUMERIC_BYTE );
+        addModelField("Person",
+                "this",
+                "Person",
+                DataType.TYPE_THIS);
+        addModelField("Person",
+                "byteField",
+                Byte.class.getName(),
+                DataType.TYPE_NUMERIC_BYTE);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel(drl, "test", 1);
+        assertEquals(expected.getTreeName(),
+                model.getTreeName());
 
-        assertNotNull( model );
-        assertEquals( expected.getTreeName(),
-                      model.getTreeName() );
+        assertNull(model.getRoot());
 
-        assertNull( model.getRoot() );
-
-        assertEquals( 1,
-                      model.getParserErrors().size() );
         assertEquals( "test_0",
                       model.getParserErrors().get( 0 ).getOriginalRuleName() );
         assertEqualsIgnoreWhitespace( drl,
@@ -641,32 +531,28 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
                 "end";
 
         final GuidedDecisionTree expected = new GuidedDecisionTree();
-        expected.setTreeName( "test" );
+        expected.setTreeName("test");
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        expected.setRoot( type );
+        expected.setRoot(type);
 
         addModelField( "Person",
                        "this",
                        "Person",
                        DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "dateField",
-                       Date.class.getName(),
-                       DataType.TYPE_DATE );
+        addModelField("Person",
+                "dateField",
+                Date.class.getName(),
+                DataType.TYPE_DATE);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel(drl, "test", 1);
 
-        assertNotNull( model );
-        assertEquals( expected.getTreeName(),
-                      model.getTreeName() );
+        assertNotNull(model);
+        assertEquals(expected.getTreeName(),
+                model.getTreeName());
 
-        assertNull( model.getRoot() );
+        assertNull(model.getRoot());
 
-        assertEquals( 1,
-                      model.getParserErrors().size() );
         assertEquals( "test_0",
                       model.getParserErrors().get( 0 ).getOriginalRuleName() );
         assertEqualsIgnoreWhitespace( drl,
@@ -690,32 +576,28 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
                 "end";
 
         final GuidedDecisionTree expected = new GuidedDecisionTree();
-        expected.setTreeName( "test" );
+        expected.setTreeName("test");
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        expected.setRoot( type );
+        expected.setRoot(type);
 
         addModelField( "Person",
                        "this",
                        "Person",
                        DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "doubleField",
-                       Double.class.getName(),
-                       DataType.TYPE_NUMERIC_DOUBLE );
+        addModelField("Person",
+                "doubleField",
+                Double.class.getName(),
+                DataType.TYPE_NUMERIC_DOUBLE);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel(drl, "test", 1);
 
-        assertNotNull( model );
-        assertEquals( expected.getTreeName(),
-                      model.getTreeName() );
+        assertNotNull(model);
+        assertEquals(expected.getTreeName(),
+                model.getTreeName());
 
-        assertNull( model.getRoot() );
+        assertNull(model.getRoot());
 
-        assertEquals( 1,
-                      model.getParserErrors().size() );
         assertEquals( "test_0",
                       model.getParserErrors().get( 0 ).getOriginalRuleName() );
         assertEqualsIgnoreWhitespace( drl,
@@ -739,32 +621,27 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
                 "end";
 
         final GuidedDecisionTree expected = new GuidedDecisionTree();
-        expected.setTreeName( "test" );
+        expected.setTreeName("test");
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        expected.setRoot( type );
+        expected.setRoot(type);
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "floatField",
-                       Float.class.getName(),
-                       DataType.TYPE_NUMERIC_FLOAT );
+        addModelField("Person",
+                "this",
+                "Person",
+                DataType.TYPE_THIS);
+        addModelField("Person",
+                "floatField",
+                Float.class.getName(),
+                DataType.TYPE_NUMERIC_FLOAT);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel(drl, "test", 1);
 
-        assertNotNull( model );
-        assertEquals( expected.getTreeName(),
-                      model.getTreeName() );
+        assertEquals(expected.getTreeName(),
+                model.getTreeName());
 
-        assertNull( model.getRoot() );
+        assertNull(model.getRoot());
 
-        assertEquals( 1,
-                      model.getParserErrors().size() );
         assertEquals( "test_0",
                       model.getParserErrors().get( 0 ).getOriginalRuleName() );
         assertEqualsIgnoreWhitespace( drl,
@@ -788,32 +665,26 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
                 "end";
 
         final GuidedDecisionTree expected = new GuidedDecisionTree();
-        expected.setTreeName( "test" );
+        expected.setTreeName("test");
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        expected.setRoot( type );
+        expected.setRoot(type);
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "integerField",
-                       Integer.class.getName(),
-                       DataType.TYPE_NUMERIC_INTEGER );
+        addModelField("Person",
+                "this",
+                "Person",
+                DataType.TYPE_THIS);
+        addModelField("Person",
+                "integerField",
+                Integer.class.getName(),
+                DataType.TYPE_NUMERIC_INTEGER);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel(drl, "test", 1);
+        assertEquals(expected.getTreeName(),
+                model.getTreeName());
 
-        assertNotNull( model );
-        assertEquals( expected.getTreeName(),
-                      model.getTreeName() );
+        assertNull(model.getRoot());
 
-        assertNull( model.getRoot() );
-
-        assertEquals( 1,
-                      model.getParserErrors().size() );
         assertEquals( "test_0",
                       model.getParserErrors().get( 0 ).getOriginalRuleName() );
         assertEqualsIgnoreWhitespace( drl,
@@ -837,32 +708,26 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
                 "end";
 
         final GuidedDecisionTree expected = new GuidedDecisionTree();
-        expected.setTreeName( "test" );
+        expected.setTreeName("test");
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        expected.setRoot( type );
+        expected.setRoot(type);
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "longField",
-                       Long.class.getName(),
-                       DataType.TYPE_NUMERIC_LONG );
+        addModelField("Person",
+                "this",
+                "Person",
+                DataType.TYPE_THIS);
+        addModelField("Person",
+                "longField",
+                Long.class.getName(),
+                DataType.TYPE_NUMERIC_LONG);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel(drl, "test", 1);
+        assertEquals(expected.getTreeName(),
+                model.getTreeName());
 
-        assertNotNull( model );
-        assertEquals( expected.getTreeName(),
-                      model.getTreeName() );
+        assertNull(model.getRoot());
 
-        assertNull( model.getRoot() );
-
-        assertEquals( 1,
-                      model.getParserErrors().size() );
         assertEquals( "test_0",
                       model.getParserErrors().get( 0 ).getOriginalRuleName() );
         assertEqualsIgnoreWhitespace( drl,
@@ -886,32 +751,26 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
                 "end";
 
         final GuidedDecisionTree expected = new GuidedDecisionTree();
-        expected.setTreeName( "test" );
+        expected.setTreeName("test");
 
         final TypeNode type = new TypeNodeImpl( "Person" );
-        expected.setRoot( type );
+        expected.setRoot(type);
 
-        addModelField( "Person",
-                       "this",
-                       "Person",
-                       DataType.TYPE_THIS );
-        addModelField( "Person",
-                       "shortField",
-                       Short.class.getName(),
-                       DataType.TYPE_NUMERIC_SHORT );
+        addModelField("Person",
+                "this",
+                "Person",
+                DataType.TYPE_THIS);
+        addModelField("Person",
+                "shortField",
+                Short.class.getName(),
+                DataType.TYPE_NUMERIC_SHORT);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel(drl, "test", 1);
+        assertEquals(expected.getTreeName(),
+                model.getTreeName());
 
-        assertNotNull( model );
-        assertEquals( expected.getTreeName(),
-                      model.getTreeName() );
+        assertNull(model.getRoot());
 
-        assertNull( model.getRoot() );
-
-        assertEquals( 1,
-                      model.getParserErrors().size() );
         assertEquals( "test_0",
                       model.getParserErrors().get( 0 ).getOriginalRuleName() );
         assertEqualsIgnoreWhitespace( drl,
@@ -949,29 +808,24 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
                        "this",
                        "Person",
                        DataType.TYPE_THIS );
-        addModelField( "Cheese",
-                       "this",
-                       "Cheese",
-                       DataType.TYPE_THIS );
+        addModelField("Cheese",
+                "this",
+                "Cheese",
+                DataType.TYPE_THIS);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl1 + drl2,
-                                                                                                   "test",
-                                                                                                   dmo );
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel(drl1 + drl2, "test", 1);
 
-        assertNotNull( model );
-        assertEquals( expected.getTreeName(),
-                      model.getTreeName() );
+        assertEquals(expected.getTreeName(),
+                model.getTreeName());
 
-        assertNotNull( model.getRoot() );
-        assertEquals( type.getClassName(),
-                      model.getRoot().getClassName() );
-        assertFalse( model.getRoot().isBound() );
+        assertNotNull(model.getRoot());
+        assertEquals(type.getClassName(),
+                model.getRoot().getClassName());
+        assertFalse(model.getRoot().isBound());
 
-        assertEquals( 0,
-                      model.getRoot().getChildren().size() );
+        assertEquals(0,
+                model.getRoot().getChildren().size());
 
-        assertEquals( 1,
-                      model.getParserErrors().size() );
         assertEquals( "test_1",
                       model.getParserErrors().get( 0 ).getOriginalRuleName() );
         assertEqualsIgnoreWhitespace( drl2,
@@ -985,16 +839,4 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest {
         assertEqualsIgnoreWhitespace( drl1 + drl2,
                                       drl3 );
     }
-
-    private void assertEqualsIgnoreWhitespace( final String expected,
-                                               final String actual ) {
-        final String cleanExpected = expected.replaceAll( "\\s+",
-                                                          "" );
-        final String cleanActual = actual.replaceAll( "\\s+",
-                                                      "" );
-
-        assertEquals( cleanExpected,
-                      cleanActual );
-    }
-
 }
