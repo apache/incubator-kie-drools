@@ -115,10 +115,21 @@ public class KieContainerImpl
 
     public Results updateDependencyToVersion(ReleaseId currentReleaseId, ReleaseId newReleaseId) {
         checkNotClasspathKieProject();
-        // if the new and the current release are equal (a snapshot) check if there is an older version with the same releaseId
-        InternalKieModule currentKM = currentReleaseId.equals( newReleaseId ) ?
-                                      (InternalKieModule) ((KieRepositoryImpl)kr).getOldKieModule( currentReleaseId ) :
-                                      (InternalKieModule) kr.getKieModule( currentReleaseId );
+
+        ReleaseId installedReleaseId = getReleaseId();
+        InternalKieModule currentKM;
+        if (currentReleaseId.getGroupId().equals(installedReleaseId.getGroupId()) &&
+            currentReleaseId.getArtifactId().equals(installedReleaseId.getArtifactId())) {
+            // upgrading the kProject itself: taking the kmodule from there
+            currentKM = ((KieModuleKieProject)kProject).getInternalKieModule();
+        } else {
+            // upgrading a transitive dependency: taking the kmodule from the krepo
+            // if the new and the current release are equal (a snapshot) check if there is an older version with the same releaseId
+            currentKM = currentReleaseId.equals(newReleaseId) ?
+                        (InternalKieModule) ((KieRepositoryImpl) kr).getOldKieModule(currentReleaseId) :
+                        (InternalKieModule) kr.getKieModule(currentReleaseId);
+        }
+
         return update(currentKM, newReleaseId);
     }
 
