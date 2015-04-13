@@ -63,11 +63,11 @@ public class BeliefSystemTypeOption implements SingleValueKieSessionOption {
     }
     
     /**
-     * Returns the configured clock type
+     * Returns the configured belief system type
      * 
      * @return
      */
-    public String getBelieSystemType() {
+    public String getBeliefSystemType() {
         return belieSystemType;
     }
 
