@@ -547,7 +547,7 @@ public class SessionConfiguration
         } else if ( option instanceof QueryListenerOption ) {
             this.queryListener = (QueryListenerOption) option;
         } else if ( option instanceof BeliefSystemTypeOption ) {
-            this.beliefSystemType = ((BeliefSystemType.resolveBeliefSystemType( ((BeliefSystemTypeOption) option).getBelieSystemType() )));
+            this.beliefSystemType = ((BeliefSystemType.resolveBeliefSystemType( ((BeliefSystemTypeOption) option).getBeliefSystemType() )));
         }
     }
 
