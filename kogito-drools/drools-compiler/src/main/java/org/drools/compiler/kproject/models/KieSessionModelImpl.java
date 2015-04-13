@@ -209,7 +209,7 @@ public class KieSessionModelImpl
                 writer.addAttribute("clockType", kSession.getClockType().getClockType());
             }
             if ( kSession.getBeliefSystem() != null ) {
-                writer.addAttribute( "beliefSystem", kSession.getBeliefSystem().getBelieSystemType().toLowerCase() );
+                writer.addAttribute( "beliefSystem", kSession.getBeliefSystem().getBeliefSystemType().toLowerCase() );
             }
             if (kSession.getScope() != null) {
                 writer.addAttribute("scope", kSession.getScope() );

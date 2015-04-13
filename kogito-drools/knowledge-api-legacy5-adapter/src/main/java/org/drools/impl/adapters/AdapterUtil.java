@@ -39,13 +39,10 @@ import org.kie.api.runtime.conf.QueryListenerOption;
 import org.kie.api.runtime.conf.SingleValueKieSessionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.conf.WorkItemHandlerOption;
-import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.EvaluatorDefinition;
-import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.conf.AlphaThresholdOption;
 import org.kie.internal.conf.CompositeKeyDepthOption;
-import org.kie.internal.conf.ConsequenceExceptionHandlerOption;
 import org.kie.internal.conf.IndexLeftBetaMemoryOption;
 import org.kie.internal.conf.IndexPrecedenceOption;
 import org.kie.internal.conf.IndexRightBetaMemoryOption;
@@ -415,7 +412,7 @@ public class AdapterUtil {
     public static SingleValueKnowledgeSessionOption adaptOption(SingleValueKieSessionOption option) {
         if (option instanceof BeliefSystemTypeOption) {
             BeliefSystemTypeOption kieOption = (BeliefSystemTypeOption)option;
-            return org.drools.runtime.conf.BeliefSystemTypeOption.get(kieOption.getBelieSystemType());
+            return org.drools.runtime.conf.BeliefSystemTypeOption.get(kieOption.getBeliefSystemType());
         }
         if (option instanceof ClockTypeOption) {
             ClockTypeOption kieOption = (ClockTypeOption)option;
