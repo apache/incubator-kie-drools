@@ -16,6 +16,9 @@
 
 package org.jbpm.workflow.instance;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
@@ -23,9 +26,6 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class WorkflowProcessInstanceUpgrader {
 
@@ -72,7 +72,14 @@ public class WorkflowProcessInstanceUpgrader {
             if (newNodeId == null) {
                 newNodeId = nodeInstance.getNodeId();
             }
+            
+            // clean up iteration levels for removed (old) nodes 
+            Map<String, Integer> iterLevels = ((WorkflowProcessInstanceImpl)nodeInstance.getProcessInstance()).getIterationLevels();
+            String uniqueId = (String) ((NodeImpl)nodeInstance.getNode()).getMetaData("UniqueId");            
+            iterLevels.remove(uniqueId);            	
+            // and now set to new node id
             ((NodeInstanceImpl) nodeInstance).setNodeId(newNodeId);
+            
             if (nodeInstance instanceof NodeInstanceContainer) {
             	updateNodeInstances((NodeInstanceContainer) nodeInstance, nodeMapping);
             }
