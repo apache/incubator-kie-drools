@@ -23,6 +23,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -137,16 +138,17 @@ public abstract class AbstractPhaseScope {
         if (!undoScore.equals(lastCompletedStepScore)) {
             // First assert that are probably no corrupted score rules.
             getScoreDirector().assertWorkingScoreFromScratch(undoScore, undoMove);
-            throw new IllegalStateException(
-                    "The moveClass (" + move.getClass() + ")'s move (" + move
-                            + ") probably has a corrupted undoMove (" + undoMove + ")." +
-                            " Or maybe there are corrupted score rules.\n"
-                            + "Check the Move.createUndoMove(...) method of that Move class" +
-                            " and enable EnvironmentMode " + EnvironmentMode.FULL_ASSERT
-                            + " to fail-faster on corrupted score rules.\n"
-                            + "UndoMove corruption: the lastCompletedStepScore (" + lastCompletedStepScore
-                            + ") is not the undoScore (" + undoScore
-                            + ") which is the uncorruptedScore (" + undoScore + ") of the workingSolution.");
+            throw new IllegalStateException("UndoMove corruption: the lastCompletedStepScore (" + lastCompletedStepScore
+                    + ") is not the undoScore (" + undoScore
+                    + ") which is the uncorruptedScore (" + undoScore + ") of the workingSolution.\n"
+                    + "  1) Enable EnvironmentMode " + EnvironmentMode.FULL_ASSERT
+                    + " (if you haven't already) to fail-faster in case there's a score corruption.\n"
+                    + "  2) Check the Move.createUndoMove(...) method of the moveClass (" + move.getClass() + ")."
+                    + " The move (" + move + ") might have a corrupted undoMove (" + undoMove + ").\n"
+                    + "  3) Check your custom " + VariableListener.class.getSimpleName() + "s (if you have any)"
+                    + " for shadow variables that are used by the score constraints with a different score weight"
+                    + " between the lastCompletedStepScore (" + lastCompletedStepScore
+                    + ") and the undoScore (" + undoScore + ").");
         }
     }
 
