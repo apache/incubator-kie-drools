@@ -144,8 +144,9 @@ public abstract class AbstractPhaseScope {
                             + "Check the Move.createUndoMove(...) method of that Move class" +
                             " and enable EnvironmentMode " + EnvironmentMode.FULL_ASSERT
                             + " to fail-faster on corrupted score rules.\n"
-                            + "Score corruption: the lastCompletedStepScore (" + lastCompletedStepScore
-                            + ") is not the undoScore (" + undoScore + ").");
+                            + "UndoMove corruption: the lastCompletedStepScore (" + lastCompletedStepScore
+                            + ") is not the undoScore (" + undoScore
+                            + ") which is the uncorruptedScore (" + undoScore + ") of the workingSolution.");
         }
     }
 
