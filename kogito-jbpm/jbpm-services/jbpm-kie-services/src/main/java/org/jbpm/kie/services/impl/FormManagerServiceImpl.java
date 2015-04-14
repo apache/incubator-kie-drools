@@ -17,6 +17,7 @@ package org.jbpm.kie.services.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -24,7 +25,7 @@ import java.util.Map;
  */
 public class FormManagerServiceImpl implements FormManagerService {
     private Map<String, Map<String, String>> formsRegistry = new HashMap<String, Map<String, String>>();
-    
+
 
     @Override
     public void registerForm(String deploymentId, String key, String formContent) {
@@ -35,8 +36,18 @@ public class FormManagerServiceImpl implements FormManagerService {
     }
 
     @Override
+    public void unRegisterForms( String deploymentId ) {
+        formsRegistry.remove( deploymentId );
+    }
+
+    @Override
     public Map<String, String> getAllFormsByDeployment(String deploymentId) {
         return formsRegistry.get(deploymentId);
+    }
+
+    @Override
+    public Set<String> getAllDeployments() {
+        return formsRegistry.keySet();
     }
 
     @Override

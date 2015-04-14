@@ -28,8 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.persistence.EntityManagerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -176,8 +174,10 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
         }
         KModuleDeploymentUnit kmoduleUnit = (KModuleDeploymentUnit) unit;
 		super.undeploy(unit);
-		
-		KieServices ks = KieServices.Factory.get();
+
+        formManagerService.unRegisterForms( unit.getIdentifier() );
+
+        KieServices ks = KieServices.Factory.get();
 		ReleaseId releaseId = ks.newReleaseId(kmoduleUnit.getGroupId(), kmoduleUnit.getArtifactId(), kmoduleUnit.getVersion());
 		ks.getRepository().removeKieModule(releaseId);
 	}
@@ -291,40 +291,19 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                     }
                     process.setEncodedProcessSource(Base64.encodeBase64String(processString.getBytes()));
                     process.setDeploymentId(unit.getIdentifier());
-                   // process.setForms(formsData);
                     deployedUnit.addAssetLocation(process.getId(), process);
                 } catch (UnsupportedEncodingException e) {
                 	throw new IllegalArgumentException("Unsupported encoding while processing process " + fileName);
                 }
-            } else if (fileName.matches(".+ftl$")) {
+            } else if (fileName.matches(".+ftl$") || fileName.matches(".+form$")) {
                 try {
+                    // Registering forms
                     String formContent = new String(module.getBytes(fileName), "UTF-8");
-                    Pattern regex = Pattern.compile("(.{0}|.*/)([^/]*?)\\.ftl");
-                    Matcher m = regex.matcher(fileName);
-                    String key = fileName;
-                    while (m.find()) {
-                        key = m.group(2);
-                    }
-                  //  formsData.put(key, formContent);
-                  formManagerService.registerForm(unit.getIdentifier(), key, formContent);
+                    formManagerService.registerForm(unit.getIdentifier(), fileName, formContent);
                 } catch (UnsupportedEncodingException e) {
                 	throw new IllegalArgumentException("Unsupported encoding while processing form " + fileName);
                 }
-            } else if (fileName.matches(".+form$")) {
-                try {
-                    String formContent = new String(module.getBytes(fileName), "UTF-8");
-                    Pattern regex = Pattern.compile("(.{0}|.*/)([^/]*?)\\.form");
-                    Matcher m = regex.matcher(fileName);
-                    String key = fileName;
-                    while (m.find()) {
-                        key = m.group(2);
-                    }
-                 //   formsData.put(key+".form", formContent);
-                 formManagerService.registerForm(unit.getIdentifier(), key+".form", formContent);
-                } catch (UnsupportedEncodingException e) {
-                	throw new IllegalArgumentException("Unsupported encoding while processing form " + fileName);
-                }
-            } else if( fileName.matches(".+class$")) { 
+            } else if( fileName.matches(".+class$")) {
                 String className = fileName.replaceAll("/", ".");
                 className = className.substring(0, fileName.length() - ".class".length());
                 try {

@@ -16,14 +16,23 @@
 package org.jbpm.kie.services.impl;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
  * @author salaboy
  */
 public interface FormManagerService {
+
     void registerForm(String deploymentId, String key, String formContent);
+
+    void unRegisterForms( String deploymentId );
+
     Map<String, String> getAllFormsByDeployment(String deploymentId);
+
+    Set<String> getAllDeployments();
+
     Map<String, String> getAllForms();
+
     String getFormByKey(String deploymentId, String key);
 }

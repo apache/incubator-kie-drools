@@ -17,14 +17,40 @@ package org.jbpm.kie.services.impl.form.provider;
 
 import org.jbpm.kie.services.impl.FormManagerService;
 import org.jbpm.kie.services.impl.form.FormProvider;
+import org.kie.api.task.model.Task;
+import org.kie.internal.task.api.model.InternalTask;
 
 /**
  *
  * @author salaboy
  */
-public abstract class AbstractFormProvider implements FormProvider{
+public abstract class AbstractFormProvider implements FormProvider {
+
     protected FormManagerService formManagerService;
+    protected String formExtension = "";
+
     public void setFormManagerService(FormManagerService formManagerService){
         this.formManagerService = formManagerService;
+    }
+
+    protected String getFormSuffix() {
+        return "-taskform" + getFormExtension();
+    }
+
+    protected String getTaskFormName(Task task) {
+        String formName = ((InternalTask ) task).getFormName();
+        if (formName != null && !formName.equals("")) {
+            // if the form name has extension it
+            if ( formName.endsWith( getFormExtension() ) ) return formName;
+            return formName + getFormSuffix();
+        } else {
+            formName = task.getNames().get(0).getText();
+            if (formName != null) return formName.replace(" ", "") + getFormSuffix();
+        }
+        return null;
+    }
+
+    protected String getFormExtension() {
+        return formExtension;
     }
 }

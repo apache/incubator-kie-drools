@@ -134,28 +134,29 @@ public class FormProviderServiceImpl implements FormProviderService {
 
         // prepare task variables for rendering
         String processId = task.getTaskData().getProcessId();
-        Map<String, String> taskOutputMappings = null;
-        if (processId != null && !processId.equals("")) {
-
-            taskOutputMappings = bpmn2Service.getTaskOutputMappings(task.getTaskData().getDeploymentId(), processId, task.getName());
-
-        }
-        if (taskOutputMappings == null) {
-            taskOutputMappings = new HashMap<String, String>();
-        }
-
-        // I need to replace the value that comes from the 
-        //process mappings with the value that can be stored in the output Content
         Map<String, Object> finalOutput = new HashMap<String, Object>();
-        for (String key : taskOutputMappings.values()) {
 
-            Object value = ((Map<String, Object>) output).get(key);
-            if (value == null) {
-                value = "";
+        if (processId != null && !processId.equals("")) {
+            // If task has an associated process let's merge the outputs
+            Map<String, String> taskOutputMappings = bpmn2Service.getTaskOutputMappings(task.getTaskData().getDeploymentId(), processId, task.getName());
+            if (taskOutputMappings == null) {
+                taskOutputMappings = new HashMap<String, String>();
             }
-            finalOutput.put(key, value);
-        }
 
+            // I need to replace the value that comes from the
+            //process mappings with the value that can be stored in the output Content
+            for (String key : taskOutputMappings.values()) {
+                Object value = ((Map<String, Object>) output).get(key);
+                if (value == null) {
+                    value = "";
+                }
+                finalOutput.put(key, value);
+            }
+
+        } else if (output instanceof Map && !((Map)output).isEmpty()) {
+            // If the task doesn't belongs to any project BUT it has outputs let's add them directly to the rendering context.
+            finalOutput.putAll( (Map<String, Object>) output );
+        }
 
         // merge template with process variables        
         renderContext.put("task", task);
