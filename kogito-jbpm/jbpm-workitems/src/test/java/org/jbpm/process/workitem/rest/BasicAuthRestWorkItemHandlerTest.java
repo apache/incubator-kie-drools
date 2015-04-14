@@ -8,11 +8,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
+import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.RuntimeDelegate;
 
+import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
+import org.apache.cxf.jaxrs.ext.RequestHandler;
+import org.apache.cxf.jaxrs.model.ClassResourceInfo;
 import org.apache.cxf.jaxrs.provider.JAXBElementProvider;
+import org.apache.cxf.message.Message;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException;
 import org.junit.AfterClass;
@@ -27,7 +32,7 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 
 @RunWith(Parameterized.class)
-public class RestWorkItemHandlerTest {
+public class BasicAuthRestWorkItemHandlerTest {
 
     @Parameters(name="Http Client 4.3 api = {0}")
     public static Collection<Object[]> parameters() {
@@ -43,7 +48,10 @@ public class RestWorkItemHandlerTest {
     private final static String serverURL = "http://localhost:9998/test";
     private static Server server;
     
-    public RestWorkItemHandlerTest(boolean httpClient43) {
+    private String username = "username";
+    private String password = "password";
+    
+    public BasicAuthRestWorkItemHandlerTest(boolean httpClient43) {
     	this.httpClient43 = httpClient43;
     }
 
@@ -57,6 +65,9 @@ public class RestWorkItemHandlerTest {
         JAXRSServerFactoryBean bean = delegate.createEndpoint(application, JAXRSServerFactoryBean.class);
         bean.setProvider(new JAXBElementProvider());
         bean.setAddress("http://localhost:9998" + bean.getAddress());
+        // disabled logging interceptor by default but proves to be useful
+        // bean.getInInterceptors().add(new LoggingInInterceptor(new PrintWriter(System.out, true)));
+        bean.setProvider(new AuthenticationHandler());
         server = bean.create();
         server.start();
     }
@@ -74,7 +85,7 @@ public class RestWorkItemHandlerTest {
     
     @Test
     public void testGETOperation() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
         
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter( "Url", serverURL);
@@ -97,7 +108,7 @@ public class RestWorkItemHandlerTest {
     
     @Test
     public void testGETOperationWithCustomTimeout() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
         
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter( "Url", serverURL);
@@ -122,7 +133,7 @@ public class RestWorkItemHandlerTest {
     
     @Test
     public void testGETOperationWithInvalidTimeout() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
         
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter( "Url", serverURL);
@@ -147,7 +158,7 @@ public class RestWorkItemHandlerTest {
     
     @Test
     public void testGETOperationWithQueryParam() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
         
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter( "Url", serverURL+"?param=test");
@@ -170,7 +181,7 @@ public class RestWorkItemHandlerTest {
     
     @Test
     public void testPOSTOperation() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
         		"<person><age>25</age><name>Post john</name></person>";
         
@@ -197,7 +208,7 @@ public class RestWorkItemHandlerTest {
     
     @Test
     public void testPOSTOperationWithPathParamAndNoContent() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
         
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter( "Url", serverURL+"/john");
@@ -220,7 +231,7 @@ public class RestWorkItemHandlerTest {
     
     @Test
     public void testPUTOperation() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
                 "<person><age>25</age><name>Put john</name></person>";
         
@@ -247,7 +258,7 @@ public class RestWorkItemHandlerTest {
     
     @Test
     public void testDELETEOperation() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
                 "<person><age>-1</age><name>deleted john</name></person>";
         
@@ -272,7 +283,7 @@ public class RestWorkItemHandlerTest {
     
     @Test(expected=IllegalArgumentException.class)
     public void testUnsupportedOperation() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
         
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter( "Url", serverURL+"/xml/john");
@@ -285,7 +296,7 @@ public class RestWorkItemHandlerTest {
     
     @Test
     public void testHandleErrorOnNotSuccessfulResponse() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
         
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter( "Url", serverURL+"/notexisting");
@@ -304,6 +315,55 @@ public class RestWorkItemHandlerTest {
         	assertEquals(serverURL+"/notexisting", e.getEndoint());
         	assertEquals("", e.getResponse());
         }
+    }
+    
+    @Test
+    public void testHandleErrorOnNotSuccessfulResponseWrongCredentials() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, "wrongpassword");
+        
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter( "Url", serverURL);
+        workItem.setParameter( "Method", "GET" );
+        workItem.setParameter("HandleResponseErrors", "true");
+        
+        
+        WorkItemManager manager = new TestWorkItemManager(workItem);
+        try {
+        	handler.executeWorkItem(workItem, manager);
+        	fail("Should throw exception as it was instructed to do so");
+        } catch (WorkItemHandlerRuntimeException ex) {
+        	
+        	RESTServiceException e = (RESTServiceException) ex.getCause().getCause();
+        	assertEquals(401, e.getStatus());
+        	assertEquals(serverURL, e.getEndoint());
+        	assertEquals("", e.getResponse());
+        }
+    }
+    
+    @Test
+    public void testGETOperationAuthTypeAsParam() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter( "Url", serverURL);
+        workItem.setParameter( "Method", "GET" );
+        workItem.setParameter( "AuthType", "BASIC" );
+        workItem.setParameter( "Username", username );
+        workItem.setParameter( "Password", password );
+        
+        
+        WorkItemManager manager = new TestWorkItemManager(workItem);
+        handler.executeWorkItem(workItem, manager);
+        
+        String result = (String) workItem.getResult("Result");
+        assertNotNull("result cannot be null", result);
+        assertEquals("Hello from REST", result);
+        int responseCode = (Integer) workItem.getResult("Status");
+        assertNotNull(responseCode);
+        assertEquals(200, responseCode);
+        String responseMsg = (String) workItem.getResult("StatusMsg");
+        assertNotNull(responseMsg);
+        assertEquals("request to endpoint " + workItem.getParameter("Url") +" successfully completed OK", responseMsg);
     }
     
     private class TestWorkItemManager implements WorkItemManager {
@@ -330,5 +390,29 @@ public class RestWorkItemHandlerTest {
             
         }
         
+    }
+    
+    private static class AuthenticationHandler implements RequestHandler {
+    	 
+        public Response handleRequest(Message m, ClassResourceInfo resourceClass) {
+            AuthorizationPolicy policy = (AuthorizationPolicy)m.get(AuthorizationPolicy.class);
+            String username = policy.getUserName();
+            String password = policy.getPassword(); 
+            if (isAuthenticated(username, password)) {
+                // let request to continue
+                return null;
+            } else {
+                // authentication failed, request the authetication, add the realm name if needed to the value of WWW-Authenticate 
+                return Response.status(401).header("WWW-Authenticate", "Basic").build();
+            }
+        }
+
+		private boolean isAuthenticated(String username, String password) {
+			if ("username".equals(username) && "password".equals(password)) {
+				return true;
+			}
+			return false;
+		}
+     
     }
 }

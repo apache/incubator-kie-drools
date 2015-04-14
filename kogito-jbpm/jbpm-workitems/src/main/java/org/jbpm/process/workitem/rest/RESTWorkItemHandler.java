@@ -114,6 +114,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	 */
 	public RESTWorkItemHandler() {
 		logger.debug("REST work item handler will use http client 4.3 api " + HTTP_CLIENT_API_43);
+		this.type = AuthenticationType.NONE;
 	}
 	
 	/**
@@ -162,6 +163,12 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         	handleException = Boolean.parseBoolean(handleExceptionStr);
         }
         Map<String,Object> params = workItem.getParameters();
+        
+        // authentication type from parameters
+        AuthenticationType authType = type;
+        if (params.get("AuthType") != null) {
+        	authType = AuthenticationType.valueOf((String) params.get("AuthType"));
+        }
 
         // optional timeout config parameters, defaulted to 60 seconds
         Integer connectTimeout = getParamAsInt(params.get("ConnectTimeout"));
@@ -173,7 +180,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	        
         Object methodObject = configureRequest(method, urlStr, params);
         try {
-            HttpResponse response = doRequestWithAuthorization(httpClient, methodObject, params);
+            HttpResponse response = doRequestWithAuthorization(httpClient, methodObject, params, authType);
         	StatusLine statusLine = response.getStatusLine();
         	int responseCode = statusLine.getStatusCode();
 	        Map<String, Object> results = new HashMap<String, Object>();
@@ -246,11 +253,11 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         results.put("Result", result);
     }
     
-    protected HttpResponse doRequestWithAuthorization(HttpClient httpclient, Object method, Map<String, Object> params) {
+    protected HttpResponse doRequestWithAuthorization(HttpClient httpclient, Object method, Map<String, Object> params, AuthenticationType authType) {
     	if (HTTP_CLIENT_API_43) {
-    		return doRequestWithAuthorization(httpclient, (RequestBuilder) method, params);
+    		return doRequestWithAuthorization(httpclient, (RequestBuilder) method, params, authType);
     	} else {
-    		return doRequestWithAuthorization(httpclient, (HttpRequestBase) method, params);
+    		return doRequestWithAuthorization(httpclient, (HttpRequestBase) method, params, authType);
     	}
     }
 
@@ -266,9 +273,9 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
      * @param params The parameters that may be needed for authentication
      * @return A {@link HttpResponse} instance from which we can extract the content
      */
-    protected HttpResponse doRequestWithAuthorization(HttpClient httpclient, RequestBuilder requestBuilder, Map<String, Object> params) {
+    protected HttpResponse doRequestWithAuthorization(HttpClient httpclient, RequestBuilder requestBuilder, Map<String, Object> params, AuthenticationType type) {
         // no authorization
-    	if (type == null) {
+    	if (type == null || type == AuthenticationType.NONE) {
     	    HttpUriRequest request = requestBuilder.build();
     	    try {
                 return httpclient.execute(request);
@@ -295,11 +302,13 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
             // basic auth
             URI requestUri = requestBuilder.getUri();
             
+            HttpHost targetHost = new HttpHost(requestUri.getHost(), requestUri.getPort(), requestUri.getScheme());
+            
         	// Create AuthCache instance and add it: so that HttpClient thinks that it has already queried (as per the HTTP spec) 
         	// - generate BASIC scheme object and add it to the local auth cache
         	AuthCache authCache = new BasicAuthCache();
         	BasicScheme basicAuth = new BasicScheme();
-        	authCache.put(new HttpHost(requestUri.getHost()), basicAuth);
+        	authCache.put(targetHost, basicAuth);
 
         	// - add AuthCache to the execution context:
         	HttpClientContext clientContext = HttpClientContext.create();
@@ -315,7 +324,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         	// - execute request
         	HttpUriRequest request = requestBuilder.build();
         	try {
-                return httpclient.execute(request, clientContext);
+                return httpclient.execute(targetHost, request, clientContext);
             } catch( Exception e ) {
                 throw new RuntimeException("Could not execute request with preemptive authentication [" + request.getMethod() + "] " + request.getURI(), e);
             } 
@@ -381,8 +390,8 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         }
     }
     
-    protected HttpResponse doRequestWithAuthorization(HttpClient httpclient, HttpRequestBase httpMethod, Map<String, Object> params) {
-    	if (type == null) {
+    protected HttpResponse doRequestWithAuthorization(HttpClient httpclient, HttpRequestBase httpMethod, Map<String, Object> params, AuthenticationType type) {
+    	if (type == null || type == AuthenticationType.NONE) {
     		try {
                 return httpclient.execute(httpMethod);
             } catch( Exception e ) {
@@ -471,6 +480,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     }
     
     public enum AuthenticationType {
+    	NONE,
     	BASIC,
     	FORM_BASED
     }
