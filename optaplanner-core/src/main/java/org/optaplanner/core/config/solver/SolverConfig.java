@@ -217,6 +217,9 @@ public class SolverConfig {
             bestSolutionRecaller.setAssertInitialScoreFromScratch(true);
             bestSolutionRecaller.setAssertBestScoreIsUnmodified(true);
         }
+        if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+            bestSolutionRecaller.setAssertVariableListenersDoNotAffectInitialScore(true);
+        }
         return bestSolutionRecaller;
     }
 

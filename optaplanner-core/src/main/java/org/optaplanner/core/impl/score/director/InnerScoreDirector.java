@@ -22,6 +22,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
@@ -125,12 +126,23 @@ public interface InnerScoreDirector extends ScoreDirector {
      * in the current {@link ScoreDirector} (with possibly incremental calculation residue),
      * it is equal to the parameter {@link Score expectedWorkingScore}.
      * <p/>
-     * Used to assert that skipping {@link #calculateScore()} (when the score is otherwise determined) is correct,
+     * Used to assert that skipping {@link #calculateScore()} (when the score is otherwise determined) is correct.
      * @param expectedWorkingScore never null
      * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
      * is included in the exception message
      */
     void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction);
+
+    /**
+     * Asserts that if all {@link VariableListener}s are forcibly triggered,
+     * and therefore all shadow variables are updated if needed,
+     * that the {@link Score} calculated for the {@link Solution workingSolution} afterwards
+     * is equal to the parameter {@link Score expectedWorkingScore}.
+     * <p/>
+     * Used to assert that the shadow variables' state is consistent with the genuine variables' state.
+     * @param expectedWorkingScore never null
+     */
+    void assertVariableListenersDoNotAffectWorkingScore(Score expectedWorkingScore);
 
     /**
      * Asserts that if the {@link Score} is calculated for the current {@link Solution workingSolution}

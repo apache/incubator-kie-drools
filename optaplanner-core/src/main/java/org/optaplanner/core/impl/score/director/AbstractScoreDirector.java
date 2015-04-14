@@ -315,8 +315,22 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         if (!expectedWorkingScore.equals(workingScore)) {
             throw new IllegalStateException(
                     "Score corruption: the expectedWorkingScore (" + expectedWorkingScore
+                    + ") is not the workingScore  (" + workingScore
+                    + ") after completedAction (" + completedAction + ").");
+        }
+    }
+
+    public void assertVariableListenersDoNotAffectWorkingScore(Score expectedWorkingScore) {
+        variableListenerSupport.triggerAllVariableListeners(this);
+        Score workingScore = calculateScore();
+        if (!expectedWorkingScore.equals(workingScore)) {
+            throw new IllegalStateException(
+                    "VariableListener corruption: the expectedWorkingScore (" + expectedWorkingScore
                             + ") is not the workingScore  (" + workingScore
-                            + ") after completedAction (" + completedAction + ").");
+                            + ") after all VariableListeners were triggered without changes to the genuine variables.\n"
+                            + "A VariableListener probably changed a shadow variable,"
+                            + " despite that the genuine variable didn't change,"
+                            + " which means the shadow variable's original value is probably wrong.");
         }
     }
 
@@ -334,8 +348,8 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
             uncorruptedScoreDirector.dispose();
             throw new IllegalStateException(
                     "Score corruption: the workingScore (" + workingScore + ") is not the uncorruptedScore ("
-                            + uncorruptedScore + ") after completedAction (" + completedAction
-                            + "):\n" + scoreCorruptionAnalysis);
+                    + uncorruptedScore + ") after completedAction (" + completedAction
+                    + "):\n" + scoreCorruptionAnalysis);
         } else {
             uncorruptedScoreDirector.dispose();
         }

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -164,6 +165,19 @@ public class VariableListenerSupport implements SupplyManager {
             Object entity) {
         for (VariableListener variableListener : entityVariableListenerMap.get(entityDescriptor)) {
             variableListener.afterEntityRemoved(scoreDirector, entity);
+        }
+    }
+
+    public void triggerAllVariableListeners(InnerScoreDirector scoreDirector) {
+        SolutionDescriptor solutionDescriptor = scoreDirector.getSolutionDescriptor();
+        List<Object> entityList = scoreDirector.getWorkingEntityList();
+        for (Object entity : entityList) {
+            EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
+            for (GenuineVariableDescriptor variableDescriptor : entityDescriptor.getGenuineVariableDescriptors()) {
+                beforeVariableChanged(scoreDirector, variableDescriptor, entity);
+                // No change
+                afterVariableChanged(scoreDirector, variableDescriptor, entity);
+            }
         }
     }
 
