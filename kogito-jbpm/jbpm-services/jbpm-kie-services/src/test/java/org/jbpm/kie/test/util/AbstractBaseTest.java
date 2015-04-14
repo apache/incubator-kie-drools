@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.jbpm.kie.services.impl.FormManagerServiceImpl;
 import org.jbpm.kie.services.impl.KModuleDeploymentService;
 import org.jbpm.kie.services.impl.ProcessServiceImpl;
 import org.jbpm.kie.services.impl.RuntimeDataServiceImpl;
@@ -111,6 +112,7 @@ public abstract class AbstractBaseTest {
 		((KModuleDeploymentService)deploymentService).setEmf(emf);
 		((KModuleDeploymentService)deploymentService).setIdentityProvider(identityProvider);
 		((KModuleDeploymentService)deploymentService).setManagerFactory(new RuntimeManagerFactoryImpl());
+		((KModuleDeploymentService)deploymentService).setFormManagerService(new FormManagerServiceImpl());
 		
 		// build runtime data service
 		runtimeDataService = new RuntimeDataServiceImpl();
