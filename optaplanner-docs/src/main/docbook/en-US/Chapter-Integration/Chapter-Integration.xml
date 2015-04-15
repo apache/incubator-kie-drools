@@ -10,8 +10,8 @@
   <section xml:id="integrationOverview">
     <title>Overview</title>
 
-    <para>Planner's input and output data (the planning problem and the best solution) are plain old JavaBeans
-    (POJO's), so integration with other Java technologies is straightforward. For example:</para>
+    <para>Planner's input and output data (the planning problem and the best solution) are plain old JavaBeans (POJO's),
+    so integration with other Java technologies is straightforward. For example:</para>
 
     <itemizedlist>
       <listitem>
@@ -160,9 +160,9 @@
       </orderedlist>
 
       <important>
-        <para>Because of WildFly's class loading, the method
-        <literal>SolverFactory.createFromXmlResource()</literal> might not find the solver configuration and throw an
-        <literal>IllegalArgumentException</literal>. Instead use:</para>
+        <para>Because of WildFly's class loading, the method <literal>SolverFactory.createFromXmlResource()</literal>
+        might not find the solver configuration and throw an <literal>IllegalArgumentException</literal>. Instead
+        use:</para>
 
         <programlisting language="java">        SolverFactory solverFactory = SolverFactory.createFromXmlInputStream(
                 getClass().getClassLoader().getResourceAsStream(
@@ -177,54 +177,65 @@
       environment too.</para>
 
       <note>
-        <para>Planner does <emphasis>not</emphasis> require OSGi. It works perfectly fine in a normal Java
-        environment too.</para>
+        <para>Planner does <emphasis>not</emphasis> require OSGi. It works perfectly fine in a normal Java environment
+        too.</para>
       </note>
     </section>
 
     <section xml:id="integrationWithAndroid">
       <title>Android</title>
 
-      <para>Android is not a complete JVM and some core libraries are missing for proper Planner functionality.
-        Currently, however, it is possible to use Planner with Java score calculation by adding missing libraries
-        to your Android project. Drools rule engine does not work on the Android platform yet. See the workaround
-        below.</para>
+      <para>Android is not a complete JVM. Some JDK libraries of the <literal>java.beans</literal> package are missing
+      for proper Planner functionality. However, it is possible to use Planner with Java score calculation by adding
+      missing libraries to your Android project. The Drools rule engine does not work on Android yet, so Drools score
+      calculation doesn't work on Android.</para>
 
-      <para><emphasis role="bold">Workaround to use Planner on the Android platform:</emphasis></para>
+      <para><emphasis role="bold">Workaround to use Planner on Android:</emphasis></para>
 
       <orderedlist>
         <listitem>
           <para>Download <link xlink:href="https://openbeans.googlecode.com/files/openbeans-1.0.jar">OpenBeans</link>
-            redistribution of the <literal>java.beans</literal> package.</para>
+          redistribution of the <literal>java.beans</literal> package.</para>
         </listitem>
+
         <listitem>
           <para>Download <link xlink:href="https://jarjar.googlecode.com/files/jarjar-1.4.jar">Jar Jar Links</link>
-            utility for repacking the redistribution.</para>
+          utility for repacking the redistribution.</para>
         </listitem>
+
         <listitem>
-          <para>Create simple <literal>rule.txt</literal> text file which contains single line:</para>
+          <para>Create a <literal>jarJarRule.txt</literal> text file with a single line:</para>
+
           <programlisting>rule com.googlecode.openbeans.** java.beans.@1</programlisting>
         </listitem>
+
         <listitem>
-          <para>Place all the files in the same folder and run command:</para>
-          <programlisting>$ java -jar jarjar-1.4.jar process rule.txt openbeans-1.0.jar javabeans.jar</programlisting>
+          <para>Place all the files in the same folder and run the command:</para>
+
+          <programlisting>$ java -jar jarjar-1.4.jar process jarJarRule.txt openbeans-1.0.jar javabeans-1.0.jar</programlisting>
         </listitem>
+
         <listitem>
-          <para>Move created <literal>javabeans.jar</literal> file to the <literal>libs</literal> folder in your
-            Android project.</para>
+          <para>Move the created <literal>javabeans-1.0.jar</literal> into the <literal>libs</literal> folder in your
+          Android project.</para>
         </listitem>
+
         <listitem>
           <para>Add <literal>--core-library</literal> flag to the <literal>dx</literal> file in
-            <literal>build-tools</literal> folder in your Android SDK. After flag adding, last line of the file should
-            look like:</para>
+          <literal>build-tools</literal> folder in your Android SDK, because otherwise it will not accept classes in the
+          <literal>java.*</literal> package of the <literal>javabeans-1.0.jar</literal>. The last line of that file
+          should look something like this:</para>
+
           <programlisting>exec java $javaOpts -jar "$jarpath" --core-library "$@"</programlisting>
         </listitem>
+
         <listitem>
-          <para>At the end, dependency should be added to <literal>build.gradle</literal> file in your project (exclude
-            <literal>org.drools</literal> and <literal>xmlpull</literal> libraries):</para>
+          <para>Add a dependency to the <literal>build.gradle</literal> file in your Android project to exclude
+          <literal>org.drools</literal> and <literal>xmlpull</literal> dependencies:</para>
+
           <programlisting language="gradle">dependencies {
 ...
-    compile ('org.optaplanner:optaplanner-core:6.3.0-SNAPSHOT') {
+    compile('org.optaplanner:optaplanner-core:...') {
         exclude group: 'xmlpull'
         exclude group: 'org.drools'
     }
@@ -232,15 +243,14 @@
 }</programlisting>
         </listitem>
       </orderedlist>
-
     </section>
   </section>
 
   <section xml:id="integrationWithHumanPlanners">
     <title>Integration with Human Planners (Politics)</title>
 
-    <para>A good Planner implementation beats any good human planner for non-trivial datasets. Many human planners
-    fail to accept this, often because they feel threatened by an automated system.</para>
+    <para>A good Planner implementation beats any good human planner for non-trivial datasets. Many human planners fail
+    to accept this, often because they feel threatened by an automated system.</para>
 
     <para>But despite that, Planner can benefit from a human planner as supervisor:</para>
 
