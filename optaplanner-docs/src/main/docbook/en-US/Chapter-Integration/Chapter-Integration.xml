@@ -185,9 +185,54 @@
     <section xml:id="integrationWithAndroid">
       <title>Android</title>
 
-      <para>Planner does not work out-of-the-box on Android yet, because it is not a complete JVM. For more
-      information and workarounds, <link xlink:href="https://issues.jboss.org/browse/PLANNER-146">see this
-      issue</link>.</para>
+      <para>Android is not a complete JVM and some core libraries are missing for proper Planner functionality.
+        Currently, however, it is possible to use Planner with Java score calculation by adding missing libraries
+        to your Android project. Drools rule engine does not work on the Android platform yet. See the workaround
+        below.</para>
+
+      <para><emphasis role="bold">Workaround to use Planner on the Android platform:</emphasis></para>
+
+      <orderedlist>
+        <listitem>
+          <para>Download <link xlink:href="https://openbeans.googlecode.com/files/openbeans-1.0.jar">OpenBeans</link>
+            redistribution of the <literal>java.beans</literal> package.</para>
+        </listitem>
+        <listitem>
+          <para>Download <link xlink:href="https://jarjar.googlecode.com/files/jarjar-1.4.jar">Jar Jar Links</link>
+            utility for repacking the redistribution.</para>
+        </listitem>
+        <listitem>
+          <para>Create simple <literal>rule.txt</literal> text file which contains single line:</para>
+          <programlisting>rule com.googlecode.openbeans.** java.beans.@1</programlisting>
+        </listitem>
+        <listitem>
+          <para>Place all the files in the same folder and run command:</para>
+          <programlisting>$ java -jar jarjar-1.4.jar process rule.txt openbeans-1.0.jar javabeans.jar</programlisting>
+        </listitem>
+        <listitem>
+          <para>Move created <literal>javabeans.jar</literal> file to the <literal>libs</literal> folder in your
+            Android project.</para>
+        </listitem>
+        <listitem>
+          <para>Add <literal>--core-library</literal> flag to the <literal>dx</literal> file in
+            <literal>build-tools</literal> folder in your Android SDK. After flag adding, last line of the file should
+            look like:</para>
+          <programlisting>exec java $javaOpts -jar "$jarpath" --core-library "$@"</programlisting>
+        </listitem>
+        <listitem>
+          <para>At the end, dependency should be added to <literal>build.gradle</literal> file in your project (exclude
+            <literal>org.drools</literal> and <literal>xmlpull</literal> libraries):</para>
+          <programlisting language="gradle">dependencies {
+...
+    compile ('org.optaplanner:optaplanner-core:6.3.0-SNAPSHOT') {
+        exclude group: 'xmlpull'
+        exclude group: 'org.drools'
+    }
+...
+}</programlisting>
+        </listitem>
+      </orderedlist>
+
     </section>
   </section>
 
