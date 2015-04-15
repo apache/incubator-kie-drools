@@ -43,6 +43,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
@@ -55,7 +56,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
 
     protected final Map<Class, Constructor> constructorCache = new HashMap<Class, Constructor>();
     protected final Map<Class, List<Field>> fieldListCache = new HashMap<Class, List<Field>>();
-    protected final Map<Field, Boolean> deepCloneDecisionFieldCache = new HashMap<Field, Boolean>();
+    protected final Map<Pair<Field, Class>, Boolean> deepCloneDecisionFieldCache = new HashMap<Pair<Field, Class>, Boolean>();
     protected final Map<Class, Boolean> deepCloneDecisionActualValueClassCache = new HashMap<Class, Boolean>();
 
     public FieldAccessingSolutionCloner(SolutionDescriptor solutionDescriptor) {
@@ -96,11 +97,12 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
         return fieldList;
     }
 
-    protected boolean retrieveDeepCloneDecision(Field field, Class<?> actualValueClass) {
-        Boolean deepCloneDecision = deepCloneDecisionFieldCache.get(field);
+    protected boolean retrieveDeepCloneDecision(Field field, Class fieldInstanceClass, Class<?> actualValueClass) {
+        Pair<Field, Class> pair = Pair.of(field, fieldInstanceClass);
+        Boolean deepCloneDecision = deepCloneDecisionFieldCache.get(pair);
         if (deepCloneDecision == null) {
-            deepCloneDecision = isFieldDeepCloned(field);
-            deepCloneDecisionFieldCache.put(field, deepCloneDecision);
+            deepCloneDecision = isFieldDeepCloned(field, fieldInstanceClass);
+            deepCloneDecisionFieldCache.put(pair, deepCloneDecision);
         }
         if (deepCloneDecision) {
             return true;
@@ -108,15 +110,15 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
         return retrieveDeepCloneDecisionForActualValueClass(actualValueClass);
     }
 
-    private boolean isFieldDeepCloned(Field field) {
-        return isFieldAnEntityPropertyOnSolution(field)
-                || isFieldAnEntityOrSolution(field)
-                || isFieldADeepCloneProperty(field);
+    private boolean isFieldDeepCloned(Field field, Class fieldInstanceClass) {
+        return isFieldAnEntityPropertyOnSolution(field, fieldInstanceClass)
+                || isFieldAnEntityOrSolution(field, fieldInstanceClass)
+                || isFieldADeepCloneProperty(field, fieldInstanceClass);
     }
 
-    protected boolean isFieldAnEntityPropertyOnSolution(Field field) {
-        Class<?> declaringClass = field.getDeclaringClass();
-        if (solutionDescriptor.getSolutionClass().isAssignableFrom(declaringClass)) {
+    protected boolean isFieldAnEntityPropertyOnSolution(Field field, Class fieldInstanceClass) {
+        // field.getDeclaringClass() is a superclass of or equal to the fieldInstanceClass
+        if (solutionDescriptor.getSolutionClass().isAssignableFrom(fieldInstanceClass)) {
             String fieldName = field.getName();
             // This assumes we're dealing with a simple getter/setter.
             // If that assumption is false, validateCloneSolution(...) fails-fast.
@@ -132,7 +134,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
         return false;
     }
 
-    protected boolean isFieldAnEntityOrSolution(Field field) {
+    protected boolean isFieldAnEntityOrSolution(Field field, Class fieldInstanceClass) {
         Class<?> type = field.getType();
         if (isClassDeepCloned(type)) {
             return true;
@@ -163,10 +165,10 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
         return false;
     }
 
-    private boolean isFieldADeepCloneProperty(Field field) {
+    private boolean isFieldADeepCloneProperty(Field field, Class fieldInstanceClass) {
         PropertyDescriptor propertyDescriptor;
         try {
-            propertyDescriptor = new PropertyDescriptor(field.getName(), field.getDeclaringClass());
+            propertyDescriptor = new PropertyDescriptor(field.getName(), fieldInstanceClass);
         } catch (IntrospectionException e) {
             return false;
         }
@@ -212,10 +214,10 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             if (existingClone != null) {
                 return  existingClone;
             }
-            Class<C> clazz = (Class<C>) original.getClass();
-            C clone = constructClone(clazz);
+            Class<C> instanceClass = (Class<C>) original.getClass();
+            C clone = constructClone(instanceClass);
             originalToCloneMap.put(original, clone);
-            copyFields(clazz, original, clone);
+            copyFields(instanceClass, instanceClass, original, clone);
             return clone;
         }
 
@@ -239,10 +241,10 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             }
         }
 
-        protected <C> void copyFields(Class<C> clazz, C original, C clone) {
+        protected <C> void copyFields(Class<C> clazz, Class<? extends C> instanceClass, C original, C clone) {
             for (Field field : retrieveCachedFields(clazz)) {
                 Object originalValue = getFieldValue(original, field);
-                if (isDeepCloneField(field, originalValue)) {
+                if (isDeepCloneField(field, instanceClass, originalValue)) {
                     // Postpone filling in the fields
                     unprocessedQueue.add(new Unprocessed(clone, field, originalValue));
                 } else {
@@ -252,15 +254,15 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             }
             Class<? super C> superclass = clazz.getSuperclass();
             if (superclass != null) {
-                copyFields(superclass, original, clone);
+                copyFields(superclass, instanceClass, original, clone);
             }
         }
 
-        protected boolean isDeepCloneField(Field field, Object originalValue) {
+        protected boolean isDeepCloneField(Field field, Class fieldInstanceClass, Object originalValue) {
             if (originalValue == null) {
                 return false;
             }
-            return retrieveDeepCloneDecision(field, originalValue.getClass());
+            return retrieveDeepCloneDecision(field, fieldInstanceClass, originalValue.getClass());
         }
 
         protected void processQueue() {
