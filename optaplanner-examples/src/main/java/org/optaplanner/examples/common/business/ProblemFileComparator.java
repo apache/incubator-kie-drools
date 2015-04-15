@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Comparator;
 import java.util.Locale;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 
 public class ProblemFileComparator implements Comparator<File> {
 

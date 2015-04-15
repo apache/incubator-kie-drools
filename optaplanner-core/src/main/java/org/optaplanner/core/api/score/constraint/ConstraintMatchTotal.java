@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
-import org.apache.commons.lang.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 

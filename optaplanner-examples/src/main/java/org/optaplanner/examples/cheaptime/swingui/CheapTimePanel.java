@@ -31,7 +31,7 @@ import java.util.Map;
 import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;

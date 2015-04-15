@@ -19,7 +19,7 @@ package org.optaplanner.examples.machinereassignment.domain.solver;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 
 public class MrProcessAssignmentDifficultyComparator implements Comparator<MrProcessAssignment>, Serializable {

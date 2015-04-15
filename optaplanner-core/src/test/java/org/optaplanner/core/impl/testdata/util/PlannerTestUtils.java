@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.testdata.util;
 import java.io.Serializable;
 
 import com.thoughtworks.xstream.XStream;
-import org.apache.commons.lang.SerializationUtils;
+import org.apache.commons.lang3.SerializationUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;

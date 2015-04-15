@@ -18,7 +18,7 @@ package org.optaplanner.examples.common.domain;
 
 import java.io.Serializable;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 
 public abstract class AbstractPersistable implements Serializable, Comparable<AbstractPersistable> {

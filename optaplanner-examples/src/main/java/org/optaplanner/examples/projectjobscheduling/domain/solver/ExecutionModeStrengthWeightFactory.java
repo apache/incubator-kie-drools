@@ -19,7 +19,7 @@ package org.optaplanner.examples.projectjobscheduling.domain.solver;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.projectjobscheduling.domain.ExecutionMode;
 import org.optaplanner.examples.projectjobscheduling.domain.ResourceRequirement;

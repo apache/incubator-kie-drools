@@ -18,7 +18,7 @@ package org.optaplanner.examples.coachshuttlegathering.domain.solver;
 
 import java.util.List;
 
-import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;

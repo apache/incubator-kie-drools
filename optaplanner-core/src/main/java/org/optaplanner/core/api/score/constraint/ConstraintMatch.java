@@ -19,7 +19,7 @@ package org.optaplanner.core.api.score.constraint;
 import java.io.Serializable;
 import java.util.List;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 
 /**
  * Retrievable from {@link ConstraintMatchTotal#getConstraintMatchSet()}.

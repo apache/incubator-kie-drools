@@ -19,7 +19,7 @@ package org.optaplanner.examples.pas.domain.solver;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.examples.pas.domain.Bed;
 import org.optaplanner.examples.pas.domain.Department;
 import org.optaplanner.examples.pas.domain.Room;

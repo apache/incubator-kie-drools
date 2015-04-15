@@ -26,7 +26,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
@@ -236,7 +236,7 @@ public class SolverBenchmarkResult {
         XStream xStream = XStreamXmlSolverFactory.buildXStream();
         xStream.setMode(XStream.NO_REFERENCES);
         String xml = xStream.toXML(solverConfig);
-        return StringEscapeUtils.escapeHtml(xml);
+        return StringEscapeUtils.ESCAPE_HTML4.translate(xml);
     }
 
     // ************************************************************************

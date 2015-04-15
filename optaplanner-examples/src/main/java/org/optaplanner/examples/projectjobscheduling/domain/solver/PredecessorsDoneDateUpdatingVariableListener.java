@@ -3,7 +3,7 @@ package org.optaplanner.examples.projectjobscheduling.domain.solver;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
