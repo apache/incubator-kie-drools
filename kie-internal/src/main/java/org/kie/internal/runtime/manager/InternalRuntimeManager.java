@@ -15,6 +15,7 @@
  */
 package org.kie.internal.runtime.manager;
 
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeManager;
@@ -77,4 +78,16 @@ public interface InternalRuntimeManager extends RuntimeManager {
      * @return
      */
     CacheManager getCacheManager();
+    
+    /**
+     * Returns KieContainer associated with this runtime manager if any
+     * @return
+     */
+    KieContainer getKieContainer();
+    
+    /**
+     * Sets KieContainer to be associated with this runtime manager
+     * @param kieContainer
+     */
+    void setKieContainer(KieContainer kieContainer);
 }
