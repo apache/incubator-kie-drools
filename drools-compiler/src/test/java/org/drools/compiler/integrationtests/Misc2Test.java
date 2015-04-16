@@ -118,6 +118,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7163,25 +7165,6 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
-    public void testJittedConstraintStringAndLong() {
-        // DROOLS-740
-        String drl =
-                " import org.drools.compiler.Person; " +
-                " rule 'hello person' " +
-                " when " +
-                " Person( name == \"Elizabeth\" + new Long(2L) ) " +
-                " then " +
-                " end " +
-                "\n";
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
-                                             .build()
-                                             .newKieSession();
-
-        ksession.insert(new org.drools.compiler.Person("Elizabeth2", 88));
-        assertEquals(1, ksession.fireAllRules());
-    }
-
-    @Test
     public void testMalformedAccumulate() {
         // DROOLS-725
         String str =
@@ -7217,5 +7200,62 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end;\n";
 
         assertDrlHasCompilationError(drl1, 1);
+    }
+
+    @Test
+    public void testJittedConstraintStringAndLong() {
+        // DROOLS-740
+        String drl =
+                " import org.drools.compiler.Person; " +
+                " rule 'hello person' " +
+                " when " +
+                " Person( name == \"Elizabeth\" + new Long(2L) ) " +
+                " then " +
+                " end " +
+                "\n";
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        ksession.insert(new org.drools.compiler.Person("Elizabeth2", 88));
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testKieBuilderWithClassLoader() {
+        // DROOLS-763
+        String drl =
+                "import com.billasurf.Person\n" +
+                "\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $i : Integer()\n" +
+                "then\n" +
+                "    Person p = new Person();\n" +
+                "    p.setAge($i);\n" +
+                "    insert(p);\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "    $p : Person()\n" +
+                "then\n" +
+                "    list.add($p.getAge());\n" +
+                "end\n";
+
+        URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{ this.getClass().getResource("/billasurf.jar") } );
+        KieSession ksession = new KieHelper().setClassLoader(urlClassLoader)
+                                             .addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(18);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals(18, (int)list.get(0));
     }
 }
