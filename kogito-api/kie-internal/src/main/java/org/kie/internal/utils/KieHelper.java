@@ -41,6 +41,8 @@ public class KieHelper {
 
     public final KieFileSystem kfs = ks.newKieFileSystem();
 
+    private ClassLoader classLoader;
+
     private int counter = 0;
 
     public KieHelper() {}
@@ -76,18 +78,23 @@ public class KieHelper {
     }
 
     protected KieContainer getKieContainer() {
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs, classLoader ).buildAll();
         Results results = kieBuilder.getResults();
         if (results.hasMessages(Message.Level.ERROR)) {
             throw new RuntimeException(results.getMessages().toString());
         }
-        KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
+        KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId(), classLoader);
         return kieContainer;
     }
 
     public Results verify() {
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
         return kieBuilder.getResults();
+    }
+
+    public KieHelper setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+        return this;
     }
 
     public KieHelper setKieModuleModel(KieModuleModel kieModel) {
