@@ -78,11 +78,18 @@ public class KieBuilderImpl
 
     private KieBuilderSetImpl     kieBuilderSet;
 
+    private ClassLoader           classLoader;
+
     public KieBuilderImpl(File file) {
         this.srcMfs = new DiskResourceReader( file );
     }
 
     public KieBuilderImpl(KieFileSystem kieFileSystem) {
+        this(kieFileSystem, null);
+    }
+
+    public KieBuilderImpl(KieFileSystem kieFileSystem, ClassLoader classLoader) {
+        this.classLoader = classLoader;
         srcMfs = ((KieFileSystemImpl) kieFileSystem).asMemoryFileSystem();
     }
 
@@ -173,7 +180,7 @@ public class KieBuilderImpl
                 kModule.setPomModel(pomModel);
             }
 
-            KieModuleKieProject kProject = new KieModuleKieProject( kModule );
+            KieModuleKieProject kProject = new KieModuleKieProject( kModule, classLoader );
             for (ReleaseId unresolvedDep : kModule.getUnresolvedDependencies()) {
                 results.addMessage(Level.ERROR, "pom.xml", "Unresolved dependency " + unresolvedDep);
             }

@@ -92,11 +92,15 @@ public class KieServicesImpl implements InternalKieServices {
     }
     
     public KieContainer newKieContainer(ReleaseId releaseId) {
+        return newKieContainer(releaseId, null);
+    }
+
+    public KieContainer newKieContainer(ReleaseId releaseId, ClassLoader classLoader) {
         InternalKieModule kieModule = (InternalKieModule) getRepository().getKieModule(releaseId);
         if (kieModule == null) {
             throw new RuntimeException("Cannot find KieModule: " + releaseId);
         }
-        KieProject kProject = new KieModuleKieProject( kieModule );
+        KieProject kProject = new KieModuleKieProject( kieModule, classLoader );
         return new KieContainerImpl( kProject, getRepository(), releaseId );
     }
     
@@ -108,6 +112,10 @@ public class KieServicesImpl implements InternalKieServices {
     public KieBuilder newKieBuilder(KieFileSystem kieFileSystem) {
         return new KieBuilderImpl(kieFileSystem);
     }    
+
+    public KieBuilder newKieBuilder(KieFileSystem kieFileSystem, ClassLoader classLoader) {
+        return new KieBuilderImpl(kieFileSystem, classLoader);
+    }
 
     public KieScanner newKieScanner(KieContainer kieContainer) {
         KieScannerFactoryService scannerFactoryService = ServiceRegistryImpl.getInstance().get( KieScannerFactoryService.class );
