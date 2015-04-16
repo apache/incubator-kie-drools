@@ -123,6 +123,15 @@ public interface KieServices {
     KieContainer newKieContainer(ReleaseId releaseId);
 
     /**
+     * Creates a new KieContainer wrapping the KieModule with the given ReleaseId
+     * and using the given class loader
+     * @param releaseId releaseId
+     * @param classLoader classLoader
+     * @return new kie container
+     */
+    KieContainer newKieContainer(ReleaseId releaseId, ClassLoader classLoader);
+
+    /**
      * Creates a KieScanner to automatically discover if there are new releases of the KieModule
      * (and its dependencies) wrapped by the given KieContainer
      * @param kieContainer kieContainer
@@ -142,6 +151,13 @@ public interface KieServices {
      * @return new kie builder 
      */
     KieBuilder newKieBuilder(KieFileSystem kieFileSystem);
+
+    /**
+     * Creates a new KieBuilder to build the KieModule contained in the given KieFileSystem
+     * and using the given class loader
+     * @return new kie builder
+     */
+    KieBuilder newKieBuilder(KieFileSystem kieFileSystem, ClassLoader classLoader);
 
     /**
      * Creates a new ReleaseId with the given groupId, artifactId and version
