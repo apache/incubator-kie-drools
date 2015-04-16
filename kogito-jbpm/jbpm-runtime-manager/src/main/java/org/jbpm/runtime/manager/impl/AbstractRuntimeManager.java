@@ -37,6 +37,7 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
@@ -50,7 +51,6 @@ import org.kie.internal.runtime.manager.InternalRegisterableItemsFactory;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.SecurityManager;
-import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.EventService;
 import org.kie.internal.task.api.InternalTaskService;
 
@@ -72,8 +72,9 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     protected RuntimeManagerRegistry registry = RuntimeManagerRegistry.get();
     protected RuntimeEnvironment environment;
     protected DeploymentDescriptor deploymentDescriptor;
+    protected KieContainer kieContainer;
     
-    protected CacheManager cacheManager = new CacheManagerImpl();
+	protected CacheManager cacheManager = new CacheManagerImpl();
     
     protected boolean engineInitEager = Boolean.parseBoolean(System.getProperty("org.jbpm.rm.engine.eager", "false"));
 
@@ -90,6 +91,7 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
             throw new IllegalStateException("RuntimeManager with id " + identifier + " is already active");
         }
         internalSetDeploymentDescriptor();
+        internalSetKieContainer();
         ((InternalRegisterableItemsFactory)environment.getRegisterableItemsFactory()).setRuntimeManager(this);
         String eagerInit = (String)((SimpleRuntimeEnvironment)environment).getEnvironmentTemplate().get("RuntimeEngineEagerInit");
         if (eagerInit != null) {
@@ -103,10 +105,13 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     		this.deploymentDescriptor = new DeploymentDescriptorManager().getDefaultDescriptor();
     	}
 	}
+    
+    private void internalSetKieContainer() {
+    	this.kieContainer = (KieContainer) ((SimpleRuntimeEnvironment)environment).getEnvironmentTemplate().get("KieContainer");
+	}
 
 	public abstract void init();
     
-    @SuppressWarnings("unchecked")
 	protected void registerItems(RuntimeEngine runtime) {
         RegisterableItemsFactory factory = environment.getRegisterableItemsFactory();
         // process handlers
@@ -303,6 +308,16 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
 	@Override
 	public CacheManager getCacheManager() {
 		return cacheManager;
+	}
+	
+	@Override
+    public KieContainer getKieContainer() {
+		return kieContainer;
+	}
+
+	@Override
+	public void setKieContainer(KieContainer kieContainer) {
+		this.kieContainer = kieContainer;
 	}
     
     

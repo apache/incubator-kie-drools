@@ -24,6 +24,7 @@ import java.util.Map;
 import org.drools.core.util.StringUtils;
 import org.jbpm.kie.services.api.AttributesAware;
 import org.jbpm.services.api.model.DeploymentUnit;
+import org.kie.api.runtime.KieContainer;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.MergeMode;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
@@ -44,6 +45,8 @@ public class KModuleDeploymentUnit implements DeploymentUnit, AttributesAware, S
     private DeploymentDescriptor deploymentDescriptor;
     private boolean deployed = false;
     private boolean strategyUnset = true;
+    
+    private transient KieContainer kieContainer;
     
     private Map<String, String> attributes = new HashMap<String, String>();
     
@@ -184,6 +187,14 @@ public class KModuleDeploymentUnit implements DeploymentUnit, AttributesAware, S
 	@Override
 	public Map<String, String> getAttributes() {
 		return Collections.unmodifiableMap(this.attributes);
+	}
+
+	public KieContainer getKieContainer() {
+		return kieContainer;
+	}
+
+	public void setKieContainer(KieContainer kieContainer) {
+		this.kieContainer = kieContainer;
 	}
 
 }

@@ -213,6 +213,11 @@ public abstract class AbstractBaseTest {
                 .setClockType( ClockTypeOption.get("realtime") )
                 .newWorkItemHandlerModel("Log", "new org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler()");
         
+        kieBaseModel1.newKieSessionModel("ksession-test-2").setDefault(false)
+        .setType(KieSessionModel.KieSessionType.STATEFUL)
+        .setClockType( ClockTypeOption.get("realtime") )
+        .newWorkItemHandlerModel("Log", "new org.jbpm.kie.services.test.objects.KieConteinerSystemOutWorkItemHandler(kieContainer)");
+        
         kieBaseModel1.newKieSessionModel("ksession-test2").setDefault(false)
         .setType(KieSessionModel.KieSessionType.STATEFUL)
         .setClockType( ClockTypeOption.get("realtime") );

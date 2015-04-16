@@ -97,15 +97,24 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                 throw new IllegalArgumentException("Invalid deployment unit provided - " + unit.getClass().getName());
             }
             KModuleDeploymentUnit kmoduleUnit = (KModuleDeploymentUnit) unit;
-            KieServices ks = KieServices.Factory.get();
             DeployedUnitImpl deployedUnit = new DeployedUnitImpl(unit);
-            ReleaseId releaseId = ks.newReleaseId(kmoduleUnit.getGroupId(), kmoduleUnit.getArtifactId(), kmoduleUnit.getVersion());
-
-            MavenRepository repository = getMavenRepository();
-            repository.resolveArtifact(releaseId.toExternalForm());
-
-            KieContainer kieContainer = ks.newKieContainer(releaseId);
-
+            
+            KieContainer kieContainer = kmoduleUnit.getKieContainer();
+            ReleaseId releaseId = null;
+            if (kieContainer == null) {
+	            KieServices ks = KieServices.Factory.get();
+	            
+	            releaseId = ks.newReleaseId(kmoduleUnit.getGroupId(), kmoduleUnit.getArtifactId(), kmoduleUnit.getVersion());
+	
+	            MavenRepository repository = getMavenRepository();
+	            repository.resolveArtifact(releaseId.toExternalForm());
+	
+	            kieContainer = ks.newKieContainer(releaseId);
+	            
+	            kmoduleUnit.setKieContainer(kieContainer);
+            }
+            releaseId = kieContainer.getReleaseId();
+            
             String kbaseName = kmoduleUnit.getKbaseName();
             if (StringUtils.isEmpty(kbaseName)) {
                 KieBaseModel defaultKBaseModel = ((KieContainerImpl)kieContainer).getKieProject().getDefaultKieBaseModel();
@@ -150,7 +159,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 
             builder.registerableItemsFactory(getRegisterableItemsFactory(auditLoggerBuilder, kieContainer, kmoduleUnit));
 
-            commonDeploy(unit, deployedUnit, builder.get());
+            commonDeploy(unit, deployedUnit, builder.get(), kieContainer);
             kmoduleUnit.setDeployed(true);
     	} catch (Throwable e) {
     		logger.warn("Unexpected error while deploying unit {}", unit.getIdentifier(), e);
@@ -239,6 +248,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 		builder.addEnvironmentEntry(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, mStrategies);
 		
 		builder.addEnvironmentEntry("KieDeploymentDescriptor", descriptor);
+		builder.addEnvironmentEntry("KieContainer", kieContainer);
 		
 		// populate all assets with roles for this deployment unit
 		List<String> requiredRoles = descriptor.getRequiredRoles(DeploymentDescriptor.TYPE_VIEW);

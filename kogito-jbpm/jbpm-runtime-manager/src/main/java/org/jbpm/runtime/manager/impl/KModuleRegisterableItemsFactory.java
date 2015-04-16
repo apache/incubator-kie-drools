@@ -82,10 +82,15 @@ public class KModuleRegisterableItemsFactory extends DefaultRegisterableItemsFac
         parameters.put("ksession", runtime.getKieSession());
         parameters.put("taskService", runtime.getKieSession());
         parameters.put("runtimeManager", ((RuntimeEngineImpl)runtime).getManager());
+        if (getRuntimeManager().getKieContainer() != null) {
+        	parameters.put("kieContainer", getRuntimeManager().getKieContainer());
+        }
+        parameters.put("classLoader", getRuntimeManager().getEnvironment().getClassLoader());
         try {
 
             CDIHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession(), parameters);
         } catch (Exception e) {
+        	e.printStackTrace();
             // use fallback mechanism
             CDIHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession());
         }

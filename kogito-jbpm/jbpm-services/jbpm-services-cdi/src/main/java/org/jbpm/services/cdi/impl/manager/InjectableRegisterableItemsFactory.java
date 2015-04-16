@@ -134,6 +134,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         parameters.put("ksession", runtime.getKieSession());
         parameters.put("taskService", runtime.getTaskService());
         parameters.put("runtimeManager", manager);
+        parameters.put("kieContainer", getRuntimeManager().getKieContainer());
         try {
             parameters.put("executorService", executorService.get());
         } catch (Exception e) {
@@ -259,6 +260,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         parameters.put("ksession", runtime.getKieSession());
         parameters.put("taskService", runtime.getTaskService());
         parameters.put("runtimeManager", manager);
+        parameters.put("kieContainer", getRuntimeManager().getKieContainer());
         try {
             parameters.put("executorService", executorService.get());
         } catch (Exception e) {
