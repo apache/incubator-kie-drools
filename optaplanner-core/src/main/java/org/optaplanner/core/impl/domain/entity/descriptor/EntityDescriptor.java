@@ -154,6 +154,8 @@ public class EntityDescriptor {
     }
 
     private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
+        // TODO entityBeanInfo.getPropertyDescriptors() should order inherited getters first
+        // https://issues.jboss.org/browse/PLANNER-323
         PropertyDescriptor[] propertyDescriptors = entityBeanInfo.getPropertyDescriptors();
         declaredGenuineVariableDescriptorMap = new LinkedHashMap<String, GenuineVariableDescriptor>(propertyDescriptors.length);
         declaredShadowVariableDescriptorMap = new LinkedHashMap<String, ShadowVariableDescriptor>(propertyDescriptors.length);
