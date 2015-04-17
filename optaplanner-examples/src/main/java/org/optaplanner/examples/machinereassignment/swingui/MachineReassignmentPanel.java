@@ -176,7 +176,7 @@ public class MachineReassignmentPanel extends SolutionPanel {
         private MrProcessAssignment processAssignment;
 
         public MrProcessAssignmentAction(MrProcessAssignment processAssignment) {
-            super("=>");
+            super(processAssignment.getLabel());
             this.processAssignment = processAssignment;
         }
 
