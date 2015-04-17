@@ -83,7 +83,8 @@ public class ShiftAssignmentSwapMove extends AbstractMove {
     }
 
     public String toString() {
-        return leftShiftAssignment + " <=> " + rightShiftAssignment;
+        return leftShiftAssignment + " {" + leftShiftAssignment.getEmployee() + "} <-> "
+                + rightShiftAssignment + " {" + rightShiftAssignment.getEmployee() + "}";
     }
 
 }

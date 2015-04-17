@@ -48,4 +48,5 @@ public class UnavailabilityPenalty extends AbstractPersistable {
     public void setDay(Day day) {
         this.day = day;
     }
+
 }

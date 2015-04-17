@@ -17,12 +17,18 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
 import java.util.Arrays;
+import java.util.Collection;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.entityproviding.TestdataEntityProvidingEntity;
+import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity;
+import org.optaplanner.core.impl.testdata.domain.multivar.TestdataOtherValue;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -169,6 +175,44 @@ public class SwapMoveTest {
         bcMove.doMove(scoreDirector);
         assertEquals(v2, b.getValue());
         assertEquals(v3, c.getValue());
+    }
+
+    @Test
+    public void toStringTest() {
+        TestdataValue v1 = new TestdataValue("v1");
+        TestdataValue v2 = new TestdataValue("v2");
+        TestdataEntity a = new TestdataEntity("a", null);
+        TestdataEntity b = new TestdataEntity("b", v1);
+        TestdataEntity c = new TestdataEntity("c", v2);
+        EntityDescriptor entityDescriptor = TestdataEntity.buildEntityDescriptor();
+        Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
+
+        assertEquals("a {null} <-> a {null}", new SwapMove(variableDescriptors, a, a).toString());
+        assertEquals("a {null} <-> b {v1}", new SwapMove(variableDescriptors, a, b).toString());
+        assertEquals("a {null} <-> c {v2}", new SwapMove(variableDescriptors, a, c).toString());
+        assertEquals("b {v1} <-> c {v2}", new SwapMove(variableDescriptors, b, c).toString());
+        assertEquals("c {v2} <-> b {v1}", new SwapMove(variableDescriptors, c, b).toString());
+    }
+
+    @Test @Ignore("https://issues.jboss.org/browse/PLANNER-323")
+    public void toStringTestMultiVar() {
+        TestdataValue v1 = new TestdataValue("v1");
+        TestdataValue v2 = new TestdataValue("v2");
+        TestdataValue v3 = new TestdataValue("v3");
+        TestdataValue v4 = new TestdataValue("v4");
+        TestdataOtherValue w1 = new TestdataOtherValue("w1");
+        TestdataOtherValue w2 = new TestdataOtherValue("w2");
+        TestdataMultiVarEntity a = new TestdataMultiVarEntity("a", null, null, null);
+        TestdataMultiVarEntity b = new TestdataMultiVarEntity("b", v1, v3, w1);
+        TestdataMultiVarEntity c = new TestdataMultiVarEntity("c", v2, v4, w2);
+        EntityDescriptor entityDescriptor = TestdataMultiVarEntity.buildEntityDescriptor();
+        Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
+
+        assertEquals("a {null, null, null} <-> a {null, null, null}", new SwapMove(variableDescriptors, a, a).toString());
+        assertEquals("a {null, null, null} <-> b {v1, v3, w1}", new SwapMove(variableDescriptors, a, b).toString());
+        assertEquals("a {null, null, null} <-> c {v2, v4, w2}", new SwapMove(variableDescriptors, a, c).toString());
+        assertEquals("b {v1, v3, w1} <-> c {v2, v4, w2}", new SwapMove(variableDescriptors, b, c).toString());
+        assertEquals("c {v2, v4, w2} <-> b {v1, v3, w1}", new SwapMove(variableDescriptors, c, b).toString());
     }
 
 }

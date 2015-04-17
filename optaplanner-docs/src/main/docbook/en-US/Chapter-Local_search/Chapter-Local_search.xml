@@ -63,7 +63,7 @@
       green arrows. At each step it tries all selected moves, but unless it's the step, it doesn't investigate that
       solution further. This is one of the reasons why Local Search is very scalable.</para>
 
-      <para>As you can see, Local Search solves the 4 queens problem by starting with the starting solution and make the
+      <para>As shown above, Local Search solves the 4 queens problem by starting with the starting solution and make the
       following steps sequentially:</para>
 
       <orderedlist>
@@ -80,23 +80,24 @@
         </listitem>
       </orderedlist>
 
-      <para>If we turn on <literal>debug</literal> logging for the category <literal>org.optaplanner</literal>, then
-      those steps are shown into the log:</para>
+      <para>Turn on <literal>debug</literal> logging for the category <literal>org.optaplanner</literal> to show those
+      steps in the log:</para>
 
       <programlisting>INFO  Solving started: time spent (0), best score (-6), random (JDK with seed 0).
-DEBUG     LS step (0), time spent (20), score (-3), new best score (-3), accepted/selected move count (12/12), picked move (col1@row0 =&gt; row3).
-DEBUG     LS step (1), time spent (31), score (-1), new best score (-1), accepted/selected move count (12/12), picked move (col0@row0 =&gt; row1).
-DEBUG     LS step (2), time spent (40), score (0), new best score (0), accepted/selected move count (12/12), picked move (col3@row0 =&gt; row2).
+DEBUG     LS step (0), time spent (20), score (-3), new best score (-3), accepted/selected move count (12/12), picked move (Queen-1 {Row-0 -&gt; Row-3}).
+DEBUG     LS step (1), time spent (31), score (-1), new best score (-1), accepted/selected move count (12/12), picked move (Queen-3 {Row-0 -&gt; Row-2}).
+DEBUG     LS step (2), time spent (40), score (0), new best score (0), accepted/selected move count (12/12), picked move (Queen-0 {Row-0 -&gt; Row-1}).
 INFO  Local Search phase (0) ended: step total (3), time spent (41), best score (0).
 INFO  Solving ended: time spent (41), best score (0), average calculate count per second (1780).</programlisting>
 
-      <para>Notice that the logging uses the <literal>toString()</literal> method of the <literal>Move</literal>
-      implementation: <literal>col1@row0 =&gt; row3</literal>.</para>
+      <para>Notice that a log message includes the <literal>toString()</literal> method of the <literal>Move</literal>
+      implementation which returns for example "<literal>Queen-1 {Row-0 -&gt; Row-3}</literal>".</para>
 
       <para>A naive Local Search configuration solves the 4 queens problem in 3 steps, by evaluating only 37 possible
       solutions (3 steps with 12 moves each + 1 starting solution), which is only fraction of all 256 possible
       solutions. It solves 16 queens in 31 steps, by evaluating only 7441 out of 18446744073709551616 possible
-      solutions. By doing a good Construction Heuristics first, it's even a lot more efficient.</para>
+      solutions. By using a <link linkend="constructionHeuristics">Construction Heuristics</link> phase first, it's even
+      a lot more efficient.</para>
     </section>
 
     <section xml:id="localSearchConceptsDecideTheNextStep">
@@ -147,17 +148,17 @@ INFO  Solving ended: time spent (41), best score (0), average calculate count pe
       log:</para>
 
       <programlisting>INFO  Solver started: time spent (0), score (-6), new best score (-6), random (JDK with seed 0).
-TRACE         Move index (0) not doable, ignoring move (col0@row0 =&gt; row0).
-TRACE         Move index (1), score (-4), accepted (true), move (col0@row0 =&gt; row1).
-TRACE         Move index (2), score (-4), accepted (true), move (col0@row0 =&gt; row2).
-TRACE         Move index (3), score (-4), accepted (true), move (col0@row0 =&gt; row3).
+TRACE         Move index (0) not doable, ignoring move (Queen-0 {Row-0 -&gt; Row-0}).
+TRACE         Move index (1), score (-4), accepted (true), move (Queen-0 {Row-0 -&gt; Row-1}).
+TRACE         Move index (2), score (-4), accepted (true), move (Queen-0 {Row-0 -&gt; Row-2}).
+TRACE         Move index (3), score (-4), accepted (true), move (Queen-0 {Row-0 -&gt; Row-3}).
 ...
-TRACE         Move index (6), score (-3), accepted (true), move (col1@row0 =&gt; row3).
+TRACE         Move index (6), score (-3), accepted (true), move (Queen-1 {Row-0 -&gt; Row-3}).
 ...
-TRACE         Move index (9), score (-3), accepted (true), move (col2@row0 =&gt; row3).
+TRACE         Move index (9), score (-3), accepted (true), move (Queen-2 {Row-0 -&gt; Row-3}).
 ...
-TRACE         Move index (12), score (-4), accepted (true), move (col3@row0 =&gt; row3).
-DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted/selected move count (12/12), picked move (col1@row0 =&gt; row3).
+TRACE         Move index (12), score (-4), accepted (true), move (Queen-3 {Row-0 -&gt; Row-3}).
+DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted/selected move count (12/12), picked move (Queen-1 {Row-0 -&gt; Row-3}).
 ...</programlisting>
 
       <para>Because the last solution can degrade (for example in Tabu Search), the <literal>Solver</literal> remembers

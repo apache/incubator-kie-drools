@@ -83,7 +83,8 @@ public class BedDesignationSwapMove extends AbstractMove {
     }
 
     public String toString() {
-        return leftBedDesignation + " <=> " + rightBedDesignation;
+        return leftBedDesignation + " {" + leftBedDesignation.getBed() + "} <-> "
+                + rightBedDesignation + " {" + rightBedDesignation.getBed() + "}";
     }
 
 }

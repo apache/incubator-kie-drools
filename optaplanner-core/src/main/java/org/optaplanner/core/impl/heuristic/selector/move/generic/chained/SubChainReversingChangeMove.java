@@ -49,13 +49,13 @@ public class SubChainReversingChangeMove extends AbstractMove {
         if (subChain.getEntityList().contains(toPlanningValue)) {
             return false;
         }
-        Object oldFirstPlanningValue = variableDescriptor.getValue(subChain.getFirstEntity());
-        return !ObjectUtils.equals(oldFirstPlanningValue, toPlanningValue);
+        Object oldFirstValue = variableDescriptor.getValue(subChain.getFirstEntity());
+        return !ObjectUtils.equals(oldFirstValue, toPlanningValue);
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        Object oldFirstPlanningValue = variableDescriptor.getValue(subChain.getFirstEntity());
-        return new SubChainReversingChangeMove(subChain.reverse(), variableDescriptor, oldFirstPlanningValue);
+        Object oldFirstValue = variableDescriptor.getValue(subChain.getFirstEntity());
+        return new SubChainReversingChangeMove(subChain.reverse(), variableDescriptor, oldFirstValue);
     }
 
     public void doMove(ScoreDirector scoreDirector) {
@@ -104,7 +104,8 @@ public class SubChainReversingChangeMove extends AbstractMove {
     }
 
     public String toString() {
-        return subChain + " reversed => " + toPlanningValue;
+        Object oldFirstValue = variableDescriptor.getValue(subChain.getFirstEntity());
+        return subChain.toDottedString() + " {" + oldFirstValue + " -reversing-> " + toPlanningValue + "}";
     }
 
 }

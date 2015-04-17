@@ -62,6 +62,21 @@ public class Department extends AbstractPersistable {
         this.roomList = roomList;
     }
 
+    public int countHardDisallowedAdmissionPart(AdmissionPart admissionPart) {
+        return countDisallowedPatientAge(admissionPart.getPatient());
+    }
+
+    public int countDisallowedPatientAge(Patient patient) {
+        int count = 0;
+        if (minimumAge != null && patient.getAge() < minimumAge) {
+            count += 100;
+        }
+        if (maximumAge != null && patient.getAge() > maximumAge) {
+            count += 100;
+        }
+        return count;
+    }
+
     public String getLabel() {
         String label = name;
         if (minimumAge != null) {
@@ -76,21 +91,6 @@ public class Department extends AbstractPersistable {
     @Override
     public String toString() {
         return name;
-    }
-
-    public int countHardDisallowedAdmissionPart(AdmissionPart admissionPart) {
-        return countDisallowedPatientAge(admissionPart.getPatient());
-    }
-
-    public int countDisallowedPatientAge(Patient patient) {
-        int count = 0;
-        if (minimumAge != null && patient.getAge() < minimumAge) {
-            count += 100;
-        }
-        if (maximumAge != null && patient.getAge() > maximumAge) {
-            count += 100;
-        }
-        return count;
     }
 
 }

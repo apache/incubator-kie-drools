@@ -87,15 +87,6 @@ public class ShiftDate extends AbstractPersistable {
         return dateFormat.format(calendar.getTime());
     }
 
-    public String getLabel() {
-        return dayOfWeek.getLabel() + " " + dateString.substring(5).replaceAll("\\-", "/");
-    }
-
-    @Override
-    public String toString() {
-        return dateString + "(" + dayOfWeek + ")";
-    }
-
     public int getWeekendSundayIndex() {
         switch (dayOfWeek) {
             case MONDAY:
@@ -115,6 +106,15 @@ public class ShiftDate extends AbstractPersistable {
             default:
                 throw new IllegalArgumentException("The dayOfWeek (" + dayOfWeek + ") is not valid.");
         }
+    }
+
+    public String getLabel() {
+        return dayOfWeek.getLabel() + " " + dateString.substring(5).replaceAll("\\-", "/");
+    }
+
+    @Override
+    public String toString() {
+        return dateString;
     }
 
 }

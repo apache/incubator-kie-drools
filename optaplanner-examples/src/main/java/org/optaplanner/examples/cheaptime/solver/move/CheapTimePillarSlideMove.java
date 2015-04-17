@@ -65,4 +65,9 @@ public class CheapTimePillarSlideMove extends AbstractMove {
         return Collections.singletonList(startPeriodList);
     }
 
+    @Override
+    public String toString() {
+        return pillar + " {" + (startPeriodDiff < 0 ? startPeriodDiff : "+" + startPeriodDiff) + "}";
+    }
+
 }

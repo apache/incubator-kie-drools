@@ -104,7 +104,7 @@ public class ShiftAssignment extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return shift + "@" + employee;
+        return shift.toString();
     }
 
 }

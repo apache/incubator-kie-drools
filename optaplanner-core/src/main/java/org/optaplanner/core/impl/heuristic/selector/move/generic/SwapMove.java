@@ -152,7 +152,25 @@ public class SwapMove extends AbstractMove {
     }
 
     public String toString() {
-        return leftEntity + " <=> " + rightEntity;
+        StringBuilder s = new StringBuilder(variableDescriptors.size() * 16);
+        s.append(leftEntity).append(" {");
+        appendVariablesToString(s, leftEntity);
+        s.append("} <-> ");
+        s.append(rightEntity).append(" {");
+        appendVariablesToString(s, rightEntity);
+        s.append("}");
+        return s.toString();
+    }
+
+    protected void appendVariablesToString(StringBuilder s, Object entity) {
+        boolean first = true;
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+            if (!first) {
+                s.append(", ");
+            }
+            s.append(variableDescriptor.getValue(entity));
+            first = false;
+        }
     }
 
 }

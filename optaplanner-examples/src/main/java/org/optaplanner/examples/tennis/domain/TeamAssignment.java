@@ -78,4 +78,9 @@ public class TeamAssignment extends AbstractPersistable {
         this.team = team;
     }
 
+    @Override
+    public String toString() {
+        return "Day-" + day.getDateIndex() + "(" + indexInDay + ")";
+    }
+
 }

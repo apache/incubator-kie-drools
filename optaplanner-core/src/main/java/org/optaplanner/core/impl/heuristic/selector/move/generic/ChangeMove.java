@@ -109,7 +109,8 @@ public class ChangeMove extends AbstractMove {
     }
 
     public String toString() {
-        return entity + " => " + toPlanningValue;
+        Object oldValue = variableDescriptor.getValue(entity);
+        return entity + " {" + oldValue + " -> " + toPlanningValue + "}";
     }
 
 }

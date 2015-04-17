@@ -49,7 +49,7 @@ public class Day extends AbstractPersistable implements Labeled {
 
     @Override
     public String toString() {
-        return Integer.toString(index);
+        return "Day-" + index;
     }
 
 }

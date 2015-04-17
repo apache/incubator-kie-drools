@@ -80,9 +80,4 @@ public class CloudProcess extends AbstractPersistable {
         return "Process " + id;
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + "@" + computer;
-    }
-
 }

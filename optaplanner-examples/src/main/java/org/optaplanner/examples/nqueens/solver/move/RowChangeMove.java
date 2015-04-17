@@ -82,7 +82,7 @@ public class RowChangeMove extends AbstractMove {
     }
 
     public String toString() {
-        return queen + " => " + toRow;
+        return queen + " {" + queen.getRow() + " -> " + toRow + "}";
     }
 
 }

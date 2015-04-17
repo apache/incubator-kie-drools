@@ -114,7 +114,7 @@ public class BedDesignation extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return admissionPart + " @ " + bed;
+        return admissionPart.toString();
     }
 
 }

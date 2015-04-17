@@ -166,16 +166,16 @@ public class BusStop extends AbstractPersistable implements BusOrStop, StopOrHub
         return transportTimeLimit - transportTimeToHub;
     }
 
-    @Override
-    public String toString() {
-        return name;
-    }
-
     public String getTransportLabel() {
         if (passengerQuantity <= 0) {
             return null;
         }
         return (transportTimeToHub == null ? "inf" : transportTimeToHub.toString()) + "/" + transportTimeLimit;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
 }

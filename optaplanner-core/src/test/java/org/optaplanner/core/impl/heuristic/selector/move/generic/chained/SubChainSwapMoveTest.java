@@ -28,14 +28,14 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class SubChainSwapMoveTest {
 
     @Test
     public void noTrailing() {
-        EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
-        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor("chainedObject");
+        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -79,8 +79,7 @@ public class SubChainSwapMoveTest {
 
     @Test
     public void oldAndNewTrailing() {
-        EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
-        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor("chainedObject");
+        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -124,6 +123,30 @@ public class SubChainSwapMoveTest {
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5);
         SelectorTestUtils.assertChain(b0, b1, b2, b3);
+    }
+
+    @Test
+    public void toStringTest() {
+        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
+        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
+        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
+        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
+        TestdataChainedEntity a4 = new TestdataChainedEntity("a4", a3);
+        TestdataChainedEntity a5 = new TestdataChainedEntity("a5", a4);
+
+        TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
+        TestdataChainedEntity b1 = new TestdataChainedEntity("b1", b0);
+        TestdataChainedEntity b2 = new TestdataChainedEntity("b2", b1);
+        TestdataChainedEntity b3 = new TestdataChainedEntity("b3", b2);
+
+        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
+
+        assertEquals("[a2..a4] {a1} <-> [b1..b3] {b0}", new SubChainSwapMove(variableDescriptor,
+                new SubChain(Arrays.<Object>asList(a2, a3, a4)), new SubChain(Arrays.<Object>asList(b1, b2, b3))).toString());
+        assertEquals("[a1..a2] {a0} <-> [a4..a5] {a3}", new SubChainSwapMove(variableDescriptor,
+                new SubChain(Arrays.<Object>asList(a1, a2)), new SubChain(Arrays.<Object>asList(a4, a5))).toString());
+        assertEquals("[a3..a3] {a2} <-> [b2..b2] {b1}", new SubChainSwapMove(variableDescriptor,
+                new SubChain(Arrays.<Object>asList(a3)), new SubChain(Arrays.<Object>asList(b2))).toString());
     }
 
 }

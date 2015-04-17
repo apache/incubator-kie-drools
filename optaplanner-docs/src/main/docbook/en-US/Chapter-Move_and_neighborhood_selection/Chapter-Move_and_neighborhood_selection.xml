@@ -1506,13 +1506,12 @@
 
       <para>Notice that it checks if the other move is an instance of the same move type. This
       <literal>instanceof</literal> check is important because a move will be compared to a move with another move type
-      if you're using more then 1 move type.</para>
+      if you're using more than 1 move type.</para>
 
-      <para>It's also recommended to implement the <literal>toString()</literal> method as it allows you to read
-      Planner's logging more easily:</para>
+      <para>Implement the <literal>toString()</literal> method to keep Planner's logs readable:</para>
 
       <programlisting language="java">    public String toString() {
-        return queen + " =&gt; " + toRow;
+        return queen + " {" + queen.getRow() + " -&gt; " + toRow + "}";
     }</programlisting>
 
       <para>Now that we can implement a single custom <literal>Move</literal>, let's take a look at generating such

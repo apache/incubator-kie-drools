@@ -98,7 +98,7 @@ public class SeatDesignation extends AbstractPersistable implements Labeled {
 
     @Override
     public String toString() {
-        return guest + " @ " + seat;
+        return guest.toString();
     }
 
 }

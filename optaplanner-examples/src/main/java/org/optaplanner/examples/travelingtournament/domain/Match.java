@@ -98,7 +98,7 @@ public class Match extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return super.toString() + " " + homeTeam + " + " + awayTeam + " @ " + day;
+        return homeTeam + "+" + awayTeam;
     }
 
 }

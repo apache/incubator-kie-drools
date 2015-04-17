@@ -124,7 +124,7 @@ public class Lecture extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return course + "-" + lectureIndexInCourse + " @ " + period + " + " + room;
+        return course + "-" + lectureIndexInCourse;
     }
 
 }

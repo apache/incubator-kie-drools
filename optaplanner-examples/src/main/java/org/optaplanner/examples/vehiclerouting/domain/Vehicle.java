@@ -75,7 +75,11 @@ public class Vehicle extends AbstractPersistable implements Standstill {
 
     @Override
     public String toString() {
-        return getLocation() + "[vehicle-" + id + "]";
+        Location location = getLocation();
+        if (location.getName() == null) {
+            return super.toString();
+        }
+        return location.getName() + "/" + super.toString();
     }
 
 }

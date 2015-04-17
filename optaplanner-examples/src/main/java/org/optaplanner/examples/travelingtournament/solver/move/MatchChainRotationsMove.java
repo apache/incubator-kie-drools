@@ -112,7 +112,7 @@ public class MatchChainRotationsMove extends AbstractMove {
     }
 
     public String toString() {
-        return firstMatchList + " & " + secondMatchList;
+        return "Rotation " + firstMatchList + " & Rotation " + secondMatchList;
     }
 
 }

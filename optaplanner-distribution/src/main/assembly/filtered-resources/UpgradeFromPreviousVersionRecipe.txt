@@ -2396,3 +2396,37 @@ After in *.java:
             return processList;
         }
     }
+
+[MAJOR] To adhere to Java best practices,
+which state that an Object.toString() should identify an instance and be short
+(instead of trying to verbalize it's entire state),
+the Move.toString() methods have been modified to mention the old value too (as well as the entity and the new value).
+Their notations have also been made consistent:
+    ChangeMove:         "a {v1 -> v2}"
+    SwapMove:           "a {v1} <-> b {v2}"
+    PillarChangeMove:   "[a, b] {v1 -> v2}"
+    PillarSwapMove:     "[a, b] {v1} <-> [c, d, e] {v2}"
+    TailChainSwapMove:  "a3 {a2} <-tailChainSwap-> b1 {b0}"
+    SubChainChangeMove: "[a2..a5] {a1 -> b0}"
+             Reversing: "[a2..a5] {a1 -reversing-> b0}"
+    SubChainSwapMove:   "[a2..a5] {a1} <-> [b1..b3] {b0}"
+             Reversing: "[a2..a5] {a1} <-reversing-> [b1..b3] {b0}"
+This mainly affects the logging output.
+In the examples, the toString() method of planning entities and planning values has been modified accordingly
+to avoid mentioning the old value twice:
+Before in *.java:
+    public class CloudProcess {
+        ...
+
+        public String toString() {
+            return processName + "@" + computer.getName();
+        }
+    }
+After in *.java:
+    public class CloudProcess {
+        ...
+
+        public String toString() {
+            return processName;
+        }
+    }

@@ -80,7 +80,7 @@ public class BedChangeMove extends AbstractMove {
     }
 
     public String toString() {
-        return bedDesignation + " => " + toBed;
+        return bedDesignation + " {" + bedDesignation.getBed() + " -> " + toBed + "}";
     }
 
 }

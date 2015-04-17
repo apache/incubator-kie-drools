@@ -80,7 +80,7 @@ public class EmployeeChangeMove extends AbstractMove {
     }
 
     public String toString() {
-        return shiftAssignment + " => " + toEmployee;
+        return shiftAssignment + " {" + shiftAssignment.getEmployee() + " -> " + toEmployee + "}";
     }
 
 }

@@ -95,7 +95,7 @@ public class MrProcessAssignment extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return process + " @ " + machine;
+        return process.toString();
     }
 
 }

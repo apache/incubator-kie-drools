@@ -103,4 +103,12 @@ public class Employee extends AbstractPersistable implements Labeled {
         return "Employee " + name;
     }
 
+    @Override
+    public String toString() {
+        if (name == null) {
+            return super.toString();
+        }
+        return name;
+    }
+
 }

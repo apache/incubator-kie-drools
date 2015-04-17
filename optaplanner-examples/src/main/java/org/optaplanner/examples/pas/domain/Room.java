@@ -90,15 +90,6 @@ public class Room extends AbstractPersistable {
         this.bedList = bedList;
     }
 
-    public String getLabel() {
-        return name;
-    }
-
-    @Override
-    public String toString() {
-        return department + "_" + name;
-    }
-
     public int countHardDisallowedAdmissionPart(AdmissionPart admissionPart) {
         return countMissingRequiredRoomProperties(admissionPart.getPatient())
                 + department.countHardDisallowedAdmissionPart(admissionPart)
@@ -159,6 +150,15 @@ public class Room extends AbstractPersistable {
             }
         }
         return count;
+    }
+
+    public String getLabel() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
 }

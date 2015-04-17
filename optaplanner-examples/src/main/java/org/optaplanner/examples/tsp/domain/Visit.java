@@ -83,7 +83,10 @@ public class Visit extends AbstractPersistable implements Standstill {
 
     @Override
     public String toString() {
-        return location + "(after " + (previousStandstill == null ? "null" : previousStandstill.getLocation()) + ")";
+        if (location.getName() == null) {
+            return super.toString();
+        }
+        return location.getName();
     }
 
 }

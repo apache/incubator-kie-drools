@@ -92,7 +92,7 @@ public class EmployeeMultipleChangeMove extends AbstractMove {
     }
 
     public String toString() {
-        return shiftAssignmentList + " => " + toEmployee;
+        return shiftAssignmentList + " {? -> " + toEmployee + "}";
     }
 
 }

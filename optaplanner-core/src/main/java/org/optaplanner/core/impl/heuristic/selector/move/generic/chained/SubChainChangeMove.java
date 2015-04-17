@@ -49,13 +49,13 @@ public class SubChainChangeMove extends AbstractMove {
         if (subChain.getEntityList().contains(toPlanningValue)) {
             return false;
         }
-        Object oldFirstPlanningValue = variableDescriptor.getValue(subChain.getFirstEntity());
-        return !ObjectUtils.equals(oldFirstPlanningValue, toPlanningValue);
+        Object oldFirstValue = variableDescriptor.getValue(subChain.getFirstEntity());
+        return !ObjectUtils.equals(oldFirstValue, toPlanningValue);
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        Object oldFirstPlanningValue = variableDescriptor.getValue(subChain.getFirstEntity());
-        return new SubChainChangeMove(subChain, variableDescriptor, oldFirstPlanningValue);
+        Object oldFirstValue = variableDescriptor.getValue(subChain.getFirstEntity());
+        return new SubChainChangeMove(subChain, variableDescriptor, oldFirstValue);
     }
 
     public void doMove(ScoreDirector scoreDirector) {
@@ -103,7 +103,8 @@ public class SubChainChangeMove extends AbstractMove {
     }
 
     public String toString() {
-        return subChain + " => " + toPlanningValue;
+        Object oldFirstValue = variableDescriptor.getValue(subChain.getFirstEntity());
+        return subChain.toDottedString() + " {" + oldFirstValue + " -> " + toPlanningValue + "}";
     }
 
 }

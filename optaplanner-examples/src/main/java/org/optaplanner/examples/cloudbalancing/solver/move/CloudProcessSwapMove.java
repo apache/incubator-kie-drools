@@ -83,7 +83,8 @@ public class CloudProcessSwapMove extends AbstractMove {
     }
 
     public String toString() {
-        return leftCloudProcess + " <=> " + rightCloudProcess;
+        return leftCloudProcess + " {" + leftCloudProcess.getComputer() +  "} <-> "
+                + rightCloudProcess + " {" + rightCloudProcess.getComputer() + "}";
     }
 
 }

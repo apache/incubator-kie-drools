@@ -23,7 +23,9 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningEntity
@@ -32,6 +34,12 @@ public class TestdataEntityProvidingEntity extends TestdataObject {
     public static EntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataEntityProvidingSolution.buildSolutionDescriptor();
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataEntityProvidingEntity.class);
+    }
+
+    public static GenuineVariableDescriptor buildVariableDescriptorForValue() {
+        SolutionDescriptor solutionDescriptor = TestdataEntityProvidingSolution.buildSolutionDescriptor();
+        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataEntityProvidingEntity.class);
+        return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
     private final List<TestdataValue> valueRange;

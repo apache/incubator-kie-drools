@@ -50,4 +50,12 @@ public class Depot extends AbstractPersistable {
         return location.getDistanceTo(standstill.getLocation());
     }
 
+    @Override
+    public String toString() {
+        if (location.getName() == null) {
+            return super.toString();
+        }
+        return location.getName();
+    }
+
 }

@@ -109,7 +109,7 @@ public abstract class Exam extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return topic + " @ " + getPeriod() + " + " + room;
+        return topic.toString();
     }
 
 }

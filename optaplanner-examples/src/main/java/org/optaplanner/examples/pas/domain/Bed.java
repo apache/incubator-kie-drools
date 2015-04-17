@@ -56,7 +56,7 @@ public class Bed extends AbstractPersistable implements Labeled {
 
     @Override
     public String toString() {
-        return room + "_" + indexInRoom;
+        return room + "(" + indexInRoom + ")";
     }
 
 }

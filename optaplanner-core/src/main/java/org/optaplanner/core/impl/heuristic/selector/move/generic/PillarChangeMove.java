@@ -131,7 +131,8 @@ public class PillarChangeMove extends AbstractMove {
     }
 
     public String toString() {
-        return pillar + " => " + toPlanningValue;
+        Object oldValue = variableDescriptor.getValue(pillar.get(0));
+        return pillar.toString() + " {" + oldValue + " -> " + toPlanningValue + "}";
     }
 
 }

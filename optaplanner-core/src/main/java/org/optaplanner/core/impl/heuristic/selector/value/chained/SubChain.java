@@ -92,4 +92,8 @@ public class SubChain implements Serializable {
         return entityList.toString();
     }
 
+    public String toDottedString() {
+        return "[" + getFirstEntity() + ".." + getLastEntity() + "]";
+    }
+
 }

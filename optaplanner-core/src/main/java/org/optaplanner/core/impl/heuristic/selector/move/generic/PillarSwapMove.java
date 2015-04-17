@@ -170,7 +170,25 @@ public class PillarSwapMove extends AbstractMove {
     }
 
     public String toString() {
-        return leftPillar + " <=> " + rightPillar;
+        StringBuilder s = new StringBuilder(variableDescriptors.size() * 16);
+        s.append(leftPillar).append(" {");
+        appendVariablesToString(s, leftPillar);
+        s.append("} <-> ");
+        s.append(rightPillar).append(" {");
+        appendVariablesToString(s, rightPillar);
+        s.append("}");
+        return s.toString();
+    }
+
+    protected void appendVariablesToString(StringBuilder s, List<Object> pillar) {
+        boolean first = true;
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+            if (!first) {
+                s.append(", ");
+            }
+            s.append(variableDescriptor.getValue(pillar.get(0)));
+            first = false;
+        }
     }
 
 }

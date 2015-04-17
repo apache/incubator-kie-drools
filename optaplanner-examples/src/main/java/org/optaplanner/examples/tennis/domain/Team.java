@@ -45,4 +45,9 @@ public class Team extends AbstractPersistable implements Labeled {
         return name;
     }
 
+    @Override
+    public String toString() {
+        return name == null ? super.toString() : name;
+    }
+
 }

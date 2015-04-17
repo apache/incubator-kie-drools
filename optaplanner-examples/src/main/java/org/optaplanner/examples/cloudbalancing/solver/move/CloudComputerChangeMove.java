@@ -80,7 +80,7 @@ public class CloudComputerChangeMove extends AbstractMove {
     }
 
     public String toString() {
-        return cloudProcess + " => " + toCloudComputer;
+        return cloudProcess + " {" + cloudProcess.getComputer() + " -> " + toCloudComputer + "}";
     }
 
 }

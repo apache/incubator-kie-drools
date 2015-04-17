@@ -47,7 +47,10 @@ public class Domicile extends AbstractPersistable implements Standstill {
 
     @Override
     public String toString() {
-        return location.toString();
+        if (location.getName() == null) {
+            return super.toString();
+        }
+        return location.getName();
     }
 
 }

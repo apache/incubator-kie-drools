@@ -265,7 +265,9 @@ public class TailChainSwapMove extends AbstractMove {
     }
 
     public String toString() {
-        return leftEntity + " =tailChainSwap=> " + rightValue;
+        Object leftValue = variableDescriptor.getValue(leftEntity);
+        Object rightEntity = inverseVariableSupply.getInverseSingleton(rightValue);
+        return leftEntity + " {" + leftValue + "} <-tailChainSwap-> " + rightEntity + " {" + rightValue + "}";
     }
 
 }

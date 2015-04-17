@@ -131,7 +131,10 @@ public class SubChainSwapMove extends AbstractMove {
     }
 
     public String toString() {
-        return leftSubChain + " <=> " + rightSubChain;
+        Object oldLeftValue = variableDescriptor.getValue(leftSubChain.getFirstEntity());
+        Object oldRightValue = variableDescriptor.getValue(rightSubChain.getFirstEntity());
+        return leftSubChain.toDottedString() + " {" + oldLeftValue + "} <-> "
+                + rightSubChain.toDottedString() + " {" + oldRightValue + "}";
     }
 
 }

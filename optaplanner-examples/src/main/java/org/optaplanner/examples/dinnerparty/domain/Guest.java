@@ -77,7 +77,7 @@ public class Guest extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return code + "(" + job + "," + gender.getCode() + ")";
+        return name;
     }
 
 }

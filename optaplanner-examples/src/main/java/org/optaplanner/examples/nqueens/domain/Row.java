@@ -40,7 +40,7 @@ public class Row extends AbstractPersistable implements Labeled {
 
     @Override
     public String toString() {
-        return "row" + index;
+        return "Row-" + index;
     }
 
 }
