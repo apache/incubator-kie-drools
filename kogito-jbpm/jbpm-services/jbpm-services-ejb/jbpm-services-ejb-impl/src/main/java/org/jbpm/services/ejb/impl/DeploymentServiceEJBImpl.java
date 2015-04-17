@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
+import org.jbpm.kie.services.impl.FormManagerService;
 import org.jbpm.kie.services.impl.KModuleDeploymentService;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl;
@@ -110,6 +111,12 @@ public class DeploymentServiceEJBImpl extends KModuleDeploymentService implement
 		super.setRuntimeDataService(runtimeDataService);
 		super.addListener((DeploymentEventListener) runtimeDataService);
 
+	}
+
+	@EJB(beanInterface=FormManagerServiceEJBImpl.class)
+	@Override
+	public void setFormManagerService(FormManagerService formManagerService) {
+		super.setFormManagerService(formManagerService);
 	}
 
 	@Override
