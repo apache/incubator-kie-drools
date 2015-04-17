@@ -170,10 +170,18 @@ public class DefinitionServiceEJBIntegrationTest extends AbstractTestSupport {
         Map<String, String> taskInputMappings = bpmn2Service.getTaskInputMappings(deploymentUnit.getIdentifier(), processId, "HR Interview" );
         
         assertEquals(4, taskInputMappings.keySet().size());
+        assertEquals("java.lang.String", taskInputMappings.get("TaskName"));
+        assertEquals("Object", taskInputMappings.get("GroupId"));
+        assertEquals("Object", taskInputMappings.get("Comment"));
+        assertEquals("String", taskInputMappings.get("in_name"));
         
         Map<String, String> taskOutputMappings = bpmn2Service.getTaskOutputMappings(deploymentUnit.getIdentifier(), processId, "HR Interview" );
         
         assertEquals(4, taskOutputMappings.keySet().size());
+        assertEquals("String", taskOutputMappings.get("out_name"));
+        assertEquals("Integer", taskOutputMappings.get("out_age"));
+        assertEquals("String", taskOutputMappings.get("out_mail"));
+        assertEquals("Integer", taskOutputMappings.get("out_score"));
         
         Map<String, Collection<String>> associatedEntities = bpmn2Service.getAssociatedEntities(deploymentUnit.getIdentifier(), processId);
         

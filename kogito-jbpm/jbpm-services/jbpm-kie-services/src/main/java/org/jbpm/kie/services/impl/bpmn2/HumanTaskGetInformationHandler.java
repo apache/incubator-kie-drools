@@ -21,7 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.xml.ExtensibleXmlParser;
+import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.bpmn2.xml.UserTaskHandler;
+import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.w3c.dom.Element;
@@ -35,6 +37,8 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
     private ProcessDescriptionRepository repository;
     
     private BPMN2DataServiceSemanticModule module;
+    
+    private Map<String, ItemDefinition> itemDefinitions;    
 
     /**
      * Creates a new {@link HumanTaskGetInformationHandler} instance.
@@ -58,20 +62,44 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
     protected void readIoSpecification(org.w3c.dom.Node xmlNode,
             Map<String, String> dataInputs, Map<String, String> dataOutputs) {
         dataInputs.clear();
-        dataOutputs.clear();
+        dataOutputs.clear(); 
+        
+        Map<String, String> dataTypeInputs = new HashMap<String, String>();
+        Map<String, String> dataTypeOutputs = new HashMap<String, String>();
 
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
         while (subNode instanceof Element) {
             String subNodeName = subNode.getNodeName();
             if ("dataInput".equals(subNodeName)) {
-                String id = ((Element) subNode).getAttribute("id");
-                String inputName = ((Element) subNode).getAttribute("name");
+            	String id = ((Element) subNode).getAttribute("id");
+            	String inputName = ((Element) subNode).getAttribute("name");
+                String itemSubjectRef = ((Element) subNode).getAttribute("itemSubjectRef");
                 dataInputs.put(id, inputName);
+                if (itemSubjectRef == null || itemSubjectRef.isEmpty()) {
+                	String dataType = ((Element) subNode).getAttribute("dtype");
+                	if (dataType == null || dataType.isEmpty()) {
+                		dataType = "java.lang.String";
+                	}
+                	dataTypeInputs.put(inputName, dataType);
+                } else {
+                	dataTypeInputs.put(inputName, itemDefinitions.get(itemSubjectRef).getStructureRef());
+                }
             }
             if ("dataOutput".equals(subNodeName)) {
-                String id = ((Element) subNode).getAttribute("id");
+            	String id = ((Element) subNode).getAttribute("id");
                 String outputName = ((Element) subNode).getAttribute("name");
+                String itemSubjectRef = ((Element) subNode).getAttribute("itemSubjectRef");
+                
                 dataOutputs.put(id, outputName);
+                if (itemSubjectRef == null || itemSubjectRef.isEmpty()) {
+                	String dataType = ((Element) subNode).getAttribute("dtype");
+                	if (dataType == null || dataType.isEmpty()) {
+                		dataType = "java.lang.String";
+                	}
+                	dataTypeOutputs.put(outputName, dataType);
+                } else {
+                	dataTypeOutputs.put(outputName, itemDefinitions.get(itemSubjectRef).getStructureRef());
+                }
             }
             subNode = subNode.getNextSibling();
         }
@@ -90,11 +118,11 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
         Map<String, String> inputParams = new HashMap<String, String>();
         
         
-        for (Map.Entry<String, String> in : dataInputs.entrySet()) {
+        for (Map.Entry<String, String> in : dataTypeInputs.entrySet()) {
         	inputParams.put(in.getKey(), in.getValue());
         }
         Map<String, String> outputParams = new HashMap<String, String>();
-        for (Map.Entry<String, String> out : dataOutputs.entrySet()) {
+        for (Map.Entry<String, String> out : dataTypeOutputs.entrySet()) {
             outputParams.put(out.getKey(), out.getValue());
         }
 
@@ -107,11 +135,15 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
         repository.getProcessDesc(mainProcessId).getTaskInputMappings().put(task.getName(), inputParams);
         repository.getProcessDesc(mainProcessId).getTaskOutputMappings().put(task.getName(), outputParams);
     }
+    
+    
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     protected void handleNode(final org.jbpm.workflow.core.Node node, final Element element, final String uri, 
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
-            super.handleNode(node, element, uri, localName, parser);
+    	itemDefinitions = (Map<String, ItemDefinition>)((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
+    	super.handleNode(node, element, uri, localName, parser);
         WorkItemNode humanTaskNode = (WorkItemNode) node;
         Map<String, Object> parameters = humanTaskNode.getWork().getParameters();
         String mainProcessId = module.getRepoHelper().getProcess().getId();
@@ -136,7 +168,7 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
             }
         }
         ((UserTaskDefinitionImpl)repository.getProcessDesc(mainProcessId).getTasks().get(humanTaskNode.getName())).setAssociatedEntities(currentAssignment);
-       
+        itemDefinitions = null;
     }
     
     @Override

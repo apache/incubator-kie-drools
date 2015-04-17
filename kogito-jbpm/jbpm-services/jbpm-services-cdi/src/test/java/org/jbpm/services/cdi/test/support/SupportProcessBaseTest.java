@@ -158,7 +158,7 @@ public abstract class SupportProcessBaseTest extends AbstractBaseTest {
         		"support.process", createSupportTask.getName());
 
         assertEquals(1, taskOutputMappings.size());
-        assertEquals("output_customer", taskOutputMappings.values().iterator().next());
+        assertEquals("output_customer", taskOutputMappings.keySet().iterator().next());
 
         Map<String, Object> output = new HashMap<String, Object>();
 
