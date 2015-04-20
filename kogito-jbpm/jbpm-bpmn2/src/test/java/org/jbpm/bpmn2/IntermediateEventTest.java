@@ -2065,6 +2065,23 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ksession.abortProcessInstance(processInstance.getId());        
         assertProcessInstanceFinished(processInstance, ksession);
     }
+    
+    @Test
+    public void testIntermediateCatchEventTimerDurationValueFromGlobal() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-GlobalTimerInterrupted.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        
+        ksession.setGlobal("time", "2s");
+        
+        ProcessInstance processInstance = ksession.startProcess("interruptedTimer");
+        Thread.sleep(1000);
+        assertProcessInstanceActive(processInstance);
+        // now wait for 1 second for timer to trigger
+        Thread.sleep(2000);
+
+        assertProcessInstanceFinished(processInstance, ksession);
+
+    }
 
     /*
      * helper methods

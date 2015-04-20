@@ -46,7 +46,17 @@ public class VariableScopeInstance extends AbstractContextInstance {
     }
 
     public Object getVariable(String name) {
-        return variables.get(name);
+                
+        Object value = variables.get(name);
+        if (value != null) {
+            return value;
+        }
+        
+        if (getProcessInstance() != null && getProcessInstance().getKnowledgeRuntime() != null) {
+            return getProcessInstance().getKnowledgeRuntime().getGlobal(name);
+        }
+        
+        return null;
     }
 
     public Map<String, Object> getVariables() {

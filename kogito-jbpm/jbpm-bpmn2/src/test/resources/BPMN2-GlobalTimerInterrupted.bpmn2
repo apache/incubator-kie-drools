@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                   xmlns="http://www.omg.org/bpmn20" 
+                   xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
+                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI" 
+                   xmlns:drools="http://www.jboss.org/drools" 
+                   id="_df_GEJnmEeG1YvOsUtyHvw" 
+                   xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" 
+                   targetNamespace="http://www.omg.org/bpmn20">
+
+  <bpmn2:itemDefinition id="_timeItem" structureRef="String"/>
+
+  <bpmn2:process id="interruptedTimer" isExecutable="true">
+    <extensionElements>
+        <drools:global identifier="time" type="java.lang.String" />
+    </extensionElements>
+    <bpmn2:property id="time" itemSubjectRef="_timeItem"/>
+
+    <bpmn2:startEvent id="_1" drools:bgcolor="#ffffff" name="">
+      <bpmn2:outgoing>_1-2</bpmn2:outgoing>
+    </bpmn2:startEvent>
+
+    <bpmn2:scriptTask id="_2" name="start" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_1-2</bpmn2:incoming>
+      <bpmn2:outgoing>_2-3</bpmn2:outgoing>
+      <bpmn2:script><![CDATA[System.out.println("- process start");]]></bpmn2:script>
+    </bpmn2:scriptTask>
+
+    <bpmn2:sequenceFlow id="_1-2" sourceRef="_1" targetRef="_2"/>
+
+    <bpmn2:sequenceFlow id="_2-3" sourceRef="_2" targetRef="_3"/>
+
+    <bpmn2:intermediateCatchEvent id="_3" drools:bgcolor="#ffffff" drools:boundaryca="false" name="">
+      <bpmn2:incoming>_2-3</bpmn2:incoming>
+      <bpmn2:outgoing>_3-4</bpmn2:outgoing>
+      <bpmn2:timerEventDefinition id="_6">
+        <bpmn2:timeCycle xsi:type="bpmn2:tFormalExpression" id="_7">#{time}</bpmn2:timeCycle>
+      </bpmn2:timerEventDefinition>
+    </bpmn2:intermediateCatchEvent>
+
+    <bpmn2:scriptTask id="_4" name="end" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_3-4</bpmn2:incoming>
+      <bpmn2:outgoing>_4-5</bpmn2:outgoing>
+      <bpmn2:script><![CDATA[System.out.println("- process end");]]></bpmn2:script>
+    </bpmn2:scriptTask>
+
+    <bpmn2:sequenceFlow id="_3-4" sourceRef="_3" targetRef="_4"/>
+
+    <bpmn2:endEvent id="_5" drools:bgcolor="#ffffff" name="">
+      <bpmn2:incoming>_4-5</bpmn2:incoming>
+    </bpmn2:endEvent>
+
+    <bpmn2:sequenceFlow id="_4-5" sourceRef="_4" targetRef="_5"/>
+
+  </bpmn2:process>
+
+  <bpmndi:BPMNDiagram id="_df_tIpnmEeG1YvOsUtyHvw">
+    <bpmndi:BPMNPlane id="_df_tI5nmEeG1YvOsUtyHvw" bpmnElement="defaultPackage.TimerProcess">
+      <bpmndi:BPMNShape id="_df_tJJnmEeG1YvOsUtyHvw" bpmnElement="_1">
+        <dc:Bounds height="30.0" width="30.0" x="49.0" y="121.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_df_tJZnmEeG1YvOsUtyHvw" bpmnElement="_2">
+        <dc:Bounds height="80.0" width="100.0" x="124.0" y="96.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_df_tJpnmEeG1YvOsUtyHvw" bpmnElement="_1-2">
+        <di:waypoint xsi:type="dc:Point" x="64.0" y="136.0"/>
+        <di:waypoint xsi:type="dc:Point" x="174.0" y="136.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_df_tJ5nmEeG1YvOsUtyHvw" bpmnElement="_2-3">
+        <di:waypoint xsi:type="dc:Point" x="174.0" y="136.0"/>
+        <di:waypoint xsi:type="dc:Point" x="284.0" y="136.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_df_tKJnmEeG1YvOsUtyHvw" bpmnElement="_3">
+        <dc:Bounds height="30.0" width="30.0" x="269.0" y="121.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_df_tKZnmEeG1YvOsUtyHvw" bpmnElement="_4">
+        <dc:Bounds height="80.0" width="100.0" x="344.0" y="96.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_df_tKpnmEeG1YvOsUtyHvw" bpmnElement="_3-4">
+        <di:waypoint xsi:type="dc:Point" x="284.0" y="136.0"/>
+        <di:waypoint xsi:type="dc:Point" x="394.0" y="136.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_df_tK5nmEeG1YvOsUtyHvw" bpmnElement="_5">
+        <dc:Bounds height="28.0" width="28.0" x="484.0" y="117.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_df_tLJnmEeG1YvOsUtyHvw" bpmnElement="_4-5">
+        <di:waypoint xsi:type="dc:Point" x="394.0" y="136.0"/>
+        <di:waypoint xsi:type="dc:Point" x="498.0" y="131.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</bpmn2:definitions>
