@@ -16,6 +16,7 @@ import org.drools.core.time.impl.TimerJobInstance;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.NamedJobContext;
 import org.jbpm.process.core.timer.SchedulerServiceInterceptor;
+import org.jbpm.process.core.timer.impl.DelegateSchedulerServiceInterceptor;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.process.core.timer.impl.GlobalTimerService.GlobalJobHandle;
 import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
@@ -27,6 +28,8 @@ public class EjbSchedulerService implements GlobalSchedulerService {
 	private AtomicLong idCounter = new AtomicLong();
 	private TimerService globalTimerService;
 	private EJBTimerScheduler scheduler;
+	
+	private SchedulerServiceInterceptor interceptor = new DelegateSchedulerServiceInterceptor(this);
 	
 
 	@Override
@@ -47,9 +50,8 @@ public class EjbSchedulerService implements GlobalSchedulerService {
 														jobHandle, 
 														(InternalSchedulerService) globalTimerService);
 		
-		jobHandle.setTimerJobInstance((TimerJobInstance) jobInstance);
-		
-		internalSchedule(jobInstance);
+		jobHandle.setTimerJobInstance((TimerJobInstance) jobInstance);		
+		interceptor.internalSchedule(jobInstance);
 		return jobHandle;
 	}
 
@@ -90,7 +92,7 @@ public class EjbSchedulerService implements GlobalSchedulerService {
 
 	@Override
 	public boolean isTransactional() {
-		return true;
+		return false;
 	}
 
 	@Override
@@ -100,7 +102,7 @@ public class EjbSchedulerService implements GlobalSchedulerService {
 
 	@Override
 	public void setInterceptor(SchedulerServiceInterceptor interceptor) {
-		// not used here
+	    this.interceptor = interceptor; 
 	}
 
 	@Override

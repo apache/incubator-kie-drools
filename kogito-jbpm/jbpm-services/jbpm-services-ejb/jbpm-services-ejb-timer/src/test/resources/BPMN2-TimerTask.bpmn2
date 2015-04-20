@@ -10,7 +10,7 @@
       <bpmn2:incoming>_1-_3</bpmn2:incoming>
       <bpmn2:outgoing>_3-_4</bpmn2:outgoing>
       <bpmn2:timerEventDefinition id="TimerEventDefinition_1">
-        <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1">2s</bpmn2:timeDuration>
+        <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1">#{x}</bpmn2:timeDuration>
       </bpmn2:timerEventDefinition>
     </bpmn2:intermediateCatchEvent>
     <bpmn2:scriptTask id="_4" name="Event">

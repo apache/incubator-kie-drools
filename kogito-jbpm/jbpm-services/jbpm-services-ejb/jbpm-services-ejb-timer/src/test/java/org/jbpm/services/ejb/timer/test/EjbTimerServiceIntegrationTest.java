@@ -8,7 +8,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
@@ -87,7 +89,19 @@ public class EjbTimerServiceIntegrationTest {
 	
 	
 	@Test
-	public void testProcessWithTimerOverEJBTimerService() throws InterruptedException {
+	public void testProcessWithTimerOverEJBTimerService2SecDelay() throws InterruptedException {
+	    
+	    testProcessWithTimerOverEJBTimerService("2s");
+	}
+	
+	@Test
+    public void testProcessWithTimerOverEJBTimerService0SecDelay() throws InterruptedException {
+	    
+	    testProcessWithTimerOverEJBTimerService("0s");
+        
+    }
+	
+	public void testProcessWithTimerOverEJBTimerService(String delay) throws InterruptedException {
 		cleanupSingletonSessionId();
 		
 		final List<String> timerExecution = new ArrayList<String>();
@@ -125,9 +139,12 @@ public class EjbTimerServiceIntegrationTest {
         
         RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
         KieSession ksession = runtime.getKieSession();
-        assertNotNull(ksession);       
+        assertNotNull(ksession);  
+        
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("x", delay);
 
-        ProcessInstance instance = ksession.startProcess("IntermediateCatchEvent");
+        ProcessInstance instance = ksession.startProcess("IntermediateCatchEvent", parameters);
         assertNotNull(instance);
         
         Thread.sleep(3000);
