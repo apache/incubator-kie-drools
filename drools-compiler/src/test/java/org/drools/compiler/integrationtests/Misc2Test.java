@@ -7280,4 +7280,84 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(1, list.size());
         assertEquals(18, (int)list.get(0));
     }
+    
+    @Test
+    public void testVariableOrderProblem()
+    {
+        // DROOLS-707
+
+        // - VERSION 1
+        // this case throws a NPE
+        String drl1 =
+                "import java.util.*\n" +
+                        "rule \"Version 1 - crash\"\n" +
+                        "    when\n" +
+                        "        accumulate( Integer($int: intValue), $list: collectSet($int) )\n" +
+                        "        List() from collect( Integer($list not contains intValue) )\n\n" +
+                        "        accumulate( Integer($int: intValue), $list: collectSet($int) )\n" +
+                        "    then\n" +
+                        "end\n";
+
+        KieSession ksession1 = new KieHelper().addContent(drl1, ResourceType.DRL)
+                .build()
+                .newKieSession();
+
+        ksession1.insert(1);
+        assertEquals(1, ksession1.fireAllRules());
+
+        // but switching the order of the rule lines, it passes
+        String drl2 =
+                "import java.util.*\n" +
+                        "rule \"Version 1 - pass\"\n" +
+                        "    when\n" +
+                        "        accumulate( Integer($int: intValue), $list: collectSet($int) )\n\n" +
+                        "        accumulate( Integer($int: intValue), $list: collectSet($int) )\n" +
+                        "        List() from collect( Integer($list not contains intValue) )\n" +
+                        "    then\n" +
+                        "end\n";
+
+        KieSession ksession2 = new KieHelper().addContent(drl2, ResourceType.DRL)
+                .build()
+                .newKieSession();
+
+        ksession2.insert(1);
+        assertEquals(1, ksession2.fireAllRules());
+
+        // - VERSION 2
+        // this case throws a duplicated variable error
+        String drl3 =
+                "import java.util.*\n" +
+                        "rule \"Version 2 - duplicated variable\"\n" +
+                        "when\n" +
+                        "    accumulate( Integer($int: intValue), $list: collectSet($int) )\n" +
+                        "    List() from collect( Integer($list not contains intValue) )\n\n" +
+                        "    $list: List() from collect( Integer() )\n" +
+                        "then\n" +
+                        "end;\n";
+
+        KieSession ksession3 = new KieHelper().addContent(drl3, ResourceType.DRL)
+                .build()
+                .newKieSession();
+
+        ksession3.insert(1);
+        assertEquals(0, ksession3.fireAllRules());
+
+        // but switching the order of the rule lines, it passes
+        String drl4 =
+                "import java.util.*\n" +
+                        "rule \"Version 2 - pass\"\n" +
+                        "when\n" +
+                        "    $list: List() from collect( Integer() )\n\n" +
+                        "    accumulate( Integer($int: intValue), $list: collectSet($int) )\n" +
+                        "    List() from collect( Integer($list not contains intValue) )\n" +
+                        "then\n" +
+                        "end;\n";
+
+        KieSession ksession4 = new KieHelper().addContent(drl4, ResourceType.DRL)
+                .build()
+                .newKieSession();
+
+        ksession4.insert(1);
+        assertEquals(1, ksession4.fireAllRules());
+    }
 }
