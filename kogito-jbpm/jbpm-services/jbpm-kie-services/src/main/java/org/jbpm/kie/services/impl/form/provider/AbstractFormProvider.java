@@ -27,7 +27,6 @@ import org.kie.internal.task.api.model.InternalTask;
 public abstract class AbstractFormProvider implements FormProvider {
 
     protected FormManagerService formManagerService;
-    protected String formExtension = "";
 
     public void setFormManagerService(FormManagerService formManagerService){
         this.formManagerService = formManagerService;
@@ -51,6 +50,6 @@ public abstract class AbstractFormProvider implements FormProvider {
     }
 
     protected String getFormExtension() {
-        return formExtension;
+        return "";
     }
 }

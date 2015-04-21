@@ -27,10 +27,6 @@ public class InMemoryFormProvider extends FreemakerFormProvider {
     private static final String DEFAULT_PROCESS = "DefaultProcess";
     private static final String DEFAULT_TASK = "DefaultTask";
 
-    {
-        formExtension = ".ftl";
-    }
-
     @Override
     public String render(String name, ProcessDefinition process, Map<String, Object> renderContext) {
         ProcessAssetDesc asset = null;
@@ -70,5 +66,10 @@ public class InMemoryFormProvider extends FreemakerFormProvider {
     @Override
     public int getPriority() {
         return 3;
+    }
+
+    @Override
+    protected String getFormExtension() {
+        return ".ftl";
     }
 }

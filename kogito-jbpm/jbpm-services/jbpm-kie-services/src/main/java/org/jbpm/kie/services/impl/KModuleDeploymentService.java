@@ -310,8 +310,8 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                 }
             } else if (fileName.matches(".+ftl$") || fileName.matches(".+form$")) {
                 try {
-                    // Registering forms
                     String formContent = new String(module.getBytes(fileName), "UTF-8");
+                    if (fileName.indexOf( "/" ) != -1) fileName = fileName.substring( fileName.lastIndexOf( "/" ) + 1);
                     formManagerService.registerForm(unit.getIdentifier(), fileName, formContent);
                 } catch (UnsupportedEncodingException e) {
                 	throw new IllegalArgumentException("Unsupported encoding while processing form " + fileName);
