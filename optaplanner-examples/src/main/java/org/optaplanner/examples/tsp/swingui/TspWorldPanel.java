@@ -76,7 +76,11 @@ public class TspWorldPanel extends JPanel {
                 if (translator != null) {
                     double longitude = translator.translateXToLongitude(e.getX());
                     double latitude = translator.translateYToLatitude(e.getY());
-                    TspWorldPanel.this.tspPanel.insertLocationAndVisit(longitude, latitude);
+                    if (e.getButton() == MouseEvent.BUTTON1) {
+                        TspWorldPanel.this.tspPanel.insertLocationAndVisit(longitude, latitude);
+                    } else if (e.getButton() == MouseEvent.BUTTON3) {
+                        TspWorldPanel.this.tspPanel.moveVisitToTail(new AirLocation(-1L, latitude, longitude));
+                    }
                 }
             }
         });
@@ -154,7 +158,11 @@ public class TspWorldPanel extends JPanel {
         g.drawString(locationsSizeString,
                 ((int) width - g.getFontMetrics().stringWidth(locationsSizeString)) / 2, (int) height - 5);
         if (travelingSalesmanTour.getDistanceType() == DistanceType.AIR_DISTANCE) {
-            String clickString = "Click anywhere in the map to add a visit.";
+            String clickString = "Left click anywhere in the map to add a visit.";
+            g.drawString(clickString, (int) width - 5 - g.getFontMetrics().stringWidth(clickString), (int) height - 10 - TEXT_SIZE);
+        }
+        if (travelingSalesmanTour.getDistanceType() == DistanceType.AIR_DISTANCE) {
+            String clickString = "Right click near a visit to append it to the end.";
             g.drawString(clickString, (int) width - 5 - g.getFontMetrics().stringWidth(clickString), (int) height - 5);
         }
         // Show soft score
@@ -164,7 +172,7 @@ public class TspWorldPanel extends JPanel {
             String distanceString = travelingSalesmanTour.getDistanceString(NUMBER_FORMAT);
             g.setFont(g.getFont().deriveFont(Font.BOLD, (float) TEXT_SIZE * 2));
             g.drawString(distanceString,
-                    (int) width - g.getFontMetrics().stringWidth(distanceString) - 10, (int) height - 10 - TEXT_SIZE);
+                    (int) width - g.getFontMetrics().stringWidth(distanceString) - 10, (int) height - 15 - 2 * TEXT_SIZE);
         }
         repaint();
     }

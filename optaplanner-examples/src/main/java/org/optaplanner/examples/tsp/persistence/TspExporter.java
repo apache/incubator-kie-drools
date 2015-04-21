@@ -66,7 +66,7 @@ public class TspExporter extends AbstractTxtSolutionExporter {
             bufferedWriter.write("EOF\n");
         }
 
-        private Standstill findNextVisit(Standstill standstill) {
+        private Visit findNextVisit(Standstill standstill) {
             for (Visit visit : tour.getVisitList()) {
                 if (visit.getPreviousStandstill() == standstill) {
                     return visit;

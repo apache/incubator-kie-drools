@@ -133,6 +133,36 @@ public class TspPanel extends SolutionPanel {
         });
     }
 
+    public void moveVisitToTail(AirLocation clickLocation) {
+        TravelingSalesmanTour tour = getTravelingSalesmanTour();
+        Visit visit = null;
+        double minimumAirDistance = Double.MAX_VALUE;
+        for (Visit selectedVisit : tour.getVisitList()) {
+            double airDistance = selectedVisit.getLocation().getAirDistanceDoubleTo(clickLocation);
+            if (airDistance < minimumAirDistance) {
+                visit = selectedVisit;
+                minimumAirDistance = airDistance;
+            }
+        }
+        logger.info("Moving visit ({}) to tail.", visit);
+        Standstill standstill = tour.getDomicile();
+        for (Visit nextVisit = findNextVisit(tour, standstill); nextVisit != null; nextVisit = findNextVisit(tour, standstill)) {
+            standstill = nextVisit;
+        }
+        doMove(visit, standstill);
+        getWorkflowFrame().resetScreen();
+    }
+
+    private Visit findNextVisit(TravelingSalesmanTour tour, Standstill standstill) {
+        // Using an @InverseRelationShadowVariable on the model like in vehicle routing is far more efficient
+        for (Visit visit : tour.getVisitList()) {
+            if (visit.getPreviousStandstill() == standstill) {
+                return visit;
+            }
+        }
+        return null;
+    }
+
     public void doMove(Visit visit, Standstill toStandstill) {
         solutionBusiness.doChangeMove(visit, "previousStandstill", toStandstill);
     }
