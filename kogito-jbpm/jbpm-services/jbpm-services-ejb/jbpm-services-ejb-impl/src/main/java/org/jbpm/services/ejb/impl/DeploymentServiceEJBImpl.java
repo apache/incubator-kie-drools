@@ -46,8 +46,10 @@ import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.ejb.api.DefinitionServiceEJBLocal;
 import org.jbpm.services.ejb.api.DeploymentServiceEJBLocal;
 import org.jbpm.services.ejb.api.DeploymentServiceEJBRemote;
+import org.jbpm.services.ejb.api.ExecutorServiceEJB;
 import org.jbpm.services.ejb.api.RuntimeDataServiceEJBLocal;
 import org.jbpm.services.ejb.impl.identity.EJBContextIdentityProvider;
+import org.kie.internal.executor.api.ExecutorService;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.NamedObjectModel;
@@ -119,7 +121,13 @@ public class DeploymentServiceEJBImpl extends KModuleDeploymentService implement
 		super.setFormManagerService(formManagerService);
 	}
 
+	@EJB(beanInterface=ExecutorServiceEJB.class)
 	@Override
+    public void setExecutorService(ExecutorService executorService) {
+        super.setExecutorService(executorService);
+    }
+
+    @Override
 	public void deploy(String groupId, String artifactId, String version) {
 		KModuleDeploymentUnit unit = new KModuleDeploymentUnit(groupId, artifactId, version);
 		

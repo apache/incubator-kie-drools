@@ -25,8 +25,8 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
-import org.jbpm.kie.services.impl.FormManagerService;
 
+import org.jbpm.kie.services.impl.FormManagerService;
 import org.jbpm.kie.services.impl.KModuleDeploymentService;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.process.audit.event.AuditEventBuilder;
@@ -45,6 +45,7 @@ import org.jbpm.services.cdi.impl.manager.InjectableRegisterableItemsFactory;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
+import org.kie.internal.executor.api.ExecutorService;
 import org.kie.internal.identity.IdentityProvider;
 
 @ApplicationScoped
@@ -145,13 +146,20 @@ public class DeploymentServiceCDIImpl extends KModuleDeploymentService {
 		super.setIdentityProvider(new IdentityProviderCDIWrapper(identityProvider, backupProviders));
 	}
         
-        @Inject
+    @Inject
 	@Override
 	public void setFormManagerService(FormManagerService formManagerService) {
 		super.setFormManagerService(formManagerService);
 	}
 	
-	@Override
+    @Inject	
+    public void setExecutorService(Instance<ExecutorService> executorService) {
+        if (!executorService.isUnsatisfied()) {
+            super.setExecutorService(executorService.get());
+        }
+    }
+
+    @Override
 	protected RegisterableItemsFactory getRegisterableItemsFactory(AuditEventBuilder auditLoggerBuilder, KieContainer kieContainer,
 			KModuleDeploymentUnit unit) {
         

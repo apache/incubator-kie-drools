@@ -192,10 +192,14 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
             } else if ("dataInputAssociation".equals(nodeName)) {
 				readDataInputAssociation(xmlNode, actionNode);
 			} else if ("signalEventDefinition".equals(nodeName)) {
-				String signalName = ((Element) xmlNode)
-						.getAttribute("signalRef");
-				String variable = (String) actionNode
-						.getMetaData("MappingVariable");
+				String signalName = ((Element) xmlNode).getAttribute("signalRef");
+				String variable = (String) actionNode.getMetaData("MappingVariable");
+				
+				// check if signal should be send async
+				if (dataInputs.containsValue("async")) {
+				    signalName = "ASYNC-" + signalName;
+				}
+				
 				actionNode
 						.setAction(new DroolsConsequenceAction(
 								"java",

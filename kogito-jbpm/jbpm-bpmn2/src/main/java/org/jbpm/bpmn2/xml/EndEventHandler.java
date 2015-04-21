@@ -17,6 +17,7 @@
 package org.jbpm.bpmn2.xml;
 
 import static org.jbpm.bpmn2.xml.ProcessHandler.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -127,11 +128,21 @@ public class EndEventHandler extends AbstractNodeHandler {
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("dataInputAssociation".equals(nodeName)) {
+            if ("dataInput".equals(nodeName)) {
+                String id = ((Element) xmlNode).getAttribute("id");
+                String inputName = ((Element) xmlNode).getAttribute("name");
+                dataInputs.put(id, inputName);
+            } else if ("dataInputAssociation".equals(nodeName)) {
                 readEndDataInputAssociation(xmlNode, endNode);
             } else if ("signalEventDefinition".equals(nodeName)) {
                 String signalName = ((Element) xmlNode).getAttribute("signalRef");
                 String variable = (String) endNode.getMetaData("MappingVariable");
+                
+                // check if signal should be send async
+                if (dataInputs.containsValue("async")) {
+                    signalName = "ASYNC-" + signalName;
+                }
+                
                 List<DroolsAction> actions = new ArrayList<DroolsAction>();
                 actions.add(new DroolsConsequenceAction("mvel",
                     RUNTIME_SIGNAL_EVENT

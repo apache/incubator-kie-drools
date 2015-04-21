@@ -59,6 +59,7 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
+import org.kie.internal.executor.api.ExecutorService;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.MergeMode;
 import org.kie.internal.runtime.conf.NamedObjectModel;
@@ -83,7 +84,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     
     private FormManagerService formManagerService;
  
-    
+    private ExecutorService executorService;
     
     public void onInit() {
     	EntityManagerFactoryManager.get().addEntityManagerFactory("org.jbpm.domain", getEmf());
@@ -249,7 +250,9 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 		
 		builder.addEnvironmentEntry("KieDeploymentDescriptor", descriptor);
 		builder.addEnvironmentEntry("KieContainer", kieContainer);
-		
+		if (executorService != null) {
+		    builder.addEnvironmentEntry("ExecutorService", executorService);
+		}
 		// populate all assets with roles for this deployment unit
 		List<String> requiredRoles = descriptor.getRequiredRoles(DeploymentDescriptor.TYPE_VIEW);
 		if (requiredRoles != null && !requiredRoles.isEmpty()) {
@@ -373,11 +376,14 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 		this.merger = merger;
 	}
 
-        public void setFormManagerService(FormManagerService formManagerService) {
-            this.formManagerService = formManagerService;
-        }
+    public void setFormManagerService(FormManagerService formManagerService) {
+        this.formManagerService = formManagerService;
+    }
         
-        
+    public void setExecutorService(ExecutorService executorService) {
+        this.executorService = executorService;
+    }
+    
 
 	@Override
 	public void activate(String deploymentId) {

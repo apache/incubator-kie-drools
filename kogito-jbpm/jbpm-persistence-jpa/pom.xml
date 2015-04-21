@@ -164,6 +164,7 @@
               org.drools.persistence.jta,
               org.drools.persistence.map,
               org.jbpm.marshalling.impl,
+              org.jbpm.process.core.async,
               org.jbpm.process.core.timer,
               org.jbpm.process.core.timer.impl,
               org.jbpm.process.instance,
@@ -181,6 +182,7 @@
               org.kie.api.runtime.process,
               org.kie.internal.command,
               org.kie.internal.process,
+              org.kie.internal.executor.api,
               org.kie.internal.runtime.manager,
               org.kie.internal.runtime.manager.context,
               org.slf4j
