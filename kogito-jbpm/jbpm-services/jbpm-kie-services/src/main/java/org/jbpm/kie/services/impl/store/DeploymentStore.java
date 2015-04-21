@@ -226,14 +226,17 @@ public class DeploymentStore {
 	protected Map<String, String> getEntryAttributes(String attributes) {
 		logger.debug("Reading attributes string {}", attributes);
 		Map<String, String> attributeMap = new HashMap<String, String>();
-		if (attributes != null && !attributes.isEmpty()) {
+		if (attributes != null && !attributes.trim().isEmpty()) {
 			// expected format: key=value;key=value;...
 			String[] pairs = attributes.split(";");
 			
 			for (String pair : pairs) {
 				String[] keyValue = pair.split("=");
-				
-				attributeMap.put(keyValue[0], keyValue[1]);
+				if (keyValue.length == 2) {
+				    attributeMap.put(keyValue[0], keyValue[1]);
+				} else if (keyValue.length == 1) {
+				    attributeMap.put(keyValue[0], "");
+				}
 			}
 		}
 		
