@@ -118,7 +118,10 @@ public class JpaOptLockPersistentStatefulSessionTest {
         public void run() {
             StatefulKnowledgeSession ksession2 = JPAKnowledgeService.loadStatefulKnowledgeSession(ksessionId, kbase, null, createEnvironment(context) );
             SingleSessionCommandService sscs = (SingleSessionCommandService)((CommandBasedStatefulKnowledgeSession) ksession2).getCommandService();
-            sscs.addInterceptor(new OptimisticLockRetryInterceptor());
+            OptimisticLockRetryInterceptor interceptor = new OptimisticLockRetryInterceptor();
+            // set higher delay so that the interceptor is not invoked multiple times on slow machines
+            interceptor.setDelay(500);
+            sscs.addInterceptor(interceptor);
 
             ksession2.setGlobal( "list", list );
             ksession2.insert( 1 );
