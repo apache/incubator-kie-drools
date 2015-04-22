@@ -73,7 +73,9 @@ public interface RuleRuntime
      *            The arguments used for the query
      *
      * @return The QueryResults of the specified query.
-     *         If the query does not exist or no results match the query it is empty.
+     *         If no results match the query it is empty.
+     * 
+     * @throws RuntimeException If the query does not exist
      */
     public QueryResults getQueryResults(String query,
                                         Object... arguments);
