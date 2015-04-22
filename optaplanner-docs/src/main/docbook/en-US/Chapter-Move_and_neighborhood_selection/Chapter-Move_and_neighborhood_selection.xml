@@ -1310,8 +1310,8 @@
           significantly.</para>
 
           <programlisting language="xml">  &lt;nearbySelection&gt;
-    &lt;betaDistributionAlpha&gt;5&lt;/betaDistributionAlpha&gt;
-    &lt;betaDistributionBeta&gt;1&lt;/betaDistributionBeta&gt;
+    &lt;betaDistributionAlpha&gt;1&lt;/betaDistributionAlpha&gt;
+    &lt;betaDistributionBeta&gt;5&lt;/betaDistributionBeta&gt;
   &lt;/nearbySelection&gt;</programlisting>
         </listitem>
       </itemizedlist>
