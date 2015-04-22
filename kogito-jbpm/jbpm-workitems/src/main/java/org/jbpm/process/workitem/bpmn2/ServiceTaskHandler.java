@@ -167,7 +167,7 @@ public class ServiceTaskHandler extends AbstractLogOrThrowWorkItemHandler implem
                 }
 
              } catch (Exception e) {
-                 handleException(e, interfaceRef, operationRef, parameter.getClass().getName(), parameter);
+                 handleException(e, interfaceRef, "", operationRef, parameter.getClass().getName(), parameter);
              } finally {
          		Thread.currentThread().setContextClassLoader(origClassloader);
          	}
@@ -223,11 +223,26 @@ public class ServiceTaskHandler extends AbstractLogOrThrowWorkItemHandler implem
 
 	public void executeJavaWorkItem(WorkItem workItem, WorkItemManager manager) {
         String i = (String) workItem.getParameter("Interface");
+        String iImplementationRef = (String) workItem.getParameter("interfaceImplementationRef"); 
         String operation = (String) workItem.getParameter("Operation");
         String parameterType = (String) workItem.getParameter("ParameterType");
         Object parameter = workItem.getParameter("Parameter");
+        
+        String[] interfaces = {i, iImplementationRef};
+        Class<?> c = null;
+        
+        for(String interf : interfaces) {
+            try {
+                c = Class.forName(interf);
+                break;
+            } catch (ClassNotFoundException cnfe) {
+                if(interf.compareTo(interfaces[interfaces.length - 1]) == 0) {
+                    handleException(cnfe, i, iImplementationRef, operation, parameterType, parameter);
+                }
+            }
+        }
+        
         try {
-            Class<?> c = Class.forName(i, true, getInternalClassLoader());
             Object instance = c.newInstance();
             Class<?>[] classes = null;
             Object[] params = null;
@@ -245,24 +260,25 @@ public class ServiceTaskHandler extends AbstractLogOrThrowWorkItemHandler implem
             results.put("Result", result);
             manager.completeWorkItem(workItem.getId(), results);
         } catch (ClassNotFoundException e) {
-            handleException(e, i, operation, parameterType, parameter);
+            handleException(e, i, iImplementationRef, operation, parameterType, parameter);
         } catch (InstantiationException e) {
-            handleException(e, i, operation, parameterType, parameter);
+            handleException(e, i, iImplementationRef, operation, parameterType, parameter);
         } catch (IllegalAccessException e) {
-            handleException(e, i, operation, parameterType, parameter);
+            handleException(e, i, iImplementationRef, operation, parameterType, parameter);
         } catch (NoSuchMethodException e) {
-            handleException(e, i, operation, parameterType, parameter);
+            handleException(e, i, iImplementationRef, operation, parameterType, parameter);
         } catch (InvocationTargetException e) {
-            handleException(e, i, operation, parameterType, parameter);
+            handleException(e, i, iImplementationRef, operation, parameterType, parameter);
         }
     }
     
-    private void handleException(Throwable cause, String service, String operation, String paramType, Object param) { 
-        logger.debug("Handling exception {} inside service {} and operation {} with param type {} and value {}",
+    private void handleException(Throwable cause, String service, String iImplementationRef, String operation, String paramType, Object param) { 
+        logger.debug("Handling exception {} inside service {} or {} and operation {} with param type {} and value {}",
                 cause.getMessage(), service, operation, paramType, param);
         Map<String, Object> data = new HashMap<String, Object>();
 
         data.put("Interface", service);
+        data.put("InterfaceImplementationRef", iImplementationRef);
         data.put("Operation", operation);
         data.put("ParameterType", paramType);
         data.put("Parameter", param);
