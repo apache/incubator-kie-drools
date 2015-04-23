@@ -211,29 +211,31 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
 
     @After
     public void tearDown() throws Exception {
-    	clearCustomRegistry();
-        disposeRuntimeManager();
-        clearHistory();
-        if (setupDataSource) {
-            if (emf != null) {
-                emf.close();
-                emf = null;
-               	EntityManagerFactoryManager.get().clear();
-
-            }
-            if (ds != null) {
-                ds.close();
-                ds = null;
-            }
-            try {
-                InitialContext context = new InitialContext();
-                UserTransaction ut = (UserTransaction) context.lookup( JtaTransactionManager.DEFAULT_USER_TRANSACTION_NAME );
-                if( ut.getStatus() != Status.STATUS_NO_TRANSACTION ) {
-                    ut.setRollbackOnly();
-                    ut.rollback();
+        try {
+            clearCustomRegistry();
+            disposeRuntimeManager();
+            clearHistory();
+        } finally {
+            if (setupDataSource) {
+                if (emf != null) {
+                    emf.close();
+                    emf = null;
+                    EntityManagerFactoryManager.get().clear();
                 }
-            } catch( Exception e ) {
-                // do nothing
+                if (ds != null) {
+                    ds.close();
+                    ds = null;
+                }
+                try {
+                    InitialContext context = new InitialContext();
+                    UserTransaction ut = (UserTransaction) context.lookup( JtaTransactionManager.DEFAULT_USER_TRANSACTION_NAME );
+                    if( ut.getStatus() != Status.STATUS_NO_TRANSACTION ) {
+                        ut.setRollbackOnly();
+                        ut.rollback();
+                    }
+                } catch( Exception e ) {
+                    // do nothing
+                }
             }
         }
     }
