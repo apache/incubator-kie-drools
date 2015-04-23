@@ -23,10 +23,12 @@ import org.drools.core.time.JobHandle;
 
 /**
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class TimerInstance implements Serializable{
 
+    /** Generated serial version UID */
+    private static final long serialVersionUID = 9161292833931227195L;
+    
     private long id;
     private long timerId;
     private long delay;
@@ -103,12 +105,6 @@ public class TimerInstance implements Serializable{
 		this.processInstanceId = processInstanceId;
 	}
 
-    @Override
-    public String toString() {
-        return "TimerInstance [id=" + id + ", timerId=" + timerId + ", delay=" + delay + ", period=" + period + ", jobHandle=" + jobHandle + ", activated=" + activated + ", lastTriggered=" + lastTriggered + ", processInstanceId=" + processInstanceId
-               + "]";
-    }
-
     public int getRepeatLimit() {
         return repeatLimit;
     }
@@ -132,5 +128,11 @@ public class TimerInstance implements Serializable{
     public void setCronExpression(String cronExpression) {
         this.cronExpression = cronExpression;
     }
-    
+
+    @Override
+    public String toString() {
+        return "TimerInstance [id=" + id + ", timerId=" + timerId + ", delay=" + delay + ", period=" + period + ", jobHandle=" + jobHandle + ", activated=" + activated + ", lastTriggered=" + lastTriggered + ", processInstanceId=" + processInstanceId
+               + "]";
+    }
+
 }

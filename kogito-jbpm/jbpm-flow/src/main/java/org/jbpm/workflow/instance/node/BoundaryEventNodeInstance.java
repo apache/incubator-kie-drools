@@ -34,14 +34,14 @@ public class BoundaryEventNodeInstance extends EventNodeInstance {
         Collection<NodeInstance> nodeInstances = ((NodeInstanceContainer) getNodeInstanceContainer()).getNodeInstances();
         if( type != null && type.startsWith("Compensation") ) { 
             // if not active && completed, signal
-            if( ! isAttachedToNodeActive(nodeInstances, attachedTo) && isAttachedToNodeCompleted(attachedTo)) {
+            if( ! isAttachedToNodeActive(nodeInstances, attachedTo, type, event) && isAttachedToNodeCompleted(attachedTo)) {
                 super.signalEvent(type, event);
             } 
             else {
                 cancel();
             }
         } else { 
-            if (isAttachedToNodeActive(nodeInstances, attachedTo)) {
+            if (isAttachedToNodeActive(nodeInstances, attachedTo, type, event)) {
                 super.signalEvent(type, event);
             } else {
                 cancel();
@@ -49,16 +49,23 @@ public class BoundaryEventNodeInstance extends EventNodeInstance {
         }
     }
 
-    private boolean isAttachedToNodeActive(Collection<NodeInstance> nodeInstances, String attachedTo) {
+    private boolean isAttachedToNodeActive(Collection<NodeInstance> nodeInstances, String attachedTo, String type, Object event) {
         if (nodeInstances != null && !nodeInstances.isEmpty()) {
             for (NodeInstance nInstance : nodeInstances) {
                 String nodeUniqueId = (String) nInstance.getNode().getMetaData().get("UniqueId");
                 boolean isActivating = ((WorkflowProcessInstanceImpl)nInstance.getProcessInstance()).getActivatingNodeIds().contains(nodeUniqueId);
                 if (attachedTo.equals(nodeUniqueId) && !isActivating) {
-                    return true;
+                    // in case this is timer event make sure it corresponds to the proper node instance
+                    if (type.startsWith("Timer-")) {
+                        if (Long.valueOf(nInstance.getId()).equals(event)) {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
                 }
                 if (nInstance instanceof CompositeNodeInstance) {
-                    boolean hasActive = isAttachedToNodeActive(((CompositeNodeInstance) nInstance).getNodeInstances(), attachedTo);
+                    boolean hasActive = isAttachedToNodeActive(((CompositeNodeInstance) nInstance).getNodeInstances(), attachedTo, type, event);
                     if (hasActive) {
                         return true;
                     }

@@ -43,6 +43,7 @@ import org.jbpm.process.instance.impl.ConstraintEvaluator;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
+import org.jbpm.workflow.instance.node.ActionNodeInstance;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
@@ -186,8 +187,8 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     public abstract void internalTrigger(NodeInstance from, String type);
    
     /**
-     * This method is used in both instances of the {@link extendednodeinstanceimpl} 
-     * and {@link actionnodeinstance} instances in order to handle 
+     * This method is used in both instances of the {@link ExtendedNodeInstanceImpl}
+     * and {@link ActionNodeInstance} instances in order to handle 
      * exceptions thrown when executing actions.
      * 
      * @param action An {@link Action} instance.

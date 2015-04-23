@@ -69,6 +69,7 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.EventTrigger;
+import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.Split;
@@ -461,7 +462,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             timer.setDelay(timeDuration);
             timer.setTimeType(Timer.TIME_DURATION);
             compositeNode.addTimer(timer, new DroolsConsequenceAction("java",
-                PROCESS_INSTANCE_SIGNAL_EVENT + "Timer-" + attachedTo + "-" + timeDuration + "\", null);"));
+                PROCESS_INSTANCE_SIGNAL_EVENT + "Timer-" + attachedTo + "-" + timeDuration + "\", kcontext.getNodeInstance().getId());"));
         } else if (timeCycle != null) {
             int index = timeCycle.indexOf("###");
             if (index != -1) {
@@ -472,11 +473,12 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             timer.setDelay(timeCycle);
             timer.setTimeType(Timer.TIME_CYCLE);
             compositeNode.addTimer(timer, new DroolsConsequenceAction("java",
-                PROCESS_INSTANCE_SIGNAL_EVENT + "Timer-" + attachedTo + "-" + timeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "\", null);"));
+                PROCESS_INSTANCE_SIGNAL_EVENT + "Timer-" + attachedTo + "-" + timeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "\", kcontext.getNodeInstance().getId());"));
         } else if (timeDate != null) {
             timer.setDate(timeDate);
             timer.setTimeType(Timer.TIME_DATE);
-            compositeNode.addTimer(timer, new DroolsConsequenceAction("java", PROCESS_INSTANCE_SIGNAL_EVENT + "Timer-" + attachedTo + "-" + timeDate + "\", null);"));
+            compositeNode.addTimer(timer, new DroolsConsequenceAction("java", 
+                PROCESS_INSTANCE_SIGNAL_EVENT + "Timer-" + attachedTo + "-" + timeDate + "\", kcontext.getNodeInstance().getId());"));
         }
         
         if (cancelActivity) {

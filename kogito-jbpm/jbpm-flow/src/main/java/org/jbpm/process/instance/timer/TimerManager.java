@@ -297,10 +297,12 @@ public class TimerManager {
                 ctx.getTimer().setLastTriggered(
                         new Date(ctx.getKnowledgeRuntime().<SessionClock> getSessionClock().getCurrentTime()));
 
+                
                 // if there is no more trigger reset period on timer so its node instance can be removed
                 if (ctx.getTrigger().hasNextFireTime() == null) {
                     ctx.getTimer().setPeriod(0);
                 }
+                
                 ((InternalProcessRuntime) kruntime.getProcessRuntime()).getSignalManager().signalEvent(processInstanceId,
                         "timerTriggered", ctx.getTimer());
 
