@@ -179,7 +179,7 @@ value_sentence
     ;
 
 value_chunk
-    : (literal|EQUALS|COMMA)+
+    : (literal|EQUALS|COMMA|DOT)+
     ;
 
 literal 

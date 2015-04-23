@@ -1,20 +1,29 @@
-// $ANTLR 3.5 src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g 2014-02-20 15:51:31
+// $ANTLR 3.5 src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g 2015-04-23 15:24:03
 
     package org.drools.compiler.lang.dsl;
-    import java.util.List;
-    import java.util.ArrayList;
-    import java.util.regex.Pattern;
-    import org.drools.compiler.compiler.ParserError;
+    import org.antlr.runtime.BitSet;
+import org.antlr.runtime.CommonToken;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.FailedPredicateException;
+import org.antlr.runtime.MismatchedSetException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.Parser;
+import org.antlr.runtime.ParserRuleReturnScope;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.RecognizerSharedState;
+import org.antlr.runtime.Token;
+import org.antlr.runtime.TokenStream;
+import org.antlr.runtime.tree.CommonTreeAdaptor;
+import org.antlr.runtime.tree.RewriteEarlyExitException;
+import org.antlr.runtime.tree.RewriteEmptyStreamException;
+import org.antlr.runtime.tree.RewriteRuleSubtreeStream;
+import org.antlr.runtime.tree.RewriteRuleTokenStream;
+import org.antlr.runtime.tree.TreeAdaptor;
+import org.drools.compiler.compiler.ParserError;
 
-
-import org.antlr.runtime.*;
-import java.util.Stack;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-
-import org.antlr.runtime.tree.*;
+import java.util.List;
+import java.util.regex.Pattern;
 
 
 @SuppressWarnings("all")
@@ -407,7 +416,7 @@ public class DSLMapParser extends Parser {
 			// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:119:57: ( value_section )?
 			int alt4=2;
 			int LA4_0 = input.LA(1);
-			if ( ((LA4_0 >= COLON && LA4_0 <= COMMA)||LA4_0==EQUALS||(LA4_0 >= LEFT_CURLY && LA4_0 <= LITERAL)||LA4_0==RIGHT_SQUARE) ) {
+			if ( ((LA4_0 >= COLON && LA4_0 <= DOT)||LA4_0==EQUALS||(LA4_0 >= LEFT_CURLY && LA4_0 <= LITERAL)||LA4_0==RIGHT_SQUARE) ) {
 				alt4=1;
 			}
 			switch (alt4) {
@@ -462,7 +471,7 @@ public class DSLMapParser extends Parser {
 			}
 
 			// AST REWRITE
-			// elements: meta_section, key_section, value_section, scope_section
+			// elements: meta_section, scope_section, key_section, value_section
 			// token labels: 
 			// rule labels: retval
 			// token list labels: 
@@ -655,7 +664,7 @@ public class DSLMapParser extends Parser {
 			if ( state.backtracking==0 ) stream_RIGHT_SQUARE.add(RIGHT_SQUARE12);
 
 			// AST REWRITE
-			// elements: value1, value3, value2, value4
+			// elements: value2, value3, value1, value4
 			// token labels: 
 			// rule labels: retval, value3, value4, value1, value2
 			// token list labels: 
@@ -1173,7 +1182,7 @@ public class DSLMapParser extends Parser {
 			while (true) {
 				int alt11=2;
 				int LA11_0 = input.LA(1);
-				if ( ((LA11_0 >= COLON && LA11_0 <= COMMA)||LA11_0==EQUALS||(LA11_0 >= LEFT_CURLY && LA11_0 <= LITERAL)||LA11_0==RIGHT_SQUARE) ) {
+				if ( ((LA11_0 >= COLON && LA11_0 <= DOT)||LA11_0==EQUALS||(LA11_0 >= LEFT_CURLY && LA11_0 <= LITERAL)||LA11_0==RIGHT_SQUARE) ) {
 					alt11=1;
 				}
 
@@ -1285,7 +1294,7 @@ public class DSLMapParser extends Parser {
 			if ( (LA12_0==LEFT_CURLY) ) {
 				alt12=1;
 			}
-			else if ( ((LA12_0 >= COLON && LA12_0 <= COMMA)||LA12_0==EQUALS||(LA12_0 >= LEFT_SQUARE && LA12_0 <= LITERAL)||LA12_0==RIGHT_SQUARE) ) {
+			else if ( ((LA12_0 >= COLON && LA12_0 <= DOT)||LA12_0==EQUALS||(LA12_0 >= LEFT_SQUARE && LA12_0 <= LITERAL)||LA12_0==RIGHT_SQUARE) ) {
 				alt12=2;
 			}
 
@@ -1373,7 +1382,7 @@ public class DSLMapParser extends Parser {
 
 
 	// $ANTLR start "value_chunk"
-	// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:181:1: value_chunk : ( literal | EQUALS | COMMA )+ ;
+	// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:181:1: value_chunk : ( literal | EQUALS | COMMA | DOT )+ ;
 	public final DSLMapParser.value_chunk_return value_chunk() throws RecognitionException {
 		DSLMapParser.value_chunk_return retval = new DSLMapParser.value_chunk_return();
 		retval.start = input.LT(1);
@@ -1382,23 +1391,25 @@ public class DSLMapParser extends Parser {
 
 		Token EQUALS21=null;
 		Token COMMA22=null;
+		Token DOT23=null;
 		ParserRuleReturnScope literal20 =null;
 
 		Object EQUALS21_tree=null;
 		Object COMMA22_tree=null;
+		Object DOT23_tree=null;
 
 		try {
-			// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:182:5: ( ( literal | EQUALS | COMMA )+ )
-			// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:182:7: ( literal | EQUALS | COMMA )+
+			// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:182:5: ( ( literal | EQUALS | COMMA | DOT )+ )
+			// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:182:7: ( literal | EQUALS | COMMA | DOT )+
 			{
 			root_0 = (Object)adaptor.nil();
 
 
-			// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:182:7: ( literal | EQUALS | COMMA )+
+			// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:182:7: ( literal | EQUALS | COMMA | DOT )+
 			int cnt13=0;
 			loop13:
 			while (true) {
-				int alt13=4;
+				int alt13=5;
 				switch ( input.LA(1) ) {
 				case COLON:
 				case LEFT_SQUARE:
@@ -1426,6 +1437,15 @@ public class DSLMapParser extends Parser {
 					int LA13_4 = input.LA(2);
 					if ( (synpred17_DSLMap()) ) {
 						alt13=3;
+					}
+
+					}
+					break;
+				case DOT:
+					{
+					int LA13_5 = input.LA(2);
+					if ( (synpred18_DSLMap()) ) {
+						alt13=4;
 					}
 
 					}
@@ -1461,6 +1481,17 @@ public class DSLMapParser extends Parser {
 					if ( state.backtracking==0 ) {
 					COMMA22_tree = (Object)adaptor.create(COMMA22);
 					adaptor.addChild(root_0, COMMA22_tree);
+					}
+
+					}
+					break;
+				case 4 :
+					// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:182:29: DOT
+					{
+					DOT23=(Token)match(input,DOT,FOLLOW_DOT_in_value_chunk748); if (state.failed) return retval;
+					if ( state.backtracking==0 ) {
+					DOT23_tree = (Object)adaptor.create(DOT23);
+					adaptor.addChild(root_0, DOT23_tree);
 					}
 
 					}
@@ -1512,9 +1543,9 @@ public class DSLMapParser extends Parser {
 
 		Object root_0 = null;
 
-		Token set23=null;
+		Token set24=null;
 
-		Object set23_tree=null;
+		Object set24_tree=null;
 
 		try {
 			// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:186:5: ( ( LITERAL | COLON | LEFT_SQUARE | RIGHT_SQUARE ) )
@@ -1523,10 +1554,10 @@ public class DSLMapParser extends Parser {
 			root_0 = (Object)adaptor.nil();
 
 
-			set23=input.LT(1);
+			set24=input.LT(1);
 			if ( input.LA(1)==COLON||(input.LA(1) >= LEFT_SQUARE && input.LA(1) <= LITERAL)||input.LA(1)==RIGHT_SQUARE ) {
 				input.consume();
-				if ( state.backtracking==0 ) adaptor.addChild(root_0, (Object)adaptor.create(set23));
+				if ( state.backtracking==0 ) adaptor.addChild(root_0, (Object)adaptor.create(set24));
 				state.errorRecovery=false;
 				state.failed=false;
 			}
@@ -1576,16 +1607,16 @@ public class DSLMapParser extends Parser {
 		Token name=null;
 		Token q=null;
 		Token rc=null;
-		Token COLON24=null;
 		Token COLON25=null;
+		Token COLON26=null;
 		ParserRuleReturnScope pat =null;
 
 		Object lc_tree=null;
 		Object name_tree=null;
 		Object q_tree=null;
 		Object rc_tree=null;
-		Object COLON24_tree=null;
 		Object COLON25_tree=null;
+		Object COLON26_tree=null;
 		RewriteRuleTokenStream stream_COLON=new RewriteRuleTokenStream(adaptor,"token COLON");
 		RewriteRuleTokenStream stream_LITERAL=new RewriteRuleTokenStream(adaptor,"token LITERAL");
 		RewriteRuleTokenStream stream_RIGHT_CURLY=new RewriteRuleTokenStream(adaptor,"token RIGHT_CURLY");
@@ -1601,14 +1632,14 @@ public class DSLMapParser extends Parser {
 			// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:196:5: (lc= LEFT_CURLY name= LITERAL ( ( COLON q= LITERAL )? COLON pat= pattern )? rc= RIGHT_CURLY -> { hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) -> {!hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) -> {!hasSpaceBefore && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) -> { hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE -> {!hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE -> { hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE -> ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) )
 			// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:196:7: lc= LEFT_CURLY name= LITERAL ( ( COLON q= LITERAL )? COLON pat= pattern )? rc= RIGHT_CURLY
 			{
-			lc=(Token)match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_definition807); if (state.failed) return retval; 
+			lc=(Token)match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_definition809); if (state.failed) return retval; 
 			if ( state.backtracking==0 ) stream_LEFT_CURLY.add(lc);
 
 			if ( state.backtracking==0 ) {
 			        CommonToken back2 =  (CommonToken)input.LT(-2);
 			        if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true;
 			        }
-			name=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition825); if (state.failed) return retval; 
+			name=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition827); if (state.failed) return retval; 
 			if ( state.backtracking==0 ) stream_LITERAL.add(name);
 
 			// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:201:18: ( ( COLON q= LITERAL )? COLON pat= pattern )?
@@ -1630,7 +1661,7 @@ public class DSLMapParser extends Parser {
 							int LA14_2 = input.LA(3);
 							if ( (LA14_2==COLON) ) {
 								int LA14_4 = input.LA(4);
-								if ( (synpred21_DSLMap()) ) {
+								if ( (synpred22_DSLMap()) ) {
 									alt14=1;
 								}
 							}
@@ -1640,10 +1671,10 @@ public class DSLMapParser extends Parser {
 						case 1 :
 							// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:201:21: COLON q= LITERAL
 							{
-							COLON24=(Token)match(input,COLON,FOLLOW_COLON_in_variable_definition830); if (state.failed) return retval; 
-							if ( state.backtracking==0 ) stream_COLON.add(COLON24);
+							COLON25=(Token)match(input,COLON,FOLLOW_COLON_in_variable_definition832); if (state.failed) return retval; 
+							if ( state.backtracking==0 ) stream_COLON.add(COLON25);
 
-							q=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition834); if (state.failed) return retval; 
+							q=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition836); if (state.failed) return retval; 
 							if ( state.backtracking==0 ) stream_LITERAL.add(q);
 
 							}
@@ -1651,10 +1682,10 @@ public class DSLMapParser extends Parser {
 
 					}
 
-					COLON25=(Token)match(input,COLON,FOLLOW_COLON_in_variable_definition838); if (state.failed) return retval; 
-					if ( state.backtracking==0 ) stream_COLON.add(COLON25);
+					COLON26=(Token)match(input,COLON,FOLLOW_COLON_in_variable_definition840); if (state.failed) return retval; 
+					if ( state.backtracking==0 ) stream_COLON.add(COLON26);
 
-					pushFollow(FOLLOW_pattern_in_variable_definition842);
+					pushFollow(FOLLOW_pattern_in_variable_definition844);
 					pat=pattern();
 					state._fsp--;
 					if (state.failed) return retval;
@@ -1665,7 +1696,7 @@ public class DSLMapParser extends Parser {
 
 			}
 
-			rc=(Token)match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_definition851); if (state.failed) return retval; 
+			rc=(Token)match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_definition853); if (state.failed) return retval; 
 			if ( state.backtracking==0 ) stream_RIGHT_CURLY.add(rc);
 
 			if ( state.backtracking==0 ) {
@@ -1674,7 +1705,7 @@ public class DSLMapParser extends Parser {
 			      isIdentifier( name );
 			    }
 			// AST REWRITE
-			// elements: q, q, name, name, name, name, q, q, q, name, name, name, name, q, q, q, name, q
+			// elements: name, name, q, q, name, name, q, q, name, name, name, q, name, q, q, q, q, name
 			// token labels: q, name
 			// rule labels: retval
 			// token list labels: 
@@ -1965,22 +1996,22 @@ public class DSLMapParser extends Parser {
 
 		Object root_0 = null;
 
-		Token DOT27=null;
-		Token MISC28=null;
-		Token LEFT_CURLY29=null;
-		Token RIGHT_CURLY31=null;
-		Token LEFT_SQUARE32=null;
-		Token RIGHT_SQUARE34=null;
-		ParserRuleReturnScope literal26 =null;
-		ParserRuleReturnScope literal30 =null;
-		ParserRuleReturnScope pattern33 =null;
+		Token DOT28=null;
+		Token MISC29=null;
+		Token LEFT_CURLY30=null;
+		Token RIGHT_CURLY32=null;
+		Token LEFT_SQUARE33=null;
+		Token RIGHT_SQUARE35=null;
+		ParserRuleReturnScope literal27 =null;
+		ParserRuleReturnScope literal31 =null;
+		ParserRuleReturnScope pattern34 =null;
 
-		Object DOT27_tree=null;
-		Object MISC28_tree=null;
-		Object LEFT_CURLY29_tree=null;
-		Object RIGHT_CURLY31_tree=null;
-		Object LEFT_SQUARE32_tree=null;
-		Object RIGHT_SQUARE34_tree=null;
+		Object DOT28_tree=null;
+		Object MISC29_tree=null;
+		Object LEFT_CURLY30_tree=null;
+		Object RIGHT_CURLY32_tree=null;
+		Object LEFT_SQUARE33_tree=null;
+		Object RIGHT_SQUARE35_tree=null;
 
 		try {
 			// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:220:9: ( ( literal | DOT | MISC | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+ )
@@ -1998,7 +2029,7 @@ public class DSLMapParser extends Parser {
 				case RIGHT_SQUARE:
 					{
 					int LA16_2 = input.LA(2);
-					if ( (synpred23_DSLMap()) ) {
+					if ( (synpred24_DSLMap()) ) {
 						alt16=1;
 					}
 
@@ -2007,10 +2038,10 @@ public class DSLMapParser extends Parser {
 				case LEFT_SQUARE:
 					{
 					int LA16_3 = input.LA(2);
-					if ( (synpred23_DSLMap()) ) {
+					if ( (synpred24_DSLMap()) ) {
 						alt16=1;
 					}
-					else if ( (synpred27_DSLMap()) ) {
+					else if ( (synpred28_DSLMap()) ) {
 						alt16=5;
 					}
 
@@ -2042,21 +2073,21 @@ public class DSLMapParser extends Parser {
 				case 1 :
 					// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:220:13: literal
 					{
-					pushFollow(FOLLOW_literal_in_pattern1288);
-					literal26=literal();
+					pushFollow(FOLLOW_literal_in_pattern1290);
+					literal27=literal();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, literal26.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, literal27.getTree());
 
 					}
 					break;
 				case 2 :
 					// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:221:13: DOT
 					{
-					DOT27=(Token)match(input,DOT,FOLLOW_DOT_in_pattern1302); if (state.failed) return retval;
+					DOT28=(Token)match(input,DOT,FOLLOW_DOT_in_pattern1304); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					DOT27_tree = (Object)adaptor.create(DOT27);
-					adaptor.addChild(root_0, DOT27_tree);
+					DOT28_tree = (Object)adaptor.create(DOT28);
+					adaptor.addChild(root_0, DOT28_tree);
 					}
 
 					}
@@ -2064,10 +2095,10 @@ public class DSLMapParser extends Parser {
 				case 3 :
 					// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:222:13: MISC
 					{
-					MISC28=(Token)match(input,MISC,FOLLOW_MISC_in_pattern1316); if (state.failed) return retval;
+					MISC29=(Token)match(input,MISC,FOLLOW_MISC_in_pattern1318); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					MISC28_tree = (Object)adaptor.create(MISC28);
-					adaptor.addChild(root_0, MISC28_tree);
+					MISC29_tree = (Object)adaptor.create(MISC29);
+					adaptor.addChild(root_0, MISC29_tree);
 					}
 
 					}
@@ -2075,22 +2106,22 @@ public class DSLMapParser extends Parser {
 				case 4 :
 					// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:223:13: LEFT_CURLY literal RIGHT_CURLY
 					{
-					LEFT_CURLY29=(Token)match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_pattern1330); if (state.failed) return retval;
+					LEFT_CURLY30=(Token)match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_pattern1332); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					LEFT_CURLY29_tree = (Object)adaptor.create(LEFT_CURLY29);
-					adaptor.addChild(root_0, LEFT_CURLY29_tree);
+					LEFT_CURLY30_tree = (Object)adaptor.create(LEFT_CURLY30);
+					adaptor.addChild(root_0, LEFT_CURLY30_tree);
 					}
 
-					pushFollow(FOLLOW_literal_in_pattern1332);
-					literal30=literal();
+					pushFollow(FOLLOW_literal_in_pattern1334);
+					literal31=literal();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, literal30.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, literal31.getTree());
 
-					RIGHT_CURLY31=(Token)match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_pattern1334); if (state.failed) return retval;
+					RIGHT_CURLY32=(Token)match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_pattern1336); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					RIGHT_CURLY31_tree = (Object)adaptor.create(RIGHT_CURLY31);
-					adaptor.addChild(root_0, RIGHT_CURLY31_tree);
+					RIGHT_CURLY32_tree = (Object)adaptor.create(RIGHT_CURLY32);
+					adaptor.addChild(root_0, RIGHT_CURLY32_tree);
 					}
 
 					}
@@ -2098,22 +2129,22 @@ public class DSLMapParser extends Parser {
 				case 5 :
 					// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:224:13: LEFT_SQUARE pattern RIGHT_SQUARE
 					{
-					LEFT_SQUARE32=(Token)match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_pattern1348); if (state.failed) return retval;
+					LEFT_SQUARE33=(Token)match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_pattern1350); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					LEFT_SQUARE32_tree = (Object)adaptor.create(LEFT_SQUARE32);
-					adaptor.addChild(root_0, LEFT_SQUARE32_tree);
+					LEFT_SQUARE33_tree = (Object)adaptor.create(LEFT_SQUARE33);
+					adaptor.addChild(root_0, LEFT_SQUARE33_tree);
 					}
 
-					pushFollow(FOLLOW_pattern_in_pattern1350);
-					pattern33=pattern();
+					pushFollow(FOLLOW_pattern_in_pattern1352);
+					pattern34=pattern();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, pattern33.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, pattern34.getTree());
 
-					RIGHT_SQUARE34=(Token)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_pattern1352); if (state.failed) return retval;
+					RIGHT_SQUARE35=(Token)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_pattern1354); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
-					RIGHT_SQUARE34_tree = (Object)adaptor.create(RIGHT_SQUARE34);
-					adaptor.addChild(root_0, RIGHT_SQUARE34_tree);
+					RIGHT_SQUARE35_tree = (Object)adaptor.create(RIGHT_SQUARE35);
+					adaptor.addChild(root_0, RIGHT_SQUARE35_tree);
 					}
 
 					}
@@ -2184,19 +2215,19 @@ public class DSLMapParser extends Parser {
 			// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:234:5: (lc= LEFT_CURLY name= variable_reference_expr rc= RIGHT_CURLY -> { hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF LITERAL[$name.start,$name.text] ) VT_SPACE -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF LITERAL[$name.start,$name.text] ) -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_REF LITERAL[$name.start,$name.text] ) VT_SPACE -> ^( VT_VAR_REF LITERAL[$name.start,$name.text] ) )
 			// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:234:7: lc= LEFT_CURLY name= variable_reference_expr rc= RIGHT_CURLY
 			{
-			lc=(Token)match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_reference1387); if (state.failed) return retval; 
+			lc=(Token)match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_reference1389); if (state.failed) return retval; 
 			if ( state.backtracking==0 ) stream_LEFT_CURLY.add(lc);
 
 			if ( state.backtracking==0 ) {
 			        CommonToken back2 =  (CommonToken)input.LT(-2);
 			        if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true;
 			        }
-			pushFollow(FOLLOW_variable_reference_expr_in_variable_reference1407);
+			pushFollow(FOLLOW_variable_reference_expr_in_variable_reference1409);
 			name=variable_reference_expr();
 			state._fsp--;
 			if (state.failed) return retval;
 			if ( state.backtracking==0 ) stream_variable_reference_expr.add(name.getTree());
-			rc=(Token)match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_reference1411); if (state.failed) return retval; 
+			rc=(Token)match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_reference1413); if (state.failed) return retval; 
 			if ( state.backtracking==0 ) stream_RIGHT_CURLY.add(rc);
 
 			if ( state.backtracking==0 ) {if(((CommonToken)rc).getStopIndex() < ((CommonToken)input.LT(1)).getStartIndex() - 1) hasSpaceAfter = true;}
@@ -2305,9 +2336,9 @@ public class DSLMapParser extends Parser {
 
 		Object root_0 = null;
 
-		Token set35=null;
+		Token set36=null;
 
-		Object set35_tree=null;
+		Object set36_tree=null;
 
 		try {
 			// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:248:5: ( ( LITERAL | EQUALS )+ )
@@ -2330,10 +2361,10 @@ public class DSLMapParser extends Parser {
 				case 1 :
 					// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:
 					{
-					set35=input.LT(1);
+					set36=input.LT(1);
 					if ( input.LA(1)==EQUALS||input.LA(1)==LITERAL ) {
 						input.consume();
-						if ( state.backtracking==0 ) adaptor.addChild(root_0, (Object)adaptor.create(set35));
+						if ( state.backtracking==0 ) adaptor.addChild(root_0, (Object)adaptor.create(set36));
 						state.errorRecovery=false;
 						state.failed=false;
 					}
@@ -2404,7 +2435,7 @@ public class DSLMapParser extends Parser {
 				if (state.backtracking>0) {state.failed=true; return retval;}
 				throw new FailedPredicateException(input, "condition_key", "validateIdentifierKey(\"condition\")||validateIdentifierKey(\"when\")");
 			}
-			value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_condition_key1597); if (state.failed) return retval; 
+			value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_condition_key1599); if (state.failed) return retval; 
 			if ( state.backtracking==0 ) stream_LITERAL.add(value);
 
 			// AST REWRITE
@@ -2478,7 +2509,7 @@ public class DSLMapParser extends Parser {
 				if (state.backtracking>0) {state.failed=true; return retval;}
 				throw new FailedPredicateException(input, "consequence_key", "validateIdentifierKey(\"consequence\")||validateIdentifierKey(\"then\")");
 			}
-			value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_consequence_key1629); if (state.failed) return retval; 
+			value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_consequence_key1631); if (state.failed) return retval; 
 			if ( state.backtracking==0 ) stream_LITERAL.add(value);
 
 			// AST REWRITE
@@ -2552,7 +2583,7 @@ public class DSLMapParser extends Parser {
 				if (state.backtracking>0) {state.failed=true; return retval;}
 				throw new FailedPredicateException(input, "keyword_key", "validateIdentifierKey(\"keyword\")");
 			}
-			value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_keyword_key1661); if (state.failed) return retval; 
+			value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_keyword_key1663); if (state.failed) return retval; 
 			if ( state.backtracking==0 ) stream_LITERAL.add(value);
 
 			// AST REWRITE
@@ -2626,7 +2657,7 @@ public class DSLMapParser extends Parser {
 				if (state.backtracking>0) {state.failed=true; return retval;}
 				throw new FailedPredicateException(input, "any_key", "validateIdentifierKey(\"*\")");
 			}
-			value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_any_key1693); if (state.failed) return retval; 
+			value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_any_key1695); if (state.failed) return retval; 
 			if ( state.backtracking==0 ) stream_LITERAL.add(value);
 
 			// AST REWRITE
@@ -2794,29 +2825,41 @@ public class DSLMapParser extends Parser {
 	}
 	// $ANTLR end synpred17_DSLMap
 
-	// $ANTLR start synpred21_DSLMap
-	public final void synpred21_DSLMap_fragment() throws RecognitionException {
+	// $ANTLR start synpred18_DSLMap
+	public final void synpred18_DSLMap_fragment() throws RecognitionException {
+		// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:182:29: ( DOT )
+		// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:182:29: DOT
+		{
+		match(input,DOT,FOLLOW_DOT_in_synpred18_DSLMap748); if (state.failed) return;
+
+		}
+
+	}
+	// $ANTLR end synpred18_DSLMap
+
+	// $ANTLR start synpred22_DSLMap
+	public final void synpred22_DSLMap_fragment() throws RecognitionException {
 		Token q=null;
 
 
 		// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:201:21: ( COLON q= LITERAL )
 		// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:201:21: COLON q= LITERAL
 		{
-		match(input,COLON,FOLLOW_COLON_in_synpred21_DSLMap830); if (state.failed) return;
+		match(input,COLON,FOLLOW_COLON_in_synpred22_DSLMap832); if (state.failed) return;
 
-		q=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_synpred21_DSLMap834); if (state.failed) return;
+		q=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_synpred22_DSLMap836); if (state.failed) return;
 
 		}
 
 	}
-	// $ANTLR end synpred21_DSLMap
+	// $ANTLR end synpred22_DSLMap
 
-	// $ANTLR start synpred23_DSLMap
-	public final void synpred23_DSLMap_fragment() throws RecognitionException {
+	// $ANTLR start synpred24_DSLMap
+	public final void synpred24_DSLMap_fragment() throws RecognitionException {
 		// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:220:13: ( literal )
 		// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:220:13: literal
 		{
-		pushFollow(FOLLOW_literal_in_synpred23_DSLMap1288);
+		pushFollow(FOLLOW_literal_in_synpred24_DSLMap1290);
 		literal();
 		state._fsp--;
 		if (state.failed) return;
@@ -2824,26 +2867,26 @@ public class DSLMapParser extends Parser {
 		}
 
 	}
-	// $ANTLR end synpred23_DSLMap
+	// $ANTLR end synpred24_DSLMap
 
-	// $ANTLR start synpred27_DSLMap
-	public final void synpred27_DSLMap_fragment() throws RecognitionException {
+	// $ANTLR start synpred28_DSLMap
+	public final void synpred28_DSLMap_fragment() throws RecognitionException {
 		// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:224:13: ( LEFT_SQUARE pattern RIGHT_SQUARE )
 		// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:224:13: LEFT_SQUARE pattern RIGHT_SQUARE
 		{
-		match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_synpred27_DSLMap1348); if (state.failed) return;
+		match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_synpred28_DSLMap1350); if (state.failed) return;
 
-		pushFollow(FOLLOW_pattern_in_synpred27_DSLMap1350);
+		pushFollow(FOLLOW_pattern_in_synpred28_DSLMap1352);
 		pattern();
 		state._fsp--;
 		if (state.failed) return;
 
-		match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_synpred27_DSLMap1352); if (state.failed) return;
+		match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_synpred28_DSLMap1354); if (state.failed) return;
 
 		}
 
 	}
-	// $ANTLR end synpred27_DSLMap
+	// $ANTLR end synpred28_DSLMap
 
 	// Delegated rules
 
@@ -2917,25 +2960,11 @@ public class DSLMapParser extends Parser {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred23_DSLMap() {
+	public final boolean synpred28_DSLMap() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred23_DSLMap_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred27_DSLMap() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred27_DSLMap_fragment(); // can never throw exception
+			synpred28_DSLMap_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -2959,11 +2988,39 @@ public class DSLMapParser extends Parser {
 		state.failed=false;
 		return success;
 	}
+	public final boolean synpred18_DSLMap() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred18_DSLMap_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
 	public final boolean synpred17_DSLMap() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
 			synpred17_DSLMap_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred22_DSLMap() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred22_DSLMap_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -2987,11 +3044,11 @@ public class DSLMapParser extends Parser {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred21_DSLMap() {
+	public final boolean synpred24_DSLMap() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred21_DSLMap_fragment(); // can never throw exception
+			synpred24_DSLMap_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -3010,7 +3067,7 @@ public class DSLMapParser extends Parser {
 	public static final BitSet FOLLOW_scope_section_in_entry336 = new BitSet(new long[]{0x0000000000013810L});
 	public static final BitSet FOLLOW_meta_section_in_entry338 = new BitSet(new long[]{0x0000000000013810L});
 	public static final BitSet FOLLOW_key_section_in_entry341 = new BitSet(new long[]{0x0000000000000100L});
-	public static final BitSet FOLLOW_EQUALS_in_entry343 = new BitSet(new long[]{0x00000000000139B0L});
+	public static final BitSet FOLLOW_EQUALS_in_entry343 = new BitSet(new long[]{0x00000000000139F0L});
 	public static final BitSet FOLLOW_value_section_in_entry345 = new BitSet(new long[]{0x0000000000000080L});
 	public static final BitSet FOLLOW_EOL_in_entry349 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_EOF_in_entry351 = new BitSet(new long[]{0x0000000000000002L});
@@ -3027,35 +3084,36 @@ public class DSLMapParser extends Parser {
 	public static final BitSet FOLLOW_variable_definition_in_key_sentence608 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_key_chunk_in_key_sentence618 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_literal_in_key_chunk646 = new BitSet(new long[]{0x0000000000013012L});
-	public static final BitSet FOLLOW_value_sentence_in_value_section664 = new BitSet(new long[]{0x0000000000013932L});
+	public static final BitSet FOLLOW_value_sentence_in_value_section664 = new BitSet(new long[]{0x0000000000013972L});
 	public static final BitSet FOLLOW_variable_reference_in_value_sentence703 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_value_chunk_in_value_sentence713 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_literal_in_value_chunk742 = new BitSet(new long[]{0x0000000000013132L});
-	public static final BitSet FOLLOW_EQUALS_in_value_chunk744 = new BitSet(new long[]{0x0000000000013132L});
-	public static final BitSet FOLLOW_COMMA_in_value_chunk746 = new BitSet(new long[]{0x0000000000013132L});
-	public static final BitSet FOLLOW_LEFT_CURLY_in_variable_definition807 = new BitSet(new long[]{0x0000000000002000L});
-	public static final BitSet FOLLOW_LITERAL_in_variable_definition825 = new BitSet(new long[]{0x0000000000008010L});
-	public static final BitSet FOLLOW_COLON_in_variable_definition830 = new BitSet(new long[]{0x0000000000002000L});
-	public static final BitSet FOLLOW_LITERAL_in_variable_definition834 = new BitSet(new long[]{0x0000000000000010L});
-	public static final BitSet FOLLOW_COLON_in_variable_definition838 = new BitSet(new long[]{0x0000000000017850L});
-	public static final BitSet FOLLOW_pattern_in_variable_definition842 = new BitSet(new long[]{0x0000000000008000L});
-	public static final BitSet FOLLOW_RIGHT_CURLY_in_variable_definition851 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_literal_in_pattern1288 = new BitSet(new long[]{0x0000000000017852L});
-	public static final BitSet FOLLOW_DOT_in_pattern1302 = new BitSet(new long[]{0x0000000000017852L});
-	public static final BitSet FOLLOW_MISC_in_pattern1316 = new BitSet(new long[]{0x0000000000017852L});
-	public static final BitSet FOLLOW_LEFT_CURLY_in_pattern1330 = new BitSet(new long[]{0x0000000000013010L});
-	public static final BitSet FOLLOW_literal_in_pattern1332 = new BitSet(new long[]{0x0000000000008000L});
-	public static final BitSet FOLLOW_RIGHT_CURLY_in_pattern1334 = new BitSet(new long[]{0x0000000000017852L});
-	public static final BitSet FOLLOW_LEFT_SQUARE_in_pattern1348 = new BitSet(new long[]{0x0000000000017850L});
-	public static final BitSet FOLLOW_pattern_in_pattern1350 = new BitSet(new long[]{0x0000000000010000L});
-	public static final BitSet FOLLOW_RIGHT_SQUARE_in_pattern1352 = new BitSet(new long[]{0x0000000000017852L});
-	public static final BitSet FOLLOW_LEFT_CURLY_in_variable_reference1387 = new BitSet(new long[]{0x0000000000002100L});
-	public static final BitSet FOLLOW_variable_reference_expr_in_variable_reference1407 = new BitSet(new long[]{0x0000000000008000L});
-	public static final BitSet FOLLOW_RIGHT_CURLY_in_variable_reference1411 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_LITERAL_in_condition_key1597 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_LITERAL_in_consequence_key1629 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_LITERAL_in_keyword_key1661 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_LITERAL_in_any_key1693 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_literal_in_value_chunk742 = new BitSet(new long[]{0x0000000000013172L});
+	public static final BitSet FOLLOW_EQUALS_in_value_chunk744 = new BitSet(new long[]{0x0000000000013172L});
+	public static final BitSet FOLLOW_COMMA_in_value_chunk746 = new BitSet(new long[]{0x0000000000013172L});
+	public static final BitSet FOLLOW_DOT_in_value_chunk748 = new BitSet(new long[]{0x0000000000013172L});
+	public static final BitSet FOLLOW_LEFT_CURLY_in_variable_definition809 = new BitSet(new long[]{0x0000000000002000L});
+	public static final BitSet FOLLOW_LITERAL_in_variable_definition827 = new BitSet(new long[]{0x0000000000008010L});
+	public static final BitSet FOLLOW_COLON_in_variable_definition832 = new BitSet(new long[]{0x0000000000002000L});
+	public static final BitSet FOLLOW_LITERAL_in_variable_definition836 = new BitSet(new long[]{0x0000000000000010L});
+	public static final BitSet FOLLOW_COLON_in_variable_definition840 = new BitSet(new long[]{0x0000000000017850L});
+	public static final BitSet FOLLOW_pattern_in_variable_definition844 = new BitSet(new long[]{0x0000000000008000L});
+	public static final BitSet FOLLOW_RIGHT_CURLY_in_variable_definition853 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_literal_in_pattern1290 = new BitSet(new long[]{0x0000000000017852L});
+	public static final BitSet FOLLOW_DOT_in_pattern1304 = new BitSet(new long[]{0x0000000000017852L});
+	public static final BitSet FOLLOW_MISC_in_pattern1318 = new BitSet(new long[]{0x0000000000017852L});
+	public static final BitSet FOLLOW_LEFT_CURLY_in_pattern1332 = new BitSet(new long[]{0x0000000000013010L});
+	public static final BitSet FOLLOW_literal_in_pattern1334 = new BitSet(new long[]{0x0000000000008000L});
+	public static final BitSet FOLLOW_RIGHT_CURLY_in_pattern1336 = new BitSet(new long[]{0x0000000000017852L});
+	public static final BitSet FOLLOW_LEFT_SQUARE_in_pattern1350 = new BitSet(new long[]{0x0000000000017850L});
+	public static final BitSet FOLLOW_pattern_in_pattern1352 = new BitSet(new long[]{0x0000000000010000L});
+	public static final BitSet FOLLOW_RIGHT_SQUARE_in_pattern1354 = new BitSet(new long[]{0x0000000000017852L});
+	public static final BitSet FOLLOW_LEFT_CURLY_in_variable_reference1389 = new BitSet(new long[]{0x0000000000002100L});
+	public static final BitSet FOLLOW_variable_reference_expr_in_variable_reference1409 = new BitSet(new long[]{0x0000000000008000L});
+	public static final BitSet FOLLOW_RIGHT_CURLY_in_variable_reference1413 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_LITERAL_in_condition_key1599 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_LITERAL_in_consequence_key1631 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_LITERAL_in_keyword_key1663 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_LITERAL_in_any_key1695 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_meta_section_in_synpred3_DSLMap338 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_condition_key_in_synpred6_DSLMap425 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_consequence_key_in_synpred7_DSLMap439 = new BitSet(new long[]{0x0000000000000002L});
@@ -3064,10 +3122,11 @@ public class DSLMapParser extends Parser {
 	public static final BitSet FOLLOW_literal_in_synpred15_DSLMap742 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_EQUALS_in_synpred16_DSLMap744 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_COMMA_in_synpred17_DSLMap746 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_COLON_in_synpred21_DSLMap830 = new BitSet(new long[]{0x0000000000002000L});
-	public static final BitSet FOLLOW_LITERAL_in_synpred21_DSLMap834 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_literal_in_synpred23_DSLMap1288 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred27_DSLMap1348 = new BitSet(new long[]{0x0000000000017850L});
-	public static final BitSet FOLLOW_pattern_in_synpred27_DSLMap1350 = new BitSet(new long[]{0x0000000000010000L});
-	public static final BitSet FOLLOW_RIGHT_SQUARE_in_synpred27_DSLMap1352 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_DOT_in_synpred18_DSLMap748 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_COLON_in_synpred22_DSLMap832 = new BitSet(new long[]{0x0000000000002000L});
+	public static final BitSet FOLLOW_LITERAL_in_synpred22_DSLMap836 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_literal_in_synpred24_DSLMap1290 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred28_DSLMap1350 = new BitSet(new long[]{0x0000000000017850L});
+	public static final BitSet FOLLOW_pattern_in_synpred28_DSLMap1352 = new BitSet(new long[]{0x0000000000010000L});
+	public static final BitSet FOLLOW_RIGHT_SQUARE_in_synpred28_DSLMap1354 = new BitSet(new long[]{0x0000000000000002L});
 }
