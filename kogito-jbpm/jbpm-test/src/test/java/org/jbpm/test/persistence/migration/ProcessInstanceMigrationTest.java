@@ -2,7 +2,6 @@ package org.jbpm.test.persistence.migration;
 
 
 import java.util.ArrayList;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,17 +12,12 @@ import javax.persistence.Query;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
-import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.test.JbpmJUnitBaseTestCase;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstanceUpgrader;
-
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.junit.Before;
-
 import org.junit.Test;
-import org.kie.api.definition.process.Node;
-import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
@@ -55,7 +49,8 @@ public class ProcessInstanceMigrationTest extends JbpmJUnitBaseTestCase {
     public void init() throws Exception {
         manager = createRuntimeManager("migration/sample.bpmn2", "migration/sample2.bpmn2",
                 "migration/BPMN2-ProcessVersion-3.bpmn2", "migration/BPMN2-ProcessVersion-4.bpmn2",
-                "migration/sample3.bpmn2", "migration/sample4.bpmn2");
+                "migration/sample3.bpmn2", "migration/sample4.bpmn2",
+                "migration/subprocess1.bpmn2", "migration/subprocess2.bpmn2");
         engine = manager.getRuntimeEngine(null);
         ksession = engine.getKieSession();
         taskService = engine.getTaskService();
@@ -65,7 +60,6 @@ public class ProcessInstanceMigrationTest extends JbpmJUnitBaseTestCase {
                                                         // for a debugger
     }
     
-    @SuppressWarnings("unchecked")
     @Test
     public void testProcessInstanceMigration() throws Exception {
         ProcessInstance p = ksession.startProcess("com.sample.bpmn.migration");
@@ -74,43 +68,23 @@ public class ProcessInstanceMigrationTest extends JbpmJUnitBaseTestCase {
         assertEquals("com.sample.bpmn.migration", ksession.getProcessInstance(pid).getProcessId());
 
         // let john execute Task 1
-        List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
-        assertNotNull(list);
-        assertEquals(1, list.size());
+        List<TaskSummary> list = assertTaskAssignedTo("john");
 
         // upgrade to version to of the process
         UpgradeCommand c = new UpgradeCommand(pid, null, "com.sample.bpmn.migration2");
         ksession.execute(c);
 
-        TaskSummary task = list.get(0);
-        taskService.start(task.getId(), "john");
-        taskService.complete(task.getId(), "john", null);
+        completeTask(list.get(0));
 
         // in second version of the process second user task is for mary while
         // for first version it's for john
-        list = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
-        assertNotNull(list);
-        assertEquals(1, list.size());
+        list = assertTaskAssignedTo("mary");
 
-        assertEquals("com.sample.bpmn.migration2", ksession.getProcessInstance(pid).getProcessId());
-
-        EntityManager em = getEmf().createEntityManager();
-        Query query = em.createQuery(
-                        "select p from ProcessInstanceInfo p where p.processInstanceId = :pid")
-                .setParameter("pid", pid);
-        List<ProcessInstanceInfo> found = query.getResultList();
-
-        assertNotNull(found);
-        assertEquals(1, found.size());
-
-        ProcessInstanceInfo instance = found.get(0);
-        assertEquals("com.sample.bpmn.migration2", instance.getProcessId());
-
-        Thread.sleep(400);
-
-        manager.disposeRuntimeEngine(engine);
+        assertDefinitionChanged(pid, "com.sample.bpmn.migration2", false);
     }
+
     
+
     @Test
     public void testProcessInstanceMigrationWithGatewaysAndSameUniqueId() throws Exception {
             
@@ -125,16 +99,16 @@ public class ProcessInstanceMigrationTest extends JbpmJUnitBaseTestCase {
         
         assertEquals(1, processInstance.getNodeInstances().size());
         
-        Map<String, Long> mapping = new HashMap<String, Long>();
-        mapping.put(
-                String.valueOf(getNodeId(ksession, "com.sample.BPMN2ProcessVersion3", "UserTask")),
-                getNodeId(ksession, "com.sample.BPMN2ProcessVersion4", "StartTask"));
+        Map<String, String> mapping = new HashMap<String, String>();
+        mapping.put("UserTask", "StartTask");
     
         
         // upgrade to version to of the process
-        UpgradeCommand c = new UpgradeCommand(pid, mapping, "com.sample.BPMN2ProcessVersion4");
+        ExplicitUpgradeCommand c = new ExplicitUpgradeCommand(pid, mapping, "com.sample.BPMN2ProcessVersion4");
         ksession.execute(c);
     
+        assertEquals("com.sample.BPMN2ProcessVersion4", ksession.getProcessInstance(pid).getProcessId());
+        
         assertEquals(1, processInstance.getNodeInstances().size());
         
         NodeInstance current = processInstance.getNodeInstances().iterator().next();
@@ -144,19 +118,16 @@ public class ProcessInstanceMigrationTest extends JbpmJUnitBaseTestCase {
         handler.completeWorkItem(handler.getWorkItem("FirstPath"), ksession.getWorkItemManager());
         handler.completeWorkItem(handler.getWorkItem("SecondPath"), ksession.getWorkItemManager());
         
-        // process instance should be null == completed
-        assertNull(ksession.getProcessInstance(pid));
-        // check variable value if it get updated
+        
         List<? extends VariableInstanceLog> vars = engine.getAuditService().findVariableInstances(pid, "x");
         assertNotNull(vars);
         assertEquals(2, vars.size());
         assertEquals("10", vars.get(1).getValue());
         
-        manager.disposeRuntimeEngine(engine);
+        assertDefinitionChanged(pid, "com.sample.BPMN2ProcessVersion4", true);
         
     }
     
-    @SuppressWarnings("unchecked")
     @Test
     public void testProcessInstanceMigrationExplicit() throws Exception {
         ProcessInstance p = ksession.startProcess("com.sample.bpmn.migration");
@@ -164,49 +135,21 @@ public class ProcessInstanceMigrationTest extends JbpmJUnitBaseTestCase {
 
         assertEquals("com.sample.bpmn.migration", ksession.getProcessInstance(pid).getProcessId());
 
-        // let john execute Task 1
-        List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
-        assertNotNull(list);
-        assertEquals(1, list.size());
+        List<TaskSummary> list = assertTaskAssignedTo("john");
         
         assertEquals(ProcessInstance.STATE_ACTIVE, p.getState());
-        Map<String, Long> mapping = new HashMap<String, Long>();
-        mapping.put(
-            String.valueOf(getNodeId(((RuleFlowProcess)ksession.getKieBase().getProcess("com.sample.bpmn.migration")).getNodes(), "Task 1")),
-            getNodeId(((RuleFlowProcess)ksession.getKieBase().getProcess("com.sample.bpmn.migration2")).getNodes(), "Task 2"));
+        Map<String, String> mapping = new HashMap<String, String>();
+        mapping.put("Task 1", "Task 2");
 
         // upgrade to version to of the process
-        UpgradeCommand c = new UpgradeCommand(pid, mapping, "com.sample.bpmn.migration2");
+        ExplicitUpgradeCommand c = new ExplicitUpgradeCommand(pid, mapping, "com.sample.bpmn.migration2");
         ksession.execute(c);
         
-        assertEquals("com.sample.bpmn.migration2", ksession.getProcessInstance(pid).getProcessId());
+        completeTask(list.get(0));
 
-        // in second version of the process second user task is for mary while
-        // for first version it's for john
-        list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
-        assertNotNull(list);
-        assertEquals(1, list.size());
-
-        assertEquals("com.sample.bpmn.migration2", ksession.getProcessInstance(pid).getProcessId());
-
-        EntityManager em = getEmf().createEntityManager();
-        Query query = em.createQuery(
-                        "select p from ProcessInstanceInfo p where p.processInstanceId = :pid")
-                .setParameter("pid", pid);
-        List<ProcessInstanceInfo> found = query.getResultList();
-
-        assertNotNull(found);
-        assertEquals(1, found.size());
-
-        ProcessInstanceInfo instance = found.get(0);
-        assertEquals("com.sample.bpmn.migration2", instance.getProcessId());
-
-        Thread.sleep(400);
-
-        manager.disposeRuntimeEngine(engine);
+        assertDefinitionChanged(pid, "com.sample.bpmn.migration2", true);
     }
     
-    @SuppressWarnings("unchecked")
     @Test
     public void testProcessInstanceMigrationExplicitSubprocesses() throws Exception {
         
@@ -230,42 +173,55 @@ public class ProcessInstanceMigrationTest extends JbpmJUnitBaseTestCase {
         handler.completeWorkItem(handler.getWorkItem("ForJohn"), ksession.getWorkItemManager());
         handler.completeWorkItem(handler.getWorkItem("ForBill"), ksession.getWorkItemManager());
         
-        EntityManager em = getEmf().createEntityManager();
-        Query query = em.createQuery(
-                        "select p from ProcessInstanceInfo p where p.processInstanceId = :pid")
-                .setParameter("pid", pid);
-        List<ProcessInstanceInfo> found = query.getResultList();
-
-        assertNotNull(found);
-        assertEquals(0, found.size()); //process is completed
-
-
-        Thread.sleep(400);
-
-        manager.disposeRuntimeEngine(engine);
+        assertDefinitionChanged(pid, "com.sample.bpmn.migration4", true);
     }
     
-    private static Long getNodeId(Node[] nodes, String nodeName) {
-        for(Node node : nodes) {
-            if(node.getName().compareTo(nodeName) == 0) {
-                return node.getId();
-            }
-        }
-        
-        throw new IllegalArgumentException("No node with name " + nodeName);
+    @Test
+    public void testProcessInstanceMigrationImplicitSubprocess() throws Exception {
+        ProcessInstance p = ksession.startProcess("com.sample.bpmn.migration.subprocess1");
+        long pid = p.getId();
+
+        assertEquals("com.sample.bpmn.migration.subprocess1", ksession.getProcessInstance(pid).getProcessId());
+
+        List<TaskSummary> list = assertTaskAssignedTo("john");
+
+        // upgrade to version to of the process
+        UpgradeCommand c = new UpgradeCommand(pid, null, "com.sample.bpmn.migration.subprocess2");
+        ksession.execute(c);
+
+        completeTask(list.get(0));
+
+        // in second version of the process second user task is for mary while
+        // for first version it's for john
+        list = assertTaskAssignedTo("mary");
+
+        assertDefinitionChanged(pid, "com.sample.bpmn.migration.subprocess2", false);
     }
     
-    private static Long getNodeId(KieSession kSession, String processId, String nodeName) {
-        Node[] nodes = ((WorkflowProcess) kSession.getKieBase().getProcess(processId)).getNodes();
+    @Test
+    public void testProcessInstanceMigrationExplicitBack() throws Exception {
+        ProcessInstance p = ksession.startProcess("com.sample.bpmn.migration.subprocess1");
+        long pid = p.getId();
+
+        assertEquals("com.sample.bpmn.migration.subprocess1", ksession.getProcessInstance(pid).getProcessId());
+
+        List<TaskSummary> list = assertTaskAssignedTo("john");
+        completeTask(list.get(0));
+
+        Map<String, String> mapping = new HashMap<String, String>();
+        mapping.put("ForJohn2", "ForJohn1");
         
-        for(Node node : nodes) {
-            if(node.getName().compareTo(nodeName) == 0) {
-                return node.getId();
-            }
-        }
+        ExplicitUpgradeCommand c = new ExplicitUpgradeCommand(pid, mapping, "com.sample.bpmn.migration.subprocess2");
+        ksession.execute(c);
+
+        list = assertTaskAssignedTo("john");
+        completeTask(list.get(0));
         
-        throw new IllegalArgumentException("NO node with name " + nodeName);
+        list = assertTaskAssignedTo("mary");
+
+        assertDefinitionChanged(pid, "com.sample.bpmn.migration.subprocess2", false);
     }
+    
     
     private class PersistenceWorkItemHandler implements WorkItemHandler {
     
@@ -349,5 +305,43 @@ public class ProcessInstanceMigrationTest extends JbpmJUnitBaseTestCase {
             return null;
 
         }
+    }
+    
+    private List<TaskSummary> assertTaskAssignedTo(String user) {
+        List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner(user, "en-UK");
+        assertNotNull(list);
+        assertEquals(1, list.size());
+        return list;
+    }
+    
+    private void completeTask(TaskSummary task) {
+        taskService.start(task.getId(), "john");
+        taskService.complete(task.getId(), "john", null);
+    }
+    
+    private void assertDefinitionChanged(long pid, String sPid, boolean complete) throws InterruptedException {
+        if(!complete) {
+            assertEquals(sPid, ksession.getProcessInstance(pid).getProcessId());
+        }
+
+        EntityManager em = getEmf().createEntityManager();
+        Query query = em.createQuery(
+                        "select p from ProcessInstanceInfo p where p.processInstanceId = :pid")
+                .setParameter("pid", pid);
+        List<ProcessInstanceInfo> found = query.getResultList();
+
+        int count = (complete) ? 0 : 1;
+        
+        assertNotNull(found);
+        assertEquals(count, found.size());
+
+        if(!complete) {
+            ProcessInstanceInfo instance = found.get(0);
+            assertEquals(sPid, instance.getProcessId());
+        }
+
+        Thread.sleep(400);
+
+        manager.disposeRuntimeEngine(engine);
     }
 }

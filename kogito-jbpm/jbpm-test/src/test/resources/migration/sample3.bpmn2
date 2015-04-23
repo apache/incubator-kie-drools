@@ -25,9 +25,7 @@
         </bpmn2:startEvent>
         <bpmn2:userTask id="UserTask_2" name="ForJohn">
           <bpmn2:extensionElements>
-            <tns:onEntry-script>
-              <tns:script></tns:script>
-            </tns:onEntry-script>
+            <tns:onEntry-script/>
           </bpmn2:extensionElements>
           <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>
           <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
@@ -89,7 +87,7 @@
           </bpmn2:dataInputAssociation>
           <bpmn2:potentialOwner id="PotentialOwner_1">
             <bpmn2:resourceAssignmentExpression id="ResourceAssignmentExpression_1">
-              <bpmn2:formalExpression id="FormalExpression_43">John</bpmn2:formalExpression>
+              <bpmn2:formalExpression id="FormalExpression_43">john</bpmn2:formalExpression>
             </bpmn2:resourceAssignmentExpression>
           </bpmn2:potentialOwner>
         </bpmn2:userTask>

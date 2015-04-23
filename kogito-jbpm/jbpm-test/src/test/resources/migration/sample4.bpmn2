@@ -24,6 +24,11 @@
           <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
         </bpmn2:startEvent>
         <bpmn2:userTask id="UserTask_2" name="ForMary">
+          <bpmn2:extensionElements>
+            <tns:onEntry-script scriptFormat="http://www.jboss.org/drools/rule">
+              <tns:script></tns:script>
+            </tns:onEntry-script>
+          </bpmn2:extensionElements>
           <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>
           <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
           <bpmn2:ioSpecification id="InputOutputSpecification_3">
@@ -84,7 +89,7 @@
           </bpmn2:dataInputAssociation>
           <bpmn2:potentialOwner id="PotentialOwner_1">
             <bpmn2:resourceAssignmentExpression id="ResourceAssignmentExpression_1">
-              <bpmn2:formalExpression id="FormalExpression_43">Mary</bpmn2:formalExpression>
+              <bpmn2:formalExpression id="FormalExpression_43">mary</bpmn2:formalExpression>
             </bpmn2:resourceAssignmentExpression>
           </bpmn2:potentialOwner>
         </bpmn2:userTask>
@@ -154,7 +159,7 @@
           </bpmn2:dataInputAssociation>
           <bpmn2:potentialOwner id="PotentialOwner_2">
             <bpmn2:resourceAssignmentExpression id="ResourceAssignmentExpression_2">
-              <bpmn2:formalExpression id="FormalExpression_21">Bill</bpmn2:formalExpression>
+              <bpmn2:formalExpression id="FormalExpression_21">bill</bpmn2:formalExpression>
             </bpmn2:resourceAssignmentExpression>
           </bpmn2:potentialOwner>
         </bpmn2:userTask>
@@ -227,7 +232,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_UserTask_1" bpmnElement="UserTask_1">
         <dc:Bounds height="50.0" width="110.0" x="520.0" y="266.0"/>
-        <bpmndi:BPMNLabel>
+        <bpmndi:BPMNLabel id="BPMNLabel_10">
           <dc:Bounds height="14.0" width="35.0" x="557.0" y="284.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
@@ -275,7 +280,7 @@
         <di:waypoint xsi:type="dc:Point" x="435.0" y="203.0"/>
         <di:waypoint xsi:type="dc:Point" x="575.0" y="203.0"/>
         <di:waypoint xsi:type="dc:Point" x="575.0" y="266.0"/>
-        <bpmndi:BPMNLabel/>
+        <bpmndi:BPMNLabel id="BPMNLabel_16"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
