@@ -10,7 +10,7 @@
   <section xml:id="introductionToRepeatedPlanning">
     <title>Introduction to Repeated Planning</title>
 
-    <para>The world constantly changes. The planning facts used to create a solution, might change before or during the
+    <para>The world constantly changes. The problem facts used to create a solution, might change before or during the
     execution of that solution. There are 3 types of situations:</para>
 
     <itemizedlist>
@@ -27,12 +27,12 @@
       </listitem>
 
       <listitem>
-        <para><emphasis>Constantly changing planning facts</emphasis>: Use <emphasis role="bold">real-time
+        <para><emphasis>Constantly changing problem facts</emphasis>: Use <emphasis role="bold">real-time
         planning</emphasis>.</para>
       </listitem>
     </itemizedlist>
 
-    <para>Waiting to start planning - to lower the risk of planning facts changing - usually isn't a good way to deal
+    <para>Waiting to start planning - to lower the risk of problem facts changing - usually isn't a good way to deal
     with that. More CPU time means a better planning solution. An incomplete plan is better than no plan.</para>
 
     <para>Luckily, the optimization algorithms support planning a solution that's already (partially) planned, known as
@@ -46,7 +46,7 @@
     things go wrong. That creates a backup plan in the plan. For example: try to assign an employee as the spare
     employee (1 for every 10 shifts at the same time), keep 1 hospital bed open in each department, ...</para>
 
-    <para>Then, when things go wrong (one of the employees calls in sick), change the planning facts on the original
+    <para>Then, when things go wrong (one of the employees calls in sick), change the problem facts on the original
     solution (delete the sick employee leave his/her shifts unassigned) and just restart the planning, starting from
     that solution, which has a different score now. The construction heuristics will fill in the newly created gaps
     (probably with the spare employee) and the metaheuristics will even improve it further.</para>
@@ -82,7 +82,7 @@
     </mediaobject>
 
     <para>Notice the difference between the original planning of November 1th and the new planning of November 5th: some
-    planning facts (F, H, I, J, K) changed, which results in unrelated planning entities (G) changing too.</para>
+      problem facts (F, H, I, J, K) changed, which results in unrelated planning entities (G) changing too.</para>
 
     <section xml:id="immovablePlanningEntities">
       <title>Immovable Planning Entities</title>
@@ -216,7 +216,7 @@ end</programlisting>
         solver.addProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
                 CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
-                // First remove the planning fact from all planning entities that use it
+                // First remove the problem fact from all planning entities that use it
                 for (CloudProcess process : cloudBalance.getProcessList()) {
                     if (ObjectUtils.equals(process.getComputer(), computer)) {
                         scoreDirector.beforeVariableChanged(process, "computer");
@@ -227,7 +227,7 @@ end</programlisting>
                 // A SolutionCloner does not clone problem fact lists (such as computerList)
                 // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
                 cloudBalance.setComputerList(new ArrayList&lt;CloudComputer&gt;(cloudBalance.getComputerList()));
-                // Next remove it the planning fact itself
+                // Next remove it the problem fact itself
                 for (Iterator&lt;CloudComputer&gt; it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
                     CloudComputer workingComputer = it.next();
                     if (ObjectUtils.equals(workingComputer, computer)) {

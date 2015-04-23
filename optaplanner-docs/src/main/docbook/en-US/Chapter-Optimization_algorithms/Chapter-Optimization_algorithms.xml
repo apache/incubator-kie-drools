@@ -980,7 +980,7 @@
     </warning>
 
     <warning>
-      <para>Do not change any of the planning facts in a <literal>CustomPhaseCommand</literal>. That will corrupt the
+      <para>Do not change any of the problem facts in a <literal>CustomPhaseCommand</literal>. That will corrupt the
       <literal>Solver</literal> because any previous score or solution was for a different problem. To do that, read
       about <link linkend="repeatedPlanning">repeated planning</link> and do it with a <link
       linkend="problemFactChange">ProblemFactChange</link> instead.</para>

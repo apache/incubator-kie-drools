@@ -250,7 +250,7 @@ public class NurseRosteringPanel extends SolutionPanel {
         doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
                 NurseRoster nurseRoster = (NurseRoster) scoreDirector.getWorkingSolution();
-                // First remove the planning fact from all planning entities that use it
+                // First remove the problem fact from all planning entities that use it
                 for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
                     if (ObjectUtils.equals(shiftAssignment.getEmployee(), employee)) {
                         scoreDirector.beforeVariableChanged(shiftAssignment, "employee");
@@ -261,7 +261,7 @@ public class NurseRosteringPanel extends SolutionPanel {
                 // A SolutionCloner does not clone problem fact lists (such as employeeList)
                 // Shallow clone the employeeList so only workingSolution is affected, not bestSolution or guiSolution
                 nurseRoster.setEmployeeList(new ArrayList<Employee>(nurseRoster.getEmployeeList()));
-                // Remove it the planning fact itself
+                // Remove it the problem fact itself
                 for (Iterator<Employee> it = nurseRoster.getEmployeeList().iterator(); it.hasNext(); ) {
                     Employee workingEmployee = it.next();
                     if (ObjectUtils.equals(workingEmployee, employee)) {

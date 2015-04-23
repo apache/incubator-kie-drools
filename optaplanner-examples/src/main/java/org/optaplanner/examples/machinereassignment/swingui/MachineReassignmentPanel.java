@@ -141,7 +141,7 @@ public class MachineReassignmentPanel extends SolutionPanel {
         doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
                 MachineReassignment machineReassignment = (MachineReassignment) scoreDirector.getWorkingSolution();
-                // First remove the planning fact from all planning entities that use it
+                // First remove the problem fact from all planning entities that use it
                 for (MrProcessAssignment processAssignment : machineReassignment.getProcessAssignmentList()) {
                     if (ObjectUtils.equals(processAssignment.getOriginalMachine(), machine)) {
                         scoreDirector.beforeProblemFactChanged(processAssignment);
@@ -157,7 +157,7 @@ public class MachineReassignmentPanel extends SolutionPanel {
                 // A SolutionCloner does not clone problem fact lists (such as machineList)
                 // Shallow clone the machineList so only workingSolution is affected, not bestSolution or guiSolution
                 machineReassignment.setMachineList(new ArrayList<MrMachine>(machineReassignment.getMachineList()));
-                // Remove it the planning fact itself
+                // Remove it the problem fact itself
                 for (Iterator<MrMachine> it = machineReassignment.getMachineList().iterator(); it.hasNext(); ) {
                     MrMachine workingMachine = it.next();
                     if (ObjectUtils.equals(workingMachine, machine)) {

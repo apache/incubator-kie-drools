@@ -25,8 +25,8 @@ public enum PlanningVariableGraphType {
      * Changes to this variable need to trigger chain correction.
      * <p/>
      * In some use cases, such as Vehicle Routing, planning entities are chained.
-     * A chained variable recursively points to a planning fact, which is called the anchor.
-     * So either it points directly to the anchor (that planning fact)
+     * A chained variable recursively points to a problem fact, which is called the anchor.
+     * So either it points directly to the anchor (that problem fact)
      * or it points to another planning entity which recursively points to the anchor.
      * Chains always have exactly 1 anchor, thus they never loop and the tail is always open.
      * Chains never split into a tree: a anchor or planning entity has at most 1 trailing planning entity.

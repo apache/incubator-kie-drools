@@ -259,7 +259,7 @@ public class CloudBalancingPanel extends SolutionPanel {
                 // A SolutionCloner does not clone problem fact lists (such as computerList)
                 // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
                 cloudBalance.setComputerList(new ArrayList<CloudComputer>(cloudBalance.getComputerList()));
-                // Add the planning fact itself
+                // Add the problem fact itself
                 scoreDirector.beforeProblemFactAdded(computer);
                 cloudBalance.getComputerList().add(computer);
                 scoreDirector.afterProblemFactAdded(computer);
@@ -272,7 +272,7 @@ public class CloudBalancingPanel extends SolutionPanel {
         doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
                 CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
-                // First remove the planning fact from all planning entities that use it
+                // First remove the problem fact from all planning entities that use it
                 for (CloudProcess process : cloudBalance.getProcessList()) {
                     if (ObjectUtils.equals(process.getComputer(), computer)) {
                         scoreDirector.beforeVariableChanged(process, "computer");
@@ -283,7 +283,7 @@ public class CloudBalancingPanel extends SolutionPanel {
                 // A SolutionCloner does not clone problem fact lists (such as computerList)
                 // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
                 cloudBalance.setComputerList(new ArrayList<CloudComputer>(cloudBalance.getComputerList()));
-                // Remove the planning fact itself
+                // Remove the problem fact itself
                 for (Iterator<CloudComputer> it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
                     CloudComputer workingComputer = it.next();
                     if (ObjectUtils.equals(workingComputer, computer)) {

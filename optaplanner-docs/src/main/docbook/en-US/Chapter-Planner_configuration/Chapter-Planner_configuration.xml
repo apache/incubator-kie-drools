@@ -809,7 +809,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 
         <itemizedlist>
           <listitem>
-            <para>Directly points to a planning fact, which is called an <emphasis>anchor</emphasis>.</para>
+            <para>Directly points to a problem fact (or planning entity), which is called an <emphasis>anchor</emphasis>.</para>
           </listitem>
 
           <listitem>

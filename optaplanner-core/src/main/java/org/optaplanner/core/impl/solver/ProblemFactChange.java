@@ -38,7 +38,7 @@ public interface ProblemFactChange {
      * Every modification to the {@link Solution}, must be correctly notified to the {@link ScoreDirector},
      * otherwise the {@link Score} calculation will be corrupted.
      * @param scoreDirector never null
-     * Contains the working {@link Solution} which contains the planning facts (and planning entities) to change.
+     * Contains the working {@link Solution} which contains the problem facts (and planning entities) to change.
      * Also needs to get notified of those changes.
      */
     void doChange(ScoreDirector scoreDirector);
