@@ -514,6 +514,10 @@ public final class JBPMMessages {
        * <code>EVENT_SUBPROCESS_NODE = 12;</code>
        */
       EVENT_SUBPROCESS_NODE(12, 12),
+      /**
+       * <code>ASYNC_EVENT_NODE = 13;</code>
+       */
+      ASYNC_EVENT_NODE(13, 13),
       ;
 
       /**
@@ -568,6 +572,10 @@ public final class JBPMMessages {
        * <code>EVENT_SUBPROCESS_NODE = 12;</code>
        */
       public static final int EVENT_SUBPROCESS_NODE_VALUE = 12;
+      /**
+       * <code>ASYNC_EVENT_NODE = 13;</code>
+       */
+      public static final int ASYNC_EVENT_NODE_VALUE = 13;
 
 
       public final int getNumber() { return value; }
@@ -587,6 +595,7 @@ public final class JBPMMessages {
           case 10: return FOR_EACH_NODE;
           case 11: return DYNAMIC_NODE;
           case 12: return EVENT_SUBPROCESS_NODE;
+          case 13: return ASYNC_EVENT_NODE;
           default: return null;
         }
       }
@@ -2650,6 +2659,20 @@ public final class JBPMMessages {
        * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.ForEachNode for_each = 12;</code>
        */
       org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNodeOrBuilder getForEachOrBuilder();
+
+      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;
+      /**
+       * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;</code>
+       */
+      boolean hasAsyncEvent();
+      /**
+       * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;</code>
+       */
+      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode getAsyncEvent();
+      /**
+       * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;</code>
+       */
+      org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNodeOrBuilder getAsyncEventOrBuilder();
     }
     /**
      * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent}
@@ -2854,6 +2877,19 @@ public final class JBPMMessages {
                   forEach_ = subBuilder.buildPartial();
                 }
                 bitField0_ |= 0x00000800;
+                break;
+              }
+              case 106: {
+                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.Builder subBuilder = null;
+                if (((bitField0_ & 0x00001000) == 0x00001000)) {
+                  subBuilder = asyncEvent_.toBuilder();
+                }
+                asyncEvent_ = input.readMessage(org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.PARSER, extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(asyncEvent_);
+                  asyncEvent_ = subBuilder.buildPartial();
+                }
+                bitField0_ |= 0x00001000;
                 break;
               }
             }
@@ -12280,6 +12316,477 @@ public final class JBPMMessages {
         // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.ForEachNode)
       }
 
+      public interface AsyncEventNodeOrBuilder
+          extends com.google.protobuf.MessageOrBuilder {
+
+        // optional string event_type = 1;
+        /**
+         * <code>optional string event_type = 1;</code>
+         */
+        boolean hasEventType();
+        /**
+         * <code>optional string event_type = 1;</code>
+         */
+        java.lang.String getEventType();
+        /**
+         * <code>optional string event_type = 1;</code>
+         */
+        com.google.protobuf.ByteString
+            getEventTypeBytes();
+      }
+      /**
+       * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode}
+       */
+      public static final class AsyncEventNode extends
+          com.google.protobuf.GeneratedMessage
+          implements AsyncEventNodeOrBuilder {
+        // Use AsyncEventNode.newBuilder() to construct.
+        private AsyncEventNode(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+          super(builder);
+          this.unknownFields = builder.getUnknownFields();
+        }
+        private AsyncEventNode(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+        private static final AsyncEventNode defaultInstance;
+        public static AsyncEventNode getDefaultInstance() {
+          return defaultInstance;
+        }
+
+        public AsyncEventNode getDefaultInstanceForType() {
+          return defaultInstance;
+        }
+
+        private final com.google.protobuf.UnknownFieldSet unknownFields;
+        @java.lang.Override
+        public final com.google.protobuf.UnknownFieldSet
+            getUnknownFields() {
+          return this.unknownFields;
+        }
+        private AsyncEventNode(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          initFields();
+          int mutable_bitField0_ = 0;
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+              com.google.protobuf.UnknownFieldSet.newBuilder();
+          try {
+            boolean done = false;
+            while (!done) {
+              int tag = input.readTag();
+              switch (tag) {
+                case 0:
+                  done = true;
+                  break;
+                default: {
+                  if (!parseUnknownField(input, unknownFields,
+                                         extensionRegistry, tag)) {
+                    done = true;
+                  }
+                  break;
+                }
+                case 10: {
+                  bitField0_ |= 0x00000001;
+                  eventType_ = input.readBytes();
+                  break;
+                }
+              }
+            }
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.setUnfinishedMessage(this);
+          } catch (java.io.IOException e) {
+            throw new com.google.protobuf.InvalidProtocolBufferException(
+                e.getMessage()).setUnfinishedMessage(this);
+          } finally {
+            this.unknownFields = unknownFields.build();
+            makeExtensionsImmutable();
+          }
+        }
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.Builder.class);
+        }
+
+        public static com.google.protobuf.Parser<AsyncEventNode> PARSER =
+            new com.google.protobuf.AbstractParser<AsyncEventNode>() {
+          public AsyncEventNode parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new AsyncEventNode(input, extensionRegistry);
+          }
+        };
+
+        @java.lang.Override
+        public com.google.protobuf.Parser<AsyncEventNode> getParserForType() {
+          return PARSER;
+        }
+
+        private int bitField0_;
+        // optional string event_type = 1;
+        public static final int EVENT_TYPE_FIELD_NUMBER = 1;
+        private java.lang.Object eventType_;
+        /**
+         * <code>optional string event_type = 1;</code>
+         */
+        public boolean hasEventType() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        /**
+         * <code>optional string event_type = 1;</code>
+         */
+        public java.lang.String getEventType() {
+          java.lang.Object ref = eventType_;
+          if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+          } else {
+            com.google.protobuf.ByteString bs = 
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              eventType_ = s;
+            }
+            return s;
+          }
+        }
+        /**
+         * <code>optional string event_type = 1;</code>
+         */
+        public com.google.protobuf.ByteString
+            getEventTypeBytes() {
+          java.lang.Object ref = eventType_;
+          if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            eventType_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+
+        private void initFields() {
+          eventType_ = "";
+        }
+        private byte memoizedIsInitialized = -1;
+        public final boolean isInitialized() {
+          byte isInitialized = memoizedIsInitialized;
+          if (isInitialized != -1) return isInitialized == 1;
+
+          memoizedIsInitialized = 1;
+          return true;
+        }
+
+        public void writeTo(com.google.protobuf.CodedOutputStream output)
+                            throws java.io.IOException {
+          getSerializedSize();
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            output.writeBytes(1, getEventTypeBytes());
+          }
+          getUnknownFields().writeTo(output);
+        }
+
+        private int memoizedSerializedSize = -1;
+        public int getSerializedSize() {
+          int size = memoizedSerializedSize;
+          if (size != -1) return size;
+
+          size = 0;
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeBytesSize(1, getEventTypeBytes());
+          }
+          size += getUnknownFields().getSerializedSize();
+          memoizedSerializedSize = size;
+          return size;
+        }
+
+        private static final long serialVersionUID = 0L;
+        @java.lang.Override
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
+          return super.writeReplace();
+        }
+
+        public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return PARSER.parseFrom(input);
+        }
+        public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return PARSER.parseFrom(input, extensionRegistry);
+        }
+        public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return PARSER.parseDelimitedFrom(input);
+        }
+        public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return PARSER.parseDelimitedFrom(input, extensionRegistry);
+        }
+        public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+          return PARSER.parseFrom(input);
+        }
+        public static org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return PARSER.parseFrom(input, extensionRegistry);
+        }
+
+        public static Builder newBuilder() { return Builder.create(); }
+        public Builder newBuilderForType() { return newBuilder(); }
+        public static Builder newBuilder(org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode prototype) {
+          return newBuilder().mergeFrom(prototype);
+        }
+        public Builder toBuilder() { return newBuilder(this); }
+
+        @java.lang.Override
+        protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          Builder builder = new Builder(parent);
+          return builder;
+        }
+        /**
+         * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode}
+         */
+        public static final class Builder extends
+            com.google.protobuf.GeneratedMessage.Builder<Builder>
+           implements org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNodeOrBuilder {
+          public static final com.google.protobuf.Descriptors.Descriptor
+              getDescriptor() {
+            return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_descriptor;
+          }
+
+          protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+              internalGetFieldAccessorTable() {
+            return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                    org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.class, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.Builder.class);
+          }
+
+          // Construct using org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.newBuilder()
+          private Builder() {
+            maybeForceBuilderInitialization();
+          }
+
+          private Builder(
+              com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            super(parent);
+            maybeForceBuilderInitialization();
+          }
+          private void maybeForceBuilderInitialization() {
+            if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            }
+          }
+          private static Builder create() {
+            return new Builder();
+          }
+
+          public Builder clear() {
+            super.clear();
+            eventType_ = "";
+            bitField0_ = (bitField0_ & ~0x00000001);
+            return this;
+          }
+
+          public Builder clone() {
+            return create().mergeFrom(buildPartial());
+          }
+
+          public com.google.protobuf.Descriptors.Descriptor
+              getDescriptorForType() {
+            return org.jbpm.marshalling.impl.JBPMMessages.internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_descriptor;
+          }
+
+          public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode getDefaultInstanceForType() {
+            return org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.getDefaultInstance();
+          }
+
+          public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode build() {
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode result = buildPartial();
+            if (!result.isInitialized()) {
+              throw newUninitializedMessageException(result);
+            }
+            return result;
+          }
+
+          public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode buildPartial() {
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode result = new org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode(this);
+            int from_bitField0_ = bitField0_;
+            int to_bitField0_ = 0;
+            if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+              to_bitField0_ |= 0x00000001;
+            }
+            result.eventType_ = eventType_;
+            result.bitField0_ = to_bitField0_;
+            onBuilt();
+            return result;
+          }
+
+          public Builder mergeFrom(com.google.protobuf.Message other) {
+            if (other instanceof org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode) {
+              return mergeFrom((org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode)other);
+            } else {
+              super.mergeFrom(other);
+              return this;
+            }
+          }
+
+          public Builder mergeFrom(org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode other) {
+            if (other == org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.getDefaultInstance()) return this;
+            if (other.hasEventType()) {
+              bitField0_ |= 0x00000001;
+              eventType_ = other.eventType_;
+              onChanged();
+            }
+            this.mergeUnknownFields(other.getUnknownFields());
+            return this;
+          }
+
+          public final boolean isInitialized() {
+            return true;
+          }
+
+          public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode parsedMessage = null;
+            try {
+              parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+              parsedMessage = (org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode) e.getUnfinishedMessage();
+              throw e;
+            } finally {
+              if (parsedMessage != null) {
+                mergeFrom(parsedMessage);
+              }
+            }
+            return this;
+          }
+          private int bitField0_;
+
+          // optional string event_type = 1;
+          private java.lang.Object eventType_ = "";
+          /**
+           * <code>optional string event_type = 1;</code>
+           */
+          public boolean hasEventType() {
+            return ((bitField0_ & 0x00000001) == 0x00000001);
+          }
+          /**
+           * <code>optional string event_type = 1;</code>
+           */
+          public java.lang.String getEventType() {
+            java.lang.Object ref = eventType_;
+            if (!(ref instanceof java.lang.String)) {
+              java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                  .toStringUtf8();
+              eventType_ = s;
+              return s;
+            } else {
+              return (java.lang.String) ref;
+            }
+          }
+          /**
+           * <code>optional string event_type = 1;</code>
+           */
+          public com.google.protobuf.ByteString
+              getEventTypeBytes() {
+            java.lang.Object ref = eventType_;
+            if (ref instanceof String) {
+              com.google.protobuf.ByteString b = 
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                      (java.lang.String) ref);
+              eventType_ = b;
+              return b;
+            } else {
+              return (com.google.protobuf.ByteString) ref;
+            }
+          }
+          /**
+           * <code>optional string event_type = 1;</code>
+           */
+          public Builder setEventType(
+              java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+            eventType_ = value;
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>optional string event_type = 1;</code>
+           */
+          public Builder clearEventType() {
+            bitField0_ = (bitField0_ & ~0x00000001);
+            eventType_ = getDefaultInstance().getEventType();
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>optional string event_type = 1;</code>
+           */
+          public Builder setEventTypeBytes(
+              com.google.protobuf.ByteString value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+            eventType_ = value;
+            onChanged();
+            return this;
+          }
+
+          // @@protoc_insertion_point(builder_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode)
+        }
+
+        static {
+          defaultInstance = new AsyncEventNode(true);
+          defaultInstance.initFields();
+        }
+
+        // @@protoc_insertion_point(class_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode)
+      }
+
       private int bitField0_;
       // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceType type = 1;
       public static final int TYPE_FIELD_NUMBER = 1;
@@ -12539,6 +13046,28 @@ public final class JBPMMessages {
         return forEach_;
       }
 
+      // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;
+      public static final int ASYNC_EVENT_FIELD_NUMBER = 13;
+      private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode asyncEvent_;
+      /**
+       * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;</code>
+       */
+      public boolean hasAsyncEvent() {
+        return ((bitField0_ & 0x00001000) == 0x00001000);
+      }
+      /**
+       * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;</code>
+       */
+      public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode getAsyncEvent() {
+        return asyncEvent_;
+      }
+      /**
+       * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;</code>
+       */
+      public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNodeOrBuilder getAsyncEventOrBuilder() {
+        return asyncEvent_;
+      }
+
       private void initFields() {
         type_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceType.RULE_SET_NODE;
         ruleSet_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.getDefaultInstance();
@@ -12552,6 +13081,7 @@ public final class JBPMMessages {
         state_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.StateNode.getDefaultInstance();
         composite_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode.getDefaultInstance();
         forEach_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.getDefaultInstance();
+        asyncEvent_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.getDefaultInstance();
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -12600,6 +13130,9 @@ public final class JBPMMessages {
         }
         if (((bitField0_ & 0x00000800) == 0x00000800)) {
           output.writeMessage(12, forEach_);
+        }
+        if (((bitField0_ & 0x00001000) == 0x00001000)) {
+          output.writeMessage(13, asyncEvent_);
         }
         getUnknownFields().writeTo(output);
       }
@@ -12657,6 +13190,10 @@ public final class JBPMMessages {
         if (((bitField0_ & 0x00000800) == 0x00000800)) {
           size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(12, forEach_);
+        }
+        if (((bitField0_ & 0x00001000) == 0x00001000)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(13, asyncEvent_);
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -12777,6 +13314,7 @@ public final class JBPMMessages {
             getStateFieldBuilder();
             getCompositeFieldBuilder();
             getForEachFieldBuilder();
+            getAsyncEventFieldBuilder();
           }
         }
         private static Builder create() {
@@ -12853,6 +13391,12 @@ public final class JBPMMessages {
             forEachBuilder_.clear();
           }
           bitField0_ = (bitField0_ & ~0x00000800);
+          if (asyncEventBuilder_ == null) {
+            asyncEvent_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.getDefaultInstance();
+          } else {
+            asyncEventBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00001000);
           return this;
         }
 
@@ -12973,6 +13517,14 @@ public final class JBPMMessages {
           } else {
             result.forEach_ = forEachBuilder_.build();
           }
+          if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
+            to_bitField0_ |= 0x00001000;
+          }
+          if (asyncEventBuilder_ == null) {
+            result.asyncEvent_ = asyncEvent_;
+          } else {
+            result.asyncEvent_ = asyncEventBuilder_.build();
+          }
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -13024,6 +13576,9 @@ public final class JBPMMessages {
           }
           if (other.hasForEach()) {
             mergeForEach(other.getForEach());
+          }
+          if (other.hasAsyncEvent()) {
+            mergeAsyncEvent(other.getAsyncEvent());
           }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
@@ -14373,6 +14928,123 @@ public final class JBPMMessages {
             forEach_ = null;
           }
           return forEachBuilder_;
+        }
+
+        // optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;
+        private org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode asyncEvent_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.getDefaultInstance();
+        private com.google.protobuf.SingleFieldBuilder<
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNodeOrBuilder> asyncEventBuilder_;
+        /**
+         * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;</code>
+         */
+        public boolean hasAsyncEvent() {
+          return ((bitField0_ & 0x00001000) == 0x00001000);
+        }
+        /**
+         * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;</code>
+         */
+        public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode getAsyncEvent() {
+          if (asyncEventBuilder_ == null) {
+            return asyncEvent_;
+          } else {
+            return asyncEventBuilder_.getMessage();
+          }
+        }
+        /**
+         * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;</code>
+         */
+        public Builder setAsyncEvent(org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode value) {
+          if (asyncEventBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            asyncEvent_ = value;
+            onChanged();
+          } else {
+            asyncEventBuilder_.setMessage(value);
+          }
+          bitField0_ |= 0x00001000;
+          return this;
+        }
+        /**
+         * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;</code>
+         */
+        public Builder setAsyncEvent(
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.Builder builderForValue) {
+          if (asyncEventBuilder_ == null) {
+            asyncEvent_ = builderForValue.build();
+            onChanged();
+          } else {
+            asyncEventBuilder_.setMessage(builderForValue.build());
+          }
+          bitField0_ |= 0x00001000;
+          return this;
+        }
+        /**
+         * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;</code>
+         */
+        public Builder mergeAsyncEvent(org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode value) {
+          if (asyncEventBuilder_ == null) {
+            if (((bitField0_ & 0x00001000) == 0x00001000) &&
+                asyncEvent_ != org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.getDefaultInstance()) {
+              asyncEvent_ =
+                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.newBuilder(asyncEvent_).mergeFrom(value).buildPartial();
+            } else {
+              asyncEvent_ = value;
+            }
+            onChanged();
+          } else {
+            asyncEventBuilder_.mergeFrom(value);
+          }
+          bitField0_ |= 0x00001000;
+          return this;
+        }
+        /**
+         * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;</code>
+         */
+        public Builder clearAsyncEvent() {
+          if (asyncEventBuilder_ == null) {
+            asyncEvent_ = org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.getDefaultInstance();
+            onChanged();
+          } else {
+            asyncEventBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00001000);
+          return this;
+        }
+        /**
+         * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;</code>
+         */
+        public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.Builder getAsyncEventBuilder() {
+          bitField0_ |= 0x00001000;
+          onChanged();
+          return getAsyncEventFieldBuilder().getBuilder();
+        }
+        /**
+         * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;</code>
+         */
+        public org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNodeOrBuilder getAsyncEventOrBuilder() {
+          if (asyncEventBuilder_ != null) {
+            return asyncEventBuilder_.getMessageOrBuilder();
+          } else {
+            return asyncEvent_;
+          }
+        }
+        /**
+         * <code>optional .org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.AsyncEventNode async_event = 13;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilder<
+            org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNodeOrBuilder> 
+            getAsyncEventFieldBuilder() {
+          if (asyncEventBuilder_ == null) {
+            asyncEventBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+                org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.Builder, org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNodeOrBuilder>(
+                    asyncEvent_,
+                    getParentForChildren(),
+                    isClean());
+            asyncEvent_ = null;
+          }
+          return asyncEventBuilder_;
         }
 
         // @@protoc_insertion_point(builder_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent)
@@ -22377,6 +23049,11 @@ public final class JBPMMessages {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_ForEachNode_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_org_jbpm_marshalling_Variable_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -22417,7 +23094,7 @@ public final class JBPMMessages {
     java.lang.String[] descriptorData = {
       "\n\'org/jbpm/marshalling/jbpmmessages.prot" +
       "o\022\024org.jbpm.marshalling\0320org/drools/core" +
-      "/marshalling/droolsmessages.proto\"\352\032\n\017Pr" +
+      "/marshalling/droolsmessages.proto\"\205\034\n\017Pr" +
       "ocessInstance\022\024\n\014process_type\030\001 \001(\t\022\n\n\002i" +
       "d\030\002 \001(\003\022\022\n\nprocess_id\030\003 \001(\t\022\r\n\005state\030\004 \001" +
       "(\005\022\035\n\025node_instance_counter\030\005 \001(\003\022\023\n\013pro" +
@@ -22439,7 +23116,7 @@ public final class JBPMMessages {
       "arshalling.ProcessInstance.NodeInstanceC" +
       "ontent\022\r\n\005level\030\005 \001(\005\0328\n\026ExclusiveGroupI" +
       "nstance\022\036\n\026group_node_instance_id\030\001 \003(\003\032" +
-      "\207\022\n\023NodeInstanceContent\022D\n\004type\030\001 \001(\01626." +
+      "\214\023\n\023NodeInstanceContent\022D\n\004type\030\001 \001(\01626." +
       "org.jbpm.marshalling.ProcessInstance.Nod" +
       "eInstanceType\022W\n\010rule_set\030\002 \001(\0132E.org.jb" +
       "pm.marshalling.ProcessInstance.NodeInsta" +
@@ -22465,76 +23142,80 @@ public final class JBPMMessages {
       "rshalling.ProcessInstance.NodeInstanceCo" +
       "ntent.CompositeContextNode\022W\n\010for_each\030\014" +
       " \001(\0132E.org.jbpm.marshalling.ProcessInsta",
-      "nce.NodeInstanceContent.ForEachNode\032\324\001\n\013" +
-      "RuleSetNode\022\031\n\021timer_instance_id\030\001 \003(\003\022d" +
-      "\n\010mapEntry\030\002 \003(\0132R.org.jbpm.marshalling." +
-      "ProcessInstance.NodeInstanceContent.Rule" +
-      "SetNode.TextMapEntry\022\027\n\017rule_flow_group\030" +
-      "\003 \001(\t\032+\n\014TextMapEntry\022\014\n\004name\030\001 \001(\t\022\r\n\005v" +
-      "alue\030\002 \001(\t\032@\n\rHumanTaskNode\022\024\n\014work_item" +
-      "_id\030\001 \001(\003\022\031\n\021timer_instance_id\030\002 \003(\003\032?\n\014" +
-      "WorkItemNode\022\024\n\014work_item_id\030\001 \001(\003\022\031\n\021ti" +
-      "mer_instance_id\030\002 \003(\003\032H\n\016SubProcessNode\022",
-      "\033\n\023process_instance_id\030\001 \001(\003\022\031\n\021timer_in" +
-      "stance_id\030\002 \003(\003\032*\n\rMilestoneNode\022\031\n\021time" +
-      "r_instance_id\030\001 \003(\003\032\013\n\tEventNode\032\035\n\tTime" +
-      "rNode\022\020\n\010timer_id\030\001 \001(\003\032\234\001\n\010JoinNode\022_\n\007" +
-      "trigger\030\001 \003(\0132N.org.jbpm.marshalling.Pro" +
-      "cessInstance.NodeInstanceContent.JoinNod" +
-      "e.JoinTrigger\032/\n\013JoinTrigger\022\017\n\007node_id\030" +
-      "\001 \001(\003\022\017\n\007counter\030\002 \001(\005\032&\n\tStateNode\022\031\n\021t" +
-      "imer_instance_id\030\001 \003(\003\032\304\002\n\024CompositeCont" +
-      "extNode\022\031\n\021timer_instance_id\030\002 \003(\003\0220\n\010va",
-      "riable\030\003 \003(\0132\036.org.jbpm.marshalling.Vari" +
-      "able\022I\n\rnode_instance\030\004 \003(\01322.org.jbpm.m" +
-      "arshalling.ProcessInstance.NodeInstance\022" +
-      "U\n\017exclusive_group\030\005 \003(\0132<.org.jbpm.mars" +
-      "halling.ProcessInstance.ExclusiveGroupIn" +
-      "stance\022=\n\017iterationLevels\030\006 \003(\0132$.org.jb" +
-      "pm.marshalling.IterationLevel\032\311\001\n\013ForEac" +
-      "hNode\022I\n\rnode_instance\030\001 \003(\01322.org.jbpm." +
+      "nce.NodeInstanceContent.ForEachNode\022]\n\013a" +
+      "sync_event\030\r \001(\0132H.org.jbpm.marshalling." +
+      "ProcessInstance.NodeInstanceContent.Asyn" +
+      "cEventNode\032\324\001\n\013RuleSetNode\022\031\n\021timer_inst" +
+      "ance_id\030\001 \003(\003\022d\n\010mapEntry\030\002 \003(\0132R.org.jb" +
+      "pm.marshalling.ProcessInstance.NodeInsta" +
+      "nceContent.RuleSetNode.TextMapEntry\022\027\n\017r" +
+      "ule_flow_group\030\003 \001(\t\032+\n\014TextMapEntry\022\014\n\004" +
+      "name\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\032@\n\rHumanTaskNo" +
+      "de\022\024\n\014work_item_id\030\001 \001(\003\022\031\n\021timer_instan",
+      "ce_id\030\002 \003(\003\032?\n\014WorkItemNode\022\024\n\014work_item" +
+      "_id\030\001 \001(\003\022\031\n\021timer_instance_id\030\002 \003(\003\032H\n\016" +
+      "SubProcessNode\022\033\n\023process_instance_id\030\001 " +
+      "\001(\003\022\031\n\021timer_instance_id\030\002 \003(\003\032*\n\rMilest" +
+      "oneNode\022\031\n\021timer_instance_id\030\001 \003(\003\032\013\n\tEv" +
+      "entNode\032\035\n\tTimerNode\022\020\n\010timer_id\030\001 \001(\003\032\234" +
+      "\001\n\010JoinNode\022_\n\007trigger\030\001 \003(\0132N.org.jbpm." +
       "marshalling.ProcessInstance.NodeInstance" +
-      "\0220\n\010variable\030\002 \003(\0132\036.org.jbpm.marshallin",
-      "g.Variable\022=\n\017iterationLevels\030\003 \003(\0132$.or" +
-      "g.jbpm.marshalling.IterationLevel\"\222\002\n\020No" +
-      "deInstanceType\022\021\n\rRULE_SET_NODE\020\000\022\023\n\017HUM" +
-      "AN_TASK_NODE\020\001\022\022\n\016WORK_ITEM_NODE\020\002\022\023\n\017SU" +
-      "BPROCESS_NODE\020\003\022\022\n\016MILESTONE_NODE\020\004\022\016\n\nE" +
-      "VENT_NODE\020\005\022\016\n\nTIMER_NODE\020\006\022\r\n\tJOIN_NODE" +
-      "\020\007\022\016\n\nSTATE_NODE\020\010\022\032\n\026COMPOSITE_CONTEXT_" +
-      "NODE\020\t\022\021\n\rFOR_EACH_NODE\020\n\022\020\n\014DYNAMIC_NOD" +
-      "E\020\013\022\031\n\025EVENT_SUBPROCESS_NODE\020\014\"?\n\010Variab" +
-      "le\022\014\n\004name\030\001 \001(\t\022\026\n\016strategy_index\030\002 \001(\005",
-      "\022\r\n\005value\030\003 \001(\014\"\305\001\n\010WorkItem\022\n\n\002id\030\001 \001(\003" +
-      "\022\034\n\024process_instances_id\030\002 \001(\003\022\014\n\004name\030\003" +
-      " \001(\t\022\r\n\005state\030\004 \001(\005\0220\n\010variable\030\005 \003(\0132\036." +
-      "org.jbpm.marshalling.Variable\022\025\n\rdeploym" +
-      "ent_id\030\006 \001(\t\022\030\n\020node_instance_id\030\007 \001(\003\022\017" +
-      "\n\007node_id\030\010 \001(\003\"\323\002\n\014ProcessTimer\022?\n\005time" +
-      "r\030\001 \001(\01320.org.jbpm.marshalling.ProcessTi" +
-      "mer.TimerInstance\0225\n\007trigger\030\002 \001(\0132$.org" +
-      ".drools.core.marshalling.Trigger\032\312\001\n\rTim" +
-      "erInstance\022\n\n\002id\030\001 \001(\003\022\020\n\010timer_id\030\002 \001(\003",
-      "\022\r\n\005delay\030\003 \001(\003\022\016\n\006period\030\004 \001(\003\022\033\n\023proce" +
-      "ss_instance_id\030\005 \001(\003\022\026\n\016activated_time\030\006" +
-      " \001(\003\022\026\n\016last_triggered\030\007 \001(\003\022\034\n\024DEPRECAT" +
-      "ED_sessionId\030\010 \001(\005\022\021\n\tsessionId\030\t \001(\003\"+\n" +
-      "\016IterationLevel\022\n\n\002id\030\001 \001(\t\022\r\n\005level\030\002 \001" +
-      "(\005\"E\n\021VariableContainer\0220\n\010variable\030\001 \003(" +
-      "\0132\036.org.jbpm.marshalling.Variable:i\n\020pro" +
-      "cess_instance\022(.org.drools.core.marshall" +
-      "ing.ProcessData\030\n \003(\0132%.org.jbpm.marshal" +
-      "ling.ProcessInstance:[\n\twork_item\022(.org.",
-      "drools.core.marshalling.ProcessData\030\013 \003(" +
-      "\0132\036.org.jbpm.marshalling.WorkItem::\n\010tim" +
-      "er_id\022(.org.drools.core.marshalling.Proc" +
-      "essData\030\r \001(\003:c\n\rprocess_timer\022(.org.dro" +
-      "ols.core.marshalling.ProcessData\030\014 \003(\0132\"" +
-      ".org.jbpm.marshalling.ProcessTimer:a\n\npr" +
-      "oc_timer\022).org.drools.core.marshalling.T" +
-      "imers.Timer\030d \001(\0132\".org.jbpm.marshalling" +
-      ".ProcessTimerB)\n\031org.jbpm.marshalling.im" +
-      "plB\014JBPMMessages"
+      "Content.JoinNode.JoinTrigger\032/\n\013JoinTrig" +
+      "ger\022\017\n\007node_id\030\001 \001(\003\022\017\n\007counter\030\002 \001(\005\032&\n",
+      "\tStateNode\022\031\n\021timer_instance_id\030\001 \003(\003\032\304\002" +
+      "\n\024CompositeContextNode\022\031\n\021timer_instance" +
+      "_id\030\002 \003(\003\0220\n\010variable\030\003 \003(\0132\036.org.jbpm.m" +
+      "arshalling.Variable\022I\n\rnode_instance\030\004 \003" +
+      "(\01322.org.jbpm.marshalling.ProcessInstanc" +
+      "e.NodeInstance\022U\n\017exclusive_group\030\005 \003(\0132" +
+      "<.org.jbpm.marshalling.ProcessInstance.E" +
+      "xclusiveGroupInstance\022=\n\017iterationLevels" +
+      "\030\006 \003(\0132$.org.jbpm.marshalling.IterationL" +
+      "evel\032\311\001\n\013ForEachNode\022I\n\rnode_instance\030\001 ",
+      "\003(\01322.org.jbpm.marshalling.ProcessInstan" +
+      "ce.NodeInstance\0220\n\010variable\030\002 \003(\0132\036.org." +
+      "jbpm.marshalling.Variable\022=\n\017iterationLe" +
+      "vels\030\003 \003(\0132$.org.jbpm.marshalling.Iterat" +
+      "ionLevel\032$\n\016AsyncEventNode\022\022\n\nevent_type" +
+      "\030\001 \001(\t\"\250\002\n\020NodeInstanceType\022\021\n\rRULE_SET_" +
+      "NODE\020\000\022\023\n\017HUMAN_TASK_NODE\020\001\022\022\n\016WORK_ITEM" +
+      "_NODE\020\002\022\023\n\017SUBPROCESS_NODE\020\003\022\022\n\016MILESTON" +
+      "E_NODE\020\004\022\016\n\nEVENT_NODE\020\005\022\016\n\nTIMER_NODE\020\006" +
+      "\022\r\n\tJOIN_NODE\020\007\022\016\n\nSTATE_NODE\020\010\022\032\n\026COMPO",
+      "SITE_CONTEXT_NODE\020\t\022\021\n\rFOR_EACH_NODE\020\n\022\020" +
+      "\n\014DYNAMIC_NODE\020\013\022\031\n\025EVENT_SUBPROCESS_NOD" +
+      "E\020\014\022\024\n\020ASYNC_EVENT_NODE\020\r\"?\n\010Variable\022\014\n" +
+      "\004name\030\001 \001(\t\022\026\n\016strategy_index\030\002 \001(\005\022\r\n\005v" +
+      "alue\030\003 \001(\014\"\305\001\n\010WorkItem\022\n\n\002id\030\001 \001(\003\022\034\n\024p" +
+      "rocess_instances_id\030\002 \001(\003\022\014\n\004name\030\003 \001(\t\022" +
+      "\r\n\005state\030\004 \001(\005\0220\n\010variable\030\005 \003(\0132\036.org.j" +
+      "bpm.marshalling.Variable\022\025\n\rdeployment_i" +
+      "d\030\006 \001(\t\022\030\n\020node_instance_id\030\007 \001(\003\022\017\n\007nod" +
+      "e_id\030\010 \001(\003\"\323\002\n\014ProcessTimer\022?\n\005timer\030\001 \001",
+      "(\01320.org.jbpm.marshalling.ProcessTimer.T" +
+      "imerInstance\0225\n\007trigger\030\002 \001(\0132$.org.droo" +
+      "ls.core.marshalling.Trigger\032\312\001\n\rTimerIns" +
+      "tance\022\n\n\002id\030\001 \001(\003\022\020\n\010timer_id\030\002 \001(\003\022\r\n\005d" +
+      "elay\030\003 \001(\003\022\016\n\006period\030\004 \001(\003\022\033\n\023process_in" +
+      "stance_id\030\005 \001(\003\022\026\n\016activated_time\030\006 \001(\003\022" +
+      "\026\n\016last_triggered\030\007 \001(\003\022\034\n\024DEPRECATED_se" +
+      "ssionId\030\010 \001(\005\022\021\n\tsessionId\030\t \001(\003\"+\n\016Iter" +
+      "ationLevel\022\n\n\002id\030\001 \001(\t\022\r\n\005level\030\002 \001(\005\"E\n" +
+      "\021VariableContainer\0220\n\010variable\030\001 \003(\0132\036.o",
+      "rg.jbpm.marshalling.Variable:i\n\020process_" +
+      "instance\022(.org.drools.core.marshalling.P" +
+      "rocessData\030\n \003(\0132%.org.jbpm.marshalling." +
+      "ProcessInstance:[\n\twork_item\022(.org.drool" +
+      "s.core.marshalling.ProcessData\030\013 \003(\0132\036.o" +
+      "rg.jbpm.marshalling.WorkItem::\n\010timer_id" +
+      "\022(.org.drools.core.marshalling.ProcessDa" +
+      "ta\030\r \001(\003:c\n\rprocess_timer\022(.org.drools.c" +
+      "ore.marshalling.ProcessData\030\014 \003(\0132\".org." +
+      "jbpm.marshalling.ProcessTimer:a\n\nproc_ti",
+      "mer\022).org.drools.core.marshalling.Timers" +
+      ".Timer\030d \001(\0132\".org.jbpm.marshalling.Proc" +
+      "essTimerB)\n\031org.jbpm.marshalling.implB\014J" +
+      "BPMMessages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -22570,7 +23251,7 @@ public final class JBPMMessages {
           internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor,
-              new java.lang.String[] { "Type", "RuleSet", "HumanTask", "WorkItem", "SubProcess", "Milestone", "Event", "Timer", "Join", "State", "Composite", "ForEach", });
+              new java.lang.String[] { "Type", "RuleSet", "HumanTask", "WorkItem", "SubProcess", "Milestone", "Event", "Timer", "Join", "State", "Composite", "ForEach", "AsyncEvent", });
           internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_descriptor =
             internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(0);
           internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_RuleSetNode_fieldAccessorTable = new
@@ -22649,6 +23330,12 @@ public final class JBPMMessages {
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_ForEachNode_descriptor,
               new java.lang.String[] { "NodeInstance", "Variable", "IterationLevels", });
+          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_descriptor =
+            internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_descriptor.getNestedTypes().get(11);
+          internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_AsyncEventNode_descriptor,
+              new java.lang.String[] { "EventType", });
           internal_static_org_jbpm_marshalling_Variable_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_org_jbpm_marshalling_Variable_fieldAccessorTable = new

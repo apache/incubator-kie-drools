@@ -226,8 +226,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 			throw new IllegalArgumentException("Illegal node type: "
 					+ node.getClass());
 		}
-		NodeInstanceImpl nodeInstance = (NodeInstanceImpl) conf
-				.getNodeInstance(node, this, this);
+		NodeInstanceImpl nodeInstance = (NodeInstanceImpl) conf.getNodeInstance(node, this, this);
 		if (nodeInstance == null) {
 			throw new IllegalArgumentException("Illegal node type: "
 					+ node.getClass());
@@ -236,8 +235,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 			getKnowledgeRuntime().insert(nodeInstance);
 		}
 		return nodeInstance;
-	}
-
+	}	
 
 	public long getNodeInstanceCounter() {
 	    if( deprecatedIdStrategy ) { 

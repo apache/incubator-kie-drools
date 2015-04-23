@@ -255,6 +255,14 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
                     .setType( NodeInstanceType.MILESTONE_NODE )
                     .setMilestone( _ms.build() );
+        } else if ( nodeInstance instanceof AsyncEventNodeInstance ) {
+            JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.Builder _asyncEvent = JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.newBuilder();
+            _asyncEvent.setEventType(((AsyncEventNodeInstance) nodeInstance).getEventType());
+                    
+            _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
+                    .setType( NodeInstanceType.ASYNC_EVENT_NODE )
+                    .setAsyncEvent(_asyncEvent.build());
+            
         } else if ( nodeInstance instanceof EventNodeInstance ) {
             _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
                     .setType( NodeInstanceType.EVENT_NODE );
@@ -718,6 +726,10 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             case TIMER_NODE :
                 nodeInstance = new TimerNodeInstance();
                 ((TimerNodeInstance) nodeInstance).internalSetTimerId( _content.getTimer().getTimerId() );
+                break;
+            case ASYNC_EVENT_NODE :
+                nodeInstance = new AsyncEventNodeInstance();
+                ((AsyncEventNodeInstance) nodeInstance).setEventType(_content.getAsyncEvent().getEventType());
                 break;
             case EVENT_NODE :
                 nodeInstance = new EventNodeInstance();

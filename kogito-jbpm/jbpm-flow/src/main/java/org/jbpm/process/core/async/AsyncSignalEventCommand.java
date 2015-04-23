@@ -26,7 +26,6 @@ public class AsyncSignalEventCommand implements Command {
         if (runtimeManager == null) {
             throw new IllegalArgumentException("No runtime manager found for deployment id " + deploymentId);  
         }
-        
         RuntimeEngine engine = runtimeManager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));        
         try {
             engine.getKieSession().signalEvent(signal, event, processInstanceId);

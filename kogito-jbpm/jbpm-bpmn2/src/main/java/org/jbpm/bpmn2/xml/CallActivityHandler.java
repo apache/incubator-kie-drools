@@ -84,6 +84,10 @@ public class CallActivityHandler extends AbstractNodeHandler {
         }
         handleScript(subProcessNode, element, "onEntry");
         handleScript(subProcessNode, element, "onExit");
+        // handle async continuation based on presence of 'async' data input
+        if (dataInputs.containsValue("async")) {
+            node.setMetaData("async", true);
+        }
 	}
     
     protected void readIoSpecification(org.w3c.dom.Node xmlNode, Map<String, String> dataInputs, Map<String, String> dataOutputs) {

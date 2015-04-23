@@ -80,6 +80,7 @@ message ProcessInstance {
         optional StateNode state = 10;
         optional CompositeContextNode composite = 11;
         optional ForEachNode for_each = 12;
+        optional AsyncEventNode async_event = 13;
 
         message RuleSetNode {
             repeated int64 timer_instance_id = 1;
@@ -125,6 +126,9 @@ message ProcessInstance {
             repeated Variable variable = 2;
             repeated IterationLevel iterationLevels = 3;
         }
+        message AsyncEventNode {
+            optional string event_type = 1;
+        }
     }
 
     enum NodeInstanceType {
@@ -141,6 +145,7 @@ message ProcessInstance {
         FOR_EACH_NODE = 10;
         DYNAMIC_NODE = 11;
         EVENT_SUBPROCESS_NODE = 12;
+        ASYNC_EVENT_NODE = 13;
     }
 }
 

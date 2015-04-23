@@ -160,6 +160,14 @@ public abstract class NodeImpl implements Node, Serializable, ContextResolver {
         validateRemoveIncomingConnection(type, connection);
         this.incomingConnections.get(type).remove(connection);
     }
+    
+    public void clearIncomingConnection() {
+        this.incomingConnections.clear();
+    }
+    
+    public void clearOutgoingConnection() {
+        this.outgoingConnections.clear();
+    }
 
     public void validateRemoveIncomingConnection(final String type, final Connection connection) {
         if (type == null) {

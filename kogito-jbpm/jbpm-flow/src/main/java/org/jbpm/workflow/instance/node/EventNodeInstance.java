@@ -68,14 +68,14 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
     }
 
     public void triggerCompleted() {   
-    	getProcessInstance().removeEventListener(getEventNode().getType(), listener, true);
+    	getProcessInstance().removeEventListener(getEventType(), getEventListener(), true);
         ((org.jbpm.workflow.instance.NodeInstanceContainer)getNodeInstanceContainer()).setCurrentLevel(getLevel());
         triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
     }
     
     @Override
 	public void cancel() {
-    	getProcessInstance().removeEventListener(getEventNode().getType(), listener, true);
+    	getProcessInstance().removeEventListener(getEventType(), getEventListener(), true);
 		super.cancel();
 	}
 
@@ -91,12 +91,20 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
     
 	@Override
 	public void addEventListeners() {
-		getProcessInstance().addEventListener(getEventNode().getType(), listener, true);
+		getProcessInstance().addEventListener(getEventType(), getEventListener(), true);
 	}
 
 	@Override
 	public void removeEventListeners() {
 		
 		
+	}
+	
+	public String getEventType() {
+	    return getEventNode().getType();
+	}
+	
+	protected EventListener getEventListener() {
+	    return listener;
 	}
 }

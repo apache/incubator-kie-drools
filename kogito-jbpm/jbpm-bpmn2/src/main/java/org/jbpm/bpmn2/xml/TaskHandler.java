@@ -32,7 +32,6 @@ import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.Transformation;
 import org.jbpm.workflow.core.node.WorkItemNode;
-import org.kie.api.definition.process.Connection;
 import org.kie.api.runtime.process.DataTransformer;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -55,6 +54,8 @@ public class TaskHandler extends AbstractNodeHandler {
     protected void handleNode(final Node node, final Element element, final String uri, 
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
     	super.handleNode(node, element, uri, localName, parser);
+        dataInputs.clear();
+        dataOutputs.clear();
     	WorkItemNode workItemNode = (WorkItemNode) node;
         String name = getTaskName(element);
         Work work = new WorkImpl();
@@ -202,6 +203,10 @@ public class TaskHandler extends AbstractNodeHandler {
 		Node node = (Node) parser.getCurrent();
 		// determine type of event definition, so the correct type of node can be generated
     	handleNode(node, element, uri, localName, parser);
+    	
+        // handle async continuation based on presence of 'async' data input
+        handleAsyncContinuation(node);
+        
 		org.w3c.dom.Node xmlNode = element.getFirstChild();
 		int uniqueIdGen = 1;
 		while (xmlNode != null) {
@@ -232,6 +237,7 @@ public class TaskHandler extends AbstractNodeHandler {
 		}
 		NodeContainer nodeContainer = (NodeContainer) parser.getParent();
 		nodeContainer.addNode(node);
+		       
 		return node;
 	}
     
