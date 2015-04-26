@@ -246,7 +246,7 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.315"
-     inkscape:cx="400"
+     inkscape:cx="310.26616"
      inkscape:cy="300"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -415,21 +415,7 @@
            x="187.33434"
            y="72.811104"
            style="font-size:14.48488903px" /></flowRegion><flowPara
-         id="flowPara3463">changeMoveSelector</flowPara></flowRoot>    <flowRoot
-       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,661.72239)"
-       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       id="flowRoot3620"
-       xml:space="preserve"><flowRegion
-         id="flowRegion3622"><rect
-           style="font-size:14.48488903px"
-           y="72.810577"
-           x="193.36971"
-           height="72.424446"
-           width="193.13185"
-           id="rect3624" /></flowRegion><flowPara
-         id="flowPara3645">A0, A1, A2, ...</flowPara><flowPara
-         id="flowPara3922">C0, C1, C2, ...</flowPara><flowPara
-         id="flowPara3671">...</flowPara></flowRoot>    <path
+         id="flowPara3463">changeMoveSelector</flowPara></flowRoot>    <path
        sodipodi:nodetypes="ccccccc"
        inkscape:connector-curvature="0"
        id="path4520"
@@ -594,35 +580,7 @@
            x="223.54655"
            y="72.811111"
            style="font-size:14.48488903px" /></flowRegion><flowPara
-         id="flowPara3609">A, B, C, D, ...</flowPara></flowRoot>    <flowRoot
-       xml:space="preserve"
-       id="flowRoot3628"
-       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="matrix(1.6568991,0,0,1.6568991,99.60592,601.72139)"><flowRegion
-         id="flowRegion3630"><rect
-           id="rect3632"
-           width="193.13185"
-           height="72.424446"
-           x="205.44044"
-           y="72.81118"
-           style="font-size:14.48488903px" /></flowRegion><flowPara
-         id="flowPara3634">AB, AC, AD, ...</flowPara><flowPara
-         id="flowPara3654">BC, BD, ...</flowPara><flowPara
-         id="flowPara3656">CD, ...</flowPara><flowPara
-         id="flowPara3673">...</flowPara></flowRoot>    <flowRoot
-       xml:space="preserve"
-       id="flowRoot3663"
-       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="matrix(1.6568991,0,0,1.6568991,-90.39408,481.72095)"><flowRegion
-         id="flowRegion3665"><rect
-           id="rect3667"
-           width="446.61743"
-           height="36.212219"
-           x="72.662285"
-           y="72.81118"
-           style="font-size:14.48488903px" /></flowRegion><flowPara
-         id="flowPara3669">A0, A1, A2, ..., C0, C1, C2, ...</flowPara><flowPara
-         id="flowPara3676">AB, AD, ..., BC, ..., CD, ...</flowPara></flowRoot>    <rect
+         id="flowPara3609">A, B, C, D, ...</flowPara></flowRoot>    <rect
        ry="5"
        rx="4.9999986"
        y="842.86218"
@@ -643,33 +601,7 @@
            x="199.40508"
            y="72.811104"
            style="font-size:14.48488903px" /></flowRegion><flowPara
-         id="flowPara3114">swapMoveSelectionFilter</flowPara></flowRoot>    <g
-       id="g3906">
-      <path
-         inkscape:connector-curvature="0"
-         id="path3886"
-         d="m 565.49987,749.75421 33.15408,-24.78406"
-         style="color:#000000;fill:none;stroke:#ce5c00;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-      <path
-         inkscape:connector-curvature="0"
-         id="path3888"
-         d="M 598.65395,749.75421 565.49987,724.97015"
-         style="color:#000000;fill:none;stroke:#ce5c00;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-    </g>
-    <g
-       id="g3910">
-      <path
-         style="color:#000000;fill:none;stroke:#ce5c00;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-         d="m 590,779.75418 33.15408,-24.78406"
-         id="path3890"
-         inkscape:connector-curvature="0" />
-      <path
-         style="color:#000000;fill:none;stroke:#ce5c00;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-         d="M 623.15408,779.75418 590,754.97012"
-         id="path3892"
-         inkscape:connector-curvature="0" />
-    </g>
-    <rect
+         id="flowPara3114">swapMoveSelectionFilter</flowPara></flowRoot>    <rect
        ry="5"
        rx="4.9999986"
        y="962.86218"
@@ -690,9 +622,43 @@
            x="223.54655"
            y="72.811111"
            style="font-size:9.65659332px" /></flowRegion><flowPara
-         id="flowPara3902">entitySelectionFilter</flowPara></flowRoot>    <g
+         id="flowPara3902">entitySelectionFilter</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3628"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.6568991,0,0,1.6568991,99.605922,601.72139)"><flowRegion
+         id="flowRegion3630"><rect
+           id="rect3632"
+           width="193.13185"
+           height="72.424446"
+           x="205.44044"
+           y="72.81118"
+           style="font-size:14.48488903px" /></flowRegion><flowPara
+         id="flowPara3634">AB, AC, AD, ...</flowPara><flowPara
+         id="flowPara3654">BC, BD, ...</flowPara><flowPara
+         id="flowPara3656">CD, ...</flowPara><flowPara
+         id="flowPara3673">...</flowPara></flowRoot>  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Entity filter">
+    <flowRoot
+       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,209.36021)"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot3620"
+       xml:space="preserve"><flowRegion
+         id="flowRegion3622"><rect
+           style="font-size:14.48488903px"
+           y="72.810577"
+           x="193.36971"
+           height="72.424446"
+           width="193.13185"
+           id="rect3624" /></flowRegion><flowPara
+         id="flowPara3645">A0, A1, A2, ...</flowPara><flowPara
+         id="flowPara3922">C0, C1, C2, ...</flowPara><flowPara
+         id="flowPara3671">...</flowPara></flowRoot>    <g
        id="g3914"
-       transform="matrix(0.60426955,0,0,1,-274.65435,209.99997)">
+       transform="matrix(0.60426955,0,0,1,-274.65435,-242.36221)">
       <path
          style="color:#000000;fill:none;stroke:#ce5c00;stroke-width:2.57285094;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
          d="m 565.49987,749.75421 33.15408,-24.78406"
@@ -705,7 +671,7 @@
          inkscape:connector-curvature="0" />
     </g>
     <g
-       transform="matrix(0.60426955,0,0,1,-214.05435,209.99997)"
+       transform="matrix(0.60426955,0,0,1,-214.05435,-242.36221)"
        id="g3926">
       <path
          inkscape:connector-curvature="0"
@@ -719,4 +685,57 @@
          style="color:#000000;fill:none;stroke:#ce5c00;stroke-width:2.57285094;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
     </g>
   </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Move filter"
+     style="display:inline">
+    <g
+       transform="translate(1.7426573e-6,-452.36218)"
+       id="g3906">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3886"
+         d="m 565.49987,749.75421 33.15408,-24.78406"
+         style="color:#000000;fill:none;stroke:#ce5c00;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3888"
+         d="M 598.65395,749.75421 565.49987,724.97015"
+         style="color:#000000;fill:none;stroke:#ce5c00;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+    </g>
+    <g
+       transform="translate(1.7426573e-6,-452.36218)"
+       id="g3910">
+      <path
+         style="color:#000000;fill:none;stroke:#ce5c00;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         d="m 590,779.75418 33.15408,-24.78406"
+         id="path3890"
+         inkscape:connector-curvature="0" />
+      <path
+         style="color:#000000;fill:none;stroke:#ce5c00;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         d="M 623.15408,779.75418 590,754.97012"
+         id="path3892"
+         inkscape:connector-curvature="0" />
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="Result"
+     style="display:inline">
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3663"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.6568991,0,0,1.6568991,-90.394077,29.358766)"><flowRegion
+         id="flowRegion3665"><rect
+           id="rect3667"
+           width="446.61743"
+           height="36.212219"
+           x="72.662285"
+           y="72.81118"
+           style="font-size:14.48488903px" /></flowRegion><flowPara
+         id="flowPara3669">A0, A1, A2, ..., C0, C1, C2, ...</flowPara><flowPara
+         id="flowPara3676">AB, AD, ..., BC, ..., CD, ...</flowPara></flowRoot>  </g>
 </svg>

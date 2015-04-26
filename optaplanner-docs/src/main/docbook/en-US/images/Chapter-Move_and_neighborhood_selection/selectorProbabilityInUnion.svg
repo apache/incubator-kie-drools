@@ -261,9 +261,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.315"
-     inkscape:cx="398.3071"
-     inkscape:cy="265.7172"
+     inkscape:zoom="1.3483333"
+     inkscape:cx="400"
+     inkscape:cy="300"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -272,7 +272,7 @@
      gridtolerance="10"
      inkscape:window-width="1680"
      inkscape:window-height="991"
-     inkscape:window-x="1680"
+     inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
      inkscape:snap-grids="true"
@@ -303,7 +303,7 @@
             <dc:title>www.optaplanner.org</dc:title>
           </cc:Agent>
         </dc:creator>
-        <dc:title />
+        <dc:title></dc:title>
         <dc:rights>
           <cc:Agent>
             <dc:title>www.optaplanner.org</dc:title>
@@ -344,7 +344,7 @@
            x="50"
            y="150.00014"
            style="font-size:14px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-         id="flowPara4308-6">A cached Selector can favor some selections over others.</flowPara></flowRoot>    <g
+         id="flowPara4308-6">A random Selector can favor some selections over others.</flowPara></flowRoot>    <g
        id="g3709"
        transform="translate(0,19.999997)" />
     <flowRoot
@@ -411,29 +411,7 @@
            x="187.33434"
            y="72.811104"
            style="font-size:14.48488903px" /></flowRegion><flowPara
-         id="flowPara3463">changeMoveSelector</flowPara></flowRoot>    <flowRoot
-       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,546.7226)"
-       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       id="flowRoot3620"
-       xml:space="preserve"><flowRegion
-         id="flowRegion3622"><rect
-           style="font-size:14.48488903px"
-           y="72.810585"
-           x="193.36971"
-           height="54.318336"
-           width="193.13185"
-           id="rect3624" /></flowRegion><flowPara
-         id="flowPara3671"
-         style="fill:#000000;fill-opacity:1">8 moves</flowPara><flowPara
-         style="font-size:10.86366653px;fill:#000000;fill-opacity:1"
-         id="flowPara4070">A0, A1, B0, B1, C0, C1, D0, D1</flowPara><flowPara
-         id="flowPara3166"><flowSpan
-   style="fill:#555753"
-   id="flowSpan3215">P(</flowSpan>A0<flowSpan
-   style="fill:#555753"
-   id="flowSpan3186">)=</flowSpan><flowSpan
-   style="font-size:14.48488903px"
-   id="flowSpan4064">1/8, .</flowSpan>..</flowPara></flowRoot>    <rect
+         id="flowPara3463">changeMoveSelector</flowPara></flowRoot>    <rect
        style="fill:#729fcf;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect3467"
        width="339"
@@ -460,56 +438,7 @@
        id="path3273"
        d="m 435,752.36218 c 5,-88.88888 145,-77.77778 155,-94.44444 l -10,0 20,-5.55556 20,5.55556 -10,0 c 10,16.66666 150,5.55556 155,94.44444"
        style="opacity:0.4;color:#000000;fill:#729fcf;stroke:#204a87;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-    <flowRoot
-       xml:space="preserve"
-       id="flowRoot3277"
-       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="matrix(1.6568991,0,0,1.6568991,119.60592,546.7226)"><flowRegion
-         id="flowRegion3279"><rect
-           id="rect3281"
-           width="193.13185"
-           height="54.318329"
-           x="193.36971"
-           y="72.810585"
-           style="font-size:14.48488903px" /></flowRegion><flowPara
-         id="flowPara3283">6 moves</flowPara><flowPara
-         id="flowPara4056"
-         style="font-size:10.86366653px">AB, AC, AD, BC, BD, CD</flowPara><flowPara
-         id="flowPara3303"><flowSpan
-   id="flowSpan3295"
-   style="fill:#555753">P(</flowSpan>AB<flowSpan
-   id="flowSpan3297"
-   style="fill:#555753">)=</flowSpan><flowSpan
-   style="font-size:14.48488903px"
-   id="flowSpan4068">1/6, ...</flowSpan></flowPara></flowRoot>    <flowRoot
-       xml:space="preserve"
-       id="flowRoot3403"
-       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,626.7226)"><flowRegion
-         id="flowRegion3405"><rect
-           id="rect3407"
-           width="434.54663"
-           height="36.212227"
-           x="193.36971"
-           y="-35.826088"
-           style="font-size:14.48488903px" /></flowRegion><flowPara
-         id="flowPara3429"
-         style="font-size:10.86366653px;fill:#000000;fill-opacity:1">A0, A1, B0, B1, C0, C1, D0, D1, AB, AC, AD, BC, BD, CD</flowPara><flowPara
-         id="flowPara4256"><flowSpan
-   style="fill:#555753"
-   id="flowSpan4258">P(</flowSpan>A0<flowSpan
-   id="flowSpan3413"
-   style="fill:#555753">)=</flowSpan><flowSpan
-   style="font-size:14.48488903px"
-   id="flowSpan4060"><flowSpan
-   style="font-weight:bold"
-   id="flowSpan4378">1/16</flowSpan>, ..</flowSpan>., <flowSpan
-   style="fill:#555753"
-   id="flowSpan3443">P(</flowSpan>AB<flowSpan
-   style="fill:#555753"
-   id="flowSpan3453">)=</flowSpan><flowSpan
-   style="font-weight:bold"
-   id="flowSpan4380">1/12</flowSpan>, ...</flowPara></flowRoot>    <text
+    <text
        xml:space="preserve"
        style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Serif;-inkscape-font-specification:Serif"
        x="561.97717"
@@ -564,22 +493,117 @@
            width="241.41481"
            id="rect4386" /></flowRegion><flowPara
          id="flowPara4388">1/2       probabilityWeight       1/2</flowPara><flowPara
-         id="flowPara4390">(default)</flowPara></flowRoot>    <path
+         id="flowPara4390">(default)</flowPara></flowRoot>  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="ChangeMove probability"
+     style="display:inline">
+    <flowRoot
+       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,94.36042)"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot3620"
+       xml:space="preserve"><flowRegion
+         id="flowRegion3622"><rect
+           style="font-size:14.48488903px"
+           y="72.810585"
+           x="193.36971"
+           height="54.318336"
+           width="193.13185"
+           id="rect3624" /></flowRegion><flowPara
+         id="flowPara3671"
+         style="fill:#000000;fill-opacity:1">8 moves</flowPara><flowPara
+         style="font-size:10.86366653px;fill:#000000;fill-opacity:1"
+         id="flowPara4070">A0, A1, B0, B1, C0, C1, D0, D1</flowPara><flowPara
+         id="flowPara3166"><flowSpan
+   style="fill:#555753"
+   id="flowSpan3215">P(</flowSpan>A0<flowSpan
+   style="fill:#555753"
+   id="flowSpan3186">)=</flowSpan><flowSpan
+   style="font-size:14.48488903px"
+   id="flowSpan4064">1/8, .</flowSpan>..</flowPara></flowRoot>  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="SwapMove probability"
+     style="display:inline">
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3277"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.6568991,0,0,1.6568991,119.60592,94.36042)"><flowRegion
+         id="flowRegion3279"><rect
+           id="rect3281"
+           width="193.13185"
+           height="54.318329"
+           x="193.36971"
+           y="72.810585"
+           style="font-size:14.48488903px" /></flowRegion><flowPara
+         id="flowPara3283">6 moves</flowPara><flowPara
+         id="flowPara4056"
+         style="font-size:10.86366653px">AB, AC, AD, BC, BD, CD</flowPara><flowPara
+         id="flowPara3303"><flowSpan
+   id="flowSpan3295"
+   style="fill:#555753">P(</flowSpan>AB<flowSpan
+   id="flowSpan3297"
+   style="fill:#555753">)=</flowSpan><flowSpan
+   style="font-size:14.48488903px"
+   id="flowSpan4068">1/6, ...</flowSpan></flowPara></flowRoot>  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="Result probability"
+     style="display:inline">
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3403"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,174.36042)"><flowRegion
+         id="flowRegion3405"><rect
+           id="rect3407"
+           width="434.54663"
+           height="36.212227"
+           x="193.36971"
+           y="-35.826088"
+           style="font-size:14.48488903px" /></flowRegion><flowPara
+         id="flowPara3429"
+         style="font-size:10.86366653px;fill:#000000;fill-opacity:1">A0, A1, B0, B1, C0, C1, D0, D1, AB, AC, AD, BC, BD, CD</flowPara><flowPara
+         id="flowPara4256"><flowSpan
+   style="fill:#555753"
+   id="flowSpan4258">P(</flowSpan>A0<flowSpan
+   id="flowSpan3413"
+   style="fill:#555753">)=</flowSpan><flowSpan
+   style="font-size:14.48488903px"
+   id="flowSpan4060"><flowSpan
+   style="font-weight:bold"
+   id="flowSpan4378">1/16</flowSpan>, ..</flowSpan>., <flowSpan
+   style="fill:#555753"
+   id="flowSpan3443">P(</flowSpan>AB<flowSpan
+   style="fill:#555753"
+   id="flowSpan3453">)=</flowSpan><flowSpan
+   style="font-weight:bold"
+   id="flowSpan4380">1/12</flowSpan>, ...</flowPara></flowRoot>  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Different weight"
+     style="display:inline">
+    <path
        sodipodi:nodetypes="ccccccc"
        inkscape:connector-curvature="0"
        id="path4392"
-       d="M 35,992.36218 C 40,903.4733 180,914.5844 190,897.91774 l -10,0 20,-5.55556 20,5.55556 -10,0 c 10,16.66666 150,5.55556 155,94.44444"
+       d="m 35,540 c 5,-88.88888 145,-77.77778 155,-94.44444 l -10,0 20,-5.55556 20,5.55556 -10,0 C 220,462.22222 360,451.11112 365,540"
        style="opacity:0.4;color:#000000;fill:#729fcf;stroke:#204a87;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
     <path
        sodipodi:nodetypes="ccccccc"
        inkscape:connector-curvature="0"
        id="path4394"
-       d="m 35,862.36218 c 5,-70 325,-44.54545 355,-63.63637 l -10,0 20,-6.36363 20,6.36363 -10,0 c 30,19.09092 350,-6.36363 355,63.63637"
+       d="m 35,410 c 5,-70 325,-44.54545 355,-63.63637 l -10,0 20,-6.36363 20,6.36363 -10,0 C 440,365.45455 760,340 765,410"
        style="opacity:0.4;color:#000000;fill:#729fcf;stroke:#204a87;stroke-width:0.99999988px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
     <rect
        ry="5"
        rx="4.9999981"
-       y="862.86218"
+       y="410.5"
        x="30.5"
        height="29"
        width="739"
@@ -589,7 +613,7 @@
        xml:space="preserve"
        id="flowRoot4398"
        style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="matrix(1.6568991,0,0,1.6568991,-90.39408,741.72152)"><flowRegion
+       transform="matrix(1.6568991,0,0,1.6568991,-90.39408,289.35934)"><flowRegion
          id="flowRegion4400"><rect
            id="rect4402"
            width="446.61749"
@@ -603,11 +627,11 @@
        width="339"
        height="29"
        x="30.5"
-       y="992.86218"
+       y="540.5"
        rx="4.9999981"
        ry="5" />
     <flowRoot
-       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,871.72153)"
+       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,419.35935)"
        style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        id="flowRoot4408"
        xml:space="preserve"><flowRegion
@@ -622,7 +646,7 @@
        xml:space="preserve"
        id="flowRoot4416"
        style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,786.7226)"><flowRegion
+       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,334.36042)"><flowRegion
          id="flowRegion4418"><rect
            id="rect4420"
            width="193.13185"
@@ -643,7 +667,7 @@
    style="font-size:14.48488903px">1/8, .</flowSpan>..</flowPara></flowRoot>    <rect
        ry="5"
        rx="4.9999986"
-       y="992.86218"
+       y="540.5"
        x="430.5"
        height="29"
        width="339"
@@ -653,7 +677,7 @@
        xml:space="preserve"
        id="flowRoot4436"
        style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="matrix(1.6568991,0,0,1.6568991,99.60592,871.72153)"><flowRegion
+       transform="matrix(1.6568991,0,0,1.6568991,99.60592,419.35935)"><flowRegion
          id="flowRegion4438"><rect
            id="rect4440"
            width="205.20259"
@@ -663,12 +687,12 @@
            style="font-size:14.48488903px" /></flowRegion><flowPara
          id="flowPara4442">swapMoveSelector</flowPara></flowRoot>    <path
        style="opacity:0.4;color:#000000;fill:#729fcf;stroke:#204a87;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-       d="m 435,992.36218 c 5,-88.88888 145,-77.77778 155,-94.44444 l -10,0 20,-5.55556 20,5.55556 -10,0 c 10,16.66666 150,5.55556 155,94.44444"
+       d="m 435,540 c 5,-88.88888 145,-77.77778 155,-94.44444 l -10,0 20,-5.55556 20,5.55556 -10,0 C 620,462.22222 760,451.11112 765,540"
        id="path4444"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccccc" />
     <flowRoot
-       transform="matrix(1.6568991,0,0,1.6568991,119.60592,786.7226)"
+       transform="matrix(1.6568991,0,0,1.6568991,119.60592,334.36042)"
        style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        id="flowRoot4446"
        xml:space="preserve"><flowRegion
@@ -689,7 +713,7 @@
    id="flowSpan4460">)=</flowSpan><flowSpan
    id="flowSpan4462"
    style="font-size:14.48488903px">1/6, ...</flowSpan></flowPara></flowRoot>    <flowRoot
-       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,866.7226)"
+       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,414.36042)"
        style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        id="flowRoot4464"
        xml:space="preserve"><flowRegion
@@ -720,7 +744,7 @@
        xml:space="preserve"
        id="flowRoot4488"
        style="font-size:10.86366653px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,871.72153)"><flowRegion
+       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,419.35935)"><flowRegion
          id="flowRegion4490"><rect
            id="rect4492"
            width="241.41481"

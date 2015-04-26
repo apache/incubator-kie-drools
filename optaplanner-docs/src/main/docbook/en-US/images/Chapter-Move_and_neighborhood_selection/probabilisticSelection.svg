@@ -245,11 +245,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.315"
-     inkscape:cx="402.98023"
-     inkscape:cy="332.06898"
+     inkscape:zoom="1.3483333"
+     inkscape:cx="400"
+     inkscape:cy="300"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer2"
      showgrid="true"
      width="800px"
      borderlayer="true"
@@ -409,45 +409,7 @@
            x="187.33434"
            y="72.811104"
            style="font-size:14.48488903px" /></flowRegion><flowPara
-         id="flowPara3463">changeMoveSelector</flowPara></flowRoot>    <flowRoot
-       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,661.72239)"
-       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       id="flowRoot3620"
-       xml:space="preserve"><flowRegion
-         id="flowRegion3622"><rect
-           style="font-size:14.48488903px"
-           y="66.775215"
-           x="193.36971"
-           height="60.353722"
-           width="193.13185"
-           id="rect3624" /></flowRegion><flowPara
-         id="flowPara3671"><flowSpan
-   style="fill:#555753"
-   id="flowSpan3168">P(</flowSpan>A0<flowSpan
-   style="fill:#555753"
-   id="flowSpan3186">)=</flowSpan>0.05, <flowSpan
-   style="fill:#555753"
-   id="flowSpan3174">P(</flowSpan>A1<flowSpan
-   style="fill:#555753"
-   id="flowSpan3180">)=</flowSpan>0.05,</flowPara><flowPara
-         id="flowPara3164"><flowSpan
-   style="fill:#555753"
-   id="flowSpan3170">P(</flowSpan>B0<flowSpan
-   style="fill:#555753"
-   id="flowSpan3188">)=</flowSpan>0.20, <flowSpan
-   style="fill:#555753"
-   id="flowSpan3176">P(</flowSpan>B1<flowSpan
-   style="fill:#555753"
-   id="flowSpan3182">)=</flowSpan>0.20,</flowPara><flowPara
-         id="flowPara3166"><flowSpan
-   style="fill:#555753"
-   id="flowSpan3172">P(</flowSpan>C0<flowSpan
-   style="fill:#555753"
-   id="flowSpan3190">)=</flowSpan>0.25, <flowSpan
-   style="fill:#555753"
-   id="flowSpan3178">P(</flowSpan>C1<flowSpan
-   style="fill:#555753"
-   id="flowSpan3184">)=</flowSpan>0.25</flowPara></flowRoot>    <rect
+         id="flowPara3463">changeMoveSelector</flowPara></flowRoot>    <rect
        style="fill:#729fcf;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect3467"
        width="339"
@@ -552,61 +514,7 @@
            height="18.106117"
            width="96.565926"
            id="rect3545" /></flowRegion><flowPara
-         id="flowPara3547">entitySelector</flowPara></flowRoot>    <flowRoot
-       xml:space="preserve"
-       id="flowRoot3577"
-       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="matrix(1.6568991,0,0,1.6568991,-340.39408,808.72198)"><flowRegion
-         id="flowRegion3579"><rect
-           id="rect3581"
-           width="96.565872"
-           height="24.141464"
-           x="223.54655"
-           y="66.775482"
-           style="font-size:14.48488903px" /></flowRegion><flowPara
-         id="flowPara3583"
-         style="font-size:9.65659332px"><flowSpan
-   style="fill:#555753"
-   id="flowSpan3137">P(</flowSpan>A<flowSpan
-   style="fill:#555753"
-   id="flowSpan3139">)=</flowSpan><flowSpan
-   style="font-weight:bold;fill:#ce5c00"
-   id="flowSpan3234">0.1</flowSpan>,</flowPara><flowPara
-         id="flowPara3125"
-         style="font-size:9.65659332px"><flowSpan
-   style="fill:#555753"
-   id="flowSpan3141">P(</flowSpan>B<flowSpan
-   style="fill:#555753"
-   id="flowSpan3143">)=</flowSpan><flowSpan
-   style="font-weight:bold;fill:#ce5c00"
-   id="flowSpan3232">0.4</flowSpan>, <flowSpan
-   style="fill:#555753"
-   id="flowSpan3145">P(</flowSpan>C<flowSpan
-   style="fill:#555753"
-   id="flowSpan3147">)=</flowSpan><flowSpan
-   style="font-weight:bold;fill:#ce5c00"
-   id="flowSpan3240">0.5</flowSpan></flowPara></flowRoot>    <flowRoot
-       transform="matrix(1.6568991,0,0,1.6568991,-160.39408,841.72161)"
-       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       id="flowRoot3586"
-       xml:space="preserve"><flowRegion
-         id="flowRegion3588"><rect
-           style="font-size:14.48488903px"
-           y="54.704941"
-           x="223.54655"
-           height="36.212219"
-           width="96.565849"
-           id="rect3590" /></flowRegion><flowPara
-         id="flowPara3592"><flowSpan
-   style="fill:#555753"
-   id="flowSpan3153">P(</flowSpan>0<flowSpan
-   style="fill:#555753"
-   id="flowSpan3151">)=</flowSpan>0.5,</flowPara><flowPara
-         id="flowPara3149"><flowSpan
-   style="fill:#555753"
-   id="flowSpan3155">P(</flowSpan>1<flowSpan
-   style="fill:#555753"
-   id="flowSpan3157">)=</flowSpan>0.5</flowPara></flowRoot>    <rect
+         id="flowPara3547">entitySelector</flowPara></flowRoot>    <rect
        ry="5"
        rx="4.9999986"
        y="962.86218"
@@ -639,40 +547,157 @@
        id="path3275"
        d="m 435,962.36218 c 5,-46.66667 55,-33.33333 65,-53.33333 l -10,0 20,-6.66667 20,6.66667 -10,0 c 10,20 60,6.66666 65,53.33333"
        style="opacity:0.4;color:#000000;fill:#fcaf3e;stroke:#ce5c00;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+    <rect
+       style="fill:#fcaf3e;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect3341"
+       width="159"
+       height="29"
+       x="430.5"
+       y="962.86218"
+       rx="4.9999986"
+       ry="5" />
+    <flowRoot
+       transform="matrix(1.6568991,0,0,1.6568991,59.60592,845.11462)"
+       style="font-size:9.65659332px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot3343"
+       xml:space="preserve"><flowRegion
+         id="flowRegion3345"><rect
+           style="font-size:9.65659332px"
+           y="72.811111"
+           x="223.54655"
+           height="18.106117"
+           width="96.565926"
+           id="rect3347" /></flowRegion><flowPara
+         id="flowPara3349">entityWeightFactory</flowPara></flowRoot>    <path
+       style="opacity:0.4;color:#000000;fill:#fcaf3e;stroke:#ce5c00;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 615,962.36218 c 5,-46.66667 55,-33.33333 65,-53.33333 l -10,0 20,-6.66667 20,6.66667 -10,0 c 10,20 60,6.66666 65,53.33333"
+       id="path3351"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccc" />
+    <rect
+       ry="5"
+       rx="4.9999986"
+       y="962.86218"
+       x="610.5"
+       height="29"
+       width="159"
+       id="rect3381"
+       style="fill:#fcaf3e;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
     <flowRoot
        xml:space="preserve"
-       id="flowRoot3277"
+       id="flowRoot3383"
+       style="font-size:9.65659332px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.6568991,0,0,1.6568991,239.60592,845.11462)"><flowRegion
+         id="flowRegion3385"><rect
+           id="rect3387"
+           width="96.565926"
+           height="18.106117"
+           x="223.54655"
+           y="72.811111"
+           style="font-size:9.65659332px" /></flowRegion><flowPara
+         id="flowPara3389">entityWeightFactory</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Serif;-inkscape-font-specification:Serif"
+       x="561.97717"
+       y="195.43726"
+       id="text3439"
+       sodipodi:linespacing="125%"
+       transform="translate(0,452.36218)"><tspan
+         sodipodi:role="line"
+         id="tspan3441" /></text>
+    <flowRoot
+       transform="matrix(1.6568991,0,0,1.6568991,315.60575,689.45622)"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot3455"
+       xml:space="preserve"><flowRegion
+         id="flowRegion3457"><rect
+           style="font-size:14.48488903px;text-align:start;text-anchor:start"
+           y="-108.25053"
+           x="187.33434"
+           height="24.141476"
+           width="30.176846"
+           id="rect3459" /></flowRegion><flowPara
+         id="flowPara3490"><flowSpan
+   style="text-align:start;text-anchor:start;fill:#555753"
+   id="flowSpan3463">P(</flowSpan>x<flowSpan
+   style="text-align:start;text-anchor:start;fill:#555753"
+   id="flowSpan3465">)</flowSpan></flowPara><flowPara
+         id="flowPara3558" /></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3560"
+       style="font-size:14.48488902999999972px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#555753;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.6568991,0,0,1.6568991,319.60535,681.72261)"><flowRegion
+         id="flowRegion3562"><rect
+           id="rect3564"
+           width="78.459816"
+           height="48.282967"
+           x="217.51118"
+           y="-108.25053"
+           style="font-size:14.48488902999999972px;text-align:start;text-anchor:start;fill:#555753" /></flowRegion><flowPara
+         id="flowPara3566"
+         style="font-size:12.07074069999999999px;font-style:italic;-inkscape-font-specification:Arial Italic;fill:#555753">probability</flowPara><flowPara
+         id="flowPara3572"
+         style="font-size:12.07074069999999999px;font-style:italic;-inkscape-font-specification:Arial Italic;fill:#555753">to select x</flowPara></flowRoot>  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Leaf probability">
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3577"
        style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="matrix(1.6568991,0,0,1.6568991,119.60592,661.72239)"><flowRegion
-         id="flowRegion3279"><rect
-           id="rect3281"
-           width="193.13185"
-           height="60.353722"
-           x="193.36971"
-           y="66.775215"
+       transform="matrix(1.6568991,0,0,1.6568991,-340.39408,356.3598)"><flowRegion
+         id="flowRegion3579"><rect
+           id="rect3581"
+           width="96.565872"
+           height="24.141464"
+           x="223.54655"
+           y="66.775482"
            style="font-size:14.48488903px" /></flowRegion><flowPara
-         id="flowPara3283"><flowSpan
-   id="flowSpan3285"
-   style="fill:#555753">P(</flowSpan>AB<flowSpan
-   id="flowSpan3287"
-   style="fill:#555753">)=4<flowSpan
-   style="font-size:12.07074106px"
-   id="flowSpan3397">/29</flowSpan>=</flowSpan>0.1379,</flowPara><flowPara
-         id="flowPara3293"><flowSpan
-   id="flowSpan3295"
-   style="fill:#555753">P(</flowSpan>AC<flowSpan
-   id="flowSpan3297"
-   style="fill:#555753">)=5<flowSpan
-   style="font-size:12.07074106px"
-   id="flowSpan3399">/29</flowSpan>=</flowSpan>0.1724,</flowPara><flowPara
-         id="flowPara3303"><flowSpan
-   id="flowSpan3305"
-   style="fill:#555753">P(</flowSpan>BC<flowSpan
-   id="flowSpan3307"
-   style="fill:#555753">)=20<flowSpan
-   style="font-size:12.07074106px"
-   id="flowSpan3401">/29</flowSpan>=</flowSpan>0.6897</flowPara></flowRoot>    <flowRoot
-       transform="matrix(1.6568991,0,0,1.6568991,59.60592,808.72198)"
+         id="flowPara3583"
+         style="font-size:9.65659332px"><flowSpan
+   style="fill:#555753"
+   id="flowSpan3137">P(</flowSpan>A<flowSpan
+   style="fill:#555753"
+   id="flowSpan3139">)=</flowSpan><flowSpan
+   style="font-weight:bold;fill:#ce5c00"
+   id="flowSpan3234">0.1</flowSpan>,</flowPara><flowPara
+         id="flowPara3125"
+         style="font-size:9.65659332px"><flowSpan
+   style="fill:#555753"
+   id="flowSpan3141">P(</flowSpan>B<flowSpan
+   style="fill:#555753"
+   id="flowSpan3143">)=</flowSpan><flowSpan
+   style="font-weight:bold;fill:#ce5c00"
+   id="flowSpan3232">0.4</flowSpan>, <flowSpan
+   style="fill:#555753"
+   id="flowSpan3145">P(</flowSpan>C<flowSpan
+   style="fill:#555753"
+   id="flowSpan3147">)=</flowSpan><flowSpan
+   style="font-weight:bold;fill:#ce5c00"
+   id="flowSpan3240">0.5</flowSpan></flowPara></flowRoot>    <flowRoot
+       transform="matrix(1.6568991,0,0,1.6568991,-160.39408,389.35943)"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot3586"
+       xml:space="preserve"><flowRegion
+         id="flowRegion3588"><rect
+           style="font-size:14.48488903px"
+           y="54.704941"
+           x="223.54655"
+           height="36.212219"
+           width="96.565849"
+           id="rect3590" /></flowRegion><flowPara
+         id="flowPara3592"><flowSpan
+   style="fill:#555753"
+   id="flowSpan3153">P(</flowSpan>0<flowSpan
+   style="fill:#555753"
+   id="flowSpan3151">)=</flowSpan>0.5,</flowPara><flowPara
+         id="flowPara3149"><flowSpan
+   style="fill:#555753"
+   id="flowSpan3155">P(</flowSpan>1<flowSpan
+   style="fill:#555753"
+   id="flowSpan3157">)=</flowSpan>0.5</flowPara></flowRoot>    <flowRoot
+       transform="matrix(1.6568991,0,0,1.6568991,59.605923,356.3598)"
        style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        id="flowRoot3313"
        xml:space="preserve"><flowRegion
@@ -704,38 +729,11 @@
    id="flowSpan3337"
    style="fill:#555753">)=</flowSpan><flowSpan
    id="flowSpan3339"
-   style="font-weight:bold;fill:#ce5c00">0.5</flowSpan></flowPara></flowRoot>    <rect
-       style="fill:#fcaf3e;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
-       id="rect3341"
-       width="159"
-       height="29"
-       x="430.5"
-       y="962.86218"
-       rx="4.9999986"
-       ry="5" />
-    <flowRoot
-       transform="matrix(1.6568991,0,0,1.6568991,59.60592,845.11462)"
-       style="font-size:9.65659332px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       id="flowRoot3343"
-       xml:space="preserve"><flowRegion
-         id="flowRegion3345"><rect
-           style="font-size:9.65659332px"
-           y="72.811111"
-           x="223.54655"
-           height="18.106117"
-           width="96.565926"
-           id="rect3347" /></flowRegion><flowPara
-         id="flowPara3349">entityWeightFactory</flowPara></flowRoot>    <path
-       style="opacity:0.4;color:#000000;fill:#fcaf3e;stroke:#ce5c00;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-       d="m 615,962.36218 c 5,-46.66667 55,-33.33333 65,-53.33333 l -10,0 20,-6.66667 20,6.66667 -10,0 c 10,20 60,6.66666 65,53.33333"
-       id="path3351"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccccccc" />
-    <flowRoot
+   style="font-weight:bold;fill:#ce5c00">0.5</flowSpan></flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot3353"
        style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="matrix(1.6568991,0,0,1.6568991,239.60592,808.72198)"><flowRegion
+       transform="matrix(1.6568991,0,0,1.6568991,239.60592,356.3598)"><flowRegion
          id="flowRegion3355"><rect
            id="rect3357"
            width="96.565872"
@@ -764,32 +762,96 @@
    style="fill:#555753"
    id="flowSpan3377">)=</flowSpan><flowSpan
    style="font-weight:bold;fill:#ce5c00"
-   id="flowSpan3379">0.5</flowSpan></flowPara></flowRoot>    <rect
-       ry="5"
-       rx="4.9999986"
-       y="962.86218"
-       x="610.5"
-       height="29"
-       width="159"
-       id="rect3381"
-       style="fill:#fcaf3e;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+   id="flowSpan3379">0.5</flowSpan></flowPara></flowRoot>  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="ChangeMove probability">
+    <flowRoot
+       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,209.36021)"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot3620"
+       xml:space="preserve"><flowRegion
+         id="flowRegion3622"><rect
+           style="font-size:14.48488903px"
+           y="66.775215"
+           x="193.36971"
+           height="60.353722"
+           width="193.13185"
+           id="rect3624" /></flowRegion><flowPara
+         id="flowPara3671"><flowSpan
+   style="fill:#555753"
+   id="flowSpan3168">P(</flowSpan>A0<flowSpan
+   style="fill:#555753"
+   id="flowSpan3186">)=</flowSpan>0.05, <flowSpan
+   style="fill:#555753"
+   id="flowSpan3174">P(</flowSpan>A1<flowSpan
+   style="fill:#555753"
+   id="flowSpan3180">)=</flowSpan>0.05,</flowPara><flowPara
+         id="flowPara3164"><flowSpan
+   style="fill:#555753"
+   id="flowSpan3170">P(</flowSpan>B0<flowSpan
+   style="fill:#555753"
+   id="flowSpan3188">)=</flowSpan>0.20, <flowSpan
+   style="fill:#555753"
+   id="flowSpan3176">P(</flowSpan>B1<flowSpan
+   style="fill:#555753"
+   id="flowSpan3182">)=</flowSpan>0.20,</flowPara><flowPara
+         id="flowPara3166"><flowSpan
+   style="fill:#555753"
+   id="flowSpan3172">P(</flowSpan>C0<flowSpan
+   style="fill:#555753"
+   id="flowSpan3190">)=</flowSpan>0.25, <flowSpan
+   style="fill:#555753"
+   id="flowSpan3178">P(</flowSpan>C1<flowSpan
+   style="fill:#555753"
+   id="flowSpan3184">)=</flowSpan>0.25</flowPara></flowRoot>  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="SwapMoveProbability">
     <flowRoot
        xml:space="preserve"
-       id="flowRoot3383"
-       style="font-size:9.65659332px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="matrix(1.6568991,0,0,1.6568991,239.60592,845.11462)"><flowRegion
-         id="flowRegion3385"><rect
-           id="rect3387"
-           width="96.565926"
-           height="18.106117"
-           x="223.54655"
-           y="72.811111"
-           style="font-size:9.65659332px" /></flowRegion><flowPara
-         id="flowPara3389">entityWeightFactory</flowPara></flowRoot>    <flowRoot
+       id="flowRoot3277"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.6568991,0,0,1.6568991,119.60592,209.36021)"><flowRegion
+         id="flowRegion3279"><rect
+           id="rect3281"
+           width="193.13185"
+           height="60.353722"
+           x="193.36971"
+           y="66.775215"
+           style="font-size:14.48488903px" /></flowRegion><flowPara
+         id="flowPara3283"><flowSpan
+   id="flowSpan3285"
+   style="fill:#555753">P(</flowSpan>AB<flowSpan
+   id="flowSpan3287"
+   style="fill:#555753">)=4<flowSpan
+   style="font-size:12.0707407px"
+   id="flowSpan3397">/29</flowSpan>=</flowSpan>0.1379,</flowPara><flowPara
+         id="flowPara3293"><flowSpan
+   id="flowSpan3295"
+   style="fill:#555753">P(</flowSpan>AC<flowSpan
+   id="flowSpan3297"
+   style="fill:#555753">)=5<flowSpan
+   style="font-size:12.0707407px"
+   id="flowSpan3399">/29</flowSpan>=</flowSpan>0.1724,</flowPara><flowPara
+         id="flowPara3303"><flowSpan
+   id="flowSpan3305"
+   style="fill:#555753">P(</flowSpan>BC<flowSpan
+   id="flowSpan3307"
+   style="fill:#555753">)=20<flowSpan
+   style="font-size:12.0707407px"
+   id="flowSpan3401">/29</flowSpan>=</flowSpan>0.6897</flowPara></flowRoot>  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="Result probability">
+    <flowRoot
        xml:space="preserve"
        id="flowRoot3403"
        style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,661.72239)"><flowRegion
+       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,209.36021)"><flowRegion
          id="flowRegion3405"><rect
            id="rect3407"
            width="434.54666"
@@ -835,47 +897,5 @@
    style="fill:#555753"
    id="flowSpan3447">P(</flowSpan>BC<flowSpan
    style="fill:#555753"
-   id="flowSpan3449">)=</flowSpan>0.3448</flowPara></flowRoot>    <text
-       xml:space="preserve"
-       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Serif;-inkscape-font-specification:Serif"
-       x="561.97717"
-       y="195.43726"
-       id="text3439"
-       sodipodi:linespacing="125%"
-       transform="translate(0,452.36218)"><tspan
-         sodipodi:role="line"
-         id="tspan3441"></tspan></text>
-    <flowRoot
-       transform="matrix(1.6568991,0,0,1.6568991,315.60575,689.45622)"
-       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       id="flowRoot3455"
-       xml:space="preserve"><flowRegion
-         id="flowRegion3457"><rect
-           style="font-size:14.48488903px;text-align:start;text-anchor:start"
-           y="-108.25053"
-           x="187.33434"
-           height="24.141476"
-           width="30.176846"
-           id="rect3459" /></flowRegion><flowPara
-         id="flowPara3490"><flowSpan
-   style="text-align:start;text-anchor:start;fill:#555753"
-   id="flowSpan3463">P(</flowSpan>x<flowSpan
-   style="text-align:start;text-anchor:start;fill:#555753"
-   id="flowSpan3465">)</flowSpan></flowPara><flowPara
-         id="flowPara3558" /></flowRoot>    <flowRoot
-       xml:space="preserve"
-       id="flowRoot3560"
-       style="font-size:14.48488902999999972px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#555753;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       transform="matrix(1.6568991,0,0,1.6568991,319.60535,681.72261)"><flowRegion
-         id="flowRegion3562"><rect
-           id="rect3564"
-           width="78.459816"
-           height="48.282967"
-           x="217.51118"
-           y="-108.25053"
-           style="font-size:14.48488902999999972px;text-align:start;text-anchor:start;fill:#555753" /></flowRegion><flowPara
-         id="flowPara3566"
-         style="font-size:12.07074069999999999px;font-style:italic;-inkscape-font-specification:Arial Italic;fill:#555753">probability</flowPara><flowPara
-         id="flowPara3572"
-         style="font-size:12.07074069999999999px;font-style:italic;-inkscape-font-specification:Arial Italic;fill:#555753">to select x</flowPara></flowRoot>  </g>
+   id="flowSpan3449">)=</flowSpan>0.3448</flowPara></flowRoot>  </g>
 </svg>
