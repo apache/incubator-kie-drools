@@ -1196,7 +1196,7 @@ end</programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Score_calculation/deltaBasedScoreCalculationNQueens04.png"/>
+            <imagedata fileref="images/Chapter-Score_calculation/incrementalScoreCalculationNQueens04.png"/>
           </imageobject>
         </mediaobject>
       </figure>
