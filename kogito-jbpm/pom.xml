@@ -14,15 +14,6 @@
   <groupId>org.jbpm</groupId>
   <artifactId>jbpm</artifactId>
   <packaging>pom</packaging>
-  <!-- jBPM has it's own lifecycle and it's own version -->
-  <!-- Important a released version should always follow any of these patterns: -->
-  <!-- major.minor.micro.Alpha[n] -->
-  <!-- major.minor.micro.Beta[n] -->
-  <!-- major.minor.micro.CR[n] -->
-  <!-- major.minor.micro.Final -->
-  <!-- For example: 1.2.3 without the suffix ".Final" corrupts the OSGi eclipse updatesite -->
-  <!-- For example: 1.2.3.M2 corrupts the OSGi eclipse updatesite update order -->
-  <version>6.3.0-SNAPSHOT</version>
 
   <name>jBPM :: Multiproject</name>
   <description>jBPM: a Business Process Management (BPM) Suite</description>
