@@ -24,55 +24,20 @@ import java.util.List;
  */
 public class Analysis implements Comparable<Analysis> {
 
-    private List<String> impossibleMatchHtmlList = new ArrayList<String>();
-    private List<String> multipleValuesForOneActionHtmlList = new ArrayList<String>();
-    private List<String> conflictingMatchHtmlList = new ArrayList<String>();
-    private List<String> duplicatedMatchHtmlList = new ArrayList<String>();
+    private List<String> list = new ArrayList<String>();
 
-    public void addImpossibleMatch( String htmlEntry ) {
-        impossibleMatchHtmlList.add( htmlEntry );
-    }
-
-    public void addMultipleValuesForOneAction( String htmlEntry ) {
-        multipleValuesForOneActionHtmlList.add( htmlEntry );
-    }
-
-    public void addConflictingMatch( String htmlEntry ) {
-        conflictingMatchHtmlList.add( htmlEntry );
-    }
-
-    public void addDuplicatedMatch( String htmlEntry ) {
-        duplicatedMatchHtmlList.add( htmlEntry );
+    public void addRowMessage( String htmlEntry ) {
+        list.add( htmlEntry );
     }
 
     public String toHtmlString() {
         StringBuilder htmlBuilder = new StringBuilder( "<span>" );
         boolean first = true;
-        for ( String htmlEntry : impossibleMatchHtmlList ) {
-            if ( !first ) {
-                htmlBuilder.append( ", " );
+        for ( String htmlEntry : list ) {
+            if ( first ) {
                 first = false;
-            }
-            htmlBuilder.append( htmlEntry );
-        }
-        for ( String htmlEntry : multipleValuesForOneActionHtmlList ) {
-            if ( !first ) {
-                htmlBuilder.append( ", " );
-                first = false;
-            }
-            htmlBuilder.append( htmlEntry );
-        }
-        for ( String htmlEntry : conflictingMatchHtmlList ) {
-            if ( !first ) {
-                htmlBuilder.append( ", " );
-                first = false;
-            }
-            htmlBuilder.append( htmlEntry );
-        }
-        for ( String htmlEntry : duplicatedMatchHtmlList ) {
-            if ( !first ) {
-                htmlBuilder.append( ", " );
-                first = false;
+            } else {
+                htmlBuilder.append( "<br/> " );
             }
             htmlBuilder.append( htmlEntry );
         }
@@ -80,25 +45,22 @@ public class Analysis implements Comparable<Analysis> {
         return htmlBuilder.toString();
     }
 
+    public String firstRowToHtmlString() {
+        if ( list.size() > 1 ) {
+            return "<span>" + list.get( 0 ) + "...</span>";
+        } else if ( list.size() == 1 ) {
+            return "<span>" + list.get( 0 ) + "</span>";
+        } else {
+            return "<span></span>";
+        }
+    }
+
     public int getWarningsSize() {
-        return getImpossibleMatchesSize() + getMultipleValuesForOneActionSize()
-                + getConflictingMatchSize() + getDuplicatedMatchSize();
+        return getRowMessagesSize();
     }
 
-    public int getImpossibleMatchesSize() {
-        return impossibleMatchHtmlList.size();
-    }
-
-    public int getMultipleValuesForOneActionSize() {
-        return multipleValuesForOneActionHtmlList.size();
-    }
-
-    public int getConflictingMatchSize() {
-        return conflictingMatchHtmlList.size();
-    }
-
-    public int getDuplicatedMatchSize() {
-        return duplicatedMatchHtmlList.size();
+    public int getRowMessagesSize() {
+        return list.size();
     }
 
     public int compareTo( Analysis other ) {
