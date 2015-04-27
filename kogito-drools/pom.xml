@@ -12,11 +12,10 @@
   </parent>
 
   <groupId>org.drools</groupId>
-  <!-- TODO rename to drools once parent pom has been moved -->
-  <artifactId>drools-multiproject</artifactId>
+  <artifactId>drools</artifactId>
   <packaging>pom</packaging>
 
-  <name>Drools multiproject</name>
+  <name>Drools Multiproject</name>
   <description>
     Drools Expert is the rule engine and Drools Fusion does complex event processing (CEP).
   </description>
