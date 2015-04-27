@@ -59,15 +59,11 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
           <configuration>
-            <executable>java</executable>
-            <classpathScope>runtime</classpathScope>
+            <mainClass>org.optaplanner.examples.app.OptaPlannerExamplesApp</mainClass>
             <arguments>
-              <argument>-Xms256m</argument>
-              <argument>-Xmx1024m</argument>
-              <argument>-server</argument>
-              <argument>-cp</argument>
-              <classpath/>
-              <argument>org.optaplanner.examples.app.OptaPlannerExamplesApp</argument>
+                <argument>-Xms256m</argument>
+                <argument>-Xmx1024m</argument>
+                <argument>-server</argument>
             </arguments>
           </configuration>
         </plugin>
