@@ -26,6 +26,18 @@ import org.junit.Before;
 
 public abstract class LDAPBaseTest {
 
+    public enum SearchScope {
+
+        OBJECT_SCOPE, ONELEVEL_SCOPE, SUBTREE_SCOPE
+
+    }
+
+    public enum Configuration {
+
+        CUSTOM, DEFAULT, SYSTEM
+
+    }
+
     private InMemoryDirectoryServer server;
 
     @Before

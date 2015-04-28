@@ -10,89 +10,86 @@ objectclass: top
 objectclass: organizationalUnit
 ou: People
 
-dn: ou=Roles,dc=jbpm,dc=org
-objectclass: top
-objectclass: organizationalUnit
-ou: Roles
-
-dn: uid=krisv,ou=People,dc=jbpm,dc=org
-objectclass: top
-objectclass: uidObject
-objectclass: person
-objectClass: inetOrgPerson
-uid: krisv
-cn: krisv
-sn: KrisV
-displayName: Kris Verlaenen
-mail: krisv@jbpm.org
-userPassword: krisv
-
 dn: uid=john,ou=People,dc=jbpm,dc=org
 objectclass: top
 objectclass: uidObject
 objectclass: person
-objectClass: inetOrgPerson
+objectclass: inetOrgPerson
 uid: john
-cn: john
-sn: John
 displayName: John Doe
-mail: john@jbpm.org
-userPassword: john
+mail: johndoe@jbpm.org
+locale: en-US
 
 dn: uid=mary,ou=People,dc=jbpm,dc=org
 objectclass: top
 objectclass: uidObject
 objectclass: person
-objectClass: inetOrgPerson
 uid: mary
-cn: mary
-sn: Mary
-displayName: Mary Bloody
-mail: mary@jbpm.org
-userPassword: mary
+name: Mary Snow
+email: marysnow@jbpm.org
+language: fr-FR
 
-dn: uid=admin,ou=People,dc=jbpm,dc=org
+dn: ou=ENG,ou=People,dc=jbpm,dc=org
+objectclass: top
+objectclass: organizationalUnit
+ou: ENG
+
+dn: uid=peter,ou=ENG,ou=People,dc=jbpm,dc=org
 objectclass: top
 objectclass: uidObject
 objectclass: person
-objectClass: inetOrgPerson
-uid: admin
-cn: admin
-sn: Admin
-displayName: Administrator of jBPM
-mail: admin@jbpm.org
-userPassword: admin
+uid: peter
 
+dn: ou=QA,ou=ENG,ou=People,dc=jbpm,dc=org
+objectclass: top
+objectclass: organizationalUnit
+ou: QA
 
-dn: cn=admin,ou=Roles,dc=jbpm,dc=org
-objectClass: groupOfNames
-objectClass: top
-cn: admin
-description: Admin group
-ou: admins@jbpm.org
-member: uid=krisv,ou=People,dc=jbpm,dc=org
-member: uid=john,ou=People,dc=jbpm,dc=org
-member: uid=mary,ou=People,dc=jbpm,dc=org
-member: uid=admin,ou=People,dc=jbpm,dc=org
+dn: uid=mike,ou=QA,ou=ENG,ou=People,dc=jbpm,dc=org
+objectclass: top
+objectclass: uidObject
+objectclass: person
+uid: mike
+
+dn: ou=Roles,dc=jbpm,dc=org
+objectclass: top
+objectclass: organizationalUnit
+ou: Roles
 
 dn: cn=manager,ou=Roles,dc=jbpm,dc=org
-objectClass: groupOfNames
-objectClass: top
-cn: manager
-description: Manager group
-ou: managers@jbpm.org
-member: uid=krisv,ou=People,dc=jbpm,dc=org
+objectclass: top
+objectclass: groupOfNames
 member: uid=john,ou=People,dc=jbpm,dc=org
-member: uid=mary,ou=People,dc=jbpm,dc=org
-member: uid=admin,ou=People,dc=jbpm,dc=org
+representative: uid=mary,ou=People,dc=jbpm,dc=org
+cn: manager
+displayName: jBPM manager
+mail: manager@jbpm.org
+locale: en-US
 
 dn: cn=user,ou=Roles,dc=jbpm,dc=org
-objectClass: groupOfNames
-objectClass: top
+objectclass: top
+objectclass: groupOfNames
 cn: user
-description: User group
-ou: users@jbpm.org
-member: uid=krisv,ou=People,dc=jbpm,dc=org
-member: uid=john,ou=People,dc=jbpm,dc=org
-member: uid=mary,ou=People,dc=jbpm,dc=org
-member: uid=admin,ou=People,dc=jbpm,dc=org
+name: jBPM user
+email: user@jbpm.org
+language: fr-FR
+
+dn: ou=ENG,ou=Roles,dc=jbpm,dc=org
+objectclass: top
+objectclass: organizationalUnit
+ou: ENG
+
+dn: cn=analyst,ou=ENG,ou=Roles,dc=jbpm,dc=org
+objectclass: top
+objectclass: groupOfNames
+cn: analyst
+
+dn: ou=RD,ou=ENG,ou=Roles,dc=jbpm,dc=org
+objectclass: top
+objectclass: organizationalUnit
+ou: RD
+
+dn: cn=developer,ou=RD,ou=ENG,ou=Roles,dc=jbpm,dc=org
+objectclass: top
+objectclass: groupOfNames
+cn: developer
