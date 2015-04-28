@@ -40,6 +40,7 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
@@ -140,6 +141,10 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
 	private void postProcessItemDefinitions(NodeContainer nodeContainer, Map<String, ItemDefinition> itemDefinitions) {
 		if (nodeContainer instanceof ContextContainer) {
 			setVariablesDataType((ContextContainer) nodeContainer, itemDefinitions);
+		}
+		// process composite context node of for each to enhance its variables with types
+		if (nodeContainer instanceof ForEachNode) {
+		    setVariablesDataType(((ForEachNode) nodeContainer).getCompositeNode(), itemDefinitions);
 		}
 		for (Node node: nodeContainer.getNodes()) {
 			if (node instanceof NodeContainer) {

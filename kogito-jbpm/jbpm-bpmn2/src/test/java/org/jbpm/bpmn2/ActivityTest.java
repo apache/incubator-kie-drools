@@ -1658,4 +1658,22 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     		// there should be build errors
     	}
     }
+    
+    @Test
+    public void testSubProcessWithTypeVariable() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("subprocess/BPMN2-SubProcessWithTypeVariable.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        final List<String> list = new ArrayList<String>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+
+            public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+                if (event.getNodeInstance().getNodeName().equals("Read Map")) {
+                    list.add(event.getNodeInstance().getNodeName());
+                }
+            }
+        });
+        ProcessInstance processInstance = ksession.startProcess("sub_variable.sub_variables");
+        assertProcessInstanceCompleted(processInstance);
+        assertEquals(2, list.size());
+    }
 }
