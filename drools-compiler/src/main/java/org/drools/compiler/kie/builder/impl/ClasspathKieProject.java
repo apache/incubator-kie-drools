@@ -300,7 +300,7 @@ public class ClasspathKieProject extends AbstractKieProject {
                 ReleaseIdImpl gav = (ReleaseIdImpl) pomModel.getReleaseId();
 
                 String str =  KieBuilderImpl.generatePomProperties( gav );
-                log.info( "Recursed up folders,  found and used pom.xml " + file );
+                log.info( "Recursed up folders, found and used pom.xml " + file );
 
                 return str;
             } catch ( Exception e ) {
