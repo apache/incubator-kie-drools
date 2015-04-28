@@ -77,7 +77,7 @@ public class NQueensPanel extends SolutionPanel {
                     throw new IllegalStateException("The queenList is not in the expected order.");
                 }
                 String toolTipText = "<html>Row " + row + "<br/>Column " + column + "</html>";
-                if (queen.getRow() != null && queen.getRow().getIndex() == row) {
+                if (queen.getRow() != null && queen.getRow().intValue() == row) {
                     JButton button = new JButton(new QueenAction(queen));
                     button.setMinimumSize(new Dimension(20, 20));
                     button.setPreferredSize(new Dimension(20, 20));

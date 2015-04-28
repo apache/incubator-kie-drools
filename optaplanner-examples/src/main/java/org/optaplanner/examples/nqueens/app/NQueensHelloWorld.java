@@ -54,7 +54,7 @@ public class NQueensHelloWorld {
                     throw new IllegalStateException("The queenList is not in the expected order.");
                 }
                 displayString.append(" ");
-                if (queen.getRow() != null && queen.getRow().getIndex() == row) {
+                if (queen.getRow() != null && queen.getRow() == row) {
                     displayString.append("Q");
                 } else {
                     displayString.append("_");
