@@ -38,6 +38,7 @@ import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.NodeImpl;
+import org.jbpm.workflow.core.node.AsyncEventNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventNodeInterface;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
@@ -221,12 +222,22 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 
 	public NodeInstance getNodeInstance(final Node node) {
-		NodeInstanceFactory conf = NodeInstanceFactoryRegistry.getInstance(getKnowledgeRuntime().getEnvironment()).getProcessNodeInstanceFactory(node);
+	    Node actualNode = node;
+	    // async continuation handling
+	    if (node instanceof AsyncEventNode) {
+            actualNode = ((AsyncEventNode) node).getActualNode();
+        } else if (Boolean.parseBoolean((String)node.getMetaData().get("customAsync"))) {
+            actualNode = new AsyncEventNode(node);
+        }
+	    
+	    
+		NodeInstanceFactory conf = NodeInstanceFactoryRegistry.getInstance(getKnowledgeRuntime().getEnvironment()).getProcessNodeInstanceFactory(actualNode);
 		if (conf == null) {
 			throw new IllegalArgumentException("Illegal node type: "
 					+ node.getClass());
 		}
-		NodeInstanceImpl nodeInstance = (NodeInstanceImpl) conf.getNodeInstance(node, this, this);
+		NodeInstanceImpl nodeInstance  = (NodeInstanceImpl) conf.getNodeInstance(actualNode, this, this);
+		
 		if (nodeInstance == null) {
 			throw new IllegalArgumentException("Illegal node type: "
 					+ node.getClass());

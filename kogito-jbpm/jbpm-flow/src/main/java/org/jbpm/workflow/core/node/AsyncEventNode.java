@@ -16,24 +16,41 @@
 
 package org.jbpm.workflow.core.node;
 
+import java.util.Map;
+
+import org.jbpm.workflow.core.impl.NodeImpl;
+import org.kie.api.definition.process.Node;
+
 
 public class AsyncEventNode extends EventNode {
 
     private static final long serialVersionUID = -4724021457443413412L;
 
-    private String signalName;
+    private Node node;
     
-    public AsyncEventNode(String signalName) {
-        this.signalName = signalName;
+    public AsyncEventNode(Node node) {
+        this.node = node;
         setMetaData("hidden", "true");
     }
-
-    public String getSignalName() {
-        return signalName;
-    }
     
-    public void setSignalName(String signalName) {
-        this.signalName = signalName;
+    public Node getActualNode() {
+        return node;
     }
+
+    @Override
+    public long getId() {
+        return node.getId();
+    }
+
+    @Override
+    public Object getMetaData(String name) {
+        return ((NodeImpl)node).getMetaData(name);
+    }
+
+    @Override
+    public Map<String, Object> getMetaData() {
+        return node.getMetaData();
+    }
+
     
 }

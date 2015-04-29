@@ -23,27 +23,27 @@
     <!-- nodes -->
     <startEvent id="_2-1" name="StartSubProcess" />
     <scriptTask id="_2-2" name="Hello1" >
-       <ioSpecification>
-        <dataInput id="_2_inputasync4" name="async" />
-        <inputSet/>
-        <outputSet/>
-      </ioSpecification>
+      <extensionElements>
+        <tns:metaData name="customAsync">
+          <tns:metaValue>true</tns:metaValue>
+        </tns:metaData>
+      </extensionElements>
       <script>System.out.println(Thread.currentThread().getName() + " 1 x = " + x);</script>
     </scriptTask>
     <scriptTask id="_2-3" name="Hello2" >
-      <ioSpecification>
-        <dataInput id="_2_inputasync3" name="async" />
-        <inputSet/>
-        <outputSet/>
-      </ioSpecification>
+      <extensionElements>
+        <tns:metaData name="customAsync">
+          <tns:metaValue>true</tns:metaValue>
+        </tns:metaData>
+      </extensionElements>
       <script>kcontext.setVariable("x", "Hello");</script>
     </scriptTask>
     <scriptTask id="_2-4" name="Hello3" >
-       <ioSpecification>
-        <dataInput id="_2_inputasync2" name="async" />
-        <inputSet/>
-        <outputSet/>
-      </ioSpecification>
+       <extensionElements>
+        <tns:metaData name="customAsync">
+          <tns:metaValue>true</tns:metaValue>
+        </tns:metaData>
+      </extensionElements>
       <script>System.out.println(Thread.currentThread().getName() + " 2 x = " + x);</script>
     </scriptTask>
     <endEvent id="_2-5" name="EndSubProcess" />
@@ -54,11 +54,11 @@
     <sequenceFlow id="_2-4-_2-5" sourceRef="_2-4" targetRef="_2-5" />
     </subProcess>
     <scriptTask id="_3" name="Goodbye" >
-       <ioSpecification>
-        <dataInput id="_2_inputasync1" name="async" />
-        <inputSet/>
-        <outputSet/>
-      </ioSpecification>
+       <extensionElements>
+        <tns:metaData name="customAsync">
+          <tns:metaValue>true</tns:metaValue>
+        </tns:metaData>
+      </extensionElements>
       <script>System.out.println(Thread.currentThread().getName() + " Goodbye World");</script>
     </scriptTask>
     <endEvent id="_4" name="EndProcess" >

@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.workflow.core.node.AsyncEventNode;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventNodeInterface;
@@ -261,12 +262,19 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
             nodeInstance.setProcessInstance(getProcessInstance());
             return nodeInstance;
         }
+        Node actualNode = node;
+        // async continuation handling
+        if (node instanceof AsyncEventNode) {
+            actualNode = ((AsyncEventNode) node).getActualNode();
+        } else if (Boolean.parseBoolean((String)node.getMetaData().get("customAsync"))) {
+            actualNode = new AsyncEventNode(node);
+        }
         
-        NodeInstanceFactory conf = NodeInstanceFactoryRegistry.getInstance(getProcessInstance().getKnowledgeRuntime().getEnvironment()).getProcessNodeInstanceFactory(node);
+        NodeInstanceFactory conf = NodeInstanceFactoryRegistry.getInstance(getProcessInstance().getKnowledgeRuntime().getEnvironment()).getProcessNodeInstanceFactory(actualNode);
         if (conf == null) {
             throw new IllegalArgumentException("Illegal node type: " + node.getClass());
         }
-        NodeInstanceImpl nodeInstance = (NodeInstanceImpl) conf.getNodeInstance(node, getProcessInstance(), this);
+        NodeInstanceImpl nodeInstance = (NodeInstanceImpl) conf.getNodeInstance(actualNode, getProcessInstance(), this);
         if (nodeInstance == null) {
             throw new IllegalArgumentException("Illegal node type: " + node.getClass());
         }

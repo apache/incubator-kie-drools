@@ -43,11 +43,15 @@
       <bpmn2:outgoing>_AB07717D-E4BD-42E7-BAFF-16F1B6EFEFFD</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:serviceTask id="_5FD4AD31-B35B-4CF4-9F18-CBCAD73F7577" drools:selectable="true" drools:serviceimplementation="Java" drools:serviceoperation="hello" drools:serviceinterface="org.jbpm.test.HelloService" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Async Service" implementation="Java" operationRef="_5FD4AD31-B35B-4CF4-9F18-CBCAD73F7577_ServiceOperation">
+      <bpmn2:extensionElements>
+        <drools:metaData name="customAsync">
+          <drools:metaValue>true</drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
       <bpmn2:incoming>_AB07717D-E4BD-42E7-BAFF-16F1B6EFEFFD</bpmn2:incoming>
       <bpmn2:outgoing>_9D9CAB35-6742-47EE-AF90-2824DBE3197D</bpmn2:outgoing>
       <bpmn2:ioSpecification id="_qya5QeqBEeS69PbqiWldTA">
-        <bpmn2:dataInput id="_5FD4AD31-B35B-4CF4-9F18-CBCAD73F7577_ParameterInputX" drools:dtype="String" itemSubjectRef="__5FD4AD31-B35B-4CF4-9F18-CBCAD73F7577_ParameterInputXItem" name="Parameter"/>
-        <bpmn2:dataInput id="_5FD4AD31-B35B-4CF4-9F18-CBCAD73F7577_asyncInputX" drools:dtype="Object" itemSubjectRef="__5FD4AD31-B35B-4CF4-9F18-CBCAD73F7577_asyncInputXItem" name="async"/>
+        <bpmn2:dataInput id="_5FD4AD31-B35B-4CF4-9F18-CBCAD73F7577_ParameterInputX" drools:dtype="String" itemSubjectRef="__5FD4AD31-B35B-4CF4-9F18-CBCAD73F7577_ParameterInputXItem" name="Parameter"/>        
         <bpmn2:dataOutput id="_5FD4AD31-B35B-4CF4-9F18-CBCAD73F7577_ResultOutputX" drools:dtype="Object" itemSubjectRef="__5FD4AD31-B35B-4CF4-9F18-CBCAD73F7577_ResultOutputXItem" name="Result"/>
         <bpmn2:inputSet id="_qya5QuqBEeS69PbqiWldTA">
           <bpmn2:dataInputRefs>_5FD4AD31-B35B-4CF4-9F18-CBCAD73F7577_ParameterInputX</bpmn2:dataInputRefs>
@@ -80,11 +84,15 @@
     </bpmn2:serviceTask>
     <bpmn2:sequenceFlow id="_9D9CAB35-6742-47EE-AF90-2824DBE3197D" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_5FD4AD31-B35B-4CF4-9F18-CBCAD73F7577" targetRef="_A047313B-5A1B-4D68-A0D0-D3DEF83335E4"/>
     <bpmn2:serviceTask id="_4F1DC414-C25A-4381-A5B5-97E8A6F98970" drools:selectable="true" drools:serviceimplementation="Java" drools:serviceoperation="hello2" drools:serviceinterface="org.jbpm.test.HelloService" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Async Service" implementation="Java" operationRef="_4F1DC414-C25A-4381-A5B5-97E8A6F98970_ServiceOperation">
+      <bpmn2:extensionElements>
+        <drools:metaData name="customAsync">
+          <drools:metaValue>true</drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
       <bpmn2:incoming>_6F00DEDD-8705-479E-A4B7-70E3CF1B6EF0</bpmn2:incoming>
       <bpmn2:outgoing>_7AF78B36-7088-40B1-8AD4-18223991FF02</bpmn2:outgoing>
       <bpmn2:ioSpecification id="_qya5SeqBEeS69PbqiWldTA">
         <bpmn2:dataInput id="_4F1DC414-C25A-4381-A5B5-97E8A6F98970_ParameterInputX" drools:dtype="Object" itemSubjectRef="__4F1DC414-C25A-4381-A5B5-97E8A6F98970_ParameterInputXItem" name="Parameter"/>
-        <bpmn2:dataInput id="_4F1DC414-C25A-4381-A5B5-97E8A6F98970_asyncInputX" drools:dtype="Object" itemSubjectRef="__4F1DC414-C25A-4381-A5B5-97E8A6F98970_asyncInputXItem" name="async"/>
         <bpmn2:inputSet id="_qya5SuqBEeS69PbqiWldTA">
           <bpmn2:dataInputRefs>_4F1DC414-C25A-4381-A5B5-97E8A6F98970_ParameterInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_4F1DC414-C25A-4381-A5B5-97E8A6F98970_asyncInputX</bpmn2:dataInputRefs>
@@ -114,11 +122,15 @@
     </bpmn2:serviceTask>
     <bpmn2:sequenceFlow id="_7AF78B36-7088-40B1-8AD4-18223991FF02" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_4F1DC414-C25A-4381-A5B5-97E8A6F98970" targetRef="_BAD154A7-87FD-4F83-AE04-EC6A0C0C022E"/>
     <bpmn2:serviceTask id="_05C0DFB4-2C4C-4AE9-8059-7DD1F50D5107" drools:selectable="true" drools:serviceimplementation="Java" drools:serviceoperation="hello4" drools:serviceinterface="org.jbpm.test.HelloService" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Async Service" implementation="Java" operationRef="_05C0DFB4-2C4C-4AE9-8059-7DD1F50D5107_ServiceOperation">
+      <bpmn2:extensionElements>
+        <drools:metaData name="customAsync">
+          <drools:metaValue>true</drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
       <bpmn2:incoming>_74598B5A-8C49-4BA8-B0FC-D36D61412577</bpmn2:incoming>
       <bpmn2:outgoing>_93D0CFE5-08B4-40E2-9006-D63016CC90B1</bpmn2:outgoing>
       <bpmn2:ioSpecification id="_qybgUOqBEeS69PbqiWldTA">
         <bpmn2:dataInput id="_05C0DFB4-2C4C-4AE9-8059-7DD1F50D5107_ParameterInputX" drools:dtype="Object" itemSubjectRef="__05C0DFB4-2C4C-4AE9-8059-7DD1F50D5107_ParameterInputXItem" name="Parameter"/>
-        <bpmn2:dataInput id="_05C0DFB4-2C4C-4AE9-8059-7DD1F50D5107_asyncInputX" drools:dtype="Object" itemSubjectRef="__05C0DFB4-2C4C-4AE9-8059-7DD1F50D5107_asyncInputXItem" name="async"/>
         <bpmn2:inputSet id="_qybgUeqBEeS69PbqiWldTA">
           <bpmn2:dataInputRefs>_05C0DFB4-2C4C-4AE9-8059-7DD1F50D5107_ParameterInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_05C0DFB4-2C4C-4AE9-8059-7DD1F50D5107_asyncInputX</bpmn2:dataInputRefs>

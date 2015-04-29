@@ -70,22 +70,13 @@ public class SubProcessHandler extends AbstractNodeHandler {
 		final Element element = parser.endElementBuilder();
 		Node node = (Node) parser.getCurrent();
 		
-		dataInputs.clear();
-        dataOutputs.clear();
-		Boolean isAsync = false;
-		
 		// determine type of event definition, so the correct type of node can be generated
 		boolean found = false;		
 		org.w3c.dom.Node xmlNode = element.getFirstChild();
 		while (xmlNode != null) {
 			String nodeName = xmlNode.getNodeName();
-			if ("ioSpecification".equals(nodeName)) {
-                readIoSpecification(xmlNode, dataInputs, dataOutputs);
-                
-                if (dataInputs.containsValue("async")) {
-                    isAsync = true;
-                }
-            } else if ("multiInstanceLoopCharacteristics".equals(nodeName)) {
+			 if ("multiInstanceLoopCharacteristics".equals(nodeName)) {
+			    Boolean isAsync = Boolean.parseBoolean((String)node.getMetaData().get("customAsync"));
 				// create new timerNode
 				ForEachNode forEachNode = new ForEachNode();
 				forEachNode.setId(node.getId());
@@ -107,7 +98,7 @@ public class SubProcessHandler extends AbstractNodeHandler {
 			xmlNode = xmlNode.getNextSibling();
 		}
 		if (!found) {
-			handleCompositeContextNode(node, element, uri, localName, parser, isAsync);
+			handleCompositeContextNode(node, element, uri, localName, parser);
 		}
 		
         NodeContainer nodeContainer = (NodeContainer) parser.getParent();
@@ -118,7 +109,7 @@ public class SubProcessHandler extends AbstractNodeHandler {
     
     @SuppressWarnings("unchecked")
 	protected void handleCompositeContextNode(final Node node, final Element element, final String uri, 
-            final String localName, final ExtensibleXmlParser parser, boolean isAsync) throws SAXException {
+            final String localName, final ExtensibleXmlParser parser) throws SAXException {
     	super.handleNode(node, element, uri, localName, parser);
     	CompositeContextNode compositeNode = (CompositeContextNode) node;
     	List<SequenceFlow> connections = (List<SequenceFlow>)
@@ -148,7 +139,7 @@ public class SubProcessHandler extends AbstractNodeHandler {
             }
         }
         */
-        applyAsync(node, isAsync);
+        
     }
     
     @SuppressWarnings("unchecked")
@@ -193,7 +184,7 @@ public class SubProcessHandler extends AbstractNodeHandler {
                 if (incoming != null) {
                     for (Connection con : incoming) {
                         if (con.getFrom() instanceof StartNode) {
-                            ((Node)subNode).setMetaData("async", isAsync);
+                            ((Node)subNode).setMetaData("customAsync", Boolean.toString(isAsync));
                             return;
                         }
                     }

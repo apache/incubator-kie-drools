@@ -134,8 +134,6 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         handleNode(node, element, uri, localName, parser);
         NodeContainer nodeContainer = (NodeContainer) parser.getParent();
         nodeContainer.addNode(node);
-        // handle async continuation based on presence of 'async' data input
-        handleAsyncContinuation(node);
         return node;
     }
     
@@ -516,13 +514,6 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                 
             }
             xmlNode = xmlNode.getNextSibling();
-        }
-    }
-    
-    protected void handleAsyncContinuation(Node node) {
-        // handle async continuation based on presence of 'async' data input
-        if (dataInputs.containsValue("async")) {
-            node.setMetaData("async", true);
         }
     }
 

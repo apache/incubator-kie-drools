@@ -23,9 +23,13 @@
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
     <subProcess id="_2" name="Hello"  >
+      <extensionElements>
+        <tns:metaData name="customAsync">
+          <tns:metaValue>true</tns:metaValue>
+        </tns:metaData>
+      </extensionElements>
       <ioSpecification>
-        <dataInput id="_2_input" name="MultiInstanceInput" />
-        <dataInput id="_2_inputasync" name="async" />
+        <dataInput id="_2_input" name="MultiInstanceInput" />        
         <inputSet/>
         <outputSet/>
       </ioSpecification>

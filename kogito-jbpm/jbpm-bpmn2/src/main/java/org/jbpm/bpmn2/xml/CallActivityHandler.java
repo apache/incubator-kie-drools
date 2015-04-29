@@ -17,16 +17,12 @@
 package org.jbpm.bpmn2.xml;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.workflow.core.Node;
-import org.jbpm.workflow.core.node.Assignment;
-import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.Transformation;
 import org.kie.api.runtime.process.DataTransformer;
@@ -84,10 +80,6 @@ public class CallActivityHandler extends AbstractNodeHandler {
         }
         handleScript(subProcessNode, element, "onEntry");
         handleScript(subProcessNode, element, "onExit");
-        // handle async continuation based on presence of 'async' data input
-        if (dataInputs.containsValue("async")) {
-            node.setMetaData("async", true);
-        }
 	}
     
     protected void readIoSpecification(org.w3c.dom.Node xmlNode, Map<String, String> dataInputs, Map<String, String> dataOutputs) {

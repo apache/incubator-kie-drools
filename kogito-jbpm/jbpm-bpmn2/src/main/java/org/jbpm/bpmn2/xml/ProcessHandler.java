@@ -61,7 +61,6 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
-import org.jbpm.workflow.core.node.AsyncEventNode;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
 import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.CompositeNode;
@@ -70,7 +69,6 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.EventTrigger;
-import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.Split;
@@ -746,58 +744,10 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         }
         assignLanes(process, laneMapping);
     }
-    
-    protected Node replaceForAsyncIfNeeded(Node node) {
-        Boolean isAsync = (Boolean) node.getMetaData().get("async");
-        if (isAsync == null || !isAsync) {
-            return node;
-        }
-        
-        String signalName = "async continuation for " + node.getId();
-        
-        AsyncEventNode asyncReceiver = new AsyncEventNode(signalName);
-        asyncReceiver.setName("async continuation node");
-                      
-        List<EventFilter> eventFilters = new ArrayList<EventFilter>();
-        EventTypeFilter eventFilter = new EventTypeFilter();
-        eventFilter.setType(signalName);
-        eventFilters.add(eventFilter);        
-        asyncReceiver.setEventFilters(eventFilters);
-        // use negative id so it won't interfere with actual nodes
-        asyncReceiver.setId(node.getId() * -1);
-        ((org.jbpm.workflow.core.NodeContainer)node.getNodeContainer()).addNode(asyncReceiver);
-           
-        if (node.getNodeContainer() instanceof CompositeContextNode && ((CompositeContextNode) node.getNodeContainer()).getNodeContainer() instanceof ForEachNode) {
-            CompositeContextNode contextNode = (CompositeContextNode) node.getNodeContainer();
-   
-            ((ForEachNode) contextNode.getNodeContainer()).linkIncomingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE, asyncReceiver.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE);
-    
-        } else {
-        
-            // add incoming connections to the async node
-            List<org.kie.api.definition.process.Connection> incoming = node.getIncomingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE);
-    
-                for (org.kie.api.definition.process.Connection connection : incoming) {
-                    // clear connection of the from node as they will be replaced with connections to async node
-                    ((NodeImpl)connection.getFrom()).clearOutgoingConnection();
-                    // make a connection between from node to async node
-                    new ConnectionImpl(connection.getFrom(), NodeImpl.CONNECTION_DEFAULT_TYPE, asyncReceiver,  NodeImpl.CONNECTION_DEFAULT_TYPE);                
-                
-            }
-        }
-        // clear all outgoing connections from the node that will be replaced with connection from async node
-       ((NodeImpl)node).clearIncomingConnection();
-       // add outgoing connection         
-       new ConnectionImpl(asyncReceiver,  NodeImpl.CONNECTION_DEFAULT_TYPE, node,  NodeImpl.CONNECTION_DEFAULT_TYPE);
-       
-       
-       return asyncReceiver;
-    }
 
     private void postProcessNodes(RuleFlowProcess process, NodeContainer container) {
         for (Node node: container.getNodes()) {
             
-            node = replaceForAsyncIfNeeded(node);
             if (node instanceof StateNode) {
                 StateNode stateNode = (StateNode) node;
                 String condition = (String) stateNode.getMetaData("Condition");

@@ -20,6 +20,9 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import org.jbpm.process.core.async.AsyncSignalEventCommand;
+import org.jbpm.workflow.core.impl.NodeImpl;
+import org.jbpm.workflow.core.node.AsyncEventNode;
+import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
@@ -73,6 +76,22 @@ public class AsyncEventNodeInstance extends EventNodeInstance {
         this.eventType = eventType;
     }
  
+    @Override
+    public Node getNode() {
+        return new AsyncEventNode(super.getNode());
+    }
+
+    @Override
+    public void triggerCompleted() {
+        getProcessInstance().removeEventListener(getEventType(), getEventListener(), true);
+        ((org.jbpm.workflow.instance.NodeInstanceContainer)getNodeInstanceContainer()).setCurrentLevel(getLevel());
+        ((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
+        
+        NodeInstance instance = ((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer()).getNodeInstance(getNode());
+        
+        triggerNodeInstance((org.jbpm.workflow.instance.NodeInstance) instance, NodeImpl.CONNECTION_DEFAULT_TYPE);
+    }
+
     @Override
     protected EventListener getEventListener() {
         return this.listener;

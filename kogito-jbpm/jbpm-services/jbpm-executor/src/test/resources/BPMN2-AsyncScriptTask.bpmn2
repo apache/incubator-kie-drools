@@ -5,11 +5,13 @@
       <bpmn2:outgoing>_1-_2</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:scriptTask id="_2" name="Hello" scriptFormat="http://www.java.com/java">
+      <bpmn2:extensionElements>
+        <tns:metaData name="customAsync">
+          <tns:metaValue>true</tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
       <bpmn2:incoming>_1-_2</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
-      <bpmn2:ioSpecification id="_CmuRYPgcEeGZaN4J4fh7nQ">
-        <bpmn2:dataInput id="_D0D5DF16-4A75-4C5E-8451-2F0A0BD24940_asyncInput" name="async"/>
-      </bpmn2:ioSpecification>
       <bpmn2:script>System.out.println(Thread.currentThread().getName() + &quot; Hello World&quot;);</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:endEvent id="_3" name="EndProcess">

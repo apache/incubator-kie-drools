@@ -51,8 +51,6 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
     protected void handleNode(final Node node, final Element element, final String uri, 
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
     	super.handleNode(node, element, uri, localName, parser);
-    	dataInputs.clear();
-        dataOutputs.clear();
         RuleSetNode ruleSetNode = (RuleSetNode) node;
 		String ruleFlowGroup = element.getAttribute("ruleFlowGroup");
 		if (ruleFlowGroup != null) {
@@ -73,7 +71,6 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
 		
         handleScript(ruleSetNode, element, "onEntry");
         handleScript(ruleSetNode, element, "onExit");
-        handleAsyncContinuation(ruleSetNode);
 	}
 
 	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
