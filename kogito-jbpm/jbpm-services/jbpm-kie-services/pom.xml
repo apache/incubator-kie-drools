@@ -208,6 +208,7 @@
             </Import-Package>
             <Export-Package>
               org.jbpm.kie.services.api.*,
+              org.jbpm.kie.services.impl.model.*,
             </Export-Package>
           </instructions>
         </configuration>
