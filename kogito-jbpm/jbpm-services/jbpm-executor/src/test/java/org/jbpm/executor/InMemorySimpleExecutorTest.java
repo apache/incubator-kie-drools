@@ -42,14 +42,14 @@ public class InMemorySimpleExecutorTest extends BasicExecutorBaseTest{
     @Override
     @Test
     @Ignore("It's only for JPA based as it removes data from db")
-    public void cleanupLogExcecutionTest() throws InterruptedException {
+    public void cleanupLogExecutionTest() throws InterruptedException {
     	
     }
     
     @Override
     @Test
     @Ignore("It's only for JPA based as it removes data from db")
-    public void reoccurringExcecutionTest() throws InterruptedException {
+    public void reoccurringExecutionTest() throws InterruptedException {
     	
     }
     

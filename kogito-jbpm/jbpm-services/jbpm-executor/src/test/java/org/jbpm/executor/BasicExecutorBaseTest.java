@@ -70,7 +70,7 @@ public abstract class BasicExecutorBaseTest {
     }
 
     @Test
-    public void simpleExcecutionTest() throws InterruptedException {
+    public void simpleExecutionTest() throws InterruptedException {
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
 
@@ -301,7 +301,7 @@ public abstract class BasicExecutorBaseTest {
     }
     
     @Test
-    public void reoccurringExcecutionTest() throws InterruptedException {
+    public void reoccurringExecutionTest() throws InterruptedException {
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
 
@@ -320,7 +320,7 @@ public abstract class BasicExecutorBaseTest {
     }
     
     @Test
-    public void cleanupLogExcecutionTest() throws InterruptedException {
+    public void cleanupLogExecutionTest() throws InterruptedException {
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
         
