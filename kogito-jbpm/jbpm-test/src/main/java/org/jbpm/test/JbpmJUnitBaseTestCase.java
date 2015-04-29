@@ -328,7 +328,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
             builder = RuntimeEnvironmentBuilder.Factory.get()
         			.newEmptyBuilder()
             .addConfiguration("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName())
-            .addConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName())
+            .addConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName())            
             .registerableItemsFactory(new SimpleRegisterableItemsFactory() {
 
 				@Override
@@ -401,6 +401,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
         } else {
             builder = RuntimeEnvironmentBuilder.Factory.get()
         			.newDefaultInMemoryBuilder()
+        			.entityManagerFactory(emf)
         			.registerableItemsFactory(new DefaultRegisterableItemsFactory() {
 
 				@Override

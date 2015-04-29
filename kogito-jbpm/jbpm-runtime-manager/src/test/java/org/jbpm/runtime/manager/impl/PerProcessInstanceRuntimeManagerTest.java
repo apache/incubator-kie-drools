@@ -21,6 +21,7 @@ import javax.transaction.UserTransaction;
 import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.PerProcessInstanceRuntimeManager;
+import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
@@ -65,6 +66,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
     private PoolingDataSource pds;
     private UserGroupCallback userGroupCallback;
     private RuntimeManager manager; 
+    private EntityManagerFactory emf;
     @Before
     public void setup() {
         Properties properties= new Properties();
@@ -73,11 +75,14 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         userGroupCallback = new JBossUserGroupCallbackImpl(properties);
 
         pds = TestUtil.setupPoolingDataSource();
+        
+        emf = EntityManagerFactoryManager.get().getOrCreate("org.jbpm.persistence.jpa");
     }
     
     @After
     public void teardown() {
         manager.close();
+        EntityManagerFactoryManager.get().clear();
         pds.close();
     }
     
@@ -86,6 +91,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
     			.newDefaultInMemoryBuilder()
                 .userGroupCallback(userGroupCallback)
+                .entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
                 .get();
@@ -452,6 +458,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
     			.newDefaultInMemoryBuilder()
                 .userGroupCallback(userGroupCallback)
+                .entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
                 .get();
@@ -534,6 +541,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
     			.newDefaultInMemoryBuilder()
                 .userGroupCallback(userGroupCallback)
+                .entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
                 .registerableItemsFactory(new DefaultRegisterableItemsFactory(){
@@ -605,6 +613,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
     			.newDefaultInMemoryBuilder()
                 .userGroupCallback(userGroupCallback)
+                .entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
                 .addEnvironmentEntry("org.kie.internal.runtime.manager.TaskServiceFactory", new TaskServiceFactory() {
