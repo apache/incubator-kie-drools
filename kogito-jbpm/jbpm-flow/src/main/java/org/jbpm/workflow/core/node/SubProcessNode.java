@@ -18,6 +18,7 @@ package org.jbpm.workflow.core.node;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.LinkedList;
 import java.util.List;
@@ -131,6 +132,19 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
     		}
     	}
     	return out;
+    }
+    
+    public void adjustOutMapping(String forEachOutVariable) {
+        if (forEachOutVariable == null) {
+            return;
+        }
+        Iterator<DataAssociation> it = outMapping.iterator();
+        while (it.hasNext()) {
+            DataAssociation association = it.next();
+            if (forEachOutVariable.equals(association.getTarget())) {
+                it.remove();
+            }
+        }
     }
     
     public void addOutAssociation(DataAssociation dataAssociation) {

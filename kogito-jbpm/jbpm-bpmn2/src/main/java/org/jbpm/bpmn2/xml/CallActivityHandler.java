@@ -23,8 +23,12 @@ import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.impl.NodeImpl;
+import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.Transformation;
+import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.runtime.process.DataTransformer;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -78,10 +82,61 @@ public class CallActivityHandler extends AbstractNodeHandler {
         	}
     		xmlNode = xmlNode.getNextSibling();
         }
+        
+        subProcessNode.setMetaData("DataInputs", dataInputs);
+        subProcessNode.setMetaData("DataOutputs", dataOutputs);
+        
         handleScript(subProcessNode, element, "onEntry");
         handleScript(subProcessNode, element, "onExit");
 	}
     
+    @SuppressWarnings("unchecked")
+    @Override
+    public Object end(String uri, String localName, ExtensibleXmlParser parser) throws SAXException {
+        final Element element = parser.endElementBuilder();
+        Node node = (Node) parser.getCurrent();
+        handleNode(node, element, uri, localName, parser);
+        
+        org.w3c.dom.Node xmlNode = element.getFirstChild();
+        int uniqueIdGen = 1;
+        while (xmlNode != null) {
+            String nodeName = xmlNode.getNodeName();
+            if ("multiInstanceLoopCharacteristics".equals(nodeName)) {
+                // create new timerNode
+                ForEachNode forEachNode = new ForEachNode();
+                forEachNode.setId(node.getId());
+                String uniqueId = (String) node.getMetaData().get("UniqueId");
+                forEachNode.setMetaData("UniqueId", uniqueId);
+                node.setMetaData("UniqueId", uniqueId + ":" + uniqueIdGen++);
+                node.setMetaData("hidden", true);
+                forEachNode.addNode(node);
+                forEachNode.linkIncomingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE, node.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE);
+                forEachNode.linkOutgoingConnections(node.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE, NodeImpl.CONNECTION_DEFAULT_TYPE);
+                
+                Node orignalNode = node;                
+                node = forEachNode;
+                handleForEachNode(node, element, uri, localName, parser);
+                // remove output collection data output of for each to avoid problems when running in variable strict mode
+                if (orignalNode instanceof SubProcessNode) {
+                    ((SubProcessNode)orignalNode).adjustOutMapping(forEachNode.getOutputCollectionExpression());
+                }
+                
+                Map<String, String> dataInputs = (Map<String, String>) orignalNode.getMetaData().remove("DataInputs");
+                Map<String, String> dataOutputs = (Map<String, String>) orignalNode.getMetaData().remove("DataOutputs");
+                
+                orignalNode.setMetaData("MICollectionOutput", dataOutputs.get(((ForEachNode)node).getMetaData("MICollectionOutput")));
+                orignalNode.setMetaData("MICollectionInput", dataInputs.get(((ForEachNode)node).getMetaData("MICollectionInput")));
+                                
+                break;
+            }
+            xmlNode = xmlNode.getNextSibling();
+        }
+        
+        NodeContainer nodeContainer = (NodeContainer) parser.getParent();
+        nodeContainer.addNode(node);
+        return node;
+    }
+
     protected void readIoSpecification(org.w3c.dom.Node xmlNode, Map<String, String> dataInputs, Map<String, String> dataOutputs) {
     	org.w3c.dom.Node subNode = xmlNode.getFirstChild();
 		while (subNode instanceof Element) {
@@ -174,6 +229,24 @@ public class CallActivityHandler extends AbstractNodeHandler {
 			subNode = subNode.getNextSibling();
 		}
 		subProcessNode.addOutMapping(dataOutputs.get(from), to, transformation);
+    }
+    
+    protected void handleForEachNode(final Node node, final Element element, final String uri, 
+            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+        ForEachNode forEachNode = (ForEachNode) node;
+        org.w3c.dom.Node xmlNode = element.getFirstChild();
+        
+        while (xmlNode != null) {
+            String nodeName = xmlNode.getNodeName();
+            if ("dataInputAssociation".equals(nodeName)) {
+                readDataInputAssociation(xmlNode, inputAssociation);
+            } else if ("dataOutputAssociation".equals(nodeName)) {
+                readDataOutputAssociation(xmlNode, outputAssociation);
+            } else if ("multiInstanceLoopCharacteristics".equals(nodeName)) {
+                readMultiInstanceLoopCharacteristics(xmlNode, forEachNode, parser);
+            }
+            xmlNode = xmlNode.getNextSibling();
+        }
     }
 
 	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {

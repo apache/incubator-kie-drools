@@ -40,7 +40,9 @@ import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ContextInstanceFactory;
 import org.jbpm.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
+import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.DataAssociation;
+import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.Transformation;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -178,6 +180,10 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
             if (manager != null) {
                 RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
                 kruntime = (KnowledgeRuntime) runtime.getKieSession();
+            }
+            if (getSubProcessNode().getMetaData("MICollectionInput") != null) {
+                // remove foreach input variable to avoid problems when running in variable strict mode
+                parameters.remove(getSubProcessNode().getMetaData("MICollectionInput"));
             }
 	    	ProcessInstance processInstance = ( ProcessInstance ) kruntime.createProcessInstance(processId, parameters);
 	    	this.processInstanceId = processInstance.getId();

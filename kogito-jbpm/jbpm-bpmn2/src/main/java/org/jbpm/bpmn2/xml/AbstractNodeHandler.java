@@ -401,7 +401,9 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                         collectionName = dataOutputs.get(outputDataRef);
                     }
                     forEachNode.setOutputCollectionExpression(collectionName);
+                    
                 }
+                forEachNode.setMetaData("MICollectionOutput", outputDataRef);
                 
             } else if ("loopDataInputRef".equals(nodeName)) {
                 
@@ -413,7 +415,9 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                         collectionName = dataInputs.get(inputDataRef);
                     }
                     forEachNode.setCollectionExpression(collectionName);
+                    
                 }
+                forEachNode.setMetaData("MICollectionInput", inputDataRef);
                 
             } else if ("completionCondition".equals(nodeName)) {
         		String expression = subNode.getTextContent();

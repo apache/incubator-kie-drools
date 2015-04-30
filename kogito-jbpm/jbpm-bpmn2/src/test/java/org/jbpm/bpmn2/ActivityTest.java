@@ -638,6 +638,45 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals("new value",
                 ((WorkflowProcessInstance) processInstance).getVariable("y"));
     }
+    
+    @Test
+    public void testCallActivityMI() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-CallActivityMI.bpmn2",
+                "BPMN2-CallActivitySubProcess.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        final List<Long> subprocessStarted = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+
+            @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                if (event.getProcessInstance().getProcessId().equals("SubProcess")) {
+                    subprocessStarted.add(event.getProcessInstance().getId());
+                }
+            }
+            
+        });
+        
+        List<String> list = new ArrayList<String>();
+        list.add("first");
+        list.add("second");
+        List<String> listOut = new ArrayList<String>();
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "oldValue");
+        params.put("list", list);
+        params.put("listOut", listOut);
+        
+        ProcessInstance processInstance = ksession.startProcess("ParentProcess", params);
+        assertProcessInstanceCompleted(processInstance);
+        
+        assertEquals(2, subprocessStarted.size());
+        listOut = (List)((WorkflowProcessInstance) processInstance).getVariable("listOut");
+        assertNotNull(listOut);
+        assertEquals(2, listOut.size());
+        
+        assertEquals("new value", listOut.get(0));
+        assertEquals("new value", listOut.get(1));
+    }
 
 	@Test
 	public void testCallActivity2() throws Exception {
