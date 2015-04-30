@@ -2133,4 +2133,76 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         assertProcessInstanceFinished(processInstance, ksession);
     }
+    
+    @Test
+    public void testIntermediateTimerParallelGateway() throws Exception {
+        KieBase kbase = createKnowledgeBase("timer/BPMN2-IntermediateTimerParallelGateway.bpmn2");
+
+        int badNumTimers = 9;
+        final CountDownLatch timerCompleted = new CountDownLatch(badNumTimers);
+
+        // prepare listener to assert results
+        final List<Long> timerExpirations = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener(){
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                String nodeName = event.getNodeInstance().getNodeName();
+                if (nodeName.startsWith("Timer")) {
+                    timerExpirations.add(event.getProcessInstance().getId());
+                    timerCompleted.countDown();
+                }
+            }
+        };
+
+        ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(listener);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        ProcessInstance processInstance = ksession.startProcess("Evaluation.timer-parallel");
+        assertProcessInstanceActive(processInstance);
+
+        boolean didNotWait = timerCompleted.await(4, TimeUnit.SECONDS);
+        
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        assertTrue("Too many timers elapsed: " + (badNumTimers - timerCompleted.getCount()), ! didNotWait );
+    }
+    
+    @Test
+    public void testIntermediateTimerEventMI() throws Exception {
+        KieBase kbase = createKnowledgeBase("timer/BPMN2-IntermediateTimerEventMI.bpmn2");
+
+        int badNumTimers = 9;
+        final CountDownLatch timerCompleted = new CountDownLatch(badNumTimers);
+
+        // prepare listener to assert results
+        final List<Long> timerExpirations = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener(){
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                String nodeName = event.getNodeInstance().getNodeName();
+                if (nodeName.equals("After timer")) {
+                    timerExpirations.add(event.getProcessInstance().getId());
+                    timerCompleted.countDown();
+                }
+            }
+        };
+
+        ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(listener);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        ProcessInstance processInstance = ksession.startProcess("defaultprocessid");
+        assertProcessInstanceActive(processInstance);
+
+        boolean didNotWait = timerCompleted.await(3, TimeUnit.SECONDS);
+        
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        
+        ksession.abortProcessInstance(processInstance.getId());
+        
+        assertProcessInstanceAborted(processInstance.getId(), ksession);
+        assertTrue("Too many timers elapsed: " + (badNumTimers - timerCompleted.getCount()), ! didNotWait );
+    }
 }
