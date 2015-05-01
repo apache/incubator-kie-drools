@@ -131,9 +131,9 @@
       <programlisting language="java">        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
 
-        SolverConfig solverConfig = solverFactory.getSolverConfig();
-        TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
+        TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setMinutesSpentLimit(userInput);
+        solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);
 
         Solver solver = solverFactory.buildSolver();</programlisting>
 
