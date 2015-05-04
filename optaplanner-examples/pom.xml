@@ -59,11 +59,16 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
           <configuration>
-            <mainClass>org.optaplanner.examples.app.OptaPlannerExamplesApp</mainClass>
+            <executable>java</executable>
+            <classpathScope>runtime</classpathScope>
             <arguments>
-                <argument>-Xms256m</argument>
-                <argument>-Xmx1024m</argument>
-                <argument>-server</argument>
+              <!-- Most examples run (potentially slower) with max heap of 128 MB (so -Xmx128m), but 1 example's dataset requires 1.5 GB -->
+              <argument>-Xms256m</argument>
+              <argument>-Xmx1536m</argument>
+              <argument>-server</argument>
+              <argument>-cp</argument>
+              <classpath/>
+              <argument>org.optaplanner.examples.app.OptaPlannerExamplesApp</argument>
             </arguments>
           </configuration>
         </plugin>
