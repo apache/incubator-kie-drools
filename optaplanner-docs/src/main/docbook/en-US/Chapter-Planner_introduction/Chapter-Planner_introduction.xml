@@ -464,7 +464,7 @@ $ mvn clean install -DskipTests
           <para>Run the examples:</para>
 
           <programlisting>$ cd optaplanner-examples
-$ mvn exec:exec
+$ mvn exec:java
 ...</programlisting>
         </listitem>
 

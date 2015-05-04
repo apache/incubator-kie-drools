@@ -58,17 +58,15 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
+          <!-- WARNING: This configuration must be run with "mvn exec:java" not "mvn exec:exec". -->
+          <!-- It is impossible to write a configuration that is compatible with both exec:java and exec:exec -->
           <configuration>
-            <executable>java</executable>
-            <classpathScope>runtime</classpathScope>
+            <mainClass>org.optaplanner.examples.app.OptaPlannerExamplesApp</mainClass>
             <arguments>
-              <!-- Most examples run (potentially slower) with max heap of 128 MB (so -Xmx128m), but 1 example's dataset requires 1.5 GB -->
               <argument>-Xms256m</argument>
+              <!-- Most examples run (potentially slower) with max heap of 128 MB (so -Xmx128m), but 1 example's dataset requires 1.5 GB -->
               <argument>-Xmx1536m</argument>
               <argument>-server</argument>
-              <argument>-cp</argument>
-              <classpath/>
-              <argument>org.optaplanner.examples.app.OptaPlannerExamplesApp</argument>
             </arguments>
           </configuration>
         </plugin>
