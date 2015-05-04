@@ -14,7 +14,7 @@
    height="600"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
+   inkscape:version="0.48.3.1 r9886"
    sodipodi:docname="positiveAndNegativeConstraints.svg"
    inkscape:export-filename="positiveAndNegativeConstraints.png"
    inkscape:export-xdpi="90"
@@ -2355,7 +2355,7 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="0.795"
-     inkscape:cx="329.35604"
+     inkscape:cx="180.92837"
      inkscape:cy="273.68282"
      inkscape:document-units="px"
      inkscape:current-layer="layer6"
@@ -2363,8 +2363,8 @@
      width="800px"
      borderlayer="true"
      gridtolerance="10"
-     inkscape:window-width="1366"
-     inkscape:window-height="702"
+     inkscape:window-width="1680"
+     inkscape:window-height="991"
      inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
@@ -2554,12 +2554,6 @@
            inkscape:connector-curvature="0" />
       </g>
     </g>
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer5"
-     inkscape:label="Positive and negative base"
-     style="display:inline">
     <path
        inkscape:connector-curvature="0"
        id="path3509"
@@ -2570,6 +2564,12 @@
        d="m 261,509.99855 -20,10 20,10"
        id="path3547"
        inkscape:connector-curvature="0" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="Positive and negative base"
+     style="display:inline">
     <g
        style="display:inline"
        transform="matrix(2.3502951,0,0,1.6037632,-642.12392,-100.69384)"
