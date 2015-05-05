@@ -1952,7 +1952,7 @@ public class RuleModelDRLPersistenceImpl
     private ExpandedDRLInfo preprocessDRL( final String str,
                                            final boolean hasDsl ) {
         StringBuilder drl = new StringBuilder();
-        String thenLine = null;
+        String thenLine = "";
         List<String> lhsStatements = new ArrayList<String>();
         List<String> rhsStatements = new ArrayList<String>();
 
