@@ -2479,10 +2479,12 @@ public class RuleModelDRLPersistenceImpl
                                          type );
                 } else {
                     ModelField modelField = null;
-                    for ( ModelField field : fields ) {
-                        if ( field.getName().equals( sourcePart ) ) {
-                            modelField = field;
-                            break;
+                    if ( fields != null ) {
+                        for ( ModelField field : fields ) {
+                            if ( field.getName().equals( sourcePart ) ) {
+                                modelField = field;
+                                break;
+                            }
                         }
                     }
                     if ( modelField == null ) {
