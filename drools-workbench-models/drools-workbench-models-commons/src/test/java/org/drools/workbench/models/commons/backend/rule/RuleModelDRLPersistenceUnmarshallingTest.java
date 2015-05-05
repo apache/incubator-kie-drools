@@ -1329,7 +1329,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         String drl =
                 "rule rule1\n"
                         + "when\n"
-                        + "p : Person( address.postalCode == p.address.postalCode) )\n"
+                        + "p : Person( address.postalCode == p.address.postalCode )\n"
                         + "then\n"
                         + "end";
 
@@ -2637,11 +2637,11 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     @Test
     public void testSingleFieldConstraintEBLeftSide() throws Exception {
         String drl = "" +
-                "rule \" broken \""
-                + "dialect \"mvel\""
-                + "  when"
-                + "    Customer( contact != null , contact.tel1 > \"15\" )"
-                + "  then"
+                "rule \" broken \"\n"
+                + "dialect \"mvel\"\n"
+                + "  when\n"
+                + "    Customer( contact != null , contact.tel1 > \"15\" )\n"
+                + "  then\n"
                 + "end";
 
         addModelField( "Customer",
@@ -7666,6 +7666,40 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         final ExpressionText et = (ExpressionText) efl.getParts().get( 1 );
         assertEquals( "package",
                       et.getName() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1218308
+    public void testInvalidSyntax1() throws Exception {
+        String drl = "rule \"test\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  Smurf( flange \n" +
+                "then\n" +
+                "end";
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FreeFormLine );
+        final FreeFormLine ffl = (FreeFormLine) p0;
+        assertEquals( "Smurf( flange",
+                      ffl.getText() );
+
+        assertEquals( 0,
+                      m.rhs.length );
 
         //Check round-trip
         assertEqualsIgnoreWhitespace( drl,
