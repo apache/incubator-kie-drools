@@ -150,9 +150,7 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
             }
         }
         if (selected != null) {
-    		if ( !((InternalKnowledgeRuntime) getProcessInstance().getKnowledgeRuntime()).getActionQueue().isEmpty() ) {
-    			((InternalKnowledgeRuntime) getProcessInstance().getKnowledgeRuntime()).executeQueuedActions();
-            }
+			((InternalKnowledgeRuntime) getProcessInstance().getKnowledgeRuntime()).executeQueuedActions();
         	removeEventListeners();
         	((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
             triggerConnection(selected);

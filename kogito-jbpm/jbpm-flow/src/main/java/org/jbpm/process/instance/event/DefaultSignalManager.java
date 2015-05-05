@@ -16,6 +16,17 @@
 
 package org.jbpm.process.instance.event;
 
+import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
+import org.drools.core.phreak.PropagationEntry;
+import org.jbpm.process.instance.InternalProcessRuntime;
+import org.kie.api.runtime.process.EventListener;
+import org.kie.api.runtime.process.ProcessInstance;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -23,16 +34,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
-import org.kie.api.runtime.process.EventListener;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.jbpm.process.instance.InternalProcessRuntime;
 
 public class DefaultSignalManager implements SignalManager {
 	
@@ -91,7 +92,7 @@ public class DefaultSignalManager implements SignalManager {
 		}
 	}
 	
-	public static class SignalProcessInstanceAction implements WorkingMemoryAction {
+	public static class SignalProcessInstanceAction extends PropagationEntry.AbstractPropagationEntry implements WorkingMemoryAction {
 
 		private long processInstanceId;
 		private String type;
@@ -157,10 +158,9 @@ public class DefaultSignalManager implements SignalManager {
             // TODO Auto-generated method stub
             return null;
         }
-		
 	}
 	
-	public static class SignalAction implements WorkingMemoryAction {
+	public static class SignalAction extends PropagationEntry.AbstractPropagationEntry implements WorkingMemoryAction {
 
 		private String type;
 		private Object event;

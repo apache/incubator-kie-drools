@@ -1,13 +1,5 @@
 package org.jbpm.process.instance;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.core.SessionConfiguration;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
@@ -20,6 +12,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
+import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.time.AcceptsTimerJobFactoryManager;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.impl.CronExpression;
@@ -60,6 +53,12 @@ import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.utils.CompositeClassLoader;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	
@@ -187,9 +186,8 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
     public ProcessInstance startProcessInstance(long processInstanceId, String trigger) {
     	try {
             kruntime.startOperation();
-            if ( !kruntime.getActionQueue().isEmpty() ) {
-            	kruntime.executeQueuedActions();
-            }
+
+            kruntime.executeQueuedActions();
             ProcessInstance processInstance = getProcessInstance(processInstanceId);
 	        getProcessEventSupport().fireBeforeProcessStarted( processInstance, kruntime );
 	        ((org.jbpm.process.instance.ProcessInstance) processInstance).start(trigger);
@@ -219,9 +217,8 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
             CorrelationKey correlationKey, Map<String, Object> parameters) {
         try {
             kruntime.startOperation();
-            if ( !kruntime.getActionQueue().isEmpty() ) {
-                kruntime.executeQueuedActions();
-            }
+            kruntime.executeQueuedActions();
+
             final Process process = kruntime.getKieBase().getProcess( processId );
             if ( process == null ) {
                 throw new IllegalArgumentException( "Unknown process ID: " + processId );
@@ -518,7 +515,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         
     }
 
-    public static class RegisterStartTimerAction implements WorkingMemoryAction {
+    public static class RegisterStartTimerAction extends PropagationEntry.AbstractPropagationEntry implements WorkingMemoryAction {
 
         private List<StartNode> startNodes;
         private String processId;
@@ -535,16 +532,6 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         }
         
         @Override
-        public void readExternal(ObjectInput in) throws IOException,
-                ClassNotFoundException {
-            
-        }
-
-        @Override
-        public void writeExternal(ObjectOutput out) throws IOException {            
-        }
-
-        @Override
         public void execute(InternalWorkingMemory workingMemory) {
             initTimer(workingMemory.getKnowledgeRuntime());
         }
@@ -552,11 +539,6 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         @Override
         public void execute(InternalKnowledgeRuntime kruntime) {
             initTimer(kruntime);
-        }
-
-        @Override
-        public void write(MarshallerWriteContext context) throws IOException {
-            
         }
 
         @Override

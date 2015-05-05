@@ -1,11 +1,5 @@
 package org.jbpm.process;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
-
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.common.EndOperationListener;
@@ -41,6 +35,12 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
 
 public class StatefulProcessSession extends AbstractRuntime implements StatefulKnowledgeSession, InternalKnowledgeRuntime, CorrelationAwareProcessRuntime {
 
@@ -155,18 +155,19 @@ public class StatefulProcessSession extends AbstractRuntime implements StatefulK
 	}
 
 	public void executeQueuedActions() {
+		if (this.actionQueue.isEmpty()) {
+			return;
+		}
         try {
             startOperation();
-            if (!this.actionQueue.isEmpty()) {
-                WorkingMemoryAction action = null;
-                while ((action = actionQueue.poll()) != null) {
-                    try {
-                        action.execute(this);
-                    } catch (Exception e) {
-                        throw new RuntimeException( "Unexpected exception executing action " + action.toString(), e );
-                    }
-                }
-            }
+			WorkingMemoryAction action = null;
+			while ((action = actionQueue.poll()) != null) {
+				try {
+					action.execute(this);
+				} catch (Exception e) {
+					throw new RuntimeException( "Unexpected exception executing action " + action.toString(), e );
+				}
+			}
         } finally {
             endOperation();
         }
