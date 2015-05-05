@@ -16,6 +16,21 @@
 
 package org.drools.core.reteoo;
 
+import static java.util.Collections.synchronizedMap;
+
+import java.beans.PropertyChangeListener;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.factmodel.traits.Thing;
@@ -28,24 +43,14 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.ObjectType;
 import org.kie.api.definition.type.Role;
 
-import java.beans.PropertyChangeListener;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 public class ClassObjectTypeConf
     implements
     ObjectTypeConf,
     Externalizable {
 
     protected static final Class<?>[]  ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
-
+    protected static final Map<Class<?>, Boolean> REFLECTION_CACHE = synchronizedMap(new WeakHashMap<Class<?>, Boolean>());
+    
     private static final long          serialVersionUID = 510l;
 
     private Class< ? >                 cls;
@@ -149,15 +154,26 @@ public class ClassObjectTypeConf
     }
 
     private boolean checkPropertyListenerSupport( Class<?> clazz ) {
-        Method method = null;
-        try {
-            method = clazz.getMethod( "addPropertyChangeListener",
-                                      ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES );
-        } catch (Exception e) {
-            // intentionally left empty
+        Boolean hasPropertyListenerSupport = REFLECTION_CACHE.get(clazz);
+
+        if (hasPropertyListenerSupport == null) {
+        	 hasPropertyListenerSupport = checkIfAddPropertyChangeListenerMethodExists(clazz);
+        	 REFLECTION_CACHE.put(clazz, hasPropertyListenerSupport);
         }
-        return method != null;
+
+        return hasPropertyListenerSupport;
     }
+
+	private boolean checkIfAddPropertyChangeListenerMethodExists(Class<?> clazz) {
+		Method method = null;
+		try {
+		    method = clazz.getMethod( "addPropertyChangeListener",
+		                              ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES );
+		} catch (Exception e) {
+		    // intentionally left empty
+		}
+		return method != null;
+	}
 
     /**
      * This will return the package name - if the package is null, it will
