@@ -120,8 +120,6 @@ import org.drools.workbench.models.datamodel.workitems.PortableObjectParameterDe
 import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.drools.core.util.StringUtils.*;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.*;
@@ -136,8 +134,6 @@ public class RuleModelDRLPersistenceImpl
     private static final String WORKITEM_PREFIX = "wi";
 
     private static final RuleModelPersistence INSTANCE = new RuleModelDRLPersistenceImpl();
-
-    private static final Logger log = LoggerFactory.getLogger( RuleModelDRLPersistenceImpl.class );
 
     //This is the default dialect for rules not specifying one explicitly
     protected DRLConstraintValueBuilder constraintValueBuilder = DRLConstraintValueBuilder.getBuilder( DRLConstraintValueBuilder.DEFAULT_DIALECT );
