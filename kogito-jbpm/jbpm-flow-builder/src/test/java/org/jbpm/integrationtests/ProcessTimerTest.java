@@ -111,6 +111,11 @@ public class ProcessTimerTest extends AbstractBaseTest {
         	// do nothing
         }
         assertEquals(5, myList.size());
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			// do nothing
+		}
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         
         session.dispose();
@@ -202,6 +207,11 @@ public class ProcessTimerTest extends AbstractBaseTest {
         	// do nothing
         }
         assertEquals(5, myList.size());
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			// do nothing
+		}
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         
         session.dispose();
