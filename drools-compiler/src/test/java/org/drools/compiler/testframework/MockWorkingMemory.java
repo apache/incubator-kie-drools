@@ -104,7 +104,10 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 
     public void executeQueuedActions() {
         // TODO Auto-generated method stub
-        
+    }
+
+    public void executeQueuedActionsForRete() {
+        // TODO Auto-generated method stub
     }
 
     public void executeQueuedActions(boolean flushPropagations) {

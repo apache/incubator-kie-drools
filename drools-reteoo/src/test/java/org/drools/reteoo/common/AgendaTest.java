@@ -1705,7 +1705,7 @@ public class AgendaTest extends DroolsTestCase {
         agenda.fireNextItem(null, 0, -1);
         assertEquals(0,
                      ruleFlowGroup0.size());
-        ksession.executeQueuedActions();
+        ksession.executeQueuedActionsForRete();
         assertEquals(0, ruleFlowGroup0.size());
         agenda.fireNextItem(null, 0, -1);
         assertFalse(ruleFlowGroup0.isActive());

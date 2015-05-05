@@ -260,7 +260,7 @@ public class NamedEntryPoint
                        PropagationContext pctx) {
         this.kBase.executeQueuedActions();
 
-        this.wm.executeQueuedActions();
+        this.wm.executeQueuedActionsForRete();
 
         if ( activation != null ) {
             // release resources so that they can be GC'ed
@@ -286,7 +286,7 @@ public class NamedEntryPoint
                                                                 object,
                                                                 this.wm);
 
-        this.wm.executeQueuedActions();
+        this.wm.executeQueuedActionsForRete();
 
         if ( rule == null ) {
             // This is not needed for internal WM actions as the firing rule will unstage
@@ -443,7 +443,7 @@ public class NamedEntryPoint
                                                                object,
                                                                this.wm);
 
-        this.wm.executeQueuedActions();
+        this.wm.executeQueuedActionsForRete();
 
         if ( rule == null ) {
             // This is not needed for internal WM actions as the firing rule will unstage
@@ -574,7 +574,7 @@ public class NamedEntryPoint
                                                                  object,
                                                                  this.wm);
 
-        this.wm.executeQueuedActions();
+        this.wm.executeQueuedActionsForRete();
 
 
         if ( rule == null ) {
