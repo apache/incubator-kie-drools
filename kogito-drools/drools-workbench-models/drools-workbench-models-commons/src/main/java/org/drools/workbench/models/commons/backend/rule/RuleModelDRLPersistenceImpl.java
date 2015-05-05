@@ -120,6 +120,8 @@ import org.drools.workbench.models.datamodel.workitems.PortableObjectParameterDe
 import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.core.util.StringUtils.*;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.*;
@@ -134,6 +136,8 @@ public class RuleModelDRLPersistenceImpl
     private static final String WORKITEM_PREFIX = "wi";
 
     private static final RuleModelPersistence INSTANCE = new RuleModelDRLPersistenceImpl();
+
+    private static final Logger log = LoggerFactory.getLogger( RuleModelDRLPersistenceImpl.class );
 
     //This is the default dialect for rules not specifying one explicitly
     protected DRLConstraintValueBuilder constraintValueBuilder = DRLConstraintValueBuilder.getBuilder( DRLConstraintValueBuilder.DEFAULT_DIALECT );
@@ -1823,10 +1827,15 @@ public class RuleModelDRLPersistenceImpl
         if ( str == null || str.isEmpty() ) {
             return new RuleModel();
         }
-        return getRuleModel( preprocessDRL( str,
-                                            false ).registerGlobals( dmo,
-                                                                     globals ),
-                             dmo );
+        try {
+            return getRuleModel( preprocessDRL( str,
+                                                false ).registerGlobals( dmo,
+                                                                         globals ),
+                                 dmo );
+
+        } catch ( RuleModelUnmarshallingException e ) {
+            return getSimpleRuleModel( str );
+        }
     }
 
     public RuleModel unmarshalUsingDSL( final String str,
@@ -1836,11 +1845,16 @@ public class RuleModelDRLPersistenceImpl
         if ( str == null || str.isEmpty() ) {
             return new RuleModel();
         }
-        return getRuleModel( parseDSLs( preprocessDRL( str,
-                                                       true ),
-                                        dsls ).registerGlobals( dmo,
-                                                                globals ),
-                             dmo );
+        try {
+            return getRuleModel( parseDSLs( preprocessDRL( str,
+                                                           true ),
+                                            dsls ).registerGlobals( dmo,
+                                                                    globals ),
+                                 dmo );
+
+        } catch ( RuleModelUnmarshallingException e ) {
+            return getSimpleRuleModel( str );
+        }
     }
 
     private ExpandedDRLInfo parseDSLs( final ExpandedDRLInfo expandedDRLInfo,
@@ -2055,6 +2069,8 @@ public class RuleModelDRLPersistenceImpl
                     expandedDRLInfo.dslStatementsInRhs.put( lineCounter,
                                                             trimmed );
                 }
+            } else {
+                drl.append( "end" );
             }
         }
 
@@ -2084,11 +2100,11 @@ public class RuleModelDRLPersistenceImpl
         drl.append( thenLine ).append( "\n" );
 
         expandedDRLInfo.consequence = "";
-        lineCounter = -1;
         for ( String statement : rhsStatements ) {
             String trimmed = statement.trim();
             if ( trimmed.endsWith( "end" ) ) {
-                trimmed = trimmed.substring( 0, trimmed.length() - 3 );
+                trimmed = trimmed.substring( 0,
+                                             trimmed.length() - 3 ).trim();
             }
             if ( trimmed.length() > 0 ) {
                 expandedDRLInfo.consequence += ( trimmed + "\n" );
@@ -2185,6 +2201,9 @@ public class RuleModelDRLPersistenceImpl
         PackageDescr packageDescr;
         try {
             packageDescr = drlParser.parse( true, expandedDRLInfo.plainDrl );
+            if ( drlParser.hasErrors() ) {
+                throw new RuleModelUnmarshallingException();
+            }
         } catch ( DroolsParserException e ) {
             throw new RuntimeException( e );
         }
@@ -4036,6 +4055,54 @@ public class RuleModelDRLPersistenceImpl
             return this.drl;
         }
 
+    }
+
+    //Exception to indicate the DrlParser encountered a problem parsing the DRL. This fails-fast the unmarshalling.
+    public static class RuleModelUnmarshallingException extends RuntimeException {
+
+    }
+
+    //Simple fall-back parser of DRL
+    public RuleModel getSimpleRuleModel( final String drl ) {
+        final RuleModel rm = new RuleModel();
+        rm.setPackageName( PackageNameParser.parsePackageName( drl ) );
+        rm.setImports( ImportsParser.parseImports( drl ) );
+
+        final Pattern rulePattern = Pattern.compile( "\\s?rule\\s+(.+?)\\s+.*",
+                                                     Pattern.DOTALL );
+        final Pattern lhsPattern = Pattern.compile( ".*\\s+when\\s+(.+?)\\s+then.*",
+                                                    Pattern.DOTALL );
+        final Pattern rhsPattern = Pattern.compile( ".*\\s+then\\s+(.+?)\\s+end.*",
+                                                    Pattern.DOTALL );
+
+        final Matcher ruleMatcher = rulePattern.matcher( drl );
+        if ( ruleMatcher.matches() ) {
+            String name = ruleMatcher.group( 1 );
+            if ( name.startsWith( "\"" ) ) {
+                name = name.substring( 1 );
+            }
+            if ( name.endsWith( "\"" ) ) {
+                name = name.substring( 0,
+                                       name.length() - 1 );
+            }
+            rm.name = name;
+        }
+
+        final Matcher lhsMatcher = lhsPattern.matcher( drl );
+        if ( lhsMatcher.matches() ) {
+            final FreeFormLine lhs = new FreeFormLine();
+            lhs.setText( lhsMatcher.group( 1 ) == null ? "" : lhsMatcher.group( 1 ).trim() );
+            rm.addLhsItem( lhs );
+        }
+
+        final Matcher rhsMatcher = rhsPattern.matcher( drl );
+        if ( rhsMatcher.matches() ) {
+            final FreeFormLine rhs = new FreeFormLine();
+            rhs.setText( rhsMatcher.group( 1 ) == null ? "" : rhsMatcher.group( 1 ).trim() );
+            rm.addRhsItem( rhs );
+        }
+
+        return rm;
     }
 
 }
