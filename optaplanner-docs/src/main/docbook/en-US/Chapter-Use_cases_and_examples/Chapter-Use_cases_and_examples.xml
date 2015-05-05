@@ -540,7 +540,7 @@
 
             <entry><itemizedlist>
                 <listitem>
-                  <para>Overconstrained planning</para>
+                  <para><link linkend="overconstrainedPlanning">Overconstrained planning</link></para>
                 </listitem>
               </itemizedlist></entry>
           </row>
@@ -1630,7 +1630,7 @@ Schedule B-10 has 20 projects, 460 jobs, 1300 execution modes, 42 resources and 
         in the hospital. Each bed belongs to a room and each room belongs to a department. The arrival and departure
         dates of the patients is fixed: only a bed needs to be assigned for each night.</para>
 
-        <para>This problem features <emphasis>overconstrained</emphasis> datasets.</para>
+        <para>This problem features <link linkend="overconstrainedPlanning">overconstrained</link> datasets.</para>
 
         <mediaobject>
           <imageobject>

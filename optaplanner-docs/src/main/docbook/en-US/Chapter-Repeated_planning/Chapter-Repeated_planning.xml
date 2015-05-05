@@ -11,13 +11,19 @@
     <title>Introduction to Repeated Planning</title>
 
     <para>The world constantly changes. The problem facts used to create a solution, might change before or during the
-    execution of that solution. There are 3 types of situations:</para>
+    execution of that solution. There are different situations (which can be combined):</para>
 
     <itemizedlist>
       <listitem>
         <para><emphasis>Unforeseen fact changes</emphasis>: For example: an employee assigned to a shift calls in sick,
         an airplane scheduled to take off has a technical delay, one of the machines or vehicles break down, ... Use
         <emphasis role="bold">backup planning</emphasis>.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis>Impossible to assign all entities now</emphasis>: Leave some unassigned. For example: there are
+        10 shifts at the same time to assign but only 9 employees to handle shifts. Use <emphasis
+        role="bold">overconstrained planning</emphasis>.</para>
       </listitem>
 
       <listitem>
@@ -52,6 +58,31 @@
     (probably with the spare employee) and the metaheuristics will even improve it further.</para>
   </section>
 
+  <section xml:id="overconstrainedPlanning">
+    <title>Overconstrained Planning</title>
+
+    <para>When there is no feasible solution to assign all planning entities, it's often desired to assign as many
+    entities as possible without breaking hard constraints. This is called overconstrained planning.</para>
+
+    <para>To implement this:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>Add a additional score level (usually a medium level between the hard and soft level) by switching <link
+        linkend="scoreDefinition">ScoreDefinition</link>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Make the planning variable <link linkend="nullablePlanningVariable">nullable</link>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Add a score constraint on the new level (so usually a medium constraint) to penalize the number of
+        unassigned entities (or a weighted sum of them).</para>
+      </listitem>
+    </orderedlist>
+  </section>
+
   <section xml:id="continuousPlanning">
     <title>Continuous Planning (Windowed Planning)</title>
 
@@ -82,7 +113,7 @@
     </mediaobject>
 
     <para>Notice the difference between the original planning of November 1th and the new planning of November 5th: some
-      problem facts (F, H, I, J, K) changed, which results in unrelated planning entities (G) changing too.</para>
+    problem facts (F, H, I, J, K) changed, which results in unrelated planning entities (G) changing too.</para>
 
     <section xml:id="immovablePlanningEntities">
       <title>Immovable Planning Entities</title>
@@ -114,7 +145,7 @@ public class ShiftAssignment {
     </section>
 
     <section xml:id="nonvolatileReplanning">
-      <title>Nonvolatile Replanning (Semi-movable Planning Entities) </title>
+      <title>Nonvolatile Replanning to minimize disruption (Semi-movable Planning Entities)</title>
 
       <para>Replanning an existing plan can be very disruptive on the plan. If the plan affects humans (such as
       employees, drivers, ...), very disruptive changes are often undesirable. In such cases, nonvolatile replanning
@@ -179,8 +210,8 @@ end</programlisting>
 
     <para>In the example above, 3 customers are added at different times (<literal>07:56</literal>,
     <literal>08:02</literal> and <literal>08:45</literal>), after the original customer set finished solving at
-    <literal>07:55</literal> and in some cases after the vehicles already left. Planner can handle such scenario's
-    with <literal>ProblemFactChange</literal> (in combination with <link linkend="immovablePlanningEntities">immovable
+    <literal>07:55</literal> and in some cases after the vehicles already left. Planner can handle such scenario's with
+    <literal>ProblemFactChange</literal> (in combination with <link linkend="immovablePlanningEntities">immovable
     planning entities</link>).</para>
 
     <section xml:id="problemFactChange">
