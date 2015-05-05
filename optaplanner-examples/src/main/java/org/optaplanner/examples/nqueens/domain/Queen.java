@@ -30,7 +30,7 @@ public class Queen extends AbstractPersistable {
     private Column column;
 
     // Planning variables: changes during planning, between score calculations.
-    private Integer row;
+    private Row row;
 
     public Column getColumn() {
         return column;
@@ -40,12 +40,13 @@ public class Queen extends AbstractPersistable {
         this.column = column;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"rowRange"})
-    public Integer getRow() {
+    @PlanningVariable(valueRangeProviderRefs = {"rowRange"},
+            strengthWeightFactoryClass = RowStrengthWeightFactory.class)
+    public Row getRow() {
         return row;
     }
 
-    public void setRow(Integer row) {
+    public void setRow(Row row) {
         this.row = row;
     }
 
@@ -61,7 +62,7 @@ public class Queen extends AbstractPersistable {
         if (row == null) {
             return Integer.MIN_VALUE;
         }
-        return row;
+        return row.getIndex();
     }
 
     public int getAscendingDiagonalIndex() {

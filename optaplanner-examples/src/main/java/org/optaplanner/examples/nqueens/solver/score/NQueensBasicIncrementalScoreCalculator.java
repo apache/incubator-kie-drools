@@ -63,7 +63,7 @@ public class NQueensBasicIncrementalScoreCalculator extends AbstractIncrementalS
     }
 
     private void insert(Queen queen) {
-        Integer row = queen.getRow();
+        Row row = queen.getRow();
         if (row != null) {
             for (Queen otherQueen : insertedQueenList) {
                 if (queen.getRowIndex() == otherQueen.getRowIndex()) {
@@ -81,7 +81,7 @@ public class NQueensBasicIncrementalScoreCalculator extends AbstractIncrementalS
     }
 
     private void retract(Queen queen) {
-        Integer row = queen.getRow();
+        Row row = queen.getRow();
         if (row != null) {
             insertedQueenList.remove(queen);
             for (Queen otherQueen : insertedQueenList) {

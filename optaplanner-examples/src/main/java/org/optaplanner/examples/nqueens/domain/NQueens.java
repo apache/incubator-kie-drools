@@ -25,8 +25,6 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
-import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
@@ -65,17 +63,10 @@ public class NQueens extends AbstractPersistable implements Solution<SimpleScore
         this.columnList = columnList;
     }
 
-
+    @ValueRangeProvider(id = "rowRange")
     public List<Row> getRowList() {
         return rowList;
     }
-
-    @ValueRangeProvider(id = "rowRange")
-    public CountableValueRange extractRowRange() {
-        return ValueRangeFactory.createIntValueRange(0, n);
-    }
-
-
 
     public void setRowList(List<Row> rowList) {
         this.rowList = rowList;

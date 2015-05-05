@@ -80,7 +80,7 @@ public class NQueensAdvancedIncrementalScoreCalculator extends AbstractIncrement
     }
 
     private void insert(Queen queen) {
-        Integer row = queen.getRow();
+        Row row = queen.getRow();
         if (row != null) {
             int rowIndex = queen.getRowIndex();
             List<Queen> rowIndexList = rowIndexMap.get(rowIndex);
@@ -96,7 +96,7 @@ public class NQueensAdvancedIncrementalScoreCalculator extends AbstractIncrement
     }
 
     private void retract(Queen queen) {
-        Integer row = queen.getRow();
+        Row row = queen.getRow();
         if (row != null) {
             List<Queen> rowIndexList = rowIndexMap.get(queen.getRowIndex());
             rowIndexList.remove(queen);
