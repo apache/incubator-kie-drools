@@ -114,7 +114,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ZeroConstraints() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person()\n" +
                 "then \n" +
@@ -153,7 +153,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
     @Test
     public void testSingleRule_InPackage() throws Exception {
         final String drl = "package org.drools.workbench.models.guided.dtree.backend; \n" +
-                "rule \"test_0\"" +
+                "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( name == \"Michael\" )\n" +
                 "then \n" +
@@ -215,7 +215,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
     public void testSingleRule_WithImport() throws Exception {
         final String drl = "package smurf; \n" +
                 "import org.drools.workbench.models.guided.dtree.backend.Person; \n" +
-                "rule \"test_0\"" +
+                "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( name == \"Michael\" )\n" +
                 "then \n" +
@@ -275,7 +275,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_SingleConstraint() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( name == \"Michael\" )\n" +
                 "then \n" +
@@ -335,7 +335,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_SingleConstraintNoOperatorNoValue() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( name )\n" +
                 "then \n" +
@@ -391,7 +391,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_MultipleConstraints() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( name == \"Michael\", age == 41 )\n" +
                 "then \n" +
@@ -481,12 +481,12 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testMultipleRules_2Rules() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( name == \"Michael\" )\n" +
                 "then \n" +
                 "end \n" +
-                "rule \"test_1\"" +
+                "rule \"test_1\"\n" +
                 "when \n" +
                 "  Person( age == 41 )\n" +
                 "then \n" +
@@ -576,17 +576,17 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testMultipleRules_3Rules() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( name == \"Michael\" )\n" +
                 "then \n" +
                 "end \n" +
-                "rule \"test_1\"" +
+                "rule \"test_1\"\n" +
                 "when \n" +
                 "  Person( age == 41 )\n" +
                 "then \n" +
                 "end \n" +
-                "rule \"test_2\"" +
+                "rule \"test_2\"\n" +
                 "when \n" +
                 "  Person( gender == \"Male\" )\n" +
                 "then \n" +
@@ -701,12 +701,12 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testMultipleRules_2Rules_1Simple_1Complex() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( name == \"Michael\" )\n" +
                 "then \n" +
                 "end \n" +
-                "rule \"test_1\"" +
+                "rule \"test_1\"\n" +
                 "when \n" +
                 "  Person( name == \"Fred\", age == 41 )\n" +
                 "then \n" +
@@ -818,7 +818,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_MultiplePatterns() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( name == \"Michael\" )\n" +
                 "  Address( country == \"England\" )\n" +
@@ -926,19 +926,19 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testMultipleRules_MultiplePatterns() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( name == \"Michael\" )\n" +
                 "  Address( country == \"England\" )\n" +
                 "then \n" +
                 "end \n" +
-                "rule \"test_1\"" +
+                "rule \"test_1\"\n" +
                 "when \n" +
                 "  Person( name == \"Michael\" )\n" +
                 "  Address( country == \"Norway\" )\n" +
                 "then \n" +
                 "end \n" +
-                "rule \"test_2\"" +
+                "rule \"test_2\"\n" +
                 "when \n" +
                 "  Person( name == \"Fred\" )\n" +
                 "then \n" +
@@ -1085,7 +1085,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testValue_BigDecimal() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( bigDecimalField == 1000000B )\n" +
                 "then \n" +
@@ -1145,7 +1145,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testValue_BigInteger() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( bigIntegerField == 1000000I )\n" +
                 "then \n" +
@@ -1205,7 +1205,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testValue_Boolean() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( booleanField == true )\n" +
                 "then \n" +
@@ -1265,7 +1265,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testValue_Byte() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( byteField == 100 )\n" +
                 "then \n" +
@@ -1325,7 +1325,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testValue_Date() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( dateField == \"15-Jul-1984\" )\n" +
                 "then \n" +
@@ -1385,7 +1385,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testValue_Double() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( doubleField == 1000.56 )\n" +
                 "then \n" +
@@ -1445,7 +1445,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testValue_Float() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( floatField == 1000.56 )\n" +
                 "then \n" +
@@ -1505,7 +1505,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testValue_Integer() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( integerField == 1000000 )\n" +
                 "then \n" +
@@ -1565,7 +1565,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testValue_Long() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( longField == 1000000 )\n" +
                 "then \n" +
@@ -1625,7 +1625,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testValue_Short() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( shortField == 1000 )\n" +
                 "then \n" +
@@ -1685,7 +1685,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testValue_String() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( stringField == \"Michael\" )\n" +
                 "then \n" +
@@ -1745,7 +1745,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_TypeBinding() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  $p : Person( )\n" +
                 "then \n" +
@@ -1786,7 +1786,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_FieldBinding() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( $n : name )\n" +
                 "then \n" +
@@ -1846,7 +1846,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_SingleConstraintJavaEnum() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( name == Names.FRED )\n" +
                 "then \n" +
@@ -1912,7 +1912,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_SingleConstraintNotNullOperator() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( name != null )\n" +
                 "then \n" +
@@ -1971,7 +1971,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_SingleConstraintNullOperator() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( name == null )\n" +
                 "then \n" +
@@ -2504,7 +2504,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ActionModifyZeroFields() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  $p : Person( )\n" +
                 "then \n" +
@@ -2972,7 +2972,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testSingleRule_ActionSetZeroFields() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  $p : Person( )\n" +
                 "then \n" +
