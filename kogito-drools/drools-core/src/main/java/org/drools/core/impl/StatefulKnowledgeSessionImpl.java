@@ -1553,6 +1553,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void executeQueuedActions() {
+        flushPropagations();
+    }
+
+    public void executeQueuedActionsForRete() {
         // NO-OP: this is necessary only for rete
     }
 
@@ -2126,12 +2130,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         } finally {
             endOperation();
         }
-        executeQueuedActions();
+        executeQueuedActionsForRete();
     }
 
     public void flushNonMarshallablePropagations() {
         propagationList.flushNonMarshallable(this);
-        executeQueuedActions();
+        executeQueuedActionsForRete();
     }
 
     public boolean hasPendingPropagations() {

@@ -61,7 +61,7 @@ public interface InternalWorkingMemory
 
     ObjectStore getObjectStore();
 
-    void executeQueuedActions();
+    void executeQueuedActionsForRete();
 
     void queueWorkingMemoryAction(final WorkingMemoryAction action);
 

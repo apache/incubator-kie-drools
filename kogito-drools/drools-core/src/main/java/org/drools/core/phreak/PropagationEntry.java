@@ -1,7 +1,9 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -10,6 +12,7 @@ import org.drools.core.spi.PropagationContext;
 public interface PropagationEntry {
 
     void execute(InternalWorkingMemory wm);
+    void execute(InternalKnowledgeRuntime kruntime);
 
     PropagationEntry getNext();
     void setNext(PropagationEntry next);
@@ -30,6 +33,11 @@ public interface PropagationEntry {
         @Override
         public boolean isMarshallable() {
             return false;
+        }
+
+        @Override
+        public void execute(InternalKnowledgeRuntime kruntime) {
+            execute( ((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory() );
         }
     }
 

@@ -138,7 +138,7 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
             }
 
             // do we need to call this in advance?
-            executeQueuedActions();
+            executeQueuedActionsForRete();
 
             fireCount = this.agenda.fireAllRules( agendaFilter,
                                                   fireLimit );
@@ -211,7 +211,7 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
     }
 
     @Override
-    public void executeQueuedActions() {
+    public void executeQueuedActionsForRete() {
         try {
             startOperation();
             if ( evaluatingActionQueue.compareAndSet( false,
