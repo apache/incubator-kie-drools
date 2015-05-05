@@ -22,6 +22,7 @@ import org.optaplanner.core.impl.localsearch.event.LocalSearchPhaseLifecycleList
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.AbstractPhase;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
@@ -49,6 +50,11 @@ public class DefaultLocalSearchPhase extends AbstractPhase implements LocalSearc
 
     public void setAssertExpectedStepScore(boolean assertExpectedStepScore) {
         this.assertExpectedStepScore = assertExpectedStepScore;
+    }
+
+    @Override
+    public String getPhaseTypeString() {
+        return "Local Search";
     }
 
     // ************************************************************************
@@ -115,10 +121,7 @@ public class DefaultLocalSearchPhase extends AbstractPhase implements LocalSearc
         super.phaseStarted(phaseScope);
         decider.phaseStarted(phaseScope);
         // TODO maybe this restriction should be lifted to allow LocalSearch to initialize a solution too?
-        if (!phaseScope.getScoreDirector().isWorkingSolutionInitialized()) {
-            throw new IllegalStateException("Local Search phase started with an uninitialized Solution." +
-                    " First initialize the Solution. For example, run a Construction Heuristic phase first.");
-        }
+        assertWorkingSolutionInitialized(phaseScope);
     }
 
     public void stepStarted(LocalSearchStepScope stepScope) {

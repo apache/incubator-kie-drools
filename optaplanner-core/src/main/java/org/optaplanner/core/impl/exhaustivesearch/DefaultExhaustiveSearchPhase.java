@@ -84,6 +84,11 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
         this.assertExpectedWorkingSolutionScore = assertExpectedWorkingSolutionScore;
     }
 
+    @Override
+    public String getPhaseTypeString() {
+        return "Exhaustive Search";
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

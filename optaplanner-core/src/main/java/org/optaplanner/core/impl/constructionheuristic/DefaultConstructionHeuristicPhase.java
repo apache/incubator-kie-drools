@@ -53,6 +53,11 @@ public class DefaultConstructionHeuristicPhase extends AbstractPhase implements 
         this.assertExpectedStepScore = assertExpectedStepScore;
     }
 
+    @Override
+    public String getPhaseTypeString() {
+        return "Construction Heuristics";
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

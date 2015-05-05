@@ -16,11 +16,18 @@
 
 package org.optaplanner.core.impl.phase;
 
+import java.util.Iterator;
+
+import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.localsearch.DefaultLocalSearchPhase;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleSupport;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
@@ -61,8 +68,10 @@ public abstract class AbstractPhase implements Phase {
         this.bestSolutionRecaller = bestSolutionRecaller;
     }
 
+    public abstract String getPhaseTypeString();
+
     // ************************************************************************
-    // Worker methods
+    // Lifecycle methods
     // ************************************************************************
 
     public void solvingStarted(DefaultSolverScope solverScope) {
@@ -108,6 +117,33 @@ public abstract class AbstractPhase implements Phase {
 
     public void removePhaseLifecycleListener(PhaseLifecycleListener phaseLifecycleListener) {
         phaseLifecycleSupport.removeEventListener(phaseLifecycleListener);
+    }
+
+    // ************************************************************************
+    // Assert methods
+    // ************************************************************************
+
+    protected void assertWorkingSolutionInitialized(AbstractPhaseScope phaseScope) {
+        InnerScoreDirector scoreDirector = phaseScope.getScoreDirector();
+        SolutionDescriptor solutionDescriptor = scoreDirector.getSolutionDescriptor();
+        Solution workingSolution = scoreDirector.getWorkingSolution();
+        for (Iterator<Object> it = solutionDescriptor.extractAllEntitiesIterator(workingSolution); it.hasNext();) {
+            Object entity = it.next();
+            if (!solutionDescriptor.isEntityInitializedOrImmovable(scoreDirector, entity)) {
+                EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
+                String variableRef = null;
+                for (GenuineVariableDescriptor variableDescriptor : entityDescriptor.getGenuineVariableDescriptors()) {
+                    if (!variableDescriptor.isInitialized(entity)) {
+                        variableRef = variableDescriptor.getSimpleEntityAndVariableName();
+                        break;
+                    }
+                }
+                throw new IllegalStateException(getPhaseTypeString() + " phase (" + phaseIndex
+                        + ") needs to start from an initialized solution, but the planning variable (" + variableRef
+                        + ") is uninitialized for the entity (" +  entity + ").\n"
+                        + "  Initialize the solution by configuring a Construction Heuristic phase before this phase.");
+            }
+        }
     }
 
 }

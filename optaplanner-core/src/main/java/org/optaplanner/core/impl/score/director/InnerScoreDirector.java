@@ -83,11 +83,6 @@ public interface InnerScoreDirector extends ScoreDirector {
     int countWorkingSolutionUninitializedVariables();
 
     /**
-     * @return true if the {@link Solution workingSolution} is initialized
-     */
-    boolean isWorkingSolutionInitialized();
-
-    /**
      * @return at least 0L
      */
     long getCalculateCount();

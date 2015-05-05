@@ -447,6 +447,10 @@ public class EntityDescriptor {
         return count;
     }
 
+    public boolean isMovable(ScoreDirector scoreDirector, Object entity) {
+        return movableEntitySelectionFilter == null || movableEntitySelectionFilter.accept(scoreDirector, entity);
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + entityClass.getName() + ")";

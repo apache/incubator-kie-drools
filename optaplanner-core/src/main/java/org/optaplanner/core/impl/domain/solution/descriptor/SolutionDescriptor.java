@@ -23,12 +23,15 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.Iterators;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -46,8 +49,6 @@ import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCl
 import org.optaplanner.core.impl.domain.solution.cloner.PlanningCloneableSolutionCloner;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
-import org.optaplanner.core.impl.domain.variable.listener.VariableListenerSupport;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -343,11 +344,8 @@ public class SolutionDescriptor {
             }
         }
         for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
-            Collection<?> entityCollection = extractEntityCollection(
-                    entityCollectionPropertyAccessor, solution);
-            for (Object entity : entityCollection) {
-                facts.add(entity);
-            }
+            Collection<Object> entityCollection = extractEntityCollection(entityCollectionPropertyAccessor, solution);
+            facts.addAll(entityCollection);
         }
         return facts;
     }
@@ -365,8 +363,7 @@ public class SolutionDescriptor {
             }
         }
         for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
-            Collection<?> entityCollection = extractEntityCollection(
-                    entityCollectionPropertyAccessor, solution);
+            Collection<Object> entityCollection = extractEntityCollection(entityCollectionPropertyAccessor, solution);
             entityCount += entityCollection.size();
         }
         return entityCount;
@@ -381,8 +378,7 @@ public class SolutionDescriptor {
             }
         }
         for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
-            Collection<?> entityCollection = extractEntityCollection(
-                    entityCollectionPropertyAccessor, solution);
+            Collection<Object> entityCollection = extractEntityCollection(entityCollectionPropertyAccessor, solution);
             entityList.addAll(entityCollection);
         }
         return entityList;
@@ -400,8 +396,7 @@ public class SolutionDescriptor {
         }
         for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
             // TODO if (entityCollectionPropertyAccessor.getPropertyType().getElementType().isAssignableFrom(entityClass)) {
-            Collection<?> entityCollection = extractEntityCollection(
-                    entityCollectionPropertyAccessor, solution);
+            Collection<Object> entityCollection = extractEntityCollection(entityCollectionPropertyAccessor, solution);
             for (Object entity : entityCollection) {
                 if (entityClass.isInstance(entity)) {
                     entityList.add(entity);
@@ -417,20 +412,10 @@ public class SolutionDescriptor {
      */
     public long getVariableCount(Solution solution) {
         long variableCount = 0L;
-        for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
-            Object entity = extractEntity(entityPropertyAccessor, solution);
-            if (entity != null) {
-                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-                variableCount += entityDescriptor.getVariableCount();
-            }
-        }
-        for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
-            Collection<?> entityCollection = extractEntityCollection(
-                    entityCollectionPropertyAccessor, solution);
-            for (Object entity : entityCollection) {
-                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-                variableCount += entityDescriptor.getVariableCount();
-            }
+        for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext();) {
+            Object entity = it.next();
+            EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+            variableCount += entityDescriptor.getVariableCount();
         }
         return variableCount;
     }
@@ -455,105 +440,67 @@ public class SolutionDescriptor {
      */
     public long getProblemScale(Solution solution) {
         long problemScale = 0L;
-        for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
-            Object entity = extractEntity(entityPropertyAccessor, solution);
-            if (entity != null) {
-                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-                problemScale += entityDescriptor.getProblemScale(solution, entity);
-            }
-        }
-        for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
-            Collection<?> entityCollection = extractEntityCollection(
-                    entityCollectionPropertyAccessor, solution);
-            for (Object entity : entityCollection) {
-                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-                problemScale += entityDescriptor.getProblemScale(solution, entity);
-            }
+        for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext();) {
+            Object entity = it.next();
+            EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+            problemScale += entityDescriptor.getProblemScale(solution, entity);
         }
         return problemScale;
     }
 
     public int countUninitializedVariables(Solution solution) {
         int count = 0;
-        for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
-            Object entity = extractEntity(entityPropertyAccessor, solution);
-            if (entity != null) {
-                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-                count += entityDescriptor.countUninitializedVariables(entity);
-            }
-        }
-        for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
-            Collection<?> entityCollection = extractEntityCollection(
-                    entityCollectionPropertyAccessor, solution);
-            for (Object entity : entityCollection) {
-                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-                count += entityDescriptor.countUninitializedVariables(entity);
-            }
+        for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext();) {
+            Object entity = it.next();
+            EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+            count += entityDescriptor.countUninitializedVariables(entity);
         }
         return count;
     }
 
     /**
      * @param scoreDirector never null
-     * @param solution never null
-     * @return true if all the movable planning entities are initialized
+     * @param entity never null
+     * @return true if the entity is initialized or immovable
      */
-    public boolean isInitialized(ScoreDirector scoreDirector, Solution solution) {
-        for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
-            Object entity = extractEntity(entityPropertyAccessor, solution);
-            if (entity != null) {
-                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-                if (!entityDescriptor.isInitialized(entity)) {
-                    if (!entityDescriptor.hasMovableEntitySelectionFilter()
-                            || entityDescriptor.getMovableEntitySelectionFilter().accept(scoreDirector, entity)) {
-                        return false;
-                    }
-                }
-            }
-        }
-        for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
-            Collection<?> entityCollection = extractEntityCollection(
-                    entityCollectionPropertyAccessor, solution);
-            for (Object entity : entityCollection) {
-                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-                if (!entityDescriptor.isInitialized(entity)) {
-                    if (!entityDescriptor.hasMovableEntitySelectionFilter()
-                            || entityDescriptor.getMovableEntitySelectionFilter().accept(scoreDirector, entity)) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
+    public boolean isEntityInitializedOrImmovable(ScoreDirector scoreDirector, Object entity) {
+        EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+        return entityDescriptor.isInitialized(entity) || !entityDescriptor.isMovable(scoreDirector, entity);
     }
 
     public int countReinitializableVariables(ScoreDirector scoreDirector, Solution solution) {
         int count = 0;
+        for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext();) {
+            Object entity = it.next();
+            EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+            count += entityDescriptor.countReinitializableVariables(scoreDirector, entity);
+        }
+        return count;
+    }
+
+    public Iterator<Object> extractAllEntitiesIterator(Solution solution) {
+        List<Iterator<Object>> iteratorList = new ArrayList<Iterator<Object>>(
+                entityPropertyAccessorMap.size() + entityCollectionPropertyAccessorMap.size());
         for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
             Object entity = extractEntity(entityPropertyAccessor, solution);
             if (entity != null) {
-                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-                count += entityDescriptor.countReinitializableVariables(scoreDirector, entity);
+                iteratorList.add(Collections.singletonList(entity).iterator());
             }
         }
         for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
-            Collection<?> entityCollection = extractEntityCollection(
-                    entityCollectionPropertyAccessor, solution);
-            for (Object entity : entityCollection) {
-                EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-                count += entityDescriptor.countReinitializableVariables(scoreDirector, entity);
-            }
+            Collection<Object> entityCollection = extractEntityCollection(entityCollectionPropertyAccessor, solution);
+            iteratorList.add(entityCollection.iterator());
         }
-        return count;
+        return Iterators.concat(iteratorList.iterator());
     }
 
     private Object extractEntity(PropertyAccessor entityPropertyAccessor, Solution solution) {
         return entityPropertyAccessor.executeGetter(solution);
     }
 
-    private Collection<?> extractEntityCollection(
+    private Collection<Object> extractEntityCollection(
             PropertyAccessor entityCollectionPropertyAccessor, Solution solution) {
-        Collection<?> entityCollection = (Collection<?>) entityCollectionPropertyAccessor.executeGetter(solution);
+        Collection<Object> entityCollection = (Collection<Object>) entityCollectionPropertyAccessor.executeGetter(solution);
         if (entityCollection == null) {
             throw new IllegalArgumentException("The solutionClass (" + solutionClass
                     + ")'s entityCollectionProperty ("

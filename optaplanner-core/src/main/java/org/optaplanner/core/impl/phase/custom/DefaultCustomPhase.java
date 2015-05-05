@@ -44,6 +44,11 @@ public class DefaultCustomPhase extends AbstractPhase
         this.forceUpdateBestSolution = forceUpdateBestSolution;
     }
 
+    @Override
+    public String getPhaseTypeString() {
+        return "Custom";
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

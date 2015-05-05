@@ -179,13 +179,6 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         return getSolutionDescriptor().countUninitializedVariables(workingSolution);
     }
 
-    /**
-     * @return true if all the movable planning entities are initialized
-     */
-    public boolean isWorkingSolutionInitialized() {
-        return getSolutionDescriptor().isInitialized(this, workingSolution);
-    }
-
     protected void setCalculatedScore(Score score) {
         workingSolution.setScore(score);
         calculateCount++;
