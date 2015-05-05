@@ -7621,6 +7621,57 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                       RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
     }
 
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1218308
+    public void testInvalidFromSyntax() throws Exception {
+        String drl = "rule \"test\"\n" +
+                "    dialect \"mvel\"\n" +
+                "    when\n" +
+                "    obj : MyClass( ) from my.package\n" +
+                "    then\n" +
+                "    System.out.println(\"Test\")\n" +
+                "    end";
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FromCompositeFactPattern );
+        final FromCompositeFactPattern fp0 = (FromCompositeFactPattern) p0;
+        assertEquals( "MyClass",
+                      fp0.getFactType() );
+
+        final FactPattern fp1 = fp0.getFactPattern();
+        assertEquals( "MyClass",
+                      fp1.getFactType() );
+        assertEquals( 0,
+                      fp1.getNumberOfConstraints() );
+
+        final ExpressionFormLine efl = fp0.getExpression();
+        assertNotNull( efl );
+        assertEquals( 2,
+                      efl.getParts().size() );
+        assertTrue( efl.getParts().get( 0 ) instanceof ExpressionVariable );
+        final ExpressionVariable ev = (ExpressionVariable) efl.getParts().get( 0 );
+        assertEquals( "my",
+                      ev.getName() );
+        assertTrue( efl.getParts().get( 1 ) instanceof ExpressionText );
+        final ExpressionText et = (ExpressionText) efl.getParts().get( 1 );
+        assertEquals( "package",
+                      et.getName() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",
