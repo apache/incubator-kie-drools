@@ -292,10 +292,6 @@ public class ObjectTypeNode extends ObjectSource
                              final InternalWorkingMemory workingMemory) {
         checkDirty();
 
-        if (!workingMemory.getSessionConfiguration().isThreadSafe()) {
-            propagateAssert(factHandle, context, workingMemory);
-        }
-
         if ( context.getReaderContext() == null && this.objectType.isEvent() && this.expirationOffset >= 0 && this.expirationOffset != Long.MAX_VALUE ) {
             scheduleExpiration(context, workingMemory, factHandle, expirationOffset, new WorkingMemoryReteExpireAction((EventFactHandle) factHandle, this));
         }

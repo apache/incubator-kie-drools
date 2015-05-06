@@ -226,7 +226,7 @@ public class DefaultAgenda
                           salience,
                           context,
                           ruleAgendaItem, agendaGroup);
-        rtnLeftTuple.setObject( rtnLeftTuple );
+        rtnLeftTuple.setObject(rtnLeftTuple);
         return rtnLeftTuple;
     }
 
@@ -270,7 +270,9 @@ public class DefaultAgenda
         if ( log.isTraceEnabled() ) {
             log.trace("Added {} to eager evaluation list.", item.getRule().getName() );
         }
-        eager.add( item );
+        synchronized (eager) {
+            eager.add(item);
+        }
     }
 
     @Override
@@ -282,7 +284,9 @@ public class DefaultAgenda
         if ( log.isTraceEnabled() ) {
             log.trace("Removed {} from eager evaluation list.", item.getRule().getName() );
         }
-        eager.remove(item);
+        synchronized (eager) {
+            eager.remove(item);
+        }
     }
 
     @Override
@@ -990,11 +994,13 @@ public class DefaultAgenda
     }
 
     public void evaluateEagerList() {
-        while ( !eager.isEmpty() ) {
-            RuleAgendaItem item = eager.removeFirst();
-            evaluateQueriesForRule(item);
-            RuleExecutor ruleExecutor = item.getRuleExecutor();
-            ruleExecutor.evaluateNetwork(this.workingMemory);
+        synchronized (eager) {
+            while ( !eager.isEmpty() ) {
+                RuleAgendaItem item = eager.removeFirst();
+                evaluateQueriesForRule(item);
+                RuleExecutor ruleExecutor = item.getRuleExecutor();
+                ruleExecutor.evaluateNetwork(this.workingMemory);
+            }
         }
     }
 
