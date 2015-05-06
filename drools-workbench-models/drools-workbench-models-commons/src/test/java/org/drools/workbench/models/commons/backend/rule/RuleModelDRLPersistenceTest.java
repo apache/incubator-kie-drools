@@ -3399,40 +3399,21 @@ public class RuleModelDRLPersistenceTest {
         assertEquals( 1,
                       m.lhs.length );
 
-        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
-        final FactPattern fp1 = (FactPattern) m.lhs[ 0 ];
-        assertEquals( "$a",
-                      fp1.getBoundName() );
-        assertEquals( "Applicant",
-                      fp1.getFactType() );
+        assertTrue( m.lhs[ 0 ] instanceof FreeFormLine );
+        final FreeFormLine ffl1 = (FreeFormLine) m.lhs[ 0 ];
+        assertEquals( "$a : Applicant( )",
+                      ffl1.getText() );
 
         //RHS
-        assertEquals( 2,
+        assertEquals( 1,
                       m.rhs.length );
 
-        assertTrue( m.rhs[ 0 ] instanceof ActionSetField );
-        final ActionSetField a1 = (ActionSetField) m.rhs[ 0 ];
-        assertEquals( "$a",
-                      a1.getVariable() );
-        assertEquals( 2,
-                      a1.getFieldValues().length );
-
-        final ActionFieldValue fv1a1 = a1.getFieldValues()[ 0 ];
-        assertEquals( "name",
-                      fv1a1.getField() );
-        assertEquals( "Michael",
-                      fv1a1.getValue() );
-
-        final ActionFieldValue fv1a2 = a1.getFieldValues()[ 1 ];
-        assertEquals( "age",
-                      fv1a2.getField() );
-        assertEquals( "40",
-                      fv1a2.getValue() );
-
-        assertTrue( m.rhs[ 1 ] instanceof FreeFormLine );
-        final FreeFormLine ffl = (FreeFormLine) m.rhs[ 1 ];
-        assertEquals( "Here's something typed by the user as free-format DRL",
-                      ffl.getText() );
+        assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
+        final FreeFormLine ffl2 = (FreeFormLine) m.rhs[ 0 ];
+        assertEquals( "$a.setName( \"Michael\" );\n" +
+                              "Here's something typed by the user as free-format DRL\n" +
+                              "$a.setAge( 40 );",
+                      ffl2.getText() );
     }
 
     @Test
