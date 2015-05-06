@@ -40,7 +40,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest extends A
 
     @Test
     public void testSingleRule_UnsupportedFieldConstraintExpression() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( this.name == \"Michael\" )\n" +
                 "then \n" +
@@ -83,7 +83,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest extends A
 
     @Test
     public void testSingleRule_UnsupportedFieldConstraintCompositeFieldConstraint() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( name == \"Michael\" || name == \"John\" )\n" +
                 "then \n" +
@@ -127,7 +127,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest extends A
 
     @Test
     public void testSingleRule_UnsupportedFieldConstraintType() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( age == (25 + 10) )\n" +
                 "then \n" +
@@ -309,7 +309,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest extends A
 
     @Test
     public void testSingleRule_DataTypeNotFound() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( name == \"Michael\" )\n" +
                 "then \n" +
@@ -349,7 +349,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest extends A
 
     @Test
     public void testValue_BigDecimal() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( bigDecimalField == \"abc\" )\n" +
                 "then \n" +
@@ -393,7 +393,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest extends A
 
     @Test
     public void testValue_BigInteger() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( bigIntegerField == \"abc\" )\n" +
                 "then \n" +
@@ -436,7 +436,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest extends A
 
     @Test
     public void testValue_Boolean() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( booleanField == \"abc\" )\n" +
                 "then \n" +
@@ -479,7 +479,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest extends A
 
     @Test
     public void testValue_Byte() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( byteField == \"abc\" )\n" +
                 "then \n" +
@@ -522,7 +522,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest extends A
 
     @Test
     public void testValue_Date() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( dateField == \"abc\" )\n" +
                 "then \n" +
@@ -567,7 +567,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest extends A
 
     @Test
     public void testValue_Double() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( doubleField == \"abc\" )\n" +
                 "then \n" +
@@ -612,7 +612,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest extends A
 
     @Test
     public void testValue_Float() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( floatField == \"abc\" )\n" +
                 "then \n" +
@@ -656,7 +656,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest extends A
 
     @Test
     public void testValue_Integer() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( integerField == \"abc\" )\n" +
                 "then \n" +
@@ -699,7 +699,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest extends A
 
     @Test
     public void testValue_Long() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( longField == \"abc\" )\n" +
                 "then \n" +
@@ -742,7 +742,7 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest extends A
 
     @Test
     public void testValue_Short() throws Exception {
-        final String drl = "rule \"test_0\"" +
+        final String drl = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( shortField == \"abc\" )\n" +
                 "then \n" +
@@ -785,12 +785,12 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingMessagesTest extends A
 
     @Test
     public void testAmbiguousRoot() throws Exception {
-        final String drl1 = "rule \"test_0\"" +
+        final String drl1 = "rule \"test_0\"\n" +
                 "when \n" +
                 "  Person( )\n" +
                 "then \n" +
                 "end \n";
-        final String drl2 = "rule \"test_1\"" +
+        final String drl2 = "rule \"test_1\"\n" +
                 "when \n" +
                 "  Cheese( )\n" +
                 "then \n" +
