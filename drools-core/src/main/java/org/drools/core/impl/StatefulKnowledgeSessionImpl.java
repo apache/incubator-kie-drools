@@ -70,6 +70,7 @@ import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.SegmentUtilities;
+import org.drools.core.phreak.SynchronizedBypassPropagationList;
 import org.drools.core.phreak.SynchronizedPropagationList;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.EntryPointNode;
@@ -258,7 +259,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private boolean alive = true;
 
-    private PropagationList propagationList;
+    protected PropagationList propagationList;
 
     protected AtomicBoolean evaluatingActionQueue = new AtomicBoolean(false);
 
@@ -359,6 +360,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     protected void init() {
+        if (config.hasForceEagerActivationFilter()) {
+            this.propagationList = new SynchronizedBypassPropagationList(this);
+        } else {
+            this.propagationList = new SynchronizedPropagationList();
+        }
+
         nodeMemories = new ConcurrentNodeMemories(this.kBase);
 
         Globals globals = (Globals) this.environment.get(EnvironmentName.GLOBALS);

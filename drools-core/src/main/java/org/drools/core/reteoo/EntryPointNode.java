@@ -77,9 +77,9 @@ public class EntryPointNode extends ObjectSource
     /**
      * The object type nodes under this node
      */
-    private Map<ObjectType, ObjectTypeNode> objectTypeNodes;
+    protected Map<ObjectType, ObjectTypeNode> objectTypeNodes;
 
-    private ObjectTypeNode queryNode;
+    protected ObjectTypeNode queryNode;
 
     private ObjectTypeNode activationNode;
 
@@ -127,7 +127,7 @@ public class EntryPointNode extends ObjectSource
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
+        super.writeExternal(out);
         out.writeObject( entryPoint );
         out.writeObject( objectTypeNodes );
     }
@@ -149,45 +149,19 @@ public class EntryPointNode extends ObjectSource
     public void assertQuery(final InternalFactHandle factHandle,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
-        if ( queryNode == null ) {
-            this.queryNode = objectTypeNodes.get( ClassObjectType.DroolsQuery_ObjectType );
-        }
-
-        if ( queryNode != null ) {
-            // There may be no queries defined
-            this.queryNode.assertObject( factHandle, context, workingMemory );
-        }
+        throw new UnsupportedOperationException("rete only");
     }
 
     public void retractQuery(final InternalFactHandle factHandle,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
-        if ( queryNode == null ) {
-            this.queryNode = objectTypeNodes.get( ClassObjectType.DroolsQuery_ObjectType );
-        }
-
-        if ( queryNode != null ) {
-            // There may be no queries defined
-            this.queryNode.retractObject(factHandle, context, workingMemory);
-        }
+        throw new UnsupportedOperationException("rete only");
     }
 
     public void modifyQuery(final InternalFactHandle factHandle,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
-         if ( queryNode == null ) {
-             this.queryNode = objectTypeNodes.get( ClassObjectType.DroolsQuery_ObjectType );
-         }
-
-         if ( queryNode != null ) {
-             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple(), this );
-             factHandle.clearLeftTuples();
-             factHandle.clearRightTuples();
-
-             // There may be no queries defined
-             this.queryNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
-             modifyPreviousTuples.retractTuples( context, workingMemory );
-         }
+        throw new UnsupportedOperationException("rete only");
      }
 
     public ObjectTypeNode getQueryNode() {
@@ -237,7 +211,7 @@ public class EntryPointNode extends ObjectSource
 
              // There may be no queries defined
              this.activationNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
-             modifyPreviousTuples.retractTuples( context, workingMemory );
+             modifyPreviousTuples.retractTuples(context, workingMemory);
          }
 
      }
@@ -266,7 +240,7 @@ public class EntryPointNode extends ObjectSource
             }
         }
 
-        if (cachedNodes.length > 0 && workingMemory.getSessionConfiguration().isThreadSafe()) {
+        if (cachedNodes.length > 0) {
             ((StatefulKnowledgeSessionImpl) workingMemory).addPropagation(new PropagationEntry.Insert(cachedNodes, handle, context));
         }
     }
@@ -280,11 +254,7 @@ public class EntryPointNode extends ObjectSource
             log.trace( "Update {}", handle.toString()  );
         }
 
-        if (workingMemory.getSessionConfiguration().isThreadSafe()) {
-            workingMemory.addPropagation(new PropagationEntry.Update(this, handle, pctx, objectTypeConf));
-        } else {
-            propagateModify( handle, pctx, objectTypeConf, workingMemory );
-        }
+        workingMemory.addPropagation(new PropagationEntry.Update(this, handle, pctx, objectTypeConf));
     }
 
     public void propagateModify(InternalFactHandle handle, PropagationContext pctx, ObjectTypeConf objectTypeConf, InternalWorkingMemory wm) {
@@ -394,11 +364,7 @@ public class EntryPointNode extends ObjectSource
             log.trace( "Delete {}", handle.toString()  );
         }
 
-        if (workingMemory.getSessionConfiguration().isThreadSafe()) {
-            workingMemory.addPropagation(new PropagationEntry.Delete(this, handle, context, objectTypeConf));
-        } else {
-            propagateRetract(handle, context, objectTypeConf, workingMemory);
-        }
+        workingMemory.addPropagation(new PropagationEntry.Delete(this, handle, context, objectTypeConf));
     }
 
     public void propagateRetract(InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf, InternalWorkingMemory workingMemory) {

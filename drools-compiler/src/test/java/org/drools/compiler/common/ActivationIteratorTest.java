@@ -687,7 +687,6 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         ksession.addEventListener(agendaEventListener);
 
         ksession.insert("test");
-        ((InternalWorkingMemory) ksession).flushPropagations();
 
         assertEquals(2, list.size());
     }
