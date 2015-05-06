@@ -164,11 +164,6 @@
             <artifactId>kie-api</artifactId>
             <classifier>javadoc</classifier>
         </dependency>
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-docs</artifactId>
-            <type>jdocbook</type>
-        </dependency>
     </dependencies>
 
 </project>
