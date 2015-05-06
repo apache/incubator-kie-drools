@@ -72,7 +72,6 @@
                 <!-- Examples dependency -->
                 <exclude>ch.qos.logback:logback-classic</exclude>
                 <!-- Examples dependency -->
-                <exclude>org.drools:drools-docs</exclude>
                 <exclude>*:*:jar:javadoc</exclude>
                 <exclude>*:*:jar:sources</exclude>
             </excludes>
@@ -128,19 +127,6 @@
         <!--<useStrictFiltering>true</useStrictFiltering>-->
         <!--</dependencySet>-->
         <!-- Reference manual -->
-        <dependencySet>
-            <includes>
-                <include>org.drools:drools-docs:jdocbook</include>
-            </includes>
-            <outputDirectory>reference_manual</outputDirectory>
-            <unpack>true</unpack>
-            <unpackOptions>
-                <excludes>
-                    <exclude>META-INF/**</exclude>
-                </excludes>
-            </unpackOptions>
-            <useStrictFiltering>true</useStrictFiltering>
-        </dependencySet>
         <dependencySet>
             <includes>
                 <include>org.kie:*:jar:sources</include>
