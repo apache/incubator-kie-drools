@@ -356,4 +356,42 @@ public class DslTest extends CommonTestMethodBase {
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
         assertEquals(0, results.getMessages().size());
     }
+
+    @Test
+    public void testDSLWithSingleDot() {
+        // DROOLS-768
+        String dsl = "[when][]if there is a simple event\n" +
+                     "{evtName}={evtName}" +
+                     ": SimpleEvent()\n" +
+                     "[when][]and a simple event 2\n" +
+                     "{evtName2} with the same {attribute} as {evtName}={evtName2} " +
+                     ": SimpleEvent2(" +
+                     "{attribute}=={evtName}.{attribute}" +
+                     ")\n" +
+                     "[then][]ok=System.out.println(\"that works\");\n" +
+                     "\n";
+
+        String drl = "declare SimpleEvent\n" +
+                     "  code: String\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare SimpleEvent2\n" +
+                     "  code: String\n" +
+                     "end\n" +
+                     "rule \"RG_CORR_RECOK_OK\"\n" +
+                     "when\n" +
+                     "if there is a simple event $evt\n" +
+                     "and a simple event 2 $evt2 with the same code as $evt\n" +
+                     "then\n" +
+                     "ok\n" +
+                     "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(dsl.getBytes()), ResourceType.DSL );
+        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DSLR);
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+    }
 }
