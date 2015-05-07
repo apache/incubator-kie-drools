@@ -163,6 +163,11 @@
 
       <para>Three or more score levels are also supported. For example: a company might decide that profit outranks
       employee satisfaction (or visa versa), while both are outranked by the constraints of physical reality.</para>
+
+      <note>
+        <para>To model fairness or load balancing, there is <link linkend="fairnessScoreConstraints">no need to use lots
+        of score levels</link> (even though Planner can handle many score levels).</para>
+      </note>
     </section>
 
     <section xml:id="paretoScoring">
@@ -1394,8 +1399,7 @@ end</programlisting>
 
       <para>Implementing such a constraint can seem difficult (especially because there are different ways to formalize
       fairness), but usually the <emphasis>squared workload</emphasis> implementation behaves most desirable: for each
-      employee/asset, count the workload <literal>w</literal> and subtract the square <literal>w²</literal> from the
-      score.</para>
+      employee/asset, count the workload <literal>w</literal> and subtract <literal>w²</literal> from the score.</para>
 
       <mediaobject>
         <imageobject>
@@ -1405,7 +1409,28 @@ end</programlisting>
 
       <para>As shown above, the <emphasis>squared workload</emphasis> implementation guarantees that if you select 2
       employees from a given solution and make their distribution between those 2 employees fairer, then the resulting
-      new solution will have a better overall score.</para>
+      new solution will have a better overall score. Don't just use the difference from the average workload, as that
+      can lead to unfairness, as demonstrated below.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Score_calculation/fairnessScoreConstraintPitfall.png"/>
+        </imageobject>
+      </mediaobject>
+
+      <note>
+        <para>Instead of the <emphasis>squared workload</emphasis>, it's also possible to use the <link
+        xlink:href="http://en.wikipedia.org/wiki/Variance">variance</link> (squared difference to the average) or the
+        <link xlink:href="http://en.wikipedia.org/wiki/Standard_deviation">standard deviation</link> (square root of the
+        variance). This has no effect on the score comparison, because the average won't change during planning. It's
+        just more work to implement (because the average needs to be known) and trivially slower (because the
+        calculation is a bit longer).</para>
+      </note>
+
+      <para>When the workload is perfect balanced, the user often likes to see a <literal>0</literal> score, instead of
+      the distracting <literal>-34soft</literal> in the image above (for the last solution which is almost perfectly
+      balanced). To nullify this, either add the average multiplied by the number of entities to the score or instead
+      show the variance or standard deviation in the UI.</para>
     </section>
   </section>
 
