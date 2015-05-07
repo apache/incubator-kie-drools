@@ -15,6 +15,7 @@
 *.jpg binary
 *.gif binary
 *.bmp binary
+*.ico binary
 
 # Audio files
 *.wav binary
