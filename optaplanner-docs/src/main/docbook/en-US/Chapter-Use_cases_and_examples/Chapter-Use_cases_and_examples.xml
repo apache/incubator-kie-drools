@@ -1878,6 +1878,96 @@ exam_comp_set8 has  7718 students,  598 exams, 80 periods,  8 rooms,  20 period 
           </imageobject>
         </mediaobject>
 
+        <para>Hard constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><emphasis role="bold">No unassigned shifts</emphasis> (build-in): Every shift need to be assigned to
+            an employee.</para>
+          </listitem>
+
+          <listitem>
+            <para><emphasis role="bold">Shift conflict</emphasis>: An employee can have only 1 shift per day.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Soft constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Contract obligations. The business frequently violates these, so they decided to define these as soft
+            constraints instead of hard constraints.</para>
+
+            <itemizedlist>
+              <listitem>
+                <para><emphasis role="bold">Minimum and maximum assignments</emphasis>: Each employee needs to work more
+                than x shifts and less than y shifts (depending on their contract).</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="bold">Minimum and maximum consecutive working days</emphasis>: Each employee needs
+                to work between x and y days in a row (depending on their contract).</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="bold">Minimum and maximum consecutive free days</emphasis>: Each employee needs to
+                be free between x and y days in a row (depending on their contract).</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="bold">Minimum and maximum consecutive working weekends</emphasis>: Each employee
+                needs to work between x and y weekends in a row (depending on their contract).</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="bold">Complete weekends</emphasis>: Each employee needs to work every day in a
+                weekend or not at all.</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="bold">Identical shift types during weekend</emphasis>: Each weekend shift for the
+                same weekend of the same employee must be the same shift type.</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="bold">Unwanted patterns</emphasis>: A combination of unwanted shift types in a
+                row. For example: a late shift followed by an early shift followed by a late shift.</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>Employee wishes:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para><emphasis role="bold">Day on request</emphasis>: An employee wants to work on a specific
+                day.</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="bold">Day off request</emphasis>: An employee does not want to work on a specific
+                day.</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="bold">Shift on request</emphasis>: An employee wants to be assigned to a specific
+                shift.</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="bold">Shift off request</emphasis>: An employee does not want to be assigned to a
+                specific shift.</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para><emphasis role="bold">Alternative skill</emphasis>: An employee assigned to a skill should have a
+            proficiency in every skill required by that shift.</para>
+          </listitem>
+        </itemizedlist>
+
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-Use_cases_and_examples/employeeShiftRosteringHardConstraints.png"/>
