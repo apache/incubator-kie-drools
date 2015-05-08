@@ -333,12 +333,14 @@ $ runExamples.bat</programlisting>
 
           <itemizedlist>
             <listitem>
-              <para>In IntelliJ IDEA and NetBeans, just open the file <filename>examples/sources/pom.xml</filename> as a
-              new project, the maven integration will take care of the rest.</para>
+              <para>In IntelliJ IDEA, NetBeans or a non-vanilla Eclipse, just open the file
+              <filename>examples/sources/pom.xml</filename> as a new project, the maven integration will take care of
+              the rest.</para>
             </listitem>
 
             <listitem>
-              <para>In Eclipse, open a new project for the directory <filename>examples/sources</filename>.</para>
+              <para>In a vanilla Eclipse (which lacks the M2Eclipse plugin), open a new project for the directory
+              <filename>examples/sources</filename>.</para>
 
               <itemizedlist>
                 <listitem>
@@ -374,6 +376,10 @@ $ runExamples.bat</programlisting>
           <para>Run that run configuration.</para>
         </listitem>
       </orderedlist>
+
+      <para>To run a specific example directly and skip the example selection window, run its <literal>App</literal>
+      class (for example <literal>CloudBalancingApp</literal>) instead of
+      <literal>OptaPlannerExamplesApp</literal>.</para>
     </section>
 
     <section xml:id="useWithMavenGradleEtc">
