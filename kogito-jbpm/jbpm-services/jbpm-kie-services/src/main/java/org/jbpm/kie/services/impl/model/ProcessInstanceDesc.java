@@ -37,26 +37,31 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
     private String processInstanceDescription;
     
     private String correlationKey;
+
+    private long parentId;
     
     private List<org.jbpm.services.api.model.UserTaskInstanceDesc> activeTasks;
 
     public ProcessInstanceDesc() {
         
     }
+
+    public ProcessInstanceDesc(long id, String processId, String processName, String processVersion,
+                               int state, String deploymentId, Date dataTimeStamp, String initiator,
+                               String processInstanceDescription, String correlationKey, Long parentId) {
+        this(id,processId,processName, processVersion,state, deploymentId, dataTimeStamp, initiator,
+                processInstanceDescription, correlationKey);
+        this.parentId = parentId;
+
+
+    }
     
     public ProcessInstanceDesc(long id, String processId, String processName, String processVersion, 
                                 int state, String deploymentId, Date dataTimeStamp, String initiator,
                                 String processInstanceDescription, String correlationKey) {
-        this.id = id;
-        this.processId = processId;
-        this.processName = processName;
-        this.processVersion = processVersion==null?"":processVersion;
-        this.state = state;
-        this.deploymentId = deploymentId;
-        this.dataTimeStamp = dataTimeStamp;
-        this.initiator = initiator;
+        this(id,processId,processName, processVersion,state, deploymentId, dataTimeStamp, initiator, correlationKey);
         this.processInstanceDescription = processInstanceDescription;
-        this.correlationKey = correlationKey==null?"":correlationKey;
+
     }
     
     public ProcessInstanceDesc(long id, String processId, String processName, String processVersion, 
@@ -145,4 +150,11 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
 		this.correlationKey = correlationKey;
 	}
 
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
+    }
 }

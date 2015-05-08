@@ -39,8 +39,9 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
             log.setParentProcessInstanceId(parentProcessInstanceId);
         } catch (Exception e) {
             //in case of problems with getting hold of parentProcessInstanceId don't break the operation
-        }        
-        
+            log.setParentProcessInstanceId(-1L);
+        }
+
         return log;
     }
 

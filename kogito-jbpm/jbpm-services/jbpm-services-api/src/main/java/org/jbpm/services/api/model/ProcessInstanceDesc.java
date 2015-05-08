@@ -40,6 +40,8 @@ public interface ProcessInstanceDesc {
     String getProcessInstanceDescription();
     
     String getCorrelationKey();
+
+    Long getParentId();
     
     List<UserTaskInstanceDesc> getActiveTasks();
 }

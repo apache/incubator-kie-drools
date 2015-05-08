@@ -60,8 +60,8 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProcessServiceImpl.class);
 	
-	private DeploymentService deploymentService;
-    private RuntimeDataService dataService;
+	protected DeploymentService deploymentService;
+	protected RuntimeDataService dataService;
 
 	public void setDeploymentService(DeploymentService deploymentService) {
 		this.deploymentService = deploymentService;
