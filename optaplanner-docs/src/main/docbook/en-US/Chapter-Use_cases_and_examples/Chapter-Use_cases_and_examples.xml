@@ -1723,6 +1723,15 @@ testdata11 has 4 specialisms, 4 equipments, 4 departments, 107 rooms, 318 beds, 
 testdata12 has 4 specialisms, 4 equipments, 4 departments, 105 rooms, 310 beds, 84 nights, 2750 patients and 2750 admissions with a search space of 10^6851.
 testdata13 has 5 specialisms, 4 equipments, 5 departments, 125 rooms, 368 beds, 28 nights,  907 patients and 1109 admissions with a search space of 10^2845.</programlisting>
       </section>
+      <section xml:id="bedAllocationDomainModel">
+        <title>Domain Model</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/hospitalBedAllocationClassDiagram.png"/>
+          </imageobject>
+        </mediaobject>
+      </section>
     </section>
   </section>
 
