@@ -32,6 +32,7 @@ import java.util.TreeMap;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.api.score.Score;
@@ -219,7 +220,8 @@ public class PlannerBenchmarkResult {
         if (StringUtils.isEmpty(name)) {
             name = timestamp;
         }
-        benchmarkReportDirectory = new File(benchmarkDirectory, timestamp);
+        benchmarkReportDirectory = new File(benchmarkDirectory,
+                BooleanUtils.isFalse(aggregation) ? timestamp : timestamp + "_aggregation");
         boolean benchmarkReportDirectoryAdded = benchmarkReportDirectory.mkdirs();
         if (!benchmarkReportDirectoryAdded) {
             throw new IllegalArgumentException("The benchmarkReportDirectory (" + benchmarkReportDirectory
