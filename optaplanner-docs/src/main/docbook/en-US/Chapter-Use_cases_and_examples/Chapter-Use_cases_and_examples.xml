@@ -2058,6 +2058,16 @@ long_late03   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees,
 long_late04   has 2 skills, 5 shiftTypes, 9 patterns, 4 contracts, 50 employees, 28 shiftDates, 752 shiftAssignments and   0 requests with a search space of 10^1277.
 long_late05   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees, 28 shiftDates, 740 shiftAssignments and   0 requests with a search space of 10^1257.</programlisting>
       </section>
+
+      <section xml:id="employeeRosteringDomainModel">
+        <title>Domain Model</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/employeeShiftRosteringClassDiagram.png"/>
+          </imageobject>
+        </mediaobject>
+      </section>
     </section>
 
     <section xml:id="travelingTournament">
