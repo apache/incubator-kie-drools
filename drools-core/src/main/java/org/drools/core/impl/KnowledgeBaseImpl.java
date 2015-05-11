@@ -57,6 +57,7 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.TripleStore;
 import org.kie.api.conf.EventProcessingOption;
@@ -764,6 +765,12 @@ public class KnowledgeBaseImpl
     }
 
     private void internalAddPackages(List<InternalKnowledgePackage> clonedPkgs) {
+        Iterator sessionsIterator = statefulSessions.iterator();
+        for ( Object obj = sessionsIterator.next(); obj != null; obj = sessionsIterator.next() ) {
+            ObjectHashSet.ObjectEntry holder = (ObjectHashSet.ObjectEntry) obj;
+            ((InternalWorkingMemory)holder.getValue()).flushPropagations();
+        }
+
         // we need to merge all byte[] first, so that the root classloader can resolve classes
         for (InternalKnowledgePackage newPkg : clonedPkgs) {
             newPkg.checkValidity();
@@ -1207,10 +1214,10 @@ public class KnowledgeBaseImpl
                                                              EntryPointId.DEFAULT);
         epn.attach();
 
-        BuildContext context = new BuildContext( this, reteooBuilder.getIdGenerator() );
-        context.setCurrentEntryPoint( epn.getEntryPoint() );
-        context.setTupleMemoryEnabled( true );
-        context.setObjectTypeNodeMemoryEnabled( true );
+        BuildContext context = new BuildContext(this, reteooBuilder.getIdGenerator());
+        context.setCurrentEntryPoint(epn.getEntryPoint());
+        context.setTupleMemoryEnabled(true);
+        context.setObjectTypeNodeMemoryEnabled(true);
 
         ObjectTypeNode otn = nodeFactory.buildObjectTypeNode(this.reteooBuilder.getIdGenerator().getNextId(),
                                                              epn,
@@ -1537,7 +1544,7 @@ public class KnowledgeBaseImpl
                                       final WindowDeclaration window ) throws InvalidPatternException {
         lock();
         try {
-            addWindowDeclaration( window );
+            addWindowDeclaration( window);
         } finally {
             unlock();
         }

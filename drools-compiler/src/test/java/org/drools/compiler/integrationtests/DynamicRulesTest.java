@@ -16,19 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.FactA;
@@ -38,17 +25,25 @@ import org.drools.compiler.OrderItem;
 import org.drools.compiler.Person;
 import org.drools.compiler.PersonInterface;
 import org.drools.compiler.Precondition;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.compiler.StockTick;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
+import org.drools.core.util.DroolsStreamUtils;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.io.ResourceType;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -56,26 +51,28 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.api.event.rule.AfterMatchFiredEvent;
-import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.EnvironmentName;
-import org.kie.api.runtime.rule.EntryPoint;
 import org.mockito.ArgumentCaptor;
+
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class DynamicRulesTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testDynamicRuleAdditions() throws Exception {
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_Dynamic1.drl" ) );
-        StatefulKnowledgeSession workingMemory = createKnowledgeSession( kbase );
-        workingMemory.setGlobal( "total",
-                                 new Integer( 0 ) );
+        StatefulKnowledgeSession workingMemory = createKnowledgeSession(kbase);
+        workingMemory.setGlobal("total",
+                                new Integer(0));
 
         final List< ? > list = new ArrayList<Object>();
         workingMemory.setGlobal( "list",
@@ -95,62 +92,62 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
-        workingMemory.insert( cheddar );
+        workingMemory.insert(cheddar);
         workingMemory.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
+        assertEquals(1,
+                     list.size());
 
-        assertEquals( "stilton",
-                      list.get( 0 ) );
+        assertEquals("stilton",
+                     list.get(0));
 
         Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages( "test_Dynamic2.drl" ) );
-        kbase.addKnowledgePackages( kpkgs );
+        kbase.addKnowledgePackages(kpkgs);
 
         workingMemory.fireAllRules();
-        assertEquals( 5,
-                      list.size() );
+        assertEquals(5,
+                     list.size());
 
-        assertEquals( "stilton",
-                      list.get( 0 ) );
+        assertEquals("stilton",
+                     list.get(0));
 
-        assertTrue( "cheddar".equals( list.get( 1 ) ) || "cheddar".equals( list.get( 2 ) ) );
+        assertTrue("cheddar".equals(list.get(1)) || "cheddar".equals(list.get(2)));
 
-        assertTrue( "stilton".equals( list.get( 1 ) ) || "stilton".equals( list.get( 2 ) ) );
+        assertTrue("stilton".equals(list.get(1)) || "stilton".equals(list.get(2)));
 
         list.clear();
 
         kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages( "test_Dynamic3.drl" ) );
-        kbase.addKnowledgePackages( kpkgs );
+        kbase.addKnowledgePackages(kpkgs);
 
         // Package 3 has a rule working on Person instances.
         // As we added person instance in advance, rule should fire now
         workingMemory.fireAllRules();
 
-        assertEquals( "Rule from package 3 should have been fired",
-                      "match Person ok",
-                      bob.getStatus() );
+        assertEquals("Rule from package 3 should have been fired",
+                     "match Person ok",
+                     bob.getStatus());
 
-        assertEquals( 1,
-                      list.size() );
+        assertEquals(1,
+                     list.size());
 
-        assertEquals( bob,
-                      list.get( 0 ) );
+        assertEquals(bob,
+                     list.get(0));
 
         kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages( "test_Dynamic4.drl" ) );
-        kbase.addKnowledgePackages( kpkgs );
+        kbase.addKnowledgePackages(kpkgs);
         workingMemory.fireAllRules();
         kbase = SerializationHelper.serializeObject( kbase );
 
-        assertEquals( "Rule from package 4 should have been fired",
-                      "Who likes Stilton ok",
-                      bob.getStatus() );
+        assertEquals("Rule from package 4 should have been fired",
+                     "Who likes Stilton ok",
+                     bob.getStatus());
 
         assertEquals( 2,
                       list.size() );
 
-        assertEquals( bob,
-                      list.get( 1 ) );
+        assertEquals(bob,
+                     list.get(1));
 
     }
 
@@ -158,8 +155,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
     public void testDynamicRuleRemovals() throws Exception {
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_Dynamic1.drl", "test_Dynamic3.drl", "test_Dynamic4.drl" ) );
 
-        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages( "test_Dynamic2.drl" ) );
-        kbase.addKnowledgePackages( kpkgs );
+        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject(loadKnowledgePackages("test_Dynamic2.drl"));
+        kbase.addKnowledgePackages(kpkgs);
 
         StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
 //        AgendaEventListener ael = mock( AgendaEventListener.class );
@@ -191,31 +188,31 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         FactHandle fh4 = wm.insert( cheddar );
 
         wm.fireAllRules();
-        assertEquals( 15, list.size() );
+        assertEquals(15, list.size());
         list.clear();
 
-        kbase.removeRule( "org.drools.compiler.test",
-                          "Who likes Stilton" );
+        kbase.removeRule("org.drools.compiler.test",
+                         "Who likes Stilton");
 
-        wm.update( fh0, bob);
-        wm.update( fh1, stilton1);
-        wm.update( fh2, stilton2);
-        wm.update( fh3, stilton3);
-        wm.update( fh4, cheddar);
+        wm.update(fh0, bob);
+        wm.update(fh1, stilton1);
+        wm.update(fh2, stilton2);
+        wm.update(fh3, stilton3);
+        wm.update(fh4, cheddar);
         wm.fireAllRules();
-        assertEquals( 12, list.size() );
+        assertEquals(12, list.size());
         list.clear();
 
-        kbase.removeRule( "org.drools.compiler.test",
-                          "like cheese" );
+        kbase.removeRule("org.drools.compiler.test",
+                         "like cheese");
 
         wm.update( fh0, bob);
-        wm.update( fh1, stilton1);
-        wm.update( fh2, stilton2);
-        wm.update( fh3, stilton3);
-        wm.update( fh4, cheddar);
+        wm.update(fh1, stilton1);
+        wm.update(fh2, stilton2);
+        wm.update(fh3, stilton3);
+        wm.update(fh4, cheddar);
         wm.fireAllRules();
-        assertEquals( 8, list.size() );
+        assertEquals(8, list.size());
         list.clear();
 
         final Cheese muzzarela = new Cheese( "muzzarela",
@@ -333,7 +330,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     @Test (timeout=10000)
     public void testRemovePackage() throws Exception {
-        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages(  "test_RemovePackage.drl" ) );
+        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject(loadKnowledgePackages("test_RemovePackage.drl"));
         final String packageName = kpkgs.iterator().next().getName();
         KnowledgeBase kbase = loadKnowledgeBase( );
 
@@ -357,17 +354,17 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                                                                              true );
         session.fireAllRules();
 
-        ruleBaseWM.removeKnowledgePackage( packageName );
+        ruleBaseWM.removeKnowledgePackage(packageName);
         ruleBaseWM.addKnowledgePackages( SerializationHelper.serializeObject( kpkgs ) );
 
         ruleBaseWM.removeKnowledgePackage( packageName );
-        ruleBaseWM.addKnowledgePackages( SerializationHelper.serializeObject( kpkgs ) );
+        ruleBaseWM.addKnowledgePackages(SerializationHelper.serializeObject(kpkgs));
     }
 
     @Test(timeout=10000)
     public void testDynamicRules() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase( );
-        StatefulKnowledgeSession session = createKnowledgeSession( kbase );
+        KnowledgeBase kbase = loadKnowledgeBase();
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
         final Cheese a = new Cheese( "stilton",
                                      10 );
         final Cheese b = new Cheese( "stilton",
@@ -376,10 +373,10 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                                      20 );
         session.insert( a );
         session.insert( b );
-        session.insert( c );
+        session.insert(c);
 
         Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages(  "test_DynamicRules.drl" ) );
-        kbase.addKnowledgePackages( kpkgs );
+        kbase.addKnowledgePackages(kpkgs);
         kbase = SerializationHelper.serializeObject( kbase );
 
         session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session, 
@@ -390,8 +387,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testDynamicRules2() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase( );
-        StatefulKnowledgeSession session = createKnowledgeSession( kbase );
+        KnowledgeBase kbase = loadKnowledgeBase();
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
 
         // Assert some simple facts
         final FactA a = new FactA( "hello",
@@ -453,9 +450,9 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             cheeseClass = loader2.loadClass( "org.drools.compiler.Cheese" );
 
             kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, loader2);
-            kbase = loadKnowledgeBase( kbuilderConf, "test_Dynamic1.drl"  );
+            kbase = loadKnowledgeBase(kbuilderConf, "test_Dynamic1.drl");
             wm = createKnowledgeSession(kbase);
-            wm.insert( cheeseClass.newInstance() );
+            wm.insert(cheeseClass.newInstance());
             wm.fireAllRules();
         } catch ( ClassCastException cce ) {
             cce.printStackTrace();
@@ -472,7 +469,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
                                                             this.getClass().getClassLoader() );
             Thread.currentThread().setContextClassLoader( loader1 );
-            Class cheeseClass = loader1.loadClass( "org.drools.compiler.Cheese" );
+            Class cheeseClass = loader1.loadClass("org.drools.compiler.Cheese");
 
             KnowledgeBase kbase = loadKnowledgeBase( "test_Dynamic1.drl" );
             StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
@@ -486,13 +483,13 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             Thread.currentThread().setContextClassLoader( loader2 );
             cheeseClass = loader2.loadClass( "org.drools.compiler.Cheese" );
 
-            kbase = loadKnowledgeBase( "test_Dynamic1.drl" );
-            wm = createKnowledgeSession( kbase );
+            kbase = loadKnowledgeBase("test_Dynamic1.drl");
+            wm = createKnowledgeSession(kbase);
 
             wm.insert( cheeseClass.newInstance() );
             wm.fireAllRules();
 
-            Thread.currentThread().setContextClassLoader( original );
+            Thread.currentThread().setContextClassLoader(original);
         } catch ( ClassCastException cce ) {
             cce.printStackTrace();
             fail( "No ClassCastException should be raised." );
@@ -501,7 +498,16 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testCollectDynamicRules() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase( "test_CollectDynamicRules1.drl" );
+        checkCollectWithDynamicRules( "test_CollectDynamicRules1.drl" );
+    }
+
+    @Test(timeout=10000)
+    public void testCollectDynamicRulesWithExistingOTN() throws Exception {
+        checkCollectWithDynamicRules( "test_CollectDynamicRules1a.drl" );
+    }
+
+    private void checkCollectWithDynamicRules(String originalDrl) throws java.io.IOException, ClassNotFoundException {
+        KnowledgeBase kbase = loadKnowledgeBase( originalDrl );
         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
 
         List<?> list = new ArrayList<Object>();
@@ -520,14 +526,13 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( loadKnowledgePackages( "test_CollectDynamicRules2.drl" ) );
         session.fireAllRules();
 
-        kbase = SerializationHelper.serializeObject( kbase );
+        kbase = SerializationHelper.serializeObject(kbase);
 
         // fire all rules is automatic
         assertEquals( 1,
                       list.size() );
         assertEquals( 2,
                       ((List<?>) list.get( 0 )).size() );
-
     }
 
     @Test(timeout=10000)
