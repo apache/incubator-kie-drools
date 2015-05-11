@@ -1,0 +1,9 @@
+package org.drools.compiler
+
+global java.util.List results
+
+rule "Test collect dynamic rule"
+when
+    Cheese( )
+then
+end
