@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -69,7 +68,7 @@ public class Aether {
 
     private Collection<RemoteRepository> initRepositories(MavenProject mavenProject) {
         Collection<RemoteRepository> reps = new HashSet<RemoteRepository>();
-        reps.add(newCentralRepository());
+        reps.add( newCentralRepository() );
         if (mavenProject != null) {
             reps.addAll(mavenProject.getRemoteProjectRepositories());
         }
@@ -78,8 +77,6 @@ public class Aether {
         if (localRepo != null) {
             reps.add(localRepo);
             localRepository = localRepo;
-        } else {
-            localRepoDir = IoUtils.getTmpDirectory().getAbsolutePath();
         }
         return reps;
     }
@@ -108,13 +105,25 @@ public class Aether {
 
     private RemoteRepository newLocalRepository() {
         File m2RepoDir = new File( localRepoDir );
-        if (!m2RepoDir.exists()) {
-            return null;
-        }
         try {
+            if (!m2RepoDir.exists()) {
+                log.info( "The local repository directory " + localRepoDir + " doesn't exist. Creating it." );
+                m2RepoDir.mkdirs();
+            }
             String localRepositoryUrl = m2RepoDir.toURI().toURL().toExternalForm();
             return new RemoteRepository.Builder( "local", "default", localRepositoryUrl ).build();
-        } catch (MalformedURLException e) { }
+        } catch (Exception e) {
+            try {
+                log.warn( "Cannot use directory " + localRepoDir + " as local repository.", e );
+                localRepoDir = IoUtils.getTmpDirectory().getAbsolutePath();
+                log.warn( "Using the temporary directory " + localRepoDir + " as local repository" );
+                m2RepoDir = new File( localRepoDir );
+                String localRepositoryUrl = m2RepoDir.toURI().toURL().toExternalForm();
+                return new RemoteRepository.Builder( "local", "default", localRepositoryUrl ).build();
+            } catch (Exception e1) {
+                log.warn( "Cannot create a local repository in " + localRepoDir, e1 );
+            }
+        }
         return null;
     }
 
