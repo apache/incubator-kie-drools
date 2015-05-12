@@ -14,16 +14,15 @@ public class SynchronizedBypassPropagationList implements PropagationList {
     }
 
     @Override
-    public synchronized boolean addEntry(PropagationEntry propagationEntry) {
+    public synchronized void addEntry(PropagationEntry propagationEntry) {
         propagationEntry.execute(workingMemory);
-        return true;
     }
 
     @Override
-    public void flush(InternalWorkingMemory workingMemory) { }
+    public void flush() { }
 
     @Override
-    public void flushNonMarshallable(InternalWorkingMemory workingMemory) { }
+    public void flushNonMarshallable() { }
 
     @Override
     public void reset() { }

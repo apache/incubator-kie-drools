@@ -111,7 +111,7 @@ public class RuleNetworkEvaluator {
             nodeMem = smem.getNodeMemories().getFirst().getNext(); // skip the liaNode memory
         }
 
-        LeftTupleSets srcTuples = smem.getStagedLeftTuples().takeAll(); // need to takeAll, as this is taken alpha network
+        LeftTupleSets srcTuples = smem.getStagedLeftTuples();
         if (log.isTraceEnabled()) {
             log.trace("Rule[name={}] segments={} {}", ((TerminalNode)pmem.getNetworkNode()).getRule().getName(), smems.length, srcTuples.toStringSizes());
         }

@@ -117,7 +117,6 @@ public class DefaultAgenda
     private org.kie.api.runtime.rule.ConsequenceExceptionHandler consequenceExceptionHandler;
 
     protected final AtomicBoolean                                halt               = new AtomicBoolean( true );
-    protected volatile boolean                                   fireUntilHalt      = false;
 
     protected int                                                activationCounter;
 
@@ -271,7 +270,7 @@ public class DefaultAgenda
             log.trace("Added {} to eager evaluation list.", item.getRule().getName() );
         }
         synchronized (eager) {
-            eager.add(item);
+            eager.add( item );
         }
     }
 
@@ -291,7 +290,7 @@ public class DefaultAgenda
 
     @Override
     public void addQueryAgendaItem(RuleAgendaItem item) {
-        queries.putIfAbsent((QueryImpl) item.getRule(), item);
+        queries.putIfAbsent( (QueryImpl) item.getRule(), item );
         if ( log.isTraceEnabled() ) {
             log.trace("Added {} to query evaluation list.", item.getRule().getName() );
         }
@@ -569,7 +568,7 @@ public class DefaultAgenda
     }
 
     public boolean removeGroup(InternalAgendaGroup group) {
-        boolean existed = this.focusStack.remove(group);
+        boolean existed = this.focusStack.remove( group );
         group.visited();
 
         return existed;
@@ -679,14 +678,14 @@ public class DefaultAgenda
 
     public void activateRuleFlowGroup(final String name) {
         InternalRuleFlowGroup group =  (InternalRuleFlowGroup) getRuleFlowGroup( name );
-        activateRuleFlowGroup(group, -1, null);
+        activateRuleFlowGroup( group, -1, null );
     }
 
     public void activateRuleFlowGroup(final String name,
                                       long processInstanceId,
                                       String nodeInstanceId) {
         InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) getRuleFlowGroup( name );
-        activateRuleFlowGroup(ruleFlowGroup, processInstanceId, nodeInstanceId);
+        activateRuleFlowGroup( ruleFlowGroup, processInstanceId, nodeInstanceId );
     }
 
     public void activateRuleFlowGroup(final InternalRuleFlowGroup group, long processInstanceId, String nodeInstanceId) {
@@ -704,7 +703,7 @@ public class DefaultAgenda
     }
 
     public void deactivateRuleFlowGroup(final String name) {
-        deactivateRuleFlowGroup((InternalRuleFlowGroup) getRuleFlowGroup(name));
+        deactivateRuleFlowGroup( (InternalRuleFlowGroup) getRuleFlowGroup( name ) );
     }
 
     public void deactivateRuleFlowGroup(final InternalRuleFlowGroup group) {
@@ -715,9 +714,9 @@ public class DefaultAgenda
                                                                                                         this.workingMemory );
         while ( removeGroup(group) ); // keep removing while group is on the stack
         group.setActive(false);
-        innerDeactiveRuleFlowGroup(group);
-        ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupDeactivated(group,
-                                                                                                      this.workingMemory);
+        innerDeactiveRuleFlowGroup( group );
+        ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupDeactivated( group,
+                                                                                                       this.workingMemory );
     }
 
     private void innerDeactiveRuleFlowGroup(InternalRuleFlowGroup group) {
@@ -1230,18 +1229,13 @@ public class DefaultAgenda
     }
 
     @Override
-    public boolean isFireUntilHalt() {
-        return fireUntilHalt;
-    }
-
-    @Override
     public void stageLeftTuple(RuleAgendaItem ruleAgendaItem, AgendaItem justified) {
         // this method name is incorrect for Rete, as it doesn't have staging like Rete did for declarative agenda.
         // so it just gets added directly.  It happens when a blocked LeftTuple becomes unblocked.
         if (!ruleAgendaItem.isQueued()) {
             ruleAgendaItem.getRuleExecutor().getPathMemory().queueRuleAgendaItem(workingMemory);
         }
-        ruleAgendaItem.getRuleExecutor().addLeftTuple(justified.getTuple());
+        ruleAgendaItem.getRuleExecutor().addLeftTuple( justified.getTuple() );
     }
 
     public void fireUntilHalt() {
@@ -1250,39 +1244,30 @@ public class DefaultAgenda
 
     public void fireUntilHalt(final AgendaFilter agendaFilter) {
         if( this.halt.compareAndSet( true, false ) ) { // if this was false already means someone else is firing rules already
-            fireUntilHalt = true;
             try {
                 if ( log.isTraceEnabled() ) {
                     log.trace("Starting fireUntilHalt");
                 }
-                while ( continueFiring( -1 ) ) {
-                    boolean fired = fireNextItem( agendaFilter, 0, -1 ) > 0 || workingMemory.hasPendingPropagations();
-                    this.workingMemory.flushPropagations();
+                while ( isFiring() ) {
+                    boolean fired = fireNextItem( agendaFilter, 0, -1 ) > 0;
                     if ( !fired ) {
                         synchronized ( this.halt ) {
-                            // has to check in here because a different thread might have set the halt flag already
-                            if( ! this.halt.get() ) {
-                                // need to check again the agenda is still empty as a new activation
-                                // could have been created between the time it did not fire the last 
-                                // one and the synchronized block started
-                                InternalAgendaGroup nextFocus = getNextFocus();
-                                if( nextFocus == null || nextFocus.isEmpty() ) {
-                                    try {
-                                        this.halt.wait();
-                                    } catch (InterruptedException e) {
-                                        // nothing to do
-                                    }
+                            if (!workingMemory.hasPendingPropagations()) {
+                                try {
+                                    this.halt.wait();
+                                } catch (InterruptedException e) {
+                                    // nothing to do
                                 }
                             }
                         }
                     }
+                    this.workingMemory.flushPropagations();
                 }
                 if ( log.isTraceEnabled() ) {
-                    log.trace("Ending fireUntilHalt");
+                    log.trace( "Ending fireUntilHalt" );
                 }
             } finally {
-                fireUntilHalt = false;
-                this.halt.set(true);
+                this.halt.set( true );
             }
         }
     }
@@ -1298,7 +1283,7 @@ public class DefaultAgenda
                     returnedFireCount = fireNextItem( agendaFilter, fireCount, fireLimit );
                     fireCount += returnedFireCount;
                     this.workingMemory.flushPropagations();
-                } while ( continueFiring( 0 ) && returnedFireCount != 0 && (fireLimit == -1 || (fireCount < fireLimit)) );
+                } while ( isFiring() && returnedFireCount != 0 && (fireLimit == -1 || (fireCount < fireLimit)) );
                 if ( this.focusStack.size() == 1 && getMainAgendaGroup().isEmpty() ) {
                     // the root MAIN agenda group is empty, reset active to false, so it can receive more activations.
                     getMainAgendaGroup().setActive( false );
@@ -1311,8 +1296,21 @@ public class DefaultAgenda
     }
 
     @Override
-    public boolean continueFiring(final int fireLimit) {
+    public boolean isFiring() {
         return !halt.get();
+    }
+
+    @Override
+    public boolean executeIfNotFiring(Runnable task) {
+        if( this.halt.compareAndSet( true, false ) ) {
+            try {
+                task.run();
+            } finally {
+                this.halt.set( true );
+            }
+            return true;
+        }
+        return false;
     }
 
     public void notifyHalt() {

@@ -63,11 +63,11 @@ public class BaseLeftTuple
     // node memory
     protected LeftTupleList      memory;
     protected Entry              next;
-    protected Entry              previous;    
-    
-    protected volatile short     stagedType;
-    protected LeftTuple          stagedNext;
-    protected LeftTuple          stagedPrevious;        
+    protected Entry              previous;
+
+    private volatile short       stagedType;
+    private LeftTuple            stagedNext;
+    private LeftTuple            stagedPrevious;
 
     private Object               object;
     
