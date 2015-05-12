@@ -97,13 +97,13 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         return rtn;
     }
 
-    public synchronized boolean doLinkRule(InternalWorkingMemory wm) {
+    public synchronized void doLinkRule(InternalWorkingMemory wm) {
         TerminalNode rtn = ensureAgendaItemCreated(wm);
         if (isLogTraceEnabled) {
             log.trace(" LinkRule name={}", rtn.getRule().getName());
         }
 
-        return queueRuleAgendaItem(wm);
+        queueRuleAgendaItem(wm);
     }
 
     public synchronized void doUnlinkRule(InternalWorkingMemory wm) {
@@ -115,7 +115,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         queueRuleAgendaItem(wm);
     }
 
-    public boolean queueRuleAgendaItem(InternalWorkingMemory wm) {
+    public void queueRuleAgendaItem(InternalWorkingMemory wm) {
         InternalAgenda agenda = (InternalAgenda) wm.getAgenda();
         synchronized ( agendaItem ) {
             agendaItem.getRuleExecutor().setDirty(true);
@@ -123,7 +123,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
             if ( activationFilter != null && !activationFilter.accept( agendaItem,
                                                                        wm,
                                                                        agendaItem.getTerminalNode() ) ) {
-                return false;
+                return;
             }
 
             if ( !agendaItem.isQueued() ) {
@@ -140,8 +140,6 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         } else if ( agendaItem.getRule().isEager() ) {
             ((InternalAgenda)wm.getAgenda()).addEagerRuleAgendaItem( agendaItem );
         }
-
-        return true;
     }
 
     public void unlinkedSegment(long mask,

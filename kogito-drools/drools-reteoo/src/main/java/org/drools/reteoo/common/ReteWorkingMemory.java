@@ -55,9 +55,7 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
 
     @Override
     protected void init() {
-        super.init();
-
-        actionQueue = new ConcurrentLinkedQueue<WorkingMemoryAction>();
+        this.actionQueue = new ConcurrentLinkedQueue<WorkingMemoryAction>();
         this.propagationList = new SynchronizedBypassPropagationList(this);
     }
 

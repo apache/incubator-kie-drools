@@ -34,7 +34,7 @@ public class PropagationListTest {
         for (int counter = 0; counter < results.length;) {
 
             final Checker checker = new Checker(THREAD_NR);
-            final PropagationList propagationList = new SynchronizedPropagationList();
+            final PropagationList propagationList = new SynchronizedPropagationList(null);
             CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
 
             long start = System.nanoTime();
@@ -51,7 +51,7 @@ public class PropagationListTest {
 
             for (int i = 0; i < THREAD_NR * 20; i++) {
                 //System.out.println("FLUSHING!");
-                propagationList.flush(null);
+                propagationList.flush();
                 try {
                     Thread.sleep(1L);
                 } catch (InterruptedException e) {
@@ -68,7 +68,7 @@ public class PropagationListTest {
                 }
             }
 
-            propagationList.flush(null);
+            propagationList.flush();
 
             results[counter++] = System.nanoTime() - start;
 

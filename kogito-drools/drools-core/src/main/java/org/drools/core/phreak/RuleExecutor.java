@@ -228,7 +228,7 @@ public class RuleExecutor {
                                    InternalAgenda agenda) {
 
 
-        return !agenda.continueFiring(0) ||
+        return !agenda.isFiring() ||
                ( (nextRule != null) && (!ruleAgendaItem.getAgendaGroup().equals( nextRule.getAgendaGroup() ) || !isHighestSalience(nextRule)) )
                || (fireLimit >= 0 && (localFireCount + fireCount >= fireLimit));
     }

@@ -285,7 +285,8 @@ public interface InternalAgenda
 
     RuleAgendaItem peekNextRule();
 
-    boolean continueFiring(int fireLimit);
+    boolean isFiring();
+    boolean executeIfNotFiring(Runnable task);
 
     void insertAndStageActivation(AgendaItem activation);
 
@@ -305,8 +306,6 @@ public interface InternalAgenda
          * @see org.kie.common.AgendaI#setFocus(org.kie.spi.AgendaGroup)
          */
     boolean setFocus(AgendaGroup agendaGroup);
-
-    boolean isFireUntilHalt();
 
     void stageLeftTuple(RuleAgendaItem ruleAgendaItem, AgendaItem justified);
 

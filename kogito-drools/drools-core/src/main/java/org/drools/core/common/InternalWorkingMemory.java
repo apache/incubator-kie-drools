@@ -44,6 +44,8 @@ import java.util.concurrent.locks.Lock;
 public interface InternalWorkingMemory
     extends WorkingMemory {
 
+    InternalAgenda getAgenda();
+
     int getId();
     void setId(Long id);
 

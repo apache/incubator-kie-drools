@@ -61,7 +61,16 @@ import java.util.concurrent.TimeUnit;
 public class MultithreadTest extends CommonTestMethodBase {
 
     @Test(timeout = 10000)
-    public void testConcurrentInsertions() {
+    public void testConcurrentInsertionsFewObjectsManyThreads() {
+        testConcurrentInsertions(1, 1000);
+    }
+
+    @Test(timeout = 10000)
+    public void testConcurrentInsertionsManyObjectsFewThreads() {
+        testConcurrentInsertions(1000, 4);
+    }
+
+    private void testConcurrentInsertions(final int objectCount, final int threadCount) {
         String str = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
                      "\n" +
                      "rule \"R\"\n" +
@@ -70,8 +79,7 @@ public class MultithreadTest extends CommonTestMethodBase {
                      "then\n" +
                      "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL).build().newKieSession();
 
         Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
             public Thread newThread(Runnable r) {
@@ -81,18 +89,15 @@ public class MultithreadTest extends CommonTestMethodBase {
             }
         });
 
-        final int OBJECT_NR = 1000;
-        final int THREAD_NR = 4;
-
         CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
-        for (int i = 0; i < THREAD_NR; i++) {
+        for (int i = 0; i < threadCount; i++) {
             ecs.submit(new Callable<Boolean>() {
                 public Boolean call() throws Exception {
                     try {
-                        FactHandle[] facts = new FactHandle[OBJECT_NR];
-                        for (int i = 0; i < OBJECT_NR; i++) facts[i] = ksession.insert(new Bean(i));
+                        FactHandle[] facts = new FactHandle[objectCount];
+                        for (int i = 0; i < objectCount; i++) facts[i] = ksession.insert(new Bean(i));
                         ksession.fireAllRules();
-                        for (FactHandle fact : facts) ksession.retract(fact);
+                        for (FactHandle fact : facts) ksession.delete(fact);
                         ksession.fireAllRules();
                         return true;
                     } catch (Exception e) {
@@ -104,7 +109,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
 
         boolean success = true;
-        for (int i = 0; i < THREAD_NR; i++) {
+        for (int i = 0; i < threadCount; i++) {
             try {
                 success = ecs.take().get() && success;
             } catch (Exception e) {
@@ -118,7 +123,7 @@ public class MultithreadTest extends CommonTestMethodBase {
 
     public static class Bean {
 
-        private int seed;
+        private final int seed;
 
         public Bean(int seed) {
             this.seed = seed;

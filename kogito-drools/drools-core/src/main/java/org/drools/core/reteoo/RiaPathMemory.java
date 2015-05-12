@@ -20,9 +20,8 @@ public class RiaPathMemory extends PathMemory {
         return this.riaNode;
     }
 
-    public boolean doLinkRule(InternalWorkingMemory wm) {
+    public void doLinkRule(InternalWorkingMemory wm) {
         riaNode.getSinkPropagator().doLinkRiaNode( wm );
-        return true;
     }
         
     public void doUnlinkRule(InternalWorkingMemory wm) {

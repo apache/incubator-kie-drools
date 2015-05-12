@@ -35,7 +35,6 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +43,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static java.util.Arrays.asList;
 
 public class TimerAndCalendarTest extends CommonTestMethodBase {
 
@@ -290,19 +291,6 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
 
-        final CyclicBarrier barrier = new CyclicBarrier(2);
-
-        AgendaEventListener agendaEventListener = new DefaultAgendaEventListener() {
-            public void afterMatchFired(org.kie.api.event.rule.AfterMatchFiredEvent event) {
-                try {
-                    barrier.await();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        };
-        ksession.addEventListener(agendaEventListener);
-
         List list = new ArrayList();
 
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
@@ -311,21 +299,15 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
-        assertEquals(0, list.size());
+        assertEquals( 0, list.size() );
 
-        timeService.advanceTime(35, TimeUnit.SECONDS);
-        barrier.await();
-        barrier.reset();
-        assertEquals(1, list.size());
+        timeService.advanceTime( 35, TimeUnit.SECONDS );
+        assertEquals( 1, list.size() );
 
-        timeService.advanceTime(10, TimeUnit.SECONDS);
-        barrier.await();
-        barrier.reset();
-        assertEquals(2, list.size());
+        timeService.advanceTime( 10, TimeUnit.SECONDS );
+        assertEquals( 2, list.size() );
 
-        timeService.advanceTime(10, TimeUnit.SECONDS);
-        barrier.await();
-        barrier.reset();
+        timeService.advanceTime( 10, TimeUnit.SECONDS );
         assertEquals( 3, list.size() );
     }
 
@@ -1478,19 +1460,19 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         } ).start();
         Thread.sleep( 250 );
 
-        assertEquals( java.util.Arrays.asList( 0, 0, 0 ), list );
+        assertEquals( asList( 0, 0, 0 ), list );
 
         ksession.insert( "halt" );
         ksession.insert( "trigger" );
         Thread.sleep( 300 );
-        assertEquals( java.util.Arrays.asList( 0, 0, 0 ), list );
+        assertEquals( asList( 0, 0, 0 ), list );
 
         new Thread( new Runnable(){
             public void run(){ ksession.fireUntilHalt(); }
         } ).start();
         Thread.sleep( 200 );
 
-        assertEquals( java.util.Arrays.asList( 0, 0, 0, 5, 0, -5, 0, 0 ), list );
+        assertEquals( asList( 0, 0, 0, 5, 0, -5, 0, 0 ), list );
     }
 
 
@@ -1535,7 +1517,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         } ).start();
         Thread.sleep( 150 );
         assertEquals( 2, list.size() ); // delay 0, repeat after 100
-        assertEquals( java.util.Arrays.asList( 0, 0 ), list );
+        assertEquals( asList( 0, 0 ), list );
 
         ksession.insert( "halt" );
 
@@ -1549,7 +1531,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         Thread.sleep( 500 );
 
         assertEquals( 2, list.size() );
-        assertEquals( java.util.Arrays.asList( 0, 0 ), list );
+        assertEquals( asList( 0, 0 ), list );
     }
 
     @Test
@@ -1619,7 +1601,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         FactHandle handle = ksession.insert("go1");
         ksession.fireAllRules();
         System.out.println( "***** " + list + " *****");
-        assertEquals( Arrays.asList(0L, 1L, 1L), list );
+        assertEquals( asList( 0L, 1L, 1L ), list );
         list.clear();
         ksession.retract( handle );
 
@@ -1628,7 +1610,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         handle = ksession.insert( "go2" );
         ksession.fireAllRules();
         System.out.println( "***** " + list + " *****");
-        assertEquals( Arrays.asList( 0L, 0L, 1L ), list );
+        assertEquals( asList( 0L, 0L, 1L ), list );
         list.clear();
         ksession.retract( handle );
 
@@ -1637,7 +1619,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         handle = ksession.insert( "go3" );
         ksession.fireAllRules();
         System.out.println( "***** " + list + " *****");
-        assertEquals( Arrays.asList( 0L, 0L, 0L ), list );
+        assertEquals( asList( 0L, 0L, 0L ), list );
         list.clear();
         ksession.retract( handle );
 
@@ -1805,7 +1787,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         KieSession ksession = createKnowledgeSession(kbase, conf);
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
         SessionClock clock = ksession.getSessionClock();
@@ -1813,9 +1795,10 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         ksession.insert(1);
         ksession.fireAllRules();
-        pseudoClock.advanceTime(35, TimeUnit.SECONDS);
+        pseudoClock.advanceTime( 35, TimeUnit.SECONDS );
         ksession.fireAllRules();
-        assertEquals(2, list.size());
+        assertEquals( 2, list.size() );
+        assertTrue( list.containsAll( asList( "1", "2" ) ) );
     }
 
     @Test
@@ -1841,11 +1824,13 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KieSession ksession = createKnowledgeSession(kbase, conf);
 
         List list = new ArrayList();
-        ksession.setGlobal("list", list);
+        ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
         assertEquals( 0, list.size() );
-        Thread.sleep( 3000 );
+        Thread.sleep( 900 );
+        assertEquals( 0, list.size() );
+        Thread.sleep( 500 );
         assertEquals( 1, list.size() );
     }
 }
