@@ -142,8 +142,6 @@ public class ReteAgenda<M extends ModedAssertion<M>>
 
     private volatile boolean mustNotifyHalt = false;
 
-    private volatile boolean fireUntilHalt = false;
-
     // @TODO make serialisation work
     private InternalActivationGroup stagedActivations;
 
@@ -321,7 +319,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         if ( log.isTraceEnabled() ) {
             log.trace("Removed {} from eager evaluation list.", item.getRule().getName() );
         }
-        eager.remove(item);
+        eager.remove( item );
     }
 
     @Override
@@ -364,7 +362,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         if ( group != null && group.length() > 0 ) {
             InternalActivationGroup actgroup = getActivationGroup( group );
 
-            actgroup.addActivation(item);
+            actgroup.addActivation( item );
         }
     }
 
@@ -490,7 +488,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
             AgendaItem item = (AgendaItem) node.getActivation();
             item.setActivationGroupNode( null );
 
-            addActivation(item, false);
+            addActivation( item, false );
             i++;
         }
 
@@ -538,7 +536,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
     @Override
     public void addAgendaItemToGroup(AgendaItem item) {
         InternalAgendaGroup agendaGroup = (InternalAgendaGroup) this.getAgendaGroup(item.getRule().getAgendaGroup());
-        agendaGroup.add(item);
+        agendaGroup.add( item );
     }
 
     public void removeScheduleItem(final ScheduledAgendaItem item) {
@@ -955,7 +953,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
     }
 
     public void deactivateRuleFlowGroup(final String name) {
-        deactivateRuleFlowGroup((InternalRuleFlowGroup ) getRuleFlowGroup(name));
+        deactivateRuleFlowGroup( (InternalRuleFlowGroup) getRuleFlowGroup( name ) );
     }
 
     public void deactivateRuleFlowGroup(final InternalRuleFlowGroup group) {
@@ -966,11 +964,11 @@ public class ReteAgenda<M extends ModedAssertion<M>>
                                                                                                         this.workingMemory );
         while ( this.focusStack.remove( group ) ); // keep removing while group is on the stack
         group.setActive(false);
-        innerDeactiveRuleFlowGroup(group);
+        innerDeactiveRuleFlowGroup( group );
     }
 
     private void innerDeactiveRuleFlowGroup(InternalRuleFlowGroup group) {
-        group.hasRuleFlowListener(false);
+        group.hasRuleFlowListener( false );
         group.getNodeInstances().clear();
         ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupDeactivated( group, this.workingMemory );
     }
@@ -1088,7 +1086,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
 
         // cancel all activation groups.
         for ( InternalActivationGroup group : this.activationGroups.values() ) {
-            clearAndCancelActivationGroup( group);
+            clearAndCancelActivationGroup( group );
         }
 
     }
@@ -1178,7 +1176,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
     }
 
     public void clearAndCancelRuleFlowGroup(final String name) {
-        clearAndCancelAgendaGroup( (InternalAgendaGroup) agendaGroups.get(name) );
+        clearAndCancelAgendaGroup( (InternalAgendaGroup) agendaGroups.get( name ) );
     }
 
     public void clearAndCancelAndCancel(final RuleFlowGroup ruleFlowGroup) {
@@ -1407,17 +1405,11 @@ public class ReteAgenda<M extends ModedAssertion<M>>
     }
 
     @Override
-    public boolean isFireUntilHalt() {
-        return fireUntilHalt;
-    }
-
-    @Override
     public void stageLeftTuple(RuleAgendaItem ruleAgendaItem, AgendaItem justified) {
         getStageActivationsGroup().addActivation(justified);
     }
 
     public void fireUntilHalt() {
-        fireUntilHalt = true;
         fireUntilHalt( null );
     }
 
@@ -1427,7 +1419,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         if ( log.isTraceEnabled() ) {
             log.trace("Starting fireUntilHalt");
         }
-        while ( continueFiring( -1 ) ) {
+        while ( isFiring() ) {
             boolean fired = fireNextItem( agendaFilter, 0, -1 ) >= 0 ||
                             !((ReteWorkingMemory) this.workingMemory).getActionQueue().isEmpty();
             this.workingMemory.executeQueuedActionsForRete();
@@ -1448,7 +1440,6 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         if ( log.isTraceEnabled() ) {
             log.trace("Ending fireUntilHalt");
         }
-        fireUntilHalt = false;
     }
 
     public int fireAllRules(AgendaFilter agendaFilter,
@@ -1461,7 +1452,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
             returnedFireCount = fireNextItem( agendaFilter, fireCount, fireLimit );
             fireCount += returnedFireCount;
             this.workingMemory.executeQueuedActionsForRete();
-        } while ( continueFiring( 0 ) && returnedFireCount != 0 && (fireLimit == -1 || (fireCount < fireLimit)) );
+        } while ( isFiring() && returnedFireCount != 0 && (fireLimit == -1 || (fireCount < fireLimit)) );
         if ( this.focusStack.size() == 1 && getMainAgendaGroup().isEmpty() ) {
             // the root MAIN agenda group is empty, reset active to false, so it can receive more activations.
             getMainAgendaGroup().setActive( false );
@@ -1470,8 +1461,21 @@ public class ReteAgenda<M extends ModedAssertion<M>>
     }
 
     @Override
-    public boolean continueFiring(final int fireLimit) {
+    public boolean isFiring() {
         return !halt.get();
+    }
+
+    @Override
+    public boolean executeIfNotFiring(Runnable task) {
+        if( this.halt.compareAndSet( true, false ) ) {
+            try {
+                task.run();
+            } finally {
+                this.halt.set( true );
+            }
+            return true;
+        }
+        return false;
     }
 
     public void notifyHalt() {

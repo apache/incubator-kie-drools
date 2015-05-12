@@ -16,6 +16,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
@@ -52,7 +53,6 @@ import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.time.SessionClock;
@@ -255,7 +255,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return 0;
     }
 
-    public Agenda getAgenda() {
+    public InternalAgenda getAgenda() {
         // TODO Auto-generated method stub
         return null;
     }

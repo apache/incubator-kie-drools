@@ -122,7 +122,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
@@ -339,7 +338,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.agendaEventSupport = agendaEventSupport;
         this.ruleEventListenerSupport = ruleEventListenerSupport;
 
-        this.propagationList = new SynchronizedPropagationList();
+        init();
+
         this.propagationIdCounter = new AtomicLong(propagationContext);
 
         if (agenda == null) {
@@ -349,19 +349,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
         this.agenda.setWorkingMemory(this);
 
-        init();
-
-        if (initInitFactHandle) {
-            initInitialFact(kBase, null);
-        }
-    }
-
-    protected void init() {
-        if (config.hasForceEagerActivationFilter()) {
-            this.propagationList = new SynchronizedBypassPropagationList(this);
-        } else {
-            this.propagationList = new SynchronizedPropagationList();
-        }
 
         nodeMemories = new ConcurrentNodeMemories(this.kBase);
 
@@ -405,6 +392,18 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.processRuntime = createProcessRuntime();
 
         initManagementBeans();
+
+        if (initInitFactHandle) {
+            initInitialFact(kBase, null);
+        }
+    }
+
+    protected void init() {
+        if (config.hasForceEagerActivationFilter()) {
+            this.propagationList = new SynchronizedBypassPropagationList(this);
+        } else {
+            this.propagationList = new SynchronizedPropagationList(this);
+        }
     }
 
     public <T> T getKieRuntime(Class<T> cls) {
@@ -1234,7 +1233,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return this.environment;
     }
 
-    public Agenda getAgenda() {
+    public InternalAgenda getAgenda() {
         return this.agenda;
     }
 
@@ -1833,17 +1832,17 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public ProcessInstance startProcess(String processId,
                                         Map<String, Object> parameters) {
-        return processRuntime.startProcess(processId,
-                                           parameters);
+        return processRuntime.startProcess( processId,
+                                            parameters );
     }
 
     public ProcessInstance createProcessInstance(String processId,
                                                  Map<String, Object> parameters) {
-        return processRuntime.createProcessInstance(processId, parameters);
+        return processRuntime.createProcessInstance( processId, parameters );
     }
 
     public ProcessInstance startProcessInstance(long processInstanceId) {
-        return processRuntime.startProcessInstance(processInstanceId);
+        return processRuntime.startProcessInstance( processInstanceId );
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
@@ -1851,21 +1850,21 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public ProcessInstance getProcessInstance(long processInstanceId) {
-        return processRuntime.getProcessInstance(processInstanceId);
+        return processRuntime.getProcessInstance( processInstanceId );
     }
 
     @Override
     public ProcessInstance startProcess(String processId,
                                         CorrelationKey correlationKey, Map<String, Object> parameters) {
 
-        return processRuntime.startProcess(processId, correlationKey, parameters);
+        return processRuntime.startProcess( processId, correlationKey, parameters );
     }
 
     @Override
     public ProcessInstance createProcessInstance(String processId,
                                                  CorrelationKey correlationKey, Map<String, Object> parameters) {
 
-        return processRuntime.createProcessInstance(processId, correlationKey, parameters);
+        return processRuntime.createProcessInstance( processId, correlationKey, parameters );
     }
 
     @Override
@@ -2125,9 +2124,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void addPropagation(PropagationEntry propagationEntry) {
-        if (propagationList.addEntry(propagationEntry)) {
-            agenda.notifyHalt();
-        }
+        propagationList.addEntry( propagationEntry );
     }
 
     public void flushPropagations() {
@@ -2135,7 +2132,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             startOperation();
             if ( evaluatingActionQueue.compareAndSet( false, true ) ) {
                 try {
-                    propagationList.flush(this);
+                    propagationList.flush();
                 } finally {
                     evaluatingActionQueue.compareAndSet(true, false);
                 }
@@ -2147,7 +2144,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void flushNonMarshallablePropagations() {
-        propagationList.flushNonMarshallable(this);
+        propagationList.flushNonMarshallable();
         executeQueuedActionsForRete();
     }
 
