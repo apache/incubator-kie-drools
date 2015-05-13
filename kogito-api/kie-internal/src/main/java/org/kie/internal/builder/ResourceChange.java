@@ -4,7 +4,7 @@ package org.kie.internal.builder;
 
 public class ResourceChange {
     public static enum Type {
-        RULE, DECLARATION, FUNCTION;
+        RULE, DECLARATION, FUNCTION, GLOBAL, PROCESS;
         public String toString() {
             return super.toString().toLowerCase();
         }
