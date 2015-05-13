@@ -8,6 +8,7 @@ import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -796,9 +797,9 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         kfs.write( ks.getResources()
-                           .newReaderResource( new StringReader( drl2 ) )
-                           .setResourceType( ResourceType.DRL )
-                           .setSourcePath( "drl2.txt" ) );
+                     .newReaderResource( new StringReader( drl2 ) )
+                     .setResourceType( ResourceType.DRL )
+                     .setSourcePath( "drl2.txt" ) );
 
         IncrementalResults results = ( (InternalKieBuilder) kieBuilder ).incrementalBuild();
         assertEquals( 0, results.getAddedMessages().size() );
@@ -1171,7 +1172,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         // try to update the container to version 1.1.0
         kc.updateToVersion( releaseId2 );
 
-        ksession.setGlobal("foo", "Hello World");
+        ksession.setGlobal( "foo", "Hello World" );
 
         // continue working with the session
         ksession.insert( new Message( "Hello World" ) );
@@ -1272,7 +1273,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         // Create an in-memory jar for version 1.0.0
         ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
-        KieModule km = createAndDeployJarWithDSL(ks, releaseId1, dsl, drl2_1);
+        KieModule km = createAndDeployJarWithDSL( ks, releaseId1, dsl, drl2_1 );
 
         // Create a session and fire rules
         KieContainer kc = ks.newKieContainer( km.getReleaseId() );
@@ -1283,7 +1284,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         // Create a new jar for version 1.1.0
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
-        km = createAndDeployJarWithDSL(ks, releaseId2, dsl, drl2_2);
+        km = createAndDeployJarWithDSL( ks, releaseId2, dsl, drl2_2 );
 
         // try to update the container to version 1.1.0
         kc.updateToVersion( releaseId2 );
@@ -1366,20 +1367,63 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         kfs.generateAndWritePomXML(releaseId);
         KieModuleModel module = ks.newKieModuleModel();
 
-        KieBaseModel defaultBase = module.newKieBaseModel("kBase1");
+        KieBaseModel defaultBase = module.newKieBaseModel( "kBase1" );
         defaultBase.setEventProcessingMode(EventProcessingOption.STREAM).setDefault(true);
         defaultBase.newKieSessionModel("defaultKSession").setDefault(true);
-        kfs.writeKModuleXML(module.toXML());
+        kfs.writeKModuleXML( module.toXML() );
 
         for (int i = 0; i < drls.length; i++) {
             kfs.write("src/main/resources/rules" + i + ".drl", drls[i]);
         }
 
-        KieBuilder kb = ks.newKieBuilder(kfs);
+        KieBuilder kb = ks.newKieBuilder( kfs );
         kb.buildAll();
         if (kb.getResults().hasMessages(org.kie.api.builder.Message.Level.ERROR)) {
             System.out.println(kb.getResults().toString());
         }
         return kb.getKieModule();
+    }
+
+    @Test @Ignore("this test takes too long and cannot be emulated with a pseudo clock")
+    public void testIncrementalCompilationWithFireUntilHalt() throws Exception {
+        String drl1 = getCronRule(3) + getCronRule(6);
+        String drl2 = getCronRule(8) + getCronRule(10) + getCronRule(5);
+
+        KieServices ks = KieServices.Factory.get();
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-fireUntilHalt", "1.0.0" );
+        //KieModule km = createAndDeployJar( ks, releaseId1, testRuleAdd1, testRuleAdd2 );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl1 );
+
+        // Create a session and fire rules
+        final KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+
+        new Thread(new Runnable() {
+            public void run() {
+                kc.newKieSession().fireUntilHalt();
+            }
+        }).start();
+
+        Thread.sleep( 10000 );
+
+        // Create a new jar for version 1.1.0
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-fireUntilHalt", "1.1.0" );
+        km = createAndDeployJar( ks, releaseId2, drl2 );
+
+        // try to update the container to version 1.1.0
+        Results results = kc.updateToVersion( releaseId2 );
+
+        assertFalse( "Errors detected on updateToVersion: " + results.getMessages( org.kie.api.builder.Message.Level.ERROR ),
+                     results.hasMessages( org.kie.api.builder.Message.Level.ERROR ) );
+
+        Thread.sleep( 10000 );
+    }
+
+    private String getCronRule(int seconds) {
+        return "rule R" + seconds + " " +
+               "timer (cron: */" + seconds + " * * * * ?) " +
+               "when then System.out.println('Hey there, I print every " + seconds + " seconds'); " +
+               "end\n";
     }
 }

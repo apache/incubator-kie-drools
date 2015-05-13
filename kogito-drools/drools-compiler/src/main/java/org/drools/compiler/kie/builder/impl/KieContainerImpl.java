@@ -7,6 +7,7 @@ import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -42,6 +43,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.definition.KnowledgePackage;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -161,7 +163,8 @@ public class KieContainerImpl
                 kbasesToRemove.add( kbaseName );
             } else {
                 // attaching the builder to the kbase
-                KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder((KnowledgeBase) kBaseEntry.getValue());
+                KnowledgeBase kBase = (KnowledgeBase) kBaseEntry.getValue();
+                KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kBase);
                 KnowledgeBuilderImpl pkgbuilder = (KnowledgeBuilderImpl)kbuilder;
                 CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
@@ -187,6 +190,10 @@ public class KieContainerImpl
                             }
                         }
                         rebuildAll(newReleaseId, results, newKM, modifiedClasses, kieBaseModel, pkgbuilder, ckbuilder);
+                    }
+
+                    for (StatefulKnowledgeSession session : kBase.getStatefulKnowledgeSessions()) {
+                        ((InternalAgenda)session.getAgenda()).notifyHalt();
                     }
                 } finally {
                     pkgbuilder.completePackageUpdate();
