@@ -22,6 +22,7 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -1386,8 +1387,9 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
     @Test @Ignore("this test takes too long and cannot be emulated with a pseudo clock")
     public void testIncrementalCompilationWithFireUntilHalt() throws Exception {
+        // DROOLS-782
         String drl1 = getCronRule(3) + getCronRule(6);
-        String drl2 = getCronRule(8) + getCronRule(10) + getCronRule(5);
+        String drl2 = getCronRule( 8 ) + getCronRule(10) + getCronRule(5);
 
         KieServices ks = KieServices.Factory.get();
 
@@ -1425,5 +1427,49 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                "timer (cron: */" + seconds + " * * * * ?) " +
                "when then System.out.println('Hey there, I print every " + seconds + " seconds'); " +
                "end\n";
+    }
+
+    @Test
+    public void testKJarUpgradeSameSessionRemovingGlobal() throws Exception {
+        // DROOLS-752
+        String drl1 = "package org.drools.compiler\n" +
+                      "global java.lang.String foo\n" +
+                      "global java.lang.String bar\n" +
+                      "rule R1 when\n" +
+                      "   $m : Message()\n" +
+                      "then\n" +
+                      "end\n";
+
+        String drl2 = "package org.drools.compiler\n" +
+                      "global java.lang.String foo\n" +
+                      "global java.lang.String baz\n" +
+                      "rule R2 when\n" +
+                      "   $m : Message( )\n" +
+                      "then\n" +
+                      "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl1 );
+
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+        KieSession ksession = kc.newKieSession();
+        ksession.setGlobal( "foo", "foo" );
+        ksession.setGlobal( "bar", "bar" );
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        km = createAndDeployJar( ks, releaseId2, drl2 );
+
+        kc.updateToVersion( releaseId2 );
+
+        ksession.setGlobal( "baz", "baz" );
+
+        Globals globals = ksession.getGlobals();
+        assertEquals( 2, globals.getGlobalKeys().size() );
+
+        assertEquals( "foo", ksession.getGlobal( "foo" ) );
+        assertNull( ksession.getGlobal( "bar" ) );
+        assertEquals( "baz", ksession.getGlobal( "baz" ) );
     }
 }

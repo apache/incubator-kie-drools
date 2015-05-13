@@ -206,4 +206,6 @@ public interface InternalWorkingMemory
     boolean hasPendingPropagations();
 
     Iterator<? extends PropagationEntry> getActionsIterator();
+
+    void removeGlobal(String identifier);
 }

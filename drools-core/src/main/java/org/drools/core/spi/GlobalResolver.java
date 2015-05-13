@@ -21,5 +21,7 @@ public interface GlobalResolver {
 
     void setGlobal(String identifier, Object value);
 
+    void removeGlobal(String identifier);
+
     void clear();
 }

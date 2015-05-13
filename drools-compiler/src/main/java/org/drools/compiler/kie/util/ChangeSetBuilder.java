@@ -20,6 +20,7 @@ import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.FunctionDescr;
+import org.drools.compiler.lang.descr.GlobalDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.io.impl.ByteArrayResource;
@@ -100,6 +101,9 @@ public class ChangeSetBuilder {
 
                 List<FunctionDescr> ofuncs = new ArrayList<FunctionDescr>( opkg.getFunctions() ); // needs to be cloned
                 diffDescrs(ob, cb, pkgcs, ofuncs, cpkg.getFunctions(), ResourceChange.Type.FUNCTION, FUNC_CONVERTER);
+
+                List<GlobalDescr> oglobals = new ArrayList<GlobalDescr>( opkg.getGlobals() ); // needs to be cloned
+                diffDescrs(ob, cb, pkgcs, oglobals, cpkg.getGlobals(), ResourceChange.Type.GLOBAL, GLOBAL_CONVERTER);
             } catch ( Exception e ) {
                 logger.error( "Error analyzing the contents of "+file+". Skipping.", e );
             }
@@ -130,6 +134,14 @@ public class ChangeSetBuilder {
         @Override
         public String getName(FunctionDescr descr) {
             return descr.getName();
+        }
+    }
+
+    private static final GlobalDescrNameConverter GLOBAL_CONVERTER = new GlobalDescrNameConverter();
+    private static class GlobalDescrNameConverter implements DescrNameConverter<GlobalDescr> {
+        @Override
+        public String getName(GlobalDescr descr) {
+            return descr.getIdentifier();
         }
     }
 
