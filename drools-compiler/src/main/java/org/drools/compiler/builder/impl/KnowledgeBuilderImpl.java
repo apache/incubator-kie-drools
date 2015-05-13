@@ -390,9 +390,9 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     private void dumpDrlGeneratedFromDTable(File dumpDir, String generatedDrl, String srcPath) {
         File dumpFile;
         if (srcPath != null) {
-            dumpFile = new File(dumpDir, srcPath.replaceAll(File.separator, "_") + ".drl");
+            dumpFile = createDumpDrlFile(dumpDir, srcPath, ".drl");
         } else {
-            dumpFile = new File(dumpDir, "decision-table-" + UUID.randomUUID() + ".drl");
+            dumpFile = createDumpDrlFile(dumpDir, "decision-table-" + UUID.randomUUID(), ".drl");
         }
         try {
             IoUtils.write(dumpFile, generatedDrl.getBytes(IoUtils.UTF8_CHARSET));
@@ -401,6 +401,10 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             logger.warn("Can't write the DRL generated from decision table to file " + dumpFile.getAbsolutePath() + "!\n" +
                     Arrays.toString(ex.getStackTrace()));
         }
+    }
+
+    protected static File createDumpDrlFile(File dumpDir, String fileName, String extension) {
+        return new File(dumpDir, fileName.replaceAll("[^a-zA-Z0-9\\.\\-_]+", "_") + extension);
     }
 
     public void addPackageFromScoreCard(Resource resource,
