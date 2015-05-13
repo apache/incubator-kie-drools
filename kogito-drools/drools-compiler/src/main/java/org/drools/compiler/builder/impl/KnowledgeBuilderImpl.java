@@ -100,6 +100,7 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
+import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.ScoreCardConfiguration;
 import org.kie.internal.definition.KnowledgePackage;
@@ -621,7 +622,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             if ( errors.isEmpty() ) {
                 if ( this.kBase != null && processes != null ) {
                     for (Process process : processes) {
-                        if ( filterAccepts( process.getNamespace(), process.getId() ) ) {
+                        if ( filterAccepts( ResourceChange.Type.PROCESS, process.getNamespace(), process.getId() ) ) {
                             this.kBase.addProcess(process);
                         }
                     }
@@ -909,7 +910,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         // iterate and compile
         if (!hasErrors() && this.kBase != null) {
             for (RuleDescr ruleDescr : packageDescr.getRules()) {
-                if( filterAccepts( ruleDescr.getNamespace(), ruleDescr.getName() ) ) {
+                if( filterAccepts( ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName() ) ) {
                     pkgRegistry = this.pkgRegistryMap.get(ruleDescr.getNamespace());
                     this.kBase.addRule(pkgRegistry.getPackage(), pkgRegistry.getPackage().getRule(ruleDescr.getName()));
                 }
@@ -975,7 +976,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
             // iterate and compile
             for (FunctionDescr functionDescr : functions) {
-                if (filterAccepts(functionDescr.getNamespace(), functionDescr.getName()) ) {
+                if (filterAccepts(ResourceChange.Type.FUNCTION, functionDescr.getNamespace(), functionDescr.getName()) ) {
                     // inherit the dialect from the package
                     addFunction(functionDescr);
                 }
@@ -986,7 +987,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             compileAll();
 
             for (FunctionDescr functionDescr : functions) {
-                if (filterAccepts(functionDescr.getNamespace(), functionDescr.getName()) ) {
+                if (filterAccepts(ResourceChange.Type.FUNCTION, functionDescr.getNamespace(), functionDescr.getName()) ) {
                     postCompileAddFunction(functionDescr);
                 }
             }
@@ -1017,18 +1018,18 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
         // iterate and compile
         for (RuleDescr ruleDescr : packageDescr.getRules()) {
-            if (filterAccepts(ruleDescr.getNamespace(), ruleDescr.getName()) ) {
+            if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()) ) {
                 addRule(ruleCxts.get(ruleDescr.getName()));
             }
         }
     }
 
-    boolean filterAccepts( String namespace, String name ) {
-        return assetFilter == null || ! AssetFilter.Action.DO_NOTHING.equals( assetFilter.accept( namespace, name ) );
+    boolean filterAccepts( ResourceChange.Type type, String namespace, String name ) {
+        return assetFilter == null || ! AssetFilter.Action.DO_NOTHING.equals( assetFilter.accept( type, namespace, name ) );
     }
 
-    private boolean filterAcceptsRemoval( String namespace, String name ) {
-        return assetFilter != null && AssetFilter.Action.REMOVE.equals( assetFilter.accept( namespace, name ) );
+    private boolean filterAcceptsRemoval( ResourceChange.Type type, String namespace, String name ) {
+        return assetFilter != null && AssetFilter.Action.REMOVE.equals( assetFilter.accept( type, namespace, name ) );
     }
 
     private Map<String, RuleBuildContext> preProcessRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
@@ -1040,7 +1041,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
             // first, check if any rules no longer exist
             for( org.kie.api.definition.rule.Rule rule : pkg.getRules() ) {
-                if (filterAcceptsRemoval( rule.getPackageName(), rule.getName() ) ) {
+                if (filterAcceptsRemoval( ResourceChange.Type.RULE, rule.getPackageName(), rule.getName() ) ) {
                     needsRemoval = true;
                     break;
                 }
@@ -1048,7 +1049,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
             if( !needsRemoval ) {
                 for (RuleDescr ruleDescr : packageDescr.getRules()) {
-                    if (filterAccepts(ruleDescr.getNamespace(), ruleDescr.getName()) ) {
+                    if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()) ) {
                         if (pkg.getRule(ruleDescr.getName()) != null) {
                             needsRemoval = true;
                             break;
@@ -1061,13 +1062,13 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 try {
                     this.kBase.lock();
                     for( org.kie.api.definition.rule.Rule rule : pkg.getRules() ) {
-                        if (filterAcceptsRemoval( rule.getPackageName(), rule.getName() ) ) {
+                        if (filterAcceptsRemoval( ResourceChange.Type.RULE, rule.getPackageName(), rule.getName() ) ) {
                             this.kBase.removeRule(pkg, pkg.getRule(rule.getName()));
                             pkg.removeRule(((RuleImpl)rule));
                         }
                     }
                     for (RuleDescr ruleDescr : packageDescr.getRules()) {
-                        if (filterAccepts(ruleDescr.getNamespace(), ruleDescr.getName()) ) {
+                        if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()) ) {
                             if (pkg.getRule(ruleDescr.getName()) != null) {
                                 // XXX: this one notifies listeners
                                 this.kBase.removeRule(pkg, pkg.getRule(ruleDescr.getName()));
@@ -1082,7 +1083,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
         // Pre Process each rule, needed for Query signuture registration
         for (RuleDescr ruleDescr : packageDescr.getRules()) {
-            if (filterAccepts(ruleDescr.getNamespace(), ruleDescr.getName()) ) {
+            if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()) ) {
                 RuleBuildContext ruleBuildContext = ruleCxts.get(ruleDescr.getName());
                 ruleBuilder.preProcess(ruleBuildContext);
                 pkg.addRule(ruleBuildContext.getRule());
@@ -1474,9 +1475,9 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         PackageRegistry pkgRegistry = new PackageRegistry(rootClassLoader, configuration, pkg);
 
         // add default import for this namespace
-        pkgRegistry.addImport(new ImportDescr(packageDescr.getNamespace() + ".*"));
+        pkgRegistry.addImport( new ImportDescr( packageDescr.getNamespace() + ".*" ) );
 
-        this.pkgRegistryMap.put(packageDescr.getName(), pkgRegistry);
+        this.pkgRegistryMap.put( packageDescr.getName(), pkgRegistry );
 
         return pkgRegistry;
     }
@@ -1488,7 +1489,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
         normalizeTypeDeclarationAnnotations( packageDescr );
         processAccumulateFunctions(pkgRegistry, packageDescr);
-        processEntryPointDeclarations(pkgRegistry, packageDescr);
+        processEntryPointDeclarations( pkgRegistry, packageDescr );
 
         Map<String,AbstractClassTypeDeclarationDescr> unprocesseableDescrs = new HashMap<String,AbstractClassTypeDeclarationDescr>();
         List<TypeDefinition> unresolvedTypes = new ArrayList<TypeDefinition>();
@@ -1526,8 +1527,12 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     private void processGlobals(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
+        InternalKnowledgePackage pkg = pkgRegistry.getPackage();
+        Set<String> existingGlobals = new HashSet(pkg.getGlobals().keySet());
+
         for (final GlobalDescr global : packageDescr.getGlobals()) {
             final String identifier = global.getIdentifier();
+            existingGlobals.remove( identifier );
             String className = global.getType();
 
             // JBRULES-3039: can't handle type name with generic params
@@ -1541,16 +1546,23 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                     addBuilderResult(new GlobalError(global, " Primitive types are not allowed in globals : " + className));
                     return;
                 }
-                pkgRegistry.getPackage().addGlobal(identifier,
-                                                   clazz);
-                this.globals.put(identifier,
-                                 clazz);
+                pkg.addGlobal(identifier, clazz);
+                this.globals.put(identifier, clazz);
                 if (kBase != null) {
                     kBase.addGlobal(identifier, clazz);
                 }
             } catch (final ClassNotFoundException e) {
                 addBuilderResult(new GlobalError(global, e.getMessage()));
                 e.printStackTrace();
+            }
+        }
+
+        for (String toBeRemoved : existingGlobals) {
+            if (filterAcceptsRemoval( ResourceChange.Type.GLOBAL, pkg.getName(), toBeRemoved )) {
+                pkg.removeGlobal( toBeRemoved );
+                if ( kBase != null ) {
+                    kBase.removeGlobal( toBeRemoved );
+                }
             }
         }
     }
@@ -2137,7 +2149,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             DO_NOTHING, ADD, REMOVE, UPDATE
         }
 
-        public Action accept(String pkgName, String assetName);
+        public Action accept(ResourceChange.Type type, String pkgName, String assetName);
     }
 
     public AssetFilter getAssetFilter() {

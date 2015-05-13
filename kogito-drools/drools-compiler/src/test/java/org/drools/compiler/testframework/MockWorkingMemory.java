@@ -408,6 +408,10 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
+    public void removeGlobal(String identifier) {
+        // TODO Auto-generated method stub
+    }
+
     public void addEventListener(RuleRuntimeEventListener listener) {
         // TODO Auto-generated method stub
         

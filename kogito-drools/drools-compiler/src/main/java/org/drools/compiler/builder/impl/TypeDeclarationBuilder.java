@@ -17,8 +17,8 @@ import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.rule.TypeDeclaration;
 import org.kie.api.io.Resource;
+import org.kie.internal.builder.ResourceChange;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -266,7 +266,7 @@ public class TypeDeclarationBuilder {
         Map<String, PackageDescr> foreignPackages = null;
 
         for ( AbstractClassTypeDeclarationDescr typeDescr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
-            if ( kbuilder.filterAccepts(typeDescr.getNamespace(), typeDescr.getTypeName()) ) {
+            if ( kbuilder.filterAccepts( ResourceChange.Type.DECLARATION, typeDescr.getNamespace(), typeDescr.getTypeName()) ) {
 
                 if ( ! typeDescr.getNamespace().equals( packageDescr.getNamespace() ) ) {
                     // If the type declaration is for a different namespace, process that separately.

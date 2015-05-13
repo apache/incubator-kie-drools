@@ -111,6 +111,7 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
     void removeProcess( final String id );
 
     void addGlobal(String identifier, Class clazz);
+    void removeGlobal(String identifier);
 
     boolean removeObjectsGeneratedFromResource(Resource resource);
 

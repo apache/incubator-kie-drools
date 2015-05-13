@@ -396,7 +396,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
             if( changes != null ) {
                 changeMap = new HashMap<String, ResourceChange>();
                 for( ResourceChange c : changes.getChanges() ) {
-                    changeMap.put(c.getName(), c);
+                    changeMap.put( assetId(c.getType(), c.getName()), c) ;
                 }
             } else {
                 changeMap = null;
@@ -409,8 +409,8 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         
         private class ChangeSetAssetFilter implements KnowledgeBuilderImpl.AssetFilter {
             @Override
-            public Action accept(String pkgName, String assetName) {
-                ResourceChange change = changeMap.get(assetName);
+            public Action accept(ResourceChange.Type type, String pkgName, String assetName) {
+                ResourceChange change = changeMap.get( assetId(type, assetName) );
                 if( change == null ) {
                     return Action.DO_NOTHING;
                 } else if( change.getChangeType().equals(ChangeType.ADDED) ) {
@@ -422,6 +422,10 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
                 }
                 return Action.DO_NOTHING;
             }
+        }
+
+        private String assetId(ResourceChange.Type type, String assetName) {
+            return type + "_" + assetName;
         }
     }
 

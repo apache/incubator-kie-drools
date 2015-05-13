@@ -1004,6 +1004,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                               value );
         }
 
+        public void removeGlobal(String identifier) {
+            ((GlobalResolver)globals).removeGlobal( identifier );
+        }
+
         @Override
         public void clear() {
             if (globals instanceof GlobalResolver) {
@@ -1056,7 +1060,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         propagationList.reset();
 
         if (nodeMemories != null) {
-            nodeMemories.resetAllMemories(this);
+            nodeMemories.resetAllMemories( this );
         }
 
         ((DefaultAgenda)this.agenda).reset();
@@ -1066,12 +1070,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.handleFactory.clear( 0, 0 );
         this.propagationIdCounter.set(0);
         this.opCounter.set(0);
-        this.lastIdleTimestamp.set(-1);
+        this.lastIdleTimestamp.set( -1 );
 
         initTransient();
 
         timerService = TimerServiceFactory.getTimerService(this.config);
-        ((AcceptsTimerJobFactoryManager) timerService).setTimerJobFactoryManager(config.getTimerJobFactoryManager());
+        ((AcceptsTimerJobFactoryManager) timerService).setTimerJobFactoryManager( config.getTimerJobFactoryManager() );
 
         if (this.processRuntime != null) {
             this.processRuntime = createProcessRuntime();
@@ -1098,8 +1102,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             iep.reset();
         }
 
-        this.handleFactory.clear(handleId,
-                                 handleCounter);
+        this.handleFactory.clear( handleId,
+                                  handleCounter);
 
         this.propagationIdCounter = new AtomicLong( propagationCounter );
         this.opCounter.set( 0 );
@@ -1124,19 +1128,19 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void addEventListener(final RuleRuntimeEventListener listener) {
-        this.ruleRuntimeEventSupport.addEventListener(listener);
+        this.ruleRuntimeEventSupport.addEventListener( listener );
     }
 
     public void removeEventListener(final RuleRuntimeEventListener listener) {
-        this.ruleRuntimeEventSupport.removeEventListener(listener);
+        this.ruleRuntimeEventSupport.removeEventListener( listener );
     }
 
     public void addEventListener(final AgendaEventListener listener) {
-        this.agendaEventSupport.addEventListener(listener);
+        this.agendaEventSupport.addEventListener( listener );
     }
 
     public void removeEventListener(final AgendaEventListener listener) {
-        this.agendaEventSupport.removeEventListener(listener);
+        this.agendaEventSupport.removeEventListener( listener );
     }
 
     public void addEventListener(KieBaseEventListener listener) {
@@ -1150,12 +1154,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public void removeEventListener(KieBaseEventListener listener) {
         this.kBase.removeEventListener( listener);
-        this.kieBaseEventListeners.remove(listener);
+        this.kieBaseEventListeners.remove( listener );
     }
 
     ///RuleEventListenerSupport
     public void addEventListener(final RuleEventListener listener) {
-        this.ruleEventListenerSupport.addEventListener(listener);
+        this.ruleEventListenerSupport.addEventListener( listener );
     }
 
     public void removeEventListener(final RuleEventListener listener) {
@@ -1196,6 +1200,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             endOperation();
             this.kBase.readUnlock();
         }
+    }
+
+    public void removeGlobal(String identifier) {
+        this.globalResolver.removeGlobal( identifier );
     }
 
     public void setGlobalResolver(final GlobalResolver globalResolver) {

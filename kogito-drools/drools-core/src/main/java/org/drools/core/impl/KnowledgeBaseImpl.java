@@ -581,8 +581,8 @@ public class KnowledgeBaseImpl
     private void populateGlobalsMap(Map<String, String> globs) throws ClassNotFoundException {
         this.globals = new HashMap<String, Class<?>>();
         for (Map.Entry<String, String> entry : globs.entrySet()) {
-            addGlobal(entry.getKey(),
-                      this.rootClassLoader.loadClass(entry.getValue()));
+            addGlobal( entry.getKey(),
+                       this.rootClassLoader.loadClass( entry.getValue() ) );
         }
     }
 
@@ -662,7 +662,7 @@ public class KnowledgeBaseImpl
     public InternalKnowledgePackage[] getPackages() {
         readLock();
         try {
-            return this.pkgs.values().toArray(new InternalKnowledgePackage[this.pkgs.size()]);
+            return this.pkgs.values().toArray( new InternalKnowledgePackage[this.pkgs.size()] );
         } finally {
             readUnlock();
         }
@@ -1198,6 +1198,15 @@ public class KnowledgeBaseImpl
 
     public void addGlobal(String identifier, Class clazz) {
         this.globals.put( identifier, clazz );
+    }
+
+    public void removeGlobal(String identifier) {
+        this.globals.remove( identifier );
+        Iterator sessionsIterator = statefulSessions.iterator();
+        for ( Object obj = sessionsIterator.next(); obj != null; obj = sessionsIterator.next() ) {
+            ObjectHashSet.ObjectEntry holder = (ObjectHashSet.ObjectEntry) obj;
+            ((InternalWorkingMemory)holder.getValue()).removeGlobal(identifier);
+        }
     }
 
     protected void setupRete() {

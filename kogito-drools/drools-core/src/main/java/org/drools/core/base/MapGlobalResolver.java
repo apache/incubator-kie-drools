@@ -103,6 +103,10 @@ public class MapGlobalResolver
                       value );
     }
 
+    public void removeGlobal(String identifier) {
+        this.map.remove( identifier );
+    }
+
     public Entry<String, Object>[] getGlobals() {
         if ( delegate == null ) {
             return (Entry<String, Object>[]) this.map.entrySet().toArray(new Entry[this.map.size()]);

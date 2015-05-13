@@ -2,6 +2,7 @@ package org.drools.compiler.lang.descr;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.kie.api.io.Resource;
+import org.kie.internal.builder.ResourceChange;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,9 +134,9 @@ public class CompositePackageDescr extends PackageDescr {
         public List<KnowledgeBuilderImpl.AssetFilter> filters = new ArrayList<KnowledgeBuilderImpl.AssetFilter>();
 
         @Override
-        public Action accept(String pkgName, String assetName) {
+        public Action accept(ResourceChange.Type type, String pkgName, String assetName) {
             for( KnowledgeBuilderImpl.AssetFilter filter : filters ) {
-                Action result = filter.accept(pkgName, assetName);
+                Action result = filter.accept(type, pkgName, assetName);
                 if( !Action.DO_NOTHING.equals( result ) ) {
                     return result;
                 }
