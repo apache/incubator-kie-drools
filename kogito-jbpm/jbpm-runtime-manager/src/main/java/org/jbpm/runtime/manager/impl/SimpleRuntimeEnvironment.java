@@ -15,6 +15,16 @@
  */
 package org.jbpm.runtime.manager.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+
+import javax.persistence.EntityManagerFactory;
+
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.marshalling.impl.ProcessInstanceResolverStrategy;
@@ -41,17 +51,6 @@ import org.kie.internal.io.ResourceTypeImpl;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.runtime.manager.Mapper;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
-
-import javax.persistence.EntityManagerFactory;
-import javax.swing.RepaintManager;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
 
 /**
  * The most basic implementation of the <code>RuntimeEnvironment</code> that, at the same time, serves as base 
@@ -121,6 +120,7 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
          * 
          * (refactoring the kbuilder code is probably a better idea.)
          */
+        boolean replaced = false;
         if (resource.getSourcePath() != null ) { 
             String path = resource.getSourcePath();
           
@@ -130,7 +130,7 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
             } else if( path.toLowerCase().endsWith(".xls") ) { 
                 typeStr = DecisionTableInputType.XLS.toString();
             } 
-            
+           
             if( typeStr != null ) { 
                 String worksheetName = null;
                 boolean replaceConfig = true;
@@ -153,11 +153,12 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
                     }
                     ResourceConfiguration conf = ResourceTypeImpl.fromProperties(prop);
                     this.kbuilder.add(resource, type, conf);
+                    replaced = true;
                 }
-            } else {
-                this.kbuilder.add(resource, type);
-            }
-        } else { 
+            } 
+        } 
+        
+        if( ! replaced ) { 
             this.kbuilder.add(resource, type);
         }
 
