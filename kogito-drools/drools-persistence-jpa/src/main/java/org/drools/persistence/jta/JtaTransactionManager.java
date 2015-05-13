@@ -137,7 +137,8 @@ public class JtaTransactionManager
             try {
                 return InitialContext.doLookup(System.getProperty("jbpm.ut.jndi.lookup", "java:jboss/UserTransaction"));
             } catch (Exception e1) {
-                throw new IllegalStateException("Unable to find transaction: " + ex.getMessage(), ex);
+                logger.warn("Unable to find transaction: {}. Might be running in CMT environment" + ex.getMessage());
+                return null;
             }
 
         }
@@ -190,10 +191,18 @@ public class JtaTransactionManager
         return null;
     }
 
+    protected UserTransaction getUt() {
+        if (this.ut == null) {
+            this.ut = findUserTransaction();
+        }
+
+        return ut;
+    }
+
     public boolean begin() {
         if ( getStatus() == TransactionManager.STATUS_NO_TRANSACTION ) {
             try {
-                this.ut.begin();
+                getUt().begin();
                 return true;
             } catch ( Exception e ) {
                 // special WAS handling for cached UserTrnsactions
@@ -243,7 +252,7 @@ public class JtaTransactionManager
             		this.ut.rollback();
         		}
         	} else {
-        		this.ut.setRollbackOnly();
+        		getUt().setRollbackOnly();
         	}
         } catch ( Exception e ) {
             logger.warn( "Unable to rollback transaction", e);
