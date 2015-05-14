@@ -1,14 +1,26 @@
 package org.drools.compiler.cdi;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.compiler.kie.builder.impl.KieProject;
+import org.drools.compiler.kproject.models.KieSessionModelImpl;
+import org.drools.core.util.StringUtils;
+import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.builder.model.KieSessionModel.KieSessionType;
+import org.kie.api.cdi.KBase;
+import org.kie.api.cdi.KReleaseId;
+import org.kie.api.cdi.KSession;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatelessKnowledgeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
@@ -25,28 +37,15 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Named;
-
-import org.drools.core.util.StringUtils;
-import org.drools.compiler.kproject.models.KieSessionModelImpl;
-import org.kie.api.KieBase;
-import org.kie.api.KieServices;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.model.KieSessionModel;
-import org.kie.api.builder.model.KieSessionModel.KieSessionType;
-import org.kie.api.builder.ReleaseId;
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kie.builder.impl.KieContainerImpl;
-import org.drools.compiler.kie.builder.impl.KieProject;
-import org.kie.api.cdi.KBase;
-import org.kie.api.cdi.KReleaseId;
-import org.kie.api.cdi.KSession;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.StatelessKieSession;
-import org.kie.internal.runtime.StatelessKnowledgeSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class KieCDIExtension
     implements
@@ -374,7 +373,8 @@ public class KieCDIExtension
                            new String[]{kBaseQName, kBaseModel.getScope(), e.getMessage()} );
             }
         }
-        KBaseBean bean = new KBaseBean( kBaseModel,
+        KBaseBean bean = new KBaseBean( kBaseQName,
+                                        kBaseModel,
                                         kieContainer,
                                         entry.getKReleaseId(),
                                         entry.getScope(),
@@ -448,7 +448,8 @@ public class KieCDIExtension
             log.debug( "Added Bean for Stateful @KSession({})  from: {}",
                        kSessionName,
                        kModule );
-            abd.addBean( new StatefulKSessionBean( kSessionModel,
+            abd.addBean( new StatefulKSessionBean( kSessionName,
+                                                   kSessionModel,
                                                    kieContainer,
                                                    entry.getKReleaseId(),
                                                    entry.getScope(),
@@ -579,7 +580,8 @@ public class KieCDIExtension
         
         private final Set<InjectionPoint>          injectionPoints;
 
-        public KBaseBean(final KieBaseModel kBaseModel,
+        public KBaseBean(final String kBaseQName,
+                         final KieBaseModel kBaseModel,
                          KieContainer kContainer,
                          KReleaseId kReleaseId, 
                          Class< ? extends Annotation> scope,
@@ -602,7 +604,7 @@ public class KieCDIExtension
                 }
 
                 public String value() {
-                    return kBaseModel.getName();
+                    return kBaseQName;
                 }
                 
                 public String name() {
@@ -788,7 +790,8 @@ public class KieCDIExtension
         
         private final Set<InjectionPoint>          injectionPoints;
 
-        public StatefulKSessionBean(final KieSessionModel kieSessionModelModel,
+        public StatefulKSessionBean(final String kSessionName,
+                                    final KieSessionModel kieSessionModelModel,
                                     KieContainer kContainer,
                                     KReleaseId kReleaseId, 
                                     Class< ? extends Annotation> scope,
@@ -811,7 +814,7 @@ public class KieCDIExtension
                 }
 
                 public String value() {
-                    return kSessionModel.getName();
+                    return kSessionName;
                 }
                 
                 public String name() {
@@ -952,15 +955,13 @@ public class KieCDIExtension
 
         /**
          * InjectionPoints is not to be included in the equals/hashcode test
-         * @return
-         */        
+         */
         public void addInjectionPoint(InjectionPoint ip) {
             this.injectionPoints.add( ip );
         }
 
         /**
          * InjectionPoints is not to be included in the equals/hashcode test
-         * @return
          */
         public Set<InjectionPoint> getInjectionPoints() {
             return injectionPoints;
@@ -968,8 +969,7 @@ public class KieCDIExtension
 
         /**
          * InjectionPoints is not to be included in the equals/hashcode test
-         * @return
-         */        
+         */
         public void setInjectionPoints(Set<InjectionPoint> injectionPoints) {
             this.injectionPoints = injectionPoints;
         }
@@ -1020,13 +1020,9 @@ public class KieCDIExtension
         } else if (ip.getType() instanceof ParameterizedType) {
             Type rawType = ((ParameterizedType) ip.getType()).getRawType();
             Type[] types = ((ParameterizedType) ip.getType()).getActualTypeArguments();
-            if (rawType instanceof Class) {
-                if (rawType instanceof Class && ((Class) rawType).isAssignableFrom(Instance.class) && types.length == 1) {
-
-                    if (types[0] instanceof Class) {
-                        return  (Class )types[0];
-                    }
-                }
+            if (rawType instanceof Class && ((Class) rawType).isAssignableFrom(Instance.class) &&
+                types.length == 1 && types[0] instanceof Class) {
+                return (Class) types[0];
             }
         }
 

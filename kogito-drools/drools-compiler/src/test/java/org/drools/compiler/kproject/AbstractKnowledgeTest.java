@@ -8,22 +8,21 @@ import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.Resource;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.core.util.FileManager;
+import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
+import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.util.FileManager;
 import org.drools.core.util.IoUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.builder.model.KieSessionModel;
-import org.kie.api.builder.model.KieSessionModel.KieSessionType;
-import org.kie.api.builder.Message.Level;
-import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
-import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message.Level;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.builder.model.KieSessionModel.KieSessionType;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieSession;
@@ -35,9 +34,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class AbstractKnowledgeTest {
 
@@ -114,36 +111,40 @@ public class AbstractKnowledgeTest {
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel(namespace + ".KBase1")
                 .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM )
-                .addPackage(namespace + ".KBase1")
+                .addPackage( namespace + ".KBase1" )
                 .setDefault( true );
             
 
-        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel(namespace + ".KSession1")
-                .setType( KieSessionType.STATELESS )
-                .setClockType( ClockTypeOption.get("realtime") )
-                .setDefault( true );
+        kieBaseModel1.newKieSessionModel( namespace + ".KSession1" )
+                     .setType( KieSessionType.STATELESS )
+                     .setClockType( ClockTypeOption.get( "realtime" ) )
+                     .setDefault( true );
 
-        KieSessionModel ksession2 = kieBaseModel1.newKieSessionModel(namespace + ".KSession2")
-                .setType( KieSessionType.STATEFUL )
-                .setClockType( ClockTypeOption.get( "pseudo" ) )
-                .setDefault( true );
+        kieBaseModel1.newKieSessionModel( namespace + ".KSession2")
+                     .setType( KieSessionType.STATEFUL )
+                     .setClockType( ClockTypeOption.get( "pseudo" ) );
 
-        KieBaseModel kieBaseModel2 = kproj.newKieBaseModel(namespace + ".KBase2")
-                .setEqualsBehavior( EqualityBehaviorOption.IDENTITY )
-                .addPackage(namespace + ".KBase2")
+        kieBaseModel1.newKieSessionModel( namespace + ".KSessionDefault")
+                     .setType( KieSessionType.STATEFUL )
+                     .setClockType( ClockTypeOption.get( "pseudo" ) )
+                     .setDefault( true );
+
+        KieBaseModel kieBaseModel2 = kproj.newKieBaseModel( namespace + ".KBase2")
+                                          .setEqualsBehavior( EqualityBehaviorOption.IDENTITY )
+                                          .addPackage( namespace + ".KBase2")
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
-        KieSessionModel ksession3 = kieBaseModel2.newKieSessionModel(namespace + ".KSession3")
+        kieBaseModel2.newKieSessionModel(namespace + ".KSession3")
                 .setType( KieSessionType.STATEFUL )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 
         KieBaseModel kieBaseModel3 = kproj.newKieBaseModel(namespace + ".KBase3")
                 .addInclude( kieBaseModel1.getName() )
-                .addInclude( kieBaseModel2.getName() )
-                .setEqualsBehavior( EqualityBehaviorOption.IDENTITY )
+                                          .addInclude( kieBaseModel2.getName() )
+                                          .setEqualsBehavior( EqualityBehaviorOption.IDENTITY )
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
-        KieSessionModel ksession4 = kieBaseModel3.newKieSessionModel(namespace + ".KSession4")
+        kieBaseModel3.newKieSessionModel(namespace + ".KSession4")
                 .setType( KieSessionType.STATELESS )
                 .setClockType( ClockTypeOption.get( "pseudo" ) );
 

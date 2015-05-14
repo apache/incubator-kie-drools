@@ -1,18 +1,5 @@
 package org.drools.compiler.cdi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
 import org.drools.compiler.kproject.AbstractKnowledgeTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -22,17 +9,31 @@ import org.kie.api.cdi.KReleaseId;
 import org.kie.api.cdi.KSession;
 import org.kie.api.runtime.KieSession;
 
+import javax.inject.Inject;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
 @RunWith(CDITestRunner.class)
 public class KieSessionInjectionTest {
     public static AbstractKnowledgeTest helper;
     
     @Inject
-    @KSession("jar1.KSession2")  
+    @KSession
     @KReleaseId( groupId    = "jar1",
                  artifactId = "art1", 
                  version    = "1.0" )
+    private KieSession defaultKsession;
+
+    @Inject
+    @KSession("jar1.KSession2")
+    @KReleaseId( groupId    = "jar1",
+                 artifactId = "art1",
+                 version    = "1.0" )
     private KieSession kbase1ksession2v10;
-    
+
     @Inject
     @KSession("jar1.KSession2")  
     @KReleaseId( groupId    = "jar1",
@@ -98,26 +99,23 @@ public class KieSessionInjectionTest {
     
     @Test
     public void testDynamicKieSessionReleaseId() throws IOException, ClassNotFoundException, InterruptedException {
-        assertNotNull( kbase1ksession2v10 );
-        assertNotNull( kbase1ksession2v10 );
-        
+        checkKSession( defaultKsession, "1.0");
+        checkKSession( kbase1ksession2v10, "1.0");
+        checkKSession( kbase1ksession2v11, "1.1");
+    }
+
+    private void checkKSession(KieSession ksession, String check) {
+        assertNotNull( ksession );
+
         List<String> list = new ArrayList<String>();
-        kbase1ksession2v10.setGlobal( "list", list );
-        kbase1ksession2v10.fireAllRules();
-        
+        ksession.setGlobal( "list", list );
+        ksession.fireAllRules();
+
         assertEquals( 2, list.size() );
-        assertTrue( list.get(0).endsWith( "1.0" ) );
-        assertTrue( list.get(1).endsWith( "1.0" ) );
-        
-        list = new ArrayList<String>();
-        kbase1ksession2v11.setGlobal( "list", list );
-        kbase1ksession2v11.fireAllRules();
-        
-        assertEquals( 2, list.size() );
-        assertTrue( list.get(0).endsWith( "1.1" ) );
-        assertTrue( list.get(1).endsWith( "1.1" ) );        
-    }    
-    
+        assertTrue( list.get( 0 ).endsWith( check ) );
+        assertTrue( list.get(1).endsWith( check ) );
+    }
+
     @Test
     public void testNamedKieSessions() throws IOException, ClassNotFoundException, InterruptedException {
         assertNotNull(kbase1ksession2ks1);
