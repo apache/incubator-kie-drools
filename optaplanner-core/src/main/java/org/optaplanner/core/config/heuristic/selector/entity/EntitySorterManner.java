@@ -53,7 +53,7 @@ public enum EntitySorterManner {
                 if (sorter == null) {
                     throw new IllegalArgumentException("The sorterManner (" + this
                             + ") on entity class (" + entityDescriptor.getEntityClass()
-                            + ") fails because that entity class's " + PlanningEntity.class.getSimpleName()
+                            + ") fails because that entity class's @" + PlanningEntity.class.getSimpleName()
                             + " annotation does not declare any difficulty comparison.");
                 }
                 return sorter;
