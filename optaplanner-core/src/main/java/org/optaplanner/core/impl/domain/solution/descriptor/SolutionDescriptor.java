@@ -259,7 +259,7 @@ public class SolutionDescriptor {
     public EntityDescriptor findEntityDescriptorOrFail(Class<?> entitySubclass) {
         EntityDescriptor entityDescriptor = findEntityDescriptor(entitySubclass);
         if (entityDescriptor == null) {
-            throw new IllegalArgumentException("A planning entity is an instance of a entitySubclass ("
+            throw new IllegalArgumentException("A planning entity is an instance of an entitySubclass ("
                     + entitySubclass + ") that is not configured as a planning entity.\n" +
                     "If that class (" + entitySubclass.getSimpleName()
                     + ") (or superclass thereof) is not a entityClass (" + getEntityClassSet()
