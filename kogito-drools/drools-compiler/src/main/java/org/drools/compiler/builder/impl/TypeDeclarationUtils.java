@@ -59,7 +59,7 @@ public class TypeDeclarationUtils {
         if (reg == null) {
             return null;
         }
-        String availableName = typeDescr.getType().getFullName();
+        String availableName = typeDescr.getFullTypeName();
         try {
             return reg.getTypeResolver().resolveType(availableName);
         } catch (ClassNotFoundException e) {

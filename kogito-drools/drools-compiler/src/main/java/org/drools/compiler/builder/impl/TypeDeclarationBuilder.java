@@ -53,6 +53,10 @@ public class TypeDeclarationBuilder {
         return classDeclarationExtractor.getAndRegisterTypeDeclaration( cls, packageName );
     }
 
+    public TypeDeclaration getExistingTypeDeclaration( String className ) {
+        return classDeclarationExtractor.getCachedTypeDeclaration( className );
+    }
+
     public TypeDeclaration getTypeDeclaration( Class<?> cls ) {
         return classDeclarationExtractor.getTypeDeclaration( cls );
     }
@@ -196,9 +200,7 @@ public class TypeDeclarationBuilder {
         }
 
         TypeDeclaration type = typeDeclarationFactory.processTypeDeclaration( pkgRegistry,
-                                                                              typeDescr,
-                                                                              unresolvedTypes,
-                                                                              unprocesseableDescrs );
+                                                                              typeDescr );
         boolean success = ! kbuilder.hasErrors();
 
         try {
