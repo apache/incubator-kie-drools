@@ -180,9 +180,12 @@ public class KnowledgePackageImpl
     }
 
     public Collection<FactType> getFactTypes() {
-        List<FactType> list = new ArrayList<FactType>(typeDeclarations.size());
+        if (typeDeclarations.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<FactType> list = new ArrayList<FactType>();
         for (TypeDeclaration typeDeclaration : typeDeclarations.values()) {
-            list.add(typeDeclaration.getTypeClassDef());
+            list.add( typeDeclaration.getTypeClassDef() );
         }
         return Collections.unmodifiableCollection(list);
     }
@@ -190,7 +193,7 @@ public class KnowledgePackageImpl
     public Map<String, FactType> getFactTypesMap() {
         Map<String, FactType> types = new HashMap<String, FactType>();
         for (Map.Entry<String, TypeDeclaration> entry : typeDeclarations.entrySet()) {
-            types.put(entry.getKey(), entry.getValue().getTypeClassDef());
+            types.put( entry.getKey(), entry.getValue().getTypeClassDef() );
         }
         return types;
     }

@@ -58,14 +58,14 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
 
     @Override
     public void writeExternal( ObjectOutput out ) throws IOException {
-        super.writeExternal(out);
+        super.writeExternal( out );
         out.writeObject( type );
         out.writeObject( fields );
     }
 
     public void setNamespace( String namespace ) {
-        super.setNamespace(namespace);
-        this.type.setNamespace(namespace);
+        super.setNamespace( namespace );
+        this.type.setNamespace( namespace );
     }
 
     /**
@@ -73,6 +73,10 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
      */
     public String getTypeName() {
         return this.type.getName();
+    }
+
+    public String getFullTypeName() {
+        return this.type.getFullName();
     }
 
     /**

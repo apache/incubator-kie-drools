@@ -75,6 +75,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -5513,5 +5514,33 @@ public class CepEspTest extends CommonTestMethodBase {
                    ", timestamp=" + timestamp +
                    '}';
         }
+    }
+
+    @Test
+    public void testUseMapAsEvent() {
+        // DROOLS-753
+        String drl =
+                "import java.util.Map\n " +
+                "declare Map \n"+
+                "  @role(event)\n"+
+                "end\n"+
+                "rule \"sliding window time map\" \n" +
+                "when \n" +
+                "   $m:Map()\n"  +
+                "   accumulate(Map() over window:time( 1m ); $count:count(); $count>1 )\n"  +
+                "then \n" +
+                "    System.out.println(\"alarm!!!!\");  \n" +
+                "end \n";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+
+        ksession.insert( new HashMap<String, Object>() );
+        ksession.fireAllRules();
     }
 }
