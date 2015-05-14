@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.domain.variable.descriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
+import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
@@ -143,15 +145,20 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
             Method readMethod = descriptorPolicy.getFromEntityValueRangeProvider(valueRangeProviderRef);
             return new FromEntityPropertyValueRangeDescriptor(this, addNullInValueRange, readMethod);
         } else {
+            Collection<String> providerIds = descriptorPolicy.getValueRangeProviderIds();
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has a " + PlanningVariable.class.getSimpleName()
-                    + ") annotated property (" + variablePropertyAccessor.getName()
+                    + ") has a @" + PlanningVariable.class.getSimpleName()
+                    + " property (" + variablePropertyAccessor.getName()
                     + ") with a valueRangeProviderRef (" + valueRangeProviderRef
-                    + ") that does not exist on a registered " + PlanningSolution.class.getSimpleName()
-                    + " or " + PlanningEntity.class.getSimpleName() + ".\n"
+                    + ") that does not exist in a @" + ValueRangeProvider.class.getSimpleName()
+                    + " on the solution class ("
+                    + entityDescriptor.getSolutionDescriptor().getSolutionClass().getSimpleName()
+                    + ") or on that entityClass.\n"
                     + "The valueRangeProviderRef (" + valueRangeProviderRef
-                    + ") does not appear in valueRangeProvideIds (" + descriptorPolicy.getValueRangeProviderIds()
-                    + ").");
+                    + ") does not appear in the valueRangeProvideIds (" + providerIds
+                    + ")." + (!providerIds.isEmpty() ? "" : "\nMaybe a @" + ValueRangeProvider.class.getSimpleName()
+                    + " annotation is missing on a method in the solution class ("
+                    + entityDescriptor.getSolutionDescriptor().getSolutionClass().getSimpleName() + ")."));
         }
     }
 
