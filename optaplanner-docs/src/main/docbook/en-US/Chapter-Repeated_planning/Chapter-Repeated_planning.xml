@@ -64,6 +64,12 @@
     <para>When there is no feasible solution to assign all planning entities, it's often desired to assign as many
     entities as possible without breaking hard constraints. This is called overconstrained planning.</para>
 
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Repeated_planning/overconstrainedPlanning.png"/>
+      </imageobject>
+    </mediaobject>
+
     <para>To implement this:</para>
 
     <orderedlist>
