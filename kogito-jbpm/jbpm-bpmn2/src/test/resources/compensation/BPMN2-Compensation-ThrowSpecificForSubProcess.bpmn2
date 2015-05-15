@@ -1,37 +1,123 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-
-<definitions id="my-definitions" targetNamespace="http://www.jboss.org/drools" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
-
-  <itemDefinition id="var_x" structureRef="Integer" />
-  <process id="CompensationSpecificSubProcess" name="Test process" isExecutable="true">
-    <property id="x" itemSubjectRef="var_x" />
-    
-    <startEvent id="start" name="start" />
-    <sequenceFlow sourceRef="start" targetRef="subprocess"/>
-    
-    <subProcess id="subprocess" name="subprocess">
-        <startEvent id="sub-start" name="sub-start" />
-        <sequenceFlow sourceRef="sub-start" targetRef="script"/>
-        <scriptTask id="script" name="script" scriptFormat="http://www.java.com/java">
-            <script>kcontext.setVariable("x", 0);</script>
-        </scriptTask>
-        <sequenceFlow sourceRef="script" targetRef="sub-end"/>
-        <endEvent id="sub-end" name="sub-end" />
-    </subProcess>
-    
-    <sequenceFlow sourceRef="subprocess" targetRef="end"/>
-    <endEvent id="end" name="end">
-      <compensateEventDefinition activityRef="subprocess" />
-    </endEvent>
-    
-    <!-- boundary event -->
-    <boundaryEvent id="compensate-catch" name="compensate-catch" attachedToRef="subprocess" cancelActivity="false">
-        <compensateEventDefinition />
-    </boundaryEvent>
-    <association associationDirection="One" sourceRef="compensate-catch" targetRef="compensate" />
-    <scriptTask id="compensate" name="compensate" scriptFormat="http://www.java.com/java" isForCompensation="true">
-        <script>kcontext.setVariable("x", null);</script>
-    </scriptTask>
-  </process>
-</definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- origin at X=0.0 Y=0.0 -->
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:ns="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="my-definitions" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.1.3.201505112032" targetNamespace="http://www.jboss.org/drools">
+  <bpmn2:itemDefinition id="var_x" isCollection="false" structureRef="Integer"/>
+  <bpmn2:process id="CompensationSpecificSubProcess" name="Test process" isExecutable="true">
+    <bpmn2:property id="x" itemSubjectRef="var_x" name="x"/>
+    <bpmn2:startEvent id="start" name="start">
+      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_1" sourceRef="start" targetRef="subprocess"/>
+    <bpmn2:subProcess id="subprocess" name="subprocess">
+      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
+      <bpmn2:startEvent id="sub-start" name="sub-start">
+        <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:sequenceFlow id="SequenceFlow_2" sourceRef="sub-start" targetRef="script"/>
+      <bpmn2:scriptTask id="script" name="script" scriptFormat="http://www.java.com/java">
+        <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
+        <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
+        <bpmn2:script>kcontext.setVariable("x", 0);</bpmn2:script>
+      </bpmn2:scriptTask>
+      <bpmn2:sequenceFlow id="SequenceFlow_3" sourceRef="script" targetRef="sub-end"/>
+      <bpmn2:endEvent id="sub-end" name="sub-end">
+        <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
+      </bpmn2:endEvent>
+    </bpmn2:subProcess>
+    <bpmn2:sequenceFlow id="SequenceFlow_4" sourceRef="subprocess" targetRef="end"/>
+    <bpmn2:endEvent id="end" name="end">
+      <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
+      <bpmn2:compensateEventDefinition id="CompensateEventDefinition_1" activityRef="subprocess" waitForCompletion="true"/>
+    </bpmn2:endEvent>
+    <bpmn2:boundaryEvent id="compensate-catch" name="compensate-catch" attachedToRef="subprocess" cancelActivity="false">
+      <bpmn2:compensateEventDefinition id="CompensateEventDefinition_2" activityRef="compensate" waitForCompletion="true"/>
+    </bpmn2:boundaryEvent>
+    <bpmn2:scriptTask id="compensate" name="compensate" isForCompensation="true" scriptFormat="http://www.java.com/java">
+      <bpmn2:script>kcontext.setVariable("x", null);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:association id="Association_1" associationDirection="One" sourceRef="compensate-catch" targetRef="compensate"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="CompensationSpecificSubProcess">
+      <bpmndi:BPMNShape id="BPMNShape_SubProcess_1" bpmnElement="subprocess" isExpanded="true">
+        <dc:Bounds height="150.0" width="382.0" x="150.0" y="134.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14.0" width="66.0" x="156.0" y="137.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="start">
+        <dc:Bounds height="36.0" width="36.0" x="50.0" y="107.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14.0" width="24.0" x="56.0" y="143.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_2" bpmnElement="sub-start">
+        <dc:Bounds height="36.0" width="36.0" x="200.0" y="191.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14.0" width="49.0" x="194.0" y="227.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="script">
+        <dc:Bounds height="50.0" width="110.0" x="286.0" y="184.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14.0" width="30.0" x="326.0" y="202.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="sub-end">
+        <dc:Bounds height="36.0" width="36.0" x="446.0" y="191.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14.0" width="46.0" x="441.0" y="227.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_2" bpmnElement="end">
+        <dc:Bounds height="36.0" width="36.0" x="568.0" y="107.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14.0" width="21.0" x="575.0" y="143.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="compensate">
+        <dc:Bounds height="50.0" width="110.0" x="320.0" y="350.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14.0" width="69.0" x="340.0" y="368.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_1" bpmnElement="compensate-catch">
+        <dc:Bounds height="36.0" width="36.0" x="186.0" y="266.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="28.0" width="75.0" x="167.0" y="302.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_SubProcess_1">
+        <di:waypoint xsi:type="dc:Point" x="68.0" y="143.0"/>
+        <di:waypoint xsi:type="dc:Point" x="68.0" y="209.0"/>
+        <di:waypoint xsi:type="dc:Point" x="150.0" y="209.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="SequenceFlow_4" sourceElement="BPMNShape_SubProcess_1" targetElement="BPMNShape_EndEvent_2">
+        <di:waypoint xsi:type="dc:Point" x="532.0" y="209.0"/>
+        <di:waypoint xsi:type="dc:Point" x="586.0" y="209.0"/>
+        <di:waypoint xsi:type="dc:Point" x="586.0" y="143.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_StartEvent_2" targetElement="BPMNShape_ScriptTask_1">
+        <di:waypoint xsi:type="dc:Point" x="236.0" y="209.0"/>
+        <di:waypoint xsi:type="dc:Point" x="261.0" y="209.0"/>
+        <di:waypoint xsi:type="dc:Point" x="286.0" y="209.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_3" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="396.0" y="209.0"/>
+        <di:waypoint xsi:type="dc:Point" x="421.0" y="209.0"/>
+        <di:waypoint xsi:type="dc:Point" x="446.0" y="209.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Association_1" bpmnElement="Association_1" sourceElement="BPMNShape_BoundaryEvent_1" targetElement="BPMNShape_ScriptTask_2">
+        <di:waypoint xsi:type="dc:Point" x="186.0" y="284.0"/>
+        <di:waypoint xsi:type="dc:Point" x="40.0" y="284.0"/>
+        <di:waypoint xsi:type="dc:Point" x="40.0" y="375.0"/>
+        <di:waypoint xsi:type="dc:Point" x="320.0" y="375.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

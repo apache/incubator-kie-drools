@@ -204,7 +204,7 @@ public class CompensationTest extends JbpmBpmn2TestCase {
 
         // compensation activity (assoc. with script task) signaled *after* script task
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
-        assertProcessVarValue(processInstance, "x", "1");
+        assertProcessVarValue(processInstance, "x", "2");
     }
     
     @Test
