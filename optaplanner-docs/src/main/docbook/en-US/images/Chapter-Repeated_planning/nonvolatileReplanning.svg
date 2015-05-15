@@ -249,7 +249,7 @@
      inkscape:cx="400"
      inkscape:cy="300"
      inkscape:document-units="px"
-     inkscape:current-layer="layer4"
+     inkscape:current-layer="layer5"
      showgrid="true"
      width="800px"
      borderlayer="true"
@@ -513,14 +513,14 @@
        height="29"
        width="159"
        id="rect4131"
-       style="fill:none;stroke:#4e9a06;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;display:inline" />
+       style="fill:none;stroke:#a40000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;display:inline" />
     <flowRoot
-       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#4e9a06;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#a40000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"
        id="flowRoot4146"
        xml:space="preserve"
        transform="translate(583.20017,448.66091)"><flowRegion
          id="flowRegion4148"><rect
-           style="font-size:14px;text-align:center;text-anchor:middle;fill:#4e9a06"
+           style="font-size:14px;text-align:center;text-anchor:middle;fill:#a40000"
            y="-18.660431"
            x="-256.90625"
            height="20"
