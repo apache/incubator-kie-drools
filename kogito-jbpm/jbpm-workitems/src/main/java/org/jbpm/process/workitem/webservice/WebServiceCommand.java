@@ -76,7 +76,7 @@ public class WebServiceCommand implements Command, Cacheable {
 	        	parameters = new Object[]{ workItem.getParameter("Parameter")};
 	        }
 	        
-	        Client client = getWSClient(workItem, interfaceRef);
+	        Client client = getWSClient(workItem, interfaceRef, ctx);
 	        
 	        //Override endpoint address if configured.
 	        if (endpointAddress != null && !"".equals(endpointAddress)) {
@@ -102,7 +102,7 @@ public class WebServiceCommand implements Command, Cacheable {
     }
     
     
-    protected synchronized Client getWSClient(WorkItem workItem, String interfaceRef) {
+    protected synchronized Client getWSClient(WorkItem workItem, String interfaceRef, CommandContext ctx) {
         if (clients.containsKey(interfaceRef)) {
             return clients.get(interfaceRef);
         }
@@ -112,7 +112,7 @@ public class WebServiceCommand implements Command, Cacheable {
         if (importLocation != null && importLocation.trim().length() > 0 
                 && importNamespace != null && importNamespace.trim().length() > 0) {
         	
-            Client client = getDynamicClientFactory().createClient(importLocation, new QName(importNamespace, interfaceRef), Thread.currentThread().getContextClassLoader(), null);
+            Client client = getDynamicClientFactory(ctx).createClient(importLocation, new QName(importNamespace, interfaceRef), Thread.currentThread().getContextClassLoader(), null);
             clients.put(interfaceRef, client);
             return client;
         	
@@ -121,7 +121,7 @@ public class WebServiceCommand implements Command, Cacheable {
         return null;
     }
     
-    protected synchronized DynamicClientFactory getDynamicClientFactory() {
+    protected synchronized DynamicClientFactory getDynamicClientFactory(CommandContext ctx) {
     	if (this.dcf == null) {
     		this.dcf = JaxWsDynamicClientFactory.newInstance();
     	}
