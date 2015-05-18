@@ -307,7 +307,7 @@ public abstract class BasicExecutorBaseTest {
 
         executorService.scheduleRequest("org.jbpm.executor.commands.ReoccurringPrintOutCommand", ctxCMD);
 
-        Thread.sleep(10000);
+        Thread.sleep(9000);
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests();
         assertEquals(0, inErrorRequests.size());
