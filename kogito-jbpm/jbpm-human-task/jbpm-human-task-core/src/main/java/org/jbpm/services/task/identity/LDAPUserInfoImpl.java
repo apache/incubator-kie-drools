@@ -111,7 +111,12 @@ public class LDAPUserInfoImpl extends AbstractUserGroupInfo implements UserInfo 
             String roleFilter = this.config.getProperty(ROLE_MEMBERS_FILTER, this.config.getProperty(ROLE_FILTER));
             String roleAttrId = this.config.getProperty(MEMBER_ATTR_ID, "member");
             
-            roleFilter = roleFilter.replaceAll("\\{0\\}", group.getId());
+            String entityId = group.getId();
+            if (Boolean.parseBoolean(this.config.getProperty(IS_ENTITY_ID_DN, "false"))) {
+                entityId = extractUserId(entityId, group);
+            }
+            
+            roleFilter = roleFilter.replaceAll("\\{0\\}", entityId);
             
             SearchControls constraints = new SearchControls();
             String searchScope  = this.config.getProperty(SEARCH_SCOPE);
@@ -157,7 +162,12 @@ public class LDAPUserInfoImpl extends AbstractUserGroupInfo implements UserInfo 
             String roleFilter = this.config.getProperty(ROLE_FILTER);
             String roleAttrId = this.config.getProperty(EMAIL_ATTR_ID, "mail");
             
-            roleFilter = roleFilter.replaceAll("\\{0\\}", group.getId());
+            String entityId = group.getId();
+            if (Boolean.parseBoolean(this.config.getProperty(IS_ENTITY_ID_DN, "false"))) {
+                entityId = extractUserId(entityId, group);
+            }
+            
+            roleFilter = roleFilter.replaceAll("\\{0\\}", entityId);
             
             SearchControls constraints = new SearchControls();
             String searchScope  = this.config.getProperty(SEARCH_SCOPE);

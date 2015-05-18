@@ -4,13 +4,13 @@ import static org.jbpm.services.task.identity.LDAPBaseTest.SearchScope.OBJECT_SC
 import static org.jbpm.services.task.identity.LDAPBaseTest.SearchScope.ONELEVEL_SCOPE;
 import static org.jbpm.services.task.identity.LDAPBaseTest.SearchScope.SUBTREE_SCOPE;
 
-import javax.naming.Context;
 import java.util.Iterator;
 import java.util.Properties;
 
+import javax.naming.Context;
+
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
@@ -142,7 +142,7 @@ public class LDAPUserInfoImplTest extends LDAPBaseTest {
         testGetMembersForGroup(false, false, false);
     }
 
-    @Ignore
+    
     @Test
     public void testGetMembersForGroupDnByDefaultAttribute() {
         testGetMembersForGroup(false, false, true);
@@ -152,8 +152,7 @@ public class LDAPUserInfoImplTest extends LDAPBaseTest {
     public void testGetMembersForGroupByCustomAttribute() {
         testGetMembersForGroup(false, true, false);
     }
-
-    @Ignore
+    
     @Test
     public void testGetMembersForGroupDnByCustomAttribute() {
         testGetMembersForGroup(false, true, true);
@@ -187,7 +186,7 @@ public class LDAPUserInfoImplTest extends LDAPBaseTest {
         testHasEmail(MANAGER, true, false);
     }
 
-    @Ignore
+    
     @Test
     public void testHasExistingEmailDnByDefaultAttribute() {
         testHasEmail(MANAGER_DN, true, false);
@@ -198,7 +197,7 @@ public class LDAPUserInfoImplTest extends LDAPBaseTest {
         testHasEmail(USER, true, true);
     }
 
-    @Ignore
+    
     @Test
     public void testHasExistingEmailDnByCustomAttribute() {
         testHasEmail(USER_DN, true, true);
