@@ -13,7 +13,7 @@
    height="600"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
+   inkscape:version="0.48.3.1 r9886"
    sodipodi:docname="overconstrainedPlanning.svg"
    inkscape:export-filename="overconstrainedPlanning.png"
    inkscape:export-xdpi="90"
@@ -249,13 +249,13 @@
      inkscape:cx="382.49497"
      inkscape:cy="300"
      inkscape:document-units="px"
-     inkscape:current-layer="layer6"
+     inkscape:current-layer="layer1"
      showgrid="true"
      width="800px"
      borderlayer="true"
      gridtolerance="10"
-     inkscape:window-width="1366"
-     inkscape:window-height="702"
+     inkscape:window-width="1680"
+     inkscape:window-height="991"
      inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
@@ -343,7 +343,7 @@
            x="40"
            y="140.00014"
            style="font-size:16px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-         id="flowPara3347">If there is no feasible score, don't assign everything.</flowPara></flowRoot>    <flowRoot
+         id="flowPara3347">If there is no feasible solution that assigns everything, then assign as many as possible.</flowPara></flowRoot>    <flowRoot
        style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"
        id="flowRoot3472-8"
        xml:space="preserve"
@@ -955,7 +955,7 @@
            id="rect3462" /></flowRegion><flowPara
          id="flowPara3464"><flowSpan
    id="flowSpan3466"
-   style="fill:#a40000">-1hard</flowSpan> / <flowSpan
+   style="fill:#a40000">-2hard</flowSpan> / <flowSpan
    id="flowSpan3468"
    style="fill:#8f5902">0medium</flowSpan> / <flowSpan
    id="flowSpan3470"
