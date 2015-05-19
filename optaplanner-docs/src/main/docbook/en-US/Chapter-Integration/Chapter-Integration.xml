@@ -221,9 +221,9 @@
         </listitem>
 
         <listitem>
-          <para>Add lines to <literal>android</literal> area in the <literal>build.gradle</literal> file in your Android
-          project to allow classes of <literal>java.*</literal> package inside the <literal>javabeans-1.0.jar</literal>
-          file, because otherwise file will not be accepted:</para>
+          <para>Add these lines to the <literal>android</literal> area in the <literal>build.gradle</literal> file in your Android
+          project to allow classes of the <literal>java.*</literal> package inside the <literal>javabeans-1.0.jar</literal>
+          file to be used:</para>
 
           <programlisting language="gradle">android {
 ...
