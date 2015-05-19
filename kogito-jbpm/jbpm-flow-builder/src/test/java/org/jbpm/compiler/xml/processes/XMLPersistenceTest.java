@@ -177,7 +177,7 @@ public class XMLPersistenceTest extends XMLTestCase {
         };
         process.setMetaData("routerLayout", 1);
         
-        List<String> imports = new ArrayList<String>();
+        Set<String> imports = new HashSet<String>();
         imports.add("import1");
         imports.add("import2");
         process.setImports(imports);

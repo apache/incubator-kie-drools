@@ -311,35 +311,34 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 if (actionNode.getAction() == null) {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "Action node '" + node.getName() + "' [" + node.getId() + "] has no action."));
-                } else {
-                    if (actionNode.getAction() instanceof DroolsConsequenceAction) {
-                        DroolsConsequenceAction droolsAction = (DroolsConsequenceAction) actionNode.getAction();
-                        String actionString = droolsAction.getConsequence();
-                        if (actionString == null) {
-                            errors.add(new ProcessValidationErrorImpl(process,
+                } else if (actionNode.getAction() instanceof DroolsConsequenceAction) {
+                    DroolsConsequenceAction droolsAction = (DroolsConsequenceAction) actionNode.getAction();
+                    String actionString = droolsAction.getConsequence();
+                    if (actionString == null) {
+                        errors.add(new ProcessValidationErrorImpl(process,
                                 "Action node '" + node.getName() + "' [" + node.getId() + "] has empty action."));
-                        } else if( "mvel".equals( droolsAction.getDialect() ) ) {
-                            try {
-                                ExpressionCompiler compiler = new ExpressionCompiler(actionString);
-                                compiler.setVerifying(true);
-                                ParserContext parserContext = new ParserContext();
-                                //parserContext.setStrictTypeEnforcement(true);
-                                compiler.compile(parserContext);
-                                List<ErrorDetail> mvelErrors = parserContext.getErrorList();
-                                if (mvelErrors != null) {
-                                    for (Iterator<ErrorDetail> iterator = mvelErrors.iterator(); iterator.hasNext(); ) {
-                                        ErrorDetail error = iterator.next();
-                                        errors.add(new ProcessValidationErrorImpl(process,
+                    } else if( "mvel".equals( droolsAction.getDialect() ) ) {
+                        try {
+                            ExpressionCompiler compiler = new ExpressionCompiler(actionString);
+                            compiler.setVerifying(true);
+                            ParserContext parserContext = new ParserContext();
+                            //parserContext.setStrictTypeEnforcement(true);
+                            compiler.compile(parserContext);
+                            List<ErrorDetail> mvelErrors = parserContext.getErrorList();
+                            if (mvelErrors != null) {
+                                for (Iterator<ErrorDetail> iterator = mvelErrors.iterator(); iterator.hasNext(); ) {
+                                    ErrorDetail error = iterator.next();
+                                    errors.add(new ProcessValidationErrorImpl(process,
                                             "Action node '" + node.getName() + "' [" + node.getId() + "] has invalid action: " + error.getMessage() + "."));
-                                    }
                                 }
-                            } catch (Throwable t) {
-                                errors.add(new ProcessValidationErrorImpl(process,
-                                    "Action node '" + node.getName() + "' [" + node.getId() + "] has invalid action: " + t.getMessage() + "."));
                             }
+                        } catch (Throwable t) {
+                            errors.add(new ProcessValidationErrorImpl(process,
+                                    "Action node '" + node.getName() + "' [" + node.getId() + "] has invalid action: " + t.getMessage() + "."));
                         }
-                        validateCompensationIntermediateOrEndEvent(actionNode, process, errors);
                     }
+                    // TODO: validation for "java" and "drools" scripts!
+                    validateCompensationIntermediateOrEndEvent(actionNode, process, errors);
                 }
             } else if (node instanceof WorkItemNode) {
                 final WorkItemNode workItemNode = (WorkItemNode) node;

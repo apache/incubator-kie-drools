@@ -23,6 +23,10 @@ import org.jbpm.process.builder.ProcessClassBuilder;
 import org.jbpm.process.builder.ReturnValueEvaluatorBuilder;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 
+/**
+ * Please make sure to use the getter methods when referring to the static final fields, 
+ * because this class is extended in other modules (jbpm-kie-services). 
+ */
 public class XPATHProcessDialect implements ProcessDialect {
 
 	public static final String ID = "XPath";

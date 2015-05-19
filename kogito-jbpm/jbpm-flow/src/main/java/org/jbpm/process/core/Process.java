@@ -18,6 +18,7 @@ package org.jbpm.process.core;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface Process extends org.kie.api.definition.process.Process, ContextContainer {
 
@@ -61,14 +62,14 @@ public interface Process extends org.kie.api.definition.process.Process, Context
      * 
      * @return	the imports of this RuleFlow process
      */
-    List<String> getImports();
+    Set<String> getImports();
     
     /**
      * Sets the imports of this RuleFlow process
      * 
      * @param imports	the imports as a List of fully qualified class names
      */
-    void setImports(List<String> imports);
+    void setImports(Set<String> imports);
     
     /**
      * Returns the function imports of this RuleFlow process.

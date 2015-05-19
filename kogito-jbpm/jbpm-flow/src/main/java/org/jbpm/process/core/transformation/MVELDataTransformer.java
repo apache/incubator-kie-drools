@@ -18,6 +18,7 @@ package org.jbpm.process.core.transformation;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.core.util.MVELSafeHelper;
 import org.kie.api.runtime.process.DataTransformer;
@@ -47,7 +48,7 @@ public class MVELDataTransformer implements DataTransformer {
 		ParserContext context = new ParserContext(config);
 		if (parameters != null) {
 			@SuppressWarnings("unchecked")
-			List<String> imports = (List<String>)parameters.get("imports");
+			Set<String> imports = (Set<String>)parameters.get("imports");
 			if (imports != null) {
 				for(String clazz : imports) {
 					try {

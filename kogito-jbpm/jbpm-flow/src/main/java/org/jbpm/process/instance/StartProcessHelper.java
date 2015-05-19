@@ -88,7 +88,7 @@ public final class StartProcessHelper {
         return null;
     }
     
-    protected static Comparator<Process> getComparator(String name) {
+    public static Comparator<Process> getComparator(String name) {
         
         if (comparatorClass != null) {
             try {
@@ -116,10 +116,16 @@ public final class StartProcessHelper {
             if (o1.getName().equals(processName) && o2.getName().equals(processName)) {
                 // then match on version
                 try {
-                    if ((Double.valueOf(o1.getVersion()) > Double.valueOf(o2.getVersion()))) {
+                    if( o1.getVersion() != null && o2.getVersion() != null ) { 
+                        if ((Double.valueOf(o1.getVersion()) > Double.valueOf(o2.getVersion()))) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
+                    } else if( o1.getVersion() != null ) { 
                         return 1;
-                    } else {
-                        return -1;
+                    } else { 
+                        return o1.getId().compareTo(o2.getId());
                     }
                 } catch (NumberFormatException e) {
                     throw new IllegalArgumentException("Could not parse version: " + o1.getVersion() + " " + o2.getVersion(), e);

@@ -41,9 +41,9 @@ public class ImportHandler extends BaseAbstractHandler
         final String name = attrs.getValue( "name" );        
         emptyAttributeCheck( localName, "name", name, parser );       
         
-        java.util.List<String> list = process.getImports();
+        java.util.Set<String> list = process.getImports();
         if ( list == null ) {
-            list = new ArrayList<String>();
+            list = new HashSet<String>();
             process.setImports( list );
         }
         list.add( name );

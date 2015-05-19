@@ -104,7 +104,7 @@ public class XmlWorkflowProcessDumper {
         xmlDump.append("  </header>" + EOL + EOL);
     }
     
-    private void visitImports(List<String> imports, StringBuilder xmlDump) {
+    private void visitImports(Collection<String> imports, StringBuilder xmlDump) {
         if (imports != null && imports.size() > 0) {
             xmlDump.append("    <imports>" + EOL);
             for (String importString: imports) {

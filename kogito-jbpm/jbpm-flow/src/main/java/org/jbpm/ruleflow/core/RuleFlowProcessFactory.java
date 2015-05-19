@@ -18,6 +18,7 @@ package org.jbpm.ruleflow.core;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.drools.core.process.core.datatype.DataType;
@@ -65,7 +66,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
     }
 
     public RuleFlowProcessFactory imports(String... imports) {
-    	getRuleFlowProcess().setImports(Arrays.asList(imports));
+    	getRuleFlowProcess().setImports(new HashSet<String>(Arrays.asList(imports)));
         return this;
     }
     

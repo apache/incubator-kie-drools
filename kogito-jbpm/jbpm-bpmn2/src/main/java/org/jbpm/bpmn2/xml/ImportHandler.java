@@ -1,6 +1,5 @@
 package org.jbpm.bpmn2.xml;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -48,9 +47,9 @@ public class ImportHandler extends BaseAbstractHandler implements Handler {
     		typedImports.put(namespace, location);
 		} else {
 		
-    		java.util.List<String> list = process.getImports();
+    		java.util.Set<String> list = process.getImports();
     		if (list == null) {
-    			list = new ArrayList<String>();
+    			list = new HashSet<String>();
     			process.setImports(list);
     		}
     		list.add(name);

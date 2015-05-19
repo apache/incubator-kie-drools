@@ -327,7 +327,7 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
     
     protected void visitHeader(WorkflowProcess process, StringBuilder xmlDump, int metaDataType) {
         Map<String, Object> metaData = getMetaData(process.getMetaData());
-    	List<String> imports = ((org.jbpm.process.core.Process) process).getImports();
+    	Set<String> imports = ((org.jbpm.process.core.Process) process).getImports();
     	Map<String, String> globals = ((org.jbpm.process.core.Process) process).getGlobals();
     	if ((imports != null && !imports.isEmpty()) || (globals != null && globals.size() > 0) || !metaData.isEmpty()) {
     		xmlDump.append("    <extensionElements>" + EOL);

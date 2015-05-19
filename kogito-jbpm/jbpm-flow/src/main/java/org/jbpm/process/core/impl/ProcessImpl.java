@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
@@ -49,7 +50,7 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
     private ContextContainer contextContainer = new ContextContainerImpl();
     private Map<String, Object> metaData = new HashMap<String, Object>();
     private transient Map<String, Object> runtimeMetaData = new HashMap<String, Object>();
-    private List<String> imports;
+    private Set<String> imports;
     private Map<String, String> globals;
     private List<String> functionImports;
 
@@ -161,11 +162,11 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
         this.resource = resource;        
     }
     
-    public List<String> getImports() {
+    public Set<String> getImports() {
         return imports;
     }
 
-    public void setImports(List<String> imports) {
+    public void setImports(Set<String> imports) {
         this.imports = imports;
     }
     

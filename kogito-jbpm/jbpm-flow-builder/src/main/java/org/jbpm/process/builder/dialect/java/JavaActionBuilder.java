@@ -43,8 +43,29 @@ public class JavaActionBuilder extends AbstractJavaProcessBuilder
                       final ActionDescr actionDescr,
                       final ContextResolver contextResolver) {
 
-        final String className = "action" + context.getNextId();               
+        final String className = getClassName(context);
 
+        AnalysisResult analysis = getAnalysis(context, actionDescr);
+
+        if ( analysis == null ) {
+            // build is not possible without analysis results
+            return;
+        }
+
+        buildAction(context, 
+                    action, 
+                    actionDescr, 
+                    contextResolver, 
+                    className, 
+                    analysis);
+    }
+   
+    protected String getClassName(PackageBuildContext context) { 
+       return "action" + context.getNextId(); 
+    }
+    
+    protected AnalysisResult getAnalysis(final PackageBuildContext context,
+                                       final ActionDescr actionDescr) {
         JavaDialect dialect = (JavaDialect) context.getDialect( "java" );
         
         Map<String, Class<?>> variables = new HashMap<String,Class<?>>();
@@ -53,12 +74,16 @@ public class JavaActionBuilder extends AbstractJavaProcessBuilder
                                                         actionDescr,
                                                         actionDescr.getText(),
                                                         boundIdentifiers);
-
-        if ( analysis == null ) {
-            // not possible to get the analysis results
-            return;
-        }
-
+        
+        return analysis;
+    }
+    
+    protected void buildAction(final PackageBuildContext context,
+            final DroolsAction action,
+            final ActionDescr actionDescr,
+            final ContextResolver contextResolver,
+            String className,
+            AnalysisResult analysis) {
         Set<String> identifiers = analysis.getBoundIdentifiers().getGlobals().keySet();
 
         final Map map = createVariableContext( className,
@@ -70,13 +95,13 @@ public class JavaActionBuilder extends AbstractJavaProcessBuilder
         map.put( "text",
                  ProcessKnowledgeHelperFixer.fix( actionDescr.getText() ));
 
-        generatTemplates( "actionMethod",
+        generateTemplates( "actionMethod",
                           "actionInvoker",
                           (ProcessBuildContext)context,
                           className,
                           map,
                           action,
-                          actionDescr );
+                          actionDescr ); 
     }
 
 }

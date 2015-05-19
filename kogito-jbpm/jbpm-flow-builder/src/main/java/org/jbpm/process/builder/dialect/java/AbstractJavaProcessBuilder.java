@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.util.StringUtils;
 import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.core.util.StringUtils;
 import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -108,7 +108,7 @@ public class AbstractJavaProcessBuilder {
     	return map;
     }
 
-    public void generatTemplates(final String ruleTemplate,
+    public void generateTemplates(final String ruleTemplate,
                                  final String invokerTemplate,
                                  final ProcessBuildContext context,
                                  final String className,

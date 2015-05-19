@@ -2,11 +2,10 @@ package org.jbpm.process.builder.dialect.java;
 
 import java.util.Iterator;
 
-import org.kie.api.definition.process.Process;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
-import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
+import org.drools.core.rule.JavaDialectRuntimeData;
 import org.jbpm.process.builder.ActionBuilder;
 import org.jbpm.process.builder.AssignmentBuilder;
 import org.jbpm.process.builder.ProcessBuildContext;
@@ -15,6 +14,7 @@ import org.jbpm.process.builder.ProcessErrorHandler;
 import org.jbpm.process.builder.ProcessInvokerErrorHandler;
 import org.jbpm.process.builder.ReturnValueEvaluatorBuilder;
 import org.jbpm.process.builder.dialect.ProcessDialect;
+import org.kie.api.definition.process.Process;
 
 public class JavaProcessDialect implements ProcessDialect {
 
@@ -93,8 +93,7 @@ public class JavaProcessDialect implements ProcessDialect {
 	}
 
 	public AssignmentBuilder getAssignmentBuilder() {
-		throw new UnsupportedOperationException(
-			"Java assignments not supported");
+		throw new UnsupportedOperationException("Java assignments not supported");
 	}
 
 }
