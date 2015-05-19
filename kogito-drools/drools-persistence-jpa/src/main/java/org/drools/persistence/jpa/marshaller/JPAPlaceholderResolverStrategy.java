@@ -45,6 +45,8 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
     private EntityManagerFactory emf;
     private ClassLoader classLoader;
 
+    private boolean closeEmf = false;
+
     private static final ThreadLocal<EntityManager> persister = new ThreadLocal<EntityManager>();
     
     public JPAPlaceholderResolverStrategy(Environment env) {
@@ -63,6 +65,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
             Thread.currentThread().setContextClassLoader(cl);
 
             this.emf = Persistence.createEntityManagerFactory(persistenceUnit);
+            this.closeEmf = true;
 
         } finally {
             Thread.currentThread().setContextClassLoader(tccl);
@@ -245,7 +248,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
 
     @Override
     public void close() {
-        if (this.emf != null) {
+        if (closeEmf && this.emf != null) {
             this.emf.close();
             this.emf = null;
         }
