@@ -221,12 +221,20 @@
         </listitem>
 
         <listitem>
-          <para>Add <literal>--core-library</literal> flag to the <literal>dx</literal> file in
-          <literal>build-tools</literal> folder in your Android SDK, because otherwise it will not accept classes in the
-          <literal>java.*</literal> package of the <literal>javabeans-1.0.jar</literal>. The last line of that file
-          should look something like this:</para>
+          <para>Add lines to <literal>android</literal> area in the <literal>build.gradle</literal> file in your Android
+          project to allow classes of <literal>java.*</literal> package inside the <literal>javabeans-1.0.jar</literal>
+          file, because otherwise file will not be accepted:</para>
 
-          <programlisting>exec java $javaOpts -jar "$jarpath" --core-library "$@"</programlisting>
+          <programlisting language="gradle">android {
+...
+    dexOptions {
+        preDexLibraries = false
+    }
+    project.tasks.withType(com.android.build.gradle.tasks.Dex) {
+        additionalParameters=['--core-library']
+    }
+...
+}</programlisting>
         </listitem>
 
         <listitem>
