@@ -225,7 +225,7 @@
           project to allow classes of <literal>java.*</literal> package inside the <literal>javabeans-1.0.jar</literal>
           file, because otherwise file will not be accepted:</para>
 
-          <programlisting language="groovy">android {
+          <programlisting language="gradle">android {
 ...
     dexOptions {
         preDexLibraries = false
@@ -241,7 +241,7 @@
           <para>Add a dependency to the <literal>build.gradle</literal> file in your Android project to exclude
           <literal>org.drools</literal> and <literal>xmlpull</literal> dependencies:</para>
 
-          <programlisting language="groovy">dependencies {
+          <programlisting language="gradle">dependencies {
 ...
     compile('org.optaplanner:optaplanner-core:...') {
         exclude group: 'xmlpull'
