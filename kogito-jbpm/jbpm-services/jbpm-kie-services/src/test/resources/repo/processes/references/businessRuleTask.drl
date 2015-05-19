@@ -1,0 +1,10 @@
+package com.sample;
+
+global java.util.List list;
+
+rule MyRule
+  ruleflow-group "org.jbpm.kie.test.references.rules"
+  when
+  then
+    list.add("Executed");
+end

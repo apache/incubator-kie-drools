@@ -2,7 +2,6 @@ package org.jbpm.kie.services.test;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,12 +36,12 @@ public class BPMN2DataServiceImplMultiThreadTest extends AbstractBaseTest {
 
 		final String process1Content = new String(process1, "UTF-8");
 		final String process2Content = new String(process2, "UTF-8");
-		
+	
 		Thread t1 = new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
-				ProcessDefinition def = bpmn2Service.buildProcessDefinition("test", process1Content, this.getClass().getClassLoader(), true);
+				ProcessDefinition def = bpmn2Service.buildProcessDefinition("test", process1Content, null, true);
 				defs.add(def);
 			}
 		});
@@ -51,7 +50,7 @@ public class BPMN2DataServiceImplMultiThreadTest extends AbstractBaseTest {
 			
 			@Override
 			public void run() {
-				ProcessDefinition def = bpmn2Service.buildProcessDefinition("test", process2Content, this.getClass().getClassLoader(), true);
+				ProcessDefinition def = bpmn2Service.buildProcessDefinition("test", process2Content, null, true);
 				defs.add(def);
 			}
 		});

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI" 
+             xmlns:g="http://www.jboss.org/drools/flow/gpd" 
+             xmlns:tns="http://www.jboss.org/drools" 
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" 
+             id="Definition" 
+             expressionLanguage="http://www.mvel.org/2.0" 
+             typeLanguage="http://www.java.com/javaTypes">
+
+  <process id="org.jbpm.kie.test.references.qualified.drools" 
+           tns:packageName="org.jbpm.kie.services.test" 
+           name="ScriptTask Process"
+           isExecutable="true" processType="Private">
+
+    <extensionElements>
+     <tns:import name="org.jbpm.kie.test.objects.OtherPerson" />
+    </extensionElements>
+
+    <startEvent id="_1" name="Start" />
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>
+
+    <scriptTask id="_2" name="Started" scriptFormat="http://www.java.com/java" >
+      <script>long id = kcontext.getProcessInstance().getId();
+              kcontext.getKieRuntime().insert(id);</script>
+    </scriptTask>
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3"/>
+
+    <intermediateCatchEvent id="_3" name="Proceed">
+      <conditionalEventDefinition id="ConditionalEventDefinition_1">
+        <condition xsi:type="tFormalExpression" id="FormalExpression_1" language="http://www.jboss.org/drools/rule">
+        thing: org.jbpm.kie.test.objects.Thing() 
+        other: OtherPerson()
+        varId: Long() 
+        varName: String() 
+        org.jbpm.kie.test.objects.Person(id == varId, name == varName)
+        </condition>
+      </conditionalEventDefinition>
+    </intermediateCatchEvent>
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4"/>
+
+    <scriptTask id="_4" name="Proceeded">
+      <script>System.out.println(&quot;Proceeded for person: &quot; + kcontext.getVariable(&quot;personName&quot;));</script>
+    </scriptTask>
+    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5"/>
+
+    <endEvent id="_5" name="End">
+      <terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </endEvent>
+
+  </process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="org.jbpm.kie.test.references.qualified.drools">
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1" isHorizontal="true">
+        <dc:Bounds height="48.0" width="48.0" x="16.0" y="19.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="_2" isHorizontal="true">
+        <dc:Bounds height="55.0" width="85.0" x="96.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_IntermediateCatchEvent_1" bpmnElement="_3" isHorizontal="true">
+        <dc:Bounds height="32.0" width="32.0" x="213.0" y="27.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_5ndEvent_1" bpmnElement="_5" isHorizontal="true">
+        <dc:Bounds height="48.0" width="48.0" x="394.0" y="19.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="_4" isHorizontal="true">
+        <dc:Bounds height="55.0" width="85.0" x="277.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="_1-_2" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_ScriptTask_1">
+        <di:waypoint xsi:type="dc:Point" x="64.0" y="43.0"/>
+        <di:waypoint xsi:type="dc:Point" x="96.0" y="43.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="_2-_3" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_IntermediateCatchEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="181.0" y="43.0"/>
+        <di:waypoint xsi:type="dc:Point" x="213.0" y="43.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="_4-_5" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_5ndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="362.0" y="43.0"/>
+        <di:waypoint xsi:type="dc:Point" x="394.0" y="43.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="_3-_4" sourceElement="BPMNShape_IntermediateCatchEvent_1" targetElement="BPMNShape_ScriptTask_2">
+        <di:waypoint xsi:type="dc:Point" x="245.0" y="43.0"/>
+        <di:waypoint xsi:type="dc:Point" x="277.0" y="43.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -103,8 +103,9 @@ public abstract class AbstractBaseTest {
 		buildDatasource();
 		emf = EntityManagerFactoryManager.get().getOrCreate("org.jbpm.domain");
 		identityProvider = new TestIdentityProvider();
+		
 		// build definition service
-		bpmn2Service = new BPMN2DataServiceImpl();    	
+		bpmn2Service = new BPMN2DataServiceImpl();
 		
 		// build deployment service
 		deploymentService = new KModuleDeploymentService();
