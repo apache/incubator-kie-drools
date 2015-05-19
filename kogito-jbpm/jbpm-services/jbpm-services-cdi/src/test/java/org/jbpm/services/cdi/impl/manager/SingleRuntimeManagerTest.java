@@ -32,7 +32,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jbpm.kie.test.util.AbstractBaseTest;
+import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -51,7 +51,7 @@ import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 @RunWith(Arquillian.class)
-public class SingleRuntimeManagerTest extends AbstractBaseTest {
+public class SingleRuntimeManagerTest extends AbstractKieServicesBaseTest {
     
     @Deployment()
     public static Archive<?> createDeployment() {

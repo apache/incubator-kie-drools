@@ -34,7 +34,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
 import org.jbpm.kie.services.test.TestIdentityProvider;
-import org.jbpm.kie.test.util.AbstractBaseTest;
+import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
@@ -58,7 +58,7 @@ import org.kie.internal.runtime.manager.context.EmptyContext;
 
 
 @RunWith(Arquillian.class)
-public class RuntimeDataServiceTest extends AbstractBaseTest {
+public class RuntimeDataServiceTest extends AbstractKieServicesBaseTest {
 
     @Deployment()
     public static Archive<?> createDeployment() {

@@ -31,7 +31,7 @@ import java.util.Map;
 
 import org.jbpm.kie.services.impl.DeployedUnitImpl;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
-import org.jbpm.kie.test.util.AbstractBaseTest;
+import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessDefinition;
@@ -50,7 +50,7 @@ import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.scanner.MavenRepository;
 
-public class KModuleWithDependenciesDeploymentServiceTest extends AbstractBaseTest {
+public class KModuleWithDependenciesDeploymentServiceTest extends AbstractKieServicesBaseTest {
    
     private List<DeploymentUnit> units = new ArrayList<DeploymentUnit>();
     

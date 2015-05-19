@@ -35,7 +35,7 @@ import java.util.Map;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.util.StringUtils;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
-import org.jbpm.kie.test.util.AbstractBaseTest;
+import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.UserTaskInstanceDesc;
@@ -59,7 +59,7 @@ import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UserTaskServiceImplTest extends AbstractBaseTest {
+public class UserTaskServiceImplTest extends AbstractKieServicesBaseTest {
 
 private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentServiceTest.class);   
     

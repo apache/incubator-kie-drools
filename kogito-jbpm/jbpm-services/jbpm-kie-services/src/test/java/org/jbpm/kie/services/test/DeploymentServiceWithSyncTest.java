@@ -34,7 +34,7 @@ import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.services.impl.store.DeploymentStore;
 import org.jbpm.kie.services.impl.store.DeploymentSyncInvoker;
 import org.jbpm.kie.services.impl.store.DeploymentSynchronizer;
-import org.jbpm.kie.test.util.AbstractBaseTest;
+import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
@@ -45,7 +45,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.scanner.MavenRepository;
 
-public class DeploymentServiceWithSyncTest extends AbstractBaseTest {
+public class DeploymentServiceWithSyncTest extends AbstractKieServicesBaseTest {
    
 	protected List<DeploymentUnit> units = new ArrayList<DeploymentUnit>();
     protected DeploymentStore store;

@@ -60,9 +60,9 @@ import org.slf4j.LoggerFactory;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
-public abstract class AbstractBaseTest {
+public abstract class AbstractKieServicesBaseTest {
 	
-	private static final Logger logger = LoggerFactory.getLogger(AbstractBaseTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(AbstractKieServicesBaseTest.class);
 	
 	protected static final String ARTIFACT_ID = "test-module";
 	protected static final String GROUP_ID = "org.jbpm.test";
@@ -135,8 +135,6 @@ public abstract class AbstractBaseTest {
 		userTaskService = new UserTaskServiceImpl();
 		((UserTaskServiceImpl) userTaskService).setDataService(runtimeDataService);
 		((UserTaskServiceImpl) userTaskService).setDeploymentService(deploymentService);
-		
-		
 	}
     
     protected String getPom(ReleaseId releaseId, ReleaseId... dependencies) {

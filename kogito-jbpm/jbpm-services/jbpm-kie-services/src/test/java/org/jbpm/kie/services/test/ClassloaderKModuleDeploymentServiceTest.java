@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
-import org.jbpm.kie.test.util.AbstractBaseTest;
+import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessDefinition;
@@ -51,7 +51,7 @@ import org.kie.internal.task.api.InternalTaskService;
 import org.kie.scanner.MavenRepository;
 
 
-public class ClassloaderKModuleDeploymentServiceTest extends AbstractBaseTest {
+public class ClassloaderKModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
     
     
     private List<DeploymentUnit> units = new ArrayList<DeploymentUnit>();

@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.util.IoUtils;
-import org.jbpm.kie.test.util.AbstractBaseTest;
+import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BPMN2DataServiceImplMultiThreadTest extends AbstractBaseTest {
+public class BPMN2DataServiceImplMultiThreadTest extends AbstractKieServicesBaseTest {
 
 	@Before
 	public void prepare() {

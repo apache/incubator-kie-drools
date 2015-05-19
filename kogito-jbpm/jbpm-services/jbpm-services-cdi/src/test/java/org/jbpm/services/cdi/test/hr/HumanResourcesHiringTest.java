@@ -35,7 +35,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
 import org.jbpm.kie.services.test.TestIdentityProvider;
-import org.jbpm.kie.test.util.AbstractBaseTest;
+import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
@@ -70,7 +70,7 @@ import org.slf4j.LoggerFactory;
 
 
 @RunWith(Arquillian.class)
-public class HumanResourcesHiringTest extends AbstractBaseTest {
+public class HumanResourcesHiringTest extends AbstractKieServicesBaseTest {
     
     private static final Logger logger = LoggerFactory.getLogger(HumanResourcesHiringTest.class);
 

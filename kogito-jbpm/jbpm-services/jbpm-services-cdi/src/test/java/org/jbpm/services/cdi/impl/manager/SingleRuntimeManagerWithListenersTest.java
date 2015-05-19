@@ -35,7 +35,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jbpm.kie.test.util.AbstractBaseTest;
+import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
 import org.jbpm.runtime.manager.impl.PerProcessInstanceRuntimeManager;
 import org.jbpm.runtime.manager.impl.RuntimeEngineImpl;
@@ -63,7 +63,7 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.EventService;
 
 @RunWith(Arquillian.class)
-public class SingleRuntimeManagerWithListenersTest extends AbstractBaseTest {
+public class SingleRuntimeManagerWithListenersTest extends AbstractKieServicesBaseTest {
     
     @Deployment()
     public static Archive<?> createDeployment() {

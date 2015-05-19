@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
-import org.jbpm.kie.test.util.AbstractBaseTest;
+import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessDefinition;
@@ -51,7 +51,7 @@ import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FilteredKModuleDeploymentServiceTest extends AbstractBaseTest {
+public class FilteredKModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
     
     private static final Logger logger = LoggerFactory.getLogger(FilteredKModuleDeploymentServiceTest.class);
    

@@ -30,7 +30,7 @@ import java.util.Map;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
-import org.jbpm.kie.test.util.AbstractBaseTest;
+import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.UserTaskDefinition;
@@ -42,7 +42,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.scanner.MavenRepository;
 
 
-public class BPMN2DataServicesTest extends AbstractBaseTest {
+public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
 
     private List<DeploymentUnit> units = new ArrayList<DeploymentUnit>();
     

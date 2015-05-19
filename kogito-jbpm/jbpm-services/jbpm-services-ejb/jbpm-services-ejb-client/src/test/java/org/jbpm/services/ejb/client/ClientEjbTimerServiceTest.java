@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
-import org.jbpm.kie.test.util.AbstractBaseTest;
+import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.ejb.api.DefinitionServiceEJBRemote;
 import org.jbpm.services.ejb.api.DeploymentServiceEJBRemote;
@@ -47,7 +47,7 @@ import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
 import org.kie.scanner.MavenRepository;
 
-public class ClientEjbTimerServiceTest extends AbstractBaseTest {
+public class ClientEjbTimerServiceTest extends AbstractKieServicesBaseTest {
 	
 	private static final String application = "sample-war-ejb-app";
 	
