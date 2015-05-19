@@ -39,6 +39,7 @@ import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.core.util.StringUtils;
+import org.jbpm.kie.services.impl.bpmn2.BPMN2DataServiceImpl;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.runtime.manager.impl.KModuleRegisterableItemsFactory;
@@ -285,7 +286,8 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     protected Object getInstanceFromModel(ObjectModel model, KieContainer kieContainer, Map<String, Object> contaxtParams) {
     	ObjectModelResolver resolver = ObjectModelResolverProvider.get(model.getResolver());
 		if (resolver == null) {
-			logger.warn("Unable to find ObjectModelResolver for {}", model.getResolver());
+		    // if we don't throw an exception here, we have an NPE below.. 
+			throw new IllegalStateException("Unable to find ObjectModelResolver for " + model.getResolver());
 		}
 		
 		return resolver.getInstance(model, kieContainer.getClassLoader(), contaxtParams);
@@ -298,7 +300,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                 ProcessAssetDesc process;
                 try {
                     String processString = new String(module.getBytes(fileName), "UTF-8");
-                    process = (ProcessAssetDesc) bpmn2Service.buildProcessDefinition(unit.getIdentifier(), processString, kieContainer.getClassLoader(), true);
+                    process = (ProcessAssetDesc) bpmn2Service.buildProcessDefinition(unit.getIdentifier(), processString, kieContainer, true);
                     if (process == null) {
                     	throw new IllegalArgumentException("Unable to read process " + fileName);
                     }
@@ -369,7 +371,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 	}
 
 	public void setBpmn2Service(DefinitionService bpmn2Service) {
-		this.bpmn2Service = bpmn2Service;
+	    this.bpmn2Service = bpmn2Service;
 	}
 
 	public void setMerger(DeploymentDescriptorMerger merger) {

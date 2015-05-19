@@ -22,6 +22,11 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 
+/**
+ * This handler collects information about item definitions, which are
+ * basically BPMN2 elements that alias an external (java) type to an 
+ * internal alias
+ */
 public class DataServiceItemDefinitionHandler extends ItemDefinitionHandler {
 
     private BPMN2DataServiceSemanticModule module;
@@ -29,7 +34,7 @@ public class DataServiceItemDefinitionHandler extends ItemDefinitionHandler {
     
     public DataServiceItemDefinitionHandler(BPMN2DataServiceSemanticModule module) {
 		this.module = module;
-		this.repository = module.getRepo();
+        this.repository = module.getRepo();
 	}
 
 	@Override
@@ -40,16 +45,21 @@ public class DataServiceItemDefinitionHandler extends ItemDefinitionHandler {
         String id = item.getId();
         String structureRef = item.getStructureRef();
         String itemDefinitionId = module.getRepoHelper().getGlobalItemDefinitions().get(id);
-        if(itemDefinitionId == null){
+        
+        if(itemDefinitionId == null) {
         	module.getRepoHelper().getGlobalItemDefinitions().put(id, structureRef);
+        
+            // The process id isn't known yet, so we use the thread local process
+        	ProcessDescRepoHelper repoHelper = ProcessDescriptionRepository.LOCAL_PROCESS_REPO_HELPER.get();
+        	if( structureRef.contains(".") ) { 
+        	    repoHelper.getReferencedClasses().add(structureRef);
+        	} else { 
+        	    repoHelper.getUnqualifiedClasses().add(structureRef);
+        	}
         }
         
         return item;
 
-    }
-
-    public void setRepository(ProcessDescriptionRepository repository) {
-        this.repository = repository;
     }
 
 }

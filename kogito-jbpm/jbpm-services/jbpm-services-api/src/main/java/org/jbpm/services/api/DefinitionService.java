@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.UserTaskDefinition;
+import org.kie.api.runtime.KieContainer;
 
 /**
  * Provides details from definition point of view which is extracted from BPMN2 definitions.
@@ -41,13 +42,14 @@ public interface DefinitionService {
 	 * @param deploymentId identifier of deployment this process belongs to, 
 	 * 			might be null if built definition does not need to be stored
 	 * @param bpmn2Content actual BPMN xml content as string to be parsed and processed
-	 * @param classLoader class loader that should be used while parsing the BPMN2 in case custom classes are referenced
+	 * @param kieContainer the {@link KieContainer} instance that contains the deployment project: this should be used when 
+	 *          parsing the BPMN2 in case custom classes or other project resources (processes, rules) are referenced
 	 * @param cache indicates if the definition service should cache this <code>ProcessDefinition</code>
 	 * @return fully populated <code>ProcessDefinition</code>
 	 * @throws IllegalArgumentException in case build operation cannot be completed
 	 */
 	ProcessDefinition buildProcessDefinition(String deploymentId, String bpmn2Content,
-			ClassLoader classLoader, boolean cache) throws IllegalArgumentException;
+			KieContainer kieContainer, boolean cache) throws IllegalArgumentException;
 
 	/**
 	 * Returns previously built <code>ProcessDefinition</code>. 
@@ -79,9 +81,29 @@ public interface DefinitionService {
 	 * NOTE: This method assumes process has already been built by invoking <code>buildProcessDefinition</code> method
      * @param deploymentId identifier of deployment that process belongs to
 	 * @param processId identifier of the process
-     * @return map of all process variables defined or empty map in none found
+     * @return map of all process variables defined or empty map if none are found
      */
     Map<String, String> getProcessVariables(String deploymentId, String processId);
+   
+    /**
+     * Returns a list of all referenced java classes defined in the given process.
+     * <br/>
+     * NOTE: This method assumes process has already been built by invoking <code>buildProcessDefinition</code> method
+     * @param deploymentId identifier of deployment that process belongs to
+     * @param processId identifier of the process
+     * @return a list of all referenced classes defined or an empty list if none are found
+     */
+    Collection<String> getJavaClasses(String deploymentId, String processId);
+   
+    /**
+     * Returns a list of all referenced rules used in the given process.
+     * <br/>
+     * NOTE: This method assumes process has already been built by invoking <code>buildProcessDefinition</code> method
+     * @param deploymentId identifier of deployment that process belongs to
+     * @param processId identifier of the process
+     * @return a list of all referenced rules or an empty list if none are found
+     */
+    Collection<String> getRuleSets(String deploymentId, String processId);
     
     /**
      * Returns service (domain specific) tasks defined in the process where:
@@ -93,7 +115,7 @@ public interface DefinitionService {
 	 * NOTE: This method assumes process has already been built by invoking <code>buildProcessDefinition</code> method
      * @param deploymentId identifier of deployment that process belongs to
 	 * @param processId identifier of the process
-     * @return returns map of all found service tasks or empty map if none found
+     * @return returns map of all found service tasks or empty map if none are found
      */
     Map<String, String> getServiceTasks(String deploymentId, String processId);
     

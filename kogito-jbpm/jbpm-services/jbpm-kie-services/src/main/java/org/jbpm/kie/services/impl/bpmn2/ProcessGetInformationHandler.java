@@ -22,8 +22,11 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+/**
+ * This handler sets up a process (setting up the {@link ProcessDescRepoHelper} instance, and the {@link ProcessAssetDesc} instance)
+ * so that information can be collected when processing the process. 
+ */
 public class ProcessGetInformationHandler extends ProcessHandler {
-
     
     private ProcessDescriptionRepository repository;
     
@@ -35,22 +38,25 @@ public class ProcessGetInformationHandler extends ProcessHandler {
     public ProcessGetInformationHandler(BPMN2DataServiceSemanticModule module) {
     	this.module = module;
     	this.repository = module.getRepo();
-		
 	}
 
     @Override
     public Object start(String uri, String localName, Attributes attrs,
             ExtensibleXmlParser parser) throws SAXException {
     	RuleFlowProcess process = (RuleFlowProcess) super.start(uri, localName, attrs, parser);
-        
-    	ProcessDescRepoHelper value = new ProcessDescRepoHelper(); 
-        ProcessAssetDesc definition = new ProcessAssetDesc(process.getId(), process.getName(), process.getVersion()
+       
+    	ProcessDescRepoHelper helper = ProcessDescriptionRepository.LOCAL_PROCESS_REPO_HELPER.get();
+        ProcessAssetDesc processDesc = new ProcessAssetDesc(process.getId(), process.getName(), process.getVersion()
                 , process.getPackageName(), process.getType(), process.getKnowledgeType().name(), process.getNamespace(), "");
         
-        value.setProcess(definition);
-        repository.addProcessDescription(definition.getId(), value);
+        helper.setProcess(processDesc);
+       
+        // after this method, we no longer refer to the ProcessDescriptionRepository.LOCAL_PROCESS_REPO_HELPER
+        repository.addProcessDescription(processDesc.getId(), helper);
+        // for when this thread happens to be reused
+        ProcessDescriptionRepository.LOCAL_PROCESS_REPO_HELPER.set(new ProcessDescRepoHelper());
         
-        module.getRepoHelper().setProcess(value.getProcess());
+        module.getRepoHelper().setProcess(processDesc);
         
         return process;
     }

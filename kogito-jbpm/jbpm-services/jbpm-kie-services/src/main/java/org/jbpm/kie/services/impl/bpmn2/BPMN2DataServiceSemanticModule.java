@@ -16,12 +16,13 @@
 package org.jbpm.kie.services.impl.bpmn2;
 
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
+import org.jbpm.bpmn2.xml.BusinessRuleTaskHandler;
 
 public class BPMN2DataServiceSemanticModule extends BPMNSemanticModule {
-	
-	private static ThreadLocal<ProcessDescRepoHelper> helper = new ThreadLocal<ProcessDescRepoHelper>();
 
-//	private ProcessDescRepoHelper repoHelper = new ProcessDescRepoHelper();
+    // also used by the BPMN2DataServiceExtensionSemanticModule
+	static ThreadLocal<ProcessDescRepoHelper> helper = new ThreadLocal<ProcessDescRepoHelper>();
+	
 	private ProcessDescriptionRepository repo = new ProcessDescriptionRepository();
     
     private HumanTaskGetInformationHandler taskHandler = null;    
@@ -30,7 +31,8 @@ public class BPMN2DataServiceSemanticModule extends BPMNSemanticModule {
     private GetReusableSubProcessesHandler reusableSubprocessHandler = null;    
     private DataServiceItemDefinitionHandler itemDefinitionHandler = null;    
     private AbstractTaskGetInformationHandler abstractTaskHandler = null;
-    
+    private ProcessGetBusinessRuleHandler businessRuleTaskHandler = null;
+   
     public BPMN2DataServiceSemanticModule() {
         super();
         taskHandler = new HumanTaskGetInformationHandler(this);
@@ -39,6 +41,7 @@ public class BPMN2DataServiceSemanticModule extends BPMNSemanticModule {
         reusableSubprocessHandler = new GetReusableSubProcessesHandler(this);    
         itemDefinitionHandler = new DataServiceItemDefinitionHandler(this);    
         abstractTaskHandler = new AbstractTaskGetInformationHandler(this);
+        businessRuleTaskHandler = new ProcessGetBusinessRuleHandler(this);
         init();
     }
 
@@ -65,14 +68,14 @@ public class BPMN2DataServiceSemanticModule extends BPMNSemanticModule {
         this.abstractTaskHandler = abstractTaskHandler;
     }
     
-    public void init(){       
-        
+    public void init() {       
         addHandler("userTask", taskHandler);
         addHandler("process", processHandler);
         addHandler("property", processInputHandler);
         addHandler("itemDefinition", itemDefinitionHandler);
         addHandler("callActivity", reusableSubprocessHandler);
         addHandler("task", abstractTaskHandler);
+        addHandler("businessRuleTask", businessRuleTaskHandler);
     }
 
 	public ProcessDescRepoHelper getRepoHelper() {

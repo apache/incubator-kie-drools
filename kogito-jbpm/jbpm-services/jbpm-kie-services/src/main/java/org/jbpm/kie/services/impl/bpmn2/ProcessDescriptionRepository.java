@@ -16,24 +16,49 @@
 
 package org.jbpm.kie.services.impl.bpmn2;
 
+import static org.jbpm.kie.services.impl.bpmn2.BPMN2DataServiceImpl.*;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-public class ProcessDescriptionRepository {
+/**
+ * This is a package-level class that is used to manage {@link ProcessDescRepoHelper} instances. 
+ */
+class ProcessDescriptionRepository {
 
-    private Map<String, ProcessDescRepoHelper> processRepoHelper = new ConcurrentHashMap<String, ProcessDescRepoHelper>();
+    private Map<String, ProcessDescRepoHelper> processRepoHelperCache = new ConcurrentHashMap<String, ProcessDescRepoHelper>();
+   
+    public static ThreadLocal<ProcessDescRepoHelper> LOCAL_PROCESS_REPO_HELPER = new ThreadLocal<ProcessDescRepoHelper>() { 
+        @Override
+        protected ProcessDescRepoHelper initialValue() { 
+            return new ProcessDescRepoHelper();
+        }
+    };
+
     
     public ProcessDescRepoHelper getProcessDesc(String processId) {
-        return this.processRepoHelper.get(processId);
+        return this.processRepoHelperCache.get(processId);
     }
     
-    public void addProcessDescription(String processId, ProcessDescRepoHelper repoHelper) {
-        this.processRepoHelper.put(processId, repoHelper);
+    public void addProcessDescription(String processId, ProcessDescRepoHelper helper) {
+        // attach the threadLocalHelper to dialect expression builders 
+        // in order to retrieve information about classes used in scripts, etc.
+        useDataServiceExpressionBuilders(helper);
+        
+        this.processRepoHelperCache.put(processId, helper);
     }
     
     public ProcessDescRepoHelper removeProcessDescription(String processId) {
-        return this.processRepoHelper.remove(processId);
+        // reset dialects
+        resetDialectExpressionBuilders();
+      
+        ProcessDescRepoHelper repoHelper =  this.processRepoHelperCache.remove(processId);
+       
+        // resolve unqualified class names
+        repoHelper.resolveUnqualifiedClasses();
+        
+        return repoHelper;
     }
-    
+ 
 }

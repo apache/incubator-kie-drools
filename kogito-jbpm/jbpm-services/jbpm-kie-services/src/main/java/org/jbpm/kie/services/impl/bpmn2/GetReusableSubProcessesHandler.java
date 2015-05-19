@@ -23,8 +23,10 @@ import org.jbpm.workflow.core.node.SubProcessNode;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+/**
+ * This handler collectsion information about reusable sub processes.
+ */
 public class GetReusableSubProcessesHandler extends CallActivityHandler {
-
     
     private ProcessDescriptionRepository repository;
     
@@ -39,9 +41,17 @@ public class GetReusableSubProcessesHandler extends CallActivityHandler {
     protected void handleNode(Node node, Element element, String uri,
             String localName, ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
+     
         String mainProcessId = module.getRepoHelper().getProcess().getId();
         SubProcessNode subProcess = (SubProcessNode) node;
-        repository.getProcessDesc(mainProcessId).getReusableSubProcesses().add(subProcess.getProcessId());
+        String processId = subProcess.getProcessId();
+       
+        ProcessDescRepoHelper helper = repository.getProcessDesc(mainProcessId);
+        if( processId != null ) { 
+            helper.getReusableSubProcesses().add(processId);
+        } else { 
+            helper.addReusableSubProcessName(subProcess.getProcessName());
+        }
     }
 
     public void setRepository(ProcessDescriptionRepository repository) {
