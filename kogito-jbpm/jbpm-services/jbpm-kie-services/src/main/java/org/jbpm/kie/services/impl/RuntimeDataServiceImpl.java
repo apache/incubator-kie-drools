@@ -464,6 +464,18 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         }
         return null;
 	}
+	
+	@Override
+    public Collection<ProcessInstanceDesc> getProcessInstancesByCorrelationKey(CorrelationKey correlationKey) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("correlationKey", correlationKey.toExternalForm() + "%");        
+
+        List<ProcessInstanceDesc> processInstances = commandService.execute(
+                new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByCorrelationKey", 
+                params));
+
+        return processInstances;
+    }
 
     
     @Override

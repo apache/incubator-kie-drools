@@ -125,13 +125,23 @@ public interface RuntimeDataService {
     ProcessInstanceDesc getProcessInstanceById(long processInstanceId);
     
     /**
-     * Returns process instance descriptions found for given correlation key if found otherwise null. At the same time it will
+     * Returns active process instance description found for given correlation key if found otherwise null. At the same time it will
      * fetch all active tasks (in status: Ready, Reserved, InProgress) to provide information what user task is keeping instance
      * and who owns them (if were already claimed). 
      * @param correlationKey correlation key assigned to process instance
      * @return Process instance information, in the form of a {@link ProcessInstanceDesc} instance.
      */
     ProcessInstanceDesc getProcessInstanceByCorrelationKey(CorrelationKey correlationKey);
+    
+    /**
+     * Returns process instances descriptions (regardless of their states) found for given correlation key if found otherwise empty list. 
+     * This query uses 'like' to match correlation key so it allows to pass only partial keys - though matching 
+     * is done based on 'starts with' 
+     * @param correlationKey correlation key assigned to process instance
+     * @return A list of {@link ProcessInstanceDesc} instances representing the process instances that match
+     *         the given correlation key
+     */
+    Collection<ProcessInstanceDesc> getProcessInstancesByCorrelationKey(CorrelationKey correlationKey);
     
     /**
      * Returns list of process instance descriptions found for given process definition id
