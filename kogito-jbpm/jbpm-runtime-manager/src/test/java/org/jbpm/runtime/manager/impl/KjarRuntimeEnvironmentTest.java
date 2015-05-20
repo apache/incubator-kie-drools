@@ -8,6 +8,7 @@ import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractBaseTest;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +40,9 @@ import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.task.UserGroupCallback;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
@@ -341,6 +346,63 @@ public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
         
     }
     
+    @Test
+    public void testXStreamUnmarshalCustomObject() {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId(GROUP_ID, "xstream-test", VERSION);
+        File kjar = new File("src/test/resources/kjar/jbpm-module.jar");
+        File pom = new File("src/test/resources/kjar/pom.xml");
+        MavenRepository repository = getMavenRepository();
+        repository.deployArtifact(releaseId, kjar, pom);
+        
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder(releaseId)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
+
+                    @Override
+                    public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
+                        Map<String, WorkItemHandler> handlers = super.getWorkItemHandlers(runtime);
+                        handlers.put("Rest", new WorkItemHandler() {
+                            
+                            @Override
+                            public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+                                Map<String, Object> results = new HashMap<String, Object>();
+                                results.put("Result", "<pv207.finepayment.Client><exists>true</exists><name>Pavel</name></pv207.finepayment.Client>");
+                                
+                                manager.completeWorkItem(workItem.getId(), results);
+                            }
+                            
+                            @Override
+                            public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {                                
+                            }
+                        });
+                        
+                        return handlers;
+                    }
+                    
+                })
+                .userGroupCallback(userGroupCallback)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
+        assertNotNull(manager);
+        
+        RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
+        assertNotNull(engine);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        
+        ProcessInstance processInstance = engine.getKieSession().startProcess("RESTTask.RestProcess", params);
+        
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        
+        Object processClient = ((WorkflowProcessInstance)processInstance).getVariable("processClient");
+        assertNotNull(processClient);
+        assertEquals("pv207.finepayment.Client", processClient.getClass().getName());
+        assertEquals("Pavel", valueOf(processClient, "name"));
+        assertEquals("true", valueOf(processClient, "exists"));
+    }
+    
     // helper methods
     protected String getPom(ReleaseId releaseId, ReleaseId... dependencies) {
         String pom =
@@ -408,5 +470,15 @@ public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.writeKModuleXML(kproj.toXML());
         return kfs;
+    }
+    
+    protected Object valueOf(Object object, String fieldName) {
+        try {
+            Field field = object.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return field.get(object);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

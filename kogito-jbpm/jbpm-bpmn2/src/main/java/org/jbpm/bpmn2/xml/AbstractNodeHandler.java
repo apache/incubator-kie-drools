@@ -375,7 +375,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                 DataType dataType = null;
                 Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
                     ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
-                dataType = getDataType(itemSubjectRef, itemDefinitions);
+                dataType = getDataType(itemSubjectRef, itemDefinitions, parser.getClassLoader());
                 
                 if (variableName != null && variableName.trim().length() > 0) {
                     forEachNode.setVariable(variableName, dataType);
@@ -386,7 +386,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                 DataType dataType = null;
                 Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
                     ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
-                dataType = getDataType(itemSubjectRef, itemDefinitions);
+                dataType = getDataType(itemSubjectRef, itemDefinitions, parser.getClassLoader());
                 
                 if (variableName != null && variableName.trim().length() > 0) {
                     forEachNode.setOutputVariable(variableName, dataType);
@@ -427,7 +427,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         }
     }
     
-    protected DataType getDataType(String itemSubjectRef, Map<String, ItemDefinition> itemDefinitions) {
+    protected DataType getDataType(String itemSubjectRef, Map<String, ItemDefinition> itemDefinitions, ClassLoader cl) {
         DataType dataType = new ObjectDataType();
         if (itemDefinitions == null) {
             return dataType;
@@ -452,7 +452,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                 dataType = new ObjectDataType(structureRef);
                 
             } else {
-                dataType = new ObjectDataType(structureRef);
+                dataType = new ObjectDataType(structureRef, cl);
             }
             
         }

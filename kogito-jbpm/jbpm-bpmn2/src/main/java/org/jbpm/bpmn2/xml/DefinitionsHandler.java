@@ -84,7 +84,7 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
         for (Process process : processes) {
             RuleFlowProcess ruleFlowProcess = (RuleFlowProcess)process;
             ruleFlowProcess.setMetaData("TargetNamespace", namespace);
-            postProcessItemDefinitions(ruleFlowProcess, itemDefinitions);
+            postProcessItemDefinitions(ruleFlowProcess, itemDefinitions, parser.getClassLoader());
             postProcessInterfaces(ruleFlowProcess, interfaces);
         }
         definitions.setTargetNamespace(namespace);
@@ -138,34 +138,34 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
 		}
 	}
 	
-	private void postProcessItemDefinitions(NodeContainer nodeContainer, Map<String, ItemDefinition> itemDefinitions) {
+	private void postProcessItemDefinitions(NodeContainer nodeContainer, Map<String, ItemDefinition> itemDefinitions, ClassLoader cl) {
 		if (nodeContainer instanceof ContextContainer) {
-			setVariablesDataType((ContextContainer) nodeContainer, itemDefinitions);
+			setVariablesDataType((ContextContainer) nodeContainer, itemDefinitions, cl);
 		}
 		// process composite context node of for each to enhance its variables with types
 		if (nodeContainer instanceof ForEachNode) {
-		    setVariablesDataType(((ForEachNode) nodeContainer).getCompositeNode(), itemDefinitions);
+		    setVariablesDataType(((ForEachNode) nodeContainer).getCompositeNode(), itemDefinitions, cl);
 		}
 		for (Node node: nodeContainer.getNodes()) {
 			if (node instanceof NodeContainer) {
-				postProcessItemDefinitions((NodeContainer) node, itemDefinitions);
+				postProcessItemDefinitions((NodeContainer) node, itemDefinitions, cl);
 			}
 			if (node instanceof ContextContainer) {
-				setVariablesDataType((ContextContainer) node, itemDefinitions);
+				setVariablesDataType((ContextContainer) node, itemDefinitions, cl);
 			}
 		}
 	}
 	
-	private void setVariablesDataType(ContextContainer container, Map<String, ItemDefinition> itemDefinitions) {
+	private void setVariablesDataType(ContextContainer container, Map<String, ItemDefinition> itemDefinitions, ClassLoader cl) {
 		VariableScope variableScope = (VariableScope) container.getDefaultContext(VariableScope.VARIABLE_SCOPE);
 		if (variableScope != null) {
 			for (Variable variable: variableScope.getVariables()) {
-				setVariableDataType(variable, itemDefinitions);
+				setVariableDataType(variable, itemDefinitions, cl);
 			}
 		}
 	}
 	
-	private void setVariableDataType(Variable variable, Map<String, ItemDefinition> itemDefinitions) {
+	private void setVariableDataType(Variable variable, Map<String, ItemDefinition> itemDefinitions, ClassLoader cl) {
 		// retrieve type from item definition
 		
 		String itemSubjectRef = (String) variable.getMetaData("ItemSubjectRef");
@@ -192,7 +192,7 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
                     dataType = new ObjectDataType("java.lang.Object");
                     
                 } else {
-                    dataType = new ObjectDataType(structureRef);
+                    dataType = new ObjectDataType(structureRef, cl);
                 }
         		
         	}

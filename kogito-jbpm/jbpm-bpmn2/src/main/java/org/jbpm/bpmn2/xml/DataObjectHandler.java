@@ -105,7 +105,7 @@ public class DataObjectHandler extends BaseAbstractHandler implements Handler {
 	                    dataType = new ObjectDataType("java.lang.Object");
 	                    
 	                } else {
-	                    dataType = new ObjectDataType(structureRef);
+	                    dataType = new ObjectDataType(structureRef, parser.getClassLoader());
 	                }
 	        	}
 	        }
