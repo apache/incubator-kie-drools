@@ -5460,6 +5460,66 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.fireAllRules();
     }
 
+    @Test
+    public void testAfterAndBeforeOperators() {
+        // DROOLS-751 regression
+        String drl =
+                "import " + Event1.class.getCanonicalName() + "\n" +
+                        "global java.util.List ruleAfterList; " +
+                        "global java.util.List ruleBeforeList; " +
+                        "declare Event1\n" +
+                        "    @role( event )\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"AfterEvent\"\n" +
+                        "    when\n" +
+                        "       $message1 : Event1() from entry-point \"EventStream\"\n" +
+                        "       $message2 : Event1(this after[1s, 10s] $message1) from entry-point \"EventStream\"\n" +
+                        "    then\n" +
+                        "       ruleAfterList.add(\"fired\");\n" +
+                        "end\n" +
+                        "rule \"BeforeEvent\"\n" +
+                        "    when\n" +
+                        "       $message1 : Event1() from entry-point \"EventStream\"\n" +
+                        "       $message2 : Event1(this before[1s, 10s] $message1) from entry-point \"EventStream\"\n" +
+                        "    then\n" +
+                        "       ruleBeforeList.add(\"fired\");\n" +
+                        "end";
+
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
+
+        KieHelper helper = new KieHelper();
+        helper.addContent(drl, ResourceType.DRL);
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession(sessionConfig, null);
+
+        EntryPoint stream = ksession.getEntryPoint("EventStream");
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        final List<String> ruleAfterList = new ArrayList<String>();
+        final List<String> ruleBeforeList = new ArrayList<String>();
+
+        ksession.setGlobal("ruleBeforeList", ruleBeforeList);
+        ksession.setGlobal("ruleAfterList", ruleAfterList);
+
+        try {
+            for (int i = 0; i < 3; i++) {
+                Event1 tc = new Event1("code"+i, i);
+                stream.insert(tc);
+                clock.advanceTime(8, TimeUnit.SECONDS);
+            }
+            ksession.fireAllRules();
+
+            assertEquals("rule with after fired wrong number of times", 2, ruleAfterList.size());
+            assertEquals("rule with before fired wrong number of times", 2, ruleBeforeList.size());
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+
     public static class Event1 implements Serializable {
 
         private final String code;
