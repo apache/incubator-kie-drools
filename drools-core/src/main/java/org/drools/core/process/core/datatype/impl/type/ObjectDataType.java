@@ -32,6 +32,8 @@ public class ObjectDataType implements DataType {
     private static final long serialVersionUID = 510l;
 
     private String className;
+
+    private ClassLoader classLoader;
     
     public ObjectDataType() {
     }
@@ -40,12 +42,25 @@ public class ObjectDataType implements DataType {
         setClassName(className);
     }
 
+    public ObjectDataType(String className, ClassLoader classLoader) {
+        setClassName(className);
+        setClassLoader(classLoader);
+    }
+
     public String getClassName() {
         return className;
     }
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -74,11 +89,17 @@ public class ObjectDataType implements DataType {
 
     public Object readValue(String value) {
         XStream xstream = new XStream();
+        if (classLoader != null) {
+            xstream.setClassLoader(classLoader);
+        }
         return xstream.fromXML(value);
     }
 
     public String writeValue(Object value) {
         XStream xstream = new XStream();
+        if (classLoader != null) {
+            xstream.setClassLoader(classLoader);
+        }
         return xstream.toXML(value);
     }
 
