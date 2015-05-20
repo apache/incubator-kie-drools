@@ -16,8 +16,8 @@
 package org.jbpm.document.service.impl;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jbpm.document.Document;
 import org.jbpm.document.service.DocumentStorageService;
 import org.slf4j.Logger;

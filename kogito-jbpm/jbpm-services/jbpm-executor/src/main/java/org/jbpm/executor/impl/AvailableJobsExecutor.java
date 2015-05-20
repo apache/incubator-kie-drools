@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.input.ClassLoaderObjectInputStream;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
 import org.kie.internal.executor.api.Command;
@@ -147,7 +147,7 @@ public class AvailableJobsExecutor {
                 	callbacks = classCacheManager.buildCommandCallback(ctx, cl);  
                     logger.warn("Error during command {} execution {}", request.getCommandName(), e.getMessage());
     
-                    ErrorInfo errorInfo = new ErrorInfo(e.getMessage(), ExceptionUtils.getFullStackTrace(e.fillInStackTrace()));
+                    ErrorInfo errorInfo = new ErrorInfo(e.getMessage(), ExceptionUtils.getStackTrace(e.fillInStackTrace()));
                     errorInfo.setRequestInfo(request);
     
                     ((List<ErrorInfo>)request.getErrorInfo()).add(errorInfo);

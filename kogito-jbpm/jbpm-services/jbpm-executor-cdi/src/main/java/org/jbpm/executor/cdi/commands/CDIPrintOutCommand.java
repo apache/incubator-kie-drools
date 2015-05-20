@@ -18,7 +18,7 @@ package org.jbpm.executor.cdi.commands;
 
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jbpm.executor.cdi.CDIUtils;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.executor.api.Command;
