@@ -286,15 +286,25 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         applySorting(outputCollection, queryContext);
         return applyPaginition(outputCollection, queryContext);
     }
-
+    
+    @Deprecated
     public ProcessDefinition getProcessById(String processId){
         
-        Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
-        CollectionUtils.select(availableProcesses, new ByProcessIdPredicate(processId, identityProvider.getRoles()), outputCollection);
-        if (!outputCollection.isEmpty()) {
-            return outputCollection.iterator().next();
+        Collection<ProcessDefinition> definitions = getProcessesById(processId);
+        if (!definitions.isEmpty()) {
+            return definitions.iterator().next();
         }
-        return null;   
+        
+        return null;
+    }
+    
+
+    public Collection<ProcessDefinition> getProcessesById(String processId){
+        
+        Collection<ProcessDefinition> outputCollection = new HashSet<ProcessDefinition>();
+        CollectionUtils.select(availableProcesses, new ByProcessIdPredicate(processId, identityProvider.getRoles()), outputCollection);
+        
+        return outputCollection;   
     }
     
     public Collection<ProcessDefinition> getProcesses(QueryContext queryContext) {

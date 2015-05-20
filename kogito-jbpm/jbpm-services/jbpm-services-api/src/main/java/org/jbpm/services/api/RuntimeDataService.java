@@ -256,12 +256,27 @@ public interface RuntimeDataService {
     Collection<String> getProcessIds(String deploymentId, QueryContext queryContext);
    
     /**
+     * Deprecated since 6.3 as it does return only first ProcessDefinition even if there are more
+     * that reside in different deployments. Use <code>getProcessesById(String processId)</code> instead
+     * <br/>
      * Returns process definition for given process id 
      * @param processId The id of the process
      * @return A {@link ProcessAssetDesc} instance, representing the {@link Process} 
      *         with the specified (process) id. 
+     * 
+     * @see RuntimeDataService#getProcessesById(String)
+     * @deprecated will be removed in version 7
      */
+    @Deprecated    
     ProcessDefinition getProcessById(String processId);
+    
+    /**
+     * Returns process definitions for given process id regardless of the deployment
+     * @param processId The id of the process
+     * @return A {@link ProcessAssetDesc} instance, representing the {@link Process} 
+     *         with the specified (process) id. 
+     */
+    Collection<ProcessDefinition> getProcessesById(String processId);
   
     /**
      * Returns process definition for given deployment and process identifiers

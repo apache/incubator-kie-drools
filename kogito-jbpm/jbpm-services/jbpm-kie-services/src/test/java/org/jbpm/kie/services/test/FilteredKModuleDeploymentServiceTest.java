@@ -125,7 +125,7 @@ public class FilteredKModuleDeploymentServiceTest extends AbstractBaseTest {
         assertNotNull(processes);
         assertEquals(2, processes.size());
         
-        ProcessDefinition process = runtimeDataService.getProcessById("customtask");
+        ProcessDefinition process = runtimeDataService.getProcessesByDeploymentIdProcessId(deploymentUnit.getIdentifier(), "customtask");
         assertNotNull(process);
  
     }
@@ -160,7 +160,7 @@ public class FilteredKModuleDeploymentServiceTest extends AbstractBaseTest {
         assertNotNull(processes);
         assertEquals(2, processes.size());
         
-        ProcessDefinition process = runtimeDataService.getProcessById("customtask");
+        ProcessDefinition process = runtimeDataService.getProcessesByDeploymentIdProcessId(deploymentUnit.getIdentifier(), "customtask");
         assertNotNull(process);
  
     }
@@ -191,7 +191,7 @@ public class FilteredKModuleDeploymentServiceTest extends AbstractBaseTest {
         assertNotNull(processes);
         assertEquals(1, processes.size());
         
-        ProcessDefinition process = runtimeDataService.getProcessById("Import");
+        ProcessDefinition process = runtimeDataService.getProcessesByDeploymentIdProcessId(deploymentUnit.getIdentifier(), "Import");
         assertNotNull(process);
  
     }
@@ -226,7 +226,7 @@ public class FilteredKModuleDeploymentServiceTest extends AbstractBaseTest {
         assertNotNull(processes);
         assertEquals(2, processes.size());
         
-        ProcessDefinition process = runtimeDataService.getProcessById("customtask");
+        ProcessDefinition process = runtimeDataService.getProcessesByDeploymentIdProcessId(deploymentUnit.getIdentifier(), "customtask");
         assertNotNull(process);
  
     }

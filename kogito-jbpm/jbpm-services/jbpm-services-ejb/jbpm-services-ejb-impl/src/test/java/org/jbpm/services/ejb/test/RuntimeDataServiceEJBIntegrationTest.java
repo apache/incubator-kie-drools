@@ -209,10 +209,11 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     
     @Test
     public void testGetProcessByProcessId() {
-    	ProcessDefinition definition = runtimeDataService.getProcessById("org.jbpm.writedocument");
-    	
-    	assertNotNull(definition);
-    	assertEquals("org.jbpm.writedocument", definition.getId());
+        Collection<ProcessDefinition> definition = runtimeDataService.getProcessesById("org.jbpm.writedocument");
+        
+        assertNotNull(definition);
+        assertEquals(1, definition.size());
+        assertEquals("org.jbpm.writedocument", definition.iterator().next().getId());
     }
     
     @Test

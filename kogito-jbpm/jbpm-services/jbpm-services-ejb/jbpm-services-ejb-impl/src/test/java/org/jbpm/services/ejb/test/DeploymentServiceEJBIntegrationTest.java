@@ -182,7 +182,7 @@ public class DeploymentServiceEJBIntegrationTest extends AbstractTestSupport {
         assertNotNull(processes);
         assertEquals(5, processes.size());
         
-        ProcessDefinition process = runtimeDataService.getProcessById("customtask");
+        ProcessDefinition process = runtimeDataService.getProcessesByDeploymentIdProcessId(deploymentUnit.getIdentifier(), "customtask");
         assertNotNull(process);
         
         RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
