@@ -216,10 +216,16 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
         // there is no need to recalculate the score, but we still need to set it
         phaseScope.getWorkingSolution().setScore(stepScope.getScore());
         if (assertWorkingSolutionScoreFromScratch) {
-            phaseScope.assertWorkingScoreFromScratch(stepScope.getScore(), restoreMoveList);
+            // In BRUTE_FORCE the stepScore can be null because it was not calculated
+            if (stepScope.getScore() != null) {
+                phaseScope.assertWorkingScoreFromScratch(stepScope.getScore(), restoreMoveList);
+            }
         }
         if (assertExpectedWorkingSolutionScore) {
-            phaseScope.assertExpectedWorkingScore(stepScope.getScore(), restoreMoveList);
+            // In BRUTE_FORCE the stepScore can be null because it was not calculated
+            if (stepScope.getScore() != null) {
+                phaseScope.assertExpectedWorkingScore(stepScope.getScore(), restoreMoveList);
+            }
         }
     }
 

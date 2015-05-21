@@ -142,7 +142,10 @@ public class ExhaustiveSearchDecider implements ExhaustiveSearchPhaseLifecycleLi
         undoMove.doMove(scoreDirector);
         if (assertExpectedUndoMoveScore) {
             ExhaustiveSearchPhaseScope phaseScope = stepScope.getPhaseScope();
-            phaseScope.assertExpectedUndoMoveScore(move, undoMove);
+            // In BRUTE_FORCE the stepScore can be null because it was not calculated
+            if (phaseScope.getLastCompletedStepScope().getScore() != null) {
+                phaseScope.assertExpectedUndoMoveScore(move, undoMove);
+            }
         }
         logger.trace("        Move treeId ({}), score ({}), expandable ({}), move ({}).",
                 moveNode.getTreeId(), moveNode.getScore(), moveNode.isExpandable(), moveNode.getMove());
