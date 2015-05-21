@@ -275,11 +275,14 @@
         &lt;scoreDrl&gt;org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
         &lt;initializingScoreTrend&gt;ONLY_DOWN&lt;/initializingScoreTrend&gt;
       &lt;/scoreDirectorFactory&gt;
+      &lt;termination&gt;
+        &lt;minutesSpentLimit&gt;1&lt;/minutesSpentLimit&gt;
+      &lt;/termination&gt;
     &lt;/solver&gt;
   &lt;/inheritedSolverBenchmark&gt;
 
   &lt;solverBenchmarkBluePrint&gt;
-    &lt;solverBenchmarkBluePrintType&gt;ALL_CONSTRUCTION_HEURISTIC_TYPES&lt;/solverBenchmarkBluePrintType&gt;
+    &lt;solverBenchmarkBluePrintType&gt;EVERY_CONSTRUCTION_HEURISTIC_TYPE_WITH_EVERY_LOCAL_SEARCH_TYPE&lt;/solverBenchmarkBluePrintType&gt;
   &lt;/solverBenchmarkBluePrint&gt;
 &lt;/plannerBenchmark&gt;</programlisting>
 
@@ -287,8 +290,22 @@
 
       <itemizedlist>
         <listitem>
-          <para><literal>ALL_CONSTRUCTION_HEURISTIC_TYPES</literal>: Run all Construction Heuristic types (First Fit,
+          <para><literal>EVERY_CONSTRUCTION_HEURISTIC_TYPE</literal>: Run every Construction Heuristic type (First Fit,
           First Fit Decreasing, Cheapest Insertion, ...).</para>
+        </listitem>
+      </itemizedlist>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>EVERY_LOCAL_SEARCH_TYPE</literal>: Run every Local Search type (Tabu Search, Late Acceptance,
+          ...) with the default Construction Heuristic.</para>
+        </listitem>
+      </itemizedlist>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>EVERY_CONSTRUCTION_HEURISTIC_TYPE_WITH_EVERY_LOCAL_SEARCH_TYPE</literal>: Run every
+          Construction Heuristic type with every Local Search type.</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -299,7 +316,7 @@
       <para>The best solution of each benchmark run can be written in the <literal>benchmarkDirectory</literal>. By
       default, this is disabled, because the files are rarely used and considered bloat. Also, on large datasets,
       writing the best solution of each single benchmark can take quite some time and memory (causing an
-      <literal>OutOfMemoryError</literal>), especially in a verbose format like XStream.</para>
+      <literal>OutOfMemoryError</literal>), especially in a verbose format like XStream XML.</para>
 
       <para>To write those solutions in the <literal>benchmarkDirectory</literal>, enable
       <literal>writeOutputSolutionEnabled</literal>:</para>
@@ -478,7 +495,7 @@
 
     <section xml:id="benchmarkReportWorstScoreDifferencePercentageSummary">
       <title>Worst Score Difference Percentage (ROI) Summary (Graph and Table)</title>
-      
+
       <para>Shows the return on investment (ROI) per <literal>inputSolutionFile</literal> for each solver configuration
       if you'd upgrade from the worst solver configuration for that particular
       <literal>inputSolutionFile</literal>.</para>
@@ -860,7 +877,7 @@
     &lt;/problemBenchmarks&gt;</programlisting>
 
       <figure>
-       <title>Picked Move Type Step Score Diff Over Time Statistic</title>
+        <title>Picked Move Type Step Score Diff Over Time Statistic</title>
 
         <mediaobject>
           <imageobject>

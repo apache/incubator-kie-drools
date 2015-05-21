@@ -35,6 +35,8 @@ import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
+import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,12 +133,39 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                     it = unifiedProblemBenchmarkResultList.iterator();
                 }
                 ProblemBenchmarkResult problemBenchmarkResult = it.next();
-                timeLeft = problemBenchmarkResult.warmUp(startingTimeMillis, plannerBenchmarkResult.getWarmUpTimeMillisSpentLimit(), timeLeft);
+                timeLeft = warmUp(problemBenchmarkResult, startingTimeMillis, plannerBenchmarkResult.getWarmUpTimeMillisSpentLimit(), timeLeft);
             }
             logger.info("================================================================================");
             logger.info("Warm up ended");
             logger.info("================================================================================");
         }
+    }
+
+    protected long warmUp(ProblemBenchmarkResult problemBenchmarkResult, long startingTimeMillis, long warmUpTimeMillisSpentLimit, long timeLeft) {
+        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
+            SolverBenchmarkResult solverBenchmarkResult = singleBenchmarkResult.getSolverBenchmarkResult();
+            TerminationConfig originalTerminationConfig = solverBenchmarkResult.getSolverConfig().getTerminationConfig();
+            TerminationConfig tmpTerminationConfig = originalTerminationConfig == null
+                    ? new TerminationConfig() : originalTerminationConfig.clone();
+            tmpTerminationConfig.shortenTimeMillisSpentLimit(timeLeft);
+            solverBenchmarkResult.getSolverConfig().setTerminationConfig(tmpTerminationConfig);
+
+            try {
+                Solver solver = solverBenchmarkResult.getSolverConfig().buildSolver();
+                solver.solve(problemBenchmarkResult.readPlanningProblem());
+            } catch (RuntimeException e) {
+                logger.error("The warmUp of singleBenchmark (" + singleBenchmarkResult.getName() + ") failed.", e);
+                // TODO update firstFailureSingleBenchmarkRunner (when warmups happen in a Runner too in parallel)
+            }
+
+            solverBenchmarkResult.getSolverConfig().setTerminationConfig(originalTerminationConfig);
+            long timeSpent = System.currentTimeMillis() - startingTimeMillis;
+            timeLeft = warmUpTimeMillisSpentLimit - timeSpent;
+            if (timeLeft <= 0L) {
+                return timeLeft;
+            }
+        }
+        return timeLeft;
     }
 
     protected void runSingleBenchmarks() {

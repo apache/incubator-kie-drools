@@ -263,28 +263,6 @@ public class ProblemBenchmarkResult {
         }
     }
 
-    public long warmUp(long startingTimeMillis, long warmUpTimeMillisSpentLimit, long timeLeft) {
-        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            SolverBenchmarkResult solverBenchmarkResult = singleBenchmarkResult.getSolverBenchmarkResult();
-            TerminationConfig originalTerminationConfig = solverBenchmarkResult.getSolverConfig().getTerminationConfig();
-            TerminationConfig tmpTerminationConfig = originalTerminationConfig == null
-                    ? new TerminationConfig() : originalTerminationConfig.clone();
-            tmpTerminationConfig.shortenTimeMillisSpentLimit(timeLeft);
-            solverBenchmarkResult.getSolverConfig().setTerminationConfig(tmpTerminationConfig);
-
-            Solver solver = solverBenchmarkResult.getSolverConfig().buildSolver();
-            solver.solve(readPlanningProblem());
-
-            solverBenchmarkResult.getSolverConfig().setTerminationConfig(originalTerminationConfig);
-            long timeSpent = System.currentTimeMillis() - startingTimeMillis;
-            timeLeft = warmUpTimeMillisSpentLimit - timeSpent;
-            if (timeLeft <= 0L) {
-                return timeLeft;
-            }
-        }
-        return timeLeft;
-    }
-
     public Solution readPlanningProblem() {
         return solutionFileIO.read(inputSolutionFile);
     }

@@ -2430,3 +2430,14 @@ After in *.java:
             return processName;
         }
     }
+
+[MINOR] Default parameter tweaked: a empty <constructionHeuristic>'s default changed from FIRST_FIT to ALLOCATE_ENTITY_FROM_QUEUE.
+If no entity difficulty comparison and no planning value strength comparison is defined, the behavior is exactly the same.
+Otherwise, the behaviour is FIRST_FIT_DECREASING or WEAKEST_FIT(_DECREASING).
+
+[MINOR] The solverBenchmarkBluePrintType ALL_CONSTRUCTION_HEURISTIC_TYPES has been renamed to EVERY_CONSTRUCTION_HEURISTIC_TYPE.
+The old name ALL_CONSTRUCTION_HEURISTIC_TYPES is deprecated and will be removed in 7.0.
+Before in *BenchmarkConfig.xml:
+    <solverBenchmarkBluePrintType>ALL_CONSTRUCTION_HEURISTIC_TYPES</solverBenchmarkBluePrintType>
+After in *BenchmarkConfig.xml:
+    <solverBenchmarkBluePrintType>EVERY_CONSTRUCTION_HEURISTIC_TYPE</solverBenchmarkBluePrintType>
