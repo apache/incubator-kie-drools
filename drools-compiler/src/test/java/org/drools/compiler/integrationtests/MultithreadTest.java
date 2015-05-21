@@ -98,7 +98,7 @@ public class MultithreadTest extends CommonTestMethodBase {
                         FactHandle[] facts = new FactHandle[objectCount];
                         for (int i = 0; i < objectCount; i++) facts[i] = ksession.insert(new Bean(i));
                         ksession.fireAllRules();
-                        for (FactHandle fact : facts) ksession.retract(fact);
+                        for (FactHandle fact : facts) ksession.delete(fact);
                         ksession.fireAllRules();
                         return true;
                     } catch (Exception e) {
