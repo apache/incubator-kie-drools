@@ -17,6 +17,7 @@
 package org.optaplanner.benchmark.config.blueprint;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,6 +25,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
+import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
+import org.optaplanner.core.config.localsearch.LocalSearchType;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 
@@ -46,16 +49,7 @@ public class SolverBenchmarkBluePrintConfig {
 
     public List<SolverBenchmarkConfig> buildSolverBenchmarkConfigList() {
         validate();
-        List<SolverBenchmarkConfig> solverBenchmarkConfigList;
-        switch (solverBenchmarkBluePrintType) {
-            case ALL_CONSTRUCTION_HEURISTIC_TYPES:
-                solverBenchmarkConfigList = buildAllConstructionHeuristicTypes();
-                break;
-            default:
-                throw new IllegalStateException("The solverBenchmarkBluePrintType ("
-                        + solverBenchmarkBluePrintType + ") is not implemented.");
-        }
-        return solverBenchmarkConfigList;
+        return solverBenchmarkBluePrintType.buildSolverBenchmarkConfigList();
     }
 
     protected void validate() {
@@ -64,22 +58,10 @@ public class SolverBenchmarkBluePrintConfig {
                     "The solverBenchmarkBluePrint must have"
                             + " a solverBenchmarkBluePrintType (" + solverBenchmarkBluePrintType + ").");
         }
-    }
-
-    protected List<SolverBenchmarkConfig> buildAllConstructionHeuristicTypes() {
-        ConstructionHeuristicType[] types = ConstructionHeuristicType.values();
-        List<SolverBenchmarkConfig> solverBenchmarkConfigList = new ArrayList<SolverBenchmarkConfig>(types.length);
-        for (ConstructionHeuristicType type : types) {
-            SolverBenchmarkConfig solverBenchmarkConfig = new SolverBenchmarkConfig();
-            solverBenchmarkConfig.setName(type.name());
-            SolverConfig solverConfig = new SolverConfig();
-            ConstructionHeuristicPhaseConfig phaseConfig = new ConstructionHeuristicPhaseConfig();
-            phaseConfig.setConstructionHeuristicType(type);
-            solverConfig.setPhaseConfigList(Collections.<PhaseConfig>singletonList(phaseConfig));
-            solverBenchmarkConfig.setSolverConfig(solverConfig);
-            solverBenchmarkConfigList.add(solverBenchmarkConfig);
+        // TODO Remove Backwards compatibility workaround in 7.0
+        if (solverBenchmarkBluePrintType == SolverBenchmarkBluePrintType.ALL_CONSTRUCTION_HEURISTIC_TYPES) {
+            solverBenchmarkBluePrintType = SolverBenchmarkBluePrintType.EVERY_CONSTRUCTION_HEURISTIC_TYPE;
         }
-        return solverBenchmarkConfigList;
     }
 
 }
