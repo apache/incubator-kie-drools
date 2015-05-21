@@ -66,7 +66,7 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
     // ************************************************************************
 
     /**
-     * Calculates the minimum timeGradient of all Terminations.
+     * Calculates the maximum timeGradient of all Terminations.
      * Not supported timeGradients (-1.0) are ignored.
      * @param solverScope never null
      * @return the maximum timeGradient of the Terminations.
@@ -83,7 +83,7 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
     }
 
     /**
-     * Calculates the minimum timeGradient of all Terminations.
+     * Calculates the maximum timeGradient of all Terminations.
      * Not supported timeGradients (-1.0) are ignored.
      * @param phaseScope never null
      * @return the maximum timeGradient of the Terminations.
