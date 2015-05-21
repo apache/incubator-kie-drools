@@ -219,9 +219,9 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
         linkend="benchmarker">Benchmarker</link> to tweak the value.</para>
 
         <important>
-          <para>With a low <literal>acceptedCountLimit</literal> it is recommended to avoid using
-          <literal>selectionOrder</literal> SHUFFLED because the shuffling generates a random number for every element
-          in the selector, taking up a lot of time, but only a few elements are actually selected.</para>
+          <para>With a low <literal>acceptedCountLimit</literal> (so a fast stepping algorithm), it is recommended to
+          avoid using <literal>selectionOrder</literal> SHUFFLED because the shuffling generates a random number for
+          every element in the selector, taking up a lot of time, but only a few elements are actually selected.</para>
         </important>
       </section>
 
@@ -308,7 +308,13 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
     <section xml:id="hillClimbingConfigure">
       <title>Configuration</title>
 
-      <para>Configure this solver phase:</para>
+      <para>Simplest configuration:</para>
+
+      <programlisting language="xml">  &lt;localSearch&gt;
+    &lt;localSearchType&gt;HILL_CLIMBING&lt;/localSearchType&gt;
+  &lt;/localSearch&gt;</programlisting>
+
+      <para>Advanced configuration:</para>
 
       <programlisting language="xml">  &lt;localSearch&gt;
     ...
@@ -316,7 +322,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
       &lt;acceptorType&gt;HILL_CLIMBING&lt;/acceptorType&gt;
     &lt;/acceptor&gt;
     &lt;forager&gt;
-      &lt;acceptedCountLimit&gt;1000&lt;/acceptedCountLimit&gt;
+      &lt;acceptedCountLimit&gt;1&lt;/acceptedCountLimit&gt;
     &lt;/forager&gt;
   &lt;/localSearch&gt;</programlisting>
     </section>
@@ -340,14 +346,24 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
         </imageobject>
       </mediaobject>
 
+      <note>
+        <para>It's called Tabu Search, not Taboo Search. There is no spelling error.</para>
+      </note>
+
       <para>Scientific paper: <emphasis>Tabu Search - Part 1 and Part 2</emphasis> by Fred Glover (1989 - 1990)</para>
     </section>
 
     <section xml:id="tabuSearchConfiguration">
       <title>Configuration</title>
 
+      <para>Simplest configuration:</para>
+
+      <programlisting language="xml">  &lt;localSearch&gt;
+    &lt;localSearchType&gt;TABU_SEARCH&lt;/localSearchType&gt;
+  &lt;/localSearch&gt;</programlisting>
+
       <para>When Tabu Search takes steps it creates one or more tabu's. For a number of steps, it does not accept a move
-      if that move breaks tabu. That number of steps is the tabu size.</para>
+      if that move breaks tabu. That number of steps is the tabu size. Advanced configuration:</para>
 
       <programlisting language="xml">  &lt;localSearch&gt;
     ...
@@ -441,7 +457,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
     &lt;/acceptor&gt;</programlisting>
 
       <para>If the tabu size is too small, the solver can still get stuck in a local optimum. On the other hand, if the
-      tabu size is too large, the solver can get stuck by bouncing of the walls. Use the <link
+      tabu size is too large, the solver can be inefficient by bouncing of the walls. Use the <link
       linkend="benchmarker">Benchmarker</link> to fine tweak your configuration.</para>
     </section>
   </section>
@@ -463,18 +479,19 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
           <imagedata fileref="images/Chapter-Local_search/simulatedAnnealing.png"/>
         </imageobject>
       </mediaobject>
-    </section>
-
-    <section xml:id="simulatedAnnealingConfiguration">
-      <title>Configuration</title>
 
       <para>Simulated Annealing does not always pick the move with the highest score, neither does it evaluate many
       moves per step. At least at first. Instead, it gives non improving moves also a chance to be picked, depending on
       its score and the time gradient of the <literal>Termination</literal>. In the end, it gradually turns into Hill
       Climbing, only accepting improving moves.</para>
+    </section>
+
+    <section xml:id="simulatedAnnealingConfiguration">
+      <title>Configuration</title>
 
       <para>Start with a <literal>simulatedAnnealingStartingTemperature</literal> set to the maximum score delta a
-      single move can cause. Use the <link linkend="benchmarker">Benchmarker</link> to tweak the value.</para>
+      single move can cause. Use the <link linkend="benchmarker">Benchmarker</link> to tweak the value. Advanced
+      configuration:</para>
 
       <programlisting language="xml">  &lt;localSearch&gt;
     ...
@@ -490,8 +507,8 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
       <literal>acceptedCountLimit</literal> of <literal>1</literal>, but often <literal>4</literal> performs
       better.</para>
 
-      <para>You can even combine it with a tabu acceptor at the same time. That gives Simulated Annealing salted with a
-      bit of Tabu. Use a lower tabu size than in a pure Tabu Search configuration.</para>
+      <para>Simulated Annealing can be combined with a tabu acceptor at the same time. That gives Simulated Annealing
+      salted with a bit of Tabu. Use a lower tabu size than in a pure Tabu Search configuration.</para>
 
       <programlisting language="xml">  &lt;localSearch&gt;
     ...
@@ -530,8 +547,14 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
     <section xml:id="lateAcceptanceConfiguration">
       <title>Configuration</title>
 
+      <para>Simplest configuration:</para>
+
+      <programlisting language="xml">  &lt;localSearch&gt;
+    &lt;localSearchType&gt;LATE_ACCEPTANCE&lt;/localSearchType&gt;
+  &lt;/localSearch&gt;</programlisting>
+
       <para>Late Acceptance accepts any move that has a score which is higher than the best score of a number of steps
-      ago. That number of steps is the <literal>lateAcceptanceSize</literal>.</para>
+      ago. That number of steps is the <literal>lateAcceptanceSize</literal>. Advanced configuration:</para>
 
       <programlisting language="xml">  &lt;localSearch&gt;
     ...
@@ -543,8 +566,10 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
     &lt;/forager&gt;
   &lt;/localSearch&gt;</programlisting>
 
-      <para>You can even combine it with a tabu acceptor at the same time. That gives Late Acceptance salted with a bit
-      of Tabu. Use a lower tabu size than in a pure Tabu Search configuration.</para>
+      <para>Late Acceptance should use a low <literal>acceptedCountLimit</literal>.</para>
+
+      <para>Late Acceptance can be combined with a tabu acceptor at the same time. That gives Late Acceptance salted
+      with a bit of Tabu. Use a lower tabu size than in a pure Tabu Search configuration.</para>
 
       <programlisting language="xml">  &lt;localSearch&gt;
     ...
@@ -556,8 +581,6 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
       &lt;acceptedCountLimit&gt;1&lt;/acceptedCountLimit&gt;
     &lt;/forager&gt;
   &lt;/localSearch&gt;</programlisting>
-
-      <para>Late Acceptance should use a low <literal>acceptedCountLimit</literal>.</para>
     </section>
   </section>
 
@@ -593,10 +616,10 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
     &lt;/forager&gt;
   &lt;/localSearch&gt;</programlisting>
 
-      <para>You can even combine it with a tabu acceptor at the same time, similar as shown in <link
-      linkend="lateAcceptance">the Late Acceptance section</link>.</para>
-
       <para>Step Counting Hill Climbing should use a low <literal>acceptedCountLimit</literal>.</para>
+
+      <para>Step Counting Hill Climbing can be combined with a tabu acceptor at the same time, similar as shown in <link
+      linkend="lateAcceptance">the Late Acceptance section</link>.</para>
     </section>
   </section>
 

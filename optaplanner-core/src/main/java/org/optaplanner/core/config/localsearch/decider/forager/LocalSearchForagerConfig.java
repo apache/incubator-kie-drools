@@ -24,6 +24,8 @@ import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
 import org.optaplanner.core.impl.localsearch.decider.forager.finalist.FinalistPodium;
 import org.optaplanner.core.impl.localsearch.decider.forager.finalist.HighestScoreFinalistPodium;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 @XStreamAlias("localSearchForagerConfig")
 public class LocalSearchForagerConfig {
 
@@ -79,12 +81,10 @@ public class LocalSearchForagerConfig {
             }
             return ConfigUtils.newInstance(this, "foragerClass", foragerClass);
         }
-        LocalSearchPickEarlyType pickEarlyType_ = (pickEarlyType == null)
-                ? LocalSearchPickEarlyType.NEVER : pickEarlyType;
-        int acceptedCountLimit_ = (acceptedCountLimit == null) ? Integer.MAX_VALUE : acceptedCountLimit;
-        FinalistPodium finalistPodium = finalistPodiumType == null ? new HighestScoreFinalistPodium()
-                : finalistPodiumType.buildFinalistPodium();
-        return new AcceptedForager(finalistPodium, pickEarlyType_, acceptedCountLimit_);
+        LocalSearchPickEarlyType pickEarlyType_ = defaultIfNull(pickEarlyType, LocalSearchPickEarlyType.NEVER);
+        int acceptedCountLimit_ = defaultIfNull(acceptedCountLimit, Integer.MAX_VALUE);
+        FinalistPodiumType finalistPodiumType_ = defaultIfNull(finalistPodiumType, FinalistPodiumType.HIGHEST_SCORE);
+        return new AcceptedForager(finalistPodiumType_.buildFinalistPodium(), pickEarlyType_, acceptedCountLimit_);
     }
 
     public void inherit(LocalSearchForagerConfig inheritedConfig) {

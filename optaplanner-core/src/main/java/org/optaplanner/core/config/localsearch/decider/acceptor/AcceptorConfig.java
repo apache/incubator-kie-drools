@@ -40,6 +40,8 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.EntityRa
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.FixedTabuSizeStrategy;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.ValueRatioTabuSizeStrategy;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 @XStreamAlias("acceptor")
 public class AcceptorConfig {
 
@@ -273,6 +275,8 @@ public class AcceptorConfig {
                 acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(entityTabuSize));
             } else if (entityTabuRatio != null) {
                 acceptor.setTabuSizeStrategy(new EntityRatioTabuSizeStrategy(entityTabuRatio));
+            } else if (fadingEntityTabuSize == null && fadingEntityTabuRatio == null) {
+                acceptor.setTabuSizeStrategy(new EntityRatioTabuSizeStrategy(0.1));
             }
             if (fadingEntityTabuSize != null) {
                 if (fadingEntityTabuRatio != null) {
@@ -371,6 +375,12 @@ public class AcceptorConfig {
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.SIMULATED_ANNEALING))
                 || simulatedAnnealingStartingTemperature != null) {
             SimulatedAnnealingAcceptor acceptor = new SimulatedAnnealingAcceptor();
+            if (simulatedAnnealingStartingTemperature == null) {
+                // TODO Support SA without a parameter
+                throw new IllegalArgumentException("The acceptorType (" + AcceptorType.SIMULATED_ANNEALING
+                        + ") currently requires a simulatedAnnealingStartingTemperature ("
+                        + simulatedAnnealingStartingTemperature + ").");
+            }
             acceptor.setStartingTemperature(configPolicy.getScoreDefinition()
                     .parseScore(simulatedAnnealingStartingTemperature));
             acceptorList.add(acceptor);
@@ -378,15 +388,14 @@ public class AcceptorConfig {
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.LATE_ACCEPTANCE))
                 || lateAcceptanceSize != null) {
             LateAcceptanceAcceptor acceptor = new LateAcceptanceAcceptor();
-            acceptor.setLateAcceptanceSize((lateAcceptanceSize == null) ? 1000 : lateAcceptanceSize);
+            acceptor.setLateAcceptanceSize(defaultIfNull(lateAcceptanceSize, 400));
             acceptorList.add(acceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.STEP_COUNTING_HILL_CLIMBING))
                 || stepCountingHillClimbingSize != null) {
-            int stepCountingHillClimbingSize_ = (stepCountingHillClimbingSize == null)
-                    ? 1000 : stepCountingHillClimbingSize;
-            StepCountingHillClimbingType stepCountingHillClimbingType_ = (stepCountingHillClimbingType == null)
-                    ? StepCountingHillClimbingType.STEP : stepCountingHillClimbingType;
+            int stepCountingHillClimbingSize_ = defaultIfNull(stepCountingHillClimbingSize, 400);
+            StepCountingHillClimbingType stepCountingHillClimbingType_
+                    = defaultIfNull(stepCountingHillClimbingType, StepCountingHillClimbingType.STEP);
             StepCountingHillClimbingAcceptor acceptor = new StepCountingHillClimbingAcceptor(
                     stepCountingHillClimbingSize_, stepCountingHillClimbingType_);
             acceptorList.add(acceptor);
@@ -394,16 +403,14 @@ public class AcceptorConfig {
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.LATE_SIMULATED_ANNEALING))
                 || lateSimulatedAnnealingSize != null) {
             LateSimulatedAnnealingAcceptor acceptor = new LateSimulatedAnnealingAcceptor();
-            acceptor.setLateSimulatedAnnealingSize((lateSimulatedAnnealingSize == null) ? 1000 : lateSimulatedAnnealingSize);
+            acceptor.setLateSimulatedAnnealingSize(defaultIfNull(lateSimulatedAnnealingSize, 400));
             acceptorList.add(acceptor);
         }
         if (acceptorList.size() == 1) {
             return acceptorList.get(0);
         } else if (acceptorList.size() > 1) {
-            CompositeAcceptor compositeAcceptor = new CompositeAcceptor(acceptorList);
-            return compositeAcceptor;
+            return new CompositeAcceptor(acceptorList);
         } else {
-            // TODO Create a good all-round acceptor instead of fail-fasting.
             throw new IllegalArgumentException("The acceptor does not specify any acceptorType (" + acceptorTypeList
                     + ") or other acceptor property.\n"
                     + "For a good starting values,"

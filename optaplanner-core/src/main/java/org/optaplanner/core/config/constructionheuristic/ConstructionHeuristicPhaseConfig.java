@@ -37,6 +37,8 @@ import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 @XStreamAlias("constructionHeuristic")
 public class ConstructionHeuristicPhaseConfig extends PhaseConfig {
 
@@ -107,8 +109,8 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig {
         DefaultConstructionHeuristicPhase phase = new DefaultConstructionHeuristicPhase();
         configurePhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
         phase.setDecider(buildDecider(phaseConfigPolicy, phase.getTermination()));
-        ConstructionHeuristicType constructionHeuristicType_ = constructionHeuristicType == null
-                ? ConstructionHeuristicType.FIRST_FIT : constructionHeuristicType;
+        ConstructionHeuristicType constructionHeuristicType_ = defaultIfNull(
+                constructionHeuristicType, ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE);
         phaseConfigPolicy.setEntitySorterManner(entitySorterManner != null ? entitySorterManner
                 : constructionHeuristicType_.getDefaultEntitySorterManner());
         phaseConfigPolicy.setValueSorterManner(valueSorterManner != null ? valueSorterManner
@@ -120,7 +122,7 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig {
             entityPlacerConfig = entityPlacerConfigList.get(0);
             if (constructionHeuristicType != null) {
                 throw new IllegalArgumentException("The constructionHeuristicType (" + constructionHeuristicType
-                        + ") should not be configured if the entityPlacerConfig (" + entityPlacerConfig
+                        + ") must not be configured if the entityPlacerConfig (" + entityPlacerConfig
                         + ") is explicitly configured.");
             }
         } else {

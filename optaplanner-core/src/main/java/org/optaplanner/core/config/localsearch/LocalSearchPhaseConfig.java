@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -31,23 +32,35 @@ import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSe
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
+import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig;
+import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchPickEarlyType;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.exhaustivesearch.node.comparator.BreadthFirstNodeComparator;
+import org.optaplanner.core.impl.exhaustivesearch.node.comparator.DepthFirstNodeComparator;
+import org.optaplanner.core.impl.exhaustivesearch.node.comparator.OptimisticBoundFirstNodeComparator;
+import org.optaplanner.core.impl.exhaustivesearch.node.comparator.OriginalOrderNodeComparator;
+import org.optaplanner.core.impl.exhaustivesearch.node.comparator.ScoreFirstNodeComparator;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.localsearch.DefaultLocalSearchPhase;
 import org.optaplanner.core.impl.localsearch.LocalSearchPhase;
 import org.optaplanner.core.impl.localsearch.decider.LocalSearchDecider;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
 import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
+
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("localSearch")
 public class LocalSearchPhaseConfig extends PhaseConfig {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
+
+    protected LocalSearchType localSearchType = null;
 
     // TODO This is a List due to XStream limitations. With JAXB it could be just a MoveSelectorConfig instead.
     @XStreamImplicit()
@@ -56,6 +69,14 @@ public class LocalSearchPhaseConfig extends PhaseConfig {
     private AcceptorConfig acceptorConfig = null;
     @XStreamAlias("forager")
     private LocalSearchForagerConfig foragerConfig = null;
+
+    public LocalSearchType getLocalSearchType() {
+        return localSearchType;
+    }
+
+    public void setLocalSearchType(LocalSearchType localSearchType) {
+        this.localSearchType = localSearchType;
+    }
 
     public MoveSelectorConfig getMoveSelectorConfig() {
         return moveSelectorConfigList == null ? null : moveSelectorConfigList.get(0);
@@ -107,12 +128,9 @@ public class LocalSearchPhaseConfig extends PhaseConfig {
         decider.setTermination(termination);
         MoveSelector moveSelector = buildMoveSelector(configPolicy);
         decider.setMoveSelector(moveSelector);
-        AcceptorConfig acceptorConfig_ = acceptorConfig == null ? new AcceptorConfig()
-                : acceptorConfig;
-        decider.setAcceptor(acceptorConfig_.buildAcceptor(configPolicy));
-        LocalSearchForagerConfig foragerConfig_ = foragerConfig == null ? new LocalSearchForagerConfig()
-                : foragerConfig;
-        Forager forager = foragerConfig_.buildForager(configPolicy);
+        Acceptor acceptor = buildAcceptor(configPolicy);
+        decider.setAcceptor(acceptor);
+        Forager forager = buildForager(configPolicy);
         decider.setForager(forager);
         if (moveSelector.isNeverEnding() && !forager.supportsNeverEndingMoveSelector()) {
             throw new IllegalStateException("The moveSelector (" + moveSelector
@@ -131,7 +149,73 @@ public class LocalSearchPhaseConfig extends PhaseConfig {
         return decider;
     }
 
-    private MoveSelector buildMoveSelector(HeuristicConfigPolicy configPolicy) {
+    protected Acceptor buildAcceptor(HeuristicConfigPolicy configPolicy) {
+        AcceptorConfig acceptorConfig_;
+        if (acceptorConfig != null) {
+            if (localSearchType != null) {
+                throw new IllegalArgumentException("The localSearchType (" + localSearchType
+                        + ") must not be configured if the acceptorConfig (" + acceptorConfig
+                        + ") is explicitly configured.");
+            }
+            acceptorConfig_ = acceptorConfig;
+        } else {
+            LocalSearchType localSearchType_ = defaultIfNull(localSearchType, LocalSearchType.LATE_ACCEPTANCE);
+            acceptorConfig_ = new AcceptorConfig();
+            switch (localSearchType_) {
+                case HILL_CLIMBING:
+                    acceptorConfig_.setAcceptorTypeList(Collections.singletonList(AcceptorType.HILL_CLIMBING));
+                    break;
+                case TABU_SEARCH:
+                    acceptorConfig_.setAcceptorTypeList(Collections.singletonList(AcceptorType.ENTITY_TABU));
+                    break;
+                case SIMULATED_ANNEALING:
+                    acceptorConfig_.setAcceptorTypeList(Collections.singletonList(AcceptorType.SIMULATED_ANNEALING));
+                    break;
+                case LATE_ACCEPTANCE:
+                    acceptorConfig_.setAcceptorTypeList(Collections.singletonList(AcceptorType.LATE_ACCEPTANCE));
+                    break;
+                default:
+                    throw new IllegalStateException("The localSearchType (" + localSearchType_
+                            + ") is not implemented.");
+            }
+        }
+        return acceptorConfig_.buildAcceptor(configPolicy);
+    }
+
+    protected Forager buildForager(HeuristicConfigPolicy configPolicy) {
+        LocalSearchForagerConfig foragerConfig_;
+        if (foragerConfig != null) {
+            if (localSearchType != null) {
+                throw new IllegalArgumentException("The localSearchType (" + localSearchType
+                        + ") must not be configured if the foragerConfig (" + foragerConfig
+                        + ") is explicitly configured.");
+            }
+            foragerConfig_ = foragerConfig;
+        } else {
+            LocalSearchType localSearchType_ = defaultIfNull(localSearchType, LocalSearchType.LATE_ACCEPTANCE);
+            foragerConfig_ = new LocalSearchForagerConfig();
+            switch (localSearchType_) {
+                case HILL_CLIMBING:
+                    foragerConfig_.setAcceptedCountLimit(1);
+                    break;
+                case TABU_SEARCH:
+                    // Slow stepping algorithm
+                    foragerConfig_.setAcceptedCountLimit(1000);
+                    break;
+                case SIMULATED_ANNEALING:
+                case LATE_ACCEPTANCE:
+                    // Fast stepping algorithm
+                    foragerConfig_.setAcceptedCountLimit(1);
+                    break;
+                default:
+                    throw new IllegalStateException("The localSearchType (" + localSearchType_
+                            + ") is not implemented.");
+            }
+        }
+        return foragerConfig_.buildForager(configPolicy);
+    }
+
+    protected MoveSelector buildMoveSelector(HeuristicConfigPolicy configPolicy) {
         MoveSelector moveSelector;
         SelectionCacheType defaultCacheType = SelectionCacheType.JUST_IN_TIME;
         SelectionOrder defaultSelectionOrder = SelectionOrder.RANDOM;
@@ -157,6 +241,8 @@ public class LocalSearchPhaseConfig extends PhaseConfig {
 
     public void inherit(LocalSearchPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
+        localSearchType = ConfigUtils.inheritOverwritableProperty(localSearchType,
+                inheritedConfig.getLocalSearchType());
         setMoveSelectorConfig(ConfigUtils.inheritOverwritableProperty(
                 getMoveSelectorConfig(), inheritedConfig.getMoveSelectorConfig()));
         if (acceptorConfig == null) {

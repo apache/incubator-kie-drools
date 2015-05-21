@@ -132,4 +132,19 @@ public enum ConstructionHeuristicType {
         }
     }
 
+    /**
+     * @return {@link #values()} without duplicates (abstract types that end up behaving as one of the other types).
+     */
+    public static ConstructionHeuristicType[] getBluePrintTypes() {
+        return new ConstructionHeuristicType[] {
+            FIRST_FIT,
+            FIRST_FIT_DECREASING,
+            WEAKEST_FIT,
+            WEAKEST_FIT_DECREASING,
+            STRONGEST_FIT,
+            STRONGEST_FIT_DECREASING,
+            CHEAPEST_INSERTION
+        };
+    }
+
 }
