@@ -586,6 +586,26 @@
     </orderedlist>
   </section>
 
+  <section xml:id="powerTweaking">
+    <title>Power tweaking or default parameter values</title>
+
+    <para>Many optimization algorithms have parameters which affect results and scalability. Planner applies
+    <emphasis>configuration by exception</emphasis>, so all optimization algorithms have default parameter values. This
+    is very similar to the Garbage Collection parameters in a JVM: most users have no need to tweak them, but power
+    users do tweak them.</para>
+
+    <para>The default parameter values are good enough for many cases (and especially for prototypes), but if
+    development time allows, it can be well worth to power tweak them with the <link
+    linkend="benchmarker">benchmarker</link> for better results and scalability on a specific use case. The
+    documentation for each optimization algorithm also declares its advanced configuration for power tweaking.</para>
+
+    <warning>
+      <para>The default value of parameters will change between minor versions, to improve them for most users (but not
+      necessary for you). To shield yourself from these changes, for better or worse, always use the advanced
+      configuration. This is not recommended.</para>
+    </warning>
+  </section>
+
   <section xml:id="solverPhase">
     <title>Solver Phase</title>
 
