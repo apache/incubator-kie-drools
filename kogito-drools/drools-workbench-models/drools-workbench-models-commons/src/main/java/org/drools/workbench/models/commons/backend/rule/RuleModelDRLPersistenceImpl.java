@@ -16,38 +16,9 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.lang.descr.AccumulateDescr;
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.AnnotationDescr;
-import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.BehaviorDescr;
-import org.drools.compiler.lang.descr.CollectDescr;
-import org.drools.compiler.lang.descr.ConditionalElementDescr;
-import org.drools.compiler.lang.descr.EntryPointDescr;
-import org.drools.compiler.lang.descr.EvalDescr;
-import org.drools.compiler.lang.descr.ExprConstraintDescr;
-import org.drools.compiler.lang.descr.FromDescr;
-import org.drools.compiler.lang.descr.GlobalDescr;
-import org.drools.compiler.lang.descr.NotDescr;
-import org.drools.compiler.lang.descr.OrDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.lang.descr.PatternSourceDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.*;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.core.base.evaluators.Operator;
 import org.drools.core.util.ReflectiveVisitor;
@@ -61,67 +32,19 @@ import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorCont
 import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContextFactory;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
-import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.MethodInfo;
-import org.drools.workbench.models.datamodel.oracle.ModelField;
-import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
-import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
-import org.drools.workbench.models.datamodel.rule.ActionFieldFunction;
-import org.drools.workbench.models.datamodel.rule.ActionFieldList;
-import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
-import org.drools.workbench.models.datamodel.rule.ActionGlobalCollectionAdd;
-import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
-import org.drools.workbench.models.datamodel.rule.ActionInsertLogicalFact;
-import org.drools.workbench.models.datamodel.rule.ActionRetractFact;
-import org.drools.workbench.models.datamodel.rule.ActionSetField;
-import org.drools.workbench.models.datamodel.rule.ActionUpdateField;
-import org.drools.workbench.models.datamodel.rule.ActionWorkItemFieldValue;
-import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
-import org.drools.workbench.models.datamodel.rule.CEPWindow;
-import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
-import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
-import org.drools.workbench.models.datamodel.rule.ConnectiveConstraint;
-import org.drools.workbench.models.datamodel.rule.DSLSentence;
-import org.drools.workbench.models.datamodel.rule.ExpressionCollection;
-import org.drools.workbench.models.datamodel.rule.ExpressionField;
-import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
-import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
-import org.drools.workbench.models.datamodel.rule.ExpressionMethodParameter;
-import org.drools.workbench.models.datamodel.rule.ExpressionPart;
-import org.drools.workbench.models.datamodel.rule.ExpressionText;
-import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
-import org.drools.workbench.models.datamodel.rule.ExpressionVariable;
-import org.drools.workbench.models.datamodel.rule.FactPattern;
-import org.drools.workbench.models.datamodel.rule.FieldConstraint;
-import org.drools.workbench.models.datamodel.rule.FieldNature;
-import org.drools.workbench.models.datamodel.rule.FieldNatureType;
-import org.drools.workbench.models.datamodel.rule.FreeFormLine;
-import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
-import org.drools.workbench.models.datamodel.rule.FromCollectCompositeFactPattern;
-import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
-import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
-import org.drools.workbench.models.datamodel.rule.IAction;
-import org.drools.workbench.models.datamodel.rule.IFactPattern;
-import org.drools.workbench.models.datamodel.rule.IPattern;
-import org.drools.workbench.models.datamodel.rule.RuleAttribute;
-import org.drools.workbench.models.datamodel.rule.RuleMetadata;
-import org.drools.workbench.models.datamodel.rule.RuleModel;
-import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
-import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
+import org.drools.workbench.models.datamodel.oracle.*;
+import org.drools.workbench.models.datamodel.rule.*;
 import org.drools.workbench.models.datamodel.rule.builder.DRLConstraintValueBuilder;
 import org.drools.workbench.models.datamodel.rule.visitors.ToStringExpressionVisitor;
-import org.drools.workbench.models.datamodel.workitems.HasBinding;
-import org.drools.workbench.models.datamodel.workitems.PortableBooleanParameterDefinition;
-import org.drools.workbench.models.datamodel.workitems.PortableFloatParameterDefinition;
-import org.drools.workbench.models.datamodel.workitems.PortableIntegerParameterDefinition;
-import org.drools.workbench.models.datamodel.workitems.PortableObjectParameterDefinition;
-import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
-import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDefinition;
-import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
+import org.drools.workbench.models.datamodel.workitems.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static org.drools.core.util.StringUtils.*;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.drools.core.util.StringUtils.splitArgumentsList;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.*;
 
 /**
@@ -134,6 +57,8 @@ public class RuleModelDRLPersistenceImpl
     private static final String WORKITEM_PREFIX = "wi";
 
     private static final RuleModelPersistence INSTANCE = new RuleModelDRLPersistenceImpl();
+
+    private static final Logger log = LoggerFactory.getLogger( RuleModelDRLPersistenceImpl.class );
 
     //This is the default dialect for rules not specifying one explicitly
     protected DRLConstraintValueBuilder constraintValueBuilder = DRLConstraintValueBuilder.getBuilder( DRLConstraintValueBuilder.DEFAULT_DIALECT );
@@ -1829,7 +1754,8 @@ public class RuleModelDRLPersistenceImpl
                                                                          globals ),
                                  dmo );
 
-        } catch ( RuleModelUnmarshallingException e ) {
+        } catch ( Exception e ) {
+            log.info( "Unable to parse source Drl. Falling back to simple parser. \n" + str );
             return getSimpleRuleModel( str );
         }
     }
@@ -1848,7 +1774,8 @@ public class RuleModelDRLPersistenceImpl
                                                                     globals ),
                                  dmo );
 
-        } catch ( RuleModelUnmarshallingException e ) {
+        } catch ( Exception e ) {
+            log.info( "Unable to parse source Drl. Falling back to simple parser. \n" + str );
             return getSimpleRuleModel( str );
         }
     }
@@ -3651,9 +3578,8 @@ public class RuleModelDRLPersistenceImpl
                 } else if ( isBoundParam ) {
                     ModelField currentFact = findFact( dmo.getProjectModelFields(),
                                                        factType );
-                    expression.appendPart( new ExpressionVariable( expressionPart,
-                                                                   currentFact.getClassName(),
-                                                                   currentFact.getType() ) );
+
+                    expression.appendPart(getExpressionPart(expressionPart, currentFact));
                     isBoundParam = false;
 
                 } else {
@@ -3991,6 +3917,22 @@ public class RuleModelDRLPersistenceImpl
             final Map<String, String[]> projectJavaEnumDefinitions = dmo.getProjectJavaEnumDefinitions();
 
             return projectJavaEnumDefinitions.containsKey( key );
+        }
+    }
+
+    /**
+     * If the bound type is not in the DMO it probably hasn't been imported.
+     * So we have little option than to fall back to keeping the value as Text.
+     *
+     */
+    private static ExpressionPart getExpressionPart( String expressionPart,
+                                                     ModelField currentFact) {
+        if ( currentFact == null ) {
+            return new ExpressionText( expressionPart );
+        } else {
+            return new ExpressionVariable( expressionPart,
+                                           currentFact.getClassName(),
+                                           currentFact.getType() );
         }
     }
 
