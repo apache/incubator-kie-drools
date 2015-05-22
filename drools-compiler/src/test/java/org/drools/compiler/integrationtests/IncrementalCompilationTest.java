@@ -5,6 +5,7 @@ import org.drools.compiler.FactA;
 import org.drools.compiler.Message;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
@@ -18,16 +19,21 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.command.BatchExecutionCommand;
+import org.kie.api.command.Command;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.ResourceType;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
+import org.kie.internal.command.CommandFactory;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -1341,18 +1347,18 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         // Create an in-memory jar for version 1.0.0
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
-        KieModule km = createAndDeployJarInStreamMode(ks, releaseId1, file2);
+        KieModule km = createAndDeployJarInStreamMode( ks, releaseId1, file2 );
 
         // Create a session and fire rules
-        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
         KieSession ksession = kc.newKieSession();
 
         FactA factA = new FactA(105742);
-        factA.setField1("entry:" + 105742);
+        factA.setField1( "entry:" + 105742 );
         FactHandle fh = ksession.insert(factA);
 
         // Create a new jar for version 1.1.0
-        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
         km = createAndDeployJarInStreamMode(ks, releaseId2);
 
         // try to update the container to version 1.1.0
@@ -1369,7 +1375,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         KieModuleModel module = ks.newKieModuleModel();
 
         KieBaseModel defaultBase = module.newKieBaseModel( "kBase1" );
-        defaultBase.setEventProcessingMode(EventProcessingOption.STREAM).setDefault(true);
+        defaultBase.setEventProcessingMode(EventProcessingOption.STREAM).setDefault( true );
         defaultBase.newKieSessionModel("defaultKSession").setDefault(true);
         kfs.writeKModuleXML( module.toXML() );
 
@@ -1471,5 +1477,52 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         assertEquals( "foo", ksession.getGlobal( "foo" ) );
         assertNull( ksession.getGlobal( "bar" ) );
         assertEquals( "baz", ksession.getGlobal( "baz" ) );
+    }
+
+    @Test
+    public void testUpdateVersionWithKSessionLogger() {
+        // DROOLS-790
+        String drl1 =
+                "import java.util.List\n" +
+                "import java.util.ArrayList\n" +
+                "\n" +
+                "rule \"Test1\"\n" +
+                "\n" +
+                "when\n" +
+                "   $a : Integer()\n" +
+                "then\n" +
+                "   insert(new ArrayList());\n" +
+                "end\n";
+
+        String drl2 = "rule \"Test2\"\n" +
+                      "when\n" +
+                      "   $b : List()\n" +
+                      " then\n" +
+                      "   $b.isEmpty();\n" +
+                      "end";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl1 );
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+
+        StatelessKieSession statelessKieSession = kc.newStatelessKieSession();
+        KieRuntimeLogger kieRuntimeLogger = ks.getLoggers().newConsoleLogger(statelessKieSession);
+
+        List<Command> cmds = new ArrayList<Command>();
+        cmds.add( CommandFactory.newInsertElements( new ArrayList() ));
+        FireAllRulesCommand fireAllRulesCommand = (FireAllRulesCommand) CommandFactory.newFireAllRules();
+        cmds.add( fireAllRulesCommand );
+        cmds.add( CommandFactory.newGetObjects( "returnedObjects" ) );
+        BatchExecutionCommand batchExecutionCommand = CommandFactory.newBatchExecution( cmds );
+
+        statelessKieSession.execute( batchExecutionCommand );
+        kieRuntimeLogger.close();
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        km = createAndDeployJar( ks, releaseId2, drl1 + drl2 );
+
+        kc.updateToVersion(km.getReleaseId());
     }
 }

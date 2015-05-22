@@ -25,6 +25,7 @@ public class BeforeKiePackageAddedEventImpl extends KnowledgeBaseEventImpl imple
     
     public BeforeKiePackageAddedEventImpl(KnowledgeBase knowledgeBase, KnowledgePackage knowledgePackage) {
         super( knowledgeBase );
+        this.knowledgePackage = knowledgePackage;
     }
 
     public KnowledgePackage getKiePackage() {
