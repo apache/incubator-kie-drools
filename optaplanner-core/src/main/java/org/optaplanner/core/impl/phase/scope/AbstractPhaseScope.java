@@ -132,13 +132,12 @@ public abstract class AbstractPhaseScope {
         solverScope.assertWorkingScoreFromScratch(workingScore, completedAction);
     }
 
-    public void assertExpectedUndoMoveScore(Move move, Move undoMove) {
+    public void assertExpectedUndoMoveScore(Move move, Move undoMove, Score beforeMoveScore) {
         Score undoScore = calculateScore();
-        Score lastCompletedStepScore = getLastCompletedStepScope().getScore();
-        if (!undoScore.equals(lastCompletedStepScore)) {
+        if (!undoScore.equals(beforeMoveScore)) {
             // First assert that are probably no corrupted score rules.
             getScoreDirector().assertWorkingScoreFromScratch(undoScore, undoMove);
-            throw new IllegalStateException("UndoMove corruption: the lastCompletedStepScore (" + lastCompletedStepScore
+            throw new IllegalStateException("UndoMove corruption: the beforeMoveScore (" + beforeMoveScore
                     + ") is not the undoScore (" + undoScore
                     + ") which is the uncorruptedScore (" + undoScore + ") of the workingSolution.\n"
                     + "  1) Enable EnvironmentMode " + EnvironmentMode.FULL_ASSERT
@@ -147,8 +146,7 @@ public abstract class AbstractPhaseScope {
                     + " The move (" + move + ") might have a corrupted undoMove (" + undoMove + ").\n"
                     + "  3) Check your custom " + VariableListener.class.getSimpleName() + "s (if you have any)"
                     + " for shadow variables that are used by the score constraints with a different score weight"
-                    + " between the lastCompletedStepScore (" + lastCompletedStepScore
-                    + ") and the undoScore (" + undoScore + ").");
+                    + " between the beforeMoveScore (" + beforeMoveScore + ") and the undoScore (" + undoScore + ").");
         }
     }
 

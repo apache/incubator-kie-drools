@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.exhaustivesearch;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -25,7 +24,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecider;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchLayer;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
@@ -33,7 +31,6 @@ import org.optaplanner.core.impl.exhaustivesearch.node.bounder.ScoreBounder;
 import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchPhaseScope;
 import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchStepScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -214,17 +211,17 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
             restoreMove.doMove(scoreDirector);
         }
         // there is no need to recalculate the score, but we still need to set it
-        phaseScope.getWorkingSolution().setScore(stepScope.getScore());
+        phaseScope.getWorkingSolution().setScore(stepScope.getStartingStepScore());
         if (assertWorkingSolutionScoreFromScratch) {
             // In BRUTE_FORCE the stepScore can be null because it was not calculated
-            if (stepScope.getScore() != null) {
-                phaseScope.assertWorkingScoreFromScratch(stepScope.getScore(), restoreMoveList);
+            if (stepScope.getStartingStepScore() != null) {
+                phaseScope.assertWorkingScoreFromScratch(stepScope.getStartingStepScore(), restoreMoveList);
             }
         }
         if (assertExpectedWorkingSolutionScore) {
             // In BRUTE_FORCE the stepScore can be null because it was not calculated
-            if (stepScope.getScore() != null) {
-                phaseScope.assertExpectedWorkingScore(stepScope.getScore(), restoreMoveList);
+            if (stepScope.getStartingStepScore() != null) {
+                phaseScope.assertExpectedWorkingScore(stepScope.getStartingStepScore(), restoreMoveList);
             }
         }
     }

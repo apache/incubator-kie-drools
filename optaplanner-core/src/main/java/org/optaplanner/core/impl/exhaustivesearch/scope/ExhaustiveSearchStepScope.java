@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.exhaustivesearch.scope;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 
@@ -46,7 +47,10 @@ public class ExhaustiveSearchStepScope extends AbstractStepScope {
 
     public void setExpandingNode(ExhaustiveSearchNode expandingNode) {
         this.expandingNode = expandingNode;
-        this.score = expandingNode.getScore();
+    }
+
+    public Score getStartingStepScore() {
+        return expandingNode.getScore();
     }
 
     public Long getSelectedMoveCount() {
