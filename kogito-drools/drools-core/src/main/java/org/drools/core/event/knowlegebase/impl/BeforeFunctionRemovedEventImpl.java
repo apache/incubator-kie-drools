@@ -24,6 +24,7 @@ public class BeforeFunctionRemovedEventImpl extends KnowledgeBaseEventImpl imple
     
     public BeforeFunctionRemovedEventImpl(KnowledgeBase knowledgeBase, String function) {
         super( knowledgeBase );
+        this.function = function;
     }
 
     public String getFunction() {

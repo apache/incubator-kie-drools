@@ -35,11 +35,16 @@ import static org.drools.core.util.ClassUtils.getAccessor;
 
 public class XpathConstraint extends MutableTypeConstraint {
 
-    private final LinkedList<XpathChunk> chunks = new LinkedList<XpathChunk>();
+    private final LinkedList<XpathChunk> chunks;
 
     private Declaration declaration;
 
     public XpathConstraint() {
+        this(new LinkedList<XpathChunk>());
+    }
+
+    private XpathConstraint(LinkedList<XpathChunk> chunks) {
+        this.chunks = chunks;
         setType(ConstraintType.XPATH);
     }
 
@@ -63,9 +68,10 @@ public class XpathConstraint extends MutableTypeConstraint {
     }
 
     @Override
-    public MutableTypeConstraint clone() {
-        throw new UnsupportedOperationException("org.drools.core.rule.constraint.XpathConstraint.clone -> TODO");
-
+    public XpathConstraint clone() {
+        XpathConstraint clone = new XpathConstraint(this.chunks);
+        clone.setDeclaration( declaration.clone() );
+        return clone;
     }
 
     @Override
