@@ -7674,6 +7674,101 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
     @Test
     //https://bugzilla.redhat.com/show_bug.cgi?id=1218308
+    public void testValidSyntaxNonImportedType() throws Exception {
+        String drl = "rule \"x\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  var : NotImported( )\n" +
+                "  OtherType( field != var.field )\n" +
+                "  MyType( ) from var.collectionField\n" +
+                "then\n" +
+                "end";
+
+        addModelField( "org.test.OtherType",
+                       "this",
+                       "org.test.OtherType",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.OtherType",
+                       "field",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+        addModelField( "org.test.MyType",
+                       "this",
+                       "org.test.MyType",
+                       DataType.TYPE_THIS );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 3,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "NotImported",
+                      fp0.getFactType() );
+        assertEquals( "var",
+                      fp0.getBoundName() );
+        assertEquals( 0,
+                      fp0.getNumberOfConstraints() );
+
+        final IPattern p1 = m.lhs[ 1 ];
+        assertTrue( p1 instanceof FactPattern );
+        final FactPattern fp1 = (FactPattern) p1;
+        assertEquals( "OtherType",
+                      fp1.getFactType() );
+        assertEquals( 1,
+                      fp1.getNumberOfConstraints() );
+        assertTrue( fp1.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        final SingleFieldConstraint fp1sfc0 = (SingleFieldConstraint) fp1.getConstraint( 0 );
+        assertEquals( "OtherType",
+                      fp1sfc0.getFactType() );
+        assertEquals( "field",
+                      fp1sfc0.getFieldName() );
+        assertEquals( "!=",
+                      fp1sfc0.getOperator() );
+        assertEquals( 2,
+                      fp1sfc0.getExpressionValue().getParts().size() );
+        assertTrue( fp1sfc0.getExpressionValue().getParts().get( 0 ) instanceof ExpressionText );
+        final ExpressionText fp1sfc0e0 = (ExpressionText) fp1sfc0.getExpressionValue().getParts().get( 0 );
+        assertEquals( "var",
+                      fp1sfc0e0.getName() );
+        assertTrue( fp1sfc0.getExpressionValue().getParts().get( 1 ) instanceof ExpressionText );
+        final ExpressionText fp1sfc0e1 = (ExpressionText) fp1sfc0.getExpressionValue().getParts().get( 1 );
+        assertEquals( "field",
+                      fp1sfc0e1.getName() );
+
+        final IPattern p2 = m.lhs[ 2 ];
+        assertTrue( p2 instanceof FromCompositeFactPattern );
+        final FromCompositeFactPattern fp2 = (FromCompositeFactPattern) p2;
+        assertEquals( "MyType",
+                      fp2.getFactType() );
+        assertEquals( 2,
+                      fp2.getExpression().getParts().size() );
+        assertTrue( fp2.getExpression().getParts().get( 0 ) instanceof ExpressionVariable );
+        final ExpressionVariable fp2e0 = (ExpressionVariable) fp2.getExpression().getParts().get( 0 );
+        assertEquals( "var",
+                      fp2e0.getName() );
+        assertTrue( fp2.getExpression().getParts().get( 1 ) instanceof ExpressionText );
+        final ExpressionText fp2e1 = (ExpressionText) fp2.getExpression().getParts().get( 1 );
+        assertEquals( "collectionField",
+                      fp2e1.getName() );
+
+        assertEquals( 0,
+                      m.rhs.length );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1218308
     public void testInvalidSyntax1() throws Exception {
         String drl = "rule \"test\"\n" +
                 "dialect \"mvel\"\n" +

@@ -120,6 +120,8 @@ import org.drools.workbench.models.datamodel.workitems.PortableObjectParameterDe
 import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.core.util.StringUtils.*;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.*;
@@ -134,6 +136,8 @@ public class RuleModelDRLPersistenceImpl
     private static final String WORKITEM_PREFIX = "wi";
 
     private static final RuleModelPersistence INSTANCE = new RuleModelDRLPersistenceImpl();
+
+    private static final Logger log = LoggerFactory.getLogger( RuleModelDRLPersistenceImpl.class );
 
     //This is the default dialect for rules not specifying one explicitly
     protected DRLConstraintValueBuilder constraintValueBuilder = DRLConstraintValueBuilder.getBuilder( DRLConstraintValueBuilder.DEFAULT_DIALECT );
@@ -1829,7 +1833,8 @@ public class RuleModelDRLPersistenceImpl
                                                                          globals ),
                                  dmo );
 
-        } catch ( RuleModelUnmarshallingException e ) {
+        } catch ( Exception e ) {
+            log.info( "Unable to parse source Drl. Falling back to simple parser. \n" + str );
             return getSimpleRuleModel( str );
         }
     }
@@ -1848,7 +1853,8 @@ public class RuleModelDRLPersistenceImpl
                                                                     globals ),
                                  dmo );
 
-        } catch ( RuleModelUnmarshallingException e ) {
+        } catch ( Exception e ) {
+            log.info( "Unable to parse source Drl. Falling back to simple parser. \n" + str );
             return getSimpleRuleModel( str );
         }
     }
@@ -3651,9 +3657,15 @@ public class RuleModelDRLPersistenceImpl
                 } else if ( isBoundParam ) {
                     ModelField currentFact = findFact( dmo.getProjectModelFields(),
                                                        factType );
-                    expression.appendPart( new ExpressionVariable( expressionPart,
-                                                                   currentFact.getClassName(),
-                                                                   currentFact.getType() ) );
+                    //If the bound type is not in the DMO it probably hasn't been imported.
+                    //So we have little option than to fall back to keeping the value as Text.
+                    if ( currentFact == null ) {
+                        expression.appendPart( new ExpressionText( expressionPart ) );
+                    } else {
+                        expression.appendPart( new ExpressionVariable( expressionPart,
+                                                                       currentFact.getClassName(),
+                                                                       currentFact.getType() ) );
+                    }
                     isBoundParam = false;
 
                 } else {
