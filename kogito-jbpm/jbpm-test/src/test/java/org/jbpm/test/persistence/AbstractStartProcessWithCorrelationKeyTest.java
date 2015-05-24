@@ -301,6 +301,72 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         assertProcessInstanceNotActive(processInstance.getId(), ksession);
     }
     
+    @Test
+    public void testProcessesWithSameBusinessKeyInParallel() {
+        createRuntimeManager("humantask.bpmn");
+        RuntimeEngine runtimeEngine = getRuntimeEngine();
+        KieSession ksession = runtimeEngine.getKieSession();
+        TaskService taskService = runtimeEngine.getTaskService();
+        
+        ProcessInstance processInstance = ((CorrelationAwareProcessRuntime)ksession).
+                startProcess("com.sample.bpmn.hello", getMultiValuedCorrelationKey("first", "second"), null);
+
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        assertNodeTriggered(processInstance.getId(), "Start", "Task 1");     
+        
+        // let john execute Task 1
+        List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
+        TaskSummary task = list.get(0);
+        logger.info("John is executing task {}", task.getName());
+        taskService.start(task.getId(), "john");
+        taskService.complete(task.getId(), "john", null);
+
+        assertNodeTriggered(processInstance.getId(), "Task 2");
+        
+        ProcessInstance processInstanceCopy = ((CorrelationAwareProcessRuntime)ksession).getProcessInstance(getMultiValuedCorrelationKey("first", "second"));
+        assertNotNull(processInstanceCopy);
+        assertEquals(processInstance.getId(), processInstanceCopy.getId());
+        
+        ProcessInstance processInstance2 = ((CorrelationAwareProcessRuntime)ksession).startProcess("com.sample.bpmn.hello", getMultiValuedCorrelationKey("third", "fourth"), null);
+
+        assertProcessInstanceActive(processInstance2.getId(), ksession);
+        assertNodeTriggered(processInstance2.getId(), "Start", "Task 1");      
+        
+        // let john execute Task 1
+        list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
+        task = list.get(0);
+        logger.info("John is executing task {}", task.getName());
+        taskService.start(task.getId(), "john");
+        taskService.complete(task.getId(), "john", null);
+
+        assertNodeTriggered(processInstance2.getId(), "Task 2");
+        
+        ProcessInstance processInstanceCopy2 = ((CorrelationAwareProcessRuntime)ksession).getProcessInstance(getMultiValuedCorrelationKey("third", "fourth"));
+        assertNotNull(processInstanceCopy2);
+        assertEquals(processInstance2.getId(), processInstanceCopy2.getId());
+        
+        // let mary execute Task 2 on process instance 2
+        list = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
+        task = list.get(0);
+        logger.info("Mary is executing task {}", task.getName());
+        taskService.start(task.getId(), "mary");
+        taskService.complete(task.getId(), "mary", null);
+
+        assertNodeTriggered(processInstance2.getId(), "End");
+        assertProcessInstanceNotActive(processInstance2.getId(), ksession);
+        
+        // let mary execute Task 2 on process instance 1
+        list = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
+        task = list.get(0);
+        logger.info("Mary is executing task {}", task.getName());
+        taskService.start(task.getId(), "mary");
+        taskService.complete(task.getId(), "mary", null);
+
+        assertNodeTriggered(processInstance.getId(), "End");
+        assertProcessInstanceNotActive(processInstance.getId(), ksession);
+        
+    }
+    
     private CorrelationKey getCorrelationKey() {
         
         return factory.newCorrelationKey("mybusinesskey");
@@ -310,6 +376,15 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         List<String> properties = new ArrayList<String>();
         properties.add("customerid");
         properties.add("orderid");
+        return factory.newCorrelationKey(properties);
+    }
+    
+    private CorrelationKey getMultiValuedCorrelationKey(String...props) {
+        List<String> properties = new ArrayList<String>();
+        
+        for (String prop : props) {
+            properties.add(prop);
+        }
         return factory.newCorrelationKey(properties);
     }
     
