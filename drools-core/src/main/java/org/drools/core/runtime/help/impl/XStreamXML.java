@@ -609,8 +609,10 @@ public class XStreamXML {
             StartProcessCommand cmd = (StartProcessCommand) object;
             writer.addAttribute( "processId",
                                  cmd.getProcessId() );
-            writer.addAttribute( "out-identifier",
-                                 cmd.getOutIdentifier() );
+            if ( cmd.getOutIdentifier() != null ) {
+                writer.addAttribute( "out-identifier",
+                                     cmd.getOutIdentifier() );
+            }
 
             for ( Entry<String, Object> entry : cmd.getParameters().entrySet() ) {
                 writer.startNode( "parameter" );
