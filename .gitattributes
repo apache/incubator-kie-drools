@@ -25,3 +25,9 @@
 # Other binary files
 *.xls binary
 *.xlsx binary
+
+# GitHub syntax highlighting
+############################
+
+# To prevent GitHub to presume those optaplanner-examples/data files are Objective-C++ code.
+*.mm linguist-language=Text
