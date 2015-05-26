@@ -23,7 +23,9 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
+import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.random.RandomType;
@@ -237,13 +239,15 @@ public class SolverConfig {
     }
 
     protected List<Phase> buildPhaseList(HeuristicConfigPolicy configPolicy, BestSolutionRecaller bestSolutionRecaller, Termination termination) {
-        if (ConfigUtils.isEmptyCollection(phaseConfigList)) {
-            throw new IllegalArgumentException(
-                    "Configure at least 1 phase (for example <localSearch>) in the solver configuration.");
+        List<PhaseConfig> phaseConfigList_ = phaseConfigList;
+        if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
+            phaseConfigList_ = new ArrayList<PhaseConfig>(2);
+            phaseConfigList_.add(new ConstructionHeuristicPhaseConfig());
+            phaseConfigList_.add(new LocalSearchPhaseConfig());
         }
-        List<Phase> phaseList = new ArrayList<Phase>(phaseConfigList.size());
+        List<Phase> phaseList = new ArrayList<Phase>(phaseConfigList_.size());
         int phaseIndex = 0;
-        for (PhaseConfig phaseConfig : phaseConfigList) {
+        for (PhaseConfig phaseConfig : phaseConfigList_) {
             Phase phase = phaseConfig.buildPhase(phaseIndex, configPolicy,
                     bestSolutionRecaller, termination);
             phaseList.add(phase);
