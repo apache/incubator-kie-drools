@@ -20,9 +20,9 @@
   </scoreDirectorFactory>
 
   <!-- Optimization algorithms configuration -->
-  <!--<termination>-->
-    <!--<secondsSpentLimit>120</secondsSpentLimit>-->
-  <!--</termination>-->
+  <termination>
+    <secondsSpentLimit>120</secondsSpentLimit>
+  </termination>
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
   </constructionHeuristic>
