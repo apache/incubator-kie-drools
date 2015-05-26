@@ -219,8 +219,6 @@
 
         <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;solver&gt;
-  &lt;!--&lt;environmentMode&gt;FAST_ASSERT&lt;/environmentMode&gt;--&gt;
-
   &lt;!-- Domain model configuration --&gt;
   &lt;solutionClass&gt;org.optaplanner.examples.cloudbalancing.domain.CloudBalance&lt;/solutionClass&gt;
   &lt;entityClass&gt;org.optaplanner.examples.cloudbalancing.domain.CloudProcess&lt;/entityClass&gt;
@@ -235,19 +233,8 @@
 
   &lt;!-- Optimization algorithms configuration --&gt;
   &lt;termination&gt;
-    &lt;secondsSpentLimit&gt;120&lt;/secondsSpentLimit&gt;
+    &lt;secondsSpentLimit&gt;60&lt;/secondsSpentLimit&gt;
   &lt;/termination&gt;
-  &lt;constructionHeuristic&gt;
-    &lt;constructionHeuristicType&gt;FIRST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
-  &lt;/constructionHeuristic&gt;
-  &lt;localSearch&gt;
-    &lt;acceptor&gt;
-      &lt;entityTabuSize&gt;7&lt;/entityTabuSize&gt;
-    &lt;/acceptor&gt;
-    &lt;forager&gt;
-      &lt;acceptedCountLimit&gt;1000&lt;/acceptedCountLimit&gt;
-    &lt;/forager&gt;
-  &lt;/localSearch&gt;
 &lt;/solver&gt;</programlisting>
       </example>
 
@@ -264,10 +251,10 @@
 
         <listitem>
           <para><emphasis role="bold">Score configuration</emphasis>: How should Planner optimize the planning
-          variables? Since we have hard and soft constraints, we use a <literal>HardSoftScore</literal>. But we also
-          need to tell Planner how to calculate such the score, depending on our business requirements. Further down, we
-          'll look into 2 alternatives to calculate the score: using a simple Java implementation or using Drools
-          DRL.</para>
+          variables? What is our goal? Since we have hard and soft constraints, we use a
+          <literal>HardSoftScore</literal>. But we also need to tell Planner how to calculate the score, depending on
+          our business requirements. Further down, we 'll look into 2 alternatives to calculate the score: using a
+          simple Java implementation or using Drools DRL.</para>
 
           <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
@@ -278,25 +265,16 @@
         </listitem>
 
         <listitem>
-          <para><emphasis role="bold">Optimization algorithms configuration</emphasis>: How should Planner optimize it?
-          Don't worry about this for now: this is a good default configuration that works on most planning problems. It
-          will already surpass human planners and most in-house implementations. Using the Planner benchmark toolkit,
-          you can tweak it to get even better results.</para>
+          <para><emphasis role="bold">Optimization algorithms configuration</emphasis>: How should Planner optimize it
+          and for how long? In this case, we <link linkend="termination">terminate</link> it after 60 seconds and use
+          the default <link linkend="optimizationAlgorithms">optimization algorithms</link> (because no explicit
+          optimization algorithms are configured). The default algorithms should already easily surpass human planners
+          and most in-house implementations. Use the <link linkend="benchmarker">Benchmarker</link> to <link
+          linkend="powerTweaking">power tweak</link> it to get even better results.</para>
 
           <programlisting language="xml">  &lt;termination&gt;
-    &lt;secondsSpentLimit&gt;120&lt;/secondsSpentLimit&gt;
-  &lt;/termination&gt;
-  &lt;constructionHeuristic&gt;
-    &lt;constructionHeuristicType&gt;FIRST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
-  &lt;/constructionHeuristic&gt;
-  &lt;localSearch&gt;
-    &lt;acceptor&gt;
-      &lt;entityTabuSize&gt;7&lt;/entityTabuSize&gt;
-    &lt;/acceptor&gt;
-    &lt;forager&gt;
-      &lt;acceptedCountLimit&gt;1000&lt;/acceptedCountLimit&gt;
-    &lt;/forager&gt;
-  &lt;/localSearch&gt;</programlisting>
+    &lt;secondsSpentLimit&gt;60&lt;/secondsSpentLimit&gt;
+  &lt;/termination&gt;</programlisting>
         </listitem>
       </itemizedlist>
 
@@ -471,8 +449,8 @@ public class CloudProcess ... {
       <section xml:id="cloudBalancingEasyJavaScoreConfiguration">
         <title>Easy Java Score Configuration</title>
 
-        <para>One way to define a score function is to implement the interface <literal>EasyScoreCalculator</literal>
-        in plain Java.</para>
+        <para>One way to define a score function is to implement the interface <literal>EasyScoreCalculator</literal> in
+        plain Java.</para>
 
         <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
@@ -612,7 +590,7 @@ end</programlisting>
         </example>
 
         <para>If you use the Drools rule engine for score calculation, you can integrate with other Drools technologies,
-        such as decision tables (XLS or web based), the KIE Workbench rule repository, ...</para>
+        such as decision tables (XLS or web based), the KIE Workbench, ...</para>
       </section>
     </section>
 
@@ -629,8 +607,8 @@ end</programlisting>
         </listitem>
 
         <listitem>
-          <para>Each <literal>Computer</literal> is located in a <literal>Building</literal>. A building might burn down,
-          so processes of the same services should be assigned to computers in different buildings.</para>
+          <para>Each <literal>Computer</literal> is located in a <literal>Building</literal>. A building might burn
+          down, so processes of the same services should be assigned to computers in different buildings.</para>
         </listitem>
       </itemizedlist>
     </section>

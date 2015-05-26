@@ -23,21 +23,22 @@
   <termination>
     <secondsSpentLimit>120</secondsSpentLimit>
   </termination>
-  <constructionHeuristic>
-    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-  </constructionHeuristic>
-  <localSearch>
-    <unionMoveSelector>
-      <changeMoveSelector/>
-      <swapMoveSelector/>
-      <pillarChangeMoveSelector/>
-      <pillarSwapMoveSelector/>
-    </unionMoveSelector>
-    <acceptor>
-      <entityTabuSize>7</entityTabuSize>
-    </acceptor>
-    <forager>
-      <acceptedCountLimit>1000</acceptedCountLimit>
-    </forager>
-  </localSearch>
+  <!-- Power tweaked optimization algorithms configuration -->
+  <!--<constructionHeuristic>-->
+    <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
+  <!--</constructionHeuristic>-->
+  <!--<localSearch>-->
+    <!--<unionMoveSelector>-->
+      <!--<changeMoveSelector/>-->
+      <!--<swapMoveSelector/>-->
+      <!--<pillarChangeMoveSelector/>-->
+      <!--<pillarSwapMoveSelector/>-->
+    <!--</unionMoveSelector>-->
+    <!--<acceptor>-->
+      <!--<entityTabuSize>7</entityTabuSize>-->
+    <!--</acceptor>-->
+    <!--<forager>-->
+      <!--<acceptedCountLimit>1000</acceptedCountLimit>-->
+    <!--</forager>-->
+  <!--</localSearch>-->
 </solver>
