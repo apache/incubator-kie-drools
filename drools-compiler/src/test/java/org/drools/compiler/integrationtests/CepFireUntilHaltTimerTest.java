@@ -1,5 +1,17 @@
 package org.drools.compiler.integrationtests;
 
+import org.drools.core.time.SessionPseudoClock;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.conf.ClockTypeOption;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,28 +20,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import org.drools.core.time.SessionPseudoClock;
-import org.junit.After;
-import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.io.Resource;
-import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.runtime.conf.ClockTypeOption;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests proper timer firing using accumulate and fireUntilHalt() mode.
  * BZ-981270
  */
-@Ignore
+//@Ignore
 public class CepFireUntilHaltTimerTest {
 
     private KieSession ksession;
@@ -97,7 +96,18 @@ public class CepFireUntilHaltTimerTest {
 
     @Test
     public void testTimerAccumulateFireUntilHalt() throws Exception {
+        this.performTest();
+    }
 
+    @Test
+    public void testTwoRunsTimerAccumulateFireUntilHalt() throws Exception {
+        this.performTest();
+        cleanup();
+        init();
+        this.performTest();
+    }
+
+    private void performTest() throws Exception {
         ExecutorService thread = Executors.newSingleThreadExecutor();
         final Future fireUntilHaltResult = thread.submit(new Runnable() {
             @Override
@@ -105,7 +115,6 @@ public class CepFireUntilHaltTimerTest {
                 ksession.fireUntilHalt();
             }
         });
-
 
         try {
 
@@ -118,17 +127,17 @@ public class CepFireUntilHaltTimerTest {
             ksession.insert("events_inserted");
 
             // give time to fireUntilHalt to process the insertions
-            Thread.sleep(1000);
+            TimerUtils.sleepMillis(1000);
 
-            clock.advanceTime(30, TimeUnit.SECONDS);
-            Thread.sleep(1000);
+            clock.advanceTime(40, TimeUnit.SECONDS);
+            TimerUtils.sleepMillis(2000);
 
-            assertFalse("The result is unexpectedly empty", result.isEmpty());
+            assertTrue("The result does not contain at least 2 elements", result.size() >= 2);
             assertEquals(205, (long) result.get(0));
             assertEquals(0, (long) result.get(1));
         } finally {
             ksession.halt();
-            // wait for the engine to finish and throw exception if any was thrown 
+            // wait for the engine to finish and throw exception if any was thrown
             // in engine's thread
             fireUntilHaltResult.get(60000, TimeUnit.SECONDS);
             thread.shutdown();
@@ -184,6 +193,52 @@ public class CepFireUntilHaltTimerTest {
         @Override
         public String toString() {
             return String.format("MetadataEvent[name='%s' timestamp='%s', duration='%s']", name, metadataTimestamp, metadataDuration);
+        }
+    }
+
+    /**
+     * Utility class providing methods for coping with timing issues, such as
+     * {@link java.lang.Thread#sleep(long, int)} inaccuracy, on certain OS.
+     * <p/>
+     * Inspired by http://stackoverflow.com/questions/824110/accurate-sleep-for-java-on-windows
+     * and http://andy-malakov.blogspot.cz/2010/06/alternative-to-threadsleep.html.
+     */
+    public static class TimerUtils {
+
+        private static final long SLEEP_PRECISION = Long.valueOf(System.getProperty("TIMER_SLEEP_PRECISION", "50000"));
+
+        private static final long SPIN_YIELD_PRECISION = Long.valueOf(System.getProperty("TIMER_YIELD_PRECISION", "30000"));
+
+        private TimerUtils() {
+        }
+
+        /**
+         * Sleeps for specified amount of time in milliseconds.
+         *
+         * @param duration the amount of milliseconds to wait
+         * @throws InterruptedException if the current thread gets interrupted
+         */
+        public static void sleepMillis(final long duration) throws InterruptedException {
+            sleepNanos(TimeUnit.MILLISECONDS.toNanos(duration));
+        }
+
+        /**
+         * Sleeps for specified amount of time in nanoseconds.
+         *
+         * @param nanoDuration the amount of nanoseconds to wait
+         * @throws InterruptedException if the current thread gets interrupted
+         */
+        public static void sleepNanos(final long nanoDuration) throws InterruptedException {
+            final long end = System.nanoTime() + nanoDuration;
+            long timeLeft = nanoDuration;
+            do {
+                if (timeLeft > SLEEP_PRECISION) {
+                    Thread.sleep(1);
+                } else if (timeLeft > SPIN_YIELD_PRECISION) {
+                    Thread.yield();
+                }
+                timeLeft = end - System.nanoTime();
+            } while (timeLeft > 0);
         }
     }
 
