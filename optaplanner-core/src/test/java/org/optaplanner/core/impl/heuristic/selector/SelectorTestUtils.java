@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.impl.heuristic.selector;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.ListMultimap;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -133,23 +133,34 @@ public class SelectorTestUtils {
 
     public static ValueSelector mockValueSelectorForEntity(Class entityClass, Object entity, String variableName,
             Object... values) {
-        GenuineVariableDescriptor variableDescriptor = mockVariableDescriptor(entityClass, variableName);
-        return mockValueSelectorForEntity(variableDescriptor, entity, values);
+        return mockValueSelectorForEntity(entityClass, variableName,
+                ImmutableListMultimap.builder().putAll(entity, values).build());
     }
 
-    public static ValueSelector mockValueSelectorForEntity(GenuineVariableDescriptor variableDescriptor, Object entity,
-            Object... values) {
+    public static ValueSelector mockValueSelectorForEntity(Class entityClass, String variableName,
+                                                           ListMultimap<Object, Object> entityToValues) {
+        GenuineVariableDescriptor variableDescriptor = mockVariableDescriptor(entityClass, variableName);
+        return mockValueSelectorForEntity(variableDescriptor, entityToValues);
+    }
+
+    public static ValueSelector mockValueSelectorForEntity(GenuineVariableDescriptor variableDescriptor,
+                                                           ListMultimap<Object, Object> entityToValues) {
         ValueSelector valueSelector = mock(ValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
-        final List<Object> valueList = Arrays.<Object>asList(values);
-        when(valueSelector.iterator(entity)).thenAnswer(new Answer<Iterator<Object>>() {
-            public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
-                return valueList.iterator();
-            }
-        });
+        when(valueSelector.iterator(any())).thenReturn(Iterators.emptyIterator());
+        when(valueSelector.getSize(any())).thenReturn(0L);
+        for (Map.Entry<Object, Collection<Object>> entry : entityToValues.asMap().entrySet()) {
+            Object entity = entry.getKey();
+            final List<Object> valueList = (List<Object>) entry.getValue();
+            when(valueSelector.iterator(entity)).thenAnswer(new Answer<Iterator<Object>>() {
+                public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
+                    return valueList.iterator();
+                }
+            });
+            when(valueSelector.getSize(entity)).thenReturn((long) valueList.size());
+        }
         when(valueSelector.isCountable()).thenReturn(true);
         when(valueSelector.isNeverEnding()).thenReturn(false);
-        when(valueSelector.getSize(entity)).thenReturn((long) valueList.size());
         return valueSelector;
     }
 
