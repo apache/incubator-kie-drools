@@ -156,7 +156,7 @@ public class PseudoClockScheduler
     @Override
     public boolean removeJob(final JobHandle jobHandle) {
         jobHandle.setCancel( true );
-        jobFactoryManager.removeTimerJobInstance( ((DefaultJobHandle) jobHandle).getTimerJobInstance() );
+        jobFactoryManager.removeTimerJobInstance(((DefaultJobHandle) jobHandle).getTimerJobInstance());
         synchronized( queue ) {
             return this.queue.remove( ((DefaultJobHandle) jobHandle).getTimerJobInstance() );
         }
@@ -172,18 +172,15 @@ public class PseudoClockScheduler
     public long advanceTime(final long amount,
                             final TimeUnit unit,
                             final int numberOfTimes) {
-        final int numberOfSteps = Math.abs(numberOfTimes);
-        // If steps == 0, the result is current time.
-        long resultTime = getCurrentTime();
-        for (int i = 0; i < numberOfSteps; i++) {
-            // If the time is moving backwards...
-            if (numberOfTimes < 0) {
-                resultTime = this.runCallBacksAndIncreaseTimer( unit.toMillis( -amount ) );
-            } else {
-                resultTime = this.runCallBacksAndIncreaseTimer( unit.toMillis( amount ) );
+        if (numberOfTimes > 0) {
+            long resultTime = 0;
+            for (int i = 0; i < numberOfTimes; i++) {
+                resultTime = advanceTime(amount, unit);
             }
+            return resultTime;
+        } else {
+            throw new IllegalArgumentException("numberOfTimes must be greater than 0!");
         }
-        return resultTime;
     }
 
     public void setStartupTime(final long i) {
