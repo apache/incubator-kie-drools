@@ -20,8 +20,8 @@ import java.util.Date;
 
 public interface TaskEvent extends Externalizable {
     
-    public enum TaskEventType{STARTED, ACTIVATED, COMPLETED, 
-                                STOPPED, EXITED, FAILED, ADDED,
+    public enum TaskEventType{ADDED, UPDATED, STARTED, ACTIVATED, COMPLETED,
+                                STOPPED, EXITED, FAILED,
                                 CLAIMED, SKIPPED, SUSPENDED, CREATED, 
                                 FORWARDED, RELEASED, RESUMED, DELEGATED, NOMINATED};
    
@@ -38,5 +38,7 @@ public interface TaskEvent extends Externalizable {
     Long getProcessInstanceId();
     
     Long getWorkItemId();
+
+    String getMessage();
     
 }
