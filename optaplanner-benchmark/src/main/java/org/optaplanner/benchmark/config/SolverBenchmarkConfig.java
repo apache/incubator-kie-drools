@@ -76,12 +76,16 @@ public class SolverBenchmarkConfig {
         problemBenchmarksConfig_.buildProblemBenchmarkList(solverBenchmarkResult);
     }
 
-    private void validate() {
+    protected void validate() {
         final String nameRegex = "^[\\w\\d _\\-\\.\\(\\)]+$";
         if (!name.matches(nameRegex)) {
             throw new IllegalStateException("The solverBenchmark name (" + name
                     + ") is invalid because it does not follow the nameRegex (" + nameRegex + ")" +
                     " which might cause an illegal filename.");
+        }
+        if (!name.trim().equals(name)) {
+            throw new IllegalStateException("The solverBenchmark name (" + name
+                    + ") is invalid because it starts or ends with whitespace.");
         }
     }
 
