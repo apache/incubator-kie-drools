@@ -52,6 +52,8 @@ public class TaskEventImpl implements TaskEvent, Externalizable {
 
   private String userId;
 
+  private String message;
+
   @Temporal(javax.persistence.TemporalType.TIMESTAMP)
   private Date logTime;
 
@@ -83,6 +85,12 @@ public class TaskEventImpl implements TaskEvent, Externalizable {
 
   public TaskEventImpl(Long taskId, TaskEventType type, Long processInstanceId, Long workItemId, String userId) {
     this(taskId, type, processInstanceId, workItemId, userId, new Date());
+
+  }
+
+  public TaskEventImpl(Long taskId, TaskEventType type, Long processInstanceId, Long workItemId, String userId, String message) {
+    this(taskId, type, processInstanceId, workItemId, userId, new Date());
+    this.message = message;
 
   }
 
@@ -120,6 +128,14 @@ public class TaskEventImpl implements TaskEvent, Externalizable {
     return workItemId;
   }
 
+  public String getMessage() {
+    return message;
+  }
+
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
   @Override
   public void readExternal(ObjectInput in) throws IOException,
           ClassNotFoundException {
@@ -130,7 +146,9 @@ public class TaskEventImpl implements TaskEvent, Externalizable {
 	  taskId = in.readLong();
 	  
 	  type = TaskEventType.valueOf(in.readUTF());
-	  
+
+      message = in.readUTF();
+
 	  userId = in.readUTF();
 	  
 	  workItemId = in.readLong();
@@ -153,7 +171,14 @@ public class TaskEventImpl implements TaskEvent, Externalizable {
       } else {
       	out.writeUTF("");
       }
-	  
+
+      if (message != null) {
+        out.writeUTF(message);
+      } else {
+        out.writeUTF("");
+      }
+
+
 	  if (userId != null) {
       	out.writeUTF(userId);
       } else {
@@ -179,6 +204,7 @@ public class TaskEventImpl implements TaskEvent, Externalizable {
     hash = 97 * hash + (this.taskId != null ? this.taskId.hashCode() : 0);
     hash = 97 * hash + (this.workItemId != null ? this.workItemId.hashCode() : 0);
     hash = 97 * hash + (this.type != null ? this.type.hashCode() : 0);
+    hash = 97 * hash + (this.message != null ? this.message.hashCode() : 0);
     hash = 97 * hash + (this.processInstanceId != null ? this.processInstanceId.hashCode() : 0);
     hash = 97 * hash + (this.userId != null ? this.userId.hashCode() : 0);
     hash = 97 * hash + (this.logTime != null ? this.logTime.hashCode() : 0);
@@ -207,6 +233,9 @@ public class TaskEventImpl implements TaskEvent, Externalizable {
       return false;
     }
     if (this.type != other.type) {
+      return false;
+    }
+    if (!this.message.equals(other.message) ) {
       return false;
     }
     if (this.processInstanceId != other.processInstanceId && (this.processInstanceId == null || !this.processInstanceId.equals(other.processInstanceId))) {
