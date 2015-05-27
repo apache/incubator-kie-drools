@@ -38,6 +38,16 @@ public interface SessionPseudoClock extends SessionClock {
      * @param unit the used time unit
      * @return the current absolute timestamp
      */
-    public long advanceTime( long amount, TimeUnit unit );
+    long advanceTime( long amount, TimeUnit unit );
+
+    /**
+     * Advances the clock time number of times in the specified unit amount specified.
+     *
+     * @param amount the amount of units to advance in the clock
+     * @param unit the used time unit
+     * @param numberOfTimes the number of times the clock is advanced by specified amount
+     * @return the current absolute timestamp
+     */
+    long advanceTime( long amount, TimeUnit unit , int numberOfTimes );
 
 }
