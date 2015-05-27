@@ -34,6 +34,8 @@ import org.optaplanner.core.impl.heuristic.selector.entity.nearby.NearEntityNear
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.nearby.NearEntityNearbyValueSelector;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 @XStreamAlias("nearbySelection")
 public class NearbySelectionConfig extends SelectorConfig {
 
@@ -252,20 +254,20 @@ public class NearbySelectionConfig extends SelectorConfig {
                     + ") has both parabolicDistribution and betaDistribution parameters.");
         }
         if (blockDistributionEnabled) {
-            int sizeMinimum = blockDistributionSizeMinimum == null ? 1 : blockDistributionSizeMinimum;
-            int sizeMaximum = blockDistributionSizeMaximum == null ? Integer.MAX_VALUE : blockDistributionSizeMaximum;
-            double sizeRatio = blockDistributionSizeRatio == null ? 1.0 : blockDistributionSizeRatio;
-            double uniformDistributionProbability = blockDistributionUniformDistributionProbability == null ? 0.0 : blockDistributionUniformDistributionProbability;
+            int sizeMinimum = defaultIfNull(blockDistributionSizeMinimum, 1);
+            int sizeMaximum = defaultIfNull(blockDistributionSizeMaximum, Integer.MAX_VALUE);
+            double sizeRatio = defaultIfNull(blockDistributionSizeRatio, 1.0);
+            double uniformDistributionProbability = defaultIfNull(blockDistributionUniformDistributionProbability, 0.0);
             return new BlockDistributionNearbyRandom(sizeMinimum, sizeMaximum, sizeRatio, uniformDistributionProbability);
         } else if (linearDistributionEnabled) {
-            int sizeMaximum = linearDistributionSizeMaximum == null ? Integer.MAX_VALUE : linearDistributionSizeMaximum;
+            int sizeMaximum = defaultIfNull(linearDistributionSizeMaximum, Integer.MAX_VALUE);
             return new LinearDistributionNearbyRandom(sizeMaximum);
         } else if (parabolicDistributionEnabled) {
-            int sizeMaximum = parabolicDistributionSizeMaximum == null ? Integer.MAX_VALUE : parabolicDistributionSizeMaximum;
+            int sizeMaximum = defaultIfNull(parabolicDistributionSizeMaximum, Integer.MAX_VALUE);
             return new ParabolicDistributionNearbyRandom(sizeMaximum);
         } else if (betaDistributionEnabled) {
-            double alpha = betaDistributionAlpha == null ? 1.0 : betaDistributionAlpha;
-            double beta = betaDistributionBeta == null ? 5.0 : betaDistributionBeta;
+            double alpha = defaultIfNull(betaDistributionAlpha, 1.0);
+            double beta = defaultIfNull(betaDistributionBeta, 5.0);
             return new BetaDistributionNearbyRandom(alpha, beta);
         } else {
             return new LinearDistributionNearbyRandom(Integer.MAX_VALUE);

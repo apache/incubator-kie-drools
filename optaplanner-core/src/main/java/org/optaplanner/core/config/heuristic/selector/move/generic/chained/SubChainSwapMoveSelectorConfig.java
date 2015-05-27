@@ -28,6 +28,8 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.SubChainSwapMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 @XStreamAlias("subChainSwapMoveSelector")
 public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig {
 
@@ -84,13 +86,13 @@ public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig {
         SubChainSelector leftSubChainSelector = subChainSelectorConfig_.buildSubChainSelector(configPolicy,
                 entityDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        SubChainSelectorConfig rightSubChainSelectorConfig = secondarySubChainSelectorConfig == null
-                ? subChainSelectorConfig_ : secondarySubChainSelectorConfig;
+        SubChainSelectorConfig rightSubChainSelectorConfig = defaultIfNull(secondarySubChainSelectorConfig,
+                subChainSelectorConfig_);
         SubChainSelector rightSubChainSelector = rightSubChainSelectorConfig.buildSubChainSelector(configPolicy,
                 entityDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         return new SubChainSwapMoveSelector(leftSubChainSelector, rightSubChainSelector, randomSelection,
-                selectReversingMoveToo == null ? true : selectReversingMoveToo);
+                defaultIfNull(selectReversingMoveToo , true));
     }
 
     public void inherit(SubChainSwapMoveSelectorConfig inheritedConfig) {

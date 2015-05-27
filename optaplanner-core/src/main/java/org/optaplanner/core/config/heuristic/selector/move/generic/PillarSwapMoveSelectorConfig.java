@@ -32,6 +32,8 @@ import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarSwapMoveSelector;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 @XStreamAlias("pillarSwapMoveSelector")
 public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {
 
@@ -78,8 +80,7 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {
                 : pillarSelectorConfig;
         PillarSelector leftPillarSelector = pillarSelectorConfig_.buildPillarSelector(configPolicy,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
-        PillarSelectorConfig rightPillarSelectorConfig = secondaryPillarSelectorConfig == null
-                ? pillarSelectorConfig_ : secondaryPillarSelectorConfig;
+        PillarSelectorConfig rightPillarSelectorConfig = defaultIfNull(secondaryPillarSelectorConfig, pillarSelectorConfig_);
         PillarSelector rightPillarSelector = rightPillarSelectorConfig.buildPillarSelector(configPolicy,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
         Collection<GenuineVariableDescriptor> variableDescriptors = deduceVariableDescriptors(

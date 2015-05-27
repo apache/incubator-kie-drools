@@ -32,6 +32,8 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMoveSelector;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 @XStreamAlias("swapMoveSelector")
 public class SwapMoveSelectorConfig extends MoveSelectorConfig {
 
@@ -79,8 +81,8 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
         EntitySelector leftEntitySelector = entitySelectorConfig_.buildEntitySelector(
                 configPolicy,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        EntitySelectorConfig rightEntitySelectorConfig = secondaryEntitySelectorConfig == null
-                ? entitySelectorConfig_ : secondaryEntitySelectorConfig;
+        EntitySelectorConfig rightEntitySelectorConfig = defaultIfNull(secondaryEntitySelectorConfig,
+                entitySelectorConfig_);
         EntitySelector rightEntitySelector = rightEntitySelectorConfig.buildEntitySelector(
                 configPolicy,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));

@@ -32,6 +32,8 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.DefaultPillarSelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 @XStreamAlias("pillarSelector")
 public class PillarSelectorConfig extends SelectorConfig {
 
@@ -111,9 +113,9 @@ public class PillarSelectorConfig extends SelectorConfig {
         }
         return new DefaultPillarSelector(entitySelector, variableDescriptors,
                 inheritedSelectionOrder.toRandomSelectionBoolean(),
-                subPillarEnabled == null ? true : subPillarEnabled,
-                minimumSubPillarSize == null ? 1 : minimumSubPillarSize,
-                maximumSubPillarSize == null ? Integer.MAX_VALUE : maximumSubPillarSize);
+                defaultIfNull(subPillarEnabled, true),
+                defaultIfNull(minimumSubPillarSize, 1),
+                defaultIfNull(maximumSubPillarSize, Integer.MAX_VALUE));
     }
 
     public void inherit(PillarSelectorConfig inheritedConfig) {

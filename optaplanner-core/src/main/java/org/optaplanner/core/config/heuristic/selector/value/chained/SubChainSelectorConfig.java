@@ -34,6 +34,8 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.DefaultSubChainSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 @XStreamAlias("subChainSelector")
 public class SubChainSelectorConfig extends SelectorConfig {
 
@@ -114,8 +116,8 @@ public class SubChainSelectorConfig extends SelectorConfig {
         }
         return new DefaultSubChainSelector((EntityIndependentValueSelector) valueSelector,
                 inheritedSelectionOrder.toRandomSelectionBoolean(),
-                minimumSubChainSize == null ? DEFAULT_MINIMUM_SUB_CHAIN_SIZE : minimumSubChainSize,
-                maximumSubChainSize == null ? DEFAULT_MAXIMUM_SUB_CHAIN_SIZE : maximumSubChainSize);
+                defaultIfNull(minimumSubChainSize, DEFAULT_MINIMUM_SUB_CHAIN_SIZE),
+                        defaultIfNull(maximumSubChainSize, DEFAULT_MAXIMUM_SUB_CHAIN_SIZE));
     }
 
     public void inherit(SubChainSelectorConfig inheritedConfig) {

@@ -29,6 +29,8 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.composite.CartesianProductMoveSelector;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 @XStreamAlias("cartesianProductMoveSelector")
 public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig {
 
@@ -72,7 +74,7 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig {
                     moveSelectorConfig.buildMoveSelector(configPolicy,
                             minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection)));
         }
-        boolean ignoreEmptyChildIterators_ = ignoreEmptyChildIterators == null ? true : ignoreEmptyChildIterators;
+        boolean ignoreEmptyChildIterators_ = defaultIfNull(ignoreEmptyChildIterators, true);
         return new CartesianProductMoveSelector(moveSelectorList, ignoreEmptyChildIterators_, randomSelection);
     }
 

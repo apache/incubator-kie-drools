@@ -48,6 +48,8 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 @XStreamAlias("exhaustiveSearch")
 public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
 
@@ -132,7 +134,7 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
         boolean scoreBounderEnabled = exhaustiveSearchType_.isScoreBounderEnabled();
         NodeExplorationType nodeExplorationType_;
         if (exhaustiveSearchType_ == ExhaustiveSearchType.BRUTE_FORCE) {
-            nodeExplorationType_ = nodeExplorationType != null ? nodeExplorationType : NodeExplorationType.ORIGINAL_ORDER;
+            nodeExplorationType_ = defaultIfNull(nodeExplorationType, NodeExplorationType.ORIGINAL_ORDER);
             if (nodeExplorationType_ != NodeExplorationType.ORIGINAL_ORDER) {
                 throw new IllegalArgumentException("The phaseConfig (" + this
                         + ") has an nodeExplorationType ("  + nodeExplorationType
@@ -140,7 +142,7 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
                         + ").");
             }
         } else {
-            nodeExplorationType_ = nodeExplorationType != null ? nodeExplorationType : NodeExplorationType.DEPTH_FIRST;
+            nodeExplorationType_ = defaultIfNull(nodeExplorationType, NodeExplorationType.DEPTH_FIRST);
         }
         phase.setNodeComparator(nodeExplorationType_.buildNodeComparator(scoreBounderEnabled));
         EntitySelectorConfig entitySelectorConfig_ = buildEntitySelectorConfig(phaseConfigPolicy);

@@ -32,6 +32,8 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 @XStreamAlias("subChainChangeMoveSelector")
 public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
 
@@ -99,7 +101,7 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
                     + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
         }
         return new SubChainChangeMoveSelector(subChainSelector, (EntityIndependentValueSelector) valueSelector,
-                randomSelection, selectReversingMoveToo == null ? true : selectReversingMoveToo);
+                randomSelection, defaultIfNull(selectReversingMoveToo, true));
     }
 
     public void inherit(SubChainChangeMoveSelectorConfig inheritedConfig) {
