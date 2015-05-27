@@ -138,7 +138,7 @@ public class SelectorTestUtils {
     }
 
     public static ValueSelector mockValueSelectorForEntity(Class entityClass, String variableName,
-                                                           ListMultimap<Object, Object> entityToValues) {
+            ListMultimap<Object, Object> entityToValues) {
         GenuineVariableDescriptor variableDescriptor = mockVariableDescriptor(entityClass, variableName);
         return mockValueSelectorForEntity(variableDescriptor, entityToValues);
     }
@@ -147,13 +147,16 @@ public class SelectorTestUtils {
                                                            ListMultimap<Object, Object> entityToValues) {
         ValueSelector valueSelector = mock(ValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
-        when(valueSelector.iterator(any())).thenReturn(Iterators.emptyIterator());
-        when(valueSelector.getSize(any())).thenReturn(0L);
         for (Map.Entry<Object, Collection<Object>> entry : entityToValues.asMap().entrySet()) {
             Object entity = entry.getKey();
             final List<Object> valueList = (List<Object>) entry.getValue();
+            when(valueSelector.getSize(entity)).thenAnswer(new Answer<Long>() {
+                public Long answer(InvocationOnMock invocation) {
+                    return (long) valueList.size();
+                }
+            });
             when(valueSelector.iterator(entity)).thenAnswer(new Answer<Iterator<Object>>() {
-                public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
+                public Iterator<Object> answer(InvocationOnMock invocation) {
                     return valueList.iterator();
                 }
             });
