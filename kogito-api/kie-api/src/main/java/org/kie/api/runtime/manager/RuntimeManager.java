@@ -85,4 +85,12 @@ public interface RuntimeManager {
      */
     void close();
     
+    /**
+     * Allows to signal event on runtime manager level which in turn allows to broadcast given event to all listening 
+     * components managed by this RuntimeManager
+     * @param type type of the signal
+     * @param event actual event data
+     */
+    void signalEvent(String type, Object event);
+    
 }
