@@ -174,7 +174,7 @@ public class PatientVariablePersistenceStrategyTest extends JbpmJUnitBaseTestCas
                                 runtimeEngine.getKieSession().getEnvironment());
         
         logger.info(" >>> Object = {}", readObject);
-        return (MedicalRecord)readObject;
+        return (MedicalRecord)((Map)readObject).get("Content");
     }
     
   

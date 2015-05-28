@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.process.core.timer.DateTimeUtils;
@@ -193,6 +194,18 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
             content = ContentMarshallerHelper.marshal(contentObject, env);
         }
         return content;
+    }
+    
+    protected Map<String, Object> createTaskDataBasedOnWorkItemParams(KieSession session, WorkItem workItem) {
+        Map<String, Object> data = new HashMap<String, Object>();
+        Object contentObject = workItem.getParameter("Content");
+        if (contentObject == null) {
+            data = new HashMap<String, Object>(workItem.getParameters());
+        } else {
+            data.put("Content", contentObject);
+        }
+        
+        return data;
     }
     
     protected boolean isAutoClaim(WorkItem workItem, Task task) {

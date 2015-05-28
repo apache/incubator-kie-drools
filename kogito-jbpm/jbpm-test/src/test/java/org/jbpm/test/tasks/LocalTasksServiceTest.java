@@ -157,8 +157,8 @@ public class LocalTasksServiceTest extends JbpmJUnitBaseTestCase {
 		byte[] contentbyte = content.getContent();
 		Object tmpObject = ContentMarshallerHelper.unmarshall(contentbyte, ksession.getEnvironment());
 		assertNotNull(tmpObject);
-		assertTrue(tmpObject instanceof String);
-		assertEquals("someContent", tmpObject);
+		assertTrue(tmpObject instanceof Map);
+		assertEquals("someContent", ((Map)tmpObject).get("Content"));
 
 		// then by using getTaskContent api method
 		Map<String, Object> contentMap = taskService.getTaskContent(task.getId());

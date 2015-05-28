@@ -6,15 +6,23 @@ package org.jbpm.services.task.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.drools.core.process.instance.WorkItem;
+import org.drools.core.util.MVELSafeHelper;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.commands.TaskContext;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.internals.lifecycle.LifeCycleManager;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.Environment;
 import org.kie.api.task.model.Content;
@@ -44,6 +52,8 @@ import org.slf4j.LoggerFactory;
 public class TaskInstanceServiceImpl implements TaskInstanceService {
     
     private static final Logger logger = LoggerFactory.getLogger(TaskInstanceServiceImpl.class);
+    
+    protected static final Pattern PARAMETER_MATCHER = Pattern.compile("\\$\\{([\\S&&[^\\}]]+)\\}", Pattern.DOTALL);
     
     private LifeCycleManager lifeCycleManager;
     
@@ -83,30 +93,39 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     public long addTask(Task task, Map<String, Object> params) {    	
     	taskEventSupport.fireBeforeTaskAdded(task, context);
     	
+    	persistenceContext.persistTask(task);
+    	
+    	resolveTaskDetailsForTaskProperties(task);
+    	resolveTaskDetails(params, task);
+    	
     	if (params != null) {
-			ContentData contentData = ContentMarshallerHelper.marshal(params, environment);
+			ContentData contentData = ContentMarshallerHelper.marshal(params, TaskContentRegistry.get().getMarshallerContext(task).getEnvironment());
 			Content content = TaskModelProvider.getFactory().newContent();
 			((InternalContent) content).setContent(contentData.getContent());
 			persistenceContext.persistContent(content);
-			((InternalTaskData) task.getTaskData()).setDocument(
-					content.getId(), contentData);
+			((InternalTaskData) task.getTaskData()).setDocument(content.getId(), contentData);
 		}
 
-		persistenceContext.persistTask(task);
+		
 		taskEventSupport.fireAfterTaskAdded(task, context);
 		return task.getId();
     }
 
     public long addTask(Task task, ContentData contentData) {
-    	taskEventSupport.fireBeforeTaskAdded(task, context);   	
-        if (contentData != null) {
+    	taskEventSupport.fireBeforeTaskAdded(task, context);  
+    	
+    	persistenceContext.persistTask(task);
+    	
+    	resolveTaskDetailsForTaskProperties(task);
+        
+    	if (contentData != null) {
             Content content = TaskModelProvider.getFactory().newContent();
             ((InternalContent) content).setContent(contentData.getContent());
             persistenceContext.persistContent(content);
             ((InternalTaskData) task.getTaskData()).setDocument(content.getId(), contentData);
         }
         
-        persistenceContext.persistTask(task);
+        
         taskEventSupport.fireAfterTaskAdded(task, context);
         return task.getId();
     }
@@ -356,5 +375,49 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     	}
     	
     	return groups;
+    }
+    
+    protected Map<String, Object> resolveTaskDetails(Map<String, Object> parameters, Task task) {
+        for (Map.Entry<String, Object> entry: parameters.entrySet()) {
+            if (entry.getValue() != null && entry.getValue() instanceof String) {
+                String s = (String) entry.getValue();
+                Map<String, String> replacements = new HashMap<String, String>();
+                Matcher matcher = PARAMETER_MATCHER.matcher(s);
+                while (matcher.find()) {
+                    String paramName = matcher.group(1);
+                    if (replacements.get(paramName) == null) {
+               
+                        try {
+                            Object variableValue = MVELSafeHelper.getEvaluator().eval(paramName, new TaskResolverFactory(task));
+                            String variableValueString = variableValue == null ? "" : variableValue.toString();
+                            replacements.put(paramName, variableValueString);
+                        } catch (Throwable t) {
+    
+                            logger.error("Continuing without setting parameter.");
+                        }
+                    }
+                    
+                }
+                for (Map.Entry<String, String> replacement: replacements.entrySet()) {
+                    s = s.replace("${" + replacement.getKey() + "}", replacement.getValue());
+                }
+                parameters.put(entry.getKey(), s);
+            }
+        }
+        return parameters;
+    }
+    
+    protected void resolveTaskDetailsForTaskProperties(Task task) {
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("name", task.getName());
+        parameters.put("description", task.getDescription());
+        parameters.put("subject", task.getSubject());
+        parameters.put("formName", ((InternalTask)task).getFormName());
+        
+        Map<String, Object> replacements = resolveTaskDetails(parameters, task);
+        ((InternalTask)task).setName((String) replacements.get("name"));
+        ((InternalTask)task).setDescription((String) replacements.get("description"));
+        ((InternalTask)task).setSubject((String) replacements.get("subject"));
+        ((InternalTask)task).setFormName((String) replacements.get("formName"));
     }
 }
