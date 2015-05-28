@@ -16,14 +16,6 @@
 
 package org.drools.core.time.impl;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Date;
-import java.util.Map;
-
-import org.drools.core.WorkingMemory;
 import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalWorkingMemory;
@@ -34,6 +26,13 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Date;
+import java.util.Map;
 
 import static org.drools.core.time.TimeUtils.evalDateExpression;
 
@@ -124,10 +123,7 @@ public class    IntervalTimer extends BaseTimer
                                  Calendars calendars,
                                  Declaration[][] declrs,
                                  InternalWorkingMemory wm) {
-        long timeSinceLastFire = 0;
-
         Declaration[] startDeclarations = declrs[0];
-        Declaration[] endDeclarations = declrs[1];
 
         Date lastFireTime = null;
         Date createdTime = null;

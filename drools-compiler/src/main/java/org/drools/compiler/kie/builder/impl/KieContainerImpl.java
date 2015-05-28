@@ -7,7 +7,7 @@ import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -193,7 +193,7 @@ public class KieContainerImpl
                     }
 
                     for (StatefulKnowledgeSession session : kBase.getStatefulKnowledgeSessions()) {
-                        ((InternalAgenda)session.getAgenda()).notifyHalt();
+                        ( (InternalWorkingMemory) session ).notifyHalt();
                     }
                 } finally {
                     pkgbuilder.completePackageUpdate();

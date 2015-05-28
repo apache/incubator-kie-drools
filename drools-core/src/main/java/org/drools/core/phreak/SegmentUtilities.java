@@ -66,6 +66,8 @@ public class SegmentUtilities {
      */
     public static SegmentMemory createSegmentMemory(LeftTupleSource tupleSource,
                                                     final InternalWorkingMemory wm) {
+        // this synchronization is still necessary only because a segment memory could be also
+        // created during a query evaluation. TODO check if this can be removed
         synchronized (wm) {
             SegmentMemory smem = wm.getNodeMemory((MemoryFactory) tupleSource).getSegmentMemory();
             if ( smem != null ) {
@@ -309,16 +311,14 @@ public class SegmentUtilities {
     public static void createChildSegments(final InternalWorkingMemory wm,
                                            SegmentMemory smem,
                                            LeftTupleSinkPropagator sinkProp) {
-        synchronized (smem) {
-            if ( !smem.isEmpty() ) {
-                  return; // this can happen when multiple threads are trying to initialize the segment
-            }
-            for (LeftTupleSinkNode sink = sinkProp.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode()) {
-                Memory memory = wm.getNodeMemory((MemoryFactory) sink);
+        if ( !smem.isEmpty() ) {
+              return; // this can happen when multiple threads are trying to initialize the segment
+        }
+        for (LeftTupleSinkNode sink = sinkProp.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode()) {
+            Memory memory = wm.getNodeMemory((MemoryFactory) sink);
 
-                SegmentMemory childSmem = createChildSegment(wm, sink, memory);
-                smem.add(childSmem);
-            }
+            SegmentMemory childSmem = createChildSegment(wm, sink, memory);
+            smem.add(childSmem);
         }
     }
 

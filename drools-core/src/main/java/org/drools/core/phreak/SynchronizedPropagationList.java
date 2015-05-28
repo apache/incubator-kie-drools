@@ -5,6 +5,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import java.util.Iterator;
 
 public class SynchronizedPropagationList implements PropagationList {
+
     private final InternalWorkingMemory workingMemory;
 
     private volatile PropagationEntry head;
@@ -16,50 +17,73 @@ public class SynchronizedPropagationList implements PropagationList {
 
     @Override
     public void addEntry(final PropagationEntry entry) {
-        if (entry.requiresImmediateFlushingIfNotFiring()) {
-            boolean executed = workingMemory.getAgenda().executeIfNotFiring( new Runnable() {
+        if (entry.requiresImmediateFlushing()) {
+            workingMemory.getAgenda().executeTask( new ExecutableEntry() {
                 @Override
-                public void run() {
+                public void execute() {
                     ( (PhreakTimerNode.TimerAction) entry ).execute( workingMemory, true );
                 }
+
+                @Override
+                public void enqueue() {
+                    internalAddEntry( entry );
+                }
             } );
-            if (executed) {
-                return;
-            }
+        } else {
+            internalAddEntry( entry );
         }
+    }
 
-        synchronized (this) {
-            boolean wasEmpty = head == null;
-            if ( wasEmpty ) {
-                head = entry;
-            } else {
-                tail.setNext( entry );
-            }
-            tail = entry;
+    private synchronized void internalAddEntry( PropagationEntry entry ) {
+        boolean wasEmpty = head == null;
+        if ( wasEmpty ) {
+            head = entry;
+        } else {
+            tail.setNext( entry );
+        }
+        tail = entry;
 
-            if ( wasEmpty ) {
-                workingMemory.getAgenda().notifyHalt();
-            }
+        if ( wasEmpty ) {
+            notifyHalt();
         }
     }
 
     @Override
     public void flush() {
-        while (head != null) {
-            internalFlush();
+        for ( PropagationEntry currentHead = takeAll(); currentHead != null; currentHead = takeAll() ) {
+            flush( workingMemory, currentHead );
         }
     }
 
-    private void internalFlush() {
-        PropagationEntry currentHead;
-        synchronized (this) {
-            currentHead = head;
-            head = null;
-            tail = null;
+    @Override
+    public void flushOnFireUntilHalt(boolean fired) {
+        flushOnFireUntilHalt( fired, takeAll() );
+    }
+
+    @Override
+    public void flushOnFireUntilHalt( boolean fired, PropagationEntry currentHead ) {
+        if ( !fired && currentHead == null) {
+            halt();
+            currentHead = takeAll();
         }
+        while ( currentHead != null ) {
+            flush( workingMemory, currentHead );
+            currentHead = takeAll();
+        }
+    }
+
+    public static void flush( InternalWorkingMemory workingMemory, PropagationEntry currentHead ) {
         for (PropagationEntry entry = currentHead; entry != null; entry = entry.getNext()) {
             entry.execute(workingMemory);
         }
+    }
+
+    @Override
+    public synchronized PropagationEntry takeAll() {
+        PropagationEntry currentHead = head;
+        head = null;
+        tail = null;
+        return currentHead;
     }
 
     @Override
@@ -82,6 +106,14 @@ public class SynchronizedPropagationList implements PropagationList {
         tail = newTail;
     }
 
+    private synchronized void halt() {
+        try {
+            wait();
+        } catch (InterruptedException e) {
+            // nothing to do
+        }
+    }
+
     @Override
     public synchronized void reset() {
         head = null;
@@ -89,8 +121,13 @@ public class SynchronizedPropagationList implements PropagationList {
     }
 
     @Override
-    public boolean isEmpty() {
+    public synchronized boolean isEmpty() {
         return head == null;
+    }
+
+    @Override
+    public synchronized void notifyHalt() {
+        notifyAll();
     }
 
     public synchronized Iterator<PropagationEntry> iterator() {

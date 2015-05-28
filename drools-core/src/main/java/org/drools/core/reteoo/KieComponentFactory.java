@@ -17,29 +17,31 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.base.DefaultKnowledgeHelperFactory;
-import org.drools.core.base.FieldFactory;
 import org.drools.core.base.FieldDataFactory;
+import org.drools.core.base.FieldFactory;
 import org.drools.core.base.KnowledgeHelperFactory;
 import org.drools.core.common.AgendaFactory;
+import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.BeliefSystemFactory;
 import org.drools.core.common.DefaultAgendaFactory;
 import org.drools.core.common.PhreakBeliefSystemFactory;
 import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PhreakWorkingMemoryFactory;
+import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.WorkingMemoryFactory;
-import org.drools.core.reteoo.builder.PhreakNodeFactory;
-import org.drools.core.util.TripleFactory;
-import org.drools.core.util.TripleFactoryImpl;
-import org.drools.core.util.TripleStore;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.reteoo.builder.NodeFactory;
+import org.drools.core.reteoo.builder.PhreakNodeFactory;
 import org.drools.core.rule.DefaultLogicTransformerFactory;
 import org.drools.core.rule.LogicTransformerFactory;
 import org.drools.core.spi.FactHandleFactory;
+import org.drools.core.util.TripleFactory;
+import org.drools.core.util.TripleFactoryImpl;
+import org.drools.core.util.TripleStore;
 
 import java.io.Serializable;
 
@@ -70,7 +72,7 @@ public class KieComponentFactory implements Serializable {
         return new ReteooFactHandleFactory();
     }
 
-    private WorkingMemoryFactory wmFactory = new PhreakWorkingMemoryFactory();
+    private WorkingMemoryFactory wmFactory = PhreakWorkingMemoryFactory.getInstance();
 
     public WorkingMemoryFactory getWorkingMemoryFactory() {
         return wmFactory;
@@ -80,7 +82,7 @@ public class KieComponentFactory implements Serializable {
         this.wmFactory = wmFactory;
     }
 
-    private NodeFactory nodeFactory = new PhreakNodeFactory();
+    private NodeFactory nodeFactory = PhreakNodeFactory.getInstance();
 
     public NodeFactory getNodeFactoryService() {
         return nodeFactory;
@@ -91,14 +93,14 @@ public class KieComponentFactory implements Serializable {
     }
 
     public void setDefaultNodeFactoryProvider() {
-        nodeFactory = new PhreakNodeFactory();
+        nodeFactory = PhreakNodeFactory.getInstance();
     }
 
     public static NodeFactory getDefaultNodeFactoryProvider() {
-        return new PhreakNodeFactory();
+        return PhreakNodeFactory.getInstance();
     }
 
-    private PropagationContextFactory propagationFactory = new PhreakPropagationContextFactory();
+    private PropagationContextFactory propagationFactory = PhreakPropagationContextFactory.getInstance();
 
     public void setPropagationContextFactory(PropagationContextFactory factory) {
         propagationFactory = factory;
@@ -139,7 +141,7 @@ public class KieComponentFactory implements Serializable {
     }
 
 
-    private AgendaFactory agendaFactory = new DefaultAgendaFactory();
+    private AgendaFactory agendaFactory = DefaultAgendaFactory.getInstance();
 
     public AgendaFactory getAgendaFactory() {
         return agendaFactory;
@@ -150,11 +152,30 @@ public class KieComponentFactory implements Serializable {
     }
 
     public void setDefaultAgendaFactory() {
-        agendaFactory = new DefaultAgendaFactory();
+        agendaFactory = DefaultAgendaFactory.getInstance();
     }
 
     public static AgendaFactory getDefaultAgendaFactory() {
-        return new DefaultAgendaFactory();
+        return DefaultAgendaFactory.getInstance();
+    }
+
+
+    private AgendaGroupFactory agendaGroupFactory = PriorityQueueAgendaGroupFactory.getInstance();
+
+    public AgendaGroupFactory getAgendaGroupFactory() {
+        return agendaGroupFactory;
+    }
+
+    public void setAgendaGroupFactory(AgendaGroupFactory provider) {
+        agendaGroupFactory = provider;
+    }
+
+    public void setDefaultAgendaGroupFactory() {
+        agendaFactory = DefaultAgendaFactory.getInstance();
+    }
+
+    public static AgendaGroupFactory getDefaultAgendaGroupFactory() {
+        return PriorityQueueAgendaGroupFactory.getInstance();
     }
 
 

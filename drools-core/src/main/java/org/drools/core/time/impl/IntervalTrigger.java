@@ -16,15 +16,15 @@
 
 package org.drools.core.time.impl;
 
+import org.drools.core.time.Trigger;
+import org.kie.api.runtime.Calendars;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-
-import org.drools.core.time.Trigger;
-import org.kie.api.runtime.Calendars;
 
 public class IntervalTrigger
     implements
@@ -127,7 +127,7 @@ public class IntervalTrigger
         }
 
         Date eTime = getEndTime();
-        if ( eTime != null && startTime != null && eTime.before( startTime ) ) {
+        if ( eTime != null && eTime.before( startTime ) ) {
             throw new IllegalArgumentException( "End time cannot be before start time" );
         }
 
@@ -262,7 +262,7 @@ public class IntervalTrigger
                     break;
                 }
             }
-            if ( included == true ) {
+            if ( included ) {
                 // if no calendars blocked, break
                 break;
             } else {

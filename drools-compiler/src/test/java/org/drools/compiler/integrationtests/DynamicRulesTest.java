@@ -299,7 +299,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         try {
             workingMemory.fireAllRules();
             fail( "Function should have been removed and NoClassDefFoundError thrown from the Consequence" );
-        } catch ( final NoClassDefFoundError e ) {
+        } catch ( final Throwable e ) {
         }
 
         // Check a new function can be added to replace an old function

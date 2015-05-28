@@ -27,6 +27,7 @@ import static org.junit.Assert.assertTrue;
  * Tests proper timer firing using accumulate and fireUntilHalt() mode.
  * BZ-981270
  */
+@Ignore
 public class CepFireUntilHaltTimerTest {
 
     private KieSession ksession;

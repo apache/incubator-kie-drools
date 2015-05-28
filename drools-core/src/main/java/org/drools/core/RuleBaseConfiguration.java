@@ -18,7 +18,6 @@ package org.drools.core;
 
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
-import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.WorkingMemoryFactory;
@@ -668,7 +667,7 @@ public class RuleBaseConfiguration
     }
 
     public AgendaGroupFactory getAgendaGroupFactory() {
-        return PriorityQueueAgendaGroupFactory.getInstance();
+        return getComponentFactory().getAgendaGroupFactory();
     }
 
     public SequentialAgenda getSequentialAgenda() {
@@ -757,6 +756,9 @@ public class RuleBaseConfiguration
     public void setPhreakEnabled(boolean enabled) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.phreakEnabled = enabled;
+        if (!isPhreakEnabled())  {
+            configureReteComponentFactory();
+        }
     }
 
     public SessionCacheOption getSessionCacheOption() {
@@ -912,59 +914,43 @@ public class RuleBaseConfiguration
                                                               isClassLoaderCacheEnabled());
     }
 
-    private static NodeFactory               reteNodeFactory;
-    private static AgendaFactory             agendaFactory;
-    private static PropagationContextFactory pctxFactory;
-    private static WorkingMemoryFactory      wmFactory;
-
     public KieComponentFactory getComponentFactory() {
-        if (!isPhreakEnabled())  {
-            if (!(componentFactory.getWorkingMemoryFactory().getClass().getName().endsWith("ReteWorkingMemory"))) {
-                if (wmFactory == null) {
-                    try {
-                        wmFactory = (WorkingMemoryFactory) Class.forName("org.drools.reteoo.common.ReteWorkingMemoryFactory").newInstance();
-                    } catch (ClassNotFoundException e) {
-                        logger.warn("Cannot find drools-reteoo.jar on the classpath, switching to phreak");
-                        phreakEnabled = true;
-                        return componentFactory;
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                componentFactory.setWorkingMemoryFactory(wmFactory);
-            }
-            if (!(componentFactory.getNodeFactoryService().getClass().getName().endsWith("ReteNodeFactory"))) {
-                if (reteNodeFactory == null) {
-                    try {
-                        reteNodeFactory = (NodeFactory) Class.forName("org.drools.reteoo.builder.ReteNodeFactory").newInstance();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                componentFactory.setNodeFactoryProvider(reteNodeFactory);
-            }
-            if (!(componentFactory.getPropagationContextFactory().getClass().getName().endsWith("RetePropagationContextFactory"))) {
-                if (pctxFactory == null) {
-                    try {
-                        pctxFactory = (PropagationContextFactory) Class.forName("org.drools.reteoo.common.RetePropagationContextFactory").newInstance();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                componentFactory.setPropagationContextFactory(pctxFactory);
-            }
-            if (!(componentFactory.getAgendaFactory().getClass().getName().endsWith("ReteAgendaFactory"))) {
-                if (agendaFactory == null) {
-                    try {
-                        agendaFactory = (AgendaFactory) Class.forName("org.drools.reteoo.common.ReteAgendaFactory").newInstance();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                componentFactory.setAgendaFactory(agendaFactory);
+        return componentFactory;
+    }
+
+    private void configureReteComponentFactory() {
+        if (!(componentFactory.getWorkingMemoryFactory().getClass().getName().endsWith("ReteWorkingMemory"))) {
+            try {
+                componentFactory.setWorkingMemoryFactory( (WorkingMemoryFactory) getStaticInstance( "org.drools.reteoo.common.ReteWorkingMemoryFactory" ) );
+            } catch (ClassNotFoundException e) {
+                logger.warn("Cannot find drools-reteoo.jar on the classpath, switching to phreak");
+                phreakEnabled = true;
+                return;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
-        return componentFactory;
+
+        try {
+            if (!(componentFactory.getNodeFactoryService().getClass().getName().endsWith("ReteNodeFactory"))) {
+                componentFactory.setNodeFactoryProvider( (NodeFactory) getStaticInstance( "org.drools.reteoo.builder.ReteNodeFactory" ) );
+            }
+            if (!(componentFactory.getPropagationContextFactory().getClass().getName().endsWith("RetePropagationContextFactory"))) {
+                componentFactory.setPropagationContextFactory( (PropagationContextFactory) getStaticInstance( "org.drools.reteoo.common.RetePropagationContextFactory" ) );
+            }
+            if (!(componentFactory.getAgendaFactory().getClass().getName().endsWith("ReteAgendaFactory"))) {
+                componentFactory.setAgendaFactory( (AgendaFactory) getStaticInstance("org.drools.reteoo.common.ReteAgendaFactory") );
+            }
+            if (!(componentFactory.getAgendaGroupFactory().getClass().getName().endsWith( "RetePriorityQueueAgendaGroupFactory"))) {
+                componentFactory.setAgendaGroupFactory((AgendaGroupFactory) getStaticInstance( "org.drools.reteoo.common.RetePriorityQueueAgendaGroupFactory" ));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Object getStaticInstance(String className) throws Exception {
+        return Class.forName( className ).getMethod( "getInstance" ).invoke( null );
     }
 
     public void setComponentFactory(KieComponentFactory componentFactory) {

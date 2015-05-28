@@ -42,7 +42,6 @@ import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.core.phreak.PhreakTimerNode.Scheduler;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
-import org.drools.core.phreak.StackEntry;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -816,7 +815,7 @@ public class ProtobufInputMarshaller {
             RuleAgendaItem rai = null;
             while ( (rai = rneaToFire.poll()) != null ) {
                 RuleExecutor ruleExecutor = rai.getRuleExecutor();
-                ruleExecutor.reEvaluateNetwork( wm, new org.drools.core.util.LinkedList<StackEntry>() );
+                ruleExecutor.reEvaluateNetwork( wm );
                 ruleExecutor.removeRuleAgendaItemWhenEmpty( wm );
             }
         }

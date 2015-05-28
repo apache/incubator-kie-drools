@@ -40,43 +40,22 @@ public class PhreakConflictResolver
         return PhreakConflictResolver.INSTANCE;
     }
 
-    /**                                                                                   11
-     * @see org.drools.core.spi.ConflictResolver
-     */
-    public final int compare(final Object existing,
-                             final Object adding) {
-        return compare((Activation) existing,
-                       (Activation) adding);
-    }
-
     public final int compare(final Activation existing,
                              final Activation adding) {
         return doCompare( existing, adding );
     }
 
     public final static int doCompare(final Activation existing,
-                             final Activation adding) {
+                                      final Activation adding) {
+        if (existing == adding) {
+            return 0;
+        }
+
         final int s1 = existing.getSalience();
         final int s2 = adding.getSalience();
 
-        // highest goes first
-        if (s1 > s2) {
-            return 1;
-        } else if (s1 < s2) {
-            return -1;
-        }
-
-        final int l1 = existing.getRule().getLoadOrder();
-        final int l2 = adding.getRule().getLoadOrder();
-
-        // lowest goes first
-        if (l1 < l2) {
-            return 1;
-        } else if (l1 > l2) {
-            return -1;
-        } else {
-            return 0;
-        }
+        return s1 != s2 ?
+               ( s1 > s2 ? 1 : -1 ) : // highest salience goes first (cannot do s1-s2 due to overflow)
+               adding.getRule().getLoadOrder() - existing.getRule().getLoadOrder(); // lowest order goes first
     }
-
 }

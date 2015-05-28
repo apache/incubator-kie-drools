@@ -26,7 +26,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
@@ -34,19 +33,16 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -621,94 +617,4 @@ public final class ClassUtils {
         String os =  System.getProperty("os.name");
         return os.toUpperCase().contains( "MAC OS X" );
     }
-    
-    /**
-     * This is an Internal Drools Class
-     */
-    public static class MapClassLoader extends ClassLoader  {
-
-        private Map<String, byte[]> map;
-        
-        public MapClassLoader(Map<String, byte[]> map, ClassLoader parent) {
-            super( parent );
-            this.map = map;
-        }
-
-        public Class<?> loadClass( final String name,
-                                   final boolean resolve ) throws ClassNotFoundException {
-            Class<?> cls = fastFindClass( name );
-
-            if (cls == null) {
-                cls = super.loadClass( name, resolve );
-            }
-
-            if (cls == null) {
-                throw new ClassNotFoundException( "Unable to load class: " + name );
-            }
-
-            return cls;
-        }
-
-        public Class<?> fastFindClass( final String name ) {
-            Class<?> cls = findLoadedClass( name );
-
-            if (cls == null) {
-                final byte[] clazzBytes = this.map.get( convertClassToResourcePath( name ) );
-                if (clazzBytes != null) {
-                    int lastDotPos = name.lastIndexOf( '.' );
-                    String pkgName = lastDotPos > 0 ? name.substring( 0, lastDotPos ) : "";
-
-                    if (getPackage( pkgName ) == null) {
-                        definePackage( pkgName,
-                                       "",
-                                       "",
-                                       "",
-                                       "",
-                                       "",
-                                       "",
-                                       null );
-                    }
-
-                    cls = defineClass( name,
-                                       clazzBytes,
-                                       0,
-                                       clazzBytes.length,
-                                       PROTECTION_DOMAIN );
-                }
-
-                if (cls != null) {
-                    resolveClass( cls );
-                }
-            }
-
-            return cls;
-        }
-
-        public InputStream getResourceAsStream( final String name ) {
-            final byte[] clsBytes =  this.map.get( name );
-            if (clsBytes != null) {
-                return new ByteArrayInputStream( clsBytes );
-            }
-            return null;
-        }
-
-        public URL getResource( String name ) {
-            return null;
-        }
-
-        public Enumeration<URL> getResources( String name ) throws IOException {
-            return new Enumeration<URL>() {
-
-                public boolean hasMoreElements() {
-                    return false;
-                }
-
-                public URL nextElement() {
-                    throw new NoSuchElementException();
-                }
-            };
-        }
-
-    }
-    
 }

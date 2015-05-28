@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
 public class PhreakTimerNode {
@@ -388,7 +387,7 @@ public class PhreakTimerNode {
         }
 
         @Override
-        public boolean requiresImmediateFlushingIfNotFiring() {
+        public boolean requiresImmediateFlushing() {
             return timerJobCtx.getWorkingMemory().getSessionConfiguration().getTimedRuleExecutionFilter() != null;
         }
 
@@ -431,10 +430,8 @@ public class PhreakTimerNode {
 
         private void evaluateAndFireRule(PathMemory pmem, InternalWorkingMemory wm) {
             RuleExecutor ruleExecutor = pmem.getRuleAgendaItem().getRuleExecutor();
-            LinkedList<StackEntry> outerStack = new LinkedList<StackEntry>();
-            ruleExecutor.reEvaluateNetwork( wm, outerStack );
-            wm.flushPropagations();
-            ruleExecutor.fire(wm, outerStack);
+            ruleExecutor.reEvaluateNetwork( wm );
+            ruleExecutor.fire(wm);
         }
     }
 
@@ -466,8 +463,7 @@ public class PhreakTimerNode {
 
         rne.outerEval(lian, pmem, sink, bit, tm,
                       smems, smemIndex, trgLeftTuples,
-                      wm, new LinkedList<StackEntry>(), outerStack,
-                      new HashSet<String>(), true,
+                      wm, new LinkedList<StackEntry>(), true,
                       pmem.getRuleAgendaItem().getRuleExecutor());
         return outerStack;
     }

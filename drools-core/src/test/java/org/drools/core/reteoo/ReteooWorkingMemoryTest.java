@@ -158,7 +158,7 @@ public class ReteooWorkingMemoryTest {
         }
     }
 
-    @Test
+    @Test @Ignore
     public void testExecuteQueueActions() {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();

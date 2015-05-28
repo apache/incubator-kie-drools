@@ -27,12 +27,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
 
     private List<LIANodePropagation> liaPropagations;
 
     private Queue<WorkingMemoryAction> actionQueue;
+
+    private AtomicBoolean evaluatingActionQueue = new AtomicBoolean(false);
 
     public ReteWorkingMemory() {
     }
@@ -199,7 +202,7 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
         try {
             startOperation();
             actionQueue.add(action);
-            this.agenda.notifyHalt();
+            notifyHalt();
         } finally {
             endOperation();
         }

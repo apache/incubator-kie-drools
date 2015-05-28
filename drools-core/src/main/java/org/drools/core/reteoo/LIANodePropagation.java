@@ -16,16 +16,14 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.spi.PropagationContext;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.phreak.SegmentUtilities;
-import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
-import org.drools.core.spi.PropagationContext;
 
 public class LIANodePropagation
     implements
@@ -33,8 +31,7 @@ public class LIANodePropagation
     private LeftInputAdapterNode node;
     private InternalFactHandle   handle;
     private PropagationContext   context;
-    private boolean leftTupleMemoryEnabled;
-    
+
     public LIANodePropagation() {
         // constructor needed for serialisation
     }
@@ -62,10 +59,6 @@ public class LIANodePropagation
     }
 
     public void doPropagation(InternalWorkingMemory workingMemory) {
-        LiaNodeMemory memory = ( LiaNodeMemory ) workingMemory.getNodeMemory( node );
-        if ( memory.getSegmentMemory() == null ) {
-            SegmentUtilities.createSegmentMemory( node, workingMemory ); // initialises for all nodes in segment, including this one
-        }
         node.getSinkPropagator().createAndPropagateAssertLeftTuple( handle,
                                                                     context,
                                                                     workingMemory,
