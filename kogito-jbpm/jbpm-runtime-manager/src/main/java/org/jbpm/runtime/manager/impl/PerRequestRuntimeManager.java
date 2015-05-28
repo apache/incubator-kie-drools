@@ -28,6 +28,7 @@ import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
+import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.InternalTaskService;
 
@@ -88,6 +89,17 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     	}
         local.set(runtime);
         return runtime;
+    }
+    
+    @Override
+    public void signalEvent(String type, Object event) {
+        RuntimeEngine runtimeEngine = getRuntimeEngine(EmptyContext.get());
+        
+        runtimeEngine.getKieSession().signalEvent(type, event);
+        
+        if (canDispose(runtimeEngine)) {
+            disposeRuntimeEngine(runtimeEngine);
+        }
     }
     
 

@@ -117,6 +117,16 @@ public interface ProcessService {
     void signalProcessInstances(List<Long> processInstanceIds, String signalName, Object event);
     
     /**
+     * Signal an event to a any process instance that listens to give signal that belongs to given deployment
+     * 
+     * @param deployment information for the process's kjar
+     * @param signalName the signal's id in the process
+     * @param event the event object to be passed in with the event
+     * @throws DeploymentNotFoundException in case deployment unit was not found 
+     */
+    void signalEvent(String deployment, String signalName, Object event);
+    
+    /**
 	 * Returns process instance information. Will return null if no
 	 * active process with that id is found
 	 * 

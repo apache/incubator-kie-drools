@@ -185,6 +185,18 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		}
 
 	}
+	
+
+    @Override
+    public void signalEvent(String deployment, String signalName, Object event) {
+        DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deployment);
+        if (deployedUnit == null) {
+            throw new DeploymentNotFoundException("No deployments available for " + deployment);
+        }
+        RuntimeManager manager = deployedUnit.getRuntimeManager();
+        event = process(event, ((InternalRuntimeManager) manager).getEnvironment().getClassLoader());
+        manager.signalEvent(signalName, event);
+    }
 
 	@Override
 	public ProcessInstance getProcessInstance(Long processInstanceId) {
@@ -519,5 +531,6 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	protected void disposeRuntimeEngine(RuntimeManager manager, RuntimeEngine engine) {
 		manager.disposeRuntimeEngine(engine);
 	}
+
 
 }

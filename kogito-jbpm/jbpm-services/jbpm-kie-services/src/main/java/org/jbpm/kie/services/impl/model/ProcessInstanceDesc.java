@@ -38,7 +38,7 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
     
     private String correlationKey;
 
-    private long parentId;
+    private Long parentId;
     
     private List<org.jbpm.services.api.model.UserTaskInstanceDesc> activeTasks;
 

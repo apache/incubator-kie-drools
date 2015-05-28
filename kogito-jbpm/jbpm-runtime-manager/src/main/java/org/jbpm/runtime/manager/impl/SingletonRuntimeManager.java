@@ -120,6 +120,14 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
         return this.singleton;
     }
 
+    @Override
+    public void signalEvent(String type, Object event) {
+        if (isClosed()) {
+            throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
+        }
+        checkPermission();
+        this.singleton.getKieSession().signalEvent(type, event);
+    }
 
     @Override
     public void validate(KieSession ksession, Context<?> context) throws IllegalStateException {

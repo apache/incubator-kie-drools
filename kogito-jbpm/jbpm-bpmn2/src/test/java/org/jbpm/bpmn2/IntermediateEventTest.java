@@ -47,6 +47,7 @@ import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
+import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -62,6 +63,7 @@ import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -2204,5 +2206,100 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         
         assertProcessInstanceAborted(processInstance.getId(), ksession);
         assertTrue("Too many timers elapsed: " + (badNumTimers - timerCompleted.getCount()), ! didNotWait );
+    }
+    
+    @Test
+    public void testThrowIntermediateSignalWithScope() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2IntermediateThrowEventScope.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        Map<String, Object> params = new HashMap<String, Object>();
+        
+        ProcessInstance processInstance = ksession.startProcess("intermediate-event-scope", params);
+        ProcessInstance processInstance2 = ksession.startProcess("intermediate-event-scope", params);
+        
+        assertProcessInstanceActive(processInstance);
+        assertProcessInstanceActive(processInstance2);
+        
+        ksession.execute(new AssertNodeActiveCommand(processInstance.getId(), "Complete work", "Wait"));
+        ksession.execute(new AssertNodeActiveCommand(processInstance2.getId(), "Complete work", "Wait"));
+        
+        List<WorkItem> items = handler.getWorkItems();
+        
+        WorkItem wi = items.get(0);
+
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("_output", "sending event");
+        
+        ksession.getWorkItemManager().completeWorkItem(wi.getId(), result);
+        
+        assertProcessInstanceCompleted(processInstance);
+        assertProcessInstanceActive(processInstance2);
+        ksession.execute(new AssertNodeActiveCommand(processInstance2.getId(), "Complete work", "Wait"));
+        
+        wi = items.get(1);
+        ksession.getWorkItemManager().completeWorkItem(wi.getId(), result);
+        assertProcessInstanceCompleted(processInstance2);
+
+    }
+    
+    @Test
+    public void testThrowEndSignalWithScope() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2EndThrowEventScope.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        Map<String, Object> params = new HashMap<String, Object>();
+        
+        ProcessInstance processInstance = ksession.startProcess("end-event-scope", params);
+        ProcessInstance processInstance2 = ksession.startProcess("end-event-scope", params);
+        
+        assertProcessInstanceActive(processInstance);
+        assertProcessInstanceActive(processInstance2);
+        
+        ksession.execute(new AssertNodeActiveCommand(processInstance.getId(), "Complete work", "Wait"));
+        ksession.execute(new AssertNodeActiveCommand(processInstance2.getId(), "Complete work", "Wait"));
+        
+        List<WorkItem> items = handler.getWorkItems();
+        
+        WorkItem wi = items.get(0);
+
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("_output", "sending event");
+        
+        ksession.getWorkItemManager().completeWorkItem(wi.getId(), result);
+        
+        assertProcessInstanceCompleted(processInstance);
+        assertProcessInstanceActive(processInstance2);
+        ksession.execute(new AssertNodeActiveCommand(processInstance2.getId(), "Complete work", "Wait"));
+        
+        wi = items.get(1);
+        ksession.getWorkItemManager().completeWorkItem(wi.getId(), result);
+        assertProcessInstanceCompleted(processInstance2);
+
+    }
+    
+    class AssertNodeActiveCommand implements GenericCommand<Void> {
+
+        private long piId;
+        private String[] nodes;
+        public AssertNodeActiveCommand(long piId, String... nodes) {
+            this.piId = piId;
+            this.nodes = nodes;
+        }
+        
+        @Override
+        public Void execute(Context context) {
+            
+            KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+            assertNodeActive(piId, ksession, nodes);
+            
+            return null;
+        }
     }
 }

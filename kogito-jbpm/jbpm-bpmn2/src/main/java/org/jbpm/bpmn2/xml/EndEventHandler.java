@@ -143,9 +143,11 @@ public class EndEventHandler extends AbstractNodeHandler {
                     signalName = "ASYNC-" + signalName;
                 }
                 
+                String signalExpression = getSignalExpression(endNode);
+                
                 List<DroolsAction> actions = new ArrayList<DroolsAction>();
                 actions.add(new DroolsConsequenceAction("mvel",
-                    RUNTIME_SIGNAL_EVENT
+                        signalExpression
                         + signalName + "\", " + (variable == null ? "null" : variable) + ")"));
                 endNode.setActions(EndNode.EVENT_NODE_ENTER, actions);
             }

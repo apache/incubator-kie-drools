@@ -1014,6 +1014,12 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 		public void close() {
 			// do nothing
 		}
+
+        @Override
+        public void signalEvent(String type, Object event) {
+            // do nothing
+            
+        }
 		
 	}
 

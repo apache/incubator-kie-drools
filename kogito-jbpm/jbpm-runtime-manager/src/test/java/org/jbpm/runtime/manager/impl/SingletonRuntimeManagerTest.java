@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.manager.audit.AuditService;
+import org.kie.api.runtime.manager.audit.NodeInstanceLog;
 import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
@@ -660,6 +662,66 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         assertEquals(ProcessInstance.STATE_COMPLETED, processStates.get("com.sample.bpmn.Second").intValue());
         
         manager.disposeRuntimeEngine(runtime);     
+        manager.close();
+    }
+    
+    @Test
+    public void testSignalEventViaRuntimeManager() {
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2IntermediateThrowEventScope.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime1 = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession1 = runtime1.getKieSession();
+        assertNotNull(ksession1);       
+          
+        ProcessInstance processInstance = ksession1.startProcess("intermediate-event-scope");
+        
+        RuntimeEngine runtime2 = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession2 = runtime2.getKieSession();
+        assertNotNull(ksession2); 
+        
+        ProcessInstance processInstance2 = ksession2.startProcess("intermediate-event-scope");
+        
+        List<Long> tasks1 = runtime1.getTaskService().getTasksByProcessInstanceId(processInstance.getId());
+        assertNotNull(tasks1);
+        assertEquals(1, tasks1.size());
+        
+        List<Long> tasks2 = runtime1.getTaskService().getTasksByProcessInstanceId(processInstance2.getId());
+        assertNotNull(tasks2);
+        assertEquals(1, tasks2.size());
+        
+        Object data = "some data";
+        
+        runtime1.getTaskService().claim(tasks1.get(0), "john");
+        runtime1.getTaskService().start(tasks1.get(0), "john");
+        runtime1.getTaskService().complete(tasks1.get(0), "john", Collections.singletonMap("_output", data));
+        
+        AuditService auditService = runtime1.getAuditService();
+        
+        ProcessInstanceLog pi1Log = auditService.findProcessInstance(processInstance.getId());
+        assertNotNull(pi1Log);
+        assertEquals(ProcessInstance.STATE_COMPLETED, pi1Log.getStatus().intValue());
+        ProcessInstanceLog pi2Log = auditService.findProcessInstance(processInstance2.getId());
+        assertNotNull(pi2Log);
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi2Log.getStatus().intValue());
+        
+        List<? extends NodeInstanceLog> nLogs = auditService.findNodeInstances(processInstance2.getId(), "_527AF0A7-D741-4062-9953-A05E51479C80");
+        assertNotNull(nLogs);
+        assertEquals(2, nLogs.size());
+        
+        auditService.dispose();
+        
+        // dispose session that should not have affect on the session at all
+        manager.disposeRuntimeEngine(runtime1);
+        manager.disposeRuntimeEngine(runtime2);
+        
+        // close manager which will close session maintained by the manager
         manager.close();
     }
 }

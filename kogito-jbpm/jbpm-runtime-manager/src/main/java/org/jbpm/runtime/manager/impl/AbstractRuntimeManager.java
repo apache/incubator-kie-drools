@@ -158,6 +158,21 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         }
     }
     
+    protected boolean canDispose(RuntimeEngine runtime) {
+        if (hasEnvironmentEntry("IS_JTA_TRANSACTION", false)) {
+            return true;
+        }
+        // register it if there is an active transaction as we assume then to be running in a managed environment e.g CMT       
+        TransactionManager tm = getTransactionManager(runtime.getKieSession().getEnvironment());
+        if (tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
+                && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
+                && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
+            return false;
+        }
+        
+        return true;
+    }
+    
     protected void attachManager(RuntimeEngine runtime) {
         runtime.getKieSession().getEnvironment().set("RuntimeManager", this);
         runtime.getKieSession().getEnvironment().set("deploymentId", this.getIdentifier());
@@ -318,7 +333,6 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
 	@Override
 	public void setKieContainer(KieContainer kieContainer) {
 		this.kieContainer = kieContainer;
-	}
-    
+	}    
     
 }

@@ -16,6 +16,10 @@
 
 package org.jbpm.bpmn2.xml;
 
+import static org.jbpm.bpmn2.xml.ProcessHandler.PROCESS_INSTANCE_SIGNAL_EVENT;
+import static org.jbpm.bpmn2.xml.ProcessHandler.RUNTIME_MANAGER_SIGNAL_EVENT;
+import static org.jbpm.bpmn2.xml.ProcessHandler.RUNTIME_SIGNAL_EVENT;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,6 +52,7 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
+import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
@@ -534,6 +539,18 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 			xmlDump.append("      </outputSet>" + EOL);
 		}
 	}
+	
+    protected String getSignalExpression(NodeImpl node) {
+        String signalExpression = RUNTIME_SIGNAL_EVENT;
+        String scope = (String) node.getMetaData("customScope");
+        if ("processInstance".equalsIgnoreCase(scope)) {
+            signalExpression = PROCESS_INSTANCE_SIGNAL_EVENT;
+        } else if ("runtimeManager".equalsIgnoreCase(scope) || "project".equalsIgnoreCase(scope)) {
+            signalExpression = RUNTIME_MANAGER_SIGNAL_EVENT;
+        }
+        
+        return signalExpression;
+    }	
     
 
 }

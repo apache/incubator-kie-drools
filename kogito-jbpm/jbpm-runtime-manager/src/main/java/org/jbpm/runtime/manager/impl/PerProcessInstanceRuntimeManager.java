@@ -31,6 +31,7 @@ import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
 import org.jbpm.runtime.manager.impl.mapper.EnvironmentAwareProcessInstanceContext;
 import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
+import org.jbpm.runtime.manager.impl.mapper.InternalMapper;
 import org.jbpm.runtime.manager.impl.mapper.JPAMapper;
 import org.jbpm.runtime.manager.impl.tx.DestroySessionTransactionSynchronization;
 import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
@@ -145,6 +146,26 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         saveLocalRuntime(contextId, runtime);
         
         return runtime;
+    }
+    
+    @Override
+    public void signalEvent(String type, Object event) {
+        
+        // first signal with new context in case there are start event with signal
+        RuntimeEngine runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get());        
+        runtimeEngine.getKieSession().signalEvent(type, event);  
+        if (canDispose(runtimeEngine)) {
+            disposeRuntimeEngine(runtimeEngine);
+        }
+        // next find out all instances waiting for given event type
+        List<String> processInstances = ((InternalMapper) mapper).findContextIdForEvent(type, getIdentifier());
+        for (String piId : processInstances) {
+            runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get(Long.parseLong(piId)));        
+            runtimeEngine.getKieSession().signalEvent(type, event);        
+            if (canDispose(runtimeEngine)) {
+                disposeRuntimeEngine(runtimeEngine);
+            }
+        }
     }
     
 

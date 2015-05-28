@@ -30,7 +30,6 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.manager.Context;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationProperty;
-import org.kie.internal.runtime.manager.Mapper;
 import org.kie.internal.runtime.manager.context.CorrelationKeyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
@@ -43,7 +42,7 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
  *
  */
 @SuppressWarnings("rawtypes")
-public class JPAMapper implements Mapper {
+public class JPAMapper extends InternalMapper {
     
 	private EntityManagerFactory emf;
     
@@ -203,6 +202,14 @@ public class JPAMapper implements Mapper {
 	public List<Long> findKSessionToInit(String ownerId) {
         EntityManager em = emf.createEntityManager();
         Query findQuery = em.createNamedQuery("FindKSessionToInit").setParameter("ownerId", ownerId);
+        return findQuery.getResultList();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<String> findContextIdForEvent(String eventType, String ownerId) {
+        EntityManager em = emf.createEntityManager();
+        Query findQuery = em.createNamedQuery("FindProcessInstanceWaitingForEvent")
+                .setParameter("eventType", eventType).setParameter("ownerId", ownerId);
         return findQuery.getResultList();
     }
 

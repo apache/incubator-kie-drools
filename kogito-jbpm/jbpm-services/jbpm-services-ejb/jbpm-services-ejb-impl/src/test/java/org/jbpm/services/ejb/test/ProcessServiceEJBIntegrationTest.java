@@ -346,6 +346,40 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
     }
     
     @Test
+    public void testStartAndSignal() {
+        assertNotNull(deploymentService);
+        
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+        assertTrue(isDeployed);
+        
+        assertNotNull(processService);
+        
+        long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "signal");
+        assertNotNull(processInstanceId);
+        
+        long processInstanceId2 = processService.startProcess(deploymentUnit.getIdentifier(), "signal");
+        assertNotNull(processInstanceId2);
+        
+        ProcessInstance pi = processService.getProcessInstance(processInstanceId);      
+        assertNotNull(pi);
+        
+        pi = processService.getProcessInstance(processInstanceId2);      
+        assertNotNull(pi);
+        
+        processService.signalEvent(deploymentUnit.getIdentifier(), "MySignal", null);
+        
+        pi = processService.getProcessInstance(processInstanceId);      
+        assertNull(pi);
+        pi = processService.getProcessInstance(processInstanceId2);      
+        assertNull(pi);
+    }
+    
+    @Test
     public void testStartProcessAndChangeVariables() {
     	assertNotNull(deploymentService);
         

@@ -200,6 +200,8 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 				    signalName = "ASYNC-" + signalName;
 				}
 				
+				String signalExpression = getSignalExpression(actionNode);
+
 				actionNode
 						.setAction(new DroolsConsequenceAction(
 								"java",
@@ -209,7 +211,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 								+ "  tVariable = new org.jbpm.process.core.event.EventTransformerImpl(transformation)"
 								+ "  .transformEvent("+(variable == null ? "null" : variable)+");"
 								+ "}"+
-								RUNTIME_SIGNAL_EVENT 
+								signalExpression
 										+ signalName
 										+ "\", "
 										+ "tVariable"
@@ -219,7 +221,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
 	public void handleMessageNode(final Node node, final Element element,
 			final String uri, final String localName,
 			final ExtensibleXmlParser parser) throws SAXException {
