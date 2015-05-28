@@ -23,6 +23,14 @@ import java.io.Serializable;
 
 public class DefaultAgendaFactory implements AgendaFactory, Serializable {
 
+    private static final AgendaFactory INSTANCE = new DefaultAgendaFactory();
+
+    public static AgendaFactory getInstance() {
+        return INSTANCE;
+    }
+
+    private DefaultAgendaFactory() { }
+
     public InternalAgenda createAgenda(InternalKnowledgeBase kBase, boolean initMain) {
         return new DefaultAgenda( kBase, initMain );
     }

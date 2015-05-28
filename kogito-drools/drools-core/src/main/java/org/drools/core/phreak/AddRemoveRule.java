@@ -43,7 +43,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -134,6 +133,7 @@ public class AddRemoveRule {
 
              // must be done before segments are mutated
              flushStagedTuples(splitStartNode, removedPmem, wm, true);
+             wm.flushPropagations();
 
              //
              if (NodeTypeEnums.LeftInputAdapterNode == splitStartNode.getType() && splitStartNode.getAssociations().size() == 1) {
@@ -264,7 +264,7 @@ public class AddRemoveRule {
              new RuleNetworkEvaluator().outerEval( ( LeftInputAdapterNode ) smems[0].getRootNode(),
                                                    pmem, sink, bit, mem, smems, smemIndex,
                                                    sm.getStagedLeftTuples().takeAll(), wm,
-                                                   new LinkedList<StackEntry>(), new LinkedList<StackEntry>(), new HashSet<String>(),
+                                                   new LinkedList<StackEntry>(),
                                                    true, pmem.getRuleAgendaItem().getRuleExecutor() );
          }
      }
@@ -295,7 +295,7 @@ public class AddRemoveRule {
 
         new RuleNetworkEvaluator().outerEval( ( LeftInputAdapterNode ) smems[0].getRootNode(),
                                               pmem, sink, bit, mem, smems, smemIndex, leftTupleSets, wm,
-                                              new LinkedList<StackEntry>(), new LinkedList<StackEntry>(), new HashSet<String>(),
+                                              new LinkedList<StackEntry>(),
                                               true, pmem.getOrCreateRuleAgendaItem(wm).getRuleExecutor() );
      }
 

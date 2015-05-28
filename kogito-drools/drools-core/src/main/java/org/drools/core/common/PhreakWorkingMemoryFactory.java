@@ -13,6 +13,12 @@ import java.io.Serializable;
 
 public class PhreakWorkingMemoryFactory implements WorkingMemoryFactory, Serializable {
 
+    private static final WorkingMemoryFactory INSTANCE = new PhreakWorkingMemoryFactory();
+
+    public static WorkingMemoryFactory getInstance() {
+        return INSTANCE;
+    }
+
     public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, SessionConfiguration config, Environment environment) {
         InternalWorkingMemory cachedWm = kBase.getCachedSession(config, environment);
         if (cachedWm != null) {

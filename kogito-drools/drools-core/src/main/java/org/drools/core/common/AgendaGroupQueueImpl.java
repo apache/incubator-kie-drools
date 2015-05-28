@@ -17,7 +17,6 @@
 package org.drools.core.common;
 
 import org.drools.core.conflict.PhreakConflictResolver;
-import org.drools.core.conflict.SequentialConflictResolver;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
@@ -48,7 +47,7 @@ public class AgendaGroupQueueImpl
     /**
      * Items in the agenda.
      */
-    private final    BinaryHeapQueue    priorityQueue;
+    protected final  BinaryHeapQueue    priorityQueue;
     private volatile boolean            active;
     private          PropagationContext autoFocusActivator;
     private          long               activatedForRecency;
@@ -68,19 +67,15 @@ public class AgendaGroupQueueImpl
     public AgendaGroupQueueImpl(final String name,
                                 final InternalKnowledgeBase kBase) {
         this.name = name;
-        if (kBase.getConfiguration().isPhreakEnabled()) {
-            this.priorityQueue = new BinaryHeapQueue(new PhreakConflictResolver());
-        } else {
-            if (kBase.getConfiguration().isSequential()) {
-                this.priorityQueue = new BinaryHeapQueue(new SequentialConflictResolver());
-            } else {
-                this.priorityQueue = new BinaryHeapQueue(kBase.getConfiguration().getConflictResolver());
-            }
-        }
+        this.sequential = kBase.getConfiguration().isSequential();
 
-        sequential = kBase.getConfiguration().isSequential();
+        this.priorityQueue = initPriorityQueue( kBase );
 
         this.clearedForRecency = -1;
+    }
+
+    protected BinaryHeapQueue initPriorityQueue( InternalKnowledgeBase kBase ) {
+        return new BinaryHeapQueue(new PhreakConflictResolver());
     }
 
     @Override
@@ -116,7 +111,39 @@ public class AgendaGroupQueueImpl
     }
 
     public void clear() {
-        ((InternalAgenda)workingMemory.getAgenda()).clearAndCancelAgendaGroup(this.name);
+        workingMemory.addPropagation( new ClearAction( this.name ) );
+    }
+
+    public class ClearAction extends PropagationEntry.AbstractPropagationEntry {
+
+        private final String name;
+
+        public ClearAction( String name ) {
+            this.name = name;
+        }
+
+        @Override
+        public void execute( InternalWorkingMemory wm ) {
+            wm.getAgenda().clearAndCancelAgendaGroup(this.name);
+        }
+    }
+
+    public void setFocus() {
+        workingMemory.addPropagation( new SetFocusAction( this.name ) );
+    }
+
+    public class SetFocusAction extends PropagationEntry.AbstractPropagationEntry {
+
+        private final String name;
+
+        public SetFocusAction( String name ) {
+            this.name = name;
+        }
+
+        @Override
+        public void execute( InternalWorkingMemory wm ) {
+            wm.getAgenda().setFocus(this.name);
+        }
     }
 
     public void reset() {
@@ -160,10 +187,6 @@ public class AgendaGroupQueueImpl
         return this.active;
     }
 
-    public void deactivateIfEmpty() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
     public boolean isAutoDeactivate() {
         return autoDeactivate;
     }
@@ -196,15 +219,12 @@ public class AgendaGroupQueueImpl
         this.autoFocusActivator = autoFocusActivator;
     }
 
-
     public boolean isEmpty() {
         return this.priorityQueue.isEmpty();
     }
 
     public Activation[] getActivations() {
-        synchronized (this.priorityQueue) {
-            return (Activation[]) this.priorityQueue.toArray(new AgendaItem[this.priorityQueue.size()]);
-        }
+        return (Activation[]) this.priorityQueue.toArray(new AgendaItem[this.priorityQueue.size()]);
     }
 
     @Override
@@ -221,19 +241,11 @@ public class AgendaGroupQueueImpl
             return false;
         }
 
-        if (((AgendaGroupQueueImpl) object).name.equals(this.name)) {
-            return true;
-        }
-
-        return false;
+        return ((AgendaGroupQueueImpl) object).name.equals( this.name );
     }
 
     public int hashCode() {
         return this.name.hashCode();
-    }
-
-    public void setFocus() {
-        ((InternalAgenda)workingMemory.getAgenda()).setFocus( this.name );
     }
 
     public void remove(final Activation activation) {

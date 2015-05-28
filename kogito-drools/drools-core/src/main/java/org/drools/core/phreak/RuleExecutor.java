@@ -14,7 +14,6 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.spi.Activation;
 import org.drools.core.util.BinaryHeapQueue;
-import org.drools.core.util.LinkedList;
 import org.drools.core.util.index.LeftTupleList;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.rule.AgendaFilter;
@@ -47,32 +46,27 @@ public class RuleExecutor {
         }
     }
 
-    public synchronized void evaluateNetwork(InternalWorkingMemory wm) {
-        NETWORK_EVALUATOR.evaluateNetwork(pmem, null, this, wm);
-        setDirty(false);
-        wm.flushPropagations();
+    public void evaluateNetwork(InternalWorkingMemory wm) {
+        NETWORK_EVALUATOR.evaluateNetwork( pmem, this, wm );
+        setDirty( false );
     }
 
-    public synchronized int evaluateNetworkAndFire( InternalWorkingMemory wm,
+    public int evaluateNetworkAndFire( InternalWorkingMemory wm,
                                                     final AgendaFilter filter,
                                                     int fireCount,
                                                     int fireLimit ) {
-        LinkedList<StackEntry> outerStack = new LinkedList<StackEntry>();
-
-        reEvaluateNetwork(wm, outerStack);
-        wm.flushPropagations();
-        return fire(wm, filter, fireCount, fireLimit, outerStack, (InternalAgenda) wm.getAgenda());
+        reEvaluateNetwork( wm );
+        return fire(wm, filter, fireCount, fireLimit, wm.getAgenda());
     }
 
-    public synchronized void fire(InternalWorkingMemory wm, LinkedList<StackEntry> outerStack) {
-        fire(wm, null, 0, Integer.MAX_VALUE, outerStack, (InternalAgenda) wm.getAgenda());
+    public void fire(InternalWorkingMemory wm) {
+        fire(wm, null, 0, Integer.MAX_VALUE, wm.getAgenda());
     }
 
     private int fire( InternalWorkingMemory wm,
                       AgendaFilter filter,
                       int fireCount,
                       int fireLimit,
-                      LinkedList<StackEntry> outerStack,
                       InternalAgenda agenda) {
         int localFireCount = 0;
 
@@ -80,7 +74,7 @@ public class RuleExecutor {
             if (!fireExitedEarly && isDeclarativeAgendaEnabled()) {
                 // Network Evaluation can notify meta rules, which should be given a chance to fire first
                 RuleAgendaItem nextRule = agenda.peekNextRule();
-                if (!isHighestSalience(nextRule)) {
+                if (!isHigherSalience( nextRule )) {
                     fireExitedEarly = true;
                     return localFireCount;
                 }
@@ -109,33 +103,29 @@ public class RuleExecutor {
                     continue;
                 }
 
-                agenda.fireActivation(item);
+                agenda.fireActivation( item );
                 localFireCount++;
 
                 if (rtn.getLeftTupleSource() == null) {
                     break; // The activation firing removed this rule from the rule base
                 }
 
+                wm.flushPropagations();
+
                 int salience = ruleAgendaItem.getSalience(); // dyanmic salience may have updated it, so get again.
                 if (queue != null && !queue.isEmpty() && salience != queue.peek().getSalience()) {
                     ruleAgendaItem.dequeue();
                     ruleAgendaItem.setSalience(queue.peek().getSalience());
-                    ruleAgendaItem.getAgendaGroup().add(ruleAgendaItem);
+                    ruleAgendaItem.getAgendaGroup().add( ruleAgendaItem );
                 }
 
                 if (!rule.isAllMatches()) { // if firing rule is @All don't give way to other rules
-                    RuleAgendaItem nextRule = agenda.peekNextRule();
-                    if (haltRuleFiring(nextRule, fireCount, fireLimit, localFireCount, agenda)) {
+                    if ( haltRuleFiring( fireCount, fireLimit, localFireCount, agenda ) ) {
                         break; // another rule has high priority and is on the agenda, so evaluate it first
                     }
-                    wm.flushPropagations();
-                }
-
-                if (tupleList.isEmpty() && !outerStack.isEmpty()) {
-                    // the outer stack is nodes needing evaluation, once all rule firing is done
-                    // such as window expiration, which must be done serially
-                    StackEntry entry = outerStack.removeFirst();
-                    NETWORK_EVALUATOR.evalStackEntry(entry, outerStack, outerStack, this, wm);
+                    if (!wm.isSequential()) {
+                        reEvaluateNetwork( wm );
+                    }
                 }
             }
 
@@ -171,27 +161,22 @@ public class RuleExecutor {
 
     public void removeRuleAgendaItemWhenEmpty(InternalWorkingMemory wm) {
         if (!dirty && tupleList.isEmpty()) {
-            // dirty check, before doing the synced check and removal
-            synchronized (ruleAgendaItem) {
-                if (!dirty && tupleList.isEmpty()) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("Removing RuleAgendaItem " + ruleAgendaItem);
-                    }
-                    ruleAgendaItem.remove();
-                    if ( ruleAgendaItem.getRule().isQuery() ) {
-                        ((InternalAgenda)wm.getAgenda()).removeQueryAgendaItem( ruleAgendaItem );
-                    } else if ( ruleAgendaItem.getRule().isEager() ) {
-                        ((InternalAgenda) wm.getAgenda()).removeEagerRuleAgendaItem(ruleAgendaItem);
-                    }
-                }
+            if (log.isTraceEnabled()) {
+                log.trace("Removing RuleAgendaItem " + ruleAgendaItem);
+            }
+            ruleAgendaItem.remove();
+            if ( ruleAgendaItem.getRule().isQuery() ) {
+                wm.getAgenda().removeQueryAgendaItem( ruleAgendaItem );
+            } else if ( ruleAgendaItem.getRule().isEager() ) {
+                wm.getAgenda().removeEagerRuleAgendaItem(ruleAgendaItem);
             }
         }
     }
 
-    public synchronized void reEvaluateNetwork(InternalWorkingMemory wm, LinkedList<StackEntry> outerStack) {
+    public void reEvaluateNetwork(InternalWorkingMemory wm) {
         if ( isDirty() ) {
             setDirty(false);
-            NETWORK_EVALUATOR.evaluateNetwork(pmem, outerStack, this, wm);
+            NETWORK_EVALUATOR.evaluateNetwork(pmem, this, wm);
         }
     }
 
@@ -221,20 +206,23 @@ public class RuleExecutor {
         return filter != null && !filter.accept((Activation) leftTuple);
     }
 
-    private boolean haltRuleFiring(RuleAgendaItem nextRule,
-                                   int fireCount,
+    private boolean haltRuleFiring(int fireCount,
                                    int fireLimit,
                                    int localFireCount,
                                    InternalAgenda agenda) {
+        if (!agenda.isFiring() || (fireLimit >= 0 && (localFireCount + fireCount >= fireLimit))) {
+            return true;
+        }
 
+        // The eager list must be evaluated first, as dynamic salience rules will impact the results of peekNextRule
+        agenda.evaluateEagerList();
 
-        return !agenda.isFiring() ||
-               ( (nextRule != null) && (!ruleAgendaItem.getAgendaGroup().equals( nextRule.getAgendaGroup() ) || !isHighestSalience(nextRule)) )
-               || (fireLimit >= 0 && (localFireCount + fireCount >= fireLimit));
+        RuleAgendaItem nextRule = agenda.peekNextRule();
+        return nextRule != null && (!ruleAgendaItem.getAgendaGroup().equals( nextRule.getAgendaGroup() ) || !isHigherSalience(nextRule));
     }
 
-    public boolean isHighestSalience(RuleAgendaItem nextRule) {
-        return PhreakConflictResolver.doCompare(ruleAgendaItem,nextRule) > 0;
+    private boolean isHigherSalience(RuleAgendaItem nextRule) {
+        return PhreakConflictResolver.doCompare(ruleAgendaItem,nextRule) >= 0;
     }
 
     public LeftTupleList getLeftTupleList() {

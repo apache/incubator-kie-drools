@@ -12,6 +12,13 @@ import org.drools.core.util.bitmask.BitMask;
 import java.io.Serializable;
 
 public class RetePropagationContextFactory implements PropagationContextFactory, Serializable  {
+
+    private static final PropagationContextFactory INSTANCE = new RetePropagationContextFactory();
+
+    public static PropagationContextFactory getInstance() {
+        return INSTANCE;
+    }
+
     public PropagationContext createPropagationContext(final long number,
                                                        final int type,
                                                        final RuleImpl rule,

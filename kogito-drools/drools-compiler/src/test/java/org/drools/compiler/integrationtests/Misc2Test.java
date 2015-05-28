@@ -7280,4 +7280,32 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(1, list.size());
         assertEquals(18, (int)list.get(0));
     }
+
+    @Test
+    public void testInsertAndDelete() {
+        String drl =
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $i : Integer()\n" +
+                "    $s : String()\n" +
+                "then\n" +
+                "    delete($i);\n" +
+                "    list.add($s);\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( 1 );
+        ksession.insert( "a" );
+        ksession.insert( "b" );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+    }
 }

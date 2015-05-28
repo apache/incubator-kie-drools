@@ -2,7 +2,6 @@ package org.drools.core.reteoo;
 
 import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.core.common.ActivationsFilter;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
@@ -81,7 +80,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         }
     }
 
-    public synchronized RuleAgendaItem getOrCreateRuleAgendaItem(InternalWorkingMemory wm) {
+    public RuleAgendaItem getOrCreateRuleAgendaItem(InternalWorkingMemory wm) {
         ensureAgendaItemCreated(wm);
         return agendaItem;
     }
@@ -92,12 +91,12 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
             int salience = ( rtn.getRule().getSalience() instanceof MVELSalienceExpression)
                            ? 0
                            : rtn.getRule().getSalience().getValue(null, rtn.getRule(), wm);
-            agendaItem = ((InternalAgenda) wm.getAgenda()).createRuleAgendaItem(salience, this, rtn);
+            agendaItem = wm.getAgenda().createRuleAgendaItem(salience, this, rtn);
         }
         return rtn;
     }
 
-    public synchronized void doLinkRule(InternalWorkingMemory wm) {
+    public void doLinkRule(InternalWorkingMemory wm) {
         TerminalNode rtn = ensureAgendaItemCreated(wm);
         if (isLogTraceEnabled) {
             log.trace(" LinkRule name={}", rtn.getRule().getName());
@@ -106,7 +105,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         queueRuleAgendaItem(wm);
     }
 
-    public synchronized void doUnlinkRule(InternalWorkingMemory wm) {
+    public void doUnlinkRule(InternalWorkingMemory wm) {
         TerminalNode rtn = ensureAgendaItemCreated(wm);
         if (isLogTraceEnabled) {
             log.trace("    UnlinkRule name={}", rtn.getRule().getName());
@@ -116,29 +115,26 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public void queueRuleAgendaItem(InternalWorkingMemory wm) {
-        InternalAgenda agenda = (InternalAgenda) wm.getAgenda();
-        synchronized ( agendaItem ) {
-            agendaItem.getRuleExecutor().setDirty(true);
-            ActivationsFilter activationFilter = agenda.getActivationsFilter();
-            if ( activationFilter != null && !activationFilter.accept( agendaItem,
-                                                                       wm,
-                                                                       agendaItem.getTerminalNode() ) ) {
-                return;
-            }
+        agendaItem.getRuleExecutor().setDirty(true);
+        ActivationsFilter activationFilter = wm.getAgenda().getActivationsFilter();
+        if ( activationFilter != null && !activationFilter.accept( agendaItem,
+                                                                   wm,
+                                                                   agendaItem.getTerminalNode() ) ) {
+            return;
+        }
 
-            if ( !agendaItem.isQueued() ) {
-                if ( isLogTraceEnabled ) {
-                    log.trace("Queue RuleAgendaItem {}", agendaItem);
-                }
-                InternalAgendaGroup ag = agendaItem.getAgendaGroup();
-                ag.add( agendaItem );
+        if ( !agendaItem.isQueued() ) {
+            if ( isLogTraceEnabled ) {
+                log.trace("Queue RuleAgendaItem {}", agendaItem);
             }
+            InternalAgendaGroup ag = agendaItem.getAgendaGroup();
+            ag.add( agendaItem );
         }
 
         if ( agendaItem.getRule().isQuery() ) {
-            ((InternalAgenda)wm.getAgenda()).addQueryAgendaItem( agendaItem );
+            wm.getAgenda().addQueryAgendaItem( agendaItem );
         } else if ( agendaItem.getRule().isEager() ) {
-            ((InternalAgenda)wm.getAgenda()).addEagerRuleAgendaItem( agendaItem );
+            wm.getAgenda().addEagerRuleAgendaItem( agendaItem );
         }
     }
 

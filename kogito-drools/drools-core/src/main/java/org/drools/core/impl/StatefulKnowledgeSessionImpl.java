@@ -260,9 +260,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     protected PropagationList propagationList;
 
-    protected AtomicBoolean evaluatingActionQueue = new AtomicBoolean(false);
-
-
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -823,8 +820,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 }
             }
 
-            flushPropagations();
-
             this.handleFactory.destroyFactHandle( handle);
 
             return new QueryResultsImpl( (List<QueryRowWithSubruleIndex>) queryObject.getQueryResultCollector().getResults(),
@@ -877,9 +872,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             final PropagationContext pCtx = pctxFactory.createPropagationContext(getNextPropagationIdCounter(), PropagationContext.INSERTION,
                                                                                  null, null, handle, getEntryPoint());
 
-            evalQuery(queryObject.getName(), queryObject, handle, pCtx);
-
-            flushPropagations();
+            evalQuery( queryObject.getName(), queryObject, handle, pCtx );
 
             return new LiveQueryImpl( this,
                                       handle );
@@ -1281,6 +1274,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public void halt() {
         this.agenda.halt();
+        notifyHalt();
     }
 
     public int fireAllRules() {
@@ -1318,12 +1312,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         int fireCount = 0;
         try {
             kBase.readLock();
-
-            // do we need to call this in advance?
-            flushPropagations();
-
-            fireCount = this.agenda.fireAllRules( agendaFilter,
-                                                  fireLimit );
+            fireCount = this.agenda.fireAllRules( agendaFilter, fireLimit );
         } finally {
             kBase.readUnlock();
             if (kBase.flushModifications()) {
@@ -1361,12 +1350,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             throw new IllegalStateException( "fireUntilHalt() can not be called in sequential mode." );
         }
 
-        if ( this.firing.compareAndSet(false,
-                                       true) ) {
+        if ( this.firing.compareAndSet( false, true ) ) {
             try {
-                flushPropagations();
-                this.agenda.fireUntilHalt( agendaFilter );
+                startOperation();
+                agenda.fireUntilHalt( agendaFilter );
             } finally {
+                endOperation();
                 this.firing.set( false );
             }
         }
@@ -1566,12 +1555,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                       activation);
     }
 
-    public void executeQueuedActions() {
-        flushPropagations();
-    }
-
     public void executeQueuedActionsForRete() {
         // NO-OP: this is necessary only for rete
+    }
+
+    public void executeQueuedActions() {
+        flushPropagations();
     }
 
     public void queueWorkingMemoryAction(final WorkingMemoryAction action) {
@@ -2130,19 +2119,26 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void flushPropagations() {
-        try {
-            startOperation();
-            if ( evaluatingActionQueue.compareAndSet( false, true ) ) {
-                try {
-                    propagationList.flush();
-                } finally {
-                    evaluatingActionQueue.compareAndSet(true, false);
-                }
-            }
-        } finally {
-            endOperation();
-        }
+        propagationList.flush();
         executeQueuedActionsForRete();
+    }
+
+    public void flushPropagationsOnFireUntilHalt(boolean fired) {
+        propagationList.flushOnFireUntilHalt( fired );
+        executeQueuedActionsForRete();
+    }
+
+    public void flushPropagationsOnFireUntilHalt( boolean fired, PropagationEntry propagationEntry ) {
+        propagationList.flushOnFireUntilHalt( fired, propagationEntry );
+        executeQueuedActionsForRete();
+    }
+
+    public PropagationEntry takeAllPropagations() {
+        return propagationList.takeAll();
+    }
+
+    public void notifyHalt() {
+        propagationList.notifyHalt();
     }
 
     public void flushNonMarshallablePropagations() {

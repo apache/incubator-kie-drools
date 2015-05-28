@@ -16,7 +16,6 @@
 
 package org.drools.core.conflict;
 
-import org.drools.core.spi.Activation;
 import org.drools.core.spi.ConflictResolver;
 
 /**
@@ -29,12 +28,4 @@ import org.drools.core.spi.ConflictResolver;
 public abstract class AbstractConflictResolver
     implements
     ConflictResolver {
-    /**
-     * @see ConflictResolver
-     */
-    public final int compare(final Object existing,
-                             final Object adding) {
-        return compare( (Activation) existing,
-                        (Activation) adding );
-    }
 }

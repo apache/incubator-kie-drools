@@ -25,17 +25,16 @@ import java.io.ObjectOutput;
 
 
 public class PriorityQueueAgendaGroupFactory implements AgendaGroupFactory, Externalizable {
+
     private static final AgendaGroupFactory INSTANCE = new PriorityQueueAgendaGroupFactory();
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-    }
 
     public static AgendaGroupFactory getInstance() {
         return INSTANCE;
     }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException { }
+
+    public void writeExternal(ObjectOutput out) throws IOException { }
 
     public InternalAgendaGroup createAgendaGroup(String name, InternalKnowledgeBase kBase) {
         return new AgendaGroupQueueImpl( name, kBase );

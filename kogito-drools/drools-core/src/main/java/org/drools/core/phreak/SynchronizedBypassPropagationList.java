@@ -14,8 +14,13 @@ public class SynchronizedBypassPropagationList implements PropagationList {
     }
 
     @Override
-    public synchronized void addEntry(PropagationEntry propagationEntry) {
+    public void addEntry(PropagationEntry propagationEntry) {
         propagationEntry.execute(workingMemory);
+    }
+
+    @Override
+    public PropagationEntry takeAll() {
+        return null;
     }
 
     @Override
@@ -23,6 +28,32 @@ public class SynchronizedBypassPropagationList implements PropagationList {
 
     @Override
     public void flushNonMarshallable() { }
+
+    @Override
+    public void flushOnFireUntilHalt(boolean fired) {
+        flushOnFireUntilHalt( fired, null );
+    }
+
+    @Override
+    public void flushOnFireUntilHalt( boolean fired, PropagationEntry currentHead ) {
+        if ( !fired ) {
+            synchronized ( this ) {
+                try {
+                    this.wait();
+                } catch (InterruptedException e) {
+                    // nothing to do
+                }
+            }
+        }
+        flush();
+    }
+
+    @Override
+    public void notifyHalt() {
+        synchronized ( this ) {
+            this.notifyAll();
+        }
+    }
 
     @Override
     public void reset() { }

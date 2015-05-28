@@ -2,10 +2,19 @@ package org.drools.core.util;
 
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
+import org.drools.core.common.ActivationGroupNode;
+import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalAgendaGroup;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
+import org.drools.core.common.LogicalDependency;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.reteoo.LeftTupleImpl;
+import org.drools.core.rule.GroupElement;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.ConflictResolver;
 import org.drools.core.spi.Consequence;
+import org.drools.core.spi.PropagationContext;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
@@ -14,22 +23,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.core.common.ActivationGroupNode;
-import org.drools.core.common.ActivationNode;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.LogicalDependency;
-import org.drools.core.reteoo.LeftTupleImpl;
-import org.drools.core.rule.GroupElement;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.ConflictResolver;
-import org.drools.core.spi.PropagationContext;
-import org.kie.internal.runtime.beliefs.Mode;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Thes test class uses auxiliary test classes in org.kie.util:
@@ -400,9 +398,6 @@ public class BinaryHeapQueueTest {
             implements
             ConflictResolver {
 
-        /**
-         *
-         */
         private static final long                 serialVersionUID = 1L;
         public static final  ItemConflictResolver INSTANCE         = new ItemConflictResolver();
 
@@ -410,17 +405,8 @@ public class BinaryHeapQueueTest {
             return ItemConflictResolver.INSTANCE;
         }
 
-        /**
-         * @see ConflictResolver
-         */
-        public final int compare(final Object existing,
-                                 final Object adding) {
-            return compare((Item) existing,
-                           (Item) adding);
-        }
-
-        public final int compare(final Item existing,
-                                 final Item adding) {
+        public final int compare(final Activation existing,
+                                 final Activation adding) {
             final int s1 = existing.getSalience();
             final int s2 = adding.getSalience();
 
@@ -430,11 +416,6 @@ public class BinaryHeapQueueTest {
 
             // we know that no two activations will have the same number
             return (int) (existing.getActivationNumber() - adding.getActivationNumber());
-        }
-
-        public int compare(Activation arg0,
-                           Activation arg1) {
-            return 0;
         }
 
     }

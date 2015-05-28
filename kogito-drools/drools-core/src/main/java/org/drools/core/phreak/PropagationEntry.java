@@ -19,7 +19,7 @@ public interface PropagationEntry {
 
     boolean isMarshallable();
 
-    boolean requiresImmediateFlushingIfNotFiring();
+    boolean requiresImmediateFlushing();
 
     abstract class AbstractPropagationEntry implements PropagationEntry {
         private PropagationEntry next;
@@ -38,7 +38,7 @@ public interface PropagationEntry {
         }
 
         @Override
-        public boolean requiresImmediateFlushingIfNotFiring() {
+        public boolean requiresImmediateFlushing() {
             return false;
         }
 

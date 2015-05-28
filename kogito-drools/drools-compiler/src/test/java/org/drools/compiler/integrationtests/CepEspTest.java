@@ -2656,7 +2656,7 @@ public class CepEspTest extends CommonTestMethodBase {
         }
     }
 
-    @Test//(timeout=10000)
+    @Test(timeout=10000)
     public void testEventExpirationInSlidingWindow() throws Exception {
         // DROOLS-70
         String str =

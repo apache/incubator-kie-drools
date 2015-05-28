@@ -76,7 +76,7 @@ public final class Scheduler {
             InternalAgenda agenda = ( InternalAgenda ) ((ActivationTimerJobContext)ctx).getAgenda();
             ScheduledAgendaItem item  = ((ActivationTimerJobContext)ctx).getScheduledAgendaItem();
 
-            boolean wasFired = agenda.fireTimedActivation( item, false );
+            boolean wasFired = agenda.fireTimedActivation( item );
 
             if ( ((ActivationTimerJobContext)ctx).getTrigger().hasNextFireTime() == null ) {
 

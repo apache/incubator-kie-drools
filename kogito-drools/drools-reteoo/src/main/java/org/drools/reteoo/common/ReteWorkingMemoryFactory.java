@@ -16,6 +16,12 @@ import java.io.Serializable;
 
 public class ReteWorkingMemoryFactory implements WorkingMemoryFactory, Serializable {
 
+    private static final WorkingMemoryFactory INSTANCE = new ReteWorkingMemoryFactory();
+
+    public static WorkingMemoryFactory getInstance() {
+        return INSTANCE;
+    }
+
     public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, SessionConfiguration config, Environment environment) {
         return new ReteWorkingMemory(id, kBase, false, config, environment);
     }
