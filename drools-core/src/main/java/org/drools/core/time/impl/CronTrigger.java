@@ -16,12 +16,12 @@
 
 package org.drools.core.time.impl;
 
+import org.drools.core.time.Trigger;
+import org.kie.api.runtime.Calendars;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
-
-import org.drools.core.time.Trigger;
-import org.kie.api.runtime.Calendars;
 
 public class CronTrigger
     implements
@@ -102,7 +102,7 @@ public class CronTrigger
         }
 
         Date eTime = getEndTime();
-        if ( eTime != null && startTime != null && eTime.before( startTime ) ) {
+        if ( eTime != null && eTime.before( startTime ) ) {
             throw new IllegalArgumentException( "End time cannot be before start time" );
         }
 
@@ -123,8 +123,6 @@ public class CronTrigger
      * Get the time at which the <code>CronTrigger</code> should quit
      * repeating - even if repeastCount isn't yet satisfied.
      * </p>
-     * 
-     * @see #getFinalFireTime()
      */
     public Date getEndTime() {
         return this.endTime;
@@ -152,8 +150,6 @@ public class CronTrigger
      * <p>The value returned is not guaranteed to be valid until after the <code>Trigger</code>
      * has been added to the scheduler.
      * </p>
-     *
-     * @see TriggerUtils#computeFireTimesBetween(Trigger, org.quartz.Calendar , Date, Date)
      */
     public Date getNextFireTime() {
         return this.nextFireTime;
@@ -361,7 +357,7 @@ public class CronTrigger
                     break;
                 }
             }
-            if ( included == true ) {
+            if ( included ) {
                 // if no calendars blocked, break
                 break;
             } else {

@@ -80,6 +80,13 @@ import java.util.List;
 
 public class ReteNodeFactory implements NodeFactory, Serializable {
 
+    private static final NodeFactory INSTANCE = new ReteNodeFactory();
+
+    public static NodeFactory getInstance() {
+        return INSTANCE;
+    }
+
+    private ReteNodeFactory() { }
 
     public EntryPointNode buildEntryPointNode(int id, ObjectSource objectSource, BuildContext context) {
         return new ReteEntryPointNode(id, objectSource, context);

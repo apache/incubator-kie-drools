@@ -25,6 +25,14 @@ import java.io.Serializable;
 
 public class ReteAgendaFactory implements AgendaFactory, Serializable {
 
+    private static final AgendaFactory INSTANCE = new ReteAgendaFactory();
+
+    public static AgendaFactory getInstance() {
+        return INSTANCE;
+    }
+
+    private ReteAgendaFactory() { }
+
     public InternalAgenda createAgenda(InternalKnowledgeBase kBase, boolean initMain) {
         return new ReteAgenda( kBase, initMain );
     }

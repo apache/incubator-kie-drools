@@ -67,6 +67,12 @@ import java.util.List;
 
 public class PhreakNodeFactory implements NodeFactory, Serializable {
 
+    private static final NodeFactory INSTANCE = new PhreakNodeFactory();
+
+    public static NodeFactory getInstance() {
+        return INSTANCE;
+    }
+
     public EntryPointNode buildEntryPointNode(int id, ObjectSource objectSource, BuildContext context) {
         return new EntryPointNode(id, objectSource, context);
     }

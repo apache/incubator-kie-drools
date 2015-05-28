@@ -203,9 +203,16 @@ public interface InternalWorkingMemory
     void closeLiveQuery(InternalFactHandle factHandle);
 
     void addPropagation(PropagationEntry propagationEntry);
+
     void flushPropagations();
+    void flushPropagationsOnFireUntilHalt( boolean fired );
+    void flushPropagationsOnFireUntilHalt( boolean fired, PropagationEntry propagationEntry );
     void flushNonMarshallablePropagations();
+
     boolean hasPendingPropagations();
+    PropagationEntry takeAllPropagations();
 
     Iterator<? extends PropagationEntry> getActionsIterator();
+
+    void notifyHalt();
 }

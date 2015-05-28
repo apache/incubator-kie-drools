@@ -38,6 +38,7 @@ import org.drools.core.common.Scheduler;
 import org.drools.core.common.TruthMaintenanceSystemHelper;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -307,7 +308,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         if ( log.isTraceEnabled() ) {
             log.trace("Added {} to eager evaluation list.", item.getRule().getName() );
         }
-        eager.add(item);
+        eager.add( item );
     }
 
     @Override
@@ -346,9 +347,9 @@ public class ReteAgenda<M extends ModedAssertion<M>>
             // this is not a serialization propagation, so schedule it
             // otherwise the timer will be correlated with this activation later during the
             // deserialization of timers
-            Scheduler.scheduleAgendaItem(item,
-                                         this,
-                                         wm);
+            Scheduler.scheduleAgendaItem( item,
+                                          this,
+                                          wm );
         }
     }
 
@@ -470,7 +471,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         for ( ActivationGroupNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
             AgendaItem item = (AgendaItem) node.getActivation();
             // This must be set to false otherwise modify won't work properly
-            item.setQueued(false);
+            item.setQueued( false );
             eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
                                                                           this.workingMemory,
                                                                           MatchCancelledCause.CLEAR );
@@ -492,7 +493,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
             i++;
         }
 
-        notifyHalt();
+        workingMemory.notifyHalt();
 
         return i;
     }
@@ -500,7 +501,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
     public void addActivation(AgendaItem item,
                               boolean notify) {
         RuleImpl rule = item.getRule();
-        item.setQueued(true);
+        item.setQueued( true );
 
         // set the focus if rule autoFocus is true
         if ( rule.getAutoFocus() ) {
@@ -528,7 +529,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
             if ( isFiringActivation ) {
                 mustNotifyHalt = true;
             } else {
-                notifyHalt();
+                workingMemory.notifyHalt();
             }
         }
     }
@@ -563,7 +564,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         if ( rtn.isFireDirect() ) {
             // Fire RunLevel == 0 straight away. agenda-groups, rule-flow groups, salience are ignored
             AgendaItem item = createAgendaItem( tuple, 0, context,
-                                                rtn, null, null);
+                                                rtn, null, null );
             tuple.setObject( item );
             if ( activationsFilter != null && !activationsFilter.accept( item,
                                                                          workingMemory,
@@ -936,7 +937,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
                                       long processInstanceId,
                                       String nodeInstanceId) {
         InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) getRuleFlowGroup( name );
-        activateRuleFlowGroup(ruleFlowGroup, processInstanceId, nodeInstanceId);
+        activateRuleFlowGroup( ruleFlowGroup, processInstanceId, nodeInstanceId );
     }
 
     public void activateRuleFlowGroup(final InternalRuleFlowGroup group, long processInstanceId, String nodeInstanceId) {
@@ -963,7 +964,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         ((EventSupport) this.workingMemory).getAgendaEventSupport().fireBeforeRuleFlowGroupDeactivated( group,
                                                                                                         this.workingMemory );
         while ( this.focusStack.remove( group ) ); // keep removing while group is on the stack
-        group.setActive(false);
+        group.setActive( false );
         innerDeactiveRuleFlowGroup( group );
     }
 
@@ -1347,14 +1348,17 @@ public class ReteAgenda<M extends ModedAssertion<M>>
             isFiringActivation = false;
             if ( mustNotifyHalt ) {
                 mustNotifyHalt = false;
-                notifyHalt();
+                workingMemory.notifyHalt();
             }
             this.workingMemory.endOperation();
         }
     }
 
-    public synchronized boolean fireTimedActivation(final Activation activation,
-                                                    boolean saveForLater) throws ConsequenceException {
+    public synchronized void fireConsequenceEvent(Activation activation, String consequenceName) throws ConsequenceException {
+        throw new UnsupportedOperationException("Cannot invoke fireActivationEvent on ReteAgenda");
+    }
+
+    public synchronized boolean fireTimedActivation(final Activation activation) throws ConsequenceException {
         //TODO : "save for later" : put activation in queue if halted, then dispatch again on next fire
         if ( !this.halt.get() ) {
             fireActivation( activation);
@@ -1438,7 +1442,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
             }
         }
         if ( log.isTraceEnabled() ) {
-            log.trace("Ending fireUntilHalt");
+            log.trace( "Ending fireUntilHalt");
         }
     }
 
@@ -1466,27 +1470,19 @@ public class ReteAgenda<M extends ModedAssertion<M>>
     }
 
     @Override
-    public boolean executeIfNotFiring(Runnable task) {
+    public void executeTask( ExecutableEntry executable ) {
         if( this.halt.compareAndSet( true, false ) ) {
             try {
-                task.run();
+                executable.execute();
             } finally {
                 this.halt.set( true );
             }
-            return true;
-        }
-        return false;
-    }
-
-    public void notifyHalt() {
-        synchronized ( this.halt ) {
-            this.halt.notifyAll();
         }
     }
 
     public void halt() {
         this.halt.set( true );
-        notifyHalt();
+        workingMemory.notifyHalt();
     }
 
     public ConsequenceExceptionHandler getConsequenceExceptionHandler() {
