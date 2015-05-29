@@ -29,7 +29,7 @@ public class AssetClass extends AbstractPersistable {
     private long expectedReturnNanos; // In nano's (so multiplied by 10^9)
     private long standardDeviationRiskNanos; // In nano's (so multiplied by 10^9)
 
-    private Map<AssetClass, Integer> correlationNanosMap;
+    private Map<AssetClass, Long> correlationNanosMap;
 
     public String getName() {
         return name;
@@ -55,11 +55,11 @@ public class AssetClass extends AbstractPersistable {
         this.standardDeviationRiskNanos = standardDeviationRiskNanos;
     }
 
-    public Map<AssetClass, Integer> getCorrelationNanosMap() {
+    public Map<AssetClass, Long> getCorrelationNanosMap() {
         return correlationNanosMap;
     }
 
-    public void setCorrelationNanosMap(Map<AssetClass, Integer> correlationNanosMap) {
+    public void setCorrelationNanosMap(Map<AssetClass, Long> correlationNanosMap) {
         this.correlationNanosMap = correlationNanosMap;
     }
 

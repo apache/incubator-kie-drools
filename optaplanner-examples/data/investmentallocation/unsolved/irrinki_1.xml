@@ -6,36 +6,218 @@
       <name>UK Equities</name>
       <expectedReturnNanos>100000000</expectedReturnNanos>
       <standardDeviationRiskNanos>150000000</standardDeviationRiskNanos>
+      <correlationNanosMap class="linked-hash-map" id="4">
+        <entry>
+          <IaAssetClass reference="3"/>
+          <long>1000000000</long>
+        </entry>
+        <entry>
+          <IaAssetClass id="5">
+            <id>2</id>
+            <name>Ex-UK Equities</name>
+            <expectedReturnNanos>80000000</expectedReturnNanos>
+            <standardDeviationRiskNanos>120000000</standardDeviationRiskNanos>
+            <correlationNanosMap class="linked-hash-map" id="6">
+              <entry>
+                <IaAssetClass reference="3"/>
+                <long>760000000</long>
+              </entry>
+              <entry>
+                <IaAssetClass reference="5"/>
+                <long>1000000000</long>
+              </entry>
+              <entry>
+                <IaAssetClass id="7">
+                  <id>3</id>
+                  <name>Intermediate Bond</name>
+                  <expectedReturnNanos>40000000</expectedReturnNanos>
+                  <standardDeviationRiskNanos>70000000</standardDeviationRiskNanos>
+                  <correlationNanosMap class="linked-hash-map" id="8">
+                    <entry>
+                      <IaAssetClass reference="3"/>
+                      <long>350000000</long>
+                    </entry>
+                    <entry>
+                      <IaAssetClass reference="5"/>
+                      <long>40000000</long>
+                    </entry>
+                    <entry>
+                      <IaAssetClass reference="7"/>
+                      <long>1000000000</long>
+                    </entry>
+                    <entry>
+                      <IaAssetClass id="9">
+                        <id>4</id>
+                        <name>Long-Term Bonds</name>
+                        <expectedReturnNanos>45000000</expectedReturnNanos>
+                        <standardDeviationRiskNanos>80000000</standardDeviationRiskNanos>
+                        <correlationNanosMap class="linked-hash-map" id="10">
+                          <entry>
+                            <IaAssetClass reference="3"/>
+                            <long>500000000</long>
+                          </entry>
+                          <entry>
+                            <IaAssetClass reference="5"/>
+                            <long>300000000</long>
+                          </entry>
+                          <entry>
+                            <IaAssetClass reference="7"/>
+                            <long>870000000</long>
+                          </entry>
+                          <entry>
+                            <IaAssetClass reference="9"/>
+                            <long>1000000000</long>
+                          </entry>
+                          <entry>
+                            <IaAssetClass id="11">
+                              <id>5</id>
+                              <name>Intermediate Bond</name>
+                              <expectedReturnNanos>50000000</expectedReturnNanos>
+                              <standardDeviationRiskNanos>90000000</standardDeviationRiskNanos>
+                              <correlationNanosMap class="linked-hash-map" id="12">
+                                <entry>
+                                  <IaAssetClass reference="3"/>
+                                  <long>240000000</long>
+                                </entry>
+                                <entry>
+                                  <IaAssetClass reference="5"/>
+                                  <long>360000000</long>
+                                </entry>
+                                <entry>
+                                  <IaAssetClass reference="7"/>
+                                  <long>620000000</long>
+                                </entry>
+                                <entry>
+                                  <IaAssetClass reference="9"/>
+                                  <long>520000000</long>
+                                </entry>
+                                <entry>
+                                  <IaAssetClass reference="11"/>
+                                  <long>1000000000</long>
+                                </entry>
+                                <entry>
+                                  <IaAssetClass id="13">
+                                    <id>6</id>
+                                    <name>Real Estate</name>
+                                    <expectedReturnNanos>70000000</expectedReturnNanos>
+                                    <standardDeviationRiskNanos>100000000</standardDeviationRiskNanos>
+                                    <correlationNanosMap class="linked-hash-map" id="14">
+                                      <entry>
+                                        <IaAssetClass reference="3"/>
+                                        <long>300000000</long>
+                                      </entry>
+                                      <entry>
+                                        <IaAssetClass reference="5"/>
+                                        <long>250000000</long>
+                                      </entry>
+                                      <entry>
+                                        <IaAssetClass reference="7"/>
+                                        <long>-50000000</long>
+                                      </entry>
+                                      <entry>
+                                        <IaAssetClass reference="9"/>
+                                        <long>-20000000</long>
+                                      </entry>
+                                      <entry>
+                                        <IaAssetClass reference="11"/>
+                                        <long>200000000</long>
+                                      </entry>
+                                      <entry>
+                                        <IaAssetClass reference="13"/>
+                                        <long>1000000000</long>
+                                      </entry>
+                                    </correlationNanosMap>
+                                  </IaAssetClass>
+                                  <long>200000000</long>
+                                </entry>
+                              </correlationNanosMap>
+                            </IaAssetClass>
+                            <long>520000000</long>
+                          </entry>
+                          <entry>
+                            <IaAssetClass reference="13"/>
+                            <long>-20000000</long>
+                          </entry>
+                        </correlationNanosMap>
+                      </IaAssetClass>
+                      <long>870000000</long>
+                    </entry>
+                    <entry>
+                      <IaAssetClass reference="11"/>
+                      <long>620000000</long>
+                    </entry>
+                    <entry>
+                      <IaAssetClass reference="13"/>
+                      <long>-50000000</long>
+                    </entry>
+                  </correlationNanosMap>
+                </IaAssetClass>
+                <long>40000000</long>
+              </entry>
+              <entry>
+                <IaAssetClass reference="9"/>
+                <long>300000000</long>
+              </entry>
+              <entry>
+                <IaAssetClass reference="11"/>
+                <long>360000000</long>
+              </entry>
+              <entry>
+                <IaAssetClass reference="13"/>
+                <long>250000000</long>
+              </entry>
+            </correlationNanosMap>
+          </IaAssetClass>
+          <long>760000000</long>
+        </entry>
+        <entry>
+          <IaAssetClass reference="7"/>
+          <long>350000000</long>
+        </entry>
+        <entry>
+          <IaAssetClass reference="9"/>
+          <long>500000000</long>
+        </entry>
+        <entry>
+          <IaAssetClass reference="11"/>
+          <long>240000000</long>
+        </entry>
+        <entry>
+          <IaAssetClass reference="13"/>
+          <long>300000000</long>
+        </entry>
+      </correlationNanosMap>
     </IaAssetClass>
-    <IaAssetClass id="4">
-      <id>2</id>
-      <name>Ex-UK Equities</name>
-      <expectedReturnNanos>80000000</expectedReturnNanos>
-      <standardDeviationRiskNanos>120000000</standardDeviationRiskNanos>
-    </IaAssetClass>
-    <IaAssetClass id="5">
-      <id>3</id>
-      <name>Intermediate Bond</name>
-      <expectedReturnNanos>40000000</expectedReturnNanos>
-      <standardDeviationRiskNanos>70000000</standardDeviationRiskNanos>
-    </IaAssetClass>
-    <IaAssetClass id="6">
-      <id>4</id>
-      <name>Long-Term Bonds</name>
-      <expectedReturnNanos>45000000</expectedReturnNanos>
-      <standardDeviationRiskNanos>80000000</standardDeviationRiskNanos>
-    </IaAssetClass>
-    <IaAssetClass id="7">
-      <id>5</id>
-      <name>Intermediate Bond</name>
-      <expectedReturnNanos>50000000</expectedReturnNanos>
-      <standardDeviationRiskNanos>90000000</standardDeviationRiskNanos>
-    </IaAssetClass>
-    <IaAssetClass id="8">
-      <id>6</id>
-      <name>Real Estate</name>
-      <expectedReturnNanos>70000000</expectedReturnNanos>
-      <standardDeviationRiskNanos>100000000</standardDeviationRiskNanos>
-    </IaAssetClass>
+    <IaAssetClass reference="5"/>
+    <IaAssetClass reference="7"/>
+    <IaAssetClass reference="9"/>
+    <IaAssetClass reference="11"/>
+    <IaAssetClass reference="13"/>
   </assetClassList>
+  <assetClassAllocationList id="15">
+    <IaAssetClassAllocation id="16">
+      <id>1</id>
+      <assetClass reference="3"/>
+    </IaAssetClassAllocation>
+    <IaAssetClassAllocation id="17">
+      <id>2</id>
+      <assetClass reference="5"/>
+    </IaAssetClassAllocation>
+    <IaAssetClassAllocation id="18">
+      <id>3</id>
+      <assetClass reference="7"/>
+    </IaAssetClassAllocation>
+    <IaAssetClassAllocation id="19">
+      <id>4</id>
+      <assetClass reference="9"/>
+    </IaAssetClassAllocation>
+    <IaAssetClassAllocation id="20">
+      <id>5</id>
+      <assetClass reference="11"/>
+    </IaAssetClassAllocation>
+    <IaAssetClassAllocation id="21">
+      <id>6</id>
+      <assetClass reference="13"/>
+    </IaAssetClassAllocation>
+  </assetClassAllocationList>
 </IaInvestmentAllocationSolution>

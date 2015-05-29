@@ -33,6 +33,7 @@ import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.investmentallocation.domain.AssetClass;
+import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
 import org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution;
 
 public class InvestmentAllocationImporter extends AbstractTxtSolutionImporter {
@@ -62,6 +63,7 @@ public class InvestmentAllocationImporter extends AbstractTxtSolutionImporter {
             solution = new InvestmentAllocationSolution();
             solution.setId(0L);
             readAssetClassList();
+            createAssetClassAllocationList();
 
             logger.info("InvestmentAllocation {} has {} asset classes.",
                     getInputId(), solution.getAssetClassList().size());
@@ -78,26 +80,48 @@ public class InvestmentAllocationImporter extends AbstractTxtSolutionImporter {
                 throw new IllegalArgumentException("Read line (" + headerLine + ") is expected to be a constant regex ("
                         + headerRegex + ").");
             }
-            int assetClassListSize = headerTokens.length - 4;
+            final int ASSET_CLASS_PROPERTIES_COUNT = 4;
+            int assetClassListSize = headerTokens.length - ASSET_CLASS_PROPERTIES_COUNT;
             List<AssetClass> assetClassList = new ArrayList<AssetClass>(assetClassListSize);
             Map<Long, AssetClass> idToAssetClassMap = new HashMap<Long, AssetClass>(assetClassListSize);
-            for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
-                String[] tokens = splitBySemicolonSeparatedValue(line, 4 + assetClassListSize);
+            for (int i = 0; i < assetClassListSize; i++) {
                 AssetClass assetClass = new AssetClass();
-                assetClass.setId(Long.parseLong(tokens[0]));
-                assetClass.setName(tokens[1]);
-                assetClass.setExpectedReturnNanos(parsePercentageNanos(tokens[2]));
-                assetClass.setStandardDeviationRiskNanos(parsePercentageNanos(tokens[3]));
-
+                assetClass.setId(Long.parseLong(headerTokens[ASSET_CLASS_PROPERTIES_COUNT + i]));
                 assetClassList.add(assetClass);
                 idToAssetClassMap.put(assetClass.getId(), assetClass);
             }
-            if (assetClassList.size() != assetClassListSize) {
-                throw new IllegalStateException("The assetClassList size (" + assetClassList.size()
-                        + ") is expected to be the same as the header's assetClassListSize ("
-                        + assetClassListSize + ")");
+            for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
+                String[] tokens = splitBySemicolonSeparatedValue(line, ASSET_CLASS_PROPERTIES_COUNT + assetClassListSize);
+                long id = Long.parseLong(tokens[0]);
+                AssetClass assetClass = idToAssetClassMap.get(id);
+                if (assetClass == null) {
+                    throw new IllegalStateException("The assetClass line (" + line
+                            + ") has an assetClass id (" + id + ") that is not in the headerLine (" + headerLine + ")");
+                }
+                assetClass.setName(tokens[1]);
+                assetClass.setExpectedReturnNanos(parsePercentageNanos(tokens[2]));
+                assetClass.setStandardDeviationRiskNanos(parsePercentageNanos(tokens[3]));
+                Map<AssetClass, Long> correlationNanosMap = new LinkedHashMap<AssetClass, Long>(assetClassListSize);
+                for (int i = 0; i < assetClassListSize; i++) {
+                    AssetClass other = assetClassList.get(i);
+                    long correlationNanos = parsePercentageNanos(tokens[ASSET_CLASS_PROPERTIES_COUNT + i]);
+                    correlationNanosMap.put(other, correlationNanos);
+                }
+                assetClass.setCorrelationNanosMap(correlationNanosMap);
             }
             solution.setAssetClassList(assetClassList);
+        }
+
+        private void createAssetClassAllocationList() {
+            List<AssetClass> assetClassList = solution.getAssetClassList();
+            List<AssetClassAllocation> assetClassAllocationList = new ArrayList<AssetClassAllocation>(assetClassList.size());
+            for (AssetClass assetClass : assetClassList) {
+                AssetClassAllocation allocation = new AssetClassAllocation();
+                allocation.setId(assetClass.getId());
+                allocation.setAssetClass(assetClass);
+                assetClassAllocationList.add(allocation);
+            }
+            solution.setAssetClassAllocationList(assetClassAllocationList);
         }
 
         protected long parsePercentageNanos(String token) {
