@@ -52,8 +52,8 @@ public class XStreamXmlSolverFactory extends SolverFactory {
         return xStream;
     }
 
-    private XStream xStream;
-    private SolverConfig solverConfig = null;
+    protected XStream xStream;
+    protected SolverConfig solverConfig = null;
 
     public XStreamXmlSolverFactory() {
         xStream = buildXStream();
@@ -66,25 +66,8 @@ public class XStreamXmlSolverFactory extends SolverFactory {
         xStream.processAnnotations(xStreamAnnotations);
     }
 
-    /**
-     * @see {@link XStream#alias(String, Class)}
-     */
-    public void addXStreamAlias(String name, Class type) {
-        xStream.alias(name, type);
-    }
-
-    /**
-     * @see {@link XStream#aliasAttribute(Class, String, String)}
-     */
-    public void addXStreamAliasAttribute(Class definedIn, String attributeName, String alias) {
-        xStream.aliasAttribute(definedIn, attributeName, alias);
-    }
-
-    /**
-     * @see {@link XStream#addDefaultImplementation(Class, Class)}
-     */
-    public void addXStreamDefaultImplementation(Class defaultImplementation, Class ofType) {
-        xStream.addDefaultImplementation(defaultImplementation, ofType);
+    public XStream getXStream() {
+        return xStream;
     }
 
     // ************************************************************************

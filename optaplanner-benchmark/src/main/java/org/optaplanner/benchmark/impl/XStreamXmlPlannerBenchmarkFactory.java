@@ -37,8 +37,8 @@ import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
  */
 public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
 
-    private XStream xStream;
-    private PlannerBenchmarkConfig plannerBenchmarkConfig = null;
+    protected XStream xStream;
+    protected PlannerBenchmarkConfig plannerBenchmarkConfig = null;
 
     public XStreamXmlPlannerBenchmarkFactory() {
         xStream = XStreamXmlSolverFactory.buildXStream();
@@ -56,25 +56,8 @@ public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
         xStream.processAnnotations(xStreamAnnotations);
     }
 
-    /**
-     * @see {@link XStream#alias(String, Class)}
-     */
-    public void addXStreamAlias(String name, Class type) {
-        xStream.alias(name, type);
-    }
-
-    /**
-     * @see {@link XStream#aliasAttribute(Class, String, String)}
-     */
-    public void addXStreamAliasAttribute(Class definedIn, String attributeName, String alias) {
-        xStream.aliasAttribute(definedIn, attributeName, alias);
-    }
-
-    /**
-     * @see {@link XStream#addDefaultImplementation(Class, Class)}
-     */
-    public void addXStreamDefaultImplementation(Class defaultImplementation, Class ofType) {
-        xStream.addDefaultImplementation(defaultImplementation, ofType);
+    public XStream getXStream() {
+        return xStream;
     }
 
     /**
