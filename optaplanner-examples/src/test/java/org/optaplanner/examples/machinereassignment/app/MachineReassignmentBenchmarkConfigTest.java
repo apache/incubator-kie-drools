@@ -20,9 +20,9 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
-import org.optaplanner.examples.common.app.PlannerBenchmarkConfigTest;
+import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 
-public class MachineReassignmentBenchmarkConfigTest extends PlannerBenchmarkConfigTest {
+public class MachineReassignmentBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getArgOptionsAsParameters() {

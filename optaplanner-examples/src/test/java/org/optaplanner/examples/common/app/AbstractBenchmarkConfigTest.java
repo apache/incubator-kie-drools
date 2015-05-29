@@ -29,7 +29,7 @@ import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
-public abstract class PlannerBenchmarkConfigTest {
+public abstract class AbstractBenchmarkConfigTest {
 
     protected static Collection<Object[]> getArgOptionsAsParameters(CommonBenchmarkApp benchmarkApp) {
         List<Object[]> filesAsParameters = new ArrayList<Object[]>();
@@ -41,7 +41,7 @@ public abstract class PlannerBenchmarkConfigTest {
 
     protected CommonBenchmarkApp.ArgOption argOption;
 
-    protected PlannerBenchmarkConfigTest(CommonBenchmarkApp.ArgOption argOption) {
+    protected AbstractBenchmarkConfigTest(CommonBenchmarkApp.ArgOption argOption) {
         this.argOption = argOption;
     }
 
