@@ -14,9 +14,9 @@
       <title>Problem Description</title>
 
       <para>Suppose your company owns a number of cloud computers and needs to run a number of processes on those
-      computers. Assign each process to a computer under the following 4 constraints.</para>
+      computers. Assign each process to a computer under the following four constraints.</para>
 
-      <para>Hard constraints which must be fulfilled:</para>
+      <para>The following hard constraints must be fulfilled:</para>
 
       <itemizedlist>
         <listitem>
@@ -42,7 +42,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>Soft constraints which should be optimized:</para>
+      <para>The following soft constraints should be optimized:</para>
 
       <itemizedlist>
         <listitem>
@@ -57,8 +57,8 @@
         </listitem>
       </itemizedlist>
 
-      <para>How would you do that? This problem is a form of <emphasis>bin packing</emphasis>. Here's a simplified
-      example where we assign 4 processes to 2 computers with 2 constraints (CPU and RAM) with a simple
+      <para>This problem is a form of <emphasis>bin packing</emphasis>. The following is a simplified
+      example, where we assign four processes to two computers with two constraints (CPU and RAM) with a simple
       algorithm:</para>
 
       <mediaobject>
@@ -68,35 +68,87 @@
       </mediaobject>
 
       <para>The simple algorithm used here is the <emphasis>First Fit Decreasing</emphasis> algorithm, which assigns the
-      bigger processes first and assigns the smaller processes to the remaining space. As you can see, it's not optimal,
-      because it does not leave enough room to assign the yellow process D.</para>
+      bigger processes first and assigns the smaller processes to the remaining space. As you can see, it is not optimal, 
+      as it does not leave enough room to assign the yellow process "D".</para>
 
-      <para>Planner does find the more optimal solution fast, by using additional, smarter algorithms. And it scales
-      too: both in data (more processes, more computers) and constraints (more hardware requirements, other
-      constraints). So let's take a look how we can use Planner for this.</para>
+      <para>Planner does find the more optimal solution fast by using additional, smarter algorithms. It also scales: both in data (more processes, more computers) and constraints (more hardware requirements, other
+      constraints). So see how Planner can be used in this scenario.</para>
     </section>
 
     <section xml:id="cloudBalancingProblemSize">
       <title>Problem Size</title>
-
-      <programlisting>2computers-6processes      has   2 computers and    6 processes with a search space of      64.
-3computers-9processes      has   3 computers and    9 processes with a search space of    10^4.
-4computers-012processes    has   4 computers and   12 processes with a search space of    10^7.
-100computers-300processes  has 100 computers and  300 processes with a search space of  10^600.
-200computers-600processes  has 200 computers and  600 processes with a search space of 10^1380.
-400computers-1200processes has 400 computers and 1200 processes with a search space of 10^3122.
-800computers-2400processes has 800 computers and 2400 processes with a search space of 10^6967.</programlisting>
+      <table id="cloudBalancingProblemTable">
+		  <title>Cloud Balancing Problem Size</title>
+		  <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+			<colspec colname='c1'/>
+			<colspec colname='c2'/>
+			<colspec colname='c3'/>
+			<colspec colname='c4'/>
+			<thead>
+				<row>
+					<entry>Problem Size</entry>
+					<entry>Computers</entry>
+					<entry>Processes</entry>
+					<entry>Search Space</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>2computers-6processes</entry>
+					<entry>2</entry>
+					<entry>6</entry>
+					<entry>64</entry>
+				</row>
+				<row>
+					<entry>3computers-9processes</entry>
+					<entry>3</entry>
+					<entry>9</entry>
+					<entry>10^4</entry>
+				</row>
+				<row>
+					<entry>4computers-012processes</entry>
+					<entry>4</entry>
+					<entry>12</entry>
+					<entry>10^7</entry>
+				</row>
+				<row>
+					<entry>100computers-300processes</entry>
+					<entry>100</entry>
+					<entry>300</entry>
+					<entry>10^600</entry>
+				</row>
+				<row>
+					<entry>200computers-600processes</entry>
+					<entry>200</entry>
+					<entry>600</entry>
+					<entry>10^1380</entry>
+				</row>
+				<row>
+					<entry>400computers-1200processes</entry>
+					<entry>400</entry>
+					<entry>1200</entry>
+					<entry>10^3122</entry>
+				</row>
+				<row>
+					<entry>800computers-2400processes</entry>
+					<entry>800</entry>
+					<entry>2400</entry>
+					<entry>10^6967</entry>
+				</row>
+			</tbody>
+		  </tgroup>
+      </table>
     </section>
 
     <section xml:id="cloudBalancingDomainModelDesign">
       <title>Domain Model Design</title>
 
-      <para>Let's start by taking a look at the domain model. It's pretty simple:</para>
+      <para>Beginning with the domain model:</para>
 
       <itemizedlist>
         <listitem>
           <para><literal>Computer</literal>: represents a computer with certain hardware (CPU power, RAM memory, network
-          bandwidth) and maintenance cost.</para>
+          bandwidth) and maintenance cost.</para>   
         </listitem>
 
         <listitem>
@@ -120,19 +172,19 @@
 
       <itemizedlist>
         <listitem>
-          <para>Planning entity: the class (or classes) that changes during planning. In this example that's the class
+          <para>Planning entity: the class (or classes) that changes during planning. In this example, it is the class
           <literal>Process</literal>.</para>
         </listitem>
 
         <listitem>
           <para>Planning variable: the property (or properties) of a planning entity class that changes during planning.
-          In this example, that's the property <literal>computer</literal> on the class
+          In this example, it is the property <literal>computer</literal> on the class
           <literal>Process</literal>.</para>
         </listitem>
 
         <listitem>
           <para>Solution: the class that represents a data set and contains all planning entities. In this example
-          that's the class <literal>CloudBalance</literal>.</para>
+          that is the class <literal>CloudBalance</literal>.</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -141,7 +193,7 @@
       <title>Main Method</title>
 
       <para>Try it yourself. <link linkend="downloadAndRunTheExamples">Download and configure the examples in your
-      favorite IDE.</link> Run <literal>org.optaplanner.examples.cloudbalancing.app.CloudBalancingHelloWorld</literal>.
+      preferred IDE.</link> Run <literal>org.optaplanner.examples.cloudbalancing.app.CloudBalancingHelloWorld</literal>.
       By default, it is configured to run for 120 seconds. It will execute this code:</para>
 
       <example>
@@ -172,7 +224,7 @@
 }</programlisting>
       </example>
 
-      <para>The code above does this:</para>
+      <para>The code example does the following:</para>
 
       <itemizedlist>
         <listitem>
@@ -185,7 +237,7 @@
         </listitem>
 
         <listitem>
-          <para>Load the problem. <literal>CloudBalancingGenerator</literal> generates a random problem: you'll replace
+          <para>Load the problem. <literal>CloudBalancingGenerator</literal> generates a random problem: you will replace
           this with a class that loads a real problem, for example from a database.</para>
 
           <programlisting language="java">        CloudBalance unsolvedCloudBalance = new CloudBalancingGenerator().createCloudBalance(400, 1200);</programlisting>
@@ -206,7 +258,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>The only non-obvious part is building the <literal>Solver</literal>. Let's examine that.</para>
+      <para>The only non-obvious part is building the <literal>Solver</literal>, as detailed in the next section.</para>
     </section>
 
     <section xml:id="cloudBalancingSolverConfiguration">
@@ -217,28 +269,28 @@
       <example>
         <title>cloudBalancingSolverConfig.xml</title>
 
-        <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;solver&gt;
-  &lt;!-- Domain model configuration --&gt;
-  &lt;solutionClass&gt;org.optaplanner.examples.cloudbalancing.domain.CloudBalance&lt;/solutionClass&gt;
-  &lt;entityClass&gt;org.optaplanner.examples.cloudbalancing.domain.CloudProcess&lt;/entityClass&gt;
-
-  &lt;!-- Score configuration --&gt;
-  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
-    &lt;easyScoreCalculatorClass&gt;org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingEasyScoreCalculator&lt;/easyScoreCalculatorClass&gt;
-    &lt;!--&lt;scoreDrl&gt;org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;--&gt;
-    &lt;initializingScoreTrend&gt;ONLY_DOWN&lt;/initializingScoreTrend&gt;
-  &lt;/scoreDirectorFactory&gt;
-
-  &lt;!-- Optimization algorithms configuration --&gt;
-  &lt;termination&gt;
-    &lt;secondsSpentLimit&gt;60&lt;/secondsSpentLimit&gt;
-  &lt;/termination&gt;
-&lt;/solver&gt;</programlisting>
+        <programlisting language="xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+​<solver>
+​  <!-- Domain model configuration -->
+​  <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
+​  <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
+​
+​  <!-- Score configuration -->
+​  <scoreDirectorFactory>
+​    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+​    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
+​    <!--<scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
+​    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+​  </scoreDirectorFactory>
+​
+​  <!-- Optimization algorithms configuration -->
+​  <termination>
+​    <secondsSpentLimit>60</secondsSpentLimit>
+​  </termination>
+​</solver>]]></programlisting>
       </example>
 
-      <para>This solver configuration consists out of 3 parts:</para>
+      <para>This solver configuration consists of three parts:</para>
 
       <itemizedlist>
         <listitem>
@@ -256,12 +308,12 @@
           our business requirements. Further down, we 'll look into 2 alternatives to calculate the score: using a
           simple Java implementation or using Drools DRL.</para>
 
-          <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
-    &lt;easyScoreCalculatorClass&gt;org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingEasyScoreCalculator&lt;/easyScoreCalculatorClass&gt;
-    &lt;!--&lt;scoreDrl&gt;org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;--&gt;
-    &lt;initializingScoreTrend&gt;ONLY_DOWN&lt;/initializingScoreTrend&gt;
-  &lt;/scoreDirectorFactory&gt;</programlisting>
+          <programlisting language="xml"> <![CDATA[<scoreDirectorFactory>
+​    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+​    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
+​    <!--<scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
+​    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+​  </scoreDirectorFactory>]]></programlisting>
         </listitem>
 
         <listitem>
@@ -287,7 +339,7 @@
       <section xml:id="cloudBalancingClassComputer">
         <title>The <literal>Computer</literal> Class</title>
 
-        <para>The <literal>Computer</literal> class is a POJO (Plain Old Java Object), nothing special. Usually, you'll
+        <para>The <literal>Computer</literal> class is a POJO (Plain Old Java Object). Usually, you will
         have more of this kind of classes.</para>
 
         <example>
@@ -346,8 +398,7 @@ public class CloudProcess ... {
 
         <para>The values that Planner can choose from for the field <literal>computer</literal>, are retrieved from a
         method on the <literal>Solution</literal> implementation: <literal>CloudBalance.getComputerList()</literal>
-        which returns a list of all computers in the current data set. We tell Planner about this by using the
-        <literal>valueRangeProviderRefs</literal> property.</para>
+        which returns a list of all computers in the current data set. The <literal>valueRangeProviderRefs</literal> property is used to tell Planner about this.</para>
       </section>
 
       <section xml:id="cloudBalancingClassCloudBalance">
@@ -358,7 +409,7 @@ public class CloudProcess ... {
         it can change, so we need to annotate the getter <literal>getProcessList</literal> with
         <literal>@PlanningEntityCollectionProperty</literal>.</para>
 
-        <para>The <literal>CloudBalance</literal> class also has a property <literal>score</literal> which is the
+        <para>The <literal>CloudBalance</literal> class also has a property <literal>score</literal>, which is the
         <literal>Score</literal> of that <literal>Solution</literal> instance in its current state:</para>
 
         <example>
@@ -408,7 +459,7 @@ public class CloudProcess ... {
 }</programlisting>
         </example>
 
-        <para>The <literal>getProblemFacts()</literal> method is only needed for score calculation with Drools. It's not
+        <para>The <literal>getProblemFacts()</literal> method is only needed for score calculation with Drools. It is not
         needed for the other score calculation types.</para>
       </section>
     </section>
@@ -416,8 +467,8 @@ public class CloudProcess ... {
     <section xml:id="cloudBalancingScoreConfiguration">
       <title>Score Configuration</title>
 
-      <para>Planner will search for the <literal>Solution</literal> with the highest <literal>Score</literal>. We're
-      using a <literal>HardSoftScore</literal>, which means Planner will look for the solution with no hard constraints
+      <para>Planner will search for the <literal>Solution</literal> with the highest <literal>Score</literal>. This example
+      uses a <literal>HardSoftScore</literal>, which means Planner will look for the solution with no hard constraints
       broken (fulfill hardware requirements) and as little as possible soft constraints broken (minimize maintenance
       cost).</para>
 
