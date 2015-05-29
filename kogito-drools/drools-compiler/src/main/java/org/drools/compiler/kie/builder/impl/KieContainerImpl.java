@@ -604,7 +604,7 @@ public class KieContainerImpl
 
     public StatelessKieSession newStatelessKieSession(String kSessionName, KieSessionConfiguration conf) {
         KieSessionModelImpl kSessionModel = (KieSessionModelImpl) kProject.getKieSessionModel( kSessionName );
-        if ( kSessionName == null ) {
+        if ( kSessionModel == null ) {
             log.error("Unknown KieSession name: " + kSessionName);
             return null;
         }
