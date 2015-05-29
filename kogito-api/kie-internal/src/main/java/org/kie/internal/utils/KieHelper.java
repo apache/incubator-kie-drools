@@ -83,7 +83,7 @@ public class KieHelper {
         if (results.hasMessages(Message.Level.ERROR)) {
             throw new RuntimeException(results.getMessages().toString());
         }
-        KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId(), classLoader);
+        KieContainer kieContainer = ks.newKieContainer( ks.getRepository().getDefaultReleaseId(), classLoader );
         return kieContainer;
     }
 
@@ -103,7 +103,12 @@ public class KieHelper {
     }
 
     public KieHelper addContent(String content, ResourceType type) {
-        kfs.write(generateResourceName(type), content);
+        kfs.write( generateResourceName( type ), content );
+        return this;
+    }
+
+    public KieHelper addContent(String content, String name) {
+        kfs.write("src/main/resources/" + name, content);
         return this;
     }
 
