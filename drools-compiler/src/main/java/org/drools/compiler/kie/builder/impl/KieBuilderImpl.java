@@ -16,7 +16,6 @@ import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -31,7 +30,6 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
@@ -74,7 +72,6 @@ public class KieBuilderImpl
     private KieModuleModel        kModuleModel;
 
     private Collection<KieModule> kieDependencies;
-    private Collection<ReleaseId> jarDependencies;
 
     private KieBuilderSetImpl     kieBuilderSet;
 
@@ -133,8 +130,6 @@ public class KieBuilderImpl
                 KieModule depModule = repository.getKieModule( dep, pomXml );
                 if ( depModule != null ) {
                     addKieDependency( depModule );
-                } else {
-                    addJarDependency( dep );
                 }
             }
         } else {
@@ -148,13 +143,6 @@ public class KieBuilderImpl
             kieDependencies = new ArrayList<KieModule>();
         }
         kieDependencies.add( depModule );
-    }
-
-    private void addJarDependency(ReleaseId releaseId) {
-        if ( jarDependencies == null ) {
-            jarDependencies = new ArrayList<ReleaseId>();
-        }
-        jarDependencies.add( releaseId );
     }
 
     public KieBuilder buildAll() {
@@ -236,16 +224,6 @@ public class KieBuilderImpl
         }
     }
 
-    private KieBaseConfiguration getKnowledgeBaseConfiguration(KieBaseModel kieBase,
-                                                               Properties properties,
-                                                               ClassLoader... classLoaders) {
-        KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( properties, classLoaders );
-        kbConf.setOption( kieBase.getEqualsBehavior() );
-        kbConf.setOption( kieBase.getEventProcessingMode() );
-        kbConf.setOption( kieBase.getDeclarativeAgenda() );
-        return kbConf;
-    }
-
     private void addKBaseFilesToTrg(KieBaseModel kieBase) {
         for ( String fileName : srcMfs.getFileNames() ) {
             fileName = fileName.replace(File.separatorChar, '/');
@@ -319,7 +297,7 @@ public class KieBuilderImpl
     }
 
     private static boolean isFileInKieBase(KieBaseModel kieBase, String fileName) {
-        int lastSep = Math.max(0, fileName.lastIndexOf( "/" ));
+        int lastSep = fileName.lastIndexOf( "/" );
         if (lastSep+1 < fileName.length() && fileName.charAt(lastSep+1) == '.') {
             // skip dot files
             return false;
@@ -327,7 +305,7 @@ public class KieBuilderImpl
         if ( kieBase.getPackages().isEmpty() ) {
             return true;
         } else {
-            String pkgNameForFile = lastSep > 0 ? fileName.substring( 0, lastSep ) : fileName;
+            String pkgNameForFile = lastSep > 0 ? fileName.substring( 0, lastSep ) : "";
             pkgNameForFile = pkgNameForFile.replace( '/', '.' );
             for ( String pkgName : kieBase.getPackages() ) {
                 boolean isNegative = pkgName.startsWith( "!" );

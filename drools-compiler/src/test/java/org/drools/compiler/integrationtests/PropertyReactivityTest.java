@@ -6,6 +6,7 @@ import org.drools.compiler.Person;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.io.ResourceType;
@@ -1332,5 +1333,74 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
         assertEquals(1, list.size());
+    }
+
+    @Test
+    public void testPropReactiveAnnotationOnDifferentDrl() {
+        // DROOLS-800
+        String str1 =
+                "package org.jboss.ddoyle.drools.propertyreactive;\n" +
+                "\n" +
+                "import " + Event1.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "declare Event1\n" +
+                "    @role( event )\n" +
+                "    @timestamp( timestamp )\n" +
+                "    @expires( 2d )\n" +
+                "    @propertyReactive\n" +
+                "end\n";
+
+        String str2 =
+                "package org.jboss.ddoyle.drools.propertyreactive;\n" +
+                "\n" +
+                "import " + Event1.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule \"rule_1\"\n" +
+                "    when\n" +
+                "       Event1() @watch(*, !code)\n" +
+                "    then\n" +
+                "       System.out.println(\"Rule fired.\");\n" +
+                "end\n";
+
+        KieBase kbase = new KieHelper().addContent(str1, "a.drl")
+                                       .addContent(str2, "rules.drl")
+                                       .build();
+    }
+
+    public static class Event1 {
+
+        private int id;
+        private String code;
+
+        private long timestamp;
+
+        public Event1( String code, int id ) {
+            this.code = code;
+            this.id = id;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public long getTimestamp() {
+            return timestamp;
+        }
+
+        public void setTimestamp( long timestamp ) {
+            this.timestamp = timestamp;
+        }
+
+        public void setId( int id ) {
+            this.id = id;
+        }
+
+        public void setCode( String code ) {
+            this.code = code;
+        }
     }
 }
