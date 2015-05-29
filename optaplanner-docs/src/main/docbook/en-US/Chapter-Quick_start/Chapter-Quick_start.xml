@@ -78,65 +78,65 @@
     <section xml:id="cloudBalancingProblemSize">
       <title>Problem Size</title>
       <table id="cloudBalancingProblemTable">
-		  <title>Cloud Balancing Problem Size</title>
-		  <tgroup cols='4' align='left' colsep='1' rowsep='1'>
-			<colspec colname='c1'/>
-			<colspec colname='c2'/>
-			<colspec colname='c3'/>
-			<colspec colname='c4'/>
-			<thead>
-				<row>
-					<entry>Problem Size</entry>
-					<entry>Computers</entry>
-					<entry>Processes</entry>
-					<entry>Search Space</entry>
-				</row>
-			</thead>
-			<tbody>
-				<row>
-					<entry>2computers-6processes</entry>
-					<entry>2</entry>
-					<entry>6</entry>
-					<entry>64</entry>
-				</row>
-				<row>
-					<entry>3computers-9processes</entry>
-					<entry>3</entry>
-					<entry>9</entry>
-					<entry>10^4</entry>
-				</row>
-				<row>
-					<entry>4computers-012processes</entry>
-					<entry>4</entry>
-					<entry>12</entry>
-					<entry>10^7</entry>
-				</row>
-				<row>
-					<entry>100computers-300processes</entry>
-					<entry>100</entry>
-					<entry>300</entry>
-					<entry>10^600</entry>
-				</row>
-				<row>
-					<entry>200computers-600processes</entry>
-					<entry>200</entry>
-					<entry>600</entry>
-					<entry>10^1380</entry>
-				</row>
-				<row>
-					<entry>400computers-1200processes</entry>
-					<entry>400</entry>
-					<entry>1200</entry>
-					<entry>10^3122</entry>
-				</row>
-				<row>
-					<entry>800computers-2400processes</entry>
-					<entry>800</entry>
-					<entry>2400</entry>
-					<entry>10^6967</entry>
-				</row>
-			</tbody>
-		  </tgroup>
+      <title>Cloud Balancing Problem Size</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <colspec colname='c1'/>
+      <colspec colname='c2'/>
+      <colspec colname='c3'/>
+      <colspec colname='c4'/>
+      <thead>
+        <row>
+          <entry>Problem Size</entry>
+          <entry>Computers</entry>
+          <entry>Processes</entry>
+          <entry>Search Space</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry>2computers-6processes</entry>
+          <entry>2</entry>
+          <entry>6</entry>
+          <entry>64</entry>
+        </row>
+        <row>
+          <entry>3computers-9processes</entry>
+          <entry>3</entry>
+          <entry>9</entry>
+          <entry>10^4</entry>
+        </row>
+        <row>
+          <entry>4computers-012processes</entry>
+          <entry>4</entry>
+          <entry>12</entry>
+          <entry>10^7</entry>
+        </row>
+        <row>
+          <entry>100computers-300processes</entry>
+          <entry>100</entry>
+          <entry>300</entry>
+          <entry>10^600</entry>
+        </row>
+        <row>
+          <entry>200computers-600processes</entry>
+          <entry>200</entry>
+          <entry>600</entry>
+          <entry>10^1380</entry>
+        </row>
+        <row>
+          <entry>400computers-1200processes</entry>
+          <entry>400</entry>
+          <entry>1200</entry>
+          <entry>10^3122</entry>
+        </row>
+        <row>
+          <entry>800computers-2400processes</entry>
+          <entry>800</entry>
+          <entry>2400</entry>
+          <entry>10^6967</entry>
+        </row>
+      </tbody>
+      </tgroup>
       </table>
     </section>
 
@@ -270,24 +270,24 @@
         <title>cloudBalancingSolverConfig.xml</title>
 
         <programlisting language="xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-​<solver>
-​  <!-- Domain model configuration -->
-​  <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
-​  <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
-​
-​  <!-- Score configuration -->
-​  <scoreDirectorFactory>
-​    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
-​    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
-​    <!--<scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
-​    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
-​  </scoreDirectorFactory>
-​
-​  <!-- Optimization algorithms configuration -->
-​  <termination>
-​    <secondsSpentLimit>60</secondsSpentLimit>
-​  </termination>
-​</solver>]]></programlisting>
+<solver>
+  <!-- Domain model configuration -->
+  <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
+  <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
+
+  <!-- Score configuration -->
+  <scoreDirectorFactory>
+    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
+    <!--<scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
+    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+  </scoreDirectorFactory>
+
+  <!-- Optimization algorithms configuration -->
+  <termination>
+    <secondsSpentLimit>60</secondsSpentLimit>
+  </termination>
+</solver>]]></programlisting>
       </example>
 
       <para>This solver configuration consists of three parts:</para>
@@ -308,12 +308,12 @@
           our business requirements. Further down, we 'll look into 2 alternatives to calculate the score: using a
           simple Java implementation or using Drools DRL.</para>
 
-          <programlisting language="xml"> <![CDATA[<scoreDirectorFactory>
-​    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
-​    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
-​    <!--<scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
-​    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
-​  </scoreDirectorFactory>]]></programlisting>
+          <programlisting language="xml"> <![CDATA[  <scoreDirectorFactory>
+    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
+    <!--<scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
+    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+  </scoreDirectorFactory>]]></programlisting>
         </listitem>
 
         <listitem>
