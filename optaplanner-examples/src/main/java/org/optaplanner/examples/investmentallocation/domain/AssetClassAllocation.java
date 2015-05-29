@@ -28,7 +28,7 @@ public class AssetClassAllocation extends AbstractPersistable {
     private AssetClass assetClass;
 
     // Planning variables: changes during planning, between score calculations.
-    private Integer quantityNanos; // In nano's (so multiplied by 10^9)
+    private Long quantityNanos; // In nano's (so multiplied by 10^9)
 
     public AssetClass getAssetClass() {
         return assetClass;
@@ -39,11 +39,11 @@ public class AssetClassAllocation extends AbstractPersistable {
     }
 
     @PlanningVariable(valueRangeProviderRefs = {"quantityNanosRange"})
-    public Integer getQuantityNanos() {
+    public Long getQuantityNanos() {
         return quantityNanos;
     }
 
-    public void setQuantityNanos(Integer quantityNanos) {
+    public void setQuantityNanos(Long quantityNanos) {
         this.quantityNanos = quantityNanos;
     }
 
