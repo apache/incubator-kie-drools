@@ -16,6 +16,7 @@
 
 package org.optaplanner.benchmark.config;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -29,7 +30,7 @@ public class SolverBenchmarkConfigTest {
         config.validate();
     }
 
-    @Test
+    @Test @Ignore("PLANNER-348 is not in Java 6 (only in Java 7 or higher). See PlannerBenchmarkConfig.VALID_NAME_PATTERN")
     public void validNameWithJapanese() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("Valid name (有効名 in Japanese)");

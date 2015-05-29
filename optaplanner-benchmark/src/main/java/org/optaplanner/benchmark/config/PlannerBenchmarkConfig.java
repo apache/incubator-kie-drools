@@ -23,6 +23,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -48,7 +49,19 @@ public class PlannerBenchmarkConfig {
      * @see Runtime#availableProcessors()
      */
     public static final String AVAILABLE_PROCESSOR_COUNT = "availableProcessorCount";
-    public static final Pattern VALID_NAME_PATTERN = Pattern.compile("^[\\w\\d _\\-\\.\\(\\)]+$", Pattern.UNICODE_CHARACTER_CLASS);
+    public static final Pattern VALID_NAME_PATTERN;
+    // TODO Remove workaround for Java 6 (once we no longer support it) and unignore tests related to PLANNER-348.
+    static {
+        Pattern validNamePattern;
+        try {
+            validNamePattern = Pattern.compile("(?U)^[\\w\\d _\\-\\.\\(\\)]+$");
+        } catch (PatternSyntaxException e) {
+            // Java 6 does not support (?U)
+            validNamePattern = Pattern.compile("^[\\w\\d _\\-\\.\\(\\)]+$");
+        }
+        VALID_NAME_PATTERN = validNamePattern;
+    }
+
 
     private static final Logger logger = LoggerFactory.getLogger(PlannerBenchmarkConfig.class);
 
