@@ -127,12 +127,12 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
         public void readConstantLine(String constantRegex) throws IOException {
             String line = bufferedReader.readLine();
             if (line == null) {
-                throw new IllegalArgumentException("File ends before a line is expected to be a constant value ("
+                throw new IllegalArgumentException("File ends before a line is expected to be a constant regex ("
                         + constantRegex + ").");
             }
             String value = line.trim();
             if (!value.matches(constantRegex)) {
-                throw new IllegalArgumentException("Read line (" + line + ") is expected to be a constant value ("
+                throw new IllegalArgumentException("Read line (" + line + ") is expected to be a constant regex ("
                         + constantRegex + ").");
             }
         }
@@ -298,6 +298,10 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
 
         public String[] splitByPipelineAndTrim(String line, int numberOfTokens) {
             return splitBy(line, "\\|", "a pipeline (|)", numberOfTokens, true, false);
+        }
+
+        public String[] splitBySemicolonSeparatedValue(String line) {
+            return splitBy(line, ";", "a semicolon (;)", null, false, true);
         }
 
         public String[] splitBySemicolonSeparatedValue(String line, int numberOfTokens) {

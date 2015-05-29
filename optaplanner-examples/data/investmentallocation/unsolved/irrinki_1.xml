@@ -1,0 +1,41 @@
+<IaInvestmentAllocationSolution id="1">
+  <id>0</id>
+  <assetClassList id="2">
+    <IaAssetClass id="3">
+      <id>1</id>
+      <name>UK Equities</name>
+      <expectedReturnNanos>100000000</expectedReturnNanos>
+      <standardDeviationRiskNanos>150000000</standardDeviationRiskNanos>
+    </IaAssetClass>
+    <IaAssetClass id="4">
+      <id>2</id>
+      <name>Ex-UK Equities</name>
+      <expectedReturnNanos>80000000</expectedReturnNanos>
+      <standardDeviationRiskNanos>120000000</standardDeviationRiskNanos>
+    </IaAssetClass>
+    <IaAssetClass id="5">
+      <id>3</id>
+      <name>Intermediate Bond</name>
+      <expectedReturnNanos>40000000</expectedReturnNanos>
+      <standardDeviationRiskNanos>70000000</standardDeviationRiskNanos>
+    </IaAssetClass>
+    <IaAssetClass id="6">
+      <id>4</id>
+      <name>Long-Term Bonds</name>
+      <expectedReturnNanos>45000000</expectedReturnNanos>
+      <standardDeviationRiskNanos>80000000</standardDeviationRiskNanos>
+    </IaAssetClass>
+    <IaAssetClass id="7">
+      <id>5</id>
+      <name>Intermediate Bond</name>
+      <expectedReturnNanos>50000000</expectedReturnNanos>
+      <standardDeviationRiskNanos>90000000</standardDeviationRiskNanos>
+    </IaAssetClass>
+    <IaAssetClass id="8">
+      <id>6</id>
+      <name>Real Estate</name>
+      <expectedReturnNanos>70000000</expectedReturnNanos>
+      <standardDeviationRiskNanos>100000000</standardDeviationRiskNanos>
+    </IaAssetClass>
+  </assetClassList>
+</IaInvestmentAllocationSolution>
