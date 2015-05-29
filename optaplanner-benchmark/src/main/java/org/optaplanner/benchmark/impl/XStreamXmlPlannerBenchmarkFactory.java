@@ -49,8 +49,32 @@ public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
     // Configure methods
     // ************************************************************************
 
+    /**
+     * @see {@link XStream#processAnnotations(Class[])}
+     */
     public void addXStreamAnnotations(Class... xStreamAnnotations) {
         xStream.processAnnotations(xStreamAnnotations);
+    }
+
+    /**
+     * @see {@link XStream#alias(String, Class)}
+     */
+    public void addXStreamAlias(String name, Class type) {
+        xStream.alias(name, type);
+    }
+
+    /**
+     * @see {@link XStream#aliasAttribute(Class, String, String)}
+     */
+    public void addXStreamAliasAttribute(Class definedIn, String attributeName, String alias) {
+        xStream.aliasAttribute(definedIn, attributeName, alias);
+    }
+
+    /**
+     * @see {@link XStream#addDefaultImplementation(Class, Class)}
+     */
+    public void addXStreamDefaultImplementation(Class defaultImplementation, Class ofType) {
+        xStream.addDefaultImplementation(defaultImplementation, ofType);
     }
 
     /**

@@ -59,6 +59,9 @@ public class XStreamXmlSolverFactory extends SolverFactory {
         xStream = buildXStream();
     }
 
+    /**
+     * @see {@link XStream#processAnnotations(Class[])}
+     */
     public void addXStreamAnnotations(Class... xStreamAnnotations) {
         xStream.processAnnotations(xStreamAnnotations);
     }
