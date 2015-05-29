@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -47,6 +48,8 @@ public class PlannerBenchmarkConfig {
      * @see Runtime#availableProcessors()
      */
     public static final String AVAILABLE_PROCESSOR_COUNT = "availableProcessorCount";
+    public static final Pattern VALID_NAME_PATTERN = Pattern.compile("^[\\w\\d _\\-\\.\\(\\)]+$", Pattern.UNICODE_CHARACTER_CLASS);
+
     private static final Logger logger = LoggerFactory.getLogger(PlannerBenchmarkConfig.class);
 
     private String name = null;
@@ -194,11 +197,15 @@ public class PlannerBenchmarkConfig {
     }
 
     protected void validate() {
-        final String nameRegex = "^[\\w\\d _\\-\\.\\(\\)]+$";
-        if (name != null && !name.matches(nameRegex)) {
+        if (!PlannerBenchmarkConfig.VALID_NAME_PATTERN.matcher(name).matches()) {
             throw new IllegalStateException("The plannerBenchmark name (" + name
-                    + ") is invalid because it does not follow the nameRegex (" + nameRegex + ")" +
+                    + ") is invalid because it does not follow the nameRegex ("
+                    + PlannerBenchmarkConfig.VALID_NAME_PATTERN.pattern() + ")" +
                     " which might cause an illegal filename.");
+        }
+        if (!name.trim().equals(name)) {
+            throw new IllegalStateException("The plannerBenchmark name (" + name
+                    + ") is invalid because it starts or ends with whitespace.");
         }
         if (ConfigUtils.isEmptyCollection(solverBenchmarkBluePrintConfigList)
                 && ConfigUtils.isEmptyCollection(solverBenchmarkConfigList)) {

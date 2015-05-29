@@ -17,6 +17,7 @@
 package org.optaplanner.benchmark.config;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
@@ -77,10 +78,10 @@ public class SolverBenchmarkConfig {
     }
 
     protected void validate() {
-        final String nameRegex = "^[\\w\\d _\\-\\.\\(\\)]+$";
-        if (!name.matches(nameRegex)) {
+        if (!PlannerBenchmarkConfig.VALID_NAME_PATTERN.matcher(name).matches()) {
             throw new IllegalStateException("The solverBenchmark name (" + name
-                    + ") is invalid because it does not follow the nameRegex (" + nameRegex + ")" +
+                    + ") is invalid because it does not follow the nameRegex ("
+                    + PlannerBenchmarkConfig.VALID_NAME_PATTERN.pattern() + ")" +
                     " which might cause an illegal filename.");
         }
         if (!name.trim().equals(name)) {

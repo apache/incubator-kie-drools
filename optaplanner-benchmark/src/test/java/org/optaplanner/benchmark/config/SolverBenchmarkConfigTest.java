@@ -23,14 +23,21 @@ import static org.junit.Assert.*;
 public class SolverBenchmarkConfigTest {
 
     @Test
-    public void validName() {
+    public void validNameWithUnderscoreAndSpace() {
+        SolverBenchmarkConfig config = new SolverBenchmarkConfig();
+        config.setName("Valid_name with space_and_underscore");
+        config.validate();
+    }
+
+    @Test
+    public void validNameWithJapanese() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("Valid name (有効名 in Japanese)");
         config.validate();
     }
 
     @Test(expected = IllegalStateException.class)
-    public void invalidNameWithIllegalChar() {
+    public void invalidNameWithSlash() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("slash/name");
         config.validate();
