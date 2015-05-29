@@ -308,7 +308,7 @@
           our business requirements. Further down, we 'll look into 2 alternatives to calculate the score: using a
           simple Java implementation or using Drools DRL.</para>
 
-          <programlisting language="xml"> <![CDATA[  <scoreDirectorFactory>
+          <programlisting language="xml"><![CDATA[  <scoreDirectorFactory>
     <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
     <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
     <!--<scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
