@@ -53,8 +53,13 @@ public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRunt
         if (delegateClock instanceof org.drools.core.time.SessionPseudoClock) {
             return (T) new SessionPseudoClock() {
                 @Override
-                public long advanceTime(long amount, TimeUnit unit) {
+                public long advanceTime(final long amount, final TimeUnit unit) {
                     return ((org.drools.core.time.SessionPseudoClock)delegateClock).advanceTime(amount, unit);
+                }
+
+                @Override
+                public long advanceTime(final long amount, final TimeUnit unit, final int numberOfTimes) {
+                    return ((org.drools.core.time.SessionPseudoClock)delegateClock).advanceTime(amount, unit, numberOfTimes);
                 }
 
                 @Override

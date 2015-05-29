@@ -67,34 +67,37 @@ public class PseudoClockScheduler
         this( null );
     }
 
-    public PseudoClockScheduler(InternalWorkingMemory session) {
+    public PseudoClockScheduler(final InternalWorkingMemory session) {
         this.timer = new AtomicLong(0);
         this.queue = new PriorityBlockingQueue<Callable<Void>>();
         this.session = session;
     }
 
     @SuppressWarnings("unchecked")
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+    @Override
+    public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
         timer = new AtomicLong( in.readLong() );
-        PriorityBlockingQueue<Callable<Void>> tmp = (PriorityBlockingQueue<Callable<Void>>) in.readObject();
+        final PriorityBlockingQueue<Callable<Void>> tmp = (PriorityBlockingQueue<Callable<Void>>) in.readObject();
         if ( tmp != null ) {
             queue = tmp;
         }
         session = ((DroolsObjectInputStream) in).getWorkingMemory();
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
+    @Override
+    public void writeExternal(final ObjectOutput out) throws IOException {
         out.writeLong( timer.get() );
         // this is a work around to a bug in the object stream code, where it raises exceptions
         // when trying to de-serialize an empty priority queue.
         out.writeObject( queue.isEmpty() ? null : queue );
     }
 
-    public void setTimerJobFactoryManager(TimerJobFactoryManager timerJobFactoryManager) {
+    @Override
+    public void setTimerJobFactoryManager(final TimerJobFactoryManager timerJobFactoryManager) {
         this.jobFactoryManager = timerJobFactoryManager;
     }
-    
+
+    @Override
     public TimerJobFactoryManager getTimerJobFactoryManager() {
         return this.jobFactoryManager;
     }    
@@ -104,6 +107,7 @@ public class PseudoClockScheduler
      * 
      * @see org.kie.api.time.SessionClock#getCurrentTime()
      */
+    @Override
     public long getCurrentTime() {
         return this.timer.get();
     }
@@ -113,11 +117,12 @@ public class PseudoClockScheduler
      *
      * @see org.drools.core.time.TimerService#scheduleJob(Job, JobContext, Trigger)
      */
-    public JobHandle scheduleJob(Job job,
-                                 JobContext ctx,
-                                 Trigger trigger) {
+    @Override
+    public JobHandle scheduleJob(final Job job,
+                                 final JobContext ctx,
+                                 final Trigger trigger) {
 
-        Date date = trigger.hasNextFireTime();
+        final Date date = trigger.hasNextFireTime();
 
         if ( date != null ) {
             DefaultJobHandle jobHandle = new DefaultJobHandle( idCounter.getAndIncrement() );
@@ -135,7 +140,8 @@ public class PseudoClockScheduler
         return null;
     }
 
-    public void internalSchedule(TimerJobInstance timerJobInstance) {
+    @Override
+    public void internalSchedule(final TimerJobInstance timerJobInstance) {
         jobFactoryManager.addTimerJobInstance(timerJobInstance);
         synchronized(queue) {
             queue.add( ( Callable<Void> ) timerJobInstance );
@@ -147,23 +153,37 @@ public class PseudoClockScheduler
      *
      * @see org.drools.core.time.TimerService#removeJob(JobHandle)
      */
-    public boolean removeJob(JobHandle jobHandle) {
+    @Override
+    public boolean removeJob(final JobHandle jobHandle) {
         jobHandle.setCancel( true );
-        jobFactoryManager.removeTimerJobInstance( ((DefaultJobHandle) jobHandle).getTimerJobInstance() );
+        jobFactoryManager.removeTimerJobInstance(((DefaultJobHandle) jobHandle).getTimerJobInstance());
         synchronized( queue ) {
             return this.queue.remove( ((DefaultJobHandle) jobHandle).getTimerJobInstance() );
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public long advanceTime(long amount,
-                            TimeUnit unit) {
+    @Override
+    public long advanceTime(final long amount,
+                            final TimeUnit unit) {
         return this.runCallBacksAndIncreaseTimer( unit.toMillis( amount ) );
     }
 
-    public void setStartupTime(long i) {
+    @Override
+    public long advanceTime(final long amount,
+                            final TimeUnit unit,
+                            final int numberOfTimes) {
+        if (numberOfTimes > 0) {
+            long resultTime = 0;
+            for (int i = 0; i < numberOfTimes; i++) {
+                resultTime = advanceTime(amount, unit);
+            }
+            return resultTime;
+        } else {
+            throw new IllegalArgumentException("numberOfTimes must be greater than 0!");
+        }
+    }
+
+    public void setStartupTime(final long i) {
         this.timer.set( i );
     }
 
@@ -177,20 +197,18 @@ public class PseudoClockScheduler
     /**
      * @param session the session to set
      */
-    public synchronized void setSession(InternalWorkingMemory session) {
+    public synchronized void setSession(final InternalWorkingMemory session) {
         this.session = session;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void shutdown() {
         // nothing to do
     }
 
     @SuppressWarnings("unchecked")
-    private synchronized long runCallBacksAndIncreaseTimer( long increase ) {
-        long endTime = this.timer.get() + increase;
+    private synchronized long runCallBacksAndIncreaseTimer( final long increase ) {
+        final long endTime = this.timer.get() + increase;
         TimerJobInstance item = (TimerJobInstance) queue.peek();
         long fireTime;
         while ( item != null && ((item.getTrigger().hasNextFireTime() != null && ( ( fireTime = item.getTrigger().hasNextFireTime().getTime()) <= endTime ) ) )  ) {
@@ -221,13 +239,15 @@ public class PseudoClockScheduler
         return this.timer.get(); 
     }
 
+    @Override
     public long getTimeToNextJob() {
         synchronized( queue ) {
-            TimerJobInstance item = (TimerJobInstance) queue.peek();
+            final TimerJobInstance item = (TimerJobInstance) queue.peek();
             return (item != null) ? item.getTrigger().hasNextFireTime().getTime() - this.timer.get() : -1;
         }
     }
 
+    @Override
     public Collection<TimerJobInstance> getTimerJobInstances(long id) {
         return jobFactoryManager.getTimerJobInstances();
     }
