@@ -95,6 +95,7 @@ public class InvestmentAllocationPanel extends SolutionPanel {
         correlationPanel.defineColumnHeaderByKey(HEADER_COLUMN);
         correlationPanel.defineColumnHeaderByKey(HEADER_COLUMN_EXTRA_PROPERTY_1);
         correlationPanel.defineColumnHeaderByKey(HEADER_COLUMN_EXTRA_PROPERTY_2);
+        correlationPanel.defineColumnHeaderByKey(HEADER_COLUMN_EXTRA_PROPERTY_3);
         for (AssetClass assetClass : solution.getAssetClassList()) {
             correlationPanel.defineColumnHeader(assetClass, footprintWidth);
         }
@@ -112,6 +113,10 @@ public class InvestmentAllocationPanel extends SolutionPanel {
                 createHeaderPanel(new JLabel("Expected return"), null));
         correlationPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, HEADER_ROW,
                 createHeaderPanel(new JLabel("Standard deviation risk"), null));
+        JLabel quantityHeaderLabel = new JLabel("Quantity");
+        quantityHeaderLabel.setForeground(TangoColorFactory.ORANGE_3);
+        correlationPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, HEADER_ROW,
+                createHeaderPanel(quantityHeaderLabel, null));
         for (AssetClass assetClass : solution.getAssetClassList()) {
             correlationPanel.addColumnHeader(assetClass, HEADER_ROW,
                     createHeaderPanel(new JLabel(assetClass.getName(), SwingConstants.CENTER),
@@ -138,7 +143,10 @@ public class InvestmentAllocationPanel extends SolutionPanel {
                     new JLabel(allocation.getAssetClass().getExpectedReturnLabel(), SwingConstants.RIGHT));
             correlationPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, allocation.getAssetClass(),
                     new JLabel(allocation.getAssetClass().getStandardDeviationRiskLabel(), SwingConstants.RIGHT));
-
+            JLabel quantityLabel = new JLabel(allocation.getQuantityLabel(), SwingConstants.RIGHT);
+            quantityLabel.setForeground(TangoColorFactory.ORANGE_3);
+            correlationPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, allocation.getAssetClass(),
+                    quantityLabel);
         }
         correlationPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, TRAILING_HEADER_ROW,
                 new JLabel(InvestmentAllocationMicrosUtil.formatPicosAsPercentage(expectedReturnTotalPicos), SwingConstants.RIGHT));

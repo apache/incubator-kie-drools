@@ -20,6 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationMicrosUtil;
 
 @PlanningEntity()
 @XStreamAlias("IaAssetClassAllocation")
@@ -56,6 +57,13 @@ public class AssetClassAllocation extends AbstractPersistable {
             return 0L;
         }
         return quantityMicros * assetClass.getExpectedReturnMicros();
+    }
+
+    public String getQuantityLabel() {
+        if (quantityMicros == null) {
+            return "";
+        }
+        return InvestmentAllocationMicrosUtil.formatMicrosAsPercentage(quantityMicros);
     }
 
     public String getLabel() {
