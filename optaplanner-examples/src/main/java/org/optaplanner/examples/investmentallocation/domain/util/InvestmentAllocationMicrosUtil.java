@@ -27,12 +27,12 @@ public class InvestmentAllocationMicrosUtil {
     public static final NumberFormat PERCENT_FORMAT = new DecimalFormat("#0.00%");
 
     public static String formatMicrosAsPercentage(long micros) {
-        BigDecimal percentage = new BigDecimal(micros).divide(MICROS_DIVISOR, BigDecimal.ROUND_HALF_UP);
+        BigDecimal percentage = new BigDecimal(micros).divide(MICROS_DIVISOR, 6, BigDecimal.ROUND_HALF_UP);
         return PERCENT_FORMAT.format(percentage);
     }
 
     public static String formatPicosAsPercentage(long picos) {
-        BigDecimal percentage = new BigDecimal(picos).divide(PICOS_DIVISOR, BigDecimal.ROUND_HALF_UP);
+        BigDecimal percentage = new BigDecimal(picos).divide(PICOS_DIVISOR, 12, BigDecimal.ROUND_HALF_UP);
         return PERCENT_FORMAT.format(percentage);
     }
 
