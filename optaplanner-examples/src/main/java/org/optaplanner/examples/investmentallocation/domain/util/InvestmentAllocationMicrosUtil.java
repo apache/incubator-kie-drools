@@ -23,10 +23,16 @@ import java.text.NumberFormat;
 public class InvestmentAllocationMicrosUtil {
 
     private static final BigDecimal MICROS_DIVISOR = new BigDecimal(1000000L);
+    private static final BigDecimal PICOS_DIVISOR = new BigDecimal(1000000000000L);
     public static final NumberFormat PERCENT_FORMAT = new DecimalFormat("#0.00%");
 
     public static String formatMicrosAsPercentage(long micros) {
         BigDecimal percentage = new BigDecimal(micros).divide(MICROS_DIVISOR, BigDecimal.ROUND_HALF_UP);
+        return PERCENT_FORMAT.format(percentage);
+    }
+
+    public static String formatPicosAsPercentage(long picos) {
+        BigDecimal percentage = new BigDecimal(picos).divide(PICOS_DIVISOR, BigDecimal.ROUND_HALF_UP);
         return PERCENT_FORMAT.format(percentage);
     }
 
