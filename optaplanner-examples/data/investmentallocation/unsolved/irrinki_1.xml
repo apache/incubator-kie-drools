@@ -4,189 +4,189 @@
     <IaAssetClass id="3">
       <id>1</id>
       <name>UK Equities</name>
-      <expectedReturnNanos>100000000</expectedReturnNanos>
-      <standardDeviationRiskNanos>150000000</standardDeviationRiskNanos>
-      <correlationNanosMap class="linked-hash-map" id="4">
+      <expectedReturnMicros>100000</expectedReturnMicros>
+      <standardDeviationRiskMicros>150000</standardDeviationRiskMicros>
+      <correlationMicrosMap class="linked-hash-map" id="4">
         <entry>
           <IaAssetClass reference="3"/>
-          <long>1000000000</long>
+          <long>1000000</long>
         </entry>
         <entry>
           <IaAssetClass id="5">
             <id>2</id>
             <name>Ex-UK Equities</name>
-            <expectedReturnNanos>80000000</expectedReturnNanos>
-            <standardDeviationRiskNanos>120000000</standardDeviationRiskNanos>
-            <correlationNanosMap class="linked-hash-map" id="6">
+            <expectedReturnMicros>80000</expectedReturnMicros>
+            <standardDeviationRiskMicros>120000</standardDeviationRiskMicros>
+            <correlationMicrosMap class="linked-hash-map" id="6">
               <entry>
                 <IaAssetClass reference="3"/>
-                <long>760000000</long>
+                <long>760000</long>
               </entry>
               <entry>
                 <IaAssetClass reference="5"/>
-                <long>1000000000</long>
+                <long>1000000</long>
               </entry>
               <entry>
                 <IaAssetClass id="7">
                   <id>3</id>
                   <name>Intermediate Bond</name>
-                  <expectedReturnNanos>40000000</expectedReturnNanos>
-                  <standardDeviationRiskNanos>70000000</standardDeviationRiskNanos>
-                  <correlationNanosMap class="linked-hash-map" id="8">
+                  <expectedReturnMicros>40000</expectedReturnMicros>
+                  <standardDeviationRiskMicros>70000</standardDeviationRiskMicros>
+                  <correlationMicrosMap class="linked-hash-map" id="8">
                     <entry>
                       <IaAssetClass reference="3"/>
-                      <long>350000000</long>
+                      <long>350000</long>
                     </entry>
                     <entry>
                       <IaAssetClass reference="5"/>
-                      <long>40000000</long>
+                      <long>40000</long>
                     </entry>
                     <entry>
                       <IaAssetClass reference="7"/>
-                      <long>1000000000</long>
+                      <long>1000000</long>
                     </entry>
                     <entry>
                       <IaAssetClass id="9">
                         <id>4</id>
                         <name>Long-Term Bonds</name>
-                        <expectedReturnNanos>45000000</expectedReturnNanos>
-                        <standardDeviationRiskNanos>80000000</standardDeviationRiskNanos>
-                        <correlationNanosMap class="linked-hash-map" id="10">
+                        <expectedReturnMicros>45000</expectedReturnMicros>
+                        <standardDeviationRiskMicros>80000</standardDeviationRiskMicros>
+                        <correlationMicrosMap class="linked-hash-map" id="10">
                           <entry>
                             <IaAssetClass reference="3"/>
-                            <long>500000000</long>
+                            <long>500000</long>
                           </entry>
                           <entry>
                             <IaAssetClass reference="5"/>
-                            <long>300000000</long>
+                            <long>300000</long>
                           </entry>
                           <entry>
                             <IaAssetClass reference="7"/>
-                            <long>870000000</long>
+                            <long>870000</long>
                           </entry>
                           <entry>
                             <IaAssetClass reference="9"/>
-                            <long>1000000000</long>
+                            <long>1000000</long>
                           </entry>
                           <entry>
                             <IaAssetClass id="11">
                               <id>5</id>
                               <name>Intermediate Bond</name>
-                              <expectedReturnNanos>50000000</expectedReturnNanos>
-                              <standardDeviationRiskNanos>90000000</standardDeviationRiskNanos>
-                              <correlationNanosMap class="linked-hash-map" id="12">
+                              <expectedReturnMicros>50000</expectedReturnMicros>
+                              <standardDeviationRiskMicros>90000</standardDeviationRiskMicros>
+                              <correlationMicrosMap class="linked-hash-map" id="12">
                                 <entry>
                                   <IaAssetClass reference="3"/>
-                                  <long>240000000</long>
+                                  <long>240000</long>
                                 </entry>
                                 <entry>
                                   <IaAssetClass reference="5"/>
-                                  <long>360000000</long>
+                                  <long>360000</long>
                                 </entry>
                                 <entry>
                                   <IaAssetClass reference="7"/>
-                                  <long>620000000</long>
+                                  <long>620000</long>
                                 </entry>
                                 <entry>
                                   <IaAssetClass reference="9"/>
-                                  <long>520000000</long>
+                                  <long>520000</long>
                                 </entry>
                                 <entry>
                                   <IaAssetClass reference="11"/>
-                                  <long>1000000000</long>
+                                  <long>1000000</long>
                                 </entry>
                                 <entry>
                                   <IaAssetClass id="13">
                                     <id>6</id>
                                     <name>Real Estate</name>
-                                    <expectedReturnNanos>70000000</expectedReturnNanos>
-                                    <standardDeviationRiskNanos>100000000</standardDeviationRiskNanos>
-                                    <correlationNanosMap class="linked-hash-map" id="14">
+                                    <expectedReturnMicros>70000</expectedReturnMicros>
+                                    <standardDeviationRiskMicros>100000</standardDeviationRiskMicros>
+                                    <correlationMicrosMap class="linked-hash-map" id="14">
                                       <entry>
                                         <IaAssetClass reference="3"/>
-                                        <long>300000000</long>
+                                        <long>300000</long>
                                       </entry>
                                       <entry>
                                         <IaAssetClass reference="5"/>
-                                        <long>250000000</long>
+                                        <long>250000</long>
                                       </entry>
                                       <entry>
                                         <IaAssetClass reference="7"/>
-                                        <long>-50000000</long>
+                                        <long>-50000</long>
                                       </entry>
                                       <entry>
                                         <IaAssetClass reference="9"/>
-                                        <long>-20000000</long>
+                                        <long>-20000</long>
                                       </entry>
                                       <entry>
                                         <IaAssetClass reference="11"/>
-                                        <long>200000000</long>
+                                        <long>200000</long>
                                       </entry>
                                       <entry>
                                         <IaAssetClass reference="13"/>
-                                        <long>1000000000</long>
+                                        <long>1000000</long>
                                       </entry>
-                                    </correlationNanosMap>
+                                    </correlationMicrosMap>
                                   </IaAssetClass>
-                                  <long>200000000</long>
+                                  <long>200000</long>
                                 </entry>
-                              </correlationNanosMap>
+                              </correlationMicrosMap>
                             </IaAssetClass>
-                            <long>520000000</long>
+                            <long>520000</long>
                           </entry>
                           <entry>
                             <IaAssetClass reference="13"/>
-                            <long>-20000000</long>
+                            <long>-20000</long>
                           </entry>
-                        </correlationNanosMap>
+                        </correlationMicrosMap>
                       </IaAssetClass>
-                      <long>870000000</long>
+                      <long>870000</long>
                     </entry>
                     <entry>
                       <IaAssetClass reference="11"/>
-                      <long>620000000</long>
+                      <long>620000</long>
                     </entry>
                     <entry>
                       <IaAssetClass reference="13"/>
-                      <long>-50000000</long>
+                      <long>-50000</long>
                     </entry>
-                  </correlationNanosMap>
+                  </correlationMicrosMap>
                 </IaAssetClass>
-                <long>40000000</long>
+                <long>40000</long>
               </entry>
               <entry>
                 <IaAssetClass reference="9"/>
-                <long>300000000</long>
+                <long>300000</long>
               </entry>
               <entry>
                 <IaAssetClass reference="11"/>
-                <long>360000000</long>
+                <long>360000</long>
               </entry>
               <entry>
                 <IaAssetClass reference="13"/>
-                <long>250000000</long>
+                <long>250000</long>
               </entry>
-            </correlationNanosMap>
+            </correlationMicrosMap>
           </IaAssetClass>
-          <long>760000000</long>
+          <long>760000</long>
         </entry>
         <entry>
           <IaAssetClass reference="7"/>
-          <long>350000000</long>
+          <long>350000</long>
         </entry>
         <entry>
           <IaAssetClass reference="9"/>
-          <long>500000000</long>
+          <long>500000</long>
         </entry>
         <entry>
           <IaAssetClass reference="11"/>
-          <long>240000000</long>
+          <long>240000</long>
         </entry>
         <entry>
           <IaAssetClass reference="13"/>
-          <long>300000000</long>
+          <long>300000</long>
         </entry>
-      </correlationNanosMap>
+      </correlationMicrosMap>
     </IaAssetClass>
     <IaAssetClass reference="5"/>
     <IaAssetClass reference="7"/>

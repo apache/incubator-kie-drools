@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <!--<environmentMode>FULL_ASSERT</environmentMode>-->
+
+  <!-- Domain model configuration -->
+  <solutionClass>org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution</solutionClass>
+  <entityClass>org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation</entityClass>
+
+  <!-- Score configuration -->
+  <scoreDirectorFactory>
+    <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
+    <scoreDrl>org/optaplanner/examples/investmentallocation/solver/investmentAllocationScoreRules.drl</scoreDrl>
+    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+  </scoreDirectorFactory>
+
+  <!-- Optimization algorithms configuration -->
+  <termination>
+    <minutesSpentLimit>5</minutesSpentLimit>
+  </termination>
+</solver>

@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.investmentallocation.domain;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -65,6 +68,25 @@ public class AssetClass extends AbstractPersistable {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
+
+    public String getExpectedReturnLabel() {
+        BigDecimal percentage = new BigDecimal(expectedReturnMicros).divide(
+                new BigDecimal(1000000L), BigDecimal.ROUND_HALF_UP);
+        return DecimalFormat.getPercentInstance().format(percentage);
+    }
+
+    public String getStandardDeviationRiskLabel() {
+        BigDecimal percentage = new BigDecimal(standardDeviationRiskMicros).divide(
+                new BigDecimal(1000000L), BigDecimal.ROUND_HALF_UP);
+        return DecimalFormat.getPercentInstance().format(percentage);
+    }
+
+    public String getCorrelationLabel(AssetClass other) {
+        long correlationMicros = correlationMicrosMap.get(other);
+        BigDecimal percentage = new BigDecimal(correlationMicros).divide(
+                new BigDecimal(1000000L), BigDecimal.ROUND_HALF_UP);
+        return DecimalFormat.getPercentInstance().format(percentage);
+    }
 
     @Override
     public String toString() {
