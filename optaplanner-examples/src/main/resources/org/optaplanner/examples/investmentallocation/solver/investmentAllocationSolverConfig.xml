@@ -10,7 +10,7 @@
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
     <scoreDrl>org/optaplanner/examples/investmentallocation/solver/investmentAllocationScoreRules.drl</scoreDrl>
-    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+    <initializingScoreTrend>ONLY_DOWN/ANY</initializingScoreTrend>
   </scoreDirectorFactory>
 
   <!-- Optimization algorithms configuration -->

@@ -109,13 +109,13 @@ public class InvestmentAllocationPanel extends SolutionPanel {
             correlationPanel.addColumnHeader(assetClass, HEADER_ROW,
                     createHeaderPanel(new JLabel(assetClass.getName(), SwingConstants.CENTER),
                             "Expected return: " + assetClass.getExpectedReturnLabel()
-                            + "\nStandard deviation risk: " + assetClass.getStandardDeviationRiskLabel()));
+                            + " - Standard deviation risk: " + assetClass.getStandardDeviationRiskLabel()));
         }
         for (AssetClass assetClass : solution.getAssetClassList()) {
             correlationPanel.addRowHeader(HEADER_COLUMN, assetClass,
-                    createHeaderPanel(new JLabel(assetClass.getName(), SwingConstants.CENTER),
+                    createHeaderPanel(new JLabel(assetClass.getName(), SwingConstants.LEFT),
                             "Expected return: " + assetClass.getExpectedReturnLabel()
-                            + "\nStandard deviation risk: " + assetClass.getStandardDeviationRiskLabel()));
+                            + " - Standard deviation risk: " + assetClass.getStandardDeviationRiskLabel()));
         }
         for (AssetClass a : solution.getAssetClassList()) {
             for (AssetClass b : solution.getAssetClassList()) {

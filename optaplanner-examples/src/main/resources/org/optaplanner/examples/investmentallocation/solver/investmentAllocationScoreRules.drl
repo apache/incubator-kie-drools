@@ -34,3 +34,9 @@ global HardSoftLongScoreHolder scoreHolder;
 // Soft constraints
 // ############################################################################
 
+rule "Maximize expected return"
+    when
+        AssetClassAllocation($quantifiedExpectedReturnPicos : quantifiedExpectedReturnPicos)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, $quantifiedExpectedReturnPicos);
+end

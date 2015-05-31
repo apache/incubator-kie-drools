@@ -78,7 +78,7 @@ public class InvestmentAllocationSolution extends AbstractPersistable implements
 
     @ValueRangeProvider(id = "quantityMicrosRange")
     public CountableValueRange<Long> getQuantityMicrosRange() {
-        return ValueRangeFactory.createLongValueRange(0L, 1000000L);
+        return ValueRangeFactory.createLongValueRange(0L, 1000001L);
     }
 
     public Collection<? extends Object> getProblemFacts() {

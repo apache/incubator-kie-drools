@@ -51,6 +51,13 @@ public class AssetClassAllocation extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    public long getQuantifiedExpectedReturnPicos() {
+        if (quantityMicros == null) {
+            return 0L;
+        }
+        return quantityMicros * assetClass.getExpectedReturnMicros();
+    }
+
     public String getLabel() {
         return assetClass.getName();
     }
