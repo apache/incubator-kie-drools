@@ -100,6 +100,7 @@ public class InvestmentAllocationPanel extends SolutionPanel {
             correlationPanel.defineColumnHeader(assetClass, footprintWidth);
         }
 
+        correlationPanel.defineRowHeaderByKey(HEADER_ROW_GROUP1);
         correlationPanel.defineRowHeaderByKey(HEADER_ROW);
         for (AssetClass assetClass : solution.getAssetClassList()) {
             correlationPanel.defineRowHeader(assetClass);
@@ -108,29 +109,33 @@ public class InvestmentAllocationPanel extends SolutionPanel {
     }
 
     private void fillCells(InvestmentAllocationSolution solution) {
+        List<AssetClass> assetClassList = solution.getAssetClassList();
         correlationPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Asset class"), null));
         correlationPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, HEADER_ROW,
                 createHeaderPanel(new JLabel("Expected return"), null));
         correlationPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, HEADER_ROW,
                 createHeaderPanel(new JLabel("Standard deviation risk"), null));
+        correlationPanel.addColumnHeader(assetClassList.get(0), HEADER_ROW_GROUP1,
+                assetClassList.get(assetClassList.size() - 1), HEADER_ROW_GROUP1,
+                createHeaderPanel(new JLabel("Correlation"), null));
         JLabel quantityHeaderLabel = new JLabel("Quantity");
         quantityHeaderLabel.setForeground(TangoColorFactory.ORANGE_3);
         correlationPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, HEADER_ROW,
                 createHeaderPanel(quantityHeaderLabel, null));
-        for (AssetClass assetClass : solution.getAssetClassList()) {
+        for (AssetClass assetClass : assetClassList) {
             correlationPanel.addColumnHeader(assetClass, HEADER_ROW,
                     createHeaderPanel(new JLabel(assetClass.getName(), SwingConstants.CENTER),
                             "Expected return: " + assetClass.getExpectedReturnLabel()
                             + " - Standard deviation risk: " + assetClass.getStandardDeviationRiskLabel()));
         }
-        for (AssetClass assetClass : solution.getAssetClassList()) {
+        for (AssetClass assetClass : assetClassList) {
             correlationPanel.addRowHeader(HEADER_COLUMN, assetClass,
                     createHeaderPanel(new JLabel(assetClass.getName(), SwingConstants.LEFT),
                             "Expected return: " + assetClass.getExpectedReturnLabel()
                             + " - Standard deviation risk: " + assetClass.getStandardDeviationRiskLabel()));
         }
-        for (AssetClass a : solution.getAssetClassList()) {
-            for (AssetClass b : solution.getAssetClassList()) {
+        for (AssetClass a : assetClassList) {
+            for (AssetClass b : assetClassList) {
                 correlationPanel.addCell(a, b, new JLabel(a.getCorrelationLabel(b), SwingConstants.RIGHT));
             }
         }
