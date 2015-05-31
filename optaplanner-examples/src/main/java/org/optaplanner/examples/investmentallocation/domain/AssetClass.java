@@ -23,6 +23,7 @@ import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationMicrosUtil;
 
 @XStreamAlias("IaAssetClass")
 public class AssetClass extends AbstractPersistable {
@@ -70,22 +71,16 @@ public class AssetClass extends AbstractPersistable {
     // ************************************************************************
 
     public String getExpectedReturnLabel() {
-        BigDecimal percentage = new BigDecimal(expectedReturnMicros).divide(
-                new BigDecimal(1000000L), BigDecimal.ROUND_HALF_UP);
-        return DecimalFormat.getPercentInstance().format(percentage);
+        return InvestmentAllocationMicrosUtil.formatMicrosAsPercentage(expectedReturnMicros);
     }
 
     public String getStandardDeviationRiskLabel() {
-        BigDecimal percentage = new BigDecimal(standardDeviationRiskMicros).divide(
-                new BigDecimal(1000000L), BigDecimal.ROUND_HALF_UP);
-        return DecimalFormat.getPercentInstance().format(percentage);
+        return InvestmentAllocationMicrosUtil.formatMicrosAsPercentage(standardDeviationRiskMicros);
     }
 
     public String getCorrelationLabel(AssetClass other) {
         long correlationMicros = correlationMicrosMap.get(other);
-        BigDecimal percentage = new BigDecimal(correlationMicros).divide(
-                new BigDecimal(1000000L), BigDecimal.ROUND_HALF_UP);
-        return DecimalFormat.getPercentInstance().format(percentage);
+        return InvestmentAllocationMicrosUtil.formatMicrosAsPercentage(correlationMicros);
     }
 
     @Override

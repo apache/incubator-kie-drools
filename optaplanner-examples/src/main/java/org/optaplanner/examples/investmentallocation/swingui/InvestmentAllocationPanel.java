@@ -119,7 +119,7 @@ public class InvestmentAllocationPanel extends SolutionPanel {
         }
         for (AssetClass a : solution.getAssetClassList()) {
             for (AssetClass b : solution.getAssetClassList()) {
-                correlationPanel.addCell(a, b, new JLabel(a.getCorrelationLabel(b)));
+                correlationPanel.addCell(a, b, new JLabel(a.getCorrelationLabel(b), SwingConstants.RIGHT));
             }
         }
     }
