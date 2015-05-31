@@ -16,7 +16,6 @@
 
 package org.optaplanner.examples.investmentallocation.domain;
 
-import java.util.List;
 import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -26,10 +25,10 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 public class AssetClass extends AbstractPersistable {
 
     private String name;
-    private long expectedReturnNanos; // In nano's (so multiplied by 10^9)
-    private long standardDeviationRiskNanos; // In nano's (so multiplied by 10^9)
+    private long expectedReturnMicros; // In micro's (so multiplied by 10^6)
+    private long standardDeviationRiskMicros; // In micro's (so multiplied by 10^6)
 
-    private Map<AssetClass, Long> correlationNanosMap;
+    private Map<AssetClass, Long> correlationMicrosMap;
 
     public String getName() {
         return name;
@@ -39,28 +38,28 @@ public class AssetClass extends AbstractPersistable {
         this.name = name;
     }
 
-    public long getExpectedReturnNanos() {
-        return expectedReturnNanos;
+    public long getExpectedReturnMicros() {
+        return expectedReturnMicros;
     }
 
-    public void setExpectedReturnNanos(long expectedReturnNanos) {
-        this.expectedReturnNanos = expectedReturnNanos;
+    public void setExpectedReturnMicros(long expectedReturnMicros) {
+        this.expectedReturnMicros = expectedReturnMicros;
     }
 
-    public long getStandardDeviationRiskNanos() {
-        return standardDeviationRiskNanos;
+    public long getStandardDeviationRiskMicros() {
+        return standardDeviationRiskMicros;
     }
 
-    public void setStandardDeviationRiskNanos(long standardDeviationRiskNanos) {
-        this.standardDeviationRiskNanos = standardDeviationRiskNanos;
+    public void setStandardDeviationRiskMicros(long standardDeviationRiskMicros) {
+        this.standardDeviationRiskMicros = standardDeviationRiskMicros;
     }
 
-    public Map<AssetClass, Long> getCorrelationNanosMap() {
-        return correlationNanosMap;
+    public Map<AssetClass, Long> getCorrelationMicrosMap() {
+        return correlationMicrosMap;
     }
 
-    public void setCorrelationNanosMap(Map<AssetClass, Long> correlationNanosMap) {
-        this.correlationNanosMap = correlationNanosMap;
+    public void setCorrelationMicrosMap(Map<AssetClass, Long> correlationMicrosMap) {
+        this.correlationMicrosMap = correlationMicrosMap;
     }
 
     // ************************************************************************

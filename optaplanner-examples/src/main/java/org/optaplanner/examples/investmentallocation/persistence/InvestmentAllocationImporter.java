@@ -16,20 +16,14 @@
 
 package org.optaplanner.examples.investmentallocation.persistence;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.investmentallocation.domain.AssetClass;
@@ -99,15 +93,15 @@ public class InvestmentAllocationImporter extends AbstractTxtSolutionImporter {
                             + ") has an assetClass id (" + id + ") that is not in the headerLine (" + headerLine + ")");
                 }
                 assetClass.setName(tokens[1]);
-                assetClass.setExpectedReturnNanos(parsePercentageNanos(tokens[2]));
-                assetClass.setStandardDeviationRiskNanos(parsePercentageNanos(tokens[3]));
-                Map<AssetClass, Long> correlationNanosMap = new LinkedHashMap<AssetClass, Long>(assetClassListSize);
+                assetClass.setExpectedReturnMicros(parsePercentageMicros(tokens[2]));
+                assetClass.setStandardDeviationRiskMicros(parsePercentageMicros(tokens[3]));
+                Map<AssetClass, Long> correlationMicrosMap = new LinkedHashMap<AssetClass, Long>(assetClassListSize);
                 for (int i = 0; i < assetClassListSize; i++) {
                     AssetClass other = assetClassList.get(i);
-                    long correlationNanos = parsePercentageNanos(tokens[ASSET_CLASS_PROPERTIES_COUNT + i]);
-                    correlationNanosMap.put(other, correlationNanos);
+                    long correlationMicros = parsePercentageMicros(tokens[ASSET_CLASS_PROPERTIES_COUNT + i]);
+                    correlationMicrosMap.put(other, correlationMicros);
                 }
-                assetClass.setCorrelationNanosMap(correlationNanosMap);
+                assetClass.setCorrelationMicrosMap(correlationMicrosMap);
             }
             solution.setAssetClassList(assetClassList);
         }
@@ -124,16 +118,16 @@ public class InvestmentAllocationImporter extends AbstractTxtSolutionImporter {
             solution.setAssetClassAllocationList(assetClassAllocationList);
         }
 
-        protected long parsePercentageNanos(String token) {
-            BigDecimal nanos;
+        protected long parsePercentageMicros(String token) {
+            BigDecimal micros;
             if (token.endsWith("%")) {
-                nanos = new BigDecimal(token.substring(0, token.length() - 1))
-                        .multiply(new BigDecimal(10000000L));
+                micros = new BigDecimal(token.substring(0, token.length() - 1))
+                        .multiply(new BigDecimal(10000L));
             } else {
-                nanos = new BigDecimal(token)
-                        .multiply(new BigDecimal(1000000000L));
+                micros = new BigDecimal(token)
+                        .multiply(new BigDecimal(1000000L));
             }
-            return nanos.longValueExact();
+            return micros.longValueExact();
         }
 
     }

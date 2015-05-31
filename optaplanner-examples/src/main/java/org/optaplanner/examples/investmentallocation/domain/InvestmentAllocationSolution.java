@@ -76,9 +76,9 @@ public class InvestmentAllocationSolution extends AbstractPersistable implements
     // Complex methods
     // ************************************************************************
 
-    @ValueRangeProvider(id = "quantityNanosRange")
-    public CountableValueRange<Long> getQuantityNanosRange() {
-        return ValueRangeFactory.createLongValueRange(0L, 1000000000L);
+    @ValueRangeProvider(id = "quantityMicrosRange")
+    public CountableValueRange<Long> getQuantityMicrosRange() {
+        return ValueRangeFactory.createLongValueRange(0L, 1000000L);
     }
 
     public Collection<? extends Object> getProblemFacts() {
