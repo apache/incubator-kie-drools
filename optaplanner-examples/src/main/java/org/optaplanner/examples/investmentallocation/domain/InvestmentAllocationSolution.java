@@ -35,15 +35,24 @@ import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAlloc
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution
-@XStreamAlias("IaInvestmentAllocationSolution")
+@XStreamAlias("InvestmentAllocationSolution")
 public class InvestmentAllocationSolution extends AbstractPersistable implements Solution<HardSoftLongScore> {
 
+    private InvestmentParametrization parametrization;
     private List<AssetClass> assetClassList;
 
     private List<AssetClassAllocation> assetClassAllocationList;
 
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftLongScoreDefinition.class})
     private HardSoftLongScore score;
+
+    public InvestmentParametrization getParametrization() {
+        return parametrization;
+    }
+
+    public void setParametrization(InvestmentParametrization parametrization) {
+        this.parametrization = parametrization;
+    }
 
     public List<AssetClass> getAssetClassList() {
         return assetClassList;
@@ -81,6 +90,7 @@ public class InvestmentAllocationSolution extends AbstractPersistable implements
 
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
+        facts.add(parametrization);
         facts.addAll(assetClassList);
         // Do not add the planning entity's (assetClassAllocationList) because that will be done automatically
         return facts;
@@ -101,6 +111,14 @@ public class InvestmentAllocationSolution extends AbstractPersistable implements
      * Not incremental
      */
     public long calculateStandardDeviationMicros() {
+        long squaredFemtos = calculateStandardDeviationSquaredFemtos();
+        return (long) Math.sqrt(squaredFemtos / 1000L);
+    }
+
+    /**
+     * Not incremental
+     */
+    public long calculateStandardDeviationSquaredFemtos() {
         long totalFemtos = 0L;
         for (AssetClassAllocation a : assetClassAllocationList) {
             for (AssetClassAllocation b : assetClassAllocationList) {
@@ -115,8 +133,7 @@ public class InvestmentAllocationSolution extends AbstractPersistable implements
                 }
             }
         }
-        long totalPicos = totalFemtos / 1000L;
-        return (long) Math.sqrt(totalPicos);
+        return totalFemtos;
     }
 
 }

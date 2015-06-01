@@ -1,223 +1,227 @@
-<IaInvestmentAllocationSolution id="1">
+<InvestmentAllocationSolution id="1">
   <id>0</id>
-  <assetClassList id="2">
-    <IaAssetClass id="3">
+  <parametrization id="2">
+    <id>0</id>
+    <standardDeviationMillisMaximum>95</standardDeviationMillisMaximum>
+  </parametrization>
+  <assetClassList id="3">
+    <AssetClass id="4">
       <id>1</id>
       <name>UK Equities</name>
       <expectedReturnMillis>100</expectedReturnMillis>
       <standardDeviationRiskMillis>150</standardDeviationRiskMillis>
-      <correlationMillisMap class="linked-hash-map" id="4">
+      <correlationMillisMap class="linked-hash-map" id="5">
         <entry>
-          <IaAssetClass reference="3"/>
+          <AssetClass reference="4"/>
           <long>1000</long>
         </entry>
         <entry>
-          <IaAssetClass id="5">
+          <AssetClass id="6">
             <id>2</id>
             <name>Ex-UK Equities</name>
             <expectedReturnMillis>80</expectedReturnMillis>
             <standardDeviationRiskMillis>120</standardDeviationRiskMillis>
-            <correlationMillisMap class="linked-hash-map" id="6">
+            <correlationMillisMap class="linked-hash-map" id="7">
               <entry>
-                <IaAssetClass reference="3"/>
+                <AssetClass reference="4"/>
                 <long>760</long>
               </entry>
               <entry>
-                <IaAssetClass reference="5"/>
+                <AssetClass reference="6"/>
                 <long>1000</long>
               </entry>
               <entry>
-                <IaAssetClass id="7">
+                <AssetClass id="8">
                   <id>3</id>
                   <name>Intermediate Bond</name>
                   <expectedReturnMillis>40</expectedReturnMillis>
                   <standardDeviationRiskMillis>70</standardDeviationRiskMillis>
-                  <correlationMillisMap class="linked-hash-map" id="8">
+                  <correlationMillisMap class="linked-hash-map" id="9">
                     <entry>
-                      <IaAssetClass reference="3"/>
+                      <AssetClass reference="4"/>
                       <long>350</long>
                     </entry>
                     <entry>
-                      <IaAssetClass reference="5"/>
+                      <AssetClass reference="6"/>
                       <long>40</long>
                     </entry>
                     <entry>
-                      <IaAssetClass reference="7"/>
+                      <AssetClass reference="8"/>
                       <long>1000</long>
                     </entry>
                     <entry>
-                      <IaAssetClass id="9">
+                      <AssetClass id="10">
                         <id>4</id>
                         <name>Long-Term Bonds</name>
                         <expectedReturnMillis>45</expectedReturnMillis>
                         <standardDeviationRiskMillis>80</standardDeviationRiskMillis>
-                        <correlationMillisMap class="linked-hash-map" id="10">
+                        <correlationMillisMap class="linked-hash-map" id="11">
                           <entry>
-                            <IaAssetClass reference="3"/>
+                            <AssetClass reference="4"/>
                             <long>500</long>
                           </entry>
                           <entry>
-                            <IaAssetClass reference="5"/>
+                            <AssetClass reference="6"/>
                             <long>300</long>
                           </entry>
                           <entry>
-                            <IaAssetClass reference="7"/>
+                            <AssetClass reference="8"/>
                             <long>870</long>
                           </entry>
                           <entry>
-                            <IaAssetClass reference="9"/>
+                            <AssetClass reference="10"/>
                             <long>1000</long>
                           </entry>
                           <entry>
-                            <IaAssetClass id="11">
+                            <AssetClass id="12">
                               <id>5</id>
                               <name>Intermediate Bond</name>
                               <expectedReturnMillis>50</expectedReturnMillis>
                               <standardDeviationRiskMillis>90</standardDeviationRiskMillis>
-                              <correlationMillisMap class="linked-hash-map" id="12">
+                              <correlationMillisMap class="linked-hash-map" id="13">
                                 <entry>
-                                  <IaAssetClass reference="3"/>
+                                  <AssetClass reference="4"/>
                                   <long>240</long>
                                 </entry>
                                 <entry>
-                                  <IaAssetClass reference="5"/>
+                                  <AssetClass reference="6"/>
                                   <long>360</long>
                                 </entry>
                                 <entry>
-                                  <IaAssetClass reference="7"/>
+                                  <AssetClass reference="8"/>
                                   <long>620</long>
                                 </entry>
                                 <entry>
-                                  <IaAssetClass reference="9"/>
+                                  <AssetClass reference="10"/>
                                   <long>520</long>
                                 </entry>
                                 <entry>
-                                  <IaAssetClass reference="11"/>
+                                  <AssetClass reference="12"/>
                                   <long>1000</long>
                                 </entry>
                                 <entry>
-                                  <IaAssetClass id="13">
+                                  <AssetClass id="14">
                                     <id>6</id>
                                     <name>Real Estate</name>
                                     <expectedReturnMillis>70</expectedReturnMillis>
                                     <standardDeviationRiskMillis>100</standardDeviationRiskMillis>
-                                    <correlationMillisMap class="linked-hash-map" id="14">
+                                    <correlationMillisMap class="linked-hash-map" id="15">
                                       <entry>
-                                        <IaAssetClass reference="3"/>
+                                        <AssetClass reference="4"/>
                                         <long>300</long>
                                       </entry>
                                       <entry>
-                                        <IaAssetClass reference="5"/>
+                                        <AssetClass reference="6"/>
                                         <long>250</long>
                                       </entry>
                                       <entry>
-                                        <IaAssetClass reference="7"/>
+                                        <AssetClass reference="8"/>
                                         <long>-50</long>
                                       </entry>
                                       <entry>
-                                        <IaAssetClass reference="9"/>
+                                        <AssetClass reference="10"/>
                                         <long>-20</long>
                                       </entry>
                                       <entry>
-                                        <IaAssetClass reference="11"/>
+                                        <AssetClass reference="12"/>
                                         <long>200</long>
                                       </entry>
                                       <entry>
-                                        <IaAssetClass reference="13"/>
+                                        <AssetClass reference="14"/>
                                         <long>1000</long>
                                       </entry>
                                     </correlationMillisMap>
-                                  </IaAssetClass>
+                                  </AssetClass>
                                   <long>200</long>
                                 </entry>
                               </correlationMillisMap>
-                            </IaAssetClass>
+                            </AssetClass>
                             <long>520</long>
                           </entry>
                           <entry>
-                            <IaAssetClass reference="13"/>
+                            <AssetClass reference="14"/>
                             <long>-20</long>
                           </entry>
                         </correlationMillisMap>
-                      </IaAssetClass>
+                      </AssetClass>
                       <long>870</long>
                     </entry>
                     <entry>
-                      <IaAssetClass reference="11"/>
+                      <AssetClass reference="12"/>
                       <long>620</long>
                     </entry>
                     <entry>
-                      <IaAssetClass reference="13"/>
+                      <AssetClass reference="14"/>
                       <long>-50</long>
                     </entry>
                   </correlationMillisMap>
-                </IaAssetClass>
+                </AssetClass>
                 <long>40</long>
               </entry>
               <entry>
-                <IaAssetClass reference="9"/>
+                <AssetClass reference="10"/>
                 <long>300</long>
               </entry>
               <entry>
-                <IaAssetClass reference="11"/>
+                <AssetClass reference="12"/>
                 <long>360</long>
               </entry>
               <entry>
-                <IaAssetClass reference="13"/>
+                <AssetClass reference="14"/>
                 <long>250</long>
               </entry>
             </correlationMillisMap>
-          </IaAssetClass>
+          </AssetClass>
           <long>760</long>
         </entry>
         <entry>
-          <IaAssetClass reference="7"/>
+          <AssetClass reference="8"/>
           <long>350</long>
         </entry>
         <entry>
-          <IaAssetClass reference="9"/>
+          <AssetClass reference="10"/>
           <long>500</long>
         </entry>
         <entry>
-          <IaAssetClass reference="11"/>
+          <AssetClass reference="12"/>
           <long>240</long>
         </entry>
         <entry>
-          <IaAssetClass reference="13"/>
+          <AssetClass reference="14"/>
           <long>300</long>
         </entry>
       </correlationMillisMap>
-    </IaAssetClass>
-    <IaAssetClass reference="5"/>
-    <IaAssetClass reference="7"/>
-    <IaAssetClass reference="9"/>
-    <IaAssetClass reference="11"/>
-    <IaAssetClass reference="13"/>
+    </AssetClass>
+    <AssetClass reference="6"/>
+    <AssetClass reference="8"/>
+    <AssetClass reference="10"/>
+    <AssetClass reference="12"/>
+    <AssetClass reference="14"/>
   </assetClassList>
-  <assetClassAllocationList id="15">
-    <IaAssetClassAllocation id="16">
+  <assetClassAllocationList id="16">
+    <AssetClassAllocation id="17">
       <id>1</id>
-      <assetClass reference="3"/>
-    </IaAssetClassAllocation>
-    <IaAssetClassAllocation id="17">
+      <assetClass reference="4"/>
+    </AssetClassAllocation>
+    <AssetClassAllocation id="18">
       <id>2</id>
-      <assetClass reference="5"/>
-    </IaAssetClassAllocation>
-    <IaAssetClassAllocation id="18">
+      <assetClass reference="6"/>
+    </AssetClassAllocation>
+    <AssetClassAllocation id="19">
       <id>3</id>
-      <assetClass reference="7"/>
-    </IaAssetClassAllocation>
-    <IaAssetClassAllocation id="19">
+      <assetClass reference="8"/>
+    </AssetClassAllocation>
+    <AssetClassAllocation id="20">
       <id>4</id>
-      <assetClass reference="9"/>
-    </IaAssetClassAllocation>
-    <IaAssetClassAllocation id="20">
+      <assetClass reference="10"/>
+    </AssetClassAllocation>
+    <AssetClassAllocation id="21">
       <id>5</id>
-      <assetClass reference="11"/>
-    </IaAssetClassAllocation>
-    <IaAssetClassAllocation id="21">
+      <assetClass reference="12"/>
+    </AssetClassAllocation>
+    <AssetClassAllocation id="22">
       <id>6</id>
-      <assetClass reference="13"/>
-    </IaAssetClassAllocation>
+      <assetClass reference="14"/>
+    </AssetClassAllocation>
   </assetClassAllocationList>
-</IaInvestmentAllocationSolution>
+</InvestmentAllocationSolution>

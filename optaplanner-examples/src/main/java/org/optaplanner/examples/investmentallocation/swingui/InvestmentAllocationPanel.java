@@ -145,10 +145,16 @@ public class InvestmentAllocationPanel extends SolutionPanel {
             assetClassPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, allocation.getAssetClass(),
                     quantityLabel);
         }
+        JLabel expectedReturnLabel = new JLabel(InvestmentAllocationNumericUtil.formatMicrosAsPercentage(solution.calculateExpectedReturnMicros()), SwingConstants.RIGHT);
         assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, TRAILING_HEADER_ROW,
-                new JLabel(InvestmentAllocationNumericUtil.formatMicrosAsPercentage(solution.calculateExpectedReturnMicros()), SwingConstants.RIGHT));
+                expectedReturnLabel);
+        long standardDeviationMicros = solution.calculateStandardDeviationMicros();
+        JLabel standardDeviationLabel = new JLabel(InvestmentAllocationNumericUtil.formatMicrosAsPercentage(standardDeviationMicros), SwingConstants.RIGHT);
+        if (standardDeviationMicros > solution.getParametrization().getStandardDeviationMillisMaximum() * 1000L) {
+            standardDeviationLabel.setForeground(TangoColorFactory.SCARLET_3);
+        }
         assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, TRAILING_HEADER_ROW,
-                new JLabel(InvestmentAllocationNumericUtil.formatMicrosAsPercentage(solution.calculateStandardDeviationMicros()), SwingConstants.RIGHT));
+                standardDeviationLabel);
         JLabel quantityTotalLabel = new JLabel(InvestmentAllocationNumericUtil.formatMillisAsPercentage(quantityTotalMillis), SwingConstants.RIGHT);
         quantityTotalLabel.setForeground(TangoColorFactory.ORANGE_3);
         assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, TRAILING_HEADER_ROW, quantityTotalLabel);

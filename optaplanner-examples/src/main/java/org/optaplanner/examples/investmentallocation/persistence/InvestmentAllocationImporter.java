@@ -29,6 +29,7 @@ import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.investmentallocation.domain.AssetClass;
 import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
 import org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution;
+import org.optaplanner.examples.investmentallocation.domain.InvestmentParametrization;
 
 public class InvestmentAllocationImporter extends AbstractTxtSolutionImporter {
 
@@ -56,6 +57,7 @@ public class InvestmentAllocationImporter extends AbstractTxtSolutionImporter {
         public Solution readSolution() throws IOException {
             solution = new InvestmentAllocationSolution();
             solution.setId(0L);
+            readHeaders();
             readAssetClassList();
             createAssetClassAllocationList();
 
@@ -64,9 +66,16 @@ public class InvestmentAllocationImporter extends AbstractTxtSolutionImporter {
             return solution;
         }
 
-        private void readAssetClassList() throws IOException {
+        private void readHeaders() throws IOException {
             readConstantLine("ABC Institutional Investor Capital Markets Expectations;*");
             readConstantLine("Asset class;+Correlation;*");
+            InvestmentParametrization parametrization = new InvestmentParametrization();
+            parametrization.setId(0L);
+            parametrization.setStandardDeviationMillisMaximum(95); // TODO do not hardcode
+            solution.setParametrization(parametrization);
+        }
+
+        private void readAssetClassList() throws IOException {
             String headerLine = bufferedReader.readLine();
             String[] headerTokens = splitBySemicolonSeparatedValue(headerLine);
             String headerRegex = "ID;Name;Expected return;Standard deviation(;\\d+)+";

@@ -23,7 +23,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationNumericUtil;
 
 @PlanningEntity()
-@XStreamAlias("IaAssetClassAllocation")
+@XStreamAlias("AssetClassAllocation")
 public class AssetClassAllocation extends AbstractPersistable {
 
     private AssetClass assetClass;

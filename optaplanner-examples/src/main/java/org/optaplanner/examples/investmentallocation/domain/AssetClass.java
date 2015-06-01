@@ -22,7 +22,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationNumericUtil;
 
-@XStreamAlias("IaAssetClass")
+@XStreamAlias("AssetClass")
 public class AssetClass extends AbstractPersistable {
 
     private String name;
