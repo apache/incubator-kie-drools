@@ -24,19 +24,25 @@ public class InvestmentAllocationNumericUtil {
 
     public static final long MAXIMUM_QUANTITY_MILLIS = 1000L;
 
-    protected static final NumberFormat PERCENT_FORMAT = new DecimalFormat("#0.0%");
+    protected static final NumberFormat MILLIS_NUMBER_FORMAT = new DecimalFormat("#0.000");
+    protected static final NumberFormat MILLIS_PERCENT_FORMAT = new DecimalFormat("#0.0%");
 
     protected static final BigDecimal MILLIS_DIVISOR = new BigDecimal(1000L);
     protected static final BigDecimal MICROS_DIVISOR = new BigDecimal(1000000L);
 
+    public static String formatMillisAsNumber(long millis) {
+        BigDecimal value = new BigDecimal(millis).divide(MILLIS_DIVISOR, 3, BigDecimal.ROUND_HALF_UP);
+        return MILLIS_NUMBER_FORMAT.format(value);
+    }
+
     public static String formatMillisAsPercentage(long millis) {
-        BigDecimal percentage = new BigDecimal(millis).divide(MILLIS_DIVISOR, 3, BigDecimal.ROUND_HALF_UP);
-        return PERCENT_FORMAT.format(percentage);
+        BigDecimal value = new BigDecimal(millis).divide(MILLIS_DIVISOR, 3, BigDecimal.ROUND_HALF_UP);
+        return MILLIS_PERCENT_FORMAT.format(value);
     }
 
     public static String formatMicrosAsPercentage(long micros) {
-        BigDecimal percentage = new BigDecimal(micros).divide(MICROS_DIVISOR, 6, BigDecimal.ROUND_HALF_UP);
-        return PERCENT_FORMAT.format(percentage);
+        BigDecimal value = new BigDecimal(micros).divide(MICROS_DIVISOR, 6, BigDecimal.ROUND_HALF_UP);
+        return MILLIS_PERCENT_FORMAT.format(value);
     }
 
     private InvestmentAllocationNumericUtil() {

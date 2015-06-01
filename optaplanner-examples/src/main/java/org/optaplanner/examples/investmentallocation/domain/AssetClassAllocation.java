@@ -59,6 +59,13 @@ public class AssetClassAllocation extends AbstractPersistable {
         return quantityMillis * assetClass.getExpectedReturnMillis();
     }
 
+    public long getQuantifiedStandardDeviationRiskMicros() {
+        if (quantityMillis == null) {
+            return 0L;
+        }
+        return quantityMillis * assetClass.getStandardDeviationRiskMillis();
+    }
+
     public String getQuantityLabel() {
         if (quantityMillis == null) {
             return "";

@@ -86,4 +86,37 @@ public class InvestmentAllocationSolution extends AbstractPersistable implements
         return facts;
     }
 
+    /**
+     * Not incremental
+     */
+    public long calculateExpectedReturnMicros() {
+        long expectedReturnMicros = 0L;
+        for (AssetClassAllocation allocation : assetClassAllocationList) {
+            expectedReturnMicros += allocation.getQuantifiedExpectedReturnMicros();
+        }
+        return expectedReturnMicros;
+    }
+
+    /**
+     * Not incremental
+     */
+    public long calculateStandardDeviationMicros() {
+        long totalFemtos = 0L;
+        for (AssetClassAllocation a : assetClassAllocationList) {
+            for (AssetClassAllocation b : assetClassAllocationList) {
+                if (a == b) {
+                    totalFemtos += a.getQuantifiedStandardDeviationRiskMicros() * b.getQuantifiedStandardDeviationRiskMicros()
+                            * 1000L;
+                } else {
+                    // Matches twice: once for (A, B) and once for (B, A)
+                    long correlationMillis = a.getAssetClass().getCorrelationMillisMap().get(b.getAssetClass());
+                    totalFemtos += a.getQuantifiedStandardDeviationRiskMicros() * b.getQuantifiedStandardDeviationRiskMicros()
+                            * correlationMillis;
+                }
+            }
+        }
+        long totalPicos = totalFemtos / 1000L;
+        return (long) Math.sqrt(totalPicos);
+    }
+
 }

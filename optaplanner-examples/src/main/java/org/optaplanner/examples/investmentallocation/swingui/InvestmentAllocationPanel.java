@@ -43,14 +43,14 @@ public class InvestmentAllocationPanel extends SolutionPanel {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/investmentallocation/swingui/investmentAllocationLogo.png";
 
-    private final TimeTablePanel<AssetClass, AssetClass> correlationPanel;
+    private final TimeTablePanel<AssetClass, AssetClass> assetClassPanel;
 
 
     public InvestmentAllocationPanel() {
         setLayout(new BorderLayout());
         JTabbedPane tabbedPane = new JTabbedPane();
-        correlationPanel = new TimeTablePanel<AssetClass, AssetClass>();
-        tabbedPane.add("Correlation", new JScrollPane(correlationPanel));
+        assetClassPanel = new TimeTablePanel<AssetClass, AssetClass>();
+        tabbedPane.add("Asset classes", new JScrollPane(assetClassPanel));
         add(tabbedPane, BorderLayout.CENTER);
         setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);
     }
@@ -70,7 +70,7 @@ public class InvestmentAllocationPanel extends SolutionPanel {
     }
 
     public void resetPanel(Solution s) {
-        correlationPanel.reset();
+        assetClassPanel.reset();
         InvestmentAllocationSolution solution = (InvestmentAllocationSolution) s;
         defineGrid(solution);
         fillCells(solution);
@@ -82,76 +82,76 @@ public class InvestmentAllocationPanel extends SolutionPanel {
         footprint.setMargin(new Insets(0, 0, 0, 0));
         int footprintWidth = footprint.getPreferredSize().width;
 
-        correlationPanel.defineColumnHeaderByKey(HEADER_COLUMN);
-        correlationPanel.defineColumnHeaderByKey(HEADER_COLUMN_EXTRA_PROPERTY_1);
-        correlationPanel.defineColumnHeaderByKey(HEADER_COLUMN_EXTRA_PROPERTY_2);
-        correlationPanel.defineColumnHeaderByKey(HEADER_COLUMN_EXTRA_PROPERTY_3);
+        assetClassPanel.defineColumnHeaderByKey(HEADER_COLUMN);
+        assetClassPanel.defineColumnHeaderByKey(HEADER_COLUMN_EXTRA_PROPERTY_1);
+        assetClassPanel.defineColumnHeaderByKey(HEADER_COLUMN_EXTRA_PROPERTY_2);
+        assetClassPanel.defineColumnHeaderByKey(HEADER_COLUMN_EXTRA_PROPERTY_3);
         for (AssetClass assetClass : solution.getAssetClassList()) {
-            correlationPanel.defineColumnHeader(assetClass, footprintWidth);
+            assetClassPanel.defineColumnHeader(assetClass, footprintWidth);
         }
 
-        correlationPanel.defineRowHeaderByKey(HEADER_ROW_GROUP1);
-        correlationPanel.defineRowHeaderByKey(HEADER_ROW);
+        assetClassPanel.defineRowHeaderByKey(HEADER_ROW_GROUP1);
+        assetClassPanel.defineRowHeaderByKey(HEADER_ROW);
         for (AssetClass assetClass : solution.getAssetClassList()) {
-            correlationPanel.defineRowHeader(assetClass);
+            assetClassPanel.defineRowHeader(assetClass);
         }
-        correlationPanel.defineRowHeaderByKey(TRAILING_HEADER_ROW); // Total
+        assetClassPanel.defineRowHeaderByKey(TRAILING_HEADER_ROW); // Total
     }
 
     private void fillCells(InvestmentAllocationSolution solution) {
         List<AssetClass> assetClassList = solution.getAssetClassList();
-        correlationPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Asset class"), null));
-        correlationPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, HEADER_ROW,
+        assetClassPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Asset class"), null));
+        assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, HEADER_ROW,
                 createHeaderPanel(new JLabel("Expected return"), null));
-        correlationPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, HEADER_ROW,
+        assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, HEADER_ROW,
                 createHeaderPanel(new JLabel("Standard deviation risk"), null));
-        correlationPanel.addColumnHeader(assetClassList.get(0), HEADER_ROW_GROUP1,
+        assetClassPanel.addColumnHeader(assetClassList.get(0), HEADER_ROW_GROUP1,
                 assetClassList.get(assetClassList.size() - 1), HEADER_ROW_GROUP1,
                 createHeaderPanel(new JLabel("Correlation"), null));
         JLabel quantityHeaderLabel = new JLabel("Quantity");
         quantityHeaderLabel.setForeground(TangoColorFactory.ORANGE_3);
-        correlationPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, HEADER_ROW,
+        assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, HEADER_ROW,
                 createHeaderPanel(quantityHeaderLabel, null));
         for (AssetClass assetClass : assetClassList) {
-            correlationPanel.addColumnHeader(assetClass, HEADER_ROW,
+            assetClassPanel.addColumnHeader(assetClass, HEADER_ROW,
                     createHeaderPanel(new JLabel(assetClass.getName(), SwingConstants.CENTER),
                             "Expected return: " + assetClass.getExpectedReturnLabel()
-                            + " - Standard deviation risk: " + assetClass.getStandardDeviationRiskLabel()));
+                                    + " - Standard deviation risk: " + assetClass.getStandardDeviationRiskLabel()));
         }
         for (AssetClass assetClass : assetClassList) {
-            correlationPanel.addRowHeader(HEADER_COLUMN, assetClass,
+            assetClassPanel.addRowHeader(HEADER_COLUMN, assetClass,
                     createHeaderPanel(new JLabel(assetClass.getName(), SwingConstants.LEFT),
                             "Expected return: " + assetClass.getExpectedReturnLabel()
-                            + " - Standard deviation risk: " + assetClass.getStandardDeviationRiskLabel()));
+                                    + " - Standard deviation risk: " + assetClass.getStandardDeviationRiskLabel()));
         }
         for (AssetClass a : assetClassList) {
             for (AssetClass b : assetClassList) {
-                correlationPanel.addCell(a, b, new JLabel(a.getCorrelationLabel(b), SwingConstants.RIGHT));
+                assetClassPanel.addCell(a, b, new JLabel(a.getCorrelationLabel(b), SwingConstants.RIGHT));
             }
         }
-        correlationPanel.addCornerHeader(HEADER_COLUMN, TRAILING_HEADER_ROW,
+        assetClassPanel.addCornerHeader(HEADER_COLUMN, TRAILING_HEADER_ROW,
                 createHeaderPanel(new JLabel("Total"), null));
-        long expectedReturnTotalMicros = 0L;
         long quantityTotalMillis = 0L;
         for (AssetClassAllocation allocation : solution.getAssetClassAllocationList()) {
             if (allocation.getQuantityMillis() != null) {
-                expectedReturnTotalMicros += allocation.getQuantifiedExpectedReturnMicros();
                 quantityTotalMillis += allocation.getQuantityMillis();
             }
-            correlationPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, allocation.getAssetClass(),
+            assetClassPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, allocation.getAssetClass(),
                     new JLabel(allocation.getAssetClass().getExpectedReturnLabel(), SwingConstants.RIGHT));
-            correlationPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, allocation.getAssetClass(),
+            assetClassPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, allocation.getAssetClass(),
                     new JLabel(allocation.getAssetClass().getStandardDeviationRiskLabel(), SwingConstants.RIGHT));
             JLabel quantityLabel = new JLabel(allocation.getQuantityLabel(), SwingConstants.RIGHT);
             quantityLabel.setForeground(TangoColorFactory.ORANGE_3);
-            correlationPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, allocation.getAssetClass(),
+            assetClassPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, allocation.getAssetClass(),
                     quantityLabel);
         }
-        correlationPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, TRAILING_HEADER_ROW,
-                new JLabel(InvestmentAllocationNumericUtil.formatMicrosAsPercentage(expectedReturnTotalMicros), SwingConstants.RIGHT));
+        assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, TRAILING_HEADER_ROW,
+                new JLabel(InvestmentAllocationNumericUtil.formatMicrosAsPercentage(solution.calculateExpectedReturnMicros()), SwingConstants.RIGHT));
+        assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, TRAILING_HEADER_ROW,
+                new JLabel(InvestmentAllocationNumericUtil.formatMicrosAsPercentage(solution.calculateStandardDeviationMicros()), SwingConstants.RIGHT));
         JLabel quantityTotalLabel = new JLabel(InvestmentAllocationNumericUtil.formatMillisAsPercentage(quantityTotalMillis), SwingConstants.RIGHT);
         quantityTotalLabel.setForeground(TangoColorFactory.ORANGE_3);
-        correlationPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, TRAILING_HEADER_ROW, quantityTotalLabel);
+        assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, TRAILING_HEADER_ROW, quantityTotalLabel);
     }
 
     private JPanel createHeaderPanel(JLabel label, String toolTipText) {

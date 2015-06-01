@@ -77,7 +77,7 @@ public class AssetClass extends AbstractPersistable {
 
     public String getCorrelationLabel(AssetClass other) {
         long correlationMillis = correlationMillisMap.get(other);
-        return InvestmentAllocationNumericUtil.formatMillisAsPercentage(correlationMillis);
+        return InvestmentAllocationNumericUtil.formatMillisAsNumber(correlationMillis);
     }
 
     @Override
