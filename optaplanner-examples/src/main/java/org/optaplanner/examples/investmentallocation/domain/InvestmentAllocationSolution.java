@@ -34,6 +34,7 @@ import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationMicrosUtil;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution
@@ -78,7 +79,7 @@ public class InvestmentAllocationSolution extends AbstractPersistable implements
 
     @ValueRangeProvider(id = "quantityMicrosRange")
     public CountableValueRange<Long> getQuantityMicrosRange() {
-        return ValueRangeFactory.createLongValueRange(0L, 1000001L);
+        return ValueRangeFactory.createLongValueRange(0L, InvestmentAllocationMicrosUtil.MAXIMUM_QUANTITY_MICROS + 1L);
     }
 
     public Collection<? extends Object> getProblemFacts() {

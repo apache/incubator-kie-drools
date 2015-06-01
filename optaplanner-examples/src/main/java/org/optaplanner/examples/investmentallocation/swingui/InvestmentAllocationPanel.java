@@ -142,8 +142,12 @@ public class InvestmentAllocationPanel extends SolutionPanel {
         correlationPanel.addCornerHeader(HEADER_COLUMN, TRAILING_HEADER_ROW,
                 createHeaderPanel(new JLabel("Total"), null));
         long expectedReturnTotalPicos = 0L;
+        long quantityTotalMicros = 0L;
         for (AssetClassAllocation allocation : solution.getAssetClassAllocationList()) {
-            expectedReturnTotalPicos += allocation.getQuantifiedExpectedReturnPicos();
+            if (allocation.getQuantityMicros() != null) {
+                expectedReturnTotalPicos += allocation.getQuantifiedExpectedReturnPicos();
+                quantityTotalMicros += allocation.getQuantityMicros();
+            }
             correlationPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, allocation.getAssetClass(),
                     new JLabel(allocation.getAssetClass().getExpectedReturnLabel(), SwingConstants.RIGHT));
             correlationPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, allocation.getAssetClass(),
@@ -155,6 +159,10 @@ public class InvestmentAllocationPanel extends SolutionPanel {
         }
         correlationPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, TRAILING_HEADER_ROW,
                 new JLabel(InvestmentAllocationMicrosUtil.formatPicosAsPercentage(expectedReturnTotalPicos), SwingConstants.RIGHT));
+        JLabel quantityTotalLabel = new JLabel(InvestmentAllocationMicrosUtil.formatMicrosAsPercentage(quantityTotalMicros), SwingConstants.RIGHT);
+        quantityTotalLabel.setForeground(TangoColorFactory.ORANGE_3);
+        correlationPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, TRAILING_HEADER_ROW,
+                quantityTotalLabel);
 
     }
 

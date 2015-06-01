@@ -1,0 +1,55 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.optaplanner.examples.investmentallocation.solver.solution.initializer;
+
+import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
+import org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution;
+import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationMicrosUtil;
+import org.optaplanner.examples.machinereassignment.domain.MrMachine;
+import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class InvestmentAllocationSolutionInitializer implements CustomPhaseCommand {
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+
+    public void changeWorkingSolution(ScoreDirector scoreDirector) {
+        InvestmentAllocationSolution solution = (InvestmentAllocationSolution) scoreDirector.getWorkingSolution();
+        distributeQuantityEvenly(scoreDirector, solution);
+    }
+
+    private void distributeQuantityEvenly(ScoreDirector scoreDirector, InvestmentAllocationSolution solution) {
+        long budget = InvestmentAllocationMicrosUtil.MAXIMUM_QUANTITY_MICROS;
+        int size = solution.getAssetClassAllocationList().size();
+        long budgetPerAllocation = budget / size;
+        long remainder = budget % size;
+        for (AssetClassAllocation allocation : solution.getAssetClassAllocationList()) {
+            long quantityMicros = budgetPerAllocation;
+            if (remainder > 0L) {
+                remainder--;
+                quantityMicros++;
+            }
+            scoreDirector.beforeVariableChanged(allocation, "quantityMicros");
+            allocation.setQuantityMicros(quantityMicros);
+            scoreDirector.afterVariableChanged(allocation, "quantityMicros");
+        }
+    }
+
+}

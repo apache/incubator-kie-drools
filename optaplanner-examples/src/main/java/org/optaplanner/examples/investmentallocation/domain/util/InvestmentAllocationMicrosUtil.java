@@ -22,9 +22,12 @@ import java.text.NumberFormat;
 
 public class InvestmentAllocationMicrosUtil {
 
-    private static final BigDecimal MICROS_DIVISOR = new BigDecimal(1000000L);
-    private static final BigDecimal PICOS_DIVISOR = new BigDecimal(1000000000000L);
-    public static final NumberFormat PERCENT_FORMAT = new DecimalFormat("#0.00%");
+    public static final long MAXIMUM_QUANTITY_MICROS = 1000000L;
+
+    protected static final NumberFormat PERCENT_FORMAT = new DecimalFormat("#0.00%");
+
+    protected static final BigDecimal MICROS_DIVISOR = new BigDecimal(1000000L);
+    protected static final BigDecimal PICOS_DIVISOR = new BigDecimal(1000000000000L);
 
     public static String formatMicrosAsPercentage(long micros) {
         BigDecimal percentage = new BigDecimal(micros).divide(MICROS_DIVISOR, 6, BigDecimal.ROUND_HALF_UP);
