@@ -60,8 +60,11 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
         NavigableMap<Long, AssetClassAllocation> quantityIncrementMicrosToAllocationMap = new TreeMap<Long, AssetClassAllocation>();
         long quantityIncrementMicros = 0L;
         for (AssetClassAllocation allocation : allocationList) {
-            quantityIncrementMicros +=  allocation.getQuantityMicros();
-            quantityIncrementMicrosToAllocationMap.put(quantityIncrementMicros, allocation);
+            long quantityMicros = allocation.getQuantityMicros();
+            if (quantityMicros > 0L) {
+                quantityIncrementMicros += quantityMicros;
+                quantityIncrementMicrosToAllocationMap.put(quantityIncrementMicros, allocation);
+            }
         }
         if (quantityIncrementMicros != InvestmentAllocationMicrosUtil.MAXIMUM_QUANTITY_MICROS) {
             throw new IllegalStateException("The quantityIncrementMicros (" + quantityIncrementMicros
