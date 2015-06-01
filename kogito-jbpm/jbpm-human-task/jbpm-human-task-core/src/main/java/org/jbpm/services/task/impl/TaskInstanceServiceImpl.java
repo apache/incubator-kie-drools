@@ -12,17 +12,13 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.core.process.instance.WorkItem;
 import org.drools.core.util.MVELSafeHelper;
-import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.commands.TaskContext;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.internals.lifecycle.LifeCycleManager;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
-import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.Environment;
 import org.kie.api.task.model.Content;
@@ -95,10 +91,11 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     	
     	persistenceContext.persistTask(task);
     	
-    	resolveTaskDetailsForTaskProperties(task);
-    	resolveTaskDetails(params, task);
+    	resolveTaskDetailsForTaskProperties(task);    	
     	
     	if (params != null) {
+    	    resolveTaskDetails(params, task);
+    	    
 			ContentData contentData = ContentMarshallerHelper.marshal(params, TaskContentRegistry.get().getMarshallerContext(task).getEnvironment());
 			Content content = TaskModelProvider.getFactory().newContent();
 			((InternalContent) content).setContent(contentData.getContent());
