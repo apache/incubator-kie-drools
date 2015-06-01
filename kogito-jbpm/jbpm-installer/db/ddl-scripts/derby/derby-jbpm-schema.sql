@@ -342,6 +342,7 @@
         taskId bigint,
         type varchar(255),
         userId varchar(255),
+        message varchar(255),
         OPTLOCK integer,
         workItemId bigint,
         primary key (id)

@@ -342,6 +342,7 @@
         taskId numeric(19,0),
         type varchar(255),
         userId varchar(255),
+        message varchar(255),
         OPTLOCK int,
         workItemId numeric(19,0),
         primary key (id)
