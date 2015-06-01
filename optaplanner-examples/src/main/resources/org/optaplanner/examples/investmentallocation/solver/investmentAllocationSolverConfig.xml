@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <!--<environmentMode>FULL_ASSERT</environmentMode>-->
+  <environmentMode>FULL_ASSERT</environmentMode>
 
   <!-- Domain model configuration -->
   <solutionClass>org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution</solutionClass>
@@ -20,6 +20,9 @@
   <customPhase>
     <customPhaseCommandClass>org.optaplanner.examples.investmentallocation.solver.solution.initializer.InvestmentAllocationSolutionInitializer</customPhaseCommandClass>
   </customPhase>
-  <!--<localSearch>-->
-  <!--</localSearch>-->
+  <localSearch>
+    <moveIteratorFactory>
+      <moveIteratorFactoryClass>org.optaplanner.examples.investmentallocation.solver.move.factory.InvestmentQuantityTransferMoveIteratorFactory</moveIteratorFactoryClass>
+    </moveIteratorFactory>
+  </localSearch>
 </solver>

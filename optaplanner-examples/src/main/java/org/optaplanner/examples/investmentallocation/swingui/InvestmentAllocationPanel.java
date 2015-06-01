@@ -161,9 +161,7 @@ public class InvestmentAllocationPanel extends SolutionPanel {
                 new JLabel(InvestmentAllocationMicrosUtil.formatPicosAsPercentage(expectedReturnTotalPicos), SwingConstants.RIGHT));
         JLabel quantityTotalLabel = new JLabel(InvestmentAllocationMicrosUtil.formatMicrosAsPercentage(quantityTotalMicros), SwingConstants.RIGHT);
         quantityTotalLabel.setForeground(TangoColorFactory.ORANGE_3);
-        correlationPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, TRAILING_HEADER_ROW,
-                quantityTotalLabel);
-
+        correlationPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, TRAILING_HEADER_ROW, quantityTotalLabel);
     }
 
     private JPanel createHeaderPanel(JLabel label, String toolTipText) {
