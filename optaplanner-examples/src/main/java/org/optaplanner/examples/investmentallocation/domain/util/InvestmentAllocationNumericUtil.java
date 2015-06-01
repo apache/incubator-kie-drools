@@ -20,26 +20,26 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-public class InvestmentAllocationMicrosUtil {
+public class InvestmentAllocationNumericUtil {
 
-    public static final long MAXIMUM_QUANTITY_MICROS = 1000000L;
+    public static final long MAXIMUM_QUANTITY_MILLIS = 1000L;
 
-    protected static final NumberFormat PERCENT_FORMAT = new DecimalFormat("#0.00%");
+    protected static final NumberFormat PERCENT_FORMAT = new DecimalFormat("#0.0%");
 
+    protected static final BigDecimal MILLIS_DIVISOR = new BigDecimal(1000L);
     protected static final BigDecimal MICROS_DIVISOR = new BigDecimal(1000000L);
-    protected static final BigDecimal PICOS_DIVISOR = new BigDecimal(1000000000000L);
+
+    public static String formatMillisAsPercentage(long millis) {
+        BigDecimal percentage = new BigDecimal(millis).divide(MILLIS_DIVISOR, 3, BigDecimal.ROUND_HALF_UP);
+        return PERCENT_FORMAT.format(percentage);
+    }
 
     public static String formatMicrosAsPercentage(long micros) {
         BigDecimal percentage = new BigDecimal(micros).divide(MICROS_DIVISOR, 6, BigDecimal.ROUND_HALF_UP);
         return PERCENT_FORMAT.format(percentage);
     }
 
-    public static String formatPicosAsPercentage(long picos) {
-        BigDecimal percentage = new BigDecimal(picos).divide(PICOS_DIVISOR, 12, BigDecimal.ROUND_HALF_UP);
-        return PERCENT_FORMAT.format(percentage);
-    }
-
-    private InvestmentAllocationMicrosUtil() {
+    private InvestmentAllocationNumericUtil() {
     }
 
 }

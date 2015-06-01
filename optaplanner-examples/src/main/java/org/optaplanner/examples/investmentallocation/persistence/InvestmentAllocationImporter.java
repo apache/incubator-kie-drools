@@ -93,15 +93,15 @@ public class InvestmentAllocationImporter extends AbstractTxtSolutionImporter {
                             + ") has an assetClass id (" + id + ") that is not in the headerLine (" + headerLine + ")");
                 }
                 assetClass.setName(tokens[1]);
-                assetClass.setExpectedReturnMicros(parsePercentageMicros(tokens[2]));
-                assetClass.setStandardDeviationRiskMicros(parsePercentageMicros(tokens[3]));
-                Map<AssetClass, Long> correlationMicrosMap = new LinkedHashMap<AssetClass, Long>(assetClassListSize);
+                assetClass.setExpectedReturnMillis(parsePercentageMillis(tokens[2]));
+                assetClass.setStandardDeviationRiskMillis(parsePercentageMillis(tokens[3]));
+                Map<AssetClass, Long> correlationMillisMap = new LinkedHashMap<AssetClass, Long>(assetClassListSize);
                 for (int i = 0; i < assetClassListSize; i++) {
                     AssetClass other = assetClassList.get(i);
-                    long correlationMicros = parsePercentageMicros(tokens[ASSET_CLASS_PROPERTIES_COUNT + i]);
-                    correlationMicrosMap.put(other, correlationMicros);
+                    long correlationMillis = parsePercentageMillis(tokens[ASSET_CLASS_PROPERTIES_COUNT + i]);
+                    correlationMillisMap.put(other, correlationMillis);
                 }
-                assetClass.setCorrelationMicrosMap(correlationMicrosMap);
+                assetClass.setCorrelationMillisMap(correlationMillisMap);
             }
             solution.setAssetClassList(assetClassList);
         }
@@ -118,16 +118,14 @@ public class InvestmentAllocationImporter extends AbstractTxtSolutionImporter {
             solution.setAssetClassAllocationList(assetClassAllocationList);
         }
 
-        protected long parsePercentageMicros(String token) {
-            BigDecimal micros;
+        protected long parsePercentageMillis(String token) {
+            BigDecimal millis;
             if (token.endsWith("%")) {
-                micros = new BigDecimal(token.substring(0, token.length() - 1))
-                        .multiply(new BigDecimal(10000L));
+                millis = new BigDecimal(token.substring(0, token.length() - 1)).multiply(new BigDecimal(10L));
             } else {
-                micros = new BigDecimal(token)
-                        .multiply(new BigDecimal(1000000L));
+                millis = new BigDecimal(token).multiply(new BigDecimal(1000L));
             }
-            return micros.longValueExact();
+            return millis.longValueExact();
         }
 
     }

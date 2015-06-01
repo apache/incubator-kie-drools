@@ -16,23 +16,20 @@
 
 package org.optaplanner.examples.investmentallocation.domain;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationMicrosUtil;
+import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationNumericUtil;
 
 @XStreamAlias("IaAssetClass")
 public class AssetClass extends AbstractPersistable {
 
     private String name;
-    private long expectedReturnMicros; // In micro's (so multiplied by 10^6)
-    private long standardDeviationRiskMicros; // In micro's (so multiplied by 10^6)
+    private long expectedReturnMillis; // In milli's (so multiplied by 1000)
+    private long standardDeviationRiskMillis; // In milli's (so multiplied by 1000)
 
-    private Map<AssetClass, Long> correlationMicrosMap;
+    private Map<AssetClass, Long> correlationMillisMap;
 
     public String getName() {
         return name;
@@ -42,28 +39,28 @@ public class AssetClass extends AbstractPersistable {
         this.name = name;
     }
 
-    public long getExpectedReturnMicros() {
-        return expectedReturnMicros;
+    public long getExpectedReturnMillis() {
+        return expectedReturnMillis;
     }
 
-    public void setExpectedReturnMicros(long expectedReturnMicros) {
-        this.expectedReturnMicros = expectedReturnMicros;
+    public void setExpectedReturnMillis(long expectedReturnMillis) {
+        this.expectedReturnMillis = expectedReturnMillis;
     }
 
-    public long getStandardDeviationRiskMicros() {
-        return standardDeviationRiskMicros;
+    public long getStandardDeviationRiskMillis() {
+        return standardDeviationRiskMillis;
     }
 
-    public void setStandardDeviationRiskMicros(long standardDeviationRiskMicros) {
-        this.standardDeviationRiskMicros = standardDeviationRiskMicros;
+    public void setStandardDeviationRiskMillis(long standardDeviationRiskMillis) {
+        this.standardDeviationRiskMillis = standardDeviationRiskMillis;
     }
 
-    public Map<AssetClass, Long> getCorrelationMicrosMap() {
-        return correlationMicrosMap;
+    public Map<AssetClass, Long> getCorrelationMillisMap() {
+        return correlationMillisMap;
     }
 
-    public void setCorrelationMicrosMap(Map<AssetClass, Long> correlationMicrosMap) {
-        this.correlationMicrosMap = correlationMicrosMap;
+    public void setCorrelationMillisMap(Map<AssetClass, Long> correlationMillisMap) {
+        this.correlationMillisMap = correlationMillisMap;
     }
 
     // ************************************************************************
@@ -71,16 +68,16 @@ public class AssetClass extends AbstractPersistable {
     // ************************************************************************
 
     public String getExpectedReturnLabel() {
-        return InvestmentAllocationMicrosUtil.formatMicrosAsPercentage(expectedReturnMicros);
+        return InvestmentAllocationNumericUtil.formatMillisAsPercentage(expectedReturnMillis);
     }
 
     public String getStandardDeviationRiskLabel() {
-        return InvestmentAllocationMicrosUtil.formatMicrosAsPercentage(standardDeviationRiskMicros);
+        return InvestmentAllocationNumericUtil.formatMillisAsPercentage(standardDeviationRiskMillis);
     }
 
     public String getCorrelationLabel(AssetClass other) {
-        long correlationMicros = correlationMicrosMap.get(other);
-        return InvestmentAllocationMicrosUtil.formatMicrosAsPercentage(correlationMicros);
+        long correlationMillis = correlationMillisMap.get(other);
+        return InvestmentAllocationNumericUtil.formatMillisAsPercentage(correlationMillis);
     }
 
     @Override

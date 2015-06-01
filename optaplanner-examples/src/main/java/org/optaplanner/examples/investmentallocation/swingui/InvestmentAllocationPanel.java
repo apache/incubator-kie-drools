@@ -17,20 +17,11 @@
 package org.optaplanner.examples.investmentallocation.swingui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.util.List;
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -39,12 +30,11 @@ import javax.swing.SwingConstants;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
-import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.investmentallocation.domain.AssetClass;
 import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
 import org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution;
-import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationMicrosUtil;
+import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationNumericUtil;
 
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
@@ -141,12 +131,12 @@ public class InvestmentAllocationPanel extends SolutionPanel {
         }
         correlationPanel.addCornerHeader(HEADER_COLUMN, TRAILING_HEADER_ROW,
                 createHeaderPanel(new JLabel("Total"), null));
-        long expectedReturnTotalPicos = 0L;
-        long quantityTotalMicros = 0L;
+        long expectedReturnTotalMicros = 0L;
+        long quantityTotalMillis = 0L;
         for (AssetClassAllocation allocation : solution.getAssetClassAllocationList()) {
-            if (allocation.getQuantityMicros() != null) {
-                expectedReturnTotalPicos += allocation.getQuantifiedExpectedReturnPicos();
-                quantityTotalMicros += allocation.getQuantityMicros();
+            if (allocation.getQuantityMillis() != null) {
+                expectedReturnTotalMicros += allocation.getQuantifiedExpectedReturnMicros();
+                quantityTotalMillis += allocation.getQuantityMillis();
             }
             correlationPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, allocation.getAssetClass(),
                     new JLabel(allocation.getAssetClass().getExpectedReturnLabel(), SwingConstants.RIGHT));
@@ -158,8 +148,8 @@ public class InvestmentAllocationPanel extends SolutionPanel {
                     quantityLabel);
         }
         correlationPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, TRAILING_HEADER_ROW,
-                new JLabel(InvestmentAllocationMicrosUtil.formatPicosAsPercentage(expectedReturnTotalPicos), SwingConstants.RIGHT));
-        JLabel quantityTotalLabel = new JLabel(InvestmentAllocationMicrosUtil.formatMicrosAsPercentage(quantityTotalMicros), SwingConstants.RIGHT);
+                new JLabel(InvestmentAllocationNumericUtil.formatMicrosAsPercentage(expectedReturnTotalMicros), SwingConstants.RIGHT));
+        JLabel quantityTotalLabel = new JLabel(InvestmentAllocationNumericUtil.formatMillisAsPercentage(quantityTotalMillis), SwingConstants.RIGHT);
         quantityTotalLabel.setForeground(TangoColorFactory.ORANGE_3);
         correlationPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, TRAILING_HEADER_ROW, quantityTotalLabel);
     }

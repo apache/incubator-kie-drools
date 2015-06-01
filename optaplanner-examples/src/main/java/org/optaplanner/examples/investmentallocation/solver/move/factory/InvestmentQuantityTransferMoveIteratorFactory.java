@@ -16,9 +16,7 @@
 
 package org.optaplanner.examples.investmentallocation.solver.move.factory;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -29,14 +27,9 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
-import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
-import org.optaplanner.examples.cheaptime.domain.Machine;
-import org.optaplanner.examples.cheaptime.domain.Task;
-import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
-import org.optaplanner.examples.cheaptime.solver.move.CheapTimePillarSlideMove;
 import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
 import org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution;
-import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationMicrosUtil;
+import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationNumericUtil;
 import org.optaplanner.examples.investmentallocation.solver.move.InvestmentQuantityTransferMove;
 
 public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIteratorFactory {
@@ -45,7 +38,7 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
     public long getSize(ScoreDirector scoreDirector) {
         InvestmentAllocationSolution solution = (InvestmentAllocationSolution) scoreDirector.getWorkingSolution();
         return (solution.getAssetClassAllocationList().size() - 1)
-                * InvestmentAllocationMicrosUtil.MAXIMUM_QUANTITY_MICROS;
+                * InvestmentAllocationNumericUtil.MAXIMUM_QUANTITY_MILLIS;
     }
 
     @Override
@@ -57,33 +50,34 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
     public Iterator<Move> createRandomMoveIterator(ScoreDirector scoreDirector, Random workingRandom) {
         InvestmentAllocationSolution solution = (InvestmentAllocationSolution) scoreDirector.getWorkingSolution();
         List<AssetClassAllocation> allocationList = solution.getAssetClassAllocationList();
-        NavigableMap<Long, AssetClassAllocation> quantityIncrementMicrosToAllocationMap = new TreeMap<Long, AssetClassAllocation>();
-        long quantityIncrementMicros = 0L;
+        NavigableMap<Long, AssetClassAllocation> quantityMillisIncrementToAllocationMap = new TreeMap<Long, AssetClassAllocation>();
+        long quantityIncrementMillis = 0L;
         for (AssetClassAllocation allocation : allocationList) {
-            long quantityMicros = allocation.getQuantityMicros();
-            if (quantityMicros > 0L) {
-                quantityIncrementMicros += quantityMicros;
-                quantityIncrementMicrosToAllocationMap.put(quantityIncrementMicros, allocation);
+            long quantityMillis = allocation.getQuantityMillis();
+            if (quantityMillis > 0L) {
+                quantityIncrementMillis += quantityMillis;
+                quantityMillisIncrementToAllocationMap.put(quantityIncrementMillis, allocation);
             }
         }
-        if (quantityIncrementMicros != InvestmentAllocationMicrosUtil.MAXIMUM_QUANTITY_MICROS) {
-            throw new IllegalStateException("The quantityIncrementMicros (" + quantityIncrementMicros
-                    + ") must always be total to MAXIMUM_QUANTITY_MICROS ("
-                    + InvestmentAllocationMicrosUtil.MAXIMUM_QUANTITY_MICROS + ").");
+        if (quantityIncrementMillis != InvestmentAllocationNumericUtil.MAXIMUM_QUANTITY_MILLIS) {
+            throw new IllegalStateException("The quantityIncrementMillis (" + quantityIncrementMillis
+                    + ") must always be total to MAXIMUM_QUANTITY_MILLIS ("
+                    + InvestmentAllocationNumericUtil.MAXIMUM_QUANTITY_MILLIS + ").");
         }
-        return new RandomInvestmentQuantityTransferMoveIterator(allocationList, quantityIncrementMicrosToAllocationMap, workingRandom);
+        return new RandomInvestmentQuantityTransferMoveIterator(allocationList,
+                quantityMillisIncrementToAllocationMap, workingRandom);
     }
 
     private class RandomInvestmentQuantityTransferMoveIterator implements Iterator<Move> {
 
         private final List<AssetClassAllocation> allocationList;
-        private final NavigableMap<Long, AssetClassAllocation> quantityIncrementMicrosToAllocationMap;
+        private final NavigableMap<Long, AssetClassAllocation> quantityMillisIncrementToAllocationMap;
         private final Random workingRandom;
 
         public RandomInvestmentQuantityTransferMoveIterator(List<AssetClassAllocation> allocationList,
-                NavigableMap<Long, AssetClassAllocation> quantityIncrementMicrosToAllocationMap, Random workingRandom) {
+                NavigableMap<Long, AssetClassAllocation> quantityMillisIncrementToAllocationMap, Random workingRandom) {
             this.allocationList = allocationList;
-            this.quantityIncrementMicrosToAllocationMap = quantityIncrementMicrosToAllocationMap;
+            this.quantityMillisIncrementToAllocationMap = quantityMillisIncrementToAllocationMap;
             this.workingRandom = workingRandom;
         }
 
@@ -92,13 +86,13 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
         }
 
         public Move next() {
-            long transferMicros
-                    = RandomUtils.nextLong(workingRandom, InvestmentAllocationMicrosUtil.MAXIMUM_QUANTITY_MICROS) + 1L;
+            long transferMillis
+                    = RandomUtils.nextLong(workingRandom, InvestmentAllocationNumericUtil.MAXIMUM_QUANTITY_MILLIS) + 1L;
             Map.Entry<Long, AssetClassAllocation> lowerEntry
-                    = quantityIncrementMicrosToAllocationMap.lowerEntry(transferMicros);
-            Map.Entry<Long, AssetClassAllocation> ceilingEntry = quantityIncrementMicrosToAllocationMap
-                    .ceilingEntry(transferMicros);
-            transferMicros -= (lowerEntry == null ? 0L : lowerEntry.getKey());
+                    = quantityMillisIncrementToAllocationMap.lowerEntry(transferMillis);
+            Map.Entry<Long, AssetClassAllocation> ceilingEntry = quantityMillisIncrementToAllocationMap
+                    .ceilingEntry(transferMillis);
+            transferMillis -= (lowerEntry == null ? 0L : lowerEntry.getKey());
             AssetClassAllocation fromAllocation = ceilingEntry.getValue();
 
             // TODO improve scalability by not using indexOf() on an ArrayList
@@ -108,7 +102,7 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
                 toAllocationIndex++;
             }
             AssetClassAllocation toAllocation = allocationList.get(toAllocationIndex);
-            return new InvestmentQuantityTransferMove(fromAllocation, toAllocation, transferMicros);
+            return new InvestmentQuantityTransferMove(fromAllocation, toAllocation, transferMillis);
         }
 
         public void remove() {

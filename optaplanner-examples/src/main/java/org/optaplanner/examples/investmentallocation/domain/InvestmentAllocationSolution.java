@@ -28,13 +28,10 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
-import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationMicrosUtil;
+import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationNumericUtil;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution
@@ -77,9 +74,9 @@ public class InvestmentAllocationSolution extends AbstractPersistable implements
     // Complex methods
     // ************************************************************************
 
-    @ValueRangeProvider(id = "quantityMicrosRange")
-    public CountableValueRange<Long> getQuantityMicrosRange() {
-        return ValueRangeFactory.createLongValueRange(0L, InvestmentAllocationMicrosUtil.MAXIMUM_QUANTITY_MICROS + 1L);
+    @ValueRangeProvider(id = "quantityMillisRange")
+    public CountableValueRange<Long> getQuantityMillisRange() {
+        return ValueRangeFactory.createLongValueRange(0L, InvestmentAllocationNumericUtil.MAXIMUM_QUANTITY_MILLIS + 1L);
     }
 
     public Collection<? extends Object> getProblemFacts() {

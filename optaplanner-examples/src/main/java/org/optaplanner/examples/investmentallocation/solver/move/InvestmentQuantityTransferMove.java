@@ -29,12 +29,12 @@ public class InvestmentQuantityTransferMove extends AbstractMove {
 
     private final AssetClassAllocation fromAssetClassAllocation;
     private final AssetClassAllocation toAssetClassAllocation;
-    private final long transferMicros;
+    private final long transferMillis;
 
-    public InvestmentQuantityTransferMove(AssetClassAllocation fromAssetClassAllocation, AssetClassAllocation toAssetClassAllocation, long transferMicros) {
+    public InvestmentQuantityTransferMove(AssetClassAllocation fromAssetClassAllocation, AssetClassAllocation toAssetClassAllocation, long transferMillis) {
         this.fromAssetClassAllocation = fromAssetClassAllocation;
         this.toAssetClassAllocation = toAssetClassAllocation;
-        this.transferMicros = transferMicros;
+        this.transferMillis = transferMillis;
     }
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
@@ -42,16 +42,16 @@ public class InvestmentQuantityTransferMove extends AbstractMove {
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        return new InvestmentQuantityTransferMove(toAssetClassAllocation, fromAssetClassAllocation, transferMicros);
+        return new InvestmentQuantityTransferMove(toAssetClassAllocation, fromAssetClassAllocation, transferMillis);
     }
 
     public void doMove(ScoreDirector scoreDirector) {
-        scoreDirector.beforeVariableChanged(fromAssetClassAllocation, "quantityMicros");
-        fromAssetClassAllocation.setQuantityMicros(fromAssetClassAllocation.getQuantityMicros() - transferMicros);
-        scoreDirector.afterVariableChanged(fromAssetClassAllocation, "quantityMicros");
-        scoreDirector.beforeVariableChanged(toAssetClassAllocation, "quantityMicros");
-        toAssetClassAllocation.setQuantityMicros(toAssetClassAllocation.getQuantityMicros() + transferMicros);
-        scoreDirector.afterVariableChanged(toAssetClassAllocation, "quantityMicros");
+        scoreDirector.beforeVariableChanged(fromAssetClassAllocation, "quantityMillis");
+        fromAssetClassAllocation.setQuantityMillis(fromAssetClassAllocation.getQuantityMillis() - transferMillis);
+        scoreDirector.afterVariableChanged(fromAssetClassAllocation, "quantityMillis");
+        scoreDirector.beforeVariableChanged(toAssetClassAllocation, "quantityMillis");
+        toAssetClassAllocation.setQuantityMillis(toAssetClassAllocation.getQuantityMillis() + transferMillis);
+        scoreDirector.afterVariableChanged(toAssetClassAllocation, "quantityMillis");
     }
 
     public Collection<? extends Object> getPlanningEntities() {
@@ -64,10 +64,10 @@ public class InvestmentQuantityTransferMove extends AbstractMove {
 
     @Override
     public String toString() {
-        long fromQuantity = fromAssetClassAllocation.getQuantityMicros();
-        long toQuantity = toAssetClassAllocation.getQuantityMicros();
-        return "[" + fromAssetClassAllocation + " {" + fromQuantity + "->" + (fromQuantity - transferMicros) + "}, "
-                + toAssetClassAllocation + " {" + toQuantity + "->" + (toQuantity + transferMicros) + "}]";
+        long fromQuantity = fromAssetClassAllocation.getQuantityMillis();
+        long toQuantity = toAssetClassAllocation.getQuantityMillis();
+        return "[" + fromAssetClassAllocation + " {" + fromQuantity + "->" + (fromQuantity - transferMillis) + "}, "
+                + toAssetClassAllocation + " {" + toQuantity + "->" + (toQuantity + transferMillis) + "}]";
     }
 
 }

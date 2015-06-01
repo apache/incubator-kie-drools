@@ -20,9 +20,7 @@ import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
 import org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution;
-import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationMicrosUtil;
-import org.optaplanner.examples.machinereassignment.domain.MrMachine;
-import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
+import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationNumericUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,19 +34,19 @@ public class InvestmentAllocationSolutionInitializer implements CustomPhaseComma
     }
 
     private void distributeQuantityEvenly(ScoreDirector scoreDirector, InvestmentAllocationSolution solution) {
-        long budget = InvestmentAllocationMicrosUtil.MAXIMUM_QUANTITY_MICROS;
+        long budget = InvestmentAllocationNumericUtil.MAXIMUM_QUANTITY_MILLIS;
         int size = solution.getAssetClassAllocationList().size();
         long budgetPerAllocation = budget / size;
         long remainder = budget % size;
         for (AssetClassAllocation allocation : solution.getAssetClassAllocationList()) {
-            long quantityMicros = budgetPerAllocation;
+            long quantityMillis = budgetPerAllocation;
             if (remainder > 0L) {
                 remainder--;
-                quantityMicros++;
+                quantityMillis++;
             }
-            scoreDirector.beforeVariableChanged(allocation, "quantityMicros");
-            allocation.setQuantityMicros(quantityMicros);
-            scoreDirector.afterVariableChanged(allocation, "quantityMicros");
+            scoreDirector.beforeVariableChanged(allocation, "quantityMillis");
+            allocation.setQuantityMillis(quantityMillis);
+            scoreDirector.afterVariableChanged(allocation, "quantityMillis");
         }
     }
 

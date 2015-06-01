@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationMicrosUtil;
+import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationNumericUtil;
 
 @PlanningEntity()
 @XStreamAlias("IaAssetClassAllocation")
@@ -29,7 +29,7 @@ public class AssetClassAllocation extends AbstractPersistable {
     private AssetClass assetClass;
 
     // Planning variables: changes during planning, between score calculations.
-    private Long quantityMicros; // In micro's (so multiplied by 10^6)
+    private Long quantityMillis; // In milli's (so multiplied by 1000)
 
     public AssetClass getAssetClass() {
         return assetClass;
@@ -39,31 +39,31 @@ public class AssetClassAllocation extends AbstractPersistable {
         this.assetClass = assetClass;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"quantityMicrosRange"})
-    public Long getQuantityMicros() {
-        return quantityMicros;
+    @PlanningVariable(valueRangeProviderRefs = {"quantityMillisRange"})
+    public Long getQuantityMillis() {
+        return quantityMillis;
     }
 
-    public void setQuantityMicros(Long quantityMicros) {
-        this.quantityMicros = quantityMicros;
+    public void setQuantityMillis(Long quantityMillis) {
+        this.quantityMillis = quantityMillis;
     }
 
     // ************************************************************************
     // Complex methods
     // ************************************************************************
 
-    public long getQuantifiedExpectedReturnPicos() {
-        if (quantityMicros == null) {
+    public long getQuantifiedExpectedReturnMicros() {
+        if (quantityMillis == null) {
             return 0L;
         }
-        return quantityMicros * assetClass.getExpectedReturnMicros();
+        return quantityMillis * assetClass.getExpectedReturnMillis();
     }
 
     public String getQuantityLabel() {
-        if (quantityMicros == null) {
+        if (quantityMillis == null) {
             return "";
         }
-        return InvestmentAllocationMicrosUtil.formatMicrosAsPercentage(quantityMicros);
+        return InvestmentAllocationNumericUtil.formatMillisAsPercentage(quantityMillis);
     }
 
     public String getLabel() {
