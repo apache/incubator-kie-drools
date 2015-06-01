@@ -78,7 +78,7 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
      * Their weight is included in the total.
      * The medium score is usually a negative number because most use cases only have negative constraints.
      * <p/>
-     * In a normal score comparison, the medium score is irrelevant if the 2 scores don't have the same score.
+     * In a normal score comparison, the medium score is irrelevant if the 2 scores don't have the same hard score.
      * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
      */
     public int getMediumScore() {
