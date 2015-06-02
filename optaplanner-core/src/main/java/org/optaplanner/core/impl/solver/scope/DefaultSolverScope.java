@@ -33,11 +33,11 @@ public class DefaultSolverScope {
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected int startingSolverCount;
+    protected Random workingRandom;
+    protected InnerScoreDirector scoreDirector;
 
     protected Long startingSystemTimeMillis;
     protected Long endingSystemTimeMillis;
-    protected Random workingRandom;
-    protected InnerScoreDirector scoreDirector;
 
     protected Score startingInitializedScore; // TODO after initialization => ambiguous with solve()'s planningProblem
 
@@ -55,6 +55,22 @@ public class DefaultSolverScope {
         this.startingSolverCount = startingSolverCount;
     }
 
+    public Random getWorkingRandom() {
+        return workingRandom;
+    }
+
+    public void setWorkingRandom(Random workingRandom) {
+        this.workingRandom = workingRandom;
+    }
+
+    public InnerScoreDirector getScoreDirector() {
+        return scoreDirector;
+    }
+
+    public void setScoreDirector(InnerScoreDirector scoreDirector) {
+        this.scoreDirector = scoreDirector;
+    }
+
     public Long getStartingSystemTimeMillis() {
         return startingSystemTimeMillis;
     }
@@ -69,26 +85,6 @@ public class DefaultSolverScope {
 
     public void setEndingSystemTimeMillis(Long endingSystemTimeMillis) {
         this.endingSystemTimeMillis = endingSystemTimeMillis;
-    }
-
-    public Random getWorkingRandom() {
-        return workingRandom;
-    }
-
-    public void setWorkingRandom(Random workingRandom) {
-        this.workingRandom = workingRandom;
-    }
-
-    public InnerScoreDirector getScoreDirector() {
-        return scoreDirector;
-    }
-
-    public void setScoreDirector(InnerScoreDirector scoreDirector) {
-        // TODO remove HACK to fix memory leak of https://issues.jboss.org/browse/PLANNER-19
-        if (this.scoreDirector != null) {
-            this.scoreDirector.dispose();
-        }
-        this.scoreDirector = scoreDirector;
     }
 
     public SolutionDescriptor getSolutionDescriptor() {

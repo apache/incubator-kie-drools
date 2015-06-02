@@ -184,14 +184,14 @@ public class DefaultSolver implements Solver {
         solving.set(true);
         basicPlumbingTermination.resetTerminateEarly();
         solverScope.setStartingSolverCount(0);
+        solverScope.setWorkingRandom(randomFactory.createRandom());
+        solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(constraintMatchEnabledPreference));
     }
 
     public void solvingStarted(DefaultSolverScope solverScope) {
         solverScope.setStartingSystemTimeMillis(System.currentTimeMillis());
         solverScope.setEndingSystemTimeMillis(null);
-        solverScope.setWorkingRandom(randomFactory.createRandom());
-        solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(constraintMatchEnabledPreference));
-        // TODO PLANNER-39 call solverScope.getScoreDirector().resetCalculateCount();
+        solverScope.getScoreDirector().resetCalculateCount();
         solverScope.setWorkingSolutionFromBestSolution();
         bestSolutionRecaller.solvingStarted(solverScope);
         for (Phase phase : phaseList) {

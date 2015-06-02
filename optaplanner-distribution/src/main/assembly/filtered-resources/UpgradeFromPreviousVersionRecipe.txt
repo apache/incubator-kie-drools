@@ -2445,3 +2445,8 @@ After in *BenchmarkConfig.xml:
 [MINOR] In real-time planning, calling addProblemFactChange() now resets the time spent terminations too.
 It did already reset all other terminations (despite that the docs claimed otherwise).
 The docs have also been fixed to reflect reality, which is also the desired behaviour by users.
+
+[MINOR] In real-time planning, addProblemFactChange() no longer causes the ScoreDirector to be replaced
+(so it no longer creates a new KieSession) upon solver restart.
+This might expose a hidden bug in your ProblemFactChange implementation.
+Enable environmentMode FULL_ASSERT and do a few addProblemFactChange() calls to validate that there are no such bugs.
