@@ -33,6 +33,8 @@ import org.optaplanner.examples.investmentallocation.domain.InvestmentParametriz
 
 public class InvestmentAllocationImporter extends AbstractTxtSolutionImporter {
 
+    private static final String INPUT_FILE_SUFFIX = "csv";
+
     public static void main(String[] args) {
         InvestmentAllocationImporter importer = new InvestmentAllocationImporter();
         importer.convert("irrinki_1.csv", "irrinki_1.xml");
@@ -44,6 +46,11 @@ public class InvestmentAllocationImporter extends AbstractTxtSolutionImporter {
 
     public InvestmentAllocationImporter(boolean withoutDao) {
         super(withoutDao);
+    }
+
+    @Override
+    public String getInputFileSuffix() {
+        return INPUT_FILE_SUFFIX;
     }
 
     public TxtInputBuilder createTxtInputBuilder() {
