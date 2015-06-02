@@ -20,7 +20,7 @@ import org.kie.api.runtime.KieContainer;
 
 public class KieProjectDefaultClasspathTest extends AbstractKnowledgeTest {
 
-    KieServicesEventListerner listener;
+    private KieServicesEventListerner listener;
 
     @Test
     public void createMultpleJarAndFileResources() throws IOException,
