@@ -46,7 +46,8 @@ public class CloudBalancingDaemonTest extends LoggingTest {
     private Queue<CloudProcess> notYetAddedProcessQueue = new LinkedList<CloudProcess>();
 
     @Test(timeout = 600000)
-    public void daemon() throws InterruptedException { // In main thread
+    public void daemon() throws InterruptedException {
+        // In main thread
         Solver solver = buildSolver();
         CloudBalance cloudBalance = buildPlanningProblem();
         SolverThread solverThread = new SolverThread(solver, cloudBalance);

@@ -108,6 +108,10 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         return calculateCount;
     }
 
+    public void resetCalculateCount() {
+        this.calculateCount = 0L;
+    }
+
     public SupplyManager getSupplyManager() {
         return variableListenerSupport;
     }

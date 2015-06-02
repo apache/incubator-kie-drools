@@ -32,11 +32,12 @@ public class DefaultSolverScope {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected Long startingSystemTimeMillis;
     protected int startingSolverCount;
+
+    protected Long startingSystemTimeMillis;
     protected Long endingSystemTimeMillis;
-    protected InnerScoreDirector scoreDirector;
     protected Random workingRandom;
+    protected InnerScoreDirector scoreDirector;
 
     protected Score startingInitializedScore; // TODO after initialization => ambiguous with solve()'s planningProblem
 
@@ -46,14 +47,6 @@ public class DefaultSolverScope {
     protected Long bestSolutionTimeMillis;
 
 
-    public Long getStartingSystemTimeMillis() {
-        return startingSystemTimeMillis;
-    }
-
-    public void setStartingSystemTimeMillis(Long startingSystemTimeMillis) {
-        this.startingSystemTimeMillis = startingSystemTimeMillis;
-    }
-
     public int getStartingSolverCount() {
         return startingSolverCount;
     }
@@ -62,12 +55,28 @@ public class DefaultSolverScope {
         this.startingSolverCount = startingSolverCount;
     }
 
+    public Long getStartingSystemTimeMillis() {
+        return startingSystemTimeMillis;
+    }
+
+    public void setStartingSystemTimeMillis(Long startingSystemTimeMillis) {
+        this.startingSystemTimeMillis = startingSystemTimeMillis;
+    }
+
     public Long getEndingSystemTimeMillis() {
         return endingSystemTimeMillis;
     }
 
     public void setEndingSystemTimeMillis(Long endingSystemTimeMillis) {
         this.endingSystemTimeMillis = endingSystemTimeMillis;
+    }
+
+    public Random getWorkingRandom() {
+        return workingRandom;
+    }
+
+    public void setWorkingRandom(Random workingRandom) {
+        this.workingRandom = workingRandom;
     }
 
     public InnerScoreDirector getScoreDirector() {
@@ -120,14 +129,6 @@ public class DefaultSolverScope {
 
     public void assertScoreFromScratch(Solution solution) {
         scoreDirector.getScoreDirectorFactory().assertScoreFromScratch(solution);
-    }
-
-    public Random getWorkingRandom() {
-        return workingRandom;
-    }
-
-    public void setWorkingRandom(Random workingRandom) {
-        this.workingRandom = workingRandom;
     }
 
     public Score getStartingInitializedScore() {

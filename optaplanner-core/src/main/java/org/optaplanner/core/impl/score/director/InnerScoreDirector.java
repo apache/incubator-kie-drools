@@ -87,6 +87,8 @@ public interface InnerScoreDirector extends ScoreDirector {
      */
     long getCalculateCount();
 
+    void resetCalculateCount();
+
     /**
      * @return never null
      */

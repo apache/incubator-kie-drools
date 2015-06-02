@@ -2441,3 +2441,7 @@ Before in *BenchmarkConfig.xml:
     <solverBenchmarkBluePrintType>ALL_CONSTRUCTION_HEURISTIC_TYPES</solverBenchmarkBluePrintType>
 After in *BenchmarkConfig.xml:
     <solverBenchmarkBluePrintType>EVERY_CONSTRUCTION_HEURISTIC_TYPE</solverBenchmarkBluePrintType>
+
+[MINOR] In real-time planning, calling addProblemFactChange() now resets the time spent terminations too.
+It did already reset all other terminations (despite that the docs claimed otherwise).
+The docs have also been fixed to reflect reality, which is also the desired behaviour by users.
