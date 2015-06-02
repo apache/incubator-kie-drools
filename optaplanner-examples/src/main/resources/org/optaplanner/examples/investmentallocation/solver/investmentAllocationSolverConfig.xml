@@ -9,10 +9,13 @@
   <!-- Score configuration -->
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
-    <easyScoreCalculatorClass>org.optaplanner.examples.investmentallocation.solver.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>
-    <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.investmentallocation.solver.score.InvestmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
+    <!--<easyScoreCalculatorClass>org.optaplanner.examples.investmentallocation.solver.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>-->
+    <incrementalScoreCalculatorClass>org.optaplanner.examples.investmentallocation.solver.score.InvestmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
     <!--<scoreDrl>org/optaplanner/examples/investmentallocation/solver/investmentAllocationScoreRules.drl</scoreDrl>-->
     <initializingScoreTrend>ONLY_DOWN/ANY</initializingScoreTrend>
+    <assertionScoreDirectorFactory>
+      <easyScoreCalculatorClass>org.optaplanner.examples.investmentallocation.solver.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>
+    </assertionScoreDirectorFactory>
   </scoreDirectorFactory>
 
   <!-- Optimization algorithms configuration -->
