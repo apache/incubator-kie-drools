@@ -49,7 +49,7 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
         hardScore = 0L;
         softScore = 0L;
         for (AssetClassAllocation allocation : solution.getAssetClassAllocationList()) {
-            insertQuantityMillis(allocation);
+            insertQuantityMillis(allocation, true);
         }
     }
 
@@ -58,7 +58,7 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
     }
 
     public void afterEntityAdded(Object entity) {
-        insertQuantityMillis((AssetClassAllocation) entity);
+        insertQuantityMillis((AssetClassAllocation) entity, false);
     }
 
     public void beforeVariableChanged(Object entity, String variableName) {
@@ -66,7 +66,7 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
     }
 
     public void afterVariableChanged(Object entity, String variableName) {
-        insertQuantityMillis((AssetClassAllocation) entity);
+        insertQuantityMillis((AssetClassAllocation) entity, false);
     }
 
     public void beforeEntityRemoved(Object entity) {
@@ -81,11 +81,11 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
     // Modify methods
     // ************************************************************************
 
-    private void insertQuantityMillis(AssetClassAllocation allocation) {
+    private void insertQuantityMillis(AssetClassAllocation allocation, boolean reset) {
         if (standardDeviationSquaredFemtos > standardDeviationSquaredFemtosMaximum) {
             hardScore += standardDeviationSquaredFemtos - standardDeviationSquaredFemtosMaximum;
         }
-        standardDeviationSquaredFemtos += calculateStandardDeviationSquaredFemtosDelta(allocation);
+        standardDeviationSquaredFemtos += calculateStandardDeviationSquaredFemtosDelta(allocation, reset);
         if (standardDeviationSquaredFemtos > standardDeviationSquaredFemtosMaximum) {
             hardScore -= standardDeviationSquaredFemtos - standardDeviationSquaredFemtosMaximum;
         }
@@ -96,14 +96,14 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
         if (standardDeviationSquaredFemtos > standardDeviationSquaredFemtosMaximum) {
             hardScore += standardDeviationSquaredFemtos - standardDeviationSquaredFemtosMaximum;
         }
-        standardDeviationSquaredFemtos -= calculateStandardDeviationSquaredFemtosDelta(allocation);
+        standardDeviationSquaredFemtos -= calculateStandardDeviationSquaredFemtosDelta(allocation, false);
         if (standardDeviationSquaredFemtos > standardDeviationSquaredFemtosMaximum) {
             hardScore -= standardDeviationSquaredFemtos - standardDeviationSquaredFemtosMaximum;
         }
         softScore -= allocation.getQuantifiedExpectedReturnMicros();
     }
 
-    private long calculateStandardDeviationSquaredFemtosDelta(AssetClassAllocation allocation) {
+    private long calculateStandardDeviationSquaredFemtosDelta(AssetClassAllocation allocation, boolean reset) {
         long squaredFemtos = 0L;
         for (AssetClassAllocation other : solution.getAssetClassAllocationList()) {
             if (allocation == other) {
@@ -112,7 +112,10 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
             } else {
                 long picos = allocation.getQuantifiedStandardDeviationRiskMicros() * other.getQuantifiedStandardDeviationRiskMicros();
                 squaredFemtos += picos * allocation.getAssetClass().getCorrelationMillisMap().get(other.getAssetClass());
-                squaredFemtos += picos * other.getAssetClass().getCorrelationMillisMap().get(allocation.getAssetClass());
+                // TODO FIXME the reset hack only works if there are no moves that mix multiple before/after notifications
+                if (!reset) {
+                    squaredFemtos += picos * other.getAssetClass().getCorrelationMillisMap().get(allocation.getAssetClass());
+                }
             }
         }
         return squaredFemtos;
