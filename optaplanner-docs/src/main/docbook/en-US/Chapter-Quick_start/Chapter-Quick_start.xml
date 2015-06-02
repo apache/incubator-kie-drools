@@ -258,7 +258,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>The only non-obvious part is building the <literal>Solver</literal>, as detailed in the next section.</para>
+      <para>The only complicated part is building the <literal>Solver</literal>, as detailed in the next section.</para>
     </section>
 
     <section xml:id="cloudBalancingSolverConfiguration">
@@ -305,8 +305,8 @@
           <para><emphasis role="bold">Score configuration</emphasis>: How should Planner optimize the planning
           variables? What is our goal? Since we have hard and soft constraints, we use a
           <literal>HardSoftScore</literal>. But we also need to tell Planner how to calculate the score, depending on
-          our business requirements. Further down, we 'll look into 2 alternatives to calculate the score: using a
-          simple Java implementation or using Drools DRL.</para>
+          our business requirements. Further down, we will look into two alternatives to calculate the score: using a
+          simple Java implementation, or using Drools DRL.</para>
 
           <programlisting language="xml"><![CDATA[  <scoreDirectorFactory>
     <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
@@ -360,7 +360,7 @@
       <section xml:id="cloudBalancingClassProcess">
         <title>The <literal>Process</literal> Class</title>
 
-        <para>The <literal>Process</literal> class is a little bit special. We need to tell Planner that it can change
+        <para>The <literal>Process</literal> class is particularly important. We need to tell Planner that it can change
         the field <literal>computer</literal>, so we annotate the class with <literal>@PlanningEntity</literal> and the
         getter <literal>getComputer</literal> with <literal>@PlanningVariable</literal>:</para>
 
@@ -397,16 +397,16 @@ public class CloudProcess ... {
         </example>
 
         <para>The values that Planner can choose from for the field <literal>computer</literal>, are retrieved from a
-        method on the <literal>Solution</literal> implementation: <literal>CloudBalance.getComputerList()</literal>
-        which returns a list of all computers in the current data set. The <literal>valueRangeProviderRefs</literal> property is used to tell Planner about this.</para>
+        method on the <literal>Solution</literal> implementation: <literal>CloudBalance.getComputerList()</literal>,
+        which returns a list of all computers in the current data set. The <literal>valueRangeProviderRefs</literal> property is used to pass this information to the Planner.</para>
       </section>
 
       <section xml:id="cloudBalancingClassCloudBalance">
         <title>The <literal>CloudBalance</literal> Class</title>
 
         <para>The <literal>CloudBalance</literal> class implements the <filename>Solution</filename> interface. It holds
-        a list of all computers and processes. We need to tell Planner how to retrieve the collection of processes which
-        it can change, so we need to annotate the getter <literal>getProcessList</literal> with
+        a list of all computers and processes. We need to tell Planner how to retrieve the collection of processes that
+        it can change, therefore we must annotate the getter <literal>getProcessList</literal> with
         <literal>@PlanningEntityCollectionProperty</literal>.</para>
 
         <para>The <literal>CloudBalance</literal> class also has a property <literal>score</literal>, which is the
@@ -495,7 +495,7 @@ public class CloudProcess ... {
         </listitem>
       </itemizedlist>
 
-      <para>Let's take a look at 2 different implementations:</para>
+      <para>Let's take a look at two different implementations:</para>
 
       <section xml:id="cloudBalancingEasyJavaScoreConfiguration">
         <title>Easy Java Score Configuration</title>
@@ -565,7 +565,7 @@ public class CloudProcess ... {
         </example>
 
         <para>Even if we optimize the code above to use <literal>Map</literal>s to iterate through the
-        <literal>processList</literal> only once, <emphasis role="bold">it is still slow</emphasis> because it doesn't
+        <literal>processList</literal> only once, <emphasis role="bold">it is still slow</emphasis> because it does not
         do incremental score calculation. To fix that, either use an incremental Java score function or a Drools score
         function. Let's take a look at the latter.</para>
       </section>
