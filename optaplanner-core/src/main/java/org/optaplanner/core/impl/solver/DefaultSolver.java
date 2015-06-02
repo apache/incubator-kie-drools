@@ -224,12 +224,12 @@ public class DefaultSolver implements Solver {
             phase.solvingEnded(solverScope);
         }
         bestSolutionRecaller.solvingEnded(solverScope);
+        solverScope.setEndingSystemTimeMillis(System.currentTimeMillis());
     }
 
     public void outerSolvingEnded(DefaultSolverScope solverScope) {
         // Must be kept open for doProblemFactChange
         solverScope.getScoreDirector().dispose();
-        solverScope.setEndingSystemTimeMillis(System.currentTimeMillis());
         long timeMillisSpent = getTimeMillisSpent();
         // Avoid divide by zero exception on a fast CPU
         long averageCalculateCountPerSecond = solverScope.getCalculateCount() * 1000L
