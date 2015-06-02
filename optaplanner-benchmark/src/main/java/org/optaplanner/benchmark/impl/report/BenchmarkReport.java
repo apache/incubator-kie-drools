@@ -69,7 +69,7 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 
 public class BenchmarkReport {
 
-    public static final int CHARTED_SCORE_LEVEL_SIZE = 5;
+    public static final int CHARTED_SCORE_LEVEL_SIZE = 15;
 
     private final PlannerBenchmarkResult plannerBenchmarkResult;
 
