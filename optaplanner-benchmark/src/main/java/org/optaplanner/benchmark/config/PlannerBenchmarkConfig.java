@@ -210,15 +210,17 @@ public class PlannerBenchmarkConfig {
     }
 
     protected void validate() {
-        if (!PlannerBenchmarkConfig.VALID_NAME_PATTERN.matcher(name).matches()) {
-            throw new IllegalStateException("The plannerBenchmark name (" + name
-                    + ") is invalid because it does not follow the nameRegex ("
-                    + PlannerBenchmarkConfig.VALID_NAME_PATTERN.pattern() + ")" +
-                    " which might cause an illegal filename.");
-        }
-        if (!name.trim().equals(name)) {
-            throw new IllegalStateException("The plannerBenchmark name (" + name
-                    + ") is invalid because it starts or ends with whitespace.");
+        if (name != null) {
+            if (!PlannerBenchmarkConfig.VALID_NAME_PATTERN.matcher(name).matches()) {
+                throw new IllegalStateException("The plannerBenchmark name (" + name
+                        + ") is invalid because it does not follow the nameRegex ("
+                        + PlannerBenchmarkConfig.VALID_NAME_PATTERN.pattern() + ")" +
+                        " which might cause an illegal filename.");
+            }
+            if (!name.trim().equals(name)) {
+                throw new IllegalStateException("The plannerBenchmark name (" + name
+                        + ") is invalid because it starts or ends with whitespace.");
+            }
         }
         if (ConfigUtils.isEmptyCollection(solverBenchmarkBluePrintConfigList)
                 && ConfigUtils.isEmptyCollection(solverBenchmarkConfigList)) {
