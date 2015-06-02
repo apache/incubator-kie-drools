@@ -323,9 +323,11 @@ end</programlisting>
       </note>
 
       <para>In essence, the <literal>Solver</literal> stops, runs the <literal>ProblemFactChange</literal> and <emphasis
-      role="bold">restarts</emphasis>. Each solver phase runs again. This implies the construction heuristic runs again,
-      but because little or no planning variables are uninitialized (unless you have a <link
-      linkend="nullablePlanningVariable">nullable planning variable</link>), this doesn't take long.</para>
+      role="bold">restarts</emphasis>. This is a <emphasis>warm start</emphasis> because its initial solution is the
+      adjusted best solution of the previous run. Each solver phase runs again. This implies the construction heuristic
+      runs again, but because little or no planning variables are uninitialized (unless you have a <link
+      linkend="nullablePlanningVariable">nullable planning variable</link>), it finishes much quicker than in a cold
+      start.</para>
 
       <para>Each configured phase <literal>Termination</literal> resets, but each solver Termination (including
       <literal>terminateEarly</literal>) does not reset. Normally however, you won't configure any
@@ -338,30 +340,30 @@ end</programlisting>
       <title>Daemon: <literal>solve()</literal> Does Not Return</title>
 
       <para>In real-time planning, it's often useful to have a solver thread wait when it runs out of work, and
-      immediately solve a problem once problem fact changes are added. Putting the Solver in daemon mode has these
-      effects:</para>
+      immediately resume solving a problem once new problem fact changes are added. Putting the
+      <literal>Solver</literal> in daemon mode has these effects:</para>
 
       <itemizedlist>
         <listitem>
           <para>If the <literal>Solver</literal>'s <literal>Termination</literal> terminates, it does not return from
-          <literal>solve()</literal> but waits instead (freeing up CPU).</para>
+          <literal>solve()</literal> but blocks its thread instead (which frees up CPU power).</para>
 
           <itemizedlist>
             <listitem>
               <para>Except for terminateEarly(), which does make it return from <literal>solve()</literal>, freeing up
-              system resources (and allowing the application to shutdown gracefully).</para>
+              system resources and allowing an application to shutdown gracefully.</para>
             </listitem>
 
             <listitem>
-              <para>If a <literal>Solver</literal> starts with an empty planning entity collection, it goes to the
-              waiting state immediately.</para>
+              <para>If a <literal>Solver</literal> starts with an empty planning entity collection, it waits in the
+              blocked state immediately.</para>
             </listitem>
           </itemizedlist>
         </listitem>
 
         <listitem>
-          <para>If a <literal>ProblemFactChange</literal> is added, it's processed and the <literal>Solver</literal>
-          runs again.</para>
+          <para>If a <literal>ProblemFactChange</literal> is added, it goes into the running state, applies the
+          <literal>ProblemFactChange</literal> and runs the <literal>Solver</literal> again.</para>
         </listitem>
       </itemizedlist>
 
