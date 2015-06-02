@@ -9,7 +9,9 @@
   <!-- Score configuration -->
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
-    <scoreDrl>org/optaplanner/examples/investmentallocation/solver/investmentAllocationScoreRules.drl</scoreDrl>
+    <easyScoreCalculatorClass>org.optaplanner.examples.investmentallocation.solver.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>
+    <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.investmentallocation.solver.score.InvestmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
+    <!--<scoreDrl>org/optaplanner/examples/investmentallocation/solver/investmentAllocationScoreRules.drl</scoreDrl>-->
     <initializingScoreTrend>ONLY_DOWN/ANY</initializingScoreTrend>
   </scoreDirectorFactory>
 
@@ -24,5 +26,11 @@
     <moveIteratorFactory>
       <moveIteratorFactoryClass>org.optaplanner.examples.investmentallocation.solver.move.factory.InvestmentQuantityTransferMoveIteratorFactory</moveIteratorFactoryClass>
     </moveIteratorFactory>
+    <acceptor>
+      <lateAcceptanceSize>40000</lateAcceptanceSize>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>1</acceptedCountLimit>
+    </forager>
   </localSearch>
 </solver>
