@@ -23,6 +23,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.phase.PhaseConfig;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.phase.custom.CustomPhase;
 import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
@@ -79,6 +80,10 @@ public class CustomPhaseConfig extends PhaseConfig {
         }
         customPhase.setCustomPhaseCommandList(customPhaseCommandList);
         customPhase.setForceUpdateBestSolution(forceUpdateBestSolution == null ? false : forceUpdateBestSolution);
+        EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
+        if (environmentMode.isNonIntrusiveFullAsserted()) {
+            customPhase.setAssertStepScoreFromScratch(true);
+        }
         return customPhase;
     }
 

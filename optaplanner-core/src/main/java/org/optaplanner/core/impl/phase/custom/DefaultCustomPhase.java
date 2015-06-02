@@ -36,12 +36,18 @@ public class DefaultCustomPhase extends AbstractPhase
     protected List<CustomPhaseCommand> customPhaseCommandList;
     protected boolean forceUpdateBestSolution;
 
+    protected boolean assertStepScoreFromScratch = false;
+
     public void setCustomPhaseCommandList(List<CustomPhaseCommand> customPhaseCommandList) {
         this.customPhaseCommandList = customPhaseCommandList;
     }
 
     public void setForceUpdateBestSolution(boolean forceUpdateBestSolution) {
         this.forceUpdateBestSolution = forceUpdateBestSolution;
+    }
+
+    public void setAssertStepScoreFromScratch(boolean assertStepScoreFromScratch) {
+        this.assertStepScoreFromScratch = assertStepScoreFromScratch;
     }
 
     @Override
@@ -86,6 +92,9 @@ public class DefaultCustomPhase extends AbstractPhase
         stepScope.setUninitializedVariableCount(uninitializedVariableCount);
         Score score = scoreDirector.calculateScore();
         stepScope.setScore(score);
+        if (assertStepScoreFromScratch) {
+            stepScope.getPhaseScope().assertWorkingScoreFromScratch(stepScope.getScore(), customPhaseCommand);
+        }
         bestSolutionRecaller.processWorkingSolutionDuringStep(stepScope);
     }
 
