@@ -34,14 +34,7 @@ import org.drools.core.command.runtime.process.AbortWorkItemCommand;
 import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.core.command.runtime.process.SignalEventCommand;
 import org.drools.core.command.runtime.process.StartProcessCommand;
-import org.drools.core.command.runtime.rule.DeleteCommand;
-import org.drools.core.command.runtime.rule.FireAllRulesCommand;
-import org.drools.core.command.runtime.rule.GetObjectCommand;
-import org.drools.core.command.runtime.rule.GetObjectsCommand;
-import org.drools.core.command.runtime.rule.InsertElementsCommand;
-import org.drools.core.command.runtime.rule.InsertObjectCommand;
-import org.drools.core.command.runtime.rule.ModifyCommand;
-import org.drools.core.command.runtime.rule.QueryCommand;
+import org.drools.core.command.runtime.rule.*;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.rule.Declaration;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
@@ -74,8 +67,13 @@ public class XStreamXML {
         xstream.addImplicitCollection( BatchExecutionCommandImpl.class,
                                        "commands" );
 
+        xstream.registerConverter( new AgendaGroupSetFocusConverter( xstream ) );
+        xstream.registerConverter( new ClearActivationGroupConverter( xstream ) );
+        xstream.registerConverter( new ClearAgendaConverter( xstream ) );
+        xstream.registerConverter( new ClearAgendaGroupConverter( xstream ) );
+        xstream.registerConverter( new ClearRuleFlowGroupConverter( xstream ) );
+        xstream.registerConverter( new DeleteConverter( xstream ) );
         xstream.registerConverter( new InsertConverter( xstream ) );
-        xstream.registerConverter( new RetractConverter( xstream ) );
         xstream.registerConverter( new ModifyConverter( xstream ) );
         xstream.registerConverter( new GetObjectConverter( xstream ) );
         xstream.registerConverter( new InsertElementsConverter( xstream ) );
@@ -169,8 +167,9 @@ public class XStreamXML {
                             MarshallingContext marshallingContext) {
             FactHandle fh = (FactHandle) object;
             //writer.startNode("fact-handle");
-            writer.addAttribute( "external-form",
-                                 fh.toExternalForm() );
+            writer.addAttribute(
+                    "external-form",
+                    fh.toExternalForm() );
             //writer.endNode();
         }
 
@@ -228,11 +227,12 @@ public class XStreamXML {
 
     }
 
-    public static class RetractConverter extends AbstractCollectionConverter
+    public static class DeleteConverter
+            extends AbstractCollectionConverter
         implements
         Converter {
 
-        public RetractConverter(XStream xstream) {
+        public DeleteConverter(XStream xstream) {
             super( xstream.getMapper() );
         }
 
@@ -249,7 +249,7 @@ public class XStreamXML {
                                 UnmarshallingContext context) {
             FactHandle factHandle = new DefaultFactHandle( reader.getAttribute( "fact-handle" ) );
 
-            return CommandFactory.newDelete(factHandle);
+            return CommandFactory.newDelete( factHandle );
         }
 
         public boolean canConvert(Class clazz) {
@@ -759,8 +759,9 @@ public class XStreamXML {
                 reader.moveUp();
             }
 
-            Command cmd = CommandFactory.newCompleteWorkItem( Long.parseLong( id ),
-                                                              results );
+            Command cmd = CommandFactory.newCompleteWorkItem(
+                    Long.parseLong( id ),
+                    results );
 
             return cmd;
         }
@@ -1028,4 +1029,150 @@ public class XStreamXML {
             return QueryResults.class.isAssignableFrom( clazz );
         }
     }
+
+    public static class AgendaGroupSetFocusConverter extends AbstractCollectionConverter
+            implements
+            Converter {
+
+        public AgendaGroupSetFocusConverter(XStream xstream) {
+            super( xstream.getMapper() );
+        }
+
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
+            AgendaGroupSetFocusCommand cmd = (AgendaGroupSetFocusCommand) object;
+
+            writer.addAttribute( "name",
+                                 cmd.getName() );
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
+            String name = reader.getAttribute( "name" );
+
+            AgendaGroupSetFocusCommand cmd = new AgendaGroupSetFocusCommand( name );
+            return cmd;
+        }
+
+        public boolean canConvert(Class clazz) {
+            return clazz.equals( AgendaGroupSetFocusCommand.class );
+        }
+    }
+
+    public static class ClearActivationGroupConverter extends AbstractCollectionConverter
+            implements
+            Converter {
+
+        public ClearActivationGroupConverter(XStream xstream) {
+            super( xstream.getMapper() );
+        }
+
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
+            ClearActivationGroupCommand cmd = (ClearActivationGroupCommand) object;
+
+            writer.addAttribute( "name",
+                                 cmd.getName() );
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
+            String name = reader.getAttribute( "name" );
+
+            ClearActivationGroupCommand cmd = new ClearActivationGroupCommand( name );
+            return cmd;
+        }
+
+        public boolean canConvert(Class clazz) {
+            return clazz.equals( ClearActivationGroupCommand.class );
+        }
+    }
+
+    public static class ClearAgendaConverter extends AbstractCollectionConverter
+            implements
+            Converter {
+
+        public ClearAgendaConverter(XStream xstream) {
+            super( xstream.getMapper() );
+        }
+
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
+            ClearAgendaCommand cmd = (ClearAgendaCommand) object;
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
+            ClearAgendaCommand cmd = new ClearAgendaCommand( );
+            return cmd;
+        }
+
+        public boolean canConvert(Class clazz) {
+            return clazz.equals( ClearAgendaCommand.class );
+        }
+    }
+
+    public static class ClearAgendaGroupConverter extends AbstractCollectionConverter
+            implements
+            Converter {
+
+        public ClearAgendaGroupConverter(XStream xstream) {
+            super( xstream.getMapper() );
+        }
+
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
+            ClearAgendaGroupCommand cmd = (ClearAgendaGroupCommand) object;
+
+            writer.addAttribute( "name",
+                                 cmd.getName() );
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
+            String name = reader.getAttribute( "name" );
+
+            ClearAgendaGroupCommand cmd = new ClearAgendaGroupCommand( name );
+            return cmd;
+        }
+
+        public boolean canConvert(Class clazz) {
+            return clazz.equals( ClearAgendaGroupCommand.class );
+        }
+    }
+
+    public static class ClearRuleFlowGroupConverter extends AbstractCollectionConverter
+            implements
+            Converter {
+
+        public ClearRuleFlowGroupConverter(XStream xstream) {
+            super( xstream.getMapper() );
+        }
+
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
+            ClearRuleFlowGroupCommand cmd = (ClearRuleFlowGroupCommand) object;
+
+            writer.addAttribute( "name",
+                                 cmd.getName() );
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
+            String name = reader.getAttribute( "name" );
+
+            ClearRuleFlowGroupCommand cmd = new ClearRuleFlowGroupCommand( name );
+            return cmd;
+        }
+
+        public boolean canConvert(Class clazz) {
+            return clazz.equals( ClearRuleFlowGroupCommand.class );
+        }
+    }
+
 }

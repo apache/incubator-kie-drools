@@ -23,14 +23,7 @@ import org.drools.core.command.runtime.process.AbortWorkItemCommand;
 import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.core.command.runtime.process.SignalEventCommand;
 import org.drools.core.command.runtime.process.StartProcessCommand;
-import org.drools.core.command.runtime.rule.DeleteCommand;
-import org.drools.core.command.runtime.rule.FireAllRulesCommand;
-import org.drools.core.command.runtime.rule.GetObjectCommand;
-import org.drools.core.command.runtime.rule.GetObjectsCommand;
-import org.drools.core.command.runtime.rule.InsertElementsCommand;
-import org.drools.core.command.runtime.rule.InsertObjectCommand;
-import org.drools.core.command.runtime.rule.ModifyCommand;
-import org.drools.core.command.runtime.rule.QueryCommand;
+import org.drools.core.command.runtime.rule.*;
 import org.drools.core.command.runtime.rule.ModifyCommand.SetterImpl;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
@@ -78,5 +71,15 @@ public class XStreamHelper {
                        FlatQueryResults.class );
         xstream.alias( "fact-handle",
                        DefaultFactHandle.class );
+        xstream.alias( "set-focus",
+                       AgendaGroupSetFocusCommand.class );
+        xstream.alias( "clear-activation-group",
+                       ClearActivationGroupCommand.class );
+        xstream.alias( "clear-agenda",
+                       ClearAgendaCommand.class );
+        xstream.alias( "clear-agenda-group",
+                       ClearAgendaGroupCommand.class );
+        xstream.alias( "clear-ruleflow-group",
+                       ClearRuleFlowGroupCommand.class );
     }
 }
