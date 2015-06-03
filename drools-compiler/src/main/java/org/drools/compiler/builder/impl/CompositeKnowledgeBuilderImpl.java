@@ -13,7 +13,6 @@ import org.drools.core.util.StringUtils;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
@@ -410,15 +409,13 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         private class ChangeSetAssetFilter implements KnowledgeBuilderImpl.AssetFilter {
             @Override
             public Action accept(String pkgName, String assetName) {
-                ResourceChange change = changeMap.get(assetName);
-                if( change == null ) {
-                    return Action.DO_NOTHING;
-                } else if( change.getChangeType().equals(ChangeType.ADDED) ) {
-                    return Action.ADD;
-                } else if( change.getChangeType().equals(ChangeType.REMOVED) ) {
-                    return Action.REMOVE;
-                } else if( change.getChangeType().equals(ChangeType.UPDATED) ) {
-                    return Action.UPDATE;
+                ResourceChange change = changeMap.get( assetName );
+                if ( change != null ) {
+                    switch (change.getChangeType()) {
+                        case ADDED: return Action.ADD;
+                        case REMOVED: return Action.REMOVE;
+                        case UPDATED: return Action.UPDATE;
+                    }
                 }
                 return Action.DO_NOTHING;
             }

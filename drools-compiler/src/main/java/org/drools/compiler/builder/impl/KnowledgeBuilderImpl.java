@@ -361,7 +361,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                                             ResourceConfiguration configuration) throws DroolsParserException,
                                                                                         IOException {
         this.resource = resource;
-        addPackage(decisionTableToPackageDescr(resource, configuration));
+        addPackage( decisionTableToPackageDescr( resource, configuration ) );
         this.resource = null;
     }
 
@@ -406,7 +406,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                                         ResourceConfiguration configuration) throws DroolsParserException,
                                                                                     IOException {
         this.resource = resource;
-        addPackage(scoreCardToPackageDescr(resource, configuration));
+        addPackage( scoreCardToPackageDescr( resource, configuration ) );
         this.resource = null;
     }
 
@@ -420,7 +420,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
         DrlParser parser = new DrlParser(this.configuration.getLanguageLevel());
         PackageDescr pkg = parser.parse(resource, new StringReader(string));
-        this.results.addAll(parser.getErrors());
+        this.results.addAll( parser.getErrors() );
         if (pkg == null) {
             addBuilderResult(new ParserError(resource, "Parser returned a null Package", 0, 0));
         }
@@ -489,7 +489,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     PackageDescr xmlToPackageDescr(Resource resource) throws DroolsParserException,
                                                              IOException {
         final XmlPackageReader xmlReader = new XmlPackageReader(this.configuration.getSemanticModules());
-        xmlReader.getParser().setClassLoader(this.rootClassLoader);
+        xmlReader.getParser().setClassLoader( this.rootClassLoader );
 
         Reader reader = null;
         try {
@@ -523,7 +523,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
         final DrlParser parser = new DrlParser(configuration.getLanguageLevel());
         final PackageDescr pkg = parser.parse(source, dsl);
-        this.results.addAll(parser.getErrors());
+        this.results.addAll( parser.getErrors() );
         if (!parser.hasErrors()) {
             addPackage(pkg);
         }
@@ -699,14 +699,14 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                                    ResourceConfiguration configuration) throws Exception {
         KieAssemblers assemblers = ServiceRegistryImpl.getInstance().get(KieAssemblers.class);
 
-        KieAssemblerService assembler = assemblers.getAssemblers().get(type);
+        KieAssemblerService assembler = assemblers.getAssemblers().get( type );
 
 
         if (assembler != null) {
-            assembler.addResource(this,
-                                  resource,
-                                  type,
-                                  configuration);
+            assembler.addResource( this,
+                                   resource,
+                                   type,
+                                   configuration );
         } else {
             throw new RuntimeException("Unknown resource type: " + type);
         }
@@ -893,7 +893,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     void compileAllRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
-        pkgRegistry.setDialect(getPackageDialect(packageDescr));
+        pkgRegistry.setDialect( getPackageDialect( packageDescr ) );
 
         validateUniqueRuleNames( packageDescr );
         compileRules(packageDescr, pkgRegistry);
@@ -922,7 +922,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     PackageRegistry createPackageRegistry(PackageDescr packageDescr) {
-        PackageRegistry pkgRegistry = initPackageRegistry(packageDescr);
+        PackageRegistry pkgRegistry = initPackageRegistry( packageDescr );
         if (pkgRegistry == null) {
             return null;
         }
@@ -948,7 +948,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
         initPackage(packageDescr);
 
-        PackageRegistry pkgRegistry = this.pkgRegistryMap.get(packageDescr.getNamespace());
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
         if (pkgRegistry == null) {
             // initialise the package and namespace if it hasn't been used before
             pkgRegistry = newPackage(packageDescr);
@@ -1095,23 +1095,25 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         // Using a topological sorting algorithm
         // see http://en.wikipedia.org/wiki/Topological_sorting
 
-        PackageRegistry pkgRegistry = this.pkgRegistryMap.get(packageDescr.getNamespace());
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
 
         List<RuleDescr> roots = new LinkedList<RuleDescr>();
         Map<String, List<RuleDescr>> children = new HashMap<String, List<RuleDescr>>();
         LinkedHashMap<String, RuleDescr> sorted = new LinkedHashMap<String, RuleDescr>();
         List<RuleDescr> queries = new ArrayList<RuleDescr>();
+        List<String> compiledRules = new ArrayList<String>();
 
         for (RuleDescr ruleDescr : packageDescr.getRules()) {
             if (ruleDescr.isQuery()) {
                 queries.add(ruleDescr);
             } else if (!ruleDescr.hasParent()) {
                 roots.add(ruleDescr);
-            } else if (pkg.getRule(ruleDescr.getParentName()) != null) {
-                // The parent of this rule has been already compiled
-                sorted.put(ruleDescr.getName(), ruleDescr);
             } else {
+                if (pkg.getRule(ruleDescr.getParentName()) != null) {
+                    // The parent of this rule has been already compiled
+                    compiledRules.add(ruleDescr.getParentName());
+                }
                 List<RuleDescr> childz = children.get(ruleDescr.getParentName());
                 if (childz == null) {
                     childz = new ArrayList<RuleDescr>();
@@ -1129,6 +1131,11 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             return;
         }
 
+        for (String compiledRule : compiledRules) {
+            List<RuleDescr> childz = children.remove( compiledRule );
+            roots.addAll( childz );
+        }
+
         while (!roots.isEmpty()) {
             RuleDescr root = roots.remove(0);
             sorted.put(root.getName(), root);
@@ -1142,8 +1149,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
         packageDescr.getRules().clear();
         packageDescr.getRules().addAll(queries);
-        for (RuleDescr descr : sorted.values()) {
-            packageDescr.getRules().add(descr);
+        for (RuleDescr descr : sorted.values() ) {
+            packageDescr.getRules().add( descr );
         }
     }
 
@@ -1155,11 +1162,11 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 if (parents.get(ruleDescr.getParentName()) != null
                     && (sorted.containsKey(ruleDescr.getName()) || parents.containsKey(ruleDescr.getName()))) {
                     circularDep = true;
-                    results.add(new RuleBuildError(new RuleImpl(ruleDescr.getName()), ruleDescr, null,
-                                                   "Circular dependency in rules hierarchy"));
+                    results.add( new RuleBuildError( new RuleImpl( ruleDescr.getName() ), ruleDescr, null,
+                                                     "Circular dependency in rules hierarchy" ) );
                     break;
                 }
-                manageUnresolvedExtension(ruleDescr, sorted.values());
+                manageUnresolvedExtension( ruleDescr, sorted.values() );
             }
             if (circularDep) {
                 break;
@@ -1500,7 +1507,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             unsortedDescrs.add( enumDeclarationDescr );
         }
 
-        typeBuilder.processTypeDeclarations( Arrays.asList( packageDescr ), unsortedDescrs, unresolvedTypes, unprocesseableDescrs );
+        typeBuilder.processTypeDeclarations( Collections.singletonList( packageDescr ), unsortedDescrs, unresolvedTypes, unprocesseableDescrs );
         for ( AbstractClassTypeDeclarationDescr descr : unprocesseableDescrs.values() ) {
             this.addBuilderResult( new TypeDeclarationError( descr, "Unable to process type " + descr.getTypeName() ) );
         }
@@ -1829,10 +1836,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         return new PackageBuilderResults(problems.toArray(new BaseKnowledgeBuilderResultImpl[problems.size()]));
     }
 
-    /**
-     * @param severities
-     * @return
-     */
     private List<KnowledgeBuilderResult> getResultList(ResultSeverity... severities) {
         List<ResultSeverity> typesToFetch = Arrays.asList(severities);
         ArrayList<KnowledgeBuilderResult> problems = new ArrayList<KnowledgeBuilderResult>();
@@ -2029,7 +2032,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 });
             }
         } else {
-            buildResources.push(Arrays.asList(resource));
+            buildResources.push( Collections.singletonList( resource ) );
         }
     }
 
@@ -2132,15 +2135,15 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         return !(rootClassLoader instanceof ProjectClassLoader) || ((ProjectClassLoader) rootClassLoader).isClassInUse(className);
     }
 
-    public static interface AssetFilter {
-        public static enum Action {
+    public interface AssetFilter {
+        enum Action {
             DO_NOTHING, ADD, REMOVE, UPDATE
         }
 
-        public Action accept(String pkgName, String assetName);
+        Action accept(String pkgName, String assetName);
     }
 
-    public AssetFilter getAssetFilter() {
+    AssetFilter getAssetFilter() {
         return assetFilter;
     }
 
