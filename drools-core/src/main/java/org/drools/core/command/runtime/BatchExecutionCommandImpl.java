@@ -32,14 +32,7 @@ import org.drools.core.command.runtime.process.AbortWorkItemCommand;
 import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.core.command.runtime.process.SignalEventCommand;
 import org.drools.core.command.runtime.process.StartProcessCommand;
-import org.drools.core.command.runtime.rule.DeleteCommand;
-import org.drools.core.command.runtime.rule.FireAllRulesCommand;
-import org.drools.core.command.runtime.rule.GetObjectCommand;
-import org.drools.core.command.runtime.rule.GetObjectsCommand;
-import org.drools.core.command.runtime.rule.InsertElementsCommand;
-import org.drools.core.command.runtime.rule.InsertObjectCommand;
-import org.drools.core.command.runtime.rule.ModifyCommand;
-import org.drools.core.command.runtime.rule.QueryCommand;
+import org.drools.core.command.runtime.rule.*;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.internal.command.Context;
 import org.kie.api.runtime.ExecutionResults;
@@ -97,39 +90,44 @@ public class BatchExecutionCommandImpl implements BatchExecutionCommand, Generic
     }
 
     @XmlElements({
-        @XmlElement(name = "abort-work-item", type = AbortWorkItemCommand.class),
-        @XmlElement(name = "signal-event", type = SignalEventCommand.class),
-        @XmlElement(name = "start-process", type = StartProcessCommand.class),
-        @XmlElement(name = "retract", type = DeleteCommand.class),
-        @XmlElement(name = "get-global", type = GetGlobalCommand.class),
-        @XmlElement(name = "set-global", type = SetGlobalCommand.class),
-        @XmlElement(name = "insert-elements", type = InsertElementsCommand.class),
-        @XmlElement(name = "query", type = QueryCommand.class),
-        @XmlElement(name = "insert", type = InsertObjectCommand.class),
-        @XmlElement(name = "modify", type = ModifyCommand.class),
-        @XmlElement(name = "get-object", type = GetObjectCommand.class),
-        @XmlElement(name = "fire-all-rules", type = FireAllRulesCommand.class),
-        @XmlElement(name = "complete-work-item", type = CompleteWorkItemCommand.class),
-        @XmlElement(name = "get-objects", type = GetObjectsCommand.class)
-    })
+                         @XmlElement(name = "abort-work-item", type = AbortWorkItemCommand.class),
+                         @XmlElement(name = "signal-event", type = SignalEventCommand.class),
+                         @XmlElement(name = "start-process", type = StartProcessCommand.class),
+                         @XmlElement(name = "retract", type = DeleteCommand.class),
+                         @XmlElement(name = "get-global", type = GetGlobalCommand.class),
+                         @XmlElement(name = "set-global", type = SetGlobalCommand.class),
+                         @XmlElement(name = "insert-elements", type = InsertElementsCommand.class),
+                         @XmlElement(name = "query", type = QueryCommand.class),
+                         @XmlElement(name = "insert", type = InsertObjectCommand.class),
+                         @XmlElement(name = "modify", type = ModifyCommand.class),
+                         @XmlElement(name = "get-object", type = GetObjectCommand.class),
+                         @XmlElement(name = "fire-all-rules", type = FireAllRulesCommand.class),
+                         @XmlElement(name = "complete-work-item", type = CompleteWorkItemCommand.class),
+                         @XmlElement(name = "get-objects", type = GetObjectsCommand.class),
+                         @XmlElement(name = "set-focus", type = AgendaGroupSetFocusCommand.class),
+                         @XmlElement(name = "clear-activation-group", type = ClearActivationGroupCommand.class),
+                         @XmlElement(name = "clear-agenda", type = ClearAgendaCommand.class),
+                         @XmlElement(name = "clear-agenda-group", type = ClearAgendaGroupCommand.class),
+                         @XmlElement(name = "clear-ruleflow-group", type = ClearRuleFlowGroupCommand.class)
+                 })
     protected List<GenericCommand<?>> commands;
 
     /**
      * Gets the value of the abortWorkItemOrCompleteWorkItemOrFireAllRules property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the abortWorkItemOrCompleteWorkItemOrFireAllRules property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getCommand().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link SetGlobalCommand }
@@ -144,7 +142,7 @@ public class BatchExecutionCommandImpl implements BatchExecutionCommand, Generic
      * {@link InsertObjectCommand }
      */
     public List<GenericCommand<?>> getCommands() {
-        if (commands == null) {
+        if ( commands == null ) {
             commands = new ArrayList<GenericCommand<?>>();
         }
         return this.commands;
@@ -152,7 +150,7 @@ public class BatchExecutionCommandImpl implements BatchExecutionCommand, Generic
 
     public ExecutionResults execute(Context context) {
         for ( GenericCommand<?> command : commands ) {
-            ((GenericCommand<?>)command).execute( context );
+            ((GenericCommand<?>) command).execute( context );
         }
         return null;
     }
@@ -167,8 +165,8 @@ public class BatchExecutionCommandImpl implements BatchExecutionCommand, Generic
 
     public String toString() {
         return "BatchExecutionCommandImpl{" +
-                "lookup='" + lookup + '\'' +
-                ", commands=" + commands +
-                '}';
+               "lookup='" + lookup + '\'' +
+               ", commands=" + commands +
+               '}';
     }
 }
