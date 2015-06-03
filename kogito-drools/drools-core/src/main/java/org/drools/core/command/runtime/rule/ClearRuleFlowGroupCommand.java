@@ -22,9 +22,24 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class ClearRuleFlowGroupCommand implements GenericCommand<Void> {
 
+    @XmlAttribute(required=true)
     private String name;
+
+    public ClearRuleFlowGroupCommand() {
+    }
+
+    public ClearRuleFlowGroupCommand(String name) {
+        this.name = name;
+    }
 
     public String getName() {
         return name;

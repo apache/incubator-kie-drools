@@ -21,9 +21,24 @@ import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class ClearAgendaGroupCommand implements GenericCommand<Void> {
 
+    @XmlAttribute(name="name", required=true)
     private String name;
+
+    public ClearAgendaGroupCommand() {
+    }
+
+    public ClearAgendaGroupCommand(String name) {
+        this.name = name;
+    }
 
     public String getName() {
         return name;
