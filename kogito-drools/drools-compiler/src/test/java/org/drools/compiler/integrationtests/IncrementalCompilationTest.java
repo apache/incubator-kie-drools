@@ -4,7 +4,6 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.FactA;
 import org.drools.compiler.Message;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -108,7 +107,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         kc.updateToVersion( km.getReleaseId() );
 
-        KiePackage kpkg = ( (KieContainerImpl) kc ).getKieBase().getKiePackage( "org.drools.compiler" );
+        KiePackage kpkg = kc.getKieBase().getKiePackage( "org.drools.compiler" );
         assertEquals( ruleNames.length, kpkg.getRules().size() );
         Map<String, Rule> rules = rulestoMap( kpkg.getRules() );
 
@@ -597,13 +596,13 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         // Create a session and fire rules
         KieContainer kc = ks.newKieContainer( km.getReleaseId() );
-        KiePackage kpkg = ( (KieContainerImpl) kc ).getKieBase().getKiePackage( "org.drools.compiler" );
+        KiePackage kpkg = kc.getKieBase().getKiePackage( "org.drools.compiler" );
         assertEquals( 3, kpkg.getRules().size() );
         Map<String, Rule> rules = rulestoMap( kpkg.getRules() );
 
-        assertNotNull( ( (org.drools.core.definitions.rule.impl.RuleImpl) rules.get( "R1" ) ) );
-        assertNotNull( ( (org.drools.core.definitions.rule.impl.RuleImpl) rules.get( "R2" ) ) );
-        assertNotNull( ( (org.drools.core.definitions.rule.impl.RuleImpl) rules.get( "R3" ) ) );
+        assertNotNull( rules.get( "R1" ) );
+        assertNotNull( rules.get( "R2" ) );
+        assertNotNull( rules.get( "R3" ) );
 
         RuleTerminalNode rtn1_1 = (RuleTerminalNode) ( (KnowledgeBaseImpl) kc.getKieBase() ).getReteooBuilder().getTerminalNodes( "R1" )[ 0 ];
         RuleTerminalNode rtn2_1 = (RuleTerminalNode) ( (KnowledgeBaseImpl) kc.getKieBase() ).getReteooBuilder().getTerminalNodes( "R2" )[ 0 ];
@@ -625,13 +624,13 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         assertSame( rtn3_1, rtn3_2 );
         assertSame( rtn1_1, rtn1_2 );
 
-        kpkg = ( (KieContainerImpl) kc ).getKieBase().getKiePackage( "org.drools.compiler" );
+        kpkg = kc.getKieBase().getKiePackage( "org.drools.compiler" );
         assertEquals( 2, kpkg.getRules().size() );
         rules = rulestoMap( kpkg.getRules() );
 
-        assertNotNull( ( (org.drools.core.definitions.rule.impl.RuleImpl) rules.get( "R1" ) ) );
-        assertNull( ( (org.drools.core.definitions.rule.impl.RuleImpl) rules.get( "R2" ) ) );
-        assertNotNull( ( (org.drools.core.definitions.rule.impl.RuleImpl) rules.get( "R3" ) ) );
+        assertNotNull( rules.get( "R1" ) );
+        assertNull( rules.get( "R2" ) );
+        assertNotNull( rules.get( "R3" ) );
     }
 
     private Map<String, Rule> rulestoMap( Collection<Rule> rules ) {
@@ -860,7 +859,6 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         KieContainer kc = ks.newKieContainer( id );
         KieSession ksession = kc.newKieSession();
-        List<String> list = new ArrayList<String>();
         ksession.fireAllRules();
 
         kfs.write( ks.getResources()
@@ -944,7 +942,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         IncrementalResults results = ( (InternalKieBuilder) kieBuilder2 ).incrementalBuild();
         assertEquals( 0, results.getAddedMessages().size() );
 
-        Results updateResults = kc2.updateToVersion( id );
+        kc2.updateToVersion( id );
         ksession2.fireAllRules();
 
         assertEquals( Arrays.asList( "AX", "BX", "CX" ), list );
@@ -1047,7 +1045,6 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         kieBuilder.buildAll();
         assertEquals( 0, kieBuilder.getResults().getMessages().size() );
-        KieModule kieModule = kieBuilder.getKieModule();
 
         KieContainer kc = ks.newKieContainer( releaseId );
 
@@ -1066,8 +1063,6 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         IncrementalResults results = ( (InternalKieBuilder) kieBuilder ).incrementalBuild();
         assertEquals( 0, results.getAddedMessages().size() );
-
-        kieModule = kieBuilder.getKieModule();
 
         Results updateResults = kc.updateToVersion( releaseId );
         assertEquals( 0, updateResults.getMessages().size() );
@@ -1362,7 +1357,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         km = createAndDeployJarInStreamMode(ks, releaseId2);
 
         // try to update the container to version 1.1.0
-        Results results = kc.updateToVersion(releaseId2);
+        kc.updateToVersion(releaseId2);
 
         ksession.delete(fh);
     }
@@ -1524,5 +1519,81 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         km = createAndDeployJar( ks, releaseId2, drl1 + drl2 );
 
         kc.updateToVersion(km.getReleaseId());
+    }
+
+    @Test
+    public void testChangeParentRule() {
+        String drl1 =
+            "global java.util.List list;" +
+            "rule B extends A when\n" +
+            "    $s : String()\n" +
+            "then\n" +
+            "    list.add( $s );\n" +
+            "end\n" +
+            "\n" +
+            "rule A when\n" +
+            "    $i : Integer( this > 3 )\n" +
+            "then\n" +
+            "end";
+
+        String drl2 =
+            "global java.util.List list;" +
+            "rule B extends A when\n" +
+            "    $s : String()\n" +
+            "then\n" +
+            "    list.add( $s );\n" +
+            "end\n" +
+            "\n" +
+            "rule A when\n" +
+            "    $i : Integer( this > 2 )\n" +
+            "then\n" +
+            "end";
+
+        String drl3 =
+            "global java.util.List list;" +
+            "rule B extends A when\n" +
+            "    $s : String()\n" +
+            "then\n" +
+            "    list.add( $s );\n" +
+            "end\n" +
+            "\n" +
+            "rule A when\n" +
+            "    $i : Integer( this > 5 )\n" +
+            "then\n" +
+            "end";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl1 );
+
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+        KieSession ksession = kc.newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( 4 );
+        ksession.insert( "test" );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+
+        list.clear();
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        createAndDeployJar( ks, releaseId2, drl2 );
+        kc.updateToVersion( releaseId2 );
+
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+
+        list.clear();
+
+        ReleaseId releaseId3 = ks.newReleaseId( "org.kie", "test-upgrade", "1.2.0" );
+        createAndDeployJar( ks, releaseId3, drl3 );
+        kc.updateToVersion( releaseId3 );
+
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() );
     }
 }
