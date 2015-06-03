@@ -3,11 +3,11 @@ package org.jbpm.process.builder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.api.definition.process.Node;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
 import org.jbpm.workflow.core.node.CompositeContextNode;
+import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
@@ -22,6 +22,7 @@ import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.kie.api.definition.process.Node;
 
 // Marco: extend this and extend the ActionNodeBuilder to also collection info.. 
 public class ProcessNodeBuilderRegistry {
@@ -69,6 +70,8 @@ public class ProcessNodeBuilderRegistry {
                 new EventNodeBuilder() );
         register( BoundaryEventNode.class,
                 new EventNodeBuilder() );
+        register( DynamicNode.class,
+                new ExtendedNodeBuilder() );
     }
 
     public void register(Class< ? extends Node> cls,

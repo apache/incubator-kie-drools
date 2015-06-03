@@ -16,6 +16,11 @@
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
     <adHocSubProcess id="_2" name="Hello"  ordering="Parallel" >
+      <extensionElements>
+        <tns:onExit-script scriptFormat="http://www.java.com/java">
+          <tns:script>kcontext.setVariable("y", "Exit");</tns:script>
+        </tns:onExit-script>
+      </extensionElements>
     <!-- nodes -->
     <userTask id="_2-1" name="Hello1" >
       <ioSpecification>

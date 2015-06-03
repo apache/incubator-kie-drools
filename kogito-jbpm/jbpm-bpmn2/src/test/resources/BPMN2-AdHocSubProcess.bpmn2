@@ -17,6 +17,12 @@
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
     <adHocSubProcess id="_2" name="Hello"  ordering="Parallel" >
+      <extensionElements>
+        <tns:onEntry-script scriptFormat="http://www.java.com/java">
+          <tns:script>kcontext.setVariable("x", "Entry");</tns:script>
+        </tns:onEntry-script>
+      </extensionElements>
+      
     <!-- nodes -->
     <scriptTask id="_2-1" name="Hello1" >
       <script>System.out.println("Hello World 1");</script>

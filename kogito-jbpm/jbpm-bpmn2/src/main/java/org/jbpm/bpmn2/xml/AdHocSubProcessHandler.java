@@ -69,6 +69,9 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
 			dynamicNode.getMetaData(ProcessHandler.CONNECTIONS);
     	ProcessHandler.linkConnections(dynamicNode, connections);
     	ProcessHandler.linkBoundaryEvents(dynamicNode);
+    	
+        handleScript(dynamicNode, element, "onEntry");
+        handleScript(dynamicNode, element, "onExit");
     }
     
     public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
