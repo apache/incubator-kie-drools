@@ -96,7 +96,15 @@ public abstract class AbstractFromPropertyValueRangeDescriptor extends AbstractV
         } else {
             valueRange = (ValueRange<Object>) valueRangeObject;
         }
-        return doNullInValueRangeWrapping(valueRange);
+        valueRange = doNullInValueRangeWrapping(valueRange);
+        if (valueRange.isEmpty()) {
+            throw new IllegalStateException("The @" + ValueRangeProvider.class.getSimpleName()
+                    + " annotated readMethod (" + readMethodAccessor.getReadMethod()
+                    + ") called on bean (" + bean
+                    + ") must not return an empty valueRange (" + valueRangeObject + ").\n"
+                    + "  If this a valid dataset, apply overconstrained planning as described in the documentation.");
+        }
+        return valueRange;
     }
 
     private <T> List<T> transformToList(Collection<T> collection) {

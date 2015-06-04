@@ -34,6 +34,12 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 public interface ValueRange<T> {
 
     /**
+     * In a {@link CountableValueRange}, this must be consistent with {@link CountableValueRange#getSize()}.
+     * @return true if the range is empty
+     */
+    boolean isEmpty();
+
+    /**
      * @param value sometimes null
      * @return true if the ValueRange contains that value
      */

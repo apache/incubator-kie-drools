@@ -30,4 +30,9 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
  */
 public abstract class AbstractCountableValueRange<T> implements CountableValueRange<T>, Serializable {
 
+    @Override
+    public boolean isEmpty() {
+        return getSize() == 0L;
+    }
+
 }

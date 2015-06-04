@@ -25,6 +25,11 @@ public class DoubleValueRange extends AbstractUncountableValueRange<Double> {
     }
 
     @Override
+    public boolean isEmpty() {
+        return from == to;
+    }
+
+    @Override
     public boolean contains(Double value) {
         if (value == null) {
             return false;
