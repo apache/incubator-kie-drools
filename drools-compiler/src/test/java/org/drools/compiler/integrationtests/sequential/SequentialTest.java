@@ -11,12 +11,10 @@ import org.drools.core.util.IoUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
-import org.kie.internal.command.CommandFactory;
-import org.kie.internal.conf.SequentialOption;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Results;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.AgendaGroupPoppedEvent;
@@ -29,6 +27,14 @@ import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.StatelessKieSession;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.conf.RuleEngineOption;
+import org.kie.internal.command.CommandFactory;
+import org.kie.internal.conf.SequentialOption;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 
 import java.io.IOException;
@@ -215,7 +221,7 @@ public class SequentialTest extends CommonTestMethodBase {
                                            15 );
 
 
-        ksession.execute( CommandFactory.newInsertElements(Arrays.asList( new Object[]{p1, stilton, p2, cheddar, p3} )) );
+        ksession.execute( CommandFactory.newInsertElements( Arrays.asList( new Object[]{p1, stilton, p2, cheddar, p3} ) ) );
 
         assertEquals( 3,
                       list.size() );
@@ -236,8 +242,8 @@ public class SequentialTest extends CommonTestMethodBase {
                       list.size() );
         
         assertEquals( "rule 3", list.get( 0 ));
-        assertEquals( "rule 2", list.get( 1 ));
-        assertEquals( "rule 1", list.get( 2 ));
+        assertEquals( "rule 2", list.get( 1 ) );
+        assertEquals( "rule 1", list.get( 2 ) );
     }
     
     @Test
@@ -277,76 +283,76 @@ public class SequentialTest extends CommonTestMethodBase {
         
         ksession.addEventListener( new AgendaEventListener() {
 
-            public void matchCancelled(MatchCancelledEvent event) {
+            public void matchCancelled( MatchCancelledEvent event ) {
                 assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
-            public void matchCreated(MatchCreatedEvent event) {
+            public void matchCreated( MatchCreatedEvent event ) {
                 assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
-            public void afterMatchFired(AfterMatchFiredEvent event) {
+            public void afterMatchFired( AfterMatchFiredEvent event ) {
                 assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
-            public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
+            public void agendaGroupPopped( AgendaGroupPoppedEvent event ) {
                 assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
-            public void agendaGroupPushed(AgendaGroupPushedEvent event) {
+            public void agendaGroupPushed( AgendaGroupPushedEvent event ) {
                 assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
-            public void beforeMatchFired(BeforeMatchFiredEvent event) {
+            public void beforeMatchFired( BeforeMatchFiredEvent event ) {
                 assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
-            public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-                assertNotNull( event.getKieRuntime() );
-                list.add( event );    
-            }
-
-            public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-                assertNotNull( event.getKieRuntime() );
-                list.add( event );  
-            }
-
-            public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-                assertNotNull( event.getKieRuntime() );
-                list.add( event ); 
-            }
-
-            public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+            public void beforeRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {
                 assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
-        });
+            public void afterRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {
+                assertNotNull( event.getKieRuntime() );
+                list.add( event );
+            }
+
+            public void beforeRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {
+                assertNotNull( event.getKieRuntime() );
+                list.add( event );
+            }
+
+            public void afterRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {
+                assertNotNull( event.getKieRuntime() );
+                list.add( event );
+            }
+
+        } );
         
         ksession.addEventListener( new RuleRuntimeEventListener() {
 
-            public void objectInserted(ObjectInsertedEvent event) {
+            public void objectInserted( ObjectInsertedEvent event ) {
                 assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
-            public void objectDeleted(ObjectDeletedEvent event) {
+            public void objectDeleted( ObjectDeletedEvent event ) {
                 assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
 
-            public void objectUpdated(ObjectUpdatedEvent event) {
+            public void objectUpdated( ObjectUpdatedEvent event ) {
                 assertNotNull( event.getKieRuntime() );
                 list.add( event );
             }
-            
-        });
+
+        } );
         
         ksession.execute( new Message( "help" ) );
         
@@ -377,9 +383,9 @@ public class SequentialTest extends CommonTestMethodBase {
         assertEquals( "rule 3", list.get( 0 ));
         assertEquals( "rule 2", list.get( 1 ));
         assertEquals( "rule 1", list.get( 2 ));
-        assertEquals( "rule 3", list.get( 3 ));
-        assertEquals( "rule 2", list.get( 4 ));
-        assertEquals( "rule 1", list.get( 5 ));
+        assertEquals( "rule 3", list.get( 3 ) );
+        assertEquals( "rule 2", list.get( 4 ) );
+        assertEquals( "rule 1", list.get( 5 ) );
         assertEquals( person, list.get( 6 ));
     }
 
@@ -407,7 +413,7 @@ public class SequentialTest extends CommonTestMethodBase {
         //test throughput
         runTestProfileManyRulesAndFacts( true,
                                          "SEQUENTIAL",
-                                         2000, "sequentialProfile.drl"  );
+                                         2000, "sequentialProfile.drl" );
     }
 
     @Test
@@ -497,4 +503,39 @@ public class SequentialTest extends CommonTestMethodBase {
 
     }
 
+    @Test(timeout = 10000L)
+    public void testSequentialWithNoLoop() throws Exception {
+        // BZ-1228098
+        String str =
+                "package org.drools.compiler.test\n" +
+                "import \n" + Message.class.getCanonicalName() + ";" +
+                "rule R1 no-loop when\n" +
+                "    $s : String( )" +
+                "    $m : Message( )\n" +
+                "then\n" +
+                "    modify($m) { setMessage($s) };\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write("src/main/resources/r0.drl", str);
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        Results results = kieBuilder.getResults();
+        if (results.hasMessages( org.kie.api.builder.Message.Level.ERROR)) {
+            throw new RuntimeException(results.getMessages().toString());
+        }
+        KieContainer kieContainer = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() );
+
+        KieBaseConfiguration kieBaseConf = ks.newKieBaseConfiguration();
+        kieBaseConf.setOption( SequentialOption.YES );
+
+        StatelessKieSession sequentialKsession = kieContainer.newKieBase( kieBaseConf ).newStatelessKieSession();
+        List result = (List) sequentialKsession.execute( CommandFactory.newInsertElements(Arrays.asList("test", new Message())));
+        assertEquals( 2, result.size() );
+
+        StatelessKieSession ksession = kieContainer.getKieBase().newStatelessKieSession();
+        result = (List) ksession.execute( CommandFactory.newInsertElements(Arrays.asList("test", new Message())));
+        assertEquals( 2, result.size() );
+    }
 }
