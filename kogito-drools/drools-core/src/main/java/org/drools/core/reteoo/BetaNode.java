@@ -427,7 +427,6 @@ public abstract class BetaNode extends LeftTupleSource
 
     public LeftTuple getFirstLeftTuple(final RightTuple rightTuple,
                                        final LeftTupleMemory memory,
-                                       final PropagationContext context,
                                        final FastIterator it) {
         if ( !this.indexedUnificationJoin ) {
             return memory.getFirst(rightTuple);

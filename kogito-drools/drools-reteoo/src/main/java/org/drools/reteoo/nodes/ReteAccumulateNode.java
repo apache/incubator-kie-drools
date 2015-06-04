@@ -224,7 +224,7 @@ public class ReteAccumulateNode extends AccumulateNode {
 
         FastIterator leftIt = getLeftIterator( leftMemory );
 
-        for ( LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, leftIt ); leftTuple != null; leftTuple = (LeftTuple) leftIt.next( leftTuple ) ) {
+        for ( LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, leftIt ); leftTuple != null; leftTuple = (LeftTuple) leftIt.next( leftTuple ) ) {
             if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
                                                         leftTuple ) ) {
                 final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
@@ -437,7 +437,7 @@ public class ReteAccumulateNode extends AccumulateNode {
 
         FastIterator leftIt = getLeftIterator( leftMemory );
 
-        LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, leftIt );
+        LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, leftIt );
 
         this.constraints.updateFromFactHandle( bm.getContext(),
                                                workingMemory,

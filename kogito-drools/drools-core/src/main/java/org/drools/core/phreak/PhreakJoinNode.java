@@ -12,7 +12,6 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleMemory;
 import org.drools.core.rule.ContextEntry;
-import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
 
 public class PhreakJoinNode {
@@ -78,24 +77,24 @@ public class PhreakJoinNode {
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            boolean useLeftMemory = RuleNetworkEvaluator.useLeftMemory(joinNode, leftTuple);
+            boolean useLeftMemory = RuleNetworkEvaluator.useLeftMemory( joinNode, leftTuple );
 
             if (useLeftMemory) {
                 ltm.add(leftTuple);
             }
 
-            FastIterator it = joinNode.getRightIterator(rtm);
+            FastIterator it = joinNode.getRightIterator( rtm );
 
-            constraints.updateFromTuple(contextEntry,
-                                        wm,
-                                        leftTuple);
+            constraints.updateFromTuple( contextEntry,
+                                         wm,
+                                         leftTuple );
 
-            for (RightTuple rightTuple = joinNode.getFirstRightTuple(leftTuple,
-                                                                     rtm,
-                                                                     null,
-                                                                     it); rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
-                if (constraints.isAllowedCachedLeft(contextEntry,
-                                                    rightTuple.getFactHandle())) {
+            for (RightTuple rightTuple = joinNode.getFirstRightTuple( leftTuple,
+                                                                      rtm,
+                                                                      null,
+                                                                      it ); rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
+                if (constraints.isAllowedCachedLeft( contextEntry,
+                                                     rightTuple.getFactHandle() )) {
                     trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
                                                                  rightTuple,
                                                                  null,
@@ -108,7 +107,7 @@ public class PhreakJoinNode {
             leftTuple.clearStaged();
             leftTuple = next;
         }
-        constraints.resetTuple(contextEntry);
+        constraints.resetTuple( contextEntry );
     }
 
     public void doRightInserts(JoinNode joinNode,
@@ -124,42 +123,36 @@ public class PhreakJoinNode {
 
         for (RightTuple rightTuple = srcRightTuples.getInsertFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();
+            rtm.add( rightTuple );
 
-            rtm.add(rightTuple);
-            if ( ltm == null || ltm.size() == 0 ) {
-                // do nothing here, as no left memory
-                rightTuple.clearStaged();
-                rightTuple = next;
-                continue;
-            }
+            if ( ltm != null && ltm.size() > 0 ) {
+                FastIterator it = joinNode.getLeftIterator( ltm );
 
-            FastIterator it = joinNode.getLeftIterator(ltm);
-            PropagationContext context = rightTuple.getPropagationContext();
+                constraints.updateFromFactHandle( contextEntry,
+                                                  wm,
+                                                  rightTuple.getFactHandle() );
 
-            constraints.updateFromFactHandle(contextEntry,
-                                             wm,
-                                             rightTuple.getFactHandle());
+                for ( LeftTuple leftTuple = joinNode.getFirstLeftTuple( rightTuple, ltm, it ); leftTuple != null; leftTuple = (LeftTuple) it.next( leftTuple ) ) {
+                    if ( leftTuple.getStagedType() == LeftTuple.UPDATE ) {
+                        // ignore, as it will get processed via left iteration. Children cannot be processed twice
+                        continue;
+                    }
 
-            for (LeftTuple leftTuple = joinNode.getFirstLeftTuple(rightTuple, ltm, context, it); leftTuple != null; leftTuple = (LeftTuple) it.next(leftTuple)) {
-                if (leftTuple.getStagedType() == LeftTuple.UPDATE) {
-                    // ignore, as it will get processed via left iteration. Children cannot be processed twice
-                    continue;
-                }
-
-                if (constraints.isAllowedCachedRight(contextEntry,
-                                                     leftTuple)) {
-                    trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
-                                                                 rightTuple,
-                                                                 null,
-                                                                 null,
-                                                                 sink,
-                                                                 true));
+                    if ( constraints.isAllowedCachedRight( contextEntry,
+                                                           leftTuple ) ) {
+                        trgLeftTuples.addInsert( sink.createLeftTuple( leftTuple,
+                                                                       rightTuple,
+                                                                       null,
+                                                                       null,
+                                                                       sink,
+                                                                       true ) );
+                    }
                 }
             }
             rightTuple.clearStaged();
             rightTuple = next;
         }
-        constraints.resetFactHandle(contextEntry);
+        constraints.resetFactHandle( contextEntry );
     }
 
     public void doLeftUpdates(JoinNode joinNode,
@@ -277,31 +270,30 @@ public class PhreakJoinNode {
         for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();
 
-            PropagationContext context = rightTuple.getPropagationContext();
+            if ( ltm != null && ltm.size() > 0 ) {
+                FastIterator it = joinNode.getLeftIterator( ltm );
+                LeftTuple leftTuple = joinNode.getFirstLeftTuple( rightTuple, ltm, it );
 
-            LeftTuple childLeftTuple = rightTuple.getFirstChild();
+                constraints.updateFromFactHandle( contextEntry,
+                                                  wm,
+                                                  rightTuple.getFactHandle() );
 
-            FastIterator it = joinNode.getLeftIterator(ltm);
-            LeftTuple leftTuple = joinNode.getFirstLeftTuple(rightTuple, ltm, context, it);
-
-            constraints.updateFromFactHandle(contextEntry,
-                                             wm,
-                                             rightTuple.getFactHandle());
-
-            // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
-            // We assume a bucket change if leftTuple == null
-            if (childLeftTuple != null && ltm.isIndexed() && !it.isFullIterator() && (leftTuple == null || (leftTuple.getMemory() != childLeftTuple.getLeftParent().getMemory()))) {
-                // our index has changed, so delete all the previous propagations
-                while (childLeftTuple != null) {
-                    childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
-                    childLeftTuple = RuleNetworkEvaluator.deleteRightChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
+                // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
+                // We assume a bucket change if leftTuple == null
+                LeftTuple childLeftTuple = rightTuple.getFirstChild();
+                if ( childLeftTuple != null && ltm.isIndexed() && !it.isFullIterator() && ( leftTuple == null || ( leftTuple.getMemory() != childLeftTuple.getLeftParent().getMemory() ) ) ) {
+                    // our index has changed, so delete all the previous propagations
+                    while ( childLeftTuple != null ) {
+                        childLeftTuple.setPropagationContext( rightTuple.getPropagationContext() );
+                        childLeftTuple = RuleNetworkEvaluator.deleteRightChild( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                    }
+                    // childLeftTuple is now null, so the next check will attempt matches for new bucket
                 }
-                // childLeftTuple is now null, so the next check will attempt matches for new bucket
-            }
 
-            // we can't do anything if LeftTupleMemory is empty
-            if (leftTuple != null) {
-                doRightUpdatesProcessChildren(childLeftTuple, leftTuple, rightTuple, stagedLeftTuples, contextEntry, constraints, sink, it, trgLeftTuples);
+                // we can't do anything if LeftTupleMemory is empty
+                if ( leftTuple != null ) {
+                    doRightUpdatesProcessChildren( childLeftTuple, leftTuple, rightTuple, stagedLeftTuples, contextEntry, constraints, sink, it, trgLeftTuples );
+                }
             }
             rightTuple.clearStaged();
             rightTuple = next;

@@ -142,7 +142,7 @@ public class ReteNotNode extends NotNode {
                                                rightTuple.getFactHandle() );
         LeftTupleMemory leftMemory = memory.getLeftTupleMemory();
         FastIterator it = getLeftIterator( leftMemory );
-        for (LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, it );  leftTuple != null; ) {
+        for (LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, it );  leftTuple != null; ) {
             // preserve next now, in case we remove this leftTuple
             LeftTuple temp = (LeftTuple) it.next(leftTuple);
 
@@ -312,7 +312,7 @@ public class ReteNotNode extends NotNode {
         LeftTupleMemory leftMemory = memory.getLeftTupleMemory();
 
         FastIterator leftIt = getLeftIterator( leftMemory );
-        LeftTuple firstLeftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, leftIt );
+        LeftTuple firstLeftTuple = getFirstLeftTuple( rightTuple, leftMemory, leftIt );
 
         LeftTuple firstBlocked = rightTuple.getBlocked();
         // we now have  reference to the first Blocked, so null it in the rightTuple itself, so we can rebuild

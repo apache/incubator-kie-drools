@@ -94,9 +94,9 @@ public class PhreakAccumulateNode {
 
         for (LeftTuple leftTuple = tempLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
-            evaluateResultConstraints(accNode, sink, accumulate, leftTuple, leftTuple.getPropagationContext(),
-                                      wm, am, (AccumulateContext) leftTuple.getObject(),
-                                      trgLeftTuples, stagedLeftTuples);
+            evaluateResultConstraints( accNode, sink, accumulate, leftTuple, leftTuple.getPropagationContext(),
+                                       wm, am, (AccumulateContext) leftTuple.getObject(),
+                                       trgLeftTuples, stagedLeftTuples );
             leftTuple.clearStaged();
             leftTuple = next;
         }
@@ -144,9 +144,9 @@ public class PhreakAccumulateNode {
                             leftTuple,
                             wm);
 
-            constraints.updateFromTuple(contextEntry,
-                                        wm,
-                                        leftTuple);
+            constraints.updateFromTuple( contextEntry,
+                                         wm,
+                                         leftTuple );
 
             FastIterator rightIt = accNode.getRightIterator(rtm);
 
@@ -181,13 +181,13 @@ public class PhreakAccumulateNode {
             }
 
             leftTuple.clearStaged();
-            trgLeftTuples.addInsert(leftTuple);
+            trgLeftTuples.addInsert( leftTuple );
 
-            constraints.resetTuple(contextEntry);
+            constraints.resetTuple( contextEntry );
 
             leftTuple = next;
         }
-        constraints.resetTuple(contextEntry);
+        constraints.resetTuple( contextEntry );
     }
 
     public void doRightInserts(AccumulateNode accNode,
@@ -209,50 +209,43 @@ public class PhreakAccumulateNode {
 
         for (RightTuple rightTuple = srcRightTuples.getInsertFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();
+            rtm.add( rightTuple );
 
-            rtm.add(rightTuple);
-            if ( ltm == null || ltm.size() == 0 ) {
-                // do nothing here, as no left memory
-                rightTuple.clearStaged();
-                rightTuple = next;
-                continue;
-            }
+            if ( ltm != null && ltm.size() > 0 ) {
+                constraints.updateFromFactHandle( contextEntry,
+                                                  wm,
+                                                  rightTuple.getFactHandle() );
 
-            PropagationContext context = rightTuple.getPropagationContext();
-            constraints.updateFromFactHandle(contextEntry,
-                                             wm,
-                                             rightTuple.getFactHandle());
+                FastIterator leftIt = accNode.getLeftIterator( ltm );
 
-            FastIterator leftIt = accNode.getLeftIterator(ltm);
+                for ( LeftTuple leftTuple = accNode.getFirstLeftTuple( rightTuple, ltm, leftIt ); leftTuple != null; leftTuple = (LeftTuple) leftIt.next( leftTuple ) ) {
+                    if ( constraints.isAllowedCachedRight( contextEntry,
+                                                           leftTuple ) ) {
+                        final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
+                        addMatch( accNode,
+                                  accumulate,
+                                  leftTuple,
+                                  rightTuple,
+                                  null,
+                                  null,
+                                  wm,
+                                  am,
+                                  accctx,
+                                  true );
 
-            for (LeftTuple leftTuple = accNode.getFirstLeftTuple(rightTuple, ltm, context, leftIt); leftTuple != null; leftTuple = (LeftTuple) leftIt.next(leftTuple)) {
-                if (constraints.isAllowedCachedRight(contextEntry,
-                                                     leftTuple)) {
-                    final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
-                    addMatch(accNode,
-                             accumulate,
-                             leftTuple,
-                             rightTuple,
-                             null,
-                             null,
-                             wm,
-                             am,
-                             accctx,
-                             true);
+                        // right inserts and updates are done first
+                        // so any existing leftTuples we know are updates, but only add if not already added
+                        if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
+                            trgLeftTuples.addUpdate( leftTuple );
+                        }
 
-                    // right inserts and updates are done first
-                    // so any existing leftTuples we know are updates, but only add if not already added
-                    if (leftTuple.getStagedType() == LeftTuple.NONE) {
-                        trgLeftTuples.addUpdate(leftTuple);
                     }
-
                 }
             }
-
             rightTuple.clearStaged();
             rightTuple = next;
         }
-        constraints.resetFactHandle(contextEntry);
+        constraints.resetFactHandle( contextEntry );
     }
 
     public void doLeftUpdates(AccumulateNode accNode,
@@ -421,50 +414,50 @@ public class PhreakAccumulateNode {
 
         for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();
-            PropagationContext context = rightTuple.getPropagationContext();
 
-            LeftTuple childLeftTuple = rightTuple.getFirstChild();
+            if ( ltm != null && ltm.size() > 0 ) {
+                LeftTuple childLeftTuple = rightTuple.getFirstChild();
 
-            FastIterator leftIt = accNode.getLeftIterator(ltm);
-            LeftTuple leftTuple = accNode.getFirstLeftTuple(rightTuple, ltm, context, leftIt);
+                FastIterator leftIt = accNode.getLeftIterator( ltm );
+                LeftTuple leftTuple = accNode.getFirstLeftTuple( rightTuple, ltm, leftIt );
 
-            constraints.updateFromFactHandle(contextEntry,
-                                             wm,
-                                             rightTuple.getFactHandle());
+                constraints.updateFromFactHandle( contextEntry,
+                                                  wm,
+                                                  rightTuple.getFactHandle() );
 
-            // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
-            // We assume a bucket change if leftTuple == null
-            if (childLeftTuple != null && ltm.isIndexed() && !leftIt.isFullIterator() && (leftTuple == null || (leftTuple.getMemory() != childLeftTuple.getLeftParent().getMemory()))) {
-                // our index has changed, so delete all the previous matches
-                removePreviousMatchesForRightTuple(accNode,
-                                                   accumulate,
-                                                   rightTuple,
-                                                   wm,
-                                                   am,
-                                                   childLeftTuple,
-                                                   trgLeftTuples);
-                childLeftTuple = null; // null so the next check will attempt matches for new bucket
-            }
-
-            // if LeftTupleMemory is empty, there are no matches to modify
-            if (leftTuple != null) {
-                if (leftTuple.getStagedType() == LeftTuple.NONE) {
-                    trgLeftTuples.addUpdate(leftTuple);
+                // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
+                // We assume a bucket change if leftTuple == null
+                if ( childLeftTuple != null && ltm.isIndexed() && !leftIt.isFullIterator() && ( leftTuple == null || ( leftTuple.getMemory() != childLeftTuple.getLeftParent().getMemory() ) ) ) {
+                    // our index has changed, so delete all the previous matches
+                    removePreviousMatchesForRightTuple( accNode,
+                                                        accumulate,
+                                                        rightTuple,
+                                                        wm,
+                                                        am,
+                                                        childLeftTuple,
+                                                        trgLeftTuples );
+                    childLeftTuple = null; // null so the next check will attempt matches for new bucket
                 }
 
-                doRightUpdatesProcessChildren(accNode,
-                                              am,
-                                              wm,
-                                              bm,
-                                              constraints,
-                                              accumulate,
-                                              leftIt,
-                                              rightTuple,
-                                              childLeftTuple,
-                                              leftTuple,
-                                              trgLeftTuples);
-            }
+                // if LeftTupleMemory is empty, there are no matches to modify
+                if ( leftTuple != null ) {
+                    if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
+                        trgLeftTuples.addUpdate( leftTuple );
+                    }
 
+                    doRightUpdatesProcessChildren( accNode,
+                                                   am,
+                                                   wm,
+                                                   bm,
+                                                   constraints,
+                                                   accumulate,
+                                                   leftIt,
+                                                   rightTuple,
+                                                   childLeftTuple,
+                                                   leftTuple,
+                                                   trgLeftTuples );
+                }
+            }
             rightTuple.clearStaged();
             rightTuple = next;
         }
@@ -575,7 +568,6 @@ public class PhreakAccumulateNode {
                               LeftTupleSets trgLeftTuples) {
         BetaMemory bm = am.getBetaMemory();
         LeftTupleMemory ltm = bm.getLeftTupleMemory();
-        //ContextEntry[] contextEntry = bm.getContext();
         Accumulate accumulate = accNode.getAccumulate();
 
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
@@ -597,9 +589,6 @@ public class PhreakAccumulateNode {
 
                 if (accctx.propagated) {
                     trgLeftTuples.addDelete(accctx.resultLeftTuple);
-                } else {
-                    // if not propagated, just destroy the result fact handle
-                    // workingMemory.getFactHandleFactory().destroyFactHandle( accctx.result.getFactHandle() );
                 }
             }
 

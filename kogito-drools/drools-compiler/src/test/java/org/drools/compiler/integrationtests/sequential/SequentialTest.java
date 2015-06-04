@@ -28,6 +28,7 @@ import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.KnowledgeBase;
@@ -36,6 +37,7 @@ import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.conf.SequentialOption;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -537,5 +539,33 @@ public class SequentialTest extends CommonTestMethodBase {
         StatelessKieSession ksession = kieContainer.getKieBase().newStatelessKieSession();
         result = (List) ksession.execute( CommandFactory.newInsertElements(Arrays.asList("test", new Message())));
         assertEquals( 2, result.size() );
+    }
+
+    @Test
+    public void testSharedSegment() throws Exception {
+        // BZ-1228313
+        String str =
+                "package org.drools.compiler.test\n" +
+                "import \n" + Message.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "    $s : String()\n" +
+                "    $m : Message()\n" +
+                "    $i : Integer( this < $s.length )\n" +
+                "then\n" +
+                "    modify($m) { setMessage($s) };\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "    $s : String()\n" +
+                "    $m : Message()\n" +
+                "    $i : Integer( this > $s.length )\n" +
+                "then\n" +
+                "end\n";
+
+        StatelessKieSession ksession = new KieHelper().addContent( str, ResourceType.DRL )
+                                                      .build( SequentialOption.YES )
+                                                      .newStatelessKieSession();
+
+        ksession.execute( CommandFactory.newInsertElements(Arrays.asList("test", new Message(), 3, 5)));
     }
 }
