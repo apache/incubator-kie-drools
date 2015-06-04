@@ -420,9 +420,9 @@ public class HumanTaskHandlerHelperTest extends AbstractBaseTest {
 	
 	private long roundExpirationTime(long expirationTime) {
 		BigDecimal a = new BigDecimal(expirationTime);
-		a.setScale(1, 1);
+		a = a.setScale(1, 1);
 		BigDecimal b = new BigDecimal(60*60*1000);
-		b.setScale(1, 1);
+		b = b.setScale(1, 1);
 		double devided = a.doubleValue()/b.doubleValue();
 
 		long roundedValue = Math.round(devided);
