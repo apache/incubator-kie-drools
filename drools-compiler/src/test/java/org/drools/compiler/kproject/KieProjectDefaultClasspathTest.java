@@ -20,6 +20,8 @@ import org.kie.api.runtime.KieContainer;
 
 public class KieProjectDefaultClasspathTest extends AbstractKnowledgeTest {
 
+    private KieServicesEventListerner listener;
+
     @Test
     public void createMultpleJarAndFileResources() throws IOException,
                        ClassNotFoundException,
@@ -50,7 +52,7 @@ public class KieProjectDefaultClasspathTest extends AbstractKnowledgeTest {
             InternalKieServices ks = (InternalKieServices) KieServices.Factory.get();
 
             final AtomicInteger kieModulesCounter = new AtomicInteger(0);
-            KieServicesEventListerner listener = new AbstractKieServicesEventListerner() {
+            listener = new AbstractKieServicesEventListerner() {
                 @Override
                 public void onKieModuleDiscovered(KieModuleDiscovered event) {
                     // skip kmodule.xml contained in test/resources
@@ -68,8 +70,7 @@ public class KieProjectDefaultClasspathTest extends AbstractKnowledgeTest {
             testEntry(new KProjectTestClassImpl( "jar1", kContainer ), "jar1");
             testEntry(new KProjectTestClassImpl( "jar2", kContainer ), "jar2");
             testEntry(new KProjectTestClassImpl( "jar3", kContainer ), "jar3");
-            testEntry(new KProjectTestClassImpl( "fol4", kContainer ), "fol4");
-
+            testEntry(new KProjectTestClassImpl("fol4", kContainer), "fol4");
         } finally {
             // FIXME Java 7+
             // on Windows, the URLClassLoader will not release all resources,
