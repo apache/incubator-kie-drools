@@ -26,6 +26,17 @@ import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAlloc
 @XStreamAlias("AssetClassAllocation")
 public class AssetClassAllocation extends AbstractPersistable {
 
+    public static long calculateSquaredStandardDeviationFemtosFromTo(AssetClassAllocation from, AssetClassAllocation to) {
+        if (from == to) {
+            long micros = from.getQuantifiedStandardDeviationRiskMicros();
+            return micros * micros * 1000L;
+        } else {
+            long picos = from.getQuantifiedStandardDeviationRiskMicros() * to.getQuantifiedStandardDeviationRiskMicros();
+            long correlationMillis = from.getAssetClass().getCorrelationMillisMap().get(to.getAssetClass());
+            return picos * correlationMillis;
+        }
+    }
+
     private AssetClass assetClass;
 
     // Planning variables: changes during planning, between score calculations.

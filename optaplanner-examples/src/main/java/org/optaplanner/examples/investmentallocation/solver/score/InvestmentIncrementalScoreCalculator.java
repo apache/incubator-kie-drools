@@ -30,8 +30,8 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
 
     private InvestmentAllocationSolution solution;
 
-    private long standardDeviationSquaredFemtos;
-    private long standardDeviationSquaredFemtosMaximum;
+    private long squaredStandardDeviationFemtosMaximum;
+    private long squaredStandardDeviationFemtos;
 
     private long hardScore;
     private long softScore;
@@ -42,10 +42,9 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
 
     public void resetWorkingSolution(InvestmentAllocationSolution solution) {
         this.solution = solution;
-        standardDeviationSquaredFemtos = 0L;
-        long standardDeviationMillisMaximum = solution.getParametrization().getStandardDeviationMillisMaximum();
-        standardDeviationSquaredFemtosMaximum = standardDeviationMillisMaximum * standardDeviationMillisMaximum
-                * 1000L * 1000L * 1000L;
+        squaredStandardDeviationFemtosMaximum = solution.getParametrization()
+                .calculateSquaredStandardDeviationFemtosMaximum();
+        squaredStandardDeviationFemtos = 0L;
         hardScore = 0L;
         softScore = 0L;
         for (AssetClassAllocation allocation : solution.getAssetClassAllocationList()) {
@@ -82,23 +81,23 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
     // ************************************************************************
 
     private void insertQuantityMillis(AssetClassAllocation allocation, boolean reset) {
-        if (standardDeviationSquaredFemtos > standardDeviationSquaredFemtosMaximum) {
-            hardScore += standardDeviationSquaredFemtos - standardDeviationSquaredFemtosMaximum;
+        if (squaredStandardDeviationFemtos > squaredStandardDeviationFemtosMaximum) {
+            hardScore += squaredStandardDeviationFemtos - squaredStandardDeviationFemtosMaximum;
         }
-        standardDeviationSquaredFemtos += calculateStandardDeviationSquaredFemtosDelta(allocation, reset);
-        if (standardDeviationSquaredFemtos > standardDeviationSquaredFemtosMaximum) {
-            hardScore -= standardDeviationSquaredFemtos - standardDeviationSquaredFemtosMaximum;
+        squaredStandardDeviationFemtos += calculateStandardDeviationSquaredFemtosDelta(allocation, reset);
+        if (squaredStandardDeviationFemtos > squaredStandardDeviationFemtosMaximum) {
+            hardScore -= squaredStandardDeviationFemtos - squaredStandardDeviationFemtosMaximum;
         }
         softScore += allocation.getQuantifiedExpectedReturnMicros();
     }
 
     private void retractQuantityMillis(AssetClassAllocation allocation) {
-        if (standardDeviationSquaredFemtos > standardDeviationSquaredFemtosMaximum) {
-            hardScore += standardDeviationSquaredFemtos - standardDeviationSquaredFemtosMaximum;
+        if (squaredStandardDeviationFemtos > squaredStandardDeviationFemtosMaximum) {
+            hardScore += squaredStandardDeviationFemtos - squaredStandardDeviationFemtosMaximum;
         }
-        standardDeviationSquaredFemtos -= calculateStandardDeviationSquaredFemtosDelta(allocation, false);
-        if (standardDeviationSquaredFemtos > standardDeviationSquaredFemtosMaximum) {
-            hardScore -= standardDeviationSquaredFemtos - standardDeviationSquaredFemtosMaximum;
+        squaredStandardDeviationFemtos -= calculateStandardDeviationSquaredFemtosDelta(allocation, false);
+        if (squaredStandardDeviationFemtos > squaredStandardDeviationFemtosMaximum) {
+            hardScore -= squaredStandardDeviationFemtos - squaredStandardDeviationFemtosMaximum;
         }
         softScore -= allocation.getQuantifiedExpectedReturnMicros();
     }

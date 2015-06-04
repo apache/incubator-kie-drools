@@ -35,4 +35,13 @@ public class InvestmentParametrization extends AbstractPersistable {
         this.standardDeviationMillisMaximum = standardDeviationMillisMaximum;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
+    public long calculateSquaredStandardDeviationFemtosMaximum() {
+        return standardDeviationMillisMaximum * standardDeviationMillisMaximum
+                * 1000L * 1000L * 1000L;
+    }
+
 }

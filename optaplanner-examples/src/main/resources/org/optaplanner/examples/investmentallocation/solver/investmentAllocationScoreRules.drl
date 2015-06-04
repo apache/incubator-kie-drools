@@ -22,6 +22,7 @@ import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScoreHold
 import org.optaplanner.examples.investmentallocation.domain.AssetClass;
 import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
 import org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution;
+import org.optaplanner.examples.investmentallocation.domain.InvestmentParametrization;
 
 global HardSoftLongScoreHolder scoreHolder;
 
@@ -29,6 +30,17 @@ global HardSoftLongScoreHolder scoreHolder;
 // Hard constraints
 // ############################################################################
 
+rule "Standard deviation maximum"
+    when
+        InvestmentParametrization($squaredStandardDeviationFemtosMaximum : calculateSquaredStandardDeviationFemtosMaximum())
+        $squaredStandardDeviationFemtos : Number(longValue > $squaredStandardDeviationFemtosMaximum) from accumulate(
+            $a : AssetClassAllocation() and $b : AssetClassAllocation(),
+            sum(AssetClassAllocation.calculateSquaredStandardDeviationFemtosFromTo($a, $b))
+        )
+    then
+        scoreHolder.addHardConstraintMatch(kcontext,
+                $squaredStandardDeviationFemtosMaximum - $squaredStandardDeviationFemtos.longValue());
+end
 
 // ############################################################################
 // Soft constraints

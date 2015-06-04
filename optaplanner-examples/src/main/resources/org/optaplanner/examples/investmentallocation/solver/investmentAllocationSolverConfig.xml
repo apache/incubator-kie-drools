@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <environmentMode>FULL_ASSERT</environmentMode>
+  <!--<environmentMode>FULL_ASSERT</environmentMode>-->
 
   <!-- Domain model configuration -->
   <solutionClass>org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution</solutionClass>
@@ -10,12 +10,12 @@
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.investmentallocation.solver.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>-->
-    <incrementalScoreCalculatorClass>org.optaplanner.examples.investmentallocation.solver.score.InvestmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
-    <!--<scoreDrl>org/optaplanner/examples/investmentallocation/solver/investmentAllocationScoreRules.drl</scoreDrl>-->
+    <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.investmentallocation.solver.score.InvestmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
+    <scoreDrl>org/optaplanner/examples/investmentallocation/solver/investmentAllocationScoreRules.drl</scoreDrl>
     <initializingScoreTrend>ONLY_DOWN/ANY</initializingScoreTrend>
-    <assertionScoreDirectorFactory>
-      <easyScoreCalculatorClass>org.optaplanner.examples.investmentallocation.solver.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>
-    </assertionScoreDirectorFactory>
+    <!--<assertionScoreDirectorFactory>-->
+      <!--<easyScoreCalculatorClass>org.optaplanner.examples.investmentallocation.solver.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>-->
+    <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
   <!-- Optimization algorithms configuration -->

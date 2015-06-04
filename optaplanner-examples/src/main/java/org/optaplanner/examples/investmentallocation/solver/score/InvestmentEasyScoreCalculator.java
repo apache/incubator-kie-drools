@@ -25,10 +25,8 @@ public class InvestmentEasyScoreCalculator implements EasyScoreCalculator<Invest
     public HardSoftLongScore calculateScore(InvestmentAllocationSolution solution) {
         long hardScore = 0L;
         long softScore = 0L;
+        long squaredFemtosMaximum = solution.getParametrization().calculateSquaredStandardDeviationFemtosMaximum();
         long squaredFemtos = solution.calculateStandardDeviationSquaredFemtos();
-        long standardDeviationMillisMaximum = solution.getParametrization().getStandardDeviationMillisMaximum();
-        long squaredFemtosMaximum = standardDeviationMillisMaximum * standardDeviationMillisMaximum
-                * 1000L * 1000L * 1000L;
         if (squaredFemtos > squaredFemtosMaximum) {
             hardScore -= squaredFemtos - squaredFemtosMaximum;
         }
