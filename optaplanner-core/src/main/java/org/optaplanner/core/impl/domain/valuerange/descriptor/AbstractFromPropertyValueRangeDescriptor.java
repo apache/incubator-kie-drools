@@ -83,6 +83,12 @@ public abstract class AbstractFromPropertyValueRangeDescriptor extends AbstractV
 
     protected ValueRange<?> readValueRange(Object bean) {
         Object valueRangeObject = readMethodAccessor.read(bean);
+        if (valueRangeObject == null) {
+            throw new IllegalStateException("The @" + ValueRangeProvider.class.getSimpleName()
+                    + " annotated readMethod (" + readMethodAccessor.getReadMethod()
+                    + ") called on bean (" + bean
+                    + ") must not return a null valueRangeObject (" + valueRangeObject + ").");
+        }
         ValueRange<Object> valueRange;
         if (collectionWrapping) {
             List<Object> list = transformToList((Collection<Object>) valueRangeObject);
