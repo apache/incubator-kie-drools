@@ -116,7 +116,7 @@ public class ReteJoinNode extends JoinNode {
                                                rightTuple.getFactHandle() );
 
         FastIterator it = getLeftIterator( leftMemory );
-        for ( LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, it ); leftTuple != null; leftTuple = (LeftTuple) it.next( leftTuple ) ) {
+        for ( LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, it ); leftTuple != null; leftTuple = (LeftTuple) it.next( leftTuple ) ) {
             propagateFromRight( rightTuple, leftTuple, memory, context, workingMemory );
         }
 
@@ -208,7 +208,7 @@ public class ReteJoinNode extends JoinNode {
 
 
         FastIterator it = getLeftIterator( leftMemory );
-        LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, it );
+        LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, it );
 
         this.constraints.updateFromFactHandle( memory.getContext(),
                                                workingMemory,
