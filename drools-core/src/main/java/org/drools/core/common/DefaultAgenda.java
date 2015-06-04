@@ -115,6 +115,7 @@ public class DefaultAgenda
     protected int                                                activationCounter;
 
     private boolean                                              declarativeAgenda;
+    private boolean                                              sequential;
 
     private ObjectTypeConf                                       activationObjectTypeConf;
 
@@ -181,6 +182,7 @@ public class DefaultAgenda
         }
 
         this.declarativeAgenda = kBase.getConfiguration().isDeclarativeAgenda();
+        this.sequential = kBase.getConfiguration().isSequential();
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -194,6 +196,7 @@ public class DefaultAgenda
         knowledgeHelper = (KnowledgeHelper) in.readObject();
         legacyConsequenceExceptionHandler = (ConsequenceExceptionHandler) in.readObject();
         declarativeAgenda = in.readBoolean();
+        sequential = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -205,7 +208,8 @@ public class DefaultAgenda
         out.writeObject( agendaGroupFactory );
         out.writeObject( knowledgeHelper );
         out.writeObject( legacyConsequenceExceptionHandler );
-        out.writeBoolean(declarativeAgenda);
+        out.writeBoolean( declarativeAgenda );
+        out.writeBoolean( sequential );
     }
 
     public RuleAgendaItem createRuleAgendaItem(final int salience,
@@ -272,6 +276,10 @@ public class DefaultAgenda
 
     @Override
     public void addEagerRuleAgendaItem(RuleAgendaItem item) {
+        if ( sequential ) {
+            return;
+        }
+
         if ( workingMemory.getSessionConfiguration().getForceEagerActivationFilter().accept(item.getRule()) ) {
             item.getRuleExecutor().evaluateNetwork(workingMemory);
             return;
