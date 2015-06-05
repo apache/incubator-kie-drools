@@ -73,11 +73,7 @@ public class VariableScopeInstance extends AbstractContextInstance {
         	if (value == null) {
         		return;
         	}
-        } else {
-        	if (oldValue.equals(value)) {
-        		return;
-        	}
-        }
+        } 
         ProcessEventSupport processEventSupport = ((InternalProcessRuntime) getProcessInstance()
     		.getKnowledgeRuntime().getProcessRuntime()).getProcessEventSupport();
     	processEventSupport.fireBeforeVariableChanged(

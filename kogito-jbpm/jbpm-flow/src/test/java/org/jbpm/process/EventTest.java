@@ -434,6 +434,7 @@ public class EventTest extends AbstractBaseTest  {
             "bnt-1", "ant-1",
             "anl-3", "ant-3",
             "anl-2",
+            "bvc-event", "avc-event",
             "bnl-4",
             "bnt-5", "bnl-5",
             "bnt-1", "ant-1",

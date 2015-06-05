@@ -29,6 +29,7 @@ import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.audit.VariableInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Content;
@@ -79,6 +80,10 @@ public class PatientVariablePersistenceStrategyTest extends JbpmJUnitBaseTestCas
         //The process is in the first Human Task waiting for its completion
         Assert.assertEquals(ProcessInstance.STATE_ACTIVE, process.getState());
         
+        List<? extends VariableInstanceLog> varLogs = runtimeEngine.getAuditService().findVariableInstances(processInstanceId, "medicalRecord");
+        assertNotNull(varLogs);
+        assertEquals(1, varLogs.size());        
+        
         //gets frontDesk's tasks
         List<TaskSummary> frontDeskTasks = taskService.getTasksAssignedAsPotentialOwner("frontDesk", "en-UK");
         Assert.assertEquals(1, frontDeskTasks.size());
@@ -101,6 +106,13 @@ public class PatientVariablePersistenceStrategyTest extends JbpmJUnitBaseTestCas
         Map<String, Object> output = new HashMap<String, Object>();
         output.put("output1", taskMedicalRecord);
         taskService.complete(frontDeskTasks.get(0).getId(), "frontDesk", output);
+        
+        varLogs = runtimeEngine.getAuditService().findVariableInstances(processInstanceId, "medicalRecord");
+        assertNotNull(varLogs);        
+        assertEquals(2, varLogs.size());        
+        
+        assertTrue(varLogs.get(0).getValue().contains("Last Three Years Medical Hisotry"));
+        assertTrue(varLogs.get(1).getValue().contains("Initial Description of the Medical Record"));
         
         //Now doctor has 1 task
         doctorTasks = taskService.getTasksAssignedAsPotentialOwner("doctor", "en-UK");

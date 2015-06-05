@@ -211,7 +211,7 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
         assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
         List<VariableInstanceLog> variableInstances = auditLogService.findVariableInstances(processInstanceId);
-        assertEquals(9, variableInstances.size());
+        assertEquals(11, variableInstances.size());
         for (VariableInstanceLog variableInstance: variableInstances) {
             logger.debug(variableInstance.toString());
             assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
@@ -233,7 +233,7 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         String varId = "s";
         String varValue = "ResultValue";
         variableInstances = auditLogService.findVariableInstancesByNameAndValue(varId, varValue, false);
-        assertEquals( 1, variableInstances.size() );
+        assertEquals( 3, variableInstances.size() );
         VariableInstanceLog varLog = variableInstances.get(0);
         assertEquals( varId, varLog.getVariableId() );
         assertEquals( varValue, varLog.getValue() );
@@ -283,7 +283,7 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
         assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
         List<VariableInstanceLog> variableInstances = auditLogService.findVariableInstances(processInstanceId);
-        assertEquals(6, variableInstances.size());
+        assertEquals(8, variableInstances.size());
         for (VariableInstanceLog variableInstance: variableInstances) {
             logger.debug(variableInstance.toString());
             assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
@@ -384,7 +384,7 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
         assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
         List<VariableInstanceLog> variableInstances = auditLogService.findVariableInstances(processInstanceId);
-        assertEquals(10, variableInstances.size());
+        assertEquals(12, variableInstances.size());
         for (VariableInstanceLog variableInstance: variableInstances) {
             logger.debug(variableInstance.toString());
             assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
@@ -406,7 +406,7 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         String varId = "s";
         String varValue = "ResultValue";
         variableInstances = auditLogService.findVariableInstancesByNameAndValue(varId, varValue, false);
-        assertEquals( 1, variableInstances.size() );
+        assertEquals( 3, variableInstances.size() );
         VariableInstanceLog varLog = variableInstances.get(0);
         assertEquals( varId, varLog.getVariableId() );
         assertEquals( varValue, varLog.getValue() );
