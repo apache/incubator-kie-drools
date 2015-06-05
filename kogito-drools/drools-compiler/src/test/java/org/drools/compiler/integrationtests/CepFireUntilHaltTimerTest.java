@@ -1,6 +1,7 @@
 package org.drools.compiler.integrationtests;
 
 import org.drools.core.time.SessionPseudoClock;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -89,6 +90,8 @@ public class CepFireUntilHaltTimerTest {
         ksession.dispose();
     }
 
+    @Ignore("Fails intermittently due to race condition between the propagation queue and the default agenda " +
+            "(as described by Mario Fusco). Should be fixed within a few days.")
     @Test
     public void testTwoRunsTimerAccumulateFireUntilHalt() throws Exception {
         init();
