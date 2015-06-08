@@ -180,6 +180,10 @@ public abstract class TraitProxy implements Externalizable, TraitType, Comparabl
         propagationTypeCode.or( typeCode );
     }
 
+    public boolean hasOtns() {
+        return otns != null && ! otns.isEmpty();
+    }
+
     public void clearOtns() {
         if ( otns != null ) {
             otns.clear();

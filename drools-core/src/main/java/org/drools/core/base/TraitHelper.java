@@ -122,8 +122,8 @@ public class TraitHelper implements Externalizable {
                     NamedEntryPoint nep = (NamedEntryPoint) h.getEntryPoint();
                     PropagationContext propagationContext = nep.getPctxFactory().createPropagationContext( nep.getInternalWorkingMemory().getNextPropagationIdCounter(),
                                                                                                            PropagationContext.MODIFICATION,
-                                                                                                           activation.getRule(),
-                                                                                                           activation.getTuple(),
+                                                                                                           activation != null ? activation.getRule() : null,
+                                                                                                           activation != null ? activation.getTuple() : null,
                                                                                                            h,
                                                                                                            nep.getEntryPoint(),
                                                                                                            mask,
@@ -133,7 +133,7 @@ public class TraitHelper implements Externalizable {
                                 t,
                                 t,
                                 nep.getObjectTypeConfigurationRegistry().getObjectTypeConf( nep.getEntryPoint(), t ),
-                                activation.getRule(),
+                                activation != null ? activation.getRule() : null,
                                 propagationContext );
                 }
             }
@@ -388,14 +388,25 @@ public class TraitHelper implements Externalizable {
     }
 
 
-    protected Collection<Thing> getTraitBoundary( TraitableBean inner, boolean needsProxy, boolean hasTrait, Class trait ) {
+    protected <K> Collection<Thing> getTraitBoundary( TraitableBean<K,?> inner, boolean needsProxy, boolean hasTrait, Class trait ) {
         boolean refresh = ! needsProxy && ! hasTrait && Thing.class != trait;
-        if ( refresh ) {
-            return inner.getMostSpecificTraits();
+        if ( ! refresh ) {
+            return null;
         }
-        return null;
-    }
 
+        if ( inner._getTraitMap() == null || inner instanceof Thing ) return Collections.EMPTY_LIST;
+        if ( inner._getTraitMap().isEmpty() ) return null;
+
+        Collection<Thing> ts = new ArrayList<Thing>();
+        for ( Thing t : inner._getTraitMap().values() )     {
+            if ( t instanceof TraitProxy ) {
+                if ( ( (TraitProxy) t ).hasOtns() ) {
+                    ts.add( t );
+                }
+            }
+        }
+        return ts;
+    }
 
     private <T, K> T asTrait( K core, TraitableBean inner, Class<T> trait, boolean needsProxy, boolean hasTrait, boolean needsUpdate, TraitFactory builder, boolean logical, Activation activation ) throws LogicalTypeInconsistencyException {
         T thing;
@@ -654,5 +665,15 @@ public class TraitHelper implements Externalizable {
             }
         }
         return null;
+    }
+
+    public void replaceCore( InternalFactHandle handle, Object object, Object originalObject, BitMask modificationMask, Class<? extends Object> aClass, Activation activation ) {
+        TraitableBean src = (TraitableBean) originalObject;
+        TraitableBean tgt = (TraitableBean) object;
+        tgt._setTraitMap( src._getTraitMap() );
+        tgt._setDynamicProperties( src._getDynamicProperties() );
+        tgt._setFieldTMS( src._getFieldTMS() );
+
+        updateTraits( handle, modificationMask, object.getClass(), activation );
     }
 }
