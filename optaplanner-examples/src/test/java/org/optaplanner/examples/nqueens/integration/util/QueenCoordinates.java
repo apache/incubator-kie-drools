@@ -2,24 +2,24 @@ package org.optaplanner.examples.nqueens.integration.util;
 
 public class QueenCoordinates  {
 
-    public static QueenCoordinates createQueenCoordinates(int x, int y) {
-        return new QueenCoordinates(x, y);
+    public static QueenCoordinates createQueenCoordinates(int columnIndex, int rowIndex) {
+        return new QueenCoordinates(columnIndex, rowIndex);
     }
 
-    private final int x;
-    private final int y;
+    private final int columnIndex;
+    private final int rowIndex;
 
-    public QueenCoordinates(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public QueenCoordinates(int columnIndex, int rowIndex) {
+        this.columnIndex = columnIndex;
+        this.rowIndex = rowIndex;
     }
 
-    public int getX() {
-        return x;
+    public int getColumnIndex() {
+        return columnIndex;
     }
 
-    public int getY() {
-        return y;
+    public int getRowIndex() {
+        return rowIndex;
     }
 
 }

@@ -14,12 +14,11 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.solver.DefaultSolver;
-import org.optaplanner.examples.nqueens.domain.Column;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
-import org.optaplanner.examples.nqueens.domain.Row;
 import org.optaplanner.examples.nqueens.integration.util.QueenCoordinates;
 import org.optaplanner.examples.nqueens.integration.util.QueenCoordinatesStepListener;
+import org.optaplanner.examples.nqueens.persistence.NQueensGenerator;
 import org.optaplanner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator;
 
 import java.util.*;
@@ -65,26 +64,8 @@ public class ConstructionHeuristicTest {
         chConfig.setValueSorterManner(valueSorterManner);
         config.setPhaseConfigList(Collections.<PhaseConfig>singletonList(chConfig));
 
-        NQueens solution = new NQueens();
-        List<Queen> entities = new ArrayList<Queen>();
-        int dimension = 8;
-        List<Row> rowList = new ArrayList<Row>();
-        List<Column> columnList = new ArrayList<Column>();
-        for (int i = 0; i < dimension; i++) {
-            Column column = new Column();
-            column.setIndex(i);
-            Row row = new Row();
-            row.setIndex(i);
-            Queen entity = new Queen();
-            entity.setColumn(column);
-            rowList.add(row);
-            columnList.add(column);
-            entities.add(entity);
-        }
-        solution.setN(dimension);
-        solution.setRowList(rowList);
-        solution.setColumnList(columnList);
-        solution.setQueenList(entities);
+        NQueensGenerator generator = new NQueensGenerator();
+        NQueens solution = generator.createNQueens(8);
 
         QueenCoordinatesStepListener listener = new QueenCoordinatesStepListener();
 
@@ -193,8 +174,8 @@ public class ConstructionHeuristicTest {
         assertEquals(expected.size(), recorded.size());
 
         for (int i = 0; i < expected.size(); i++) {
-            assertEquals(expected.get(i).getX(), recorded.get(i).getX());
-            assertEquals(expected.get(i).getY(), recorded.get(i).getY());
+            assertEquals(expected.get(i).getColumnIndex(), recorded.get(i).getColumnIndex());
+            assertEquals(expected.get(i).getRowIndex(), recorded.get(i).getRowIndex());
         }
     }
 
