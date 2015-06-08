@@ -1,4 +1,4 @@
-package org.optaplanner.examples.nqueens.integration.util;
+package org.optaplanner.examples.common.solver.tracking;
 
 
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
