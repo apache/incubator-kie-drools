@@ -191,10 +191,24 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
 
       <para>A <literal>Forager</literal> gathers all accepted moves and picks the move which is the next step. Normally
       it picks the accepted move with the highest score. If several accepted moves have the highest score, one is picked
-      randomly.</para>
+      randomly to break the tie. Breaking ties randomly leads to better results.</para>
 
-      <para>You can implement your own <literal>Forager</literal>, but the build-in forager should suffice for most
-      needs.</para>
+      <note>
+        <para>It is possible to disable breaking ties randomly by explicitly setting <literal>breakTieRandomly</literal>
+        to <literal>false</literal>, but that's almost never a good idea:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>If an earlier move is better than a later move with the same score, the score calculator should add an
+            extra softer <link linkend="scoreLevel">score level</link> to score the first move as slightly better. Don't
+            rely on move selection order to enforce that.</para>
+          </listitem>
+
+          <listitem>
+            <para>Random tie breaking does not affect <link linkend="environmentMode">reproducibility</link>.</para>
+          </listitem>
+        </itemizedlist>
+      </note>
 
       <section xml:id="acceptedCountLimit">
         <title>Accepted Count Limit</title>
