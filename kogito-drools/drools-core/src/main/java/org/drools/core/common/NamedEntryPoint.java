@@ -22,6 +22,9 @@ import org.drools.core.base.TraitHelper;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.TraitTypeEnum;
+import org.drools.core.factmodel.traits.Traitable;
+import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
@@ -420,7 +423,13 @@ public class NamedEntryPoint
                 }
             }
 
-            update(handle, object, originalObject, typeConf, rule, propagationContext);
+            if ( handle.isTraitable() && object != originalObject
+                 && object instanceof TraitableBean && originalObject instanceof TraitableBean ) {
+                this.traitHelper.replaceCore( handle, object, originalObject, propagationContext.getModificationMask(), object.getClass(), activation );
+            }
+
+            update( handle, object, originalObject, typeConf, rule, propagationContext );
+
         } finally {
             this.wm.endOperation();
             this.kBase.readUnlock();

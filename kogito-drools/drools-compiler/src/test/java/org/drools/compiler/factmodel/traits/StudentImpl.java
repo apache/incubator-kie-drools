@@ -157,6 +157,8 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public void _setFieldTMS( TraitFieldTMS tms ) {}
+
     public BitSet getBottomTypeCode() {
         return new BitSet();
     }

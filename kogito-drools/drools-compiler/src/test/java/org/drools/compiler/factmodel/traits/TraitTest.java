@@ -52,7 +52,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.command.Command;
+import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.DebugAgendaEventListener;
@@ -1242,10 +1244,7 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
-
-
-
-    @Test(timeout=10000) @Ignore
+    @Test(timeout=10000)
     public void testTraitLegacy() {
         String source = "org/drools/compiler/factmodel/traits/testTraitLegacyTrait.drl";
 
@@ -2271,9 +2270,7 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
-
-
-    @Test(timeout=10000) @Ignore
+    @Test(timeout=10000)
     public void testTraitModifyCore() {
         String s1 = "package test; " +
                     "import org.drools.core.factmodel.traits.*; " +
@@ -4194,7 +4191,7 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
-    @Test(timeout=10000)
+    @Test
     public void testMultipleModifications() {
         String drl = "package org.drools.traits.test;\n" +
                      "\n" +
@@ -4764,10 +4761,10 @@ public class TraitTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         // insert Core Bean, A, B, Thing.
-        // Update the bean on don A, update the bean and A on don B
+        // Update the bean on don B
         assertEquals( 0, cwm.getdeletes() );
         assertEquals( 3, cwm.getInserts() );
-        assertEquals( 2, cwm.getUpdates() );
+        assertEquals( 1, cwm.getUpdates() );
         cwm.reset();
 
         FactHandle handle = ksession.insert( "go" );
@@ -4807,6 +4804,57 @@ public class TraitTest extends CommonTestMethodBase {
 
         assertEquals( 4, list.size() );
         assertTrue( list.containsAll( Arrays.asList( 0, 1, 2, 3 ) ) );
+    }
+
+    @Test
+    public void testDonManyTraitsAtOnce2() {
+        String drl = "" +
+                     "package org.drools.core.factmodel.traits.test;\n" +
+                     "\n" +
+                     "import org.drools.core.factmodel.traits.*;\n" +
+                     "import java.util.*;\n" +
+                     "\n" +
+                     "global List list; \n" +
+                     "" +
+                     "declare trait A @propertyReactive end \n" +
+                     "declare trait B @propertyReactive end \n" +
+                     "\n" +
+                     "declare TBean @Traitable @propertyReactive fld0 : String end \n" +
+                     "" +
+                     "rule \"Don 1\"\n" +
+                     "when \n" +
+                     "then\n" +
+                     "  TBean t = new TBean(); \n" +
+                     "  don( t, A.class ); \n" +
+                     "  don( t, B.class ); \n" +
+                     "end\n" +
+                     "" +
+                     "rule \"Test Don A,B\" " +
+                     "when \n" +
+                     "  A(this isA B) \n" +
+                     "then \n" +
+                     "  list.add( 0 ); \n" +
+                     "  System.out.println( \"Call DON MANY (A isA B) \" ); " +
+                     "end \n" +
+                     "" +
+                     "" ;
+
+        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        TraitFactory.setMode( mode, ksession.getKieBase() );
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        CountingWorkingMemoryEventListener cwm = new CountingWorkingMemoryEventListener();
+        ksession.addEventListener( cwm );
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 0 ), list );
+
+        assertEquals( 0, cwm.getdeletes() );
+        assertEquals( 3, cwm.getInserts() );
+        assertEquals( 1, cwm.getUpdates() );
+
     }
 
 
@@ -5489,7 +5537,7 @@ public class TraitTest extends CommonTestMethodBase {
                 "declare trait A @propertyReactive end " +
                 "declare trait B extends A @propertyReactive end " +
                 "declare trait C extends A @propertyReactive end " +
-                
+
                 "rule Trait when " +
                 "    $core: Entity( ) " +
                 "then " +
@@ -5681,6 +5729,68 @@ public class TraitTest extends CommonTestMethodBase {
             }
         }
         assertEquals( 2, counter2 );
+    }
+
+
+    @Test
+    public void testExternalUpdateWithProxyRefreshInEqualityMode() {
+        String drl = "package org.drools.trait.test; " +
+                     "import " + ExtEntity.class.getCanonicalName() + "; " +
+                     "global " + List.class.getName() + " list; " +
+
+                     "declare trait Mask " +
+                     "  id  : String " +
+                     "  num : int " +
+                     "end " +
+
+                     "rule Don when " +
+                     "  $x : ExtEntity( $id : id ) " +
+                     "then " +
+                     "  list.add( $id ); " +
+                     "  don( $x, Mask.class ); " +
+                     "end " +
+
+                     "rule Test when " +
+                     "  Mask( $n : num ) " +
+                     "then " +
+                     "  list.add( $n ); " +
+                     "end ";
+
+        RuleBaseConfiguration rbc = new RuleBaseConfiguration();
+        rbc.setOption( EqualityBehaviorOption.EQUALITY );
+        final KnowledgeBase kbase = getKieBaseFromString( drl, rbc );
+        TraitFactory.setMode( mode, kbase );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        FactHandle handle = ksession.insert( new ExtEntity( "x1", 42 ) );
+        ksession.fireAllRules();
+
+        ksession.update( handle, new ExtEntity( "x1", 35 ) );
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( "x1", 42, "x1", 42 ), list );
+    }
+
+    @Traitable
+    @PropertyReactive
+    public static class ExtEntity extends Entity {
+        private int num;
+
+        public int getNum() {
+            return num;
+        }
+
+        public void setNum( int num ) {
+            this.num = num;
+        }
+
+        public ExtEntity( String id, int num ) {
+            super( id );
+            this.num = num;
+        }
     }
 
     protected Set<BitSet> checkOTNPartitioning( TraitableBean core, KieSession wm ) {

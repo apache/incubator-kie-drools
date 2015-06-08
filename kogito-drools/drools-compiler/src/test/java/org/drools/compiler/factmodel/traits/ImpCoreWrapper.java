@@ -104,6 +104,8 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp>, TraitableBe
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public void _setFieldTMS( TraitFieldTMS tms ) {}
+
     public BitSet getBottomTypeCode() {
         return ((TraitTypeMap) __$$dynamic_traits_map$$).getBottomCode();
     }

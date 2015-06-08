@@ -59,4 +59,5 @@ public interface TraitableBean<K, X extends TraitableBean> {
 
     public TraitFieldTMS _getFieldTMS();
 
+    void _setFieldTMS( TraitFieldTMS traitFieldTMS );
 }
