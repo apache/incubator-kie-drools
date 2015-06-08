@@ -105,8 +105,9 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
             Object oldTabu = it.next();
             Integer oldTabuStepIndexInteger = tabuToStepIndexMap.get(oldTabu);
             if (oldTabuStepIndexInteger == null) {
-                throw new IllegalStateException("HashCode violation: the hashCode of tabu (" + oldTabu
-                        + ") probably changed since it was inserted in the tabu Map or Set.");
+                throw new IllegalStateException("HashCode stability violation: the hashCode() of tabu ("
+                        + oldTabu + ") of class (" + oldTabu.getClass()
+                        + ") changed during planning, since it was inserted in the tabu Map or Set.");
             }
             int oldTabuStepCount = tabuStepIndex - oldTabuStepIndexInteger; // at least 1
             if (oldTabuStepCount < totalTabuListSize) {
@@ -171,12 +172,15 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
                 for (Object tabu : tabuSequenceList) {
                     if (tabu.equals(checkingTabu)) {
                         if (tabu.hashCode() != checkingTabu.hashCode()) {
-                            throw new IllegalStateException("HashCode violation: tabu (" + tabu + ") and checkingTabu ("
-                                    + checkingTabu + ") are equal but have a different hashCode.");
+                            throw new IllegalStateException("HashCode/equals contract violation: tabu (" + tabu
+                                    + ") of class (" + tabu.getClass()
+                                    + ") and checkingTabu (" + checkingTabu
+                                    + ") are equals() but have a different hashCode().");
                         }
                         if (tabuStepIndexInteger == null) {
-                            throw new IllegalStateException("HashCode violation: the hashCode of tabu (" + tabu
-                                    + ") probably changed since it was inserted in the tabu Map or Set.");
+                            throw new IllegalStateException("HashCode stability violation: the hashCode() of tabu ("
+                                    + tabu + ") of class (" + tabu.getClass()
+                                    + ") changed during planning, since it was inserted in the tabu Map or Set.");
                         }
                     }
                 }
