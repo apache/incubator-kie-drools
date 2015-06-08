@@ -13,8 +13,6 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
-import org.optaplanner.examples.common.solver.tracking.NQueensStepTracking;
-import org.optaplanner.examples.common.solver.tracking.NQueensStepTracker;
 import org.optaplanner.examples.nqueens.persistence.NQueensGenerator;
 
 import java.util.ArrayList;

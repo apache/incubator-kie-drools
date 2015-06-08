@@ -1,4 +1,4 @@
-package org.optaplanner.examples.common.solver.tracking;
+package org.optaplanner.examples.nqueens.solver.tracking;
 
 public class NQueensStepTracking {
 
