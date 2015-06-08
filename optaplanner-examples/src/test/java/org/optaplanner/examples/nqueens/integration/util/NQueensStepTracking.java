@@ -1,11 +1,11 @@
 package org.optaplanner.examples.nqueens.integration.util;
 
-public class QueenCoordinates {
+public class NQueensStepTracking {
 
     private final int columnIndex;
     private final int rowIndex;
 
-    public QueenCoordinates(int columnIndex, int rowIndex) {
+    public NQueensStepTracking(int columnIndex, int rowIndex) {
         this.columnIndex = columnIndex;
         this.rowIndex = rowIndex;
     }
