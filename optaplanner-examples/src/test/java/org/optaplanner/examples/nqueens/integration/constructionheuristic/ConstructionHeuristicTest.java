@@ -3,25 +3,24 @@ package org.optaplanner.examples.nqueens.integration.constructionheuristic;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
+import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
-import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
-import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.examples.nqueens.domain.NQueens;
-import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.integration.util.QueenCoordinates;
 import org.optaplanner.examples.nqueens.integration.util.QueenCoordinatesStepListener;
 import org.optaplanner.examples.nqueens.persistence.NQueensGenerator;
-import org.optaplanner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -45,24 +44,24 @@ public class ConstructionHeuristicTest {
 
     @Test
     public void testConstructionHeuristics() {
-        SolverConfig config = new SolverConfig();
-        config.setEnvironmentMode(EnvironmentMode.REPRODUCIBLE);
-        config.setSolutionClass(NQueens.class);
-        config.setEntityClassList(Collections.<Class<?>>singletonList(Queen.class));
+        SolverConfig config = SolverFactory.createFromXmlResource(
+                "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml").getSolverConfig();
+        List<PhaseConfig> phaseConfigs = config.getPhaseConfigList();
 
-        config.setScoreDirectorFactoryConfig(new ScoreDirectorFactoryConfig());
-        config.getScoreDirectorFactoryConfig().setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
-        config.getScoreDirectorFactoryConfig()
-                .setIncrementalScoreCalculatorClass(NQueensAdvancedIncrementalScoreCalculator.class);
+        if(phaseConfigs.get(1) instanceof LocalSearchPhaseConfig) {
+            phaseConfigs.remove(1);
+        } else {
+            throw new IllegalStateException("Config file had to be changed! Check org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
+        }
 
-        config.setTerminationConfig(new TerminationConfig());
-        config.getTerminationConfig().setBestScoreLimit("0");
-
-        ConstructionHeuristicPhaseConfig chConfig = new ConstructionHeuristicPhaseConfig();
-        chConfig.setConstructionHeuristicType(constructionHeuristicType);
-        chConfig.setEntitySorterManner(entitySorterManner);
-        chConfig.setValueSorterManner(valueSorterManner);
-        config.setPhaseConfigList(Collections.<PhaseConfig>singletonList(chConfig));
+        if(phaseConfigs.get(0) instanceof ConstructionHeuristicPhaseConfig) {
+            ConstructionHeuristicPhaseConfig chConfig = (ConstructionHeuristicPhaseConfig) phaseConfigs.get(0);
+            chConfig.setValueSorterManner(valueSorterManner);
+            chConfig.setEntitySorterManner(entitySorterManner);
+            chConfig.setConstructionHeuristicType(constructionHeuristicType);
+        } else {
+            throw new IllegalStateException("Config file had to be changed! Check org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
+        }
 
         NQueensGenerator generator = new NQueensGenerator();
         NQueens solution = generator.createNQueens(8);
