@@ -44,15 +44,8 @@ public abstract class AbstractFinalistPodium extends LocalSearchPhaseLifecycleLi
         finalistList = new ArrayList<LocalSearchMoveScope>(1024);
     }
 
-    public LocalSearchMoveScope pickMove(LocalSearchStepScope stepScope) {
-        if (finalistList.isEmpty()) {
-            return null;
-        }
-        if (finalistList.size() == 1) {
-            return finalistList.get(0);
-        }
-        int randomIndex = stepScope.getWorkingRandom().nextInt(finalistList.size());
-        return finalistList.get(randomIndex);
+    public List<LocalSearchMoveScope> getFinalistList() {
+        return finalistList;
     }
 
     @Override

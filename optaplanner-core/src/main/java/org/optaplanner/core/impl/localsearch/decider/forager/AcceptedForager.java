@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.localsearch.decider.forager;
 
+import java.util.List;
+
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchPickEarlyType;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
@@ -35,6 +37,7 @@ public class AcceptedForager extends AbstractForager {
     protected final FinalistPodium finalistPodium;
     protected final LocalSearchPickEarlyType pickEarlyType;
     protected final int acceptedCountLimit;
+    protected final boolean breakTieRandomly;
 
     protected long selectedMoveCount;
     protected long acceptedMoveCount;
@@ -42,7 +45,7 @@ public class AcceptedForager extends AbstractForager {
     protected LocalSearchMoveScope earlyPickedMoveScope;
 
     public AcceptedForager(FinalistPodium finalistPodium,
-            LocalSearchPickEarlyType pickEarlyType, int acceptedCountLimit) {
+            LocalSearchPickEarlyType pickEarlyType, int acceptedCountLimit, boolean breakTieRandomly) {
         this.finalistPodium = finalistPodium;
         this.pickEarlyType = pickEarlyType;
         this.acceptedCountLimit = acceptedCountLimit;
@@ -50,6 +53,7 @@ public class AcceptedForager extends AbstractForager {
             throw new IllegalArgumentException("The acceptedCountLimit (" + acceptedCountLimit
                     + ") cannot be negative or zero.");
         }
+        this.breakTieRandomly = breakTieRandomly;
     }
 
     // ************************************************************************
@@ -123,7 +127,15 @@ public class AcceptedForager extends AbstractForager {
         if (earlyPickedMoveScope != null) {
             return earlyPickedMoveScope;
         }
-        return finalistPodium.pickMove(stepScope);
+        List<LocalSearchMoveScope> finalistList = finalistPodium.getFinalistList();
+        if (finalistList.isEmpty()) {
+            return null;
+        }
+        if (finalistList.size() == 1 || !breakTieRandomly) {
+            return finalistList.get(0);
+        }
+        int randomIndex = stepScope.getWorkingRandom().nextInt(finalistList.size());
+        return finalistList.get(randomIndex);
     }
 
     @Override

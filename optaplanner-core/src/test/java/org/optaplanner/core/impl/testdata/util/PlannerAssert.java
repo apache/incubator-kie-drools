@@ -380,6 +380,11 @@ public class PlannerAssert extends Assert {
         }
     }
 
+    public static <E> E extractSingleton(List<E> singletonList) {
+        assertEquals(1, singletonList.size());
+        return singletonList.get(0);
+    }
+
     private PlannerAssert() {
     }
 

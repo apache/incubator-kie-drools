@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.localsearch.decider.forager.finalist;
 
+import java.util.List;
+
 import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
 import org.optaplanner.core.impl.localsearch.event.LocalSearchPhaseLifecycleListener;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
@@ -35,10 +37,9 @@ public interface FinalistPodium extends LocalSearchPhaseLifecycleListener {
     void addMove(LocalSearchMoveScope moveScope);
 
     /**
-     * See {@link Forager#pickMove(LocalSearchStepScope)}.
-     * @param stepScope never null
-     * @return sometimes null, for example if no move is selected
+     *
+     * @return never null, sometimes empty
      */
-    LocalSearchMoveScope pickMove(LocalSearchStepScope stepScope);
+    List<LocalSearchMoveScope> getFinalistList();
 
 }
