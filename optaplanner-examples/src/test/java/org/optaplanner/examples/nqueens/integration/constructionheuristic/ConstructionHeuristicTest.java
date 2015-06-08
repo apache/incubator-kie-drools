@@ -12,6 +12,7 @@ import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.solver.DefaultSolver;
+import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.integration.util.QueenCoordinates;
 import org.optaplanner.examples.nqueens.integration.util.QueenCoordinatesStepListener;
@@ -20,6 +21,7 @@ import org.optaplanner.examples.nqueens.persistence.NQueensGenerator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -44,37 +46,25 @@ public class ConstructionHeuristicTest {
 
     @Test
     public void testConstructionHeuristics() {
-        SolverConfig config = SolverFactory.createFromXmlResource(
-                "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml").getSolverConfig();
-        List<PhaseConfig> phaseConfigs = config.getPhaseConfigList();
+        SolverConfig config = SolverFactory.createFromXmlResource(NQueensApp.SOLVER_CONFIG).getSolverConfig();
 
-        if(phaseConfigs.get(1) instanceof LocalSearchPhaseConfig) {
-            phaseConfigs.remove(1);
-        } else {
-            throw new IllegalStateException("Config file had to be changed! Check org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
-        }
-
-        if(phaseConfigs.get(0) instanceof ConstructionHeuristicPhaseConfig) {
-            ConstructionHeuristicPhaseConfig chConfig = (ConstructionHeuristicPhaseConfig) phaseConfigs.get(0);
-            chConfig.setValueSorterManner(valueSorterManner);
-            chConfig.setEntitySorterManner(entitySorterManner);
-            chConfig.setConstructionHeuristicType(constructionHeuristicType);
-        } else {
-            throw new IllegalStateException("Config file had to be changed! Check org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
-        }
+        ConstructionHeuristicPhaseConfig chConfig = new ConstructionHeuristicPhaseConfig();
+        chConfig.setValueSorterManner(valueSorterManner);
+        chConfig.setEntitySorterManner(entitySorterManner);
+        chConfig.setConstructionHeuristicType(constructionHeuristicType);
+        config.setPhaseConfigList(Collections.<PhaseConfig>singletonList(chConfig));
 
         NQueensGenerator generator = new NQueensGenerator();
-        NQueens solution = generator.createNQueens(8);
+        NQueens planningProblem = generator.createNQueens(8);
 
         QueenCoordinatesStepListener listener = new QueenCoordinatesStepListener();
-
         DefaultSolver solver = (DefaultSolver) config.buildSolver();
         solver.addPhaseLifecycleListener(listener);
-        solver.solve(solution);
+        solver.solve(planningProblem);
 
-        NQueens result = (NQueens) solver.getBestSolution();
+        NQueens bestSolution = (NQueens) solver.getBestSolution();
 
-        assertNotNull(result);
+        assertNotNull(bestSolution);
         assertCoordinates(expectedCoordinates, listener.getCoordinates());
     }
 

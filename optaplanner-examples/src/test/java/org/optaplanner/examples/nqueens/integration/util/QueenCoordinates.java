@@ -1,10 +1,6 @@
 package org.optaplanner.examples.nqueens.integration.util;
 
-public class QueenCoordinates  {
-
-    public static QueenCoordinates createQueenCoordinates(int columnIndex, int rowIndex) {
-        return new QueenCoordinates(columnIndex, rowIndex);
-    }
+public class QueenCoordinates {
 
     private final int columnIndex;
     private final int rowIndex;
