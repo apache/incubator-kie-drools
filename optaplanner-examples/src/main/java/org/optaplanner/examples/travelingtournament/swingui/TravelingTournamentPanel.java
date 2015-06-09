@@ -103,7 +103,7 @@ public class TravelingTournamentPanel extends SolutionPanel {
     }
 
     private void fillCells(TravelingTournament travelingTournament) {
-        teamsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Day")));
+        teamsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Day")));
         fillTeamCells(travelingTournament);
         fillDayCells(travelingTournament);
         fillMatchCells(travelingTournament);
@@ -111,22 +111,22 @@ public class TravelingTournamentPanel extends SolutionPanel {
 
     private void fillTeamCells(TravelingTournament travelingTournament) {
         for (Team team : travelingTournament.getTeamList()) {
-            JPanel teamPanel = createHeaderPanel(new JLabel(team.getLabel(), SwingConstants.CENTER));
+            JPanel teamPanel = createTableHeader(new JLabel(team.getLabel(), SwingConstants.CENTER));
             teamPanel.setBackground(tangoColorFactory.pickColor(team));
             teamsPanel.addColumnHeader(team, HEADER_ROW,
                     teamPanel);
         }
         teamsPanel.addColumnHeader(null, HEADER_ROW,
-                createHeaderPanel(new JLabel("Unassigned", SwingConstants.CENTER)));
+                createTableHeader(new JLabel("Unassigned", SwingConstants.CENTER)));
     }
 
     private void fillDayCells(TravelingTournament travelingTournament) {
         for (Day day : travelingTournament.getDayList()) {
             teamsPanel.addRowHeader(HEADER_COLUMN, day,
-                    createHeaderPanel(new JLabel(day.getLabel())));
+                    createTableHeader(new JLabel(day.getLabel())));
         }
         teamsPanel.addRowHeader(HEADER_COLUMN, null,
-                createHeaderPanel(new JLabel("Unassigned")));
+                createTableHeader(new JLabel("Unassigned")));
     }
 
     private void fillMatchCells(TravelingTournament travelingTournament) {
@@ -140,7 +140,7 @@ public class TravelingTournamentPanel extends SolutionPanel {
         }
     }
 
-    private JPanel createHeaderPanel(JLabel label) {
+    private JPanel createTableHeader(JLabel label) {
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.add(label, BorderLayout.NORTH);
         headerPanel.setBorder(BorderFactory.createCompoundBorder(

@@ -134,14 +134,14 @@ public class CurriculumCoursePanel extends SolutionPanel {
     }
 
     private void fillCells(CourseSchedule courseSchedule) {
-        roomsPanel.addCornerHeader(HEADER_COLUMN_GROUP1, HEADER_ROW, createHeaderPanel(new JLabel("Day")));
-        roomsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Time")));
+        roomsPanel.addCornerHeader(HEADER_COLUMN_GROUP1, HEADER_ROW, createTableHeader(new JLabel("Day")));
+        roomsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Time")));
         fillRoomCells(courseSchedule);
-        teachersPanel.addCornerHeader(HEADER_COLUMN_GROUP1, HEADER_ROW, createHeaderPanel(new JLabel("Day")));
-        teachersPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Time")));
+        teachersPanel.addCornerHeader(HEADER_COLUMN_GROUP1, HEADER_ROW, createTableHeader(new JLabel("Day")));
+        teachersPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Time")));
         fillTeacherCells(courseSchedule);
-        curriculaPanel.addCornerHeader(HEADER_COLUMN_GROUP1, HEADER_ROW, createHeaderPanel(new JLabel("Day")));
-        curriculaPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Time")));
+        curriculaPanel.addCornerHeader(HEADER_COLUMN_GROUP1, HEADER_ROW, createTableHeader(new JLabel("Day")));
+        curriculaPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Time")));
         fillCurriculumCells(courseSchedule);
         fillDayCells(courseSchedule);
         fillLectureCells(courseSchedule);
@@ -150,23 +150,23 @@ public class CurriculumCoursePanel extends SolutionPanel {
     private void fillRoomCells(CourseSchedule courseSchedule) {
         for (Room room : courseSchedule.getRoomList()) {
             roomsPanel.addColumnHeader(room, HEADER_ROW,
-                    createHeaderPanel(new JLabel(room.getLabel(), SwingConstants.CENTER)));
+                    createTableHeader(new JLabel(room.getLabel(), SwingConstants.CENTER)));
         }
         roomsPanel.addColumnHeader(null, HEADER_ROW,
-                createHeaderPanel(new JLabel("Unassigned", SwingConstants.CENTER)));
+                createTableHeader(new JLabel("Unassigned", SwingConstants.CENTER)));
     }
 
     private void fillTeacherCells(CourseSchedule courseSchedule) {
         for (Teacher teacher : courseSchedule.getTeacherList()) {
             teachersPanel.addColumnHeader(teacher, HEADER_ROW,
-                    createHeaderPanel(new JLabel(teacher.getLabel(), SwingConstants.CENTER)));
+                    createTableHeader(new JLabel(teacher.getLabel(), SwingConstants.CENTER)));
         }
     }
 
     private void fillCurriculumCells(CourseSchedule courseSchedule) {
         for (Curriculum curriculum : courseSchedule.getCurriculumList()) {
             curriculaPanel.addColumnHeader(curriculum, HEADER_ROW,
-                    createHeaderPanel(new JLabel(curriculum.getLabel(), SwingConstants.CENTER)));
+                    createTableHeader(new JLabel(curriculum.getLabel(), SwingConstants.CENTER)));
         }
     }
 
@@ -175,26 +175,26 @@ public class CurriculumCoursePanel extends SolutionPanel {
             Period dayStartPeriod = day.getPeriodList().get(0);
             Period dayEndPeriod = day.getPeriodList().get(day.getPeriodList().size() - 1);
             roomsPanel.addRowHeader(HEADER_COLUMN_GROUP1, dayStartPeriod, HEADER_COLUMN_GROUP1, dayEndPeriod,
-                    createHeaderPanel(new JLabel(day.getLabel())));
+                    createTableHeader(new JLabel(day.getLabel())));
             teachersPanel.addRowHeader(HEADER_COLUMN_GROUP1, dayStartPeriod, HEADER_COLUMN_GROUP1, dayEndPeriod,
-                    createHeaderPanel(new JLabel(day.getLabel())));
+                    createTableHeader(new JLabel(day.getLabel())));
             curriculaPanel.addRowHeader(HEADER_COLUMN_GROUP1, dayStartPeriod, HEADER_COLUMN_GROUP1, dayEndPeriod,
-                    createHeaderPanel(new JLabel(day.getLabel())));
+                    createTableHeader(new JLabel(day.getLabel())));
             for (Period period : day.getPeriodList()) {
                 roomsPanel.addRowHeader(HEADER_COLUMN, period,
-                        createHeaderPanel(new JLabel(period.getTimeslot().getLabel())));
+                        createTableHeader(new JLabel(period.getTimeslot().getLabel())));
                 teachersPanel.addRowHeader(HEADER_COLUMN, period,
-                        createHeaderPanel(new JLabel(period.getTimeslot().getLabel())));
+                        createTableHeader(new JLabel(period.getTimeslot().getLabel())));
                 curriculaPanel.addRowHeader(HEADER_COLUMN, period,
-                        createHeaderPanel(new JLabel(period.getTimeslot().getLabel())));
+                        createTableHeader(new JLabel(period.getTimeslot().getLabel())));
             }
         }
         roomsPanel.addRowHeader(HEADER_COLUMN_GROUP1, null, HEADER_COLUMN, null,
-                createHeaderPanel(new JLabel("Unassigned")));
+                createTableHeader(new JLabel("Unassigned")));
         teachersPanel.addRowHeader(HEADER_COLUMN_GROUP1, null, HEADER_COLUMN, null,
-                createHeaderPanel(new JLabel("Unassigned")));
+                createTableHeader(new JLabel("Unassigned")));
         curriculaPanel.addRowHeader(HEADER_COLUMN_GROUP1, null, HEADER_COLUMN, null,
-                createHeaderPanel(new JLabel("Unassigned")));
+                createTableHeader(new JLabel("Unassigned")));
     }
 
     private void fillLectureCells(CourseSchedule courseSchedule) {
@@ -212,7 +212,7 @@ public class CurriculumCoursePanel extends SolutionPanel {
         }
     }
 
-    private JPanel createHeaderPanel(JLabel label) {
+    private JPanel createTableHeader(JLabel label) {
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.add(label, BorderLayout.NORTH);
         headerPanel.setBorder(BorderFactory.createCompoundBorder(

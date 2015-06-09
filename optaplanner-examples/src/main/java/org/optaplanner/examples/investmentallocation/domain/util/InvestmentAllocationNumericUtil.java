@@ -24,8 +24,11 @@ public class InvestmentAllocationNumericUtil {
 
     public static final long MAXIMUM_QUANTITY_MILLIS = 1000L;
 
-    protected static final NumberFormat MILLIS_NUMBER_FORMAT = new DecimalFormat("#0.000");
-    protected static final NumberFormat MILLIS_PERCENT_FORMAT = new DecimalFormat("#0.0%");
+    public static final String MILLIS_NUMBER_PATTERN = "#0.000";
+    public static final String MILLIS_PERCENT_PATTERN = "#0.0%";
+    // TODO Remove potential multi-threaded use of a thread-unsafe class
+    protected static final NumberFormat MILLIS_NUMBER_FORMAT = new DecimalFormat(MILLIS_NUMBER_PATTERN);
+    protected static final NumberFormat MILLIS_PERCENT_FORMAT = new DecimalFormat(MILLIS_PERCENT_PATTERN);
 
     protected static final BigDecimal MILLIS_DIVISOR = new BigDecimal(1000L);
     protected static final BigDecimal MICROS_DIVISOR = new BigDecimal(1000000L);

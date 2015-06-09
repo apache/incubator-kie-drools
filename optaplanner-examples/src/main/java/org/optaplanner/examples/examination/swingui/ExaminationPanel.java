@@ -163,7 +163,7 @@ public class ExaminationPanel extends SolutionPanel {
     }
 
     private void fillCells(Examination examination) {
-        roomsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Time"), null));
+        roomsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Time"), null));
         fillRoomCells(examination);
         fillPeriodCells(examination);
         fillExamCells(examination);
@@ -172,21 +172,21 @@ public class ExaminationPanel extends SolutionPanel {
     private void fillRoomCells(Examination examination) {
         for (Room room : examination.getRoomList()) {
             roomsPanel.addColumnHeader(room, HEADER_ROW,
-                    createHeaderPanel(new JLabel(room.getLabel(), new RoomIcon(room), SwingConstants.CENTER),
+                    createTableHeader(new JLabel(room.getLabel(), new RoomIcon(room), SwingConstants.CENTER),
                             "Capacity: " + room.getCapacity() + " (shown as rectangle)"));
         }
         roomsPanel.addColumnHeader(null, HEADER_ROW,
-                createHeaderPanel(new JLabel("Unassigned", SwingConstants.CENTER), null));
+                createTableHeader(new JLabel("Unassigned", SwingConstants.CENTER), null));
     }
 
     private void fillPeriodCells(Examination examination) {
         for (Period period : examination.getPeriodList()) {
-            roomsPanel.addRowHeader(HEADER_COLUMN, period, createHeaderPanel(
+            roomsPanel.addRowHeader(HEADER_COLUMN, period, createTableHeader(
                     new JLabel(period.getLabel(), new PeriodIcon(period), SwingConstants.LEFT),
                     "Duration: " + period.getDuration()));
         }
         roomsPanel.addRowHeader(HEADER_COLUMN, null,
-                createHeaderPanel(new JLabel("Unassigned"), null));
+                createTableHeader(new JLabel("Unassigned"), null));
     }
 
     private void fillExamCells(Examination examination) {
@@ -198,7 +198,7 @@ public class ExaminationPanel extends SolutionPanel {
         }
     }
 
-    private JPanel createHeaderPanel(JLabel label, String toolTipText) {
+    private JPanel createTableHeader(JLabel label, String toolTipText) {
         if (toolTipText != null) {
             label.setToolTipText(toolTipText);
         }

@@ -18,7 +18,6 @@ package org.optaplanner.examples.tennis.swingui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -33,12 +32,10 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import javax.swing.SwingConstants;
 
 import org.optaplanner.core.api.domain.solution.Solution;
@@ -125,7 +122,7 @@ public class TennisPanel extends SolutionPanel {
     }
 
     private void fillCells(TennisSolution tennisSolution) {
-        datesPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Team")));
+        datesPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Team")));
         fillDayCells(tennisSolution);
         fillTeamCells(tennisSolution);
         fillUnavailabilityPenaltyCells(tennisSolution);
@@ -136,26 +133,26 @@ public class TennisPanel extends SolutionPanel {
     private void fillDayCells(TennisSolution tennisSolution) {
         for (Day day : tennisSolution.getDayList()) {
             datesPanel.addColumnHeader(day, HEADER_ROW,
-                    createHeaderPanel(new JLabel(day.getLabel(), SwingConstants.CENTER)));
+                    createTableHeader(new JLabel(day.getLabel(), SwingConstants.CENTER)));
         }
         datesPanel.addCornerHeader(TRAILING_HEADER_COLUMN, HEADER_ROW,
-                createHeaderPanel(new JLabel("Day count")));
+                createTableHeader(new JLabel("Day count")));
     }
 
     private void fillTeamCells(TennisSolution tennisSolution) {
         Map<Team, Integer> teamToDayCountMap = extractTeamToDayCountMap(tennisSolution);
         for (Team team : tennisSolution.getTeamList()) {
             datesPanel.addRowHeader(HEADER_COLUMN, team,
-                    createHeaderPanel(new JLabel(team.getLabel())));
+                    createTableHeader(new JLabel(team.getLabel())));
             datesPanel.addRowHeader(TRAILING_HEADER_COLUMN, team,
-                    createHeaderPanel(new JLabel(teamToDayCountMap.get(team) + " days")));
+                    createTableHeader(new JLabel(teamToDayCountMap.get(team) + " days")));
             confrontationsPanel.addColumnHeader(team, HEADER_ROW,
-                    createHeaderPanel(new JLabel(team.getLabel())));
+                    createTableHeader(new JLabel(team.getLabel())));
             confrontationsPanel.addRowHeader(HEADER_COLUMN, team,
-                    createHeaderPanel(new JLabel(team.getLabel())));
+                    createTableHeader(new JLabel(team.getLabel())));
         }
         datesPanel.addRowHeader(HEADER_COLUMN, null,
-                createHeaderPanel(new JLabel("Unassigned")));
+                createTableHeader(new JLabel("Unassigned")));
     }
 
     private Map<Team, Integer> extractTeamToDayCountMap(TennisSolution tennisSolution) {
@@ -234,11 +231,11 @@ public class TennisPanel extends SolutionPanel {
             List<Team> teamPair = teamPairToConfrontationCount.getKey();
             int confrontationCount = teamPairToConfrontationCount.getValue();
             confrontationsPanel.addCell(teamPair.get(0), teamPair.get(1),
-                    createHeaderPanel(new JLabel(Integer.toString(confrontationCount))));
+                    createTableHeader(new JLabel(Integer.toString(confrontationCount))));
         }
     }
 
-    private JPanel createHeaderPanel(JLabel label) {
+    private JPanel createTableHeader(JLabel label) {
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.add(label, BorderLayout.NORTH);
         headerPanel.setBorder(BorderFactory.createCompoundBorder(
