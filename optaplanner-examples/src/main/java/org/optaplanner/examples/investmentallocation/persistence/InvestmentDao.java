@@ -17,12 +17,12 @@
 package org.optaplanner.examples.investmentallocation.persistence;
 
 import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution;
+import org.optaplanner.examples.investmentallocation.domain.InvestmentSolution;
 
-public class InvestmentAllocationDao extends XStreamSolutionDao {
+public class InvestmentDao extends XStreamSolutionDao {
 
-    public InvestmentAllocationDao() {
-        super("investmentallocation", InvestmentAllocationSolution.class);
+    public InvestmentDao() {
+        super("investmentallocation", InvestmentSolution.class);
     }
 
 }

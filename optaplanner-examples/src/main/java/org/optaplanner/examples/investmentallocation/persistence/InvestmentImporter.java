@@ -28,23 +28,23 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.investmentallocation.domain.AssetClass;
 import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution;
+import org.optaplanner.examples.investmentallocation.domain.InvestmentSolution;
 import org.optaplanner.examples.investmentallocation.domain.InvestmentParametrization;
 
-public class InvestmentAllocationImporter extends AbstractTxtSolutionImporter {
+public class InvestmentImporter extends AbstractTxtSolutionImporter {
 
     private static final String INPUT_FILE_SUFFIX = "csv";
 
     public static void main(String[] args) {
-        InvestmentAllocationImporter importer = new InvestmentAllocationImporter();
+        InvestmentImporter importer = new InvestmentImporter();
         importer.convert("irrinki_1.csv", "irrinki_1.xml");
     }
 
-    public InvestmentAllocationImporter() {
-        super(new InvestmentAllocationDao());
+    public InvestmentImporter() {
+        super(new InvestmentDao());
     }
 
-    public InvestmentAllocationImporter(boolean withoutDao) {
+    public InvestmentImporter(boolean withoutDao) {
         super(withoutDao);
     }
 
@@ -59,10 +59,10 @@ public class InvestmentAllocationImporter extends AbstractTxtSolutionImporter {
 
     public static class InvestmentAllocationInputBuilder extends TxtInputBuilder {
 
-        private InvestmentAllocationSolution solution;
+        private InvestmentSolution solution;
 
         public Solution readSolution() throws IOException {
-            solution = new InvestmentAllocationSolution();
+            solution = new InvestmentSolution();
             solution.setId(0L);
             readHeaders();
             readAssetClassList();

@@ -19,8 +19,6 @@ package org.optaplanner.examples.investmentallocation.solver.move.factory;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.NavigableMap;
 import java.util.Random;
 
 import org.optaplanner.core.impl.heuristic.move.CompositeMove;
@@ -29,19 +27,19 @@ import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFac
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution;
-import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationNumericUtil;
+import org.optaplanner.examples.investmentallocation.domain.InvestmentSolution;
+import org.optaplanner.examples.investmentallocation.domain.util.InvestmentNumericUtil;
 import org.optaplanner.examples.investmentallocation.solver.move.InvestmentQuantityTransferMove;
 
 public class InvestmentBiQuantityTransferMoveIteratorFactory implements MoveIteratorFactory {
 
     @Override
     public long getSize(ScoreDirector scoreDirector) {
-        InvestmentAllocationSolution solution = (InvestmentAllocationSolution) scoreDirector.getWorkingSolution();
+        InvestmentSolution solution = (InvestmentSolution) scoreDirector.getWorkingSolution();
         int size = solution.getAssetClassAllocationList().size();
         // The MAXIMUM_QUANTITY_MILLIS accounts for all fromAllocations too
-        return InvestmentAllocationNumericUtil.MAXIMUM_QUANTITY_MILLIS
-                * InvestmentAllocationNumericUtil.MAXIMUM_QUANTITY_MILLIS
+        return InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS
+                * InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS
                 * (size - 1) * (size - 1);
     }
 
@@ -52,7 +50,7 @@ public class InvestmentBiQuantityTransferMoveIteratorFactory implements MoveIter
 
     @Override
     public Iterator<Move> createRandomMoveIterator(ScoreDirector scoreDirector, Random workingRandom) {
-        InvestmentAllocationSolution solution = (InvestmentAllocationSolution) scoreDirector.getWorkingSolution();
+        InvestmentSolution solution = (InvestmentSolution) scoreDirector.getWorkingSolution();
         List<AssetClassAllocation> allocationList = solution.getAssetClassAllocationList();
         List<AssetClassAllocation> nonEmptyAllocationList = new ArrayList<AssetClassAllocation>(allocationList);
         for (Iterator<AssetClassAllocation> it = nonEmptyAllocationList.iterator(); it.hasNext(); ) {

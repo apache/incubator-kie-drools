@@ -1,4 +1,4 @@
-<InvestmentAllocationSolution id="1">
+<InvestmentSolution id="1">
   <id>0</id>
   <parametrization id="2">
     <id>0</id>
@@ -224,4 +224,4 @@
       <assetClass reference="14"/>
     </AssetClassAllocation>
   </assetClassAllocationList>
-</InvestmentAllocationSolution>
+</InvestmentSolution>

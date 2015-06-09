@@ -20,15 +20,15 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution;
+import org.optaplanner.examples.investmentallocation.domain.InvestmentSolution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<InvestmentAllocationSolution> {
+public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<InvestmentSolution> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private InvestmentAllocationSolution solution;
+    private InvestmentSolution solution;
 
     private long squaredStandardDeviationFemtosMaximum;
     private long squaredStandardDeviationFemtos;
@@ -40,7 +40,7 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
     // Lifecycle methods
     // ************************************************************************
 
-    public void resetWorkingSolution(InvestmentAllocationSolution solution) {
+    public void resetWorkingSolution(InvestmentSolution solution) {
         this.solution = solution;
         squaredStandardDeviationFemtosMaximum = solution.getParametrization()
                 .calculateSquaredStandardDeviationFemtosMaximum();

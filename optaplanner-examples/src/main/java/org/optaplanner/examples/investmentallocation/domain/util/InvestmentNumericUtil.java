@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-public class InvestmentAllocationNumericUtil {
+public class InvestmentNumericUtil {
 
     public static final long MAXIMUM_QUANTITY_MILLIS = 1000L;
 
@@ -48,7 +48,7 @@ public class InvestmentAllocationNumericUtil {
         return MILLIS_PERCENT_FORMAT.format(value);
     }
 
-    private InvestmentAllocationNumericUtil() {
+    private InvestmentNumericUtil() {
     }
 
 }

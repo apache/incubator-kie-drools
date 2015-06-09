@@ -28,18 +28,18 @@ import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFac
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution;
-import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationNumericUtil;
+import org.optaplanner.examples.investmentallocation.domain.InvestmentSolution;
+import org.optaplanner.examples.investmentallocation.domain.util.InvestmentNumericUtil;
 import org.optaplanner.examples.investmentallocation.solver.move.InvestmentQuantityTransferMove;
 
 public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIteratorFactory {
 
     @Override
     public long getSize(ScoreDirector scoreDirector) {
-        InvestmentAllocationSolution solution = (InvestmentAllocationSolution) scoreDirector.getWorkingSolution();
+        InvestmentSolution solution = (InvestmentSolution) scoreDirector.getWorkingSolution();
         int size = solution.getAssetClassAllocationList().size();
         // The MAXIMUM_QUANTITY_MILLIS accounts for all fromAllocations too
-        return InvestmentAllocationNumericUtil.MAXIMUM_QUANTITY_MILLIS * (size - 1);
+        return InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS * (size - 1);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
 
     @Override
     public Iterator<Move> createRandomMoveIterator(ScoreDirector scoreDirector, Random workingRandom) {
-        InvestmentAllocationSolution solution = (InvestmentAllocationSolution) scoreDirector.getWorkingSolution();
+        InvestmentSolution solution = (InvestmentSolution) scoreDirector.getWorkingSolution();
         List<AssetClassAllocation> allocationList = solution.getAssetClassAllocationList();
         NavigableMap<Long, AssetClassAllocation> quantityMillisIncrementToAllocationMap = new TreeMap<Long, AssetClassAllocation>();
         long quantityIncrementMillis = 0L;
@@ -60,10 +60,10 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
                 quantityMillisIncrementToAllocationMap.put(quantityIncrementMillis, allocation);
             }
         }
-        if (quantityIncrementMillis != InvestmentAllocationNumericUtil.MAXIMUM_QUANTITY_MILLIS) {
+        if (quantityIncrementMillis != InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS) {
             throw new IllegalStateException("The quantityIncrementMillis (" + quantityIncrementMillis
                     + ") must always be total to MAXIMUM_QUANTITY_MILLIS ("
-                    + InvestmentAllocationNumericUtil.MAXIMUM_QUANTITY_MILLIS + ").");
+                    + InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS + ").");
         }
         return new RandomInvestmentQuantityTransferMoveIterator(allocationList,
                 quantityMillisIncrementToAllocationMap, workingRandom);
@@ -88,7 +88,7 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
 
         public Move next() {
             long transferMillis
-                    = RandomUtils.nextLong(workingRandom, InvestmentAllocationNumericUtil.MAXIMUM_QUANTITY_MILLIS) + 1L;
+                    = RandomUtils.nextLong(workingRandom, InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS) + 1L;
             Map.Entry<Long, AssetClassAllocation> lowerEntry
                     = quantityMillisIncrementToAllocationMap.lowerEntry(transferMillis);
             Map.Entry<Long, AssetClassAllocation> ceilingEntry = quantityMillisIncrementToAllocationMap

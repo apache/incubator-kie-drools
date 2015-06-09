@@ -19,28 +19,27 @@ package org.optaplanner.examples.investmentallocation.app;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.app.CommonApp;
-import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.investmentallocation.persistence.InvestmentAllocationDao;
-import org.optaplanner.examples.investmentallocation.persistence.InvestmentAllocationImporter;
-import org.optaplanner.examples.investmentallocation.swingui.InvestmentAllocationPanel;
+import org.optaplanner.examples.investmentallocation.persistence.InvestmentDao;
+import org.optaplanner.examples.investmentallocation.persistence.InvestmentImporter;
+import org.optaplanner.examples.investmentallocation.swingui.InvestmentPanel;
 
-public class InvestmentAllocationApp extends CommonApp {
+public class InvestmentApp extends CommonApp {
 
     public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/investmentallocation/solver/investmentAllocationSolverConfig.xml";
+            = "org/optaplanner/examples/investmentallocation/solver/investmentSolverConfig.xml";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();
-        new InvestmentAllocationApp().init();
+        new InvestmentApp().init();
     }
 
-    public InvestmentAllocationApp() {
+    public InvestmentApp() {
         super("Investment asset class allocation",
                 "Decide the percentage of the investor's budget to invest in each asset class.",
-                InvestmentAllocationPanel.LOGO_PATH);
+                InvestmentPanel.LOGO_PATH);
     }
 
     @Override
@@ -51,17 +50,17 @@ public class InvestmentAllocationApp extends CommonApp {
 
     @Override
     protected SolutionPanel createSolutionPanel() {
-        return new InvestmentAllocationPanel();
+        return new InvestmentPanel();
     }
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new InvestmentAllocationDao();
+        return new InvestmentDao();
     }
 
     @Override
     protected AbstractSolutionImporter createSolutionImporter() {
-        return new InvestmentAllocationImporter();
+        return new InvestmentImporter();
     }
 
 }

@@ -20,7 +20,7 @@ import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationNumericUtil;
+import org.optaplanner.examples.investmentallocation.domain.util.InvestmentNumericUtil;
 
 @XStreamAlias("AssetClass")
 public class AssetClass extends AbstractPersistable {
@@ -68,16 +68,16 @@ public class AssetClass extends AbstractPersistable {
     // ************************************************************************
 
     public String getExpectedReturnLabel() {
-        return InvestmentAllocationNumericUtil.formatMillisAsPercentage(expectedReturnMillis);
+        return InvestmentNumericUtil.formatMillisAsPercentage(expectedReturnMillis);
     }
 
     public String getStandardDeviationRiskLabel() {
-        return InvestmentAllocationNumericUtil.formatMillisAsPercentage(standardDeviationRiskMillis);
+        return InvestmentNumericUtil.formatMillisAsPercentage(standardDeviationRiskMillis);
     }
 
     public String getCorrelationLabel(AssetClass other) {
         long correlationMillis = correlationMillisMap.get(other);
-        return InvestmentAllocationNumericUtil.formatMillisAsNumber(correlationMillis);
+        return InvestmentNumericUtil.formatMillisAsNumber(correlationMillis);
     }
 
     @Override

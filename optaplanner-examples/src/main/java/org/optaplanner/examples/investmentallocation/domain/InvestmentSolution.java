@@ -31,12 +31,12 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationNumericUtil;
+import org.optaplanner.examples.investmentallocation.domain.util.InvestmentNumericUtil;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution
-@XStreamAlias("InvestmentAllocationSolution")
-public class InvestmentAllocationSolution extends AbstractPersistable implements Solution<HardSoftLongScore> {
+@XStreamAlias("InvestmentSolution")
+public class InvestmentSolution extends AbstractPersistable implements Solution<HardSoftLongScore> {
 
     private InvestmentParametrization parametrization;
     private List<AssetClass> assetClassList;
@@ -85,7 +85,7 @@ public class InvestmentAllocationSolution extends AbstractPersistable implements
 
     @ValueRangeProvider(id = "quantityMillisRange")
     public CountableValueRange<Long> getQuantityMillisRange() {
-        return ValueRangeFactory.createLongValueRange(0L, InvestmentAllocationNumericUtil.MAXIMUM_QUANTITY_MILLIS + 1L);
+        return ValueRangeFactory.createLongValueRange(0L, InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS + 1L);
     }
 
     public Collection<? extends Object> getProblemFacts() {

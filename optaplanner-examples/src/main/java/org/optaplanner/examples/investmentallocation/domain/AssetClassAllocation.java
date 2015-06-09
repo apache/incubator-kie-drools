@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationNumericUtil;
+import org.optaplanner.examples.investmentallocation.domain.util.InvestmentNumericUtil;
 
 @PlanningEntity()
 @XStreamAlias("AssetClassAllocation")
@@ -81,7 +81,7 @@ public class AssetClassAllocation extends AbstractPersistable {
         if (quantityMillis == null) {
             return "";
         }
-        return InvestmentAllocationNumericUtil.formatMillisAsPercentage(quantityMillis);
+        return InvestmentNumericUtil.formatMillisAsPercentage(quantityMillis);
     }
 
     public String getLabel() {

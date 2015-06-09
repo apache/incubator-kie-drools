@@ -18,11 +18,11 @@ package org.optaplanner.examples.investmentallocation.solver.score;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution;
+import org.optaplanner.examples.investmentallocation.domain.InvestmentSolution;
 
-public class InvestmentEasyScoreCalculator implements EasyScoreCalculator<InvestmentAllocationSolution> {
+public class InvestmentEasyScoreCalculator implements EasyScoreCalculator<InvestmentSolution> {
 
-    public HardSoftLongScore calculateScore(InvestmentAllocationSolution solution) {
+    public HardSoftLongScore calculateScore(InvestmentSolution solution) {
         long hardScore = 0L;
         long softScore = 0L;
         long squaredFemtosMaximum = solution.getParametrization().calculateSquaredStandardDeviationFemtosMaximum();

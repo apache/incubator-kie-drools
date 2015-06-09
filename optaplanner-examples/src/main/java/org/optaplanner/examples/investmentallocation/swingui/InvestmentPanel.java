@@ -40,23 +40,23 @@ import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.investmentallocation.domain.AssetClass;
 import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution;
+import org.optaplanner.examples.investmentallocation.domain.InvestmentSolution;
 import org.optaplanner.examples.investmentallocation.domain.InvestmentParametrization;
-import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationNumericUtil;
+import org.optaplanner.examples.investmentallocation.domain.util.InvestmentNumericUtil;
 
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
 
-public class InvestmentAllocationPanel extends SolutionPanel {
+public class InvestmentPanel extends SolutionPanel {
 
-    public static final String LOGO_PATH = "/org/optaplanner/examples/investmentallocation/swingui/investmentAllocationLogo.png";
+    public static final String LOGO_PATH = "/org/optaplanner/examples/investmentallocation/swingui/investmentLogo.png";
 
     private final TimeTablePanel<AssetClass, AssetClass> assetClassPanel;
     private JSpinner standardDeviationMaximumField;
 
     private boolean ignoreChangeEvents = false;
 
-    public InvestmentAllocationPanel() {
+    public InvestmentPanel() {
         setLayout(new BorderLayout());
         add(createTableHeader(), BorderLayout.NORTH);
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -71,7 +71,7 @@ public class InvestmentAllocationPanel extends SolutionPanel {
         headerPanel.add(new JLabel("Standard deviation maximum"));
         standardDeviationMaximumField = new JSpinner(new SpinnerNumberModel(1.0, 0.0, 10.0, 0.001));
         standardDeviationMaximumField.setEditor(new JSpinner.NumberEditor(standardDeviationMaximumField,
-                InvestmentAllocationNumericUtil.MILLIS_PERCENT_PATTERN));
+                InvestmentNumericUtil.MILLIS_PERCENT_PATTERN));
         headerPanel.add(standardDeviationMaximumField);
         standardDeviationMaximumField.addChangeListener(new ChangeListener() {
             @Override
@@ -96,13 +96,13 @@ public class InvestmentAllocationPanel extends SolutionPanel {
         return true;
     }
 
-    private InvestmentAllocationSolution getInvestmentAllocationSolution() {
-        return (InvestmentAllocationSolution) solutionBusiness.getSolution();
+    private InvestmentSolution getInvestmentAllocationSolution() {
+        return (InvestmentSolution) solutionBusiness.getSolution();
     }
 
     public void resetPanel(Solution s) {
         assetClassPanel.reset();
-        InvestmentAllocationSolution solution = (InvestmentAllocationSolution) s;
+        InvestmentSolution solution = (InvestmentSolution) s;
         InvestmentParametrization parametrization = solution.getParametrization();
         ignoreChangeEvents = true;
         standardDeviationMaximumField.setValue((double) parametrization.getStandardDeviationMillisMaximum() / 1000.0);
@@ -112,7 +112,7 @@ public class InvestmentAllocationPanel extends SolutionPanel {
         repaint(); // Hack to force a repaint of TimeTableLayout during "refresh screen while solving"
     }
 
-    private void defineGrid(InvestmentAllocationSolution solution) {
+    private void defineGrid(InvestmentSolution solution) {
         JButton footprint = new JButton("99999999");
         footprint.setMargin(new Insets(0, 0, 0, 0));
         int footprintWidth = footprint.getPreferredSize().width;
@@ -133,7 +133,7 @@ public class InvestmentAllocationPanel extends SolutionPanel {
         assetClassPanel.defineRowHeaderByKey(TRAILING_HEADER_ROW); // Total
     }
 
-    private void fillCells(InvestmentAllocationSolution solution) {
+    private void fillCells(InvestmentSolution solution) {
         List<AssetClass> assetClassList = solution.getAssetClassList();
         assetClassPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Asset class"), null));
         assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, HEADER_ROW,
@@ -180,17 +180,17 @@ public class InvestmentAllocationPanel extends SolutionPanel {
             assetClassPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, allocation.getAssetClass(),
                     quantityLabel);
         }
-        JLabel expectedReturnLabel = new JLabel(InvestmentAllocationNumericUtil.formatMicrosAsPercentage(solution.calculateExpectedReturnMicros()), SwingConstants.RIGHT);
+        JLabel expectedReturnLabel = new JLabel(InvestmentNumericUtil.formatMicrosAsPercentage(solution.calculateExpectedReturnMicros()), SwingConstants.RIGHT);
         assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, TRAILING_HEADER_ROW,
                 expectedReturnLabel);
         long standardDeviationMicros = solution.calculateStandardDeviationMicros();
-        JLabel standardDeviationLabel = new JLabel(InvestmentAllocationNumericUtil.formatMicrosAsPercentage(standardDeviationMicros), SwingConstants.RIGHT);
+        JLabel standardDeviationLabel = new JLabel(InvestmentNumericUtil.formatMicrosAsPercentage(standardDeviationMicros), SwingConstants.RIGHT);
         if (standardDeviationMicros > solution.getParametrization().getStandardDeviationMillisMaximum() * 1000L) {
             standardDeviationLabel.setForeground(TangoColorFactory.SCARLET_3);
         }
         assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, TRAILING_HEADER_ROW,
                 standardDeviationLabel);
-        JLabel quantityTotalLabel = new JLabel(InvestmentAllocationNumericUtil.formatMillisAsPercentage(quantityTotalMillis), SwingConstants.RIGHT);
+        JLabel quantityTotalLabel = new JLabel(InvestmentNumericUtil.formatMillisAsPercentage(quantityTotalMillis), SwingConstants.RIGHT);
         quantityTotalLabel.setForeground(TangoColorFactory.ORANGE_3);
         assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, TRAILING_HEADER_ROW, quantityTotalLabel);
     }
@@ -210,7 +210,7 @@ public class InvestmentAllocationPanel extends SolutionPanel {
     private void changeStandardDeviationMillisMaximum(final long standardDeviationMillisMaximum) {
         doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
-                InvestmentAllocationSolution solution = (InvestmentAllocationSolution) scoreDirector.getWorkingSolution();
+                InvestmentSolution solution = (InvestmentSolution) scoreDirector.getWorkingSolution();
                 solution.getParametrization().setStandardDeviationMillisMaximum(standardDeviationMillisMaximum);
             }
         }, true);

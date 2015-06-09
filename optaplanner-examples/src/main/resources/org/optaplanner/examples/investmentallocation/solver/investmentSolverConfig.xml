@@ -3,7 +3,7 @@
   <!--<environmentMode>FULL_ASSERT</environmentMode>-->
 
   <!-- Domain model configuration -->
-  <solutionClass>org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution</solutionClass>
+  <solutionClass>org.optaplanner.examples.investmentallocation.domain.InvestmentSolution</solutionClass>
   <entityClass>org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation</entityClass>
 
   <!-- Score configuration -->
@@ -11,7 +11,7 @@
     <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.investmentallocation.solver.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.investmentallocation.solver.score.InvestmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
-    <scoreDrl>org/optaplanner/examples/investmentallocation/solver/investmentAllocationScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/investmentallocation/solver/investmentScoreRules.drl</scoreDrl>
     <initializingScoreTrend>ONLY_DOWN/ANY</initializingScoreTrend>
     <!--<assertionScoreDirectorFactory>-->
       <!--<easyScoreCalculatorClass>org.optaplanner.examples.investmentallocation.solver.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>-->

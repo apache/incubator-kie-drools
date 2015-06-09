@@ -19,8 +19,8 @@ package org.optaplanner.examples.investmentallocation.solver.solution.initialize
 import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentAllocationSolution;
-import org.optaplanner.examples.investmentallocation.domain.util.InvestmentAllocationNumericUtil;
+import org.optaplanner.examples.investmentallocation.domain.InvestmentSolution;
+import org.optaplanner.examples.investmentallocation.domain.util.InvestmentNumericUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,12 +29,12 @@ public class InvestmentAllocationSolutionInitializer implements CustomPhaseComma
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     public void changeWorkingSolution(ScoreDirector scoreDirector) {
-        InvestmentAllocationSolution solution = (InvestmentAllocationSolution) scoreDirector.getWorkingSolution();
+        InvestmentSolution solution = (InvestmentSolution) scoreDirector.getWorkingSolution();
         distributeQuantityEvenly(scoreDirector, solution);
     }
 
-    private void distributeQuantityEvenly(ScoreDirector scoreDirector, InvestmentAllocationSolution solution) {
-        long budget = InvestmentAllocationNumericUtil.MAXIMUM_QUANTITY_MILLIS;
+    private void distributeQuantityEvenly(ScoreDirector scoreDirector, InvestmentSolution solution) {
+        long budget = InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS;
         int size = solution.getAssetClassAllocationList().size();
         long budgetPerAllocation = budget / size;
         long remainder = budget % size;
