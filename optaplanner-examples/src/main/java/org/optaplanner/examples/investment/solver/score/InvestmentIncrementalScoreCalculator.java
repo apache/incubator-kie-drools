@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.investmentallocation.solver.score;
+package org.optaplanner.examples.investment.solver.score;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
-import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentSolution;
+import org.optaplanner.examples.investment.domain.AssetClassAllocation;
+import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

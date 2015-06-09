@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.investmentallocation.persistence;
+package org.optaplanner.examples.investment.persistence;
 
 import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentSolution;
+import org.optaplanner.examples.investment.domain.InvestmentSolution;
 
 public class InvestmentDao extends XStreamSolutionDao {
 
     public InvestmentDao() {
-        super("investmentallocation", InvestmentSolution.class);
+        super("investment", InvestmentSolution.class);
     }
 
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.investmentallocation.swingui;
+package org.optaplanner.examples.investment.swingui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -38,11 +38,11 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
-import org.optaplanner.examples.investmentallocation.domain.AssetClass;
-import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentSolution;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentParametrization;
-import org.optaplanner.examples.investmentallocation.domain.util.InvestmentNumericUtil;
+import org.optaplanner.examples.investment.domain.AssetClass;
+import org.optaplanner.examples.investment.domain.AssetClassAllocation;
+import org.optaplanner.examples.investment.domain.InvestmentSolution;
+import org.optaplanner.examples.investment.domain.InvestmentParametrization;
+import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
 
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;

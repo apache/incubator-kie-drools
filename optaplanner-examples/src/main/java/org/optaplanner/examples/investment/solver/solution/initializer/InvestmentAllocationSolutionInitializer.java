@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.investmentallocation.solver.solution.initializer;
+package org.optaplanner.examples.investment.solver.solution.initializer;
 
 import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentSolution;
-import org.optaplanner.examples.investmentallocation.domain.util.InvestmentNumericUtil;
+import org.optaplanner.examples.investment.domain.AssetClassAllocation;
+import org.optaplanner.examples.investment.domain.InvestmentSolution;
+import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.investmentallocation.app;
+package org.optaplanner.examples.investment.app;
 
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -22,14 +22,14 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.investmentallocation.persistence.InvestmentDao;
-import org.optaplanner.examples.investmentallocation.persistence.InvestmentImporter;
-import org.optaplanner.examples.investmentallocation.swingui.InvestmentPanel;
+import org.optaplanner.examples.investment.persistence.InvestmentDao;
+import org.optaplanner.examples.investment.persistence.InvestmentImporter;
+import org.optaplanner.examples.investment.swingui.InvestmentPanel;
 
 public class InvestmentApp extends CommonApp {
 
     public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/investmentallocation/solver/investmentSolverConfig.xml";
+            = "org/optaplanner/examples/investment/solver/investmentSolverConfig.xml";
 
     public static void main(String[] args) {
         prepareSwingEnvironment();

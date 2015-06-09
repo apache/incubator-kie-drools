@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.investmentallocation.solver.score;
+package org.optaplanner.examples.investment.solver.score;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentSolution;
+import org.optaplanner.examples.investment.domain.InvestmentSolution;
 
 public class InvestmentEasyScoreCalculator implements EasyScoreCalculator<InvestmentSolution> {
 

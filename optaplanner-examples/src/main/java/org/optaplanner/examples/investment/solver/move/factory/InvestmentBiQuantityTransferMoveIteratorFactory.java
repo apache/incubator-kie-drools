@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.investmentallocation.solver.move.factory;
+package org.optaplanner.examples.investment.solver.move.factory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,10 +26,10 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
-import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentSolution;
-import org.optaplanner.examples.investmentallocation.domain.util.InvestmentNumericUtil;
-import org.optaplanner.examples.investmentallocation.solver.move.InvestmentQuantityTransferMove;
+import org.optaplanner.examples.investment.domain.AssetClassAllocation;
+import org.optaplanner.examples.investment.domain.InvestmentSolution;
+import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
+import org.optaplanner.examples.investment.solver.move.InvestmentQuantityTransferMove;
 
 public class InvestmentBiQuantityTransferMoveIteratorFactory implements MoveIteratorFactory {
 

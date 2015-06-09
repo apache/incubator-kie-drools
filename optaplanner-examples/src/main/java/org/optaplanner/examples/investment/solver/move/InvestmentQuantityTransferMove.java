@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.investmentallocation.solver.move;
+package org.optaplanner.examples.investment.solver.move;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,7 +23,7 @@ import java.util.Collections;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
+import org.optaplanner.examples.investment.domain.AssetClassAllocation;
 
 public class InvestmentQuantityTransferMove extends AbstractMove {
 

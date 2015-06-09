@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.investmentallocation.persistence;
+package org.optaplanner.examples.investment.persistence;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -26,10 +26,10 @@ import java.util.Map;
 
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.optaplanner.examples.investmentallocation.domain.AssetClass;
-import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentSolution;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentParametrization;
+import org.optaplanner.examples.investment.domain.AssetClass;
+import org.optaplanner.examples.investment.domain.AssetClassAllocation;
+import org.optaplanner.examples.investment.domain.InvestmentSolution;
+import org.optaplanner.examples.investment.domain.InvestmentParametrization;
 
 public class InvestmentImporter extends AbstractTxtSolutionImporter {
 

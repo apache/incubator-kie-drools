@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <!--<environmentMode>FULL_ASSERT</environmentMode>-->
+
+  <!-- Domain model configuration -->
+  <solutionClass>org.optaplanner.examples.investment.domain.InvestmentSolution</solutionClass>
+  <entityClass>org.optaplanner.examples.investment.domain.AssetClassAllocation</entityClass>
+
+  <!-- Score configuration -->
+  <scoreDirectorFactory>
+    <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
+    <!--<easyScoreCalculatorClass>org.optaplanner.examples.investment.solver.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>-->
+    <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.investment.solver.score.InvestmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
+    <scoreDrl>org/optaplanner/examples/investment/solver/investmentScoreRules.drl</scoreDrl>
+    <initializingScoreTrend>ONLY_DOWN/ANY</initializingScoreTrend>
+    <!--<assertionScoreDirectorFactory>-->
+      <!--<easyScoreCalculatorClass>org.optaplanner.examples.investment.solver.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>-->
+    <!--</assertionScoreDirectorFactory>-->
+  </scoreDirectorFactory>
+
+  <!-- Optimization algorithms configuration -->
+  <termination>
+    <minutesSpentLimit>5</minutesSpentLimit>
+  </termination>
+  <customPhase>
+    <customPhaseCommandClass>org.optaplanner.examples.investment.solver.solution.initializer.InvestmentAllocationSolutionInitializer</customPhaseCommandClass>
+  </customPhase>
+  <localSearch>
+    <unionMoveSelector>
+      <moveIteratorFactory>
+        <moveIteratorFactoryClass>org.optaplanner.examples.investment.solver.move.factory.InvestmentQuantityTransferMoveIteratorFactory</moveIteratorFactoryClass>
+      </moveIteratorFactory>
+      <moveIteratorFactory>
+        <moveIteratorFactoryClass>org.optaplanner.examples.investment.solver.move.factory.InvestmentBiQuantityTransferMoveIteratorFactory</moveIteratorFactoryClass>
+      </moveIteratorFactory>
+    </unionMoveSelector>
+    <acceptor>
+      <lateAcceptanceSize>400</lateAcceptanceSize>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>1</acceptedCountLimit>
+    </forager>
+  </localSearch>
+</solver>

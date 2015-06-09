@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.investmentallocation.domain;
+package org.optaplanner.examples.investment.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +31,7 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.investmentallocation.domain.util.InvestmentNumericUtil;
+import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution

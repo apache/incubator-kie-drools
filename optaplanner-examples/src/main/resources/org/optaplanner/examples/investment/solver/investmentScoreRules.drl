@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.investmentallocation.solver;
+package org.optaplanner.examples.investment.solver;
     dialect "java"
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScoreHolder;
 
-import org.optaplanner.examples.investmentallocation.domain.AssetClass;
-import org.optaplanner.examples.investmentallocation.domain.AssetClassAllocation;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentSolution;
-import org.optaplanner.examples.investmentallocation.domain.InvestmentParametrization;
+import org.optaplanner.examples.investment.domain.AssetClass;
+import org.optaplanner.examples.investment.domain.AssetClassAllocation;
+import org.optaplanner.examples.investment.domain.InvestmentSolution;
+import org.optaplanner.examples.investment.domain.InvestmentParametrization;
 
 global HardSoftLongScoreHolder scoreHolder;
 

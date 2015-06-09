@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.investmentallocation.domain.util;
+package org.optaplanner.examples.investment.domain.util;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
