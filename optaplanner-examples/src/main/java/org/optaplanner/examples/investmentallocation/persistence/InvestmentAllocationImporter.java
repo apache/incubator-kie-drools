@@ -78,7 +78,7 @@ public class InvestmentAllocationImporter extends AbstractTxtSolutionImporter {
             readConstantLine("Asset class;+Correlation;*");
             InvestmentParametrization parametrization = new InvestmentParametrization();
             parametrization.setId(0L);
-            parametrization.setStandardDeviationMillisMaximum(95); // TODO do not hardcode
+            parametrization.setStandardDeviationMillisMaximum(73); // TODO do not hardcode
             solution.setParametrization(parametrization);
         }
 

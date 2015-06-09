@@ -35,7 +35,7 @@
       </moveIteratorFactory>
     </unionMoveSelector>
     <acceptor>
-      <lateAcceptanceSize>40000</lateAcceptanceSize>
+      <lateAcceptanceSize>400</lateAcceptanceSize>
     </acceptor>
     <forager>
       <acceptedCountLimit>1</acceptedCountLimit>
