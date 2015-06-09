@@ -37,8 +37,9 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
     @Override
     public long getSize(ScoreDirector scoreDirector) {
         InvestmentAllocationSolution solution = (InvestmentAllocationSolution) scoreDirector.getWorkingSolution();
-        return (solution.getAssetClassAllocationList().size() - 1)
-                * InvestmentAllocationNumericUtil.MAXIMUM_QUANTITY_MILLIS;
+        int size = solution.getAssetClassAllocationList().size();
+        // The MAXIMUM_QUANTITY_MILLIS accounts for all fromAllocations too
+        return InvestmentAllocationNumericUtil.MAXIMUM_QUANTITY_MILLIS * (size - 1);
     }
 
     @Override
@@ -82,7 +83,7 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
         }
 
         public boolean hasNext() {
-            return allocationList.size() > 1;
+            return allocationList.size() >= 2;
         }
 
         public Move next() {
@@ -95,13 +96,10 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
             transferMillis -= (lowerEntry == null ? 0L : lowerEntry.getKey());
             AssetClassAllocation fromAllocation = ceilingEntry.getValue();
 
-            // TODO improve scalability by not using indexOf() on an ArrayList
-            int fromAllocationIndex = allocationList.indexOf(fromAllocation);
-            int toAllocationIndex = workingRandom.nextInt(allocationList.size() - 1);
-            if (toAllocationIndex >= fromAllocationIndex) {
-                toAllocationIndex++;
-            }
-            AssetClassAllocation toAllocation = allocationList.get(toAllocationIndex);
+            AssetClassAllocation toAllocation = allocationList.get(workingRandom.nextInt(allocationList.size() - 1));
+            if (toAllocation == fromAllocation) {
+                toAllocation = allocationList.get(allocationList.size() - 1);
+            };
             return new InvestmentQuantityTransferMove(fromAllocation, toAllocation, transferMillis);
         }
 

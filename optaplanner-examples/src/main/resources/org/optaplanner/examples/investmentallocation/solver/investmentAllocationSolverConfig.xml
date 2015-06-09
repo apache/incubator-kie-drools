@@ -26,9 +26,14 @@
     <customPhaseCommandClass>org.optaplanner.examples.investmentallocation.solver.solution.initializer.InvestmentAllocationSolutionInitializer</customPhaseCommandClass>
   </customPhase>
   <localSearch>
-    <moveIteratorFactory>
-      <moveIteratorFactoryClass>org.optaplanner.examples.investmentallocation.solver.move.factory.InvestmentQuantityTransferMoveIteratorFactory</moveIteratorFactoryClass>
-    </moveIteratorFactory>
+    <unionMoveSelector>
+      <moveIteratorFactory>
+        <moveIteratorFactoryClass>org.optaplanner.examples.investmentallocation.solver.move.factory.InvestmentQuantityTransferMoveIteratorFactory</moveIteratorFactoryClass>
+      </moveIteratorFactory>
+      <moveIteratorFactory>
+        <moveIteratorFactoryClass>org.optaplanner.examples.investmentallocation.solver.move.factory.InvestmentBiQuantityTransferMoveIteratorFactory</moveIteratorFactoryClass>
+      </moveIteratorFactory>
+    </unionMoveSelector>
     <acceptor>
       <lateAcceptanceSize>40000</lateAcceptanceSize>
     </acceptor>
