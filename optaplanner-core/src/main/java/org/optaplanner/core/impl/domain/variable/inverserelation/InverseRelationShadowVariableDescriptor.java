@@ -21,8 +21,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
-import org.optaplanner.core.impl.domain.common.PropertyAccessor;
-import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
+import org.optaplanner.core.impl.domain.common.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -38,8 +37,8 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
     protected boolean singleton;
 
     public InverseRelationShadowVariableDescriptor(EntityDescriptor entityDescriptor,
-            PropertyAccessor variablePropertyAccessor) {
-        super(entityDescriptor, variablePropertyAccessor);
+            MemberAccessor variableMemberAccessor) {
+        super(entityDescriptor, variableMemberAccessor);
     }
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
@@ -51,16 +50,16 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
     }
 
     public void linkShadowSources(DescriptorPolicy descriptorPolicy) {
-        InverseRelationShadowVariable shadowVariableAnnotation = variablePropertyAccessor
+        InverseRelationShadowVariable shadowVariableAnnotation = variableMemberAccessor
                 .getAnnotation(InverseRelationShadowVariable.class);
         Class<?> variablePropertyType = getVariablePropertyType();
         Class<?> masterClass;
         if (Collection.class.isAssignableFrom(variablePropertyType)) {
-            Type genericType = variablePropertyAccessor.getGenericType();
+            Type genericType = variableMemberAccessor.getGenericType();
             if (!(genericType instanceof ParameterizedType)) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
-                        + " annotated property (" + variablePropertyAccessor.getName()
+                        + " annotated property (" + variableMemberAccessor.getName()
                         + ") with a property type (" + variablePropertyType
                         + ") which is non parameterized collection.");
             }
@@ -69,7 +68,7 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
             if (typeArguments.length != 1) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
-                        + " annotated property (" + variablePropertyAccessor.getName()
+                        + " annotated property (" + variableMemberAccessor.getName()
                         + ") with a property type (" + variablePropertyType
                         + ") which is parameterized collection with an unsupported number of type arguments ("
                         + typeArguments.length + ").");
@@ -78,7 +77,7 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
             if (!(typeArgument instanceof Class)) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
-                        + " annotated property (" + variablePropertyAccessor.getName()
+                        + " annotated property (" + variableMemberAccessor.getName()
                         + ") with a property type (" + variablePropertyType
                         + ") which is parameterized collection with an unsupported type arguments ("
                         + typeArgument + ").");
@@ -94,7 +93,7 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
         if (sourceEntityDescriptor == null) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
-                    + " annotated property (" + variablePropertyAccessor.getName()
+                    + " annotated property (" + variableMemberAccessor.getName()
                     + ") with a masterClass (" + masterClass
                     + ") which is not a valid planning entity.");
         }
@@ -103,7 +102,7 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
         if (sourceVariableDescriptor == null) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
-                    + " annotated property (" + variablePropertyAccessor.getName()
+                    + " annotated property (" + variableMemberAccessor.getName()
                     + ") with sourceVariableName (" + sourceVariableName
                     + ") which is not a valid planning variable on entityClass ("
                     + sourceEntityDescriptor.getEntityClass() + ").\n"
@@ -115,7 +114,7 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
             if (!chained) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
-                        + " annotated property (" + variablePropertyAccessor.getName()
+                        + " annotated property (" + variableMemberAccessor.getName()
                         + ") which does not return a " + Collection.class.getSimpleName()
                         + " with sourceVariableName (" + sourceVariableName
                         + ") which is not chained. Only a chained variable supports a singleton inverse.");
@@ -124,7 +123,7 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
             if (chained) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
-                        + " annotated property (" + variablePropertyAccessor.getName()
+                        + " annotated property (" + variableMemberAccessor.getName()
                         + ") which does returns a " + Collection.class.getSimpleName()
                         + " with sourceVariableName (" + sourceVariableName
                         + ") which is chained. A chained variable supports only a singleton inverse.");

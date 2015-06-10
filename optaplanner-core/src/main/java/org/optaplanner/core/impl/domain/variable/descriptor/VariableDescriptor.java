@@ -19,22 +19,22 @@ package org.optaplanner.core.impl.domain.variable.descriptor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.optaplanner.core.impl.domain.common.PropertyAccessor;
+import org.optaplanner.core.impl.domain.common.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 
 public abstract class VariableDescriptor {
 
     protected final EntityDescriptor entityDescriptor;
 
-    protected final PropertyAccessor variablePropertyAccessor;
+    protected final MemberAccessor variableMemberAccessor;
     protected final String variableName;
 
     private List<ShadowVariableDescriptor> shadowVariableDescriptorList = new ArrayList<ShadowVariableDescriptor>(4);
 
-    public VariableDescriptor(EntityDescriptor entityDescriptor, PropertyAccessor variablePropertyAccessor) {
+    public VariableDescriptor(EntityDescriptor entityDescriptor, MemberAccessor variableMemberAccessor) {
         this.entityDescriptor = entityDescriptor;
-        this.variablePropertyAccessor = variablePropertyAccessor;
-        variableName = variablePropertyAccessor.getName();
+        this.variableMemberAccessor = variableMemberAccessor;
+        variableName = variableMemberAccessor.getName();
     }
 
     // ************************************************************************
@@ -54,7 +54,7 @@ public abstract class VariableDescriptor {
     }
 
     public Class<?> getVariablePropertyType() {
-        return variablePropertyAccessor.getType();
+        return variableMemberAccessor.getType();
     }
 
     // ************************************************************************
@@ -78,11 +78,11 @@ public abstract class VariableDescriptor {
     // ************************************************************************
 
     public Object getValue(Object entity) {
-        return variablePropertyAccessor.executeGetter(entity);
+        return variableMemberAccessor.executeGetter(entity);
     }
 
     public void setValue(Object entity, Object value) {
-        variablePropertyAccessor.executeSetter(entity, value);
+        variableMemberAccessor.executeSetter(entity, value);
     }
 
     @Override

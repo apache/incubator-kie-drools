@@ -22,16 +22,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-/**
- * Wraps {@link PropertyDescriptor} for faster and easier access.
- */
-public final class ReflectionPropertyAccessor implements PropertyAccessor {
+public final class BeanPropertyMemberAccessor implements MemberAccessor {
 
     private final PropertyDescriptor propertyDescriptor;
     private final Method readMethod;
     private final Method writeMethod;
 
-    public ReflectionPropertyAccessor(PropertyDescriptor propertyDescriptor) {
+    public BeanPropertyMemberAccessor(PropertyDescriptor propertyDescriptor) {
         this.propertyDescriptor = propertyDescriptor;
         readMethod = propertyDescriptor.getReadMethod();
         if (readMethod == null) {

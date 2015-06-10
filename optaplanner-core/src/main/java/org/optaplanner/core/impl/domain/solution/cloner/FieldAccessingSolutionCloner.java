@@ -47,7 +47,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
-import org.optaplanner.core.impl.domain.common.PropertyAccessor;
+import org.optaplanner.core.impl.domain.common.MemberAccessor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements SolutionCloner<SolutionG> {
@@ -378,27 +378,27 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
          * @param cloneSolution never null
          */
         protected void validateCloneSolution(SolutionG originalSolution, SolutionG cloneSolution) {
-            for (PropertyAccessor propertyAccessor
+            for (MemberAccessor memberAccessor
                     : solutionDescriptor.getEntityPropertyAccessorMap().values()) {
-                Object originalProperty = propertyAccessor.executeGetter(originalSolution);
+                Object originalProperty = memberAccessor.executeGetter(originalSolution);
                 if (originalProperty != null) {
-                    Object cloneProperty = propertyAccessor.executeGetter(cloneSolution);
+                    Object cloneProperty = memberAccessor.executeGetter(cloneSolution);
                     if (originalProperty == cloneProperty) {
                         throw new IllegalStateException(
-                                "The solutionProperty (" + propertyAccessor.getName() + ") was not cloned as expected."
+                                "The solutionProperty (" + memberAccessor.getName() + ") was not cloned as expected."
                                 + " The " + FieldAccessingSolutionCloner.class.getSimpleName() + " failed to recognize"
                                 + " that property's field, probably because its field name is different.");
                     }
                 }
             }
-            for (PropertyAccessor propertyAccessor
+            for (MemberAccessor memberAccessor
                     : solutionDescriptor.getEntityCollectionPropertyAccessorMap().values()) {
-                Object originalProperty = propertyAccessor.executeGetter(originalSolution);
+                Object originalProperty = memberAccessor.executeGetter(originalSolution);
                 if (originalProperty != null) {
-                    Object cloneProperty = propertyAccessor.executeGetter(cloneSolution);
+                    Object cloneProperty = memberAccessor.executeGetter(cloneSolution);
                     if (originalProperty == cloneProperty) {
                         throw new IllegalStateException(
-                                "The solutionProperty (" + propertyAccessor.getName() + ") was not cloned as expected."
+                                "The solutionProperty (" + memberAccessor.getName() + ") was not cloned as expected."
                                 + " The " + FieldAccessingSolutionCloner.class.getSimpleName() + " failed to recognize"
                                 + " that property's field, probably because its field name is different.");
                     }

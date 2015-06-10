@@ -17,8 +17,7 @@
 package org.optaplanner.core.impl.domain.variable.anchor;
 
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
-import org.optaplanner.core.impl.domain.common.PropertyAccessor;
-import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
+import org.optaplanner.core.impl.domain.common.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -35,8 +34,8 @@ public class AnchorShadowVariableDescriptor extends ShadowVariableDescriptor {
     protected VariableDescriptor sourceVariableDescriptor;
 
     public AnchorShadowVariableDescriptor(EntityDescriptor entityDescriptor,
-            PropertyAccessor variablePropertyAccessor) {
-        super(entityDescriptor, variablePropertyAccessor);
+            MemberAccessor variableMemberAccessor) {
+        super(entityDescriptor, variableMemberAccessor);
     }
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
@@ -48,13 +47,13 @@ public class AnchorShadowVariableDescriptor extends ShadowVariableDescriptor {
     }
 
     public void linkShadowSources(DescriptorPolicy descriptorPolicy) {
-        AnchorShadowVariable shadowVariableAnnotation = variablePropertyAccessor.getAnnotation(AnchorShadowVariable.class);
+        AnchorShadowVariable shadowVariableAnnotation = variableMemberAccessor.getAnnotation(AnchorShadowVariable.class);
         String sourceVariableName = shadowVariableAnnotation.sourceVariableName();
         sourceVariableDescriptor = entityDescriptor.getVariableDescriptor(sourceVariableName);
         if (sourceVariableDescriptor == null) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + AnchorShadowVariable.class.getSimpleName()
-                    + " annotated property (" + variablePropertyAccessor.getName()
+                    + " annotated property (" + variableMemberAccessor.getName()
                     + ") with sourceVariableName (" + sourceVariableName
                     + ") which is not a valid planning variable on entityClass ("
                     + entityDescriptor.getEntityClass() + ").\n"
@@ -64,7 +63,7 @@ public class AnchorShadowVariableDescriptor extends ShadowVariableDescriptor {
                 !((GenuineVariableDescriptor) sourceVariableDescriptor).isChained()) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + AnchorShadowVariable.class.getSimpleName()
-                    + " annotated property (" + variablePropertyAccessor.getName()
+                    + " annotated property (" + variableMemberAccessor.getName()
                     + ") with sourceVariableName (" + sourceVariableName
                     + ") which is not chained.");
         }

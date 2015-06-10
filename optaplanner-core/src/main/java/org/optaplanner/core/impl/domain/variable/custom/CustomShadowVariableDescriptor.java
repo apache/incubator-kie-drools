@@ -22,8 +22,7 @@ import java.util.List;
 
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.common.PropertyAccessor;
-import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
+import org.optaplanner.core.impl.domain.common.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -39,8 +38,8 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
     protected List<VariableDescriptor> sourceVariableDescriptorList;
 
     public CustomShadowVariableDescriptor(EntityDescriptor entityDescriptor,
-            PropertyAccessor variablePropertyAccessor) {
-        super(entityDescriptor, variablePropertyAccessor);
+            MemberAccessor variableMemberAccessor) {
+        super(entityDescriptor, variableMemberAccessor);
     }
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
@@ -48,21 +47,21 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
     }
 
     private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
-        CustomShadowVariable shadowVariableAnnotation = variablePropertyAccessor
+        CustomShadowVariable shadowVariableAnnotation = variableMemberAccessor
                 .getAnnotation(CustomShadowVariable.class);
         variableListenerClass = shadowVariableAnnotation.variableListenerClass();
         CustomShadowVariable.Source[] sources = shadowVariableAnnotation.sources();
         if (sources.length < 1) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + CustomShadowVariable.class.getSimpleName()
-                    + " annotated property (" + variablePropertyAccessor.getName()
+                    + " annotated property (" + variableMemberAccessor.getName()
                     + ") with sources (" + Arrays.toString(sources)
                     + ") which is empty.");
         }
     }
 
     public void linkShadowSources(DescriptorPolicy descriptorPolicy) {
-        CustomShadowVariable shadowVariableAnnotation = variablePropertyAccessor
+        CustomShadowVariable shadowVariableAnnotation = variableMemberAccessor
                 .getAnnotation(CustomShadowVariable.class);
         SolutionDescriptor solutionDescriptor = entityDescriptor.getSolutionDescriptor();
         CustomShadowVariable.Source[] sources = shadowVariableAnnotation.sources();
@@ -77,7 +76,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
                 if (sourceEntityDescriptor == null) {
                     throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                             + ") has a " + CustomShadowVariable.class.getSimpleName()
-                            + " annotated property (" + variablePropertyAccessor.getName()
+                            + " annotated property (" + variableMemberAccessor.getName()
                             + ") with a sourceEntityClass (" + sourceEntityClass
                             + ") which is not a valid planning entity.");
                 }
@@ -88,7 +87,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
             if (sourceVariableDescriptor == null) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a " + CustomShadowVariable.class.getSimpleName()
-                        + " annotated property (" + variablePropertyAccessor.getName()
+                        + " annotated property (" + variableMemberAccessor.getName()
                         + ") with sourceVariableName (" + sourceVariableName
                         + ") which is not a valid planning variable on entityClass ("
                         + sourceEntityDescriptor.getEntityClass() + ").\n"
