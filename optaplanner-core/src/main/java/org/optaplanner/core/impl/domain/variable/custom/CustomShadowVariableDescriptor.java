@@ -48,7 +48,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
     }
 
     private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
-        CustomShadowVariable shadowVariableAnnotation = variablePropertyAccessor.getReadMethod()
+        CustomShadowVariable shadowVariableAnnotation = variablePropertyAccessor
                 .getAnnotation(CustomShadowVariable.class);
         variableListenerClass = shadowVariableAnnotation.variableListenerClass();
         CustomShadowVariable.Source[] sources = shadowVariableAnnotation.sources();
@@ -62,7 +62,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
     }
 
     public void linkShadowSources(DescriptorPolicy descriptorPolicy) {
-        CustomShadowVariable shadowVariableAnnotation = variablePropertyAccessor.getReadMethod()
+        CustomShadowVariable shadowVariableAnnotation = variablePropertyAccessor
                 .getAnnotation(CustomShadowVariable.class);
         SolutionDescriptor solutionDescriptor = entityDescriptor.getSolutionDescriptor();
         CustomShadowVariable.Source[] sources = shadowVariableAnnotation.sources();

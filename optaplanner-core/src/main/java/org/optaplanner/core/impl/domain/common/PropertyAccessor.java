@@ -16,17 +16,23 @@
 
 package org.optaplanner.core.impl.domain.common;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
-public interface PropertyAccessor {
+public interface PropertyAccessor extends AnnotatedElement {
 
     String getName();
 
-    Class<?> getPropertyType();
+    Class<?> getType();
 
-    Method getReadMethod();
-
-    Method getWriteMethod();
+    /**
+     * As defined by {@link Method#getGenericReturnType()} and {@link Field#getGenericType()}.
+     * @return never null
+     */
+    Type getGenericType();
 
     Object executeGetter(Object bean);
 

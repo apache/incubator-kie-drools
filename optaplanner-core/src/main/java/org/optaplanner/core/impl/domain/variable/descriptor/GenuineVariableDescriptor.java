@@ -24,8 +24,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -34,7 +32,6 @@ import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
-import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.CompositeValueRangeDescriptor;
@@ -69,8 +66,7 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
     }
 
     private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
-        PlanningVariable planningVariableAnnotation = variablePropertyAccessor.getReadMethod()
-                .getAnnotation(PlanningVariable.class);
+        PlanningVariable planningVariableAnnotation = variablePropertyAccessor.getAnnotation(PlanningVariable.class);
         processNullable(descriptorPolicy, planningVariableAnnotation);
         processChained(descriptorPolicy, planningVariableAnnotation);
         processValueRangeRefs(descriptorPolicy, planningVariableAnnotation);
@@ -79,11 +75,11 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
 
     private void processNullable(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         nullable = planningVariableAnnotation.nullable();
-        if (nullable && variablePropertyAccessor.getPropertyType().isPrimitive()) {
+        if (nullable && variablePropertyAccessor.getType().isPrimitive()) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
                     + ") with nullable (" + nullable + "), which is not compatible with the primitive propertyType ("
-                    + variablePropertyAccessor.getPropertyType() + ").");
+                    + variablePropertyAccessor.getType() + ").");
         }
         Class<? extends SelectionFilter> reinitializeVariableEntityFilterClass
                 = planningVariableAnnotation.reinitializeVariableEntityFilter();
@@ -100,11 +96,11 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
 
     private void processChained(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         chained = planningVariableAnnotation.graphType() == PlanningVariableGraphType.CHAINED;
-        if (chained && !variablePropertyAccessor.getPropertyType().isAssignableFrom(
+        if (chained && !variablePropertyAccessor.getType().isAssignableFrom(
                 entityDescriptor.getEntityClass())) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
-                    + ") with chained (" + chained + ") and propertyType (" + variablePropertyAccessor.getPropertyType()
+                    + ") with chained (" + chained + ") and propertyType (" + variablePropertyAccessor.getType()
                     + ") which is not a superclass/interface of or the same as the entityClass ("
                     + entityDescriptor.getEntityClass() + ").");
         }

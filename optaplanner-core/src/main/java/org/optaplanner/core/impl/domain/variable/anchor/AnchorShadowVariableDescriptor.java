@@ -48,8 +48,7 @@ public class AnchorShadowVariableDescriptor extends ShadowVariableDescriptor {
     }
 
     public void linkShadowSources(DescriptorPolicy descriptorPolicy) {
-        AnchorShadowVariable shadowVariableAnnotation = variablePropertyAccessor.getReadMethod()
-                .getAnnotation(AnchorShadowVariable.class);
+        AnchorShadowVariable shadowVariableAnnotation = variablePropertyAccessor.getAnnotation(AnchorShadowVariable.class);
         String sourceVariableName = shadowVariableAnnotation.sourceVariableName();
         sourceVariableDescriptor = entityDescriptor.getVariableDescriptor(sourceVariableName);
         if (sourceVariableDescriptor == null) {

@@ -61,7 +61,6 @@ public class SolutionDescriptor {
     private final BeanInfo solutionBeanInfo;
     private SolutionCloner solutionCloner;
     
-    private final Map<String, PropertyAccessor> propertyAccessorMap;
     private final Map<String, PropertyAccessor> entityPropertyAccessorMap;
     private final Map<String, PropertyAccessor> entityCollectionPropertyAccessorMap;
 
@@ -77,7 +76,6 @@ public class SolutionDescriptor {
             throw new IllegalStateException("The solutionClass (" + solutionClass + ") is not a valid java bean.", e);
         }
         int mapSize = solutionBeanInfo.getPropertyDescriptors().length;
-        propertyAccessorMap = new LinkedHashMap<String, PropertyAccessor>(mapSize);
         entityPropertyAccessorMap = new LinkedHashMap<String, PropertyAccessor>(mapSize);
         entityCollectionPropertyAccessorMap = new LinkedHashMap<String, PropertyAccessor>(mapSize);
         entityDescriptorMap = new LinkedHashMap<Class<?>, EntityDescriptor>(mapSize);
@@ -143,16 +141,14 @@ public class SolutionDescriptor {
     private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
         boolean noPlanningEntityPropertyAnnotation = true;
         for (PropertyDescriptor propertyDescriptor : solutionBeanInfo.getPropertyDescriptors()) {
-            PropertyAccessor propertyAccessor = new ReflectionPropertyAccessor(propertyDescriptor);
-            propertyAccessorMap.put(propertyAccessor.getName(), propertyAccessor);
-            Method propertyGetter = propertyAccessor.getReadMethod();
-            if (propertyGetter != null) {
-                if (propertyGetter.isAnnotationPresent(PlanningEntityProperty.class)) {
+            if (propertyDescriptor.getReadMethod() != null) {
+                PropertyAccessor propertyAccessor = new ReflectionPropertyAccessor(propertyDescriptor);
+                if (propertyAccessor.isAnnotationPresent(PlanningEntityProperty.class)) {
                     noPlanningEntityPropertyAnnotation = false;
                     entityPropertyAccessorMap.put(propertyAccessor.getName(), propertyAccessor);
-                } else if (propertyGetter.isAnnotationPresent(PlanningEntityCollectionProperty.class)) {
+                } else if (propertyAccessor.isAnnotationPresent(PlanningEntityCollectionProperty.class)) {
                     noPlanningEntityPropertyAnnotation = false;
-                    if (!Collection.class.isAssignableFrom(propertyAccessor.getPropertyType())) {
+                    if (!Collection.class.isAssignableFrom(propertyAccessor.getType())) {
                         throw new IllegalStateException("The solutionClass (" + solutionClass
                                 + ") has a PlanningEntityCollection annotated property ("
                                 + propertyAccessor.getName() + ") that does not return a Collection.");
@@ -219,10 +215,6 @@ public class SolutionDescriptor {
     // ************************************************************************
     // Model methods
     // ************************************************************************
-
-    public PropertyAccessor getPropertyAccessor(String propertyName) {
-        return propertyAccessorMap.get(propertyName);
-    }
 
     public Set<Class<?>> getEntityClassSet() {
         return entityDescriptorMap.keySet();
@@ -387,7 +379,7 @@ public class SolutionDescriptor {
     public List<Object> getEntityListByEntityClass(Solution solution, Class<?> entityClass) {
         List<Object> entityList = new ArrayList<Object>();
         for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
-            if (entityPropertyAccessor.getPropertyType().isAssignableFrom(entityClass)) {
+            if (entityPropertyAccessor.getType().isAssignableFrom(entityClass)) {
                 Object entity = extractEntity(entityPropertyAccessor, solution);
                 if (entity != null && entityClass.isInstance(entity)) {
                     entityList.add(entity);

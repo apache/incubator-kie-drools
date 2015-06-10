@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
-import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 
 public abstract class VariableDescriptor {
@@ -55,7 +54,7 @@ public abstract class VariableDescriptor {
     }
 
     public Class<?> getVariablePropertyType() {
-        return variablePropertyAccessor.getPropertyType();
+        return variablePropertyAccessor.getType();
     }
 
     // ************************************************************************

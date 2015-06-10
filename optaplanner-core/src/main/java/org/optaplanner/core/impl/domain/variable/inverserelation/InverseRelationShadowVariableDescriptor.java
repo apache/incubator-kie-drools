@@ -51,12 +51,12 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
     }
 
     public void linkShadowSources(DescriptorPolicy descriptorPolicy) {
-        InverseRelationShadowVariable shadowVariableAnnotation = variablePropertyAccessor.getReadMethod()
+        InverseRelationShadowVariable shadowVariableAnnotation = variablePropertyAccessor
                 .getAnnotation(InverseRelationShadowVariable.class);
         Class<?> variablePropertyType = getVariablePropertyType();
         Class<?> masterClass;
         if (Collection.class.isAssignableFrom(variablePropertyType)) {
-            Type genericType = variablePropertyAccessor.getReadMethod().getGenericReturnType();
+            Type genericType = variablePropertyAccessor.getGenericType();
             if (!(genericType instanceof ParameterizedType)) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a " + InverseRelationShadowVariable.class.getSimpleName()

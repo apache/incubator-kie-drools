@@ -17,8 +17,10 @@
 package org.optaplanner.core.impl.domain.common;
 
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 /**
  * Wraps {@link PropertyDescriptor} for faster and easier access.
@@ -32,29 +34,29 @@ public final class ReflectionPropertyAccessor implements PropertyAccessor {
     public ReflectionPropertyAccessor(PropertyDescriptor propertyDescriptor) {
         this.propertyDescriptor = propertyDescriptor;
         readMethod = propertyDescriptor.getReadMethod();
-        if (readMethod != null) {
-            readMethod.setAccessible(true); // Performance hack by avoiding security checks
+        if (readMethod == null) {
+            throw new IllegalStateException("The propertyDescriptor (" + propertyDescriptor
+                    + ") lacks a readMethod (" + readMethod + ").");
         }
+        readMethod.setAccessible(true); // Performance hack by avoiding security checks
         writeMethod = propertyDescriptor.getWriteMethod();
         if (writeMethod != null) {
             writeMethod.setAccessible(true); // Performance hack by avoiding security checks
         }
     }
 
-    public Method getReadMethod() {
-        return readMethod;
-    }
-
-    public Method getWriteMethod() {
-        return writeMethod;
-    }
-
     public String getName() {
         return propertyDescriptor.getName();
     }
 
-    public Class<?> getPropertyType() {
+    @Override
+    public Class<?> getType() {
         return propertyDescriptor.getPropertyType();
+    }
+
+    @Override
+    public Type getGenericType() {
+        return readMethod.getGenericReturnType();
     }
 
     public Object executeGetter(Object bean) {
@@ -81,6 +83,30 @@ public final class ReflectionPropertyAccessor implements PropertyAccessor {
                     + ") setter on bean of class (" + bean.getClass() + ") throws an exception.",
                     e.getCause());
         }
+    }
+
+    // ************************************************************************
+    // AnnotatedElement methods
+    // ************************************************************************
+
+    @Override
+    public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
+        return readMethod.isAnnotationPresent(annotationClass);
+    }
+
+    @Override
+    public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
+        return readMethod.getAnnotation(annotationClass);
+    }
+
+    @Override
+    public Annotation[] getAnnotations() {
+        return readMethod.getAnnotations();
+    }
+
+    @Override
+    public Annotation[] getDeclaredAnnotations() {
+        return readMethod.getDeclaredAnnotations();
     }
 
 }
