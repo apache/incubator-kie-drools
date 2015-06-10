@@ -26,11 +26,11 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Specifies that a bean property is the anchor of a chained {@link PlanningVariable}, which implies it's a shadow variable.
+ * Specifies that a bean property (or a field) is the anchor of a chained {@link PlanningVariable}, which implies it's a shadow variable.
  * <p/>
- * It is specified on a getter of a java bean property of a {@link PlanningEntity} class.
+ * It is specified on a getter of a java bean property (or a field) of a {@link PlanningEntity} class.
  */
-@Target({METHOD})
+@Target({METHOD, FIELD})
 @Retention(RUNTIME)
 public @interface AnchorShadowVariable {
 

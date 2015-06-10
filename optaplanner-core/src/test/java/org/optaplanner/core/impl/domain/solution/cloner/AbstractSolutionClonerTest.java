@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-import org.optaplanner.core.impl.testdata.domain.accessmodifier.TestdataAccessModifierSolution;
+import org.optaplanner.core.impl.testdata.domain.reflect.accessmodifier.TestdataAccessModifierSolution;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;

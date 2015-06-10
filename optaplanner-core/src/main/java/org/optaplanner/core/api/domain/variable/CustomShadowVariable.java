@@ -26,11 +26,11 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Specifies that a bean property is a custom shadow of 1 or more {@link PlanningVariable}'s.
+ * Specifies that a bean property (or a field) is a custom shadow of 1 or more {@link PlanningVariable}'s.
  * <p/>
- * It is specified on a getter of a java bean property of a {@link PlanningEntity} class.
+ * It is specified on a getter of a java bean property (or a field) of a {@link PlanningEntity} class.
  */
-@Target({METHOD})
+@Target({METHOD, FIELD})
 @Retention(RUNTIME)
 public @interface CustomShadowVariable {
 

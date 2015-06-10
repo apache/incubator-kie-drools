@@ -18,6 +18,7 @@ package org.optaplanner.core.api.domain.solution;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import java.util.Collection;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -26,12 +27,12 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Specifies that a property on a {@link Solution} is a collection of planning entities.
+ * Specifies that a property (or a field) on a {@link Solution} class is a {@link Collection} of planning entities.
  * <p/>
  * Every element in the planning entity collection should have the {@link PlanningEntity} annotation.
  * Every element in the planning entity collection will be added to the {@link ScoreDirector}.
  */
-@Target({METHOD})
+@Target({METHOD, FIELD})
 @Retention(RUNTIME)
 public @interface PlanningEntityCollectionProperty {
 

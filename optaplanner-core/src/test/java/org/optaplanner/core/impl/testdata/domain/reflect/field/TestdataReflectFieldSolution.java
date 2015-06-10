@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.accessmodifier;
+package org.optaplanner.core.impl.testdata.domain.reflect.field;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,82 +25,43 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataUtils;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
-public class TestdataAccessModifierSolution extends TestdataObject implements Solution<SimpleScore> {
-
-    private static final String STATIC_FINAL_FIELD = "staticFinalFieldValue";
-
-    private static Object staticField;
-
-    public static String getStaticFinalField() {
-        return STATIC_FINAL_FIELD;
-    }
-
-    public static Object getStaticField() {
-        return staticField;
-    }
-
-    public static void setStaticField(Object staticField) {
-        TestdataAccessModifierSolution.staticField = staticField;
-    }
+public class TestdataReflectFieldSolution extends TestdataObject implements Solution<SimpleScore> {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return TestdataUtils.buildSolutionDescriptor(TestdataAccessModifierSolution.class, TestdataEntity.class);
-    }
-
-    private final String finalField;
-    private String readWriteOnlyField;
-
-    private List<TestdataValue> valueList;
-    private List<TestdataEntity> entityList;
-
-    private SimpleScore score;
-
-    private TestdataAccessModifierSolution() {
-        finalField = "No-argument constructor";
-    }
-
-    public TestdataAccessModifierSolution(String code) {
-        super(code);
-        finalField = "Constructor with argument code (" + code + ")";
-    }
-
-    public String getFinalField() {
-        return finalField;
-    }
-
-    public String getReadOnlyField() {
-        return "read" + readWriteOnlyField;
-    }
-
-    public void setWriteOnlyField(String writeOnlyField) {
-        if (!writeOnlyField.startsWith("write")) {
-            throw new IllegalArgumentException("The writeOnlyField (" + writeOnlyField + ") should start with write.");
-        }
-        readWriteOnlyField = writeOnlyField.substring("write".length());
+        return TestdataUtils.buildSolutionDescriptor(TestdataReflectFieldSolution.class, TestdataReflectFieldEntity.class);
     }
 
     @ValueRangeProvider(id = "valueRange")
+    private List<TestdataValue> valueList;
+    @PlanningEntityCollectionProperty
+    private List<TestdataReflectFieldEntity> entityList;
+
+    private SimpleScore score;
+
+    public TestdataReflectFieldSolution() {
+    }
+
+    public TestdataReflectFieldSolution(String code) {
+        super(code);
+    }
+
+    public TestdataReflectFieldSolution(String code, List<TestdataValue> valueList, List<TestdataReflectFieldEntity> entityList) {
+        super(code);
+        this.valueList = valueList;
+        this.entityList = entityList;
+    }
+
     public List<TestdataValue> getValueList() {
         return valueList;
     }
 
-    public void setValueList(List<TestdataValue> valueList) {
-        this.valueList = valueList;
-    }
-
-    @PlanningEntityCollectionProperty
-    public List<TestdataEntity> getEntityList() {
+    public List<TestdataReflectFieldEntity> getEntityList() {
         return entityList;
-    }
-
-    public void setEntityList(List<TestdataEntity> entityList) {
-        this.entityList = entityList;
     }
 
     public SimpleScore getScore() {
