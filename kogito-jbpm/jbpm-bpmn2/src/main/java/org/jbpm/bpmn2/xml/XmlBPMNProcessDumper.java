@@ -77,6 +77,7 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
 	public static final String MVEL_LANGUAGE = "http://www.mvel.org/2.0";
 	public static final String RULE_LANGUAGE = "http://www.jboss.org/drools/rule";
     public static final String XPATH_LANGUAGE = "http://www.w3.org/1999/XPath";
+    public static final String JAVASCRIPT_LANGUAGE = "http://www.javascript.com/javascript";
     
     public static final int NO_META_DATA = 0;
     public static final int META_DATA_AS_NODE_PROPERTY = 1;
@@ -764,6 +765,8 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
                             xmlDump.append("language=\"" + JAVA_LANGUAGE + "\" ");
                         } else if ("XPath".equals(constraint.getDialect())) {
                             xmlDump.append("language=\"" + XPATH_LANGUAGE + "\" ");
+                        }  else if ("JavaScript".equals(constraint.getDialect())) {
+                            xmlDump.append("language=\"" + JAVASCRIPT_LANGUAGE + "\" ");
                         }
                     } else {
                         xmlDump.append("language=\"" + RULE_LANGUAGE + "\" ");

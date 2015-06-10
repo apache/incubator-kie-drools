@@ -226,6 +226,21 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    public void testScriptTaskJS() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ScriptTaskJS.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("name", "krisv");
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("ScriptTask", params);
+        assertEquals("Entry", processInstance.getVariable("x"));
+        assertNull(processInstance.getVariable("y"));
+        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        assertEquals("Exit", getProcessVarValue(processInstance, "y"));
+    }
+
+    @Test
     @RequirePersistence
     public void testScriptTaskWithHistoryLog() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ScriptTask.bpmn2");

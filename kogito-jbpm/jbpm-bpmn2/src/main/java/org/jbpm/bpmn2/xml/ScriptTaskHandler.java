@@ -51,6 +51,8 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
 		String language = element.getAttribute("scriptFormat");
 		if (XmlBPMNProcessDumper.JAVA_LANGUAGE.equals(language)) {
 			action.setDialect(JavaDialect.ID);
+		} else if (XmlBPMNProcessDumper.JAVASCRIPT_LANGUAGE.equals(language)) {
+		    action.setDialect("JavaScript");
 		}
 		action.setConsequence("");
         org.w3c.dom.Node xmlNode = element.getFirstChild();
