@@ -13,6 +13,17 @@
   <name>Drools API examples</name>
 
   <packaging>pom</packaging>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kiebase-inclusion</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <modules>
     <module>default-kiesession</module>
     <module>named-kiesession</module>
