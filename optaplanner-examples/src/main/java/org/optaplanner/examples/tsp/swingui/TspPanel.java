@@ -26,6 +26,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
+import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
@@ -119,38 +120,48 @@ public class TspPanel extends SolutionPanel {
         logger.info("Scheduling insertion of newLocation ({}).", newLocation);
         doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
-                TravelingSalesmanTour solution = (TravelingSalesmanTour) scoreDirector.getWorkingSolution();
+                TravelingSalesmanTour tour = (TravelingSalesmanTour) scoreDirector.getWorkingSolution();
                 scoreDirector.beforeProblemFactAdded(newLocation);
-                solution.getLocationList().add(newLocation);
+                tour.getLocationList().add(newLocation);
                 scoreDirector.afterProblemFactAdded(newLocation);
                 Visit newVisit = new Visit();
                 newVisit.setId(newLocation.getId());
                 newVisit.setLocation(newLocation);
                 scoreDirector.beforeEntityAdded(newVisit);
-                solution.getVisitList().add(newVisit);
+                tour.getVisitList().add(newVisit);
                 scoreDirector.afterEntityAdded(newVisit);
             }
         });
     }
+    public void connectStandstills(Standstill sourceStandstill, Standstill targetStandstill) {
+        if (targetStandstill instanceof Domicile) {
+            TravelingSalesmanTour tour = getTravelingSalesmanTour();
+            Standstill lastStandstill = tour.getDomicile();
+            for (Visit nextVisit = findNextVisit(tour, lastStandstill); nextVisit != null; nextVisit = findNextVisit(tour, lastStandstill)) {
+                lastStandstill = nextVisit;
+            }
+            targetStandstill = sourceStandstill;
+            sourceStandstill = lastStandstill;
+        }
+        if (targetStandstill instanceof Visit
+                && (sourceStandstill instanceof Domicile ||  ((Visit) sourceStandstill).getPreviousStandstill() != null)) {
+            solutionBusiness.doChangeMove((Visit) targetStandstill, "previousStandstill", sourceStandstill);
+        }
+        solverAndPersistenceFrame.resetScreen();
+    }
 
-    public void moveVisitToTail(AirLocation clickLocation) {
+    public Standstill findNearestStandstill(AirLocation clickLocation) {
         TravelingSalesmanTour tour = getTravelingSalesmanTour();
-        Visit visit = null;
-        double minimumAirDistance = Double.MAX_VALUE;
+        Standstill standstill = tour.getDomicile();
+        double minimumAirDistance = standstill.getLocation().getAirDistanceDoubleTo(clickLocation);
         for (Visit selectedVisit : tour.getVisitList()) {
             double airDistance = selectedVisit.getLocation().getAirDistanceDoubleTo(clickLocation);
             if (airDistance < minimumAirDistance) {
-                visit = selectedVisit;
+                standstill = selectedVisit;
                 minimumAirDistance = airDistance;
             }
         }
-        logger.info("Moving visit ({}) to tail.", visit);
-        Standstill standstill = tour.getDomicile();
-        for (Visit nextVisit = findNextVisit(tour, standstill); nextVisit != null; nextVisit = findNextVisit(tour, standstill)) {
-            standstill = nextVisit;
-        }
-        doMove(visit, standstill);
-        getWorkflowFrame().resetScreen();
+        return standstill;
     }
 
     private Visit findNextVisit(TravelingSalesmanTour tour, Standstill standstill) {
