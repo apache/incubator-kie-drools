@@ -49,11 +49,13 @@ public class VehicleRoutingWorldPanel extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                LatitudeLongitudeTranslator translator = solutionPainter.getTranslator();
-                if (translator != null) {
-                    double longitude = translator.translateXToLongitude(e.getX());
-                    double latitude = translator.translateYToLatitude(e.getY());
-                    VehicleRoutingWorldPanel.this.vehicleRoutingPanel.insertLocationAndCustomer(longitude, latitude);
+                if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
+                    LatitudeLongitudeTranslator translator = solutionPainter.getTranslator();
+                    if (translator != null) {
+                        double longitude = translator.translateXToLongitude(e.getX());
+                        double latitude = translator.translateYToLatitude(e.getY());
+                        VehicleRoutingWorldPanel.this.vehicleRoutingPanel.insertLocationAndCustomer(longitude, latitude);
+                    }
                 }
             }
         });

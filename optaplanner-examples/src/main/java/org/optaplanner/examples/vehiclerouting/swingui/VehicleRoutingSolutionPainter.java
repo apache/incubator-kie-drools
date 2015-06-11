@@ -212,7 +212,7 @@ public class VehicleRoutingSolutionPainter {
         g.drawString(customersSizeString,
                 ((int) width - g.getFontMetrics().stringWidth(customersSizeString)) / 2, (int) height - 5);
         if (solution.getDistanceType() == DistanceType.AIR_DISTANCE) {
-            String clickString = "Click anywhere in the map to add a customer.";
+            String clickString = "Right click anywhere on the map to add a customer.";
             g.drawString(clickString, (int) width - 5 - g.getFontMetrics().stringWidth(clickString), (int) height - 5);
         }
         // Show soft score
