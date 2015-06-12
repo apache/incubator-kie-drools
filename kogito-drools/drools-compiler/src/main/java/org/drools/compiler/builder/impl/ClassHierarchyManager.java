@@ -56,8 +56,11 @@ public class ClassHierarchyManager {
         Map<QualifiedName, AbstractClassTypeDeclarationDescr> cache = new HashMap<QualifiedName, AbstractClassTypeDeclarationDescr>();
 
         for (AbstractClassTypeDeclarationDescr tdescr : unsortedDescrs) {
+            cache.put(tdescr.getType(), tdescr);
+        }
+
+        for (AbstractClassTypeDeclarationDescr tdescr : unsortedDescrs) {
             QualifiedName name = tdescr.getType();
-            cache.put(name, tdescr);
 
             Collection<QualifiedName> supers = taxonomy.get(name);
             if (supers == null) {
@@ -72,7 +75,9 @@ public class ClassHierarchyManager {
             for (QualifiedName sup : tdescr.getSuperTypes()) {
                 if (!Object.class.getName().equals(name.getFullName())) {
                     if (!hasCircularDependency(tdescr.getType(), sup, taxonomy)) {
-                        supers.add(sup);
+                        if ( cache.containsKey( sup ) ) {
+                            supers.add( sup );
+                        }
                     } else {
                         circular = true;
                         kbuilder.addBuilderResult(new TypeDeclarationError(tdescr,
@@ -91,7 +96,9 @@ public class ClassHierarchyManager {
                 QualifiedName name = tdescr.getType();
                 QualifiedName typeName = new QualifiedName(field.getPattern().getObjectType());
                 if (!hasCircularDependency(name, typeName, taxonomy)) {
-                    taxonomy.get(name).add(typeName);
+                    if ( cache.containsKey( typeName ) ) {
+                        taxonomy.get( name ).add( typeName );
+                    }
                 } else {
                     field.setRecursive( true );
                 }
@@ -360,32 +367,51 @@ public class ClassHierarchyManager {
                     }
                 }
 
-                if (!type1.equals(type2)) {
+                boolean clash = ! type1.equals(type2);
+                TypeFieldDescr overriding = null;
+                if ( clash ) {
+                    // this may still be an override using a subclass of the original type
+                    try {
+                        Class<?> sup = resolver.resolveType( type1 );
+                        Class<?> loc = resolver.resolveType( type2 );
+                        if ( sup.isAssignableFrom( loc ) ) {
+                            clash = false;
+                            // mark as non inherited so that a new field is actually built
+                            overriding = fieldMap.get( fieldName );
+                        }
+                    } catch ( ClassNotFoundException cnfe ) {
+                        // not much to do
+                    }
+                }
+                if ( clash ) {
                     kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                        "Cannot redeclare field '" + fieldName + " from " + type1 + " to " + type2));
-                    typeDescr.setType(null,
-                                      null);
+                    typeDescr.setType(null,null);
                     return false;
                 } else {
                     String initVal = fieldMap.get(fieldName).getInitExpr();
-                    if (typeDescr.getFields().get(fieldName).getInitExpr() == null) {
-                        typeDescr.getFields().get(fieldName).setInitExpr(initVal);
+                    TypeFieldDescr fd = typeDescr.getFields().get(fieldName);
+                    if (fd.getInitExpr() == null) {
+                        fd.setInitExpr( initVal );
                     }
-                    typeDescr.getFields().get(fieldName).setInherited(fieldMap.get(fieldName).isInherited());
+
+                    fd.setInherited( fieldMap.get( fieldName ).isInherited() );
+                    fd.setOverriding( overriding );
+
 
                     for (String key : fieldMap.get(fieldName).getAnnotationNames()) {
-                        if (typeDescr.getFields().get(fieldName).getAnnotation(key) == null) {
-                            typeDescr.getFields().get(fieldName).addAnnotation(fieldMap.get(fieldName).getAnnotation(key));
+                        if (fd.getAnnotation( key ) == null) {
+                            fd.addAnnotation( fieldMap.get( fieldName ).getAnnotation( key ) );
                         }
                     }
 
-                    if (typeDescr.getFields().get(fieldName).getIndex() < 0) {
-                        typeDescr.getFields().get(fieldName).setIndex(fieldMap.get(fieldName).getIndex());
+                    if (fd.getIndex() < 0) {
+                        fd.setIndex( fieldMap.get( fieldName ).getIndex() );
                     }
                 }
             }
-            fieldMap.put(fieldName,
-                         typeDescr.getFields().get(fieldName));
+            fieldMap.put( fieldName,
+                          typeDescr.getFields().get( fieldName ) );
         }
 
         typeDescr.setFields(fieldMap);

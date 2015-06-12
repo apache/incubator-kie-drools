@@ -221,6 +221,9 @@ public class ClassDefinitionFactory {
             FieldDefinition fieldDef = new FieldDefinition( field.getFieldName(), fullFieldType );
             fieldDefs.add(fieldDef);
 
+            if ( field.hasOverride() ) {
+                fieldDef.setOverriding( field.getOverriding().getPattern().getObjectType() );
+            }
             fieldDef.setInherited( field.isInherited() );
             fieldDef.setRecursive(  field.isRecursive() );
             fieldDef.setInitExpr( TypeDeclarationUtils.rewriteInitExprWithImports( field.getInitExpr(), typeResolver ) );
