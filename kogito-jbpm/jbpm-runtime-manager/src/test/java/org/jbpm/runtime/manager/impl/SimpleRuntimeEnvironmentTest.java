@@ -80,4 +80,17 @@ public class SimpleRuntimeEnvironmentTest extends SimpleRuntimeEnvironment {
         assertEquals( "Incorrect file type", DecisionTableInputType.XLS, ((DecisionTableConfiguration) replacedConfig).getInputType());
         assertEquals( "Worksheet name not preserved",  worksheetName, ((DecisionTableConfiguration) replacedConfig).getWorksheetName());
     }
+
+    @Test
+    public void addAssetXLSDtableWithOwnConfigTest() {
+        Resource resource = ResourceFactory.newClassPathResource("/data/resource.xls", getClass());
+        DecisionTableConfigurationImpl config = new DecisionTableConfigurationImpl();
+        config.setInputType(DecisionTableInputType.XLS);
+        String worksheetName = "test-worksheet-name";
+        config.setWorksheetName(worksheetName);
+        resource.setConfiguration(config);
+
+        addAsset(resource, ResourceType.DTABLE);
+        verify(this.kbuilder).add(any(Resource.class), any(ResourceType.class));
+    }
 }
