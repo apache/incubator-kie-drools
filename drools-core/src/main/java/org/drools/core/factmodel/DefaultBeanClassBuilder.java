@@ -250,7 +250,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
     protected void buildGettersAndSetters(ClassWriter cw, ClassDefinition classDef) {
         // Building methods
         for ( FieldDefinition fieldDef : classDef.getFieldsDefinitions() ) {
-            if (! fieldDef.isInherited()) {
+            if (! fieldDef.isInherited() || fieldDef.hasOverride()) {
                 this.buildGetMethod( cw,
                         classDef,
                         fieldDef );
@@ -734,7 +734,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
      */
     protected void buildField( ClassVisitor cw,
                                FieldDefinition fieldDef) {
-        FieldVisitor fv = cw.visitField( Opcodes.ACC_PRIVATE,
+        FieldVisitor fv = cw.visitField( Opcodes.ACC_PROTECTED,
                                          fieldDef.getName(),
                                          BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ),
                                          null,
@@ -1102,10 +1102,19 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                 mv.visitVarInsn( Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) ).getOpcode( Opcodes.ILOAD ), 1 );
             }
 
-            mv.visitFieldInsn( Opcodes.PUTFIELD,
-                               BuildUtils.getInternalType( classDef.getClassName() ),
-                               fieldDef.getName(),
-                               BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) );
+            if ( ! fieldDef.hasOverride() ) {
+                mv.visitFieldInsn( Opcodes.PUTFIELD,
+                                   BuildUtils.getInternalType( classDef.getClassName() ),
+                                   fieldDef.getName(),
+                                   BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) );
+            } else {
+                mv.visitMethodInsn( INVOKESPECIAL,
+                                    BuildUtils.getInternalType( classDef.getSuperClass() ),
+                                    BuildUtils.setterName( fieldDef.getName(), fieldDef.getOverriding() ),
+                                    Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                              new Type[]{Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getOverriding()) )} ),
+                                    false );
+            }
 
             mv.visitInsn( Opcodes.RETURN );
             Label l1 = null;
@@ -1152,11 +1161,22 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             }
             mv.visitVarInsn( Opcodes.ALOAD,
                     0 );
-            mv.visitFieldInsn( Opcodes.GETFIELD,
-                    BuildUtils.getInternalType( classDef.getClassName() ),
-                    fieldDef.getName(),
-                    BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) );
-            mv.visitInsn( Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) ).getOpcode( Opcodes.IRETURN ) );
+            if ( ! fieldDef.hasOverride() ) {
+                mv.visitFieldInsn( Opcodes.GETFIELD,
+                                   BuildUtils.getInternalType( classDef.getClassName() ),
+                                   fieldDef.getName(),
+                                   BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) );
+                mv.visitInsn( Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) ).getOpcode( Opcodes.IRETURN ) );
+            } else {
+                mv.visitMethodInsn( INVOKESPECIAL,
+                                    BuildUtils.getInternalType( classDef.getSuperClass() ),
+                                    BuildUtils.getterName( fieldDef.getName(), fieldDef.getOverriding() ),
+                                    Type.getMethodDescriptor( Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getOverriding() ) ), new Type[]{} ),
+                                    false );
+                mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( fieldDef.getTypeName() ) );
+                mv.visitInsn( BuildUtils.returnType( fieldDef.getTypeName() ) );
+            }
+
             Label l1 = null;
             if ( this.debug ) {
                 l1 = new Label();

@@ -16,23 +16,6 @@
 
 package org.drools.core.util.asm;
 
-import java.beans.Introspector;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
@@ -44,6 +27,23 @@ import org.mvel2.asm.FieldVisitor;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
+
+import java.beans.Introspector;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Visit a POJO user class, and extract the property getter methods that are public, in the 
@@ -149,7 +149,13 @@ public class ClassFieldInspector {
         Collections.sort( methods,  new Comparator<Method>() {
             public int compare(Method m1,
                                Method m2) {
-                return m1.getName().compareTo( m2.getName() );
+                String n1 = m1.getName();
+                String n2 = m2.getName();
+                if ( n1.equals( n2 ) && m1.getDeclaringClass() != m2.getDeclaringClass() ) {
+                    return m1.getDeclaringClass().isAssignableFrom( m2.getDeclaringClass() ) ? -1 : 1;
+                } else {
+                    return n1.compareTo( n2 );
+                }
             }
         });
         
@@ -177,11 +183,11 @@ public class ClassFieldInspector {
         }
 
         final List<Field> flds = Arrays.asList( clazz.getFields() );
-        Collections.sort( flds,  new Comparator<Field>() {
-            public int compare(Field f1, Field f2) {
+        Collections.sort( flds, new Comparator<Field>() {
+            public int compare( Field f1, Field f2 ) {
                 return f1.getName().compareTo( f2.getName() );
             }
-        });
+        } );
 
         for ( Field fld : flds ) {
             if ( ! Modifier.isStatic( fld.getModifiers() ) && ! fieldNames.containsKey( fld.getName() ) ) {
@@ -336,7 +342,8 @@ public class ClassFieldInspector {
                                           f );
             }
         } else if( ! void.class.isAssignableFrom( method.getReturnType() ) ) {
-            if ( getterMethods.containsKey( fieldName ) ) {
+            Method existingMethod = getterMethods.get( fieldName );
+            if ( existingMethod != null && !isOverride( existingMethod, method ) ) {
                 addResult( fieldName, new GetterOverloadWarning( classUnderInspection,
                                                                  this.getterMethods.get( fieldName ).getName(), this.fieldTypes.get( fieldName ),
                                                                  method.getName(), method.getReturnType() ) );
@@ -348,6 +355,11 @@ public class ClassFieldInspector {
             this.fieldTypesField.put( fieldName,
                                       f );
         }
+    }
+
+    private boolean isOverride( Method oldMethod, Method newMethod ) {
+        return !oldMethod.getDeclaringClass().equals( newMethod.getDeclaringClass() ) &&
+               oldMethod.getDeclaringClass().isAssignableFrom( newMethod.getDeclaringClass() );
     }
 
     private String calcFieldName( String name,

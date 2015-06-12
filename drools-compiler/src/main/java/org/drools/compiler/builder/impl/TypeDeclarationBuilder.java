@@ -332,6 +332,10 @@ public class TypeDeclarationBuilder {
                     String availableName = typeDescr.getType().getFullName();
                     Class<?> resolvedType = reg.getTypeResolver().resolveType(availableName);
                     if (!Thing.class.isAssignableFrom(resolvedType)) {
+                        if ( ! resolvedType.isInterface() ) {
+                            kbuilder.addBuilderResult( new TypeDeclarationError( typeDescr, "Unable to redeclare concrete class " + resolvedType.getName() + " as a trait." ) );
+                            return;
+                        }
                         updateTraitDefinition( type,
                                                resolvedType,
                                                false );
