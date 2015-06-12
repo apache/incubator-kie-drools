@@ -34,6 +34,10 @@ public class DocumentMarshallingStrategy extends AbstractDocumentMarshallingStra
         documentStorageService = new DocumentStorageServiceImpl();
     }
 
+    public DocumentMarshallingStrategy(String path) {
+        documentStorageService = new DocumentStorageServiceImpl(path);
+    }
+
     @Override
     public Document buildDocument( String name, long size, Date lastModified, Map<String, String> params ) {
         return documentStorageService.buildDocument( name, size, lastModified, params );

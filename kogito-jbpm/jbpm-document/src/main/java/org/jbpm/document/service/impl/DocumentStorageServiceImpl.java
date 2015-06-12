@@ -44,6 +44,14 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
      */
     private String storagePath = ".docs";
 
+    public DocumentStorageServiceImpl( String storagePath ) {
+        this.storagePath = storagePath;
+    }
+
+    public DocumentStorageServiceImpl() {
+
+    }
+
     @Override
     public Document buildDocument( String name, long size, Date lastModified, Map<String, String> params ) {
         String identifier = generateUniquePath();
