@@ -16,10 +16,6 @@
 
 package org.optaplanner.core.impl.domain.entity.descriptor;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
@@ -88,8 +84,8 @@ public class EntityDescriptor {
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
         processEntityAnnotations(descriptorPolicy);
-        processMethodAnnotations(descriptorPolicy);
-        processPropertyAnnotations(descriptorPolicy);
+        processValueRangeProviderAnnotations(descriptorPolicy);
+        processPlanningVariableAnnotations(descriptorPolicy);
     }
 
     private void processEntityAnnotations(DescriptorPolicy descriptorPolicy) {
@@ -144,8 +140,8 @@ public class EntityDescriptor {
         }
     }
 
-    private void processMethodAnnotations(DescriptorPolicy descriptorPolicy) {
-        // Only iterate declared methods, not inherited methods, to avoid registering the same ValueRangeProvide twice
+    private void processValueRangeProviderAnnotations(DescriptorPolicy descriptorPolicy) {
+        // Only iterate declared methods, not inherited methods, to avoid registering the same ValueRangeProvider twice
         for (Method method : entityClass.getDeclaredMethods()) {
             if (method.isAnnotationPresent(ValueRangeProvider.class)) {
                 descriptorPolicy.addFromEntityValueRangeProvider(method);
@@ -153,7 +149,7 @@ public class EntityDescriptor {
         }
     }
 
-    private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
+    private void processPlanningVariableAnnotations(DescriptorPolicy descriptorPolicy) {
         declaredGenuineVariableDescriptorMap = new LinkedHashMap<String, GenuineVariableDescriptor>();
         declaredShadowVariableDescriptorMap = new LinkedHashMap<String, ShadowVariableDescriptor>();
         boolean noVariableAnnotation = true;

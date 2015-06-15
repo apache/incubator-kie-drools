@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.domain.common;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-
 import org.junit.Test;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -29,7 +26,7 @@ import static org.junit.Assert.*;
 public class BeanPropertyMemberAccessorTest {
 
     @Test
-    public void reflectMethodEntity() throws IntrospectionException, NoSuchMethodException {
+    public void reflectMethodEntity() throws NoSuchMethodException {
         BeanPropertyMemberAccessor memberAccessor = new BeanPropertyMemberAccessor(
                 TestdataEntity.class.getMethod("getValue"));
         assertEquals("value", memberAccessor.getName());

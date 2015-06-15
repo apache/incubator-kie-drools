@@ -8,10 +8,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.nullable.TestdataNullableEntity;
 
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-
 import static org.junit.Assert.*;
 
 public class NullValueReinitializeVariableEntityFilterTest {

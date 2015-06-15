@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.domain.solution.descriptor;
 
-import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -92,8 +89,8 @@ public class SolutionDescriptor {
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
         processSolutionAnnotations(descriptorPolicy);
-        processMethodAnnotations(descriptorPolicy);
-        processPropertyAnnotations(descriptorPolicy);
+        processValueRangeProviderAnnotations(descriptorPolicy);
+        processEntityPropertyAnnotations(descriptorPolicy);
     }
 
     private void processSolutionAnnotations(DescriptorPolicy descriptorPolicy) {
@@ -122,8 +119,8 @@ public class SolutionDescriptor {
         }
     }
 
-    private void processMethodAnnotations(DescriptorPolicy descriptorPolicy) {
-        // This only iterates public methods
+    private void processValueRangeProviderAnnotations(DescriptorPolicy descriptorPolicy) {
+        // TODO This does not support annotations on private/protected methods like EntityDescriptor
         for (Method method : solutionClass.getMethods()) {
             if (method.isAnnotationPresent(ValueRangeProvider.class)) {
                 descriptorPolicy.addFromSolutionValueRangeProvider(method);
@@ -131,7 +128,7 @@ public class SolutionDescriptor {
         }
     }
 
-    private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
+    private void processEntityPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
         boolean noEntityPropertyAnnotation = true;
         // TODO This does not support annotations on private/protected methods like EntityDescriptor
         for (Method method : solutionClass.getMethods()) {
