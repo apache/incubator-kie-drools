@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.domain.solution.descriptor;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +40,7 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
+import org.optaplanner.core.impl.domain.common.member.FieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.member.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.member.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
@@ -134,18 +136,24 @@ public class SolutionDescriptor {
 
     private void processEntityPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
         boolean noEntityPropertyAnnotation = true;
-        // TODO This does not support annotations on private/protected methods like EntityDescriptor
-        List<Method> methodList = Arrays.asList(solutionClass.getMethods());
+        // TODO This does not support annotations on inherited fields
+        List<Field> fieldList = Arrays.asList(solutionClass.getDeclaredFields());
+        Collections.sort(fieldList, new AlphabeticMemberComparator());
+        for (Field field : fieldList) {
+            boolean entityPropertyAnnotated = field.isAnnotationPresent(PlanningEntityProperty.class);
+            boolean entityCollectionPropertyAnnotated = field.isAnnotationPresent(PlanningEntityCollectionProperty.class);
+            if (entityPropertyAnnotated || entityCollectionPropertyAnnotated) {
+                noEntityPropertyAnnotation = false;
+                MemberAccessor memberAccessor = new FieldMemberAccessor(field);
+                registerEntityPropertyAccessor(entityPropertyAnnotated, entityCollectionPropertyAnnotated, memberAccessor);
+            }
+        }
+        // TODO This does not support annotations on inherited methods
+        List<Method> methodList = Arrays.asList(solutionClass.getDeclaredMethods());
         Collections.sort(methodList, new AlphabeticMemberComparator());
         for (Method method : methodList) {
             boolean entityPropertyAnnotated = method.isAnnotationPresent(PlanningEntityProperty.class);
             boolean entityCollectionPropertyAnnotated = method.isAnnotationPresent(PlanningEntityCollectionProperty.class);
-            if (entityPropertyAnnotated && entityCollectionPropertyAnnotated) {
-                throw new IllegalStateException("The solutionClass (" + solutionClass
-                        + ") has a method (" + method + ") that has both a "
-                        + PlanningEntityProperty.class.getSimpleName() + " annotation and a "
-                        + PlanningEntityCollectionProperty.class.getSimpleName() + " annotation.");
-            }
             if (entityPropertyAnnotated || entityCollectionPropertyAnnotated) {
                 noEntityPropertyAnnotation = false;
                 if (!ReflectionHelper.isGetterMethod(method)) {
@@ -156,24 +164,34 @@ public class SolutionDescriptor {
                             + "  That annotation can only be used on a JavaBeans getter method or on a field.");
                 }
                 MemberAccessor memberAccessor = new BeanPropertyMemberAccessor(method);
-                if (entityPropertyAnnotated) {
-                    entityPropertyAccessorMap.put(memberAccessor.getName(), memberAccessor);
-                } else if (entityCollectionPropertyAnnotated) {
-                    noEntityPropertyAnnotation = false;
-                    if (!Collection.class.isAssignableFrom(memberAccessor.getType())) {
-                        throw new IllegalStateException("The solutionClass (" + solutionClass
-                                + ") has a " + PlanningEntityCollectionProperty.class.getSimpleName()
-                                + " annotated property (" + memberAccessor.getName() + ") that does not return a "
-                                + Collection.class.getSimpleName() + ".");
-                    }
-                    entityCollectionPropertyAccessorMap.put(memberAccessor.getName(), memberAccessor);
-                }
+                registerEntityPropertyAccessor(entityPropertyAnnotated, entityCollectionPropertyAnnotated, memberAccessor);
             }
         }
         if (noEntityPropertyAnnotation) {
             throw new IllegalStateException("The solutionClass (" + solutionClass
                     + ") should have at least 1 getter with a PlanningEntityCollection or PlanningEntityProperty"
                     + " annotation.");
+        }
+    }
+
+    private void registerEntityPropertyAccessor(boolean entityPropertyAnnotated, boolean entityCollectionPropertyAnnotated,
+            MemberAccessor memberAccessor) {
+        if (entityPropertyAnnotated && entityCollectionPropertyAnnotated) {
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") has a member (" + memberAccessor.getName() + ") that has both a "
+                    + PlanningEntityProperty.class.getSimpleName() + " annotation and a "
+                    + PlanningEntityCollectionProperty.class.getSimpleName() + " annotation.");
+        }
+        if (entityPropertyAnnotated) {
+            entityPropertyAccessorMap.put(memberAccessor.getName(), memberAccessor);
+        } else if (entityCollectionPropertyAnnotated) {
+            if (!Collection.class.isAssignableFrom(memberAccessor.getType())) {
+                throw new IllegalStateException("The solutionClass (" + solutionClass
+                        + ") has a " + PlanningEntityCollectionProperty.class.getSimpleName()
+                        + " annotated member (" + memberAccessor.getName() + ") that does not return a "
+                        + Collection.class.getSimpleName() + ".");
+            }
+            entityCollectionPropertyAccessorMap.put(memberAccessor.getName(), memberAccessor);
         }
     }
 

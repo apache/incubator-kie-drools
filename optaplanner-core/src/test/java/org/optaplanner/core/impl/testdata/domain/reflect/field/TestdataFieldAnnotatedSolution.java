@@ -30,27 +30,27 @@ import org.optaplanner.core.impl.testdata.domain.TestdataUtils;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
-public class TestdataReflectFieldSolution extends TestdataObject implements Solution<SimpleScore> {
+public class TestdataFieldAnnotatedSolution extends TestdataObject implements Solution<SimpleScore> {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return TestdataUtils.buildSolutionDescriptor(TestdataReflectFieldSolution.class, TestdataReflectFieldEntity.class);
+        return TestdataUtils.buildSolutionDescriptor(TestdataFieldAnnotatedSolution.class, TestdataFieldAnnotatedEntity.class);
     }
 
     @ValueRangeProvider(id = "valueRange")
     private List<TestdataValue> valueList;
     @PlanningEntityCollectionProperty
-    private List<TestdataReflectFieldEntity> entityList;
+    private List<TestdataFieldAnnotatedEntity> entityList;
 
     private SimpleScore score;
 
-    public TestdataReflectFieldSolution() {
+    public TestdataFieldAnnotatedSolution() {
     }
 
-    public TestdataReflectFieldSolution(String code) {
+    public TestdataFieldAnnotatedSolution(String code) {
         super(code);
     }
 
-    public TestdataReflectFieldSolution(String code, List<TestdataValue> valueList, List<TestdataReflectFieldEntity> entityList) {
+    public TestdataFieldAnnotatedSolution(String code, List<TestdataValue> valueList, List<TestdataFieldAnnotatedEntity> entityList) {
         super(code);
         this.valueList = valueList;
         this.entityList = entityList;
@@ -60,7 +60,7 @@ public class TestdataReflectFieldSolution extends TestdataObject implements Solu
         return valueList;
     }
 
-    public List<TestdataReflectFieldEntity> getEntityList() {
+    public List<TestdataFieldAnnotatedEntity> getEntityList() {
         return entityList;
     }
 

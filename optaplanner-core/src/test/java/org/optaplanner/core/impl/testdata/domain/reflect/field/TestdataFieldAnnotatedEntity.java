@@ -25,30 +25,30 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningEntity
-public class TestdataReflectFieldEntity extends TestdataObject {
+public class TestdataFieldAnnotatedEntity extends TestdataObject {
 
     public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataReflectFieldSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataReflectFieldEntity.class);
+        SolutionDescriptor solutionDescriptor = TestdataFieldAnnotatedSolution.buildSolutionDescriptor();
+        return solutionDescriptor.findEntityDescriptorOrFail(TestdataFieldAnnotatedEntity.class);
     }
 
     public static GenuineVariableDescriptor buildVariableDescriptorForValue() {
-        SolutionDescriptor solutionDescriptor = TestdataReflectFieldSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataReflectFieldEntity.class);
+        SolutionDescriptor solutionDescriptor = TestdataFieldAnnotatedSolution.buildSolutionDescriptor();
+        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataFieldAnnotatedEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
     @PlanningVariable(valueRangeProviderRefs = "valueRange")
     private TestdataValue value;
 
-    public TestdataReflectFieldEntity() {
+    public TestdataFieldAnnotatedEntity() {
     }
 
-    public TestdataReflectFieldEntity(String code) {
+    public TestdataFieldAnnotatedEntity(String code) {
         super(code);
     }
 
-    public TestdataReflectFieldEntity(String code, TestdataValue value) {
+    public TestdataFieldAnnotatedEntity(String code, TestdataValue value) {
         this(code);
         this.value = value;
     }

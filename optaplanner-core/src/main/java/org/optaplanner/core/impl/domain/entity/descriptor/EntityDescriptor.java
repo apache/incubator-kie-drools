@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.domain.entity.descriptor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +39,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
+import org.optaplanner.core.impl.domain.common.member.FieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.member.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.member.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
@@ -157,6 +159,16 @@ public class EntityDescriptor {
         declaredGenuineVariableDescriptorMap = new LinkedHashMap<String, GenuineVariableDescriptor>();
         declaredShadowVariableDescriptorMap = new LinkedHashMap<String, ShadowVariableDescriptor>();
         boolean noVariableAnnotation = true;
+        List<Field> fieldList = Arrays.asList(entityClass.getDeclaredFields());
+        Collections.sort(fieldList, new AlphabeticMemberComparator());
+        for (Field field : fieldList) {
+            Class<? extends Annotation> variableAnnotationClass = extractVariableAnnotationClass(field);
+            if (variableAnnotationClass != null) {
+                noVariableAnnotation = false;
+                MemberAccessor memberAccessor = new FieldMemberAccessor(field);
+                registerVariableAccessor(descriptorPolicy, variableAnnotationClass, memberAccessor);
+            }
+        }
         List<Method> methodList = Arrays.asList(entityClass.getDeclaredMethods());
         Collections.sort(methodList, new AlphabeticMemberComparator());
         for (Method method : methodList) {
@@ -176,36 +188,41 @@ public class EntityDescriptor {
                             + " annotated getter method (" + method
                             + "), but lacks a setter for that property (" + memberAccessor.getName() + ").");
                 }
-                if (variableAnnotationClass.equals(PlanningVariable.class)) {
-                    GenuineVariableDescriptor variableDescriptor = new GenuineVariableDescriptor(
-                            this, memberAccessor);
-                    declaredGenuineVariableDescriptorMap.put(memberAccessor.getName(), variableDescriptor);
-                    variableDescriptor.processAnnotations(descriptorPolicy);
-                } else if (variableAnnotationClass.equals(InverseRelationShadowVariable.class)) {
-                    ShadowVariableDescriptor variableDescriptor = new InverseRelationShadowVariableDescriptor(
-                            this, memberAccessor);
-                    declaredShadowVariableDescriptorMap.put(memberAccessor.getName(), variableDescriptor);
-                    variableDescriptor.processAnnotations(descriptorPolicy);
-                } else if (variableAnnotationClass.equals(AnchorShadowVariable.class)) {
-                    ShadowVariableDescriptor variableDescriptor = new AnchorShadowVariableDescriptor(
-                            this, memberAccessor);
-                    declaredShadowVariableDescriptorMap.put(memberAccessor.getName(), variableDescriptor);
-                    variableDescriptor.processAnnotations(descriptorPolicy);
-                } else if (variableAnnotationClass.equals(CustomShadowVariable.class)) {
-                    ShadowVariableDescriptor variableDescriptor = new CustomShadowVariableDescriptor(
-                            this, memberAccessor);
-                    declaredShadowVariableDescriptorMap.put(memberAccessor.getName(), variableDescriptor);
-                    variableDescriptor.processAnnotations(descriptorPolicy);
-                } else {
-                    throw new IllegalStateException("The variableAnnotationClass ("
-                            + variableAnnotationClass + ") is not implemented.");
-                }
+                registerVariableAccessor(descriptorPolicy, variableAnnotationClass, memberAccessor);
             }
         }
         if (noVariableAnnotation) {
             throw new IllegalStateException("The entityClass (" + entityClass
                     + ") should have at least 1 getter method or 1 field with a "
                     + PlanningVariable.class.getSimpleName() + " annotation or a shadow variable annotation.");
+        }
+    }
+
+    private void registerVariableAccessor(DescriptorPolicy descriptorPolicy,
+            Class<? extends Annotation> variableAnnotationClass, MemberAccessor memberAccessor) {
+        if (variableAnnotationClass.equals(PlanningVariable.class)) {
+            GenuineVariableDescriptor variableDescriptor = new GenuineVariableDescriptor(
+                    this, memberAccessor);
+            declaredGenuineVariableDescriptorMap.put(memberAccessor.getName(), variableDescriptor);
+            variableDescriptor.processAnnotations(descriptorPolicy);
+        } else if (variableAnnotationClass.equals(InverseRelationShadowVariable.class)) {
+            ShadowVariableDescriptor variableDescriptor = new InverseRelationShadowVariableDescriptor(
+                    this, memberAccessor);
+            declaredShadowVariableDescriptorMap.put(memberAccessor.getName(), variableDescriptor);
+            variableDescriptor.processAnnotations(descriptorPolicy);
+        } else if (variableAnnotationClass.equals(AnchorShadowVariable.class)) {
+            ShadowVariableDescriptor variableDescriptor = new AnchorShadowVariableDescriptor(
+                    this, memberAccessor);
+            declaredShadowVariableDescriptorMap.put(memberAccessor.getName(), variableDescriptor);
+            variableDescriptor.processAnnotations(descriptorPolicy);
+        } else if (variableAnnotationClass.equals(CustomShadowVariable.class)) {
+            ShadowVariableDescriptor variableDescriptor = new CustomShadowVariableDescriptor(
+                    this, memberAccessor);
+            declaredShadowVariableDescriptorMap.put(memberAccessor.getName(), variableDescriptor);
+            variableDescriptor.processAnnotations(descriptorPolicy);
+        } else {
+            throw new IllegalStateException("The variableAnnotationClass ("
+                    + variableAnnotationClass + ") is not implemented.");
         }
     }
 

@@ -20,22 +20,22 @@ import org.junit.Test;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.common.member.FieldMemberAccessor;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataReflectFieldEntity;
+import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedEntity;
 
 import static org.junit.Assert.*;
 
 public class FieldMemberAccessorTest {
 
     @Test
-    public void reflectFieldEntity() throws NoSuchFieldException {
-        FieldMemberAccessor memberAccessor = new FieldMemberAccessor(TestdataReflectFieldEntity.class.getDeclaredField("value"));
+    public void fieldAnnotatedEntity() throws NoSuchFieldException {
+        FieldMemberAccessor memberAccessor = new FieldMemberAccessor(TestdataFieldAnnotatedEntity.class.getDeclaredField("value"));
         assertEquals("value", memberAccessor.getName());
         assertEquals(TestdataValue.class, memberAccessor.getType());
         assertEquals(true, memberAccessor.isAnnotationPresent(PlanningVariable.class));
 
         TestdataValue v1 = new TestdataValue("v1");
         TestdataValue v2 = new TestdataValue("v2");
-        TestdataReflectFieldEntity e1 = new TestdataReflectFieldEntity("e1", v1);
+        TestdataFieldAnnotatedEntity e1 = new TestdataFieldAnnotatedEntity("e1", v1);
         assertSame(v1, memberAccessor.executeGetter(e1));
         memberAccessor.executeSetter(e1, v2);
         assertSame(v2, e1.getValue());

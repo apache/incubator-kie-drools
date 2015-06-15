@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
 public class BeanPropertyMemberAccessorTest {
 
     @Test
-    public void reflectMethodEntity() throws NoSuchMethodException {
+    public void methodAnnotatedEntity() throws NoSuchMethodException {
         BeanPropertyMemberAccessor memberAccessor = new BeanPropertyMemberAccessor(
                 TestdataEntity.class.getMethod("getValue"));
         assertEquals("value", memberAccessor.getName());
