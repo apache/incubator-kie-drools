@@ -97,7 +97,7 @@
   &lt;/localSearch&gt;
 &lt;/solver&gt;</programlisting>
 
-      <para>Notice the 3 parts in it:</para>
+      <para>Notice the three parts in it:</para>
 
       <itemizedlist>
         <listitem>
@@ -116,7 +116,7 @@
       <para>These various parts of a configuration are explained further in this manual.</para>
 
       <para><emphasis role="bold">Planner makes it relatively easy to switch optimization algorithm(s) just by changing
-      the configuration.</emphasis> There's even a <literal>Benchmarker</literal> utility which allows you to play out
+      the configuration.</emphasis> There is even a <literal>Benchmarker</literal> utility which allows you to play out
       different configurations against each other and report the most appropriate configuration for your use
       case.</para>
     </section>
@@ -124,8 +124,8 @@
     <section xml:id="solverConfigurationByJavaAPI">
       <title>Solver Configuration by Java API</title>
 
-      <para>A solver configuration can also be configured with the <literal>SolverConfig</literal> API. This especially
-      useful to change some values dynamically at runtime, for example to change the running time based on user input,
+      <para>A solver configuration can also be configured with the <literal>SolverConfig</literal> API. This is especially
+      useful to change some values dynamically at runtime. For example, to change the running time based on user input,
       before building the <literal>Solver</literal>:</para>
 
       <programlisting language="java">        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
@@ -152,8 +152,8 @@
     <section xml:id="isThisClassAProblemFactOrPlanningEntity">
       <title>Is This Class a Problem Fact or Planning Entity?</title>
 
-      <para>Look at a dataset of your planning problem. You'll recognize domain classes in there, each of which can be
-      categorized as one of these:</para>
+      <para>Look at a dataset of your planning problem. You will recognize domain classes in there, each of which can be
+      categorized as one of the following:</para>
 
       <itemizedlist>
         <listitem>
@@ -178,12 +178,12 @@
 
       <para>Ask yourself: <emphasis>What class changes during planning?</emphasis> <emphasis>Which class has variables
       that I want the <literal>Solver</literal> to change for me?</emphasis> That class is a planning entity. Most use
-      cases have only 1 planning entity class. Most use cases also have only 1 planning variable per planning entity
+      cases have only one planning entity class. Most use cases also have only one planning variable per planning entity
       class.</para>
 
       <note>
-        <para>In <link linkend="realTimePlanning">real-time planning</link>, even thought the problem itself changes,
-        problem facts don't really change during planning, instead they change between planning (because the Solver
+        <para>In <link linkend="realTimePlanning">real-time planning</link>, even though the problem itself changes,
+        problem facts do not really change during planning, instead they change between planning (because the Solver
         temporarily stops to apply the problem fact changes).</para>
       </note>
 
@@ -192,17 +192,17 @@
 
       <itemizedlist>
         <listitem>
-          <para>In a <emphasis>many to one</emphasis> relationship, it's normally the <emphasis>many</emphasis> side
+          <para>In a <emphasis>many to one</emphasis> relationship, it is normally the <emphasis>many</emphasis> side
           that is the planning entity class. The property referencing the other side is then the planning variable. For
           example in employee rostering: the planning entity class is <literal>ShiftAssignment</literal>, not
           <literal>Employee</literal>, and the planning variable is <literal>ShiftAssignment.getEmployee()</literal>
-          because 1 <literal>Employee</literal> has multiple <literal>ShiftAssignment</literal>s but 1
-          <literal>ShiftAssignment</literal> has only 1 <literal>Employee</literal>.</para>
+          because one <literal>Employee</literal> has multiple <literal>ShiftAssignment</literal>s but one
+          <literal>ShiftAssignment</literal> has only one <literal>Employee</literal>.</para>
         </listitem>
 
         <listitem>
-          <para>A planning entity class should have at least 1 problem property. A planning entity class with only
-          planning variables can normally be simplified by converting 1 of those planning variables into a problem
+          <para>A planning entity class should have at least one problem property. A planning entity class with only
+          planning variables can normally be simplified by converting one of those planning variables into a problem
           property. That heavily decreases <link linkend="searchSpaceSize">the search space size</link>. For example in
           employee rostering: the <literal>ShiftAssignment</literal>'s <literal>getShift()</literal> is a problem
           property and the <literal>getEmployee()</literal> is a planning variable. If both were a planning variable,
@@ -210,13 +210,13 @@
 
           <itemizedlist>
             <listitem>
-              <para>A surrogate ID does not suffice as that at least 1 problem property. It needs to be understandable
+              <para>A surrogate ID does not suffice as the required minimum of one problem property. It needs to be understandable
               by the business. A business key does suffice. This prevents an unassigned entity from being nameless
               (unidentifiable by the business).</para>
             </listitem>
 
             <listitem>
-              <para>This way, there is no need to add a hard constraint to assure that 2 planning entities are
+              <para>This way, there is no need to add a hard constraint to assure that two planning entities are
               different: they are already different due to their problem properties.</para>
             </listitem>
 
@@ -230,11 +230,11 @@
         </listitem>
 
         <listitem>
-          <para>The number of planning entities is recommended to be fixed during planning. When in doubt which property
+          <para>The number of planning entities is recommended to be fixed during planning. When unsure of which property
           should be a planning variable and which should be a problem property, choose it so the number of planning
           entities is fixed. For example in employee rostering: if the planning entity class would have been
           <literal>EmployeeAssignment</literal> with a problem property <literal>getEmployee()</literal> and a planning
-          variable <literal>getShift()</literal>, than it's impossible to accurately predict how many
+          variable <literal>getShift()</literal>, than it is impossible to accurately predict how many
           <literal>EmployeeAssignment</literal> instances to make per <literal>Employee</literal>.</para>
         </listitem>
       </itemizedlist>
@@ -253,8 +253,8 @@
       </note>
 
       <para><emphasis role="bold">In Planner all problems facts and planning entities are plain old JavaBeans
-      (POJO's).</emphasis> You can load them from a database, an XML file, a data repository, a noSQL cloud, ... (see
-      <link linkend="integration">Integration</link>): Planner doesn't care.</para>
+      (POJOs).</emphasis> You can load them from a database, an XML file, a data repository, a noSQL cloud, ... (see
+      <link linkend="integration">Integration</link>).</para>
     </section>
 
     <section xml:id="problemFact">
@@ -300,8 +300,8 @@
       <note>
         <para>Generally, better designed domain classes lead to simpler and more efficient score constraints. Therefore,
         when dealing with a messy legacy system, it can sometimes be worth it to convert the messy domain set into a
-        planner specific POJO set first. For example: if your domain model has 2 <literal>Teacher</literal> instances
-        for the same teacher that teaches at 2 different departments, it's hard to write a correct score constraint that
+        planner specific POJO set first. For example: if your domain model has two <literal>Teacher</literal> instances
+        for the same teacher that teaches at two different departments, it is hard to write a correct score constraint that
         constrains a teacher's spare time.</para>
 
         <para>Alternatively, you can sometimes also introduce <link linkend="cachedProblemFact"><emphasis>a cached
@@ -317,13 +317,13 @@
 
         <para>A planning entity is a JavaBean (POJO) that changes during solving, for example a <literal>Queen</literal>
         that changes to another row. A planning problem has multiple planning entities, for example for a single n
-        queens problem, each <literal>Queen</literal> is a planning entity. But there's usually only 1 planning entity
+        queens problem, each <literal>Queen</literal> is a planning entity. But there is usually only one planning entity
         class, for example the <literal>Queen</literal> class.</para>
 
         <para>A planning entity class needs to be annotated with the <literal>@PlanningEntity</literal>
         annotation.</para>
 
-        <para>Each planning entity class has 1 or more <emphasis>planning variables</emphasis>. It usually also has 1 or
+        <para>Each planning entity class has one or more <emphasis>planning variables</emphasis>. It usually also has one or
         more <emphasis>defining</emphasis> properties. For example in n queens, a <literal>Queen</literal> is defined by
         its <literal>Column</literal> and has a planning variable <literal>Row</literal>. This means that a Queen's
         column never changes during solving, while its row does change.</para>
@@ -340,10 +340,10 @@ public class Queen {
 }</programlisting>
 
         <para>A planning entity class can have multiple planning variables. For example, a <literal>Lecture</literal> is
-        defined by its <literal>Course</literal> and its index in that course (because 1 course has multiple lectures).
+        defined by its <literal>Course</literal> and its index in that course (because one course has multiple lectures).
         Each <literal>Lecture</literal> needs to be scheduled into a <literal>Period</literal> and a
-        <literal>Room</literal> so it has 2 planning variables (period and room). For example: the course Mathematics
-        has 8 lectures per week, of which the first lecture is Monday morning at 08:00 in room 212.</para>
+        <literal>Room</literal> so it has two planning variables (period and room). For example: the course Mathematics
+        has eight lectures per week, of which the first lecture is Monday morning at 08:00 in room 212.</para>
 
         <programlisting language="java">@PlanningEntity
 public class Lecture {
@@ -436,6 +436,7 @@ public class Queen {
         anyway. For example, a <literal>Queen</literal>'s <literal>row</literal> variable should not be used.</para>
       </section>
     </section>
+<!-- gemma: edited to here -->
 
     <section xml:id="planningVariable">
       <title>Planning Variable</title>
@@ -471,7 +472,7 @@ public class Queen {
 }</programlisting>
 
         <para>The <literal>valueRangeProviderRefs</literal> property defines what are the possible planning values for
-        this planning variable. It references 1 or more <literal>@ValueRangeProvider</literal>
+        this planning variable. It references one or more <literal>@ValueRangeProvider</literal>
         <literal>id</literal>'s.</para>
       </section>
 
