@@ -1,6 +1,9 @@
 package org.drools.core.rule.builder.dialect.asm;
 
+import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.TypeResolver;
+import org.drools.core.util.ByteArrayClassLoader;
+import org.drools.core.util.ClassUtils;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
@@ -141,10 +144,16 @@ public class ClassGenerator {
     private Class<?> generateClass() {
         if (clazz == null) {
             byte[] bytecode = generateBytecode();
-            try {
-                clazz = (Class<?>) defineClassMethod.invoke(classLoader, className, bytecode, 0, bytecode.length);
-            } catch (Exception e) {
-                clazz = new InternalClassLoader(classLoader).defineClass(className, bytecode);
+            if (ClassUtils.isAndroid()) {
+                ByteArrayClassLoader cl = (ByteArrayClassLoader)
+                        ClassUtils.instantiateObject("org.drools.android.MultiDexClassLoader", null, classLoader);
+                clazz = cl.defineClass(className, bytecode, null);
+            } else {
+                try {
+                    clazz = (Class<?>) defineClassMethod.invoke(classLoader, className, bytecode, 0, bytecode.length);
+                } catch (Exception e) {
+                    clazz = new InternalClassLoader(classLoader).defineClass(className, bytecode);
+                }
             }
         }
         return clazz;
