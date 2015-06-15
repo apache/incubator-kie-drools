@@ -574,11 +574,10 @@ public class KieContainerImpl
             log.error("Unknown KieBase name: " + kSessionModel.getKieBaseModel().getName());
             return null;
         }
+
         KieSession kSession = kBase.newKieSession( conf != null ? conf : getKnowledgeSessionConfiguration(kSessionModel), environment );
         wireListnersAndWIHs(kSessionModel, kSession);
-
         registerLoggers(kSessionModel, kSession);
-
         kSessions.put(kSessionName, kSession);
         return kSession;
     }
@@ -616,7 +615,9 @@ public class KieContainerImpl
             log.error("Unknown KieBase name: " + kSessionModel.getKieBaseModel().getName());
             return null;
         }
+
         StatelessKieSession statelessKieSession = kBase.newStatelessKieSession( conf != null ? conf : getKnowledgeSessionConfiguration(kSessionModel) );
+        wireListnersAndWIHs(kSessionModel, statelessKieSession);
         registerLoggers(kSessionModel, statelessKieSession);
         statelessKSessions.put(kSessionName, statelessKieSession);
         return statelessKieSession;
