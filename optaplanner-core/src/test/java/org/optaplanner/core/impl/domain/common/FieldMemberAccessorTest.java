@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 public class FieldMemberAccessorTest {
 
     @Test
-    public void reflectFieldEntity() throws ReflectiveOperationException {
+    public void reflectFieldEntity() throws NoSuchFieldException {
         FieldMemberAccessor memberAccessor = new FieldMemberAccessor(TestdataReflectFieldEntity.class.getDeclaredField("value"));
         assertEquals("value", memberAccessor.getName());
         assertEquals(TestdataValue.class, memberAccessor.getType());
