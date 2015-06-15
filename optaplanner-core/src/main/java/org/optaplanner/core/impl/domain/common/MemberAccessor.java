@@ -24,7 +24,9 @@ import java.lang.reflect.Type;
 
 /**
  * Fast and easy access to a {@link Member} of a bean,
- * which is a property (with a getter and setter {@link Method}) or a {@link Field}.
+ * which is a property (with a getter and optional setter {@link Method}) or a {@link Field}.
+ * @see BeanPropertyMemberAccessor
+ * @see FieldMemberAccessor
  */
 public interface MemberAccessor extends AnnotatedElement {
 

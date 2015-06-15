@@ -21,22 +21,28 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
+/**
+ * A {@link MemberAccessor} based on a getter and optionally a setter.
+ */
 public final class BeanPropertyMemberAccessor implements MemberAccessor {
 
     private final Class<?> propertyType;
     private final String propertyName;
-    private final Method readMethod;
-    private final Method writeMethod;
+    private final Method getterMethod;
+    private final Method setterMethod;
 
-    public BeanPropertyMemberAccessor(Method readMethod) {
-        this.readMethod = readMethod;
-        readMethod.setAccessible(true); // Performance hack by avoiding security checks
-        Class declaringClass = readMethod.getDeclaringClass();
-        propertyType = readMethod.getReturnType();
-        propertyName = ReflectionHelper.getGetterPropertyName(readMethod);
-        writeMethod = ReflectionHelper.getSetterMethod(declaringClass, readMethod.getReturnType(), propertyName);
-        if (writeMethod != null) {
-            writeMethod.setAccessible(true); // Performance hack by avoiding security checks
+    public BeanPropertyMemberAccessor(Method getterMethod) {
+        this.getterMethod = getterMethod;
+        getterMethod.setAccessible(true); // Performance hack by avoiding security checks
+        Class declaringClass = getterMethod.getDeclaringClass();
+        if (!ReflectionHelper.isGetterMethod(getterMethod)) {
+            throw new IllegalArgumentException("The getterMethod (" + getterMethod + ") is not a valid getter.");
+        }
+        propertyType = getterMethod.getReturnType();
+        propertyName = ReflectionHelper.getGetterPropertyName(getterMethod);
+        setterMethod = ReflectionHelper.getSetterMethod(declaringClass, getterMethod.getReturnType(), propertyName);
+        if (setterMethod != null) {
+            setterMethod.setAccessible(true); // Performance hack by avoiding security checks
         }
     }
 
@@ -51,18 +57,18 @@ public final class BeanPropertyMemberAccessor implements MemberAccessor {
 
     @Override
     public Type getGenericType() {
-        return readMethod.getGenericReturnType();
+        return getterMethod.getGenericReturnType();
     }
 
     public Object executeGetter(Object bean) {
         try {
-            return readMethod.invoke(bean);
+            return getterMethod.invoke(bean);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Cannot call property (" + propertyName
-                    + ") getter method (" + readMethod + ") on bean of class (" + bean.getClass() + ").", e);
+                    + ") getterMethod (" + getterMethod + ") on bean of class (" + bean.getClass() + ").", e);
         } catch (InvocationTargetException e) {
             throw new IllegalStateException("The property (" + propertyName
-                    + ") getter method (" + readMethod + ") on bean of class (" + bean.getClass()
+                    + ") getterMethod (" + getterMethod + ") on bean of class (" + bean.getClass()
                     + ") throws an exception.",
                     e.getCause());
         }
@@ -70,19 +76,19 @@ public final class BeanPropertyMemberAccessor implements MemberAccessor {
 
     @Override
     public boolean supportSetter() {
-        return writeMethod != null;
+        return setterMethod != null;
     }
 
     public void executeSetter(Object bean, Object value) {
         try {
-            writeMethod.invoke(bean, value);
+            setterMethod.invoke(bean, value);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Cannot call property (" + propertyName
-                    + ") setter method (" + writeMethod + ") on bean of class (" + bean.getClass()
+                    + ") setterMethod (" + setterMethod + ") on bean of class (" + bean.getClass()
                     + ") for value (" + value + ").", e);
         } catch (InvocationTargetException e) {
             throw new IllegalStateException("The property (" + propertyName
-                    + ") setter method (" + writeMethod + ") on bean of class (" + bean.getClass()
+                    + ") setterMethod (" + setterMethod + ") on bean of class (" + bean.getClass()
                     + ") throws an exception for value (" + value + ").",
                     e.getCause());
         }
@@ -94,22 +100,22 @@ public final class BeanPropertyMemberAccessor implements MemberAccessor {
 
     @Override
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
-        return readMethod.isAnnotationPresent(annotationClass);
+        return getterMethod.isAnnotationPresent(annotationClass);
     }
 
     @Override
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
-        return readMethod.getAnnotation(annotationClass);
+        return getterMethod.getAnnotation(annotationClass);
     }
 
     @Override
     public Annotation[] getAnnotations() {
-        return readMethod.getAnnotations();
+        return getterMethod.getAnnotations();
     }
 
     @Override
     public Annotation[] getDeclaredAnnotations() {
-        return readMethod.getDeclaredAnnotations();
+        return getterMethod.getDeclaredAnnotations();
     }
 
 }

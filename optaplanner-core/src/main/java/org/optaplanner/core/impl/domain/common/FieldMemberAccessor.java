@@ -22,6 +22,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
+/**
+ * A {@link MemberAccessor} based on a field.
+ */
 public final class FieldMemberAccessor implements MemberAccessor {
 
     private final Field field;
