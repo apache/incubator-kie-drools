@@ -1,14 +1,5 @@
 package org.drools.compiler.kie.util;
 
-import java.lang.annotation.Annotation;
-import java.util.Map;
-import java.util.Set;
-
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.util.MVELSafeHelper;
 import org.kie.api.builder.model.KieSessionModel;
@@ -19,10 +10,19 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
+
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.lang.annotation.Annotation;
+import java.util.Map;
+import java.util.Set;
 
 public class CDIHelper {
 
@@ -43,17 +43,7 @@ public class CDIHelper {
         ClassLoader cl = ((InternalKnowledgeBase)kSession.getKieBase()).getRootClassLoader();
 
         for (ListenerModel listenerModel : model.getListenerModels()) {
-            Object listener;
-            try {
-                listener = beanCreator.createBean(cl, listenerModel.getType(), listenerModel.getQualifierModel());
-            } catch (Exception e) {
-                try {
-                    listener = fallbackBeanCreator.createBean(cl, listenerModel.getType(), listenerModel.getQualifierModel());
-                } catch (Exception ex) {
-                    throw new RuntimeException("Cannot instance listener " + listenerModel.getType(), e);
-                }
-
-            }
+            Object listener = createListener( beanCreator, fallbackBeanCreator, cl, listenerModel );
             switch(listenerModel.getKind()) {
                 case AGENDA_EVENT_LISTENER:
                     kSession.addEventListener((AgendaEventListener)listener);
@@ -79,7 +69,53 @@ public class CDIHelper {
             }
             kSession.getWorkItemManager().registerWorkItemHandler(wihModel.getName(), wih );
         }
+    }
 
+    public static void wireListnersAndWIHs(KieSessionModel model, StatelessKieSession kSession) {
+        wireListnersAndWIHs(BeanCreatorHolder.beanCreator, model, kSession);
+    }
+
+    public static void wireListnersAndWIHs(BeanManager beanManager, KieSessionModel model, StatelessKieSession kSession) {
+        wireListnersAndWIHs(new CDIBeanCreator(beanManager), model, kSession);
+    }
+
+    public static void wireListnersAndWIHs(KieSessionModel model, StatelessKieSession kSession, Map<String, Object> parameters) {
+        wireListnersAndWIHs(new MVELBeanCreator(parameters), model, kSession);
+    }
+
+    private static void wireListnersAndWIHs(BeanCreator beanCreator, KieSessionModel model, StatelessKieSession kSession) {
+        BeanCreator fallbackBeanCreator = new ReflectionBeanCreator();
+        ClassLoader cl = ((InternalKnowledgeBase)kSession.getKieBase()).getRootClassLoader();
+
+        for (ListenerModel listenerModel : model.getListenerModels()) {
+            Object listener = createListener( beanCreator, fallbackBeanCreator, cl, listenerModel );
+            switch(listenerModel.getKind()) {
+                case AGENDA_EVENT_LISTENER:
+                    kSession.addEventListener((AgendaEventListener)listener);
+                    break;
+                case RULE_RUNTIME_EVENT_LISTENER:
+                    kSession.addEventListener((RuleRuntimeEventListener)listener);
+                    break;
+                case PROCESS_EVENT_LISTENER:
+                    kSession.addEventListener((ProcessEventListener)listener);
+                    break;
+            }
+        }
+    }
+
+    private static Object createListener( BeanCreator beanCreator, BeanCreator fallbackBeanCreator, ClassLoader cl, ListenerModel listenerModel ) {
+        Object listener;
+        try {
+            listener = beanCreator.createBean(cl, listenerModel.getType(), listenerModel.getQualifierModel());
+        } catch (Exception e) {
+            try {
+                listener = fallbackBeanCreator.createBean(cl, listenerModel.getType(), listenerModel.getQualifierModel());
+            } catch (Exception ex) {
+                throw new RuntimeException("Cannot instance listener " + listenerModel.getType(), e);
+            }
+
+        }
+        return listener;
     }
 
     private static class BeanCreatorHolder {
