@@ -34,7 +34,7 @@ public class TestdataMultiVarEntity extends TestdataObject {
     private TestdataValue primaryValue;
     private TestdataValue secondaryValue;
 
-    private TestdataOtherValue nullableOtherValue;
+    private TestdataOtherValue tertiaryNullableValue;
 
     public TestdataMultiVarEntity() {
     }
@@ -44,11 +44,11 @@ public class TestdataMultiVarEntity extends TestdataObject {
     }
 
     public TestdataMultiVarEntity(String code, TestdataValue primaryValue, TestdataValue secondaryValue,
-            TestdataOtherValue nullableOtherValue) {
+            TestdataOtherValue tertiaryNullableValue) {
         super(code);
         this.primaryValue = primaryValue;
         this.secondaryValue = secondaryValue;
-        this.nullableOtherValue = nullableOtherValue;
+        this.tertiaryNullableValue = tertiaryNullableValue;
     }
 
     @PlanningVariable(valueRangeProviderRefs = "valueRange")
@@ -70,12 +70,12 @@ public class TestdataMultiVarEntity extends TestdataObject {
     }
 
     @PlanningVariable(valueRangeProviderRefs = "otherValueRange")
-    public TestdataOtherValue getNullableOtherValue() {
-        return nullableOtherValue;
+    public TestdataOtherValue getTertiaryNullableValue() {
+        return tertiaryNullableValue;
     }
 
-    public void setNullableOtherValue(TestdataOtherValue nullableOtherValue) {
-        this.nullableOtherValue = nullableOtherValue;
+    public void setTertiaryNullableValue(TestdataOtherValue tertiaryNullableValue) {
+        this.tertiaryNullableValue = tertiaryNullableValue;
     }
 
     // ************************************************************************

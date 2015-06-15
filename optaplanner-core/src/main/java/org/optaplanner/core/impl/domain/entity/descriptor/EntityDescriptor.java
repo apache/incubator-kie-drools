@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -36,6 +37,7 @@ import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
 import org.optaplanner.core.impl.domain.common.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
@@ -142,7 +144,9 @@ public class EntityDescriptor {
 
     private void processValueRangeProviderAnnotations(DescriptorPolicy descriptorPolicy) {
         // Only iterate declared methods, not inherited methods, to avoid registering the same ValueRangeProvider twice
-        for (Method method : entityClass.getDeclaredMethods()) {
+        List<Method> methodList = Arrays.asList(entityClass.getDeclaredMethods());
+        Collections.sort(methodList, new AlphabeticMemberComparator());
+        for (Method method : methodList) {
             if (method.isAnnotationPresent(ValueRangeProvider.class)) {
                 descriptorPolicy.addFromEntityValueRangeProvider(method);
             }
@@ -153,7 +157,9 @@ public class EntityDescriptor {
         declaredGenuineVariableDescriptorMap = new LinkedHashMap<String, GenuineVariableDescriptor>();
         declaredShadowVariableDescriptorMap = new LinkedHashMap<String, ShadowVariableDescriptor>();
         boolean noVariableAnnotation = true;
-        for (Method method : entityClass.getDeclaredMethods()) {
+        List<Method> methodList = Arrays.asList(entityClass.getDeclaredMethods());
+        Collections.sort(methodList, new AlphabeticMemberComparator());
+        for (Method method : methodList) {
             Class<? extends Annotation> variableAnnotationClass = extractVariableAnnotationClass(method);
             if (variableAnnotationClass != null) {
                 noVariableAnnotation = false;

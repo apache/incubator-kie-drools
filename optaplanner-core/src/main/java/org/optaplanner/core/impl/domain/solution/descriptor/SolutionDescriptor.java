@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.domain.solution.descriptor;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,6 +38,7 @@ import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
 import org.optaplanner.core.impl.domain.common.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
@@ -121,7 +123,9 @@ public class SolutionDescriptor {
 
     private void processValueRangeProviderAnnotations(DescriptorPolicy descriptorPolicy) {
         // TODO This does not support annotations on private/protected methods like EntityDescriptor
-        for (Method method : solutionClass.getMethods()) {
+        List<Method> methodList = Arrays.asList(solutionClass.getMethods());
+        Collections.sort(methodList, new AlphabeticMemberComparator());
+        for (Method method : methodList) {
             if (method.isAnnotationPresent(ValueRangeProvider.class)) {
                 descriptorPolicy.addFromSolutionValueRangeProvider(method);
             }
@@ -131,7 +135,9 @@ public class SolutionDescriptor {
     private void processEntityPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
         boolean noEntityPropertyAnnotation = true;
         // TODO This does not support annotations on private/protected methods like EntityDescriptor
-        for (Method method : solutionClass.getMethods()) {
+        List<Method> methodList = Arrays.asList(solutionClass.getMethods());
+        Collections.sort(methodList, new AlphabeticMemberComparator());
+        for (Method method : methodList) {
             boolean entityPropertyAnnotated = method.isAnnotationPresent(PlanningEntityProperty.class);
             boolean entityCollectionPropertyAnnotated = method.isAnnotationPresent(PlanningEntityCollectionProperty.class);
             if (entityPropertyAnnotated && entityCollectionPropertyAnnotated) {
