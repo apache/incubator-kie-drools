@@ -29,8 +29,9 @@ import static org.junit.Assert.*;
 public class BeanPropertyMemberAccessorTest {
 
     @Test
-    public void reflectMethodEntity() throws IntrospectionException {
-        BeanPropertyMemberAccessor memberAccessor = new BeanPropertyMemberAccessor(new PropertyDescriptor("value", TestdataEntity.class));
+    public void reflectMethodEntity() throws IntrospectionException, NoSuchMethodException {
+        BeanPropertyMemberAccessor memberAccessor = new BeanPropertyMemberAccessor(
+                TestdataEntity.class.getMethod("getValue"));
         assertEquals("value", memberAccessor.getName());
         assertEquals(TestdataValue.class, memberAccessor.getType());
         assertEquals(true, memberAccessor.isAnnotationPresent(PlanningVariable.class));

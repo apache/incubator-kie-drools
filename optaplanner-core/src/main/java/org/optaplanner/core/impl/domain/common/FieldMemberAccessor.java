@@ -56,6 +56,11 @@ public final class FieldMemberAccessor implements MemberAccessor {
         }
     }
 
+    @Override
+    public boolean supportSetter() {
+        return true;
+    }
+
     public void executeSetter(Object bean, Object value) {
         try {
             field.set(bean, value);

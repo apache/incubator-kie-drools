@@ -24,31 +24,30 @@ import java.lang.reflect.Type;
 
 public final class BeanPropertyMemberAccessor implements MemberAccessor {
 
-    private final PropertyDescriptor propertyDescriptor;
+    private final Class<?> propertyType;
+    private final String propertyName;
     private final Method readMethod;
     private final Method writeMethod;
 
-    public BeanPropertyMemberAccessor(PropertyDescriptor propertyDescriptor) {
-        this.propertyDescriptor = propertyDescriptor;
-        readMethod = propertyDescriptor.getReadMethod();
-        if (readMethod == null) {
-            throw new IllegalStateException("The propertyDescriptor (" + propertyDescriptor
-                    + ") lacks a readMethod (" + readMethod + ").");
-        }
+    public BeanPropertyMemberAccessor(Method readMethod) {
+        this.readMethod = readMethod;
         readMethod.setAccessible(true); // Performance hack by avoiding security checks
-        writeMethod = propertyDescriptor.getWriteMethod();
+        Class declaringClass = readMethod.getDeclaringClass();
+        propertyType = readMethod.getReturnType();
+        propertyName = ReflectionHelper.getGetterPropertyName(readMethod);
+        writeMethod = ReflectionHelper.getSetterMethod(declaringClass, readMethod.getReturnType(), propertyName);
         if (writeMethod != null) {
             writeMethod.setAccessible(true); // Performance hack by avoiding security checks
         }
     }
 
     public String getName() {
-        return propertyDescriptor.getName();
+        return propertyName;
     }
 
     @Override
     public Class<?> getType() {
-        return propertyDescriptor.getPropertyType();
+        return propertyType;
     }
 
     @Override
@@ -60,24 +59,32 @@ public final class BeanPropertyMemberAccessor implements MemberAccessor {
         try {
             return readMethod.invoke(bean);
         } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Cannot call property (" + propertyDescriptor.getName()
-                    + ") getter on bean of class (" + bean.getClass() + ").", e);
+            throw new IllegalStateException("Cannot call property (" + propertyName
+                    + ") getter method (" + readMethod + ") on bean of class (" + bean.getClass() + ").", e);
         } catch (InvocationTargetException e) {
-            throw new IllegalStateException("The property (" + propertyDescriptor.getName()
-                    + ") getter on bean of class (" + bean.getClass() + ") throws an exception.",
+            throw new IllegalStateException("The property (" + propertyName
+                    + ") getter method (" + readMethod + ") on bean of class (" + bean.getClass()
+                    + ") throws an exception.",
                     e.getCause());
         }
+    }
+
+    @Override
+    public boolean supportSetter() {
+        return writeMethod != null;
     }
 
     public void executeSetter(Object bean, Object value) {
         try {
             writeMethod.invoke(bean, value);
         } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Cannot call property (" + propertyDescriptor.getName()
-                    + ") setter on bean of class (" + bean.getClass() + ").", e);
+            throw new IllegalStateException("Cannot call property (" + propertyName
+                    + ") setter method (" + writeMethod + ") on bean of class (" + bean.getClass()
+                    + ") for value (" + value + ").", e);
         } catch (InvocationTargetException e) {
-            throw new IllegalStateException("The property (" + propertyDescriptor.getName()
-                    + ") setter on bean of class (" + bean.getClass() + ") throws an exception.",
+            throw new IllegalStateException("The property (" + propertyName
+                    + ") setter method (" + writeMethod + ") on bean of class (" + bean.getClass()
+                    + ") throws an exception for value (" + value + ").",
                     e.getCause());
         }
     }

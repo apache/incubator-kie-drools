@@ -40,6 +40,8 @@ public interface MemberAccessor extends AnnotatedElement {
 
     Object executeGetter(Object bean);
 
+    boolean supportSetter();
+
     void executeSetter(Object bean, Object value);
 
 }

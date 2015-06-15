@@ -38,12 +38,14 @@ public final class ReflectionHelper {
             PROPERTY_ACCESSOR_PREFIX_IS
     };
 
+    private static final String PROPERTY_MUTATOR_PREFIX = "set";
+
     /**
      * Returns the JavaBeans property name of the given member.
      * @param member never null
      * @return null if the member is neither a field nor a getter method according to the JavaBeans standard
      */
-    public static String getPropertyName(Member member) {
+    public static String getGetterPropertyName(Member member) {
         if (member instanceof Field) {
             return member.getName();
         } else if (member instanceof Method) {
@@ -87,6 +89,53 @@ public final class ReflectionHelper {
             return true;
         }
         return false;
+    }
+
+    /**
+     * @param containingClass never null
+     * @param propertyName never null
+     * @return true if that getter exists
+     */
+    public static boolean hasGetterMethod(Class containingClass, String propertyName) {
+        return getGetterMethod(containingClass, propertyName) != null;
+    }
+
+    /**
+     * @param containingClass never null
+     * @param propertyName never null
+     * @return true if that getter exists
+     */
+    public static Method getGetterMethod(Class containingClass, String propertyName) {
+        String getterName = PROPERTY_ACCESSOR_PREFIX_GET
+                + (propertyName.isEmpty() ? "" : propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1));
+        try {
+            return containingClass.getMethod(getterName);
+        } catch (NoSuchMethodException e) {}
+        String isserName = PROPERTY_ACCESSOR_PREFIX_IS
+                + (propertyName.isEmpty() ? "" : propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1));
+        try {
+            Method method = containingClass.getMethod(isserName);
+            if (method.getReturnType() == boolean.class) {
+                return method;
+            }
+        } catch (NoSuchMethodException e) {}
+        return null;
+    }
+
+    /**
+     * @param containingClass never null
+     * @param propertyType never null
+     * @param propertyName never null
+     * @return null if it doesn't exist
+     */
+    public static Method getSetterMethod(Class containingClass, Class propertyType, String propertyName) {
+        String setterName = PROPERTY_MUTATOR_PREFIX
+                + (propertyName.isEmpty() ? "" : propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1));
+        try {
+            return containingClass.getMethod(setterName, propertyType);
+        } catch (NoSuchMethodException e) {
+            return null;
+        }
     }
 
     /**

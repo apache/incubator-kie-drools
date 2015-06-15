@@ -16,10 +16,9 @@
 
 package org.optaplanner.core.impl.domain.solution.descriptor;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,6 +42,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.BeanPropertyMemberAccessor;
+import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
@@ -58,7 +58,6 @@ public class SolutionDescriptor {
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final Class<? extends Solution> solutionClass;
-    private final BeanInfo solutionBeanInfo;
     private SolutionCloner solutionCloner;
     
     private final Map<String, MemberAccessor> entityPropertyAccessorMap;
@@ -70,17 +69,11 @@ public class SolutionDescriptor {
 
     public SolutionDescriptor(Class<? extends Solution> solutionClass) {
         this.solutionClass = solutionClass;
-        try {
-            solutionBeanInfo = Introspector.getBeanInfo(solutionClass);
-        } catch (IntrospectionException e) {
-            throw new IllegalStateException("The solutionClass (" + solutionClass + ") is not a valid java bean.", e);
-        }
-        int mapSize = solutionBeanInfo.getPropertyDescriptors().length;
-        entityPropertyAccessorMap = new LinkedHashMap<String, MemberAccessor>(mapSize);
-        entityCollectionPropertyAccessorMap = new LinkedHashMap<String, MemberAccessor>(mapSize);
-        entityDescriptorMap = new LinkedHashMap<Class<?>, EntityDescriptor>(mapSize);
-        reversedEntityClassList = new ArrayList<Class<?>>(mapSize);
-        lowestEntityDescriptorCache = new HashMap<Class<?>, EntityDescriptor>(mapSize);
+        entityPropertyAccessorMap = new LinkedHashMap<String, MemberAccessor>();
+        entityCollectionPropertyAccessorMap = new LinkedHashMap<String, MemberAccessor>();
+        entityDescriptorMap = new LinkedHashMap<Class<?>, EntityDescriptor>();
+        reversedEntityClassList = new ArrayList<Class<?>>();
+        lowestEntityDescriptorCache = new HashMap<Class<?>, EntityDescriptor>();
     }
 
     public void addEntityDescriptor(EntityDescriptor entityDescriptor) {
@@ -139,25 +132,42 @@ public class SolutionDescriptor {
     }
 
     private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
-        boolean noPlanningEntityPropertyAnnotation = true;
-        for (PropertyDescriptor propertyDescriptor : solutionBeanInfo.getPropertyDescriptors()) {
-            if (propertyDescriptor.getReadMethod() != null) {
-                MemberAccessor memberAccessor = new BeanPropertyMemberAccessor(propertyDescriptor);
-                if (memberAccessor.isAnnotationPresent(PlanningEntityProperty.class)) {
-                    noPlanningEntityPropertyAnnotation = false;
+        boolean noEntityPropertyAnnotation = true;
+        // TODO This does not support annotations on private/protected methods like EntityDescriptor
+        for (Method method : solutionClass.getMethods()) {
+            boolean entityPropertyAnnotated = method.isAnnotationPresent(PlanningEntityProperty.class);
+            boolean entityCollectionPropertyAnnotated = method.isAnnotationPresent(PlanningEntityCollectionProperty.class);
+            if (entityPropertyAnnotated && entityCollectionPropertyAnnotated) {
+                throw new IllegalStateException("The solutionClass (" + solutionClass
+                        + ") has a method (" + method + ") that has both a "
+                        + PlanningEntityProperty.class.getSimpleName() + " annotation and a "
+                        + PlanningEntityCollectionProperty.class.getSimpleName() + " annotation.");
+            }
+            if (entityPropertyAnnotated || entityCollectionPropertyAnnotated) {
+                noEntityPropertyAnnotation = false;
+                if (!ReflectionHelper.isGetterMethod(method)) {
+                    throw new IllegalStateException("The solutionClass (" + solutionClass
+                            + ")'s method (" + method + ") with a " + PlanningEntityProperty.class.getSimpleName()
+                            + " or " + PlanningEntityCollectionProperty.class.getSimpleName()
+                            + " annotation must be a valid getter method.\n"
+                            + "  That annotation can only be used on a JavaBeans getter method or on a field.");
+                }
+                MemberAccessor memberAccessor = new BeanPropertyMemberAccessor(method);
+                if (entityPropertyAnnotated) {
                     entityPropertyAccessorMap.put(memberAccessor.getName(), memberAccessor);
-                } else if (memberAccessor.isAnnotationPresent(PlanningEntityCollectionProperty.class)) {
-                    noPlanningEntityPropertyAnnotation = false;
+                } else if (entityCollectionPropertyAnnotated) {
+                    noEntityPropertyAnnotation = false;
                     if (!Collection.class.isAssignableFrom(memberAccessor.getType())) {
                         throw new IllegalStateException("The solutionClass (" + solutionClass
-                                + ") has a PlanningEntityCollection annotated property ("
-                                + memberAccessor.getName() + ") that does not return a Collection.");
+                                + ") has a " + PlanningEntityCollectionProperty.class.getSimpleName()
+                                + " annotated property (" + memberAccessor.getName() + ") that does not return a "
+                                + Collection.class.getSimpleName() + ".");
                     }
                     entityCollectionPropertyAccessorMap.put(memberAccessor.getName(), memberAccessor);
                 }
             }
         }
-        if (noPlanningEntityPropertyAnnotation) {
+        if (noEntityPropertyAnnotation) {
             throw new IllegalStateException("The solutionClass (" + solutionClass
                     + ") should have at least 1 getter with a PlanningEntityCollection or PlanningEntityProperty"
                     + " annotation.");
