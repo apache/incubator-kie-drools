@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.domain.variable.descriptor;
 
-import org.optaplanner.core.impl.domain.common.MemberAccessor;
+import org.optaplanner.core.impl.domain.common.member.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;

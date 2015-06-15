@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.common;
+package org.optaplanner.core.impl.domain.common.member;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 /**

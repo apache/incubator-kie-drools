@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.common;
+package org.optaplanner.core.impl.domain.common.readmethod;
 
 import java.lang.reflect.Method;
 

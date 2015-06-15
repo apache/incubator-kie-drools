@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.domain.variable.descriptor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.optaplanner.core.impl.domain.common.MemberAccessor;
+import org.optaplanner.core.impl.domain.common.member.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 
 public abstract class VariableDescriptor {
