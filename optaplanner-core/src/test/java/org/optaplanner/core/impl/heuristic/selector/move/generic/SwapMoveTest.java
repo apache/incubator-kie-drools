@@ -194,7 +194,7 @@ public class SwapMoveTest {
         assertEquals("c {v2} <-> b {v1}", new SwapMove(variableDescriptors, c, b).toString());
     }
 
-    @Test @Ignore("https://issues.jboss.org/browse/PLANNER-323")
+    @Test
     public void toStringTestMultiVar() {
         TestdataValue v1 = new TestdataValue("v1");
         TestdataValue v2 = new TestdataValue("v2");
