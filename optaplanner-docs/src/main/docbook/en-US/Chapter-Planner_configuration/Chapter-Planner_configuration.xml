@@ -124,9 +124,9 @@
     <section xml:id="solverConfigurationByJavaAPI">
       <title>Solver Configuration by Java API</title>
 
-      <para>A solver configuration can also be configured with the <literal>SolverConfig</literal> API. This is especially
-      useful to change some values dynamically at runtime. For example, to change the running time based on user input,
-      before building the <literal>Solver</literal>:</para>
+      <para>A solver configuration can also be configured with the <literal>SolverConfig</literal> API. This is
+      especially useful to change some values dynamically at runtime. For example, to change the running time based on
+      user input, before building the <literal>Solver</literal>:</para>
 
       <programlisting language="java">        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
@@ -210,9 +210,9 @@
 
           <itemizedlist>
             <listitem>
-              <para>A surrogate ID does not suffice as the required minimum of one problem property. It needs to be understandable
-              by the business. A business key does suffice. This prevents an unassigned entity from being nameless
-              (unidentifiable by the business).</para>
+              <para>A surrogate ID does not suffice as the required minimum of one problem property. It needs to be
+              understandable by the business. A business key does suffice. This prevents an unassigned entity from being
+              nameless (unidentifiable by the business).</para>
             </listitem>
 
             <listitem>
@@ -230,9 +230,9 @@
         </listitem>
 
         <listitem>
-          <para>The number of planning entities is recommended to be fixed during planning. When unsure of which property
-          should be a planning variable and which should be a problem property, choose it so the number of planning
-          entities is fixed. For example in employee rostering: if the planning entity class would have been
+          <para>The number of planning entities is recommended to be fixed during planning. When unsure of which
+          property should be a planning variable and which should be a problem property, choose it so the number of
+          planning entities is fixed. For example in employee rostering: if the planning entity class would have been
           <literal>EmployeeAssignment</literal> with a problem property <literal>getEmployee()</literal> and a planning
           variable <literal>getShift()</literal>, than it is impossible to accurately predict how many
           <literal>EmployeeAssignment</literal> instances to make per <literal>Employee</literal>.</para>
@@ -255,6 +255,32 @@
       <para><emphasis role="bold">In Planner all problems facts and planning entities are plain old JavaBeans
       (POJOs).</emphasis> You can load them from a database, an XML file, a data repository, a noSQL cloud, ... (see
       <link linkend="integration">Integration</link>).</para>
+    </section>
+
+    <section xml:id="annotationAlternatives">
+      <title>Annotation alternatives</title>
+
+      <para>Planner needs to be told which classes in your domain model are planning entities, which properties are
+      planning variables, etc. There are several ways to deliver this information:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Add class annotations and JavaBean property annotations on the domain model. The property annotations
+          must be the getter method, not on the setter method. This is the recommended manner.</para>
+        </listitem>
+
+        <listitem>
+          <para>Add class annotations and field annotations on the domain model.</para>
+        </listitem>
+
+        <listitem>
+          <para>No annotations: externalize the domain configuration in an XML file. This is <link
+          xlink:href="https://issues.jboss.org/browse/PLANNER-151">not yet supported</link>.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>This manual focusses on the first manner, but every features supports all 3 manners, even if it's not
+      explicilty mentioned.</para>
     </section>
 
     <section xml:id="problemFact">
@@ -299,10 +325,11 @@
 
       <note>
         <para>Generally, better designed domain classes lead to simpler and more efficient score constraints. Therefore,
-        when dealing with a messy legacy system, it can sometimes be worth it to convert the messy domain set into a
-        planner specific POJO set first. For example: if your domain model has two <literal>Teacher</literal> instances
-        for the same teacher that teaches at two different departments, it is hard to write a correct score constraint that
-        constrains a teacher's spare time.</para>
+        when dealing with a messy (denormalized) legacy system, it can sometimes be worthwhile to convert the messy
+        domain model into a Planner specific model first. For example: if your domain model has two
+        <literal>Teacher</literal> instances for the same teacher that teaches at two different departments, it is
+        harder to write a correct score constraint that constrains a teacher's spare time on the original model than on
+        an adjusted model.</para>
 
         <para>Alternatively, you can sometimes also introduce <link linkend="cachedProblemFact"><emphasis>a cached
         problem fact</emphasis></link> to enrich the domain model for planning only.</para>
@@ -317,16 +344,16 @@
 
         <para>A planning entity is a JavaBean (POJO) that changes during solving, for example a <literal>Queen</literal>
         that changes to another row. A planning problem has multiple planning entities, for example for a single n
-        queens problem, each <literal>Queen</literal> is a planning entity. But there is usually only one planning entity
-        class, for example the <literal>Queen</literal> class.</para>
+        queens problem, each <literal>Queen</literal> is a planning entity. But there is usually only one planning
+        entity class, for example the <literal>Queen</literal> class.</para>
 
         <para>A planning entity class needs to be annotated with the <literal>@PlanningEntity</literal>
         annotation.</para>
 
-        <para>Each planning entity class has one or more <emphasis>planning variables</emphasis>. It usually also has one or
-        more <emphasis>defining</emphasis> properties. For example in n queens, a <literal>Queen</literal> is defined by
-        its <literal>Column</literal> and has a planning variable <literal>Row</literal>. This means that a Queen's
-        column never changes during solving, while its row does change.</para>
+        <para>Each planning entity class has one or more <emphasis>planning variables</emphasis>. It should also have
+        one or more <emphasis>defining</emphasis> properties. For example in n queens, a <literal>Queen</literal> is
+        defined by its <literal>Column</literal> and has a planning variable <literal>Row</literal>. This means that a
+        Queen's column never changes during solving, while its row does change.</para>
 
         <programlisting language="java">@PlanningEntity
 public class Queen {
@@ -340,8 +367,8 @@ public class Queen {
 }</programlisting>
 
         <para>A planning entity class can have multiple planning variables. For example, a <literal>Lecture</literal> is
-        defined by its <literal>Course</literal> and its index in that course (because one course has multiple lectures).
-        Each <literal>Lecture</literal> needs to be scheduled into a <literal>Period</literal> and a
+        defined by its <literal>Course</literal> and its index in that course (because one course has multiple
+        lectures). Each <literal>Lecture</literal> needs to be scheduled into a <literal>Period</literal> and a
         <literal>Room</literal> so it has two planning variables (period and room). For example: the course Mathematics
         has eight lectures per week, of which the first lecture is Monday morning at 08:00 in room 212.</para>
 
@@ -436,7 +463,6 @@ public class Queen {
         anyway. For example, a <literal>Queen</literal>'s <literal>row</literal> variable should not be used.</para>
       </section>
     </section>
-<!-- gemma: edited to here -->
 
     <section xml:id="planningVariable">
       <title>Planning Variable</title>
@@ -444,7 +470,7 @@ public class Queen {
       <section xml:id="planningVariableAnnotation">
         <title>Planning Variable Annotation</title>
 
-        <para>A planning variable is a property (including getter and setter) on a planning entity. It points to a
+        <para>A planning variable is a JavaBean property (so a getter and setter) on a planning entity. It points to a
         planning value, which changes during planning. For example, a <literal>Queen</literal>'s <literal>row</literal>
         property is a planning variable. Note that even though a <literal>Queen</literal>'s <literal>row</literal>
         property changes to another <literal>Row</literal> during planning, no <literal>Row</literal> instance itself is
@@ -455,10 +481,9 @@ public class Queen {
 
         <programlisting language="java">@PlanningEntity
 public class Queen {
+    ...
 
     private Row row;
-
-    // ...
 
     @PlanningVariable(valueRangeProviderRefs = {"rowRange"})
     public Row getRow() {
@@ -474,6 +499,18 @@ public class Queen {
         <para>The <literal>valueRangeProviderRefs</literal> property defines what are the possible planning values for
         this planning variable. It references one or more <literal>@ValueRangeProvider</literal>
         <literal>id</literal>'s.</para>
+
+        <para><link linkend="annotationAlternatives">Annotating the field</link> instead of the property works
+        too:</para>
+
+        <programlisting language="java">@PlanningEntity
+public class Queen {
+    ...
+
+    @PlanningVariable(valueRangeProviderRefs = {"rowRange"})
+    private Row row;
+
+}</programlisting>
       </section>
 
       <section xml:id="nullablePlanningVariable">
@@ -614,6 +651,18 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
             <literal>null</literal>, not even for a <link linkend="nullablePlanningVariable">nullable planning
             variable</link>.</para>
           </important>
+
+          <para><link linkend="annotationAlternatives">Annotating the field</link> instead of the property works
+          too:</para>
+
+          <programlisting language="java">@PlanningSolution
+public class NQueens implements Solution&lt;SimpleScore&gt; {
+    ...
+
+    @ValueRangeProvider(id = "rowRange")
+    private List&lt;Row&gt; rowList;
+
+}</programlisting>
         </section>
 
         <section xml:id="valueRangeProviderOnPlanningEntity">
@@ -810,7 +859,8 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 
         <itemizedlist>
           <listitem>
-            <para>Directly points to a problem fact (or planning entity), which is called an <emphasis>anchor</emphasis>.</para>
+            <para>Directly points to a problem fact (or planning entity), which is called an
+            <emphasis>anchor</emphasis>.</para>
           </listitem>
 
           <listitem>
